@@ -25,7 +25,8 @@ const logTiming = (label: string, startMs: number) => {
 };
 
 const resolveExport = <T>(mod: unknown, key: string): T =>
-  (mod as Record<string, T>)?.[key] ?? (mod as { default: Record<string, T> })?.default?.[key];
+  (mod as Record<string, T>)?.[key] ??
+  (mod as { default: Record<string, T> })?.default?.[key];
 
 const worldState = resolveExport<typeof LogicMod.worldState>(
   LogicMod,
@@ -56,7 +57,8 @@ const DEFAULT_TRICKS =
   [];
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 const _unusedDefaultTricks = DEFAULT_TRICKS;
-const ENTRANCES = resolveExport<Record<string, unknown>>(DataMod, 'ENTRANCES') ?? {};
+const ENTRANCES =
+  resolveExport<Record<string, unknown>>(DataMod, 'ENTRANCES') ?? {};
 const POOL = resolveExport<Record<string, unknown>>(DataMod, 'POOL') ?? {};
 const LogicPassEntrances = resolveExport<typeof EntranceMod.LogicPassEntrances>(
   EntranceMod,
@@ -366,7 +368,9 @@ const buildSilverRupeePlacements = (): Map<string, PlayerItem> => {
         ? locationName
         : `${game === 'mm' ? 'MM' : 'OOT'} ${locationName}`;
     const prefixed = game === 'mm' ? `MM_${itemId}` : `OOT_${itemId}`;
-    let item = (Items as Record<string, unknown>)[prefixed] ?? (Items as Record<string, unknown>)[itemId];
+    let item =
+      (Items as Record<string, unknown>)[prefixed] ??
+      (Items as Record<string, unknown>)[itemId];
     if (!item) {
       try {
         item = itemByID(prefixed);
@@ -475,7 +479,9 @@ const getContext = async (
     ? { ...worldData, settings: { ...settings, logic: 'none' } }
     : worldData;
   const entranceStart = nowMs();
-  const entrancePass = new LogicPassEntrances(entranceInput as Record<string, unknown>);
+  const entrancePass = new LogicPassEntrances(
+    entranceInput as Record<string, unknown>,
+  );
   const entranceResult = entrancePass.run();
   logTiming('getContext entrance pass', entranceStart);
   const worlds = entranceResult.worlds;

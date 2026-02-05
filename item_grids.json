@@ -12,23 +12,25 @@
         "rows": [
           [
             "OOT_STICK",
-            "OOT_NUT",
+            "OOT_NUT_UPGRADE",
             "OOT_BOMB_BAG",
             "OOT_BOW",
             "OOT_ARROW_FIRE",
             "OOT_SPELL_FIRE",
             "OOT_SWORD_KOKIRI",
-            "OOT_SHIELD_DEKU"
+            "OOT_SHIELD_DEKU",
+            "SHARED_TRIFORCE"
           ],
           [
             "OOT_SLINGSHOT",
             "OOT_OCARINA",
-            "EVENT_OOT_BOMBCHU",
+            "OOT_BOMBCHU_10",
             "OOT_HOOKSHOT",
             "OOT_ARROW_ICE",
             "OOT_SPELL_WIND",
             "OOT_SWORD_MASTER",
-            "OOT_SHIELD_HYLIAN"
+            "OOT_SHIELD_HYLIAN",
+            "SHARED_TRIFORCE_COURAGE"
           ],
           [
             "OOT_BOOMERANG",
@@ -38,7 +40,8 @@
             "OOT_ARROW_LIGHT",
             "OOT_SPELL_LOVE",
             "OOT_SWORD_GORON",
-            "OOT_SHIELD_MIRROR"
+            "OOT_SHIELD_MIRROR",
+            "SHARED_TRIFORCE_POWER"
           ],
           [
             "OOT_SONG_ZELDA",
@@ -48,7 +51,8 @@
             "OOT_SONG_TIME",
             "OOT_SONG_STORMS",
             "OOT_BOOTS_IRON",
-            "OOT_BOOTS_HOVER"
+            "OOT_BOOTS_HOVER",
+            "SHARED_TRIFORCE_WISDOM"
           ],
           [
             "OOT_SONG_TP_FOREST",
@@ -61,14 +65,14 @@
             "OOT_TUNIC_ZORA"
           ],
           [
-            "OOT_RUTO_LETTER",
-            "bottle1",
-            "bottle2",
-            "bottle3",
+            "OOT_BOTTLE_RUTO_LETTER",
+            "OOT_BOTTLE_EMPTY",
+            "OOT_BOTTLE_EMPTY",
+            "OOT_BOTTLE_EMPTY",
             "OOT_SCALE",
             "OOT_MAGIC_UPGRADE",
             "OOT_STRENGTH",
-            "OOT_WALLET1"
+            "OOT_WALLET"
           ],
           [
             "OOT_SKELETON_KEY",
@@ -133,892 +137,52 @@
         ]
       },
       {
-        "type": "array",
-        "orientation": "horizontal",
-        "margin": "0,0",
-        "content": [
-          {
-            "type": "array",
-            "orientation": "vertical",
-            "margin": "0,0",
-            "content": [
-              {
-                "type": "array",
-                "orientation": "horizontal",
-                "margin": "0,0",
-                "content": [
-                  {
-                    "type": "item",
-                    "item": "forest",
-                    "margin": "1,1",
-                    "width": 28,
-                    "height": 28
-                  },
-                  {
-                    "type": "item",
-                    "item": "fire",
-                    "margin": "1,1",
-                    "width": 28,
-                    "height": 28
-                  },
-                  {
-                    "type": "item",
-                    "item": "water",
-                    "margin": "1,1",
-                    "width": 28,
-                    "height": 28
-                  },
-                  {
-                    "type": "item",
-                    "item": "spirit",
-                    "margin": "1,1",
-                    "width": 28,
-                    "height": 28
-                  },
-                  {
-                    "type": "item",
-                    "item": "shadow",
-                    "margin": "1,1",
-                    "width": 28,
-                    "height": 28
-                  },
-                  {
-                    "type": "item",
-                    "item": "free",
-                    "margin": "1,1",
-                    "width": 28,
-                    "height": 28
-                  }
-                ]
-              },
-              {
-                "type": "array",
-                "orientation": "horizontal",
-                "margin": "0,0",
-                "content": [
-                  {
-                    "type": "canvas",
-                    "width": 28,
-                    "height": 28,
-                    "margin": "1,1",
-                    "content": [
-                      {
-                        "type": "item",
-                        "item": "setting_mq_ForestTemple",
-                        "canvas_depth": 1,
-                        "width": 28,
-                        "height": 10.5
-                      },
-                      {
-                        "type": "item",
-                        "item": "OOT_SMALL_KEY_FOREST",
-                        "canvas_depth": 1,
-                        "canvas_left": 0,
-                        "canvas_top": 16,
-                        "width": 14,
-                        "height": 14
-                      },
-                      {
-                        "type": "item",
-                        "item": "OOT_BOSS_KEY_FOREST",
-                        "canvas_depth": 1,
-                        "canvas_left": 16,
-                        "canvas_top": 16,
-                        "width": 14,
-                        "height": 14
-                      }
-                    ]
-                  },
-                  {
-                    "type": "canvas",
-                    "width": 28,
-                    "height": 28,
-                    "margin": "1,1",
-                    "content": [
-                      {
-                        "type": "item",
-                        "item": "setting_mq_FireTemple",
-                        "canvas_depth": 1,
-                        "width": 28,
-                        "height": 10.5
-                      },
-                      {
-                        "type": "item",
-                        "item": "OOT_SMALL_KEY_FIRE",
-                        "canvas_depth": 1,
-                        "canvas_left": 0,
-                        "canvas_top": 16,
-                        "width": 14,
-                        "height": 14
-                      },
-                      {
-                        "type": "item",
-                        "item": "OOT_BOSS_KEY_FIRE",
-                        "canvas_depth": 1,
-                        "canvas_left": 16,
-                        "canvas_top": 16,
-                        "width": 14,
-                        "height": 14
-                      }
-                    ]
-                  },
-                  {
-                    "type": "canvas",
-                    "width": 28,
-                    "height": 28,
-                    "margin": "1,1",
-                    "content": [
-                      {
-                        "type": "item",
-                        "item": "setting_mq_WaterTemple",
-                        "canvas_depth": 1,
-                        "width": 28,
-                        "height": 10.5
-                      },
-                      {
-                        "type": "item",
-                        "item": "OOT_SMALL_KEY_WATER",
-                        "canvas_depth": 1,
-                        "canvas_left": 0,
-                        "canvas_top": 16,
-                        "width": 14,
-                        "height": 14
-                      },
-                      {
-                        "type": "item",
-                        "item": "OOT_BOSS_KEY_WATER",
-                        "canvas_depth": 1,
-                        "canvas_left": 16,
-                        "canvas_top": 16,
-                        "width": 14,
-                        "height": 14
-                      }
-                    ]
-                  },
-                  {
-                    "type": "canvas",
-                    "width": 28,
-                    "height": 28,
-                    "margin": "1,1",
-                    "content": [
-                      {
-                        "type": "item",
-                        "item": "setting_mq_SpiritTemple",
-                        "canvas_depth": 1,
-                        "width": 28,
-                        "height": 10.5
-                      },
-                      {
-                        "type": "item",
-                        "item": "OOT_SMALL_KEY_SPIRIT",
-                        "canvas_depth": 1,
-                        "canvas_left": 0,
-                        "canvas_top": 16,
-                        "width": 14,
-                        "height": 14
-                      },
-                      {
-                        "type": "item",
-                        "item": "OOT_BOSS_KEY_SPIRIT",
-                        "canvas_depth": 1,
-                        "canvas_left": 16,
-                        "canvas_top": 16,
-                        "width": 14,
-                        "height": 14
-                      }
-                    ]
-                  },
-                  {
-                    "type": "canvas",
-                    "width": 28,
-                    "height": 28,
-                    "margin": "1,1",
-                    "content": [
-                      {
-                        "type": "item",
-                        "item": "setting_mq_ShadowTemple",
-                        "canvas_depth": 1,
-                        "width": 28,
-                        "height": 10.5
-                      },
-                      {
-                        "type": "item",
-                        "item": "OOT_SMALL_KEY_SHADOW",
-                        "canvas_depth": 1,
-                        "canvas_left": 0,
-                        "canvas_top": 16,
-                        "width": 14,
-                        "height": 14
-                      },
-                      {
-                        "type": "item",
-                        "item": "OOT_BOSS_KEY_SHADOW",
-                        "canvas_depth": 1,
-                        "canvas_left": 16,
-                        "canvas_top": 16,
-                        "width": 14,
-                        "height": 14
-                      }
-                    ]
-                  },
-                  {
-                    "type": "item",
-                    "item": "free_label",
-                    "margin": "1,1",
-                    "width": 28,
-                    "height": 28
-                  }
-                ]
-              },
-              {
-                "type": "array",
-                "orientation": "horizontal",
-                "margin": "0,0",
-                "content": [
-                  {
-                    "type": "item",
-                    "item": "deku",
-                    "margin": "1,1",
-                    "width": 28,
-                    "height": 28
-                  },
-                  {
-                    "type": "item",
-                    "item": "dodongo",
-                    "margin": "1,1",
-                    "width": 28,
-                    "height": 28
-                  },
-                  {
-                    "type": "item",
-                    "item": "jabu",
-                    "margin": "1,1",
-                    "width": 28,
-                    "height": 28
-                  },
-                  {
-                    "type": "canvas",
-                    "width": 28,
-                    "height": 28,
-                    "margin": "1,1",
-                    "content": [
-                      {
-                        "type": "item",
-                        "item": "setting_mq_GanonCastle",
-                        "canvas_depth": 1,
-                        "width": 28,
-                        "height": 10.5
-                      },
-                      {
-                        "type": "item",
-                        "item": "OOT_SMALL_KEY_GANON",
-                        "canvas_depth": 1,
-                        "canvas_left": 0,
-                        "canvas_top": 16,
-                        "width": 14,
-                        "height": 14
-                      },
-                      {
-                        "type": "item",
-                        "item": "OOT_BOSS_KEY_GANON",
-                        "canvas_depth": 1,
-                        "canvas_left": 16,
-                        "canvas_top": 16,
-                        "width": 14,
-                        "height": 14
-                      }
-                    ]
-                  },
-                  {
-                    "type": "canvas",
-                    "width": 28,
-                    "height": 28,
-                    "margin": "1,1",
-                    "content": [
-                      {
-                        "type": "item",
-                        "item": "setting_mq_GerudoTrainingGrounds",
-                        "canvas_depth": 1,
-                        "width": 28,
-                        "height": 10.5
-                      },
-                      {
-                        "type": "item",
-                        "item": "OOT_SMALL_KEY_GTG",
-                        "canvas_depth": 1,
-                        "canvas_left": 0,
-                        "canvas_top": 16,
-                        "width": 14,
-                        "height": 14
-                      }
-                    ]
-                  },
-                  {
-                    "type": "canvas",
-                    "width": 28,
-                    "height": 28,
-                    "margin": "1,1",
-                    "content": [
-                      {
-                        "type": "item",
-                        "item": "th_label",
-                        "canvas_depth": 1,
-                        "width": 28,
-                        "height": 10.5
-                      },
-                      {
-                        "type": "item",
-                        "item": "OOT_SMALL_KEY_GF",
-                        "canvas_depth": 1,
-                        "canvas_left": 0,
-                        "canvas_top": 16,
-                        "width": 14,
-                        "height": 14
-                      }
-                    ]
-                  }
-                ]
-              },
-              {
-                "type": "array",
-                "orientation": "horizontal",
-                "margin": "0,0",
-                "content": [
-                  {
-                    "type": "item",
-                    "item": "setting_mq_DekuTree",
-                    "margin": "1,1",
-                    "width": 28,
-                    "height": 10.5
-                  },
-                  {
-                    "type": "item",
-                    "item": "setting_mq_DodongoCavern",
-                    "margin": "1,1",
-                    "width": 28,
-                    "height": 10.5
-                  },
-                  {
-                    "type": "item",
-                    "item": "setting_mq_Jabu-Jabu",
-                    "margin": "1,1",
-                    "width": 28,
-                    "height": 10.5
-                  },
-                  {
-                    "type": "item",
-                    "item": "setting_mq_IceCavern",
-                    "margin": "1,1",
-                    "width": 28,
-                    "height": 10.5
-                  },
-                  {
-                    "type": "canvas",
-                    "width": 66,
-                    "height": 14,
-                    "margin": "1,1",
-                    "content": [
-                      {
-                        "type": "item",
-                        "item": "setting_mq_BottomoftheWell",
-                        "canvas_depth": 1,
-                        "canvas_left": 0,
-                        "canvas_top": 2,
-                        "width": 28,
-                        "height": 10.5
-                      },
-                      {
-                        "type": "item",
-                        "item": "OOT_SMALL_KEY_BOTW",
-                        "canvas_depth": 1,
-                        "canvas_left": 34,
-                        "canvas_top": 0,
-                        "width": 14,
-                        "height": 14
-                      }
-                    ]
-                  }
-                ]
-              }
-            ]
-          },
-          {
-            "type": "itemgrid",
-            "h_alignment": "left",
-            "item_margin": "1,1",
-            "scale": 0.7,
-            "rows": [["triforce", "gossip_stone"]]
-          }
-        ]
-      }
-    ]
-  },
-  "item_grid_small_oot": {
-    "type": "array",
-    "orientation": "vertical",
-    "scale": 1.2,
-    "content": [
-      {
         "type": "itemgrid",
         "h_alignment": "left",
         "item_margin": "1,1",
-        "scale": 0.875,
+        "scale": 0.8,
         "rows": [
           [
-            "OOT_SWORD_KOKIRI",
-            "OOT_SWORD_MASTER",
-            "OOT_BOMB_BAG",
-            "OOT_BOW",
-            "OOT_ARROW_FIRE",
-            "OOT_ARROW_LIGHT",
-            "OOT_SLINGSHOT",
-            "OOT_OCARINA"
+            "OOT_STONE_EMERALD",
+            "OOT_STONE_RUBY",
+            "OOT_STONE_SAPPHIRE",
+            "OOT_MEDALLION_FOREST",
+            "OOT_MEDALLION_FIRE",
+            "OOT_MEDALLION_WATER",
+            "OOT_MEDALLION_SHADOW",
+            "OOT_MEDALLION_SPIRIT",
+            "OOT_MEDALLION_LIGHT"
           ],
           [
-            "OOT_SHIELD_DEKU",
-            "OOT_SHIELD_HYLIAN",
-            "OOT_SHIELD_MIRROR",
-            "OOT_HOOKSHOT",
-            "OOT_MAGIC_UPGRADE",
-            "OOT_BOOMERANG",
-            "OOT_HAMMER",
-            "OOT_SPELL_FIRE"
+            "oot_foresttemple_label",
+            "OOT_SMALL_KEY_FOREST",
+            "OOT_BOSS_KEY_FOREST",
+            "oot_firetemple_label",
+            "OOT_SMALL_KEY_FIRE",
+            "OOT_BOSS_KEY_FIRE",
+            "oot_watertemple_label",
+            "OOT_SMALL_KEY_WATER",
+            "OOT_BOSS_KEY_WATER"
           ],
           [
-            "OOT_STRENGTH",
-            "OOT_RUTO_LETTER",
-            "OOT_SCALE",
-            "OOT_BOOTS_IRON",
-            "OOT_BOOTS_HOVER",
-            "OOT_GERUDO_CARD",
-            "OOT_WALLET1",
-            "OOT_MAGIC_BEAN"
+            "oot_spirittemple_label",
+            "OOT_SMALL_KEY_SPIRIT",
+            "OOT_BOSS_KEY_SPIRIT",
+            "oot_shadowtemple_label",
+            "OOT_SMALL_KEY_SHADOW",
+            "OOT_BOSS_KEY_SHADOW",
+            "oot_ganoncastle_label",
+            "OOT_SMALL_KEY_GANON",
+            "OOT_BOSS_KEY_GANON"
           ],
           [
-            "OOT_SONG_ZELDA",
-            "OOT_SONG_EPONA",
-            "OOT_SONG_SARIA",
-            "OOT_SONG_SUN",
-            "OOT_SONG_TIME",
-            "OOT_SONG_STORMS",
-            "OOT_TUNIC_GORON",
-            "OOT_TUNIC_ZORA"
-          ],
-          [
-            "OOT_SONG_TP_FOREST",
-            "OOT_SONG_TP_FIRE",
-            "OOT_SONG_TP_WATER",
-            "OOT_SONG_TP_SPIRIT",
-            "OOT_SONG_TP_SHADOW",
-            "OOT_SONG_TP_LIGHT",
-            "OOT_GS_TOKEN",
-            "triforce"
+            "oot_gerudotraining_label",
+            "OOT_SMALL_KEY_GTG",
+            "oot_gerudofortress_label",
+            "OOT_SMALL_KEY_GF",
+            "oot_well_label",
+            "OOT_SMALL_KEY_BOTW"
           ]
-        ]
-      },
-      {
-        "type": "array",
-        "orientation": "vertical",
-        "margin": "0,0",
-        "content": [
-          {
-            "type": "array",
-            "orientation": "horizontal",
-            "margin": "0,0",
-            "content": [
-              {
-                "type": "item",
-                "item": "forest",
-                "margin": "1,1",
-                "width": 28,
-                "height": 28
-              },
-              {
-                "type": "item",
-                "item": "fire",
-                "margin": "1,1",
-                "width": 28,
-                "height": 28
-              },
-              {
-                "type": "item",
-                "item": "water",
-                "margin": "1,1",
-                "width": 28,
-                "height": 28
-              },
-              {
-                "type": "item",
-                "item": "spirit",
-                "margin": "1,1",
-                "width": 28,
-                "height": 28
-              },
-              {
-                "type": "item",
-                "item": "shadow",
-                "margin": "1,1",
-                "width": 28,
-                "height": 28
-              },
-              {
-                "type": "item",
-                "item": "free",
-                "margin": "1,1",
-                "width": 28,
-                "height": 28
-              }
-            ]
-          },
-          {
-            "type": "array",
-            "orientation": "horizontal",
-            "margin": "0,0",
-            "content": [
-              {
-                "type": "canvas",
-                "width": 28,
-                "height": 28,
-                "margin": "1,1",
-                "content": [
-                  {
-                    "type": "item",
-                    "item": "setting_mq_ForestTemple",
-                    "canvas_depth": 1,
-                    "width": 28,
-                    "height": 10.5
-                  },
-                  {
-                    "type": "item",
-                    "item": "OOT_SMALL_KEY_FOREST",
-                    "canvas_depth": 1,
-                    "canvas_left": 0,
-                    "canvas_top": 16,
-                    "width": 14,
-                    "height": 14
-                  },
-                  {
-                    "type": "item",
-                    "item": "OOT_BOSS_KEY_FOREST",
-                    "canvas_depth": 1,
-                    "canvas_left": 16,
-                    "canvas_top": 16,
-                    "width": 14,
-                    "height": 14
-                  }
-                ]
-              },
-              {
-                "type": "canvas",
-                "width": 28,
-                "height": 28,
-                "margin": "1,1",
-                "content": [
-                  {
-                    "type": "item",
-                    "item": "setting_mq_FireTemple",
-                    "canvas_depth": 1,
-                    "width": 28,
-                    "height": 10.5
-                  },
-                  {
-                    "type": "item",
-                    "item": "OOT_SMALL_KEY_FIRE",
-                    "canvas_depth": 1,
-                    "canvas_left": 0,
-                    "canvas_top": 16,
-                    "width": 14,
-                    "height": 14
-                  },
-                  {
-                    "type": "item",
-                    "item": "OOT_BOSS_KEY_FIRE",
-                    "canvas_depth": 1,
-                    "canvas_left": 16,
-                    "canvas_top": 16,
-                    "width": 14,
-                    "height": 14
-                  }
-                ]
-              },
-              {
-                "type": "canvas",
-                "width": 28,
-                "height": 28,
-                "margin": "1,1",
-                "content": [
-                  {
-                    "type": "item",
-                    "item": "setting_mq_WaterTemple",
-                    "canvas_depth": 1,
-                    "width": 28,
-                    "height": 10.5
-                  },
-                  {
-                    "type": "item",
-                    "item": "OOT_SMALL_KEY_WATER",
-                    "canvas_depth": 1,
-                    "canvas_left": 0,
-                    "canvas_top": 16,
-                    "width": 14,
-                    "height": 14
-                  },
-                  {
-                    "type": "item",
-                    "item": "OOT_BOSS_KEY_WATER",
-                    "canvas_depth": 1,
-                    "canvas_left": 16,
-                    "canvas_top": 16,
-                    "width": 14,
-                    "height": 14
-                  }
-                ]
-              },
-              {
-                "type": "canvas",
-                "width": 28,
-                "height": 28,
-                "margin": "1,1",
-                "content": [
-                  {
-                    "type": "item",
-                    "item": "setting_mq_SpiritTemple",
-                    "canvas_depth": 1,
-                    "width": 28,
-                    "height": 10.5
-                  },
-                  {
-                    "type": "item",
-                    "item": "OOT_SMALL_KEY_SPIRIT",
-                    "canvas_depth": 1,
-                    "canvas_left": 0,
-                    "canvas_top": 16,
-                    "width": 14,
-                    "height": 14
-                  },
-                  {
-                    "type": "item",
-                    "item": "OOT_BOSS_KEY_SPIRIT",
-                    "canvas_depth": 1,
-                    "canvas_left": 16,
-                    "canvas_top": 16,
-                    "width": 14,
-                    "height": 14
-                  }
-                ]
-              },
-              {
-                "type": "canvas",
-                "width": 28,
-                "height": 28,
-                "margin": "1,1",
-                "content": [
-                  {
-                    "type": "item",
-                    "item": "setting_mq_ShadowTemple",
-                    "canvas_depth": 1,
-                    "width": 28,
-                    "height": 10.5
-                  },
-                  {
-                    "type": "item",
-                    "item": "OOT_SMALL_KEY_SHADOW",
-                    "canvas_depth": 1,
-                    "canvas_left": 0,
-                    "canvas_top": 16,
-                    "width": 14,
-                    "height": 14
-                  },
-                  {
-                    "type": "item",
-                    "item": "OOT_BOSS_KEY_SHADOW",
-                    "canvas_depth": 1,
-                    "canvas_left": 16,
-                    "canvas_top": 16,
-                    "width": 14,
-                    "height": 14
-                  }
-                ]
-              },
-              {
-                "type": "item",
-                "item": "free_label",
-                "margin": "1,1",
-                "width": 28,
-                "height": 28
-              }
-            ]
-          },
-          {
-            "type": "array",
-            "orientation": "horizontal",
-            "margin": "0,0",
-            "content": [
-              {
-                "type": "item",
-                "item": "deku",
-                "margin": "1,1",
-                "width": 28,
-                "height": 28
-              },
-              {
-                "type": "item",
-                "item": "dodongo",
-                "margin": "1,1",
-                "width": 28,
-                "height": 28
-              },
-              {
-                "type": "item",
-                "item": "jabu",
-                "margin": "1,1",
-                "width": 28,
-                "height": 28
-              },
-              {
-                "type": "canvas",
-                "width": 28,
-                "height": 28,
-                "margin": "1,1",
-                "content": [
-                  {
-                    "type": "item",
-                    "item": "setting_mq_GanonCastle",
-                    "canvas_depth": 1,
-                    "width": 28,
-                    "height": 10.5
-                  },
-                  {
-                    "type": "item",
-                    "item": "OOT_SMALL_KEY_GANON",
-                    "canvas_depth": 1,
-                    "canvas_left": 0,
-                    "canvas_top": 16,
-                    "width": 14,
-                    "height": 14
-                  },
-                  {
-                    "type": "item",
-                    "item": "OOT_BOSS_KEY_GANON",
-                    "canvas_depth": 1,
-                    "canvas_left": 16,
-                    "canvas_top": 16,
-                    "width": 14,
-                    "height": 14
-                  }
-                ]
-              },
-              {
-                "type": "canvas",
-                "width": 28,
-                "height": 28,
-                "margin": "1,1",
-                "content": [
-                  {
-                    "type": "item",
-                    "item": "setting_mq_GerudoTrainingGrounds",
-                    "canvas_depth": 1,
-                    "width": 28,
-                    "height": 10.5
-                  },
-                  {
-                    "type": "item",
-                    "item": "OOT_SMALL_KEY_GTG",
-                    "canvas_depth": 1,
-                    "canvas_left": 0,
-                    "canvas_top": 16,
-                    "width": 14,
-                    "height": 14
-                  }
-                ]
-              },
-              {
-                "type": "canvas",
-                "width": 28,
-                "height": 28,
-                "margin": "1,1",
-                "content": [
-                  {
-                    "type": "item",
-                    "item": "th_label",
-                    "canvas_depth": 1,
-                    "width": 28,
-                    "height": 10.5
-                  },
-                  {
-                    "type": "item",
-                    "item": "OOT_SMALL_KEY_GF",
-                    "canvas_depth": 1,
-                    "canvas_left": 0,
-                    "canvas_top": 16,
-                    "width": 14,
-                    "height": 14
-                  }
-                ]
-              }
-            ]
-          },
-          {
-            "type": "array",
-            "orientation": "horizontal",
-            "margin": "0,0",
-            "content": [
-              {
-                "type": "item",
-                "item": "setting_mq_DekuTree",
-                "margin": "1,1",
-                "width": 28,
-                "height": 10.5
-              },
-              {
-                "type": "item",
-                "item": "setting_mq_DodongoCavern",
-                "margin": "1,1",
-                "width": 28,
-                "height": 10.5
-              },
-              {
-                "type": "item",
-                "item": "setting_mq_Jabu-Jabu",
-                "margin": "1,1",
-                "width": 28,
-                "height": 10.5
-              },
-              {
-                "type": "item",
-                "item": "setting_mq_IceCavern",
-                "margin": "1,1",
-                "width": 28,
-                "height": 10.5
-              },
-              {
-                "type": "canvas",
-                "width": 66,
-                "height": 14,
-                "margin": "1,1",
-                "content": [
-                  {
-                    "type": "item",
-                    "item": "setting_mq_BottomoftheWell",
-                    "canvas_depth": 1,
-                    "canvas_left": 0,
-                    "canvas_top": 2,
-                    "width": 28,
-                    "height": 10.5
-                  },
-                  {
-                    "type": "item",
-                    "item": "OOT_SMALL_KEY_BOTW",
-                    "canvas_depth": 1,
-                    "canvas_left": 34,
-                    "canvas_top": 0,
-                    "width": 14,
-                    "height": 14
-                  }
-                ]
-              }
-            ]
-          }
         ]
       }
     ]
@@ -1040,19 +204,20 @@
             "MM_ARROW_FIRE",
             "MM_ARROW_ICE",
             "MM_ARROW_LIGHT",
-            "mm_spinattack",
+            "MM_SWORD",
             "MM_SHIELD_HERO",
-            "MM_SHIELD_MIRROR"
+            "MM_SHIELD_MIRROR",
+            "MM_SPIN_UPGRADE"
           ],
           [
             "MM_BOMB_BAG",
             "MM_BOMBCHU",
             "MM_STICK",
-            "MM_NUT",
+            "MM_NUTS_10",
             "MM_MAGIC_BEAN",
             "MM_BOTTLED_GOLD_DUST",
-            "mm_bottle1",
-            "mm_bottle2"
+            "MM_BOTTLE_EMPTY",
+            "MM_BOTTLE_EMPTY"
           ],
           [
             "MM_POWDER_KEG",
@@ -1060,9 +225,9 @@
             "MM_LENS",
             "MM_HOOKSHOT",
             "MM_GREAT_FAIRY_SWORD",
-            "mm_bottle3",
-            "mm_bottle4",
-            "mm_bottle5"
+            "MM_BOTTLE_EMPTY",
+            "MM_BOTTLE_EMPTY",
+            "MM_BOTTLE_EMPTY"
           ],
           [
             "MM_SONG_TIME",
@@ -1076,6 +241,7 @@
           ],
           [
             "MM_SONG_AWAKENING",
+            "MM_SONG_GORON_HALF",
             "MM_SONG_GORON",
             "MM_SONG_ZORA",
             "MM_SONG_EMPTINESS",
@@ -1152,7 +318,8 @@
             "MM_OWL_MOUNTAIN_VILLAGE",
             "MM_CLOCK1",
             "MM_CLOCK3",
-            "MM_CLOCK5"
+            "MM_CLOCK5",
+            "MM_CLOCK"
           ],
           [
             "MM_OWL_SNOWHEAD",
@@ -1178,7 +345,7 @@
             "content": [
               {
                 "type": "item",
-                "item": "mm_woodfall",
+                "item": "MM_REMAINS_ODOLWA",
                 "margin": "1,1",
                 "width": 28,
                 "height": 28
@@ -1192,7 +359,7 @@
               },
               {
                 "type": "item",
-                "item": "mm_snowhead",
+                "item": "MM_REMAINS_GOHT",
                 "margin": "1,1",
                 "width": 28,
                 "height": 28
@@ -1206,7 +373,7 @@
               },
               {
                 "type": "item",
-                "item": "mm_great_bay",
+                "item": "MM_REMAINS_GYORG",
                 "margin": "1,1",
                 "width": 28,
                 "height": 28
@@ -1220,272 +387,7 @@
               },
               {
                 "type": "item",
-                "item": "mm_stone_tower",
-                "margin": "1,1",
-                "width": 28,
-                "height": 28
-              },
-              {
-                "type": "item",
-                "item": "MM_STRAY_FAIRY_ST",
-                "margin": "3,4",
-                "width": 32,
-                "height": 32
-              }
-            ]
-          },
-          {
-            "type": "array",
-            "orientation": "horizontal",
-            "scale": 0.8,
-            "margin": "0,0",
-            "content": [
-              {
-                "type": "array",
-                "orientation": "horizontal",
-                "margin": "5,0",
-                "content": [
-                  {
-                    "type": "item",
-                    "item": "MM_BOSS_KEY_WF",
-                    "margin": "0,2",
-                    "width": 16,
-                    "height": 16
-                  },
-                  {
-                    "type": "item",
-                    "item": "mm_woodfall_label",
-                    "margin": "0,2",
-                    "width": 32,
-                    "height": 12
-                  },
-                  {
-                    "type": "item",
-                    "item": "MM_SMALL_KEY_WF",
-                    "margin": "1,2",
-                    "width": 16,
-                    "height": 16
-                  }
-                ]
-              },
-              {
-                "type": "array",
-                "orientation": "horizontal",
-                "margin": "5,0",
-                "content": [
-                  {
-                    "type": "item",
-                    "item": "MM_BOSS_KEY_SH",
-                    "margin": "0,2",
-                    "width": 16,
-                    "height": 16
-                  },
-                  {
-                    "type": "item",
-                    "item": "mm_snowhead_label",
-                    "margin": "0,2",
-                    "width": 32,
-                    "height": 12
-                  },
-                  {
-                    "type": "item",
-                    "item": "MM_SMALL_KEY_SH",
-                    "margin": "1,2",
-                    "width": 16,
-                    "height": 16
-                  }
-                ]
-              },
-              {
-                "type": "array",
-                "orientation": "horizontal",
-                "margin": "5,0",
-                "content": [
-                  {
-                    "type": "item",
-                    "item": "MM_BOSS_KEY_GB",
-                    "margin": "0,2",
-                    "width": 16,
-                    "height": 16
-                  },
-                  {
-                    "type": "item",
-                    "item": "mm_greatbay_label",
-                    "margin": "0,2",
-                    "width": 32,
-                    "height": 12
-                  },
-                  {
-                    "type": "item",
-                    "item": "MM_SMALL_KEY_GB",
-                    "margin": "1,2",
-                    "width": 16,
-                    "height": 16
-                  }
-                ]
-              },
-              {
-                "type": "array",
-                "orientation": "horizontal",
-                "margin": "5,0",
-                "content": [
-                  {
-                    "type": "item",
-                    "item": "MM_BOSS_KEY_ST",
-                    "margin": "0,2",
-                    "width": 16,
-                    "height": 16
-                  },
-                  {
-                    "type": "item",
-                    "item": "mm_stonetower_label",
-                    "margin": "0,2",
-                    "width": 32,
-                    "height": 12
-                  },
-                  {
-                    "type": "item",
-                    "item": "MM_SMALL_KEY_ST",
-                    "margin": "1,2",
-                    "width": 16,
-                    "height": 16
-                  }
-                ]
-              }
-            ]
-          }
-        ]
-      }
-    ]
-  },
-  "item_grid_small_mm": {
-    "type": "array",
-    "orientation": "vertical",
-    "scale": 1.2,
-    "content": [
-      {
-        "type": "itemgrid",
-        "h_alignment": "left",
-        "item_margin": "1,1",
-        "item_size": 28,
-        "rows": [
-          [
-            "MM_OCARINA",
-            "MM_BOW",
-            "MM_ARROW_FIRE",
-            "MM_ARROW_ICE",
-            "MM_ARROW_LIGHT",
-            "mm_spinattack",
-            "MM_SHIELD_HERO",
-            "MM_SHIELD_MIRROR"
-          ],
-          [
-            "MM_BOMB_BAG",
-            "MM_BOMBCHU",
-            "MM_MAGIC_BEAN",
-            "MM_BOTTLED_GOLD_DUST",
-            "MM_POWDER_KEG",
-            "MM_PICTOGRAPH_BOX",
-            "MM_LENS",
-            "MM_HOOKSHOT"
-          ],
-          [
-            "MM_MOON_TEAR",
-            "MM_DEED_LAND",
-            "MM_DEED_SWAMP",
-            "MM_DEED_MOUNTAIN",
-            "MM_DEED_OCEAN",
-            "MM_ROOM_KEY",
-            "MM_LETTER_TO_KAFEI",
-            "MM_LETTER_TO_MAMA"
-          ],
-          [
-            "MM_SONG_TIME",
-            "MM_SONG_HEALING",
-            "MM_SONG_EPONA",
-            "MM_SONG_SOARING",
-            "MM_SONG_STORMS",
-            "MM_WALLET",
-            "MM_MAGIC_UPGRADE",
-            "MM_PENDANT_OF_MEMORIES"
-          ],
-          [
-            "MM_SONG_AWAKENING",
-            "MM_SONG_GORON",
-            "MM_SONG_ZORA",
-            "MM_SONG_EMPTINESS",
-            "MM_SONG_ORDER",
-            "MM_STRAY_FAIRY_TOWN",
-            "MM_GS_TOKEN_SWAMP",
-            "MM_GS_TOKEN_OCEAN"
-          ],
-          [
-            "MM_MASK_DEKU",
-            "MM_MASK_GORON",
-            "MM_MASK_ZORA",
-            "MM_MASK_GIBDO",
-            "MM_MASK_GARO",
-            "MM_MASK_CAPTAIN",
-            "MM_MASK_GIANT",
-            "MM_MASK_FIERCE_DEITY"
-          ]
-        ]
-      },
-      {
-        "type": "array",
-        "orientation": "vertical",
-        "content": [
-          {
-            "type": "array",
-            "orientation": "horizontal",
-            "margin": "0,0",
-            "scale": 0.9,
-            "content": [
-              {
-                "type": "item",
-                "item": "mm_woodfall",
-                "margin": "1,1",
-                "width": 28,
-                "height": 28
-              },
-              {
-                "type": "item",
-                "item": "MM_STRAY_FAIRY_WF",
-                "margin": "3,4",
-                "width": 32,
-                "height": 32
-              },
-              {
-                "type": "item",
-                "item": "mm_snowhead",
-                "margin": "1,1",
-                "width": 28,
-                "height": 28
-              },
-              {
-                "type": "item",
-                "item": "MM_STRAY_FAIRY_SH",
-                "margin": "3,4",
-                "width": 32,
-                "height": 32
-              },
-              {
-                "type": "item",
-                "item": "mm_great_bay",
-                "margin": "1,1",
-                "width": 28,
-                "height": 28
-              },
-              {
-                "type": "item",
-                "item": "MM_STRAY_FAIRY_GB",
-                "margin": "3,4",
-                "width": 32,
-                "height": 32
-              },
-              {
-                "type": "item",
-                "item": "mm_stone_tower",
+                "item": "MM_REMAINS_TWINMOLD",
                 "margin": "1,1",
                 "width": 28,
                 "height": 28
