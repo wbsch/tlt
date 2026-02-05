@@ -402,6 +402,8 @@ const RAW_ITEM_ICONS: Record<string, string> = {
   'SHARED_MASK_BLAST': 'images/items/mm_blast.png',
   'SHARED_MASK_STONE': 'images/items/mm_stone.png',
   'SHARED_WALLET': 'images/wallet.png',
+  'SHARED_HEART_CONTAINER': 'images/system/heartcontainer.png',
+  'SHARED_HEART_PIECE': 'images/system/heartpiece.png',
   'SHARED_STRENGTH': 'images/lift1.png',
   'SHARED_SCALE': 'images/scale1.png',
   'SHARED_SPELL_FIRE': 'images/din.png',

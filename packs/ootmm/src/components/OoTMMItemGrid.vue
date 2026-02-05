@@ -25,8 +25,39 @@ const emit = defineEmits<{
 
 const grids = itemGridsData as Record<string, GridArray>
 
+const sharedGrid = computed(() => grids['item_grid_shared'])
 const ootGrid = computed(() => grids['item_grid_tall_oot'])
 const mmGrid = computed(() => grids['item_grid_tall_mm'])
+
+const sharedItemIds = [
+  'SHARED_BOW',
+  'SHARED_BOMB_BAG',
+  'SHARED_MAGIC_UPGRADE',
+  'SHARED_ARROW_FIRE',
+  'SHARED_ARROW_ICE',
+  'SHARED_ARROW_LIGHT',
+  'SHARED_HOOKSHOT',
+  'SHARED_LENS',
+  'SHARED_OCARINA',
+  'SHARED_MASK_GORON',
+  'SHARED_TUNIC_GORON',
+  'SHARED_MASK_ZORA',
+  'SHARED_TUNIC_ZORA',
+  'SHARED_SONG_EPONA',
+  'SHARED_SONG_STORMS',
+  'SHARED_SONG_TIME',
+  'SHARED_WALLET',
+  'SHARED_HEART_CONTAINER',
+  'SHARED_HEART_PIECE',
+]
+
+const hasSharedSettingItems = computed(() => {
+  if (!props.availableItemIds || props.availableItemIds.size === 0) return false
+  for (const id of sharedItemIds) {
+    if (props.availableItemIds.has(id)) return true
+  }
+  return false
+})
 
 const hasOotItems = computed(() => {
   if (!props.availableItemIds || props.availableItemIds.size === 0) return true
@@ -85,6 +116,10 @@ const filteredOotGrid = computed(() => {
   return ootGrid.value ? (filterGridElement(ootGrid.value) as GridArray | null) : null
 })
 
+const filteredSharedGrid = computed(() => {
+  return sharedGrid.value ? (filterGridElement(sharedGrid.value) as GridArray | null) : null
+})
+
 const filteredMmGrid = computed(() => {
   return mmGrid.value ? (filterGridElement(mmGrid.value) as GridArray | null) : null
 })
@@ -97,6 +132,17 @@ function handleInventoryUpdate(newInventory: Map<string, number>) {
 <template>
   <div class="item-grid-container">
     <div class="dual-grid-wrapper">
+      <!-- Shared Items Grid -->
+      <div v-if="hasSharedSettingItems && filteredSharedGrid" class="single-grid">
+        <div class="grid-header">Shared Items</div>
+        <OoTMMSingleGrid
+          :inventory="inventory"
+          :grid="filteredSharedGrid"
+          :item-max-counts="itemMaxCounts"
+          @update:inventory="handleInventoryUpdate"
+        />
+      </div>
+
       <!-- OoT Grid -->
       <div v-if="filteredOotGrid" class="single-grid">
         <div class="grid-header">Ocarina of Time</div>

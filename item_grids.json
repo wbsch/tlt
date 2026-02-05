@@ -1,4 +1,44 @@
 {
+  "item_grid_shared": {
+    "type": "array",
+    "orientation": "vertical",
+    "scale": 1.2,
+    "content": [
+      {
+        "type": "itemgrid",
+        "h_alignment": "left",
+        "item_margin": "1,1",
+        "scale": 0.875,
+        "rows": [
+          [
+            "SHARED_BOW",
+            "SHARED_BOMB_BAG",
+            "SHARED_MAGIC_UPGRADE",
+            "SHARED_ARROW_FIRE",
+            "SHARED_ARROW_ICE",
+            "SHARED_ARROW_LIGHT",
+            "SHARED_HOOKSHOT",
+            "SHARED_LENS"
+          ],
+          [
+            "SHARED_OCARINA",
+            "SHARED_MASK_GORON",
+            "SHARED_TUNIC_GORON",
+            "SHARED_MASK_ZORA",
+            "SHARED_TUNIC_ZORA",
+            "SHARED_SONG_EPONA",
+            "SHARED_SONG_STORMS",
+            "SHARED_SONG_TIME"
+          ],
+          [
+            "SHARED_WALLET",
+            "SHARED_HEART_CONTAINER",
+            "SHARED_HEART_PIECE"
+          ]
+        ]
+      }
+    ]
+  },
   "item_grid_tall_oot": {
     "type": "array",
     "orientation": "vertical",
