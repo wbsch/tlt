@@ -1,0 +1,7 @@
+{
+  "name": "@tlt/ootmm",
+  "version": "0.1.0",
+  "description": "OoTMM tracker pack for The Last Tracker",
+  "type": "module",
+  "main": "./src/index.ts"
+}

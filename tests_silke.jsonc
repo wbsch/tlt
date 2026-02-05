@@ -1,0 +1,1243 @@
+[
+  // List of basic test cases for the Lua OOTMM logic
+  // -d zur Ausgabe hinzufuegen, um alle available locations zu sehen
+  {
+    "given": {
+      "items": ["OOT_WALLET0", "OOT_WALLET1"],
+      "settings": [
+        // All others are false
+      ],
+      "tricks": [
+        // All others are false
+      ],
+      "events": {
+        // You can only override events that are marked for this. All others events are handled by the internal logic
+      },
+    },
+    "result": {
+      "available_locations": [
+        // List some locations that should be available
+        "OOT Fishing Pond Child",
+        "OOT Kakariko Grotto Back",
+        "OOT Lon Lon Ranch Silo HP",
+        "OOT Graveyard Fairy Tomb",
+        "OOT Graveyard Dampe Game",
+        "OOT Kokiri Shop Item 8",
+        "OOT Mido's House Top Left",
+        "OOT Market Bazaar Item 4",
+        "OOT Shooting Gallery Child",
+        "OOT Gerudo Valley Crate HP",
+      ],
+      "available_locations_glitched": [
+        // List some locations that should be available with glitches
+        "OOT Kakariko Man on Roof",
+      ],
+      "unavailable_locations": [
+        // List some locations that should be unavailable either way
+        "OOT Lon Lon Ranch Malon Song",
+        "OOT Hyrule Castle GS Tree",
+        "OOT Lost Woods Memory Game",
+      ],
+      "event_raw": {},
+    },
+  },
+  {
+    "given": {
+      "items": [
+        "OOT_WALLET0",
+        "OOT_HOOKSHOT",
+        "OOT_LONGSHOT",
+        "OOT_OCARINA",
+        "OOT_SHIELD_DEKU",
+        "OOT_STRENGTH",
+        "OOT_STICK",
+        "OOT_LIGHT_ARROWS",
+      ],
+      "settings": [
+        // All others are false
+      ],
+      "tricks": [
+        // All others are false
+      ],
+      "events": {
+        // You can only override events that are marked for this. All others events are handled by the internal logic
+        "EVENT_OOT_MALON": true,
+      },
+    },
+    "result": {
+      "available_locations": [
+        // List some locations that should be available
+        "OOT Lon Lon Ranch Malon Song",
+        "OOT Hyrule Castle GS Tree",
+        "OOT Lost Woods Memory Game",
+      ],
+      "available_locations_glitched": [
+        // List some locations that should be available with glitches
+        "OOT Kakariko GS Tree",
+        "OOT Kakariko GS House of Skulltula",
+        "OOT Kokiri Forest GS Night Child",
+        "OOT Kakariko GS Shooting Gallery",
+        "OOT Lon Lon Ranch GS Rain Shed",
+      ],
+      "unavailable_locations": [
+        // List some locations that should be unavailable either way
+      ],
+      "event_raw": {},
+    },
+  },
+  {
+    "given": {
+      "items": [
+        "OOT_WALLET0",
+        "OOT_HOOKSHOT",
+        "OOT_LONGSHOT",
+        "OOT_OCARINA",
+        "OOT_SHIELD_DEKU",
+        "OOT_STRENGTH",
+        "OOT_STICK",
+        "OOT_LIGHT_ARROWS",
+        "OOT_SONG_SUN",
+      ],
+      "settings": [
+        // All others are false
+      ],
+      "tricks": [
+        // All others are false
+      ],
+      "events": {
+        // You can only override events that are marked for this. All others events are handled by the internal logic
+        "EVENT_OOT_MALON": true,
+      },
+    },
+    "result": {
+      "available_locations": [
+        // List some locations that should be available
+        "OOT Kakariko GS Tree",
+        "OOT Kakariko GS House of Skulltula",
+        "OOT Kokiri Forest GS Night Child",
+        "OOT Kakariko GS Shooting Gallery",
+        "OOT Lon Lon Ranch GS Rain Shed",
+      ],
+      "available_locations_glitched": [
+        // List some locations that should be available with glitches
+      ],
+      "unavailable_locations": [
+        // List some locations that should be unavailable either way
+        "OOT Graveyard GS Soil",
+        "OOT Kokiri Forest GS Soil",
+        "OOT Lost Woods GS Soil Bridge",
+      ],
+      "event_raw": {},
+    },
+  },
+  {
+    "given": {
+      "items": [
+        "OOT_WALLET0",
+        "OOT_HOOKSHOT",
+        "OOT_LONGSHOT",
+        "OOT_OCARINA",
+        "OOT_SHIELD_DEKU",
+        "OOT_STRENGTH",
+        "OOT_STRENGTH2",
+        "OOT_STICK",
+        "OOT_LIGHT_ARROWS",
+        "OOT_SONG_SUN",
+        "OOT_BOTTLE_EMPTY",
+        "OOT_WALLET1",
+      ],
+      "settings": [
+        // All others are false
+      ],
+      "tricks": [
+        // All others are false
+      ],
+      "events": {
+        // You can only override events that are marked for this. All others events are handled by the internal logic
+        "EVENT_OOT_MALON": true,
+      },
+    },
+    "result": {
+      "available_locations": [
+        // List some locations that should be available
+        "OOT Graveyard GS Soil",
+        "OOT Kokiri Forest GS Soil",
+        "OOT Lost Woods GS Soil Bridge",
+      ],
+      "available_locations_glitched": [
+        // List some locations that should be available with glitches
+      ],
+      "unavailable_locations": [
+        // List some locations that should be unavailable either way
+        "OOT Zelda's Song",
+        "OOT Saria's Song",
+      ],
+      "event_raw": {
+        "OOT_MEET_ZELDA": false,
+      },
+    },
+  },
+  {
+    "given": {
+      "items": [
+        "OOT_WALLET0",
+        "OOT_HOOKSHOT",
+        "OOT_LONGSHOT",
+        "OOT_OCARINA",
+        "OOT_SHIELD_DEKU",
+        "OOT_STRENGTH",
+        "OOT_STRENGTH2",
+        "OOT_STICK",
+        "OOT_LIGHT_ARROWS",
+        "OOT_SONG_SUN",
+        "OOT_BOTTLE_EMPTY",
+        "OOT_WALLET1",
+        "OOT_SLINGSHOT",
+        "OOT_CHICKEN",
+      ],
+      "settings": [
+        // All others are false
+      ],
+      "tricks": [
+        // All others are false
+      ],
+      "events": {
+        // You can only override events that are marked for this. All others events are handled by the internal logic
+        "EVENT_OOT_MALON": true,
+        "EVENT_OOT_MEET_ZELDA": true,
+      },
+    },
+    "result": {
+      "available_locations": [
+        // List some locations that should be available
+        "OOT Zelda's Song",
+        "OOT Saria's Song",
+      ],
+      "available_locations_glitched": [
+        // List some locations that should be available with glitches
+      ],
+      "unavailable_locations": [
+        // List some locations that should be unavailable either way
+        "OOT Temple of Time Master Sword",
+      ],
+      "event_raw": {
+        "OOT_MEET_ZELDA": true,
+      },
+    },
+  },
+  {
+    "given": {
+      "items": [
+        "OOT_WALLET0",
+        "OOT_HOOKSHOT",
+        "OOT_LONGSHOT",
+        "OOT_OCARINA",
+        "OOT_SHIELD_DEKU",
+        "OOT_STRENGTH",
+        "OOT_STRENGTH2",
+        "OOT_STICK",
+        "OOT_LIGHT_ARROWS",
+        "OOT_SONG_SUN",
+        "OOT_BOTTLE_EMPTY",
+        "OOT_WALLET1",
+        "OOT_SLINGSHOT",
+        "OOT_CHICKEN",
+        "OOT_SONG_TIME",
+        "OOT_SONG_STORMS",
+      ],
+      "settings": [
+        // All others are false
+      ],
+      "tricks": [
+        // All others are false
+      ],
+      "events": {
+        // You can only override events that are marked for this. All others events are handled by the internal logic
+        "EVENT_OOT_MALON": true,
+        "EVENT_OOT_MEET_ZELDA": true,
+      },
+    },
+    "result": {
+      "available_locations": [
+        // List some locations that should be available
+        "OOT Temple of Time Master Sword",
+      ],
+      "available_locations_glitched": [
+        // List some locations that should be available with glitches
+      ],
+      "unavailable_locations": [
+        // List some locations that should be unavailable either way
+        "OOT Graveyard Dampe Tomb Reward 1",
+        "OOT Goron City Medigoron Giant Knife",
+        "OOT Gerudo Fortress Jail 3",
+        "OOT Dodongo Cavern Bomb Bag Chest",
+      ],
+      "event_raw": {
+        "OOT_MEET_ZELDA": true,
+      },
+    },
+  },
+  {
+    "given": {
+      "items": [
+        "OOT_WALLET0",
+        "OOT_WALLET1",
+        "OOT_WALLET2",
+        "OOT_HOOKSHOT",
+        "OOT_LONGSHOT",
+        "OOT_OCARINA",
+        "OOT_SHIELD_DEKU",
+        "OOT_STRENGTH",
+        "OOT_STRENGTH2",
+        "OOT_STICK",
+        "OOT_LIGHT_ARROWS",
+        "OOT_SONG_SUN",
+        "OOT_BOTTLE_EMPTY",
+        "OOT_SLINGSHOT",
+        "OOT_CHICKEN",
+        "OOT_SONG_TIME",
+        "OOT_SONG_STORMS",
+        "OOT_SWORD_MASTER",
+      ],
+      "settings": [
+        // All others are false
+      ],
+      "tricks": [
+        // All others are false
+      ],
+      "events": {
+        // You can only override events that are marked for this. All others events are handled by the internal logic
+        "EVENT_OOT_MALON": true,
+        "EVENT_OOT_MEET_ZELDA": true,
+      },
+    },
+    "result": {
+      "available_locations": [
+        // List some locations that should be available
+        "OOT Graveyard Dampe Tomb Reward 1",
+        "OOT Goron City Medigoron Giant Knife",
+        "OOT Gerudo Fortress Jail 3",
+        "OOT Dodongo Cavern Bomb Bag Chest",
+      ],
+      "available_locations_glitched": [
+        // List some locations that should be available with glitches
+      ],
+      "unavailable_locations": [
+        // List some locations that should be unavailable either way
+      ],
+      "event_raw": {
+        "OOT_MEET_ZELDA": true,
+        "OOT_TIME_TRAVEL": true,
+      },
+    },
+  },
+  {
+    "given": {
+      "items": ["MM_OCARINA", "MM_SONG_TIME"],
+      "settings": [
+        // All others are false
+      ],
+      "tricks": [
+        // All others are false
+      ],
+      "events": {
+        // You can only override events that are marked for this. All others events are handled by the internal logic
+      },
+    },
+    "result": {
+      "available_locations": [
+        // List some locations that should be available
+        "MM Initial Song of Healing",
+      ],
+      "available_locations_glitched": [
+        // List some locations that should be available with glitches
+        "MM Clock Town South Chest Lower",
+      ],
+      "unavailable_locations": [
+        // List some locations that should be unavailable either way
+        "MM Kafei Hideout Owner Reward 2",
+      ],
+      "event_raw": {},
+    },
+  },
+  {
+    "given": {
+      "items": [
+        "MM_OCARINA",
+        "MM_SONG_TIME",
+        "MM_MAGIC_UPGRADE",
+        "MM_LETTER_TO_KAFEI",
+      ],
+      "settings": [
+        // All others are false
+      ],
+      "tricks": [
+        // All others are false
+      ],
+      "events": {
+        // You can only override events that are marked for this. All others events are handled by the internal logic
+      },
+    },
+    "result": {
+      "available_locations": [
+        // List some locations that should be available
+        "MM Kafei Hideout Owner Reward 2",
+      ],
+      "available_locations_glitched": [
+        // List some locations that should be available with glitches
+      ],
+      "unavailable_locations": [
+        // List some locations that should be unavailable either way
+        "MM Southern Swamp Scrub Deed",
+      ],
+      "event_raw": {},
+    },
+  },
+  {
+    "given": {
+      "items": [
+        "MM_OCARINA",
+        "MM_SONG_TIME",
+        "MM_MAGIC_UPGRADE",
+        "MM_LETTER_TO_KAFEI",
+        "MM_DEED_LAND",
+      ],
+      "settings": [
+        // All others are false
+      ],
+      "tricks": [
+        // All others are false
+      ],
+      "events": {
+        // You can only override events that are marked for this. All others events are handled by the internal logic
+      },
+    },
+    "result": {
+      "available_locations": [
+        // List some locations that should be available
+        "MM Southern Swamp Scrub Deed",
+      ],
+      "available_locations_glitched": [
+        // List some locations that should be available with glitches
+      ],
+      "unavailable_locations": [
+        // List some locations that should be unavailable either way
+        "MM Bomb Shop Bomb Bag 2",
+        "MM Swamp Skulltula Gold Room Pillar",
+        "MM Tingle Map Clock Town",
+        "MM Swamp Skulltula Pot Room Pot 1",
+        "MM Clock Tower Roof Skull Kid Song of Time",
+      ],
+      "event_raw": {
+        "MM_BOMBER_CODE": false,
+      },
+    },
+  },
+  {
+    "given": {
+      "items": [
+        "MM_OCARINA",
+        "MM_SONG_TIME",
+        "MM_MAGIC_UPGRADE",
+        "MM_LETTER_TO_KAFEI",
+        "MM_DEED_LAND",
+        "MM_MASK_ZORA",
+        "MM_WALLET0",
+        "MM_WALLET1",
+        "MM_STICK",
+      ],
+      "settings": [
+        // All others are false
+      ],
+      "tricks": [
+        // All others are false
+      ],
+      "events": {
+        // You can only override events that are marked for this. All others events are handled by the internal logic
+      },
+    },
+    "result": {
+      "available_locations": [
+        // List some locations that should be available
+        "MM Bomb Shop Bomb Bag 2",
+        "MM Swamp Skulltula Gold Room Pillar",
+        "MM Tingle Map Clock Town",
+        "MM Swamp Skulltula Pot Room Pot 1",
+        "MM Clock Tower Roof Skull Kid Song of Time",
+      ],
+      "available_locations_glitched": [
+        // List some locations that should be available with glitches
+      ],
+      "unavailable_locations": [
+        // List some locations that should be unavailable either way
+        "MM Swamp Skulltula Main Room Lower Left Soft Soil",
+      ],
+      "event_raw": {
+        "MM_BOMBER_CODE": true,
+      },
+    },
+  },
+  {
+    "given": {
+      "items": [
+        "MM_OCARINA",
+        "MM_SONG_TIME",
+        "MM_WALLET0",
+        "MM_WALLET1",
+        "MM_MASK_GORON",
+        "MM_POWDER_KEG",
+      ],
+      "settings": [
+        // All others are false
+      ],
+      "tricks": [
+        // All others are false
+      ],
+      "events": {
+        // You can only override events that are marked for this. All others events are handled by the internal logic
+      },
+    },
+    "result": {
+      "available_locations": [
+        // List some locations that should be available
+        "MM Romani Ranch Epona Song",
+      ],
+      "available_locations_glitched": [
+        // List some locations that should be available with glitches
+      ],
+      "unavailable_locations": [
+        // List some locations that should be unavailable either way
+      ],
+      "event_raw": {},
+    },
+  },
+  {
+    "given": {
+      "items": [
+        "OOT_BOMB_BAG",
+        "OOT_SWORD_MASTER",
+        "OOT_OCARINA",
+        "OOT_HOOKSHOT",
+        "OOT_MAGIC_UPGRADE",
+        "OOT_LENS",
+        "OOT_SONG_TIME",
+        "OOT_MEDALLION:6",
+      ],
+      "settings": [
+        // All others are false
+        "setting_rainbowBridge_open",
+      ],
+      "tricks": [
+        // All others are false
+      ],
+      "events": {
+        // You can only override events that are marked for this. All others events are handled by the internal logic
+        "EVENT_OOT_BOMBCHU": true,
+      },
+    },
+    "result": {
+      "available_locations": [
+        // List some locations that should be available
+        "OOT Ganon Castle Spirit Chest 2",
+      ],
+      "available_locations_glitched": [
+        // List some locations that should be available with glitches
+      ],
+      "unavailable_locations": [
+        // List some locations that should be unavailable either way
+      ],
+      "event_raw": {},
+    },
+  },
+  {
+    "given": {
+      "items": [],
+      "settings": [
+        // All others are false
+        "setting_mq_DekuTree_true",
+      ],
+      "tricks": [
+        // All others are false
+      ],
+      "events": {
+        // You can only override events that are marked for this. All others events are handled by the internal logic
+      },
+    },
+    "result": {
+      "available_locations": [
+        // List some locations that should be available
+        "OOT MQ Deku Tree Map Chest",
+      ],
+      "available_locations_glitched": [
+        // List some locations that should be available with glitches
+      ],
+      "unavailable_locations": [
+        // List some locations that should be unavailable either way
+        "OOT MQ Deku Tree Slingshot Chest",
+        "OOT OOT MQ Deku Tree Before Water Platform Chest",
+        "OOT MQ Deku Tree Compass Chest",
+        "OOT MQ Deku Tree Basement Chest",
+      ],
+      "event_raw": {},
+    },
+  },
+  {
+    "given": {
+      "items": ["OOT_SLINGSHOT", "OOT_STICK"],
+      "settings": [
+        // All others are false
+        "setting_mq_DekuTree_true",
+      ],
+      "tricks": [
+        // All others are false
+      ],
+      "events": {
+        // You can only override events that are marked for this. All others events are handled by the internal logic
+      },
+    },
+    "result": {
+      "available_locations": [
+        // List some locations that should be available
+        "OOT MQ Deku Tree Before Water Platform Chest",
+        "OOT MQ Deku Tree Compass Chest",
+        "OOT MQ Deku Tree Basement Chest",
+        "OOT MQ Deku Tree Slingshot Chest",
+      ],
+      "available_locations_glitched": [
+        // List some locations that should be available with glitches
+      ],
+      "unavailable_locations": [
+        // List some locations that should be unavailable either way
+        "OOT MQ Deku Tree GS Compass Room",
+      ],
+      "event_raw": {},
+    },
+  },
+  {
+    "given": {
+      "items": [
+        "OOT_SLINGSHOT",
+        "OOT_STICK",
+        "OOT_OCARINA",
+        "OOT_SHIELD_DEKU",
+        "OOT_SONG_TIME",
+      ],
+      "settings": [
+        // All others are false
+        "setting_mq_DekuTree_true",
+      ],
+      "tricks": [
+        // All others are false
+      ],
+      "events": {
+        // You can only override events that are marked for this. All others events are handled by the internal logic
+      },
+    },
+    "result": {
+      "available_locations": [
+        // List some locations that should be available
+        "OOT MQ Deku Tree After Water Platform Chest",
+      ],
+      "available_locations_glitched": [
+        // List some locations that should be available with glitches
+      ],
+      "unavailable_locations": [
+        // List some locations that should be unavailable either way
+      ],
+      "event_raw": {},
+    },
+  },
+  {
+    "given": {
+      "items": [
+        "MM_OCARINA",
+        "MM_SONG_TIME",
+        "MM_MASK_DEKU",
+        "MM_MASK_GORON",
+        "MM_MASK_ZORA",
+      ],
+      "settings": [
+        // All others are false
+      ],
+      "tricks": [
+        // All others are false
+      ],
+      "events": {
+        // You can only override events that are marked for this. All others events are handled by the internal logic
+      },
+    },
+    "result": {
+      "available_locations": [
+        // List some locations that should be available
+      ],
+      "available_locations_glitched": [
+        // List some locations that should be available with glitches
+      ],
+      "unavailable_locations": [
+        // List some locations that should be unavailable either way
+        "MM Milk Bar Troupe Leader Mask",
+      ],
+      "event_raw": {},
+    },
+  },
+  {
+    "given": {
+      "items": [
+        "MM_OCARINA",
+        "MM_SONG_TIME",
+        "MM_MASK_DEKU",
+        "MM_MASK_GORON",
+        "MM_MASK_ZORA",
+        "MM_MASK_ROMANI",
+      ],
+      "settings": [
+        // All others are false
+      ],
+      "tricks": [
+        // All others are false
+      ],
+      "events": {
+        // You can only override events that are marked for this. All others events are handled by the internal logic
+      },
+    },
+    "result": {
+      "available_locations": [
+        // List some locations that should be available
+        "MM Milk Bar Troupe Leader Mask",
+      ],
+      "available_locations_glitched": [
+        // List some locations that should be available with glitches
+      ],
+      "unavailable_locations": [
+        // List some locations that should be unavailable either way
+      ],
+      "event_raw": {},
+    },
+  },
+  {
+    "given": {
+      "items": ["OOT_STICK", "OOT_SLINGSHOT", "OOT_SHIELD_DEKU"],
+      "settings": [
+        // All others are false
+        "setting_mq_DekuTree_true",
+      ],
+      "tricks": [
+        // All others are false
+      ],
+      "events": {
+        // You can only override events that are marked for this. All others events are handled by the internal logic
+      },
+    },
+    "result": {
+      "available_locations": [
+        // List some locations that should be available
+      ],
+      "available_locations_glitched": [
+        // List some locations that should be available with glitches
+      ],
+      "unavailable_locations": [
+        // List some locations that should be unavailable either way
+        "OOT MQ Deku Tree Scrub",
+      ],
+      "event_raw": {},
+    },
+  },
+  {
+    "given": {
+      "items": ["OOT_STICK", "OOT_SLINGSHOT", "OOT_SHIELD_DEKU", "OOT_WALLET1"],
+      "settings": [
+        // All others are false
+        "setting_mq_DekuTree_true",
+      ],
+      "tricks": [
+        // All others are false
+      ],
+      "events": {
+        // You can only override events that are marked for this. All others events are handled by the internal logic
+      },
+    },
+    "result": {
+      "available_locations": [
+        // List some locations that should be available
+        "OOT MQ Deku Tree Scrub",
+      ],
+      "available_locations_glitched": [
+        // List some locations that should be available with glitches
+      ],
+      "unavailable_locations": [
+        // List some locations that should be unavailable either way
+      ],
+      "event_raw": {},
+    },
+  },
+  {
+    "given": {
+      "items": [],
+      "settings": [
+        // All others are false
+        "setting_startingAge_adult",
+      ],
+      "tricks": [
+        // All others are false
+      ],
+      "events": {
+        // You can only override events that are marked for this. All others events are handled by the internal logic
+      },
+    },
+    "result": {
+      "available_locations": [
+        // List some locations that should be available
+      ],
+      "available_locations_glitched": [
+        // List some locations that should be available with glitches
+      ],
+      "unavailable_locations": [
+        // List some locations that should be unavailable either way
+        "OOT Graveyard Crate HP",
+      ],
+      "event_raw": {},
+    },
+  },
+  {
+    "given": {
+      "items": [
+        "OOT_OCARINA",
+        "OOT_HAMMER",
+        "OOT_SONG_TIME",
+        "OOT_SWORD_MASTER",
+        "OOT_SHIELD_HYLIAN",
+      ],
+      "settings": [
+        // All others are false
+        "setting_startingAge_adult",
+        "setting_ageChange_always",
+      ],
+      "tricks": [
+        // All others are false
+      ],
+      "events": {
+        // You can only override events that are marked for this. All others events are handled by the internal logic
+      },
+    },
+    "result": {
+      "available_locations": [
+        // List some locations that should be available
+        "OOT Deku Tree Slingshot Chest",
+      ],
+      "available_locations_glitched": [
+        // List some locations that should be available with glitches
+      ],
+      "unavailable_locations": [
+        // List some locations that should be unavailable either way
+      ],
+      "event_raw": {},
+    },
+  },
+  {
+    "given": {
+      "items": [
+        "OOT_OCARINA",
+        "OOT_HAMMER",
+        "OOT_SONG_TIME",
+        "OOT_SWORD_MASTER",
+        "OOT_SHIELD_HYLIAN",
+      ],
+      "settings": [
+        // All others are false
+        "setting_startingAge_adult",
+      ],
+      "tricks": [
+        // All others are false
+      ],
+      "events": {
+        // You can only override events that are marked for this. All others events are handled by the internal logic
+      },
+    },
+    "result": {
+      "available_locations": [
+        // List some locations that should be available
+      ],
+      "available_locations_glitched": [
+        // List some locations that should be available with glitches
+      ],
+      "unavailable_locations": [
+        // List some locations that should be unavailable either way
+        "OOT Deku Tree Slingshot Chest",
+      ],
+      "event_raw": {},
+    },
+  },
+  {
+    "given": {
+      "items": ["MM_OCARINA", "MM_SONG_TIME", "MM_SWORD_KOKIRI", "MM_CLOCK2"],
+      "settings": [
+        // All others are false
+        "setting_clocks_true",
+      ],
+      "tricks": [
+        // All others are false
+      ],
+      "events": {
+        // You can only override events that are marked for this. All others events are handled by the internal logic
+      },
+    },
+    "result": {
+      "available_locations": [
+        // List some locations that should be available
+        "MM Clock Town Blast Mask",
+      ],
+      "available_locations_glitched": [
+        // List some locations that should be available with glitches
+      ],
+      "unavailable_locations": [
+        // List some locations that should be unavailable either way
+      ],
+      "event_raw": {},
+    },
+  },
+  {
+    "given": {
+      "items": [
+        "OOT_OCARINA",
+        "OOT_SONG_TIME",
+        "OOT_BOMB_BAG",
+        "OOT_BOW",
+        "OOT_SWORD_MASTER",
+        "OOT_SHIELD_HYLIAN",
+        "OOT_HAMMER",
+        "OOT_SONG_EPONA",
+        "OOT_BOOTS_IRON",
+        "OOT_TUNIC_ZORA",
+        "OOT_GERUDO_CARD",
+        "OOT_WALLET1",
+      ],
+      "settings": [
+        // All others are false
+      ],
+      "tricks": [
+        // All others are false
+      ],
+      "events": {
+        // You can only override events that are marked for this. All others events are handled by the internal logic
+      },
+    },
+    "result": {
+      "available_locations": [
+        // List some locations that should be available
+      ],
+      "available_locations_glitched": [
+        // List some locations that should be available with glitches
+      ],
+      "unavailable_locations": [
+        // List some locations that should be unavailable either way
+        "OOT Gerudo Training Water",
+      ],
+      "event_raw": {},
+    },
+  },
+  {
+    "given": {
+      "items": [
+        "OOT_OCARINA",
+        "OOT_SONG_TIME",
+        "OOT_BOMB_BAG",
+        "OOT_BOW",
+        "OOT_SWORD_MASTER",
+        "OOT_SHIELD_HYLIAN",
+        "OOT_HAMMER",
+        "OOT_SONG_EPONA",
+        "OOT_BOOTS_IRON",
+        "OOT_TUNIC_ZORA",
+        "OOT_GERUDO_CARD",
+        "OOT_HOOKSHOT",
+        "OOT_WALLET1",
+      ],
+      "settings": [
+        // All others are false
+      ],
+      "tricks": [
+        // All others are false
+      ],
+      "events": {
+        // You can only override events that are marked for this. All others events are handled by the internal logic
+      },
+    },
+    "result": {
+      "available_locations": [
+        // List some locations that should be available
+        "OOT Gerudo Training Water",
+      ],
+      "available_locations_glitched": [
+        // List some locations that should be available with glitches
+      ],
+      "unavailable_locations": [
+        // List some locations that should be unavailable either way
+      ],
+      "event_raw": {},
+    },
+  },
+  {
+    "given": {
+      "items": [
+        "MM_OCARINA",
+        "MM_SONG_TIME",
+        "MM_SONG_EPONA",
+        "MM_MASK_GARO",
+        "MM_LONGSHOT",
+        "MM_HOOKSHOT",
+        "MM_MAGIC_UPGRADE",
+        "MM_ARROW_ICE",
+        "MM_BOW",
+        "MM_MASK_GORON",
+        "MM_MASK_ZORA",
+        "MM_SONG_EMPTINESS",
+        "MM_ARROW_LIGHT",
+        "MM_SWORD_KOKIRI",
+        "MM_MASK_GIANT",
+        "MM_BOSS_KEY_ST",
+        "MM_SMALL_KEY_ST:4",
+        "MM_MASK_DEKU",
+        "MM_SONG_HEALING",
+      ],
+      "settings": [
+        // All others are false
+      ],
+      "tricks": [
+        // All others are false
+      ],
+      "events": {
+        // You can only override events that are marked for this. All others events are handled by the internal logic
+      },
+    },
+    "result": {
+      "available_locations": [
+        // List some locations that should be available
+      ],
+      "available_locations_glitched": [
+        // List some locations that should be available with glitches
+      ],
+      "unavailable_locations": [
+        // List some locations that should be unavailable either way
+        "MM Music Box House Gibdo Mask",
+      ],
+      "event_raw": {},
+    },
+  },
+  {
+    "given": {
+      "items": [
+        "MM_OCARINA",
+        "MM_SONG_TIME",
+        "MM_SONG_EPONA",
+        "MM_MASK_GARO",
+        "MM_LONGSHOT",
+        "MM_HOOKSHOT",
+        "MM_MAGIC_UPGRADE",
+        "MM_ARROW_ICE",
+        "MM_BOW",
+        "MM_MASK_GORON",
+        "MM_MASK_ZORA",
+        "MM_SONG_EMPTINESS",
+        "MM_ARROW_LIGHT",
+        "MM_SWORD_KOKIRI",
+        "MM_MASK_GIANT",
+        "MM_BOSS_KEY_ST",
+        "MM_SMALL_KEY_ST:4",
+        "MM_MASK_DEKU",
+      ],
+      "settings": [
+        // All others are false
+      ],
+      "tricks": [
+        // All others are false
+      ],
+      "events": {
+        // You can only override events that are marked for this. All others events are handled by the internal logic
+      },
+    },
+    "result": {
+      "available_locations": [
+        // List some locations that should be available
+        "MM Stone Tower Temple Inverted Boss",
+      ],
+      "available_locations_glitched": [
+        // List some locations that should be available with glitches
+      ],
+      "unavailable_locations": [
+        // List some locations that should be unavailable either way
+      ],
+      "event_raw": {},
+    },
+  },
+  {
+    "given": {
+      "items": [
+        "MM_OCARINA",
+        "MM_SONG_TIME",
+        "MM_SONG_EPONA",
+        "MM_MASK_GARO",
+        "MM_LONGSHOT",
+        "MM_HOOKSHOT",
+        "MM_MAGIC_UPGRADE",
+        "MM_ARROW_ICE",
+        "MM_BOW",
+        "MM_SONG_HEALING",
+        "MM_BOMB_BAG",
+        "MM_SONG_STORMS",
+      ],
+      "settings": [
+        // All others are false
+      ],
+      "tricks": [
+        // All others are false
+      ],
+      "events": {
+        // You can only override events that are marked for this. All others events are handled by the internal logic
+      },
+    },
+    "result": {
+      "available_locations": [
+        // List some locations that should be available
+        "MM Music Box House Gibdo Mask",
+      ],
+      "available_locations_glitched": [
+        // List some locations that should be available with glitches
+      ],
+      "unavailable_locations": [
+        // List some locations that should be unavailable either way
+      ],
+      "event_raw": {},
+    },
+  },
+  {
+    "given": {
+      "items": ["MM_OCARINA", "MM_SONG_TIME", "MM_LETTER_TO_KAFEI"],
+      "settings": [
+        // All others are false+
+        "setting_soulsNpcMm_true",
+      ],
+      "tricks": [
+        // All others are false
+      ],
+      "events": {
+        // You can only override events that are marked for this. All others events are handled by the internal logic
+      },
+    },
+    "result": {
+      "available_locations": [
+        // List some locations that should be available
+      ],
+      "available_locations_glitched": [
+        // List some locations that should be available with glitches
+      ],
+      "unavailable_locations": [
+        // List some locations that should be unavailable either way
+        "MM Kafei Hideout Owner Reward 1",
+      ],
+      "event_raw": {},
+    },
+  },
+  {
+    "given": {
+      "items": [
+        "MM_OCARINA",
+        "MM_SONG_TIME",
+        "MM_LETTER_TO_KAFEI",
+        "MM_SOUL_NPC_KAFEI",
+      ],
+      "settings": [
+        // All others are false+
+        "setting_soulsNpcMm_true",
+      ],
+      "tricks": [
+        // All others are false
+      ],
+      "events": {
+        // You can only override events that are marked for this. All others events are handled by the internal logic
+      },
+    },
+    "result": {
+      "available_locations": [
+        // List some locations that should be available
+        "MM Kafei Hideout Owner Reward 1",
+      ],
+      "available_locations_glitched": [
+        // List some locations that should be available with glitches
+      ],
+      "unavailable_locations": [
+        // List some locations that should be unavailable either way
+      ],
+      "event_raw": {},
+    },
+  },
+  {
+    "given": {
+      "items": ["OOT_SLINGSHOT"],
+      "settings": [
+        // All others are false
+      ],
+      "tricks": [
+        // All others are false
+      ],
+      "events": {
+        // You can only override events that are marked for this. All others events are handled by the internal logic
+      },
+      "entrances": [
+        // Entrance randomization
+        {
+          "from": "OOT Kokiri Forest Near Deku Tree",
+          "to": "OOT Deku Tree",
+          "capture_to": "OOT Jabu-Jabu",
+        },
+      ],
+    },
+    "result": {
+      "available_locations": [
+        // List some locations that should be available
+        "OOT Jabu-Jabu Boomerang Chest",
+      ],
+      "available_locations_glitched": [
+        // List some locations that should be available with glitches
+      ],
+      "unavailable_locations": [
+        // List some locations that should be unavailable either way
+      ],
+      "event_raw": {},
+    },
+  },
+  {
+    "given": {
+      "items": ["MM_OCARINA", "MM_SONG_TIME"],
+      "settings": [
+        // All others are false
+      ],
+      "tricks": [
+        // All others are false
+      ],
+      "events": {
+        // You can only override events that are marked for this. All others events are handled by the internal logic
+      },
+      "entrances": [
+        // Entrance randomization
+        {
+          "from": "OOT Kokiri Forest Near Deku Tree",
+          "to": "OOT Deku Tree",
+          "capture_to": "MM Swamp Spider House",
+        },
+      ],
+    },
+    "result": {
+      "available_locations": [
+        // List some locations that should be available
+        "MM Swamp Skulltula Main Room Upper Pillar",
+      ],
+      "available_locations_glitched": [
+        // List some locations that should be available with glitches
+      ],
+      "unavailable_locations": [
+        // List some locations that should be unavailable either way
+      ],
+      "event_raw": {},
+    },
+  },
+]

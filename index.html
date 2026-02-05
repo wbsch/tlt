@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>The Last Tracker</title>
+    <script>
+      // Polyfill for crypto.subtle on non-secure contexts (HTTP on non-localhost)
+      if (!crypto.subtle) {
+        // Simple fallback hash implementation for non-cryptographic purposes
+        crypto.subtle = {
+          digest: async function (algorithm, data) {
+            const arr = new Uint8Array(data);
+            let h = 0;
+            for (let i = 0; i < arr.length; i++) {
+              h = ((h << 5) - h + arr[i]) | 0;
+            }
+            // Generate a 64-byte buffer (SHA-512 size) from the simple hash
+            const result = new ArrayBuffer(64);
+            const view = new DataView(result);
+            for (let i = 0; i < 16; i++) {
+              view.setUint32(i * 4, h ^ (h >>> i), false);
+              h = ((h << 5) - h + i) | 0;
+            }
+            return result;
+          },
+        };
+      }
+    </script>
+  </head>
+  <body>
+    <div id="app"></div>
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>

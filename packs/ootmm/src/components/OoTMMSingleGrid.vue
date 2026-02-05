@@ -1,0 +1,531 @@
+<script setup lang="ts">
+import { getItemIcon, DEFAULT_ICON } from '../data/itemIcons'
+import { getItemName } from '../data/itemNames'
+
+// Type definitions
+interface GridItem {
+  type: 'item'
+  item: string
+  margin?: string
+  width?: number
+  height?: number
+  canvas_depth?: number
+  canvas_left?: number
+  canvas_top?: number
+}
+
+interface GridCanvas {
+  type: 'canvas'
+  width: number
+  height: number
+  margin?: string
+  content: unknown[]
+}
+
+interface ItemGrid {
+  type: 'itemgrid'
+  h_alignment?: string
+  item_margin?: string
+  item_size?: number
+  scale?: number
+  rows: string[][]
+}
+
+interface GridArray {
+  type: 'array'
+  orientation: 'vertical' | 'horizontal'
+  margin?: string
+  scale?: number
+  content: unknown[]
+}
+
+const props = defineProps<{
+  inventory: Map<string, number>
+  grid: GridArray
+  itemMaxCounts?: Map<string, number>
+}>()
+
+const emit = defineEmits<{
+  'update:inventory': [Map<string, number>]
+}>()
+
+function getItemCount(itemId: string): number {
+  return props.inventory.get(itemId) || 0
+}
+
+function getItemMaxCount(itemId: string): number {
+  const max = props.itemMaxCounts?.get(itemId)
+  return max && max > 0 ? max : 1
+}
+
+function hasItem(itemId: string): boolean {
+  return getItemCount(itemId) > 0
+}
+
+function toggleItem(itemId: string) {
+  const newInventory = new Map(props.inventory)
+  const current = newInventory.get(itemId) || 0
+  const max = getItemMaxCount(itemId)
+  
+  if (max <= 1) {
+    if (current > 0) {
+      newInventory.delete(itemId)
+    } else {
+      newInventory.set(itemId, 1)
+    }
+    emit('update:inventory', newInventory)
+    return
+  }
+
+  if (current < max) {
+    newInventory.set(itemId, current + 1)
+  } else {
+    // at or above max: wrap around to 0 (remove the item)
+    newInventory.delete(itemId)
+  }
+
+  emit('update:inventory', newInventory)
+}
+
+function decrementItem(itemId: string, event: MouseEvent) {
+  event.preventDefault()
+  const newInventory = new Map(props.inventory)
+  const current = newInventory.get(itemId) || 0
+  const max = getItemMaxCount(itemId)
+  if (current > 1) {
+    newInventory.set(itemId, current - 1)
+  } else if (current === 1) {
+    newInventory.delete(itemId)
+  } else {
+    // current is 0: wrap to max
+    newInventory.set(itemId, max)
+  }
+  emit('update:inventory', newInventory)
+}
+
+function parseMargin(margin?: string): { x: number; y: number } {
+  if (!margin) return { x: 1, y: 1 }
+  const [x, y] = margin.split(',').map(Number)
+  return { x: x || 1, y: y || 1 }
+}
+
+function getIconSrc(itemId: string): string {
+  return getItemIcon(itemId)
+}
+
+function handleImageError(event: Event) {
+  const img = event.target as HTMLImageElement
+  if (img.src !== DEFAULT_ICON) {
+    img.src = DEFAULT_ICON
+  }
+}
+
+function getArrayStyle(element: GridArray) {
+  const margin = parseMargin(element.margin)
+  return {
+    margin: `${margin.y}px ${margin.x}px`,
+  }
+}
+
+function getItemStyle(element: GridItem, parentScale: number) {
+  const margin = parseMargin(element.margin)
+  const width = (element.width || 32) * parentScale
+  const height = (element.height || 32) * parentScale
+  
+  const style: Record<string, string> = {
+    width: `${width}px`,
+    height: `${height}px`,
+    margin: `${margin.y}px ${margin.x}px`,
+  }
+  
+  if (element.canvas_left !== undefined) {
+    style.position = 'absolute'
+    style.left = `${element.canvas_left * parentScale}px`
+    style.top = `${(element.canvas_top || 0) * parentScale}px`
+  }
+  
+  return style
+}
+
+function getCanvasStyle(element: GridCanvas, parentScale: number) {
+  const margin = parseMargin(element.margin)
+  const width = element.width * parentScale
+  const height = element.height * parentScale
+  
+  return {
+    width: `${width}px`,
+    height: `${height}px`,
+    margin: `${margin.y}px ${margin.x}px`,
+    position: 'relative' as const,
+  }
+}
+
+function getGridItemStyle(itemMargin: { x: number; y: number }, itemSize: number) {
+  return {
+    width: `${itemSize}px`,
+    height: `${itemSize}px`,
+    margin: `${itemMargin.y}px ${itemMargin.x}px`,
+  }
+}
+
+function getEffectiveScale(element: unknown, parentScale: number): number {
+  return ((element as { scale?: number }).scale || 1) * parentScale
+}
+</script>
+
+<template>
+  <div 
+    class="grid-array"
+    :class="grid.orientation"
+    :style="getArrayStyle(grid)"
+  >
+    <template v-for="(child, idx) in grid.content" :key="idx">
+      <!-- ItemGrid (rows of items) -->
+      <div 
+        v-if="child.type === 'itemgrid'"
+        class="item-grid"
+      >
+        <div 
+          v-for="(row, rowIdx) in (child as ItemGrid).rows" 
+          :key="rowIdx" 
+          class="item-row"
+        >
+          <div
+            v-for="(itemId, colIdx) in row"
+            :key="colIdx"
+            class="grid-item"
+            :class="{ owned: hasItem(itemId) }"
+            :style="getGridItemStyle(parseMargin((child as ItemGrid).item_margin), ((child as ItemGrid).item_size || 32) * getEffectiveScale(child, grid.scale || 1))"
+            :title="getItemName(itemId)"
+            @click="toggleItem(itemId)"
+            @contextmenu="decrementItem(itemId, $event)"
+          >
+            <img 
+              :src="getIconSrc(itemId)" 
+              :alt="itemId"
+              class="item-icon"
+              :class="{ disabled: !hasItem(itemId) }"
+              @error="handleImageError"
+            />
+            <span v-if="getItemCount(itemId) > 1" class="item-count">{{ getItemCount(itemId) }}</span>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Nested array -->
+      <div 
+        v-else-if="child.type === 'array'"
+        class="grid-array"
+        :class="(child as GridArray).orientation"
+        :style="getArrayStyle(child as GridArray)"
+      >
+        <template v-for="(grandchild, gIdx) in (child as GridArray).content" :key="gIdx">
+          <!-- Level 2 itemgrid -->
+          <div 
+            v-if="grandchild.type === 'itemgrid'"
+            class="item-grid"
+          >
+            <div 
+              v-for="(row, rowIdx) in (grandchild as ItemGrid).rows" 
+              :key="rowIdx" 
+              class="item-row"
+            >
+              <div
+                v-for="(itemId, colIdx) in row"
+                :key="colIdx"
+                class="grid-item"
+                :class="{ owned: hasItem(itemId) }"
+                :style="getGridItemStyle(parseMargin((grandchild as ItemGrid).item_margin), ((grandchild as ItemGrid).item_size || 32) * getEffectiveScale(grandchild, getEffectiveScale(child, grid.scale || 1)))"
+                :title="getItemName(itemId)"
+                @click="toggleItem(itemId)"
+                @contextmenu="decrementItem(itemId, $event)"
+              >
+                <img 
+                  :src="getIconSrc(itemId)" 
+                  :alt="itemId"
+                  class="item-icon"
+                  :class="{ disabled: !hasItem(itemId) }"
+                  @error="handleImageError"
+                />
+                <span v-if="getItemCount(itemId) > 1" class="item-count">{{ getItemCount(itemId) }}</span>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Level 2 nested array -->
+          <div 
+            v-else-if="grandchild.type === 'array'"
+            class="grid-array"
+            :class="(grandchild as GridArray).orientation"
+            :style="getArrayStyle(grandchild as GridArray)"
+          >
+            <template v-for="(ggchild, ggIdx) in (grandchild as GridArray).content" :key="ggIdx">
+              <!-- Level 3 item -->
+              <div
+                v-if="ggchild.type === 'item'"
+                class="grid-item"
+                :class="{ owned: hasItem((ggchild as GridItem).item) }"
+                :style="getItemStyle(ggchild as GridItem, getEffectiveScale(grandchild, getEffectiveScale(child, grid.scale || 1)))"
+                :title="getItemName((ggchild as GridItem).item)"
+                @click="toggleItem((ggchild as GridItem).item)"
+                @contextmenu="decrementItem((ggchild as GridItem).item, $event)"
+              >
+                <img 
+                  :src="getIconSrc((ggchild as GridItem).item)" 
+                  :alt="(ggchild as GridItem).item"
+                  class="item-icon"
+                  :class="{ disabled: !hasItem((ggchild as GridItem).item) }"
+                  @error="handleImageError"
+                />
+                <span v-if="getItemCount((ggchild as GridItem).item) > 1" class="item-count">{{ getItemCount((ggchild as GridItem).item) }}</span>
+              </div>
+              
+              <!-- Level 3 canvas -->
+              <div
+                v-else-if="ggchild.type === 'canvas'"
+                class="grid-canvas"
+                :style="getCanvasStyle(ggchild as GridCanvas, getEffectiveScale(grandchild, getEffectiveScale(child, grid.scale || 1)))"
+              >
+                <div
+                  v-for="(canvasChild, cIdx) in (ggchild as GridCanvas).content"
+                  :key="cIdx"
+                  class="grid-item canvas-item"
+                  :class="{ owned: hasItem((canvasChild as GridItem).item) }"
+                  :style="getItemStyle(canvasChild as GridItem, getEffectiveScale(grandchild, getEffectiveScale(child, grid.scale || 1)))"
+                  :title="getItemName((canvasChild as GridItem).item)"
+                  @click="toggleItem((canvasChild as GridItem).item)"
+                  @contextmenu="decrementItem((canvasChild as GridItem).item, $event)"
+                >
+                  <img 
+                    :src="getIconSrc((canvasChild as GridItem).item)" 
+                    :alt="(canvasChild as GridItem).item"
+                    class="item-icon"
+                    :class="{ disabled: !hasItem((canvasChild as GridItem).item) }"
+                    @error="handleImageError"
+                  />
+                  <span v-if="getItemCount((canvasChild as GridItem).item) > 1" class="item-count">{{ getItemCount((canvasChild as GridItem).item) }}</span>
+                </div>
+              </div>
+              
+              <!-- Level 3 nested array (for deeper nesting) -->
+              <div 
+                v-else-if="ggchild.type === 'array'"
+                class="grid-array"
+                :class="(ggchild as GridArray).orientation"
+                :style="getArrayStyle(ggchild as GridArray)"
+              >
+                <template v-for="(gggchild, gggIdx) in (ggchild as GridArray).content" :key="gggIdx">
+                  <div
+                    v-if="gggchild.type === 'item'"
+                    class="grid-item"
+                    :class="{ owned: hasItem((gggchild as GridItem).item) }"
+                    :style="getItemStyle(gggchild as GridItem, getEffectiveScale(ggchild, getEffectiveScale(grandchild, getEffectiveScale(child, grid.scale || 1))))"
+                    :title="getItemName((gggchild as GridItem).item)"
+                    @click="toggleItem((gggchild as GridItem).item)"
+                    @contextmenu="decrementItem((gggchild as GridItem).item, $event)"
+                  >
+                    <img 
+                      :src="getIconSrc((gggchild as GridItem).item)" 
+                      :alt="(gggchild as GridItem).item"
+                      class="item-icon"
+                      :class="{ disabled: !hasItem((gggchild as GridItem).item) }"
+                      @error="handleImageError"
+                    />
+                    <span v-if="getItemCount((gggchild as GridItem).item) > 1" class="item-count">{{ getItemCount((gggchild as GridItem).item) }}</span>
+                  </div>
+                </template>
+              </div>
+            </template>
+          </div>
+          
+          <!-- Level 2 item -->
+          <div
+            v-else-if="grandchild.type === 'item'"
+            class="grid-item"
+            :class="{ owned: hasItem((grandchild as GridItem).item) }"
+            :style="getItemStyle(grandchild as GridItem, getEffectiveScale(child, grid.scale || 1))"
+            :title="getItemName((grandchild as GridItem).item)"
+            @click="toggleItem((grandchild as GridItem).item)"
+            @contextmenu="decrementItem((grandchild as GridItem).item, $event)"
+          >
+            <img 
+              :src="getIconSrc((grandchild as GridItem).item)" 
+              :alt="(grandchild as GridItem).item"
+              class="item-icon"
+              :class="{ disabled: !hasItem((grandchild as GridItem).item) }"
+              @error="handleImageError"
+            />
+            <span v-if="getItemCount((grandchild as GridItem).item) > 1" class="item-count">{{ getItemCount((grandchild as GridItem).item) }}</span>
+          </div>
+          
+          <!-- Level 2 canvas -->
+          <div
+            v-else-if="grandchild.type === 'canvas'"
+            class="grid-canvas"
+            :style="getCanvasStyle(grandchild as GridCanvas, getEffectiveScale(child, grid.scale || 1))"
+          >
+            <div
+              v-for="(canvasChild, cIdx) in (grandchild as GridCanvas).content"
+              :key="cIdx"
+              class="grid-item canvas-item"
+              :class="{ owned: hasItem((canvasChild as GridItem).item) }"
+              :style="getItemStyle(canvasChild as GridItem, getEffectiveScale(child, grid.scale || 1))"
+              :title="getItemName((canvasChild as GridItem).item)"
+              @click="toggleItem((canvasChild as GridItem).item)"
+              @contextmenu="decrementItem((canvasChild as GridItem).item, $event)"
+            >
+              <img 
+                :src="getIconSrc((canvasChild as GridItem).item)" 
+                :alt="(canvasChild as GridItem).item"
+                class="item-icon"
+                :class="{ disabled: !hasItem((canvasChild as GridItem).item) }"
+                @error="handleImageError"
+              />
+              <span v-if="getItemCount((canvasChild as GridItem).item) > 1" class="item-count">{{ getItemCount((canvasChild as GridItem).item) }}</span>
+            </div>
+          </div>
+        </template>
+      </div>
+      
+      <!-- Single item at root level -->
+      <div
+        v-else-if="child.type === 'item'"
+        class="grid-item"
+        :class="{ owned: hasItem((child as GridItem).item) }"
+        :style="getItemStyle(child as GridItem, grid.scale || 1)"
+        :title="getItemName((child as GridItem).item)"
+        @click="toggleItem((child as GridItem).item)"
+        @contextmenu="decrementItem((child as GridItem).item, $event)"
+      >
+        <img 
+          :src="getIconSrc((child as GridItem).item)" 
+          :alt="(child as GridItem).item"
+          class="item-icon"
+          :class="{ disabled: !hasItem((child as GridItem).item) }"
+          @error="handleImageError"
+        />
+        <span v-if="getItemCount((child as GridItem).item) > 1" class="item-count">{{ getItemCount((child as GridItem).item) }}</span>
+      </div>
+      
+      <!-- Canvas at root level -->
+      <div
+        v-else-if="child.type === 'canvas'"
+        class="grid-canvas"
+        :style="getCanvasStyle(child as GridCanvas, grid.scale || 1)"
+      >
+        <div
+          v-for="(canvasChild, cIdx) in (child as GridCanvas).content"
+          :key="cIdx"
+          class="grid-item canvas-item"
+          :class="{ owned: hasItem((canvasChild as GridItem).item) }"
+          :style="getItemStyle(canvasChild as GridItem, grid.scale || 1)"
+          :title="getItemName((canvasChild as GridItem).item)"
+          @click="toggleItem((canvasChild as GridItem).item)"
+          @contextmenu="decrementItem((canvasChild as GridItem).item, $event)"
+        >
+          <img 
+            :src="getIconSrc((canvasChild as GridItem).item)" 
+            :alt="(canvasChild as GridItem).item"
+            class="item-icon"
+            :class="{ disabled: !hasItem((canvasChild as GridItem).item) }"
+            @error="handleImageError"
+          />
+          <span v-if="getItemCount((canvasChild as GridItem).item) > 1" class="item-count">{{ getItemCount((canvasChild as GridItem).item) }}</span>
+        </div>
+      </div>
+    </template>
+  </div>
+</template>
+
+<style scoped>
+.grid-array {
+  display: flex;
+}
+
+.grid-array.vertical {
+  flex-direction: column;
+}
+
+.grid-array.horizontal {
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-items: flex-start;
+}
+
+.item-grid {
+  display: flex;
+  flex-direction: column;
+}
+
+.item-row {
+  display: flex;
+  flex-direction: row;
+}
+
+.grid-item {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  cursor: pointer;
+  border-radius: 4px;
+  transition: all 0.15s ease;
+  background: rgba(0, 0, 0, 0.3);
+  border: 1px solid transparent;
+  box-sizing: border-box;
+}
+
+.grid-item:hover {
+  background: rgba(59, 130, 246, 0.2);
+  border-color: rgba(59, 130, 246, 0.5);
+}
+
+.grid-item.owned {
+  background: rgba(16, 185, 129, 0.15);
+  border-color: rgba(16, 185, 129, 0.3);
+}
+
+.grid-item.canvas-item {
+  background: transparent;
+  border: none;
+}
+
+.grid-item.canvas-item:hover {
+  background: rgba(59, 130, 246, 0.2);
+}
+
+.item-icon {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  image-rendering: pixelated;
+  transition: filter 0.15s ease;
+}
+
+.item-icon.disabled {
+  filter: grayscale(100%) brightness(0.4);
+}
+
+.grid-item.owned .item-icon {
+  filter: none;
+}
+
+.item-count {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  background: rgba(0, 0, 0, 0.85);
+  color: #fff;
+  font-size: 10px;
+  font-weight: bold;
+  padding: 1px 3px;
+  border-radius: 2px;
+  min-width: 14px;
+  text-align: center;
+}
+
+.grid-canvas {
+  display: block;
+  position: relative;
+}
+</style>
