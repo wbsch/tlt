@@ -29,70 +29,6 @@ const sharedGrid = computed(() => grids['item_grid_shared'])
 const ootGrid = computed(() => grids['item_grid_tall_oot'])
 const mmGrid = computed(() => grids['item_grid_tall_mm'])
 
-const sharedItemIds = [
-  'SHARED_BOW',
-  'SHARED_BOMB_BAG',
-  'SHARED_BOMBCHU',
-  'SHARED_MAGIC_UPGRADE',
-  'SHARED_ARROW_FIRE',
-  'SHARED_ARROW_ICE',
-  'SHARED_ARROW_LIGHT',
-  'SHARED_HOOKSHOT',
-  'SHARED_LENS',
-  'SHARED_OCARINA',
-  'SHARED_SWORD',
-  'SHARED_SHIELD',
-  'SHARED_HAMMER',
-  'SHARED_STRENGTH',
-  'SHARED_SCALE',
-  'SHARED_SPIN_UPGRADE',
-  'SHARED_BOOTS_IRON',
-  'SHARED_BOOTS_HOVER',
-  'SHARED_MASK_GORON',
-  'SHARED_TUNIC_GORON',
-  'SHARED_MASK_ZORA',
-  'SHARED_TUNIC_ZORA',
-  'SHARED_MASK_BUNNY',
-  'SHARED_MASK_KEATON',
-  'SHARED_MASK_TRUTH',
-  'SHARED_MASK_BLAST',
-  'SHARED_MASK_STONE',
-  'SHARED_SONG_EPONA',
-  'SHARED_SONG_STORMS',
-  'SHARED_SONG_TIME',
-  'SHARED_SONG_SUN',
-  'SHARED_SONG_EMPTINESS',
-  'SHARED_WALLET',
-  'SHARED_HEART_CONTAINER',
-  'SHARED_HEART_PIECE',
-  'SHARED_STONE_OF_AGONY',
-  'SHARED_SKELETON_KEY',
-  'SHARED_SPELL_FIRE',
-  'SHARED_SPELL_WIND',
-  'SHARED_SPELL_LOVE',
-  'SHARED_NUT_UPGRADE',
-  'SHARED_STICK_UPGRADE',
-  'SHARED_BUTTON_A',
-  'SHARED_BUTTON_C_DOWN',
-  'SHARED_BUTTON_C_LEFT',
-  'SHARED_BUTTON_C_RIGHT',
-  'SHARED_BUTTON_C_UP',
-  'SHARED_BOTTLE_EMPTY',
-  'SHARED_BOTTLE_POTION_RED',
-  'SHARED_BOTTLED_GOLD_DUST',
-  'SHARED_BOTTLE_CHATEAU',
-  'SHARED_BOTTLE_MILK',
-  'SHARED_BOTTLE_RUTO_LETTER',
-]
-
-const hasSharedSettingItems = computed(() => {
-  if (!props.availableItemIds || props.availableItemIds.size === 0) return false
-  for (const id of sharedItemIds) {
-    if (props.availableItemIds.has(id)) return true
-  }
-  return false
-})
-
 const hasOotItems = computed(() => {
   if (!props.availableItemIds || props.availableItemIds.size === 0) return true
   for (const id of props.availableItemIds) {
@@ -156,6 +92,11 @@ const filteredSharedGrid = computed(() => {
 
 const filteredMmGrid = computed(() => {
   return mmGrid.value ? (filterGridElement(mmGrid.value) as GridArray | null) : null
+})
+
+const hasSharedSettingItems = computed(() => {
+  if (!props.availableItemIds || props.availableItemIds.size === 0) return false
+  return Boolean(filteredSharedGrid.value)
 })
 
 function handleInventoryUpdate(newInventory: Map<string, number>) {
