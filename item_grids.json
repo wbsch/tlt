@@ -13,27 +13,69 @@
           [
             "SHARED_BOW",
             "SHARED_BOMB_BAG",
+            "SHARED_BOMBCHU",
             "SHARED_MAGIC_UPGRADE",
             "SHARED_ARROW_FIRE",
             "SHARED_ARROW_ICE",
             "SHARED_ARROW_LIGHT",
-            "SHARED_HOOKSHOT",
-            "SHARED_LENS"
+            "SHARED_HOOKSHOT"
           ],
           [
+            "SHARED_LENS",
             "SHARED_OCARINA",
-            "SHARED_MASK_GORON",
+            "SHARED_SWORD",
+            "SHARED_SHIELD",
+            "SHARED_HAMMER",
+            "SHARED_STRENGTH",
+            "SHARED_SCALE",
+            "SHARED_SPIN_UPGRADE"
+          ],
+          [
+            "SHARED_BOOTS_IRON",
+            "SHARED_BOOTS_HOVER",
             "SHARED_TUNIC_GORON",
-            "SHARED_MASK_ZORA",
             "SHARED_TUNIC_ZORA",
+            "SHARED_STONE_OF_AGONY",
+            "SHARED_SKELETON_KEY",
+            "SHARED_WALLET",
+            "SHARED_HEART_CONTAINER"
+          ],
+          [
+            "SHARED_HEART_PIECE",
+            "SHARED_MASK_GORON",
+            "SHARED_MASK_ZORA",
+            "SHARED_MASK_BUNNY",
+            "SHARED_MASK_KEATON",
+            "SHARED_MASK_TRUTH",
+            "SHARED_MASK_BLAST",
+            "SHARED_MASK_STONE"
+          ],
+          [
             "SHARED_SONG_EPONA",
             "SHARED_SONG_STORMS",
-            "SHARED_SONG_TIME"
+            "SHARED_SONG_TIME",
+            "SHARED_SONG_SUN",
+            "SHARED_SONG_EMPTINESS",
+            "SHARED_SPELL_FIRE",
+            "SHARED_SPELL_WIND",
+            "SHARED_SPELL_LOVE"
           ],
           [
-            "SHARED_WALLET",
-            "SHARED_HEART_CONTAINER",
-            "SHARED_HEART_PIECE"
+            "SHARED_NUT_UPGRADE",
+            "SHARED_STICK_UPGRADE",
+            "SHARED_BUTTON_A",
+            "SHARED_BUTTON_C_DOWN",
+            "SHARED_BUTTON_C_LEFT",
+            "SHARED_BUTTON_C_RIGHT",
+            "SHARED_BUTTON_C_UP",
+            "SHARED_BOTTLE_EMPTY"
+          ],
+          [
+            "SHARED_BOTTLE_POTION_RED",
+            "SHARED_BOTTLED_GOLD_DUST",
+            "SHARED_BOTTLE_CHATEAU",
+            "SHARED_BOTTLE_MILK",
+            "SHARED_BOTTLE_RUTO_LETTER"
           ]
         ]
       }
