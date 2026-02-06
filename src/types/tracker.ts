@@ -116,7 +116,12 @@ export interface SettingDefinition {
   default: unknown;
 
   /** Options (for select/multi-select) */
-  options?: { value: unknown; label: string }[];
+  options?: {
+    value: unknown;
+    label: string;
+    description?: string;
+    cond?: (settings: Record<string, unknown>) => boolean;
+  }[];
 
   /** Description/tooltip */
   description?: string;
@@ -124,7 +129,10 @@ export interface SettingDefinition {
   /** Grouping category */
   category?: string;
 
+  /** Optional condition for rendering */
+  cond?: (settings: Record<string, unknown>) => boolean;
+
   /** Optional numeric bounds (for number settings) */
-  min?: number;
-  max?: number;
+  min?: number | ((settings: Record<string, unknown>) => number);
+  max?: number | ((settings: Record<string, unknown>) => number);
 }

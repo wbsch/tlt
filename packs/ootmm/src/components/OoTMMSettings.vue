@@ -58,6 +58,35 @@ function updateSetting(key: string, value: unknown) {
   }
 }
 
+function isCondSatisfied(
+  cond: ((settings: Record<string, unknown>) => boolean) | undefined,
+  settings: Record<string, unknown>,
+) {
+  if (!cond) return true
+  return Boolean(cond(settings))
+}
+
+function isSettingVisible(def: (typeof SETTINGS_DEFINITIONS)[number]) {
+  return isCondSatisfied(def.cond, localSettings.value)
+}
+
+function getVisibleOptions(def: (typeof SETTINGS_DEFINITIONS)[number]) {
+  if (!def.options) return []
+  const settings = localSettings.value
+  return def.options.filter((option) => isCondSatisfied(option.cond, settings))
+}
+
+function getNumberBound(
+  bound: number | ((settings: Record<string, unknown>) => number) | undefined,
+) {
+  if (typeof bound === 'function') {
+    const value = bound(localSettings.value)
+    return typeof value === 'number' ? value : undefined
+  }
+  if (typeof bound === 'number') return bound
+  return undefined
+}
+
 function getMultiSelectValue(key: string): MultiSelectValue {
   const raw = localSettings.value[key]
   if (raw && typeof raw === 'object' && typeof raw.type === 'string') {
@@ -130,12 +159,13 @@ function resetSettings() {
 
 // Filter settings by search query
 const filteredSettings = computed(() => {
+  const visibleSettings = SETTINGS_DEFINITIONS.filter(isSettingVisible)
   if (!searchQuery.value.trim()) {
-    return SETTINGS_DEFINITIONS
+    return visibleSettings
   }
   
   const query = searchQuery.value.toLowerCase()
-  return SETTINGS_DEFINITIONS.filter(setting => {
+  return visibleSettings.filter(setting => {
     const matchesLabel = setting.label.toLowerCase().includes(query)
     const matchesDescription = setting.description?.toLowerCase().includes(query)
     const matchesKey = setting.key.toLowerCase().includes(query)
@@ -208,7 +238,7 @@ defineExpose({
               class="setting-select"
               @change="updateSetting(setting.key, ($event.target as HTMLSelectElement).value)"
             >
-              <option v-for="opt in setting.options" :key="opt.value" :value="opt.value">
+              <option v-for="opt in getVisibleOptions(setting)" :key="opt.value" :value="opt.value">
                 {{ opt.label }}
               </option>
             </select>
@@ -219,6 +249,8 @@ defineExpose({
               :id="setting.key"
               type="number"
               :value="localSettings[setting.key]"
+              :min="getNumberBound(setting.min)"
+              :max="getNumberBound(setting.max)"
               class="setting-input"
               @input="updateSetting(setting.key, parseInt(($event.target as HTMLInputElement).value))"
             />
@@ -237,7 +269,7 @@ defineExpose({
               </select>
 
               <div v-if="getMultiSelectMode(setting.key) === 'specific'" class="setting-multiselect-options">
-                <label v-for="opt in setting.options" :key="opt.value" class="multiselect-option">
+                <label v-for="opt in getVisibleOptions(setting)" :key="opt.value" class="multiselect-option">
                   <input
                     type="checkbox"
                     :checked="isMultiSelectChecked(setting.key, opt.value)"

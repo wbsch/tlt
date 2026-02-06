@@ -9,32 +9,53 @@ const { SETTINGS } = SettingsMod as { SETTINGS?: unknown[] }
  * Loaded directly from OoTMM settings data and transformed for UI
  */
 function transformOoTMMSetting(setting: unknown): SettingDefinition | null {
-  // Skip settings with conditions for now (would need context to evaluate)
-  // We'll implement conditional rendering later if needed
-  
-  const base = {
-    key: (setting as { key?: string }).key,
-    label: (setting as { name?: string }).name,
-    description: (setting as { description?: string }).description,
-    default: (setting as { default?: unknown }).default,
-    category: (setting as { category?: string }).category || 'Other',
+  const raw = setting as {
+    key?: string
+    name?: string
+    description?: string
+    default?: unknown
+    category?: string
+    type?: string
+    cond?: unknown
+    min?: unknown
+    max?: unknown
+    values?: unknown[]
   }
 
-  switch ((setting as { type?: string }).type) {
+  const base = {
+    key: raw.key,
+    label: raw.name,
+    description: raw.description,
+    default: raw.default,
+    category: raw.category || 'Other',
+    cond: typeof raw.cond === 'function' ? (raw.cond as (settings: Record<string, unknown>) => boolean) : undefined,
+  }
+
+  const options = raw.values?.map((v: unknown) => {
+    const option = v as { value?: unknown; name?: string; description?: string; cond?: unknown }
+    return {
+      value: option.value,
+      label: option.name ?? '',
+      description: option.description,
+      cond: typeof option.cond === 'function' ? (option.cond as (settings: Record<string, unknown>) => boolean) : undefined,
+    }
+  })
+
+  const min = typeof raw.min === 'function' || typeof raw.min === 'number' ? raw.min : undefined
+  const max = typeof raw.max === 'function' || typeof raw.max === 'number' ? raw.max : undefined
+
+  switch (raw.type) {
     case 'boolean':
       return { ...base, type: 'boolean' }
     
     case 'number':
-      return { ...base, type: 'number', min: (setting as { min?: number }).min, max: (setting as { max?: number }).max }
+      return { ...base, type: 'number', min, max }
     
     case 'enum':
       return {
         ...base,
         type: 'select',
-        options: (setting as { values?: unknown[] }).values?.map((v: unknown) => ({
-          value: (v as { value?: unknown }).value,
-          label: (v as { name?: string }).name,
-        })),
+        options,
       }
     
     case 'set':
@@ -42,10 +63,7 @@ function transformOoTMMSetting(setting: unknown): SettingDefinition | null {
         ...base,
         type: 'multi-select',
         default: { type: (setting as { default?: string }).default },
-        options: (setting as { values?: unknown[] }).values?.map((v: unknown) => ({
-          value: (v as { value?: unknown }).value,
-          label: (v as { name?: string }).name,
-        })),
+        options,
       }
     
     default:
@@ -64,7 +82,31 @@ const mergeSettingDefinitions = (
     merged.set(def.key, def)
   }
   for (const def of overrides) {
-    merged.set(def.key, def)
+    const existing = merged.get(def.key)
+    if (!existing) {
+      merged.set(def.key, def)
+      continue
+    }
+
+    const mergedDef: SettingDefinition = { ...existing, ...def }
+
+    if (def.options && existing.options) {
+      const baseOptionsByValue = new Map<unknown, (typeof existing.options)[number]>(
+        existing.options.map((option) => [option.value, option]),
+      )
+      mergedDef.options = def.options.map((option) => {
+        const baseOption = baseOptionsByValue.get(option.value)
+        if (!baseOption) return option
+        return {
+          ...baseOption,
+          ...option,
+          cond: option.cond ?? baseOption.cond,
+          description: option.description ?? baseOption.description,
+        }
+      })
+    }
+
+    merged.set(def.key, mergedDef)
   }
   return [...merged.values()]
 }

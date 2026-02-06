@@ -124,11 +124,17 @@ const stats = computed(() => {
 
 function fillInventory() {
   const newInventory = new Map<string, number>()
-  for (const item of ITEM_DATABASE) {
-    if (item.category === 'junk') continue;
-    if (availableItemIds.value.size > 0 && !availableItemIds.value.has(item.id)) continue;
-    const maxCount = itemMaxCounts.value.get(item.id) ?? item.maxCount ?? 1
-    newInventory.set(item.id, maxCount)
+  if (availableItemIds.value.size > 0) {
+    for (const itemId of availableItemIds.value) {
+      const maxCount = itemMaxCounts.value.get(itemId) ?? 1
+      newInventory.set(itemId, Math.max(1, maxCount))
+    }
+  } else {
+    for (const item of ITEM_DATABASE) {
+      if (item.category === 'junk') continue;
+      const maxCount = itemMaxCounts.value.get(item.id) ?? item.maxCount ?? 1
+      newInventory.set(item.id, Math.max(1, maxCount))
+    }
   }
   inventory.value = newInventory
 }
