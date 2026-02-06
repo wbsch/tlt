@@ -76,6 +76,31 @@ function getVisibleOptions(def: (typeof SETTINGS_DEFINITIONS)[number]) {
   return def.options.filter((option) => isCondSatisfied(option.cond, settings))
 }
 
+function getSelectValue(def: (typeof SETTINGS_DEFINITIONS)[number]) {
+  const current = localSettings.value[def.key]
+  if (def.type !== 'select') {
+    return current
+  }
+
+  const options = getVisibleOptions(def)
+  if (options.length === 0) {
+    return current
+  }
+
+  const hasCurrent = options.some((option) => option.value === current)
+  if (hasCurrent) {
+    return current
+  }
+
+  const defaultValue = def.default
+  const hasDefault = options.some((option) => option.value === defaultValue)
+  if (hasDefault) {
+    return defaultValue
+  }
+
+  return options[0].value
+}
+
 function getNumberBound(
   bound: number | ((settings: Record<string, unknown>) => number) | undefined,
 ) {
@@ -185,6 +210,27 @@ const settingsByCategory = computed(() => {
   }, {} as Record<string, (typeof SETTINGS_DEFINITIONS)[number][]>)
 })
 
+watch(
+  () => localSettings.value,
+  () => {
+    const updates: Record<string, unknown> = {}
+    for (const def of SETTINGS_DEFINITIONS) {
+      if (def.type !== 'select') continue
+      const nextValue = getSelectValue(def)
+      if (nextValue !== localSettings.value[def.key]) {
+        updates[def.key] = nextValue
+      }
+    }
+    if (Object.keys(updates).length > 0) {
+      localSettings.value = {
+        ...localSettings.value,
+        ...updates,
+      }
+    }
+  },
+  { deep: true },
+)
+
 defineExpose({
   hasUnsavedChanges,
   getLocalSettingsSnapshot,
@@ -234,7 +280,7 @@ defineExpose({
             <select
               v-else-if="setting.type === 'select'"
               :id="setting.key"
-              :value="localSettings[setting.key]"
+              :value="getSelectValue(setting)"
               class="setting-select"
               @change="updateSetting(setting.key, ($event.target as HTMLSelectElement).value)"
             >
