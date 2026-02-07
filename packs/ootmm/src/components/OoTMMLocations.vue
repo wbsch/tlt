@@ -37,7 +37,8 @@ const categories = computed(() => {
 
 const baseFilteredLocations = computed(() => {
   return props.locations.filter(loc => {
-    const matchesShuffle = showUnshuffled.value || loc.isShuffled !== false
+    const isToggleEligible = Boolean(loc.isSkulltulaToken || loc.isStrayFairy)
+    const matchesShuffle = loc.isShuffled !== false || (showUnshuffled.value && isToggleEligible)
     const matchesSearch = loc.name.toLowerCase().includes(searchQuery.value.toLowerCase())
     const matchesCategory = selectedCategory.value === 'all' || loc.category === selectedCategory.value
     return matchesShuffle && matchesSearch && matchesCategory
@@ -177,7 +178,7 @@ function toggleCollected(id: string) {
     <div class="shuffle-toggle">
       <label class="shuffle-toggle-label">
         <input v-model="showUnshuffled" type="checkbox" />
-        <span>Show unshuffled locations</span>
+        <span>Show unshuffled Skulltulas & Dungeon Stray Fairies</span>
       </label>
     </div>
 

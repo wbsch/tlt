@@ -234,12 +234,23 @@ export class OoTMMTracker implements TrackerPack {
         const fullId = makeLocation(locId, worldId)
         if (this.hiddenLocationIds.has(fullId)) continue
         const check = world.checks?.[locId]
+        const itemId = (check as { item?: { id?: string } })?.item?.id
+        const isSkulltulaToken =
+          itemId === 'OOT_GS_TOKEN' ||
+          itemId === 'MM_GS_TOKEN_SWAMP' ||
+          itemId === 'MM_GS_TOKEN_OCEAN'
+        const isStrayFairy =
+          typeof itemId === 'string' &&
+          itemId.startsWith('MM_STRAY_FAIRY_') &&
+          itemId !== 'MM_STRAY_FAIRY_TOWN'
         const shuffled = this.computeIsShuffled(world, locId, fullId, check, dungeonLocations)
         locations.push({
           id: fullId,
           name: locId,
           category: this.categorizeLocation(check),
           area: this.getAreaFromLocation(locId),
+          isSkulltulaToken,
+          isStrayFairy,
           isShuffled: shuffled,
         })
       }
