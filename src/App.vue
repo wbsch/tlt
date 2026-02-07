@@ -21,6 +21,18 @@ function getPackComponent(packId: string) {
   return packComponents[packId] ?? null;
 }
 
+function resetTrackerState() {
+  const resetFn = (
+    window as Window & { __TLT_RESET_TRACKER_STATE__?: () => void }
+  ).__TLT_RESET_TRACKER_STATE__;
+  if (typeof resetFn === 'function') {
+    resetFn();
+    return;
+  }
+  window.localStorage.clear();
+  window.location.reload();
+}
+
 onMounted(() => {
   appStore.initialize();
 });
@@ -31,22 +43,27 @@ onMounted(() => {
     <header class="app-header">
       <h1>The Last Tracker</h1>
 
-      <div class="pack-selector">
-        <label for="pack-select">Tracker Pack:</label>
-        <select
-          id="pack-select"
-          v-model="selectedPackId"
-          :disabled="isLoading"
-          @change="appStore.loadPack(selectedPackId)"
-        >
-          <option
-            v-for="pack in availablePacks"
-            :key="pack.id"
-            :value="pack.id"
+      <div class="header-actions">
+        <div class="pack-selector">
+          <label for="pack-select">Tracker Pack:</label>
+          <select
+            id="pack-select"
+            v-model="selectedPackId"
+            :disabled="isLoading"
+            @change="appStore.loadPack(selectedPackId)"
           >
-            {{ pack.name }}
-          </option>
-        </select>
+            <option
+              v-for="pack in availablePacks"
+              :key="pack.id"
+              :value="pack.id"
+            >
+              {{ pack.name }}
+            </option>
+          </select>
+        </div>
+        <button type="button" class="reset-button" @click="resetTrackerState">
+          RESET TRACKER STATE
+        </button>
       </div>
     </header>
 
@@ -95,9 +112,27 @@ onMounted(() => {
   gap: 0.5rem;
 }
 
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
 .pack-selector label {
   font-size: 0.875rem;
   color: #9ca3af;
+}
+
+.reset-button {
+  background: #7f1d1d;
+  border: 1px solid #fca5a5;
+  font-size: 0.75rem;
+  font-weight: 700;
+}
+
+.reset-button:hover {
+  background: #991b1b;
 }
 
 .app-main {
@@ -123,6 +158,10 @@ onMounted(() => {
     padding: 1rem;
     flex-direction: column;
     align-items: flex-start;
+  }
+
+  .header-actions {
+    width: 100%;
   }
 
   .pack-selector {

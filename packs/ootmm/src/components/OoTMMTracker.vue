@@ -75,6 +75,7 @@ const {
 const settingsRef = ref<SettingsPanelHandle | null>(null)
 const spoilerFileInput = ref<HTMLInputElement | null>(null)
 const statsMenuRef = ref<HTMLDetailsElement | null>(null)
+const isStatsMenuOpen = ref(false)
 
 const MAJOR_DUNGEONS = [
   { id: 'DT', label: 'Deku Tree', game: 'oot' as const },
@@ -106,6 +107,12 @@ watch(
   },
   { immediate: true },
 )
+
+watch(isApplyingSettings, (applying) => {
+  if (applying) {
+    closeStatsMenu()
+  }
+})
 
 function fillInventory() {
   sessionStore.fillInventoryForDebugActivateAll()
@@ -332,13 +339,27 @@ async function requestTabSwitch(nextTab: TrackerTab) {
   uiStore.setActiveTab(nextTab)
 }
 
-async function resetTrackerState() {
-  if (isApplyingSettings.value) return
+function handleStatsMenuToggle(event: Event) {
+  isStatsMenuOpen.value = (event.target as HTMLDetailsElement).open
+}
+
+function closeStatsMenu() {
+  isStatsMenuOpen.value = false
   if (statsMenuRef.value) {
     statsMenuRef.value.open = false
   }
-  await sessionStore.resetSessionStateToDefaults()
-  uiStore.resetUiState()
+}
+
+function resetTrackerState() {
+  closeStatsMenu()
+  const resetFn = (window as Window & { __TLT_RESET_TRACKER_STATE__?: () => void })
+    .__TLT_RESET_TRACKER_STATE__
+  if (typeof resetFn === 'function') {
+    resetFn()
+    return
+  }
+  window.localStorage.clear()
+  window.location.reload()
 }
 </script>
 
@@ -357,6 +378,13 @@ async function resetTrackerState() {
         <span class="applying-overlay__subtitle">Recalculating tracker logic</span>
       </div>
     </div>
+    <button
+      v-if="isStatsMenuOpen"
+      type="button"
+      class="stats-menu-backdrop"
+      aria-label="Close tracker menu"
+      @click="closeStatsMenu"
+    />
     <div v-if="isSpoilerDragActive" class="spoiler-drop-overlay" role="status" aria-live="polite">
       <div class="spoiler-drop-content">Drop spoiler log to load</div>
     </div>
@@ -364,16 +392,20 @@ async function resetTrackerState() {
       <div class="stats-panel">
         <div class="stats-header">
           <h3>Statistics</h3>
-          <details ref="statsMenuRef" class="stats-menu">
+          <details
+            ref="statsMenuRef"
+            class="stats-menu"
+            :class="{ 'is-open': isStatsMenuOpen }"
+            @toggle="handleStatsMenuToggle"
+          >
             <summary class="stats-menu-trigger" aria-label="Open tracker menu">⋮</summary>
             <div class="stats-menu-content" role="menu">
               <button
                 class="stats-menu-item"
                 type="button"
-                :disabled="isApplyingSettings"
                 @click="resetTrackerState"
               >
-                Reset tracker state
+                RESET TRACKER STATE
               </button>
             </div>
           </details>
@@ -563,6 +595,16 @@ async function resetTrackerState() {
   letter-spacing: 0.02em;
 }
 
+.stats-menu-backdrop {
+  position: absolute;
+  inset: 0;
+  z-index: 8;
+  border: none;
+  background: rgba(0, 0, 0, 0.35);
+  margin: 0;
+  padding: 0;
+}
+
 .spoiler-drop-overlay {
   position: absolute;
   inset: 0;
@@ -619,6 +661,10 @@ async function resetTrackerState() {
   position: relative;
 }
 
+.stats-menu.is-open {
+  z-index: 10;
+}
+
 .stats-menu-trigger {
   list-style: none;
   width: 1.75rem;
@@ -653,7 +699,7 @@ async function resetTrackerState() {
   min-width: 12rem;
   box-shadow: 0 10px 20px rgba(0, 0, 0, 0.35);
   overflow: hidden;
-  z-index: 5;
+  z-index: 11;
 }
 
 .stats-menu-item {

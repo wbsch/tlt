@@ -28,8 +28,144 @@
         };
       }
     </script>
+    <script>
+      (function () {
+        function resetTrackerState() {
+          try {
+            window.localStorage.clear();
+          } catch (error) {
+            console.error('Failed to clear localStorage during tracker reset:', error);
+          } finally {
+            window.location.reload();
+          }
+        }
+
+        function showEmergencyReset() {
+          document.body.classList.remove('tlt-app-mounted');
+          document.body.classList.add('tlt-runtime-error');
+        }
+
+        window.__TLT_RESET_TRACKER_STATE__ = resetTrackerState;
+        window.addEventListener('error', showEmergencyReset);
+        window.addEventListener('unhandledrejection', showEmergencyReset);
+      })();
+    </script>
+    <style>
+      body {
+        margin: 0;
+        font-family:
+          -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+          'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+          sans-serif;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+        background: #1a1a1a;
+        color: #f0f0f0;
+      }
+
+      #tlt-shell-header {
+        background: #2a2a2a;
+        padding: 1rem 2rem;
+        border-bottom: 2px solid #404040;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 1rem;
+        flex-wrap: wrap;
+      }
+
+      #tlt-shell-header h1 {
+        margin: 0;
+        font-size: 1.5rem;
+        font-weight: 600;
+      }
+
+      .tlt-shell-actions {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        flex-wrap: wrap;
+      }
+
+      .tlt-shell-pack-selector {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+      }
+
+      .tlt-shell-pack-selector label {
+        font-size: 0.875rem;
+        color: #9ca3af;
+      }
+
+      .tlt-shell-pack-selector select {
+        background: #2a2a2a;
+        color: #f0f0f0;
+        border: 1px solid #404040;
+        padding: 0.5rem;
+        border-radius: 0.25rem;
+      }
+
+      #tlt-shell-reset {
+        cursor: pointer;
+        border: 1px solid #fca5a5;
+        background: #7f1d1d;
+        color: #ffffff;
+        padding: 0.5rem 1rem;
+        border-radius: 0.25rem;
+        font-size: 0.75rem;
+        font-weight: 700;
+      }
+
+      #tlt-shell-reset:hover {
+        background: #991b1b;
+      }
+
+      @media (max-width: 700px) {
+        #tlt-shell-header {
+          padding: 1rem;
+          flex-direction: column;
+          align-items: flex-start;
+        }
+
+        .tlt-shell-actions {
+          width: 100%;
+        }
+
+        .tlt-shell-pack-selector {
+          width: 100%;
+        }
+
+        .tlt-shell-pack-selector select {
+          flex: 1;
+          min-width: 0;
+        }
+      }
+
+      body.tlt-app-mounted #tlt-shell-header {
+        display: none;
+      }
+    </style>
   </head>
   <body>
+    <div id="tlt-shell-header">
+      <h1>The Last Tracker</h1>
+      <div class="tlt-shell-actions">
+        <div class="tlt-shell-pack-selector">
+          <label for="tlt-shell-pack-select">Tracker Pack:</label>
+          <select id="tlt-shell-pack-select" disabled>
+            <option>OoTMM</option>
+          </select>
+        </div>
+        <button
+          id="tlt-shell-reset"
+          type="button"
+          onclick="window.__TLT_RESET_TRACKER_STATE__()"
+        >
+          RESET TRACKER STATE
+        </button>
+      </div>
+    </div>
     <div id="app"></div>
     <script type="module" src="/src/main.ts"></script>
   </body>

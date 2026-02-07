@@ -8,4 +8,11 @@ const app = createApp(App);
 const pinia = createPinia();
 pinia.use(piniaLocalStoragePlugin);
 app.use(pinia);
-app.mount('#app');
+try {
+  app.mount('#app');
+  document.body.classList.add('tlt-app-mounted');
+} catch (error) {
+  console.error('Failed to mount The Last Tracker app:', error);
+  document.body.classList.remove('tlt-app-mounted');
+  document.body.classList.add('tlt-runtime-error');
+}
