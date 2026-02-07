@@ -45,8 +45,31 @@ const hasMmItems = computed(() => {
   return false
 })
 
+const LABEL_KEY_MAP: Record<string, string[]> = {
+  oot_foresttemple_label: ['OOT_SMALL_KEY_FOREST', 'OOT_BOSS_KEY_FOREST'],
+  oot_firetemple_label: ['OOT_SMALL_KEY_FIRE', 'OOT_BOSS_KEY_FIRE'],
+  oot_watertemple_label: ['OOT_SMALL_KEY_WATER', 'OOT_BOSS_KEY_WATER'],
+  oot_spirittemple_label: ['OOT_SMALL_KEY_SPIRIT', 'OOT_BOSS_KEY_SPIRIT'],
+  oot_shadowtemple_label: ['OOT_SMALL_KEY_SHADOW', 'OOT_BOSS_KEY_SHADOW'],
+  oot_ganoncastle_label: ['OOT_SMALL_KEY_GANON', 'OOT_BOSS_KEY_GANON'],
+  oot_gerudotraining_label: ['OOT_SMALL_KEY_GTG'],
+  oot_gerudofortress_label: ['OOT_SMALL_KEY_GF'],
+  oot_well_label: ['OOT_SMALL_KEY_BOTW'],
+  mm_woodfall_label: ['MM_SMALL_KEY_WF', 'MM_BOSS_KEY_WF'],
+  mm_snowhead_label: ['MM_SMALL_KEY_SH', 'MM_BOSS_KEY_SH'],
+  mm_greatbay_label: ['MM_SMALL_KEY_GB', 'MM_BOSS_KEY_GB'],
+  mm_stonetower_label: ['MM_SMALL_KEY_ST', 'MM_BOSS_KEY_ST'],
+}
+
 function isItemVisible(itemId: string): boolean {
   if (!props.availableItemIds || props.availableItemIds.size === 0) return true
+  const labelKeys = LABEL_KEY_MAP[itemId]
+  if (labelKeys) {
+    for (const keyId of labelKeys) {
+      if (props.availableItemIds.has(keyId)) return true
+    }
+    return false
+  }
   if (props.availableItemIds.has(itemId)) return true
   if (itemId.startsWith('mm_')) return hasMmItems.value
   if (itemId.startsWith('oot_')) return hasOotItems.value
