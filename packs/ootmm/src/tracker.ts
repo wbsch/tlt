@@ -55,6 +55,7 @@ export class OoTMMTracker implements TrackerPack {
   private settings!: Record<string, unknown>
   private currentItems: Map<unknown, PlayerItem> = new Map()
   private allLocationIds: string[] = []
+  private fixedLocationIds: Set<string> = new Set()
   private hiddenLocationIds: Set<string> = new Set()
   private baseHiddenLocationIds: Set<string> = new Set()
   private preCompletedDungeonIds: Set<string> = new Set()
@@ -127,7 +128,8 @@ export class OoTMMTracker implements TrackerPack {
     this.allLocationIds = this.worlds.flatMap((world, worldId) => 
       Object.keys(world.checks).map(loc => makeLocation(loc, worldId))
     )
-    this.baseHiddenLocationIds = this.buildHiddenLocationIds(worldData?.fixedLocations)
+    this.fixedLocationIds = this.buildFixedLocationIds(worldData?.fixedLocations)
+    this.baseHiddenLocationIds = new Set()
     this.hiddenLocationIds = new Set(this.baseHiddenLocationIds)
     this.preCompletedDungeonIds.clear()
     this.baseWispEvents.clear()
@@ -232,7 +234,7 @@ export class OoTMMTracker implements TrackerPack {
         const fullId = makeLocation(locId, worldId)
         if (this.hiddenLocationIds.has(fullId)) continue
         const check = world.checks?.[locId]
-        const shuffled = this.computeIsShuffled(world, locId, check, dungeonLocations)
+        const shuffled = this.computeIsShuffled(world, locId, fullId, check, dungeonLocations)
         locations.push({
           id: fullId,
           name: locId,
@@ -291,9 +293,11 @@ export class OoTMMTracker implements TrackerPack {
   private computeIsShuffled(
     world: World,
     locId: string,
+    fullId: string,
     check: unknown,
     dungeonLocations: Set<string>,
   ): boolean {
+    if (this.fixedLocationIds.has(fullId)) return false
     const base = isShuffled ? Boolean(isShuffled(this.settings, world, locId, dungeonLocations)) : true
     const itemId = (check as { item?: { id?: string } })?.item?.id
     if (!itemId) return base
@@ -331,13 +335,13 @@ export class OoTMMTracker implements TrackerPack {
     return locId
   }
 
-  private buildHiddenLocationIds(fixedLocations?: Set<string>): Set<string> {
-    const hidden = new Set<string>()
-    if (!fixedLocations) return hidden
+  private buildFixedLocationIds(fixedLocations?: Set<string>): Set<string> {
+    const fixed = new Set<string>()
+    if (!fixedLocations) return fixed
     for (const loc of fixedLocations) {
-      hidden.add(String(loc))
+      fixed.add(String(loc))
     }
-    return hidden
+    return fixed
   }
 
   private buildDungeonLocationIds(world: World): Set<string> {

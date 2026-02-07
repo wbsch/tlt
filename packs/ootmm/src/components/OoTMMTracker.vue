@@ -103,6 +103,10 @@ const allLocations = computed(() => {
   return props.tracker.getAllLocations()
 })
 
+const shuffledLocations = computed(() => {
+  return allLocations.value.filter(loc => loc.isShuffled !== false)
+})
+
 const preCompletedEnabled = computed(() => Boolean(trackerSettings.value?.preCompletedDungeons))
 
 if (!['grid', 'inventory', 'settings', 'world'].includes(activeTab.value)) {
@@ -110,8 +114,8 @@ if (!['grid', 'inventory', 'settings', 'world'].includes(activeTab.value)) {
 }
 
 const stats = computed(() => {
-  const total = allLocations.value.length
-  const reachable = reachableLocationIds.value.size
+  const total = shuffledLocations.value.length
+  const reachable = shuffledLocations.value.filter(loc => reachableLocationIds.value.has(loc.id)).length
   const checked = 0 // TODO: track checked locations
   
   return {
