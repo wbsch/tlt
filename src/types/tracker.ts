@@ -77,6 +77,15 @@ export interface LocationInfo {
 
   /** Icon identifier */
   icon?: string;
+
+  /** True if this location is a Skulltula token check */
+  isSkulltulaToken?: boolean;
+
+  /** True if this location is a Stray Fairy check */
+  isStrayFairy?: boolean;
+
+  /** Whether this location is shuffled based on settings (if applicable) */
+  isShuffled?: boolean;
 }
 
 /**

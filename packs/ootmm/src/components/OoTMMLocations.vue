@@ -14,6 +14,7 @@ const reachabilityFilter = useSessionState<'all' | 'reachable' | 'unreachable'>(
   'locations.reachabilityFilter',
   'all'
 )
+const showUnshuffled = useSessionState<boolean>('locations.showUnshuffled', false)
 const collectionFilter = useSessionState<'all' | 'collected' | 'uncollected'>(
   'locations.collectionFilter',
   'all'
@@ -36,9 +37,10 @@ const categories = computed(() => {
 
 const baseFilteredLocations = computed(() => {
   return props.locations.filter(loc => {
+    const matchesShuffle = showUnshuffled.value || loc.isShuffled !== false
     const matchesSearch = loc.name.toLowerCase().includes(searchQuery.value.toLowerCase())
     const matchesCategory = selectedCategory.value === 'all' || loc.category === selectedCategory.value
-    return matchesSearch && matchesCategory
+    return matchesShuffle && matchesSearch && matchesCategory
   })
 })
 
@@ -172,6 +174,13 @@ function toggleCollected(id: string) {
       </div>
     </div>
 
+    <div class="shuffle-toggle">
+      <label class="shuffle-toggle-label">
+        <input v-model="showUnshuffled" type="checkbox" />
+        <span>Show unshuffled locations</span>
+      </label>
+    </div>
+
     <div class="locations-list">
       <div v-for="[area, locs] in groupedLocations" :key="area" class="location-group">
         <h3 class="area-name">{{ area }}</h3>
@@ -225,6 +234,23 @@ function toggleCollected(id: string) {
   flex-direction: column;
   gap: 0.5rem;
   border-bottom: 1px solid #404040;
+}
+
+.shuffle-toggle {
+  padding: 0.5rem 1rem;
+  border-bottom: 1px solid #404040;
+}
+
+.shuffle-toggle-label {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.85rem;
+  color: #e5e7eb;
+}
+
+.shuffle-toggle-label input {
+  accent-color: #10b981;
 }
 
 .search-input,

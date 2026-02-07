@@ -11,6 +11,7 @@ import * as ItemsMod from '@ootmm/core/items/index'
 import * as MonitorMod from '@ootmm/core/monitor'
 import * as SettingsMod from '@ootmm/core/settings/index'
 import * as EntranceMod from '@ootmm/core/logic/entrance'
+import * as IsShuffledMod from '@ootmm/core/logic/is-shuffled'
 
 const resolveExport = <T>(mod: unknown, key: string): T => (mod as Record<string, T>)?.[key] ?? (mod as { default: Record<string, T> })?.default?.[key]
 
@@ -25,6 +26,7 @@ const Monitor = resolveExport<typeof MonitorMod.Monitor>(MonitorMod, 'Monitor')
 const makeSettings = resolveExport<typeof SettingsMod.makeSettings>(SettingsMod, 'makeSettings')
 const mergeSettings = resolveExport<typeof SettingsMod.mergeSettings>(SettingsMod, 'mergeSettings')
 const LogicPassEntrances = resolveExport<typeof EntranceMod.LogicPassEntrances>(EntranceMod, 'LogicPassEntrances')
+const isShuffled = resolveExport<typeof IsShuffledMod.isShuffled>(IsShuffledMod, 'isShuffled')
 
 import type { World } from '@ootmm/core/logic/world'
 import type { PlayerItems, PlayerItem } from '@ootmm/core/items/index'
@@ -49,6 +51,7 @@ export class OoTMMTracker implements TrackerPack {
 
   private pathfinder!: InstanceType<typeof Pathfinder>
   private worlds!: World[]
+  private baseWorlds!: World[]
   private settings!: Record<string, unknown>
   private currentItems: Map<unknown, PlayerItem> = new Map()
   private allLocationIds: string[] = []
@@ -95,6 +98,8 @@ export class OoTMMTracker implements TrackerPack {
     
     console.log('[OoTMM Tracker] Building world graph...')
     const worldData = await worldState(monitor, opts as Record<string, unknown>)
+    this.baseWorlds = (worldData as { worlds?: World[] }).worlds ?? []
+    this.normalizeWorldItems(this.baseWorlds)
     
     // Run entrance pass to connect games
     console.log('[OoTMM Tracker] Running entrance pass...')
@@ -109,6 +114,7 @@ export class OoTMMTracker implements TrackerPack {
     
     const entranceResult = entrancePass.run()
     this.worlds = entranceResult.worlds
+    this.normalizeWorldItems(this.worlds)
 
     // Create pathfinder with empty starting items
     this.pathfinder = new Pathfinder(
@@ -219,16 +225,20 @@ export class OoTMMTracker implements TrackerPack {
   getAllLocations(): LocationInfo[] {
     const locations: LocationInfo[] = []
     
-    for (const [worldId, world] of this.worlds.entries()) {
+    const worldsForLocations = this.baseWorlds.length > 0 ? this.baseWorlds : this.worlds
+    for (const [worldId, world] of worldsForLocations.entries()) {
+      const dungeonLocations = this.buildDungeonLocationIds(world)
       for (const locId of Object.keys(world.checks)) {
         const fullId = makeLocation(locId, worldId)
         if (this.hiddenLocationIds.has(fullId)) continue
         const check = world.checks?.[locId]
+        const shuffled = this.computeIsShuffled(world, locId, check, dungeonLocations)
         locations.push({
           id: fullId,
           name: locId,
           category: this.categorizeLocation(check),
           area: this.getAreaFromLocation(locId),
+          isShuffled: shuffled,
         })
       }
     }
@@ -278,6 +288,40 @@ export class OoTMMTracker implements TrackerPack {
     return 'None'
   }
 
+  private computeIsShuffled(
+    world: World,
+    locId: string,
+    check: unknown,
+    dungeonLocations: Set<string>,
+  ): boolean {
+    const base = isShuffled ? Boolean(isShuffled(this.settings, world, locId, dungeonLocations)) : true
+    const itemId = (check as { item?: { id?: string } })?.item?.id
+    if (!itemId) return base
+
+    if (itemId === 'OOT_GS_TOKEN') {
+      const mode = String((this.settings as { goldSkulltulaTokens?: unknown }).goldSkulltulaTokens ?? '')
+      if (mode === 'none') return false
+      const isDungeon = dungeonLocations.has(locId)
+      if (mode === 'overworld' && isDungeon) return false
+      if (mode === 'dungeons' && !isDungeon) return false
+      return true
+    }
+
+    if (itemId === 'MM_GS_TOKEN_SWAMP' || itemId === 'MM_GS_TOKEN_OCEAN') {
+      const mode = String((this.settings as { housesSkulltulaTokens?: unknown }).housesSkulltulaTokens ?? '')
+      if (mode === 'none') return false
+      return true
+    }
+
+    if (itemId === 'MM_STRAY_FAIRY_TOWN') {
+      const mode = String((this.settings as { townFairyShuffle?: unknown }).townFairyShuffle ?? '')
+      if (mode === 'vanilla') return false
+      return true
+    }
+
+    return base
+  }
+
   private getAreaFromLocation(locId: string): string {
     // Extract area from location ID (e.g., "OOT Kokiri Forest" -> "Kokiri Forest")
     const parts = locId.split(' ')
@@ -294,6 +338,19 @@ export class OoTMMTracker implements TrackerPack {
       hidden.add(String(loc))
     }
     return hidden
+  }
+
+  private buildDungeonLocationIds(world: World): Set<string> {
+    const dungeonLocations = new Set<string>()
+    const dungeons = (world as { dungeons?: Record<string, string[]> }).dungeons
+    if (!dungeons) return dungeonLocations
+    for (const locs of Object.values(dungeons)) {
+      if (!locs) continue
+      for (const loc of locs) {
+        dungeonLocations.add(String(loc))
+      }
+    }
+    return dungeonLocations
   }
 
   private updatePreCompletedLocations(): void {
@@ -371,6 +428,24 @@ export class OoTMMTracker implements TrackerPack {
       }
     }
     return available
+  }
+
+  private normalizeWorldItems(worlds: World[]): void {
+    if (!worlds || !Items) return
+    const itemsById = Items as Record<string, unknown>
+    for (const world of worlds) {
+      const checks = (world as { checks?: Record<string, { item?: { id?: string } }> }).checks
+      if (!checks) continue
+      for (const check of Object.values(checks)) {
+        const item = check?.item
+        const id = item?.id
+        if (!id) continue
+        const canonical = itemsById[id]
+        if (canonical) {
+          check.item = canonical
+        }
+      }
+    }
   }
 
   private buildItemMaxCounts(allItems?: Map<unknown, number>): Map<string, number> {
