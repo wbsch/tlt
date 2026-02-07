@@ -1,7 +1,8 @@
 <script setup lang="ts">
 import { computed } from 'vue'
+import { storeToRefs } from 'pinia'
 import { ITEM_DATABASE } from '../data/items'
-import { useSessionState } from '../composables/useSessionState'
+import { useOoTMMUiStore } from '../stores/ootmmUi'
 
 const props = defineProps<{
   inventory: Map<string, number>
@@ -13,8 +14,11 @@ const emit = defineEmits<{
   'update:inventory': [Map<string, number>]
 }>()
 
-const searchQuery = useSessionState('inventory.searchQuery', '')
-const selectedCategory = useSessionState<string>('inventory.selectedCategory', 'all')
+const uiStore = useOoTMMUiStore()
+const {
+  inventorySearchQuery: searchQuery,
+  inventorySelectedCategory: selectedCategory,
+} = storeToRefs(uiStore)
 
 const categories = [
   { value: 'all', label: 'All Items' },

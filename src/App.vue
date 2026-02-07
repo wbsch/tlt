@@ -1,44 +1,28 @@
 <script setup lang="ts">
-import { ref, onMounted } from 'vue';
-import type { TrackerPack } from './types/tracker';
+import { onMounted } from 'vue';
+import { storeToRefs } from 'pinia';
+import { defineAsyncComponent } from 'vue';
+import { useAppStore } from './stores/app';
 
-// Import tracker packs
-import { createOoTMMTracker } from '@packs/ootmm';
+const appStore = useAppStore();
+const { availablePacks, selectedPackId, currentPack, isLoading, error } =
+  storeToRefs(appStore);
 
-const availablePacks = ref<{ id: string; name: string; description: string }[]>(
-  [
-    {
-      id: 'ootmm',
-      name: 'OoTMM',
-      description: "Ocarina of Time / Majora's Mask Randomizer",
-    },
-  ],
-);
+const packComponents: Record<
+  string,
+  ReturnType<typeof defineAsyncComponent>
+> = {
+  ootmm: defineAsyncComponent(
+    () => import('@packs/ootmm/components/OoTMMTracker.vue'),
+  ),
+};
 
-const selectedPackId = ref<string>('ootmm');
-const currentPack = ref<TrackerPack | null>(null);
-const isLoading = ref(false);
-const error = ref<string | null>(null);
-
-async function loadPack(packId: string) {
-  isLoading.value = true;
-  error.value = null;
-
-  try {
-    // Load the selected pack
-    if (packId === 'ootmm') {
-      currentPack.value = await createOoTMMTracker();
-    }
-  } catch (e) {
-    error.value = `Failed to load tracker pack: ${e instanceof Error ? e.message : String(e)}`;
-    console.error(e);
-  } finally {
-    isLoading.value = false;
-  }
+function getPackComponent(packId: string) {
+  return packComponents[packId] ?? null;
 }
 
 onMounted(() => {
-  loadPack(selectedPackId.value);
+  appStore.initialize();
 });
 </script>
 
@@ -53,7 +37,7 @@ onMounted(() => {
           id="pack-select"
           v-model="selectedPackId"
           :disabled="isLoading"
-          @change="loadPack(selectedPackId)"
+          @change="appStore.loadPack(selectedPackId)"
         >
           <option
             v-for="pack in availablePacks"
@@ -81,19 +65,6 @@ onMounted(() => {
     </main>
   </div>
 </template>
-
-<script lang="ts">
-import { defineAsyncComponent } from 'vue';
-
-function getPackComponent(packId: string) {
-  if (packId === 'ootmm') {
-    return defineAsyncComponent(
-      () => import('@packs/ootmm/components/OoTMMTracker.vue'),
-    );
-  }
-  return null;
-}
-</script>
 
 <style scoped>
 .app-container {

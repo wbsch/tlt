@@ -1,7 +1,8 @@
 <script setup lang="ts">
 import { ref, computed, watch } from 'vue'
+import { storeToRefs } from 'pinia'
 import { SETTINGS_DEFINITIONS } from '../data/settings'
-import { useSessionState } from '../composables/useSessionState'
+import { useOoTMMUiStore } from '../stores/ootmmUi'
 
 const props = defineProps<{
   settings: Record<string, unknown>
@@ -12,7 +13,8 @@ const emit = defineEmits<{
 }>()
 
 const localSettings = ref<Record<string, unknown>>({ ...props.settings })
-const searchQuery = useSessionState('settings.searchQuery', '')
+const uiStore = useOoTMMUiStore()
+const { settingsSearchQuery: searchQuery } = storeToRefs(uiStore)
 
 type MultiSelectValue =
   | { type: 'none' | 'all' }

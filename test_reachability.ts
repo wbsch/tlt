@@ -17,10 +17,12 @@ async function test() {
   const { reachableLocationIds } = tracker.checkReachability(inventory);
   const totalLocations = tracker.getAllLocations().length;
   const reachableCount = reachableLocationIds.length;
-  console.log(`Reachable with FULL inventory: ${reachableCount}/${totalLocations}`);
+  console.log(
+    `Reachable with FULL inventory: ${reachableCount}/${totalLocations}`,
+  );
   if (reachableCount !== totalLocations) {
     console.warn(
-      `Missing reachable checks: ${totalLocations - reachableCount} (see tracker for details)`
+      `Missing reachable checks: ${totalLocations - reachableCount} (see tracker for details)`,
     );
   }
 }

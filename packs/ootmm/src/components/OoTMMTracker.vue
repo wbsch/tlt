@@ -1,15 +1,16 @@
 <script setup lang="ts">
-import { ref, computed, watch, nextTick } from 'vue'
+import { ref, watch } from 'vue'
+import { storeToRefs } from 'pinia'
 import type { TrackerPack } from '@/types/tracker'
 import OoTMMInventory from './OoTMMInventory.vue'
 import OoTMMLocations from './OoTMMLocations.vue'
 import OoTMMSettings from './OoTMMSettings.vue'
 import OoTMMItemGrid from './OoTMMItemGrid.vue'
 import OoTMMWorld from './OoTMMWorld.vue'
-import { ITEM_DATABASE } from '../data/items'
 import { DEFAULT_OOTMM_SETTINGS } from '../types/settings'
 import { parseSpoilerLog } from '../utils/spoiler'
-import { useSessionState } from '../composables/useSessionState'
+import { useOoTMMSessionStore } from '../stores/ootmmSession'
+import { useOoTMMUiStore, type TrackerTab } from '../stores/ootmmUi'
 import * as ItemsMod from '@ootmm/core/items/index'
 import * as NamesMod from '@ootmm/core/names'
 import * as SettingsDataMod from '@ootmm/core/settings/data.js'
@@ -18,16 +19,14 @@ const props = defineProps<{
   tracker: TrackerPack
 }>()
 
-type TrackerTab = 'inventory' | 'settings' | 'grid' | 'world'
 type SettingsPanelHandle = {
   hasUnsavedChanges: () => boolean
   getLocalSettingsSnapshot: () => Record<string, unknown>
-  discardChanges: () => void
 }
 
 const resolveExport = <T,>(mod: unknown, key: string): T => {
-  const modObj = mod as Record<string, T> | { default: Record<string, T> }
-  return modObj[key] ?? modObj.default?.[key]
+  const modObj = mod as { default?: Record<string, T>; [k: string]: unknown }
+  return (modObj[key] as T | undefined) ?? (modObj.default?.[key] as T)
 }
 const Items = resolveExport<typeof ItemsMod.Items>(ItemsMod, 'Items')
 const itemName = resolveExport<typeof NamesMod.itemName>(NamesMod, 'itemName')
@@ -48,23 +47,33 @@ if (Items) {
   }
 }
 
-const activeTab = useSessionState<TrackerTab>('ootmm.activeTab', 'grid')
-const inventory = ref<Map<string, number>>(new Map())
-const reachableLocationIds = ref<Set<string>>(new Set())
-const availableItemIds = ref<Set<string>>(new Set())
-const itemMaxCounts = ref<Map<string, number>>(new Map())
-const canComplete = ref(false)
-const statsExtra = ref<Record<string, unknown>>({})
-const isLocationsSidebarOpen = useSessionState<boolean>('ootmm.locationsSidebarOpen', true)
-const trackerSettings = ref<Record<string, unknown>>(props.tracker.getSettings())
-const preCompletedDungeons = useSessionState<string[]>('ootmm.preCompletedDungeons', [])
-const collectedLocationIds = useSessionState<string[]>('locations.collectedIds', [])
-const locationsVersion = ref(0)
+const sessionStore = useOoTMMSessionStore()
+const uiStore = useOoTMMUiStore()
+
+const {
+  inventoryMap: inventory,
+  reachableLocationIdSet: reachableLocationIds,
+  availableItemIdSet: availableItemIds,
+  itemMaxCountsMap: itemMaxCounts,
+  canComplete,
+  stats,
+  trackerSettings,
+  preCompletedDungeons,
+  collectedLocationIds,
+  isApplyingSettings,
+  preCompletedEnabled,
+  allLocations,
+} = storeToRefs(sessionStore)
+
+const {
+  activeTab,
+  isLocationsSidebarOpen,
+  isSpoilerDragActive,
+  spoilerDragDepth,
+} = storeToRefs(uiStore)
+
 const settingsRef = ref<SettingsPanelHandle | null>(null)
-const isApplyingSettings = ref(false)
 const spoilerFileInput = ref<HTMLInputElement | null>(null)
-const isSpoilerDragActive = ref(false)
-const spoilerDragDepth = ref(0)
 
 const MAJOR_DUNGEONS = [
   { id: 'DT', label: 'Deku Tree', game: 'oot' as const },
@@ -81,131 +90,36 @@ const MAJOR_DUNGEONS = [
   { id: 'ST', label: 'Stone Tower Temple', game: 'mm' as const },
 ]
 
-// Update reachability when inventory changes
-watch(inventory, (newInventory) => {
-  const result = props.tracker.checkReachability(newInventory)
-  reachableLocationIds.value = new Set(result.reachableLocationIds)
-  canComplete.value = result.canComplete
-  statsExtra.value = result.extra || {}
-}, { deep: true })
+watch(
+  () => props.tracker,
+  (nextTracker) => {
+    sessionStore.attachTracker(nextTracker)
+  },
+  { immediate: true },
+)
 
-// Initial check
-const result = props.tracker.checkReachability(inventory.value)
-reachableLocationIds.value = new Set(result.reachableLocationIds)
-canComplete.value = result.canComplete
-statsExtra.value = result.extra || {}
-availableItemIds.value = new Set(props.tracker.getAvailableItemIds?.() ?? [])
-itemMaxCounts.value = new Map(props.tracker.getItemMaxCounts?.() ?? [])
-
-const allLocations = computed(() => {
-  // Trigger recomputation when locationsVersion changes
-  void locationsVersion.value
-  return props.tracker.getAllLocations()
-})
-
-const shuffledLocations = computed(() => {
-  return allLocations.value.filter(loc => loc.isShuffled !== false)
-})
-
-const preCompletedEnabled = computed(() => Boolean(trackerSettings.value?.preCompletedDungeons))
-
-if (!['grid', 'inventory', 'settings', 'world'].includes(activeTab.value)) {
-  activeTab.value = 'grid'
-}
-
-const stats = computed(() => {
-  const total = shuffledLocations.value.length
-  const reachable = shuffledLocations.value.filter(loc => reachableLocationIds.value.has(loc.id)).length
-  const checked = 0 // TODO: track checked locations
-  
-  return {
-    total,
-    reachable,
-    checked,
-    remaining: total - checked,
-  }
-})
+watch(
+  preCompletedEnabled,
+  () => {
+    sessionStore.applyPreCompletedDungeons()
+  },
+  { immediate: true },
+)
 
 function fillInventory() {
-  const newInventory = new Map<string, number>()
-  if (availableItemIds.value.size > 0) {
-    for (const itemId of availableItemIds.value) {
-      const maxCount = itemMaxCounts.value.get(itemId) ?? 1
-      newInventory.set(itemId, Math.max(1, maxCount))
-    }
-  } else {
-    for (const item of ITEM_DATABASE) {
-      if (item.category === 'junk') continue;
-      const maxCount = itemMaxCounts.value.get(item.id) ?? item.maxCount ?? 1
-      newInventory.set(item.id, Math.max(1, maxCount))
-    }
-  }
-  inventory.value = newInventory
+  sessionStore.fillInventoryForDebugActivateAll()
 }
 
 function handleInventoryChange(newInventory: Map<string, number>) {
-  inventory.value = newInventory
-  // NOTE: The below is vibed bullshit and not actually necessary!
-  // Manually trigger reachability check since Map reactivity can be unreliable
-  // const result = props.tracker.checkReachability(newInventory)
-  // reachableLocationIds.value = new Set(result.reachableLocationIds)
-  // canComplete.value = result.canComplete
-  // statsExtra.value = result.extra || {}
-  // ENDNOTE
+  sessionStore.setInventoryFromMap(newInventory)
 }
 
 async function handleSettingsChange(newSettings: Record<string, unknown>) {
-  if (isApplyingSettings.value) return
-  console.log('Settings changed:', newSettings)
-  // Re-initialize tracker with new settings
-  props.tracker.reset()
-  try {
-    isApplyingSettings.value = true
-    await nextTick()
-    await new Promise<void>((resolve) => setTimeout(resolve, 0))
-    await props.tracker.initialize(newSettings)
-    trackerSettings.value = props.tracker.getSettings()
-    availableItemIds.value = new Set(props.tracker.getAvailableItemIds?.() ?? [])
-    itemMaxCounts.value = new Map(props.tracker.getItemMaxCounts?.() ?? [])
-    applyPreCompletedDungeons()
-    // Re-check reachability
-    const result = props.tracker.checkReachability(inventory.value)
-    reachableLocationIds.value = new Set(result.reachableLocationIds)
-    canComplete.value = result.canComplete
-    statsExtra.value = result.extra || {}
-  } catch (error) {
-    console.error('Failed to apply settings:', error)
-  } finally {
-    isApplyingSettings.value = false
-  }
+  await sessionStore.applySettings(newSettings)
 }
-
-function applyPreCompletedDungeons() {
-  const setFn = props.tracker.setPreCompletedDungeons
-  if (!setFn) return
-  const selected = preCompletedEnabled.value ? preCompletedDungeons.value : []
-  setFn.call(props.tracker, selected)
-  locationsVersion.value += 1
-  const result = props.tracker.checkReachability(inventory.value)
-  reachableLocationIds.value = new Set(result.reachableLocationIds)
-  canComplete.value = result.canComplete
-  statsExtra.value = result.extra || {}
-}
-
-watch([preCompletedDungeons, preCompletedEnabled], () => {
-  applyPreCompletedDungeons()
-}, { deep: true, immediate: true })
 
 function applySpecialCondsPatch(patch: Record<string, unknown>) {
-  if (isApplyingSettings.value) return
-  const setFn = props.tracker.setSpecialConds
-  if (!setFn) return
-  setFn.call(props.tracker, patch)
-  trackerSettings.value = props.tracker.getSettings()
-  const result = props.tracker.checkReachability(inventory.value)
-  reachableLocationIds.value = new Set(result.reachableLocationIds)
-  canComplete.value = result.canComplete
-  statsExtra.value = result.extra || {}
+  sessionStore.applySpecialCondsPatch(patch)
 }
 
 interface SettingDef {
@@ -267,7 +181,7 @@ function coerceWorldFlagValue(raw: unknown, def?: WorldFlagDef) {
 }
 
 function applyStartingItems(startingItems: Record<string, number>) {
-  const next = new Map(inventory.value)
+  const nextById: Record<string, number> = {}
   for (const [name, count] of Object.entries(startingItems)) {
     if (!count || count <= 0) continue
     const itemId = itemNameToId.get(normalizeName(name))
@@ -275,15 +189,14 @@ function applyStartingItems(startingItems: Record<string, number>) {
       console.warn('[OoTMM Tracker] Unknown starting item:', name)
       continue
     }
-    const current = next.get(itemId) || 0
-    next.set(itemId, Math.max(current, count))
+    nextById[itemId] = Math.max(nextById[itemId] ?? 0, count)
   }
-  inventory.value = next
+  sessionStore.mergeInventoryCounts(nextById)
 }
 
 function applyJunkLocations(junkLocations: string[]) {
   if (junkLocations.length === 0) return
-  const locations = props.tracker.getAllLocations()
+  const locations = allLocations.value
   const byName = new Map<string, string[]>()
   for (const loc of locations) {
     const key = normalizeName(loc.name)
@@ -302,7 +215,7 @@ function applyJunkLocations(junkLocations: string[]) {
       next.add(id)
     }
   }
-  collectedLocationIds.value = Array.from(next)
+  sessionStore.setCollectedLocationIds(Array.from(next))
 }
 
 async function applySpoilerLog(text: string) {
@@ -332,7 +245,7 @@ async function applySpoilerLog(text: string) {
   }
 
   if (parsed.preCompletedDungeons.length > 0) {
-    preCompletedDungeons.value = Array.from(new Set(parsed.preCompletedDungeons))
+    sessionStore.setPreCompletedDungeons(Array.from(new Set(parsed.preCompletedDungeons)))
   }
 
   if (Object.keys(parsed.startingItems).length > 0) {
@@ -415,7 +328,7 @@ async function requestTabSwitch(nextTab: TrackerTab) {
     }
   }
 
-  activeTab.value = nextTab
+  uiStore.setActiveTab(nextTab)
 }
 </script>
 
@@ -531,7 +444,7 @@ async function requestTabSwitch(nextTab: TrackerTab) {
           :selected="preCompletedDungeons"
           :settings="trackerSettings"
           :special-conds="trackerSettings?.specialConds"
-          @update:selected="preCompletedDungeons = $event"
+          @update:selected="sessionStore.setPreCompletedDungeons($event)"
           @update:special-conds="applySpecialCondsPatch"
         />
         

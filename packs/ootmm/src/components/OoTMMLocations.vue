@@ -1,27 +1,29 @@
 <script setup lang="ts">
 import { computed } from 'vue'
+import { storeToRefs } from 'pinia'
 import type { LocationInfo } from '@/types/tracker'
-import { useSessionState } from '../composables/useSessionState'
+import { useOoTMMUiStore } from '../stores/ootmmUi'
+import { useOoTMMSessionStore } from '../stores/ootmmSession'
 
 const props = defineProps<{
   locations: LocationInfo[]
   reachableIds: Set<string>
 }>()
 
-const searchQuery = useSessionState('locations.searchQuery', '')
-const selectedCategory = useSessionState<string>('locations.selectedCategory', 'all')
-const reachabilityFilter = useSessionState<'all' | 'reachable' | 'unreachable'>(
-  'locations.reachabilityFilter',
-  'all'
-)
-const showUnshuffled = useSessionState<boolean>('locations.showUnshuffled', false)
-const collectionFilter = useSessionState<'all' | 'collected' | 'uncollected'>(
-  'locations.collectionFilter',
-  'all'
-)
-const collectedIds = useSessionState<string[]>('locations.collectedIds', [])
+const uiStore = useOoTMMUiStore()
+const sessionStore = useOoTMMSessionStore()
 
-const collectedIdSet = computed(() => new Set(collectedIds.value))
+const {
+  locationsSearchQuery: searchQuery,
+  locationsSelectedCategory: selectedCategory,
+  locationsReachabilityFilter: reachabilityFilter,
+  locationsShowUnshuffled: showUnshuffled,
+  locationsCollectionFilter: collectionFilter,
+} = storeToRefs(uiStore)
+
+const { collectedLocationIds } = storeToRefs(sessionStore)
+
+const collectedIdSet = computed(() => new Set(collectedLocationIds.value))
 
 const categories = computed(() => {
   const cats = new Set<string>()
@@ -100,13 +102,7 @@ const collectionStats = computed(() => {
 })
 
 function toggleCollected(id: string) {
-  const next = new Set(collectedIds.value)
-  if (next.has(id)) {
-    next.delete(id)
-  } else {
-    next.add(id)
-  }
-  collectedIds.value = Array.from(next)
+  sessionStore.toggleCollectedLocation(id)
 }
 </script>
 
