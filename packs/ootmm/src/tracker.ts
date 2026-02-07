@@ -435,10 +435,12 @@ export class OoTMMTracker implements TrackerPack {
   private buildAvailableItemIds(allItems?: Map<unknown, number>): Set<string> {
     const available = new Set<string>()
     if (!allItems) return available
+    const chestGameShuffle = String((this.settings as { smallKeyShuffleChestGame?: unknown })?.smallKeyShuffleChestGame ?? '')
     for (const [playerItem, count] of allItems) {
       if (!count || count <= 0) continue
       const itemId = (playerItem as { item?: { id?: string } })?.item?.id
       if (itemId) {
+        if (itemId === 'OOT_SMALL_KEY_TCG' && chestGameShuffle === 'vanilla') continue
         available.add(itemId)
       }
     }

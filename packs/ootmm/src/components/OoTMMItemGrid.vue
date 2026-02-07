@@ -55,6 +55,7 @@ const LABEL_KEY_MAP: Record<string, string[]> = {
   oot_gerudotraining_label: ['OOT_SMALL_KEY_GTG'],
   oot_gerudofortress_label: ['OOT_SMALL_KEY_GF'],
   oot_well_label: ['OOT_SMALL_KEY_BOTW'],
+  oot_chestgame_label: ['OOT_SMALL_KEY_TCG'],
   mm_woodfall_label: ['MM_SMALL_KEY_WF', 'MM_BOSS_KEY_WF'],
   mm_snowhead_label: ['MM_SMALL_KEY_SH', 'MM_BOSS_KEY_SH'],
   mm_greatbay_label: ['MM_SMALL_KEY_GB', 'MM_BOSS_KEY_GB'],

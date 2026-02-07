@@ -165,6 +165,7 @@ const RAW_ITEM_ICONS: Record<string, string> = {
   'OOT_SMALL_KEY_GTG': 'images/small_key.png',
   'OOT_SMALL_KEY_BOTW': 'images/small_key.png',
   'OOT_SMALL_KEY_GF': 'images/small_key.png',
+  'OOT_SMALL_KEY_TCG': 'images/small_key.png',
 
   // Dungeon items - boss keys
   'OOT_BOSS_KEY_FOREST': 'images/boss_key.png',
@@ -408,6 +409,7 @@ const RAW_ITEM_ICONS: Record<string, string> = {
   'setting_mq_Jabu-Jabu': 'images/label_jabu.png',
   'setting_mq_IceCavern': 'images/label_ice.png',
   'oot_well_label': 'images/label_botw.png',
+  'oot_chestgame_label': 'images/lens.png',
 
   // === SHARED ITEMS ===
   'SHARED_BOW': 'images/bow.png',
