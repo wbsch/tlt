@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, watch } from 'vue'
+import { onBeforeUnmount, onMounted, ref, watch } from 'vue'
 import { storeToRefs } from 'pinia'
 import type { TrackerPack } from '@/types/tracker'
 import OoTMMInventory from './OoTMMInventory.vue'
@@ -62,6 +62,8 @@ const {
   collectedLocationIds,
   isApplyingSettings,
   preCompletedEnabled,
+  canUndo,
+  canRedo,
   allLocations,
 } = storeToRefs(sessionStore)
 
@@ -116,6 +118,18 @@ watch(isApplyingSettings, (applying) => {
 
 function fillInventory() {
   sessionStore.fillInventoryForDebugActivateAll()
+}
+
+async function undo() {
+  if (isApplyingSettings.value || !canUndo.value) return
+  closeStatsMenu()
+  await sessionStore.undo()
+}
+
+async function redo() {
+  if (isApplyingSettings.value || !canRedo.value) return
+  closeStatsMenu()
+  await sessionStore.redo()
 }
 
 function handleInventoryChange(newInventory: Map<string, number>) {
@@ -361,6 +375,39 @@ function resetTrackerState() {
   window.localStorage.clear()
   window.location.reload()
 }
+
+function isEditableTarget(target: EventTarget | null) {
+  if (!(target instanceof HTMLElement)) return false
+  if (target.isContentEditable) return true
+  const tagName = target.tagName.toLowerCase()
+  return tagName === 'input' || tagName === 'textarea' || tagName === 'select'
+}
+
+function handleGlobalUndoRedoKeydown(event: KeyboardEvent) {
+  if (isApplyingSettings.value) return
+  if (!(event.ctrlKey || event.metaKey)) return
+  if (isEditableTarget(event.target)) return
+
+  const key = event.key.toLowerCase()
+  const isUndo = key === 'z' && !event.shiftKey
+  const isRedo = (key === 'z' && event.shiftKey) || key === 'y'
+  if (!isUndo && !isRedo) return
+
+  event.preventDefault()
+  if (isUndo) {
+    void undo()
+    return
+  }
+  void redo()
+}
+
+onMounted(() => {
+  window.addEventListener('keydown', handleGlobalUndoRedoKeydown)
+})
+
+onBeforeUnmount(() => {
+  window.removeEventListener('keydown', handleGlobalUndoRedoKeydown)
+})
 </script>
 
 <template>
@@ -429,6 +476,24 @@ function resetTrackerState() {
           </div>
         </div>
         <button class="debug-button" @click="fillInventory">Debug: Activate All</button>
+        <div class="history-actions">
+          <button
+            type="button"
+            class="history-button"
+            :disabled="isApplyingSettings || !canUndo"
+            @click="undo"
+          >
+            Undo
+          </button>
+          <button
+            type="button"
+            class="history-button"
+            :disabled="isApplyingSettings || !canRedo"
+            @click="redo"
+          >
+            Redo
+          </button>
+        </div>
         <div class="spoiler-actions">
           <input
             ref="spoilerFileInput"
@@ -765,6 +830,20 @@ function resetTrackerState() {
   background: #444;
   color: #fff;
   border: 1px solid #666;
+}
+
+.history-actions {
+  margin-top: 0.55rem;
+  display: flex;
+  gap: 0.45rem;
+}
+
+.history-button {
+  flex: 1;
+  padding: 0.4rem 0.5rem;
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
 }
 
 .spoiler-actions {
