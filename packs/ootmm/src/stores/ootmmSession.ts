@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia';
-import { computed, markRaw, nextTick, ref } from 'vue';
+import { computed, markRaw, nextTick, ref, watch } from 'vue';
 import type { TrackerPack } from '@/types/tracker';
 import { ITEM_DATABASE } from '../data/items';
 
@@ -23,14 +23,104 @@ function uniqueStrings(values: string[]): string[] {
   return Array.from(new Set(values));
 }
 
+const OOTMM_SESSION_STORAGE_KEY = 'tlt:ootmm-session:v1';
+
+type PersistedOoTMMSessionState = {
+  inventoryById?: Record<string, number>;
+  collectedLocationIds?: string[];
+  preCompletedDungeons?: string[];
+  trackerSettings?: Record<string, unknown>;
+};
+
+function toStringArray(value: unknown): string[] {
+  if (!Array.isArray(value)) return [];
+  return value.filter((entry): entry is string => typeof entry === 'string');
+}
+
+function toNumberRecord(value: unknown): Record<string, number> {
+  if (!value || typeof value !== 'object') return {};
+  const next: Record<string, number> = {};
+  for (const [key, count] of Object.entries(value as Record<string, unknown>)) {
+    if (typeof count !== 'number' || !Number.isFinite(count) || count <= 0) continue;
+    next[key] = Math.floor(count);
+  }
+  return next;
+}
+
+function toObjectRecord(value: unknown): Record<string, unknown> {
+  if (!value || typeof value !== 'object' || Array.isArray(value)) return {};
+  return value as Record<string, unknown>;
+}
+
+function areSettingsEqual(a: unknown, b: unknown): boolean {
+  if (a === b) return true;
+  if (typeof a !== typeof b) return false;
+  if (Array.isArray(a) && Array.isArray(b)) {
+    if (a.length !== b.length) return false;
+    for (let i = 0; i < a.length; i += 1) {
+      if (!areSettingsEqual(a[i], b[i])) return false;
+    }
+    return true;
+  }
+  if (
+    a &&
+    b &&
+    typeof a === 'object' &&
+    typeof b === 'object' &&
+    !Array.isArray(a) &&
+    !Array.isArray(b)
+  ) {
+    const aObj = a as Record<string, unknown>;
+    const bObj = b as Record<string, unknown>;
+    const aKeys = Object.keys(aObj);
+    const bKeys = Object.keys(bObj);
+    if (aKeys.length !== bKeys.length) return false;
+    for (const key of aKeys) {
+      if (!Object.prototype.hasOwnProperty.call(bObj, key)) return false;
+      if (!areSettingsEqual(aObj[key], bObj[key])) return false;
+    }
+    return true;
+  }
+  return false;
+}
+
+function loadPersistedOoTMMSessionState(): PersistedOoTMMSessionState {
+  if (typeof window === 'undefined') return {};
+  try {
+    const raw = window.localStorage.getItem(OOTMM_SESSION_STORAGE_KEY);
+    if (!raw) return {};
+    const parsed = JSON.parse(raw) as PersistedOoTMMSessionState;
+    if (!parsed || typeof parsed !== 'object') return {};
+    return {
+      inventoryById: toNumberRecord(parsed.inventoryById),
+      collectedLocationIds: toStringArray(parsed.collectedLocationIds),
+      preCompletedDungeons: toStringArray(parsed.preCompletedDungeons),
+      trackerSettings: toObjectRecord(parsed.trackerSettings),
+    };
+  } catch (error) {
+    console.warn('[OoTMM Session Store] Failed to load persisted state:', error);
+    return {};
+  }
+}
+
+function persistOoTMMSessionState(state: PersistedOoTMMSessionState) {
+  if (typeof window === 'undefined') return;
+  try {
+    window.localStorage.setItem(OOTMM_SESSION_STORAGE_KEY, JSON.stringify(state));
+  } catch (error) {
+    console.warn('[OoTMM Session Store] Failed to persist state:', error);
+  }
+}
+
 export const useOoTMMSessionStore = defineStore('ootmm-session', () => {
+  const persistedState = loadPersistedOoTMMSessionState();
   const tracker = ref<TrackerPack | null>(null);
 
-  const inventoryById = ref<Record<string, number>>({});
-  const collectedLocationIds = ref<string[]>([]);
-  const preCompletedDungeons = ref<string[]>([]);
+  const inventoryById = ref<Record<string, number>>(persistedState.inventoryById ?? {});
+  const collectedLocationIds = ref<string[]>(persistedState.collectedLocationIds ?? []);
+  const preCompletedDungeons = ref<string[]>(persistedState.preCompletedDungeons ?? []);
 
-  const trackerSettings = ref<Record<string, unknown>>({});
+  const trackerSettings = ref<Record<string, unknown>>(persistedState.trackerSettings ?? {});
   const availableItemIds = ref<string[]>([]);
   const itemMaxCountsById = ref<Record<string, number>>({});
 
@@ -60,7 +150,10 @@ export const useOoTMMSessionStore = defineStore('ootmm-session', () => {
     const reachable = shuffledLocations.value.filter((location) =>
       reachableLocationIdSet.value.has(location.id),
     ).length;
-    const checked = 0;
+    const collectedSet = new Set(collectedLocationIds.value);
+    const checked = shuffledLocations.value.filter((location) =>
+      collectedSet.has(location.id),
+    ).length;
     return {
       total,
       reachable,
@@ -69,12 +162,29 @@ export const useOoTMMSessionStore = defineStore('ootmm-session', () => {
     };
   });
 
-  function attachTracker(nextTracker: TrackerPack) {
+  async function attachTracker(nextTracker: TrackerPack) {
     tracker.value = markRaw(nextTracker) as TrackerPack;
+    const persistedSettings = { ...trackerSettings.value };
+    const hasPersistedSettings = Object.keys(persistedSettings).length > 0;
+    const defaultSettings = nextTracker.getSettings();
+    const shouldReinitializeWithPersistedSettings =
+      hasPersistedSettings && !areSettingsEqual(persistedSettings, defaultSettings);
+    if (shouldReinitializeWithPersistedSettings) {
+      isApplyingSettings.value = true;
+      try {
+        await nextTick();
+        await new Promise<void>((resolve) => setTimeout(resolve, 0));
+        await nextTracker.initialize(persistedSettings);
+      } catch (error) {
+        console.error('Failed to rehydrate persisted settings:', error);
+      } finally {
+        isApplyingSettings.value = false;
+      }
+    }
     trackerSettings.value = { ...nextTracker.getSettings() };
     availableItemIds.value = setToArray(nextTracker.getAvailableItemIds?.() ?? new Set<string>());
     itemMaxCountsById.value = mapNumberToRecord(nextTracker.getItemMaxCounts?.() ?? new Map<string, number>());
-    recomputeReachability();
+    applyPreCompletedDungeons();
   }
 
   function initializeFromTracker() {
@@ -210,6 +320,45 @@ export const useOoTMMSessionStore = defineStore('ootmm-session', () => {
     statsExtra.value = result.extra ?? {};
   }
 
+  async function resetSessionStateToDefaults() {
+    if (isApplyingSettings.value) return;
+    const currentTracker = tracker.value;
+
+    inventoryById.value = {};
+    collectedLocationIds.value = [];
+    preCompletedDungeons.value = [];
+
+    if (!currentTracker) {
+      trackerSettings.value = {};
+      availableItemIds.value = [];
+      itemMaxCountsById.value = {};
+      reachableLocationIds.value = [];
+      canComplete.value = false;
+      statsExtra.value = {};
+      return;
+    }
+
+    isApplyingSettings.value = true;
+    try {
+      currentTracker.reset();
+      await nextTick();
+      await new Promise<void>((resolve) => setTimeout(resolve, 0));
+      await currentTracker.initialize({});
+      trackerSettings.value = { ...currentTracker.getSettings() };
+      availableItemIds.value = setToArray(currentTracker.getAvailableItemIds?.() ?? new Set<string>());
+      itemMaxCountsById.value = mapNumberToRecord(
+        currentTracker.getItemMaxCounts?.() ?? new Map<string, number>(),
+      );
+      locationsVersion.value += 1;
+      applyPreCompletedDungeons();
+    } catch (error) {
+      console.error('Failed to reset tracker state:', error);
+      initializeFromTracker();
+    } finally {
+      isApplyingSettings.value = false;
+    }
+  }
+
   function fillInventoryForDebugActivateAll() {
     const nextInventory: Record<string, number> = {};
     if (availableItemIds.value.length > 0) {
@@ -227,6 +376,19 @@ export const useOoTMMSessionStore = defineStore('ootmm-session', () => {
     inventoryById.value = nextInventory;
     recomputeReachability();
   }
+
+  watch(
+    () => ({
+      inventoryById: inventoryById.value,
+      collectedLocationIds: collectedLocationIds.value,
+      preCompletedDungeons: preCompletedDungeons.value,
+      trackerSettings: trackerSettings.value,
+    }),
+    (state) => {
+      persistOoTMMSessionState(state);
+    },
+    { deep: true },
+  );
 
   return {
     tracker,
@@ -264,6 +426,7 @@ export const useOoTMMSessionStore = defineStore('ootmm-session', () => {
     applySpecialCondsPatch,
     applySettings,
     recomputeReachability,
+    resetSessionStateToDefaults,
     fillInventoryForDebugActivateAll,
   };
 });

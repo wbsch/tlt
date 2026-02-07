@@ -1,4 +1,4 @@
-import { ref } from 'vue';
+import { ref, watch } from 'vue';
 import { defineStore } from 'pinia';
 import type { TrackerPack } from '@/types/tracker';
 import { createOoTMMTracker } from '@packs/ootmm';
@@ -9,7 +9,37 @@ type AvailablePack = {
   description: string;
 };
 
+const APP_STORAGE_KEY = 'tlt:app:v1';
+
+type PersistedAppState = {
+  selectedPackId?: string;
+};
+
+function loadPersistedAppState(): PersistedAppState {
+  if (typeof window === 'undefined') return {};
+  try {
+    const raw = window.localStorage.getItem(APP_STORAGE_KEY);
+    if (!raw) return {};
+    const parsed = JSON.parse(raw) as PersistedAppState;
+    if (!parsed || typeof parsed !== 'object') return {};
+    return parsed;
+  } catch (error) {
+    console.warn('[App Store] Failed to load persisted state:', error);
+    return {};
+  }
+}
+
+function persistAppState(state: PersistedAppState) {
+  if (typeof window === 'undefined') return;
+  try {
+    window.localStorage.setItem(APP_STORAGE_KEY, JSON.stringify(state));
+  } catch (error) {
+    console.warn('[App Store] Failed to persist state:', error);
+  }
+}
+
 export const useAppStore = defineStore('app', () => {
+  const persistedState = loadPersistedAppState();
   const availablePacks = ref<AvailablePack[]>([
     {
       id: 'ootmm',
@@ -17,10 +47,14 @@ export const useAppStore = defineStore('app', () => {
       description: "Ocarina of Time / Majora's Mask Randomizer",
     },
   ]);
-  const selectedPackId = ref('ootmm');
+  const selectedPackId = ref(persistedState.selectedPackId ?? 'ootmm');
   const currentPack = ref<TrackerPack | null>(null);
   const isLoading = ref(false);
   const error = ref<string | null>(null);
+
+  watch(selectedPackId, (packId) => {
+    persistAppState({ selectedPackId: packId });
+  });
 
   async function loadPack(packId: string) {
     isLoading.value = true;

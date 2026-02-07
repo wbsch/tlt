@@ -74,6 +74,7 @@ const {
 
 const settingsRef = ref<SettingsPanelHandle | null>(null)
 const spoilerFileInput = ref<HTMLInputElement | null>(null)
+const statsMenuRef = ref<HTMLDetailsElement | null>(null)
 
 const MAJOR_DUNGEONS = [
   { id: 'DT', label: 'Deku Tree', game: 'oot' as const },
@@ -330,6 +331,15 @@ async function requestTabSwitch(nextTab: TrackerTab) {
 
   uiStore.setActiveTab(nextTab)
 }
+
+async function resetTrackerState() {
+  if (isApplyingSettings.value) return
+  if (statsMenuRef.value) {
+    statsMenuRef.value.open = false
+  }
+  await sessionStore.resetSessionStateToDefaults()
+  uiStore.resetUiState()
+}
 </script>
 
 <template>
@@ -352,7 +362,22 @@ async function requestTabSwitch(nextTab: TrackerTab) {
     </div>
     <div class="tracker-sidebar">
       <div class="stats-panel">
-        <h3>Statistics</h3>
+        <div class="stats-header">
+          <h3>Statistics</h3>
+          <details ref="statsMenuRef" class="stats-menu">
+            <summary class="stats-menu-trigger" aria-label="Open tracker menu">⋮</summary>
+            <div class="stats-menu-content" role="menu">
+              <button
+                class="stats-menu-item"
+                type="button"
+                :disabled="isApplyingSettings"
+                @click="resetTrackerState"
+              >
+                Reset tracker state
+              </button>
+            </div>
+          </details>
+        </div>
         <div class="stats-grid">
           <div class="stat-item">
             <span class="stat-label">Reachable:</span>
@@ -371,7 +396,7 @@ async function requestTabSwitch(nextTab: TrackerTab) {
             <span class="stat-value">{{ canComplete ? '✓ Ready' : '✗ Not Ready' }}</span>
           </div>
         </div>
-        <button style="margin-top: 10px; width: 100%; padding: 5px; cursor: pointer; background: #444; color: white; border: 1px solid #666;" @click="fillInventory">Debug: Activate All</button>
+        <button class="debug-button" @click="fillInventory">Debug: Activate All</button>
         <div class="spoiler-actions">
           <input
             ref="spoilerFileInput"
@@ -574,12 +599,83 @@ async function requestTabSwitch(nextTab: TrackerTab) {
   border-bottom: 1px solid #404040;
 }
 
+.stats-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  margin-bottom: 0.75rem;
+}
+
 .stats-panel h3 {
   font-size: 0.875rem;
   color: #9ca3af;
-  margin-bottom: 0.75rem;
+  margin: 0;
   text-transform: uppercase;
   letter-spacing: 0.05em;
+}
+
+.stats-menu {
+  position: relative;
+}
+
+.stats-menu-trigger {
+  list-style: none;
+  width: 1.75rem;
+  height: 1.75rem;
+  border-radius: 0.35rem;
+  border: 1px solid #4b5563;
+  color: #d1d5db;
+  background: #1f2937;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+  cursor: pointer;
+  user-select: none;
+}
+
+.stats-menu-trigger::-webkit-details-marker {
+  display: none;
+}
+
+.stats-menu-trigger:hover {
+  background: #111827;
+}
+
+.stats-menu-content {
+  position: absolute;
+  right: 0;
+  top: calc(100% + 0.4rem);
+  background: #111827;
+  border: 1px solid #374151;
+  border-radius: 0.4rem;
+  min-width: 12rem;
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.35);
+  overflow: hidden;
+  z-index: 5;
+}
+
+.stats-menu-item {
+  width: 100%;
+  border: none;
+  border-radius: 0;
+  background: transparent;
+  color: #f3f4f6;
+  text-align: left;
+  padding: 0.55rem 0.7rem;
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+.stats-menu-item:hover:not(:disabled) {
+  background: #1f2937;
+}
+
+.stats-menu-item:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
 }
 
 .stats-grid {
@@ -613,6 +709,16 @@ async function requestTabSwitch(nextTab: TrackerTab) {
 .stat-value {
   font-size: 1.125rem;
   font-weight: 600;
+}
+
+.debug-button {
+  margin-top: 10px;
+  width: 100%;
+  padding: 5px;
+  cursor: pointer;
+  background: #444;
+  color: #fff;
+  border: 1px solid #666;
 }
 
 .spoiler-actions {
