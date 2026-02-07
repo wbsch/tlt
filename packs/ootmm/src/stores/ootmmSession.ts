@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia';
-import { computed, markRaw, nextTick, ref, watch } from 'vue';
+import { computed, markRaw, nextTick, ref } from 'vue';
 import type { TrackerPack } from '@/types/tracker';
 import { ITEM_DATABASE } from '../data/items';
 
@@ -21,35 +21,6 @@ function mapNumberToRecord(map: Map<string, number>): Record<string, number> {
 
 function uniqueStrings(values: string[]): string[] {
   return Array.from(new Set(values));
-}
-
-const OOTMM_SESSION_STORAGE_KEY = 'tlt:ootmm-session:v1';
-
-type PersistedOoTMMSessionState = {
-  inventoryById?: Record<string, number>;
-  collectedLocationIds?: string[];
-  preCompletedDungeons?: string[];
-  trackerSettings?: Record<string, unknown>;
-};
-
-function toStringArray(value: unknown): string[] {
-  if (!Array.isArray(value)) return [];
-  return value.filter((entry): entry is string => typeof entry === 'string');
-}
-
-function toNumberRecord(value: unknown): Record<string, number> {
-  if (!value || typeof value !== 'object') return {};
-  const next: Record<string, number> = {};
-  for (const [key, count] of Object.entries(value as Record<string, unknown>)) {
-    if (typeof count !== 'number' || !Number.isFinite(count) || count <= 0) continue;
-    next[key] = Math.floor(count);
-  }
-  return next;
-}
-
-function toObjectRecord(value: unknown): Record<string, unknown> {
-  if (!value || typeof value !== 'object' || Array.isArray(value)) return {};
-  return value as Record<string, unknown>;
 }
 
 function areSettingsEqual(a: unknown, b: unknown): boolean {
@@ -84,43 +55,14 @@ function areSettingsEqual(a: unknown, b: unknown): boolean {
   return false;
 }
 
-function loadPersistedOoTMMSessionState(): PersistedOoTMMSessionState {
-  if (typeof window === 'undefined') return {};
-  try {
-    const raw = window.localStorage.getItem(OOTMM_SESSION_STORAGE_KEY);
-    if (!raw) return {};
-    const parsed = JSON.parse(raw) as PersistedOoTMMSessionState;
-    if (!parsed || typeof parsed !== 'object') return {};
-    return {
-      inventoryById: toNumberRecord(parsed.inventoryById),
-      collectedLocationIds: toStringArray(parsed.collectedLocationIds),
-      preCompletedDungeons: toStringArray(parsed.preCompletedDungeons),
-      trackerSettings: toObjectRecord(parsed.trackerSettings),
-    };
-  } catch (error) {
-    console.warn('[OoTMM Session Store] Failed to load persisted state:', error);
-    return {};
-  }
-}
-
-function persistOoTMMSessionState(state: PersistedOoTMMSessionState) {
-  if (typeof window === 'undefined') return;
-  try {
-    window.localStorage.setItem(OOTMM_SESSION_STORAGE_KEY, JSON.stringify(state));
-  } catch (error) {
-    console.warn('[OoTMM Session Store] Failed to persist state:', error);
-  }
-}
-
 export const useOoTMMSessionStore = defineStore('ootmm-session', () => {
-  const persistedState = loadPersistedOoTMMSessionState();
   const tracker = ref<TrackerPack | null>(null);
 
-  const inventoryById = ref<Record<string, number>>(persistedState.inventoryById ?? {});
-  const collectedLocationIds = ref<string[]>(persistedState.collectedLocationIds ?? []);
-  const preCompletedDungeons = ref<string[]>(persistedState.preCompletedDungeons ?? []);
+  const inventoryById = ref<Record<string, number>>({});
+  const collectedLocationIds = ref<string[]>([]);
+  const preCompletedDungeons = ref<string[]>([]);
 
-  const trackerSettings = ref<Record<string, unknown>>(persistedState.trackerSettings ?? {});
+  const trackerSettings = ref<Record<string, unknown>>({});
   const availableItemIds = ref<string[]>([]);
   const itemMaxCountsById = ref<Record<string, number>>({});
 
@@ -376,19 +318,6 @@ export const useOoTMMSessionStore = defineStore('ootmm-session', () => {
     inventoryById.value = nextInventory;
     recomputeReachability();
   }
-
-  watch(
-    () => ({
-      inventoryById: inventoryById.value,
-      collectedLocationIds: collectedLocationIds.value,
-      preCompletedDungeons: preCompletedDungeons.value,
-      trackerSettings: trackerSettings.value,
-    }),
-    (state) => {
-      persistOoTMMSessionState(state);
-    },
-    { deep: true },
-  );
 
   return {
     tracker,
