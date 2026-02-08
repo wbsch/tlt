@@ -40,7 +40,7 @@ const categories = computed(() => {
 const baseFilteredLocations = computed(() => {
   return props.locations.filter(loc => {
     const isToggleEligible = Boolean(loc.isSkulltulaToken || loc.isStrayFairy)
-    const matchesShuffle = loc.isShuffled !== false || (showUnshuffled.value && isToggleEligible)
+    const matchesShuffle = loc.isShuffled !== false || loc.showWhenUnshuffled || (showUnshuffled.value && isToggleEligible)
     const matchesSearch = loc.name.toLowerCase().includes(searchQuery.value.toLowerCase())
     const matchesCategory = selectedCategory.value === 'all' || loc.category === selectedCategory.value
     return matchesShuffle && matchesSearch && matchesCategory

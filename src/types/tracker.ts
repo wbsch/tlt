@@ -86,6 +86,9 @@ export interface LocationInfo {
 
   /** Whether this location is shuffled based on settings (if applicable) */
   isShuffled?: boolean;
+
+  /** Show this location even if unshuffled (e.g. vanilla key locations) */
+  showWhenUnshuffled?: boolean;
 }
 
 /**

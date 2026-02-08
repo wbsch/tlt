@@ -13,6 +13,8 @@ import * as SettingsMod from '@ootmm/core/settings/index'
 import * as EntranceMod from '@ootmm/core/logic/entrance'
 import * as IsShuffledMod from '@ootmm/core/logic/is-shuffled'
 
+import { ITEM_DATABASE } from './data/items'
+
 const resolveExport = <T>(mod: unknown, key: string): T => (mod as Record<string, T>)?.[key] ?? (mod as { default: Record<string, T> })?.default?.[key]
 
 const worldState = resolveExport<typeof LogicMod.worldState>(LogicMod, 'worldState')
@@ -244,6 +246,7 @@ export class OoTMMTracker implements TrackerPack {
           itemId.startsWith('MM_STRAY_FAIRY_') &&
           itemId !== 'MM_STRAY_FAIRY_TOWN'
         const shuffled = this.computeIsShuffled(world, locId, fullId, check, dungeonLocations)
+        const showWhenUnshuffled = this.shouldShowVanillaKeyLocation(itemId)
         locations.push({
           id: fullId,
           name: locId,
@@ -252,6 +255,7 @@ export class OoTMMTracker implements TrackerPack {
           isSkulltulaToken,
           isStrayFairy,
           isShuffled: shuffled,
+          showWhenUnshuffled,
         })
       }
     }
@@ -335,6 +339,56 @@ export class OoTMMTracker implements TrackerPack {
     }
 
     return base
+  }
+
+  private shouldShowVanillaKeyLocation(itemId?: string): boolean {
+    if (!itemId) return false
+    if (itemId === 'OOT_SMALL_KEY_TCG') return false
+    const smallKeySetting = this.getSmallKeyShuffleSetting(itemId)
+    if (smallKeySetting === 'vanilla') return true
+    const bossKeySetting = this.getBossKeyShuffleSetting(itemId)
+    if (bossKeySetting === 'vanilla') return true
+    return false
+  }
+
+  private getSmallKeyShuffleSetting(itemId: string): string | null {
+    const settings = this.settings as {
+      smallKeyShuffleOot?: unknown
+      smallKeyShuffleMm?: unknown
+      smallKeyShuffleHideout?: unknown
+      smallKeyShuffleChestGame?: unknown
+    }
+    if (itemId === 'OOT_SMALL_KEY_TCG') {
+      return String(settings.smallKeyShuffleChestGame ?? '')
+    }
+    if (itemId === 'OOT_SMALL_KEY_GF') {
+      return String(settings.smallKeyShuffleHideout ?? '')
+    }
+    if (itemId.startsWith('OOT_SMALL_KEY_') || itemId === 'OOT_SMALL_KEY' || itemId === 'OOT_TC_SMALL_KEY') {
+      return String(settings.smallKeyShuffleOot ?? '')
+    }
+    if (itemId.startsWith('MM_SMALL_KEY_') || itemId === 'MM_SMALL_KEY') {
+      return String(settings.smallKeyShuffleMm ?? '')
+    }
+    return null
+  }
+
+  private getBossKeyShuffleSetting(itemId: string): string | null {
+    const settings = this.settings as {
+      bossKeyShuffleOot?: unknown
+      bossKeyShuffleMm?: unknown
+      ganonBossKey?: unknown
+    }
+    if (itemId === 'OOT_BOSS_KEY_GANON') {
+      return String(settings.ganonBossKey ?? '')
+    }
+    if (itemId.startsWith('OOT_BOSS_KEY_') || itemId === 'OOT_BOSS_KEY') {
+      return String(settings.bossKeyShuffleOot ?? '')
+    }
+    if (itemId.startsWith('MM_BOSS_KEY_') || itemId === 'MM_BOSS_KEY') {
+      return String(settings.bossKeyShuffleMm ?? '')
+    }
+    return null
   }
 
   private getAreaFromLocation(locId: string): string {
@@ -473,6 +527,40 @@ export class OoTMMTracker implements TrackerPack {
       const itemId = (playerItem as { item?: { id?: string } })?.item?.id
       if (!itemId) continue
       counts.set(itemId, (counts.get(itemId) || 0) + count)
+    }
+    const settings = this.settings as {
+      smallKeyShuffleOot?: unknown
+      smallKeyShuffleMm?: unknown
+      smallKeyShuffleHideout?: unknown
+      smallKeyShuffleChestGame?: unknown
+    }
+    const ootSetting = String(settings.smallKeyShuffleOot ?? '')
+    const mmSetting = String(settings.smallKeyShuffleMm ?? '')
+    const hideoutSetting = String(settings.smallKeyShuffleHideout ?? '')
+    const chestGameSetting = String(settings.smallKeyShuffleChestGame ?? '')
+
+    if (ootSetting === 'vanilla' || mmSetting === 'vanilla' || hideoutSetting === 'vanilla' || chestGameSetting === 'vanilla') {
+      const defaultSmallKeyCounts = ITEM_DATABASE
+        .filter((item) => item.id.includes('SMALL_KEY') && typeof item.maxCount === 'number')
+        .map((item) => [item.id, item.maxCount as number])
+
+      for (const [itemId, maxCount] of defaultSmallKeyCounts) {
+        if (itemId === 'OOT_SMALL_KEY_GF') {
+          if (hideoutSetting === 'vanilla') counts.set(itemId, maxCount)
+          continue
+        }
+        if (itemId === 'OOT_SMALL_KEY_TCG') {
+          if (chestGameSetting === 'vanilla') counts.set(itemId, maxCount)
+          continue
+        }
+        if (itemId.startsWith('OOT_SMALL_KEY_')) {
+          if (ootSetting === 'vanilla') counts.set(itemId, maxCount)
+          continue
+        }
+        if (itemId.startsWith('MM_SMALL_KEY_')) {
+          if (mmSetting === 'vanilla') counts.set(itemId, maxCount)
+        }
+      }
     }
     return counts
   }
