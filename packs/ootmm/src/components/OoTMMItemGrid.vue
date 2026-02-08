@@ -61,6 +61,7 @@ const LABEL_KEY_MAP: Record<string, string[]> = {
   mm_greatbay_label: ['MM_SMALL_KEY_GB', 'MM_BOSS_KEY_GB'],
   mm_stonetower_label: ['MM_SMALL_KEY_ST', 'MM_BOSS_KEY_ST'],
 }
+const SILVER_RUPEE_PREFIX = 'OOT_RUPEE_SILVER_'
 
 function isItemVisible(itemId: string): boolean {
   if (!props.availableItemIds || props.availableItemIds.size === 0) return true
@@ -77,6 +78,23 @@ function isItemVisible(itemId: string): boolean {
   return false
 }
 
+function isLabelItem(itemId: string): boolean {
+  return Boolean(LABEL_KEY_MAP[itemId])
+}
+
+function filterGridRow(row: string[]): string[] {
+  const rowContainsSilver = row.some((itemId: string) => itemId.startsWith(SILVER_RUPEE_PREFIX))
+  const visible = row.filter((itemId: string) => isItemVisible(itemId))
+  if (rowContainsSilver) {
+    const hasVisibleSilver = visible.some((itemId: string) => itemId.startsWith(SILVER_RUPEE_PREFIX))
+    if (!hasVisibleSilver) return []
+  }
+  if (visible.length > 0 && visible.every((itemId: string) => isLabelItem(itemId))) {
+    return []
+  }
+  return visible
+}
+
 function filterGridElement(element: unknown): unknown | null {
   if (!element || typeof element !== 'object') return element
   if ((element as { type?: string }).type === 'item') {
@@ -91,7 +109,7 @@ function filterGridElement(element: unknown): unknown | null {
   }
   if ((element as { type?: string }).type === 'itemgrid') {
     const rows = ((element as { rows?: string[][] }).rows || [])
-      .map((row: string[]) => row.filter((itemId: string) => isItemVisible(itemId)))
+      .map((row: string[]) => filterGridRow(row))
       .filter((row: string[]) => row.length > 0)
     if (rows.length === 0) return null
     return { ...element, rows }

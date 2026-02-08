@@ -4,6 +4,7 @@ import type { TrackerPack } from '@/types/tracker';
 import { ITEM_DATABASE } from '../data/items';
 
 const HISTORY_LIMIT = 200;
+const VANILLA_SILVER_RUPEE_PREFIX = 'OOT_RUPEE_SILVER_';
 
 type SessionSnapshot = {
   inventoryById: Record<string, number>;
@@ -152,6 +153,31 @@ export const useOoTMMSessionStore = defineStore('ootmm-session', () => {
       preCompletedDungeons: [...preCompletedDungeons.value],
       trackerSettings: cloneSettingsRecord(trackerSettings.value),
     };
+  }
+
+  function applyVanillaSilverRupeeCounts(counts: Record<string, number>) {
+    const next = { ...inventoryById.value };
+    let changed = false;
+
+    for (const itemId of Object.keys(next)) {
+      if (itemId.startsWith(VANILLA_SILVER_RUPEE_PREFIX)) {
+        delete next[itemId];
+        changed = true;
+      }
+    }
+
+    for (const [itemId, count] of Object.entries(counts)) {
+      if (!itemId.startsWith(VANILLA_SILVER_RUPEE_PREFIX)) continue;
+      const safeCount = Math.floor(Number(count));
+      if (safeCount > 0) {
+        next[itemId] = safeCount;
+        changed = true;
+      }
+    }
+
+    if (changed) {
+      inventoryById.value = sanitizeInventoryRecord(next);
+    }
   }
 
   function snapshotsEqual(a: SessionSnapshot, b: SessionSnapshot): boolean {
@@ -446,6 +472,11 @@ export const useOoTMMSessionStore = defineStore('ootmm-session', () => {
     reachableLocationIds.value = result.reachableLocationIds;
     canComplete.value = result.canComplete;
     statsExtra.value = result.extra ?? {};
+
+    const autoCounts = (result.extra as { vanillaSilverRupeeCounts?: Record<string, number> } | undefined)?.vanillaSilverRupeeCounts;
+    if (autoCounts && typeof autoCounts === 'object') {
+      applyVanillaSilverRupeeCounts(autoCounts);
+    }
   }
 
   async function resetSessionStateToDefaults() {

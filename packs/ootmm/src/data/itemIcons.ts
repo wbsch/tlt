@@ -115,6 +115,30 @@ const RAW_ITEM_ICONS: Record<string, string> = {
   'OOT_COIN_BLUE': 'images/coin_blue.png',
   'OOT_COIN_YELLOW': 'images/coin_yellow.png',
 
+  // Rupees
+  'OOT_RUPEE_SILVER_DC': 'images/rupee.png',
+  'OOT_RUPEE_SILVER_BOTW': 'images/rupee.png',
+  'OOT_RUPEE_SILVER_SPIRIT_CHILD': 'images/rupee.png',
+  'OOT_RUPEE_SILVER_SPIRIT_SUN': 'images/rupee.png',
+  'OOT_RUPEE_SILVER_SPIRIT_BOULDERS': 'images/rupee.png',
+  'OOT_RUPEE_SILVER_SPIRIT_LOBBY': 'images/rupee.png',
+  'OOT_RUPEE_SILVER_SPIRIT_ADULT': 'images/rupee.png',
+  'OOT_RUPEE_SILVER_SHADOW_SCYTHE': 'images/rupee.png',
+  'OOT_RUPEE_SILVER_SHADOW_PIT': 'images/rupee.png',
+  'OOT_RUPEE_SILVER_SHADOW_SPIKES': 'images/rupee.png',
+  'OOT_RUPEE_SILVER_SHADOW_BLADES': 'images/rupee.png',
+  'OOT_RUPEE_SILVER_IC_SCYTHE': 'images/rupee.png',
+  'OOT_RUPEE_SILVER_IC_BLOCK': 'images/rupee.png',
+  'OOT_RUPEE_SILVER_GTG_SLOPES': 'images/rupee.png',
+  'OOT_RUPEE_SILVER_GTG_LAVA': 'images/rupee.png',
+  'OOT_RUPEE_SILVER_GTG_WATER': 'images/rupee.png',
+  'OOT_RUPEE_SILVER_GANON_SPIRIT': 'images/rupee.png',
+  'OOT_RUPEE_SILVER_GANON_LIGHT': 'images/rupee.png',
+  'OOT_RUPEE_SILVER_GANON_FIRE': 'images/rupee.png',
+  'OOT_RUPEE_SILVER_GANON_FOREST': 'images/rupee.png',
+  'OOT_RUPEE_SILVER_GANON_SHADOW': 'images/rupee.png',
+  'OOT_RUPEE_SILVER_GANON_WATER': 'images/rupee.png',
+
   // Buttons
   'OOT_BUTTON_A': 'images/button_a.png',
   'OOT_BUTTON_C_DOWN': 'images/button_down.png',
@@ -260,6 +284,9 @@ const RAW_ITEM_ICONS: Record<string, string> = {
   'MM_MAGIC_UPGRADE': 'images/items/mm_magic1.png',
   'MM_STRENGTH': 'images/lift1.png',
   'MM_SCALE': 'images/scale1.png',
+
+  // Rupees
+  'MM_RUPEE_SILVER': 'images/rupee.png',
 
   // Quest items
   'MM_STRAY_FAIRY_TOWN': 'images/items/mm_clocktown_stray_fairy.png',
@@ -407,7 +434,7 @@ const RAW_ITEM_ICONS: Record<string, string> = {
   'setting_mq_DekuTree': 'images/label_deku.png',
   'setting_mq_DodongoCavern': 'images/label_dodongo.png',
   'setting_mq_Jabu-Jabu': 'images/label_jabu.png',
-  'setting_mq_IceCavern': 'images/label_ice.png',
+  'oot_ice_label': 'images/label_ice.png',
   'oot_well_label': 'images/label_botw.png',
   'oot_chestgame_label': 'images/lens.png',
 
@@ -431,6 +458,7 @@ const RAW_ITEM_ICONS: Record<string, string> = {
   'SHARED_MASK_BLAST': 'images/items/mm_blast.png',
   'SHARED_MASK_STONE': 'images/items/mm_stone.png',
   'SHARED_WALLET': 'images/wallet.png',
+  'SHARED_RUPEE_SILVER': 'images/rupee.png',
   'SHARED_HEART_CONTAINER': 'images/system/heartcontainer.png',
   'SHARED_HEART_PIECE': 'images/system/heartpiece.png',
   'SHARED_STRENGTH': 'images/lift1.png',

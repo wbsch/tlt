@@ -284,6 +284,34 @@
             "OOT_SMALL_KEY_BOTW",
             "oot_chestgame_label",
             "OOT_SMALL_KEY_TCG"
+          ],
+          [
+            "oot_spirittemple_label",
+            "OOT_RUPEE_SILVER_SPIRIT_CHILD",
+            "OOT_RUPEE_SILVER_SPIRIT_SUN",
+            "OOT_RUPEE_SILVER_SPIRIT_BOULDERS",
+            "oot_gerudotraining_label",
+            "OOT_RUPEE_SILVER_GTG_SLOPES",
+            "OOT_RUPEE_SILVER_GTG_LAVA",
+            "OOT_RUPEE_SILVER_GTG_WATER"  
+          ],
+          [
+            "oot_shadowtemple_label",
+            "OOT_RUPEE_SILVER_SHADOW_SCYTHE",
+            "OOT_RUPEE_SILVER_SHADOW_PIT",
+            "OOT_RUPEE_SILVER_SHADOW_SPIKES",
+            "oot_ice_label",
+            "OOT_RUPEE_SILVER_IC_SCYTHE",
+            "OOT_RUPEE_SILVER_IC_BLOCK"  
+          ],
+          [
+            "oot_ganoncastle_label",
+            "OOT_RUPEE_SILVER_GANON_SPIRIT",
+            "OOT_RUPEE_SILVER_GANON_LIGHT",
+            "OOT_RUPEE_SILVER_GANON_FIRE",
+            "OOT_RUPEE_SILVER_GANON_FOREST",
+            "oot_well_label",
+            "OOT_RUPEE_SILVER_BOTW"   
           ]
         ]
       }

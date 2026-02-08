@@ -57,6 +57,8 @@ const SINGLE_COUNT_ITEM_IDS = new Set([
   'MM_BOTTLE_EMPTY',
 ])
 
+const VANILLA_SILVER_RUPEE_PREFIX = 'OOT_RUPEE_SILVER_'
+
 export class OoTMMTracker implements TrackerPack {
   id = 'ootmm'
   name = 'OoTMM'
@@ -75,6 +77,7 @@ export class OoTMMTracker implements TrackerPack {
   private baseWispEvents: Map<number, Map<string, unknown>> = new Map()
   private availableItemIds: Set<string> = new Set()
   private itemMaxCounts: Map<string, number> = new Map()
+  private silverRupeeLocationIdsByItemId: Map<string, string[]> = new Map()
 
   async initialize(userSettings: Partial<OoTMMSettings> = {}): Promise<void> {
     console.log('[OoTMM Tracker] Initializing...')
@@ -148,6 +151,7 @@ export class OoTMMTracker implements TrackerPack {
     this.baseWispEvents.clear()
     this.availableItemIds = this.buildAvailableItemIds(worldData?.allItems)
     this.itemMaxCounts = this.buildItemMaxCounts(worldData?.allItems)
+    this.silverRupeeLocationIdsByItemId = this.buildSilverRupeeLocationIndex(this.worlds)
     
     console.log(`[OoTMM Tracker] Initialized with ${this.allLocationIds.length} locations`)
   }
@@ -160,80 +164,67 @@ export class OoTMMTracker implements TrackerPack {
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const _unusedError = e;
     }
-    // Convert inventory to PlayerItems format
-    const playerItems: PlayerItems = new Map()
-    
-    // WORKAROUND: The OoTMM core library seems to have been transpiled with an assumption
-    // that Map.entries() returns an array (or using a C-style for loop on the result),
-    // but in the browser it returns an Iterator which has no .length property.
-    // We patch the map instance to return an array from entries().
-    // See: https://github.com/microsoft/TypeScript/issues/33077 (maybe related?)
-    ;(playerItems as { entries?: () => unknown[] }).entries = function() {
-      return Array.from(Map.prototype.entries.call(this))
-    }
-    
-    for (const [itemId, count] of inventory) {
-      // Try to find item in Items map, fall back to itemByID to resolve aliases
-      let item = (Items as Record<string, unknown>)[itemId]
-      if (!item) {
-        try {
-          item = itemByID(itemId)
-        } catch (e) {
-          console.log('[OoTMM Tracker] Could not resolve item:', itemId, e)
-          item = undefined
-        }
+    const isVanillaSilverRupees = this.isVanillaSilverRupeeShuffle()
+    const baseInventory = isVanillaSilverRupees ? this.stripVanillaSilverRupees(inventory) : inventory
+
+    let assumedInventory = baseInventory
+    let state
+    let reachableLocationIds: string[] = []
+    let newLocationIds: string[] = []
+    let silverRupeeCounts = new Map<string, number>()
+    let iterations = 0
+
+    while (true) {
+      const result = this.runPathfinder(assumedInventory)
+      state = result.state
+      reachableLocationIds = result.reachableLocationIds
+      newLocationIds = result.newLocationIds
+
+      if (!isVanillaSilverRupees || this.silverRupeeLocationIdsByItemId.size === 0) {
+        break
       }
-      if (item && count > 0) {
-        // Player 0 for single-player
-        const pi = makePlayerItem(item, 0)
-        playerItems.set(pi, count)
-        console.log('[OoTMM Tracker] Added item to playerItems:', itemId, 'as', pi.item.id, 'count:', count)
+
+      const nextCounts = this.computeVanillaSilverRupeeCounts(reachableLocationIds)
+      if (this.areCountMapsEqual(nextCounts, silverRupeeCounts)) {
+        silverRupeeCounts = nextCounts
+        break
+      }
+      silverRupeeCounts = nextCounts
+      assumedInventory = this.mergeInventoryWithCounts(baseInventory, silverRupeeCounts)
+      iterations += 1
+      if (iterations >= 10) {
+        console.warn('[OoTMM Tracker] Vanilla silver rupee auto-tracking did not stabilize after 10 iterations')
+        break
       }
     }
 
-    // Run pathfinding. Use a fresh state each run so that removals
-    // of items (decrements) are correctly handled. The
-    // Pathfinder only applies deltas for increased items
-    // when given a previous state, which prevents reductions from
-    // taking effect. Using `null` forces a full recalculation.
-    let state
-    try {
-      state = this.pathfinder.run(null, {
-        assumedItems: playerItems,  // Items the player has
-        recursive: true,
-        inPlace: false,
-      })
-    } catch (e) {
-      console.error('[OoTMM Tracker] Pathfinder error:', e)
-      throw e
-    }
-    
     if (!state) {
       console.error('[OoTMM Tracker] Pathfinder returned undefined!')
       throw new Error('Pathfinder returned undefined')
     }
-    
-    console.log('[OoTMM Tracker] State after pathfinder:', { 
+
+    console.log('[OoTMM Tracker] State after pathfinder:', {
       locations: state.locations.size,
       goal: state.goal,
       started: state.started,
     })
 
-    // Convert Location objects to strings
-    // The pathfinder already returns locations with world suffix (e.g., "@0")
-    const reachableLocationIds = Array.from(state.locations).filter((locId: string) => !this.hiddenLocationIds.has(locId)) as string[]
-    const newLocationIds = Array.from(state.newLocations).filter((locId: string) => !this.hiddenLocationIds.has(locId)) as string[]
-    
     console.log('[OoTMM Tracker] Pathfinder result: reachable =', reachableLocationIds.length, 'new =', newLocationIds.length)
+
+    const extra: Record<string, unknown> = {
+      canReachBosses: state.ganonMajora,
+      gossipStones: state.gossips[0]?.size || 0,
+    }
+
+    if (isVanillaSilverRupees) {
+      extra.vanillaSilverRupeeCounts = this.countMapToRecord(silverRupeeCounts)
+    }
 
     return {
       reachableLocationIds,
       newLocationIds,
       canComplete: state.goal,
-      extra: {
-        canReachBosses: state.ganonMajora,
-        gossipStones: state.gossips[0]?.size || 0,
-      },
+      extra,
     }
   }
 
@@ -501,10 +492,12 @@ export class OoTMMTracker implements TrackerPack {
     const available = new Set<string>()
     if (!allItems) return available
     const chestGameShuffle = String((this.settings as { smallKeyShuffleChestGame?: unknown })?.smallKeyShuffleChestGame ?? '')
+    const hideVanillaSilverRupees = this.isVanillaSilverRupeeShuffle()
     for (const [playerItem, count] of allItems) {
       if (!count || count <= 0) continue
       const itemId = (playerItem as { item?: { id?: string } })?.item?.id
       if (itemId) {
+        if (hideVanillaSilverRupees && this.isVanillaSilverRupeeItemId(itemId)) continue
         if (itemId === 'OOT_SMALL_KEY_TCG' && chestGameShuffle === 'vanilla') continue
         available.add(itemId)
       }
@@ -629,5 +622,145 @@ export class OoTMMTracker implements TrackerPack {
         counts.delete(itemId)
       }
     }
+  }
+
+  private isVanillaSilverRupeeShuffle(): boolean {
+    return String((this.settings as { silverRupeeShuffle?: unknown })?.silverRupeeShuffle ?? '') === 'vanilla'
+  }
+
+  private isVanillaSilverRupeeItemId(itemId: string): boolean {
+    return itemId.startsWith(VANILLA_SILVER_RUPEE_PREFIX)
+  }
+
+  private stripVanillaSilverRupees(inventory: Map<string, number>): Map<string, number> {
+    if (!inventory || inventory.size === 0) return new Map()
+    const next = new Map<string, number>()
+    for (const [itemId, count] of inventory) {
+      if (this.isVanillaSilverRupeeItemId(itemId)) continue
+      next.set(itemId, count)
+    }
+    return next
+  }
+
+  private mergeInventoryWithCounts(baseInventory: Map<string, number>, counts: Map<string, number>): Map<string, number> {
+    const next = new Map<string, number>(baseInventory)
+    for (const [itemId, count] of counts) {
+      if (count > 0) {
+        next.set(itemId, count)
+      }
+    }
+    return next
+  }
+
+  private areCountMapsEqual(a: Map<string, number>, b: Map<string, number>): boolean {
+    if (a.size !== b.size) return false
+    for (const [itemId, count] of a) {
+      if (b.get(itemId) !== count) return false
+    }
+    return true
+  }
+
+  private countMapToRecord(counts: Map<string, number>): Record<string, number> {
+    return Object.fromEntries(counts.entries())
+  }
+
+  private runPathfinder(inventory: Map<string, number>): {
+    state: ReturnType<InstanceType<typeof Pathfinder>['run']>
+    reachableLocationIds: string[]
+    newLocationIds: string[]
+  } {
+    const playerItems = this.buildPlayerItemsFromInventory(inventory)
+
+    // Run pathfinding. Use a fresh state each run so that removals
+    // of items (decrements) are correctly handled. The
+    // Pathfinder only applies deltas for increased items
+    // when given a previous state, which prevents reductions from
+    // taking effect. Using `null` forces a full recalculation.
+    let state
+    try {
+      state = this.pathfinder.run(null, {
+        assumedItems: playerItems,  // Items the player has
+        recursive: true,
+        inPlace: false,
+      })
+    } catch (e) {
+      console.error('[OoTMM Tracker] Pathfinder error:', e)
+      throw e
+    }
+
+    if (!state) {
+      console.error('[OoTMM Tracker] Pathfinder returned undefined!')
+      throw new Error('Pathfinder returned undefined')
+    }
+
+    const reachableLocationIds = Array.from(state.locations).filter((locId: string) => !this.hiddenLocationIds.has(locId)) as string[]
+    const newLocationIds = Array.from(state.newLocations).filter((locId: string) => !this.hiddenLocationIds.has(locId)) as string[]
+
+    return { state, reachableLocationIds, newLocationIds }
+  }
+
+  private buildPlayerItemsFromInventory(inventory: Map<string, number>): PlayerItems {
+    // Convert inventory to PlayerItems format
+    const playerItems: PlayerItems = new Map()
+
+    // WORKAROUND: The OoTMM core library seems to have been transpiled with an assumption
+    // that Map.entries() returns an array (or using a C-style for loop on the result),
+    // but in the browser it returns an Iterator which has no .length property.
+    // We patch the map instance to return an array from entries().
+    // See: https://github.com/microsoft/TypeScript/issues/33077 (maybe related?)
+    ;(playerItems as { entries?: () => unknown[] }).entries = function() {
+      return Array.from(Map.prototype.entries.call(this))
+    }
+
+    for (const [itemId, count] of inventory) {
+      let item = (Items as Record<string, unknown>)[itemId]
+      if (!item) {
+        try {
+          item = itemByID(itemId)
+        } catch (e) {
+          console.log('[OoTMM Tracker] Could not resolve item:', itemId, e)
+          item = undefined
+        }
+      }
+      if (item && count > 0) {
+        const pi = makePlayerItem(item, 0)
+        playerItems.set(pi, count)
+        console.log('[OoTMM Tracker] Added item to playerItems:', itemId, 'as', pi.item.id, 'count:', count)
+      }
+    }
+    return playerItems
+  }
+
+  private buildSilverRupeeLocationIndex(worlds: World[]): Map<string, string[]> {
+    const map = new Map<string, string[]>()
+    if (!worlds || worlds.length === 0) return map
+
+    for (const [worldId, world] of worlds.entries()) {
+      for (const [locId, check] of Object.entries(world.checks ?? {})) {
+        const itemId = (check as { item?: { id?: string } })?.item?.id
+        if (!itemId || !this.isVanillaSilverRupeeItemId(itemId)) continue
+        const fullId = makeLocation(locId, worldId)
+        const list = map.get(itemId) ?? []
+        list.push(fullId)
+        map.set(itemId, list)
+      }
+    }
+    return map
+  }
+
+  private computeVanillaSilverRupeeCounts(reachableLocationIds: string[]): Map<string, number> {
+    const counts = new Map<string, number>()
+    if (this.silverRupeeLocationIdsByItemId.size === 0) return counts
+    const reachable = new Set(reachableLocationIds)
+    for (const [itemId, locationIds] of this.silverRupeeLocationIdsByItemId) {
+      let count = 0
+      for (const locId of locationIds) {
+        if (reachable.has(locId)) count += 1
+      }
+      if (count > 0) {
+        counts.set(itemId, count)
+      }
+    }
+    return counts
   }
 }
