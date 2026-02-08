@@ -20,6 +20,7 @@ const resolveExport = <T>(mod: unknown, key: string): T => (mod as Record<string
 const worldState = resolveExport<typeof LogicMod.worldState>(LogicMod, 'worldState')
 const Pathfinder = resolveExport<typeof PathfinderMod.Pathfinder>(PathfinderMod, 'Pathfinder')
 const makeLocation = resolveExport<typeof LocationsMod.makeLocation>(LocationsMod, 'makeLocation')
+const locationData = resolveExport<typeof LocationsMod.locationData>(LocationsMod, 'locationData')
 const exprTrue = resolveExport<typeof ExprMod.exprTrue>(ExprMod, 'exprTrue')
 const Items = resolveExport<typeof ItemsMod.Items>(ItemsMod, 'Items')
 const makePlayerItem = resolveExport<typeof ItemsMod.makePlayerItem>(ItemsMod, 'makePlayerItem')
@@ -45,6 +46,16 @@ const PRECOMPLETED_WISPS: Record<string, string> = {
   GB: 'MM_WISP_CLEAR_STATE_GREAT_BAY',
   IST: 'MM_WISP_CLEAR_STATE_IKANA',
 }
+
+const SINGLE_COUNT_ITEM_IDS = new Set([
+  'OOT_BOTTLE_EMPTY',
+  'OOT_SHIELD_DEKU',
+  'OOT_SHIELD_HYLIAN',
+  'OOT_TUNIC_GORON',
+  'OOT_TUNIC_ZORA',
+  'MM_SHIELD_HERO',
+  'MM_BOTTLE_EMPTY',
+])
 
 export class OoTMMTracker implements TrackerPack {
   id = 'ootmm'
@@ -528,6 +539,11 @@ export class OoTMMTracker implements TrackerPack {
       if (!itemId) continue
       counts.set(itemId, (counts.get(itemId) || 0) + count)
     }
+
+    // Core allItems includes fixed locations on top of the initial pool snapshot,
+    // which effectively double-counts fixed items. Remove one per fixed location.
+    this.adjustFixedLocationCounts(counts)
+
     const settings = this.settings as {
       smallKeyShuffleOot?: unknown
       smallKeyShuffleMm?: unknown
@@ -562,6 +578,56 @@ export class OoTMMTracker implements TrackerPack {
         }
       }
     }
+
+    for (const itemId of SINGLE_COUNT_ITEM_IDS) {
+      if (counts.has(itemId)) {
+        counts.set(itemId, 1)
+      }
+    }
     return counts
+  }
+
+  private adjustFixedLocationCounts(counts: Map<string, number>): void {
+    if (!this.fixedLocationIds || this.fixedLocationIds.size === 0) return
+    const worlds = this.baseWorlds.length > 0 ? this.baseWorlds : this.worlds
+    if (!worlds || worlds.length === 0) return
+
+    for (const loc of this.fixedLocationIds) {
+      let locId: string | undefined
+      let worldId: number | null | undefined
+
+      if (locationData) {
+        const data = locationData(loc as unknown as ReturnType<typeof makeLocation>)
+        if (data) {
+          locId = data.id
+          worldId = data.world
+        }
+      }
+
+      if (!locId) {
+        const atIndex = loc.lastIndexOf('@')
+        if (atIndex >= 0) {
+          locId = loc.slice(0, atIndex)
+          worldId = Number(loc.slice(atIndex + 1))
+        } else {
+          locId = loc
+          worldId = 0
+        }
+      }
+
+      if (worldId === null || worldId === undefined || Number.isNaN(worldId)) continue
+      const world = worlds[worldId]
+      const itemId = world?.checks?.[locId]?.item?.id
+      if (!itemId) continue
+
+      const current = counts.get(itemId)
+      if (!current) continue
+      const next = current - 1
+      if (next > 0) {
+        counts.set(itemId, next)
+      } else {
+        counts.delete(itemId)
+      }
+    }
   }
 }
