@@ -297,30 +297,46 @@
           [
             "oot_spirittemple_label",
             "OOT_RUPEE_SILVER_SPIRIT_CHILD",
+            "OOT_POUCH_SILVER_SPIRIT_CHILD",
             "OOT_RUPEE_SILVER_SPIRIT_SUN",
+            "OOT_POUCH_SILVER_SPIRIT_SUN",
             "OOT_RUPEE_SILVER_SPIRIT_BOULDERS",
+            "OOT_POUCH_SILVER_SPIRIT_BOULDERS",
             "oot_gerudotraining_label",
             "OOT_RUPEE_SILVER_GTG_SLOPES",
+            "OOT_POUCH_SILVER_GTG_SLOPES",
             "OOT_RUPEE_SILVER_GTG_LAVA",
-            "OOT_RUPEE_SILVER_GTG_WATER"  
+            "OOT_POUCH_SILVER_GTG_LAVA",
+            "OOT_RUPEE_SILVER_GTG_WATER",
+            "OOT_POUCH_SILVER_GTG_WATER"  
           ],
           [
             "oot_shadowtemple_label",
             "OOT_RUPEE_SILVER_SHADOW_SCYTHE",
+            "OOT_POUCH_SILVER_SHADOW_SCYTHE",
             "OOT_RUPEE_SILVER_SHADOW_PIT",
+            "OOT_POUCH_SILVER_SHADOW_PIT",
             "OOT_RUPEE_SILVER_SHADOW_SPIKES",
+            "OOT_POUCH_SILVER_SHADOW_SPIKES",
             "oot_ice_label",
             "OOT_RUPEE_SILVER_IC_SCYTHE",
-            "OOT_RUPEE_SILVER_IC_BLOCK"  
+            "OOT_POUCH_SILVER_IC_SCYTHE",
+            "OOT_RUPEE_SILVER_IC_BLOCK",
+            "OOT_POUCH_SILVER_IC_BLOCK"  
           ],
           [
             "oot_ganoncastle_label",
             "OOT_RUPEE_SILVER_GANON_SPIRIT",
+            "OOT_POUCH_SILVER_GANON_SPIRIT",
             "OOT_RUPEE_SILVER_GANON_LIGHT",
+            "OOT_POUCH_SILVER_GANON_LIGHT",
             "OOT_RUPEE_SILVER_GANON_FIRE",
+            "OOT_POUCH_SILVER_GANON_FIRE",
             "OOT_RUPEE_SILVER_GANON_FOREST",
+            "OOT_POUCH_SILVER_GANON_FOREST",
             "oot_well_label",
-            "OOT_RUPEE_SILVER_BOTW"   
+            "OOT_RUPEE_SILVER_BOTW",
+            "OOT_POUCH_SILVER_BOTW"   
           ]
         ]
       }

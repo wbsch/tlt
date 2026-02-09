@@ -49,19 +49,70 @@ const LABEL_KEY_MAP: Record<string, string[]> = {
   oot_foresttemple_label: ['OOT_SMALL_KEY_FOREST', 'OOT_KEY_RING_FOREST', 'OOT_BOSS_KEY_FOREST'],
   oot_firetemple_label: ['OOT_SMALL_KEY_FIRE', 'OOT_KEY_RING_FIRE', 'OOT_BOSS_KEY_FIRE'],
   oot_watertemple_label: ['OOT_SMALL_KEY_WATER', 'OOT_KEY_RING_WATER', 'OOT_BOSS_KEY_WATER'],
-  oot_spirittemple_label: ['OOT_SMALL_KEY_SPIRIT', 'OOT_KEY_RING_SPIRIT', 'OOT_BOSS_KEY_SPIRIT'],
-  oot_shadowtemple_label: ['OOT_SMALL_KEY_SHADOW', 'OOT_KEY_RING_SHADOW', 'OOT_BOSS_KEY_SHADOW'],
-  oot_ganoncastle_label: ['OOT_SMALL_KEY_GANON', 'OOT_KEY_RING_GANON', 'OOT_BOSS_KEY_GANON'],
-  oot_gerudotraining_label: ['OOT_SMALL_KEY_GTG', 'OOT_KEY_RING_GTG'],
+  oot_spirittemple_label: [
+    'OOT_SMALL_KEY_SPIRIT',
+    'OOT_KEY_RING_SPIRIT',
+    'OOT_BOSS_KEY_SPIRIT',
+    'OOT_RUPEE_SILVER_SPIRIT_CHILD',
+    'OOT_POUCH_SILVER_SPIRIT_CHILD',
+    'OOT_RUPEE_SILVER_SPIRIT_SUN',
+    'OOT_POUCH_SILVER_SPIRIT_SUN',
+    'OOT_RUPEE_SILVER_SPIRIT_BOULDERS',
+    'OOT_POUCH_SILVER_SPIRIT_BOULDERS',
+  ],
+  oot_shadowtemple_label: [
+    'OOT_SMALL_KEY_SHADOW',
+    'OOT_KEY_RING_SHADOW',
+    'OOT_BOSS_KEY_SHADOW',
+    'OOT_RUPEE_SILVER_SHADOW_SCYTHE',
+    'OOT_POUCH_SILVER_SHADOW_SCYTHE',
+    'OOT_RUPEE_SILVER_SHADOW_PIT',
+    'OOT_POUCH_SILVER_SHADOW_PIT',
+    'OOT_RUPEE_SILVER_SHADOW_SPIKES',
+    'OOT_POUCH_SILVER_SHADOW_SPIKES',
+  ],
+  oot_ganoncastle_label: [
+    'OOT_SMALL_KEY_GANON',
+    'OOT_KEY_RING_GANON',
+    'OOT_BOSS_KEY_GANON',
+    'OOT_RUPEE_SILVER_GANON_SPIRIT',
+    'OOT_POUCH_SILVER_GANON_SPIRIT',
+    'OOT_RUPEE_SILVER_GANON_LIGHT',
+    'OOT_POUCH_SILVER_GANON_LIGHT',
+    'OOT_RUPEE_SILVER_GANON_FIRE',
+    'OOT_POUCH_SILVER_GANON_FIRE',
+    'OOT_RUPEE_SILVER_GANON_FOREST',
+    'OOT_POUCH_SILVER_GANON_FOREST',
+  ],
+  oot_gerudotraining_label: [
+    'OOT_SMALL_KEY_GTG',
+    'OOT_KEY_RING_GTG',
+    'OOT_RUPEE_SILVER_GTG_SLOPES',
+    'OOT_POUCH_SILVER_GTG_SLOPES',
+    'OOT_RUPEE_SILVER_GTG_LAVA',
+    'OOT_POUCH_SILVER_GTG_LAVA',
+    'OOT_RUPEE_SILVER_GTG_WATER',
+    'OOT_POUCH_SILVER_GTG_WATER',
+  ],
   oot_gerudofortress_label: ['OOT_SMALL_KEY_GF', 'OOT_KEY_RING_GF'],
-  oot_well_label: ['OOT_SMALL_KEY_BOTW', 'OOT_KEY_RING_BOTW'],
+  oot_well_label: [
+    'OOT_SMALL_KEY_BOTW',
+    'OOT_KEY_RING_BOTW',
+    'OOT_RUPEE_SILVER_BOTW',
+    'OOT_POUCH_SILVER_BOTW',
+  ],
   oot_chestgame_label: ['OOT_SMALL_KEY_TCG', 'OOT_KEY_RING_TCG'],
+  oot_ice_label: [
+    'OOT_RUPEE_SILVER_IC_SCYTHE',
+    'OOT_POUCH_SILVER_IC_SCYTHE',
+    'OOT_RUPEE_SILVER_IC_BLOCK',
+    'OOT_POUCH_SILVER_IC_BLOCK',
+  ],
   mm_woodfall_label: ['MM_SMALL_KEY_WF', 'MM_KEY_RING_WF', 'MM_BOSS_KEY_WF'],
   mm_snowhead_label: ['MM_SMALL_KEY_SH', 'MM_KEY_RING_SH', 'MM_BOSS_KEY_SH'],
   mm_greatbay_label: ['MM_SMALL_KEY_GB', 'MM_KEY_RING_GB', 'MM_BOSS_KEY_GB'],
   mm_stonetower_label: ['MM_SMALL_KEY_ST', 'MM_KEY_RING_ST', 'MM_BOSS_KEY_ST'],
 }
-const SILVER_RUPEE_PREFIX = 'OOT_RUPEE_SILVER_'
 
 function isItemVisible(itemId: string): boolean {
   if (!props.availableItemIds || props.availableItemIds.size === 0) return true
@@ -83,12 +134,8 @@ function isLabelItem(itemId: string): boolean {
 }
 
 function filterGridRow(row: string[]): string[] {
-  const rowContainsSilver = row.some((itemId: string) => itemId.startsWith(SILVER_RUPEE_PREFIX))
   const visible = row.filter((itemId: string) => isItemVisible(itemId))
-  if (rowContainsSilver) {
-    const hasVisibleSilver = visible.some((itemId: string) => itemId.startsWith(SILVER_RUPEE_PREFIX))
-    if (!hasVisibleSilver) return []
-  }
+  // Don't show rows that only contain labels
   if (visible.length > 0 && visible.every((itemId: string) => isLabelItem(itemId))) {
     return []
   }
