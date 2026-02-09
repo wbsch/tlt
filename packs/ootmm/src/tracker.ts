@@ -58,6 +58,7 @@ const SINGLE_COUNT_ITEM_IDS = new Set([
 ])
 
 const VANILLA_SILVER_RUPEE_PREFIX = 'OOT_RUPEE_SILVER_'
+const OWL_STATUE_PREFIX = 'MM_OWL_'
 
 export class OoTMMTracker implements TrackerPack {
   id = 'ootmm'
@@ -493,12 +494,14 @@ export class OoTMMTracker implements TrackerPack {
     if (!allItems) return available
     const chestGameShuffle = String((this.settings as { smallKeyShuffleChestGame?: unknown })?.smallKeyShuffleChestGame ?? '')
     const hideVanillaSilverRupees = this.isVanillaSilverRupeeShuffle()
+    const hideOwlStatues = String((this.settings as { owlShuffle?: unknown })?.owlShuffle ?? '') === 'none'
     for (const [playerItem, count] of allItems) {
       if (!count || count <= 0) continue
       const itemId = (playerItem as { item?: { id?: string } })?.item?.id
       if (itemId) {
         if (hideVanillaSilverRupees && this.isVanillaSilverRupeeItemId(itemId)) continue
         if (itemId === 'OOT_SMALL_KEY_TCG' && chestGameShuffle === 'vanilla') continue
+        if (hideOwlStatues && this.isOwlStatueItemId(itemId)) continue
         available.add(itemId)
       }
     }
@@ -630,6 +633,10 @@ export class OoTMMTracker implements TrackerPack {
 
   private isVanillaSilverRupeeItemId(itemId: string): boolean {
     return itemId.startsWith(VANILLA_SILVER_RUPEE_PREFIX)
+  }
+
+  private isOwlStatueItemId(itemId: string): boolean {
+    return itemId.startsWith(OWL_STATUE_PREFIX)
   }
 
   private stripVanillaSilverRupees(inventory: Map<string, number>): Map<string, number> {
