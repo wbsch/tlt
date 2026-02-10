@@ -4,11 +4,43 @@ import { storeToRefs } from 'pinia'
 import type { LocationInfo } from '@/types/tracker'
 import { useOoTMMUiStore } from '../stores/ootmmUi'
 import { useOoTMMSessionStore } from '../stores/ootmmSession'
+// Import pool data to get scene information
+import poolData from '../../../../OoTMM/packages/data/dist/data-pool.json'
 
 const props = defineProps<{
   locations: LocationInfo[]
   reachableIds: Set<string>
 }>()
+
+// Create a mapping from location name to scene name
+const locationToSceneMap = computed(() => {
+  const map = new Map<string, string>()
+  if (poolData && poolData.oot) {
+    for (const loc of poolData.oot) {
+      if (loc.location && loc.scene) {
+        map.set(loc.location, loc.scene)
+      }
+    }
+  }
+  if (poolData && poolData.mm) {
+    for (const loc of poolData.mm) {
+      if (loc.location && loc.scene) {
+        map.set(loc.location, loc.scene)
+      }
+    }
+  }
+  return map
+})
+
+// Helper function to format scene name (replace underscores with spaces)
+function formatSceneName(sceneName: string): string {
+  return sceneName.replace(/_/g, ' ')
+}
+
+// Strip leading game prefix (MM/ OOT) from a display name
+function stripGamePrefix(name: string): string {
+  return name.replace(/^(MM|OOT)\s+/, '')
+}
 
 const uiStore = useOoTMMUiStore()
 const sessionStore = useOoTMMSessionStore()
@@ -77,11 +109,21 @@ const groupedLocations = computed(() => {
   const groups = new Map<string, LocationInfo[]>()
   
   filteredLocations.value.forEach(loc => {
-    const area = loc.area
-    if (!groups.has(area)) {
-      groups.set(area, [])
+    // Detect game prefix (MM or OOT) from location name
+    const match = loc.name.match(/^(MM|OOT)\s+/)
+    const gamePrefix = match ? match[1] : ''
+    // Remove game prefix from location name for pool data lookup
+    const nameWithoutPrefix = loc.name.replace(/^(MM|OOT)\s+/, '')
+    // Get scene name from pool data, fallback to area if not found
+    const sceneName = locationToSceneMap.value.get(nameWithoutPrefix)
+    // Prefix the scene/area with the game code when present
+    const baseGroup = sceneName ? formatSceneName(sceneName) : loc.area
+    const groupKey = gamePrefix ? `${gamePrefix} ${baseGroup}` : baseGroup
+    
+    if (!groups.has(groupKey)) {
+      groups.set(groupKey, [])
     }
-    groups.get(area)!.push(loc)
+    groups.get(groupKey)!.push(loc)
   })
   
   return Array.from(groups.entries()).sort((a, b) => a[0].localeCompare(b[0]))
@@ -204,7 +246,7 @@ function toggleCollected(id: string) {
               <span v-if="collectedIdSet.has(loc.id)" class="status-check">✓</span>
             </div>
             <div class="location-info">
-              <div class="location-name">{{ loc.name }}</div>
+              <div class="location-name">{{ stripGamePrefix(loc.name) }}</div>
               <div class="location-category">{{ loc.category }}</div>
             </div>
           </div>
