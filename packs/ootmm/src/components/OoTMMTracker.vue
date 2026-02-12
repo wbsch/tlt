@@ -7,6 +7,7 @@ import OoTMMLocations from './OoTMMLocations.vue'
 import OoTMMSettings from './OoTMMSettings.vue'
 import OoTMMItemGrid from './OoTMMItemGrid.vue'
 import OoTMMWorld from './OoTMMWorld.vue'
+import OoTMMTricks from './OoTMMTricks.vue'
 import { DEFAULT_OOTMM_SETTINGS } from '../types/settings'
 import { parseSpoilerLog } from '../utils/spoiler'
 import { useOoTMMSessionStore } from '../stores/ootmmSession'
@@ -343,7 +344,7 @@ async function requestTabSwitch(nextTab: TrackerTab) {
   if (activeTab.value === nextTab) return
   if (isApplyingSettings.value) return
 
-  if (activeTab.value === 'settings') {
+  if (activeTab.value === 'settings' || activeTab.value === 'tricks') {
     const settingsHandle = settingsRef.value
     if (settingsHandle?.hasUnsavedChanges()) {
       await handleSettingsChange(settingsHandle.getLocalSettingsSnapshot())
@@ -539,6 +540,12 @@ onBeforeUnmount(() => {
         >
           Settings
         </button>
+        <button 
+          :class="{ active: activeTab === 'tricks' }"
+          @click="requestTabSwitch('tricks')"
+        >
+          Tricks & Glitches
+        </button>
       </div>
 
       <div class="tab-content">
@@ -572,6 +579,13 @@ onBeforeUnmount(() => {
         
         <OoTMMSettings
           v-if="activeTab === 'settings'"
+          ref="settingsRef"
+          :settings="trackerSettings"
+          @update:settings="handleSettingsChange"
+        />
+
+        <OoTMMTricks
+          v-if="activeTab === 'tricks'"
           ref="settingsRef"
           :settings="trackerSettings"
           @update:settings="handleSettingsChange"

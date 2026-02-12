@@ -1,5 +1,6 @@
 export interface OoTMMSettings {
   [key: string]: unknown;
+  tricks?: string[];
 }
 
 export const DEFAULT_OOTMM_SETTINGS: OoTMMSettings = {
@@ -341,5 +342,6 @@ export const DEFAULT_OOTMM_SETTINGS: OoTMMSettings = {
   fastMasks: false,
   keepItemsReset: false,
   keepBottlesReset: false,
-  autoInvert: 'never'
+  autoInvert: 'never',
+  tricks: ['OOT_NIGHT_GS']
 };
