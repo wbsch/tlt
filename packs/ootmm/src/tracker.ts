@@ -299,12 +299,9 @@ export class OoTMMTracker implements TrackerPack {
   setSongEvents(events: Record<string, number>): void {
     if (!this.worlds || !this.settings) return
     
-    // Vanilla defaults for song events
-    const vanillaDefaults = [5, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-    
     for (const world of this.worlds) {
-      // Start with vanilla defaults
-      world.songEvents = [...vanillaDefaults]
+      // Start with vanilla defaults from OoTMM core
+      world.songEvents = [...VANILLA_SONG_EVENTS]
       
       // If Song Events Shuffle is enabled, apply user selections
       if (Object.keys(events).length > 0) {

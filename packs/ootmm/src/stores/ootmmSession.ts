@@ -2,6 +2,7 @@ import { defineStore } from 'pinia';
 import { computed, markRaw, nextTick, ref } from 'vue';
 import type { TrackerPack } from '@/types/tracker';
 import { ITEM_DATABASE } from '../data/items';
+import { VANILLA_SONG_EVENTS } from '../data/song-events';
 
 const HISTORY_LIMIT = 200;
 const VANILLA_SILVER_RUPEE_PREFIX = 'OOT_RUPEE_SILVER_';
@@ -438,29 +439,12 @@ export const useOoTMMSessionStore = defineStore('ootmm-session', () => {
     const songEventsShuffleOot = Boolean(trackerSettings.value?.songEventsShuffleOot);
     
     if (songEventsShuffleOot && Object.keys(songEvents.value).length === 0) {
-      // Initialize with vanilla defaults for all configurable events
-      // Vanilla defaults: [5, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-      const vanillaDefaults: Record<string, number> = {
-        0: 5,   // Door of Time (0x00) -> Song of Time
-        1: 3,   // Drain Well Exterior (0x01) -> Song of Storms
-        2: 0,   // Royal Tomb (2) -> Zelda's Lullaby
-        3: 0,   // Zora's River Waterfall (0x03) -> Zelda's Lullaby
-        4: 0,   // Darunia's Chamber (0x04) -> Zelda's Lullaby
-        5: 0,   // Zora's Fountain Fairy (0x05) -> Zelda's Lullaby
-        6: 0,   // Hyrule Castle Fairy (0x06) -> Zelda's Lullaby
-        7: 0,   // Desert Colossus Fairy (0x07) -> Zelda's Lullaby
-        8: 0,   // Death Mountain Trail Fairy (0x08) -> Zelda's Lullaby
-        9: 0,   // Death Mountain Crater Fairy (0x09) -> Zelda's Lullaby
-        10: 0,  // Ganon's Castle Fairy (0x0a) -> Zelda's Lullaby
-        11: 0,  // Water Temple Water Level (0x0b) -> Zelda's Lullaby
-        12: 0,  // Shadow Temple Boat (0x0c) -> Zelda's Lullaby
-        13: 0,  // Spirit Temple Statue Hand (0x0d) -> Zelda's Lullaby
-        14: 0,  // Spirit Temple Compass Chest (0x0e) -> Zelda's Lullaby
-        15: 0,  // Spirit Temple Boss Key (0x0f) -> Zelda's Lullaby
-        16: 0,  // Drain Well Interior (0x10) -> Zelda's Lullaby
-        17: 0,  // Ganon's Light Trial (0x11) -> Zelda's Lullaby
-      };
-      songEvents.value = { ...vanillaDefaults };
+      // Initialize with vanilla defaults from OoTMM core
+      const vanillaDefaults: Record<string, number> = {};
+      VANILLA_SONG_EVENTS.forEach((songId, eventId) => {
+        vanillaDefaults[eventId] = songId;
+      });
+      songEvents.value = vanillaDefaults;
     }
     
     const events = songEventsShuffleOot ? songEvents.value : {};
