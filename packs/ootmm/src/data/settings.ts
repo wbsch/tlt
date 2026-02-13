@@ -196,7 +196,6 @@ const CUSTOM_SETTINGS_DEFINITIONS: SettingDefinition[] = [
     options: [
       { value: 'child', label: 'Child' },
       { value: 'adult', label: 'Adult' },
-      { value: 'random', label: 'Random' },
     ],
   },
 
