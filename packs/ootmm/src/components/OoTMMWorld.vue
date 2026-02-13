@@ -24,7 +24,9 @@ const emit = defineEmits<{
 
 const selectedSet = computed(() => new Set(props.selected))
 
+const showPreCompleted = computed(() => props.enabled)
 const songEventsEnabled = computed(() => Boolean(props.settings?.songEventsShuffleOot))
+const showEmptyState = computed(() => !showPreCompleted.value && !songEventsEnabled.value)
 
 function getSongEventSelection(eventId: number): number | undefined {
   return props.songEvents?.[eventId]
@@ -49,7 +51,11 @@ function toggleDungeon(id: string) {
 <template>
   <div class="world-panel">
     <div class="world-body">
-      <section class="world-section">
+      <div v-if="showEmptyState" class="world-empty">
+        <p>This tab is empty. Enable settings like Pre-Completed Dungeons to see world options here.</p>
+      </div>
+
+      <section v-if="showPreCompleted" class="world-section">
         <div class="world-header">
           <h3>Pre-Completed Dungeons</h3>
           <p class="world-description">
@@ -59,12 +65,7 @@ function toggleDungeon(id: string) {
             Stone Tower Temple includes the inverted dungeon.
           </p>
         </div>
-
-        <div v-if="!enabled" class="world-disabled">
-          <p>Enable <strong>Pre-Completed Dungeons</strong> in Settings to edit this list.</p>
-        </div>
-
-        <div v-else class="world-list">
+        <div class="world-list">
           <label
             v-for="dungeon in dungeons"
             :key="dungeon.id"
@@ -81,7 +82,6 @@ function toggleDungeon(id: string) {
               type="checkbox"
               class="row-toggle"
               :checked="selectedSet.has(dungeon.id)"
-              :disabled="!enabled"
               @change="toggleDungeon(dungeon.id)"
             />
           </label>
@@ -168,10 +168,13 @@ function toggleDungeon(id: string) {
   color: #9ca3af;
 }
 
-.world-disabled {
+.world-empty {
   padding: 1rem;
-  font-size: 0.875rem;
-  color: #f59e0b;
+  font-size: 0.9rem;
+  color: #cbd5f5;
+  border: 1px dashed #374151;
+  border-radius: 8px;
+  background: rgba(15, 23, 42, 0.4);
 }
 
 .world-list {
