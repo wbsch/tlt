@@ -625,10 +625,8 @@ onBeforeUnmount(() => {
           :dungeons="MAJOR_DUNGEONS"
           :selected="preCompletedDungeons"
           :settings="trackerSettings"
-          :special-conds="trackerSettings?.specialConds"
           :song-events="songEvents"
           @update:selected="sessionStore.setPreCompletedDungeons($event)"
-          @update:special-conds="applySpecialCondsPatch"
           @update:song-events="sessionStore.setSongEvents($event)"
         />
         
@@ -636,8 +634,10 @@ onBeforeUnmount(() => {
           v-if="activeTab === 'settings'"
           ref="settingsRef"
           :settings="trackerSettings"
+          :special-conds="trackerSettings?.specialConds"
           :is-applying-settings="isApplyingSettings"
           @update:settings="handleSettingsChange"
+          @update:special-conds="applySpecialCondsPatch"
           @load-spoiler-log="handleSpoilerFile"
         />
 

@@ -1,16 +1,19 @@
 <script setup lang="ts">
 import { ref, computed, watch } from 'vue'
 import { storeToRefs } from 'pinia'
+import { SPECIAL_CONDS, SPECIAL_CONDS_FIELDS } from '@ootmm/core/settings/index'
 import { SETTINGS_DEFINITIONS } from '../data/settings'
 import { useOoTMMUiStore } from '../stores/ootmmUi'
 
 const props = defineProps<{
   settings: Record<string, unknown>
+  specialConds?: Record<string, unknown>
   isApplyingSettings: boolean
 }>()
 
 const emit = defineEmits<{
   'update:settings': [Record<string, unknown>]
+  'update:special-conds': [Record<string, unknown>]
   'load-spoiler-log': [File]
 }>()
 
@@ -24,6 +27,15 @@ type MultiSelectValue =
   | { type: 'specific'; values: string[] }
   | { type: 'random' }
   | { type: 'random-mixed'; set: string[]; unset: string[] }
+
+interface SpecialCondDef {
+  cond?: (settings: Record<string, unknown>) => boolean
+  name?: string
+}
+
+interface SpecialCondField {
+  max?: number | ((settings: Record<string, unknown>) => unknown)
+}
 
 function areSettingsEqual(a: Record<string, unknown>, b: Record<string, unknown>) {
   const aKeys = Object.keys(a)
@@ -201,15 +213,123 @@ function resetSettings() {
   })
 }
 
+const SPECIAL_COND_ANCHORS: Record<string, string[]> = {
+  rainbowBridge: ['BRIDGE'],
+  lacs: ['LACS'],
+  ganonBossKey: ['GANON_BK'],
+  majoraChild: ['MAJORA'],
+}
+
+const specialFields = Object.entries(SPECIAL_CONDS_FIELDS)
+const expandedConds = ref<Record<string, boolean>>({})
+
+function isSpecialCondVisible(condKey: string) {
+  const cond = (SPECIAL_CONDS as Record<string, SpecialCondDef>)[condKey]?.cond
+  return cond ? cond(localSettings.value) : true
+}
+
+function getSpecialCondState(condKey: string) {
+  return props.specialConds?.[condKey] as Record<string, unknown> ?? { count: 0 }
+}
+
+function isSpecialCondExpanded(condKey: string) {
+  if (expandedConds.value[condKey] !== undefined) {
+    return expandedConds.value[condKey]
+  }
+  return false
+}
+
+function toggleSpecialCondExpanded(condKey: string) {
+  expandedConds.value = {
+    ...expandedConds.value,
+    [condKey]: !isSpecialCondExpanded(condKey),
+  }
+}
+
+function computeSpecialCondMax(condState: Record<string, unknown>) {
+  const settings = localSettings.value ?? {}
+  let max = 0
+  for (const [fieldKey, fieldDef] of specialFields) {
+    if (!condState[fieldKey]) continue
+    const fieldMax = (fieldDef as SpecialCondField).max
+    const raw = typeof fieldMax === 'function' ? (fieldMax as (settings: Record<string, unknown>) => unknown)(settings) : fieldMax
+    const value = typeof raw === 'number' ? raw : Number(raw)
+    if (Number.isFinite(value)) {
+      max += value
+    }
+  }
+  if (condState.masksOot && condState.masksRegular) {
+    const sharedMaskCount = Object.keys(settings)
+      .filter(key => key.includes('sharedMask'))
+      .filter(key => Boolean(settings[key as keyof typeof settings]))
+      .length
+    max -= sharedMaskCount
+  }
+  return Math.max(0, Math.floor(max))
+}
+
+function getSpecialCondMax(condKey: string) {
+  const cond = getSpecialCondState(condKey)
+  return computeSpecialCondMax(cond)
+}
+
+function getSpecialCondCount(condKey: string) {
+  const cond = getSpecialCondState(condKey)
+  const raw = Number(cond.count ?? 0)
+  const value = Number.isFinite(raw) ? raw : 0
+  const max = getSpecialCondMax(condKey)
+  return Math.min(Math.max(0, Math.floor(value)), max)
+}
+
+function getSpecialCondEnabledFields(condKey: string) {
+  const cond = getSpecialCondState(condKey)
+  return specialFields
+    .filter(([fieldKey]) => Boolean(cond[fieldKey]))
+    .map(([, fieldDef]) => String((fieldDef as { name?: string }).name))
+}
+
+function getSpecialCondSummary(condKey: string) {
+  const enabledFields = getSpecialCondEnabledFields(condKey)
+  if (enabledFields.length === 0) {
+    return 'No fields selected'
+  }
+  if (enabledFields.length <= 3) {
+    return enabledFields.join(', ')
+  }
+  return `${enabledFields.slice(0, 3).join(', ')} +${enabledFields.length - 3} more`
+}
+
+function toggleSpecialCondField(condKey: string, fieldKey: string) {
+  const cond = getSpecialCondState(condKey)
+  const nextValue = !cond[fieldKey]
+  const nextCond = { ...cond, [fieldKey]: nextValue }
+  const max = computeSpecialCondMax(nextCond)
+  const rawCount = Number(cond.count ?? 0)
+  const safeCount = Number.isFinite(rawCount) ? rawCount : 0
+  const nextCount = Math.min(Math.max(0, Math.floor(safeCount)), max)
+  const patch: Record<string, unknown> = { [fieldKey]: nextValue }
+  if (nextCount !== cond.count) {
+    patch.count = nextCount
+  }
+  emit('update:special-conds', { [condKey]: patch })
+}
+
+function updateSpecialCondCount(condKey: string, value: number) {
+  const max = getSpecialCondMax(condKey)
+  const nextValue = Math.min(Math.max(0, Math.floor(value || 0)), max)
+  emit('update:special-conds', { [condKey]: { count: nextValue } })
+}
+
+const visibleSettings = computed(() => SETTINGS_DEFINITIONS.filter(isSettingVisible))
+
 // Filter settings by search query
 const filteredSettings = computed(() => {
-  const visibleSettings = SETTINGS_DEFINITIONS.filter(isSettingVisible)
   if (!searchQuery.value.trim()) {
-    return visibleSettings
+    return visibleSettings.value
   }
   
   const query = searchQuery.value.toLowerCase()
-  return visibleSettings.filter(setting => {
+  return visibleSettings.value.filter(setting => {
     const matchesLabel = setting.label.toLowerCase().includes(query)
     const matchesDescription = setting.description?.toLowerCase().includes(query)
     const matchesKey = setting.key.toLowerCase().includes(query)
@@ -227,6 +347,34 @@ const settingsByCategory = computed(() => {
     acc[category].push(setting)
     return acc
   }, {} as Record<string, (typeof SETTINGS_DEFINITIONS)[number][]>)
+})
+
+const isSearchActive = computed(() => Boolean(searchQuery.value.trim()))
+
+const moonAnchorKey = computed(() => {
+  const keys = filteredSettings.value.map((setting) => setting.key)
+  if (keys.includes('majoraChild')) return 'majoraChild'
+  if (keys.includes('openMoon')) return 'openMoon'
+  return null
+})
+
+const specialCondKeysBySetting = computed(() => {
+  const result: Record<string, string[]> = {}
+  for (const setting of filteredSettings.value) {
+    const base = SPECIAL_COND_ANCHORS[setting.key] ?? []
+    const withMoon = setting.key === moonAnchorKey.value ? ['MOON', ...base] : base
+    const visible = withMoon.filter(isSpecialCondVisible)
+    if (visible.length > 0) {
+      result[setting.key] = Array.from(new Set(visible))
+    }
+  }
+  return result
+})
+
+const fallbackSpecialCondKeys = computed(() => {
+  if (moonAnchorKey.value) return []
+  if (isSearchActive.value) return []
+  return ['MOON'].filter(isSpecialCondVisible)
 })
 
 watch(
@@ -296,83 +444,194 @@ defineExpose({
         <h3 class="category-name">{{ category }}</h3>
         
         <div class="settings-list">
-          <div v-for="setting in categorySettings" :key="setting.key" class="setting-item">
-            <label :for="setting.key" class="setting-label">
-              {{ setting.label }}
-              <span v-if="setting.description" class="setting-description">
-                {{ setting.description }}
-              </span>
-            </label>
+          <div v-for="setting in categorySettings" :key="setting.key" class="setting-block">
+            <div class="setting-item">
+              <label :for="setting.key" class="setting-label">
+                {{ setting.label }}
+                <span v-if="setting.description" class="setting-description">
+                  {{ setting.description }}
+                </span>
+              </label>
 
-            <!-- Boolean -->
-            <input
-              v-if="setting.type === 'boolean'"
-              :id="setting.key"
-              type="checkbox"
-              :checked="localSettings[setting.key]"
-              class="setting-checkbox"
-              @change="updateSetting(setting.key, ($event.target as HTMLInputElement).checked)"
-            />
-
-            <!-- Select -->
-            <select
-              v-else-if="setting.type === 'select'"
-              :id="setting.key"
-              :value="getSelectValue(setting)"
-              class="setting-select"
-              @change="updateSetting(setting.key, ($event.target as HTMLSelectElement).value)"
-            >
-              <option v-for="opt in getVisibleOptions(setting)" :key="opt.value" :value="opt.value">
-                {{ opt.label }}
-              </option>
-            </select>
-
-            <!-- Number -->
-            <input
-              v-else-if="setting.type === 'number'"
-              :id="setting.key"
-              type="number"
-              :value="localSettings[setting.key]"
-              :min="getNumberBound(setting.min)"
-              :max="getNumberBound(setting.max)"
-              class="setting-input"
-              @input="updateSetting(setting.key, parseInt(($event.target as HTMLInputElement).value))"
-            />
-
-            <!-- Multi-select -->
-            <div v-else-if="setting.type === 'multi-select'" class="setting-multiselect">
-              <select
+              <!-- Boolean -->
+              <input
+                v-if="setting.type === 'boolean'"
                 :id="setting.key"
-                :value="getMultiSelectMode(setting.key)"
+                type="checkbox"
+                :checked="localSettings[setting.key]"
+                class="setting-checkbox"
+                @change="updateSetting(setting.key, ($event.target as HTMLInputElement).checked)"
+              />
+
+              <!-- Select -->
+              <select
+                v-else-if="setting.type === 'select'"
+                :id="setting.key"
+                :value="getSelectValue(setting)"
                 class="setting-select"
-                @change="updateMultiSelectMode(setting.key, ($event.target as HTMLSelectElement).value)"
+                @change="updateSetting(setting.key, ($event.target as HTMLSelectElement).value)"
               >
-                <option value="none">None</option>
-                <option value="all">All</option>
-                <option value="specific">Specific</option>
+                <option v-for="opt in getVisibleOptions(setting)" :key="opt.value" :value="opt.value">
+                  {{ opt.label }}
+                </option>
               </select>
 
-              <div v-if="getMultiSelectMode(setting.key) === 'specific'" class="setting-multiselect-options">
-                <label v-for="opt in getVisibleOptions(setting)" :key="opt.value" class="multiselect-option">
+              <!-- Number -->
+              <input
+                v-else-if="setting.type === 'number'"
+                :id="setting.key"
+                type="number"
+                :value="localSettings[setting.key]"
+                :min="getNumberBound(setting.min)"
+                :max="getNumberBound(setting.max)"
+                class="setting-input"
+                @input="updateSetting(setting.key, parseInt(($event.target as HTMLInputElement).value))"
+              />
+
+              <!-- Multi-select -->
+              <div v-else-if="setting.type === 'multi-select'" class="setting-multiselect">
+                <select
+                  :id="setting.key"
+                  :value="getMultiSelectMode(setting.key)"
+                  class="setting-select"
+                  @change="updateMultiSelectMode(setting.key, ($event.target as HTMLSelectElement).value)"
+                >
+                  <option value="none">None</option>
+                  <option value="all">All</option>
+                  <option value="specific">Specific</option>
+                </select>
+
+                <div v-if="getMultiSelectMode(setting.key) === 'specific'" class="setting-multiselect-options">
+                  <label v-for="opt in getVisibleOptions(setting)" :key="opt.value" class="multiselect-option">
+                    <input
+                      type="checkbox"
+                      :checked="isMultiSelectChecked(setting.key, opt.value)"
+                      @change="toggleMultiSelectValue(setting.key, opt.value, ($event.target as HTMLInputElement).checked)"
+                    />
+                    <span>{{ opt.label }}</span>
+                  </label>
+                </div>
+              </div>
+
+              <!-- Text -->
+              <input
+                v-else-if="setting.type === 'text'"
+                :id="setting.key"
+                type="text"
+                :value="localSettings[setting.key]"
+                class="setting-input"
+                @input="updateSetting(setting.key, ($event.target as HTMLInputElement).value)"
+              />
+            </div>
+
+            <div v-if="specialCondKeysBySetting[setting.key]?.length" class="setting-special">
+              <div class="setting-special-label">Special Condition</div>
+              <div class="special-grid">
+                <div v-for="condKey in specialCondKeysBySetting[setting.key]" :key="condKey" class="special-card">
+                  <div class="special-header">
+                    <div class="special-title">{{ (SPECIAL_CONDS as Record<string, SpecialCondDef>)[condKey]?.name }}</div>
+                    <button
+                      type="button"
+                      class="special-expand"
+                      :aria-expanded="isSpecialCondExpanded(condKey)"
+                      @click="toggleSpecialCondExpanded(condKey)"
+                    >
+                      {{ isSpecialCondExpanded(condKey) ? 'Hide' : 'Show' }}
+                    </button>
+                  </div>
+
+                  <div v-if="!isSpecialCondExpanded(condKey)" class="special-summary">
+                    <div class="special-summary-text">{{ getSpecialCondSummary(condKey) }}</div>
+                    <div class="special-summary-count">
+                      Amount: {{ getSpecialCondCount(condKey) }} / {{ getSpecialCondMax(condKey) }}
+                    </div>
+                  </div>
+
+                  <div v-else class="special-fields">
+                    <label
+                      v-for="[fieldKey, fieldDef] in specialFields"
+                      :key="fieldKey"
+                      class="special-field"
+                    >
+                      <span class="special-label">{{ (fieldDef as any).name }}</span>
+                      <input
+                        type="checkbox"
+                        class="special-toggle"
+                        :checked="Boolean(getSpecialCondState(condKey)[fieldKey])"
+                        @change="toggleSpecialCondField(condKey, fieldKey)"
+                      />
+                    </label>
+                    <label class="special-count">
+                      <span class="special-count-label">Amount (max: {{ getSpecialCondMax(condKey) }})</span>
+                      <input
+                        type="number"
+                        min="0"
+                        step="1"
+                        :max="getSpecialCondMax(condKey)"
+                        :value="getSpecialCondCount(condKey)"
+                        class="special-count-input"
+                        @input="updateSpecialCondCount(condKey, Number(($event.target as HTMLInputElement).value))"
+                      />
+                    </label>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div v-if="fallbackSpecialCondKeys.length > 0" class="settings-fallback">
+        <h3 class="category-name">Special Conditions</h3>
+        <div class="setting-special">
+          <div class="special-grid">
+            <div v-for="condKey in fallbackSpecialCondKeys" :key="condKey" class="special-card">
+              <div class="special-header">
+                <div class="special-title">{{ (SPECIAL_CONDS as Record<string, SpecialCondDef>)[condKey]?.name }}</div>
+                <button
+                  type="button"
+                  class="special-expand"
+                  :aria-expanded="isSpecialCondExpanded(condKey)"
+                  @click="toggleSpecialCondExpanded(condKey)"
+                >
+                  {{ isSpecialCondExpanded(condKey) ? 'Hide' : 'Show' }}
+                </button>
+              </div>
+
+              <div v-if="!isSpecialCondExpanded(condKey)" class="special-summary">
+                <div class="special-summary-text">{{ getSpecialCondSummary(condKey) }}</div>
+                <div class="special-summary-count">
+                  Amount: {{ getSpecialCondCount(condKey) }} / {{ getSpecialCondMax(condKey) }}
+                </div>
+              </div>
+
+              <div v-else class="special-fields">
+                <label
+                  v-for="[fieldKey, fieldDef] in specialFields"
+                  :key="fieldKey"
+                  class="special-field"
+                >
+                  <span class="special-label">{{ (fieldDef as any).name }}</span>
                   <input
                     type="checkbox"
-                    :checked="isMultiSelectChecked(setting.key, opt.value)"
-                    @change="toggleMultiSelectValue(setting.key, opt.value, ($event.target as HTMLInputElement).checked)"
+                    class="special-toggle"
+                    :checked="Boolean(getSpecialCondState(condKey)[fieldKey])"
+                    @change="toggleSpecialCondField(condKey, fieldKey)"
                   />
-                  <span>{{ opt.label }}</span>
+                </label>
+                <label class="special-count">
+                  <span class="special-count-label">Amount (max: {{ getSpecialCondMax(condKey) }})</span>
+                  <input
+                    type="number"
+                    min="0"
+                    step="1"
+                    :max="getSpecialCondMax(condKey)"
+                    :value="getSpecialCondCount(condKey)"
+                    class="special-count-input"
+                    @input="updateSpecialCondCount(condKey, Number(($event.target as HTMLInputElement).value))"
+                  />
                 </label>
               </div>
             </div>
-
-            <!-- Text -->
-            <input
-              v-else-if="setting.type === 'text'"
-              :id="setting.key"
-              type="text"
-              :value="localSettings[setting.key]"
-              class="setting-input"
-              @input="updateSetting(setting.key, ($event.target as HTMLInputElement).value)"
-            />
           </div>
         </div>
       </div>
@@ -451,7 +710,13 @@ defineExpose({
 .settings-list {
   display: flex;
   flex-direction: column;
-  gap: 1rem;
+  gap: 1.25rem;
+}
+
+.setting-block {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
 }
 
 .setting-item {
@@ -505,6 +770,136 @@ defineExpose({
 .setting-select,
 .setting-input {
   min-width: 150px;
+}
+
+.setting-special {
+  padding: 0.75rem;
+  border-radius: 8px;
+  border: 1px solid #2f3b4f;
+  background: #0f172a;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.setting-special-label {
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: #94a3b8;
+}
+
+.settings-fallback {
+  margin-top: 1.5rem;
+}
+
+.special-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 0.75rem;
+}
+
+.special-card {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  padding: 0.75rem;
+  border-radius: 8px;
+  border: 1px solid #404040;
+  background: #111827;
+}
+
+.special-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+}
+
+.special-title {
+  font-size: 0.95rem;
+  font-weight: 600;
+}
+
+.special-expand {
+  background: transparent;
+  border: 1px solid #334155;
+  color: #cbd5f5;
+  padding: 0.2rem 0.55rem;
+  border-radius: 999px;
+  font-size: 0.7rem;
+  cursor: pointer;
+}
+
+.special-expand:hover {
+  border-color: #60a5fa;
+  color: #e2e8f0;
+}
+
+.special-summary {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  font-size: 0.8rem;
+  color: #cbd5f5;
+  padding: 0.5rem 0.6rem;
+  border-radius: 6px;
+  border: 1px dashed #334155;
+  background: #0f172a;
+}
+
+.special-summary-text {
+  color: #e2e8f0;
+}
+
+.special-summary-count {
+  color: #94a3b8;
+  font-size: 0.75rem;
+}
+
+.special-fields {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.special-field {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  padding: 0.35rem 0.5rem;
+  border-radius: 6px;
+  background: #1f2937;
+  border: 1px solid #2f3b4f;
+}
+
+.special-label {
+  font-size: 0.8rem;
+  color: #d1d5db;
+}
+
+.special-toggle {
+  width: 16px;
+  height: 16px;
+  accent-color: #38bdf8;
+}
+
+.special-count {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  font-size: 0.8rem;
+  color: #cbd5f5;
+}
+
+.special-count-input {
+  width: 100%;
+  padding: 0.35rem 0.5rem;
+  border-radius: 6px;
+  border: 1px solid #404040;
+  background: #1f2937;
+  color: #f9fafb;
 }
 
 .settings-actions {
