@@ -9,20 +9,57 @@ type DungeonRow = {
   note?: string
 }
 
+type SongEventData = {
+  id: number
+  label: string
+  code: string
+}
+
 const props = defineProps<{
   enabled: boolean
   dungeons: DungeonRow[]
   selected: string[]
   settings: Record<string, unknown>
   specialConds?: Record<string, unknown>
+  songEvents?: Record<string, number>
 }>()
 
 const emit = defineEmits<{
   'update:selected': [string[]]
   'update:special-conds': [Record<string, unknown>]
+  'update:song-events': [Record<string, number>]
 }>()
 
 const selectedSet = computed(() => new Set(props.selected))
+
+// Song Events Data
+const SONG_EVENTS: SongEventData[] = [
+  { id: 0x10, label: 'Drain Well Interior', code: '0x10' },
+  { id: 0x11, label: "Ganon's Light Trial", code: '0x11' },
+  { id: 0x0c, label: 'Shadow Temple Boat', code: '0x0c' },
+  { id: 2, label: 'Royal Tomb', code: '2' },
+]
+
+const SONG_NAMES = [
+  { value: 0, label: "Zelda's Lullaby" },
+  { value: 1, label: "Epona's Song" },
+  { value: 2, label: "Saria's Song" },
+  { value: 3, label: "Song of Storms" },
+  { value: 4, label: "Sun's Song" },
+  { value: 5, label: "Song of Time" },
+]
+
+const songEventsEnabled = computed(() => Boolean(props.settings?.songEventsShuffleOot))
+
+function getSongEventSelection(eventId: number): number | undefined {
+  return props.songEvents?.[eventId]
+}
+
+function updateSongEvent(eventId: number, songId: number) {
+  const next = { ...props.songEvents, [eventId]: songId }
+  emit('update:song-events', next)
+}
+
 interface SpecialCond {
   cond?: (settings: Record<string, unknown>) => boolean
   name?: string
@@ -185,6 +222,41 @@ function updateSpecialCondCount(condKey: string, value: number) {
               @change="toggleDungeon(dungeon.id)"
             />
           </label>
+        </div>
+      </section>
+
+      <section v-if="songEventsEnabled" class="world-section">
+        <div class="world-header">
+          <h3>Song Events</h3>
+          <p class="world-description">
+            Choose which song is required to trigger each event. These events will require playing the selected song to proceed.
+          </p>
+        </div>
+
+        <div class="world-list">
+          <div
+            v-for="event in SONG_EVENTS"
+            :key="event.id"
+            class="world-row song-event-row"
+          >
+            <div class="row-info">
+              <span class="row-label">{{ event.label }}</span>
+              <span class="row-note">({{ event.code }})</span>
+            </div>
+            <select
+              :value="getSongEventSelection(event.id) ?? 0"
+              class="song-select"
+              @change="updateSongEvent(event.id, Number(($event.target as HTMLSelectElement).value))"
+            >
+              <option
+                v-for="song in SONG_NAMES"
+                :key="song.value"
+                :value="song.value"
+              >
+                {{ song.label }}
+              </option>
+            </select>
+          </div>
         </div>
       </section>
 
@@ -357,6 +429,31 @@ function updateSpecialCondCount(condKey: string, value: number) {
   width: 18px;
   height: 18px;
   accent-color: #3b82f6;
+}
+
+.song-event-row {
+  background: #1a2332;
+}
+
+.song-select {
+  padding: 0.35rem 0.6rem;
+  border-radius: 6px;
+  border: 1px solid #404040;
+  background: #0f172a;
+  color: #f9fafb;
+  font-size: 0.875rem;
+  cursor: pointer;
+  min-width: 160px;
+}
+
+.song-select:hover {
+  border-color: #60a5fa;
+}
+
+.song-select:focus {
+  outline: none;
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
 }
 
 .special-grid {

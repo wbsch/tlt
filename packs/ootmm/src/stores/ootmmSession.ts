@@ -10,6 +10,7 @@ type SessionSnapshot = {
   inventoryById: Record<string, number>;
   collectedLocationIds: string[];
   preCompletedDungeons: string[];
+  songEvents: Record<string, number>;
   trackerSettings: Record<string, unknown>;
 };
 
@@ -98,6 +99,7 @@ export const useOoTMMSessionStore = defineStore('ootmm-session', () => {
   const inventoryById = ref<Record<string, number>>({});
   const collectedLocationIds = ref<string[]>([]);
   const preCompletedDungeons = ref<string[]>([]);
+  const songEvents = ref<Record<string, number>>({});
 
   const trackerSettings = ref<Record<string, unknown>>({});
   const availableItemIds = ref<string[]>([]);
@@ -151,6 +153,7 @@ export const useOoTMMSessionStore = defineStore('ootmm-session', () => {
       inventoryById: sanitizeInventoryRecord({ ...inventoryById.value }),
       collectedLocationIds: [...collectedLocationIds.value],
       preCompletedDungeons: [...preCompletedDungeons.value],
+      songEvents: { ...songEvents.value },
       trackerSettings: cloneSettingsRecord(trackerSettings.value),
     };
   }
@@ -220,6 +223,7 @@ export const useOoTMMSessionStore = defineStore('ootmm-session', () => {
     const targetInventoryById = sanitizeInventoryRecord({ ...snapshot.inventoryById });
     const targetCollectedLocationIds = uniqueStrings(snapshot.collectedLocationIds);
     const targetPreCompletedDungeons = uniqueStrings(snapshot.preCompletedDungeons);
+    const targetSongEvents = { ...snapshot.songEvents };
     const targetSettings = cloneSettingsRecord(snapshot.trackerSettings);
 
     isNavigatingHistory.value = true;
@@ -228,6 +232,7 @@ export const useOoTMMSessionStore = defineStore('ootmm-session', () => {
         inventoryById.value = targetInventoryById;
         collectedLocationIds.value = targetCollectedLocationIds;
         preCompletedDungeons.value = targetPreCompletedDungeons;
+        songEvents.value = targetSongEvents;
         trackerSettings.value = targetSettings;
         reachableLocationIds.value = [];
         canComplete.value = false;
@@ -262,7 +267,9 @@ export const useOoTMMSessionStore = defineStore('ootmm-session', () => {
       }
 
       preCompletedDungeons.value = targetPreCompletedDungeons;
+      songEvents.value = targetSongEvents;
       applyPreCompletedDungeons();
+      applySongEvents();
       inventoryById.value = targetInventoryById;
       collectedLocationIds.value = targetCollectedLocationIds;
       recomputeReachability();
@@ -409,12 +416,41 @@ export const useOoTMMSessionStore = defineStore('ootmm-session', () => {
     recordHistoryEntry(previousSnapshot);
   }
 
+  function setSongEvents(events: Record<string, number>) {
+    const previousSnapshot = captureSessionSnapshot();
+    songEvents.value = { ...events };
+    applySongEvents();
+    recordHistoryEntry(previousSnapshot);
+  }
+
   function applyPreCompletedDungeons() {
     const currentTracker = tracker.value;
     if (!currentTracker || !currentTracker.setPreCompletedDungeons) return;
     const selected = preCompletedEnabled.value ? preCompletedDungeons.value : [];
     currentTracker.setPreCompletedDungeons(selected);
     locationsVersion.value += 1;
+    recomputeReachability();
+  }
+
+  function applySongEvents() {
+    const currentTracker = tracker.value;
+    if (!currentTracker || !currentTracker.setSongEvents) return;
+    const songEventsShuffleOot = Boolean(trackerSettings.value?.songEventsShuffleOot);
+    
+    if (songEventsShuffleOot && Object.keys(songEvents.value).length === 0) {
+      // Initialize with vanilla defaults for the configurable events
+      // Vanilla defaults: [5, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+      const vanillaDefaults: Record<string, number> = {
+        2: 0,   // Royal Tomb -> Zelda's Lullaby
+        12: 0,  // Shadow Temple Boat (0x0C) -> Zelda's Lullaby
+        16: 0,  // Drain Well Interior (0x10) -> Zelda's Lullaby
+        17: 0,  // Ganon's Light Trial (0x11) -> Zelda's Lullaby
+      };
+      songEvents.value = { ...vanillaDefaults };
+    }
+    
+    const events = songEventsShuffleOot ? songEvents.value : {};
+    currentTracker.setSongEvents(events);
     recomputeReachability();
   }
 
@@ -448,6 +484,7 @@ export const useOoTMMSessionStore = defineStore('ootmm-session', () => {
         currentTracker.getItemMaxCounts?.() ?? new Map<string, number>(),
       );
       applyPreCompletedDungeons();
+      applySongEvents();
       recomputeReachability();
       didApply = true;
     } catch (error) {
@@ -488,6 +525,7 @@ export const useOoTMMSessionStore = defineStore('ootmm-session', () => {
     inventoryById.value = {};
     collectedLocationIds.value = [];
     preCompletedDungeons.value = [];
+    songEvents.value = {};
 
     if (!currentTracker) {
       trackerSettings.value = {};
@@ -553,6 +591,7 @@ export const useOoTMMSessionStore = defineStore('ootmm-session', () => {
     inventoryById,
     collectedLocationIds,
     preCompletedDungeons,
+    songEvents,
     trackerSettings,
     availableItemIds,
     itemMaxCountsById,
@@ -584,7 +623,9 @@ export const useOoTMMSessionStore = defineStore('ootmm-session', () => {
     toggleCollectedLocation,
     setCollectedLocationIds,
     setPreCompletedDungeons,
+    setSongEvents,
     applyPreCompletedDungeons,
+    applySongEvents,
     applySpecialCondsPatch,
     applySettings,
     undo,

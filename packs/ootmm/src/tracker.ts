@@ -296,6 +296,30 @@ export class OoTMMTracker implements TrackerPack {
     this.pathfinder = new Pathfinder(this.worlds, this.settings, new Map())
   }
 
+  setSongEvents(events: Record<string, number>): void {
+    if (!this.worlds || !this.settings) return
+    
+    // Vanilla defaults for song events
+    const vanillaDefaults = [5, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+    
+    for (const world of this.worlds) {
+      // Start with vanilla defaults
+      world.songEvents = [...vanillaDefaults]
+      
+      // If Song Events Shuffle is enabled, apply user selections
+      if (Object.keys(events).length > 0) {
+        for (const [eventKey, songId] of Object.entries(events)) {
+          const eventId = parseInt(eventKey, 10)
+          if (!isNaN(eventId) && songId >= 0 && songId <= 5 && eventId >= 0 && eventId < world.songEvents.length) {
+            world.songEvents[eventId] = songId
+          }
+        }
+      }
+    }
+
+    this.pathfinder = new Pathfinder(this.worlds, this.settings, new Map())
+  }
+
   setSpecialConds(patch: Record<string, unknown>): void {
     if (!this.worlds || !this.settings || !mergeSettings) return
     this.settings = mergeSettings(this.settings, { specialConds: patch } as Record<string, unknown>)

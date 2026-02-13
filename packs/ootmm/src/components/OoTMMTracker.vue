@@ -63,6 +63,7 @@ const {
   stats,
   trackerSettings,
   preCompletedDungeons,
+  songEvents,
   collectedLocationIds,
   isApplyingSettings,
   preCompletedEnabled,
@@ -117,6 +118,14 @@ watch(
   preCompletedEnabled,
   () => {
     sessionStore.applyPreCompletedDungeons()
+  },
+  { immediate: true },
+)
+
+watch(
+  () => trackerSettings.value?.songEventsShuffleOot,
+  () => {
+    sessionStore.applySongEvents()
   },
   { immediate: true },
 )
@@ -592,8 +601,10 @@ onBeforeUnmount(() => {
           :selected="preCompletedDungeons"
           :settings="trackerSettings"
           :special-conds="trackerSettings?.specialConds"
+          :song-events="songEvents"
           @update:selected="sessionStore.setPreCompletedDungeons($event)"
           @update:special-conds="applySpecialCondsPatch"
+          @update:song-events="sessionStore.setSongEvents($event)"
         />
         
         <OoTMMSettings
