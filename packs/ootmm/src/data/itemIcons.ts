@@ -161,6 +161,12 @@ const RAW_ITEM_ICONS: Record<string, string> = {
   'OOT_POUCH_SILVER_GANON_SHADOW': 'images/rupee.png',
   'OOT_POUCH_SILVER_GANON_WATER': 'images/rupee.png',
 
+  // Fish
+  'OOT_FISHING_POND_CHILD_FISH_8LBS': 'images/Fish.png',
+  'OOT_FISHING_POND_ADULT_FISH_8LBS': 'images/Fish.png',
+  'OOT_FISHING_POND_CHILD_LOACH_16LBS': 'images/Fish.png',
+  'OOT_FISHING_POND_ADULT_LOACH_30LBS': 'images/Fish.png',
+
   // Buttons
   'OOT_BUTTON_A': 'images/button_a.png',
   'OOT_BUTTON_C_DOWN': 'images/button_down.png',
