@@ -175,16 +175,21 @@ const imageSuggestions = computed(() => {
 })
 
 const locationSearchResults = computed(() => {
-  const query = normalizeCode(codeSearchQuery.value)
-  if (!query) {
+  const terms = normalizeCode(codeSearchQuery.value)
+    .split(/\s+/)
+    .filter((term) => term.length > 0)
+  if (terms.length === 0) {
     return locationIndex.value.slice(0, LOCATION_SEARCH_LIMIT)
   }
   return locationIndex.value
     .filter(
       (entry) =>
-        entry.normalizedId.includes(query) ||
-        entry.normalizedBaseId.includes(query) ||
-        entry.normalizedName.includes(query),
+        terms.every(
+          (term) =>
+            entry.normalizedId.includes(term) ||
+            entry.normalizedBaseId.includes(term) ||
+            entry.normalizedName.includes(term),
+        ),
     )
     .slice(0, LOCATION_SEARCH_LIMIT)
 })
