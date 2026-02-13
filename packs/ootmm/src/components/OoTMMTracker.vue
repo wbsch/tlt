@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { onBeforeUnmount, onMounted, ref, watch } from 'vue'
+import { computed, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 import { storeToRefs } from 'pinia'
 import type { TrackerPack } from '@/types/tracker'
 import OoTMMInventory from './OoTMMInventory.vue'
@@ -7,11 +7,14 @@ import OoTMMLocations from './OoTMMLocations.vue'
 import OoTMMSettings from './OoTMMSettings.vue'
 import OoTMMItemGrid from './OoTMMItemGrid.vue'
 import OoTMMWorld from './OoTMMWorld.vue'
+import OoTMMMap from './OoTMMMap.vue'
 import OoTMMTricks from './OoTMMTricks.vue'
 import { DEFAULT_OOTMM_SETTINGS } from '../types/settings'
 import { parseSpoilerLog } from '../utils/spoiler'
 import { useOoTMMSessionStore } from '../stores/ootmmSession'
 import { useOoTMMUiStore, type TrackerTab } from '../stores/ootmmUi'
+import { OOTMM_MAP_DEFS } from '../data/maps'
+import type { MapDef } from '../data/maps/types'
 import * as ItemsMod from '@ootmm/core/items/index'
 import * as NamesMod from '@ootmm/core/names'
 import * as SettingsDataMod from '@ootmm/core/settings/data.js'
@@ -79,6 +82,13 @@ const settingsRef = ref<SettingsPanelHandle | null>(null)
 const spoilerFileInput = ref<HTMLInputElement | null>(null)
 const statsMenuRef = ref<HTMLDetailsElement | null>(null)
 const isStatsMenuOpen = ref(false)
+const mapDefs = OOTMM_MAP_DEFS
+const activeMapId = ref(mapDefs[0]?.id ?? '')
+const activeMap = computed<MapDef | null>(() => {
+  if (mapDefs.length === 0) return null
+  return mapDefs.find((mapDef) => mapDef.id === activeMapId.value) ?? mapDefs[0]
+})
+const collectedLocationIdSet = computed(() => new Set(collectedLocationIds.value))
 
 const MAJOR_DUNGEONS = [
   { id: 'DT', label: 'Deku Tree', game: 'oot' as const },
@@ -120,6 +130,23 @@ watch(isApplyingSettings, (applying) => {
 function fillInventory() {
   sessionStore.fillInventoryForDebugActivateAll()
 }
+
+function handleMapToggleCollected(checkId: string) {
+  sessionStore.toggleCollectedLocation(checkId)
+}
+
+function handleMapMarkAllReachable(checkIds: string[]) {
+  if (checkIds.length === 0) return
+  const next = new Set(collectedLocationIds.value)
+  for (const checkId of checkIds) {
+    next.add(checkId)
+  }
+  sessionStore.setCollectedLocationIds(Array.from(next))
+}
+
+function handleMapPopupOpen() {}
+
+function handleMapPopupClose() {}
 
 async function undo() {
   if (isApplyingSettings.value || !canUndo.value) return
@@ -595,10 +622,25 @@ onBeforeUnmount(() => {
 
     <div class="tracker-main">
       <div class="map-panel">
-        <div class="map-placeholder">
-          <h2>Map View</h2>
-          <p>Interactive map coming soon...</p>
-          <p class="hint">For now, use the Locations sidebar to see all checks</p>
+        <div class="map-shell">
+          <div class="map-toolbar" v-if="mapDefs.length > 1">
+            <label class="map-toolbar-label" for="map-select">Map</label>
+            <select id="map-select" v-model="activeMapId" class="map-toolbar-select">
+              <option v-for="mapDef in mapDefs" :key="mapDef.id" :value="mapDef.id">
+                {{ mapDef.title }}
+              </option>
+            </select>
+          </div>
+          <OoTMMMap
+            class="map-view"
+            :active-map="activeMap"
+            :reachable-ids="reachableLocationIds"
+            :collected-ids="collectedLocationIdSet"
+            @toggle-collected="handleMapToggleCollected"
+            @mark-all-reachable="handleMapMarkAllReachable"
+            @open-popup="handleMapPopupOpen"
+            @close-popup="handleMapPopupClose"
+          />
         </div>
       </div>
 
@@ -941,28 +983,41 @@ onBeforeUnmount(() => {
   flex: 1;
   min-width: 0;
   display: flex;
-  align-items: center;
-  justify-content: center;
+  flex-direction: column;
   overflow: hidden;
 }
 
-.map-placeholder {
-  text-align: center;
-  color: #6b7280;
+.map-shell {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
 }
 
-.map-placeholder h2 {
-  font-size: 2rem;
-  margin-bottom: 1rem;
+.map-toolbar {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 0.75rem;
+  border-bottom: 1px solid #374151;
+  background: #111827;
 }
 
-.map-placeholder p {
-  margin-bottom: 0.5rem;
-}
-
-.map-placeholder .hint {
-  font-size: 0.875rem;
+.map-toolbar-label {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
   color: #9ca3af;
+}
+
+.map-toolbar-select {
+  width: 220px;
+  max-width: 100%;
+}
+
+.map-view {
+  flex: 1;
+  min-height: 0;
 }
 
 .locations-sidebar {
@@ -1105,10 +1160,6 @@ onBeforeUnmount(() => {
 
   .tabs button {
     flex: 1 1 100%;
-  }
-
-  .map-placeholder h2 {
-    font-size: 1.5rem;
   }
 }
 </style>

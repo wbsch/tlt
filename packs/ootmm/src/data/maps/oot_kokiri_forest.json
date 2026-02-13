@@ -1,0 +1,82 @@
+{
+  "id": "oot_kokiri_forest",
+  "title": "OOT Kokiri Forest",
+  "image": "oot_kokiri_forest",
+  "width": 1000,
+  "height": 600,
+  "markers": [
+    {
+      "coords": [210, 355],
+      "image": "chest",
+      "codes": "OOT Kokiri Forest Kokiri Sword Chest"
+    },
+    {
+      "coords": [272, 412],
+      "image": "gold_skulltula",
+      "overlays": ["child", "night", "broken"],
+      "codes": "OOT Kokiri Forest GS Night Child"
+    },
+    {
+      "coords": [318, 432],
+      "image": "gold_skulltula",
+      "overlays": ["adult", "day"],
+      "codes": "OOT Kokiri Forest GS Night Adult"
+    },
+    {
+      "coords": [165, 265],
+      "image": "chest",
+      "overlays": ["day1", "day2"],
+      "codes": [
+        "OOT Mido's House Top Left",
+        "OOT Mido's House Top Right",
+        "OOT Mido's House Bottom Left",
+        "OOT Mido's House Bottom Right"
+      ]
+    },
+    {
+      "coords": [495, 318],
+      "image": "shop",
+      "overlays": ["jp_only"],
+      "codes": [
+        "OOT Kokiri Shop Item 1",
+        "OOT Kokiri Shop Item 2",
+        "OOT Kokiri Shop Item 3",
+        "OOT Kokiri Shop Item 4",
+        "OOT Kokiri Shop Item 5",
+        "OOT Kokiri Shop Item 6",
+        "OOT Kokiri Shop Item 7",
+        "OOT Kokiri Shop Item 8",
+        "OOT Lost Woods Gift from Saria",
+        "OOT Lost Woods Target",
+        "OOT Lost Woods Skull Kid",
+        "OOT Lost Woods Memory Game"
+      ]
+    },
+    {
+      "coords": [590, 190],
+      "image": "song",
+      "overlays": ["na_only"],
+      "codes": [
+        "OOT Saria's Song",
+        "OOT Shadow Temple Boss"
+      ]
+    },
+    {
+      "coords": [652, 360],
+      "image": "grotto",
+      "overlays": ["day2", "day3"],
+      "codes": [
+        "OOT Lost Woods Grotto Generic",
+        "OOT Lost Woods Grotto Scrub Nuts Upgrade"
+      ]
+    },
+    {
+      "coords": [718, 418],
+      "image": "grotto",
+      "codes": [
+        "OOT Kokiri Forest Storms Grotto",
+        "OOT Lost Woods Grotto Generic"
+      ]
+    }
+  ]
+}

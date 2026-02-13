@@ -1,0 +1,44 @@
+import type { MapMarkerOverlay } from './types'
+
+const MAP_IMAGE_BASE = '/images/maps'
+const MAP_ICON_BASE = '/images/map_icons'
+const OVERLAY_BASE = '/images/attributes'
+const OVERLAY_WIDE_BASE = '/images/attributes_wide'
+const NUMBER_BASE = '/images/numbers'
+
+export function resolveMapImage(image: string): string {
+  return `${MAP_IMAGE_BASE}/${image}.png`
+}
+
+export function resolveMarkerImage(image: string): string {
+  return `${MAP_ICON_BASE}/${image}.png`
+}
+
+export function resolveOverlayImage(overlay: Exclude<MapMarkerOverlay, 'broken'>): string {
+  if (overlay === 'jp_only' || overlay === 'na_only') {
+    return `${OVERLAY_WIDE_BASE}/${overlay}.png`
+  }
+  return `${OVERLAY_BASE}/${overlay}.png`
+}
+
+export function resolveBrokenOverlayImage(): string {
+  return `${OVERLAY_BASE}/broken_actor.png`
+}
+
+export function resolveDayComboOverlayImage(
+  first: 'day1' | 'day2' | 'day3',
+  second: 'day1' | 'day2' | 'day3',
+): string | null {
+  const key = [first, second].sort().join('+')
+  const byPair: Record<string, string> = {
+    'day1+day2': 'day1_and_2',
+    'day1+day3': 'day1_and_3',
+    'day2+day3': 'day2_and_3',
+  }
+  const file = byPair[key]
+  return file ? `${OVERLAY_WIDE_BASE}/${file}.png` : null
+}
+
+export function resolveDigitImage(digit: string): string {
+  return `${NUMBER_BASE}/${digit}.png`
+}
