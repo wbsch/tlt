@@ -47,8 +47,14 @@ const draftMap = ref<MapDef | null>(null)
 const codeSearchQuery = ref('')
 const manualCodeInput = ref('')
 const copyStatus = ref<'idle' | 'ok' | 'error'>('idle')
+const editorRef = ref<HTMLElement | null>(null)
+const panelPosition = ref<{ left: number; top: number } | null>(null)
+const isDraggingPanel = ref(false)
 
 let copyStatusTimer: number | null = null
+let panelDragPointerId: number | null = null
+let panelDragOffsetX = 0
+let panelDragOffsetY = 0
 
 const mapIconAutocompleteId = 'map-icon-autocomplete-dev'
 const mapIconNames = [...MAP_ICON_INDEX].sort((a, b) => a.localeCompare(b))
@@ -114,6 +120,117 @@ function setCopyStatus(status: 'idle' | 'ok' | 'error'): void {
     copyStatus.value = 'idle'
     copyStatusTimer = null
   }, 1800)
+}
+
+function clamp(value: number, min: number, max: number): number {
+  return Math.min(max, Math.max(min, value))
+}
+
+function getPanelContainer(): HTMLElement | null {
+  return editorRef.value?.parentElement ?? null
+}
+
+function clampPanelPosition(left: number, top: number): { left: number; top: number } {
+  const panel = editorRef.value
+  const container = getPanelContainer()
+  if (!panel || !container) {
+    return { left, top }
+  }
+
+  const maxLeft = Math.max(0, container.clientWidth - panel.offsetWidth)
+  const maxTop = Math.max(0, container.clientHeight - panel.offsetHeight)
+  return {
+    left: clamp(left, 0, maxLeft),
+    top: clamp(top, 0, maxTop),
+  }
+}
+
+function ensurePanelPosition(): { left: number; top: number } | null {
+  if (panelPosition.value) {
+    return panelPosition.value
+  }
+  const panel = editorRef.value
+  const container = getPanelContainer()
+  if (!panel || !container) {
+    return null
+  }
+  const panelRect = panel.getBoundingClientRect()
+  const containerRect = container.getBoundingClientRect()
+  const nextPosition = clampPanelPosition(
+    panelRect.left - containerRect.left,
+    panelRect.top - containerRect.top,
+  )
+  panelPosition.value = nextPosition
+  return nextPosition
+}
+
+const editorStyle = computed<Record<string, string>>(() => {
+  if (!panelPosition.value) return {}
+  return {
+    left: `${panelPosition.value.left}px`,
+    top: `${panelPosition.value.top}px`,
+    right: 'auto',
+  }
+})
+
+function handleHeaderPointerDown(event: PointerEvent): void {
+  if (event.pointerType === 'mouse' && event.button !== 0) return
+
+  const panel = editorRef.value
+  const container = getPanelContainer()
+  const position = ensurePanelPosition()
+  if (!panel || !container || !position) return
+
+  if (event.cancelable) {
+    event.preventDefault()
+  }
+
+  const containerRect = container.getBoundingClientRect()
+  panelDragPointerId = event.pointerId
+  panelDragOffsetX = event.clientX - containerRect.left - position.left
+  panelDragOffsetY = event.clientY - containerRect.top - position.top
+  isDraggingPanel.value = true
+
+  if (!panel.hasPointerCapture(event.pointerId)) {
+    try {
+      panel.setPointerCapture(event.pointerId)
+    } catch {
+      // Ignore capture errors; drag still works while pointer remains over the panel.
+    }
+  }
+}
+
+function handleEditorPointerMove(event: PointerEvent): void {
+  if (!isDraggingPanel.value || panelDragPointerId !== event.pointerId) return
+
+  const container = getPanelContainer()
+  if (!container) return
+
+  if (event.cancelable) {
+    event.preventDefault()
+  }
+
+  const containerRect = container.getBoundingClientRect()
+  panelPosition.value = clampPanelPosition(
+    event.clientX - containerRect.left - panelDragOffsetX,
+    event.clientY - containerRect.top - panelDragOffsetY,
+  )
+}
+
+function stopPanelDrag(pointerId: number): void {
+  if (panelDragPointerId !== pointerId) return
+  panelDragPointerId = null
+  panelDragOffsetX = 0
+  panelDragOffsetY = 0
+  isDraggingPanel.value = false
+}
+
+function handleEditorPointerEnd(event: PointerEvent): void {
+  stopPanelDrag(event.pointerId)
+}
+
+function handleEditorLostPointerCapture(event: PointerEvent): void {
+  stopPanelDrag(event.pointerId)
 }
 
 function emitDraftMap(): void {
@@ -407,15 +524,23 @@ onBeforeUnmount(() => {
     window.clearTimeout(copyStatusTimer)
     copyStatusTimer = null
   }
+  panelDragPointerId = null
+  isDraggingPanel.value = false
 })
 </script>
 
 <template>
   <aside
+    ref="editorRef"
     class="map-dev-editor"
-    @pointerdown.stop
+    :class="{ 'is-dragging': isDraggingPanel }"
+    :style="editorStyle"
+    @pointermove="handleEditorPointerMove"
+    @pointerup="handleEditorPointerEnd"
+    @pointercancel="handleEditorPointerEnd"
+    @lostpointercapture="handleEditorLostPointerCapture"
   >
-    <header class="map-dev-editor__header">
+    <header class="map-dev-editor__header" @pointerdown.stop="handleHeaderPointerDown">
       <h3>Marker Editor</h3>
       <p v-if="selectedMarkerIndex !== null">Marker #{{ selectedMarkerIndex + 1 }}</p>
       <p v-else>Select a marker to edit.</p>
@@ -637,6 +762,22 @@ onBeforeUnmount(() => {
   display: flex;
   flex-direction: column;
   gap: 0.55rem;
+  cursor: default;
+}
+
+.map-dev-editor.is-dragging {
+  cursor: grabbing;
+}
+
+.map-dev-editor__header {
+  cursor: move;
+  cursor: grab;
+  user-select: none;
+}
+
+.map-dev-editor.is-dragging .map-dev-editor__header {
+  cursor: move;
+  cursor: grabbing;
 }
 
 .map-dev-editor__header h3 {
