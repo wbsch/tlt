@@ -32,20 +32,8 @@ const locationToSceneMap = computed(() => {
   return map
 })
 
-// Custom scene name mappings for boss lairs
-const SCENE_NAME_OVERRIDES: Record<string, string> = {
-  'LAIR_ODOLWA': 'First Boss',
-  'LAIR_GOHT': 'First Boss',
-  'LAIR_GYORG': 'First Boss',
-  'LAIR_TWINMOLD': 'First Boss',
-}
-
 // Helper function to format scene name (replace underscores with spaces)
 function formatSceneName(sceneName: string): string {
-  // Check for custom overrides first
-  if (SCENE_NAME_OVERRIDES[sceneName]) {
-    return SCENE_NAME_OVERRIDES[sceneName]
-  }
   return sceneName.replace(/_/g, ' ')
 }
 
@@ -126,11 +114,18 @@ const groupedLocations = computed(() => {
     const gamePrefix = match ? match[1] : ''
     // Remove game prefix from location name for pool data lookup
     const nameWithoutPrefix = loc.name.replace(/^(MM|OOT)\s+/, '')
-    // Get scene name from pool data, fallback to area if not found
-    const sceneName = locationToSceneMap.value.get(nameWithoutPrefix)
-    // Prefix the scene/area with the game code when present
-    const baseGroup = sceneName ? formatSceneName(sceneName) : loc.area
-    const groupKey = gamePrefix ? `${gamePrefix} ${baseGroup}` : baseGroup
+    
+    // Special handling for "Oath to Order" - give it a generic heading
+    let groupKey: string
+    if (nameWithoutPrefix === 'Oath to Order') {
+      groupKey = gamePrefix ? `${gamePrefix} First Boss` : 'First Boss'
+    } else {
+      // Get scene name from pool data, fallback to area if not found
+      const sceneName = locationToSceneMap.value.get(nameWithoutPrefix)
+      // Prefix the scene/area with the game code when present
+      const baseGroup = sceneName ? formatSceneName(sceneName) : loc.area
+      groupKey = gamePrefix ? `${gamePrefix} ${baseGroup}` : baseGroup
+    }
     
     if (!groups.has(groupKey)) {
       groups.set(groupKey, [])
