@@ -219,7 +219,6 @@ function updateSpecialCondCount(condKey: string, value: number) {
           >
             <div class="row-info">
               <span class="row-label">{{ event.label }}</span>
-              <span class="row-note">({{ event.code }})</span>
             </div>
             <select
               :value="getSongEventSelection(event.id) ?? 0"

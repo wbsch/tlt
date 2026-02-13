@@ -60,7 +60,6 @@ export const VANILLA_SONG_EVENTS = [
 export type SongEventData = {
   id: number
   label: string
-  code: string
 }
 
 /**
@@ -68,24 +67,24 @@ export type SongEventData = {
  * Sorted alphabetically by label
  */
 export const SONG_EVENTS: SongEventData[] = [
-  { id: SONG_EVENT_GORON_CITY, label: "Darunia's Chamber", code: '0x04' },
-  { id: SONG_EVENT_GREAT_FAIRY_UPGRADE_MAGIC2, label: 'Death Mountain Crater Fairy', code: '0x09' },
-  { id: SONG_EVENT_GREAT_FAIRY_UPGRADE_MAGIC, label: 'Death Mountain Trail Fairy', code: '0x08' },
-  { id: SONG_EVENT_GREAT_FAIRY_SPELL_LOVE, label: 'Desert Colossus Fairy', code: '0x07' },
-  { id: SONG_EVENT_TEMPLE_OF_TIME, label: 'Door of Time', code: '0x00' },
-  { id: SONG_EVENT_WINDMILL, label: 'Drain Well Exterior', code: '0x01' },
-  { id: SONG_EVENT_TEMPLE_BOTW, label: 'Drain Well Interior', code: '0x10' },
-  { id: SONG_EVENT_GREAT_FAIRY_UPGRADE_DEFENSE, label: "Ganon's Castle Fairy", code: '0x0a' },
-  { id: SONG_EVENT_TEMPLE_GANON, label: "Ganon's Light Trial", code: '0x11' },
-  { id: SONG_EVENT_GREAT_FAIRY_SPELL_FIRE, label: 'Hyrule Castle Fairy', code: '0x06' },
-  { id: SONG_EVENT_GRAVEYARD, label: 'Royal Tomb', code: '0x02' },
-  { id: SONG_EVENT_TEMPLE_SHADOW, label: 'Shadow Temple Boat', code: '0x0c' },
-  { id: SONG_EVENT_TEMPLE_SPIRIT_HIGHER, label: 'Spirit Temple Boss Key', code: '0x0f' },
-  { id: SONG_EVENT_TEMPLE_SPIRIT_LOWER, label: 'Spirit Temple Compass Chest', code: '0x0e' },
-  { id: SONG_EVENT_TEMPLE_SPIRIT_STATUE, label: 'Spirit Temple Statue Hand', code: '0x0d' },
-  { id: SONG_EVENT_TEMPLE_WATER, label: 'Water Temple Water Level', code: '0x0b' },
-  { id: SONG_EVENT_GREAT_FAIRY_SPELL_WIND, label: "Zora's Fountain Fairy", code: '0x05' },
-  { id: SONG_EVENT_ZORA_RIVER, label: "Zora's River Waterfall", code: '0x03' },
+  { id: SONG_EVENT_GORON_CITY, label: "Darunia's Chamber" },
+  { id: SONG_EVENT_GREAT_FAIRY_UPGRADE_MAGIC2, label: 'Death Mountain Crater Fairy' },
+  { id: SONG_EVENT_GREAT_FAIRY_UPGRADE_MAGIC, label: 'Death Mountain Trail Fairy' },
+  { id: SONG_EVENT_GREAT_FAIRY_SPELL_LOVE, label: 'Desert Colossus Fairy' },
+  { id: SONG_EVENT_TEMPLE_OF_TIME, label: 'Door of Time' },
+  { id: SONG_EVENT_WINDMILL, label: 'Drain Well Exterior' },
+  { id: SONG_EVENT_TEMPLE_BOTW, label: 'Drain Well Interior' },
+  { id: SONG_EVENT_GREAT_FAIRY_UPGRADE_DEFENSE, label: "Ganon's Castle Fairy" },
+  { id: SONG_EVENT_TEMPLE_GANON, label: "Ganon's Light Trial" },
+  { id: SONG_EVENT_GREAT_FAIRY_SPELL_FIRE, label: 'Hyrule Castle Fairy' },
+  { id: SONG_EVENT_GRAVEYARD, label: 'Royal Tomb' },
+  { id: SONG_EVENT_TEMPLE_SHADOW, label: 'Shadow Temple Boat' },
+  { id: SONG_EVENT_TEMPLE_SPIRIT_HIGHER, label: 'Spirit Temple Boss Key' },
+  { id: SONG_EVENT_TEMPLE_SPIRIT_LOWER, label: 'Spirit Temple Compass Chest' },
+  { id: SONG_EVENT_TEMPLE_SPIRIT_STATUE, label: 'Spirit Temple Statue Hand' },
+  { id: SONG_EVENT_TEMPLE_WATER, label: 'Water Temple Water Level' },
+  { id: SONG_EVENT_GREAT_FAIRY_SPELL_WIND, label: "Zora's Fountain Fairy" },
+  { id: SONG_EVENT_ZORA_RIVER, label: "Zora's River Waterfall" },
 ]
 
 export type SongChoice = {
