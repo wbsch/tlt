@@ -147,7 +147,7 @@ export class OoTMMTracker implements TrackerPack {
       Object.keys(world.checks).map(loc => makeLocation(loc, worldId))
     )
     this.fixedLocationIds = this.buildFixedLocationIds(worldData?.fixedLocations)
-    this.baseHiddenLocationIds = new Set()
+    this.baseHiddenLocationIds = this.buildBaseHiddenLocationIds()
     this.hiddenLocationIds = new Set(this.baseHiddenLocationIds)
     this.preCompletedDungeonIds.clear()
     this.baseWispEvents.clear()
@@ -445,6 +445,34 @@ export class OoTMMTracker implements TrackerPack {
       }
     }
     return dungeonLocations
+  }
+
+  private buildBaseHiddenLocationIds(): Set<string> {
+    const hidden = new Set<string>()
+    if (!this.worlds || this.worlds.length === 0) return hidden
+
+    const settings = this.settings as { skipZelda?: unknown; shuffleWonderItemsOot?: unknown }
+    const hideZeldaLocations = Boolean(settings.skipZelda)
+    const wonderItemsSetting = String(settings.shuffleWonderItemsOot ?? '')
+    const hideCourtyardWonderItem = wonderItemsSetting !== '' && wonderItemsSetting !== 'none'
+
+    if (!hideZeldaLocations && !hideCourtyardWonderItem) return hidden
+
+    const locationNames: string[] = []
+    if (hideZeldaLocations) {
+      locationNames.push("OOT Zelda's Letter", "OOT Zelda's Song")
+    }
+    if (hideCourtyardWonderItem) {
+      locationNames.push('OOT Castle Courtyard Wonder Item')
+    }
+
+    for (let worldId = 0; worldId < this.worlds.length; worldId += 1) {
+      for (const locationName of locationNames) {
+        hidden.add(makeLocation(locationName, worldId))
+      }
+    }
+
+    return hidden
   }
 
   private updatePreCompletedLocations(): void {
