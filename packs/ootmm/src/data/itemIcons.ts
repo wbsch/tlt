@@ -1,11 +1,10 @@
 /**
  * Icon mapping for OoTMM items
- * Maps item IDs to their corresponding image paths in /images/
+ * Maps item IDs to their corresponding image paths in images/
  * Based on EmoTracker pack structure
  */
 
-const BASE_URL = import.meta.env.BASE_URL === '/' ? './' : import.meta.env.BASE_URL || './'
-const withBase = (path: string) => `${BASE_URL}${path.replace(/^\/+/, '')}`
+import { withBasePath } from '../utils/assetPath'
 
 const RAW_ITEM_ICONS: Record<string, string> = {
   // === OOT ITEMS ===
@@ -542,11 +541,11 @@ const RAW_ITEM_ICONS: Record<string, string> = {
 }
 
 export const ITEM_ICONS: Record<string, string> = Object.fromEntries(
-  Object.entries(RAW_ITEM_ICONS).map(([key, value]) => [key, withBase(value)]),
+  Object.entries(RAW_ITEM_ICONS).map(([key, value]) => [key, withBasePath(value)]),
 )
 
 // Default fallback icon
-export const DEFAULT_ICON = withBase('images/unknown.png')
+export const DEFAULT_ICON = withBasePath('images/unknown.png')
 
 /**
  * Get the icon path for an item ID

@@ -1,10 +1,11 @@
 import type { MapMarkerOverlay } from './types'
+import { withBasePath } from '../../utils/assetPath'
 
-const MAP_IMAGE_BASE = '/images/maps'
-const MAP_ICON_BASE = '/images/map_icons'
-const OVERLAY_BASE = '/images/attributes'
-const OVERLAY_WIDE_BASE = '/images/attributes_wide'
-const NUMBER_BASE = '/images/numbers'
+const MAP_IMAGE_BASE = withBasePath('images/maps')
+const MAP_ICON_BASE = withBasePath('images/map_icons')
+const OVERLAY_BASE = withBasePath('images/attributes')
+const OVERLAY_WIDE_BASE = withBasePath('images/attributes_wide')
+const NUMBER_BASE = withBasePath('images/numbers')
 
 export function resolveMapImage(image: string): string {
   return `${MAP_IMAGE_BASE}/${image}.png`
