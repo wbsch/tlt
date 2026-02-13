@@ -93,6 +93,8 @@ const isStatsMenuOpen = ref(false)
 const isStatsCollapsed = ref(true)
 const mapDefs = OOTMM_MAP_DEFS
 const activeMapId = ref(mapDefs[0]?.id ?? '')
+const isMapDevMode =
+  typeof window !== 'undefined' && new URLSearchParams(window.location.search).get('devmode') === '1'
 const activeMap = computed<MapDef | null>(() => {
   if (mapDefs.length === 0) return null
   return mapDefs.find((mapDef) => mapDef.id === activeMapId.value) ?? mapDefs[0]
@@ -653,19 +655,25 @@ onBeforeUnmount(() => {
     <div class="tracker-main">
       <div class="map-panel">
         <div class="map-shell">
-          <div class="map-toolbar" v-if="mapDefs.length > 1">
-            <label class="map-toolbar-label" for="map-select">Map</label>
-            <select id="map-select" v-model="activeMapId" class="map-toolbar-select">
-              <option v-for="mapDef in mapDefs" :key="mapDef.id" :value="mapDef.id">
-                {{ mapDef.title }}
-              </option>
-            </select>
+          <div class="map-toolbar" v-if="mapDefs.length > 1 || isMapDevMode">
+            <template v-if="mapDefs.length > 1">
+              <label class="map-toolbar-label" for="map-select">Map</label>
+              <select id="map-select" v-model="activeMapId" class="map-toolbar-select">
+                <option v-for="mapDef in mapDefs" :key="mapDef.id" :value="mapDef.id">
+                  {{ mapDef.title }}
+                </option>
+              </select>
+            </template>
+            <span v-else class="map-toolbar-label">{{ activeMap?.title ?? 'Map' }}</span>
+            <span v-if="isMapDevMode" class="map-toolbar-dev">DEV MODE</span>
           </div>
           <OoTMMMap
             class="map-view"
             :active-map="activeMap"
             :reachable-ids="reachableLocationIds"
             :collected-ids="collectedLocationIdSet"
+            :all-locations="allLocations"
+            :dev-mode="isMapDevMode"
             @toggle-collected="handleMapToggleCollected"
             @mark-all-reachable="handleMapMarkAllReachable"
             @open-popup="handleMapPopupOpen"
@@ -1030,6 +1038,18 @@ onBeforeUnmount(() => {
 .map-toolbar-select {
   width: 220px;
   max-width: 100%;
+}
+
+.map-toolbar-dev {
+  margin-left: auto;
+  padding: 0.2rem 0.45rem;
+  border-radius: 0.35rem;
+  border: 1px solid #dc2626;
+  background: #450a0a;
+  color: #fecaca;
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
 }
 
 .map-view {
