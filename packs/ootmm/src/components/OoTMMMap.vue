@@ -33,6 +33,7 @@ type MarkerRuntime = MapMarkerViewModel & {
   allCheckIds: string[]
   reachableCheckIds: string[]
   reachableUncheckedCheckIds: string[]
+  reachableUncheckedCount: number
   popupEntries: MapPopupEntry[]
   topLeftOverlays: OverlayRender[]
   bottomLeftOverlays: OverlayRender[]
@@ -331,15 +332,16 @@ const markerViewModels = computed<MarkerRuntime[]>(() => {
     const reachableUncheckedCheckIds = allCheckIds.filter(
       (checkId) => props.reachableIds.has(checkId) && !props.collectedIds.has(checkId),
     )
+    const reachableUncheckedCount = reachableUncheckedCheckIds.length
     const reachableCount = reachableCheckIds.length
     const isVisible =
       props.visibilityMode === 'reachable-any'
         ? reachableCount > 0
-        : reachableUncheckedCheckIds.length > 0
+        : reachableUncheckedCount > 0
 
     const countDigitImages =
-      Array.isArray(markerDef.codes) && reachableCount > 1
-        ? String(reachableCount).split('').map((digit) => resolveDigitImage(digit))
+      Array.isArray(markerDef.codes) && reachableUncheckedCount > 1
+        ? String(reachableUncheckedCount).split('').map((digit) => resolveDigitImage(digit))
         : []
 
     return {
@@ -355,6 +357,7 @@ const markerViewModels = computed<MarkerRuntime[]>(() => {
       allCheckIds,
       reachableCheckIds,
       reachableUncheckedCheckIds,
+      reachableUncheckedCount,
       popupEntries,
       topLeftOverlays: buildTopLeftOverlays(overlays),
       bottomLeftOverlays: buildBottomLeftOverlays(overlays),
@@ -742,7 +745,7 @@ onBeforeUnmount(() => {
           </div>
           <div class="map-popup__titles">
             <h3>{{ activePopup.title }}</h3>
-            <p>{{ popupMarker.checkedCount }} checked / {{ popupMarker.reachableCount }} reachable</p>
+            <p>{{ popupMarker.checkedCount }} checked / {{ popupMarker.reachableUncheckedCount }} reachable unchecked</p>
           </div>
           <button type="button" class="map-popup__close" aria-label="Close popup" @click="closePopup">×</button>
         </header>
