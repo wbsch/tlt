@@ -34,10 +34,24 @@ const selectedSet = computed(() => new Set(props.selected))
 
 // Song Events Data
 const SONG_EVENTS: SongEventData[] = [
+  { id: 0x04, label: "Darunia's Chamber", code: '0x04' },
+  { id: 0x09, label: 'Death Mountain Crater Fairy', code: '0x09' },
+  { id: 0x08, label: 'Death Mountain Trail Fairy', code: '0x08' },
+  { id: 0x07, label: 'Desert Colossus Fairy', code: '0x07' },
+  { id: 0x00, label: 'Door of Time', code: '0x00' },
+  { id: 0x01, label: 'Drain Well Exterior', code: '0x01' },
   { id: 0x10, label: 'Drain Well Interior', code: '0x10' },
+  { id: 0x0a, label: "Ganon's Castle Fairy", code: '0x0a' },
   { id: 0x11, label: "Ganon's Light Trial", code: '0x11' },
-  { id: 0x0c, label: 'Shadow Temple Boat', code: '0x0c' },
+  { id: 0x06, label: 'Hyrule Castle Fairy', code: '0x06' },
   { id: 2, label: 'Royal Tomb', code: '2' },
+  { id: 0x0c, label: 'Shadow Temple Boat', code: '0x0c' },
+  { id: 0x0f, label: 'Spirit Temple Boss Key', code: '0x0f' },
+  { id: 0x0e, label: 'Spirit Temple Compass Chest', code: '0x0e' },
+  { id: 0x0d, label: 'Spirit Temple Statue Hand', code: '0x0d' },
+  { id: 0x0b, label: 'Water Temple Water Level', code: '0x0b' },
+  { id: 0x05, label: "Zora's Fountain Fairy", code: '0x05' },
+  { id: 0x03, label: "Zora's River Waterfall", code: '0x03' },
 ]
 
 const SONG_NAMES = [
