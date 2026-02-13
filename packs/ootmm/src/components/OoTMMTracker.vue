@@ -81,6 +81,7 @@ const {
 const settingsRef = ref<SettingsPanelHandle | null>(null)
 const statsMenuRef = ref<HTMLDetailsElement | null>(null)
 const isStatsMenuOpen = ref(false)
+const isStatsCollapsed = ref(true)
 const mapDefs = OOTMM_MAP_DEFS
 const activeMapId = ref(mapDefs[0]?.id ?? '')
 const activeMap = computed<MapDef | null>(() => {
@@ -377,6 +378,13 @@ function closeStatsMenu() {
   }
 }
 
+function toggleStatsCollapsed() {
+  isStatsCollapsed.value = !isStatsCollapsed.value
+  if (isStatsCollapsed.value) {
+    closeStatsMenu()
+  }
+}
+
 function resetTrackerState() {
   closeStatsMenu()
   const resetFn = (window as Window & { __TLT_RESET_TRACKER_STATE__?: () => void })
@@ -455,9 +463,21 @@ onBeforeUnmount(() => {
       <div class="spoiler-drop-content">Drop spoiler log to load</div>
     </div>
     <div class="tracker-sidebar">
-      <div class="stats-panel">
+      <div class="stats-panel" :class="{ 'is-collapsed': isStatsCollapsed }">
         <div class="stats-header">
-          <h3>Statistics</h3>
+          <button
+            type="button"
+            class="stats-collapse-toggle"
+            :aria-expanded="!isStatsCollapsed"
+            aria-controls="stats-panel-content"
+            @click="toggleStatsCollapsed"
+          >
+            <span class="stats-collapse-icon" aria-hidden="true">{{ isStatsCollapsed ? '▸' : '▾' }}</span>
+            <span class="stats-collapse-title">Statistics</span>
+            <span v-if="isStatsCollapsed" class="stats-collapse-summary">
+              {{ stats.reachable }} / {{ stats.total }}
+            </span>
+          </button>
           <details
             ref="statsMenuRef"
             class="stats-menu"
@@ -476,7 +496,7 @@ onBeforeUnmount(() => {
             </div>
           </details>
         </div>
-        <div class="stats-grid">
+        <div v-if="!isStatsCollapsed" id="stats-panel-content" class="stats-grid">
           <div class="stat-item">
             <span class="stat-label">Reachable:</span>
             <span class="stat-value">{{ stats.reachable }} / {{ stats.total }}</span>
@@ -736,6 +756,10 @@ onBeforeUnmount(() => {
   border-bottom: 1px solid #404040;
 }
 
+.stats-panel.is-collapsed .stats-header {
+  margin-bottom: 0;
+}
+
 .stats-header {
   display: flex;
   align-items: center;
@@ -744,12 +768,47 @@ onBeforeUnmount(() => {
   margin-bottom: 0.75rem;
 }
 
-.stats-panel h3 {
+.stats-collapse-toggle {
+  border: none;
+  border-radius: 0.35rem;
+  padding: 0.2rem 0.35rem;
+  margin: -0.2rem -0.35rem;
+  background: transparent;
+  color: #d1d5db;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  cursor: pointer;
+  min-width: 0;
+}
+
+.stats-collapse-toggle:hover {
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.stats-collapse-toggle:focus-visible {
+  outline: 2px solid #60a5fa;
+  outline-offset: 2px;
+}
+
+.stats-collapse-icon {
+  font-size: 0.8rem;
+  color: #9ca3af;
+  width: 0.7rem;
+}
+
+.stats-collapse-title {
   font-size: 0.875rem;
   color: #9ca3af;
-  margin: 0;
   text-transform: uppercase;
   letter-spacing: 0.05em;
+}
+
+.stats-collapse-summary {
+  font-size: 0.9rem;
+  color: #f3f4f6;
+  font-weight: 600;
+  letter-spacing: 0.01em;
 }
 
 .stats-menu {
