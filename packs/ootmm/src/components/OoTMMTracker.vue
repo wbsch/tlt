@@ -18,6 +18,7 @@ import type { MapDef } from '../data/maps/types'
 import * as ItemsMod from '@ootmm/core/items/index'
 import * as NamesMod from '@ootmm/core/names'
 import * as SettingsDataMod from '@ootmm/core/settings/data.js'
+import { TRICKS } from '@ootmm/core/settings/tricks'
 
 const props = defineProps<{
   tracker: TrackerPack
@@ -39,6 +40,8 @@ const settingsByKey = new Map<string, unknown>(coreSettings.map((setting: unknow
 const settingsByName = new Map<string, unknown>(coreSettings.map((setting: unknown) => [(setting as { name: string }).name, setting]))
 const supportedSettingKeys = new Set(Object.keys(DEFAULT_OOTMM_SETTINGS))
 const itemNameToId = new Map<string, string>()
+const ALL_TRICKS = TRICKS as Record<string, { name?: string }>
+const trickNameToKey = new Map<string, string>()
 
 const normalizeName = (value: string) => value.toLowerCase().replace(/\s+/g, ' ').trim()
 
@@ -49,6 +52,11 @@ if (Items) {
     const name = itemName ? itemName(id) : id
     itemNameToId.set(normalizeName(name), id)
   }
+}
+
+for (const [key, trick] of Object.entries(ALL_TRICKS)) {
+  if (!trick?.name) continue
+  trickNameToKey.set(normalizeName(trick.name), key)
 }
 
 const sessionStore = useOoTMMSessionStore()
@@ -292,6 +300,23 @@ async function applySpoilerLog(text: string) {
     const def = settingsByName.get(name)
     if (!def || !supportedSettingKeys.has((def as { key?: string }).key)) continue
     settingsPatch[(def as { key?: string }).key] = coerceWorldFlagValue(value, def)
+  }
+
+  if (parsed.tricks) {
+    const parsedTrickKeys: string[] = []
+    const unknownTricks: string[] = []
+    for (const trickName of parsed.tricks) {
+      const key = trickNameToKey.get(normalizeName(trickName))
+      if (key) {
+        parsedTrickKeys.push(key)
+      } else {
+        unknownTricks.push(trickName)
+      }
+    }
+    if (unknownTricks.length > 0) {
+      console.warn('[OoTMM Tracker] Unknown tricks in spoiler log:', unknownTricks)
+    }
+    settingsPatch.tricks = Array.from(new Set(parsedTrickKeys))
   }
 
   const nextSettings = { ...trackerSettings.value, ...settingsPatch }

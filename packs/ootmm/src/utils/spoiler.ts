@@ -5,6 +5,7 @@ export type SpoilerLogData = {
   startingItems: Record<string, number>
   junkLocations: string[]
   preCompletedDungeons: string[]
+  tricks?: string[]
   settingsString?: string
 }
 
@@ -15,6 +16,7 @@ type Section =
   | 'junkLocations'
   | 'worldFlags'
   | 'preCompleted'
+  | 'tricks'
   | null
 
 const normalizeLine = (value: string) => value.replace(/\s+/g, ' ').trim()
@@ -77,6 +79,15 @@ export function parseSpoilerLog(text: string): SpoilerLogData {
       section = 'junkLocations'
       currentSpecialCond = null
       currentWorldFlag = null
+      continue
+    }
+    if (trimmed === 'Tricks' || trimmed === 'Glitches') {
+      section = 'tricks'
+      currentSpecialCond = null
+      currentWorldFlag = null
+      if (!result.tricks) {
+        result.tricks = []
+      }
       continue
     }
     if (trimmed === 'World Flags') {
@@ -182,6 +193,16 @@ export function parseSpoilerLog(text: string): SpoilerLogData {
         const normalized = normalizeLine(trimmed)
         if (normalized) {
           result.preCompletedDungeons.push(normalized)
+        }
+        break
+      }
+      case 'tricks': {
+        const normalized = normalizeLine(trimmed)
+        if (normalized) {
+          if (!result.tricks) {
+            result.tricks = []
+          }
+          result.tricks.push(normalized)
         }
         break
       }
