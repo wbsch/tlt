@@ -10,6 +10,7 @@ import {
   resolveOverlayImage,
 } from '../data/maps/assets'
 import OoTMMMapDevEditor from './OoTMMMapDevEditor.vue'
+import { stripWorldSuffix, useLocationCodeLookup } from '../composables/useLocationCodeLookup'
 import type {
   MapDef,
   MapMarkerDef,
@@ -45,14 +46,6 @@ type MarkerRuntime = MapMarkerViewModel & {
   bottomLeftOverlays: OverlayRender[]
   hasBrokenOverlay: boolean
   countDigitImages: string[]
-}
-
-type LocationIndexEntry = {
-  id: string
-  name: string
-  normalizedId: string
-  normalizedBaseId: string
-  normalizedName: string
 }
 
 const props = withDefaults(
@@ -100,14 +93,6 @@ const renderMapDef = computed<MapDef | null>(() =>
 )
 const isDevMode = computed(() => props.devMode)
 
-function normalizeCode(value: string): string {
-  return value.toLowerCase().replace(/\s+/g, ' ').trim()
-}
-
-function stripWorldSuffix(value: string): string {
-  return value.replace(/@\d+$/, '')
-}
-
 function looksLikeLocationId(value: string): boolean {
   return /@\d+$/.test(value)
 }
@@ -120,6 +105,12 @@ function markerCodeList(marker: MapMarkerDef): string[] {
   const rawList = Array.isArray(marker.codes) ? marker.codes : [marker.codes]
   return rawList.map((code) => code.trim()).filter((code) => code.length > 0)
 }
+
+const { resolveCodeToCheckIds } = useLocationCodeLookup(
+  computed(() => props.allLocations),
+  computed(() => props.reachableIds),
+  computed(() => props.collectedIds),
+)
 
 function syncPointerState(): void {
   if (activePointers.size < 2) {
@@ -225,69 +216,6 @@ function beginPinch(): void {
   }
   pinchStartDistance = distance
   pinchStartScale = scale.value
-}
-
-function addCodeLookup(map: Map<string, Set<string>>, key: string, value: string): void {
-  if (!key) return
-  const existing = map.get(key)
-  if (existing) {
-    existing.add(value)
-    return
-  }
-  map.set(key, new Set([value]))
-}
-
-const locationIndex = computed<LocationIndexEntry[]>(() => {
-  const byId = new Map<string, LocationIndexEntry>()
-  for (const location of props.allLocations) {
-    if (!location?.id) continue
-    byId.set(location.id, {
-      id: location.id,
-      name: location.name || location.id,
-      normalizedId: normalizeCode(location.id),
-      normalizedBaseId: normalizeCode(stripWorldSuffix(location.id)),
-      normalizedName: normalizeCode(location.name || ''),
-    })
-  }
-  return Array.from(byId.values()).sort((a, b) => a.id.localeCompare(b.id))
-})
-
-const knownLocationIds = computed(() => {
-  const ids = new Set<string>()
-  locationIndex.value.forEach((entry) => ids.add(entry.id))
-  props.reachableIds.forEach((id) => ids.add(id))
-  props.collectedIds.forEach((id) => ids.add(id))
-  return ids
-})
-
-const codeLookup = computed(() => {
-  const map = new Map<string, Set<string>>()
-  for (const entry of locationIndex.value) {
-    addCodeLookup(map, entry.id, entry.id)
-    addCodeLookup(map, entry.normalizedId, entry.id)
-    addCodeLookup(map, stripWorldSuffix(entry.id), entry.id)
-    addCodeLookup(map, entry.normalizedBaseId, entry.id)
-    addCodeLookup(map, entry.normalizedName, entry.id)
-  }
-  for (const checkId of knownLocationIds.value) {
-    addCodeLookup(map, checkId, checkId)
-    addCodeLookup(map, normalizeCode(checkId), checkId)
-    const baseName = stripWorldSuffix(checkId)
-    addCodeLookup(map, baseName, checkId)
-    addCodeLookup(map, normalizeCode(baseName), checkId)
-  }
-  return map
-})
-
-function resolveCodeToCheckIds(code: string): string[] {
-  const keys = [code, normalizeCode(code), stripWorldSuffix(code), normalizeCode(stripWorldSuffix(code))]
-  for (const key of keys) {
-    const values = codeLookup.value.get(key)
-    if (values && values.size > 0) {
-      return Array.from(values)
-    }
-  }
-  return []
 }
 
 function buildTopLeftOverlays(overlays: MapMarkerOverlay[]): OverlayRender[] {
