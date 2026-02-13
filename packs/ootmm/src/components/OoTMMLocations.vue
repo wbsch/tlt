@@ -32,8 +32,20 @@ const locationToSceneMap = computed(() => {
   return map
 })
 
+// Custom scene name mappings for boss lairs
+const SCENE_NAME_OVERRIDES: Record<string, string> = {
+  'LAIR_ODOLWA': 'First Boss',
+  'LAIR_GOHT': 'First Boss',
+  'LAIR_GYORG': 'First Boss',
+  'LAIR_TWINMOLD': 'First Boss',
+}
+
 // Helper function to format scene name (replace underscores with spaces)
 function formatSceneName(sceneName: string): string {
+  // Check for custom overrides first
+  if (SCENE_NAME_OVERRIDES[sceneName]) {
+    return SCENE_NAME_OVERRIDES[sceneName]
+  }
   return sceneName.replace(/_/g, ' ')
 }
 

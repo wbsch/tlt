@@ -23,7 +23,6 @@ const ALL_TRICKS = TRICKS as Record<string, Trick>
 
 const searchQuery = ref('')
 const selectedGame = ref<'all' | 'oot' | 'mm'>('all')
-const showGlitches = ref(false)
 
 const enabledTricks = computed(() => {
   const tricks = props.settings.tricks
@@ -40,11 +39,6 @@ const filteredTricks = computed(() => {
     .filter(([key, trick]) => {
       // Filter by game
       if (selectedGame.value !== 'all' && trick.game !== selectedGame.value) {
-        return false
-      }
-      
-      // Filter glitches if not shown
-      if (trick.glitch && !showGlitches.value) {
         return false
       }
       
@@ -98,34 +92,6 @@ function toggleTrick(trickKey: string) {
   })
 }
 
-function enableAll() {
-  const allTrickKeys = filteredTricks.value.map(([key]) => key)
-  const currentTricks = Array.isArray(props.settings.tricks) 
-    ? [...(props.settings.tricks as string[])] 
-    : []
-  
-  const tricksSet = new Set([...currentTricks, ...allTrickKeys])
-  
-  emit('update:settings', {
-    ...props.settings,
-    tricks: Array.from(tricksSet)
-  })
-}
-
-function disableAll() {
-  const allTrickKeys = new Set(filteredTricks.value.map(([key]) => key))
-  const currentTricks = Array.isArray(props.settings.tricks) 
-    ? [...(props.settings.tricks as string[])] 
-    : []
-  
-  const tricksSet = currentTricks.filter(key => !allTrickKeys.has(key))
-  
-  emit('update:settings', {
-    ...props.settings,
-    tricks: tricksSet
-  })
-}
-
 defineExpose({
   hasUnsavedChanges: () => false,
   getLocalSettingsSnapshot: () => props.settings
@@ -159,20 +125,6 @@ defineExpose({
             <option value="mm">MM ({{ mmTricksCount }})</option>
           </select>
         </div>
-
-        <label class="checkbox-label">
-          <input v-model="showGlitches" type="checkbox" />
-          <span>Show Glitches</span>
-        </label>
-      </div>
-
-      <div class="bulk-actions">
-        <button type="button" class="bulk-button" @click="enableAll">
-          Enable All Filtered
-        </button>
-        <button type="button" class="bulk-button" @click="disableAll">
-          Disable All Filtered
-        </button>
       </div>
     </div>
 
