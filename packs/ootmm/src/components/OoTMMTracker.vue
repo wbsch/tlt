@@ -415,10 +415,16 @@ function handleGlobalUndoRedoKeydown(event: KeyboardEvent) {
 }
 
 onMounted(() => {
+  const windowWithDebug = window as Window & { __TLT_DEBUG_ACTIVATE_ALL__?: () => void }
+  windowWithDebug.__TLT_DEBUG_ACTIVATE_ALL__ = fillInventory
   window.addEventListener('keydown', handleGlobalUndoRedoKeydown)
 })
 
 onBeforeUnmount(() => {
+  const windowWithDebug = window as Window & { __TLT_DEBUG_ACTIVATE_ALL__?: () => void }
+  if (windowWithDebug.__TLT_DEBUG_ACTIVATE_ALL__ === fillInventory) {
+    delete windowWithDebug.__TLT_DEBUG_ACTIVATE_ALL__
+  }
   window.removeEventListener('keydown', handleGlobalUndoRedoKeydown)
 })
 </script>
@@ -488,7 +494,6 @@ onBeforeUnmount(() => {
             <span class="stat-value">{{ canComplete ? '✓ Ready' : '✗ Not Ready' }}</span>
           </div>
         </div>
-        <button class="debug-button" @click="fillInventory">Debug: Activate All</button>
         <div class="history-actions">
           <button
             type="button"
@@ -845,16 +850,6 @@ onBeforeUnmount(() => {
 .stat-value {
   font-size: 1.125rem;
   font-weight: 600;
-}
-
-.debug-button {
-  margin-top: 10px;
-  width: 100%;
-  padding: 5px;
-  cursor: pointer;
-  background: #444;
-  color: #fff;
-  border: 1px solid #666;
 }
 
 .history-actions {

@@ -33,6 +33,15 @@ function resetTrackerState() {
   window.location.reload();
 }
 
+function debugActivateAll() {
+  const debugFn = (
+    window as Window & { __TLT_DEBUG_ACTIVATE_ALL__?: () => void }
+  ).__TLT_DEBUG_ACTIVATE_ALL__;
+  if (typeof debugFn === 'function') {
+    debugFn();
+  }
+}
+
 onMounted(() => {
   appStore.initialize();
 });
@@ -61,6 +70,13 @@ onMounted(() => {
             </option>
           </select>
         </div>
+        <button
+          type="button"
+          class="debug-activate-all-button"
+          @click="debugActivateAll"
+        >
+          Debug: Activate All
+        </button>
         <button type="button" class="reset-button" @click="resetTrackerState">
           RESET TRACKER STATE
         </button>
@@ -133,6 +149,17 @@ onMounted(() => {
 
 .reset-button:hover {
   background: #991b1b;
+}
+
+.debug-activate-all-button {
+  background: #444;
+  border: 1px solid #666;
+  font-size: 0.75rem;
+  font-weight: 700;
+}
+
+.debug-activate-all-button:hover {
+  background: #555;
 }
 
 .app-main {
