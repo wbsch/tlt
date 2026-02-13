@@ -74,6 +74,26 @@ let lastDragPoint: { x: number; y: number } | null = null
 let pinchStartDistance = 0
 let pinchStartScale = 1
 
+function syncPointerState(): void {
+  if (activePointers.size < 2) {
+    pinchStartDistance = 0
+  }
+
+  if (activePointers.size === 1) {
+    const [remaining] = Array.from(activePointers.values())
+    isDragging.value = true
+    lastDragPoint = { x: remaining.x, y: remaining.y }
+    return
+  }
+
+  isDragging.value = false
+  lastDragPoint = null
+
+  if (activePointers.size >= 2) {
+    beginPinch()
+  }
+}
+
 function normalizeCode(value: string): string {
   return value.toLowerCase().replace(/\s+/g, ' ').trim()
 }
@@ -462,27 +482,38 @@ function handlePointerDown(event: PointerEvent): void {
     return
   }
 
-  viewportRef.value?.setPointerCapture(event.pointerId)
-  activePointers.set(event.pointerId, { x: event.clientX, y: event.clientY })
-
-  if (activePointers.size === 1) {
-    isDragging.value = true
-    lastDragPoint = { x: event.clientX, y: event.clientY }
-  } else if (activePointers.size === 2) {
-    isDragging.value = false
-    lastDragPoint = null
-    beginPinch()
+  if (event.cancelable) {
+    event.preventDefault()
   }
+  const viewport = viewportRef.value
+  if (viewport && !viewport.hasPointerCapture(event.pointerId)) {
+    try {
+      viewport.setPointerCapture(event.pointerId)
+    } catch {
+      // Ignore capture errors; drag still works while pointer remains over the viewport.
+    }
+  }
+  activePointers.set(event.pointerId, { x: event.clientX, y: event.clientY })
+  syncPointerState()
 
   closePopup()
 }
 
 function handlePointerMove(event: PointerEvent): void {
   if (!activePointers.has(event.pointerId)) return
+  if (event.cancelable) {
+    event.preventDefault()
+  }
 
   activePointers.set(event.pointerId, { x: event.clientX, y: event.clientY })
 
-  if (activePointers.size >= 2 && pinchStartDistance > 0) {
+  if (activePointers.size >= 2) {
+    if (pinchStartDistance <= 0) {
+      beginPinch()
+    }
+    if (pinchStartDistance <= 0) {
+      return
+    }
     const pointers = Array.from(activePointers.values())
     const [first, second] = pointers
     const distance = Math.hypot(second.x - first.x, second.y - first.y)
@@ -507,20 +538,19 @@ function handlePointerMove(event: PointerEvent): void {
 function handlePointerEnd(event: PointerEvent): void {
   if (!activePointers.has(event.pointerId)) return
   activePointers.delete(event.pointerId)
+  syncPointerState()
+}
 
-  if (activePointers.size < 2) {
-    pinchStartDistance = 0
-  }
+function handleLostPointerCapture(event: PointerEvent): void {
+  if (!activePointers.has(event.pointerId)) return
+  activePointers.delete(event.pointerId)
+  syncPointerState()
+}
 
-  if (activePointers.size === 1) {
-    const [remaining] = Array.from(activePointers.values())
-    isDragging.value = true
-    lastDragPoint = { x: remaining.x, y: remaining.y }
-    return
-  }
-
-  isDragging.value = false
-  lastDragPoint = null
+function handleWindowBlur(): void {
+  if (activePointers.size === 0) return
+  activePointers.clear()
+  syncPointerState()
 }
 
 function handleEscapeKey(event: KeyboardEvent): void {
@@ -558,6 +588,7 @@ let resizeObserver: ResizeObserver | null = null
 
 onMounted(() => {
   window.addEventListener('keydown', handleEscapeKey)
+  window.addEventListener('blur', handleWindowBlur)
   if (viewportRef.value) {
     resizeObserver = new ResizeObserver(() => {
       const bounded = clampPanForScale(scale.value, panX.value, panY.value)
@@ -570,9 +601,11 @@ onMounted(() => {
 
 onBeforeUnmount(() => {
   window.removeEventListener('keydown', handleEscapeKey)
+  window.removeEventListener('blur', handleWindowBlur)
   resizeObserver?.disconnect()
   resizeObserver = null
   activePointers.clear()
+  syncPointerState()
 })
 </script>
 
@@ -586,7 +619,9 @@ onBeforeUnmount(() => {
     @pointermove="handlePointerMove"
     @pointerup="handlePointerEnd"
     @pointercancel="handlePointerEnd"
-    @pointerleave="handlePointerEnd"
+    @lostpointercapture="handleLostPointerCapture"
+    @dragstart.prevent
+    @selectstart.prevent
   >
     <div v-if="!activeMap" class="ootmm-map__empty">No active map selected.</div>
 
@@ -757,7 +792,13 @@ onBeforeUnmount(() => {
   background: #111827;
   overflow: hidden;
   touch-action: none;
+  user-select: none;
+  -webkit-user-select: none;
   cursor: grab;
+}
+
+.ootmm-map img {
+  -webkit-user-drag: none;
 }
 
 .ootmm-map.is-dragging {
