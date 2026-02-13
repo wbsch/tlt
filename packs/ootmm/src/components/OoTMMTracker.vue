@@ -79,7 +79,6 @@ const {
 } = storeToRefs(uiStore)
 
 const settingsRef = ref<SettingsPanelHandle | null>(null)
-const spoilerFileInput = ref<HTMLInputElement | null>(null)
 const statsMenuRef = ref<HTMLDetailsElement | null>(null)
 const isStatsMenuOpen = ref(false)
 const mapDefs = OOTMM_MAP_DEFS
@@ -313,20 +312,6 @@ async function handleSpoilerFile(file: File) {
   await applySpoilerLog(text)
 }
 
-function openSpoilerFileDialog() {
-  if (isApplyingSettings.value) return
-  spoilerFileInput.value?.click()
-}
-
-async function onSpoilerFileSelected(event: Event) {
-  const input = event.target as HTMLInputElement
-  const file = input.files?.[0]
-  if (file) {
-    await handleSpoilerFile(file)
-  }
-  input.value = ''
-}
-
 function hasFilePayload(event: DragEvent) {
   return Array.from(event.dataTransfer?.types ?? []).includes('Files')
 }
@@ -522,24 +507,6 @@ onBeforeUnmount(() => {
             Redo
           </button>
         </div>
-        <div class="spoiler-actions">
-          <input
-            ref="spoilerFileInput"
-            type="file"
-            accept=".txt"
-            class="spoiler-input"
-            @change="onSpoilerFileSelected"
-          />
-          <button
-            class="spoiler-button"
-            type="button"
-            :disabled="isApplyingSettings"
-            @click="openSpoilerFileDialog"
-          >
-            Load Spoiler Log
-          </button>
-          <p class="spoiler-hint">or drag & drop anywhere</p>
-        </div>
       </div>
 
       <div class="tabs">
@@ -608,7 +575,9 @@ onBeforeUnmount(() => {
           v-if="activeTab === 'settings'"
           ref="settingsRef"
           :settings="trackerSettings"
+          :is-applying-settings="isApplyingSettings"
           @update:settings="handleSettingsChange"
+          @load-spoiler-log="handleSpoilerFile"
         />
 
         <OoTMMTricks
@@ -900,48 +869,6 @@ onBeforeUnmount(() => {
   font-size: 0.72rem;
   text-transform: uppercase;
   letter-spacing: 0.03em;
-}
-
-.spoiler-actions {
-  margin-top: 0.75rem;
-  display: flex;
-  flex-direction: column;
-  gap: 0.4rem;
-}
-
-.spoiler-input {
-  display: none;
-}
-
-.spoiler-button {
-  width: 100%;
-  padding: 0.45rem 0.75rem;
-  background: #1f2937;
-  color: #e5e7eb;
-  border: 1px solid #374151;
-  border-radius: 0.5rem;
-  font-size: 0.85rem;
-  text-transform: uppercase;
-  letter-spacing: 0.04em;
-  cursor: pointer;
-  transition: border-color 0.2s ease, background 0.2s ease;
-}
-
-.spoiler-button:hover {
-  background: #111827;
-  border-color: #4b5563;
-}
-
-.spoiler-button:disabled {
-  opacity: 0.6;
-  cursor: not-allowed;
-}
-
-.spoiler-hint {
-  margin: 0;
-  font-size: 0.75rem;
-  color: #9ca3af;
-  text-align: center;
 }
 
 .tabs {

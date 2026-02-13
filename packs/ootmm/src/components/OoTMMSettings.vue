@@ -6,13 +6,16 @@ import { useOoTMMUiStore } from '../stores/ootmmUi'
 
 const props = defineProps<{
   settings: Record<string, unknown>
+  isApplyingSettings: boolean
 }>()
 
 const emit = defineEmits<{
   'update:settings': [Record<string, unknown>]
+  'load-spoiler-log': [File]
 }>()
 
 const localSettings = ref<Record<string, unknown>>({ ...props.settings })
+const spoilerFileInput = ref<HTMLInputElement | null>(null)
 const uiStore = useOoTMMUiStore()
 const { settingsSearchQuery: searchQuery } = storeToRefs(uiStore)
 
@@ -164,6 +167,20 @@ function applySettings() {
   emit('update:settings', localSettings.value)
 }
 
+function openSpoilerFileDialog() {
+  if (props.isApplyingSettings) return
+  spoilerFileInput.value?.click()
+}
+
+function onSpoilerFileSelected(event: Event) {
+  const input = event.target as HTMLInputElement
+  const file = input.files?.[0]
+  if (file) {
+    emit('load-spoiler-log', file)
+  }
+  input.value = ''
+}
+
 function getSettingDefault(def: (typeof SETTINGS_DEFINITIONS)[number]) {
   if (def.type === 'multi-select') {
     if (def.default && typeof def.default === 'object' && 'type' in def.default) {
@@ -246,6 +263,25 @@ defineExpose({
       <p class="settings-note">
         ⚠️ Changing settings will reset the tracker and recalculate logic
       </p>
+
+      <div class="spoiler-actions">
+        <input
+          ref="spoilerFileInput"
+          type="file"
+          accept=".txt"
+          class="spoiler-input"
+          @change="onSpoilerFileSelected"
+        />
+        <button
+          class="spoiler-button"
+          type="button"
+          :disabled="isApplyingSettings"
+          @click="openSpoilerFileDialog"
+        >
+          Load Spoiler Log
+        </button>
+        <p class="spoiler-hint">or drag & drop anywhere</p>
+      </div>
       
       <input
         v-model="searchQuery"
@@ -495,6 +531,48 @@ defineExpose({
   background: #4b5563;
 }
 
+.spoiler-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  width: 100%;
+}
+
+.spoiler-input {
+  display: none;
+}
+
+.spoiler-button {
+  flex: 1;
+  padding: 0.45rem 0.75rem;
+  background: #1f2937;
+  color: #e5e7eb;
+  border: 1px solid #374151;
+  border-radius: 0.5rem;
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  cursor: pointer;
+  transition: border-color 0.2s ease, background 0.2s ease;
+}
+
+.spoiler-button:hover {
+  background: #111827;
+  border-color: #4b5563;
+}
+
+.spoiler-button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.spoiler-hint {
+  margin: 0;
+  font-size: 0.75rem;
+  color: #9ca3af;
+  white-space: nowrap;
+}
+
 @media (max-width: 700px) {
   .setting-item {
     grid-template-columns: 1fr;
@@ -509,6 +587,17 @@ defineExpose({
   .settings-actions {
     flex-direction: column;
     align-items: stretch;
+  }
+
+  .spoiler-actions {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.3rem;
+  }
+
+  .spoiler-hint {
+    white-space: normal;
+    text-align: center;
   }
 }
 </style>
