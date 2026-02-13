@@ -1,6 +1,7 @@
 import type { TrackerPack, TrackerCheckResult, LocationInfo } from '@/types/tracker'
 import type { OoTMMSettings } from './types/settings'
 import { DEFAULT_OOTMM_SETTINGS } from './types/settings'
+import { VANILLA_SONG_EVENTS } from './data/song-events'
 
 // Import from OoTMM submodule - using default imports for CJS/TS interop
 import * as LogicMod from '@ootmm/core/logic/index'
