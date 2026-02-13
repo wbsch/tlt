@@ -8,7 +8,8 @@ The root "OoTMM" folder is the OoTMM randomizer. NEVER change code in there. Tre
 
 ### Common operations
 
-Testing reachability of checks: `npx tsx test_reachability.ts`
+Testing reachability of checks: `node --import tsx test_reachability.ts`
+(`npx tsx`/`npm exec tsx`/`./node_modules/.bin/tsx` can fail in sandboxed environments with `EPERM` on tsx IPC pipes.)
 
 Feel free to temporarily edit `test_reachability.ts` in order to test other things, or use it as a blueprint for a similar file.
 
