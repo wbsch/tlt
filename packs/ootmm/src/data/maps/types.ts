@@ -10,11 +10,19 @@ export type MapMarkerOverlay =
   | 'day'
   | 'broken'
 
+export type MapSubmenuEntryDef = {
+  image: string
+  overlays?: MapMarkerOverlay[]
+  codes: string | string[]
+}
+
 export type MapMarkerDef = {
   coords: [number, number]
   image: string
   overlays?: MapMarkerOverlay[]
-  codes: string | string[]
+  type?: 'check' | 'submenu'
+  codes?: string | string[]
+  markers?: MapSubmenuEntryDef[]
 }
 
 export type MapDef = {
@@ -33,7 +41,8 @@ export type MapMarkerViewModel = {
   coords: [number, number]
   image: string
   overlays: MapMarkerOverlay[]
-  codes: string | string[]
+  type: 'check' | 'submenu'
+  codes?: string | string[]
   reachableCount: number
   checkedCount: number
   isVisible: boolean

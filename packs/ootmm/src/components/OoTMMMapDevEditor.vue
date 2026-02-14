@@ -7,7 +7,7 @@ import {
   stripWorldSuffix,
   useLocationCodeLookup,
 } from '../composables/useLocationCodeLookup'
-import type { MapDef, MapMarkerDef, MapMarkerOverlay } from '../data/maps/types'
+import type { MapDef, MapMarkerDef, MapMarkerOverlay, MapSubmenuEntryDef } from '../data/maps/types'
 
 const LOCATION_SEARCH_LIMIT = 80
 
@@ -70,6 +70,25 @@ let panelDragOffsetY = 0
 const mapIconNames = [...MAP_ICON_INDEX].sort((a, b) => a.localeCompare(b))
 const mapIconNameSet = new Set(mapIconNames)
 
+function cloneSubmenuEntry(entry: MapSubmenuEntryDef): MapSubmenuEntryDef {
+  return {
+    image: entry.image,
+    overlays: entry.overlays ? [...entry.overlays] : undefined,
+    codes: Array.isArray(entry.codes) ? [...entry.codes] : entry.codes,
+  }
+}
+
+function cloneMarker(marker: MapMarkerDef): MapMarkerDef {
+  return {
+    coords: [marker.coords[0], marker.coords[1]],
+    image: marker.image,
+    type: marker.type,
+    overlays: marker.overlays ? [...marker.overlays] : undefined,
+    codes: Array.isArray(marker.codes) ? [...marker.codes] : marker.codes,
+    markers: marker.markers?.map((entry) => cloneSubmenuEntry(entry)),
+  }
+}
+
 function cloneMapDef(mapDef: MapDef): MapDef {
   return {
     id: mapDef.id,
@@ -77,12 +96,7 @@ function cloneMapDef(mapDef: MapDef): MapDef {
     image: mapDef.image,
     width: mapDef.width,
     height: mapDef.height,
-    markers: mapDef.markers.map((marker) => ({
-      coords: [marker.coords[0], marker.coords[1]],
-      image: marker.image,
-      overlays: marker.overlays ? [...marker.overlays] : undefined,
-      codes: Array.isArray(marker.codes) ? [...marker.codes] : marker.codes,
-    })),
+    markers: mapDef.markers.map((marker) => cloneMarker(marker)),
   }
 }
 
@@ -91,7 +105,8 @@ function formatOverlayLabel(overlay: MapMarkerOverlay): string {
 }
 
 function markerCodeList(marker: MapMarkerDef): string[] {
-  const rawList = Array.isArray(marker.codes) ? marker.codes : [marker.codes]
+  const rawCodes = marker.codes ?? ''
+  const rawList = Array.isArray(rawCodes) ? rawCodes : [rawCodes]
   return rawList.map((code) => code.trim()).filter((code) => code.length > 0)
 }
 
@@ -100,6 +115,9 @@ function normalizeLocationCode(value: string): string {
 }
 
 function assignMarkerCodes(marker: MapMarkerDef, nextCodes: string[]): void {
+  if (marker.type === 'submenu') {
+    return
+  }
   const cleaned = nextCodes.map((value) => value.trim()).filter((value) => value.length > 0)
   if (cleaned.length === 0) {
     marker.codes = ''
@@ -299,6 +317,8 @@ const selectedMarkerDuplicateCodes = computed(() =>
 const selectedMarkerUnresolvedCodes = computed(() => {
   return selectedMarkerCodeList.value.filter((code) => resolveCodeToCheckIds(code).length === 0)
 })
+
+const selectedMarkerIsSubmenu = computed(() => selectedDraftMarker.value?.type === 'submenu')
 
 const selectedMarkerImageUnknown = computed(() => {
   const marker = selectedDraftMarker.value
@@ -543,6 +563,27 @@ const draftErrors = computed<DraftIssue[]>(() => {
         message: 'Coords must be finite numbers',
       })
     }
+    if (marker.type === 'submenu') {
+      const submenuMarkers = marker.markers ?? []
+      if (submenuMarkers.length === 0) {
+        issues.push({
+          markerIndex,
+          message: 'Submenu marker must include at least one submenu marker',
+        })
+      }
+      submenuMarkers.forEach((submenuMarker, submenuIndex) => {
+        const codes = Array.isArray(submenuMarker.codes) ? submenuMarker.codes : [submenuMarker.codes]
+        const trimmedCodes = codes.map((code) => code.trim()).filter((code) => code.length > 0)
+        if (trimmedCodes.length === 0) {
+          issues.push({
+            markerIndex,
+            message: `Submenu marker #${submenuIndex + 1} must include at least one code`,
+          })
+        }
+      })
+      return
+    }
+
     const codes = markerCodeList(marker)
     if (codes.length === 0) {
       issues.push({
@@ -571,6 +612,22 @@ const draftWarnings = computed<DraftIssue[]>(() => {
         message: `Unknown image key: "${marker.image}"`,
       })
     }
+    if (marker.type === 'submenu') {
+      const submenuUnresolved = (marker.markers ?? []).flatMap((submenuMarker, submenuIndex) =>
+        (Array.isArray(submenuMarker.codes) ? submenuMarker.codes : [submenuMarker.codes])
+          .map((code) => code.trim())
+          .filter((code) => code.length > 0 && resolveCodeToCheckIds(code).length === 0)
+          .map((code) => `#${submenuIndex + 1}: ${code}`),
+      )
+      if (submenuUnresolved.length > 0) {
+        issues.push({
+          markerIndex,
+          message: `Unresolved submenu codes: ${submenuUnresolved.join(', ')}`,
+        })
+      }
+      return
+    }
+
     const unresolved = markerCodeList(marker).filter((code) => resolveCodeToCheckIds(code).length === 0)
     if (unresolved.length > 0) {
       issues.push({
@@ -593,14 +650,33 @@ function buildDraftExportMap(): MapDef | null {
     width: draftMap.value.width,
     height: draftMap.value.height,
     markers: draftMap.value.markers.map((marker) => {
-      const codes = markerCodeList(marker)
       const exportMarker: MapMarkerDef = {
         coords: [Number(marker.coords[0]), Number(marker.coords[1])],
         image: marker.image.trim(),
-        codes: codes.length > 1 ? [...codes] : (codes[0] ?? ''),
+      }
+      if (marker.type) {
+        exportMarker.type = marker.type
       }
       if (marker.overlays && marker.overlays.length > 0) {
         exportMarker.overlays = [...marker.overlays]
+      }
+      if (marker.type === 'submenu') {
+        exportMarker.markers = (marker.markers ?? []).map((submenuMarker) => {
+          const codes = (Array.isArray(submenuMarker.codes) ? submenuMarker.codes : [submenuMarker.codes])
+            .map((code) => code.trim())
+            .filter((code) => code.length > 0)
+          const exportSubmenuMarker: MapSubmenuEntryDef = {
+            image: submenuMarker.image.trim(),
+            codes: codes.length > 1 ? [...codes] : (codes[0] ?? ''),
+          }
+          if (submenuMarker.overlays && submenuMarker.overlays.length > 0) {
+            exportSubmenuMarker.overlays = [...submenuMarker.overlays]
+          }
+          return exportSubmenuMarker
+        })
+      } else {
+        const codes = markerCodeList(marker)
+        exportMarker.codes = codes.length > 1 ? [...codes] : (codes[0] ?? '')
       }
       return exportMarker
     }),
@@ -646,7 +722,7 @@ function setSelectedCoord(axis: 0 | 1, value: number): void {
 
 function addCodeToSelectedMarker(code: string): void {
   const marker = selectedDraftMarker.value
-  if (!marker) return
+  if (!marker || marker.type === 'submenu') return
   const trimmed = code.trim()
   if (!trimmed) return
   const normalized = normalizeCode(trimmed)
@@ -659,7 +735,7 @@ function addCodeToSelectedMarker(code: string): void {
 
 function removeCodeFromSelectedMarker(code: string): void {
   const marker = selectedDraftMarker.value
-  if (!marker) return
+  if (!marker || marker.type === 'submenu') return
   const normalized = normalizeCode(code)
   const nextCodes = markerCodeList(marker).filter((entry) => normalizeCode(entry) !== normalized)
   assignMarkerCodes(marker, nextCodes)
@@ -929,7 +1005,7 @@ onBeforeUnmount(() => {
         </div>
       </section>
 
-      <section class="map-dev-editor__section">
+      <section v-if="!selectedMarkerIsSubmenu" class="map-dev-editor__section">
         <h4>Codes</h4>
         <label>
           Search locations
@@ -1003,6 +1079,13 @@ onBeforeUnmount(() => {
         >
           Unresolved/manual codes: {{ selectedMarkerUnresolvedCodes.join(', ') }}
         </div>
+      </section>
+
+      <section v-else class="map-dev-editor__section">
+        <h4>Codes</h4>
+        <p class="map-dev-editor__location-empty">
+          Submenu markers use nested marker lists. Editing nested submenu markers is not supported in dev mode yet.
+        </p>
       </section>
     </template>
 

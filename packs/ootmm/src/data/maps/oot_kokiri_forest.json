@@ -938,7 +938,54 @@
         96
       ],
       "image": "grotto",
-      "codes": "TODO KF 085 :: unnamed_stack > Forest > Forest Layers > Forest Entrances :: Pasted Layer #84 :: 001-001-014-010.png"
+      "type": "submenu",
+      "markers": [
+        {
+          "image": "chest",
+          "codes": "OOT Kokiri Forest Kokiri Sword Chest"
+        },
+        {
+          "image": "business_scrub_oot",
+          "overlays": [
+            "child"
+          ],
+          "codes": [
+            "OOT Lost Woods Scrub Near Theater Left",
+            "OOT Lost Woods Scrub Near Theater Right"
+          ]
+        },
+        {
+          "image": "butterfly",
+          "overlays": [
+            "child"
+          ],
+          "codes": [
+            "OOT Lost Woods Butterfly 1",
+            "OOT Lost Woods Butterfly 2",
+            "OOT Lost Woods Butterfly 3"
+          ]
+        },
+        {
+          "image": "soft_soil",
+          "codes": [
+            "OOT Lost Woods Soil Early 1",
+            "OOT Lost Woods Soil Early 2",
+            "OOT Lost Woods Soil Early 3"
+          ]
+        },
+        {
+          "image": "grass",
+          "codes": [
+            "OOT Lost Woods Grass 1",
+            "OOT Lost Woods Grass 2",
+            "OOT Lost Woods Grass 3"
+          ]
+        },
+        {
+          "image": "gossip_stone",
+          "codes": "OOT Kokiri Gossip Near Lost Woods Open"
+        }
+      ]
     },
     {
       "coords": [
