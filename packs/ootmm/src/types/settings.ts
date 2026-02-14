@@ -157,7 +157,7 @@ export const DEFAULT_OOTMM_SETTINGS: OoTMMSettings = {
   damageMultiplierOot: 'normal',
   damageMultiplierMm: 'normal',
   progressiveShieldsOot: 'separate',
-  progressiveSwordsOot: 'goron',
+  progressiveSwordsOot: 'separate',
   progressiveShieldsMm: 'separate',
   progressiveGFS: 'separate',
   progressiveGoronLullaby: 'progressive',
