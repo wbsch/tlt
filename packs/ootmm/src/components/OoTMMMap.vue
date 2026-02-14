@@ -909,9 +909,14 @@ onBeforeUnmount(() => {
             @click="handlePopupEntryClick(entry)"
           >
             <span class="map-popup__entry-name">{{ formatLocationDisplayName(entry.code) }}</span>
-            <span class="map-popup__entry-state">
-              {{ entry.isReachable ? (entry.isChecked ? 'Checked' : 'Reachable') : 'Unreachable' }}
-            </span>
+            <span
+              class="map-popup__entry-check"
+              :class="{
+                'is-reachable': entry.isReachable,
+                'is-checked': entry.isChecked,
+              }"
+              aria-hidden="true"
+            ></span>
           </button>
         </div>
 
@@ -1214,12 +1219,31 @@ onBeforeUnmount(() => {
   font-size: 0.76rem;
 }
 
-.map-popup__entry-state {
-  font-size: 0.65rem;
-  text-transform: uppercase;
-  letter-spacing: 0.04em;
-  color: #94a3b8;
+.map-popup__entry-check {
   flex: 0 0 auto;
+  width: 1rem;
+  height: 1rem;
+  border-radius: 999px;
+  border: 1px solid #334155;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.72rem;
+  line-height: 1;
+  color: #64748b;
+  background: #0b1220;
+}
+
+.map-popup__entry-check.is-reachable {
+  border-color: #14b8a6;
+  color: #5eead4;
+  background: #042f2e;
+}
+
+.map-popup__entry-check.is-checked {
+  border-color: #60a5fa;
+  color: #bfdbfe;
+  background: #102746;
 }
 
 .map-popup__footer {
