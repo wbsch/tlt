@@ -104,6 +104,7 @@ const {
   locationsReachabilityFilter,
   locationsCollectionFilter,
   locationsShowUnshuffled,
+  locationsShowGossipStones,
 } = storeToRefs(uiStore)
 
 const settingsRef = ref<SettingsPanelHandle | null>(null)
@@ -136,6 +137,7 @@ const locationVisibilityFilters = computed<LocationVisibilityFilters>(() => ({
   reachabilityFilter: locationsReachabilityFilter.value,
   collectionFilter: locationsCollectionFilter.value,
   showUnshuffled: locationsShowUnshuffled.value,
+  showGossipStones: locationsShowGossipStones.value,
 }))
 const visibleLocationIds = computed(() => {
   const visible = new Set<string>()

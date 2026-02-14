@@ -90,6 +90,9 @@ export interface LocationInfo {
   /** True if this location is a Stray Fairy check */
   isStrayFairy?: boolean;
 
+  /** True if this location is a Gossip Stone */
+  isGossipStone?: boolean;
+
   /** Whether this location is shuffled based on settings (if applicable) */
   isShuffled?: boolean;
 

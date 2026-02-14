@@ -56,6 +56,7 @@ const {
   locationsSelectedCategory: selectedCategory,
   locationsReachabilityFilter: reachabilityFilter,
   locationsShowUnshuffled: showUnshuffled,
+  locationsShowGossipStones: showGossipStones,
   locationsCollectionFilter: collectionFilter,
 } = storeToRefs(uiStore)
 
@@ -68,6 +69,7 @@ const visibilityFilters = computed<LocationVisibilityFilters>(() => ({
   reachabilityFilter: reachabilityFilter.value,
   collectionFilter: collectionFilter.value,
   showUnshuffled: showUnshuffled.value,
+  showGossipStones: showGossipStones.value,
 }))
 
 const categories = computed(() => {
@@ -227,6 +229,10 @@ function toggleCollected(id: string) {
       <label class="shuffle-toggle-label">
         <input v-model="showUnshuffled" type="checkbox" />
         <span>Show unshuffled Skulltulas & Dungeon Stray Fairies</span>
+      </label>
+      <label class="shuffle-toggle-label">
+        <input v-model="showGossipStones" type="checkbox" />
+        <span>Show Gossip Stones</span>
       </label>
     </div>
 

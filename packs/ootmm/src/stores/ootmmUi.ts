@@ -19,6 +19,7 @@ export const useOoTMMUiStore = defineStore('ootmm-ui', () => {
   const locationsReachabilityFilter = ref<ReachabilityFilter>('all');
   const locationsCollectionFilter = ref<CollectionFilter>('all');
   const locationsShowUnshuffled = ref(false);
+  const locationsShowGossipStones = ref(false);
 
   const settingsSearchQuery = ref('');
 
@@ -57,6 +58,7 @@ export const useOoTMMUiStore = defineStore('ootmm-ui', () => {
     locationsReachabilityFilter.value = 'all';
     locationsCollectionFilter.value = 'all';
     locationsShowUnshuffled.value = false;
+    locationsShowGossipStones.value = false;
 
     settingsSearchQuery.value = '';
 
@@ -74,6 +76,7 @@ export const useOoTMMUiStore = defineStore('ootmm-ui', () => {
     locationsReachabilityFilter,
     locationsCollectionFilter,
     locationsShowUnshuffled,
+    locationsShowGossipStones,
     settingsSearchQuery,
     isSpoilerDragActive,
     spoilerDragDepth,

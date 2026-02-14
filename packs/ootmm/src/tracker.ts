@@ -223,7 +223,9 @@ export class OoTMMTracker implements TrackerPack {
 
     const extra: Record<string, unknown> = {
       canReachBosses: state.ganonMajora,
-      gossipStones: state.gossips[0]?.size || 0,
+      gossipStones: Array.isArray(state.gossips)
+        ? state.gossips.reduce((count: number, worldGossips: Set<string>) => count + worldGossips.size, 0)
+        : 0,
     }
 
     if (isVanillaSilverRupees) {
@@ -286,6 +288,19 @@ export class OoTMMTracker implements TrackerPack {
           isStrayFairy,
           isShuffled: shuffled,
           showWhenUnshuffled,
+        })
+      }
+
+      for (const gossipName of Object.keys((world as { gossip?: Record<string, unknown> }).gossip ?? {})) {
+        const fullId = makeLocation(gossipName, worldId)
+        if (!includeHidden && this.hiddenLocationIds.has(fullId)) continue
+        locations.push({
+          id: fullId,
+          name: gossipName,
+          category: 'Gossip Stone',
+          area: this.getAreaFromGossipName(gossipName),
+          isGossipStone: true,
+          isShuffled: true,
         })
       }
     }
@@ -464,6 +479,17 @@ export class OoTMMTracker implements TrackerPack {
       return parts.slice(1).join(' ')
     }
     return locId
+  }
+
+  private getAreaFromGossipName(locId: string): string {
+    const trimmed = locId.trim()
+    const prefixMatch = trimmed.match(/^(OOT|MM)\s+(.+)$/)
+    const withoutGamePrefix = prefixMatch ? prefixMatch[2] : trimmed
+    const gossipIndex = withoutGamePrefix.indexOf(' Gossip')
+    if (gossipIndex > 0) {
+      return withoutGamePrefix.slice(0, gossipIndex)
+    }
+    return this.getAreaFromLocation(locId)
   }
 
   private buildFixedLocationIds(fixedLocations?: Set<string>): Set<string> {
@@ -807,6 +833,7 @@ export class OoTMMTracker implements TrackerPack {
         assumedItems: playerItems,  // Items the player has
         recursive: true,
         inPlace: false,
+        gossips: true,
       })
     } catch (e) {
       console.error('[OoTMM Tracker] Pathfinder error:', e)
@@ -818,7 +845,19 @@ export class OoTMMTracker implements TrackerPack {
       throw new Error('Pathfinder returned undefined')
     }
 
-    const reachableLocationIds = Array.from(state.locations).filter((locId: string) => !this.hiddenLocationIds.has(locId)) as string[]
+    const reachableCheckIds = Array.from(state.locations).filter((locId: string) => !this.hiddenLocationIds.has(locId)) as string[]
+    const reachableGossipIds: string[] = []
+    if (Array.isArray(state.gossips)) {
+      state.gossips.forEach((worldGossips: Set<string>, worldId: number) => {
+        worldGossips.forEach((gossipName) => {
+          const gossipLocationId = makeLocation(gossipName, worldId)
+          if (!this.hiddenLocationIds.has(gossipLocationId)) {
+            reachableGossipIds.push(gossipLocationId)
+          }
+        })
+      })
+    }
+    const reachableLocationIds = Array.from(new Set([...reachableCheckIds, ...reachableGossipIds]))
     const newLocationIds = Array.from(state.newLocations).filter((locId: string) => !this.hiddenLocationIds.has(locId)) as string[]
 
     return { state, reachableLocationIds, newLocationIds }

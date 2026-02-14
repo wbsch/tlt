@@ -797,56 +797,56 @@
         850,
         259
       ],
-      "image": "npc",
-      "codes": "TODO KF 068 :: unnamed_stack > Forest > Forest Layers > Forest Gossip :: Pasted Layer #67 :: 001-001-013-000.png"
+      "image": "gossip_stone",
+      "codes": "OOT Kokiri Gossip Left of Deku Tree"
     },
     {
       "coords": [
         944,
         339
       ],
-      "image": "npc",
-      "codes": "TODO KF 069 :: unnamed_stack > Forest > Forest Layers > Forest Gossip :: Pasted Layer #68 :: 001-001-013-001.png"
+      "image": "gossip_stone",
+      "codes": "OOT Kokiri Gossip Right of Deku Tree"
     },
     {
       "coords": [
         532,
         324
       ],
-      "image": "tree",
-      "codes": "TODO KF 070 :: unnamed_stack > Forest > Forest Layers > Forest Gossip :: Pasted Layer #69 :: 001-001-013-002.png"
+      "image": "gossip_stone",
+      "codes": "OOT Kokiri Gossip Near Lost Woods Open"
     },
     {
       "coords": [
         351,
         299
       ],
-      "image": "npc",
-      "codes": "TODO KF 071 :: unnamed_stack > Forest > Forest Layers > Forest Gossip :: Pasted Layer #70 :: 001-001-013-003.png"
+      "image": "gossip_stone",
+      "codes": "OOT Kokiri Gossip Near Lost Woods Grotto"
     },
     {
       "coords": [
         312,
         265
       ],
-      "image": "npc",
-      "codes": "TODO KF 072 :: unnamed_stack > Forest > Forest Layers > Forest Gossip :: Pasted Layer #71 :: 001-001-013-004.png"
+      "image": "gossip_stone",
+      "codes": "OOT Lost Woods Gossip Grotto"
     },
     {
       "coords": [
         66,
         431
       ],
-      "image": "npc",
-      "codes": "TODO KF 073 :: unnamed_stack > Forest > Forest Layers > Forest Gossip :: Pasted Layer #72 :: 001-001-013-005.png"
+      "image": "gossip_stone",
+      "codes": "OOT Lost Woods Gossip Under Bridge"
     },
     {
       "coords": [
         318,
         99
       ],
-      "image": "npc",
-      "codes": "TODO KF 074 :: unnamed_stack > Forest > Forest Layers > Forest Gossip :: Pasted Layer #73 :: 001-001-013-006.png"
+      "image": "gossip_stone",
+      "codes": "OOT Sacred Meadow Gossip Near Forest Temple"
     },
     {
       "coords": [

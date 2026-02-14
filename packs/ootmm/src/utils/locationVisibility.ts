@@ -7,6 +7,7 @@ export type LocationVisibilityFilters = {
   reachabilityFilter: ReachabilityFilter
   collectionFilter: CollectionFilter
   showUnshuffled: boolean
+  showGossipStones: boolean
 }
 
 type SetMembershipFilter = 'all' | 'included' | 'excluded'
@@ -37,8 +38,9 @@ export function matchesLocationBaseVisibility(
   const matchesSearch = location.name.toLowerCase().includes(searchQuery)
   const matchesCategory =
     filters.selectedCategory === 'all' || location.category === filters.selectedCategory
+  const matchesGossip = !location.isGossipStone || filters.showGossipStones
 
-  return matchesShuffle && matchesSearch && matchesCategory
+  return matchesShuffle && matchesSearch && matchesCategory && matchesGossip
 }
 
 export function matchesLocationReachabilityVisibility(
