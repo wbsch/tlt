@@ -533,7 +533,7 @@ function handlePopupHoverEnd(): void {
 }
 
 function handlePopupEntryClick(entry: MapPopupEntry): void {
-  if (!entry.checkId || !entry.isReachable) return
+  if (!entry.checkId) return
   emit('toggle-collected', entry.checkId)
 }
 
@@ -906,7 +906,7 @@ onBeforeUnmount(() => {
               'is-reachable': entry.isReachable,
               'is-checked': entry.isChecked,
             }"
-            :disabled="!entry.checkId || !entry.isReachable"
+            :disabled="!entry.checkId"
             @click="handlePopupEntryClick(entry)"
           >
             <span class="map-popup__entry-name">{{ formatLocationDisplayName(entry.code) }}</span>
@@ -917,7 +917,7 @@ onBeforeUnmount(() => {
                 'is-checked': entry.isChecked,
               }"
               aria-hidden="true"
-            ></span>
+            >{{ entry.isChecked ? '✓' : '' }}</span>
           </button>
         </div>
 
