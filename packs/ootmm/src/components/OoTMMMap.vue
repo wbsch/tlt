@@ -901,6 +901,7 @@ onBeforeUnmount(() => {
             :key="entry.id"
             type="button"
             class="map-popup__entry"
+            :title="formatLocationDisplayName(entry.code)"
             :class="{
               'is-reachable': entry.isReachable,
               'is-checked': entry.isChecked,
