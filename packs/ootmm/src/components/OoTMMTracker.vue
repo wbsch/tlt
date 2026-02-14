@@ -116,6 +116,7 @@ const activeMapId = ref(mapDefs[0]?.id ?? '')
 const mapSelectorQuery = ref('')
 const mapSelectorInputRef = ref<HTMLInputElement | null>(null)
 const isMapSelectorOpen = ref(false)
+const hasMapSelectorUserInput = ref(false)
 const mapSelectorHighlightedIndex = ref(-1)
 const isMapDevMode =
   typeof window !== 'undefined' && new URLSearchParams(window.location.search).get('devmode') === '1'
@@ -206,6 +207,7 @@ watch(isApplyingSettings, (applying) => {
 
 function syncMapSelectorToActiveMap() {
   mapSelectorQuery.value = activeMap.value?.title ?? ''
+  hasMapSelectorUserInput.value = false
   mapSelectorHighlightedIndex.value = -1
 }
 
@@ -236,7 +238,12 @@ function getMapSelectorMatches(rawQuery: string): MapDef[] {
   return [...exactMatches, ...prefixMatches, ...fuzzyMatches]
 }
 
-const filteredMapSelectorMaps = computed(() => getMapSelectorMatches(mapSelectorQuery.value))
+const filteredMapSelectorMaps = computed(() => {
+  if (isMapSelectorOpen.value && !hasMapSelectorUserInput.value) {
+    return mapDefs
+  }
+  return getMapSelectorMatches(mapSelectorQuery.value)
+})
 const activeMapSelectorOptionId = computed(() => {
   if (
     !isMapSelectorOpen.value ||
@@ -283,6 +290,7 @@ function setMapSelectorHighlight(index: number) {
 function selectMapFromSelector(mapDef: MapDef, options?: { close?: boolean }) {
   activeMapId.value = mapDef.id
   mapSelectorQuery.value = mapDef.title
+  hasMapSelectorUserInput.value = false
   const shouldClose = options?.close ?? true
   if (shouldClose) {
     isMapSelectorOpen.value = false
@@ -318,11 +326,13 @@ function commitMapSelectorSelection() {
 }
 
 function handleMapSelectorFocus() {
+  hasMapSelectorUserInput.value = false
   openMapSelector()
   mapSelectorInputRef.value?.select()
 }
 
 function handleMapSelectorClick() {
+  hasMapSelectorUserInput.value = false
   openMapSelector()
   mapSelectorInputRef.value?.select()
 }
@@ -332,6 +342,7 @@ function handleMapSelectorBlur() {
 }
 
 function handleMapSelectorInput() {
+  hasMapSelectorUserInput.value = true
   openMapSelector()
   setMapSelectorHighlight(0)
   const match = findMapForSelectorQuery(mapSelectorQuery.value)
