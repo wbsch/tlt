@@ -11,6 +11,10 @@ import OoTMMMap from './OoTMMMap.vue'
 import OoTMMTricks from './OoTMMTricks.vue'
 import { TRACKER_DEFAULT_SETTINGS } from '../data/settings'
 import { parseSpoilerLog } from '../utils/spoiler'
+import {
+  isLocationVisibleInSidebar,
+  type LocationVisibilityFilters,
+} from '../utils/locationVisibility'
 import { useOoTMMSessionStore } from '../stores/ootmmSession'
 import { useOoTMMUiStore, type TrackerTab } from '../stores/ootmmUi'
 import { OOTMM_MAP_DEFS } from '../data/maps'
@@ -95,6 +99,11 @@ const {
   isLocationsSidebarOpen,
   isSpoilerDragActive,
   spoilerDragDepth,
+  locationsSearchQuery,
+  locationsSelectedCategory,
+  locationsReachabilityFilter,
+  locationsCollectionFilter,
+  locationsShowUnshuffled,
 } = storeToRefs(uiStore)
 
 const settingsRef = ref<SettingsPanelHandle | null>(null)
@@ -118,6 +127,29 @@ const activeMap = computed<MapDef | null>(() => {
   return mapDefs.find((mapDef) => mapDef.id === activeMapId.value) ?? mapDefs[0]
 })
 const collectedLocationIdSet = computed(() => new Set(collectedLocationIds.value))
+const locationVisibilityFilters = computed<LocationVisibilityFilters>(() => ({
+  searchQuery: locationsSearchQuery.value,
+  selectedCategory: locationsSelectedCategory.value,
+  reachabilityFilter: locationsReachabilityFilter.value,
+  collectionFilter: locationsCollectionFilter.value,
+  showUnshuffled: locationsShowUnshuffled.value,
+}))
+const visibleLocationIds = computed(() => {
+  const visible = new Set<string>()
+  for (const location of allLocations.value) {
+    if (
+      isLocationVisibleInSidebar(
+        location,
+        locationVisibilityFilters.value,
+        reachableLocationIds.value,
+        collectedLocationIdSet.value,
+      )
+    ) {
+      visible.add(location.id)
+    }
+  }
+  return visible
+})
 const allLocationsForCodeSearch = computed(() =>
   props.tracker.getAllLocationsForCodeSearch?.() ?? allLocations.value,
 )
@@ -832,6 +864,7 @@ onBeforeUnmount(() => {
             :collected-ids="collectedLocationIdSet"
             :all-locations="allLocations"
             :all-locations-for-code-search="allLocationsForCodeSearch"
+            :visible-location-ids="visibleLocationIds"
             :dev-mode="isMapDevMode"
             :dev-marker-select-request="mapMarkerSelectRequest"
             :dev-marker-hover-index="mapMarkerHoverIndex"

@@ -18,7 +18,6 @@ import type {
   MapMarkerViewModel,
   MapPopupEntry,
   MapPopupPayload,
-  MarkerVisibilityMode,
 } from '../data/maps/types'
 
 const MIN_SCALE = 0.5
@@ -60,20 +59,20 @@ const props = withDefaults(
     activeMap: MapDef | null
     reachableIds: Set<string>
     collectedIds: Set<string>
+    visibleLocationIds?: Set<string> | null
     allLocations?: LocationInfo[]
     allLocationsForCodeSearch?: LocationInfo[]
     devMode?: boolean
     devMarkerSelectRequest?: { markerIndex: number; nonce: number } | null
     devMarkerHoverIndex?: number | null
-    visibilityMode?: MarkerVisibilityMode
   }>(),
   {
+    visibleLocationIds: null,
     allLocations: () => [],
     allLocationsForCodeSearch: () => [],
     devMode: false,
     devMarkerSelectRequest: null,
     devMarkerHoverIndex: null,
-    visibilityMode: 'reachable-unchecked',
   },
 )
 
@@ -329,7 +328,15 @@ const markerViewModels = computed<MarkerRuntime[]>(() => {
       })
     })
 
-    const allCheckIds = Array.from(resolvedCheckIds)
+    const allCheckIdsRaw = Array.from(resolvedCheckIds)
+    const allCheckIds =
+      props.devMode || !props.visibleLocationIds
+        ? allCheckIdsRaw
+        : allCheckIdsRaw.filter((checkId) => props.visibleLocationIds?.has(checkId))
+    const popupEntriesForDisplay =
+      props.devMode || !props.visibleLocationIds
+        ? popupEntries
+        : popupEntries.filter((entry) => entry.checkId && props.visibleLocationIds?.has(entry.checkId))
     const reachableCheckIds = allCheckIds.filter((checkId) => props.reachableIds.has(checkId))
     const checkedCount = allCheckIds.filter((checkId) => props.collectedIds.has(checkId)).length
     const reachableUncheckedCheckIds = allCheckIds.filter(
@@ -337,11 +344,7 @@ const markerViewModels = computed<MarkerRuntime[]>(() => {
     )
     const reachableUncheckedCount = reachableUncheckedCheckIds.length
     const reachableCount = reachableCheckIds.length
-    const isVisible = props.devMode
-      ? true
-      : props.visibilityMode === 'reachable-any'
-        ? reachableCount > 0
-        : reachableUncheckedCount > 0
+    const isVisible = props.devMode ? true : allCheckIds.length > 0
 
     const countDigitImages =
       Array.isArray(markerDef.codes) && reachableUncheckedCount > 1
@@ -363,7 +366,7 @@ const markerViewModels = computed<MarkerRuntime[]>(() => {
       reachableCheckIds,
       reachableUncheckedCheckIds,
       reachableUncheckedCount,
-      popupEntries,
+      popupEntries: popupEntriesForDisplay,
       topLeftOverlays: buildTopLeftOverlays(overlays),
       bottomLeftOverlays: buildBottomLeftOverlays(overlays),
       hasBrokenOverlay: overlays.includes('broken'),

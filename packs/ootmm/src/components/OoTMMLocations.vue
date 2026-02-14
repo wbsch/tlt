@@ -4,6 +4,12 @@ import { storeToRefs } from 'pinia'
 import type { LocationInfo } from '@/types/tracker'
 import { useOoTMMUiStore } from '../stores/ootmmUi'
 import { useOoTMMSessionStore } from '../stores/ootmmSession'
+import {
+  matchesLocationBaseVisibility,
+  matchesLocationCollectionVisibility,
+  matchesLocationReachabilityVisibility,
+  type LocationVisibilityFilters,
+} from '../utils/locationVisibility'
 // Import pool data to get scene information
 import poolData from '../../../../OoTMM/packages/data/dist/data-pool.json'
 
@@ -56,6 +62,13 @@ const {
 const { collectedLocationIds } = storeToRefs(sessionStore)
 
 const collectedIdSet = computed(() => new Set(collectedLocationIds.value))
+const visibilityFilters = computed<LocationVisibilityFilters>(() => ({
+  searchQuery: searchQuery.value,
+  selectedCategory: selectedCategory.value,
+  reachabilityFilter: reachabilityFilter.value,
+  collectionFilter: collectionFilter.value,
+  showUnshuffled: showUnshuffled.value,
+}))
 
 const categories = computed(() => {
   const cats = new Set<string>()
@@ -70,37 +83,33 @@ const categories = computed(() => {
 })
 
 const baseFilteredLocations = computed(() => {
-  return props.locations.filter(loc => {
-    const isToggleEligible = Boolean(loc.isSkulltulaToken || loc.isStrayFairy)
-    const matchesShuffle = loc.isShuffled !== false || loc.showWhenUnshuffled || (showUnshuffled.value && isToggleEligible)
-    const matchesSearch = loc.name.toLowerCase().includes(searchQuery.value.toLowerCase())
-    const matchesCategory = selectedCategory.value === 'all' || loc.category === selectedCategory.value
-    return matchesShuffle && matchesSearch && matchesCategory
-  })
+  return props.locations.filter(loc => matchesLocationBaseVisibility(loc, visibilityFilters.value))
 })
 
 
 
 const collectionScopedLocations = computed(() => {
   return baseFilteredLocations.value.filter(loc => {
-    if (reachabilityFilter.value === 'reachable') {
-      return props.reachableIds.has(loc.id)
-    }
-    if (reachabilityFilter.value === 'unreachable') {
-      return !props.reachableIds.has(loc.id)
-    }
-    return true
+    return matchesLocationReachabilityVisibility(
+      loc.id,
+      props.reachableIds,
+      visibilityFilters.value.reachabilityFilter,
+    )
   })
 })
 
 const filteredLocations = computed(() => {
   return baseFilteredLocations.value.filter(loc => {
-    const matchesReachability = reachabilityFilter.value === 'all'
-      || (reachabilityFilter.value === 'reachable' && props.reachableIds.has(loc.id))
-      || (reachabilityFilter.value === 'unreachable' && !props.reachableIds.has(loc.id))
-    const matchesCollection = collectionFilter.value === 'all'
-      || (collectionFilter.value === 'collected' && collectedIdSet.value.has(loc.id))
-      || (collectionFilter.value === 'uncollected' && !collectedIdSet.value.has(loc.id))
+    const matchesReachability = matchesLocationReachabilityVisibility(
+      loc.id,
+      props.reachableIds,
+      visibilityFilters.value.reachabilityFilter,
+    )
+    const matchesCollection = matchesLocationCollectionVisibility(
+      loc.id,
+      collectedIdSet.value,
+      visibilityFilters.value.collectionFilter,
+    )
     return matchesReachability && matchesCollection
   })
 })
