@@ -25,6 +25,8 @@ const MIN_SCALE = 0.5
 const MAX_SCALE = 3
 const WHEEL_ZOOM_FACTOR = 1.1
 const MARKER_SIZE = 16
+const MARKER_PANEL_GAP = 4
+const HOVER_POPUP_CLOSE_DELAY_MS = 160
 const MAP_POPUP_WIDTH = 260
 const MAP_POPUP_HEIGHT = 230
 
@@ -91,6 +93,9 @@ const panX = ref(0)
 const panY = ref(0)
 const isDragging = ref(false)
 const popupMarkerId = ref<string | null>(null)
+const hoverMarkerId = ref<string | null>(null)
+const isPopupHovered = ref(false)
+const popupPinned = ref(false)
 
 const devDraftMap = ref<MapDef | null>(null)
 const devSelectedMarkerIndex = ref<number | null>(null)
@@ -99,6 +104,7 @@ const activePointers = new Map<number, { x: number; y: number }>()
 let lastDragPoint: { x: number; y: number } | null = null
 let pinchStartDistance = 0
 let pinchStartScale = 1
+let hoverPopupCloseTimer: ReturnType<typeof setTimeout> | null = null
 
 const renderMapDef = computed<MapDef | null>(() =>
   props.devMode ? (devDraftMap.value ?? props.activeMap) : props.activeMap,
@@ -410,17 +416,35 @@ function markerStyle(marker: MarkerRuntime): Record<string, string> {
   }
 }
 
+function panelSize(
+  element: HTMLElement | null,
+  fallbackWidth: number,
+  fallbackHeight: number,
+): { width: number; height: number } {
+  return {
+    width: element?.offsetWidth ?? fallbackWidth,
+    height: element?.offsetHeight ?? fallbackHeight,
+  }
+}
+
 function popupStyle(): Record<string, string> {
   const marker = popupMarker.value
   const viewport = viewportRef.value
   if (!marker || !viewport) return {}
 
-  const rawX = marker.coords[0] * scale.value + panX.value + MARKER_SIZE * 0.75
-  const rawY = marker.coords[1] * scale.value + panY.value + MARKER_SIZE * 0.75
-  const maxX = Math.max(8, viewport.clientWidth - MAP_POPUP_WIDTH)
-  const maxY = Math.max(8, viewport.clientHeight - MAP_POPUP_HEIGHT)
-  const left = clamp(rawX, 8, maxX)
-  const top = clamp(rawY, 8, maxY)
+  const { width: popupWidth, height: popupHeight } = panelSize(
+    popupRef.value,
+    MAP_POPUP_WIDTH,
+    MAP_POPUP_HEIGHT,
+  )
+  const markerX = marker.coords[0] * scale.value + panX.value + MARKER_SIZE * 0.5
+  const markerY = marker.coords[1] * scale.value + panY.value + MARKER_SIZE * 0.5
+  const maxX = Math.max(8, viewport.clientWidth - popupWidth - 8)
+  const maxY = Math.max(8, viewport.clientHeight - popupHeight - 8)
+  const rightSideLeft = markerX + MARKER_PANEL_GAP
+  const leftSideLeft = markerX - popupWidth - MARKER_PANEL_GAP
+  const left = leftSideLeft >= 8 ? leftSideLeft : clamp(rightSideLeft, 8, maxX)
+  const top = clamp(markerY - popupHeight * 0.5, 8, maxY)
 
   return {
     left: `${left}px`,
@@ -428,12 +452,37 @@ function popupStyle(): Record<string, string> {
   }
 }
 
-function openPopup(markerId: string): void {
+function clearHoverPopupCloseTimer(): void {
+  if (hoverPopupCloseTimer === null) return
+  clearTimeout(hoverPopupCloseTimer)
+  hoverPopupCloseTimer = null
+}
+
+function scheduleHoverPopupClose(): void {
+  if (popupPinned.value || isPopupHovered.value) return
+  clearHoverPopupCloseTimer()
+  hoverPopupCloseTimer = setTimeout(() => {
+    if (popupPinned.value || isPopupHovered.value || hoverMarkerId.value) return
+    closePopup()
+  }, HOVER_POPUP_CLOSE_DELAY_MS)
+}
+
+function openPopup(markerId: string, options?: { pinned?: boolean }): void {
+  const shouldPin = Boolean(options?.pinned)
+  if (shouldPin) {
+    popupPinned.value = true
+  }
+  clearHoverPopupCloseTimer()
+  if (popupMarkerId.value === markerId) return
   popupMarkerId.value = markerId
   emit('open-popup', markerId)
 }
 
 function closePopup(): void {
+  clearHoverPopupCloseTimer()
+  hoverMarkerId.value = null
+  isPopupHovered.value = false
+  popupPinned.value = false
   if (!popupMarkerId.value) return
   popupMarkerId.value = null
   emit('close-popup')
@@ -445,21 +494,34 @@ function handleMarkerClick(marker: MarkerRuntime): void {
     closePopup()
     return
   }
+  hoverMarkerId.value = marker.id
+  openPopup(marker.id, { pinned: true })
+}
 
-  if (Array.isArray(marker.codes)) {
-    if (marker.reachableUncheckedCheckIds.length === 1) {
-      emit('toggle-collected', marker.reachableUncheckedCheckIds[0])
-      return
-    }
-    openPopup(marker.id)
-    return
-  }
+function handleMarkerHoverStart(marker: MarkerRuntime): void {
+  if (props.devMode || popupPinned.value) return
+  hoverMarkerId.value = marker.id
+  openPopup(marker.id)
+}
 
-  const directTarget =
-    marker.reachableUncheckedCheckIds[0] ?? marker.reachableCheckIds[0] ?? marker.allCheckIds[0]
-  if (directTarget) {
-    emit('toggle-collected', directTarget)
+function handleMarkerHoverEnd(markerId: string): void {
+  if (popupPinned.value) return
+  if (hoverMarkerId.value === markerId) {
+    hoverMarkerId.value = null
   }
+  scheduleHoverPopupClose()
+}
+
+function handlePopupHoverStart(): void {
+  if (props.devMode) return
+  isPopupHovered.value = true
+  clearHoverPopupCloseTimer()
+}
+
+function handlePopupHoverEnd(): void {
+  if (props.devMode || popupPinned.value) return
+  isPopupHovered.value = false
+  scheduleHoverPopupClose()
 }
 
 function handlePopupEntryClick(entry: MapPopupEntry): void {
@@ -556,6 +618,7 @@ function handleLostPointerCapture(event: PointerEvent): void {
 }
 
 function handleWindowBlur(): void {
+  closePopup()
   if (activePointers.size === 0) return
   activePointers.clear()
   syncPointerState()
@@ -618,6 +681,13 @@ watch(
 )
 
 watch(markerViewModels, () => {
+  if (hoverMarkerId.value) {
+    const hoveredMarker = markerById.value.get(hoverMarkerId.value)
+    if (!hoveredMarker || !hoveredMarker.isVisible) {
+      hoverMarkerId.value = null
+    }
+  }
+
   if (props.devMode) return
   const activeMarkerId = popupMarkerId.value
   if (!activeMarkerId) return
@@ -628,7 +698,7 @@ watch(markerViewModels, () => {
 })
 
 watch(activePopup, async (popup) => {
-  if (!popup) return
+  if (!popup || !popupPinned.value) return
   await nextTick()
   const target = popupRef.value?.querySelector<HTMLElement>('button:not(:disabled)')
   target?.focus()
@@ -652,6 +722,7 @@ onMounted(() => {
 onBeforeUnmount(() => {
   window.removeEventListener('keydown', handleEscapeKey)
   window.removeEventListener('blur', handleWindowBlur)
+  clearHoverPopupCloseTimer()
   resizeObserver?.disconnect()
   resizeObserver = null
   activePointers.clear()
@@ -699,6 +770,10 @@ onBeforeUnmount(() => {
           :aria-label="`Map marker: ${marker.codeList.join(', ')}`"
           @pointerdown.stop
           @click.stop="handleMarkerClick(marker)"
+          @mouseenter="handleMarkerHoverStart(marker)"
+          @mouseleave="handleMarkerHoverEnd(marker.id)"
+          @focus="handleMarkerHoverStart(marker)"
+          @blur="handleMarkerHoverEnd(marker.id)"
         >
           <img
             class="map-marker__icon"
@@ -759,6 +834,10 @@ onBeforeUnmount(() => {
         :aria-label="activePopup.title"
         :style="popupStyle()"
         @pointerdown.stop
+        @mouseenter="handlePopupHoverStart"
+        @mouseleave="handlePopupHoverEnd"
+        @focusin="handlePopupHoverStart"
+        @focusout="handlePopupHoverEnd"
       >
         <header class="map-popup__header">
           <div class="map-popup__icon">
