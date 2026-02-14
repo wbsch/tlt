@@ -10,7 +10,11 @@ import {
   resolveOverlayImage,
 } from '../data/maps/assets'
 import OoTMMMapDevEditor from './OoTMMMapDevEditor.vue'
-import { stripWorldSuffix, useLocationCodeLookup } from '../composables/useLocationCodeLookup'
+import {
+  formatLocationDisplayName,
+  stripWorldSuffix,
+  useLocationCodeLookup,
+} from '../composables/useLocationCodeLookup'
 import type {
   MapDef,
   MapMarkerDef,
@@ -390,7 +394,7 @@ const activePopup = computed<MapPopupPayload | null>(() => {
 
   const title =
     marker.popupEntries.length === 1
-      ? stripWorldSuffix(marker.popupEntries[0].code)
+      ? formatLocationDisplayName(marker.popupEntries[0].code)
       : `${marker.popupEntries.length} checks`
 
   return {
@@ -904,7 +908,7 @@ onBeforeUnmount(() => {
             :disabled="!entry.checkId || !entry.isReachable"
             @click="handlePopupEntryClick(entry)"
           >
-            <span class="map-popup__entry-name">{{ stripWorldSuffix(entry.code) }}</span>
+            <span class="map-popup__entry-name">{{ formatLocationDisplayName(entry.code) }}</span>
             <span class="map-popup__entry-state">
               {{ entry.isReachable ? (entry.isChecked ? 'Checked' : 'Reachable') : 'Unreachable' }}
             </span>

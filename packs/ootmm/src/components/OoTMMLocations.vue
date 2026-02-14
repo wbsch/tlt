@@ -10,6 +10,7 @@ import {
   matchesLocationReachabilityVisibility,
   type LocationVisibilityFilters,
 } from '../utils/locationVisibility'
+import { stripGamePrefix } from '../composables/useLocationCodeLookup'
 // Import pool data to get scene information
 import poolData from '../../../../OoTMM/packages/data/dist/data-pool.json'
 
@@ -41,11 +42,6 @@ const locationToSceneMap = computed(() => {
 // Helper function to format scene name (replace underscores with spaces)
 function formatSceneName(sceneName: string): string {
   return sceneName.replace(/_/g, ' ')
-}
-
-// Strip leading game prefix (MM/ OOT) from a display name
-function stripGamePrefix(name: string): string {
-  return name.replace(/^(MM|OOT)\s+/, '')
 }
 
 const uiStore = useOoTMMUiStore()

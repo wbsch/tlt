@@ -20,6 +20,14 @@ export function stripWorldSuffix(value: string): string {
   return value.replace(/@\d+$/, '')
 }
 
+export function stripGamePrefix(value: string): string {
+  return value.replace(/^\s*(?:MM|OOT)(?:\s+|[_:\-]+)/i, '')
+}
+
+export function formatLocationDisplayName(value: string): string {
+  return stripGamePrefix(stripWorldSuffix(value))
+}
+
 function addCodeLookup(map: Map<string, Set<string>>, key: string, value: string): void {
   if (!key) return
   const existing = map.get(key)
