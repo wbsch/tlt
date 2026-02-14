@@ -1068,6 +1068,7 @@ onBeforeUnmount(() => {
   box-shadow: 0 18px 40px rgba(0, 0, 0, 0.5);
   color: #e2e8f0;
   z-index: 10;
+  cursor: default;
 }
 
 .map-popup__header {
@@ -1160,6 +1161,10 @@ onBeforeUnmount(() => {
   display: flex;
   flex-direction: column;
   gap: 0.25rem;
+}
+
+.map-popup button {
+  cursor: pointer;
 }
 
 .map-popup__entry {
