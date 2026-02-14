@@ -11,7 +11,7 @@
         582
       ],
       "image": "chest",
-      "codes": "TODO KF 001 :: unnamed_stack > Forest > Forest Layers > Forest Checks :: Pasted Layer :: 001-001-001-000.png"
+      "codes": "OOT Kokiri Forest Kokiri Sword Chest"
     },
     {
       "coords": [
@@ -123,7 +123,11 @@
         443
       ],
       "image": "gold_skulltula",
-      "codes": "TODO KF 015 :: unnamed_stack > Forest > Forest Layers > Forest Skull :: Pasted Layer #14 :: 001-001-003-004.png"
+      "codes": "OOT Kokiri Forest GS Night Child",
+      "overlays": [
+        "child",
+        "night"
+      ]
     },
     {
       "coords": [
@@ -131,7 +135,10 @@
         382
       ],
       "image": "gold_skulltula",
-      "codes": "TODO KF 016 :: unnamed_stack > Forest > Forest Layers > Forest Skull :: Pasted Layer #15 :: 001-001-003-005.png"
+      "codes": "OOT Kokiri Forest GS Soil",
+      "overlays": [
+        "child"
+      ]
     },
     {
       "coords": [
@@ -139,7 +146,11 @@
         460
       ],
       "image": "gold_skulltula",
-      "codes": "TODO KF 017 :: unnamed_stack > Forest > Forest Layers > Forest Skull :: Pasted Layer #16 :: 001-001-003-006.png"
+      "codes": "OOT Kokiri Forest GS Night Adult",
+      "overlays": [
+        "adult",
+        "night"
+      ]
     },
     {
       "coords": [
@@ -187,7 +198,19 @@
         445
       ],
       "image": "grass",
-      "codes": "TODO KF 023 :: unnamed_stack > Forest > Forest Layers > Forest Grass :: Pasted Layer #22 :: 001-001-005-003.png"
+      "codes": [
+        "OOT Kokiri Forest Grass Child Near Crawl 1",
+        "OOT Kokiri Forest Grass Child Near Crawl 2",
+        "OOT Kokiri Forest Grass Child Near Crawl 3",
+        "OOT Kokiri Forest Grass Child Near Crawl 4",
+        "OOT Kokiri Forest Grass Child Near Crawl 5",
+        "OOT Kokiri Forest Grass Child Near Crawl 6",
+        "OOT Kokiri Forest Grass Child Near Crawl 7",
+        "OOT Kokiri Forest Grass Child Near Crawl 8"
+      ],
+      "overlays": [
+        "child"
+      ]
     },
     {
       "coords": [
@@ -195,7 +218,19 @@
         461
       ],
       "image": "grass",
-      "codes": "TODO KF 024 :: unnamed_stack > Forest > Forest Layers > Forest Grass :: Pasted Layer #23 :: 001-001-005-004.png"
+      "codes": [
+        "OOT Kokiri Forest Grass Adult Near Crawl 1",
+        "OOT Kokiri Forest Grass Adult Near Crawl 2",
+        "OOT Kokiri Forest Grass Adult Near Crawl 3",
+        "OOT Kokiri Forest Grass Adult Near Crawl 4",
+        "OOT Kokiri Forest Grass Adult Near Crawl 5",
+        "OOT Kokiri Forest Grass Adult Near Crawl 6",
+        "OOT Kokiri Forest Grass Adult Near Crawl 7",
+        "OOT Kokiri Forest Grass Adult Near Crawl 8"
+      ],
+      "overlays": [
+        "adult"
+      ]
     },
     {
       "coords": [
@@ -203,7 +238,7 @@
         531
       ],
       "image": "grass",
-      "codes": "TODO KF 025 :: unnamed_stack > Forest > Forest Layers > Forest Grass :: Pasted Layer #24 :: 001-001-005-005.png"
+      "codes": "OOT Kokiri Forest Grass Child Crawl 1"
     },
     {
       "coords": [
@@ -211,7 +246,7 @@
         571
       ],
       "image": "grass",
-      "codes": "TODO KF 026 :: unnamed_stack > Forest > Forest Layers > Forest Grass :: Pasted Layer #25 :: 001-001-005-006.png"
+      "codes": "OOT Kokiri Forest Grass Child Crawl 2"
     },
     {
       "coords": [
@@ -219,7 +254,7 @@
         588
       ],
       "image": "grass",
-      "codes": "TODO KF 027 :: unnamed_stack > Forest > Forest Layers > Forest Grass :: Pasted Layer #26 :: 001-001-005-007.png"
+      "codes": "OOT Kokiri Forest Grass Child Crawl 3"
     },
     {
       "coords": [
@@ -227,7 +262,15 @@
         456
       ],
       "image": "grass",
-      "codes": "TODO KF 028 :: unnamed_stack > Forest > Forest Layers > Forest Grass :: Pasted Layer #27 :: 001-001-005-008.png"
+      "codes": [
+        "OOT Kokiri Forest Grass Child 1",
+        "OOT Kokiri Forest Grass Child 2",
+        "OOT Kokiri Forest Grass Child 3",
+        "OOT Kokiri Forest Grass Child 4"
+      ],
+      "overlays": [
+        "child"
+      ]
     },
     {
       "coords": [
@@ -235,7 +278,10 @@
         456
       ],
       "image": "grass",
-      "codes": "TODO KF 029 :: unnamed_stack > Forest > Forest Layers > Forest Grass :: Pasted Layer #28 :: 001-001-005-009.png"
+      "codes": "OOT Kokiri Forest Grass Child Kokiri",
+      "overlays": [
+        "child"
+      ]
     },
     {
       "coords": [
@@ -243,7 +289,23 @@
         472
       ],
       "image": "grass",
-      "codes": "TODO KF 030 :: unnamed_stack > Forest > Forest Layers > Forest Grass :: Pasted Layer #29 :: 001-001-005-010.png"
+      "codes": [
+        "OOT Kokiri Forest Grass Adult 01",
+        "OOT Kokiri Forest Grass Adult 02",
+        "OOT Kokiri Forest Grass Adult 03",
+        "OOT Kokiri Forest Grass Adult 04",
+        "OOT Kokiri Forest Grass Adult 05",
+        "OOT Kokiri Forest Grass Adult 06",
+        "OOT Kokiri Forest Grass Adult 07",
+        "OOT Kokiri Forest Grass Adult 08",
+        "OOT Kokiri Forest Grass Adult 09",
+        "OOT Kokiri Forest Grass Adult 10",
+        "OOT Kokiri Forest Grass Adult 11",
+        "OOT Kokiri Forest Grass Adult 12"
+      ],
+      "overlays": [
+        "adult"
+      ]
     },
     {
       "coords": [
@@ -251,23 +313,36 @@
         475
       ],
       "image": "heart",
-      "codes": "TODO KF 031 :: unnamed_stack > Forest > Forest Layers > Forest Freestanding Hearts :: Pasted Layer #30 :: 001-001-006-000.png"
+      "codes": [
+        "OOT Kokiri Forest Heart 1",
+        "OOT Kokiri Forest Heart 2",
+        "OOT Kokiri Forest Heart 3"
+      ],
+      "overlays": [
+        "child"
+      ]
     },
     {
       "coords": [
         580,
         420
       ],
-      "image": "green_rupee",
-      "codes": "TODO KF 032 :: unnamed_stack > Forest > Forest Layers > Forest Freestanding Rupees :: Pasted Layer #31 :: 001-001-007-000.png"
+      "image": "blue_rupee",
+      "codes": "OOT Kokiri Forest Rupee Child 2",
+      "overlays": [
+        "child"
+      ]
     },
     {
       "coords": [
         543,
         358
       ],
-      "image": "green_rupee",
-      "codes": "TODO KF 033 :: unnamed_stack > Forest > Forest Layers > Forest Freestanding Rupees :: Pasted Layer #32 :: 001-001-007-001.png"
+      "image": "blue_rupee",
+      "codes": "OOT Kokiri Forest Rupee Child 1",
+      "overlays": [
+        "child"
+      ]
     },
     {
       "coords": [
@@ -275,31 +350,44 @@
         364
       ],
       "image": "green_rupee",
-      "codes": "TODO KF 034 :: unnamed_stack > Forest > Forest Layers > Forest Freestanding Rupees :: Pasted Layer #33 :: 001-001-007-002.png"
+      "codes": [
+        "OOT Kokiri Forest Rupee Adult 1",
+        "OOT Kokiri Forest Rupee Adult 2",
+        "OOT Kokiri Forest Rupee Adult 3",
+        "OOT Kokiri Forest Rupee Adult 4",
+        "OOT Kokiri Forest Rupee Adult 5",
+        "OOT Kokiri Forest Rupee Adult 6"
+      ],
+      "overlays": [
+        "adult"
+      ]
     },
     {
       "coords": [
         687,
         372
       ],
-      "image": "green_rupee",
-      "codes": "TODO KF 035 :: unnamed_stack > Forest > Forest Layers > Forest Freestanding Rupees :: Pasted Layer #34 :: 001-001-007-003.png"
+      "image": "red_rupee",
+      "codes": "OOT Kokiri Forest Rupee Adult 7",
+      "overlays": [
+        "adult"
+      ]
     },
     {
       "coords": [
         490,
         547
       ],
-      "image": "green_rupee",
-      "codes": "TODO KF 036 :: unnamed_stack > Forest > Forest Layers > Forest Freestanding Rupees :: Pasted Layer #35 :: 001-001-007-004.png"
+      "image": "blue_rupee",
+      "codes": "OOT Kokiri Forest Rupee Crawl 1"
     },
     {
       "coords": [
         518,
         555
       ],
-      "image": "green_rupee",
-      "codes": "TODO KF 037 :: unnamed_stack > Forest > Forest Layers > Forest Freestanding Rupees :: Pasted Layer #36 :: 001-001-007-005.png"
+      "image": "blue_rupee",
+      "codes": "OOT Kokiri Forest Rupee Crawl 2"
     },
     {
       "coords": [
@@ -386,64 +474,97 @@
         531,
         550
       ],
-      "image": "wonder_item_random",
-      "codes": "TODO KF 048 :: unnamed_stack > Forest > Forest Layers > Forest Wonder :: Pasted Layer #47 :: 001-001-008-008.png"
+      "image": "wonder_item_green_rupee",
+      "codes": [
+        "OOT Kokiri Forest Wonder Item Crawl 1",
+        "OOT Kokiri Forest Wonder Item Crawl 2"
+      ]
     },
     {
       "coords": [
         533,
         479
       ],
-      "image": "wonder_item_random",
-      "codes": "TODO KF 049 :: unnamed_stack > Forest > Forest Layers > Forest Wonder :: Pasted Layer #48 :: 001-001-008-009.png"
+      "image": "wonder_item_green_rupee",
+      "codes": [
+        "OOT Kokiri Forest Wonder Item Midair 2",
+        "OOT Kokiri Forest Wonder Item Midair 3"
+      ],
+      "overlays": [
+        "child"
+      ]
     },
     {
       "coords": [
         549,
         479
       ],
-      "image": "wonder_item_random",
-      "codes": "TODO KF 050 :: unnamed_stack > Forest > Forest Layers > Forest Wonder :: Pasted Layer #49 :: 001-001-008-010.png"
+      "image": "wonder_item_blue_rupee",
+      "codes": "OOT Kokiri Forest Wonder Item Midair 1",
+      "overlays": [
+        "child"
+      ]
     },
     {
       "coords": [
         549,
         450
       ],
-      "image": "wonder_item_random",
-      "codes": "TODO KF 051 :: unnamed_stack > Forest > Forest Layers > Forest Wonder :: Pasted Layer #50 :: 001-001-008-011.png"
+      "image": "wonder_item_blue_rupee",
+      "codes": "OOT Kokiri Forest Wonder Item Sign",
+      "overlays": [
+        "child"
+      ]
     },
     {
       "coords": [
         553,
         409
       ],
-      "image": "wonder_item_random",
-      "codes": "TODO KF 052 :: unnamed_stack > Forest > Forest Layers > Forest Wonder :: Pasted Layer #51 :: 001-001-008-012.png"
+      "image": "wonder_item_green_rupee",
+      "codes": [
+        "OOT Kokiri Forest Wonder Item Invisible Rupee 1",
+        "OOT Kokiri Forest Wonder Item Invisible Rupee 2"
+      ],
+      "overlays": [
+        "child"
+      ]
     },
     {
       "coords": [
         580,
         385
       ],
-      "image": "wonder_item_random",
-      "codes": "TODO KF 053 :: unnamed_stack > Forest > Forest Layers > Forest Wonder :: Pasted Layer #52 :: 001-001-008-013.png"
+      "image": "wonder_item_green_rupee",
+      "codes": [
+        "OOT Kokiri Forest Wonder Item Invisible Rupee 3",
+        "OOT Kokiri Forest Wonder Item Invisible Rupee 4"
+      ],
+      "overlays": [
+        "child"
+      ]
     },
     {
       "coords": [
         602,
         402
       ],
-      "image": "wonder_item_random",
-      "codes": "TODO KF 054 :: unnamed_stack > Forest > Forest Layers > Forest Wonder :: Pasted Layer #53 :: 001-001-008-014.png"
+      "image": "wonder_item_blue_rupee",
+      "codes": "OOT Kokiri Forest Wonder Item Platforms 1",
+      "overlays": [
+        "child"
+      ]
     },
     {
       "coords": [
         659,
         424
       ],
-      "image": "wonder_item_random",
-      "codes": "TODO KF 055 :: unnamed_stack > Forest > Forest Layers > Forest Wonder :: Pasted Layer #54 :: 001-001-008-015.png"
+      "image": "wonder_item_blue_rupee",
+      "codes": "OOT Kokiri Forest Wonder Item Platforms 2",
+      "overlays": [
+        "child"
+      ]
     },
     {
       "coords": [
@@ -467,7 +588,17 @@
         376
       ],
       "image": "rock",
-      "codes": "TODO KF 058 :: unnamed_stack > Forest > Forest Layers > Forest Rocks :: Pasted Layer #57 :: 001-001-011-000.png"
+      "codes": [
+        "OOT Kokiri Forest Rock Circle Rock 1",
+        "OOT Kokiri Forest Rock Circle Rock 2",
+        "OOT Kokiri Forest Rock Circle Rock 3",
+        "OOT Kokiri Forest Rock Circle Rock 4",
+        "OOT Kokiri Forest Rock Circle Rock 5",
+        "OOT Kokiri Forest Rock Circle Rock 6",
+        "OOT Kokiri Forest Rock Circle Rock 7",
+        "OOT Kokiri Forest Rock Circle Rock 8",
+        "OOT Kokiri Forest Rock Child 8"
+      ]
     },
     {
       "coords": [
@@ -475,7 +606,7 @@
         376
       ],
       "image": "rock",
-      "codes": "TODO KF 059 :: unnamed_stack > Forest > Forest Layers > Forest Rocks :: Pasted Layer #58 :: 001-001-011-001.png"
+      "codes": "OOT Kokiri Forest Rock Child 1"
     },
     {
       "coords": [
@@ -483,7 +614,7 @@
         430
       ],
       "image": "rock",
-      "codes": "TODO KF 060 :: unnamed_stack > Forest > Forest Layers > Forest Rocks :: Pasted Layer #59 :: 001-001-011-002.png"
+      "codes": "OOT Kokiri Forest Rock Child 5"
     },
     {
       "coords": [
@@ -491,7 +622,10 @@
         480
       ],
       "image": "rock",
-      "codes": "TODO KF 061 :: unnamed_stack > Forest > Forest Layers > Forest Rocks :: Pasted Layer #60 :: 001-001-011-003.png"
+      "codes": [
+        "OOT Kokiri Forest Rock Child 6",
+        "OOT Kokiri Forest Rock Child 7"
+      ]
     },
     {
       "coords": [
@@ -499,7 +633,7 @@
         490
       ],
       "image": "rock",
-      "codes": "TODO KF 062 :: unnamed_stack > Forest > Forest Layers > Forest Rocks :: Pasted Layer #61 :: 001-001-011-004.png"
+      "codes": "OOT Kokiri Forest Rock Child 4"
     },
     {
       "coords": [
@@ -507,7 +641,7 @@
         487
       ],
       "image": "rock",
-      "codes": "TODO KF 063 :: unnamed_stack > Forest > Forest Layers > Forest Rocks :: Pasted Layer #62 :: 001-001-011-005.png"
+      "codes": "OOT Kokiri Forest Rock Child 3"
     },
     {
       "coords": [
@@ -515,7 +649,7 @@
         465
       ],
       "image": "rock",
-      "codes": "TODO KF 064 :: unnamed_stack > Forest > Forest Layers > Forest Rocks :: Pasted Layer #63 :: 001-001-011-006.png"
+      "codes": "OOT Kokiri Forest Rock Child 2"
     },
     {
       "coords": [
@@ -523,7 +657,11 @@
         393
       ],
       "image": "soft_soil",
-      "codes": "TODO KF 065 :: unnamed_stack > Forest > Forest Layers > Forest Soils :: Pasted Layer #64 :: 001-001-012-000.png"
+      "codes": [
+        "OOT Kokiri Forest Soil 1",
+        "OOT Kokiri Forest Soil 2",
+        "OOT Kokiri Forest Soil 3"
+      ]
     },
     {
       "coords": [
@@ -658,7 +796,7 @@
         548,
         330
       ],
-      "image": "overworld_entrance",
+      "image": "song_grotto",
       "codes": "TODO KF 082 :: unnamed_stack > Forest > Forest Layers > Forest Entrances :: Pasted Layer #81 :: 001-001-014-007.png"
     },
     {
