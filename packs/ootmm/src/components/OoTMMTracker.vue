@@ -100,6 +100,9 @@ const activeMap = computed<MapDef | null>(() => {
   return mapDefs.find((mapDef) => mapDef.id === activeMapId.value) ?? mapDefs[0]
 })
 const collectedLocationIdSet = computed(() => new Set(collectedLocationIds.value))
+const allLocationsForCodeSearch = computed(() =>
+  props.tracker.getAllLocationsForCodeSearch?.() ?? allLocations.value,
+)
 
 const MAJOR_DUNGEONS = [
   { id: 'DT', label: 'Deku Tree', game: 'oot' as const },
@@ -673,6 +676,7 @@ onBeforeUnmount(() => {
             :reachable-ids="reachableLocationIds"
             :collected-ids="collectedLocationIdSet"
             :all-locations="allLocations"
+            :all-locations-for-code-search="allLocationsForCodeSearch"
             :dev-mode="isMapDevMode"
             @toggle-collected="handleMapToggleCollected"
             @mark-all-reachable="handleMapMarkAllReachable"

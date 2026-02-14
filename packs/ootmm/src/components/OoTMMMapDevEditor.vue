@@ -2,7 +2,11 @@
 import { computed, onBeforeUnmount, ref, watch } from 'vue'
 import type { LocationInfo } from '@/types/tracker'
 import { MAP_ICON_INDEX } from '../data/maps/mapIconIndex'
-import { normalizeCode, useLocationCodeLookup } from '../composables/useLocationCodeLookup'
+import {
+  normalizeCode,
+  stripWorldSuffix,
+  useLocationCodeLookup,
+} from '../composables/useLocationCodeLookup'
 import type { MapDef, MapMarkerDef, MapMarkerOverlay } from '../data/maps/types'
 
 const LOCATION_SEARCH_LIMIT = 80
@@ -29,12 +33,14 @@ const props = withDefaults(
   defineProps<{
     activeMap: MapDef | null
     allLocations?: LocationInfo[]
+    allLocationsForCodeSearch?: LocationInfo[]
     reachableIds: Set<string>
     collectedIds: Set<string>
     selectedMarkerIndex: number | null
   }>(),
   {
     allLocations: () => [],
+    allLocationsForCodeSearch: () => [],
   },
 )
 
@@ -83,6 +89,10 @@ function formatOverlayLabel(overlay: MapMarkerOverlay): string {
 function markerCodeList(marker: MapMarkerDef): string[] {
   const rawList = Array.isArray(marker.codes) ? marker.codes : [marker.codes]
   return rawList.map((code) => code.trim()).filter((code) => code.length > 0)
+}
+
+function normalizeLocationCode(value: string): string {
+  return normalizeCode(stripWorldSuffix(value))
 }
 
 function assignMarkerCodes(marker: MapMarkerDef, nextCodes: string[]): void {
@@ -246,7 +256,11 @@ function resetDraftFromActiveMap(): void {
 }
 
 const { locationIndex, resolveCodeToCheckIds } = useLocationCodeLookup(
-  computed(() => props.allLocations),
+  computed(() =>
+    props.allLocationsForCodeSearch.length > 0
+      ? props.allLocationsForCodeSearch
+      : props.allLocations,
+  ),
   computed(() => props.reachableIds),
   computed(() => props.collectedIds),
 )
@@ -262,7 +276,12 @@ const selectedMarkerCodeList = computed(() =>
 
 const selectedMarkerCodeSet = computed(() => {
   const values = new Set<string>()
-  selectedMarkerCodeList.value.forEach((code) => values.add(normalizeCode(code)))
+  selectedMarkerCodeList.value.forEach((code) => {
+    const normalized = normalizeCode(code)
+    if (normalized) values.add(normalized)
+    const normalizedBase = normalizeLocationCode(code)
+    if (normalizedBase) values.add(normalizedBase)
+  })
   return values
 })
 
@@ -445,11 +464,20 @@ function removeCodeFromSelectedMarker(code: string): void {
 }
 
 function toggleLocationCode(locationId: string, selected: boolean): void {
+  const baseCode = stripWorldSuffix(locationId)
+  const normalizedBaseCode = normalizeLocationCode(baseCode)
   if (selected) {
-    addCodeToSelectedMarker(locationId)
+    addCodeToSelectedMarker(baseCode)
     return
   }
-  removeCodeFromSelectedMarker(locationId)
+  const marker = selectedDraftMarker.value
+  if (!marker) return
+  const nextCodes = markerCodeList(marker).filter((entry) => {
+    const normalizedEntry = normalizeCode(entry)
+    const normalizedEntryBase = normalizeLocationCode(entry)
+    return normalizedEntry !== normalizedBaseCode && normalizedEntryBase !== normalizedBaseCode
+  })
+  assignMarkerCodes(marker, nextCodes)
 }
 
 function addManualCode(): void {
@@ -951,7 +979,7 @@ onBeforeUnmount(() => {
   gap: 0.25rem;
 }
 
-.map-dev-editor__location-item {
+.map-dev-editor__section .map-dev-editor__location-item {
   display: grid;
   grid-template-columns: auto minmax(0, 1fr);
   align-items: center;
@@ -962,7 +990,7 @@ onBeforeUnmount(() => {
   padding: 0.25rem;
 }
 
-.map-dev-editor__location-item input {
+.map-dev-editor__section .map-dev-editor__location-item input[type='checkbox'] {
   grid-row: 1 / span 2;
   margin: 0;
 }

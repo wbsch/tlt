@@ -20,6 +20,12 @@ export interface TrackerPack {
   /** Get all available locations */
   getAllLocations(): LocationInfo[];
 
+  /**
+   * Optional: Get a location catalog that is not filtered for current
+   * settings/UI visibility. Used by dev tooling (e.g. code search).
+   */
+  getAllLocationsForCodeSearch?(): LocationInfo[];
+
   /** Get available item IDs (if the pack supports item filtering) */
   getAvailableItemIds?(): Set<string>;
 

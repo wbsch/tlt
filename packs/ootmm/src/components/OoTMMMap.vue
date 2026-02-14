@@ -54,11 +54,13 @@ const props = withDefaults(
     reachableIds: Set<string>
     collectedIds: Set<string>
     allLocations?: LocationInfo[]
+    allLocationsForCodeSearch?: LocationInfo[]
     devMode?: boolean
     visibilityMode?: MarkerVisibilityMode
   }>(),
   {
     allLocations: () => [],
+    allLocationsForCodeSearch: () => [],
     devMode: false,
     visibilityMode: 'reachable-unchecked',
   },
@@ -107,7 +109,11 @@ function markerCodeList(marker: MapMarkerDef): string[] {
 }
 
 const { resolveCodeToCheckIds } = useLocationCodeLookup(
-  computed(() => props.allLocations),
+  computed(() =>
+    props.allLocationsForCodeSearch.length > 0
+      ? props.allLocationsForCodeSearch
+      : props.allLocations,
+  ),
   computed(() => props.reachableIds),
   computed(() => props.collectedIds),
 )
@@ -805,6 +811,7 @@ onBeforeUnmount(() => {
         v-if="isDevMode"
         :active-map="props.activeMap"
         :all-locations="props.allLocations"
+        :all-locations-for-code-search="props.allLocationsForCodeSearch"
         :reachable-ids="props.reachableIds"
         :collected-ids="props.collectedIds"
         :selected-marker-index="devSelectedMarkerIndex"

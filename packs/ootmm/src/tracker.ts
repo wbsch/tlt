@@ -15,6 +15,7 @@ import * as EntranceMod from '@ootmm/core/logic/entrance'
 import * as IsShuffledMod from '@ootmm/core/logic/is-shuffled'
 
 import { ITEM_DATABASE } from './data/items'
+import { LOCATION_CODE_CATALOG } from './data/locationCatalog'
 
 const resolveExport = <T>(mod: unknown, key: string): T => (mod as Record<string, T>)?.[key] ?? (mod as { default: Record<string, T> })?.default?.[key]
 
@@ -80,6 +81,7 @@ export class OoTMMTracker implements TrackerPack {
   private availableItemIds: Set<string> = new Set()
   private itemMaxCounts: Map<string, number> = new Map()
   private silverRupeeLocationIdsByItemId: Map<string, string[]> = new Map()
+  private devLocationCatalog: LocationInfo[] = []
 
   async initialize(userSettings: Partial<OoTMMSettings> = {}): Promise<void> {
     console.log('[OoTMM Tracker] Initializing...')
@@ -154,6 +156,7 @@ export class OoTMMTracker implements TrackerPack {
     this.availableItemIds = this.buildAvailableItemIds(worldData?.allItems)
     this.itemMaxCounts = this.buildItemMaxCounts(worldData?.allItems)
     this.silverRupeeLocationIdsByItemId = this.buildSilverRupeeLocationIndex(this.worlds)
+    this.devLocationCatalog = this.buildCodeSearchLocationCatalog()
     
     console.log(`[OoTMM Tracker] Initialized with ${this.allLocationIds.length} locations`)
   }
@@ -231,14 +234,32 @@ export class OoTMMTracker implements TrackerPack {
   }
 
   getAllLocations(): LocationInfo[] {
-    const locations: LocationInfo[] = []
-    
+    return this.buildLocations(false)
+  }
+
+  getAllLocationsForCodeSearch(): LocationInfo[] {
+    const byId = new Map<string, LocationInfo>()
+    this.buildLocations(true).forEach((location) => byId.set(location.id, location))
+    this.devLocationCatalog.forEach((location) => {
+      if (!byId.has(location.id)) {
+        byId.set(location.id, location)
+      }
+    })
+    return Array.from(byId.values()).sort((a, b) => a.id.localeCompare(b.id))
+  }
+
+  private buildLocations(includeHidden: boolean): LocationInfo[] {
     const worldsForLocations = this.baseWorlds.length > 0 ? this.baseWorlds : this.worlds
-    for (const [worldId, world] of worldsForLocations.entries()) {
+    return this.buildLocationsFromWorlds(worldsForLocations, includeHidden)
+  }
+
+  private buildLocationsFromWorlds(worlds: World[], includeHidden: boolean): LocationInfo[] {
+    const locations: LocationInfo[] = []
+    for (const [worldId, world] of worlds.entries()) {
       const dungeonLocations = this.buildDungeonLocationIds(world)
       for (const locId of Object.keys(world.checks)) {
         const fullId = makeLocation(locId, worldId)
-        if (this.hiddenLocationIds.has(fullId)) continue
+        if (!includeHidden && this.hiddenLocationIds.has(fullId)) continue
         const check = world.checks?.[locId]
         const itemId = (check as { item?: { id?: string } })?.item?.id
         const isSkulltulaToken =
@@ -263,8 +284,23 @@ export class OoTMMTracker implements TrackerPack {
         })
       }
     }
-    
     return locations
+  }
+
+  private buildCodeSearchLocationCatalog(): LocationInfo[] {
+    const byId = new Map<string, LocationInfo>()
+    for (const entry of LOCATION_CODE_CATALOG) {
+      if (!entry.id) continue
+      byId.set(entry.id, {
+        id: entry.id,
+        name: entry.name || entry.id,
+        category: entry.category || 'None',
+        area: entry.area || this.getAreaFromLocation(entry.name || entry.id),
+        isSkulltulaToken: entry.isSkulltulaToken,
+        isStrayFairy: entry.isStrayFairy,
+      })
+    }
+    return Array.from(byId.values()).sort((a, b) => a.id.localeCompare(b.id))
   }
 
   getSettings(): Record<string, unknown> {
