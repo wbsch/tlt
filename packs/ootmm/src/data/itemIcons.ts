@@ -104,6 +104,7 @@ const RAW_ITEM_ICONS: Record<string, string> = {
 
   // Quest items
   'OOT_SKELETON_KEY': 'images/key_skeleton.png',
+  'OOT_RUPEE_MAGICAL': 'images/rupee_magical.png',
   'OOT_GS_TOKEN': 'images/skulltula_token.png',
   'OOT_STONE_OF_AGONY': 'images/agony.png',
   'OOT_GERUDO_CARD': 'images/gerudocard.png',
@@ -339,6 +340,7 @@ const RAW_ITEM_ICONS: Record<string, string> = {
   'MM_GS_TOKEN_OCEAN': 'images/items/mm_skulltulla_greatbay.png',
   'MM_SKELETON_KEY': 'images/key_skeleton.png',
   'MM_STONE_OF_AGONY': 'images/agony.png',
+  "MM_TRANSCENDENT_FAIRY": 'images/items/mm_clocktown_stray_fairy.png',
 
   // Buttons
   'MM_BUTTON_A': 'images/button_a.png',

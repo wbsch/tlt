@@ -179,6 +179,7 @@
           ],
           [
             "OOT_SKELETON_KEY",
+            "OOT_RUPEE_MAGICAL",
             "OOT_GS_TOKEN",
             "OOT_STONE_OF_AGONY",
             "OOT_GERUDO_CARD",
@@ -464,6 +465,7 @@
           ],
           [
             "MM_SKELETON_KEY",
+            "MM_TRANSCENDENT_FAIRY",
             "MM_SPELL_FIRE",
             "MM_SPELL_WIND",
             "MM_SPELL_LOVE",
