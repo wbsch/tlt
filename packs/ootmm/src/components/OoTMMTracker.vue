@@ -113,6 +113,9 @@ const isStatsCollapsed = ref(true)
 const mapDefs = OOTMM_MAP_DEFS
 const activeMapId = ref(mapDefs[0]?.id ?? '')
 const mapSelectorQuery = ref('')
+const mapSelectorInputRef = ref<HTMLInputElement | null>(null)
+const isMapSelectorOpen = ref(false)
+const mapSelectorHighlightedIndex = ref(-1)
 const isMapDevMode =
   typeof window !== 'undefined' && new URLSearchParams(window.location.search).get('devmode') === '1'
 const isMapWarningsOpen = ref(false)
@@ -201,6 +204,89 @@ watch(isApplyingSettings, (applying) => {
 
 function syncMapSelectorToActiveMap() {
   mapSelectorQuery.value = activeMap.value?.title ?? ''
+  mapSelectorHighlightedIndex.value = -1
+}
+
+function getMapSelectorMatches(rawQuery: string): MapDef[] {
+  const query = rawQuery.trim().toLowerCase()
+  if (!query) return mapDefs
+
+  const exactMatches: MapDef[] = []
+  const prefixMatches: MapDef[] = []
+  const fuzzyMatches: MapDef[] = []
+
+  for (const mapDef of mapDefs) {
+    const mapId = mapDef.id.toLowerCase()
+    const mapTitle = mapDef.title.toLowerCase()
+    if (mapId === query || mapTitle === query) {
+      exactMatches.push(mapDef)
+      continue
+    }
+    if (mapId.startsWith(query) || mapTitle.startsWith(query)) {
+      prefixMatches.push(mapDef)
+      continue
+    }
+    if (mapId.includes(query) || mapTitle.includes(query)) {
+      fuzzyMatches.push(mapDef)
+    }
+  }
+
+  return [...exactMatches, ...prefixMatches, ...fuzzyMatches]
+}
+
+const filteredMapSelectorMaps = computed(() => getMapSelectorMatches(mapSelectorQuery.value))
+const activeMapSelectorOptionId = computed(() => {
+  if (
+    !isMapSelectorOpen.value ||
+    mapSelectorHighlightedIndex.value < 0 ||
+    mapSelectorHighlightedIndex.value >= filteredMapSelectorMaps.value.length
+  ) {
+    return undefined
+  }
+  return getMapSelectorOptionId(mapSelectorHighlightedIndex.value)
+})
+
+function getMapSelectorOptionId(index: number): string {
+  return `map-selector-option-${index}`
+}
+
+function openMapSelector() {
+  isMapSelectorOpen.value = true
+  const maps = filteredMapSelectorMaps.value
+  if (maps.length === 0) {
+    mapSelectorHighlightedIndex.value = -1
+    return
+  }
+  const activeIndex = maps.findIndex((mapDef) => mapDef.id === activeMapId.value)
+  mapSelectorHighlightedIndex.value = activeIndex >= 0 ? activeIndex : 0
+}
+
+function closeMapSelector(options?: { syncInput?: boolean }) {
+  const shouldSyncInput = options?.syncInput ?? true
+  isMapSelectorOpen.value = false
+  if (shouldSyncInput) {
+    syncMapSelectorToActiveMap()
+  }
+}
+
+function setMapSelectorHighlight(index: number) {
+  const mapCount = filteredMapSelectorMaps.value.length
+  if (mapCount === 0) {
+    mapSelectorHighlightedIndex.value = -1
+    return
+  }
+  mapSelectorHighlightedIndex.value = Math.min(Math.max(index, 0), mapCount - 1)
+}
+
+function selectMapFromSelector(mapDef: MapDef, options?: { close?: boolean }) {
+  activeMapId.value = mapDef.id
+  mapSelectorQuery.value = mapDef.title
+  const shouldClose = options?.close ?? true
+  if (shouldClose) {
+    isMapSelectorOpen.value = false
+  }
+  const selectedIndex = filteredMapSelectorMaps.value.findIndex((candidate) => candidate.id === mapDef.id)
+  mapSelectorHighlightedIndex.value = selectedIndex >= 0 ? selectedIndex : -1
 }
 
 function findMapForSelectorQuery(rawQuery: string): MapDef | null {
@@ -213,36 +299,122 @@ function findMapForSelectorQuery(rawQuery: string): MapDef | null {
   const byTitleExact = mapDefs.find((mapDef) => mapDef.title.toLowerCase() === query)
   if (byTitleExact) return byTitleExact
 
-  const fuzzyMatches = mapDefs.filter(
-    (mapDef) =>
-      mapDef.title.toLowerCase().includes(query) || mapDef.id.toLowerCase().includes(query),
-  )
+  const fuzzyMatches = getMapSelectorMatches(query)
   return fuzzyMatches.length === 1 ? fuzzyMatches[0] : null
 }
 
+function commitMapSelectorSelection() {
+  const maps = filteredMapSelectorMaps.value
+  if (maps.length === 0) {
+    closeMapSelector()
+    return
+  }
+  const highlightedIndex = mapSelectorHighlightedIndex.value
+  const selectedMap =
+    highlightedIndex >= 0 && highlightedIndex < maps.length ? maps[highlightedIndex] : maps[0]
+  selectMapFromSelector(selectedMap)
+}
+
+function handleMapSelectorFocus() {
+  openMapSelector()
+  mapSelectorInputRef.value?.select()
+}
+
+function handleMapSelectorClick() {
+  openMapSelector()
+  mapSelectorInputRef.value?.select()
+}
+
+function handleMapSelectorBlur() {
+  closeMapSelector()
+}
+
 function handleMapSelectorInput() {
+  openMapSelector()
+  setMapSelectorHighlight(0)
   const match = findMapForSelectorQuery(mapSelectorQuery.value)
   if (!match) return
   activeMapId.value = match.id
+  const exactMatchIndex = filteredMapSelectorMaps.value.findIndex((mapDef) => mapDef.id === match.id)
+  if (exactMatchIndex >= 0) {
+    mapSelectorHighlightedIndex.value = exactMatchIndex
+  }
 }
 
-function commitMapSelector() {
-  const match = findMapForSelectorQuery(mapSelectorQuery.value)
-  if (!match) {
-    syncMapSelectorToActiveMap()
+function handleMapSelectorOptionClick(mapDef: MapDef) {
+  selectMapFromSelector(mapDef)
+}
+
+function handleMapSelectorKeydown(event: KeyboardEvent) {
+  if (event.key === 'ArrowDown') {
+    event.preventDefault()
+    if (!isMapSelectorOpen.value) {
+      openMapSelector()
+      return
+    }
+    const maps = filteredMapSelectorMaps.value
+    if (maps.length === 0) return
+    const nextIndex =
+      mapSelectorHighlightedIndex.value < 0
+        ? 0
+        : (mapSelectorHighlightedIndex.value + 1) % maps.length
+    setMapSelectorHighlight(nextIndex)
     return
   }
-  activeMapId.value = match.id
-  mapSelectorQuery.value = match.title
+
+  if (event.key === 'ArrowUp') {
+    event.preventDefault()
+    if (!isMapSelectorOpen.value) {
+      openMapSelector()
+      return
+    }
+    const maps = filteredMapSelectorMaps.value
+    if (maps.length === 0) return
+    const nextIndex =
+      mapSelectorHighlightedIndex.value < 0
+        ? maps.length - 1
+        : (mapSelectorHighlightedIndex.value - 1 + maps.length) % maps.length
+    setMapSelectorHighlight(nextIndex)
+    return
+  }
+
+  if (event.key === 'Enter') {
+    event.preventDefault()
+    commitMapSelectorSelection()
+    return
+  }
+
+  if (event.key === 'Tab') {
+    if (!isMapSelectorOpen.value) return
+    if (filteredMapSelectorMaps.value.length === 0) return
+    commitMapSelectorSelection()
+    return
+  }
+
+  if (event.key === 'Escape') {
+    event.preventDefault()
+    closeMapSelector()
+  }
 }
 
 watch(
   () => activeMap.value?.id,
   () => {
+    if (isMapSelectorOpen.value) return
     syncMapSelectorToActiveMap()
   },
   { immediate: true },
 )
+
+watch(filteredMapSelectorMaps, (maps) => {
+  if (maps.length === 0) {
+    mapSelectorHighlightedIndex.value = -1
+    return
+  }
+  if (mapSelectorHighlightedIndex.value < 0 || mapSelectorHighlightedIndex.value >= maps.length) {
+    mapSelectorHighlightedIndex.value = 0
+  }
+})
 
 function fillInventory() {
   sessionStore.fillInventoryForDebugActivateAll()
@@ -800,25 +972,53 @@ onBeforeUnmount(() => {
             <template v-if="mapDefs.length > 1">
               <div class="map-selector-combobox">
                 <label class="map-toolbar-label" for="map-selector">Map</label>
-                <input
-                  id="map-selector"
-                  v-model="mapSelectorQuery"
-                  class="map-toolbar-combobox"
-                  type="search"
-                  list="map-selector-options"
-                  placeholder="Search map by name or id"
-                  autocomplete="off"
-                  aria-label="Map selector"
-                  @input="handleMapSelectorInput"
-                  @change="commitMapSelector"
-                  @blur="commitMapSelector"
-                  @keydown.enter.prevent="commitMapSelector"
-                />
-                <datalist id="map-selector-options">
-                  <option v-for="mapDef in mapDefs" :key="mapDef.id" :value="mapDef.title">
-                    {{ mapDef.id }}
-                  </option>
-                </datalist>
+                <div class="map-selector-input-wrap">
+                  <input
+                    id="map-selector"
+                    ref="mapSelectorInputRef"
+                    v-model="mapSelectorQuery"
+                    class="map-toolbar-combobox"
+                    type="text"
+                    placeholder="Search map by name or id"
+                    autocomplete="off"
+                    role="combobox"
+                    aria-autocomplete="list"
+                    aria-label="Map selector"
+                    aria-controls="map-selector-listbox"
+                    :aria-expanded="isMapSelectorOpen"
+                    :aria-activedescendant="activeMapSelectorOptionId"
+                    @focus="handleMapSelectorFocus"
+                    @click="handleMapSelectorClick"
+                    @input="handleMapSelectorInput"
+                    @blur="handleMapSelectorBlur"
+                    @keydown="handleMapSelectorKeydown"
+                  />
+                  <ul
+                    v-if="isMapSelectorOpen"
+                    id="map-selector-listbox"
+                    class="map-selector-options"
+                    role="listbox"
+                    aria-label="Map options"
+                  >
+                    <li
+                      v-for="(mapDef, index) in filteredMapSelectorMaps"
+                      :id="getMapSelectorOptionId(index)"
+                      :key="mapDef.id"
+                      class="map-selector-option"
+                      :class="{ 'is-highlighted': index === mapSelectorHighlightedIndex }"
+                      role="option"
+                      :aria-selected="index === mapSelectorHighlightedIndex"
+                      @mousedown.prevent
+                      @click="handleMapSelectorOptionClick(mapDef)"
+                    >
+                      <span class="map-selector-option-title">{{ mapDef.title }}</span>
+                      <span class="map-selector-option-id">{{ mapDef.id }}</span>
+                    </li>
+                    <li v-if="filteredMapSelectorMaps.length === 0" class="map-selector-empty">
+                      No maps found
+                    </li>
+                  </ul>
+                </div>
               </div>
             </template>
             <span v-else class="map-toolbar-label">{{ activeMap?.title ?? 'Map' }}</span>
@@ -1229,7 +1429,7 @@ onBeforeUnmount(() => {
   align-items: center;
   gap: 0.5rem;
   min-width: min(420px, 100%);
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
 }
 
 .map-toolbar-label {
@@ -1240,8 +1440,66 @@ onBeforeUnmount(() => {
 }
 
 .map-toolbar-combobox {
+  width: 100%;
+  max-width: 100%;
+}
+
+.map-selector-input-wrap {
+  position: relative;
   width: min(340px, 100%);
   max-width: 100%;
+}
+
+.map-selector-options {
+  list-style: none;
+  margin: 0;
+  padding: 0.25rem;
+  position: absolute;
+  top: calc(100% + 0.3rem);
+  left: 0;
+  right: 0;
+  border: 1px solid #4b5563;
+  border-radius: 0.35rem;
+  background: #111827;
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.45);
+  max-height: min(20rem, 55vh);
+  overflow-y: auto;
+  z-index: 16;
+}
+
+.map-selector-option {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 0.75rem;
+  padding: 0.35rem 0.45rem;
+  border-radius: 0.25rem;
+  cursor: pointer;
+}
+
+.map-selector-option:hover,
+.map-selector-option.is-highlighted {
+  background: #1f2937;
+}
+
+.map-selector-option-title {
+  color: #e5e7eb;
+  font-size: 0.8rem;
+  min-width: 0;
+}
+
+.map-selector-option-id {
+  color: #93c5fd;
+  font-size: 0.7rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.map-selector-empty {
+  color: #9ca3af;
+  font-size: 0.75rem;
+  padding: 0.35rem 0.45rem;
 }
 
 .map-toolbar-dev {
@@ -1439,6 +1697,14 @@ onBeforeUnmount(() => {
 
   .tabs button {
     flex: 1 1 50%;
+  }
+
+  .map-selector-combobox {
+    flex-wrap: wrap;
+  }
+
+  .map-selector-input-wrap {
+    width: 100%;
   }
 
   .map-panel {
