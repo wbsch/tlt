@@ -58,6 +58,14 @@ const SINGLE_COUNT_ITEM_IDS = new Set([
   'MM_SHIELD_HERO',
   'MM_BOTTLE_EMPTY',
 ])
+const CLOCK_ITEM_IDS = new Set([
+  'MM_CLOCK1',
+  'MM_CLOCK2',
+  'MM_CLOCK3',
+  'MM_CLOCK4',
+  'MM_CLOCK5',
+  'MM_CLOCK6',
+])
 
 const VANILLA_SILVER_RUPEE_PREFIX = 'OOT_RUPEE_SILVER_'
 const OWL_STATUE_PREFIX = 'MM_OWL_'
@@ -154,7 +162,7 @@ export class OoTMMTracker implements TrackerPack {
     this.preCompletedDungeonIds.clear()
     this.baseWispEvents.clear()
     this.availableItemIds = this.buildAvailableItemIds(worldData?.allItems)
-    this.itemMaxCounts = this.buildItemMaxCounts(worldData?.allItems)
+    this.itemMaxCounts = this.buildItemMaxCounts(worldData?.allItems, worldData?.startingItems)
     this.silverRupeeLocationIdsByItemId = this.buildSilverRupeeLocationIndex(this.worlds)
     this.devLocationCatalog = this.buildCodeSearchLocationCatalog()
     
@@ -612,7 +620,10 @@ export class OoTMMTracker implements TrackerPack {
     }
   }
 
-  private buildItemMaxCounts(allItems?: Map<unknown, number>): Map<string, number> {
+  private buildItemMaxCounts(
+    allItems?: Map<unknown, number>,
+    startingItems?: Map<unknown, number>,
+  ): Map<string, number> {
     const counts = new Map<string, number>()
     if (!allItems) return counts
     for (const [playerItem, count] of allItems) {
@@ -625,6 +636,7 @@ export class OoTMMTracker implements TrackerPack {
     // Core allItems includes fixed locations on top of the initial pool snapshot,
     // which effectively double-counts fixed items. Remove one per fixed location.
     this.adjustFixedLocationCounts(counts)
+    this.adjustStartingClockCounts(counts, startingItems)
 
     const settings = this.settings as {
       smallKeyShuffleOot?: unknown
@@ -667,6 +679,29 @@ export class OoTMMTracker implements TrackerPack {
       }
     }
     return counts
+  }
+
+  private adjustStartingClockCounts(
+    counts: Map<string, number>,
+    startingItems?: Map<unknown, number>,
+  ): void {
+    if (!startingItems || startingItems.size === 0) return
+
+    for (const [playerItem, count] of startingItems) {
+      if (!count || count <= 0) continue
+      const itemId = (playerItem as { item?: { id?: string } })?.item?.id
+      if (!itemId || !CLOCK_ITEM_IDS.has(itemId)) continue
+
+      const current = counts.get(itemId)
+      if (!current) continue
+
+      const next = current - count
+      if (next > 0) {
+        counts.set(itemId, next)
+      } else {
+        counts.delete(itemId)
+      }
+    }
   }
 
   private adjustFixedLocationCounts(counts: Map<string, number>): void {
