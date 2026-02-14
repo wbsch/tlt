@@ -895,6 +895,7 @@ onBeforeUnmount(() => {
   height: 100%;
   user-select: none;
   pointer-events: none;
+  image-rendering: pixelated;
 }
 
 .map-marker {
@@ -926,6 +927,7 @@ onBeforeUnmount(() => {
   width: 16px;
   height: 16px;
   display: block;
+  image-rendering: pixelated;
 }
 
 .map-marker__corner {
