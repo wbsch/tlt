@@ -33,6 +33,7 @@ export const MAP_ICON_INDEX = [
   "gohts_remain",
   "gold_skulltula",
   "goron_ruby",
+  "gossip_stone",
   "grass",
   "green_rupee",
   "grotto",
