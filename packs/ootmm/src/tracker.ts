@@ -95,12 +95,9 @@ export class OoTMMTracker implements TrackerPack {
     console.log('[OoTMM Tracker] Initializing...')
     
     // Merge with defaults
-    // We default ageChange to 'oot' for the tracker to ensure better reachability estimates
-    // unless the user explicitly overrides it (e.g. from a spoiler log)
-    const ootmmSettings = { 
-      ...DEFAULT_OOTMM_SETTINGS, 
-      ageChange: 'oot',
-      ...userSettings 
+    const ootmmSettings = {
+      ...DEFAULT_OOTMM_SETTINGS,
+      ...userSettings,
     }
     console.log('[OoTMM Tracker] Merged settings:', ootmmSettings)
     
