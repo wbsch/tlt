@@ -57,13 +57,16 @@ const copyStatus = ref<'idle' | 'ok' | 'error'>('idle')
 const editorRef = ref<HTMLElement | null>(null)
 const panelPosition = ref<{ left: number; top: number } | null>(null)
 const isDraggingPanel = ref(false)
+const markerIconQuery = ref('')
+const markerIconInputRef = ref<HTMLInputElement | null>(null)
+const isMarkerIconSelectorOpen = ref(false)
+const markerIconHighlightedIndex = ref(-1)
 
 let copyStatusTimer: number | null = null
 let panelDragPointerId: number | null = null
 let panelDragOffsetX = 0
 let panelDragOffsetY = 0
 
-const mapIconAutocompleteId = 'map-icon-autocomplete-dev'
 const mapIconNames = [...MAP_ICON_INDEX].sort((a, b) => a.localeCompare(b))
 const mapIconNameSet = new Set(mapIconNames)
 
@@ -252,6 +255,9 @@ function resetDraftFromActiveMap(): void {
   draftMap.value = props.activeMap ? cloneMapDef(props.activeMap) : null
   codeSearchQuery.value = ''
   manualCodeInput.value = ''
+  isMarkerIconSelectorOpen.value = false
+  markerIconHighlightedIndex.value = -1
+  markerIconQuery.value = ''
   setCopyStatus('idle')
   emitDraftMap()
 }
@@ -302,14 +308,200 @@ const selectedMarkerImageUnknown = computed(() => {
   return !mapIconNameSet.has(image)
 })
 
-const imageSuggestions = computed(() => {
-  const marker = selectedDraftMarker.value
-  const query = normalizeCode(marker?.image ?? '')
-  if (!query) {
-    return mapIconNames
+function getMarkerIconSuggestions(rawQuery: string): string[] {
+  const query = normalizeCode(rawQuery)
+  if (!query) return mapIconNames
+
+  const exactMatches: string[] = []
+  const prefixMatches: string[] = []
+  const fuzzyMatches: string[] = []
+
+  for (const icon of mapIconNames) {
+    const normalized = normalizeCode(icon)
+    if (normalized === query) {
+      exactMatches.push(icon)
+      continue
+    }
+    if (normalized.startsWith(query)) {
+      prefixMatches.push(icon)
+      continue
+    }
+    if (normalized.includes(query)) {
+      fuzzyMatches.push(icon)
+    }
   }
-  return mapIconNames.filter((icon) => normalizeCode(icon).includes(query))
+
+  return [...exactMatches, ...prefixMatches, ...fuzzyMatches]
+}
+
+const markerIconSuggestions = computed(() => getMarkerIconSuggestions(markerIconQuery.value))
+const activeMarkerIconOptionId = computed(() => {
+  if (
+    !isMarkerIconSelectorOpen.value ||
+    markerIconHighlightedIndex.value < 0 ||
+    markerIconHighlightedIndex.value >= markerIconSuggestions.value.length
+  ) {
+    return undefined
+  }
+  return getMarkerIconOptionId(markerIconHighlightedIndex.value)
 })
+
+function getMarkerIconOptionId(index: number): string {
+  return `marker-icon-option-${index}`
+}
+
+function findMarkerIconForQuery(rawQuery: string): string | null {
+  const query = normalizeCode(rawQuery)
+  if (!query) return null
+
+  const exactMatch = mapIconNames.find((icon) => normalizeCode(icon) === query)
+  if (exactMatch) return exactMatch
+
+  const matches = getMarkerIconSuggestions(query)
+  return matches.length === 1 ? matches[0] : null
+}
+
+function syncMarkerIconQueryFromSelection() {
+  markerIconQuery.value = selectedDraftMarker.value?.image ?? ''
+  markerIconHighlightedIndex.value = -1
+}
+
+function openMarkerIconSelector() {
+  isMarkerIconSelectorOpen.value = true
+  const suggestions = markerIconSuggestions.value
+  if (suggestions.length === 0) {
+    markerIconHighlightedIndex.value = -1
+    return
+  }
+  const activeImage = selectedDraftMarker.value?.image.trim() ?? ''
+  const activeIndex = suggestions.findIndex((icon) => icon === activeImage)
+  markerIconHighlightedIndex.value = activeIndex >= 0 ? activeIndex : 0
+}
+
+function closeMarkerIconSelector(options?: { syncInput?: boolean }) {
+  const shouldSyncInput = options?.syncInput ?? true
+  isMarkerIconSelectorOpen.value = false
+  if (shouldSyncInput) {
+    syncMarkerIconQueryFromSelection()
+  }
+}
+
+function setMarkerIconHighlight(index: number) {
+  const suggestionCount = markerIconSuggestions.value.length
+  if (suggestionCount === 0) {
+    markerIconHighlightedIndex.value = -1
+    return
+  }
+  markerIconHighlightedIndex.value = Math.min(Math.max(index, 0), suggestionCount - 1)
+}
+
+function selectMarkerIcon(icon: string, options?: { close?: boolean }) {
+  markerIconQuery.value = icon
+  setSelectedMarkerImage(icon)
+  const shouldClose = options?.close ?? true
+  if (shouldClose) {
+    isMarkerIconSelectorOpen.value = false
+  }
+  const selectedIndex = markerIconSuggestions.value.findIndex((candidate) => candidate === icon)
+  markerIconHighlightedIndex.value = selectedIndex >= 0 ? selectedIndex : -1
+}
+
+function commitMarkerIconSelection() {
+  const suggestions = markerIconSuggestions.value
+  if (suggestions.length === 0) {
+    closeMarkerIconSelector()
+    return
+  }
+  const highlightedIndex = markerIconHighlightedIndex.value
+  const selectedIcon =
+    highlightedIndex >= 0 && highlightedIndex < suggestions.length
+      ? suggestions[highlightedIndex]
+      : suggestions[0]
+  selectMarkerIcon(selectedIcon)
+}
+
+function handleMarkerIconFocus() {
+  openMarkerIconSelector()
+  markerIconInputRef.value?.select()
+}
+
+function handleMarkerIconClick() {
+  openMarkerIconSelector()
+  markerIconInputRef.value?.select()
+}
+
+function handleMarkerIconBlur() {
+  closeMarkerIconSelector()
+}
+
+function handleMarkerIconInput(value: string) {
+  markerIconQuery.value = value
+  setSelectedMarkerImage(value)
+  openMarkerIconSelector()
+  setMarkerIconHighlight(0)
+  const match = findMarkerIconForQuery(value)
+  if (!match) return
+  const exactMatchIndex = markerIconSuggestions.value.findIndex((icon) => icon === match)
+  if (exactMatchIndex >= 0) {
+    markerIconHighlightedIndex.value = exactMatchIndex
+  }
+}
+
+function handleMarkerIconOptionClick(icon: string) {
+  selectMarkerIcon(icon)
+}
+
+function handleMarkerIconKeydown(event: KeyboardEvent) {
+  if (event.key === 'ArrowDown') {
+    event.preventDefault()
+    if (!isMarkerIconSelectorOpen.value) {
+      openMarkerIconSelector()
+      return
+    }
+    const suggestions = markerIconSuggestions.value
+    if (suggestions.length === 0) return
+    const nextIndex =
+      markerIconHighlightedIndex.value < 0
+        ? 0
+        : (markerIconHighlightedIndex.value + 1) % suggestions.length
+    setMarkerIconHighlight(nextIndex)
+    return
+  }
+
+  if (event.key === 'ArrowUp') {
+    event.preventDefault()
+    if (!isMarkerIconSelectorOpen.value) {
+      openMarkerIconSelector()
+      return
+    }
+    const suggestions = markerIconSuggestions.value
+    if (suggestions.length === 0) return
+    const nextIndex =
+      markerIconHighlightedIndex.value < 0
+        ? suggestions.length - 1
+        : (markerIconHighlightedIndex.value - 1 + suggestions.length) % suggestions.length
+    setMarkerIconHighlight(nextIndex)
+    return
+  }
+
+  if (event.key === 'Enter') {
+    event.preventDefault()
+    commitMarkerIconSelection()
+    return
+  }
+
+  if (event.key === 'Tab') {
+    if (!isMarkerIconSelectorOpen.value) return
+    if (markerIconSuggestions.value.length === 0) return
+    commitMarkerIconSelection()
+    return
+  }
+
+  if (event.key === 'Escape') {
+    event.preventDefault()
+    closeMarkerIconSelector()
+  }
+}
 
 const locationSearchResults = computed(() => {
   const terms = normalizeCode(codeSearchQuery.value)
@@ -541,6 +733,28 @@ watch(
 )
 
 watch(
+  () => selectedDraftMarker.value?.image ?? '',
+  () => {
+    if (isMarkerIconSelectorOpen.value) return
+    syncMarkerIconQueryFromSelection()
+  },
+  { immediate: true },
+)
+
+watch(markerIconSuggestions, (suggestions) => {
+  if (suggestions.length === 0) {
+    markerIconHighlightedIndex.value = -1
+    return
+  }
+  if (
+    markerIconHighlightedIndex.value < 0 ||
+    markerIconHighlightedIndex.value >= suggestions.length
+  ) {
+    markerIconHighlightedIndex.value = 0
+  }
+})
+
+watch(
   draftWarnings,
   (warnings) => {
     emit('warnings-change', warnings)
@@ -651,12 +865,48 @@ onBeforeUnmount(() => {
         <h4>Image</h4>
         <label>
           Icon key
-          <input
-            :value="selectedDraftMarker.image"
-            :list="mapIconAutocompleteId"
-            type="text"
-            @input="setSelectedMarkerImage(($event.target as HTMLInputElement).value)"
-          />
+          <div class="map-dev-editor__combobox">
+            <input
+              ref="markerIconInputRef"
+              v-model="markerIconQuery"
+              type="text"
+              role="combobox"
+              aria-autocomplete="list"
+              aria-label="Marker icon key"
+              aria-controls="marker-icon-listbox"
+              :aria-expanded="isMarkerIconSelectorOpen"
+              :aria-activedescendant="activeMarkerIconOptionId"
+              @focus="handleMarkerIconFocus"
+              @click="handleMarkerIconClick"
+              @input="handleMarkerIconInput(($event.target as HTMLInputElement).value)"
+              @blur="handleMarkerIconBlur"
+              @keydown="handleMarkerIconKeydown"
+            />
+            <ul
+              v-if="isMarkerIconSelectorOpen"
+              id="marker-icon-listbox"
+              class="map-dev-editor__combobox-options"
+              role="listbox"
+              aria-label="Marker icon options"
+            >
+              <li
+                v-for="(icon, index) in markerIconSuggestions"
+                :id="getMarkerIconOptionId(index)"
+                :key="icon"
+                class="map-dev-editor__combobox-option"
+                :class="{ 'is-highlighted': index === markerIconHighlightedIndex }"
+                role="option"
+                :aria-selected="index === markerIconHighlightedIndex"
+                @mousedown.prevent
+                @click="handleMarkerIconOptionClick(icon)"
+              >
+                {{ icon }}
+              </li>
+              <li v-if="markerIconSuggestions.length === 0" class="map-dev-editor__combobox-empty">
+                No icon keys found.
+              </li>
+            </ul>
+          </div>
         </label>
         <p v-if="selectedMarkerImageUnknown" class="map-dev-editor__inline-warning">
           Unknown image key. Marker still renders but icon may be missing.
@@ -756,9 +1006,6 @@ onBeforeUnmount(() => {
       </section>
     </template>
 
-    <datalist :id="mapIconAutocompleteId">
-      <option v-for="icon in imageSuggestions" :key="icon" :value="icon" />
-    </datalist>
   </aside>
 </template>
 
@@ -922,6 +1169,48 @@ onBeforeUnmount(() => {
   color: #e2e8f0;
   padding: 0.28rem 0.35rem;
   font-size: 0.72rem;
+}
+
+.map-dev-editor__combobox {
+  position: relative;
+}
+
+.map-dev-editor__combobox-options {
+  list-style: none;
+  margin: 0;
+  padding: 0.25rem;
+  position: absolute;
+  top: calc(100% + 0.3rem);
+  left: 0;
+  right: 0;
+  border: 1px solid #334155;
+  border-radius: 5px;
+  background: #020617;
+  box-shadow: 0 10px 22px rgba(0, 0, 0, 0.4);
+  max-height: min(14rem, 40vh);
+  overflow-y: auto;
+  z-index: 14;
+}
+
+.map-dev-editor__combobox-option {
+  border-radius: 4px;
+  padding: 0.25rem 0.3rem;
+  font-size: 0.67rem;
+  color: #cbd5e1;
+  line-height: 1.3;
+  cursor: pointer;
+}
+
+.map-dev-editor__combobox-option:hover,
+.map-dev-editor__combobox-option.is-highlighted {
+  background: #1e293b;
+  color: #f8fafc;
+}
+
+.map-dev-editor__combobox-empty {
+  padding: 0.25rem 0.3rem;
+  font-size: 0.67rem;
+  color: #94a3b8;
 }
 
 .map-dev-editor__row {
