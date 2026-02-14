@@ -563,6 +563,7 @@ onBeforeUnmount(() => {
     class="map-dev-editor"
     :class="{ 'is-dragging': isDraggingPanel }"
     :style="editorStyle"
+    @wheel.stop
     @pointermove="handleEditorPointerMove"
     @pointerup="handleEditorPointerEnd"
     @pointercancel="handleEditorPointerEnd"
@@ -801,6 +802,10 @@ onBeforeUnmount(() => {
   cursor: move;
   cursor: grab;
   user-select: none;
+}
+
+.map-dev-editor__header * {
+  cursor: inherit;
 }
 
 .map-dev-editor.is-dragging .map-dev-editor__header {
