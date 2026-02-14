@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import OoTMMSingleGrid from './OoTMMSingleGrid.vue'
+import { resolveItemGridRef } from '../utils/itemGridRef'
 
 // Import the grid layout JSON
 import itemGridsData from '../../../../item_grids.json'
@@ -134,8 +135,14 @@ function isLabelItem(itemId: string): boolean {
   return Boolean(LABEL_KEY_MAP[itemId])
 }
 
-function filterGridRow(row: string[]): string[] {
-  const visible = row.filter((itemId: string) => isItemVisible(itemId))
+function resolveVisibleItemRef(itemRef: unknown): string | null {
+  return resolveItemGridRef(itemRef, (candidate: string) => isItemVisible(candidate))
+}
+
+function filterGridRow(row: unknown[]): string[] {
+  const visible = row
+    .map((itemRef: unknown) => resolveVisibleItemRef(itemRef))
+    .filter((itemId: string | null): itemId is string => Boolean(itemId))
   // Don't show rows that only contain labels
   if (visible.length > 0 && visible.every((itemId: string) => isLabelItem(itemId))) {
     return []
@@ -146,18 +153,20 @@ function filterGridRow(row: string[]): string[] {
 function filterGridElement(element: unknown): unknown | null {
   if (!element || typeof element !== 'object') return element
   if ((element as { type?: string }).type === 'item') {
-    return isItemVisible((element as { item?: string }).item) ? element : null
+    const itemId = resolveVisibleItemRef((element as { item?: unknown }).item)
+    if (!itemId) return null
+    return { ...element, item: itemId }
   }
   if ((element as { type?: string }).type === 'canvas') {
-    const content = ((element as { content?: unknown[] }).content || []).filter((child: unknown) => {
-      return (child as { type?: string })?.type !== 'item' || isItemVisible((child as { item?: string }).item)
-    })
+    const content = ((element as { content?: unknown[] }).content || [])
+      .map((child: unknown) => filterGridElement(child))
+      .filter(Boolean)
     if (content.length === 0) return null
     return { ...element, content }
   }
   if ((element as { type?: string }).type === 'itemgrid') {
-    const rows = ((element as { rows?: string[][] }).rows || [])
-      .map((row: string[]) => filterGridRow(row))
+    const rows = ((element as { rows?: unknown[][] }).rows || [])
+      .map((row: unknown[]) => filterGridRow(row))
       .filter((row: string[]) => row.length > 0)
     if (rows.length === 0) return null
     return { ...element, rows }

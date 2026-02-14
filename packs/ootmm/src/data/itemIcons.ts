@@ -206,6 +206,7 @@ const RAW_ITEM_ICONS: Record<string, string> = {
   'OOT_BOMBCHU_5': 'images/bombchu.png',
   'OOT_BOMBCHU_10': 'images/bombchu.png',
   'OOT_BOMBCHU_20': 'images/bombchu.png',
+  'OOT_BOMBCHU_BAG': 'images/bombchu_bag.png',
 
   // Dungeon items - keys
   'OOT_SMALL_KEY_FOREST': 'images/small_key.png',

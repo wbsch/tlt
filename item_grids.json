@@ -115,7 +115,7 @@
           [
             "OOT_SLINGSHOT",
             "OOT_OCARINA",
-            "OOT_BOMBCHU_10",
+            { "or": ["OOT_BOMBCHU_BAG", "OOT_BOMBCHU_10"] },
             "OOT_HOOKSHOT",
             "OOT_ARROW_ICE",
             "OOT_SPELL_WIND",
@@ -297,7 +297,12 @@
             "OOT_SMALL_KEY_BOTW",
             "OOT_KEY_RING_BOTW",
             "oot_chestgame_label",
-            "OOT_SMALL_KEY_TCG"
+            {
+              "or": [
+                "OOT_SMALL_KEY_TCG",
+                "OOT_KEY_RING_TCG"
+              ]
+            }
           ],
           [
             "oot_spirittemple_label",
