@@ -315,11 +315,9 @@ const locationSearchResults = computed(() => {
   const terms = normalizeCode(codeSearchQuery.value)
     .split(/\s+/)
     .filter((term) => term.length > 0)
-  if (terms.length === 0) {
-    return locationIndex.value.slice(0, LOCATION_SEARCH_LIMIT)
-  }
-  return locationIndex.value
-    .filter(
+  const filtered = (terms.length === 0
+    ? locationIndex.value
+    : locationIndex.value.filter(
       (entry) =>
         terms.every(
           (term) =>
@@ -327,9 +325,20 @@ const locationSearchResults = computed(() => {
             entry.normalizedBaseId.includes(term) ||
             entry.normalizedName.includes(term),
         ),
+    ))
+    .filter(
+      (entry) =>
+        !selectedMarkerCodeSet.value.has(entry.normalizedId) &&
+        !selectedMarkerCodeSet.value.has(entry.normalizedBaseId),
     )
+  return filtered
     .slice(0, LOCATION_SEARCH_LIMIT)
 })
+
+function addLocationCode(locationId: string): void {
+  const baseCode = stripWorldSuffix(locationId)
+  addCodeToSelectedMarker(baseCode)
+}
 
 const draftErrors = computed<DraftIssue[]>(() => {
   if (!draftMap.value) return []
@@ -461,23 +470,6 @@ function removeCodeFromSelectedMarker(code: string): void {
   if (!marker) return
   const normalized = normalizeCode(code)
   const nextCodes = markerCodeList(marker).filter((entry) => normalizeCode(entry) !== normalized)
-  assignMarkerCodes(marker, nextCodes)
-}
-
-function toggleLocationCode(locationId: string, selected: boolean): void {
-  const baseCode = stripWorldSuffix(locationId)
-  const normalizedBaseCode = normalizeLocationCode(baseCode)
-  if (selected) {
-    addCodeToSelectedMarker(baseCode)
-    return
-  }
-  const marker = selectedDraftMarker.value
-  if (!marker) return
-  const nextCodes = markerCodeList(marker).filter((entry) => {
-    const normalizedEntry = normalizeCode(entry)
-    const normalizedEntryBase = normalizeLocationCode(entry)
-    return normalizedEntry !== normalizedBaseCode && normalizedEntryBase !== normalizedBaseCode
-  })
   assignMarkerCodes(marker, nextCodes)
 }
 
@@ -698,18 +690,15 @@ onBeforeUnmount(() => {
           />
         </label>
         <div class="map-dev-editor__location-list">
-          <label
+          <button
             v-for="entry in locationSearchResults"
             :key="entry.id"
+            type="button"
             class="map-dev-editor__location-item"
+            @click="addLocationCode(entry.id)"
           >
-            <input
-              type="checkbox"
-              :checked="selectedMarkerCodeSet.has(normalizeCode(entry.id))"
-              @change="toggleLocationCode(entry.id, ($event.target as HTMLInputElement).checked)"
-            />
             <span class="map-dev-editor__location-id">{{ entry.name }}</span>
-          </label>
+          </button>
           <p v-if="locationSearchResults.length === 0" class="map-dev-editor__location-empty">
             No location matches.
           </p>
@@ -984,19 +973,20 @@ onBeforeUnmount(() => {
 }
 
 .map-dev-editor__section .map-dev-editor__location-item {
-  display: grid;
-  grid-template-columns: auto minmax(0, 1fr);
+  display: flex;
   align-items: center;
-  column-gap: 0.35rem;
-  row-gap: 0.08rem;
+  width: 100%;
   border: 1px solid #1e293b;
   border-radius: 5px;
   padding: 0.25rem;
+  background: #111827;
+  text-align: left;
+  cursor: pointer;
 }
 
-.map-dev-editor__section .map-dev-editor__location-item input[type='checkbox'] {
-  grid-row: 1;
-  margin: 0;
+.map-dev-editor__section .map-dev-editor__location-item:hover {
+  border-color: #334155;
+  background: #172036;
 }
 
 .map-dev-editor__location-id {
