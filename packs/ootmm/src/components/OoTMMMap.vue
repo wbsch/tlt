@@ -24,7 +24,7 @@ const MIN_SCALE = 0.5
 const MAX_SCALE = 3
 const WHEEL_ZOOM_FACTOR = 1.1
 const MARKER_SIZE = 16
-const MARKER_PANEL_GAP = 4
+const MARKER_PANEL_GAP = 16
 const HOVER_POPUP_CLOSE_DELAY_MS = 160
 const MAP_POPUP_WIDTH = 260
 const MAP_POPUP_HEIGHT = 230
@@ -440,12 +440,13 @@ function popupStyle(): Record<string, string> {
     MAP_POPUP_WIDTH,
     MAP_POPUP_HEIGHT,
   )
-  const markerX = marker.coords[0] * scale.value + panX.value + MARKER_SIZE * 0.5
-  const markerY = marker.coords[1] * scale.value + panY.value + MARKER_SIZE * 0.5
+  const markerX = marker.coords[0] * scale.value + panX.value
+  const markerY = marker.coords[1] * scale.value + panY.value
+  const markerHalfSize = MARKER_SIZE * 0.5
   const maxX = Math.max(8, viewport.clientWidth - popupWidth - 8)
   const maxY = Math.max(8, viewport.clientHeight - popupHeight - 8)
-  const rightSideLeft = markerX + MARKER_PANEL_GAP
-  const leftSideLeft = markerX - popupWidth - MARKER_PANEL_GAP
+  const rightSideLeft = markerX + markerHalfSize + MARKER_PANEL_GAP
+  const leftSideLeft = markerX - markerHalfSize - popupWidth - MARKER_PANEL_GAP
   const left = leftSideLeft >= 8 ? leftSideLeft : clamp(rightSideLeft, 8, maxX)
   const top = clamp(markerY - popupHeight * 0.5, 8, maxY)
 
