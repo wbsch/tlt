@@ -86,32 +86,26 @@ const baseFilteredLocations = computed(() => {
   return props.locations.filter(loc => matchesLocationBaseVisibility(loc, visibilityFilters.value))
 })
 
-
+function matchesReachabilityForLocation(loc: LocationInfo): boolean {
+  return matchesLocationReachabilityVisibility(
+    loc.id,
+    props.reachableIds,
+    visibilityFilters.value.reachabilityFilter,
+  )
+}
 
 const collectionScopedLocations = computed(() => {
-  return baseFilteredLocations.value.filter(loc => {
-    return matchesLocationReachabilityVisibility(
-      loc.id,
-      props.reachableIds,
-      visibilityFilters.value.reachabilityFilter,
-    )
-  })
+  return baseFilteredLocations.value.filter((loc) => matchesReachabilityForLocation(loc))
 })
 
 const filteredLocations = computed(() => {
-  return baseFilteredLocations.value.filter(loc => {
-    const matchesReachability = matchesLocationReachabilityVisibility(
-      loc.id,
-      props.reachableIds,
-      visibilityFilters.value.reachabilityFilter,
-    )
-    const matchesCollection = matchesLocationCollectionVisibility(
+  return collectionScopedLocations.value.filter((loc) =>
+    matchesLocationCollectionVisibility(
       loc.id,
       collectedIdSet.value,
       visibilityFilters.value.collectionFilter,
     )
-    return matchesReachability && matchesCollection
-  })
+  )
 })
 
 const groupedLocations = computed(() => {

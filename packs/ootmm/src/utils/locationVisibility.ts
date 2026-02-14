@@ -9,19 +9,32 @@ export type LocationVisibilityFilters = {
   showUnshuffled: boolean
 }
 
+type SetMembershipFilter = 'all' | 'included' | 'excluded'
+
 function isToggleEligibleWhenUnshuffled(location: LocationInfo): boolean {
   return Boolean(location.isSkulltulaToken || location.isStrayFairy)
+}
+
+function matchesSetMembership(
+  locationId: string,
+  idSet: ReadonlySet<string>,
+  filter: SetMembershipFilter,
+): boolean {
+  if (filter === 'included') return idSet.has(locationId)
+  if (filter === 'excluded') return !idSet.has(locationId)
+  return true
 }
 
 export function matchesLocationBaseVisibility(
   location: LocationInfo,
   filters: LocationVisibilityFilters,
 ): boolean {
+  const searchQuery = filters.searchQuery.toLowerCase()
   const matchesShuffle =
     location.isShuffled !== false
     || location.showWhenUnshuffled
     || (filters.showUnshuffled && isToggleEligibleWhenUnshuffled(location))
-  const matchesSearch = location.name.toLowerCase().includes(filters.searchQuery.toLowerCase())
+  const matchesSearch = location.name.toLowerCase().includes(searchQuery)
   const matchesCategory =
     filters.selectedCategory === 'all' || location.category === filters.selectedCategory
 
@@ -33,9 +46,13 @@ export function matchesLocationReachabilityVisibility(
   reachableIds: ReadonlySet<string>,
   reachabilityFilter: ReachabilityFilter,
 ): boolean {
-  if (reachabilityFilter === 'reachable') return reachableIds.has(locationId)
-  if (reachabilityFilter === 'unreachable') return !reachableIds.has(locationId)
-  return true
+  const membershipFilter: SetMembershipFilter =
+    reachabilityFilter === 'reachable'
+      ? 'included'
+      : reachabilityFilter === 'unreachable'
+        ? 'excluded'
+        : 'all'
+  return matchesSetMembership(locationId, reachableIds, membershipFilter)
 }
 
 export function matchesLocationCollectionVisibility(
@@ -43,9 +60,13 @@ export function matchesLocationCollectionVisibility(
   collectedIds: ReadonlySet<string>,
   collectionFilter: CollectionFilter,
 ): boolean {
-  if (collectionFilter === 'collected') return collectedIds.has(locationId)
-  if (collectionFilter === 'uncollected') return !collectedIds.has(locationId)
-  return true
+  const membershipFilter: SetMembershipFilter =
+    collectionFilter === 'collected'
+      ? 'included'
+      : collectionFilter === 'uncollected'
+        ? 'excluded'
+        : 'all'
+  return matchesSetMembership(locationId, collectedIds, membershipFilter)
 }
 
 export function isLocationVisibleInSidebar(
