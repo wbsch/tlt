@@ -9,7 +9,7 @@ import OoTMMItemGrid from './OoTMMItemGrid.vue'
 import OoTMMWorld from './OoTMMWorld.vue'
 import OoTMMMap from './OoTMMMap.vue'
 import OoTMMTricks from './OoTMMTricks.vue'
-import { DEFAULT_OOTMM_SETTINGS } from '../types/settings'
+import { TRACKER_DEFAULT_SETTINGS } from '../data/settings'
 import { parseSpoilerLog } from '../utils/spoiler'
 import { useOoTMMSessionStore } from '../stores/ootmmSession'
 import { useOoTMMUiStore, type TrackerTab } from '../stores/ootmmUi'
@@ -38,7 +38,7 @@ const itemName = resolveExport<typeof NamesMod.itemName>(NamesMod, 'itemName')
 const coreSettings = (SettingsDataMod as { SETTINGS?: unknown[] })?.SETTINGS ?? []
 const settingsByKey = new Map<string, unknown>(coreSettings.map((setting: unknown) => [(setting as { key: string }).key, setting]))
 const settingsByName = new Map<string, unknown>(coreSettings.map((setting: unknown) => [(setting as { name: string }).name, setting]))
-const supportedSettingKeys = new Set(Object.keys(DEFAULT_OOTMM_SETTINGS))
+const supportedSettingKeys = new Set(Object.keys(TRACKER_DEFAULT_SETTINGS))
 const itemNameToId = new Map<string, string>()
 const ALL_TRICKS = TRICKS as Record<string, { name?: string }>
 const trickNameToKey = new Map<string, string>()
@@ -183,11 +183,8 @@ function handleInventoryChange(newInventory: Map<string, number>) {
   sessionStore.setInventoryFromMap(newInventory)
 }
 
-async function handleSettingsChange(
-  newSettings: Record<string, unknown>,
-  options?: { origin?: 'ui' | 'spoiler' },
-) {
-  await sessionStore.applySettings(newSettings, options)
+async function handleSettingsChange(newSettings: Record<string, unknown>) {
+  await sessionStore.applySettings(newSettings)
 }
 
 function applySpecialCondsPatch(patch: Record<string, unknown>) {
@@ -330,7 +327,7 @@ async function applySpoilerLog(text: string) {
   }
 
   if (Object.keys(settingsPatch).length > 0 || Object.keys(parsed.specialConds).length > 0) {
-    await handleSettingsChange(nextSettings, { origin: 'spoiler' })
+    await handleSettingsChange(nextSettings)
   }
 
   if (parsed.preCompletedDungeons.length > 0) {

@@ -2,8 +2,8 @@ import { defineStore } from 'pinia';
 import { computed, markRaw, nextTick, ref } from 'vue';
 import type { TrackerPack } from '@/types/tracker';
 import { ITEM_DATABASE } from '../data/items';
+import { ALL_SETTINGS_DEFINITIONS, TRACKER_DEFAULT_SETTINGS } from '../data/settings';
 import { VANILLA_SONG_EVENTS } from '../data/song-events';
-import { DEFAULT_OOTMM_SETTINGS } from '../types/settings';
 
 const HISTORY_LIMIT = 200;
 const VANILLA_SILVER_RUPEE_PREFIX = 'OOT_RUPEE_SILVER_';
@@ -93,6 +93,37 @@ function deepCloneValue(value: unknown): unknown {
 
 function cloneSettingsRecord(value: Record<string, unknown>): Record<string, unknown> {
   return deepCloneValue(value) as Record<string, unknown>;
+}
+
+function applyDefaultsForNewlyVisibleSettings(
+  previousSettings: Record<string, unknown>,
+  nextSettings: Record<string, unknown>,
+): Record<string, unknown> {
+  const normalized = { ...nextSettings };
+
+  for (const def of ALL_SETTINGS_DEFINITIONS) {
+    if (!def.cond) continue;
+
+    let wasVisible = false;
+    let isVisible = false;
+    try {
+      wasVisible = Boolean(def.cond(previousSettings));
+      isVisible = Boolean(def.cond(normalized));
+    } catch {
+      continue;
+    }
+
+    if (wasVisible || !isVisible) continue;
+
+    const previousValue = previousSettings[def.key];
+    const nextValue = normalized[def.key];
+    const isUnchanged = areSettingsEqual(previousValue, nextValue);
+    if (!isUnchanged) continue;
+
+    normalized[def.key] = deepCloneValue(def.default);
+  }
+
+  return normalized;
 }
 
 export const useOoTMMSessionStore = defineStore('ootmm-session', () => {
@@ -309,19 +340,21 @@ export const useOoTMMSessionStore = defineStore('ootmm-session', () => {
   async function attachTracker(nextTracker: TrackerPack) {
     clearHistory();
     tracker.value = markRaw(nextTracker) as TrackerPack;
-    const persistedSettings = { ...trackerSettings.value };
+    const persistedSettings = cloneSettingsRecord(trackerSettings.value);
     const hasPersistedSettings = Object.keys(persistedSettings).length > 0;
-    const defaultSettings = nextTracker.getSettings();
-    const shouldReinitializeWithPersistedSettings =
-      hasPersistedSettings && !areSettingsEqual(persistedSettings, defaultSettings);
-    if (shouldReinitializeWithPersistedSettings) {
+    const targetSettings = hasPersistedSettings
+      ? persistedSettings
+      : cloneSettingsRecord(TRACKER_DEFAULT_SETTINGS);
+    const currentSettings = nextTracker.getSettings();
+    const shouldReinitializeWithTargetSettings = !areSettingsEqual(targetSettings, currentSettings);
+    if (shouldReinitializeWithTargetSettings) {
       isApplyingSettings.value = true;
       try {
         await nextTick();
         await new Promise<void>((resolve) => setTimeout(resolve, 0));
-        await nextTracker.initialize(persistedSettings);
+        await nextTracker.initialize(targetSettings);
       } catch (error) {
-        console.error('Failed to rehydrate persisted settings:', error);
+        console.error('Failed to initialize tracker settings:', error);
       } finally {
         isApplyingSettings.value = false;
       }
@@ -464,27 +497,16 @@ export const useOoTMMSessionStore = defineStore('ootmm-session', () => {
     recordHistoryEntry(previousSnapshot);
   }
 
-  async function applySettings(
-    newSettings: Record<string, unknown>,
-    options?: { origin?: 'ui' | 'spoiler' },
-  ) {
+  async function applySettings(newSettings: Record<string, unknown>) {
     if (isApplyingSettings.value) return;
     const currentTracker = tracker.value;
     if (!currentTracker) return;
     const previousSnapshot = captureSessionSnapshot();
     let didApply = false;
-    const origin = options?.origin ?? 'ui';
-    const nextSettings = { ...newSettings };
-
-    if (origin === 'ui') {
-      const clocksEnabled = Boolean(nextSettings.clocks);
-      if (clocksEnabled) {
-        const progressive = String(nextSettings.progressiveClocks ?? '');
-        if (!progressive || progressive === 'ascending') {
-          nextSettings.progressiveClocks = DEFAULT_OOTMM_SETTINGS.progressiveClocks;
-        }
-      }
-    }
+    const nextSettings = applyDefaultsForNewlyVisibleSettings(
+      trackerSettings.value,
+      { ...newSettings },
+    );
 
     currentTracker.reset();
     isApplyingSettings.value = true;

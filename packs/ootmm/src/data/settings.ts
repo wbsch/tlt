@@ -122,6 +122,28 @@ const applyWhitelist = (definitions: SettingDefinition[]): SettingDefinition[] =
   return definitions.filter((def) => SETTINGS_WHITELIST.has(def.key))
 }
 
+const deepCloneDefault = (value: unknown): unknown => {
+  if (Array.isArray(value)) {
+    return value.map((entry) => deepCloneDefault(entry))
+  }
+  if (value && typeof value === 'object') {
+    const cloned: Record<string, unknown> = {}
+    for (const [key, entry] of Object.entries(value as Record<string, unknown>)) {
+      cloned[key] = deepCloneDefault(entry)
+    }
+    return cloned
+  }
+  return value
+}
+
+const buildDefaultsRecord = (definitions: SettingDefinition[]): Record<string, unknown> => {
+  const defaults: Record<string, unknown> = {}
+  for (const def of definitions) {
+    defaults[def.key] = deepCloneDefault(def.default)
+  }
+  return defaults
+}
+
 // Transform OoTMM settings into our UI format
 const BASE_SETTINGS_DEFINITIONS: SettingDefinition[] = SETTINGS
   .map(transformOoTMMSetting)
@@ -807,6 +829,12 @@ const CUSTOM_SETTINGS_DEFINITIONS: SettingDefinition[] = [
       { value: 'superfast', label: 'Super Fast' },
     ],
   },
+  {
+    key: 'progressiveClocks',
+    label: 'Progressive Clocks',
+    type: 'select',
+    default: 'separate',
+  },
 ]
 
 const MERGED_SETTINGS_DEFINITIONS = mergeSettingDefinitions(
@@ -814,4 +842,6 @@ const MERGED_SETTINGS_DEFINITIONS = mergeSettingDefinitions(
   CUSTOM_SETTINGS_DEFINITIONS,
 )
 
+export const ALL_SETTINGS_DEFINITIONS = MERGED_SETTINGS_DEFINITIONS
 export const SETTINGS_DEFINITIONS = applyWhitelist(MERGED_SETTINGS_DEFINITIONS)
+export const TRACKER_DEFAULT_SETTINGS = buildDefaultsRecord(MERGED_SETTINGS_DEFINITIONS)
