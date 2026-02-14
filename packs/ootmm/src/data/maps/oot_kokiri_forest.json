@@ -6,77 +6,732 @@
   "height": 600,
   "markers": [
     {
-      "coords": [210, 355],
+      "coords": [
+        555,
+        582
+      ],
       "image": "chest",
-      "codes": "OOT Kokiri Forest Kokiri Sword Chest"
+      "codes": "TODO KF 001 :: unnamed_stack > Forest > Forest Layers > Forest Checks :: Pasted Layer :: 001-001-001-000.png"
     },
     {
-      "coords": [272, 412],
-      "image": "gold_skulltula",
-      "overlays": ["child", "night", "broken"],
-      "codes": "OOT Kokiri Forest GS Night Child"
-    },
-    {
-      "coords": [318, 432],
-      "image": "gold_skulltula",
-      "overlays": ["adult", "day"],
-      "codes": "OOT Kokiri Forest GS Night Adult"
-    },
-    {
-      "coords": [165, 265],
+      "coords": [
+        174,
+        327
+      ],
       "image": "chest",
-      "overlays": ["day1", "day2"],
-      "codes": [
-        "OOT Mido's House Top Left",
-        "OOT Mido's House Top Right",
-        "OOT Mido's House Bottom Left",
-        "OOT Mido's House Bottom Right"
-      ]
+      "codes": "TODO KF 002 :: unnamed_stack > Forest > Forest Layers > Forest Checks :: Pasted Layer #1 :: 001-001-001-001.png"
     },
     {
-      "coords": [495, 318],
-      "image": "shop",
-      "overlays": ["jp_only"],
-      "codes": [
-        "OOT Kokiri Shop Item 1",
-        "OOT Kokiri Shop Item 2",
-        "OOT Kokiri Shop Item 3",
-        "OOT Kokiri Shop Item 4",
-        "OOT Kokiri Shop Item 5",
-        "OOT Kokiri Shop Item 6",
-        "OOT Kokiri Shop Item 7",
-        "OOT Kokiri Shop Item 8",
-        "OOT Lost Woods Gift from Saria",
-        "OOT Lost Woods Target",
-        "OOT Lost Woods Skull Kid",
-        "OOT Lost Woods Memory Game"
-      ]
+      "coords": [
+        167,
+        343
+      ],
+      "image": "chest",
+      "codes": "TODO KF 003 :: unnamed_stack > Forest > Forest Layers > Forest Checks :: Pasted Layer #2 :: 001-001-001-002.png"
     },
     {
-      "coords": [590, 190],
+      "coords": [
+        56,
+        328
+      ],
+      "image": "chest",
+      "codes": "TODO KF 004 :: unnamed_stack > Forest > Forest Layers > Forest Checks :: Pasted Layer #3 :: 001-001-001-003.png"
+    },
+    {
+      "coords": [
+        72,
+        328
+      ],
+      "image": "chest",
+      "codes": "TODO KF 005 :: unnamed_stack > Forest > Forest Layers > Forest Checks :: Pasted Layer #4 :: 001-001-001-004.png"
+    },
+    {
+      "coords": [
+        88,
+        328
+      ],
+      "image": "chest",
+      "codes": "TODO KF 006 :: unnamed_stack > Forest > Forest Layers > Forest Checks :: Pasted Layer #5 :: 001-001-001-005.png"
+    },
+    {
+      "coords": [
+        72,
+        344
+      ],
+      "image": "chest",
+      "codes": "TODO KF 007 :: unnamed_stack > Forest > Forest Layers > Forest Checks :: Pasted Layer #6 :: 001-001-001-006.png"
+    },
+    {
+      "coords": [
+        72,
+        399
+      ],
+      "image": "chest",
+      "codes": "TODO KF 008 :: unnamed_stack > Forest > Forest Layers > Forest Checks :: Pasted Layer #7 :: 001-001-001-007.png"
+    },
+    {
+      "coords": [
+        325,
+        65
+      ],
       "image": "song",
-      "overlays": ["na_only"],
-      "codes": [
-        "OOT Saria's Song",
-        "OOT Shadow Temple Boss"
-      ]
+      "codes": "TODO KF 009 :: unnamed_stack > Forest > Forest Layers > Forest Songs :: Pasted Layer #8 :: 001-001-002-000.png"
     },
     {
-      "coords": [652, 360],
-      "image": "grotto",
-      "overlays": ["day2", "day3"],
-      "codes": [
-        "OOT Lost Woods Grotto Generic",
-        "OOT Lost Woods Grotto Scrub Nuts Upgrade"
-      ]
+      "coords": [
+        354,
+        65
+      ],
+      "image": "song",
+      "codes": "TODO KF 010 :: unnamed_stack > Forest > Forest Layers > Forest Songs :: Pasted Layer #9 :: 001-001-002-001.png"
     },
     {
-      "coords": [718, 418],
-      "image": "grotto",
-      "codes": [
-        "OOT Kokiri Forest Storms Grotto",
-        "OOT Lost Woods Grotto Generic"
-      ]
+      "coords": [
+        61,
+        372
+      ],
+      "image": "gold_skulltula",
+      "codes": "TODO KF 011 :: unnamed_stack > Forest > Forest Layers > Forest Skull :: Pasted Layer #10 :: 001-001-003-000.png"
+    },
+    {
+      "coords": [
+        126,
+        258
+      ],
+      "image": "gold_skulltula",
+      "codes": "TODO KF 012 :: unnamed_stack > Forest > Forest Layers > Forest Skull :: Pasted Layer #11 :: 001-001-003-001.png"
+    },
+    {
+      "coords": [
+        148,
+        260
+      ],
+      "image": "gold_skulltula",
+      "codes": "TODO KF 013 :: unnamed_stack > Forest > Forest Layers > Forest Skull :: Pasted Layer #12 :: 001-001-003-002.png"
+    },
+    {
+      "coords": [
+        376,
+        238
+      ],
+      "image": "gold_skulltula",
+      "codes": "TODO KF 014 :: unnamed_stack > Forest > Forest Layers > Forest Skull :: Pasted Layer #13 :: 001-001-003-003.png"
+    },
+    {
+      "coords": [
+        479,
+        443
+      ],
+      "image": "gold_skulltula",
+      "codes": "TODO KF 015 :: unnamed_stack > Forest > Forest Layers > Forest Skull :: Pasted Layer #14 :: 001-001-003-004.png"
+    },
+    {
+      "coords": [
+        662,
+        382
+      ],
+      "image": "gold_skulltula",
+      "codes": "TODO KF 016 :: unnamed_stack > Forest > Forest Layers > Forest Skull :: Pasted Layer #15 :: 001-001-003-005.png"
+    },
+    {
+      "coords": [
+        663,
+        460
+      ],
+      "image": "gold_skulltula",
+      "codes": "TODO KF 017 :: unnamed_stack > Forest > Forest Layers > Forest Skull :: Pasted Layer #16 :: 001-001-003-006.png"
+    },
+    {
+      "coords": [
+        77,
+        419
+      ],
+      "image": "business_scrub_oot",
+      "codes": "TODO KF 018 :: unnamed_stack > Forest > Forest Layers > Forest Scrubs :: Pasted Layer #17 :: 001-001-004-000.png"
+    },
+    {
+      "coords": [
+        140,
+        279
+      ],
+      "image": "business_scrub_oot",
+      "codes": "TODO KF 019 :: unnamed_stack > Forest > Forest Layers > Forest Scrubs :: Pasted Layer #18 :: 001-001-004-001.png"
+    },
+    {
+      "coords": [
+        140,
+        311
+      ],
+      "image": "grass",
+      "codes": "TODO KF 020 :: unnamed_stack > Forest > Forest Layers > Forest Grass :: Pasted Layer #19 :: 001-001-005-000.png"
+    },
+    {
+      "coords": [
+        156,
+        247
+      ],
+      "image": "grass",
+      "codes": "TODO KF 021 :: unnamed_stack > Forest > Forest Layers > Forest Grass :: Pasted Layer #20 :: 001-001-005-001.png"
+    },
+    {
+      "coords": [
+        172,
+        247
+      ],
+      "image": "grass",
+      "codes": "TODO KF 022 :: unnamed_stack > Forest > Forest Layers > Forest Grass :: Pasted Layer #21 :: 001-001-005-002.png"
+    },
+    {
+      "coords": [
+        532,
+        445
+      ],
+      "image": "grass",
+      "codes": "TODO KF 023 :: unnamed_stack > Forest > Forest Layers > Forest Grass :: Pasted Layer #22 :: 001-001-005-003.png"
+    },
+    {
+      "coords": [
+        532,
+        461
+      ],
+      "image": "grass",
+      "codes": "TODO KF 024 :: unnamed_stack > Forest > Forest Layers > Forest Grass :: Pasted Layer #23 :: 001-001-005-004.png"
+    },
+    {
+      "coords": [
+        490,
+        531
+      ],
+      "image": "grass",
+      "codes": "TODO KF 025 :: unnamed_stack > Forest > Forest Layers > Forest Grass :: Pasted Layer #24 :: 001-001-005-005.png"
+    },
+    {
+      "coords": [
+        518,
+        571
+      ],
+      "image": "grass",
+      "codes": "TODO KF 026 :: unnamed_stack > Forest > Forest Layers > Forest Grass :: Pasted Layer #25 :: 001-001-005-006.png"
+    },
+    {
+      "coords": [
+        547,
+        588
+      ],
+      "image": "grass",
+      "codes": "TODO KF 027 :: unnamed_stack > Forest > Forest Layers > Forest Grass :: Pasted Layer #26 :: 001-001-005-007.png"
+    },
+    {
+      "coords": [
+        598,
+        456
+      ],
+      "image": "grass",
+      "codes": "TODO KF 028 :: unnamed_stack > Forest > Forest Layers > Forest Grass :: Pasted Layer #27 :: 001-001-005-008.png"
+    },
+    {
+      "coords": [
+        626,
+        456
+      ],
+      "image": "grass",
+      "codes": "TODO KF 029 :: unnamed_stack > Forest > Forest Layers > Forest Grass :: Pasted Layer #28 :: 001-001-005-009.png"
+    },
+    {
+      "coords": [
+        638,
+        472
+      ],
+      "image": "grass",
+      "codes": "TODO KF 030 :: unnamed_stack > Forest > Forest Layers > Forest Grass :: Pasted Layer #29 :: 001-001-005-010.png"
+    },
+    {
+      "coords": [
+        617,
+        475
+      ],
+      "image": "heart",
+      "codes": "TODO KF 031 :: unnamed_stack > Forest > Forest Layers > Forest Freestanding Hearts :: Pasted Layer #30 :: 001-001-006-000.png"
+    },
+    {
+      "coords": [
+        580,
+        420
+      ],
+      "image": "green_rupee",
+      "codes": "TODO KF 032 :: unnamed_stack > Forest > Forest Layers > Forest Freestanding Rupees :: Pasted Layer #31 :: 001-001-007-000.png"
+    },
+    {
+      "coords": [
+        543,
+        358
+      ],
+      "image": "green_rupee",
+      "codes": "TODO KF 033 :: unnamed_stack > Forest > Forest Layers > Forest Freestanding Rupees :: Pasted Layer #32 :: 001-001-007-001.png"
+    },
+    {
+      "coords": [
+        670,
+        364
+      ],
+      "image": "green_rupee",
+      "codes": "TODO KF 034 :: unnamed_stack > Forest > Forest Layers > Forest Freestanding Rupees :: Pasted Layer #33 :: 001-001-007-002.png"
+    },
+    {
+      "coords": [
+        687,
+        372
+      ],
+      "image": "green_rupee",
+      "codes": "TODO KF 035 :: unnamed_stack > Forest > Forest Layers > Forest Freestanding Rupees :: Pasted Layer #34 :: 001-001-007-003.png"
+    },
+    {
+      "coords": [
+        490,
+        547
+      ],
+      "image": "green_rupee",
+      "codes": "TODO KF 036 :: unnamed_stack > Forest > Forest Layers > Forest Freestanding Rupees :: Pasted Layer #35 :: 001-001-007-004.png"
+    },
+    {
+      "coords": [
+        518,
+        555
+      ],
+      "image": "green_rupee",
+      "codes": "TODO KF 037 :: unnamed_stack > Forest > Forest Layers > Forest Freestanding Rupees :: Pasted Layer #36 :: 001-001-007-005.png"
+    },
+    {
+      "coords": [
+        201,
+        303
+      ],
+      "image": "green_rupee",
+      "codes": "TODO KF 038 :: unnamed_stack > Forest > Forest Layers > Forest Freestanding Rupees :: Pasted Layer #37 :: 001-001-007-006.png"
+    },
+    {
+      "coords": [
+        187,
+        232
+      ],
+      "image": "green_rupee",
+      "codes": "TODO KF 039 :: unnamed_stack > Forest > Forest Layers > Forest Freestanding Rupees :: Pasted Layer #38 :: 001-001-007-007.png"
+    },
+    {
+      "coords": [
+        159,
+        362
+      ],
+      "image": "wonder_item_random",
+      "codes": "TODO KF 040 :: unnamed_stack > Forest > Forest Layers > Forest Wonder :: Pasted Layer #39 :: 001-001-008-000.png"
+    },
+    {
+      "coords": [
+        175,
+        362
+      ],
+      "image": "wonder_item_random",
+      "codes": "TODO KF 041 :: unnamed_stack > Forest > Forest Layers > Forest Wonder :: Pasted Layer #40 :: 001-001-008-001.png"
+    },
+    {
+      "coords": [
+        319,
+        336
+      ],
+      "image": "wonder_item_random",
+      "codes": "TODO KF 042 :: unnamed_stack > Forest > Forest Layers > Forest Wonder :: Pasted Layer #41 :: 001-001-008-002.png"
+    },
+    {
+      "coords": [
+        345,
+        304
+      ],
+      "image": "wonder_item_random",
+      "codes": "TODO KF 043 :: unnamed_stack > Forest > Forest Layers > Forest Wonder :: Pasted Layer #42 :: 001-001-008-003.png"
+    },
+    {
+      "coords": [
+        328,
+        297
+      ],
+      "image": "wonder_item_random",
+      "codes": "TODO KF 044 :: unnamed_stack > Forest > Forest Layers > Forest Wonder :: Pasted Layer #43 :: 001-001-008-004.png"
+    },
+    {
+      "coords": [
+        345,
+        286
+      ],
+      "image": "wonder_item_random",
+      "codes": "TODO KF 045 :: unnamed_stack > Forest > Forest Layers > Forest Wonder :: Pasted Layer #44 :: 001-001-008-005.png"
+    },
+    {
+      "coords": [
+        328,
+        237
+      ],
+      "image": "wonder_item_random",
+      "codes": "TODO KF 046 :: unnamed_stack > Forest > Forest Layers > Forest Wonder :: Pasted Layer #45 :: 001-001-008-006.png"
+    },
+    {
+      "coords": [
+        357,
+        239
+      ],
+      "image": "wonder_item_random",
+      "codes": "TODO KF 047 :: unnamed_stack > Forest > Forest Layers > Forest Wonder :: Pasted Layer #46 :: 001-001-008-007.png"
+    },
+    {
+      "coords": [
+        531,
+        550
+      ],
+      "image": "wonder_item_random",
+      "codes": "TODO KF 048 :: unnamed_stack > Forest > Forest Layers > Forest Wonder :: Pasted Layer #47 :: 001-001-008-008.png"
+    },
+    {
+      "coords": [
+        533,
+        479
+      ],
+      "image": "wonder_item_random",
+      "codes": "TODO KF 049 :: unnamed_stack > Forest > Forest Layers > Forest Wonder :: Pasted Layer #48 :: 001-001-008-009.png"
+    },
+    {
+      "coords": [
+        549,
+        479
+      ],
+      "image": "wonder_item_random",
+      "codes": "TODO KF 050 :: unnamed_stack > Forest > Forest Layers > Forest Wonder :: Pasted Layer #49 :: 001-001-008-010.png"
+    },
+    {
+      "coords": [
+        549,
+        450
+      ],
+      "image": "wonder_item_random",
+      "codes": "TODO KF 051 :: unnamed_stack > Forest > Forest Layers > Forest Wonder :: Pasted Layer #50 :: 001-001-008-011.png"
+    },
+    {
+      "coords": [
+        553,
+        409
+      ],
+      "image": "wonder_item_random",
+      "codes": "TODO KF 052 :: unnamed_stack > Forest > Forest Layers > Forest Wonder :: Pasted Layer #51 :: 001-001-008-012.png"
+    },
+    {
+      "coords": [
+        580,
+        385
+      ],
+      "image": "wonder_item_random",
+      "codes": "TODO KF 053 :: unnamed_stack > Forest > Forest Layers > Forest Wonder :: Pasted Layer #52 :: 001-001-008-013.png"
+    },
+    {
+      "coords": [
+        602,
+        402
+      ],
+      "image": "wonder_item_random",
+      "codes": "TODO KF 054 :: unnamed_stack > Forest > Forest Layers > Forest Wonder :: Pasted Layer #53 :: 001-001-008-014.png"
+    },
+    {
+      "coords": [
+        659,
+        424
+      ],
+      "image": "wonder_item_random",
+      "codes": "TODO KF 055 :: unnamed_stack > Forest > Forest Layers > Forest Wonder :: Pasted Layer #54 :: 001-001-008-015.png"
+    },
+    {
+      "coords": [
+        216,
+        303
+      ],
+      "image": "big_fairy_spot",
+      "codes": "TODO KF 056 :: unnamed_stack > Forest > Forest Layers > Forest Big Fairy :: Pasted Layer #55 :: 001-001-009-000.png"
+    },
+    {
+      "coords": [
+        124,
+        279
+      ],
+      "image": "butterfly",
+      "codes": "TODO KF 057 :: unnamed_stack > Forest > Forest Layers > Forest Butterfly :: Pasted Layer #56 :: 001-001-010-000.png"
+    },
+    {
+      "coords": [
+        556,
+        376
+      ],
+      "image": "rock",
+      "codes": "TODO KF 058 :: unnamed_stack > Forest > Forest Layers > Forest Rocks :: Pasted Layer #57 :: 001-001-011-000.png"
+    },
+    {
+      "coords": [
+        526,
+        376
+      ],
+      "image": "rock",
+      "codes": "TODO KF 059 :: unnamed_stack > Forest > Forest Layers > Forest Rocks :: Pasted Layer #58 :: 001-001-011-001.png"
+    },
+    {
+      "coords": [
+        482,
+        430
+      ],
+      "image": "rock",
+      "codes": "TODO KF 060 :: unnamed_stack > Forest > Forest Layers > Forest Rocks :: Pasted Layer #59 :: 001-001-011-002.png"
+    },
+    {
+      "coords": [
+        502,
+        480
+      ],
+      "image": "rock",
+      "codes": "TODO KF 061 :: unnamed_stack > Forest > Forest Layers > Forest Rocks :: Pasted Layer #60 :: 001-001-011-003.png"
+    },
+    {
+      "coords": [
+        550,
+        490
+      ],
+      "image": "rock",
+      "codes": "TODO KF 062 :: unnamed_stack > Forest > Forest Layers > Forest Rocks :: Pasted Layer #61 :: 001-001-011-004.png"
+    },
+    {
+      "coords": [
+        604,
+        487
+      ],
+      "image": "rock",
+      "codes": "TODO KF 063 :: unnamed_stack > Forest > Forest Layers > Forest Rocks :: Pasted Layer #62 :: 001-001-011-005.png"
+    },
+    {
+      "coords": [
+        598,
+        465
+      ],
+      "image": "rock",
+      "codes": "TODO KF 064 :: unnamed_stack > Forest > Forest Layers > Forest Rocks :: Pasted Layer #63 :: 001-001-011-006.png"
+    },
+    {
+      "coords": [
+        662,
+        393
+      ],
+      "image": "soft_soil",
+      "codes": "TODO KF 065 :: unnamed_stack > Forest > Forest Layers > Forest Soils :: Pasted Layer #64 :: 001-001-012-000.png"
+    },
+    {
+      "coords": [
+        136,
+        265
+      ],
+      "image": "soft_soil",
+      "codes": "TODO KF 066 :: unnamed_stack > Forest > Forest Layers > Forest Soils :: Pasted Layer #65 :: 001-001-012-001.png"
+    },
+    {
+      "coords": [
+        77,
+        372
+      ],
+      "image": "soft_soil",
+      "codes": "TODO KF 067 :: unnamed_stack > Forest > Forest Layers > Forest Soils :: Pasted Layer #66 :: 001-001-012-002.png"
+    },
+    {
+      "coords": [
+        850,
+        259
+      ],
+      "image": "npc",
+      "codes": "TODO KF 068 :: unnamed_stack > Forest > Forest Layers > Forest Gossip :: Pasted Layer #67 :: 001-001-013-000.png"
+    },
+    {
+      "coords": [
+        944,
+        339
+      ],
+      "image": "npc",
+      "codes": "TODO KF 069 :: unnamed_stack > Forest > Forest Layers > Forest Gossip :: Pasted Layer #68 :: 001-001-013-001.png"
+    },
+    {
+      "coords": [
+        532,
+        324
+      ],
+      "image": "npc",
+      "codes": "TODO KF 070 :: unnamed_stack > Forest > Forest Layers > Forest Gossip :: Pasted Layer #69 :: 001-001-013-002.png"
+    },
+    {
+      "coords": [
+        351,
+        299
+      ],
+      "image": "npc",
+      "codes": "TODO KF 071 :: unnamed_stack > Forest > Forest Layers > Forest Gossip :: Pasted Layer #70 :: 001-001-013-003.png"
+    },
+    {
+      "coords": [
+        312,
+        265
+      ],
+      "image": "npc",
+      "codes": "TODO KF 072 :: unnamed_stack > Forest > Forest Layers > Forest Gossip :: Pasted Layer #71 :: 001-001-013-004.png"
+    },
+    {
+      "coords": [
+        66,
+        431
+      ],
+      "image": "npc",
+      "codes": "TODO KF 073 :: unnamed_stack > Forest > Forest Layers > Forest Gossip :: Pasted Layer #72 :: 001-001-013-005.png"
+    },
+    {
+      "coords": [
+        318,
+        99
+      ],
+      "image": "npc",
+      "codes": "TODO KF 074 :: unnamed_stack > Forest > Forest Layers > Forest Gossip :: Pasted Layer #73 :: 001-001-013-006.png"
+    },
+    {
+      "coords": [
+        863,
+        337
+      ],
+      "image": "overworld_entrance",
+      "codes": "TODO KF 075 :: unnamed_stack > Forest > Forest Layers > Forest Entrances :: Pasted Layer #74 :: 001-001-014-000.png"
+    },
+    {
+      "coords": [
+        573,
+        497
+      ],
+      "image": "overworld_entrance",
+      "codes": "TODO KF 076 :: unnamed_stack > Forest > Forest Layers > Forest Entrances :: Pasted Layer #75 :: 001-001-014-001.png"
+    },
+    {
+      "coords": [
+        615,
+        464
+      ],
+      "image": "overworld_entrance",
+      "codes": "TODO KF 077 :: unnamed_stack > Forest > Forest Layers > Forest Entrances :: Pasted Layer #76 :: 001-001-014-002.png"
+    },
+    {
+      "coords": [
+        656,
+        454
+      ],
+      "image": "overworld_entrance",
+      "codes": "TODO KF 078 :: unnamed_stack > Forest > Forest Layers > Forest Entrances :: Pasted Layer #77 :: 001-001-014-003.png"
+    },
+    {
+      "coords": [
+        645,
+        383
+      ],
+      "image": "overworld_entrance",
+      "codes": "TODO KF 079 :: unnamed_stack > Forest > Forest Layers > Forest Entrances :: Pasted Layer #78 :: 001-001-014-004.png"
+    },
+    {
+      "coords": [
+        500,
+        443
+      ],
+      "image": "overworld_entrance",
+      "codes": "TODO KF 080 :: unnamed_stack > Forest > Forest Layers > Forest Entrances :: Pasted Layer #79 :: 001-001-014-005.png"
+    },
+    {
+      "coords": [
+        543,
+        376
+      ],
+      "image": "overworld_entrance",
+      "codes": "TODO KF 081 :: unnamed_stack > Forest > Forest Layers > Forest Entrances :: Pasted Layer #80 :: 001-001-014-006.png"
+    },
+    {
+      "coords": [
+        548,
+        330
+      ],
+      "image": "overworld_entrance",
+      "codes": "TODO KF 082 :: unnamed_stack > Forest > Forest Layers > Forest Entrances :: Pasted Layer #81 :: 001-001-014-007.png"
+    },
+    {
+      "coords": [
+        332,
+        328
+      ],
+      "image": "overworld_entrance",
+      "codes": "TODO KF 083 :: unnamed_stack > Forest > Forest Layers > Forest Entrances :: Pasted Layer #82 :: 001-001-014-008.png"
+    },
+    {
+      "coords": [
+        343,
+        238
+      ],
+      "image": "overworld_entrance",
+      "codes": "TODO KF 084 :: unnamed_stack > Forest > Forest Layers > Forest Entrances :: Pasted Layer #83 :: 001-001-014-009.png"
+    },
+    {
+      "coords": [
+        357,
+        96
+      ],
+      "image": "overworld_entrance",
+      "codes": "TODO KF 085 :: unnamed_stack > Forest > Forest Layers > Forest Entrances :: Pasted Layer #84 :: 001-001-014-010.png"
+    },
+    {
+      "coords": [
+        341,
+        79
+      ],
+      "image": "overworld_entrance",
+      "codes": "TODO KF 086 :: unnamed_stack > Forest > Forest Layers > Forest Entrances :: Pasted Layer #85 :: 001-001-014-011.png"
+    },
+    {
+      "coords": [
+        341,
+        42
+      ],
+      "image": "overworld_entrance",
+      "codes": "TODO KF 087 :: unnamed_stack > Forest > Forest Layers > Forest Entrances :: Pasted Layer #86 :: 001-001-014-012.png"
+    },
+    {
+      "coords": [
+        144,
+        235
+      ],
+      "image": "overworld_entrance",
+      "codes": "TODO KF 088 :: unnamed_stack > Forest > Forest Layers > Forest Entrances :: Pasted Layer #87 :: 001-001-014-013.png"
+    },
+    {
+      "coords": [
+        124,
+        271
+      ],
+      "image": "overworld_entrance",
+      "codes": "TODO KF 089 :: unnamed_stack > Forest > Forest Layers > Forest Entrances :: Pasted Layer #88 :: 001-001-014-014.png"
+    },
+    {
+      "coords": [
+        156,
+        296
+      ],
+      "image": "overworld_entrance",
+      "codes": "TODO KF 090 :: unnamed_stack > Forest > Forest Layers > Forest Entrances :: Pasted Layer #89 :: 001-001-014-015.png"
+    },
+    {
+      "coords": [
+        108,
+        228
+      ],
+      "image": "interior_entrance",
+      "codes": "TODO KF 091 :: unnamed_stack > Forest > Forest Layers > Forest Interiors > Layer Group :: Pasted Layer #112 :: 001-001-015-011-000.png"
     }
   ]
 }

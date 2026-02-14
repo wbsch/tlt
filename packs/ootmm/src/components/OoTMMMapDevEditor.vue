@@ -47,6 +47,7 @@ const props = withDefaults(
 const emit = defineEmits<{
   (e: 'update:draft-map', value: MapDef | null): void
   (e: 'update:selected-marker-index', value: number | null): void
+  (e: 'warnings-change', value: DraftIssue[]): void
 }>()
 
 const draftMap = ref<MapDef | null>(null)
@@ -547,6 +548,14 @@ watch(
   },
 )
 
+watch(
+  draftWarnings,
+  (warnings) => {
+    emit('warnings-change', warnings)
+  },
+  { immediate: true },
+)
+
 onBeforeUnmount(() => {
   if (copyStatusTimer !== null) {
     window.clearTimeout(copyStatusTimer)
@@ -616,15 +625,6 @@ onBeforeUnmount(() => {
       <div class="map-dev-editor__issue-title">Export blocked</div>
       <ul>
         <li v-for="(issue, index) in draftErrors" :key="`error:${issue.markerIndex}:${index}`">
-          Marker #{{ issue.markerIndex + 1 }}: {{ issue.message }}
-        </li>
-      </ul>
-    </div>
-
-    <div v-if="draftWarnings.length > 0" class="map-dev-editor__issue-group map-dev-editor__issue-group--warning">
-      <div class="map-dev-editor__issue-title">Warnings</div>
-      <ul>
-        <li v-for="(issue, index) in draftWarnings" :key="`warning:${issue.markerIndex}:${index}`">
           Marker #{{ issue.markerIndex + 1 }}: {{ issue.message }}
         </li>
       </ul>

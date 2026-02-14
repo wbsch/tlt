@@ -48,6 +48,11 @@ type MarkerRuntime = MapMarkerViewModel & {
   countDigitImages: string[]
 }
 
+type DevDraftIssue = {
+  markerIndex: number
+  message: string
+}
+
 const props = withDefaults(
   defineProps<{
     activeMap: MapDef | null
@@ -56,12 +61,16 @@ const props = withDefaults(
     allLocations?: LocationInfo[]
     allLocationsForCodeSearch?: LocationInfo[]
     devMode?: boolean
+    devMarkerSelectRequest?: { markerIndex: number; nonce: number } | null
+    devMarkerHoverIndex?: number | null
     visibilityMode?: MarkerVisibilityMode
   }>(),
   {
     allLocations: () => [],
     allLocationsForCodeSearch: () => [],
     devMode: false,
+    devMarkerSelectRequest: null,
+    devMarkerHoverIndex: null,
     visibilityMode: 'reachable-unchecked',
   },
 )
@@ -71,6 +80,7 @@ const emit = defineEmits<{
   (e: 'mark-all-reachable', checkIds: string[]): void
   (e: 'open-popup', markerId: string): void
   (e: 'close-popup'): void
+  (e: 'dev-warnings-change', warnings: DevDraftIssue[]): void
 }>()
 
 const viewportRef = ref<HTMLDivElement | null>(null)
@@ -560,6 +570,10 @@ function handleEscapeKey(event: KeyboardEvent): void {
   closePopup()
 }
 
+function handleDevWarningsChange(value: DevDraftIssue[]): void {
+  emit('dev-warnings-change', value)
+}
+
 
 watch(
   [() => props.activeMap?.id, () => props.devMode],
@@ -568,6 +582,7 @@ watch(
     if (!props.devMode) {
       devDraftMap.value = null
       devSelectedMarkerIndex.value = null
+      emit('dev-warnings-change', [])
     }
     await nextTick()
     fitMapToViewport()
@@ -590,6 +605,15 @@ watch(
     if (devSelectedMarkerIndex.value >= length) {
       devSelectedMarkerIndex.value = null
     }
+  },
+)
+
+watch(
+  () => props.devMarkerSelectRequest?.nonce,
+  () => {
+    const request = props.devMarkerSelectRequest
+    if (!props.devMode || !request) return
+    devSelectedMarkerIndex.value = request.markerIndex
   },
 )
 
@@ -667,7 +691,10 @@ onBeforeUnmount(() => {
           :key="marker.id"
           type="button"
           class="map-marker"
-          :class="{ 'is-selected': isDevMode && devSelectedMarkerIndex === marker.markerIndex }"
+          :class="{
+            'is-selected': isDevMode && devSelectedMarkerIndex === marker.markerIndex,
+            'is-hovered-by-warning': isDevMode && props.devMarkerHoverIndex === marker.markerIndex,
+          }"
           :style="markerStyle(marker)"
           :aria-label="`Map marker: ${marker.codeList.join(', ')}`"
           @pointerdown.stop
@@ -817,6 +844,7 @@ onBeforeUnmount(() => {
         :selected-marker-index="devSelectedMarkerIndex"
         @update:draft-map="devDraftMap = $event"
         @update:selected-marker-index="devSelectedMarkerIndex = $event"
+        @warnings-change="handleDevWarningsChange"
       />
     </template>
   </div>
@@ -888,6 +916,10 @@ onBeforeUnmount(() => {
 
 .map-marker.is-selected {
   filter: drop-shadow(0 0 3px rgba(251, 191, 36, 0.9));
+}
+
+.map-marker.is-hovered-by-warning {
+  filter: drop-shadow(0 0 3px rgba(96, 165, 250, 0.95));
 }
 
 .map-marker__icon {

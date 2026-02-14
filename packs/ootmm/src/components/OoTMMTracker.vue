@@ -29,6 +29,16 @@ type SettingsPanelHandle = {
   getLocalSettingsSnapshot: () => Record<string, unknown>
 }
 
+type DevDraftIssue = {
+  markerIndex: number
+  message: string
+}
+
+type DevMarkerSelectRequest = {
+  markerIndex: number
+  nonce: number
+}
+
 const resolveExport = <T,>(mod: unknown, key: string): T => {
   const modObj = mod as { default?: Record<string, T>; [k: string]: unknown }
   return (modObj[key] as T | undefined) ?? (modObj.default?.[key] as T)
@@ -95,6 +105,13 @@ const mapDefs = OOTMM_MAP_DEFS
 const activeMapId = ref(mapDefs[0]?.id ?? '')
 const isMapDevMode =
   typeof window !== 'undefined' && new URLSearchParams(window.location.search).get('devmode') === '1'
+const isMapWarningsOpen = ref(false)
+const mapWarnings = ref<DevDraftIssue[]>([])
+const mapWarningAnchorRef = ref<HTMLElement | null>(null)
+const mapWarningPanelRef = ref<HTMLElement | null>(null)
+const mapMarkerSelectRequest = ref<DevMarkerSelectRequest | null>(null)
+const mapMarkerHoverIndex = ref<number | null>(null)
+let mapMarkerSelectNonce = 0
 const activeMap = computed<MapDef | null>(() => {
   if (mapDefs.length === 0) return null
   return mapDefs.find((mapDef) => mapDef.id === activeMapId.value) ?? mapDefs[0]
@@ -169,6 +186,47 @@ function handleMapMarkAllReachable(checkIds: string[]) {
 function handleMapPopupOpen() {}
 
 function handleMapPopupClose() {}
+
+function toggleMapWarningsPanel() {
+  if (mapWarnings.value.length === 0) return
+  if (isMapWarningsOpen.value) {
+    closeMapWarningsPanel()
+    return
+  }
+  isMapWarningsOpen.value = true
+}
+
+function closeMapWarningsPanel() {
+  isMapWarningsOpen.value = false
+  mapMarkerHoverIndex.value = null
+}
+
+function handleMapWarningsChange(warnings: DevDraftIssue[]) {
+  mapWarnings.value = warnings
+  if (warnings.length === 0) {
+    closeMapWarningsPanel()
+  }
+}
+
+function focusMapWarningMarker(markerIndex: number) {
+  mapMarkerSelectNonce += 1
+  mapMarkerSelectRequest.value = { markerIndex, nonce: mapMarkerSelectNonce }
+  closeMapWarningsPanel()
+}
+
+function setHoveredMapWarningMarker(markerIndex: number | null) {
+  mapMarkerHoverIndex.value = markerIndex
+}
+
+function handleMapWarningGlobalPointerDown(event: PointerEvent) {
+  if (!isMapWarningsOpen.value) return
+  const target = event.target as Node | null
+  if (!target) return
+  if (mapWarningAnchorRef.value?.contains(target) || mapWarningPanelRef.value?.contains(target)) {
+    return
+  }
+  closeMapWarningsPanel()
+}
 
 async function undo() {
   if (isApplyingSettings.value || !canUndo.value) return
@@ -465,6 +523,7 @@ onMounted(() => {
   const windowWithDebug = window as Window & { __TLT_DEBUG_ACTIVATE_ALL__?: () => void }
   windowWithDebug.__TLT_DEBUG_ACTIVATE_ALL__ = fillInventory
   window.addEventListener('keydown', handleGlobalUndoRedoKeydown)
+  window.addEventListener('pointerdown', handleMapWarningGlobalPointerDown)
 })
 
 onBeforeUnmount(() => {
@@ -473,6 +532,7 @@ onBeforeUnmount(() => {
     delete windowWithDebug.__TLT_DEBUG_ACTIVATE_ALL__
   }
   window.removeEventListener('keydown', handleGlobalUndoRedoKeydown)
+  window.removeEventListener('pointerdown', handleMapWarningGlobalPointerDown)
 })
 </script>
 
@@ -669,6 +729,39 @@ onBeforeUnmount(() => {
             </template>
             <span v-else class="map-toolbar-label">{{ activeMap?.title ?? 'Map' }}</span>
             <span v-if="isMapDevMode" class="map-toolbar-dev">DEV MODE</span>
+            <div v-if="isMapDevMode" ref="mapWarningAnchorRef" class="map-toolbar-warning-wrap">
+              <button
+                type="button"
+                class="map-toolbar-warning-anchor"
+                :class="{ 'is-open': isMapWarningsOpen, 'has-warnings': mapWarnings.length > 0 }"
+                :disabled="mapWarnings.length === 0"
+                @click.stop="toggleMapWarningsPanel"
+              >
+                WARNINGS ({{ mapWarnings.length }})
+              </button>
+              <div
+                v-if="isMapWarningsOpen"
+                ref="mapWarningPanelRef"
+                class="map-toolbar-warning-panel"
+                role="dialog"
+                aria-label="Map warnings"
+                @mouseleave="setHoveredMapWarningMarker(null)"
+              >
+                <ul>
+                  <li v-for="(warning, index) in mapWarnings" :key="`toolbar-warning:${warning.markerIndex}:${index}`">
+                    <button
+                      type="button"
+                      class="map-toolbar-warning-item"
+                      @mouseenter="setHoveredMapWarningMarker(warning.markerIndex)"
+                      @focus="setHoveredMapWarningMarker(warning.markerIndex)"
+                      @click="focusMapWarningMarker(warning.markerIndex)"
+                    >
+                      Marker #{{ warning.markerIndex + 1 }}: {{ warning.message }}
+                    </button>
+                  </li>
+                </ul>
+              </div>
+            </div>
           </div>
           <OoTMMMap
             class="map-view"
@@ -678,10 +771,13 @@ onBeforeUnmount(() => {
             :all-locations="allLocations"
             :all-locations-for-code-search="allLocationsForCodeSearch"
             :dev-mode="isMapDevMode"
+            :dev-marker-select-request="mapMarkerSelectRequest"
+            :dev-marker-hover-index="mapMarkerHoverIndex"
             @toggle-collected="handleMapToggleCollected"
             @mark-all-reachable="handleMapMarkAllReachable"
             @open-popup="handleMapPopupOpen"
             @close-popup="handleMapPopupClose"
+            @dev-warnings-change="handleMapWarningsChange"
           />
         </div>
       </div>
@@ -1053,6 +1149,84 @@ onBeforeUnmount(() => {
   font-size: 0.68rem;
   font-weight: 700;
   letter-spacing: 0.06em;
+}
+
+.map-toolbar-warning-anchor {
+  border: 1px solid #4b5563;
+  border-radius: 0.35rem;
+  background: #0f172a;
+  color: #cbd5e1;
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  padding: 0.2rem 0.45rem;
+  cursor: pointer;
+}
+
+.map-toolbar-warning-anchor:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.map-toolbar-warning-anchor.has-warnings {
+  border-color: #a16207;
+  background: #422006;
+  color: #fde68a;
+}
+
+.map-toolbar-warning-anchor.is-open {
+  border-color: #f59e0b;
+  background: #78350f;
+  color: #fef3c7;
+}
+
+.map-toolbar-warning-wrap {
+  position: relative;
+}
+
+.map-toolbar-warning-panel {
+  position: absolute;
+  top: calc(100% + 0.35rem);
+  left: 0;
+  right: auto;
+  width: min(760px, calc(100vw - 1rem));
+  max-height: min(55vh, 520px);
+  overflow-y: auto;
+  border-radius: 0.45rem;
+  border: 1px solid #a16207;
+  background: #1c1917;
+  box-shadow: 0 10px 26px rgba(0, 0, 0, 0.45);
+  z-index: 12;
+  padding: 0.45rem;
+}
+
+.map-toolbar-warning-panel ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.map-toolbar-warning-item {
+  width: 100%;
+  border: 1px solid #57534e;
+  border-radius: 0.35rem;
+  background: #292524;
+  color: #fde68a;
+  text-align: left;
+  font-size: 0.72rem;
+  line-height: 1.3;
+  white-space: normal;
+  word-break: break-word;
+  padding: 0.3rem 0.4rem;
+  cursor: pointer;
+}
+
+.map-toolbar-warning-item:hover {
+  background: #3f3b36;
 }
 
 .map-view {
