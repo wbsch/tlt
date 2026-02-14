@@ -255,6 +255,7 @@ const RAW_ITEM_ICONS: Record<string, string> = {
   'MM_BOW': 'images/items/mm_bow.png',
   'MM_BOMB_BAG': 'images/items/mm_bomb.png',
   'MM_BOMBCHU': 'images/items/mm_bombchu.png',
+  'MM_BOMBCHU_BAG': 'images/bombchu_bag.png',
   'MM_STICK': 'images/deku_stick.png',
   'MM_NUTS_10': 'images/items/mm_nut.png',
   'MM_NUT_UPGRADE': 'images/items/mm_nut.png',

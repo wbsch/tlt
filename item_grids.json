@@ -376,7 +376,7 @@
           ],
           [
             "MM_BOMB_BAG",
-            "MM_BOMBCHU",
+            { "or": ["MM_BOMBCHU_BAG", "MM_BOMBCHU"] },
             "MM_STICK",
             "MM_NUTS_10",
             "MM_MAGIC_BEAN",
