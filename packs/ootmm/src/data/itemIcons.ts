@@ -338,6 +338,7 @@ const RAW_ITEM_ICONS: Record<string, string> = {
   'MM_GS_TOKEN_SWAMP': 'images/items/mm_skulltulla_woodfall.png',
   'MM_GS_TOKEN_OCEAN': 'images/items/mm_skulltulla_greatbay.png',
   'MM_SKELETON_KEY': 'images/key_skeleton.png',
+  'MM_STONE_OF_AGONY': 'images/agony.png',
 
   // Buttons
   'MM_BUTTON_A': 'images/button_a.png',
