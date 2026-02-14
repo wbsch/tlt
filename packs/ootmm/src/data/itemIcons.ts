@@ -281,6 +281,7 @@ const RAW_ITEM_ICONS: Record<string, string> = {
   // Shields
   'MM_SHIELD_HERO': 'images/items/mm_shield.png',
   'MM_SHIELD_MIRROR': 'images/items/mm_mirror.png',
+  'MM_SHIELD_DEKU': 'images/shield1.png',
 
   // Boots
   'MM_BOOTS_IRON': 'images/boots_iron.png',

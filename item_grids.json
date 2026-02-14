@@ -116,7 +116,12 @@
           [
             "OOT_SLINGSHOT",
             "OOT_OCARINA",
-            { "or": ["OOT_BOMBCHU_BAG", "OOT_BOMBCHU_10"] },
+            {
+              "or": [
+                "OOT_BOMBCHU_BAG",
+                "OOT_BOMBCHU_10"
+              ]
+            },
             "OOT_HOOKSHOT",
             "OOT_ARROW_ICE",
             "OOT_SPELL_WIND",
@@ -320,7 +325,7 @@
             "OOT_RUPEE_SILVER_GTG_LAVA",
             "OOT_POUCH_SILVER_GTG_LAVA",
             "OOT_RUPEE_SILVER_GTG_WATER",
-            "OOT_POUCH_SILVER_GTG_WATER"  
+            "OOT_POUCH_SILVER_GTG_WATER"
           ],
           [
             "oot_shadowtemple_label",
@@ -334,7 +339,7 @@
             "OOT_RUPEE_SILVER_IC_SCYTHE",
             "OOT_POUCH_SILVER_IC_SCYTHE",
             "OOT_RUPEE_SILVER_IC_BLOCK",
-            "OOT_POUCH_SILVER_IC_BLOCK"  
+            "OOT_POUCH_SILVER_IC_BLOCK"
           ],
           [
             "oot_ganoncastle_label",
@@ -348,7 +353,7 @@
             "OOT_POUCH_SILVER_GANON_FOREST",
             "oot_well_label",
             "OOT_RUPEE_SILVER_BOTW",
-            "OOT_POUCH_SILVER_BOTW"   
+            "OOT_POUCH_SILVER_BOTW"
           ]
         ]
       }
@@ -378,7 +383,12 @@
           ],
           [
             "MM_BOMB_BAG",
-            { "or": ["MM_BOMBCHU_BAG", "MM_BOMBCHU"] },
+            {
+              "or": [
+                "MM_BOMBCHU_BAG",
+                "MM_BOMBCHU"
+              ]
+            },
             "MM_STICK",
             "MM_NUTS_10",
             "MM_MAGIC_BEAN",
@@ -395,7 +405,8 @@
             "MM_GREAT_FAIRY_SWORD",
             "MM_BOTTLE_EMPTY",
             "MM_BOTTLE_EMPTY",
-            "MM_BOTTLE_EMPTY"
+            "MM_BOTTLE_EMPTY",
+            "MM_SHIELD_DEKU"
           ],
           [
             "MM_SONG_TIME",
