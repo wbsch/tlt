@@ -40,6 +40,7 @@ const RAW_ITEM_ICONS: Record<string, string> = {
   'OOT_SWORD_GORON': 'images/sword3.png',
   'OOT_SWORD': 'images/sword1.png',
   'OOT_SWORD_BIGGORON': 'images/sword3.png',
+  'OOT_SPIN_UPGRADE': 'images/items/mm_spin.png',
 
   // Shields
   'OOT_SHIELD_DEKU': 'images/shield1.png',
