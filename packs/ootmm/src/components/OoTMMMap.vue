@@ -12,7 +12,6 @@ import {
 import OoTMMMapDevEditor from './OoTMMMapDevEditor.vue'
 import {
   formatLocationDisplayName,
-  stripWorldSuffix,
   useLocationCodeLookup,
 } from '../composables/useLocationCodeLookup'
 import type {
@@ -99,6 +98,8 @@ const popupMarkerId = ref<string | null>(null)
 const hoverMarkerId = ref<string | null>(null)
 const isPopupHovered = ref(false)
 const popupPinned = ref(false)
+const popupLayoutReady = ref(false)
+const popupPosition = ref<{ left: number; top: number } | null>(null)
 
 const devDraftMap = ref<MapDef | null>(null)
 const devSelectedMarkerIndex = ref<number | null>(null)
@@ -434,10 +435,10 @@ function panelSize(
   }
 }
 
-function popupStyle(): Record<string, string> {
+function calculatePopupPosition(): { left: number; top: number } | null {
   const marker = popupMarker.value
   const viewport = viewportRef.value
-  if (!marker || !viewport) return {}
+  if (!marker || !viewport) return null
 
   const { width: popupWidth, height: popupHeight } = panelSize(
     popupRef.value,
@@ -454,9 +455,26 @@ function popupStyle(): Record<string, string> {
   const left = leftSideLeft >= 8 ? leftSideLeft : clamp(rightSideLeft, 8, maxX)
   const top = clamp(markerY - popupHeight * 0.5, 8, maxY)
 
+  return { left, top }
+}
+
+function updatePopupPosition(): void {
+  popupPosition.value = calculatePopupPosition()
+}
+
+function popupStyle(): Record<string, string> {
+  if (!popupPosition.value) {
+    return {
+      visibility: 'hidden',
+      pointerEvents: 'none',
+    }
+  }
+
   return {
-    left: `${left}px`,
-    top: `${top}px`,
+    left: `${popupPosition.value.left}px`,
+    top: `${popupPosition.value.top}px`,
+    visibility: popupLayoutReady.value ? 'visible' : 'hidden',
+    pointerEvents: popupLayoutReady.value ? 'auto' : 'none',
   }
 }
 
@@ -491,6 +509,8 @@ function closePopup(): void {
   hoverMarkerId.value = null
   isPopupHovered.value = false
   popupPinned.value = false
+  popupLayoutReady.value = false
+  popupPosition.value = null
   if (!popupMarkerId.value) return
   popupMarkerId.value = null
   emit('close-popup')
@@ -543,14 +563,6 @@ function handlePopupHoverEnd(): void {
 function handlePopupEntryClick(entry: MapPopupEntry): void {
   if (!entry.checkId) return
   emit('toggle-collected', entry.checkId)
-}
-
-function handlePopupMarkAll(payload: MapPopupPayload): void {
-  const ids = payload.entries
-    .filter((entry) => entry.checkId && entry.isReachable && !entry.isChecked)
-    .map((entry) => entry.checkId as string)
-  if (ids.length === 0) return
-  emit('mark-all-reachable', Array.from(new Set(ids)))
 }
 
 function handleWheel(event: WheelEvent): void {
@@ -720,6 +732,30 @@ watch(markerViewModels, () => {
   }
 })
 
+watch(
+  () => popupMarkerId.value,
+  async (markerId, previousMarkerId) => {
+    if (!markerId) {
+      popupLayoutReady.value = false
+      popupPosition.value = null
+      return
+    }
+
+    if (markerId !== previousMarkerId) {
+      popupLayoutReady.value = false
+    }
+
+    await nextTick()
+    updatePopupPosition()
+    popupLayoutReady.value = true
+  },
+)
+
+watch([scale, panX, panY, () => renderMapDef.value?.id], () => {
+  if (!popupMarkerId.value) return
+  updatePopupPosition()
+})
+
 watch(activePopup, async (popup) => {
   if (!popup || !popupPinned.value) return
   await nextTick()
@@ -737,6 +773,9 @@ onMounted(() => {
       const bounded = clampPanForScale(scale.value, panX.value, panY.value)
       panX.value = bounded.x
       panY.value = bounded.y
+      if (popupMarkerId.value) {
+        updatePopupPosition()
+      }
     })
     resizeObserver.observe(viewportRef.value)
   }
