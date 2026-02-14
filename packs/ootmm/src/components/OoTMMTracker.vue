@@ -1045,7 +1045,6 @@ onBeforeUnmount(() => {
 }
 
 .map-toolbar-dev {
-  margin-left: auto;
   padding: 0.2rem 0.45rem;
   border-radius: 0.35rem;
   border: 1px solid #dc2626;

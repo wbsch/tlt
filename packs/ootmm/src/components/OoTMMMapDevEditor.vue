@@ -708,8 +708,7 @@ onBeforeUnmount(() => {
               :checked="selectedMarkerCodeSet.has(normalizeCode(entry.id))"
               @change="toggleLocationCode(entry.id, ($event.target as HTMLInputElement).checked)"
             />
-            <span class="map-dev-editor__location-id">{{ entry.id }}</span>
-            <span class="map-dev-editor__location-name">{{ entry.name }}</span>
+            <span class="map-dev-editor__location-id">{{ entry.name }}</span>
           </label>
           <p v-if="locationSearchResults.length === 0" class="map-dev-editor__location-empty">
             No location matches.
@@ -996,19 +995,13 @@ onBeforeUnmount(() => {
 }
 
 .map-dev-editor__section .map-dev-editor__location-item input[type='checkbox'] {
-  grid-row: 1 / span 2;
+  grid-row: 1;
   margin: 0;
 }
 
 .map-dev-editor__location-id {
   font-size: 0.66rem;
   color: #e2e8f0;
-  line-height: 1.2;
-}
-
-.map-dev-editor__location-name {
-  font-size: 0.63rem;
-  color: #94a3b8;
   line-height: 1.2;
 }
 
