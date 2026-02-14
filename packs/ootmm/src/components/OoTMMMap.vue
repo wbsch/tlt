@@ -502,6 +502,14 @@ function handleMarkerClick(marker: MarkerRuntime): void {
     closePopup()
     return
   }
+  // If this marker has reachable, unchecked checks, mark them checked on click.
+  // Works for single and multiple location markers.
+  if (marker.reachableUncheckedCheckIds && marker.reachableUncheckedCheckIds.length > 0) {
+    const ids = Array.from(new Set(marker.reachableUncheckedCheckIds))
+    emit('mark-all-reachable', ids)
+    return
+  }
+
   hoverMarkerId.value = marker.id
   openPopup(marker.id, { pinned: true })
 }
@@ -921,17 +929,7 @@ onBeforeUnmount(() => {
           </button>
         </div>
 
-        <footer class="map-popup__footer">
-          <button
-            type="button"
-            class="map-popup__mark-all"
-            :disabled="!activePopup.canMarkAll"
-            @click="handlePopupMarkAll(activePopup)"
-          >
-            Mark all checked
-          </button>
-          <span class="map-popup__hint">Affects currently reachable checks only.</span>
-        </footer>
+        
       </div>
 
       <OoTMMMapDevEditor
