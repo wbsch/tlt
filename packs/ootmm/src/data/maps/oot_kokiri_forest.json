@@ -153,7 +153,8 @@
       "image": "gold_skulltula",
       "codes": "OOT Sacred Meadow GS Night Adult",
       "overlays": [
-        "adult"
+        "adult",
+        "night"
       ]
     },
     {
@@ -822,7 +823,7 @@
         299
       ],
       "image": "gossip_stone",
-      "codes": "OOT Kokiri Gossip Near Lost Woods Grotto"
+      "codes": "OOT Sacred Meadow Gossip Atop Maze Woods Side"
     },
     {
       "coords": [
@@ -830,7 +831,7 @@
         265
       ],
       "image": "gossip_stone",
-      "codes": "OOT Lost Woods Gossip Grotto"
+      "codes": "OOT Sacred Meadow Gossip Atop Maze Temple Side"
     },
     {
       "coords": [
