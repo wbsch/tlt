@@ -183,8 +183,11 @@ function handleInventoryChange(newInventory: Map<string, number>) {
   sessionStore.setInventoryFromMap(newInventory)
 }
 
-async function handleSettingsChange(newSettings: Record<string, unknown>) {
-  await sessionStore.applySettings(newSettings)
+async function handleSettingsChange(
+  newSettings: Record<string, unknown>,
+  options?: { origin?: 'ui' | 'spoiler' },
+) {
+  await sessionStore.applySettings(newSettings, options)
 }
 
 function applySpecialCondsPatch(patch: Record<string, unknown>) {
@@ -327,7 +330,7 @@ async function applySpoilerLog(text: string) {
   }
 
   if (Object.keys(settingsPatch).length > 0 || Object.keys(parsed.specialConds).length > 0) {
-    await handleSettingsChange(nextSettings)
+    await handleSettingsChange(nextSettings, { origin: 'spoiler' })
   }
 
   if (parsed.preCompletedDungeons.length > 0) {

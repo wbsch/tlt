@@ -161,7 +161,7 @@ export const DEFAULT_OOTMM_SETTINGS: OoTMMSettings = {
   progressiveShieldsMm: 'separate',
   progressiveGFS: 'separate',
   progressiveGoronLullaby: 'progressive',
-  progressiveClocks: 'ascending',
+  progressiveClocks: 'separate',
   fillWallets: false,
   bottleContentShuffle: false,
   stoneAgonyMm: false,

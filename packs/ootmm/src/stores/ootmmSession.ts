@@ -3,6 +3,7 @@ import { computed, markRaw, nextTick, ref } from 'vue';
 import type { TrackerPack } from '@/types/tracker';
 import { ITEM_DATABASE } from '../data/items';
 import { VANILLA_SONG_EVENTS } from '../data/song-events';
+import { DEFAULT_OOTMM_SETTINGS } from '../types/settings';
 
 const HISTORY_LIMIT = 200;
 const VANILLA_SILVER_RUPEE_PREFIX = 'OOT_RUPEE_SILVER_';
@@ -463,19 +464,34 @@ export const useOoTMMSessionStore = defineStore('ootmm-session', () => {
     recordHistoryEntry(previousSnapshot);
   }
 
-  async function applySettings(newSettings: Record<string, unknown>) {
+  async function applySettings(
+    newSettings: Record<string, unknown>,
+    options?: { origin?: 'ui' | 'spoiler' },
+  ) {
     if (isApplyingSettings.value) return;
     const currentTracker = tracker.value;
     if (!currentTracker) return;
     const previousSnapshot = captureSessionSnapshot();
     let didApply = false;
+    const origin = options?.origin ?? 'ui';
+    const nextSettings = { ...newSettings };
+
+    if (origin === 'ui') {
+      const clocksEnabled = Boolean(nextSettings.clocks);
+      if (clocksEnabled) {
+        const progressive = String(nextSettings.progressiveClocks ?? '');
+        if (!progressive || progressive === 'ascending') {
+          nextSettings.progressiveClocks = DEFAULT_OOTMM_SETTINGS.progressiveClocks;
+        }
+      }
+    }
 
     currentTracker.reset();
     isApplyingSettings.value = true;
     try {
       await nextTick();
       await new Promise<void>((resolve) => setTimeout(resolve, 0));
-      await currentTracker.initialize(newSettings);
+      await currentTracker.initialize(nextSettings);
       trackerSettings.value = { ...currentTracker.getSettings() };
       availableItemIds.value = setToArray(currentTracker.getAvailableItemIds?.() ?? new Set<string>());
       itemMaxCountsById.value = mapNumberToRecord(
