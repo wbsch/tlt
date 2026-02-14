@@ -103,6 +103,7 @@ const isStatsMenuOpen = ref(false)
 const isStatsCollapsed = ref(true)
 const mapDefs = OOTMM_MAP_DEFS
 const activeMapId = ref(mapDefs[0]?.id ?? '')
+const mapSelectorQuery = ref('')
 const isMapDevMode =
   typeof window !== 'undefined' && new URLSearchParams(window.location.search).get('devmode') === '1'
 const isMapWarningsOpen = ref(false)
@@ -165,6 +166,51 @@ watch(isApplyingSettings, (applying) => {
     closeStatsMenu()
   }
 })
+
+function syncMapSelectorToActiveMap() {
+  mapSelectorQuery.value = activeMap.value?.title ?? ''
+}
+
+function findMapForSelectorQuery(rawQuery: string): MapDef | null {
+  const query = rawQuery.trim().toLowerCase()
+  if (!query) return null
+
+  const byIdExact = mapDefs.find((mapDef) => mapDef.id.toLowerCase() === query)
+  if (byIdExact) return byIdExact
+
+  const byTitleExact = mapDefs.find((mapDef) => mapDef.title.toLowerCase() === query)
+  if (byTitleExact) return byTitleExact
+
+  const fuzzyMatches = mapDefs.filter(
+    (mapDef) =>
+      mapDef.title.toLowerCase().includes(query) || mapDef.id.toLowerCase().includes(query),
+  )
+  return fuzzyMatches.length === 1 ? fuzzyMatches[0] : null
+}
+
+function handleMapSelectorInput() {
+  const match = findMapForSelectorQuery(mapSelectorQuery.value)
+  if (!match) return
+  activeMapId.value = match.id
+}
+
+function commitMapSelector() {
+  const match = findMapForSelectorQuery(mapSelectorQuery.value)
+  if (!match) {
+    syncMapSelectorToActiveMap()
+    return
+  }
+  activeMapId.value = match.id
+  mapSelectorQuery.value = match.title
+}
+
+watch(
+  () => activeMap.value?.id,
+  () => {
+    syncMapSelectorToActiveMap()
+  },
+  { immediate: true },
+)
 
 function fillInventory() {
   sessionStore.fillInventoryForDebugActivateAll()
@@ -720,12 +766,28 @@ onBeforeUnmount(() => {
         <div class="map-shell">
           <div class="map-toolbar" v-if="mapDefs.length > 1 || isMapDevMode">
             <template v-if="mapDefs.length > 1">
-              <label class="map-toolbar-label" for="map-select">Map</label>
-              <select id="map-select" v-model="activeMapId" class="map-toolbar-select">
-                <option v-for="mapDef in mapDefs" :key="mapDef.id" :value="mapDef.id">
-                  {{ mapDef.title }}
-                </option>
-              </select>
+              <div class="map-selector-combobox">
+                <label class="map-toolbar-label" for="map-selector">Map</label>
+                <input
+                  id="map-selector"
+                  v-model="mapSelectorQuery"
+                  class="map-toolbar-combobox"
+                  type="search"
+                  list="map-selector-options"
+                  placeholder="Search map by name or id"
+                  autocomplete="off"
+                  aria-label="Map selector"
+                  @input="handleMapSelectorInput"
+                  @change="commitMapSelector"
+                  @blur="commitMapSelector"
+                  @keydown.enter.prevent="commitMapSelector"
+                />
+                <datalist id="map-selector-options">
+                  <option v-for="mapDef in mapDefs" :key="mapDef.id" :value="mapDef.title">
+                    {{ mapDef.id }}
+                  </option>
+                </datalist>
+              </div>
             </template>
             <span v-else class="map-toolbar-label">{{ activeMap?.title ?? 'Map' }}</span>
             <span v-if="isMapDevMode" class="map-toolbar-dev">DEV MODE</span>
@@ -1122,10 +1184,19 @@ onBeforeUnmount(() => {
 .map-toolbar {
   display: flex;
   align-items: center;
+  flex-wrap: wrap;
   gap: 0.5rem;
   padding: 0.5rem 0.75rem;
   border-bottom: 1px solid #374151;
   background: #111827;
+}
+
+.map-selector-combobox {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  min-width: min(420px, 100%);
+  flex-wrap: wrap;
 }
 
 .map-toolbar-label {
@@ -1135,8 +1206,8 @@ onBeforeUnmount(() => {
   color: #9ca3af;
 }
 
-.map-toolbar-select {
-  width: 220px;
+.map-toolbar-combobox {
+  width: min(340px, 100%);
   max-width: 100%;
 }
 

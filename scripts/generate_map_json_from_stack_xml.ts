@@ -19,6 +19,10 @@ type LayerEntry = {
   y: number
 }
 
+type LayerCandidate = LayerEntry & {
+  visible: boolean
+}
+
 type MapMeta = {
   id: string
   title: string
@@ -175,6 +179,7 @@ function shouldSkipLayer(layerName: string, src: string): boolean {
   const normalizedSrc = normalizeText(src)
 
   return (
+    normalizedName.startsWith('map ') ||
     normalizedName.includes(' bg') ||
     normalizedName.endsWith('bg') ||
     normalizedName === 'bg' ||
@@ -190,17 +195,23 @@ function pathContainsInteriorStack(pathSegments: string[]): boolean {
 function parseLayers(xml: string): LayerEntry[] {
   const tags = parseXmlTags(xml)
   const stackPath: string[] = []
-  const layers: LayerEntry[] = []
+  const stackVisibility: boolean[] = []
+  const layers: LayerCandidate[] = []
 
   for (const tag of tags) {
     if (tag.kind === 'stack') {
       if (tag.closing) {
         stackPath.pop()
+        stackVisibility.pop()
       } else {
         const name = tag.attrs.name?.trim() || 'unnamed_stack'
+        const parentVisible = stackVisibility.at(-1) ?? true
+        const visible = parentVisible && isVisible(tag.attrs)
         stackPath.push(name)
+        stackVisibility.push(visible)
         if (tag.selfClosing) {
           stackPath.pop()
+          stackVisibility.pop()
         }
       }
       continue
@@ -210,14 +221,12 @@ function parseLayers(xml: string): LayerEntry[] {
       continue
     }
 
-    if (!isVisible(tag.attrs)) {
-      continue
-    }
-
     const layerName = tag.attrs.name?.trim() || 'unnamed_layer'
     const src = tag.attrs.src?.trim() || ''
     const x = Number(tag.attrs.x)
     const y = Number(tag.attrs.y)
+    const parentVisible = stackVisibility.at(-1) ?? true
+    const visible = parentVisible && isVisible(tag.attrs)
 
     if (!Number.isFinite(x) || !Number.isFinite(y)) {
       continue
@@ -237,10 +246,20 @@ function parseLayers(xml: string): LayerEntry[] {
       src,
       x,
       y,
+      visible,
     })
   }
 
-  return layers
+  const visibleLayers = layers.filter((layer) => layer.visible)
+  const selectedLayers = visibleLayers.length > 0 ? visibleLayers : layers
+
+  return selectedLayers.map(({ path, layerName, src, x, y }) => ({
+    path,
+    layerName,
+    src,
+    x,
+    y,
+  }))
 }
 
 function normalizeText(value: string): string {
