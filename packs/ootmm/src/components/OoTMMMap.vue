@@ -542,7 +542,14 @@ function handlePopupMarkAll(payload: MapPopupPayload): void {
 }
 
 function handleWheel(event: WheelEvent): void {
+  // If the wheel event occurred over the popup, allow the browser to scroll the popup list
+  const popupEl = popupRef.value
+  if (popupEl && event.target instanceof Node && popupEl.contains(event.target)) {
+    return
+  }
+
   if (!renderMapDef.value) return
+  if (event.cancelable) event.preventDefault()
   const factor = event.deltaY < 0 ? WHEEL_ZOOM_FACTOR : 1 / WHEEL_ZOOM_FACTOR
   applyScaleAtClientPoint(scale.value * factor, event.clientX, event.clientY)
 }
@@ -739,7 +746,7 @@ onBeforeUnmount(() => {
     ref="viewportRef"
     class="ootmm-map"
     :class="{ 'is-dragging': isDragging }"
-    @wheel.prevent="handleWheel"
+    @wheel="handleWheel"
     @pointerdown="handlePointerDown"
     @pointermove="handlePointerMove"
     @pointerup="handlePointerEnd"
