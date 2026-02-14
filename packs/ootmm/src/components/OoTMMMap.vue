@@ -990,7 +990,7 @@ onBeforeUnmount(() => {
   padding: 0;
   margin: 0;
   transform: translate(-50%, -50%);
-  cursor: inherit;
+  cursor: pointer;
 }
 
 .map-marker:focus-visible {
