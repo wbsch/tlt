@@ -13,9 +13,14 @@ const OUTPUT_FILE = path.resolve(
 );
 
 type JsonRecord = Record<string, unknown>;
+const TODO_CODE_PATTERN = /^TODO\s+[A-Z0-9_-]+\s+\d{3}\s+::\s+/i;
 
 function toSortedUnique(values: Iterable<string>): string[] {
   return Array.from(new Set(values)).sort((a, b) => a.localeCompare(b));
+}
+
+function isGeneratedTodoCode(code: string): boolean {
+  return TODO_CODE_PATTERN.test(code);
 }
 
 function extractStringUnionValues(source: string, typeName: string): string[] {
@@ -112,7 +117,9 @@ async function loadCodesFromMapFiles(): Promise<string[]> {
     const data = JSON.parse(raw) as JsonRecord;
     collectCodesFromMarkers(data.markers, codes);
   }
-  return toSortedUnique(codes);
+  return toSortedUnique(
+    Array.from(codes).filter((code) => !isGeneratedTodoCode(code)),
+  );
 }
 
 async function generateMapSchema(): Promise<void> {
@@ -170,8 +177,16 @@ async function generateMapSchema(): Promise<void> {
         uniqueItems: true,
       },
       codeValue: {
-        type: 'string',
-        enum: codes,
+        anyOf: [
+          {
+            type: 'string',
+            enum: codes,
+          },
+          {
+            type: 'string',
+            pattern: '^TODO\\s+[A-Z0-9_-]+\\s+\\d{3}\\s+::\\s+',
+          },
+        ],
       },
       codes: {
         anyOf: [
