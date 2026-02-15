@@ -1596,6 +1596,29 @@
       "type": "submenu",
       "markers": [
         {
+          "image": "fairy",
+          "codes": [
+            "OOT Hyrule Field Fairy Fountain Fairy 1",
+            "OOT Hyrule Field Fairy Fountain Fairy 2",
+            "OOT Hyrule Field Fairy Fountain Fairy 3",
+            "OOT Hyrule Field Fairy Fountain Fairy 4",
+            "OOT Hyrule Field Fairy Fountain Fairy 5",
+            "OOT Hyrule Field Fairy Fountain Fairy 6",
+            "OOT Hyrule Field Fairy Fountain Fairy 7",
+            "OOT Hyrule Field Fairy Fountain Fairy 8"
+          ]
+        }
+      ]
+    },
+    {
+      "coords": [
+        794,
+        80
+      ],
+      "image": "boulder_grotto",
+      "type": "submenu",
+      "markers": [
+        {
           "image": "chest",
           "codes": "OOT Hyrule Field Grotto Market"
         },
@@ -1626,20 +1649,6 @@
         {
           "image": "gossip_stone",
           "codes": "OOT Hyrule Field Gossip Near Castle Town"
-        }
-      ]
-    },
-    {
-      "coords": [
-        794,
-        80
-      ],
-      "image": "boulder_grotto",
-      "type": "submenu",
-      "markers": [
-        {
-          "image": "gold_skulltula",
-          "codes": "OOT Hyrule Field Grotto Near Kakariko GS"
         }
       ]
     },
