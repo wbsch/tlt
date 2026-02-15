@@ -2,25 +2,23 @@ import { mkdir, readdir, readFile, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 import { MAP_ICON_INDEX } from '../packs/ootmm/src/data/maps/mapIconIndex.ts';
 
-const MAPS_DIR = path.resolve('packs/ootmm/src/data/maps');
 const TYPES_FILE = path.resolve('packs/ootmm/src/data/maps/types.ts');
 const MAP_IMAGES_DIR = path.resolve('public/images/maps');
 const WORLD_DATA_FILE = path.resolve(
   'OoTMM/packages/data/dist/data-world.json',
+);
+const HINTS_RAW_FILE = path.resolve(
+  'OoTMM/packages/data/dist/data-hints-raw.json',
 );
 const OUTPUT_FILE = path.resolve(
   'packs/ootmm/src/data/schemas/ootmm-map.schema.json',
 );
 
 type JsonRecord = Record<string, unknown>;
-const TODO_CODE_PATTERN = /^TODO\s+[A-Z0-9_-]+\s+\d{3}\s+::\s+/i;
+type HintLocationRecord = { location?: unknown };
 
 function toSortedUnique(values: Iterable<string>): string[] {
   return Array.from(new Set(values)).sort((a, b) => a.localeCompare(b));
-}
-
-function isGeneratedTodoCode(code: string): boolean {
-  return TODO_CODE_PATTERN.test(code);
 }
 
 function extractStringUnionValues(source: string, typeName: string): string[] {
@@ -33,32 +31,6 @@ function extractStringUnionValues(source: string, typeName: string): string[] {
   return toSortedUnique(
     typeMatch[1].match(/'([^']+)'/g)?.map((entry) => entry.slice(1, -1)) ?? [],
   );
-}
-
-function collectCodesFromUnknown(value: unknown, out: Set<string>): void {
-  if (typeof value === 'string') {
-    const trimmed = value.trim();
-    if (trimmed.length > 0) out.add(trimmed);
-    return;
-  }
-  if (Array.isArray(value)) {
-    value.forEach((entry) => collectCodesFromUnknown(entry, out));
-  }
-}
-
-function collectCodesFromMarkers(markers: unknown, out: Set<string>): void {
-  if (!Array.isArray(markers)) return;
-  for (const marker of markers) {
-    if (!marker || typeof marker !== 'object') continue;
-    const markerObj = marker as JsonRecord;
-    collectCodesFromUnknown(markerObj.codes, out);
-    if (Array.isArray(markerObj.markers)) {
-      for (const submenuEntry of markerObj.markers) {
-        if (!submenuEntry || typeof submenuEntry !== 'object') continue;
-        collectCodesFromUnknown((submenuEntry as JsonRecord).codes, out);
-      }
-    }
-  }
 }
 
 async function loadMapImageNames(): Promise<string[]> {
@@ -99,38 +71,32 @@ async function loadWorldLocationCodes(): Promise<string[]> {
   return toSortedUnique(codes);
 }
 
-async function loadCodesFromMapFiles(): Promise<string[]> {
-  const entries = await readdir(MAPS_DIR, { withFileTypes: true });
-  const mapJsonFiles = entries
-    .filter(
-      (entry) =>
-        entry.isFile() &&
-        entry.name.endsWith('.json') &&
-        !entry.name.endsWith('.schema.json'),
-    )
-    .map((entry) => path.join(MAPS_DIR, entry.name))
-    .sort((a, b) => a.localeCompare(b));
-
+async function loadHintLocationCodes(): Promise<string[]> {
+  const hintsRaw = await readFile(HINTS_RAW_FILE, 'utf8');
+  const hints = JSON.parse(hintsRaw) as Record<string, HintLocationRecord[]>;
   const codes = new Set<string>();
-  for (const mapPath of mapJsonFiles) {
-    const raw = await readFile(mapPath, 'utf8');
-    const data = JSON.parse(raw) as JsonRecord;
-    collectCodesFromMarkers(data.markers, codes);
+  for (const game of ['oot', 'mm'] as const) {
+    for (const hint of hints[game] ?? []) {
+      if (!hint || typeof hint !== 'object') continue;
+      if (typeof hint.location !== 'string') continue;
+      const prefixed = `${game.toUpperCase()} ${hint.location}`.trim();
+      if (prefixed.length > 0) {
+        codes.add(prefixed);
+      }
+    }
   }
-  return toSortedUnique(
-    Array.from(codes).filter((code) => !isGeneratedTodoCode(code)),
-  );
+  return toSortedUnique(codes);
 }
 
 async function generateMapSchema(): Promise<void> {
   const markerImages = toSortedUnique(MAP_ICON_INDEX);
-  const [mapImages, overlays, worldCodes, mapCodes] = await Promise.all([
+  const [mapImages, overlays, worldCodes, hintCodes] = await Promise.all([
     loadMapImageNames(),
     loadOverlayNames(),
     loadWorldLocationCodes(),
-    loadCodesFromMapFiles(),
+    loadHintLocationCodes(),
   ]);
-  const codes = toSortedUnique([...worldCodes, ...mapCodes]);
+  const codes = toSortedUnique([...worldCodes, ...hintCodes]);
 
   const schema = {
     $schema: 'https://json-schema.org/draft/2020-12/schema',
