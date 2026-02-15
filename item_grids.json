@@ -219,6 +219,7 @@
         "scale": 0.7,
         "rows": [
           [
+            "OOT_WEIRD_EGG",
             "OOT_CHICKEN",
             "OOT_ZELDA_LETTER",
             "OOT_MASK_KEATON",
@@ -239,6 +240,7 @@
         "scale": 0.7,
         "rows": [
           [
+            "OOT_POCKET_EGG",
             "OOT_POCKET_CUCCO",
             "OOT_COJIRO",
             "OOT_ODD_MUSHROOM",

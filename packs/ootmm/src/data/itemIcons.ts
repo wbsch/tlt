@@ -189,8 +189,10 @@ const RAW_ITEM_ICONS: Record<string, string> = {
 
   // Trade sequence
   'OOT_CHICKEN': 'images/cucco.png',
+  'OOT_WEIRD_EGG': 'images/egg.png',
   'OOT_ZELDA_LETTER': 'images/letter.png',
-  'OOT_POCKET_CUCCO': 'images/egg.png',
+  'OOT_POCKET_EGG': 'images/egg.png',
+  'OOT_POCKET_CUCCO': 'images/cucco.png',
   'OOT_COJIRO': 'images/cojiro.png',
   'OOT_ODD_MUSHROOM': 'images/mushroom.png',
   'OOT_ODD_POTION': 'images/medicine.png',
