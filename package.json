@@ -7,13 +7,14 @@
     "node": ">=24"
   },
   "scripts": {
-    "predev": "npm run generate:map-icons",
-    "prebuild": "npm run generate:map-icons",
+    "predev": "npm run generate:map-icons && npm run generate:map-schema",
+    "prebuild": "npm run generate:map-icons && npm run generate:map-schema",
     "dev": "vite",
     "build": "vite build",
     "build:check": "vite build",
     "preview": "vite preview",
     "generate:map-icons": "node scripts/generate_map_icon_index.ts",
+    "generate:map-schema": "node scripts/generate_map_schema.ts",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "format": "prettier . --write",

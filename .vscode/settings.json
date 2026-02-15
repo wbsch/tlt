@@ -1,0 +1,10 @@
+{
+  "json.schemas": [
+    {
+      "fileMatch": [
+        "/packs/ootmm/src/data/maps/*.json"
+      ],
+      "url": "./packs/ootmm/src/data/schemas/ootmm-map.schema.json"
+    }
+  ]
+}
