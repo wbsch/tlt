@@ -126,6 +126,7 @@ type SubmenuPanelState = {
   position: { left: number; top: number } | null
   frozenWidth: number | null
   frozenHeight: number | null
+  frozenScale: number | null
 }
 
 type DevDraftIssue = {
@@ -189,6 +190,7 @@ const submenuPanel = ref<SubmenuPanelState>({
   position: null,
   frozenWidth: null,
   frozenHeight: null,
+  frozenScale: null,
 })
 const submenuPopup = ref<SubmenuPopupState>({
   markerId: null,
@@ -477,12 +479,16 @@ function markerPopupPayload(marker: PopupMarkerRuntime): MapPopupPayload {
     marker.popupEntries.length === 1
       ? formatLocationDisplayName(marker.popupEntries[0].code)
       : `${marker.popupEntries.length} checks`
+  const uncollectedCheckIds = marker.popupEntries
+    .filter((entry) => entry.checkId && !entry.isChecked)
+    .map((entry) => entry.checkId as string)
+
   return {
     markerId: marker.id,
     title,
     entries: marker.popupEntries,
-    canMarkAll: marker.reachableUncheckedCheckIds.length > 0,
-    markAllAffectsReachableOnly: true,
+    canMarkAll: uncollectedCheckIds.length > 0,
+    markAllAffectsReachableOnly: false,
   }
 }
 
@@ -728,6 +734,11 @@ function submenuPanelStyle(): Record<string, string> {
   const cornerOffset = -2 * scale.value
   const cornerGap = Math.max(1, scale.value)
 
+  const sizeScaleFactor =
+    submenuPanel.value.frozenScale && submenuPanel.value.frozenScale > 0
+      ? scale.value / submenuPanel.value.frozenScale
+      : 1
+
   if (!submenuPanel.value.position) {
     return {
       visibility: 'hidden',
@@ -740,10 +751,10 @@ function submenuPanelStyle(): Record<string, string> {
       '--submenu-corner-offset': `${cornerOffset}px`,
       '--submenu-corner-gap': `${cornerGap}px`,
       ...(submenuPanel.value.frozenWidth !== null
-        ? { width: `${submenuPanel.value.frozenWidth}px` }
+        ? { width: `${submenuPanel.value.frozenWidth * sizeScaleFactor}px` }
         : {}),
       ...(submenuPanel.value.frozenHeight !== null
-        ? { height: `${submenuPanel.value.frozenHeight}px` }
+        ? { height: `${submenuPanel.value.frozenHeight * sizeScaleFactor}px` }
         : {}),
     }
   }
@@ -761,10 +772,10 @@ function submenuPanelStyle(): Record<string, string> {
     '--submenu-corner-offset': `${cornerOffset}px`,
     '--submenu-corner-gap': `${cornerGap}px`,
     ...(submenuPanel.value.frozenWidth !== null
-      ? { width: `${submenuPanel.value.frozenWidth}px` }
+      ? { width: `${submenuPanel.value.frozenWidth * sizeScaleFactor}px` }
       : {}),
     ...(submenuPanel.value.frozenHeight !== null
-      ? { height: `${submenuPanel.value.frozenHeight}px` }
+      ? { height: `${submenuPanel.value.frozenHeight * sizeScaleFactor}px` }
       : {}),
   }
 }
@@ -885,6 +896,7 @@ function openSubmenuPanel(markerId: string, options?: { pinned?: boolean }): voi
   if (submenuPanel.value.markerId !== markerId) {
     submenuPanel.value.frozenWidth = null
     submenuPanel.value.frozenHeight = null
+    submenuPanel.value.frozenScale = null
   }
   if (submenuPanel.value.markerId === markerId) return
   submenuPanel.value.markerId = markerId
@@ -904,6 +916,7 @@ function closeSubmenuPanel(): void {
   submenuPanel.value.position = null
   submenuPanel.value.frozenWidth = null
   submenuPanel.value.frozenHeight = null
+  submenuPanel.value.frozenScale = null
 }
 
 function openSubmenuPopup(markerId: string, options?: { pinned?: boolean }): void {
@@ -1069,6 +1082,18 @@ function handleSubmenuPanelFocusOut(event: FocusEvent): void {
 function handlePopupEntryClick(entry: MapPopupEntry): void {
   if (!entry.checkId) return
   emit('toggle-collected', entry.checkId)
+}
+
+function popupUncheckedCheckIds(popup: MapPopupPayload): string[] {
+  return popup.entries
+    .filter((entry) => entry.checkId && !entry.isChecked)
+    .map((entry) => entry.checkId as string)
+}
+
+function handlePopupMarkAllChecks(popup: MapPopupPayload): void {
+  const ids = Array.from(new Set(popupUncheckedCheckIds(popup)))
+  if (ids.length === 0) return
+  emit('mark-all-reachable', ids)
 }
 
 function handleWheel(event: WheelEvent): void {
@@ -1318,6 +1343,7 @@ watch(
       submenuPanel.value.position = null
       submenuPanel.value.frozenWidth = null
       submenuPanel.value.frozenHeight = null
+      submenuPanel.value.frozenScale = null
       return
     }
 
@@ -1331,6 +1357,9 @@ watch(
     }
     if (submenuPanel.value.frozenHeight === null) {
       submenuPanel.value.frozenHeight = submenuPanelRef.value?.offsetHeight ?? null
+    }
+    if (submenuPanel.value.frozenScale === null) {
+      submenuPanel.value.frozenScale = scale.value
     }
     updateSubmenuPanelPosition()
     submenuPanel.value.layoutReady = true
@@ -1694,6 +1723,18 @@ onBeforeUnmount(() => {
             >{{ entry.isChecked ? '✓' : '' }}</span>
           </button>
         </div>
+
+        <footer class="map-popup__footer">
+          <button
+            type="button"
+            class="map-popup__mark-all"
+            :disabled="popupUncheckedCheckIds(activeSubmenuPopup).length === 0"
+            @click="handlePopupMarkAllChecks(activeSubmenuPopup)"
+          >
+            Mark all checks as collected
+          </button>
+          <p class="map-popup__hint">Includes currently unreachable checks.</p>
+        </footer>
       </div>
 
       <div
@@ -1777,7 +1818,17 @@ onBeforeUnmount(() => {
           </button>
         </div>
 
-        
+        <footer class="map-popup__footer">
+          <button
+            type="button"
+            class="map-popup__mark-all"
+            :disabled="popupUncheckedCheckIds(activePopup).length === 0"
+            @click="handlePopupMarkAllChecks(activePopup)"
+          >
+            Mark all checks as collected
+          </button>
+          <p class="map-popup__hint">Includes currently unreachable checks.</p>
+        </footer>
       </div>
 
       <OoTMMMapDevEditor
