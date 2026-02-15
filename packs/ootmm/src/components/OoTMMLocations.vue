@@ -160,13 +160,46 @@ function isRandomizedPriceMode(mode: unknown): boolean {
   return mode === 'random' || mode === 'weighted'
 }
 
+type LocationPriceKind = 'shop' | 'oot-scrub' | 'oot-merchant' | 'mm-tingle'
+
+function getLocationPriceKind(loc: LocationInfo): LocationPriceKind | null {
+  if (loc.category === 'shop') {
+    return 'shop'
+  }
+  if (loc.category === 'scrub') {
+    return 'oot-scrub'
+  }
+  if (loc.category === 'npc') {
+    if (
+      loc.name.includes('Medigoron Giant Knife') ||
+      loc.name.includes('Carpet Merchant') ||
+      loc.name.includes('Buy Blue Potion') ||
+      loc.name.includes('Buy Milk')
+    ) {
+      return 'oot-merchant'
+    }
+  }
+  if (loc.category === 'npc' && loc.name.includes('Tingle Map ')) {
+    return 'mm-tingle'
+  }
+  return null
+}
+
 function isShopPriceEditable(loc: LocationInfo): boolean {
-  if (loc.category !== 'shop') return false
-  const isOotLocation = loc.name.startsWith('OOT ')
-  const mode = isOotLocation
-    ? trackerSettings.value?.priceOotShops
-    : trackerSettings.value?.priceMmShops
-  return isRandomizedPriceMode(mode)
+  if (!Object.prototype.hasOwnProperty.call(shopPrices.value, loc.id)) return false
+
+  const kind = getLocationPriceKind(loc)
+  if (!kind) return false
+
+  const mode =
+    kind === 'shop'
+      ? isRandomizedPriceMode(trackerSettings.value?.priceOotShops) || isRandomizedPriceMode(trackerSettings.value?.priceMmShops)
+      : kind === 'oot-scrub'
+        ? isRandomizedPriceMode(trackerSettings.value?.priceOotScrubs)
+        : kind === 'oot-merchant'
+          ? isRandomizedPriceMode(trackerSettings.value?.priceOotMerchants)
+          : isRandomizedPriceMode(trackerSettings.value?.priceMmTingle)
+  return mode
 }
 
 function getShopPrice(loc: LocationInfo): number {

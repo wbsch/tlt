@@ -214,7 +214,13 @@ watch(
 )
 
 watch(
-  () => [trackerSettings.value?.priceOotShops, trackerSettings.value?.priceMmShops],
+  () => [
+    trackerSettings.value?.priceOotShops,
+    trackerSettings.value?.priceMmShops,
+    trackerSettings.value?.priceOotScrubs,
+    trackerSettings.value?.priceOotMerchants,
+    trackerSettings.value?.priceMmTingle,
+  ],
   () => {
     sessionStore.applyShopPrices()
   },
