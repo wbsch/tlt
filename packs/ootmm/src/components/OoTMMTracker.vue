@@ -1097,6 +1097,17 @@ onBeforeUnmount(() => {
               </div>
             </div>
 
+            <div class="map-toolbar-toggles" role="group" aria-label="Location visibility toggles">
+              <label class="map-toolbar-toggle-label">
+                <input v-model="locationsShowUnshuffled" type="checkbox" />
+                <span>Unshuffled Tokens/Fairies</span>
+              </label>
+              <label class="map-toolbar-toggle-label">
+                <input v-model="locationsShowGossipStones" type="checkbox" />
+                <span>Gossip Stones</span>
+              </label>
+            </div>
+
             <span v-if="isMapDevMode" class="map-toolbar-dev">DEV MODE</span>
             <div v-if="isMapDevMode" ref="mapWarningAnchorRef" class="map-toolbar-warning-wrap">
               <button
@@ -1624,6 +1635,26 @@ onBeforeUnmount(() => {
 .map-filter-button.is-active {
   background: #1d4ed8;
   color: #eff6ff;
+}
+
+.map-toolbar-toggles {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  flex-wrap: wrap;
+}
+
+.map-toolbar-toggle-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  color: #cbd5e1;
+  font-size: 0.72rem;
+  white-space: nowrap;
+}
+
+.map-toolbar-toggle-label input {
+  accent-color: #10b981;
 }
 
 .map-toolbar-warning-anchor {
