@@ -10,16 +10,19 @@
         398,
         204
       ],
-      "image": "chest",
-      "codes": "TODO KF 001 :: unnamed_stack > Hyrule > Hyrule Layers > Hyrule Checks :: Pasted Layer :: 001-001-001-000.png"
+      "image": "npc",
+      "codes": "OOT Malon Egg"
     },
     {
       "coords": [
         706,
         172
       ],
-      "image": "chest",
-      "codes": "TODO KF 002 :: unnamed_stack > Hyrule > Hyrule Layers > Hyrule Checks :: Pasted Layer #1 :: 001-001-001-001.png"
+      "image": "npc",
+      "overlays": [
+        "child"
+      ],
+      "codes": "OOT Hyrule Field Sell Bunny Mask"
     },
     {
       "coords": [
@@ -37,16 +40,22 @@
         936,
         572
       ],
-      "image": "chest",
-      "codes": "TODO KF 004 :: unnamed_stack > Hyrule > Hyrule Layers > Hyrule Checks :: Pasted Layer #3 :: 001-001-001-003.png"
+      "image": "wonder_item_random",
+      "overlays": [
+        "child"
+      ],
+      "codes": "OOT Hatch Chicken"
     },
     {
       "coords": [
         972,
         572
       ],
-      "image": "chest",
-      "codes": "TODO KF 005 :: unnamed_stack > Hyrule > Hyrule Layers > Hyrule Checks :: Pasted Layer #4 :: 001-001-001-004.png"
+      "image": "wonder_item_random",
+      "overlays": [
+        "adult"
+      ],
+      "codes": "OOT Hatch Pocket Cucco"
     },
     {
       "coords": [
@@ -132,10 +141,7 @@
         184
       ],
       "image": "gold_skulltula",
-      "codes": [
-        "TODO KF 013 :: unnamed_stack > Hyrule > Hyrule Layers > Hyrule Skulls :: Pasted Layer #12 :: 001-001-003-005.png",
-        "OOT Hyrule Castle GS Tree"
-      ]
+      "codes": "OOT Hyrule Castle GS Tree"
     },
     {
       "coords": [
@@ -533,11 +539,47 @@
     },
     {
       "coords": [
-        642,
+        637,
         210
       ],
       "image": "red_boulder",
-      "codes": "TODO KF 043 :: unnamed_stack > Hyrule > Hyrule Layers > Hyrule Red Boulders :: Pasted Layer #42 :: 001-001-010-001.png"
+      "codes": "OOT Hyrule Field Red Boulder 4"
+    },
+    {
+      "coords": [
+        647,
+        210
+      ],
+      "image": "bomb_grotto",
+      "type": "submenu",
+      "markers": [
+        {
+          "image": "gossip_stone",
+          "codes": "OOT Hyrule Field Gossip Near Gerudo Valley"
+        },
+        {
+          "image": "gold_skulltula",
+          "codes": "OOT Hyrule Field Grotto Near Gerudo GS"
+        },
+        {
+          "image": "cow",
+          "codes": "OOT Hyrule Field Cow"
+        },
+        {
+          "image": "pot",
+          "codes": [
+            "OOT Hyrule Field Cow Grotto Pot 1",
+            "OOT Hyrule Field Cow Grotto Pot 2"
+          ]
+        },
+        {
+          "image": "grass",
+          "codes": [
+            "OOT Hyrule Field Grotto Near Gerudo Grass 1",
+            "OOT Hyrule Field Grotto Near Gerudo Grass 2"
+          ]
+        }
+      ]
     },
     {
       "coords": [
@@ -545,7 +587,10 @@
         257
       ],
       "image": "red_boulder",
-      "codes": "TODO KF 044 :: unnamed_stack > Hyrule > Hyrule Layers > Hyrule Red Boulders :: Pasted Layer #43 :: 001-001-010-002.png"
+      "codes": [
+        "OOT Hyrule Field Red Boulder 1",
+        "OOT Hyrule Field Red Boulder 2"
+      ]
     },
     {
       "coords": [
@@ -553,7 +598,7 @@
         247
       ],
       "image": "red_boulder",
-      "codes": "TODO KF 045 :: unnamed_stack > Hyrule > Hyrule Layers > Hyrule Red Boulders :: Pasted Layer #44 :: 001-001-010-003.png"
+      "codes": "OOT Hyrule Field Red Boulder 3"
     },
     {
       "coords": [
@@ -820,10 +865,7 @@
       "overlays": [
         "child"
       ],
-      "codes": [
-        "TODO KF 067 :: unnamed_stack > Hyrule > Hyrule Layers > Hyrule Bushes :: Pasted Layer #66 :: 001-001-013-001.png",
-        "OOT Hyrule Field Bush Child 01"
-      ]
+      "codes": "OOT Hyrule Field Bush Child 01"
     },
     {
       "coords": [
@@ -981,10 +1023,10 @@
       "markers": [
         {
           "image": "heart_piece",
+          "codes": "OOT Lon Lon Ranch Silo HP",
           "overlays": [
             "child"
-          ],
-          "codes": "OOT Lon Lon Ranch Silo HP"
+          ]
         },
         {
           "image": "cow",
@@ -1001,10 +1043,10 @@
         556
       ],
       "image": "grotto",
+      "type": "submenu",
       "overlays": [
         "child"
       ],
-      "type": "submenu",
       "markers": [
         {
           "image": "business_scrub_oot",
@@ -1047,19 +1089,19 @@
       "markers": [
         {
           "image": "npc",
+          "codes": "OOT Lon Lon Ranch Talon Bottle",
           "overlays": [
             "child",
             "day"
-          ],
-          "codes": "OOT Lon Lon Ranch Talon Bottle"
+          ]
         },
         {
           "image": "shop",
+          "codes": "OOT Lon Lon Ranch Talon Buy Milk",
           "overlays": [
             "child",
             "day"
-          ],
-          "codes": "OOT Lon Lon Ranch Talon Buy Milk"
+          ]
         },
         {
           "image": "pot",
@@ -1077,11 +1119,11 @@
         372
       ],
       "image": "interior_entrance",
+      "type": "submenu",
       "overlays": [
         "child",
         "night"
       ],
-      "type": "submenu",
       "markers": [
         {
           "image": "pot",
@@ -1099,19 +1141,19 @@
         440
       ],
       "image": "interior_entrance",
+      "type": "submenu",
       "overlays": [
         "child"
       ],
-      "type": "submenu",
       "markers": [
         {
           "image": "npc",
-          "overlays": [
-            "child"
-          ],
           "codes": [
             "OOT Bombchu Bowling Reward 1",
             "OOT Bombchu Bowling Reward 2"
+          ],
+          "overlays": [
+            "child"
           ]
         }
       ]
@@ -1122,18 +1164,18 @@
         380
       ],
       "image": "interior_entrance",
+      "type": "submenu",
       "overlays": [
         "child",
         "day"
       ],
-      "type": "submenu",
       "markers": [
         {
           "image": "npc",
+          "codes": "OOT Shooting Gallery Child",
           "overlays": [
             "child"
-          ],
-          "codes": "OOT Shooting Gallery Child"
+          ]
         }
       ]
     },
@@ -1143,18 +1185,18 @@
         504
       ],
       "image": "interior_entrance",
+      "type": "submenu",
       "overlays": [
         "child",
         "night"
       ],
-      "type": "submenu",
       "markers": [
         {
           "image": "npc",
+          "codes": "OOT Market Dog Lady HP",
           "overlays": [
             "child"
-          ],
-          "codes": "OOT Market Dog Lady HP"
+          ]
         },
         {
           "image": "crate",
@@ -1168,11 +1210,11 @@
         504
       ],
       "image": "interior_entrance",
+      "type": "submenu",
       "overlays": [
         "child",
         "night"
       ],
-      "type": "submenu",
       "markers": [
         {
           "image": "shop",
@@ -1195,11 +1237,11 @@
         500
       ],
       "image": "interior_entrance",
+      "type": "submenu",
       "overlays": [
         "child",
         "night"
       ],
-      "type": "submenu",
       "markers": [
         {
           "image": "shop",
@@ -1233,10 +1275,10 @@
       "markers": [
         {
           "image": "npc",
+          "codes": "OOT Market Pot House Big Poes",
           "overlays": [
             "adult"
-          ],
-          "codes": "OOT Market Pot House Big Poes"
+          ]
         },
         {
           "image": "gold_skulltula",
@@ -1244,21 +1286,18 @@
         },
         {
           "image": "crate",
-          "overlays": [
-            "child"
-          ],
           "codes": [
             "OOT Market Pot House Crate 1",
             "OOT Market Pot House Crate 2",
             "OOT Market Pot House Crate 3",
             "OOT Market Pot House Crate 4"
+          ],
+          "overlays": [
+            "child"
           ]
         },
         {
           "image": "pot",
-          "overlays": [
-            "child"
-          ],
           "codes": [
             "OOT Market Pot House Child Pot Ground 1",
             "OOT Market Pot House Child Pot Ground 2",
@@ -1304,13 +1343,13 @@
             "OOT Market Pot House Child Pot Ground 42",
             "OOT Market Pot House Child Pot Above 1",
             "OOT Market Pot House Child Pot Above 2"
+          ],
+          "overlays": [
+            "child"
           ]
         },
         {
           "image": "pot",
-          "overlays": [
-            "adult"
-          ],
           "codes": [
             "OOT Market Pot House Adult Pot 1",
             "OOT Market Pot House Adult Pot 2",
@@ -1323,6 +1362,9 @@
             "OOT Market Pot House Adult Pot 9",
             "OOT Market Pot House Adult Pot 10",
             "OOT Market Pot House Adult Pot 11"
+          ],
+          "overlays": [
+            "adult"
           ]
         }
       ]
@@ -1333,10 +1375,10 @@
         456
       ],
       "image": "interior_entrance",
+      "type": "submenu",
       "overlays": [
         "child"
       ],
-      "type": "submenu",
       "markers": [
         {
           "image": "shop",
@@ -1359,10 +1401,10 @@
         432
       ],
       "image": "interior_entrance",
+      "type": "submenu",
       "overlays": [
         "child"
       ],
-      "type": "submenu",
       "markers": [
         {
           "image": "shop",
@@ -1400,24 +1442,24 @@
       "markers": [
         {
           "image": "collectible",
+          "codes": "OOT Temple of Time Master Sword",
           "overlays": [
             "child"
-          ],
-          "codes": "OOT Temple of Time Master Sword"
+          ]
         },
         {
           "image": "song",
+          "codes": "OOT Temple of Time Sheik Song",
           "overlays": [
             "adult"
-          ],
-          "codes": "OOT Temple of Time Sheik Song"
+          ]
         },
         {
           "image": "npc",
+          "codes": "OOT Temple of Time Light Arrows",
           "overlays": [
             "adult"
-          ],
-          "codes": "OOT Temple of Time Light Arrows"
+          ]
         },
         {
           "image": "light_medallion",
@@ -1431,7 +1473,21 @@
         378
       ],
       "image": "bomb_grotto",
-      "codes": "TODO KF 093 :: unnamed_stack > Hyrule > Hyrule Layers > Hyrule Entrances :: Pasted Layer #92 :: 001-001-015-017.png"
+      "type": "submenu",
+      "markers": [
+        {
+          "image": "business_scrub_oot",
+          "codes": "OOT Hyrule Field Grotto Scrub HP"
+        },
+        {
+          "image": "beehive",
+          "codes": "OOT Hyrule Field Grotto Scrub Hive"
+        },
+        {
+          "image": "big_fairy_spot",
+          "codes": "OOT Hyrule Field Grotto Scrub Big Fairy"
+        }
+      ]
     },
     {
       "coords": [
@@ -1439,7 +1495,41 @@
         382
       ],
       "image": "grotto",
-      "codes": "TODO KF 094 :: unnamed_stack > Hyrule > Hyrule Layers > Hyrule Entrances :: Pasted Layer #93 :: 001-001-015-018.png"
+      "type": "submenu",
+      "markers": [
+        {
+          "image": "chest",
+          "codes": "OOT Hyrule Field Grotto Open"
+        },
+        {
+          "image": "grass",
+          "codes": [
+            "OOT Hyrule Field Grotto Open Grass 1",
+            "OOT Hyrule Field Grotto Open Grass 2",
+            "OOT Hyrule Field Grotto Open Grass 3",
+            "OOT Hyrule Field Grotto Open Grass 4"
+          ]
+        },
+        {
+          "image": "beehive",
+          "codes": [
+            "OOT Hyrule Field Grotto Open Hive 1",
+            "OOT Hyrule Field Grotto Open Hive 2"
+          ]
+        },
+        {
+          "image": "butterfly",
+          "codes": [
+            "OOT Hyrule Field Grotto Open Butterfly 1",
+            "OOT Hyrule Field Grotto Open Butterfly 2",
+            "OOT Hyrule Field Grotto Open Butterfly 3"
+          ]
+        },
+        {
+          "image": "gossip_stone",
+          "codes": "OOT Hyrule Field Gossip Near Lake Hylia"
+        }
+      ]
     },
     {
       "coords": [
@@ -1447,7 +1537,41 @@
         338
       ],
       "image": "boulder_grotto",
-      "codes": "TODO KF 095 :: unnamed_stack > Hyrule > Hyrule Layers > Hyrule Entrances :: Pasted Layer #94 :: 001-001-015-019.png"
+      "type": "submenu",
+      "markers": [
+        {
+          "image": "chest",
+          "codes": "OOT Hyrule Field Grotto Southeast"
+        },
+        {
+          "image": "grass",
+          "codes": [
+            "OOT Hyrule Field Grotto Southeast Grass 1",
+            "OOT Hyrule Field Grotto Southeast Grass 2",
+            "OOT Hyrule Field Grotto Southeast Grass 3",
+            "OOT Hyrule Field Grotto Southeast Grass 4"
+          ]
+        },
+        {
+          "image": "beehive",
+          "codes": [
+            "OOT Hyrule Field Grotto Southeast Hive 1",
+            "OOT Hyrule Field Grotto Southeast Hive 2"
+          ]
+        },
+        {
+          "image": "butterfly",
+          "codes": [
+            "OOT Hyrule Field Grotto Southeast Butterfly 1",
+            "OOT Hyrule Field Grotto Southeast Butterfly 2",
+            "OOT Hyrule Field Grotto Southeast Butterfly 3"
+          ]
+        },
+        {
+          "image": "gossip_stone",
+          "codes": "OOT Hyrule Field Gossip Southeast Grotto"
+        }
+      ]
     },
     {
       "coords": [
@@ -1455,7 +1579,13 @@
         130
       ],
       "image": "bomb_grotto",
-      "codes": "TODO KF 097 :: unnamed_stack > Hyrule > Hyrule Layers > Hyrule Entrances :: Pasted Layer #96 :: 001-001-015-021.png"
+      "type": "submenu",
+      "markers": [
+        {
+          "image": "heart_piece",
+          "codes": "OOT Hyrule Field Grotto Tektite HP"
+        }
+      ]
     },
     {
       "coords": [
@@ -1463,7 +1593,41 @@
         58
       ],
       "image": "boulder_grotto",
-      "codes": "TODO KF 098 :: unnamed_stack > Hyrule > Hyrule Layers > Hyrule Entrances :: Pasted Layer #97 :: 001-001-015-022.png"
+      "type": "submenu",
+      "markers": [
+        {
+          "image": "chest",
+          "codes": "OOT Hyrule Field Grotto Market"
+        },
+        {
+          "image": "grass",
+          "codes": [
+            "OOT Hyrule Field Grotto Market Grass 1",
+            "OOT Hyrule Field Grotto Market Grass 2",
+            "OOT Hyrule Field Grotto Market Grass 3",
+            "OOT Hyrule Field Grotto Market Grass 4"
+          ]
+        },
+        {
+          "image": "beehive",
+          "codes": [
+            "OOT Hyrule Field Grotto Market Hive 1",
+            "OOT Hyrule Field Grotto Market Hive 2"
+          ]
+        },
+        {
+          "image": "butterfly",
+          "codes": [
+            "OOT Hyrule Field Grotto Market Butterfly 1",
+            "OOT Hyrule Field Grotto Market Butterfly 2",
+            "OOT Hyrule Field Grotto Market Butterfly 3"
+          ]
+        },
+        {
+          "image": "gossip_stone",
+          "codes": "OOT Hyrule Field Gossip Near Castle Town"
+        }
+      ]
     },
     {
       "coords": [
@@ -1471,7 +1635,13 @@
         80
       ],
       "image": "boulder_grotto",
-      "codes": "TODO KF 099 :: unnamed_stack > Hyrule > Hyrule Layers > Hyrule Entrances :: Pasted Layer #98 :: 001-001-015-023.png"
+      "type": "submenu",
+      "markers": [
+        {
+          "image": "gold_skulltula",
+          "codes": "OOT Hyrule Field Grotto Near Kakariko GS"
+        }
+      ]
     },
     {
       "coords": [
@@ -1479,7 +1649,13 @@
         56
       ],
       "image": "bomb_grotto",
-      "codes": "TODO KF 100 :: unnamed_stack > Hyrule > Hyrule Layers > Hyrule Entrances :: Pasted Layer #99 :: 001-001-015-024.png"
+      "type": "submenu",
+      "markers": [
+        {
+          "image": "gold_skulltula",
+          "codes": "OOT Hyrule Field Grotto Near Kakariko GS"
+        }
+      ]
     },
     {
       "coords": [
@@ -1549,10 +1725,10 @@
         69
       ],
       "image": "crawl_space",
+      "type": "submenu",
       "overlays": [
         "day"
       ],
-      "type": "submenu",
       "markers": [
         {
           "image": "npc",
