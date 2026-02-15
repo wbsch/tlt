@@ -469,7 +469,7 @@ function getEffectiveScale(element: unknown, parentScale: number): number {
   position: relative;
   cursor: pointer;
   border-radius: 4px;
-  transition: all 0.15s ease;
+  transition: background-color 0.15s ease, border-color 0.15s ease;
   background: rgba(0, 0, 0, 0.3);
   border: 1px solid transparent;
   box-sizing: border-box;
@@ -478,6 +478,7 @@ function getEffectiveScale(element: unknown, parentScale: number): number {
 .grid-item:hover {
   background: rgba(59, 130, 246, 0.2);
   border-color: rgba(59, 130, 246, 0.5);
+  z-index: 2;
 }
 
 .grid-item.owned {
@@ -499,7 +500,18 @@ function getEffectiveScale(element: unknown, parentScale: number): number {
   height: 100%;
   object-fit: contain;
   image-rendering: pixelated;
-  transition: filter 0.15s ease;
+  transition: transform 0.15s ease, filter 0.15s ease;
+  transform-origin: center;
+  transform: translateZ(0);
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
+
+.grid-item:hover .item-icon,
+.grid-item:focus-visible .item-icon,
+.grid-item:focus .item-icon {
+  will-change: transform;
+  transform: translateZ(0) scale(1.12);
 }
 
 .item-icon.disabled {
