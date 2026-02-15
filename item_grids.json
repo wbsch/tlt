@@ -13,7 +13,10 @@
           [
             "SHARED_BOW",
             "SHARED_BOMB_BAG",
-            "SHARED_BOMBCHU",
+             {"or": [
+                "SHARED_BOMBCHU_BAG",
+                "SHARED_BOMBCHU"
+              ]},
             "SHARED_MAGIC_UPGRADE",
             "SHARED_ARROW_FIRE",
             "SHARED_ARROW_ICE",

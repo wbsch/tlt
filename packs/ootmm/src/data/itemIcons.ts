@@ -525,6 +525,7 @@ const RAW_ITEM_ICONS: Record<string, string> = {
   'SHARED_SONG_NOTE_SUN': 'images/song_sun.png',
   'SHARED_SONG_NOTE_EMPTINESS': 'images/items/mm_elegy.png',
   'SHARED_BOMBCHU': 'images/bombchu.png',
+  'SHARED_BOMBCHU_BAG': 'images/bombchu_bag.png',
   'SHARED_HAMMER': 'images/hammer.png',
   'SHARED_BOOTS_IRON': 'images/boots_iron.png',
   'SHARED_BOOTS_HOVER': 'images/boots_hover.png',
