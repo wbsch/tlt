@@ -57,7 +57,7 @@ const {
   locationsCollectionFilter: collectionFilter,
 } = storeToRefs(uiStore)
 
-const { collectedLocationIds } = storeToRefs(sessionStore)
+const { collectedLocationIds, trackerSettings, shopPrices } = storeToRefs(sessionStore)
 
 const collectedIdSet = computed(() => new Set(collectedLocationIds.value))
 const visibilityFilters = computed<LocationVisibilityFilters>(() => ({
@@ -154,6 +154,30 @@ const collectionStats = computed(() => {
 
 function toggleCollected(id: string) {
   sessionStore.toggleCollectedLocation(id)
+}
+
+function isRandomizedPriceMode(mode: unknown): boolean {
+  return mode === 'random' || mode === 'weighted'
+}
+
+function isShopPriceEditable(loc: LocationInfo): boolean {
+  if (loc.category !== 'shop') return false
+  const isOotLocation = loc.name.startsWith('OOT ')
+  const mode = isOotLocation
+    ? trackerSettings.value?.priceOotShops
+    : trackerSettings.value?.priceMmShops
+  return isRandomizedPriceMode(mode)
+}
+
+function getShopPrice(loc: LocationInfo): number {
+  const value = shopPrices.value[loc.id]
+  return typeof value === 'number' && Number.isFinite(value) ? Math.max(0, Math.floor(value)) : 0
+}
+
+function updateShopPrice(loc: LocationInfo, rawValue: string) {
+  const numeric = Number(rawValue)
+  const safePrice = Number.isFinite(numeric) ? Math.max(0, Math.floor(numeric)) : 0
+  sessionStore.setShopPriceForLocation(loc.id, safePrice)
 }
 </script>
 
@@ -263,6 +287,25 @@ function toggleCollected(id: string) {
             <div class="location-info">
               <div class="location-name">{{ stripGamePrefix(loc.name) }}</div>
               <div class="location-category">{{ loc.category }}</div>
+              <label
+                v-if="isShopPriceEditable(loc)"
+                class="location-shop-price"
+                @click.stop
+                @keydown.stop
+              >
+                <span class="shop-price-label">Cost</span>
+                <input
+                  type="number"
+                  min="0"
+                  step="5"
+                  class="shop-price-input"
+                  :value="getShopPrice(loc)"
+                  @click.stop
+                  @mousedown.stop
+                  @keydown.stop
+                  @input="updateShopPrice(loc, ($event.target as HTMLInputElement).value)"
+                />
+              </label>
             </div>
           </div>
         </div>
@@ -437,6 +480,33 @@ function toggleCollected(id: string) {
 .location-category {
   font-size: 0.75rem;
   color: #9ca3af;
+}
+
+.location-shop-price {
+  margin-top: 0.3rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.shop-price-label {
+  font-size: 0.72rem;
+  color: #cbd5e1;
+}
+
+.shop-price-input {
+  width: 5rem;
+  padding: 0.2rem 0.35rem;
+  border-radius: 4px;
+  border: 1px solid #4b5563;
+  background: #0f172a;
+  color: #f8fafc;
+  font-size: 0.78rem;
+}
+
+.shop-price-input:focus {
+  outline: 1px solid #60a5fa;
+  border-color: #60a5fa;
 }
 
 .empty-state {

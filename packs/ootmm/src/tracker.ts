@@ -70,6 +70,18 @@ const CLOCK_ITEM_IDS = new Set([
 const VANILLA_SILVER_RUPEE_PREFIX = 'OOT_RUPEE_SILVER_'
 const OWL_STATUE_PREFIX = 'MM_OWL_'
 
+const PRICE_COUNT_OOT_SHOPS = 64
+const PRICE_COUNT_OOT_SCRUBS = 38
+const PRICE_COUNT_OOT_MERCHANTS = 4
+const PRICE_RANGE_OOT_SHOPS = 0
+const PRICE_RANGE_MM_SHOPS = PRICE_RANGE_OOT_SHOPS + PRICE_COUNT_OOT_SHOPS + PRICE_COUNT_OOT_SCRUBS + PRICE_COUNT_OOT_MERCHANTS
+
+type ShopPriceSlot = {
+  worldId: number
+  slot: number
+  game: 'oot' | 'mm'
+}
+
 export class OoTMMTracker implements TrackerPack {
   id = 'ootmm'
   name = 'OoTMM'
@@ -89,6 +101,8 @@ export class OoTMMTracker implements TrackerPack {
   private availableItemIds: Set<string> = new Set()
   private itemMaxCounts: Map<string, number> = new Map()
   private silverRupeeLocationIdsByItemId: Map<string, string[]> = new Map()
+  private shopPriceSlotsByLocationId: Map<string, ShopPriceSlot> = new Map()
+  private baseShopPricesByLocationId: Map<string, number> = new Map()
   private devLocationCatalog: LocationInfo[] = []
 
   async initialize(userSettings: Partial<OoTMMSettings> = {}): Promise<void> {
@@ -161,6 +175,9 @@ export class OoTMMTracker implements TrackerPack {
     this.availableItemIds = this.buildAvailableItemIds(worldData?.allItems)
     this.itemMaxCounts = this.buildItemMaxCounts(worldData?.allItems, worldData?.startingItems)
     this.silverRupeeLocationIdsByItemId = this.buildSilverRupeeLocationIndex(this.worlds)
+    const shopPriceIndex = this.buildShopPriceIndex(this.worlds)
+    this.shopPriceSlotsByLocationId = shopPriceIndex.slotsByLocationId
+    this.baseShopPricesByLocationId = shopPriceIndex.basePricesByLocationId
     this.devLocationCatalog = this.buildCodeSearchLocationCatalog()
     
     console.log(`[OoTMM Tracker] Initialized with ${this.allLocationIds.length} locations`)
@@ -369,6 +386,48 @@ export class OoTMMTracker implements TrackerPack {
           }
         }
       }
+    }
+
+    this.pathfinder = new Pathfinder(this.worlds, this.settings, new Map())
+  }
+
+  getShopPrices(): Record<string, number> {
+    const prices: Record<string, number> = {}
+    if (!this.worlds || this.shopPriceSlotsByLocationId.size === 0) return prices
+
+    for (const [locationId, slotData] of this.shopPriceSlotsByLocationId.entries()) {
+      const world = this.worlds[slotData.worldId]
+      const value = world?.prices?.[slotData.slot]
+      if (typeof value === 'number' && Number.isFinite(value)) {
+        prices[locationId] = value
+      }
+    }
+
+    return prices
+  }
+
+  setShopPrices(pricesByLocation: Record<string, number>): void {
+    if (!this.worlds || !this.settings || this.shopPriceSlotsByLocationId.size === 0) return
+
+    for (const [locationId, slotData] of this.shopPriceSlotsByLocationId.entries()) {
+      const base = this.baseShopPricesByLocationId.get(locationId)
+      if (typeof base !== 'number' || !Number.isFinite(base)) continue
+      const world = this.worlds[slotData.worldId]
+      if (!world?.prices || slotData.slot < 0 || slotData.slot >= world.prices.length) continue
+      world.prices[slotData.slot] = base
+    }
+
+    for (const [locationId, rawValue] of Object.entries(pricesByLocation)) {
+      const slotData = this.shopPriceSlotsByLocationId.get(locationId)
+      if (!slotData) continue
+      if (!this.isShopPriceEditableForGame(slotData.game)) continue
+
+      const safeValue = Math.max(0, Math.floor(Number(rawValue)))
+      if (!Number.isFinite(safeValue)) continue
+
+      const world = this.worlds[slotData.worldId]
+      if (!world?.prices || slotData.slot < 0 || slotData.slot >= world.prices.length) continue
+      world.prices[slotData.slot] = safeValue
     }
 
     this.pathfinder = new Pathfinder(this.worlds, this.settings, new Map())
@@ -910,6 +969,59 @@ export class OoTMMTracker implements TrackerPack {
       }
     }
     return map
+  }
+
+  private buildShopPriceIndex(worlds: World[]): {
+    slotsByLocationId: Map<string, ShopPriceSlot>
+    basePricesByLocationId: Map<string, number>
+  } {
+    const slotsByLocationId = new Map<string, ShopPriceSlot>()
+    const basePricesByLocationId = new Map<string, number>()
+    if (!worlds || worlds.length === 0) {
+      return { slotsByLocationId, basePricesByLocationId }
+    }
+
+    for (const [worldId, world] of worlds.entries()) {
+      for (const [locId, check] of Object.entries(world.checks ?? {})) {
+        const typedCheck = check as { type?: string; id?: number; game?: 'oot' | 'mm' }
+        if (typedCheck.type !== 'shop') continue
+        if (typeof typedCheck.id !== 'number') continue
+        if (typedCheck.game !== 'oot' && typedCheck.game !== 'mm') continue
+
+        const slot = this.computeShopPriceSlot(typedCheck.game, typedCheck.id)
+        if (slot === null) continue
+        if (!world.prices || slot < 0 || slot >= world.prices.length) continue
+
+        const fullId = makeLocation(locId, worldId)
+        slotsByLocationId.set(fullId, {
+          worldId,
+          slot,
+          game: typedCheck.game,
+        })
+        basePricesByLocationId.set(fullId, world.prices[slot])
+      }
+    }
+
+    return { slotsByLocationId, basePricesByLocationId }
+  }
+
+  private computeShopPriceSlot(game: 'oot' | 'mm', checkId: number): number | null {
+    if (!Number.isInteger(checkId) || checkId < 0) return null
+    if (game === 'oot') {
+      return PRICE_RANGE_OOT_SHOPS + checkId
+    }
+    return PRICE_RANGE_MM_SHOPS + checkId
+  }
+
+  private isShopPriceEditableForGame(game: 'oot' | 'mm'): boolean {
+    const settings = this.settings as {
+      priceOotShops?: unknown
+      priceMmShops?: unknown
+    }
+    const mode = game === 'oot'
+      ? String(settings.priceOotShops ?? '')
+      : String(settings.priceMmShops ?? '')
+    return mode === 'random' || mode === 'weighted'
   }
 
   private computeVanillaSilverRupeeCounts(reachableLocationIds: string[]): Map<string, number> {

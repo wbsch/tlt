@@ -213,6 +213,14 @@ watch(
   { immediate: true },
 )
 
+watch(
+  () => [trackerSettings.value?.priceOotShops, trackerSettings.value?.priceMmShops],
+  () => {
+    sessionStore.applyShopPrices()
+  },
+  { immediate: true },
+)
+
 watch(isApplyingSettings, (applying) => {
   if (applying) {
     closeStatsMenu()

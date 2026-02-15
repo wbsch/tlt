@@ -38,6 +38,15 @@ export interface TrackerPack {
   /** Optional: Mark pre-completed dungeons to adjust logic/UI */
   setPreCompletedDungeons?(dungeons: string[]): void;
 
+  /** Optional: Override song-event requirements used in logic */
+  setSongEvents?(events: Record<string, number>): void;
+
+  /** Optional: Read current per-location shop prices */
+  getShopPrices?(): Record<string, number>;
+
+  /** Optional: Override per-location shop prices used in logic */
+  setShopPrices?(prices: Record<string, number>): void;
+
   /** Optional: Patch special conditions used in logic */
   setSpecialConds?(patch: Record<string, unknown>): void;
 

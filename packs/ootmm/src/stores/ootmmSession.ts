@@ -13,6 +13,7 @@ type SessionSnapshot = {
   collectedLocationIds: string[];
   preCompletedDungeons: string[];
   songEvents: Record<string, number>;
+  shopPrices: Record<string, number>;
   trackerSettings: Record<string, unknown>;
 };
 
@@ -29,6 +30,16 @@ function sanitizeInventoryRecord(record: Record<string, number>): Record<string,
   for (const [itemId, count] of Object.entries(record)) {
     if (!Number.isFinite(count) || count <= 0) continue;
     next[itemId] = Math.floor(count);
+  }
+  return next;
+}
+
+function sanitizeNonNegativeNumberRecord(record: Record<string, number>): Record<string, number> {
+  const next: Record<string, number> = {};
+  for (const [key, value] of Object.entries(record)) {
+    const numeric = Number(value);
+    if (!Number.isFinite(numeric) || numeric < 0) continue;
+    next[key] = Math.floor(numeric);
   }
   return next;
 }
@@ -133,6 +144,7 @@ export const useOoTMMSessionStore = defineStore('ootmm-session', () => {
   const collectedLocationIds = ref<string[]>([]);
   const preCompletedDungeons = ref<string[]>([]);
   const songEvents = ref<Record<string, number>>({});
+  const shopPrices = ref<Record<string, number>>({});
 
   const trackerSettings = ref<Record<string, unknown>>({});
   const availableItemIds = ref<string[]>([]);
@@ -187,6 +199,7 @@ export const useOoTMMSessionStore = defineStore('ootmm-session', () => {
       collectedLocationIds: [...collectedLocationIds.value],
       preCompletedDungeons: [...preCompletedDungeons.value],
       songEvents: { ...songEvents.value },
+      shopPrices: { ...shopPrices.value },
       trackerSettings: cloneSettingsRecord(trackerSettings.value),
     };
   }
@@ -257,6 +270,7 @@ export const useOoTMMSessionStore = defineStore('ootmm-session', () => {
     const targetCollectedLocationIds = uniqueStrings(snapshot.collectedLocationIds);
     const targetPreCompletedDungeons = uniqueStrings(snapshot.preCompletedDungeons);
     const targetSongEvents = { ...snapshot.songEvents };
+    const targetShopPrices = sanitizeNonNegativeNumberRecord({ ...snapshot.shopPrices });
     const targetSettings = cloneSettingsRecord(snapshot.trackerSettings);
 
     isNavigatingHistory.value = true;
@@ -266,6 +280,7 @@ export const useOoTMMSessionStore = defineStore('ootmm-session', () => {
         collectedLocationIds.value = targetCollectedLocationIds;
         preCompletedDungeons.value = targetPreCompletedDungeons;
         songEvents.value = targetSongEvents;
+        shopPrices.value = targetShopPrices;
         trackerSettings.value = targetSettings;
         reachableLocationIds.value = [];
         canComplete.value = false;
@@ -301,8 +316,10 @@ export const useOoTMMSessionStore = defineStore('ootmm-session', () => {
 
       preCompletedDungeons.value = targetPreCompletedDungeons;
       songEvents.value = targetSongEvents;
+      shopPrices.value = targetShopPrices;
       applyPreCompletedDungeons();
       applySongEvents();
+      applyShopPrices();
       inventoryById.value = targetInventoryById;
       collectedLocationIds.value = targetCollectedLocationIds;
       recomputeReachability();
@@ -363,6 +380,8 @@ export const useOoTMMSessionStore = defineStore('ootmm-session', () => {
     availableItemIds.value = setToArray(nextTracker.getAvailableItemIds?.() ?? new Set<string>());
     itemMaxCountsById.value = mapNumberToRecord(nextTracker.getItemMaxCounts?.() ?? new Map<string, number>());
     applyPreCompletedDungeons();
+    applySongEvents();
+    applyShopPrices();
   }
 
   function initializeFromTracker() {
@@ -458,6 +477,28 @@ export const useOoTMMSessionStore = defineStore('ootmm-session', () => {
     recordHistoryEntry(previousSnapshot);
   }
 
+  function setShopPrices(prices: Record<string, number>) {
+    const previousSnapshot = captureSessionSnapshot();
+    shopPrices.value = sanitizeNonNegativeNumberRecord({ ...prices });
+    applyShopPrices();
+    recordHistoryEntry(previousSnapshot);
+  }
+
+  function setShopPriceForLocation(locationId: string, price: number) {
+    if (!locationId) return;
+    const previousSnapshot = captureSessionSnapshot();
+    const next = { ...shopPrices.value };
+    const safePrice = Math.max(0, Math.floor(Number(price)));
+    if (!Number.isFinite(safePrice)) {
+      delete next[locationId];
+    } else {
+      next[locationId] = safePrice;
+    }
+    shopPrices.value = sanitizeNonNegativeNumberRecord(next);
+    applyShopPrices();
+    recordHistoryEntry(previousSnapshot);
+  }
+
   function applyPreCompletedDungeons() {
     const currentTracker = tracker.value;
     if (!currentTracker || !currentTracker.setPreCompletedDungeons) return;
@@ -483,6 +524,24 @@ export const useOoTMMSessionStore = defineStore('ootmm-session', () => {
     
     const events = songEventsShuffleOot ? songEvents.value : {};
     currentTracker.setSongEvents(events);
+    recomputeReachability();
+  }
+
+  function applyShopPrices() {
+    const currentTracker = tracker.value;
+    if (!currentTracker || !currentTracker.setShopPrices) return;
+
+    const ootMode = String(trackerSettings.value?.priceOotShops ?? '');
+    const mmMode = String(trackerSettings.value?.priceMmShops ?? '');
+    const isRandomizedMode = (mode: string) => mode === 'random' || mode === 'weighted';
+    const hasEditableShops = isRandomizedMode(ootMode) || isRandomizedMode(mmMode);
+
+    if (hasEditableShops && Object.keys(shopPrices.value).length === 0 && currentTracker.getShopPrices) {
+      shopPrices.value = sanitizeNonNegativeNumberRecord(currentTracker.getShopPrices());
+    }
+
+    const prices = hasEditableShops ? shopPrices.value : {};
+    currentTracker.setShopPrices(prices);
     recomputeReachability();
   }
 
@@ -521,6 +580,7 @@ export const useOoTMMSessionStore = defineStore('ootmm-session', () => {
       );
       applyPreCompletedDungeons();
       applySongEvents();
+      applyShopPrices();
       recomputeReachability();
       didApply = true;
     } catch (error) {
@@ -562,6 +622,7 @@ export const useOoTMMSessionStore = defineStore('ootmm-session', () => {
     collectedLocationIds.value = [];
     preCompletedDungeons.value = [];
     songEvents.value = {};
+    shopPrices.value = {};
 
     if (!currentTracker) {
       trackerSettings.value = {};
@@ -628,6 +689,7 @@ export const useOoTMMSessionStore = defineStore('ootmm-session', () => {
     collectedLocationIds,
     preCompletedDungeons,
     songEvents,
+    shopPrices,
     trackerSettings,
     availableItemIds,
     itemMaxCountsById,
@@ -660,8 +722,11 @@ export const useOoTMMSessionStore = defineStore('ootmm-session', () => {
     setCollectedLocationIds,
     setPreCompletedDungeons,
     setSongEvents,
+    setShopPrices,
+    setShopPriceForLocation,
     applyPreCompletedDungeons,
     applySongEvents,
+    applyShopPrices,
     applySpecialCondsPatch,
     applySettings,
     undo,
