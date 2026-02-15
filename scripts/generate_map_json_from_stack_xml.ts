@@ -258,7 +258,12 @@ function findRootStackXmlEntry(entries: ZipEntry[]): ZipEntry | null {
 }
 
 function findLargestPngEntry(entries: ZipEntry[]): ZipEntry | null {
-  const pngEntries = entries.filter((entry) => entry.name.toLowerCase().endsWith('.png'))
+  const pngEntries = entries.filter((entry) => {
+    const lowerName = entry.name.toLowerCase()
+    if (!lowerName.startsWith('data/')) return false
+    if (!lowerName.endsWith('.png')) return false
+    return path.basename(lowerName) !== 'mergedimage.png'
+  })
   if (pngEntries.length === 0) {
     return null
   }
