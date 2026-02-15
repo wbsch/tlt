@@ -143,6 +143,7 @@ const locationVisibilityFilters = computed<LocationVisibilityFilters>(() => ({
 const mapLocationVisibilityFilters = computed<LocationVisibilityFilters>(() => ({
   ...locationVisibilityFilters.value,
   searchQuery: '',
+  selectedCategory: 'all',
 }))
 const visibleLocationIds = computed(() => {
   const visible = new Set<string>()
