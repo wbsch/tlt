@@ -27,7 +27,7 @@ const MIN_SCALE = 0.5
 const MAX_SCALE = 3
 const WHEEL_ZOOM_FACTOR = 1.1
 const MARKER_SIZE = 16
-const MARKER_PANEL_GAP = 8
+const MARKER_PANEL_GAP = 2
 const HOVER_POPUP_CLOSE_DELAY_MS = 160
 const MAP_POPUP_WIDTH = 260
 const MAP_POPUP_HEIGHT = 230
@@ -621,6 +621,10 @@ function panelSize(
   }
 }
 
+function scaledMarkerPanelGap(): number {
+  return MARKER_PANEL_GAP * scale.value
+}
+
 function calculateAnchoredPanelPosition(
   markerCoords: [number, number],
   panelElement: HTMLElement | null,
@@ -637,11 +641,12 @@ function calculateAnchoredPanelPosition(
   )
   const markerX = markerCoords[0] * scale.value + panX.value
   const markerY = markerCoords[1] * scale.value + panY.value
-  const markerHalfSize = MARKER_SIZE * 0.5
+  const markerHalfSize = MARKER_SIZE * scale.value * 0.5
+  const markerGap = scaledMarkerPanelGap()
   const maxX = Math.max(8, viewport.clientWidth - popupWidth - 8)
   const maxY = Math.max(8, viewport.clientHeight - popupHeight - 8)
-  const rightSideLeft = markerX + markerHalfSize + MARKER_PANEL_GAP
-  const leftSideLeft = markerX - markerHalfSize - popupWidth - MARKER_PANEL_GAP
+  const rightSideLeft = markerX + markerHalfSize + markerGap
+  const leftSideLeft = markerX - markerHalfSize - popupWidth - markerGap
   const left = leftSideLeft >= 8 ? leftSideLeft : clamp(rightSideLeft, 8, maxX)
   const top = clamp(markerY - popupHeight * 0.5, 8, maxY)
 
@@ -690,8 +695,9 @@ function calculateSubmenuPopupPosition(): { left: number; top: number } | null {
   const maxX = Math.max(8, viewport.clientWidth - popupWidth - 8)
   const maxY = Math.max(8, viewport.clientHeight - popupHeight - 8)
   const centeredLeft = markerCenterX - popupWidth * 0.5
-  const belowTop = markerBottom + MARKER_PANEL_GAP
-  const aboveTop = markerTop - popupHeight - MARKER_PANEL_GAP
+  const markerGap = scaledMarkerPanelGap()
+  const belowTop = markerBottom + markerGap
+  const aboveTop = markerTop - popupHeight - markerGap
   const top = belowTop <= maxY ? belowTop : clamp(aboveTop, 8, maxY)
   const left = clamp(centeredLeft, 8, maxX)
   return { left, top }
