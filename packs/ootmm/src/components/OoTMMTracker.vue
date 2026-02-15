@@ -110,6 +110,7 @@ const {
   locationsCollectionFilter,
   locationsShowUnshuffled,
   locationsShowGossipStones,
+  activeMapId,
 } = storeToRefs(uiStore)
 
 const settingsRef = ref<SettingsPanelHandle | null>(null)
@@ -117,7 +118,10 @@ const statsMenuRef = ref<HTMLDetailsElement | null>(null)
 const isStatsMenuOpen = ref(false)
 const isStatsCollapsed = ref(true)
 const mapDefs = OOTMM_MAP_DEFS
-const activeMapId = ref(mapDefs[0]?.id ?? '')
+// ensure there's a sensible active map id in the UI store
+if (!activeMapId.value) {
+  activeMapId.value = mapDefs[0]?.id ?? ''
+}
 const mapSelectorQuery = ref('')
 const mapSelectorInputRef = ref<HTMLInputElement | null>(null)
 const isMapSelectorOpen = ref(false)

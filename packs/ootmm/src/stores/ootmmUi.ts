@@ -25,6 +25,7 @@ export const useOoTMMUiStore = defineStore('ootmm-ui', () => {
 
   const isSpoilerDragActive = ref(false);
   const spoilerDragDepth = ref(0);
+  const activeMapId = ref('');
 
   function setActiveTab(tab: TrackerTab) {
     if (!VALID_TABS.includes(tab)) {
@@ -64,6 +65,7 @@ export const useOoTMMUiStore = defineStore('ootmm-ui', () => {
 
     isSpoilerDragActive.value = false;
     spoilerDragDepth.value = 0;
+    activeMapId.value = '';
   }
 
   return {
@@ -85,5 +87,6 @@ export const useOoTMMUiStore = defineStore('ootmm-ui', () => {
     setSpoilerDragActive,
     setSpoilerDragDepth,
     resetUiState,
+    activeMapId,
   };
 });

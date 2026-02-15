@@ -51,6 +51,7 @@ const PERSIST_CONFIGS: Record<string, PersistConfig> = {
       'locationsReachabilityFilter',
       'locationsCollectionFilter',
       'locationsShowUnshuffled',
+      'activeMapId',
       'settingsSearchQuery',
     ],
     hydrate: (raw) => ({
@@ -83,6 +84,7 @@ const PERSIST_CONFIGS: Record<string, PersistConfig> = {
       ...(typeof raw.locationsShowUnshuffled === 'boolean'
         ? { locationsShowUnshuffled: raw.locationsShowUnshuffled }
         : {}),
+      ...(typeof raw.activeMapId === 'string' ? { activeMapId: raw.activeMapId } : {}),
       ...(typeof raw.settingsSearchQuery === 'string'
         ? { settingsSearchQuery: raw.settingsSearchQuery }
         : {}),
