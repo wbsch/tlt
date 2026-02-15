@@ -1,113 +1,129 @@
-import { mkdir, readdir, readFile, writeFile } from 'node:fs/promises'
-import path from 'node:path'
-import { MAP_ICON_INDEX } from '../packs/ootmm/src/data/maps/mapIconIndex.ts'
+import { mkdir, readdir, readFile, writeFile } from 'node:fs/promises';
+import path from 'node:path';
+import { MAP_ICON_INDEX } from '../packs/ootmm/src/data/maps/mapIconIndex.ts';
 
-const MAPS_DIR = path.resolve('packs/ootmm/src/data/maps')
-const TYPES_FILE = path.resolve('packs/ootmm/src/data/maps/types.ts')
-const MAP_IMAGES_DIR = path.resolve('public/images/maps')
-const WORLD_DATA_FILE = path.resolve('OoTMM/packages/data/dist/data-world.json')
-const OUTPUT_FILE = path.resolve('packs/ootmm/src/data/schemas/ootmm-map.schema.json')
+const MAPS_DIR = path.resolve('packs/ootmm/src/data/maps');
+const TYPES_FILE = path.resolve('packs/ootmm/src/data/maps/types.ts');
+const MAP_IMAGES_DIR = path.resolve('public/images/maps');
+const WORLD_DATA_FILE = path.resolve(
+  'OoTMM/packages/data/dist/data-world.json',
+);
+const OUTPUT_FILE = path.resolve(
+  'packs/ootmm/src/data/schemas/ootmm-map.schema.json',
+);
 
-type JsonRecord = Record<string, unknown>
+type JsonRecord = Record<string, unknown>;
 
 function toSortedUnique(values: Iterable<string>): string[] {
-  return Array.from(new Set(values)).sort((a, b) => a.localeCompare(b))
+  return Array.from(new Set(values)).sort((a, b) => a.localeCompare(b));
 }
 
 function extractStringUnionValues(source: string, typeName: string): string[] {
-  const typeMatch = source.match(new RegExp(`export type ${typeName} =([\\s\\S]*?)\\n\\nexport type`, 'm'))
+  const typeMatch = source.match(
+    new RegExp(`export type ${typeName} =([\\s\\S]*?)\\n\\nexport type`, 'm'),
+  );
   if (!typeMatch) {
-    throw new Error(`Could not find union definition for ${typeName}`)
+    throw new Error(`Could not find union definition for ${typeName}`);
   }
-  return toSortedUnique(typeMatch[1].match(/'([^']+)'/g)?.map((entry) => entry.slice(1, -1)) ?? [])
+  return toSortedUnique(
+    typeMatch[1].match(/'([^']+)'/g)?.map((entry) => entry.slice(1, -1)) ?? [],
+  );
 }
 
 function collectCodesFromUnknown(value: unknown, out: Set<string>): void {
   if (typeof value === 'string') {
-    const trimmed = value.trim()
-    if (trimmed.length > 0) out.add(trimmed)
-    return
+    const trimmed = value.trim();
+    if (trimmed.length > 0) out.add(trimmed);
+    return;
   }
   if (Array.isArray(value)) {
-    value.forEach((entry) => collectCodesFromUnknown(entry, out))
+    value.forEach((entry) => collectCodesFromUnknown(entry, out));
   }
 }
 
 function collectCodesFromMarkers(markers: unknown, out: Set<string>): void {
-  if (!Array.isArray(markers)) return
+  if (!Array.isArray(markers)) return;
   for (const marker of markers) {
-    if (!marker || typeof marker !== 'object') continue
-    const markerObj = marker as JsonRecord
-    collectCodesFromUnknown(markerObj.codes, out)
+    if (!marker || typeof marker !== 'object') continue;
+    const markerObj = marker as JsonRecord;
+    collectCodesFromUnknown(markerObj.codes, out);
     if (Array.isArray(markerObj.markers)) {
       for (const submenuEntry of markerObj.markers) {
-        if (!submenuEntry || typeof submenuEntry !== 'object') continue
-        collectCodesFromUnknown((submenuEntry as JsonRecord).codes, out)
+        if (!submenuEntry || typeof submenuEntry !== 'object') continue;
+        collectCodesFromUnknown((submenuEntry as JsonRecord).codes, out);
       }
     }
   }
 }
 
 async function loadMapImageNames(): Promise<string[]> {
-  const entries = await readdir(MAP_IMAGES_DIR, { withFileTypes: true })
+  const entries = await readdir(MAP_IMAGES_DIR, { withFileTypes: true });
   return toSortedUnique(
     entries
       .filter((entry) => entry.isFile() && entry.name.endsWith('.png'))
       .map((entry) => entry.name.replace(/\.png$/i, '')),
-  )
+  );
 }
 
 async function loadOverlayNames(): Promise<string[]> {
-  const source = await readFile(TYPES_FILE, 'utf8')
-  return extractStringUnionValues(source, 'MapMarkerOverlay')
+  const source = await readFile(TYPES_FILE, 'utf8');
+  return extractStringUnionValues(source, 'MapMarkerOverlay');
 }
 
 async function loadWorldLocationCodes(): Promise<string[]> {
-  const worldRaw = await readFile(WORLD_DATA_FILE, 'utf8')
-  const world = JSON.parse(worldRaw) as Record<string, Record<string, Record<string, { locations?: JsonRecord }>>>
-  const codes = new Set<string>()
+  const worldRaw = await readFile(WORLD_DATA_FILE, 'utf8');
+  const world = JSON.parse(worldRaw) as Record<
+    string,
+    Record<string, Record<string, { locations?: JsonRecord }>>
+  >;
+  const codes = new Set<string>();
   for (const game of ['oot', 'mm'] as const) {
-    const worldByGame = world[game] ?? {}
+    const worldByGame = world[game] ?? {};
     for (const areaSet of Object.values(worldByGame)) {
       for (const area of Object.values(areaSet ?? {})) {
-        const locations = area?.locations ?? {}
+        const locations = area?.locations ?? {};
         for (const locationName of Object.keys(locations)) {
-          const prefixed = `${game.toUpperCase()} ${locationName}`.trim()
+          const prefixed = `${game.toUpperCase()} ${locationName}`.trim();
           if (prefixed.length > 0) {
-            codes.add(prefixed)
+            codes.add(prefixed);
           }
         }
       }
     }
   }
-  return toSortedUnique(codes)
+  return toSortedUnique(codes);
 }
 
 async function loadCodesFromMapFiles(): Promise<string[]> {
-  const entries = await readdir(MAPS_DIR, { withFileTypes: true })
+  const entries = await readdir(MAPS_DIR, { withFileTypes: true });
   const mapJsonFiles = entries
-    .filter((entry) => entry.isFile() && entry.name.endsWith('.json') && !entry.name.endsWith('.schema.json'))
+    .filter(
+      (entry) =>
+        entry.isFile() &&
+        entry.name.endsWith('.json') &&
+        !entry.name.endsWith('.schema.json'),
+    )
     .map((entry) => path.join(MAPS_DIR, entry.name))
-    .sort((a, b) => a.localeCompare(b))
+    .sort((a, b) => a.localeCompare(b));
 
-  const codes = new Set<string>()
+  const codes = new Set<string>();
   for (const mapPath of mapJsonFiles) {
-    const raw = await readFile(mapPath, 'utf8')
-    const data = JSON.parse(raw) as JsonRecord
-    collectCodesFromMarkers(data.markers, codes)
+    const raw = await readFile(mapPath, 'utf8');
+    const data = JSON.parse(raw) as JsonRecord;
+    collectCodesFromMarkers(data.markers, codes);
   }
-  return toSortedUnique(codes)
+  return toSortedUnique(codes);
 }
 
 async function generateMapSchema(): Promise<void> {
-  const markerImages = toSortedUnique(MAP_ICON_INDEX)
+  const markerImages = toSortedUnique(MAP_ICON_INDEX);
   const [mapImages, overlays, worldCodes, mapCodes] = await Promise.all([
     loadMapImageNames(),
     loadOverlayNames(),
     loadWorldLocationCodes(),
     loadCodesFromMapFiles(),
-  ])
-  const codes = toSortedUnique([...worldCodes, ...mapCodes])
+  ]);
+  const codes = toSortedUnique([...worldCodes, ...mapCodes]);
 
   const schema = {
     $schema: 'https://json-schema.org/draft/2020-12/schema',
@@ -213,17 +229,17 @@ async function generateMapSchema(): Promise<void> {
         },
       },
     },
-  }
+  };
 
-  const output = `${JSON.stringify(schema, null, 2)}\n`
-  await mkdir(path.dirname(OUTPUT_FILE), { recursive: true })
-  await writeFile(OUTPUT_FILE, output, 'utf8')
+  const output = `${JSON.stringify(schema, null, 2)}\n`;
+  await mkdir(path.dirname(OUTPUT_FILE), { recursive: true });
+  await writeFile(OUTPUT_FILE, output, 'utf8');
   console.log(
     `Generated schema -> ${path.relative(process.cwd(), OUTPUT_FILE)} (${markerImages.length} marker images, ${overlays.length} overlays, ${codes.length} codes)`,
-  )
+  );
 }
 
 generateMapSchema().catch((error) => {
-  console.error('Failed to generate map schema:', error)
-  process.exitCode = 1
-})
+  console.error('Failed to generate map schema:', error);
+  process.exitCode = 1;
+});

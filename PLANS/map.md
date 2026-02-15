@@ -1,21 +1,35 @@
 ## Map View Plan (Merged With User Input Overrides)
 
 ## Summary
+
 - Rendering stack: `DOM + Vue layers`.
 - Marker strategy: mixed (`per-check` in sparse areas, grouped in dense areas).
 - Navigation v1: pan + wheel/pinch zoom.
 
 ## Canonical Marker Schema
+
 ```ts
 type MapMarkerDef = {
-  coords: [number, number]
-  image: string
-  overlays?: Array<'child' | 'adult' | 'jp_only' | 'na_only' | 'day1' | 'day2' | 'day3' | 'night' | 'day' | 'broken'>
-  codes: string | string[]
-}
+  coords: [number, number];
+  image: string;
+  overlays?: Array<
+    | 'child'
+    | 'adult'
+    | 'jp_only'
+    | 'na_only'
+    | 'day1'
+    | 'day2'
+    | 'day3'
+    | 'night'
+    | 'day'
+    | 'broken'
+  >;
+  codes: string | string[];
+};
 ```
 
 Example:
+
 ```js
 {
   coords: [123, 456],
@@ -24,17 +38,21 @@ Example:
   codes: "OOT Bottom of the Well Grass 01"
 }
 ```
+
 Runtime note:
+
 - In source JSON, marker `mapId` is implicit from the containing map file.
 - Loader may derive an internal/runtime `mapId` field for debugging and future global features.
 
 ## Image Handling
+
 - `image` currently maps conceptually to `images/map_icons/<image>.png`.
 - Do not hardcode storage path or extension in component logic.
 - Add an asset resolver abstraction so image source can be moved later without changing marker data format.
 - Base icon + overlays are one combined click target.
 
 ## Overlay Rules (Authoritative)
+
 - Overlays are optional; empty array is valid.
 - If `overlays` is empty, render no default overlays.
 - Overlay placement:
@@ -59,13 +77,16 @@ Runtime note:
   - support multi-digit values (e.g. `12` uses two digit icons, right-aligned in bottom-right).
 
 ## Codes Semantics (Authoritative)
+
 - `codes` type: `string | string[]`.
 
 For `codes: string`:
+
 - Visibility: marker is shown when that location is reachable and not checked.
 - Click: mark that location checked.
 
 For `codes: string[]`:
+
 - Visibility: marker is shown when at least one location in array is reachable and unchecked.
 - Click behavior:
   - If only one code effectively available, allow direct check toggle.
@@ -76,47 +97,59 @@ For `codes: string[]`:
   - `Mark all checked` only checks currently reachable locations.
 
 Future override support:
+
 - Add a visibility mode switch, defaulting to `reachable-unchecked`:
+
 ```ts
-type MarkerVisibilityMode = 'reachable-unchecked' | 'reachable-any'
+type MarkerVisibilityMode = 'reachable-unchecked' | 'reachable-any';
 ```
+
 - v1 behavior uses `reachable-unchecked`. `reachable-any` can be enabled later to keep checked markers visible.
 
 ## Popup Requirements
+
 - Popup content is fully interactive (buttons/links/icons/overlays).
 - Popup can display marker icon and overlays.
 - Popup rows represent individual checks with their current reachable/checked state.
 - Keep keyboard support (`Esc`, focusable controls).
 
 ## UI Architecture
+
 1. Create `packs/ootmm/src/components/OoTMMMap.vue`.
 2. Render layers:
+
 - map base image
 - marker buttons (`16x16` default icon size)
 - overlay sublayer inside each marker
 - popup layer (interactive)
+
 3. Wire state from existing stores:
+
 - `reachableLocationIdSet`
 - `collectedLocationIds`
 - no settings/context dependency for overlays in v1 (overlay rendering uses marker data only).
 
 ## Map Definitions (v1)
+
 Use a per-map contract that contains its own markers:
+
 ```ts
 type MapDef = {
-  id: string
-  title: string
-  image: string
-  width: number
-  height: number
-  markers: MapMarkerDef[]
-}
+  id: string;
+  title: string;
+  image: string;
+  width: number;
+  height: number;
+  markers: MapMarkerDef[];
+};
 ```
+
 - `image` is resolved by the map asset resolver.
 - `width`/`height` define coordinate-space dimensions for marker placement and pan/zoom bounds.
 - `OoTMMMap` receives one selected `activeMap`, so marker filtering is not needed inside the map component.
 
 ## Filesystem Layout (Preferred)
+
 - Map images:
   - `public/images/maps/<map-id>.png`
 - Map data (one file per map):
@@ -125,6 +158,7 @@ type MapDef = {
   - `packs/ootmm/src/data/maps/index.ts` that imports all map JSON files and exports `MapDef[]`.
 
 Example `packs/ootmm/src/data/maps/oot_overworld.json`:
+
 ```json
 {
   "id": "oot_overworld",
@@ -143,6 +177,7 @@ Example `packs/ootmm/src/data/maps/oot_overworld.json`:
 ```
 
 ## Pan/Zoom
+
 - Implement transformed viewport with:
   - drag pan
   - wheel zoom
@@ -157,13 +192,17 @@ Example `packs/ootmm/src/data/maps/oot_overworld.json`:
   - pan bounds: clamp to map extents after transform (no elastic overscroll in v1)
 
 ## Public Interfaces To Add
+
 1. `MapMarkerViewModel`
+
 - `id`, `coords`, `image`, `overlays`, `codes`, `reachableCount`, `checkedCount`, `isVisible`.
 
 2. `MapPopupPayload`
+
 - `markerId`, `title`, `entries[]`, `canMarkAll`, `markAllAffectsReachableOnly`.
 
 3. `OoTMMMap` props/emits
+
 - Props: `activeMap`, `reachableIds`, `collectedIds`.
 - Emits:
   - `toggle-collected(checkId)`
@@ -172,9 +211,11 @@ Example `packs/ootmm/src/data/maps/oot_overworld.json`:
   - `close-popup()`.
 
 Parent responsibility:
+
 - Manage map tabs/selection and pass the selected `activeMap` into `OoTMMMap`.
 
 ## Implementation Steps
+
 1. Add per-map JSON definitions in `packs/ootmm/src/data/maps/` and load them via an index module.
 2. Add asset resolver for `image`/overlay/digit icon paths (no hardcoded map-icons dependency in marker schema).
 3. Implement `OoTMMMap.vue` base rendering + marker click target composition.
@@ -184,25 +225,40 @@ Parent responsibility:
 7. Add pan/zoom and keep pointer behavior stable.
 
 ## Tests / Validation
+
 1. Single-code marker:
+
 - visible only when reachable + unchecked; click checks it.
+
 2. Multi-code marker:
+
 - visible when any code reachable + unchecked.
 - popup appears when multiple checks are present.
 - `Mark all checked` affects reachable checks only.
+
 3. Overlay rendering:
+
 - no overlays rendered when list is empty (except if count >1)
 - position mapping is correct for all overlay types.
 - count overlay renders multi-digit values with number images.
+
 4. Interaction:
+
 - marker + overlays behave as one click target.
 - popup controls are clickable and keyboard accessible.
+
 5. Navigation:
+
 - marker hitboxes stay aligned under pan/zoom.
+
 6. Tracker integrity:
+
 - `Debug: Activate All` still reaches all checks.
+
 7. Build:
+
 - `npm run build` succeeds.
 
 ## Constraints
+
 - Do not modify `OoTMM/` (external library repo).

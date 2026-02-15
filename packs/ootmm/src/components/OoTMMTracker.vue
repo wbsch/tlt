@@ -999,7 +999,7 @@ onBeforeUnmount(() => {
     <div class="tracker-main">
       <div class="map-panel">
         <div class="map-shell">
-          <div class="map-toolbar" v-if="mapDefs.length > 1 || isMapDevMode">
+          <div v-if="mapDefs.length > 1 || isMapDevMode" class="map-toolbar">
             <template v-if="mapDefs.length > 1">
               <div class="map-selector-combobox">
                 <label class="map-toolbar-label" for="map-selector">Map</label>

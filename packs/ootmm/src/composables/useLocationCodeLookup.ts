@@ -21,7 +21,7 @@ export function stripWorldSuffix(value: string): string {
 }
 
 export function stripGamePrefix(value: string): string {
-  return value.replace(/^\s*(?:MM|OOT)(?:\s+|[_:\-]+)/i, '')
+  return value.replace(/^\s*(?:MM|OOT)(?:\s+|[-_:]+)/i, '')
 }
 
 export function formatLocationDisplayName(value: string): string {

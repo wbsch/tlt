@@ -17,7 +17,9 @@ function isPlainObject(value: unknown): value is Record<string, unknown> {
 function stringArray(value: unknown): string[] {
   if (!Array.isArray(value)) return [];
   return Array.from(
-    new Set(value.filter((entry): entry is string => typeof entry === 'string')),
+    new Set(
+      value.filter((entry): entry is string => typeof entry === 'string'),
+    ),
   );
 }
 
@@ -25,7 +27,8 @@ function numberRecord(value: unknown): Record<string, number> {
   if (!isPlainObject(value)) return {};
   const next: Record<string, number> = {};
   for (const [key, count] of Object.entries(value)) {
-    if (typeof count !== 'number' || !Number.isFinite(count) || count <= 0) continue;
+    if (typeof count !== 'number' || !Number.isFinite(count) || count <= 0)
+      continue;
     next[key] = Math.floor(count);
   }
   return next;
@@ -36,7 +39,9 @@ const PERSIST_CONFIGS: Record<string, PersistConfig> = {
     key: 'tlt:app:v1',
     paths: ['selectedPackId'],
     hydrate: (raw) => ({
-      ...(typeof raw.selectedPackId === 'string' ? { selectedPackId: raw.selectedPackId } : {}),
+      ...(typeof raw.selectedPackId === 'string'
+        ? { selectedPackId: raw.selectedPackId }
+        : {}),
     }),
   },
   'ootmm-ui': {
@@ -84,7 +89,9 @@ const PERSIST_CONFIGS: Record<string, PersistConfig> = {
       ...(typeof raw.locationsShowUnshuffled === 'boolean'
         ? { locationsShowUnshuffled: raw.locationsShowUnshuffled }
         : {}),
-      ...(typeof raw.activeMapId === 'string' ? { activeMapId: raw.activeMapId } : {}),
+      ...(typeof raw.activeMapId === 'string'
+        ? { activeMapId: raw.activeMapId }
+        : {}),
       ...(typeof raw.settingsSearchQuery === 'string'
         ? { settingsSearchQuery: raw.settingsSearchQuery }
         : {}),

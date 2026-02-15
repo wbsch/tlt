@@ -13,10 +13,7 @@
           [
             "SHARED_BOW",
             "SHARED_BOMB_BAG",
-             {"or": [
-                "SHARED_BOMBCHU_BAG",
-                "SHARED_BOMBCHU"
-              ]},
+            { "or": ["SHARED_BOMBCHU_BAG", "SHARED_BOMBCHU"] },
             "SHARED_MAGIC_UPGRADE",
             "SHARED_ARROW_FIRE",
             "SHARED_ARROW_ICE",
@@ -121,10 +118,7 @@
             "OOT_SLINGSHOT",
             "OOT_OCARINA",
             {
-              "or": [
-                "OOT_BOMBCHU_BAG",
-                "OOT_BOMBCHU_10"
-              ]
+              "or": ["OOT_BOMBCHU_BAG", "OOT_BOMBCHU_10"]
             },
             "OOT_HOOKSHOT",
             "OOT_ARROW_ICE",
@@ -311,10 +305,7 @@
             "OOT_KEY_RING_BOTW",
             "oot_chestgame_label",
             {
-              "or": [
-                "OOT_SMALL_KEY_TCG",
-                "OOT_KEY_RING_TCG"
-              ]
+              "or": ["OOT_SMALL_KEY_TCG", "OOT_KEY_RING_TCG"]
             }
           ],
           [
@@ -390,10 +381,7 @@
           [
             "MM_BOMB_BAG",
             {
-              "or": [
-                "MM_BOMBCHU_BAG",
-                "MM_BOMBCHU"
-              ]
+              "or": ["MM_BOMBCHU_BAG", "MM_BOMBCHU"]
             },
             "MM_STICK",
             "MM_NUTS_10",

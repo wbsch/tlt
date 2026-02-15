@@ -34,7 +34,10 @@
           try {
             window.localStorage.clear();
           } catch (error) {
-            console.error('Failed to clear localStorage during tracker reset:', error);
+            console.error(
+              'Failed to clear localStorage during tracker reset:',
+              error,
+            );
           } finally {
             window.location.reload();
           }
