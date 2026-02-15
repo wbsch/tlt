@@ -1,0 +1,265 @@
+{
+  "id": "oot_bottom_of_the_well",
+  "title": "OOT Bottom Of The Well",
+  "image": "oot_bottom_of_the_well",
+  "width": 1000,
+  "height": 600,
+  "markers": [
+    {
+      "coords": [
+        269,
+        290
+      ],
+      "image": "chest",
+      "codes": "TODO KF 001 :: unnamed_stack > Bottom of the Well > Vanilla BotW > BotW Checks :: Pasted Layer :: 001-001-001-000.png"
+    },
+    {
+      "coords": [
+        441,
+        244
+      ],
+      "image": "chest",
+      "codes": "TODO KF 002 :: unnamed_stack > Bottom of the Well > Vanilla BotW > BotW Checks :: Pasted Layer #1 :: 001-001-001-001.png"
+    },
+    {
+      "coords": [
+        514,
+        272
+      ],
+      "image": "chest",
+      "codes": "TODO KF 003 :: unnamed_stack > Bottom of the Well > Vanilla BotW > BotW Checks :: Pasted Layer #2 :: 001-001-001-002.png"
+    },
+    {
+      "coords": [
+        524,
+        304
+      ],
+      "image": "chest",
+      "codes": "TODO KF 004 :: unnamed_stack > Bottom of the Well > Vanilla BotW > BotW Checks :: Pasted Layer #3 :: 001-001-001-003.png"
+    },
+    {
+      "coords": [
+        679,
+        252
+      ],
+      "image": "chest",
+      "codes": "TODO KF 005 :: unnamed_stack > Bottom of the Well > Vanilla BotW > BotW Checks :: Pasted Layer #4 :: 001-001-001-004.png"
+    },
+    {
+      "coords": [
+        749,
+        192
+      ],
+      "image": "chest",
+      "codes": "TODO KF 006 :: unnamed_stack > Bottom of the Well > Vanilla BotW > BotW Checks :: Pasted Layer #5 :: 001-001-001-005.png"
+    },
+    {
+      "coords": [
+        795,
+        276
+      ],
+      "image": "chest",
+      "codes": "TODO KF 007 :: unnamed_stack > Bottom of the Well > Vanilla BotW > BotW Checks :: Pasted Layer #6 :: 001-001-001-006.png"
+    },
+    {
+      "coords": [
+        806,
+        260
+      ],
+      "image": "chest",
+      "codes": "TODO KF 008 :: unnamed_stack > Bottom of the Well > Vanilla BotW > BotW Checks :: Pasted Layer #7 :: 001-001-001-007.png"
+    },
+    {
+      "coords": [
+        840,
+        260
+      ],
+      "image": "chest",
+      "codes": "TODO KF 009 :: unnamed_stack > Bottom of the Well > Vanilla BotW > BotW Checks :: Pasted Layer #8 :: 001-001-001-008.png"
+    },
+    {
+      "coords": [
+        848,
+        275
+      ],
+      "image": "chest",
+      "codes": "TODO KF 010 :: unnamed_stack > Bottom of the Well > Vanilla BotW > BotW Checks :: Pasted Layer #9 :: 001-001-001-009.png"
+    },
+    {
+      "coords": [
+        902,
+        228
+      ],
+      "image": "chest",
+      "codes": "TODO KF 011 :: unnamed_stack > Bottom of the Well > Vanilla BotW > BotW Checks :: Pasted Layer #10 :: 001-001-001-010.png"
+    },
+    {
+      "coords": [
+        893,
+        249
+      ],
+      "image": "chest",
+      "codes": "TODO KF 012 :: unnamed_stack > Bottom of the Well > Vanilla BotW > BotW Checks :: Pasted Layer #11 :: 001-001-001-011.png"
+    },
+    {
+      "coords": [
+        906,
+        304
+      ],
+      "image": "chest",
+      "codes": "TODO KF 013 :: unnamed_stack > Bottom of the Well > Vanilla BotW > BotW Checks :: Pasted Layer #12 :: 001-001-001-012.png"
+    },
+    {
+      "coords": [
+        926,
+        304
+      ],
+      "image": "chest",
+      "codes": "TODO KF 014 :: unnamed_stack > Bottom of the Well > Vanilla BotW > BotW Checks :: Pasted Layer #13 :: 001-001-001-013.png"
+    },
+    {
+      "coords": [
+        903,
+        247
+      ],
+      "image": "gold_skulltula",
+      "codes": "TODO KF 015 :: unnamed_stack > Bottom of the Well > Vanilla BotW > BotW Skulls :: Pasted Layer #14 :: 001-001-002-000.png"
+    },
+    {
+      "coords": [
+        841,
+        216
+      ],
+      "image": "gold_skulltula",
+      "codes": "TODO KF 016 :: unnamed_stack > Bottom of the Well > Vanilla BotW > BotW Skulls :: Pasted Layer #15 :: 001-001-002-001.png"
+    },
+    {
+      "coords": [
+        799,
+        214
+      ],
+      "image": "gold_skulltula",
+      "codes": "TODO KF 017 :: unnamed_stack > Bottom of the Well > Vanilla BotW > BotW Skulls :: Pasted Layer #16 :: 001-001-002-002.png"
+    },
+    {
+      "coords": [
+        207,
+        271
+      ],
+      "image": "silver_boulder_grotto",
+      "codes": "TODO KF 018 :: unnamed_stack > Bottom of the Well > Vanilla BotW > BotW Silver :: Pasted Layer #17 :: 001-001-003-000.png"
+    },
+    {
+      "coords": [
+        220,
+        249
+      ],
+      "image": "pot",
+      "codes": "TODO KF 019 :: unnamed_stack > Bottom of the Well > Vanilla BotW > BotW Pots :: Pasted Layer #18 :: 001-001-004-000.png"
+    },
+    {
+      "coords": [
+        232,
+        220
+      ],
+      "image": "pot",
+      "codes": "TODO KF 020 :: unnamed_stack > Bottom of the Well > Vanilla BotW > BotW Pots :: Pasted Layer #19 :: 001-001-004-001.png"
+    },
+    {
+      "coords": [
+        250,
+        212
+      ],
+      "image": "pot",
+      "codes": "TODO KF 021 :: unnamed_stack > Bottom of the Well > Vanilla BotW > BotW Pots :: Pasted Layer #20 :: 001-001-004-002.png"
+    },
+    {
+      "coords": [
+        821,
+        308
+      ],
+      "image": "pot",
+      "codes": "TODO KF 022 :: unnamed_stack > Bottom of the Well > Vanilla BotW > BotW Pots :: Pasted Layer #21 :: 001-001-004-003.png"
+    },
+    {
+      "coords": [
+        753,
+        290
+      ],
+      "image": "pot",
+      "codes": "TODO KF 023 :: unnamed_stack > Bottom of the Well > Vanilla BotW > BotW Pots :: Pasted Layer #22 :: 001-001-004-004.png"
+    },
+    {
+      "coords": [
+        794,
+        224
+      ],
+      "image": "pot",
+      "codes": "TODO KF 024 :: unnamed_stack > Bottom of the Well > Vanilla BotW > BotW Pots :: Pasted Layer #23 :: 001-001-004-005.png"
+    },
+    {
+      "coords": [
+        824,
+        185
+      ],
+      "image": "pot",
+      "codes": "TODO KF 025 :: unnamed_stack > Bottom of the Well > Vanilla BotW > BotW Pots :: Pasted Layer #24 :: 001-001-004-006.png"
+    },
+    {
+      "coords": [
+        884,
+        214
+      ],
+      "image": "pot",
+      "codes": "TODO KF 026 :: unnamed_stack > Bottom of the Well > Vanilla BotW > BotW Pots :: Pasted Layer #25 :: 001-001-004-007.png"
+    },
+    {
+      "coords": [
+        226,
+        241
+      ],
+      "image": "green_rupee",
+      "codes": "TODO KF 027 :: unnamed_stack > Bottom of the Well > Vanilla BotW > BotW Freestanding Rupees :: Pasted Layer #26 :: 001-001-005-000.png"
+    },
+    {
+      "coords": [
+        706,
+        254
+      ],
+      "image": "heart",
+      "codes": "TODO KF 028 :: unnamed_stack > Bottom of the Well > Vanilla BotW > BotW Freestanding Hearts :: Pasted Layer #27 :: 001-001-006-000.png"
+    },
+    {
+      "coords": [
+        692,
+        233
+      ],
+      "image": "heart",
+      "codes": "TODO KF 029 :: unnamed_stack > Bottom of the Well > Vanilla BotW > BotW Freestanding Hearts :: Pasted Layer #28 :: 001-001-006-001.png"
+    },
+    {
+      "coords": [
+        263,
+        196
+      ],
+      "image": "big_fairy_spot",
+      "codes": "TODO KF 030 :: unnamed_stack > Bottom of the Well > Vanilla BotW > BotW Big Fairy :: Pasted Layer #29 :: 001-001-007-000.png"
+    },
+    {
+      "coords": [
+        191,
+        250
+      ],
+      "image": "grass",
+      "codes": "TODO KF 031 :: unnamed_stack > Bottom of the Well > Vanilla BotW > BotW Grass :: Pasted Layer #30 :: 001-001-008-000.png"
+    },
+    {
+      "coords": [
+        171,
+        211
+      ],
+      "image": "grass",
+      "codes": "TODO KF 032 :: unnamed_stack > Bottom of the Well > Vanilla BotW > BotW Grass :: Pasted Layer #31 :: 001-001-008-001.png"
+    }
+  ]
+}
