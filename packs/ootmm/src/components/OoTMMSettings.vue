@@ -5,6 +5,7 @@ import { SPECIAL_CONDS, SPECIAL_CONDS_FIELDS } from '@ootmm/core/settings/index'
 import { SETTINGS_DEFINITIONS } from '../data/settings'
 import { useOoTMMUiStore } from '../stores/ootmmUi'
 import { matchesSearchTerms } from '../utils/search'
+import { selectSearchInputText } from '../utils/input'
 
 const props = defineProps<{
   settings: Record<string, unknown>
@@ -436,6 +437,8 @@ defineExpose({
         type="text"
         placeholder="Search settings..."
         class="search-input"
+        @focus="selectSearchInputText"
+        @click="selectSearchInputText"
       />
     </div>
 

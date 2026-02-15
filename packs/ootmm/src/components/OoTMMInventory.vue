@@ -4,6 +4,7 @@ import { storeToRefs } from 'pinia'
 import { ITEM_DATABASE } from '../data/items'
 import { useOoTMMUiStore } from '../stores/ootmmUi'
 import { matchesSearchTerms } from '../utils/search'
+import { selectSearchInputText } from '../utils/input'
 
 const props = defineProps<{
   inventory: Map<string, number>
@@ -101,6 +102,8 @@ function toggleItem(itemId: string) {
         type="text"
         placeholder="Search items..."
         class="search-input"
+        @focus="selectSearchInputText"
+        @click="selectSearchInputText"
       />
       
       <select v-model="selectedCategory" class="category-select">

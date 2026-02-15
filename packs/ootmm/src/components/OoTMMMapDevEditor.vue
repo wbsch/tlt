@@ -13,6 +13,7 @@ import {
   matchesNormalizedSearchTerms,
   normalizeSearchText,
 } from '../utils/search'
+import { selectSearchInputText } from '../utils/input'
 
 const LOCATION_SEARCH_LIMIT = 80
 
@@ -1018,6 +1019,8 @@ onBeforeUnmount(() => {
             v-model="codeSearchQuery"
             type="text"
             placeholder="Search by location id or name"
+            @focus="selectSearchInputText"
+            @click="selectSearchInputText"
           />
         </label>
         <div class="map-dev-editor__location-list">

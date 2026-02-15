@@ -10,6 +10,7 @@ import {
   matchesLocationReachabilityVisibility,
   type LocationVisibilityFilters,
 } from '../utils/locationVisibility'
+import { selectSearchInputText } from '../utils/input'
 import { stripGamePrefix } from '../composables/useLocationCodeLookup'
 // Import pool data to get scene information
 import poolData from '../../../../OoTMM/packages/data/dist/data-pool.json'
@@ -164,6 +165,8 @@ function toggleCollected(id: string) {
         type="text"
         placeholder="Search locations..."
         class="search-input"
+        @focus="selectSearchInputText"
+        @click="selectSearchInputText"
       />
       
       <select v-model="selectedCategory" class="category-select">

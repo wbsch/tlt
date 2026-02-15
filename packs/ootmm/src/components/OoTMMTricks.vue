@@ -2,6 +2,7 @@
 import { ref, computed } from 'vue'
 import { TRICKS } from '@ootmm/core/settings/tricks'
 import { matchesSearchTerms } from '../utils/search'
+import { selectSearchInputText } from '../utils/input'
 
 const props = defineProps<{
   settings: Record<string, unknown>
@@ -106,6 +107,8 @@ defineExpose({
           type="text"
           placeholder="Search tricks..."
           class="search-input"
+          @focus="selectSearchInputText"
+          @click="selectSearchInputText"
         />
         
         <div class="filter-group">
