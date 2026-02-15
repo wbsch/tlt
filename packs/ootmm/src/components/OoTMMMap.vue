@@ -716,10 +716,25 @@ function popupStyle(): Record<string, string> {
 }
 
 function submenuPanelStyle(): Record<string, string> {
+  const markerSize = MARKER_SIZE * scale.value
+  const overlaySize = 8 * scale.value
+  const overlayWideSize = 12 * scale.value
+  const digitWidth = 6 * scale.value
+  const digitHeight = 8 * scale.value
+  const cornerOffset = -2 * scale.value
+  const cornerGap = Math.max(1, scale.value)
+
   if (!submenuPanel.value.position) {
     return {
       visibility: 'hidden',
       pointerEvents: 'none',
+      '--submenu-marker-size': `${markerSize}px`,
+      '--submenu-overlay-size': `${overlaySize}px`,
+      '--submenu-overlay-wide-size': `${overlayWideSize}px`,
+      '--submenu-digit-width': `${digitWidth}px`,
+      '--submenu-digit-height': `${digitHeight}px`,
+      '--submenu-corner-offset': `${cornerOffset}px`,
+      '--submenu-corner-gap': `${cornerGap}px`,
     }
   }
 
@@ -728,6 +743,13 @@ function submenuPanelStyle(): Record<string, string> {
     top: `${submenuPanel.value.position.top}px`,
     visibility: submenuPanel.value.layoutReady ? 'visible' : 'hidden',
     pointerEvents: submenuPanel.value.layoutReady ? 'auto' : 'none',
+    '--submenu-marker-size': `${markerSize}px`,
+    '--submenu-overlay-size': `${overlaySize}px`,
+    '--submenu-overlay-wide-size': `${overlayWideSize}px`,
+    '--submenu-digit-width': `${digitWidth}px`,
+    '--submenu-digit-height': `${digitHeight}px`,
+    '--submenu-corner-offset': `${cornerOffset}px`,
+    '--submenu-corner-gap': `${cornerGap}px`,
   }
 }
 
@@ -1862,6 +1884,13 @@ onBeforeUnmount(() => {
 
 .map-submenu-panel {
   position: absolute;
+  --submenu-marker-size: 16px;
+  --submenu-overlay-size: 8px;
+  --submenu-overlay-wide-size: 12px;
+  --submenu-digit-width: 6px;
+  --submenu-digit-height: 8px;
+  --submenu-corner-offset: -2px;
+  --submenu-corner-gap: 1px;
   width: 320px;
   max-width: calc(100% - 16px);
   max-height: calc(100% - 16px);
@@ -1896,14 +1925,57 @@ onBeforeUnmount(() => {
 
 .map-submenu-marker {
   position: relative;
-  width: 16px;
-  height: 16px;
+  width: var(--submenu-marker-size);
+  height: var(--submenu-marker-size);
   border: none;
   background: transparent;
   padding: 0;
   margin: 0;
   cursor: pointer;
   flex: 0 0 auto;
+}
+
+.map-submenu-marker .map-marker__icon {
+  width: var(--submenu-marker-size);
+  height: var(--submenu-marker-size);
+}
+
+.map-submenu-marker .map-marker__corner {
+  gap: var(--submenu-corner-gap);
+}
+
+.map-submenu-marker .map-marker__corner--top-left {
+  top: var(--submenu-corner-offset);
+  left: var(--submenu-corner-offset);
+}
+
+.map-submenu-marker .map-marker__corner--bottom-left {
+  bottom: var(--submenu-corner-offset);
+  left: var(--submenu-corner-offset);
+}
+
+.map-submenu-marker .map-marker__corner--top-right {
+  top: var(--submenu-corner-offset);
+  right: var(--submenu-corner-offset);
+}
+
+.map-submenu-marker .map-marker__corner--bottom-right {
+  right: var(--submenu-corner-offset);
+  bottom: var(--submenu-corner-offset);
+}
+
+.map-submenu-marker .map-marker__overlay {
+  width: var(--submenu-overlay-size);
+  height: var(--submenu-overlay-size);
+}
+
+.map-submenu-marker .map-marker__overlay--wide {
+  width: var(--submenu-overlay-wide-size);
+}
+
+.map-submenu-marker .map-marker__digit {
+  width: var(--submenu-digit-width);
+  height: var(--submenu-digit-height);
 }
 
 .map-submenu-marker:focus-visible {
