@@ -417,6 +417,13 @@ export class OoTMMTracker implements TrackerPack {
       world.prices[slotData.slot] = base
     }
 
+    for (const [, slotData] of this.shopPriceSlotsByLocationId.entries()) {
+      if (this.getShopPriceModeForGame(slotData.game) !== 'affordable') continue
+      const world = this.worlds[slotData.worldId]
+      if (!world?.prices || slotData.slot < 0 || slotData.slot >= world.prices.length) continue
+      world.prices[slotData.slot] = 10
+    }
+
     for (const [locationId, rawValue] of Object.entries(pricesByLocation)) {
       const slotData = this.shopPriceSlotsByLocationId.get(locationId)
       if (!slotData) continue
@@ -1014,14 +1021,18 @@ export class OoTMMTracker implements TrackerPack {
   }
 
   private isShopPriceEditableForGame(game: 'oot' | 'mm'): boolean {
+    const mode = this.getShopPriceModeForGame(game)
+    return mode === 'random' || mode === 'weighted'
+  }
+
+  private getShopPriceModeForGame(game: 'oot' | 'mm'): string {
     const settings = this.settings as {
       priceOotShops?: unknown
       priceMmShops?: unknown
     }
-    const mode = game === 'oot'
+    return game === 'oot'
       ? String(settings.priceOotShops ?? '')
       : String(settings.priceMmShops ?? '')
-    return mode === 'random' || mode === 'weighted'
   }
 
   private computeVanillaSilverRupeeCounts(reachableLocationIds: string[]): Map<string, number> {
