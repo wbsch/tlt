@@ -1920,6 +1920,18 @@ onBeforeUnmount(() => {
   z-index: 2;
 }
 
+.map-marker:hover .map-marker__icon,
+.map-marker:hover .map-marker__overlay,
+.map-marker:hover .map-marker__digit,
+.map-marker:focus .map-marker__icon,
+.map-marker:focus .map-marker__overlay,
+.map-marker:focus .map-marker__digit,
+.map-marker:focus-visible .map-marker__icon,
+.map-marker:focus-visible .map-marker__overlay,
+.map-marker:focus-visible .map-marker__digit {
+  animation: map-marker-active-shimmer 1.1s ease-in-out infinite;
+}
+
 .map-marker:focus-visible {
   outline: 2px solid #fbbf24;
   outline-offset: 1px;
@@ -1981,6 +1993,16 @@ onBeforeUnmount(() => {
   width: 6px;
   height: 8px;
   image-rendering: pixelated;
+}
+
+@keyframes map-marker-active-shimmer {
+  0%,
+  100% {
+    filter: brightness(1) drop-shadow(0 0 0 rgba(255, 255, 255, 0));
+  }
+  50% {
+    filter: brightness(1.32) drop-shadow(0 0 2px rgba(255, 255, 255, 0.45));
+  }
 }
 
 .map-popup {
