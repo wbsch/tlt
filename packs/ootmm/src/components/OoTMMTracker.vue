@@ -140,13 +140,17 @@ const locationVisibilityFilters = computed<LocationVisibilityFilters>(() => ({
   showUnshuffled: locationsShowUnshuffled.value,
   showGossipStones: locationsShowGossipStones.value,
 }))
+const mapLocationVisibilityFilters = computed<LocationVisibilityFilters>(() => ({
+  ...locationVisibilityFilters.value,
+  searchQuery: '',
+}))
 const visibleLocationIds = computed(() => {
   const visible = new Set<string>()
   for (const location of allLocations.value) {
     if (
       isLocationVisibleInSidebar(
         location,
-        locationVisibilityFilters.value,
+        mapLocationVisibilityFilters.value,
         reachableLocationIds.value,
         collectedLocationIdSet.value,
       )
@@ -1035,6 +1039,63 @@ onBeforeUnmount(() => {
               </div>
             </template>
             <span v-else class="map-toolbar-label">{{ activeMap?.title ?? 'Map' }}</span>
+
+            <div class="map-toolbar-filters">
+              <div class="map-filter-group" role="group" aria-label="Reachability filter">
+                <button
+                  type="button"
+                  class="map-filter-button"
+                  :class="{ 'is-active': locationsReachabilityFilter === 'all' }"
+                  @click="locationsReachabilityFilter = 'all'"
+                >
+                  All
+                </button>
+                <button
+                  type="button"
+                  class="map-filter-button"
+                  :class="{ 'is-active': locationsReachabilityFilter === 'reachable' }"
+                  @click="locationsReachabilityFilter = 'reachable'"
+                >
+                  Reachable
+                </button>
+                <button
+                  type="button"
+                  class="map-filter-button"
+                  :class="{ 'is-active': locationsReachabilityFilter === 'unreachable' }"
+                  @click="locationsReachabilityFilter = 'unreachable'"
+                >
+                  Unreachable
+                </button>
+              </div>
+
+              <div class="map-filter-group" role="group" aria-label="Collection filter">
+                <button
+                  type="button"
+                  class="map-filter-button"
+                  :class="{ 'is-active': locationsCollectionFilter === 'all' }"
+                  @click="locationsCollectionFilter = 'all'"
+                >
+                  All
+                </button>
+                <button
+                  type="button"
+                  class="map-filter-button"
+                  :class="{ 'is-active': locationsCollectionFilter === 'collected' }"
+                  @click="locationsCollectionFilter = 'collected'"
+                >
+                  Collected
+                </button>
+                <button
+                  type="button"
+                  class="map-filter-button"
+                  :class="{ 'is-active': locationsCollectionFilter === 'uncollected' }"
+                  @click="locationsCollectionFilter = 'uncollected'"
+                >
+                  Uncollected
+                </button>
+              </div>
+            </div>
+
             <span v-if="isMapDevMode" class="map-toolbar-dev">DEV MODE</span>
             <div v-if="isMapDevMode" ref="mapWarningAnchorRef" class="map-toolbar-warning-wrap">
               <button
@@ -1524,6 +1585,44 @@ onBeforeUnmount(() => {
   font-size: 0.68rem;
   font-weight: 700;
   letter-spacing: 0.06em;
+}
+
+.map-toolbar-filters {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.map-filter-group {
+  display: inline-flex;
+  border: 1px solid #4b5563;
+  border-radius: 0.4rem;
+  overflow: hidden;
+}
+
+.map-filter-button {
+  border: none;
+  border-radius: 0;
+  background: #1f2937;
+  color: #cbd5e1;
+  font-size: 0.72rem;
+  letter-spacing: 0.02em;
+  padding: 0.3rem 0.5rem;
+  text-transform: uppercase;
+}
+
+.map-filter-button + .map-filter-button {
+  border-left: 1px solid #374151;
+}
+
+.map-filter-button:hover {
+  background: #111827;
+}
+
+.map-filter-button.is-active {
+  background: #1d4ed8;
+  color: #eff6ff;
 }
 
 .map-toolbar-warning-anchor {
