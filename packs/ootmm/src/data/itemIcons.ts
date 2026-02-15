@@ -546,6 +546,9 @@ const RAW_ITEM_ICONS: Record<string, string> = {
   'SHARED_TRIFORCE_POWER': 'images/triforce_piece.png',
   'SHARED_TRIFORCE_WISDOM': 'images/triforce_piece.png',
   'SHARED_TRIFORCE_COURAGE': 'images/triforce_piece.png',
+  'SHARED_SHIELD_DEKU': 'images/shield1.png',
+  'SHARED_SHIELD_HYLIAN': 'images/shield2.png',
+  'SHARED_SHIELD_MIRROR': 'images/shield3.png',
 }
 
 export const ITEM_ICONS: Record<string, string> = Object.fromEntries(

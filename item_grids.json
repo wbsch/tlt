@@ -25,7 +25,9 @@
             "SHARED_LENS",
             "SHARED_OCARINA",
             "SHARED_SWORD",
-            "SHARED_SHIELD",
+            "SHARED_SHIELD_DEKU",
+            "SHARED_SHIELD_HYLIAN",
+            "SHARED_SHIELD_MIRROR",
             "SHARED_HAMMER",
             "SHARED_STRENGTH",
             "SHARED_SCALE",
@@ -44,7 +46,6 @@
             "SHARED_TRIFORCE_POWER"
           ],
           [
-            "SHARED_HEART_PIECE",
             "SHARED_MASK_GORON",
             "SHARED_MASK_ZORA",
             "SHARED_MASK_BUNNY",
