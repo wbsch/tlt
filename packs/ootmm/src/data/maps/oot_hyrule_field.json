@@ -885,7 +885,6 @@
         "child"
       ],
       "codes": [
-        "TODO KF 071 :: unnamed_stack > Hyrule > Hyrule Layers > Hyrule Bushes :: Pasted Layer #70 :: 001-001-013-005.png",
         "OOT Hyrule Field Bush Child 12",
         "OOT Hyrule Field Bush Child 13",
         "OOT Hyrule Field Bush Child 14",
@@ -968,9 +967,7 @@
       "markers": [
         {
           "image": "npc",
-          "codes": [
-            "OOT Great Fairy Din's Fire"
-          ]
+          "codes": "OOT Great Fairy Defense Upgrade"
         }
       ]
     },
@@ -980,7 +977,23 @@
         564
       ],
       "image": "interior_entrance",
-      "codes": "TODO KF 078 :: unnamed_stack > Hyrule > Hyrule Layers > Hyrule Entrances :: Pasted Layer #77 :: 001-001-015-002.png"
+      "type": "submenu",
+      "markers": [
+        {
+          "image": "heart_piece",
+          "overlays": [
+            "child"
+          ],
+          "codes": "OOT Lon Lon Ranch Silo HP"
+        },
+        {
+          "image": "cow",
+          "codes": [
+            "OOT Lon Lon Ranch Silo Cow Front",
+            "OOT Lon Lon Ranch Silo Cow Back"
+          ]
+        }
+      ]
     },
     {
       "coords": [
@@ -991,7 +1004,21 @@
       "overlays": [
         "child"
       ],
-      "codes": "TODO KF 079 :: unnamed_stack > Hyrule > Hyrule Layers > Hyrule Entrances :: Pasted Layer #78 :: 001-001-015-003.png"
+      "type": "submenu",
+      "markers": [
+        {
+          "image": "business_scrub_oot",
+          "codes": [
+            "OOT Lon Lon Ranch Grotto Left Scrub",
+            "OOT Lon Lon Ranch Grotto Right Scrub",
+            "OOT Lon Lon Ranch Grotto Center Scrub"
+          ]
+        },
+        {
+          "image": "beehive",
+          "codes": "OOT Lon Lon Ranch Grotto Hive"
+        }
+      ]
     },
     {
       "coords": [
@@ -999,7 +1026,16 @@
         398
       ],
       "image": "interior_entrance",
-      "codes": "TODO KF 080 :: unnamed_stack > Hyrule > Hyrule Layers > Hyrule Entrances :: Pasted Layer #79 :: 001-001-015-004.png"
+      "type": "submenu",
+      "markers": [
+        {
+          "image": "cow",
+          "codes": [
+            "OOT Lon Lon Ranch Stables Cow Left",
+            "OOT Lon Lon Ranch Stables Cow Right"
+          ]
+        }
+      ]
     },
     {
       "coords": [
@@ -1007,7 +1043,33 @@
         390
       ],
       "image": "interior_entrance",
-      "codes": "TODO KF 081 :: unnamed_stack > Hyrule > Hyrule Layers > Hyrule Entrances :: Pasted Layer #80 :: 001-001-015-005.png"
+      "type": "submenu",
+      "markers": [
+        {
+          "image": "npc",
+          "overlays": [
+            "child",
+            "day"
+          ],
+          "codes": "OOT Lon Lon Ranch Talon Bottle"
+        },
+        {
+          "image": "shop",
+          "overlays": [
+            "child",
+            "day"
+          ],
+          "codes": "OOT Lon Lon Ranch Talon Buy Milk"
+        },
+        {
+          "image": "pot",
+          "codes": [
+            "OOT Lon Lon Ranch Talon House Pot 1",
+            "OOT Lon Lon Ranch Talon House Pot 2",
+            "OOT Lon Lon Ranch Talon House Pot 3"
+          ]
+        }
+      ]
     },
     {
       "coords": [
@@ -1019,7 +1081,17 @@
         "child",
         "night"
       ],
-      "codes": "TODO KF 082 :: unnamed_stack > Hyrule > Hyrule Layers > Hyrule Entrances :: Pasted Layer #81 :: 001-001-015-006.png"
+      "type": "submenu",
+      "markers": [
+        {
+          "image": "pot",
+          "codes": [
+            "OOT Market Back Alley East House Pot 1",
+            "OOT Market Back Alley East House Pot 2",
+            "OOT Market Back Alley East House Pot 3"
+          ]
+        }
+      ]
     },
     {
       "coords": [
@@ -1030,7 +1102,19 @@
       "overlays": [
         "child"
       ],
-      "codes": "TODO KF 083 :: unnamed_stack > Hyrule > Hyrule Layers > Hyrule Entrances :: Pasted Layer #82 :: 001-001-015-007.png"
+      "type": "submenu",
+      "markers": [
+        {
+          "image": "npc",
+          "overlays": [
+            "child"
+          ],
+          "codes": [
+            "OOT Bombchu Bowling Reward 1",
+            "OOT Bombchu Bowling Reward 2"
+          ]
+        }
+      ]
     },
     {
       "coords": [
@@ -1042,7 +1126,16 @@
         "child",
         "day"
       ],
-      "codes": "TODO KF 084 :: unnamed_stack > Hyrule > Hyrule Layers > Hyrule Entrances :: Pasted Layer #83 :: 001-001-015-008.png"
+      "type": "submenu",
+      "markers": [
+        {
+          "image": "npc",
+          "overlays": [
+            "child"
+          ],
+          "codes": "OOT Shooting Gallery Child"
+        }
+      ]
     },
     {
       "coords": [
@@ -1054,7 +1147,20 @@
         "child",
         "night"
       ],
-      "codes": "TODO KF 085 :: unnamed_stack > Hyrule > Hyrule Layers > Hyrule Entrances :: Pasted Layer #84 :: 001-001-015-009.png"
+      "type": "submenu",
+      "markers": [
+        {
+          "image": "npc",
+          "overlays": [
+            "child"
+          ],
+          "codes": "OOT Market Dog Lady HP"
+        },
+        {
+          "image": "crate",
+          "codes": "OOT Market Dog Lady Crate"
+        }
+      ]
     },
     {
       "coords": [
@@ -1066,7 +1172,22 @@
         "child",
         "night"
       ],
-      "codes": "TODO KF 086 :: unnamed_stack > Hyrule > Hyrule Layers > Hyrule Entrances :: Pasted Layer #85 :: 001-001-015-010.png"
+      "type": "submenu",
+      "markers": [
+        {
+          "image": "shop",
+          "codes": [
+            "OOT Market Bombchu Shop Item 1",
+            "OOT Market Bombchu Shop Item 2",
+            "OOT Market Bombchu Shop Item 3",
+            "OOT Market Bombchu Shop Item 4",
+            "OOT Market Bombchu Shop Item 5",
+            "OOT Market Bombchu Shop Item 6",
+            "OOT Market Bombchu Shop Item 7",
+            "OOT Market Bombchu Shop Item 8"
+          ]
+        }
+      ]
     },
     {
       "coords": [
@@ -1078,7 +1199,29 @@
         "child",
         "night"
       ],
-      "codes": "TODO KF 087 :: unnamed_stack > Hyrule > Hyrule Layers > Hyrule Entrances :: Pasted Layer #86 :: 001-001-015-011.png"
+      "type": "submenu",
+      "markers": [
+        {
+          "image": "shop",
+          "codes": "OOT Treasure Chest Game Buy Key"
+        },
+        {
+          "image": "chest",
+          "codes": [
+            "OOT Treasure Chest Game Room 1 Chest Left",
+            "OOT Treasure Chest Game Room 1 Chest Right",
+            "OOT Treasure Chest Game Room 2 Chest Left",
+            "OOT Treasure Chest Game Room 2 Chest Right",
+            "OOT Treasure Chest Game Room 3 Chest Left",
+            "OOT Treasure Chest Game Room 3 Chest Right",
+            "OOT Treasure Chest Game Room 4 Chest Left",
+            "OOT Treasure Chest Game Room 4 Chest Right",
+            "OOT Treasure Chest Game Room 5 Chest Left",
+            "OOT Treasure Chest Game Room 5 Chest Right",
+            "OOT Treasure Chest Game HP"
+          ]
+        }
+      ]
     },
     {
       "coords": [
@@ -1086,7 +1229,103 @@
         564
       ],
       "image": "interior_entrance",
-      "codes": "TODO KF 088 :: unnamed_stack > Hyrule > Hyrule Layers > Hyrule Entrances :: Pasted Layer #87 :: 001-001-015-012.png"
+      "type": "submenu",
+      "markers": [
+        {
+          "image": "npc",
+          "overlays": [
+            "adult"
+          ],
+          "codes": "OOT Market Pot House Big Poes"
+        },
+        {
+          "image": "gold_skulltula",
+          "codes": "OOT Market Pot House GS"
+        },
+        {
+          "image": "crate",
+          "overlays": [
+            "child"
+          ],
+          "codes": [
+            "OOT Market Pot House Crate 1",
+            "OOT Market Pot House Crate 2",
+            "OOT Market Pot House Crate 3",
+            "OOT Market Pot House Crate 4"
+          ]
+        },
+        {
+          "image": "pot",
+          "overlays": [
+            "child"
+          ],
+          "codes": [
+            "OOT Market Pot House Child Pot Ground 1",
+            "OOT Market Pot House Child Pot Ground 2",
+            "OOT Market Pot House Child Pot Ground 3",
+            "OOT Market Pot House Child Pot Ground 4",
+            "OOT Market Pot House Child Pot Ground 5",
+            "OOT Market Pot House Child Pot Ground 6",
+            "OOT Market Pot House Child Pot Ground 7",
+            "OOT Market Pot House Child Pot Ground 8",
+            "OOT Market Pot House Child Pot Ground 9",
+            "OOT Market Pot House Child Pot Ground 10",
+            "OOT Market Pot House Child Pot Ground 11",
+            "OOT Market Pot House Child Pot Ground 12",
+            "OOT Market Pot House Child Pot Ground 13",
+            "OOT Market Pot House Child Pot Ground 14",
+            "OOT Market Pot House Child Pot Ground 15",
+            "OOT Market Pot House Child Pot Ground 16",
+            "OOT Market Pot House Child Pot Ground 17",
+            "OOT Market Pot House Child Pot Ground 18",
+            "OOT Market Pot House Child Pot Ground 19",
+            "OOT Market Pot House Child Pot Ground 20",
+            "OOT Market Pot House Child Pot Ground 21",
+            "OOT Market Pot House Child Pot Ground 22",
+            "OOT Market Pot House Child Pot Ground 23",
+            "OOT Market Pot House Child Pot Ground 24",
+            "OOT Market Pot House Child Pot Ground 25",
+            "OOT Market Pot House Child Pot Ground 26",
+            "OOT Market Pot House Child Pot Ground 27",
+            "OOT Market Pot House Child Pot Ground 28",
+            "OOT Market Pot House Child Pot Ground 29",
+            "OOT Market Pot House Child Pot Ground 30",
+            "OOT Market Pot House Child Pot Ground 31",
+            "OOT Market Pot House Child Pot Ground 32",
+            "OOT Market Pot House Child Pot Ground 33",
+            "OOT Market Pot House Child Pot Ground 34",
+            "OOT Market Pot House Child Pot Ground 35",
+            "OOT Market Pot House Child Pot Ground 36",
+            "OOT Market Pot House Child Pot Ground 37",
+            "OOT Market Pot House Child Pot Ground 38",
+            "OOT Market Pot House Child Pot Ground 39",
+            "OOT Market Pot House Child Pot Ground 40",
+            "OOT Market Pot House Child Pot Ground 41",
+            "OOT Market Pot House Child Pot Ground 42",
+            "OOT Market Pot House Child Pot Above 1",
+            "OOT Market Pot House Child Pot Above 2"
+          ]
+        },
+        {
+          "image": "pot",
+          "overlays": [
+            "adult"
+          ],
+          "codes": [
+            "OOT Market Pot House Adult Pot 1",
+            "OOT Market Pot House Adult Pot 2",
+            "OOT Market Pot House Adult Pot 3",
+            "OOT Market Pot House Adult Pot 4",
+            "OOT Market Pot House Adult Pot 5",
+            "OOT Market Pot House Adult Pot 6",
+            "OOT Market Pot House Adult Pot 7",
+            "OOT Market Pot House Adult Pot 8",
+            "OOT Market Pot House Adult Pot 9",
+            "OOT Market Pot House Adult Pot 10",
+            "OOT Market Pot House Adult Pot 11"
+          ]
+        }
+      ]
     },
     {
       "coords": [
@@ -1097,7 +1336,22 @@
       "overlays": [
         "child"
       ],
-      "codes": "TODO KF 089 :: unnamed_stack > Hyrule > Hyrule Layers > Hyrule Entrances :: Pasted Layer #88 :: 001-001-015-013.png"
+      "type": "submenu",
+      "markers": [
+        {
+          "image": "shop",
+          "codes": [
+            "OOT Market Bazaar Item 1",
+            "OOT Market Bazaar Item 2",
+            "OOT Market Bazaar Item 3",
+            "OOT Market Bazaar Item 4",
+            "OOT Market Bazaar Item 5",
+            "OOT Market Bazaar Item 6",
+            "OOT Market Bazaar Item 7",
+            "OOT Market Bazaar Item 8"
+          ]
+        }
+      ]
     },
     {
       "coords": [
@@ -1108,7 +1362,22 @@
       "overlays": [
         "child"
       ],
-      "codes": "TODO KF 090 :: unnamed_stack > Hyrule > Hyrule Layers > Hyrule Entrances :: Pasted Layer #89 :: 001-001-015-014.png"
+      "type": "submenu",
+      "markers": [
+        {
+          "image": "shop",
+          "codes": [
+            "OOT Market Potion Shop Item 1",
+            "OOT Market Potion Shop Item 2",
+            "OOT Market Potion Shop Item 3",
+            "OOT Market Potion Shop Item 4",
+            "OOT Market Potion Shop Item 5",
+            "OOT Market Potion Shop Item 6",
+            "OOT Market Potion Shop Item 7",
+            "OOT Market Potion Shop Item 8"
+          ]
+        }
+      ]
     },
     {
       "coords": [
@@ -1127,7 +1396,34 @@
         336
       ],
       "image": "interior_entrance",
-      "codes": "TODO KF 092 :: unnamed_stack > Hyrule > Hyrule Layers > Hyrule Entrances :: Pasted Layer #91 :: 001-001-015-016.png"
+      "type": "submenu",
+      "markers": [
+        {
+          "image": "collectible",
+          "overlays": [
+            "child"
+          ],
+          "codes": "OOT Temple of Time Master Sword"
+        },
+        {
+          "image": "song",
+          "overlays": [
+            "adult"
+          ],
+          "codes": "OOT Temple of Time Sheik Song"
+        },
+        {
+          "image": "npc",
+          "overlays": [
+            "adult"
+          ],
+          "codes": "OOT Temple of Time Light Arrows"
+        },
+        {
+          "image": "light_medallion",
+          "codes": "OOT Temple of Time Medallion"
+        }
+      ]
     },
     {
       "coords": [
@@ -1199,7 +1495,13 @@
         172
       ],
       "image": "crawl_space",
-      "codes": "TODO KF 102 :: unnamed_stack > Hyrule > Hyrule Layers > Hyrule Entrances :: Pasted Layer #101 :: 001-001-015-026.png"
+      "type": "submenu",
+      "markers": [
+        {
+          "image": "npc",
+          "codes": "OOT Great Fairy Din's Fire"
+        }
+      ]
     },
     {
       "coords": [
@@ -1207,7 +1509,39 @@
         104
       ],
       "image": "song_grotto",
-      "codes": "TODO KF 103 :: unnamed_stack > Hyrule > Hyrule Layers > Hyrule Entrances :: Pasted Layer #102 :: 001-001-015-027.png"
+      "type": "submenu",
+      "markers": [
+        {
+          "image": "gold_skulltula",
+          "codes": "OOT Hyrule Castle GS Grotto"
+        },
+        {
+          "image": "pot",
+          "codes": [
+            "OOT Hyrule Castle Grotto Pot 1",
+            "OOT Hyrule Castle Grotto Pot 2",
+            "OOT Hyrule Castle Grotto Pot 3",
+            "OOT Hyrule Castle Grotto Pot 4"
+          ]
+        },
+        {
+          "image": "rock",
+          "codes": [
+            "OOT Hyrule Castle Grotto Rock Circle Rock 1",
+            "OOT Hyrule Castle Grotto Rock Circle Rock 2",
+            "OOT Hyrule Castle Grotto Rock Circle Rock 3",
+            "OOT Hyrule Castle Grotto Rock Circle Rock 4",
+            "OOT Hyrule Castle Grotto Rock Circle Rock 5",
+            "OOT Hyrule Castle Grotto Rock Circle Rock 6",
+            "OOT Hyrule Castle Grotto Rock Circle Rock 7",
+            "OOT Hyrule Castle Grotto Rock Circle Rock 8"
+          ]
+        },
+        {
+          "image": "gossip_stone",
+          "codes": "OOT Hyrule Castle Gossip Grotto"
+        }
+      ]
     },
     {
       "coords": [
@@ -1215,7 +1549,24 @@
         69
       ],
       "image": "crawl_space",
-      "codes": "TODO KF 104 :: unnamed_stack > Hyrule > Hyrule Layers > Hyrule Entrances :: Pasted Layer #103 :: 001-001-015-028.png"
+      "overlays": [
+        "day"
+      ],
+      "type": "submenu",
+      "markers": [
+        {
+          "image": "npc",
+          "codes": "OOT Zelda's Letter"
+        },
+        {
+          "image": "song",
+          "codes": "OOT Zelda's Song"
+        },
+        {
+          "image": "wonder_item_red_rupee",
+          "codes": "OOT Castle Courtyard Wonder Item"
+        }
+      ]
     }
   ]
 }
