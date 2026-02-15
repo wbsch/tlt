@@ -124,6 +124,7 @@ type SubmenuPanelState = {
   isHovered: boolean
   layoutReady: boolean
   position: { left: number; top: number } | null
+  frozenWidth: number | null
 }
 
 type DevDraftIssue = {
@@ -185,6 +186,7 @@ const submenuPanel = ref<SubmenuPanelState>({
   isHovered: false,
   layoutReady: false,
   position: null,
+  frozenWidth: null,
 })
 const submenuPopup = ref<SubmenuPopupState>({
   markerId: null,
@@ -735,6 +737,9 @@ function submenuPanelStyle(): Record<string, string> {
       '--submenu-digit-height': `${digitHeight}px`,
       '--submenu-corner-offset': `${cornerOffset}px`,
       '--submenu-corner-gap': `${cornerGap}px`,
+      ...(submenuPanel.value.frozenWidth !== null
+        ? { width: `${submenuPanel.value.frozenWidth}px` }
+        : {}),
     }
   }
 
@@ -750,6 +755,9 @@ function submenuPanelStyle(): Record<string, string> {
     '--submenu-digit-height': `${digitHeight}px`,
     '--submenu-corner-offset': `${cornerOffset}px`,
     '--submenu-corner-gap': `${cornerGap}px`,
+    ...(submenuPanel.value.frozenWidth !== null
+      ? { width: `${submenuPanel.value.frozenWidth}px` }
+      : {}),
   }
 }
 
@@ -866,6 +874,9 @@ function openSubmenuPanel(markerId: string, options?: { pinned?: boolean }): voi
     submenuPanel.value.pinned = true
   }
   clearSubmenuPanelCloseTimer()
+  if (submenuPanel.value.markerId !== markerId) {
+    submenuPanel.value.frozenWidth = null
+  }
   if (submenuPanel.value.markerId === markerId) return
   submenuPanel.value.markerId = markerId
   submenuPanel.value.layoutReady = false
@@ -882,6 +893,7 @@ function closeSubmenuPanel(): void {
   submenuPanel.value.isHovered = false
   submenuPanel.value.layoutReady = false
   submenuPanel.value.position = null
+  submenuPanel.value.frozenWidth = null
 }
 
 function openSubmenuPopup(markerId: string, options?: { pinned?: boolean }): void {
@@ -1272,6 +1284,7 @@ watch(
     if (!markerId) {
       submenuPanel.value.layoutReady = false
       submenuPanel.value.position = null
+      submenuPanel.value.frozenWidth = null
       return
     }
 
@@ -1280,6 +1293,9 @@ watch(
     }
 
     await nextTick()
+    if (submenuPanel.value.frozenWidth === null) {
+      submenuPanel.value.frozenWidth = submenuPanelRef.value?.offsetWidth ?? null
+    }
     updateSubmenuPanelPosition()
     submenuPanel.value.layoutReady = true
   },
@@ -1891,7 +1907,7 @@ onBeforeUnmount(() => {
   --submenu-digit-height: 8px;
   --submenu-corner-offset: -2px;
   --submenu-corner-gap: 1px;
-  width: 320px;
+  width: fit-content;
   max-width: calc(100% - 16px);
   max-height: calc(100% - 16px);
   display: flex;
