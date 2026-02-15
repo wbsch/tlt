@@ -1,5 +1,6 @@
-import { readFile, writeFile } from 'node:fs/promises'
+import { mkdir, readFile, writeFile } from 'node:fs/promises'
 import path from 'node:path'
+import { inflateRawSync } from 'node:zlib'
 
 import { MAP_ICON_INDEX } from '../packs/ootmm/src/data/maps/mapIconIndex.ts'
 import type { MapDef } from '../packs/ootmm/src/data/maps/types.ts'
@@ -58,26 +59,31 @@ const HEURISTIC_RULES: Array<{ icon: string; terms: string[]; weight: number }> 
 ]
 
 type CliArgs = {
-  input: string
-  output: string
+  inputOra: string
   markerCenterOffset: number
+}
+
+type ZipEntry = {
+  name: string
+  compressedSize: number
+  uncompressedSize: number
+  compressionMethod: number
+  localHeaderOffset: number
 }
 
 function usageMessage(): string {
   return [
     'Usage:',
-    '  node scripts/generate_map_json_from_stack_xml.ts --input <stack.xml> --output <map.json> [--marker-center-offset <number>]',
+    '  node scripts/generate_map_json_from_stack_xml.ts <file.ora> [--marker-center-offset <number>]',
   ].join('\n')
 }
 
 function parseCliArgs(argv: string[]): CliArgs {
   const args: {
-    input: string | null
-    output: string | null
+    inputOra: string | null
     markerCenterOffset: number
   } = {
-    input: null,
-    output: null,
+    inputOra: null,
     markerCenterOffset: DEFAULT_MARKER_CENTER_OFFSET,
   }
 
@@ -85,15 +91,11 @@ function parseCliArgs(argv: string[]): CliArgs {
     const arg = argv[i]
     const next = argv[i + 1]
 
-    if (arg === '--input' && next) {
-      args.input = path.resolve(next)
-      i += 1
-      continue
-    }
-
-    if (arg === '--output' && next) {
-      args.output = path.resolve(next)
-      i += 1
+    if (!arg.startsWith('--')) {
+      if (args.inputOra) {
+        throw new Error(`Unexpected extra positional argument: ${arg}\n${usageMessage()}`)
+      }
+      args.inputOra = path.resolve(arg)
       continue
     }
 
@@ -106,17 +108,166 @@ function parseCliArgs(argv: string[]): CliArgs {
       i += 1
       continue
     }
+
+    if (arg === '--marker-center-offset') {
+      throw new Error(`Missing value for --marker-center-offset.\n${usageMessage()}`)
+    }
+
+    if (arg.startsWith('--')) {
+      throw new Error(`Unknown option: ${arg}\n${usageMessage()}`)
+    }
   }
 
-  if (!args.input || !args.output) {
-    throw new Error(`Both --input and --output are required.\n${usageMessage()}`)
+  if (!args.inputOra) {
+    throw new Error(`Input .ora file is required.\n${usageMessage()}`)
+  }
+
+  if (path.extname(args.inputOra).toLowerCase() !== '.ora') {
+    throw new Error(`Input must be a .ora file: ${args.inputOra}`)
   }
 
   return {
-    input: args.input,
-    output: args.output,
+    inputOra: args.inputOra,
     markerCenterOffset: args.markerCenterOffset,
   }
+}
+
+function normalizeZipEntryName(name: string): string {
+  return name.replace(/\\/g, '/').replace(/^\.\//, '').replace(/^\/+/, '')
+}
+
+function decodeZipName(nameBytes: Buffer): string {
+  return new TextDecoder('utf-8').decode(nameBytes)
+}
+
+function parseZipEntries(zipBuffer: Buffer): ZipEntry[] {
+  const EOCD_SIGNATURE = 0x06054b50
+  const CENTRAL_DIR_SIGNATURE = 0x02014b50
+  const minEocdSize = 22
+  const scanStart = Math.max(0, zipBuffer.length - 0x10000 - minEocdSize)
+
+  let eocdOffset = -1
+  for (let i = zipBuffer.length - minEocdSize; i >= scanStart; i -= 1) {
+    if (zipBuffer.readUInt32LE(i) === EOCD_SIGNATURE) {
+      eocdOffset = i
+      break
+    }
+  }
+
+  if (eocdOffset < 0) {
+    throw new Error('Could not locate ZIP end-of-central-directory record')
+  }
+
+  const entryCount = zipBuffer.readUInt16LE(eocdOffset + 10)
+  const centralDirOffset = zipBuffer.readUInt32LE(eocdOffset + 16)
+
+  if (entryCount === 0xffff || centralDirOffset === 0xffffffff) {
+    throw new Error('ZIP64 archives are not supported')
+  }
+
+  const entries: ZipEntry[] = []
+  let cursor = centralDirOffset
+
+  for (let i = 0; i < entryCount; i += 1) {
+    if (cursor + 46 > zipBuffer.length) {
+      throw new Error('Central directory entry exceeds archive length')
+    }
+
+    if (zipBuffer.readUInt32LE(cursor) !== CENTRAL_DIR_SIGNATURE) {
+      throw new Error(`Invalid central directory entry at offset ${cursor}`)
+    }
+
+    const compressionMethod = zipBuffer.readUInt16LE(cursor + 10)
+    const compressedSize = zipBuffer.readUInt32LE(cursor + 20)
+    const uncompressedSize = zipBuffer.readUInt32LE(cursor + 24)
+    const fileNameLength = zipBuffer.readUInt16LE(cursor + 28)
+    const extraFieldLength = zipBuffer.readUInt16LE(cursor + 30)
+    const fileCommentLength = zipBuffer.readUInt16LE(cursor + 32)
+    const localHeaderOffset = zipBuffer.readUInt32LE(cursor + 42)
+
+    if (
+      compressedSize === 0xffffffff ||
+      uncompressedSize === 0xffffffff ||
+      localHeaderOffset === 0xffffffff
+    ) {
+      throw new Error('ZIP64 archives are not supported')
+    }
+
+    const nameStart = cursor + 46
+    const nameEnd = nameStart + fileNameLength
+    if (nameEnd > zipBuffer.length) {
+      throw new Error('ZIP entry filename exceeds archive length')
+    }
+
+    const rawName = zipBuffer.subarray(nameStart, nameEnd)
+    entries.push({
+      name: normalizeZipEntryName(decodeZipName(rawName)),
+      compressedSize,
+      uncompressedSize,
+      compressionMethod,
+      localHeaderOffset,
+    })
+
+    cursor = nameEnd + extraFieldLength + fileCommentLength
+  }
+
+  return entries
+}
+
+function extractZipEntry(zipBuffer: Buffer, entry: ZipEntry): Buffer {
+  const LOCAL_FILE_HEADER_SIGNATURE = 0x04034b50
+  const localHeaderOffset = entry.localHeaderOffset
+  if (localHeaderOffset + 30 > zipBuffer.length) {
+    throw new Error(`Local file header exceeds archive length for ${entry.name}`)
+  }
+
+  if (zipBuffer.readUInt32LE(localHeaderOffset) !== LOCAL_FILE_HEADER_SIGNATURE) {
+    throw new Error(`Invalid local file header for ${entry.name}`)
+  }
+
+  const fileNameLength = zipBuffer.readUInt16LE(localHeaderOffset + 26)
+  const extraFieldLength = zipBuffer.readUInt16LE(localHeaderOffset + 28)
+  const dataStart = localHeaderOffset + 30 + fileNameLength + extraFieldLength
+  const dataEnd = dataStart + entry.compressedSize
+
+  if (dataEnd > zipBuffer.length) {
+    throw new Error(`ZIP entry data exceeds archive length for ${entry.name}`)
+  }
+
+  const compressedData = zipBuffer.subarray(dataStart, dataEnd)
+  if (entry.compressionMethod === 0) {
+    return Buffer.from(compressedData)
+  }
+
+  if (entry.compressionMethod === 8) {
+    return inflateRawSync(compressedData)
+  }
+
+  throw new Error(
+    `Unsupported compression method ${entry.compressionMethod} for ${entry.name}; expected stored(0) or deflate(8)`,
+  )
+}
+
+function findRootStackXmlEntry(entries: ZipEntry[]): ZipEntry | null {
+  return (
+    entries.find((entry) => {
+      const normalizedName = normalizeZipEntryName(entry.name)
+      return !normalizedName.includes('/') && normalizedName.toLowerCase() === 'stack.xml'
+    }) ?? null
+  )
+}
+
+function findLargestPngEntry(entries: ZipEntry[]): ZipEntry | null {
+  const pngEntries = entries.filter((entry) => entry.name.toLowerCase().endsWith('.png'))
+  if (pngEntries.length === 0) {
+    return null
+  }
+
+  return pngEntries.reduce((largest, current) => {
+    if (current.uncompressedSize > largest.uncompressedSize) return current
+    if (current.uncompressedSize < largest.uncompressedSize) return largest
+    return current.name.localeCompare(largest.name) < 0 ? current : largest
+  })
 }
 
 function parseAttributes(raw: string): Record<string, string> {
@@ -335,8 +486,7 @@ function toTitleCaseWord(word: string, index: number): string {
   return normalized.charAt(0).toUpperCase() + normalized.slice(1).toLowerCase()
 }
 
-function inferMapMetaFromOutputPath(outputPath: string): MapMeta {
-  const baseName = path.basename(outputPath, path.extname(outputPath))
+function inferMapMetaFromBaseName(baseName: string): MapMeta {
   const titleWords = baseName
     .split('_')
     .map((word, index) => toTitleCaseWord(word, index))
@@ -371,15 +521,35 @@ function toMapDef(
 }
 
 async function generate(): Promise<void> {
-  const { input, output, markerCenterOffset } = parseCliArgs(process.argv.slice(2))
-  const xml = await readFile(input, 'utf8')
+  const { inputOra, markerCenterOffset } = parseCliArgs(process.argv.slice(2))
+  const mapBaseName = path.basename(inputOra, path.extname(inputOra))
+  const outputJsonPath = path.resolve(`packs/ootmm/src/data/maps/${mapBaseName}.json`)
+  const outputImagePath = path.resolve(`public/images/maps/${mapBaseName}.png`)
+
+  const oraBytes = await readFile(inputOra)
+  const zipEntries = parseZipEntries(oraBytes)
+  const stackXmlEntry = findRootStackXmlEntry(zipEntries)
+  if (!stackXmlEntry) {
+    throw new Error(`Could not find root-level stack.xml in ${path.basename(inputOra)}`)
+  }
+
+  const largestPngEntry = findLargestPngEntry(zipEntries)
+  if (!largestPngEntry) {
+    throw new Error(`Could not find any .png files in ${path.basename(inputOra)}`)
+  }
+
+  const xml = extractZipEntry(oraBytes, stackXmlEntry).toString('utf8')
   const { width, height } = parseImageSize(xml)
   const layers = parseLayers(xml)
-  const mapMeta = inferMapMetaFromOutputPath(output)
+  const mapMeta = inferMapMetaFromBaseName(mapBaseName)
 
   const mapDef = toMapDef(mapMeta, width, height, layers, markerCenterOffset)
+  const mapImageBytes = extractZipEntry(oraBytes, largestPngEntry)
 
-  await writeFile(output, `${JSON.stringify(mapDef, null, 2)}\n`, 'utf8')
+  await mkdir(path.dirname(outputJsonPath), { recursive: true })
+  await mkdir(path.dirname(outputImagePath), { recursive: true })
+  await writeFile(outputImagePath, mapImageBytes)
+  await writeFile(outputJsonPath, `${JSON.stringify(mapDef, null, 2)}\n`, 'utf8')
 
   const iconCounts = new Map<string, number>()
   mapDef.markers.forEach((marker) => {
@@ -391,12 +561,20 @@ async function generate(): Promise<void> {
     .map(([icon, count]) => `${icon}:${count}`)
     .join(', ')
 
-  console.log(`Generated ${mapDef.markers.length} markers -> ${path.relative(process.cwd(), output)}`)
+  console.log(
+    `Generated ${mapDef.markers.length} markers -> ${path.relative(process.cwd(), outputJsonPath)}`,
+  )
   console.log(`Image size: ${mapDef.width}x${mapDef.height}`)
+  console.log(
+    `Selected PNG: ${largestPngEntry.name} (${largestPngEntry.uncompressedSize} bytes) -> ${path.relative(
+      process.cwd(),
+      outputImagePath,
+    )}`,
+  )
   console.log(`Icon distribution: ${iconSummary}`)
 }
 
 generate().catch((error) => {
-  console.error('Failed to generate map JSON from stack XML:', error)
+  console.error('Failed to generate map JSON from .ora:', error)
   process.exitCode = 1
 })
