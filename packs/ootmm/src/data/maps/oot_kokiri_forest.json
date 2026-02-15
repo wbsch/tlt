@@ -866,7 +866,17 @@
         497
       ],
       "image": "interior_entrance",
-      "codes": "TODO KF 076 :: unnamed_stack > Forest > Forest Layers > Forest Entrances :: Pasted Layer #75 :: 001-001-014-001.png"
+      "type": "submenu",
+      "markers": [
+        {
+          "image": "pot",
+          "codes": "OOT Link's House Pot"
+        },
+        {
+          "image": "cow",
+          "codes": "OOT Kokiri Forest Cow"
+        }
+      ]
     },
     {
       "coords": [
@@ -874,7 +884,18 @@
         464
       ],
       "image": "interior_entrance",
-      "codes": "TODO KF 077 :: unnamed_stack > Forest > Forest Layers > Forest Entrances :: Pasted Layer #76 :: 001-001-014-002.png"
+      "type": "submenu",
+      "markers": [
+        {
+          "image": "heart",
+          "codes": [
+            "OOT Saria's House Heart 1",
+            "OOT Saria's House Heart 2",
+            "OOT Saria's House Heart 3",
+            "OOT Saria's House Heart 4"
+          ]
+        }
+      ]
     },
     {
       "coords": [
@@ -882,7 +903,16 @@
         454
       ],
       "image": "interior_entrance",
-      "codes": "TODO KF 078 :: unnamed_stack > Forest > Forest Layers > Forest Entrances :: Pasted Layer #77 :: 001-001-014-003.png"
+      "type": "submenu",
+      "markers": [
+        {
+          "image": "pot",
+          "codes": [
+            "OOT Twins House Pot 1",
+            "OOT Twins House Pot 2"
+          ]
+        }
+      ]
     },
     {
       "coords": [
@@ -890,7 +920,26 @@
         383
       ],
       "image": "interior_entrance",
-      "codes": "TODO KF 079 :: unnamed_stack > Forest > Forest Layers > Forest Entrances :: Pasted Layer #78 :: 001-001-014-004.png"
+      "type": "submenu",
+      "markers": [
+        {
+          "image": "shop",
+          "codes": [
+            "OOT Kokiri Shop Item 1",
+            "OOT Kokiri Shop Item 2",
+            "OOT Kokiri Shop Item 3",
+            "OOT Kokiri Shop Item 4",
+            "OOT Kokiri Shop Item 5",
+            "OOT Kokiri Shop Item 6",
+            "OOT Kokiri Shop Item 7",
+            "OOT Kokiri Shop Item 8"
+          ]
+        },
+        {
+          "image": "wonder_item_blue_rupee",
+          "codes": "OOT Kokiri Shop Wonder Item"
+        }
+      ]
     },
     {
       "coords": [
@@ -898,7 +947,16 @@
         443
       ],
       "image": "interior_entrance",
-      "codes": "TODO KF 080 :: unnamed_stack > Forest > Forest Layers > Forest Entrances :: Pasted Layer #79 :: 001-001-014-005.png"
+      "type": "submenu",
+      "markers": [
+        {
+          "image": "pot",
+          "codes": [
+            "OOT Know It All House Pot 1",
+            "OOT Know It All House Pot 2"
+          ]
+        }
+      ]
     },
     {
       "coords": [
@@ -906,7 +964,18 @@
         376
       ],
       "image": "interior_entrance",
-      "codes": "TODO KF 081 :: unnamed_stack > Forest > Forest Layers > Forest Entrances :: Pasted Layer #80 :: 001-001-014-006.png"
+      "type": "submenu",
+      "markers": [
+        {
+          "image": "chest",
+          "codes": [
+            "OOT Mido's House Top Left",
+            "OOT Mido's House Top Right",
+            "OOT Mido's House Bottom Left",
+            "OOT Mido's House Bottom Right"
+          ]
+        }
+      ]
     },
     {
       "coords": [
@@ -914,7 +983,41 @@
         330
       ],
       "image": "song_grotto",
-      "codes": "TODO KF 082 :: unnamed_stack > Forest > Forest Layers > Forest Entrances :: Pasted Layer #81 :: 001-001-014-007.png"
+      "type": "submenu",
+      "markers": [
+        {
+          "image": "chest",
+          "codes": "OOT Kokiri Forest Storms Grotto"
+        },
+        {
+          "image": "grass",
+          "codes": [
+            "OOT Kokiri Forest Storms Grotto Grass 1",
+            "OOT Kokiri Forest Storms Grotto Grass 2",
+            "OOT Kokiri Forest Storms Grotto Grass 3",
+            "OOT Kokiri Forest Storms Grotto Grass 4"
+          ]
+        },
+        {
+          "image": "beehive",
+          "codes": [
+            "OOT Kokiri Forest Storms Grotto Hive 1",
+            "OOT Kokiri Forest Storms Grotto Hive 2"
+          ]
+        },
+        {
+          "image": "butterfly",
+          "codes": [
+            "OOT Kokiri Forest Storms Grotto Butterfly 1",
+            "OOT Kokiri Forest Storms Grotto Butterfly 2",
+            "OOT Kokiri Forest Storms Grotto Butterfly 3"
+          ]
+        },
+        {
+          "image": "gossip_stone",
+          "codes": "OOT Kokiri Gossip Near Lost Woods Grotto"
+        }
+      ]
     },
     {
       "coords": [
@@ -922,7 +1025,13 @@
         328
       ],
       "image": "bomb_grotto",
-      "codes": "TODO KF 083 :: unnamed_stack > Forest > Forest Layers > Forest Entrances :: Pasted Layer #82 :: 001-001-014-008.png"
+      "type": "submenu",
+      "markers": [
+        {
+          "image": "chest",
+          "codes": "OOT Sacred Meadow Grotto"
+        }
+      ]
     },
     {
       "coords": [
@@ -930,7 +1039,22 @@
         238
       ],
       "image": "grotto",
-      "codes": "TODO KF 084 :: unnamed_stack > Forest > Forest Layers > Forest Entrances :: Pasted Layer #83 :: 001-001-014-009.png"
+      "type": "submenu",
+      "markers": [
+        {
+          "image": "fairy",
+          "codes": [
+            "OOT Sacred Meadow Fairy Fountain Fairy 1",
+            "OOT Sacred Meadow Fairy Fountain Fairy 2",
+            "OOT Sacred Meadow Fairy Fountain Fairy 3",
+            "OOT Sacred Meadow Fairy Fountain Fairy 4",
+            "OOT Sacred Meadow Fairy Fountain Fairy 5",
+            "OOT Sacred Meadow Fairy Fountain Fairy 6",
+            "OOT Sacred Meadow Fairy Fountain Fairy 7",
+            "OOT Sacred Meadow Fairy Fountain Fairy 8"
+          ]
+        }
+      ]
     },
     {
       "coords": [
@@ -941,49 +1065,15 @@
       "type": "submenu",
       "markers": [
         {
-          "image": "chest",
-          "codes": "OOT Kokiri Forest Kokiri Sword Chest"
-        },
-        {
           "image": "business_scrub_oot",
-          "overlays": [
-            "child"
-          ],
           "codes": [
-            "OOT Lost Woods Scrub Near Theater Left",
-            "OOT Lost Woods Scrub Near Theater Right"
+            "OOT Sacred Meadow Storms Grotto Front Scrub",
+            "OOT Sacred Meadow Storms Grotto Back Scrub"
           ]
         },
         {
-          "image": "butterfly",
-          "overlays": [
-            "child"
-          ],
-          "codes": [
-            "OOT Lost Woods Butterfly 1",
-            "OOT Lost Woods Butterfly 2",
-            "OOT Lost Woods Butterfly 3"
-          ]
-        },
-        {
-          "image": "soft_soil",
-          "codes": [
-            "OOT Lost Woods Soil Early 1",
-            "OOT Lost Woods Soil Early 2",
-            "OOT Lost Woods Soil Early 3"
-          ]
-        },
-        {
-          "image": "grass",
-          "codes": [
-            "OOT Lost Woods Grass 1",
-            "OOT Lost Woods Grass 2",
-            "OOT Lost Woods Grass 3"
-          ]
-        },
-        {
-          "image": "gossip_stone",
-          "codes": "OOT Kokiri Gossip Near Lost Woods Open"
+          "image": "beehive",
+          "codes": "OOT Sacred Meadow Storms Grotto Hive"
         }
       ]
     },
@@ -1009,7 +1099,24 @@
         235
       ],
       "image": "boulder_grotto",
-      "codes": "TODO KF 088 :: unnamed_stack > Forest > Forest Layers > Forest Entrances :: Pasted Layer #87 :: 001-001-014-013.png"
+      "type": "submenu",
+      "markers": [
+        {
+          "image": "business_scrub_oot",
+          "codes": [
+            "OOT Lost Woods Grotto Scrub Nuts Upgrade",
+            "OOT Lost Woods Grotto Scrub Back"
+          ]
+        },
+        {
+          "image": "beehive",
+          "codes": "OOT Lost Woods Grotto Scrub Hive"
+        },
+        {
+          "image": "big_fairy_spot",
+          "codes": "OOT Lost Woods Grotto Scrub Big Fairy"
+        }
+      ]
     },
     {
       "coords": [
@@ -1017,7 +1124,23 @@
         271
       ],
       "image": "grotto",
-      "codes": "TODO KF 089 :: unnamed_stack > Forest > Forest Layers > Forest Entrances :: Pasted Layer #88 :: 001-001-014-014.png"
+      "type": "submenu",
+      "markers": [
+        {
+          "image": "npc",
+          "overlays": [
+            "child"
+          ],
+          "codes": "OOT Deku Theater Sticks Upgrade"
+        },
+        {
+          "image": "npc",
+          "overlays": [
+            "child"
+          ],
+          "codes": "OOT Deku Theater Nuts Upgrade"
+        }
+      ]
     },
     {
       "coords": [
@@ -1025,7 +1148,41 @@
         296
       ],
       "image": "boulder_grotto",
-      "codes": "TODO KF 090 :: unnamed_stack > Forest > Forest Layers > Forest Entrances :: Pasted Layer #89 :: 001-001-014-015.png"
+      "type": "submenu",
+      "markers": [
+        {
+          "image": "gossip_stone",
+          "codes": "OOT Lost Woods Gossip Grotto"
+        },
+        {
+          "image": "chest",
+          "codes": "OOT Lost Woods Grotto Generic"
+        },
+        {
+          "image": "grass",
+          "codes": [
+            "OOT Lost Woods Grotto Generic Grass 1",
+            "OOT Lost Woods Grotto Generic Grass 2",
+            "OOT Lost Woods Grotto Generic Grass 3",
+            "OOT Lost Woods Grotto Generic Grass 4"
+          ]
+        },
+        {
+          "image": "beehive",
+          "codes": [
+            "OOT Lost Woods Grotto Generic Hive 1",
+            "OOT Lost Woods Grotto Generic Hive 2"
+          ]
+        },
+        {
+          "image": "butterfly",
+          "codes": [
+            "OOT Lost Woods Grotto Generic Butterfly 1",
+            "OOT Lost Woods Grotto Generic Butterfly 2",
+            "OOT Lost Woods Grotto Generic Butterfly 3"
+          ]
+        }
+      ]
     },
     {
       "coords": [
