@@ -1467,47 +1467,6 @@ onBeforeUnmount(() => {
         @focusin="handleSubmenuPanelHoverStart"
         @focusout="handleSubmenuPanelHoverEnd"
       >
-        <header class="map-submenu-panel__header">
-          <div class="map-popup__icon">
-            <img class="map-popup__base" :src="resolveMarkerImage(activeSubmenuMarker.image)" alt="" draggable="false" />
-            <span
-              v-if="activeSubmenuMarker.topLeftOverlays.length > 0"
-              class="map-popup__corner map-popup__corner--top-left"
-            >
-              <img
-                v-for="overlay in activeSubmenuMarker.topLeftOverlays"
-                :key="`submenu-top:${overlay.key}`"
-                class="map-popup__overlay"
-                :class="{ 'map-popup__overlay--wide': overlay.wide }"
-                :src="overlay.src"
-                alt=""
-                draggable="false"
-              />
-            </span>
-            <span
-              v-if="activeSubmenuMarker.bottomLeftOverlays.length > 0"
-              class="map-popup__corner map-popup__corner--bottom-left"
-            >
-              <img
-                v-for="overlay in activeSubmenuMarker.bottomLeftOverlays"
-                :key="`submenu-bottom:${overlay.key}`"
-                class="map-popup__overlay"
-                :src="overlay.src"
-                alt=""
-                draggable="false"
-              />
-            </span>
-            <span v-if="activeSubmenuMarker.hasBrokenOverlay" class="map-popup__corner map-popup__corner--top-right">
-              <img class="map-popup__overlay" :src="resolveBrokenOverlayImage()" alt="" draggable="false" />
-            </span>
-          </div>
-          <div class="map-popup__titles">
-            <h3>Submenu</h3>
-            <p>{{ activeSubmenuMarker.submenuMarkers.length }} markers</p>
-          </div>
-          <button type="button" class="map-popup__close" aria-label="Close submenu" @click="closeSubmenuPanel">×</button>
-        </header>
-
         <div class="map-submenu-panel__grid">
           <button
             v-for="submenuMarker in activeSubmenuMarker.submenuMarkers"
@@ -1916,14 +1875,6 @@ onBeforeUnmount(() => {
   z-index: 11;
   overflow: hidden;
   cursor: default;
-}
-
-.map-submenu-panel__header {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  padding: 0.45rem 0.5rem;
-  border-bottom: 1px solid #1e293b;
 }
 
 .map-submenu-panel__grid {
