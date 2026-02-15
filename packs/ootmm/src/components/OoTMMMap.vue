@@ -125,6 +125,7 @@ type SubmenuPanelState = {
   layoutReady: boolean
   position: { left: number; top: number } | null
   frozenWidth: number | null
+  frozenHeight: number | null
 }
 
 type DevDraftIssue = {
@@ -187,6 +188,7 @@ const submenuPanel = ref<SubmenuPanelState>({
   layoutReady: false,
   position: null,
   frozenWidth: null,
+  frozenHeight: null,
 })
 const submenuPopup = ref<SubmenuPopupState>({
   markerId: null,
@@ -740,6 +742,9 @@ function submenuPanelStyle(): Record<string, string> {
       ...(submenuPanel.value.frozenWidth !== null
         ? { width: `${submenuPanel.value.frozenWidth}px` }
         : {}),
+      ...(submenuPanel.value.frozenHeight !== null
+        ? { height: `${submenuPanel.value.frozenHeight}px` }
+        : {}),
     }
   }
 
@@ -757,6 +762,9 @@ function submenuPanelStyle(): Record<string, string> {
     '--submenu-corner-gap': `${cornerGap}px`,
     ...(submenuPanel.value.frozenWidth !== null
       ? { width: `${submenuPanel.value.frozenWidth}px` }
+      : {}),
+    ...(submenuPanel.value.frozenHeight !== null
+      ? { height: `${submenuPanel.value.frozenHeight}px` }
       : {}),
   }
 }
@@ -876,6 +884,7 @@ function openSubmenuPanel(markerId: string, options?: { pinned?: boolean }): voi
   clearSubmenuPanelCloseTimer()
   if (submenuPanel.value.markerId !== markerId) {
     submenuPanel.value.frozenWidth = null
+    submenuPanel.value.frozenHeight = null
   }
   if (submenuPanel.value.markerId === markerId) return
   submenuPanel.value.markerId = markerId
@@ -894,6 +903,7 @@ function closeSubmenuPanel(): void {
   submenuPanel.value.layoutReady = false
   submenuPanel.value.position = null
   submenuPanel.value.frozenWidth = null
+  submenuPanel.value.frozenHeight = null
 }
 
 function openSubmenuPopup(markerId: string, options?: { pinned?: boolean }): void {
@@ -1030,6 +1040,28 @@ function handleSubmenuPanelHoverStart(): void {
 
 function handleSubmenuPanelHoverEnd(): void {
   if (props.devMode || submenuPanel.value.pinned) return
+  submenuPanel.value.isHovered = false
+  scheduleSubmenuPanelClose()
+}
+
+function handleSubmenuPanelFocusIn(): void {
+  if (props.devMode) return
+  submenuPanel.value.isHovered = true
+  clearSubmenuPanelCloseTimer()
+}
+
+function handleSubmenuPanelFocusOut(event: FocusEvent): void {
+  if (props.devMode || submenuPanel.value.pinned) return
+  const panel = submenuPanelRef.value
+  const nextTarget = event.relatedTarget as Node | null
+  if (panel && nextTarget && panel.contains(nextTarget)) {
+    return
+  }
+  if (panel?.matches(':hover')) {
+    submenuPanel.value.isHovered = true
+    clearSubmenuPanelCloseTimer()
+    return
+  }
   submenuPanel.value.isHovered = false
   scheduleSubmenuPanelClose()
 }
@@ -1243,7 +1275,7 @@ watch(markerViewModels, () => {
   const activeSubmenuId = submenuPanel.value.markerId
   if (activeSubmenuId) {
     const marker = markerById.value.get(activeSubmenuId)
-    if (!marker || !marker.isVisible || marker.type !== 'submenu') {
+    if (!marker || marker.type !== 'submenu') {
       closeSubmenuPanel()
     }
   }
@@ -1285,6 +1317,7 @@ watch(
       submenuPanel.value.layoutReady = false
       submenuPanel.value.position = null
       submenuPanel.value.frozenWidth = null
+      submenuPanel.value.frozenHeight = null
       return
     }
 
@@ -1295,6 +1328,9 @@ watch(
     await nextTick()
     if (submenuPanel.value.frozenWidth === null) {
       submenuPanel.value.frozenWidth = submenuPanelRef.value?.offsetWidth ?? null
+    }
+    if (submenuPanel.value.frozenHeight === null) {
+      submenuPanel.value.frozenHeight = submenuPanelRef.value?.offsetHeight ?? null
     }
     updateSubmenuPanelPosition()
     submenuPanel.value.layoutReady = true
@@ -1502,8 +1538,8 @@ onBeforeUnmount(() => {
         @pointerdown.stop
         @mouseenter="handleSubmenuPanelHoverStart"
         @mouseleave="handleSubmenuPanelHoverEnd"
-        @focusin="handleSubmenuPanelHoverStart"
-        @focusout="handleSubmenuPanelHoverEnd"
+        @focusin="handleSubmenuPanelFocusIn"
+        @focusout="handleSubmenuPanelFocusOut"
       >
         <div class="map-submenu-panel__grid">
           <button
@@ -1908,8 +1944,8 @@ onBeforeUnmount(() => {
   --submenu-corner-offset: -2px;
   --submenu-corner-gap: 1px;
   width: fit-content;
-  max-width: calc(100% - 16px);
-  max-height: calc(100% - 16px);
+  max-width: none;
+  max-height: none;
   display: flex;
   flex-direction: column;
   background: #111827;
@@ -1918,7 +1954,7 @@ onBeforeUnmount(() => {
   box-shadow: 0 18px 40px rgba(0, 0, 0, 0.5);
   color: #e2e8f0;
   z-index: 11;
-  overflow: hidden;
+  overflow: visible;
   cursor: default;
 }
 
@@ -1926,10 +1962,10 @@ onBeforeUnmount(() => {
   position: relative;
   padding: 0.45rem;
   display: flex;
-  flex-wrap: wrap;
-  align-content: flex-start;
+  flex-wrap: nowrap;
+  align-items: flex-start;
   gap: 0;
-  overflow-y: auto;
+  overflow: hidden;
 }
 
 .map-submenu-panel__empty {
