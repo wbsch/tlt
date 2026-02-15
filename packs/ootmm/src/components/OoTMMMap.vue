@@ -1911,6 +1911,13 @@ onBeforeUnmount(() => {
   margin: 0;
   transform: translate(-50%, -50%);
   cursor: pointer;
+  z-index: 1;
+}
+
+.map-marker:hover,
+.map-marker:focus,
+.map-marker:focus-visible {
+  z-index: 2;
 }
 
 .map-marker:focus-visible {
