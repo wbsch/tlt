@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue'
 import { TRICKS } from '@ootmm/core/settings/tricks'
+import { matchesSearchTerms } from '../utils/search'
 
 const props = defineProps<{
   settings: Record<string, unknown>
@@ -33,24 +34,14 @@ const enabledTricks = computed(() => {
 })
 
 const filteredTricks = computed(() => {
-  const query = searchQuery.value.toLowerCase().trim()
-  
   return Object.entries(ALL_TRICKS)
     .filter(([key, trick]) => {
       // Filter by game
       if (selectedGame.value !== 'all' && trick.game !== selectedGame.value) {
         return false
       }
-      
-      // Filter by search query
-      if (query) {
-        const nameMatch = trick.name.toLowerCase().includes(query)
-        const keyMatch = key.toLowerCase().includes(query)
-        const tooltipMatch = trick.tooltip?.toLowerCase().includes(query) || false
-        return nameMatch || keyMatch || tooltipMatch
-      }
-      
-      return true
+
+      return matchesSearchTerms([trick.name, key, trick.tooltip ?? ''], searchQuery.value)
     })
     .sort((a, b) => {
       // Sort glitches to the bottom

@@ -4,6 +4,7 @@ import { storeToRefs } from 'pinia'
 import { SPECIAL_CONDS, SPECIAL_CONDS_FIELDS } from '@ootmm/core/settings/index'
 import { SETTINGS_DEFINITIONS } from '../data/settings'
 import { useOoTMMUiStore } from '../stores/ootmmUi'
+import { matchesSearchTerms } from '../utils/search'
 
 const props = defineProps<{
   settings: Record<string, unknown>
@@ -327,13 +328,12 @@ const filteredSettings = computed(() => {
   if (!searchQuery.value.trim()) {
     return visibleSettings.value
   }
-  
-  const query = searchQuery.value.toLowerCase()
+
   return visibleSettings.value.filter(setting => {
-    const matchesLabel = setting.label.toLowerCase().includes(query)
-    const matchesDescription = setting.description?.toLowerCase().includes(query)
-    const matchesKey = setting.key.toLowerCase().includes(query)
-    return matchesLabel || matchesDescription || matchesKey
+    return matchesSearchTerms(
+      [setting.label, setting.description ?? '', setting.key],
+      searchQuery.value,
+    )
   })
 })
 

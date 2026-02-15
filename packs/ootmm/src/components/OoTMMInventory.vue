@@ -3,6 +3,7 @@ import { computed } from 'vue'
 import { storeToRefs } from 'pinia'
 import { ITEM_DATABASE } from '../data/items'
 import { useOoTMMUiStore } from '../stores/ootmmUi'
+import { matchesSearchTerms } from '../utils/search'
 
 const props = defineProps<{
   inventory: Map<string, number>
@@ -37,7 +38,7 @@ const categories = [
 
 const filteredItems = computed(() => {
   return ITEM_DATABASE.filter(item => {
-    const matchesSearch = item.name.toLowerCase().includes(searchQuery.value.toLowerCase())
+    const matchesSearch = matchesSearchTerms([item.name], searchQuery.value)
     const matchesCategory = selectedCategory.value === 'all' || item.category === selectedCategory.value
     const matchesAvailability = !props.availableItemIds || props.availableItemIds.size === 0 || props.availableItemIds.has(item.id)
     return matchesSearch && matchesCategory && matchesAvailability

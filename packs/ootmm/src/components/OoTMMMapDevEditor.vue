@@ -8,6 +8,11 @@ import {
   useLocationCodeLookup,
 } from '../composables/useLocationCodeLookup'
 import type { MapDef, MapMarkerDef, MapMarkerOverlay, MapSubmenuEntryDef } from '../data/maps/types'
+import {
+  getSearchTerms,
+  matchesNormalizedSearchTerms,
+  normalizeSearchText,
+} from '../utils/search'
 
 const LOCATION_SEARCH_LIMIT = 80
 
@@ -329,15 +334,19 @@ const selectedMarkerImageUnknown = computed(() => {
 })
 
 function getMarkerIconSuggestions(rawQuery: string): string[] {
-  const query = normalizeCode(rawQuery)
-  if (!query) return mapIconNames
+  const query = normalizeSearchText(rawQuery)
+  const terms = getSearchTerms(rawQuery)
+  if (terms.length === 0) return mapIconNames
 
   const exactMatches: string[] = []
   const prefixMatches: string[] = []
   const fuzzyMatches: string[] = []
 
   for (const icon of mapIconNames) {
-    const normalized = normalizeCode(icon)
+    const normalized = normalizeSearchText(icon)
+    if (!matchesNormalizedSearchTerms([normalized], terms)) {
+      continue
+    }
     if (normalized === query) {
       exactMatches.push(icon)
       continue
@@ -371,13 +380,13 @@ function getMarkerIconOptionId(index: number): string {
 }
 
 function findMarkerIconForQuery(rawQuery: string): string | null {
-  const query = normalizeCode(rawQuery)
+  const query = normalizeSearchText(rawQuery)
   if (!query) return null
 
-  const exactMatch = mapIconNames.find((icon) => normalizeCode(icon) === query)
+  const exactMatch = mapIconNames.find((icon) => normalizeSearchText(icon) === query)
   if (exactMatch) return exactMatch
 
-  const matches = getMarkerIconSuggestions(query)
+  const matches = getMarkerIconSuggestions(rawQuery)
   return matches.length === 1 ? matches[0] : null
 }
 
@@ -524,18 +533,14 @@ function handleMarkerIconKeydown(event: KeyboardEvent) {
 }
 
 const locationSearchResults = computed(() => {
-  const terms = normalizeCode(codeSearchQuery.value)
-    .split(/\s+/)
-    .filter((term) => term.length > 0)
+  const terms = getSearchTerms(codeSearchQuery.value)
   const filtered = (terms.length === 0
     ? locationIndex.value
     : locationIndex.value.filter(
       (entry) =>
-        terms.every(
-          (term) =>
-            entry.normalizedId.includes(term) ||
-            entry.normalizedBaseId.includes(term) ||
-            entry.normalizedName.includes(term),
+        matchesNormalizedSearchTerms(
+          [entry.normalizedId, entry.normalizedBaseId, entry.normalizedName],
+          terms,
         ),
     ))
     .filter(

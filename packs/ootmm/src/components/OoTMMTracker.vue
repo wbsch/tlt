@@ -15,6 +15,11 @@ import {
   isLocationVisibleInSidebar,
   type LocationVisibilityFilters,
 } from '../utils/locationVisibility'
+import {
+  getSearchTerms,
+  matchesNormalizedSearchTerms,
+  normalizeSearchText,
+} from '../utils/search'
 import { useOoTMMSessionStore } from '../stores/ootmmSession'
 import { useOoTMMUiStore, type TrackerTab } from '../stores/ootmmUi'
 import { OOTMM_MAP_DEFS } from '../data/maps'
@@ -217,16 +222,20 @@ function syncMapSelectorToActiveMap() {
 }
 
 function getMapSelectorMatches(rawQuery: string): MapDef[] {
-  const query = rawQuery.trim().toLowerCase()
-  if (!query) return mapDefs
+  const query = normalizeSearchText(rawQuery)
+  const terms = getSearchTerms(rawQuery)
+  if (terms.length === 0) return mapDefs
 
   const exactMatches: MapDef[] = []
   const prefixMatches: MapDef[] = []
   const fuzzyMatches: MapDef[] = []
 
   for (const mapDef of mapDefs) {
-    const mapId = mapDef.id.toLowerCase()
-    const mapTitle = mapDef.title.toLowerCase()
+    const mapId = normalizeSearchText(mapDef.id)
+    const mapTitle = normalizeSearchText(mapDef.title)
+    if (!matchesNormalizedSearchTerms([mapId, mapTitle], terms)) {
+      continue
+    }
     if (mapId === query || mapTitle === query) {
       exactMatches.push(mapDef)
       continue
@@ -305,16 +314,16 @@ function selectMapFromSelector(mapDef: MapDef, options?: { close?: boolean }) {
 }
 
 function findMapForSelectorQuery(rawQuery: string): MapDef | null {
-  const query = rawQuery.trim().toLowerCase()
+  const query = normalizeSearchText(rawQuery)
   if (!query) return null
 
-  const byIdExact = mapDefs.find((mapDef) => mapDef.id.toLowerCase() === query)
+  const byIdExact = mapDefs.find((mapDef) => normalizeSearchText(mapDef.id) === query)
   if (byIdExact) return byIdExact
 
-  const byTitleExact = mapDefs.find((mapDef) => mapDef.title.toLowerCase() === query)
+  const byTitleExact = mapDefs.find((mapDef) => normalizeSearchText(mapDef.title) === query)
   if (byTitleExact) return byTitleExact
 
-  const fuzzyMatches = getMapSelectorMatches(query)
+  const fuzzyMatches = getMapSelectorMatches(rawQuery)
   return fuzzyMatches.length === 1 ? fuzzyMatches[0] : null
 }
 

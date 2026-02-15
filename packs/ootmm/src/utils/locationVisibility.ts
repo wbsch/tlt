@@ -1,5 +1,6 @@
 import type { LocationInfo } from '@/types/tracker'
 import type { CollectionFilter, ReachabilityFilter } from '../stores/ootmmUi'
+import { matchesSearchTerms } from './search'
 
 export type LocationVisibilityFilters = {
   searchQuery: string
@@ -30,12 +31,11 @@ export function matchesLocationBaseVisibility(
   location: LocationInfo,
   filters: LocationVisibilityFilters,
 ): boolean {
-  const searchQuery = filters.searchQuery.toLowerCase()
   const matchesShuffle =
     location.isShuffled !== false
     || location.showWhenUnshuffled
     || (filters.showUnshuffled && isToggleEligibleWhenUnshuffled(location))
-  const matchesSearch = location.name.toLowerCase().includes(searchQuery)
+  const matchesSearch = matchesSearchTerms([location.name], filters.searchQuery)
   const matchesCategory =
     filters.selectedCategory === 'all' || location.category === filters.selectedCategory
   const matchesGossip = !location.isGossipStone || filters.showGossipStones
