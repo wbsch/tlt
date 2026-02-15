@@ -229,6 +229,7 @@ const RAW_ITEM_ICONS: Record<string, string> = {
   'OOT_KEY_RING_GTG': 'images/small_key.png',
   'OOT_KEY_RING_BOTW': 'images/small_key.png',
   'OOT_KEY_RING_GF': 'images/small_key.png',
+  'OOT_KEY_RING_TCG': 'images/small_key.png',
 
   // Dungeon items - boss keys
   'OOT_BOSS_KEY_FOREST': 'images/boss_key.png',
