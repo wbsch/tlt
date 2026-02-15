@@ -1,0 +1,1221 @@
+{
+  "id": "oot_hyrule_field",
+  "title": "OOT Hyrule Field",
+  "image": "oot_hyrule_field",
+  "width": 1000,
+  "height": 600,
+  "markers": [
+    {
+      "coords": [
+        398,
+        204
+      ],
+      "image": "chest",
+      "codes": "TODO KF 001 :: unnamed_stack > Hyrule > Hyrule Layers > Hyrule Checks :: Pasted Layer :: 001-001-001-000.png"
+    },
+    {
+      "coords": [
+        706,
+        172
+      ],
+      "image": "chest",
+      "codes": "TODO KF 002 :: unnamed_stack > Hyrule > Hyrule Layers > Hyrule Checks :: Pasted Layer #1 :: 001-001-001-001.png"
+    },
+    {
+      "coords": [
+        850,
+        77
+      ],
+      "image": "collectible",
+      "overlays": [
+        "child"
+      ],
+      "codes": "OOT Hyrule Field Ocarina of Time"
+    },
+    {
+      "coords": [
+        936,
+        572
+      ],
+      "image": "chest",
+      "codes": "TODO KF 004 :: unnamed_stack > Hyrule > Hyrule Layers > Hyrule Checks :: Pasted Layer #3 :: 001-001-001-003.png"
+    },
+    {
+      "coords": [
+        972,
+        572
+      ],
+      "image": "chest",
+      "codes": "TODO KF 005 :: unnamed_stack > Hyrule > Hyrule Layers > Hyrule Checks :: Pasted Layer #4 :: 001-001-001-004.png"
+    },
+    {
+      "coords": [
+        97,
+        480
+      ],
+      "image": "song",
+      "overlays": [
+        "child",
+        "day"
+      ],
+      "codes": "OOT Lon Lon Ranch Malon Song"
+    },
+    {
+      "coords": [
+        866,
+        77
+      ],
+      "image": "song",
+      "overlays": [
+        "child"
+      ],
+      "codes": "OOT Hyrule Field Song of Time"
+    },
+    {
+      "coords": [
+        127,
+        131
+      ],
+      "image": "gold_skulltula",
+      "codes": "OOT Ganon Castle Exterior GS"
+    },
+    {
+      "coords": [
+        16,
+        533
+      ],
+      "image": "gold_skulltula",
+      "overlays": [
+        "child",
+        "night"
+      ],
+      "codes": "OOT Lon Lon Ranch GS Back Wall"
+    },
+    {
+      "coords": [
+        128,
+        520
+      ],
+      "image": "gold_skulltula",
+      "overlays": [
+        "child",
+        "night"
+      ],
+      "codes": "OOT Lon Lon Ranch GS Rain Shed"
+    },
+    {
+      "coords": [
+        154,
+        420
+      ],
+      "image": "gold_skulltula",
+      "overlays": [
+        "child"
+      ],
+      "codes": "OOT Lon Lon Ranch GS Tree"
+    },
+    {
+      "coords": [
+        141,
+        403
+      ],
+      "image": "gold_skulltula",
+      "overlays": [
+        "child",
+        "night"
+      ],
+      "codes": "OOT Lon Lon Ranch GS House"
+    },
+    {
+      "coords": [
+        402,
+        184
+      ],
+      "image": "gold_skulltula",
+      "codes": [
+        "TODO KF 013 :: unnamed_stack > Hyrule > Hyrule Layers > Hyrule Skulls :: Pasted Layer #12 :: 001-001-003-005.png",
+        "OOT Hyrule Castle GS Tree"
+      ]
+    },
+    {
+      "coords": [
+        124,
+        380
+      ],
+      "image": "pot",
+      "overlays": [
+        "child"
+      ],
+      "codes": [
+        "OOT Lon Lon Ranch Pot 1",
+        "OOT Lon Lon Ranch Pot 2",
+        "OOT Lon Lon Ranch Pot 3",
+        "OOT Lon Lon Ranch Pot 4"
+      ]
+    },
+    {
+      "coords": [
+        128,
+        504
+      ],
+      "image": "pot",
+      "overlays": [
+        "child"
+      ],
+      "codes": [
+        "OOT Lon Lon Ranch Pot 5",
+        "OOT Lon Lon Ranch Pot 6",
+        "OOT Lon Lon Ranch Pot 7"
+      ]
+    },
+    {
+      "coords": [
+        450,
+        195
+      ],
+      "image": "pot",
+      "overlays": [
+        "broken"
+      ],
+      "codes": [
+        "OOT Hyrule Castle Pot 1",
+        "OOT Hyrule Castle Pot 2"
+      ]
+    },
+    {
+      "coords": [
+        142,
+        419
+      ],
+      "image": "crate",
+      "overlays": [
+        "child"
+      ],
+      "codes": "OOT Lon Lon Ranch Crate"
+    },
+    {
+      "coords": [
+        405,
+        396
+      ],
+      "image": "crate",
+      "overlays": [
+        "child"
+      ],
+      "codes": [
+        "OOT Market Crate 3",
+        "OOT Market Crate 4"
+      ]
+    },
+    {
+      "coords": [
+        453,
+        466
+      ],
+      "image": "crate",
+      "overlays": [
+        "child"
+      ],
+      "codes": [
+        "OOT Market Crate 1",
+        "OOT Market Crate 2"
+      ]
+    },
+    {
+      "coords": [
+        399,
+        454
+      ],
+      "image": "grass",
+      "codes": [
+        "OOT Market Grass 7",
+        "OOT Market Grass 8"
+      ]
+    },
+    {
+      "coords": [
+        429,
+        409
+      ],
+      "image": "grass",
+      "codes": [
+        "OOT Market Grass 4",
+        "OOT Market Grass 5",
+        "OOT Market Grass 6"
+      ]
+    },
+    {
+      "coords": [
+        482,
+        392
+      ],
+      "image": "grass",
+      "codes": [
+        "OOT Market Grass 1",
+        "OOT Market Grass 2",
+        "OOT Market Grass 3"
+      ]
+    },
+    {
+      "coords": [
+        426,
+        102
+      ],
+      "image": "grass",
+      "codes": [
+        "OOT Hyrule Castle Grass 1",
+        "OOT Hyrule Castle Grass 2"
+      ]
+    },
+    {
+      "coords": [
+        826,
+        329
+      ],
+      "image": "grass",
+      "codes": [
+        "OOT Hyrule Field Grass Pack 4 Bush 01",
+        "OOT Hyrule Field Grass Pack 4 Bush 02",
+        "OOT Hyrule Field Grass Pack 4 Bush 03",
+        "OOT Hyrule Field Grass Pack 4 Bush 04",
+        "OOT Hyrule Field Grass Pack 4 Bush 05",
+        "OOT Hyrule Field Grass Pack 4 Bush 06",
+        "OOT Hyrule Field Grass Pack 4 Bush 07",
+        "OOT Hyrule Field Grass Pack 4 Bush 08",
+        "OOT Hyrule Field Grass Pack 4 Bush 09",
+        "OOT Hyrule Field Grass Pack 4 Bush 10",
+        "OOT Hyrule Field Grass Pack 4 Bush 11",
+        "OOT Hyrule Field Grass Pack 4 Bush 12"
+      ]
+    },
+    {
+      "coords": [
+        796,
+        298
+      ],
+      "image": "grass",
+      "codes": [
+        "OOT Hyrule Field Grass Pack 3 Bush 01",
+        "OOT Hyrule Field Grass Pack 3 Bush 02",
+        "OOT Hyrule Field Grass Pack 3 Bush 03",
+        "OOT Hyrule Field Grass Pack 3 Bush 04",
+        "OOT Hyrule Field Grass Pack 3 Bush 05",
+        "OOT Hyrule Field Grass Pack 3 Bush 06",
+        "OOT Hyrule Field Grass Pack 3 Bush 07",
+        "OOT Hyrule Field Grass Pack 3 Bush 08",
+        "OOT Hyrule Field Grass Pack 3 Bush 09",
+        "OOT Hyrule Field Grass Pack 3 Bush 10",
+        "OOT Hyrule Field Grass Pack 3 Bush 11",
+        "OOT Hyrule Field Grass Pack 3 Bush 12"
+      ]
+    },
+    {
+      "coords": [
+        891,
+        248
+      ],
+      "image": "grass",
+      "codes": [
+        "OOT Hyrule Field Grass Pack 2 Bush 01",
+        "OOT Hyrule Field Grass Pack 2 Bush 02",
+        "OOT Hyrule Field Grass Pack 2 Bush 03",
+        "OOT Hyrule Field Grass Pack 2 Bush 04",
+        "OOT Hyrule Field Grass Pack 2 Bush 05",
+        "OOT Hyrule Field Grass Pack 2 Bush 06",
+        "OOT Hyrule Field Grass Pack 2 Bush 07",
+        "OOT Hyrule Field Grass Pack 2 Bush 08",
+        "OOT Hyrule Field Grass Pack 2 Bush 09",
+        "OOT Hyrule Field Grass Pack 2 Bush 10",
+        "OOT Hyrule Field Grass Pack 2 Bush 11",
+        "OOT Hyrule Field Grass Pack 2 Bush 12"
+      ]
+    },
+    {
+      "coords": [
+        864,
+        138
+      ],
+      "image": "grass",
+      "codes": [
+        "OOT Hyrule Field Grass Pack 1 Bush 01",
+        "OOT Hyrule Field Grass Pack 1 Bush 02",
+        "OOT Hyrule Field Grass Pack 1 Bush 03",
+        "OOT Hyrule Field Grass Pack 1 Bush 04",
+        "OOT Hyrule Field Grass Pack 1 Bush 05",
+        "OOT Hyrule Field Grass Pack 1 Bush 06",
+        "OOT Hyrule Field Grass Pack 1 Bush 07",
+        "OOT Hyrule Field Grass Pack 1 Bush 08",
+        "OOT Hyrule Field Grass Pack 1 Bush 09",
+        "OOT Hyrule Field Grass Pack 1 Bush 10",
+        "OOT Hyrule Field Grass Pack 1 Bush 11",
+        "OOT Hyrule Field Grass Pack 1 Bush 12"
+      ]
+    },
+    {
+      "coords": [
+        76,
+        498
+      ],
+      "image": "wonder_item_blue_rupee",
+      "overlays": [
+        "adult"
+      ],
+      "codes": "OOT Lon Lon Ranch Wonder Item 2"
+    },
+    {
+      "coords": [
+        123,
+        464
+      ],
+      "image": "wonder_item_blue_rupee",
+      "overlays": [
+        "adult"
+      ],
+      "codes": "OOT Lon Lon Ranch Wonder Item 1"
+    },
+    {
+      "coords": [
+        358,
+        96
+      ],
+      "image": "wonder_item_green_rupee",
+      "codes": [
+        "OOT Hyrule Castle Wonder Item Moat 01",
+        "OOT Hyrule Castle Wonder Item Moat 02",
+        "OOT Hyrule Castle Wonder Item Moat 03",
+        "OOT Hyrule Castle Wonder Item Moat 04",
+        "OOT Hyrule Castle Wonder Item Moat 05",
+        "OOT Hyrule Castle Wonder Item Moat 06",
+        "OOT Hyrule Castle Wonder Item Moat 07",
+        "OOT Hyrule Castle Wonder Item Moat 08",
+        "OOT Hyrule Castle Wonder Item Moat 09"
+      ]
+    },
+    {
+      "coords": [
+        378,
+        84
+      ],
+      "image": "wonder_item_red_rupee",
+      "codes": "OOT Hyrule Castle Wonder Item Torch 1"
+    },
+    {
+      "coords": [
+        406,
+        84
+      ],
+      "image": "wonder_item_big_magic_jar",
+      "codes": "OOT Hyrule Castle Wonder Item Torch 2"
+    },
+    {
+      "coords": [
+        430,
+        53
+      ],
+      "image": "wonder_item_blue_rupee",
+      "codes": "OOT Hyrule Castle Wonder Item Moat 10"
+    },
+    {
+      "coords": [
+        381,
+        412
+      ],
+      "image": "wonder_item_blue_rupee",
+      "overlays": [
+        "child",
+        "night"
+      ],
+      "codes": [
+        "OOT Market Wonder Item Night 1",
+        "OOT Market Wonder Item Night 2"
+      ]
+    },
+    {
+      "coords": [
+        381,
+        428
+      ],
+      "image": "wonder_item_green_rupee",
+      "overlays": [
+        "child",
+        "day"
+      ],
+      "codes": [
+        "OOT Market Wonder Item Day 1",
+        "OOT Market Wonder Item Day 2",
+        "OOT Market Wonder Item Day 3",
+        "OOT Market Wonder Item Day 4",
+        "OOT Market Wonder Item Day 5"
+      ]
+    },
+    {
+      "coords": [
+        834,
+        68
+      ],
+      "image": "wonder_item_red_rupee",
+      "overlays": [
+        "child"
+      ],
+      "codes": [
+        "OOT Hyrule Field Wonder Item 1",
+        "OOT Hyrule Field Wonder Item 2",
+        "OOT Hyrule Field Wonder Item 3"
+      ]
+    },
+    {
+      "coords": [
+        964,
+        182
+      ],
+      "image": "big_fairy_spot",
+      "codes": "OOT Hyrule Field River Big Fairy"
+    },
+    {
+      "coords": [
+        382,
+        163
+      ],
+      "image": "butterfly",
+      "codes": [
+        "OOT Hyrule Castle Butterfly Pack 4 Butterfly 1",
+        "OOT Hyrule Castle Butterfly Pack 4 Butterfly 2",
+        "OOT Hyrule Castle Butterfly Pack 4 Butterfly 3",
+        "OOT Hyrule Castle Butterfly Pack 4 Butterfly 4",
+        "OOT Hyrule Castle Butterfly Pack 4 Butterfly 5"
+      ]
+    },
+    {
+      "coords": [
+        417,
+        134
+      ],
+      "image": "butterfly",
+      "codes": [
+        "OOT Hyrule Castle Butterfly Pack 3 Butterfly 3",
+        "OOT Hyrule Castle Butterfly Pack 3 Butterfly 2",
+        "OOT Hyrule Castle Butterfly Pack 3 Butterfly 1"
+      ]
+    },
+    {
+      "coords": [
+        435,
+        163
+      ],
+      "image": "butterfly",
+      "codes": [
+        "OOT Hyrule Castle Butterfly Pack 2 Butterfly 1",
+        "OOT Hyrule Castle Butterfly Pack 2 Butterfly 2"
+      ]
+    },
+    {
+      "coords": [
+        460,
+        142
+      ],
+      "image": "butterfly",
+      "codes": [
+        "OOT Hyrule Castle Butterfly Pack 1 Butterfly 1",
+        "OOT Hyrule Castle Butterfly Pack 1 Butterfly 2"
+      ]
+    },
+    {
+      "coords": [
+        148,
+        123
+      ],
+      "image": "red_boulder",
+      "codes": [
+        "OOT Ganon Castle Exterior Red Boulder 1",
+        "OOT Ganon Castle Exterior Red Boulder 2",
+        "OOT Ganon Castle Exterior Red Boulder 3"
+      ]
+    },
+    {
+      "coords": [
+        642,
+        210
+      ],
+      "image": "red_boulder",
+      "codes": "TODO KF 043 :: unnamed_stack > Hyrule > Hyrule Layers > Hyrule Red Boulders :: Pasted Layer #42 :: 001-001-010-001.png"
+    },
+    {
+      "coords": [
+        640,
+        257
+      ],
+      "image": "red_boulder",
+      "codes": "TODO KF 044 :: unnamed_stack > Hyrule > Hyrule Layers > Hyrule Red Boulders :: Pasted Layer #43 :: 001-001-010-002.png"
+    },
+    {
+      "coords": [
+        682,
+        247
+      ],
+      "image": "red_boulder",
+      "codes": "TODO KF 045 :: unnamed_stack > Hyrule > Hyrule Layers > Hyrule Red Boulders :: Pasted Layer #44 :: 001-001-010-003.png"
+    },
+    {
+      "coords": [
+        415,
+        183
+      ],
+      "image": "rock",
+      "codes": [
+        "OOT Hyrule Castle Rock 1",
+        "OOT Hyrule Castle Rock 2",
+        "OOT Hyrule Castle Rock 3"
+      ]
+    },
+    {
+      "coords": [
+        646,
+        222
+      ],
+      "image": "rock",
+      "codes": [
+        "OOT Hyrule Field Rock Circle Rock 1",
+        "OOT Hyrule Field Rock Circle Rock 2",
+        "OOT Hyrule Field Rock Circle Rock 3",
+        "OOT Hyrule Field Rock Circle Rock 4",
+        "OOT Hyrule Field Rock Circle Rock 5",
+        "OOT Hyrule Field Rock Circle Rock 6",
+        "OOT Hyrule Field Rock Circle Rock 7",
+        "OOT Hyrule Field Rock Circle Rock 8"
+      ]
+    },
+    {
+      "coords": [
+        393,
+        464
+      ],
+      "image": "tree",
+      "codes": "OOT Market Tree"
+    },
+    {
+      "coords": [
+        441,
+        91
+      ],
+      "image": "tree",
+      "codes": "OOT Hyrule Castle Tree 8"
+    },
+    {
+      "coords": [
+        385,
+        133
+      ],
+      "image": "tree",
+      "codes": "OOT Hyrule Castle Tree Guarded"
+    },
+    {
+      "coords": [
+        441,
+        136
+      ],
+      "image": "tree",
+      "codes": [
+        "OOT Hyrule Castle Tree 1",
+        "OOT Hyrule Castle Tree 2",
+        "OOT Hyrule Castle Tree 3",
+        "OOT Hyrule Castle Tree 4",
+        "OOT Hyrule Castle Tree 5",
+        "OOT Hyrule Castle Tree 6",
+        "OOT Hyrule Castle Tree 7"
+      ]
+    },
+    {
+      "coords": [
+        708,
+        62
+      ],
+      "image": "tree",
+      "codes": [
+        "OOT Hyrule Field Tree 01",
+        "OOT Hyrule Field Tree 02",
+        "OOT Hyrule Field Tree 03",
+        "OOT Hyrule Field Tree 04",
+        "OOT Hyrule Field Tree 05"
+      ]
+    },
+    {
+      "coords": [
+        732,
+        87
+      ],
+      "image": "tree",
+      "codes": "OOT Hyrule Field Tree 07"
+    },
+    {
+      "coords": [
+        702,
+        117
+      ],
+      "image": "tree",
+      "codes": "OOT Hyrule Field Tree 06"
+    },
+    {
+      "coords": [
+        809,
+        88
+      ],
+      "image": "tree",
+      "codes": [
+        "OOT Hyrule Field Tree 08",
+        "OOT Hyrule Field Tree 09",
+        "OOT Hyrule Field Tree 10"
+      ]
+    },
+    {
+      "coords": [
+        878,
+        45
+      ],
+      "image": "tree",
+      "codes": "OOT Hyrule Field Tree 11"
+    },
+    {
+      "coords": [
+        923,
+        82
+      ],
+      "image": "tree",
+      "codes": "OOT Hyrule Field Tree 12"
+    },
+    {
+      "coords": [
+        910,
+        158
+      ],
+      "image": "tree",
+      "codes": "OOT Hyrule Field Tree 13"
+    },
+    {
+      "coords": [
+        916,
+        229
+      ],
+      "image": "tree",
+      "codes": [
+        "OOT Hyrule Field Tree 14",
+        "OOT Hyrule Field Tree 15",
+        "OOT Hyrule Field Tree 16",
+        "OOT Hyrule Field Tree 17",
+        "OOT Hyrule Field Tree 18",
+        "OOT Hyrule Field Tree 19"
+      ]
+    },
+    {
+      "coords": [
+        785,
+        184
+      ],
+      "image": "tree",
+      "codes": "OOT Hyrule Field Tree 20"
+    },
+    {
+      "coords": [
+        880,
+        352
+      ],
+      "image": "tree",
+      "overlays": [
+        "child"
+      ],
+      "codes": [
+        "OOT Hyrule Field Tree Child Near Lake 1",
+        "OOT Hyrule Field Tree Child Near Lake 2",
+        "OOT Hyrule Field Tree Child Near Lake 3",
+        "OOT Hyrule Field Tree Child Near Lake 4",
+        "OOT Hyrule Field Tree Child Near Lake 5",
+        "OOT Hyrule Field Tree Child Near Lake 6"
+      ]
+    },
+    {
+      "coords": [
+        860,
+        356
+      ],
+      "image": "tree",
+      "codes": [
+        "OOT Hyrule Field Tree 21",
+        "OOT Hyrule Field Tree 22",
+        "OOT Hyrule Field Tree 23",
+        "OOT Hyrule Field Tree 24",
+        "OOT Hyrule Field Tree 25",
+        "OOT Hyrule Field Tree 26",
+        "OOT Hyrule Field Tree 27",
+        "OOT Hyrule Field Tree 28",
+        "OOT Hyrule Field Tree 29",
+        "OOT Hyrule Field Tree 30",
+        "OOT Hyrule Field Tree 31",
+        "OOT Hyrule Field Tree 32",
+        "OOT Hyrule Field Tree 33",
+        "OOT Hyrule Field Tree 34",
+        "OOT Hyrule Field Tree 35",
+        "OOT Hyrule Field Tree 36",
+        "OOT Hyrule Field Tree 37",
+        "OOT Hyrule Field Tree 38",
+        "OOT Hyrule Field Tree 39"
+      ]
+    },
+    {
+      "coords": [
+        741,
+        383
+      ],
+      "image": "tree",
+      "codes": "OOT Hyrule Field Tree 40"
+    },
+    {
+      "coords": [
+        688,
+        267
+      ],
+      "image": "tree",
+      "overlays": [
+        "child"
+      ],
+      "codes": "OOT Hyrule Field Tree Child Near Valley"
+    },
+    {
+      "coords": [
+        681,
+        209
+      ],
+      "image": "tree",
+      "overlays": [
+        "adult"
+      ],
+      "codes": "OOT Hyrule Field Tree Adult"
+    },
+    {
+      "coords": [
+        740,
+        52
+      ],
+      "image": "bush",
+      "overlays": [
+        "child"
+      ],
+      "codes": [
+        "OOT Hyrule Field Bush Child 02",
+        "OOT Hyrule Field Bush Child 03",
+        "OOT Hyrule Field Bush Child 04",
+        "OOT Hyrule Field Bush Child 05",
+        "OOT Hyrule Field Bush Child 06",
+        "OOT Hyrule Field Bush Child 07",
+        "OOT Hyrule Field Bush Child 08",
+        "OOT Hyrule Field Bush Child 09",
+        "OOT Hyrule Field Bush Child 10",
+        "OOT Hyrule Field Bush Child 11"
+      ]
+    },
+    {
+      "coords": [
+        758,
+        80
+      ],
+      "image": "bush",
+      "overlays": [
+        "child"
+      ],
+      "codes": [
+        "TODO KF 067 :: unnamed_stack > Hyrule > Hyrule Layers > Hyrule Bushes :: Pasted Layer #66 :: 001-001-013-001.png",
+        "OOT Hyrule Field Bush Child 01"
+      ]
+    },
+    {
+      "coords": [
+        714,
+        98
+      ],
+      "image": "bush",
+      "codes": [
+        "OOT Hyrule Field Bush 01",
+        "OOT Hyrule Field Bush 02",
+        "OOT Hyrule Field Bush 03",
+        "OOT Hyrule Field Bush 04",
+        "OOT Hyrule Field Bush 05",
+        "OOT Hyrule Field Bush 06"
+      ]
+    },
+    {
+      "coords": [
+        670,
+        225
+      ],
+      "image": "bush",
+      "codes": [
+        "OOT Hyrule Field Bush 30",
+        "OOT Hyrule Field Bush 31",
+        "OOT Hyrule Field Bush 32",
+        "OOT Hyrule Field Bush 33",
+        "OOT Hyrule Field Bush 34",
+        "OOT Hyrule Field Bush 35"
+      ]
+    },
+    {
+      "coords": [
+        712,
+        356
+      ],
+      "image": "bush",
+      "codes": [
+        "OOT Hyrule Field Bush 19",
+        "OOT Hyrule Field Bush 20",
+        "OOT Hyrule Field Bush 21",
+        "OOT Hyrule Field Bush 22",
+        "OOT Hyrule Field Bush 23",
+        "OOT Hyrule Field Bush 24",
+        "OOT Hyrule Field Bush 25",
+        "OOT Hyrule Field Bush 26",
+        "OOT Hyrule Field Bush 27",
+        "OOT Hyrule Field Bush 28",
+        "OOT Hyrule Field Bush 29"
+      ]
+    },
+    {
+      "coords": [
+        826,
+        365
+      ],
+      "image": "bush",
+      "overlays": [
+        "child"
+      ],
+      "codes": [
+        "TODO KF 071 :: unnamed_stack > Hyrule > Hyrule Layers > Hyrule Bushes :: Pasted Layer #70 :: 001-001-013-005.png",
+        "OOT Hyrule Field Bush Child 12",
+        "OOT Hyrule Field Bush Child 13",
+        "OOT Hyrule Field Bush Child 14",
+        "OOT Hyrule Field Bush Child 15",
+        "OOT Hyrule Field Bush Child 16",
+        "OOT Hyrule Field Bush Child 17",
+        "OOT Hyrule Field Bush Child 18",
+        "OOT Hyrule Field Bush Child 19",
+        "OOT Hyrule Field Bush Child 20",
+        "OOT Hyrule Field Bush Child 21",
+        "OOT Hyrule Field Bush Child 22",
+        "OOT Hyrule Field Bush Child 23"
+      ]
+    },
+    {
+      "coords": [
+        843,
+        365
+      ],
+      "image": "bush",
+      "codes": [
+        "OOT Hyrule Field Bush 07",
+        "OOT Hyrule Field Bush 08",
+        "OOT Hyrule Field Bush 09",
+        "OOT Hyrule Field Bush 10",
+        "OOT Hyrule Field Bush 11",
+        "OOT Hyrule Field Bush 12",
+        "OOT Hyrule Field Bush 13",
+        "OOT Hyrule Field Bush 14",
+        "OOT Hyrule Field Bush 15",
+        "OOT Hyrule Field Bush 16",
+        "OOT Hyrule Field Bush 17",
+        "OOT Hyrule Field Bush 18"
+      ]
+    },
+    {
+      "coords": [
+        360,
+        117
+      ],
+      "image": "gossip_stone",
+      "codes": "OOT Hyrule Castle Gossip Before Moat"
+    },
+    {
+      "coords": [
+        416,
+        206
+      ],
+      "image": "gossip_stone",
+      "codes": "OOT Hyrule Castle Gossip After Climb"
+    },
+    {
+      "coords": [
+        535,
+        387
+      ],
+      "image": "gossip_stone",
+      "codes": [
+        "OOT Market Gossip Outside Temple Leftmost",
+        "OOT Market Gossip Outside Temple Right-Center",
+        "OOT Market Gossip Outside Temple Rightmost",
+        "OOT Market Gossip Outside Temple Left-Center"
+      ]
+    },
+    {
+      "coords": [
+        72,
+        124
+      ],
+      "image": "dungeon_entrance",
+      "codes": "TODO KF 076 :: unnamed_stack > Hyrule > Hyrule Layers > Hyrule Entrances :: Pasted Layer #75 :: 001-001-015-000.png"
+    },
+    {
+      "coords": [
+        189,
+        128
+      ],
+      "image": "black_pillar_entrance",
+      "type": "submenu",
+      "markers": [
+        {
+          "image": "npc",
+          "codes": [
+            "OOT Great Fairy Din's Fire"
+          ]
+        }
+      ]
+    },
+    {
+      "coords": [
+        44,
+        564
+      ],
+      "image": "interior_entrance",
+      "codes": "TODO KF 078 :: unnamed_stack > Hyrule > Hyrule Layers > Hyrule Entrances :: Pasted Layer #77 :: 001-001-015-002.png"
+    },
+    {
+      "coords": [
+        169,
+        556
+      ],
+      "image": "grotto",
+      "overlays": [
+        "child"
+      ],
+      "codes": "TODO KF 079 :: unnamed_stack > Hyrule > Hyrule Layers > Hyrule Entrances :: Pasted Layer #78 :: 001-001-015-003.png"
+    },
+    {
+      "coords": [
+        122,
+        398
+      ],
+      "image": "interior_entrance",
+      "codes": "TODO KF 080 :: unnamed_stack > Hyrule > Hyrule Layers > Hyrule Entrances :: Pasted Layer #79 :: 001-001-015-004.png"
+    },
+    {
+      "coords": [
+        144,
+        390
+      ],
+      "image": "interior_entrance",
+      "codes": "TODO KF 081 :: unnamed_stack > Hyrule > Hyrule Layers > Hyrule Entrances :: Pasted Layer #80 :: 001-001-015-005.png"
+    },
+    {
+      "coords": [
+        301,
+        372
+      ],
+      "image": "interior_entrance",
+      "overlays": [
+        "child",
+        "night"
+      ],
+      "codes": "TODO KF 082 :: unnamed_stack > Hyrule > Hyrule Layers > Hyrule Entrances :: Pasted Layer #81 :: 001-001-015-006.png"
+    },
+    {
+      "coords": [
+        365,
+        440
+      ],
+      "image": "interior_entrance",
+      "overlays": [
+        "child"
+      ],
+      "codes": "TODO KF 083 :: unnamed_stack > Hyrule > Hyrule Layers > Hyrule Entrances :: Pasted Layer #82 :: 001-001-015-007.png"
+    },
+    {
+      "coords": [
+        393,
+        380
+      ],
+      "image": "interior_entrance",
+      "overlays": [
+        "child",
+        "day"
+      ],
+      "codes": "TODO KF 084 :: unnamed_stack > Hyrule > Hyrule Layers > Hyrule Entrances :: Pasted Layer #83 :: 001-001-015-008.png"
+    },
+    {
+      "coords": [
+        337,
+        504
+      ],
+      "image": "interior_entrance",
+      "overlays": [
+        "child",
+        "night"
+      ],
+      "codes": "TODO KF 085 :: unnamed_stack > Hyrule > Hyrule Layers > Hyrule Entrances :: Pasted Layer #84 :: 001-001-015-009.png"
+    },
+    {
+      "coords": [
+        361,
+        504
+      ],
+      "image": "interior_entrance",
+      "overlays": [
+        "child",
+        "night"
+      ],
+      "codes": "TODO KF 086 :: unnamed_stack > Hyrule > Hyrule Layers > Hyrule Entrances :: Pasted Layer #85 :: 001-001-015-010.png"
+    },
+    {
+      "coords": [
+        385,
+        500
+      ],
+      "image": "interior_entrance",
+      "overlays": [
+        "child",
+        "night"
+      ],
+      "codes": "TODO KF 087 :: unnamed_stack > Hyrule > Hyrule Layers > Hyrule Entrances :: Pasted Layer #86 :: 001-001-015-011.png"
+    },
+    {
+      "coords": [
+        445,
+        564
+      ],
+      "image": "interior_entrance",
+      "codes": "TODO KF 088 :: unnamed_stack > Hyrule > Hyrule Layers > Hyrule Entrances :: Pasted Layer #87 :: 001-001-015-012.png"
+    },
+    {
+      "coords": [
+        469,
+        456
+      ],
+      "image": "interior_entrance",
+      "overlays": [
+        "child"
+      ],
+      "codes": "TODO KF 089 :: unnamed_stack > Hyrule > Hyrule Layers > Hyrule Entrances :: Pasted Layer #88 :: 001-001-015-013.png"
+    },
+    {
+      "coords": [
+        469,
+        432
+      ],
+      "image": "interior_entrance",
+      "overlays": [
+        "child"
+      ],
+      "codes": "TODO KF 090 :: unnamed_stack > Hyrule > Hyrule Layers > Hyrule Entrances :: Pasted Layer #89 :: 001-001-015-014.png"
+    },
+    {
+      "coords": [
+        473,
+        380
+      ],
+      "image": "interior_entrance",
+      "overlays": [
+        "child"
+      ],
+      "codes": "TODO KF 091 :: unnamed_stack > Hyrule > Hyrule Layers > Hyrule Entrances :: Pasted Layer #90 :: 001-001-015-015.png"
+    },
+    {
+      "coords": [
+        573,
+        336
+      ],
+      "image": "interior_entrance",
+      "codes": "TODO KF 092 :: unnamed_stack > Hyrule > Hyrule Layers > Hyrule Entrances :: Pasted Layer #91 :: 001-001-015-016.png"
+    },
+    {
+      "coords": [
+        725,
+        378
+      ],
+      "image": "bomb_grotto",
+      "codes": "TODO KF 093 :: unnamed_stack > Hyrule > Hyrule Layers > Hyrule Entrances :: Pasted Layer #92 :: 001-001-015-017.png"
+    },
+    {
+      "coords": [
+        754,
+        382
+      ],
+      "image": "grotto",
+      "codes": "TODO KF 094 :: unnamed_stack > Hyrule > Hyrule Layers > Hyrule Entrances :: Pasted Layer #93 :: 001-001-015-018.png"
+    },
+    {
+      "coords": [
+        841,
+        338
+      ],
+      "image": "boulder_grotto",
+      "codes": "TODO KF 095 :: unnamed_stack > Hyrule > Hyrule Layers > Hyrule Entrances :: Pasted Layer #94 :: 001-001-015-019.png"
+    },
+    {
+      "coords": [
+        704,
+        130
+      ],
+      "image": "bomb_grotto",
+      "codes": "TODO KF 097 :: unnamed_stack > Hyrule > Hyrule Layers > Hyrule Entrances :: Pasted Layer #96 :: 001-001-015-021.png"
+    },
+    {
+      "coords": [
+        724,
+        58
+      ],
+      "image": "boulder_grotto",
+      "codes": "TODO KF 098 :: unnamed_stack > Hyrule > Hyrule Layers > Hyrule Entrances :: Pasted Layer #97 :: 001-001-015-022.png"
+    },
+    {
+      "coords": [
+        794,
+        80
+      ],
+      "image": "boulder_grotto",
+      "codes": "TODO KF 099 :: unnamed_stack > Hyrule > Hyrule Layers > Hyrule Entrances :: Pasted Layer #98 :: 001-001-015-023.png"
+    },
+    {
+      "coords": [
+        886,
+        56
+      ],
+      "image": "bomb_grotto",
+      "codes": "TODO KF 100 :: unnamed_stack > Hyrule > Hyrule Layers > Hyrule Entrances :: Pasted Layer #99 :: 001-001-015-024.png"
+    },
+    {
+      "coords": [
+        506,
+        172
+      ],
+      "image": "boulder_grotto",
+      "codes": "TODO KF 101 :: unnamed_stack > Hyrule > Hyrule Layers > Hyrule Entrances :: Pasted Layer #100 :: 001-001-015-025.png"
+    },
+    {
+      "coords": [
+        522,
+        172
+      ],
+      "image": "crawl_space",
+      "codes": "TODO KF 102 :: unnamed_stack > Hyrule > Hyrule Layers > Hyrule Entrances :: Pasted Layer #101 :: 001-001-015-026.png"
+    },
+    {
+      "coords": [
+        442,
+        104
+      ],
+      "image": "song_grotto",
+      "codes": "TODO KF 103 :: unnamed_stack > Hyrule > Hyrule Layers > Hyrule Entrances :: Pasted Layer #102 :: 001-001-015-027.png"
+    },
+    {
+      "coords": [
+        424,
+        69
+      ],
+      "image": "crawl_space",
+      "codes": "TODO KF 104 :: unnamed_stack > Hyrule > Hyrule Layers > Hyrule Entrances :: Pasted Layer #103 :: 001-001-015-028.png"
+    }
+  ]
+}
