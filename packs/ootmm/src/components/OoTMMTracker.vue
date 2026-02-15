@@ -1860,8 +1860,9 @@ onBeforeUnmount(() => {
     width: 100%;
   }
 
-  .map-panel {
-    min-height: 220px;
+  .map-panel,
+  .map-view {
+    min-height: max(360px, 50vh);
   }
 
   .locations-sidebar {
@@ -1897,6 +1898,12 @@ onBeforeUnmount(() => {
 
   .tabs button {
     flex: 1 1 100%;
+  }
+
+  /* Ensure the map container grows on small screens so the Locations panel stacks below it */
+  .map-panel,
+  .map-view {
+    min-height: max(360px, 50vh);
   }
 }
 </style>

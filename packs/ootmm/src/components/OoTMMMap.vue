@@ -2316,6 +2316,11 @@ onBeforeUnmount(() => {
 }
 
 @media (max-width: 600px) {
+  /* Increase minimum map height on narrow viewports so the map remains usable on phones */
+  .ootmm-map {
+    min-height: max(360px, 50vh);
+  }
+
   .map-popup {
     width: 240px;
   }
