@@ -197,19 +197,20 @@ function isShopPriceEditable(loc: LocationInfo): boolean {
   const kind = getLocationPriceKind(loc)
   if (!kind) return false
 
-  const mode =
-    kind === 'shop'
-      ? getLocationGame(loc) === 'oot'
-        ? isRandomizedPriceMode(trackerSettings.value?.priceOotShops)
-        : getLocationGame(loc) === 'mm'
-          ? isRandomizedPriceMode(trackerSettings.value?.priceMmShops)
-          : false
-      : kind === 'oot-scrub'
-        ? isRandomizedPriceMode(trackerSettings.value?.priceOotScrubs)
-        : kind === 'oot-merchant'
-          ? isRandomizedPriceMode(trackerSettings.value?.priceOotMerchants)
-          : isRandomizedPriceMode(trackerSettings.value?.priceMmTingle)
-  return mode
+  const game = getLocationGame(loc)
+
+  if (kind === 'shop') {
+    if (game === 'oot') return isRandomizedPriceMode(trackerSettings.value?.priceOotShops)
+    if (game === 'mm') return isRandomizedPriceMode(trackerSettings.value?.priceMmShops)
+    return false
+  }
+  if (kind === 'oot-scrub') {
+    return isRandomizedPriceMode(trackerSettings.value?.priceOotScrubs)
+  }
+  if (kind === 'oot-merchant') {
+    return isRandomizedPriceMode(trackerSettings.value?.priceOotMerchants)
+  }
+  return isRandomizedPriceMode(trackerSettings.value?.priceMmTingle)
 }
 
 function getShopPrice(loc: LocationInfo): number {

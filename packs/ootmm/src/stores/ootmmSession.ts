@@ -531,18 +531,14 @@ export const useOoTMMSessionStore = defineStore('ootmm-session', () => {
     const currentTracker = tracker.value;
     if (!currentTracker || !currentTracker.setShopPrices) return;
 
-    const ootMode = String(trackerSettings.value?.priceOotShops ?? '');
-    const ootScrubMode = String(trackerSettings.value?.priceOotScrubs ?? '');
-    const ootMerchantMode = String(trackerSettings.value?.priceOotMerchants ?? '');
-    const mmMode = String(trackerSettings.value?.priceMmShops ?? '');
-    const mmTingleMode = String(trackerSettings.value?.priceMmTingle ?? '');
     const isRandomizedMode = (mode: string) => mode === 'random' || mode === 'weighted';
-    const hasEditableShops =
-      isRandomizedMode(ootMode) ||
-      isRandomizedMode(ootScrubMode) ||
-      isRandomizedMode(ootMerchantMode) ||
-      isRandomizedMode(mmMode) ||
-      isRandomizedMode(mmTingleMode);
+    const hasEditableShops = [
+      trackerSettings.value?.priceOotShops,
+      trackerSettings.value?.priceOotScrubs,
+      trackerSettings.value?.priceOotMerchants,
+      trackerSettings.value?.priceMmShops,
+      trackerSettings.value?.priceMmTingle,
+    ].some((mode) => isRandomizedMode(String(mode ?? '')));
 
     if (hasEditableShops && currentTracker.getShopPrices) {
       const trackerPrices = sanitizeNonNegativeNumberRecord(currentTracker.getShopPrices());

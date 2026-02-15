@@ -86,7 +86,6 @@ const PRICE_RANGE_MM_TINGLE = PRICE_RANGE_MM_SHOPS_EX + PRICE_COUNT_MM_SHOPS_EX
 type ShopPriceSlot = {
   worldId: number
   slots: number[]
-  game: 'oot' | 'mm'
 }
 
 const OOT_MERCHANT_SLOT_BY_ID: Record<string, number> = {
@@ -1027,21 +1026,12 @@ export class OoTMMTracker implements TrackerPack {
         slotsByLocationId.set(fullId, {
           worldId,
           slots,
-          game: typedCheck.game,
         })
         basePricesByLocationId.set(fullId, slots.map((slot) => world.prices[slot]))
       }
     }
 
     return { slotsByLocationId, basePricesByLocationId }
-  }
-
-  private computeShopPriceSlot(game: 'oot' | 'mm', checkId: number): number | null {
-    if (!Number.isInteger(checkId) || checkId < 0) return null
-    if (game === 'oot') {
-      return PRICE_RANGE_OOT_SHOPS + checkId
-    }
-    return PRICE_RANGE_MM_SHOPS + checkId
   }
 
   private computePriceSlots(
