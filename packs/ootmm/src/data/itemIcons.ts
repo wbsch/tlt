@@ -6,7 +6,9 @@
 
 import { withBasePath } from '../utils/assetPath';
 
-function expandGroupedItemIdKeys<T>(source: Record<string, T>): Record<string, T> {
+function expandGroupedItemIdKeys<T>(
+  source: Record<string, T>,
+): Record<string, T> {
   const expanded: Record<string, T> = {};
 
   for (const [rawKey, value] of Object.entries(source)) {
@@ -564,10 +566,9 @@ const RAW_ITEM_ICONS: Record<string, string> = {
 };
 
 export const ITEM_ICONS: Record<string, string> = Object.fromEntries(
-  Object.entries(expandGroupedItemIdKeys(RAW_ITEM_ICONS)).map(([key, value]) => [
-    key,
-    withBasePath(value),
-  ]),
+  Object.entries(expandGroupedItemIdKeys(RAW_ITEM_ICONS)).map(
+    ([key, value]) => [key, withBasePath(value)],
+  ),
 );
 
 // Count-based icon variants used only by the Item Grid rendering.
@@ -741,10 +742,10 @@ const RAW_GRID_ICON_VARIANTS: Record<string, GridIconVariantConfig> = {
         'images/overlay_30_green.png',
       ],
       startUndimmed: false,
-      preItemPoolToggleItemId: 'OOT_STICK'
+      preItemPoolToggleItemId: 'OOT_STICK',
     },
   },
-    MM_STICK_UPGRADE: {
+  MM_STICK_UPGRADE: {
     default: {
       icons: ['images/stick.png', 'images/stick.png', 'images/stick.png'],
       overlays: [
@@ -753,7 +754,7 @@ const RAW_GRID_ICON_VARIANTS: Record<string, GridIconVariantConfig> = {
         'images/overlay_30_green.png',
       ],
       startUndimmed: false,
-      preItemPoolToggleItemId: 'MM_STICK'
+      preItemPoolToggleItemId: 'MM_STICK',
     },
   },
   OOT_NUT_UPGRADE: {
@@ -768,7 +769,7 @@ const RAW_GRID_ICON_VARIANTS: Record<string, GridIconVariantConfig> = {
       preItemPoolToggleItemId: 'OOT_NUTS_5',
     },
   },
-    MM_NUT_UPGRADE: {
+  MM_NUT_UPGRADE: {
     default: {
       icons: ['images/nut.png', 'images/nut.png', 'images/nut.png'],
       overlays: [
@@ -778,6 +779,87 @@ const RAW_GRID_ICON_VARIANTS: Record<string, GridIconVariantConfig> = {
       ],
       startUndimmed: false,
       preItemPoolToggleItemId: 'MM_NUTS_5',
+    },
+  },
+  'OOT_BOMB_BAG|MM_BOMB_BAG|SHARED_BOMB_BAG': {
+    default: {
+      icons: ['images/bomb.png', 'images/bomb.png', 'images/bomb.png'],
+      overlays: [
+        'images/overlay_20.png',
+        'images/overlay_30.png',
+        'images/overlay_40_green.png',
+      ],
+      startUndimmed: false,
+    },
+  },
+  'OOT_BOW|SHARED_BOW': {
+    default: {
+      icons: ['images/bow.png', 'images/bow.png', 'images/bow.png'],
+      overlays: [
+        'images/overlay_30.png',
+        'images/overlay_40.png',
+        'images/overlay_50_green.png',
+      ],
+      startUndimmed: false,
+    },
+  },
+  MM_BOW: {
+    default: {
+      icons: [
+        'images/items/mm_bow.png',
+        'images/items/mm_bow.png',
+        'images/items/mm_bow.png',
+      ],
+      overlays: [
+        'images/overlay_30.png',
+        'images/overlay_40.png',
+        'images/overlay_50_green.png',
+      ],
+      startUndimmed: false,
+    },
+  },
+  OOT_SLINGSHOT: {
+    default: {
+      icons: [
+        'images/slingshot.png',
+        'images/slingshot.png',
+        'images/slingshot.png',
+      ],
+      overlays: [
+        'images/overlay_30.png',
+        'images/overlay_40.png',
+        'images/overlay_50_green.png',
+      ],
+      startUndimmed: false,
+    },
+  },
+  'OOT_HOOKSHOT|SHARED_HOOKSHOT': {
+    default: {
+      icons: ['images/hookshot.png', 'images/longshot.png'],
+      startUndimmed: false,
+    },
+  },
+  MM_HOOKSHOT: {
+    default: {
+      icons: ['images/items/mm_hookshot.png'],
+      startUndimmed: false,
+    },
+    variants: [
+      {
+        when: {
+          settings: {
+            shortHookshotMm: true,
+          },
+        },
+        icons: ['images/hookshotd.png', 'images/items/mm_hookshot.png'],
+        startUndimmed: false,
+      },
+    ],
+  },
+  OOT_OCARINA: {
+    default: {
+      icons: ['images/fairyocarina.png', 'images/ocarina.png'],
+      startUndimmed: false,
     },
   },
 };
@@ -835,10 +917,9 @@ function withBasePathForVariantConfig(
 
 export const GRID_ICON_VARIANTS: Record<string, GridIconVariantConfig> =
   Object.fromEntries(
-    Object.entries(expandGroupedItemIdKeys(RAW_GRID_ICON_VARIANTS)).map(([key, config]) => [
-      key,
-      withBasePathForVariantConfig(config),
-    ]),
+    Object.entries(expandGroupedItemIdKeys(RAW_GRID_ICON_VARIANTS)).map(
+      ([key, config]) => [key, withBasePathForVariantConfig(config)],
+    ),
   );
 
 function hasAny(set: Set<string>, values: string[]): boolean {
