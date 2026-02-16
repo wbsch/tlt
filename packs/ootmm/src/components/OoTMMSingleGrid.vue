@@ -102,6 +102,24 @@ function changeItemCount(inventory: Map<string, number>, itemId: string, delta: 
   }
 }
 
+const AUTO_SELECT_ON_OWNED_ITEM_IDS: Record<string, string> = {
+  MM_BOTTLE_POTION_BLUE: 'MM_POTION_BLUE',
+  MM_BOTTLE_POTION_RED: 'MM_POTION_RED',
+}
+
+function syncAutoSelectedItemIds(inventory: Map<string, number>) {
+  for (const [sourceItemId, targetItemId] of Object.entries(AUTO_SELECT_ON_OWNED_ITEM_IDS)) {
+    if ((inventory.get(sourceItemId) || 0) > 0 && (inventory.get(targetItemId) || 0) <= 0) {
+      inventory.set(targetItemId, 1)
+    }
+  }
+}
+
+function emitInventoryUpdate(inventory: Map<string, number>) {
+  syncAutoSelectedItemIds(inventory)
+  emit('update:inventory', inventory)
+}
+
 function getLinkedItemIds(itemId: string): string[] | null {
   const baseItemId = getBaseItemId(itemId)
   const linkedItemIds = getGridItemLinkedItemIds(baseItemId, {
@@ -265,7 +283,7 @@ function toggleItem(itemId: string) {
         applyLinkedItemLevel(linkedItemIds, 0, newInventory)
       }
     }
-    emit('update:inventory', newInventory)
+    emitInventoryUpdate(newInventory)
     return
   }
 
@@ -283,7 +301,7 @@ function toggleItem(itemId: string) {
   if (preItemPoolToggleItemId) {
     if (current <= 0 && !preItemPoolToggleActive) {
       newInventory.set(preItemPoolToggleItemId, 1)
-      emit('update:inventory', newInventory)
+      emitInventoryUpdate(newInventory)
       return
     }
 
@@ -295,7 +313,7 @@ function toggleItem(itemId: string) {
       newInventory.delete(preItemPoolToggleItemId)
     }
 
-    emit('update:inventory', newInventory)
+    emitInventoryUpdate(newInventory)
     return
   }
   
@@ -305,7 +323,7 @@ function toggleItem(itemId: string) {
     } else {
       newInventory.set(itemId, 1)
     }
-    emit('update:inventory', newInventory)
+    emitInventoryUpdate(newInventory)
     return
   }
 
@@ -316,7 +334,7 @@ function toggleItem(itemId: string) {
     newInventory.delete(itemId)
   }
 
-  emit('update:inventory', newInventory)
+  emitInventoryUpdate(newInventory)
 }
 
 function decrementItem(itemId: string, event: MouseEvent) {
@@ -340,7 +358,7 @@ function decrementItem(itemId: string, event: MouseEvent) {
         applyLinkedItemLevel(linkedItemIds, max, newInventory)
       }
     }
-    emit('update:inventory', newInventory)
+    emitInventoryUpdate(newInventory)
     return
   }
 
@@ -368,7 +386,7 @@ function decrementItem(itemId: string, event: MouseEvent) {
       newInventory.set(itemId, max)
       newInventory.set(preItemPoolToggleItemId, 1)
     }
-    emit('update:inventory', newInventory)
+    emitInventoryUpdate(newInventory)
     return
   }
 
@@ -380,7 +398,7 @@ function decrementItem(itemId: string, event: MouseEvent) {
     // current is 0: wrap to max
     newInventory.set(itemId, max)
   }
-  emit('update:inventory', newInventory)
+  emitInventoryUpdate(newInventory)
 }
 
 function parseMargin(margin?: string): { x: number; y: number } {

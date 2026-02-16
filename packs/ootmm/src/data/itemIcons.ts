@@ -939,6 +939,29 @@ const RAW_GRID_ICON_VARIANTS: Record<string, GridIconVariantConfig> = {
       ],
     },
   },
+    MM_BOTTLE_EMPTY: {
+    default: {
+      icons: [
+        'images/bottle.png',
+        'images/bottle_red.png',
+        'images/bottle_green.png',
+        'images/bottle_blue.png',
+        'images/bottle_fire.png',
+        'images/bottle_milk.png',
+        'images/items/mm_chateau.png',
+      ],
+      startUndimmed: false,
+      linkedItemIds: [
+        'MM_BOTTLE_EMPTY',
+        'MM_BOTTLE_POTION_RED',
+        'MM_BOTTLE_POTION_GREEN',
+        'MM_BOTTLE_POTION_BLUE',
+        'MM_BOTTLE_BLUE_FIRE',
+        'MM_BOTTLE_MILK',
+        'MM_BOTTLE_CHATEAU', 
+      ],
+    },
+  },
   OOT_SLINGSHOT: {
     default: {
       icons: [

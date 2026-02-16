@@ -390,8 +390,8 @@
             },
             "MM_MAGIC_BEAN",
             "MM_BOTTLED_GOLD_DUST",
-            "MM_BOTTLE_EMPTY",
-            "MM_BOTTLE_EMPTY",
+            { "ref": "MM_Bottle1", "item": "MM_BOTTLE_EMPTY", "title": "Bottle 1" },
+            { "ref": "MM_Bottle2", "item": "MM_BOTTLE_EMPTY", "title": "Bottle 2" },
             "MM_STONE_OF_AGONY"
           ],
           [
@@ -400,9 +400,9 @@
             "MM_LENS",
             "MM_HOOKSHOT",
             "MM_GREAT_FAIRY_SWORD",
-            "MM_BOTTLE_EMPTY",
-            "MM_BOTTLE_EMPTY",
-            "MM_BOTTLE_EMPTY",
+            { "ref": "MM_Bottle3", "item": "MM_BOTTLE_EMPTY", "title": "Bottle 3" },
+            { "ref": "MM_Bottle4", "item": "MM_BOTTLE_EMPTY", "title": "Bottle 4" },
+            { "ref": "MM_Bottle5", "item": "MM_BOTTLE_EMPTY", "title": "Bottle 5" },
             "MM_SHIELD_DEKU"
           ],
           [
