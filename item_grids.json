@@ -383,8 +383,12 @@
             {
               "or": ["MM_BOMBCHU_BAG", "MM_BOMBCHU"]
             },
-            "MM_STICK",
-            "MM_NUTS_10",
+            {
+              "or": ["MM_STICK_UPGRADE", "MM_STICK"]
+            },
+            {
+              "or": ["MM_NUT_UPGRADE", "MM_NUTS_10"]
+            },
             "MM_MAGIC_BEAN",
             "MM_BOTTLED_GOLD_DUST",
             "MM_BOTTLE_EMPTY",

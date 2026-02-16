@@ -722,6 +722,18 @@ const RAW_GRID_ICON_VARIANTS: Record<string, GridIconVariantConfig> = {
       preItemPoolToggleItemId: 'OOT_STICK'
     },
   },
+    MM_STICK_UPGRADE: {
+    default: {
+      icons: ['images/stick.png', 'images/stick.png', 'images/stick.png'],
+      overlays: [
+        'images/overlay_10.png',
+        'images/overlay_20.png',
+        'images/overlay_30_green.png',
+      ],
+      startUndimmed: false,
+      preItemPoolToggleItemId: 'MM_STICK'
+    },
+  },
   OOT_NUT_UPGRADE: {
     default: {
       icons: ['images/nut.png', 'images/nut.png', 'images/nut.png'],
@@ -732,6 +744,18 @@ const RAW_GRID_ICON_VARIANTS: Record<string, GridIconVariantConfig> = {
       ],
       startUndimmed: false,
       preItemPoolToggleItemId: 'OOT_NUTS_5',
+    },
+  },
+    MM_NUT_UPGRADE: {
+    default: {
+      icons: ['images/nut.png', 'images/nut.png', 'images/nut.png'],
+      overlays: [
+        'images/overlay_20.png',
+        'images/overlay_30.png',
+        'images/overlay_40_green.png',
+      ],
+      startUndimmed: false,
+      preItemPoolToggleItemId: 'MM_NUTS_5',
     },
   },
 };
