@@ -862,7 +862,7 @@ const RAW_GRID_ICON_VARIANTS: Record<string, GridIconVariantConfig> = {
       },
     ],
   },
-  OOT_STICK_UPGRADE: {
+  'OOT_STICK_UPGRADE|SHARED_STICK_UPGRADE': {
     default: {
       icons: ['images/stick.png', 'images/stick.png', 'images/stick.png'],
       overlays: [
@@ -886,7 +886,7 @@ const RAW_GRID_ICON_VARIANTS: Record<string, GridIconVariantConfig> = {
       preItemPoolToggleItemId: 'MM_STICK',
     },
   },
-  OOT_NUT_UPGRADE: {
+  'OOT_NUT_UPGRADE|SHARED_NUT_UPGRADE': {
     default: {
       icons: ['images/nut.png', 'images/nut.png', 'images/nut.png'],
       overlays: [
