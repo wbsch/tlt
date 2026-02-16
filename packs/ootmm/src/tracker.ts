@@ -88,6 +88,21 @@ const CLOCK_ITEM_IDS = new Set([
 
 const GRID_REF_STATE_PREFIX = '__grid_ref_state__:'
 
+const BOTTLE_CONTENT_BASE_ITEM_IDS: Record<string, string> = {
+  OOT_BOTTLE_POTION_RED: 'OOT_BOTTLE_EMPTY',
+  OOT_BOTTLE_POTION_GREEN: 'OOT_BOTTLE_EMPTY',
+  OOT_BOTTLE_POTION_BLUE: 'OOT_BOTTLE_EMPTY',
+  OOT_BOTTLE_BLUE_FIRE: 'OOT_BOTTLE_EMPTY',
+  MM_BOTTLE_POTION_RED: 'MM_BOTTLE_EMPTY',
+  MM_BOTTLE_POTION_GREEN: 'MM_BOTTLE_EMPTY',
+  MM_BOTTLE_POTION_BLUE: 'MM_BOTTLE_EMPTY',
+  MM_BOTTLE_BLUE_FIRE: 'MM_BOTTLE_EMPTY',
+  SHARED_BOTTLE_POTION_RED: 'SHARED_BOTTLE_EMPTY',
+  SHARED_BOTTLE_POTION_GREEN: 'SHARED_BOTTLE_EMPTY',
+  SHARED_BOTTLE_POTION_BLUE: 'SHARED_BOTTLE_EMPTY',
+  SHARED_BOTTLE_BLUE_FIRE: 'SHARED_BOTTLE_EMPTY',
+}
+
 const VANILLA_SILVER_RUPEE_PREFIX = 'OOT_RUPEE_SILVER_'
 const OWL_STATUE_PREFIX = 'MM_OWL_'
 
@@ -984,8 +999,16 @@ export class OoTMMTracker implements TrackerPack {
     // Use ArrayEntriesMap to ensure .entries() returns an array instead of an iterator,
     // which is what the OoTMM library expects
     const playerItems: PlayerItems = new ArrayEntriesMap()
+    const expandedInventory = new Map<string, number>(inventory)
 
     for (const [itemId, count] of inventory) {
+      if (count <= 0) continue
+      const baseItemId = BOTTLE_CONTENT_BASE_ITEM_IDS[itemId]
+      if (!baseItemId) continue
+      expandedInventory.set(baseItemId, (expandedInventory.get(baseItemId) || 0) + count)
+    }
+
+    for (const [itemId, count] of expandedInventory) {
       if (itemId.startsWith(GRID_REF_STATE_PREFIX)) {
         continue
       }
