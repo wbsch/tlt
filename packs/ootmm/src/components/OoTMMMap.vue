@@ -39,6 +39,28 @@ type OverlayRender = {
   wide: boolean
 }
 
+type PopupAttributeChip = OverlayRender & {
+  label: string
+}
+
+const POPUP_ATTRIBUTE_LABELS: Record<string, string> = {
+  child: 'Child',
+  adult: 'Adult',
+  jp_only: 'JP only',
+  na_only: 'NA only',
+  day1: 'Day 1',
+  day2: 'Day 2',
+  day3: 'Day 3',
+  'day1+day2': 'Days 1-2',
+  'day1+day3': 'Days 1-3',
+  'day2+day3': 'Days 2-3',
+  night: 'Night',
+  day: 'Day',
+  clear_state: 'Clear state',
+  cursed_state: 'Cursed state',
+  broken: 'Broken',
+}
+
 type MarkerRenderState = {
   overlays: MapMarkerOverlay[]
   codeList: string[]
@@ -415,6 +437,23 @@ function buildTopRightOverlays(overlays: MapMarkerOverlay[]): OverlayRender[] {
   return result
 }
 
+function popupAttributeLabel(key: string): string {
+  const mapped = POPUP_ATTRIBUTE_LABELS[key]
+  if (mapped) return mapped
+  return key.replace(/_/g, ' ')
+}
+
+function buildPopupAttributeChips(
+  topLeftOverlays: OverlayRender[],
+  bottomLeftOverlays: OverlayRender[],
+  topRightOverlays: OverlayRender[],
+): PopupAttributeChip[] {
+  return [...topLeftOverlays, ...bottomLeftOverlays, ...topRightOverlays].map((overlay) => ({
+    ...overlay,
+    label: popupAttributeLabel(overlay.key),
+  }))
+}
+
 function buildMarkerRenderState(
   markerId: string,
   codeList: string[],
@@ -615,6 +654,26 @@ const activeSubmenuPopup = computed<MapPopupPayload | null>(() => {
   const marker = activeSubmenuPopupMarker.value
   if (!marker || props.devMode) return null
   return markerPopupPayload(marker)
+})
+
+const activePopupAttributeChips = computed<PopupAttributeChip[]>(() => {
+  const marker = popupMarker.value
+  if (!marker) return []
+  return buildPopupAttributeChips(
+    marker.topLeftOverlays,
+    marker.bottomLeftOverlays,
+    marker.topRightOverlays,
+  )
+})
+
+const activeSubmenuPopupAttributeChips = computed<PopupAttributeChip[]>(() => {
+  const marker = activeSubmenuPopupMarker.value
+  if (!marker) return []
+  return buildPopupAttributeChips(
+    marker.topLeftOverlays,
+    marker.bottomLeftOverlays,
+    marker.topRightOverlays,
+  )
 })
 
 const sceneStyle = computed(() => {
@@ -1752,6 +1811,24 @@ onBeforeUnmount(() => {
           <button type="button" class="map-popup__close" aria-label="Close popup" @click="closeSubmenuPopup">×</button>
         </header>
 
+        <div v-if="activeSubmenuPopupAttributeChips.length > 0" class="map-popup__attributes" aria-label="Attributes">
+          <span
+            v-for="attribute in activeSubmenuPopupAttributeChips"
+            :key="`submenu-popup-attribute:${attribute.key}`"
+            class="map-popup__attribute-chip"
+            :aria-label="`Attribute: ${attribute.label}`"
+          >
+            <img
+              class="map-popup__attribute-icon"
+              :class="{ 'map-popup__attribute-icon--wide': attribute.wide }"
+              :src="attribute.src"
+              alt=""
+              draggable="false"
+            />
+            <span class="map-popup__attribute-label">{{ attribute.label }}</span>
+          </span>
+        </div>
+
         <div class="map-popup__entries">
           <button
             v-for="entry in activeSubmenuPopup.entries"
@@ -1852,6 +1929,24 @@ onBeforeUnmount(() => {
           </div>
           <button type="button" class="map-popup__close" aria-label="Close popup" @click="closePopup">×</button>
         </header>
+
+        <div v-if="activePopupAttributeChips.length > 0" class="map-popup__attributes" aria-label="Attributes">
+          <span
+            v-for="attribute in activePopupAttributeChips"
+            :key="`popup-attribute:${attribute.key}`"
+            class="map-popup__attribute-chip"
+            :aria-label="`Attribute: ${attribute.label}`"
+          >
+            <img
+              class="map-popup__attribute-icon"
+              :class="{ 'map-popup__attribute-icon--wide': attribute.wide }"
+              :src="attribute.src"
+              alt=""
+              draggable="false"
+            />
+            <span class="map-popup__attribute-label">{{ attribute.label }}</span>
+          </span>
+        </div>
 
         <div class="map-popup__entries">
           <button
@@ -2261,6 +2356,43 @@ onBeforeUnmount(() => {
   color: #cbd5e1;
   font-size: 1rem;
   line-height: 1;
+}
+
+.map-popup__attributes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem;
+  padding: 0.35rem 0.5rem;
+  border-bottom: 1px solid #1e293b;
+}
+
+.map-popup__attribute-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  max-width: 100%;
+  padding: 0.16rem 0.36rem 0.16rem 0.25rem;
+  border: 1px solid #334155;
+  border-radius: 999px;
+  background: #0b1220;
+  color: #cbd5e1;
+  font-size: 0.64rem;
+  line-height: 1.2;
+}
+
+.map-popup__attribute-icon {
+  flex: 0 0 auto;
+  width: 8px;
+  height: 8px;
+  image-rendering: pixelated;
+}
+
+.map-popup__attribute-icon--wide {
+  width: 12px;
+}
+
+.map-popup__attribute-label {
+  white-space: nowrap;
 }
 
 .map-popup__entries {
