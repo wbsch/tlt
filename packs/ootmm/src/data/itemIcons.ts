@@ -985,11 +985,28 @@ const RAW_GRID_ICON_VARIANTS: Record<string, GridIconVariantConfig> = {
       },
     ],
   },
-  OOT_OCARINA: {
+  'OOT_OCARINA|SHARED_OCARINA': {
     default: {
       icons: ['images/fairyocarina.png', 'images/ocarina.png'],
       startUndimmed: false,
     },
+  },
+  MM_OCARINA: {
+    default: {
+      icons: ['images/items/mm_ocarina.png'],
+      startUndimmed: false,
+    },
+    variants: [
+      {
+        when: {
+          settings: {
+            fairyOcarinaMm: true,
+          },
+        },
+        icons: ['images/fairyocarina.png', 'images/items/mm_ocarina.png'],
+        startUndimmed: false,
+      },
+    ],
   },
   'OOT_MAGIC_UPGRADE|SHARED_MAGIC_UPGRADE': {
     default: {
@@ -1000,6 +1017,37 @@ const RAW_GRID_ICON_VARIANTS: Record<string, GridIconVariantConfig> = {
   MM_MAGIC_UPGRADE: {
     default: {
       icons: ['images/items/mm_magic1.png', 'images/items/mm_magic2.png'],
+      startUndimmed: false,
+    },
+  },
+  'OOT_SWORD|SHARED_SWORD': {
+    default: {
+      icons: ['images/sword1.png'],
+      startUndimmed: false,
+    },
+    variants: [
+      {
+        when: {
+          settings: {
+            extraChildSwordsOot: true,
+          },
+        },
+        icons: [
+          'images/sword1.png',
+          'images/items/mm_razor.png',
+          'images/items/mm_gilded.png',
+        ],
+        startUndimmed: false,
+      },
+    ],
+  },
+  MM_SWORD: {
+    default: {
+      icons: [
+        'images/items/mm_kokiri.png',
+        'images/items/mm_razor.png',
+        'images/items/mm_gilded.png',
+      ],
       startUndimmed: false,
     },
   },
