@@ -590,6 +590,10 @@ type GridIconVariantConfig =
     }
 
 const RAW_GRID_ICON_VARIANTS: Record<string, GridIconVariantConfig> = {
+  // `when.settings` can include multiple settings at once.
+  // Multiple settings are matched with AND logic (all must match).
+  // A single setting can accept multiple values via an array (OR logic).
+  // Example: settings: { bronzeScale: true, progressiveSwordsOot: ['shared', 'progressive'] }
   // Example: OOT Strength upgrade levels
   'OOT_STRENGTH': ['images/lift1.png', 'images/lift2.png', 'images/lift3.png'],
 
