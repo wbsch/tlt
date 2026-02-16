@@ -11,6 +11,7 @@ import OoTMMMap from './OoTMMMap.vue'
 import OoTMMTricks from './OoTMMTricks.vue'
 import { TRACKER_DEFAULT_SETTINGS } from '../data/settings'
 import { parseSpoilerLog } from '../utils/spoiler'
+import { useLocationCodeLookup } from '../composables/useLocationCodeLookup'
 import {
   isLocationVisibleInSidebar,
   type LocationVisibilityFilters,
@@ -189,6 +190,85 @@ const visibleLocationIds = computed(() => {
 const allLocationsForCodeSearch = computed(() =>
   props.tracker.getAllLocationsForCodeSearch?.() ?? allLocations.value,
 )
+const { resolveCodeToCheckIds: resolveMapSelectorCodeToCheckIds } = useLocationCodeLookup(
+  computed(() =>
+    allLocationsForCodeSearch.value.length > 0 ? allLocationsForCodeSearch.value : allLocations.value,
+  ),
+  reachableLocationIds,
+  collectedLocationIdSet,
+)
+
+function normalizeMapCodeList(rawCodes: string | string[] | undefined): string[] {
+  const rawList = Array.isArray(rawCodes) ? rawCodes : [rawCodes ?? '']
+  return rawList.map((code) => code.trim()).filter((code) => code.length > 0)
+}
+
+function looksLikeLocationId(value: string): boolean {
+  return /@\d+$/.test(value)
+}
+
+function addResolvedMapSelectorCode(checkIds: Set<string>, code: string): void {
+  const resolved = resolveMapSelectorCodeToCheckIds(code)
+  const candidateIds = resolved.length > 0 ? resolved : looksLikeLocationId(code) ? [code] : []
+  for (const checkId of candidateIds) {
+    checkIds.add(checkId)
+  }
+}
+
+const mapSelectorCheckIdsByMap = computed(() => {
+  const byMap = new Map<string, Set<string>>()
+
+  for (const mapDef of mapDefs) {
+    const checkIds = new Set<string>()
+    for (const marker of mapDef.markers) {
+      if (marker.type === 'submenu' && Array.isArray(marker.markers) && marker.markers.length > 0) {
+        for (const submenuEntry of marker.markers) {
+          for (const code of normalizeMapCodeList(submenuEntry.codes)) {
+            addResolvedMapSelectorCode(checkIds, code)
+          }
+        }
+        continue
+      }
+      for (const code of normalizeMapCodeList(marker.codes)) {
+        addResolvedMapSelectorCode(checkIds, code)
+      }
+    }
+    byMap.set(mapDef.id, checkIds)
+  }
+
+  return byMap
+})
+
+const mapSelectorVisibleCountByMap = computed(() => {
+  const byMap = new Map<string, number>()
+  for (const mapDef of mapDefs) {
+    const checkIds = mapSelectorCheckIdsByMap.value.get(mapDef.id)
+    if (!checkIds || checkIds.size === 0) {
+      byMap.set(mapDef.id, 0)
+      continue
+    }
+    let visibleCount = 0
+    for (const checkId of checkIds) {
+      if (visibleLocationIds.value.has(checkId)) {
+        visibleCount += 1
+      }
+    }
+    byMap.set(mapDef.id, visibleCount)
+  }
+  return byMap
+})
+
+function getMapSelectorVisibleCount(mapDef: MapDef): number {
+  return mapSelectorVisibleCountByMap.value.get(mapDef.id) ?? 0
+}
+
+function getMapSelectorLabel(mapDef: MapDef): string {
+  return `${mapDef.title} (${getMapSelectorVisibleCount(mapDef)})`
+}
+
+function syncMapSelectorQueryToActiveMap(): void {
+  mapSelectorQuery.value = activeMap.value ? getMapSelectorLabel(activeMap.value) : ''
+}
 const trackerSpecialConds = computed<Record<string, unknown> | undefined>(() => {
   const raw = trackerSettings.value?.specialConds
   if (!raw || typeof raw !== 'object' || Array.isArray(raw)) return undefined
@@ -255,7 +335,7 @@ watch(isApplyingSettings, (applying) => {
 })
 
 function syncMapSelectorToActiveMap() {
-  mapSelectorQuery.value = activeMap.value?.title ?? ''
+  syncMapSelectorQueryToActiveMap()
   hasMapSelectorUserInput.value = false
   mapSelectorHighlightedIndex.value = -1
 }
@@ -342,7 +422,7 @@ function setMapSelectorHighlight(index: number) {
 
 function selectMapFromSelector(mapDef: MapDef, options?: { close?: boolean }) {
   activeMapId.value = mapDef.id
-  mapSelectorQuery.value = mapDef.title
+  mapSelectorQuery.value = getMapSelectorLabel(mapDef)
   hasMapSelectorUserInput.value = false
   const shouldClose = options?.close ?? true
   if (shouldClose) {
@@ -471,6 +551,17 @@ watch(
   },
   { immediate: true },
 )
+
+const activeMapVisibleCount = computed(() => {
+  const mapDef = activeMap.value
+  if (!mapDef) return 0
+  return mapSelectorVisibleCountByMap.value.get(mapDef.id) ?? 0
+})
+
+watch(activeMapVisibleCount, () => {
+  if (hasMapSelectorUserInput.value) return
+  syncMapSelectorQueryToActiveMap()
+})
 
 watch(filteredMapSelectorMaps, (maps) => {
   if (maps.length === 0) {
@@ -1071,7 +1162,7 @@ onBeforeUnmount(() => {
                       @click="handleMapSelectorOptionClick(mapDef)"
                     >
                       <span class="map-selector-option-title">{{ mapDef.title }}</span>
-                      <span class="map-selector-option-id">{{ mapDef.id }}</span>
+                      <span class="map-selector-option-count">({{ getMapSelectorVisibleCount(mapDef) }})</span>
                     </li>
                     <li v-if="filteredMapSelectorMaps.length === 0" class="map-selector-empty">
                       No maps found
@@ -1080,7 +1171,9 @@ onBeforeUnmount(() => {
                 </div>
               </div>
             </template>
-            <span v-else class="map-toolbar-label">{{ activeMap?.title ?? 'Map' }}</span>
+            <span v-else class="map-toolbar-label">
+              {{ activeMap ? getMapSelectorLabel(activeMap) : 'Map' }}
+            </span>
 
             <div class="map-toolbar-filters">
               <div class="map-filter-group" role="group" aria-label="Reachability filter">
@@ -1615,11 +1708,9 @@ onBeforeUnmount(() => {
   min-width: 0;
 }
 
-.map-selector-option-id {
+.map-selector-option-count {
   color: #93c5fd;
   font-size: 0.7rem;
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
   white-space: nowrap;
 }
 
