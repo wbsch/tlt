@@ -6,6 +6,24 @@
 
 import { withBasePath } from '../utils/assetPath';
 
+function expandGroupedItemIdKeys<T>(source: Record<string, T>): Record<string, T> {
+  const expanded: Record<string, T> = {};
+
+  for (const [rawKey, value] of Object.entries(source)) {
+    const keys = rawKey
+      .split('|')
+      .map((key) => key.trim())
+      .filter((key) => key.length > 0);
+
+    if (keys.length === 0) continue;
+    for (const key of keys) {
+      expanded[key] = value;
+    }
+  }
+
+  return expanded;
+}
+
 const RAW_ITEM_ICONS: Record<string, string> = {
   // === OOT ITEMS ===
 
@@ -546,7 +564,7 @@ const RAW_ITEM_ICONS: Record<string, string> = {
 };
 
 export const ITEM_ICONS: Record<string, string> = Object.fromEntries(
-  Object.entries(RAW_ITEM_ICONS).map(([key, value]) => [
+  Object.entries(expandGroupedItemIdKeys(RAW_ITEM_ICONS)).map(([key, value]) => [
     key,
     withBasePath(value),
   ]),
@@ -599,11 +617,15 @@ const RAW_GRID_ICON_VARIANTS: Record<string, GridIconVariantConfig> = {
   // A single setting can accept multiple values via an array (OR logic).
   // Example: settings: { bronzeScale: true, progressiveSwordsOot: ['shared', 'progressive'] }
   // Example: OOT Strength upgrade levels
-  OOT_STRENGTH: ['images/lift1.png', 'images/lift2.png', 'images/lift3.png'],
+  'OOT_STRENGTH|MM_STRENGTH|SHARED_STRENGTH': [
+    'images/lift1.png',
+    'images/lift2.png',
+    'images/lift3.png',
+  ],
 
   // OOT Scale: default has 2 levels, bronze setting adds a 3rd pre-stage.
   // Driven by tracker setting values.
-  OOT_SCALE: {
+  'OOT_SCALE|MM_SCALE|SHARED_SCALE': {
     default: ['images/scale1.png', 'images/scale2.png'],
     variants: [
       {
@@ -813,7 +835,7 @@ function withBasePathForVariantConfig(
 
 export const GRID_ICON_VARIANTS: Record<string, GridIconVariantConfig> =
   Object.fromEntries(
-    Object.entries(RAW_GRID_ICON_VARIANTS).map(([key, config]) => [
+    Object.entries(expandGroupedItemIdKeys(RAW_GRID_ICON_VARIANTS)).map(([key, config]) => [
       key,
       withBasePathForVariantConfig(config),
     ]),
