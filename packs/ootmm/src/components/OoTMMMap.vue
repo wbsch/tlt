@@ -465,9 +465,10 @@ function buildMarkerRenderState(
     (checkId) => props.reachableIds.has(checkId) && !props.collectedIds.has(checkId),
   )
   const reachableUncheckedCount = reachableUncheckedCheckIds.length
+  const filteredCount = allCheckIds.length
   const countDigitImages =
-    countUsesDigits && reachableUncheckedCount > 1
-      ? String(reachableUncheckedCount).split('').map((digit) => resolveDigitImage(digit))
+    countUsesDigits && filteredCount > 1
+      ? String(filteredCount).split('').map((digit) => resolveDigitImage(digit))
       : []
 
   return {
