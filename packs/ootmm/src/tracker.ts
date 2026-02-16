@@ -86,11 +86,6 @@ const CLOCK_ITEM_IDS = new Set([
   'MM_CLOCK6',
 ])
 
-const MM_MANDATORY_BOTTLE_ITEM_IDS = [
-  'MM_BOTTLE_POTION_RED',
-  'MM_BOTTLE_POTION_BLUE',
-] as const
-
 const GRID_REF_STATE_PREFIX = '__grid_ref_state__:'
 
 const BOTTLE_CONTENT_BASE_ITEM_IDS: Record<string, string> = {
@@ -739,7 +734,6 @@ export class OoTMMTracker implements TrackerPack {
   private buildAvailableItemIds(allItems?: Map<unknown, number>): Set<string> {
     const available = new Set<string>()
     if (!allItems) return available
-    let hasMmItem = false
     const chestGameShuffle = String((this.settings as { smallKeyShuffleChestGame?: unknown })?.smallKeyShuffleChestGame ?? '')
     const hideVanillaSilverRupees = this.isVanillaSilverRupeeShuffle()
     const hideOwlStatues = String((this.settings as { owlShuffle?: unknown })?.owlShuffle ?? '') === 'none'
@@ -747,16 +741,9 @@ export class OoTMMTracker implements TrackerPack {
       if (!count || count <= 0) continue
       const itemId = (playerItem as { item?: { id?: string } })?.item?.id
       if (itemId) {
-        if (itemId.startsWith('MM_')) hasMmItem = true
         if (hideVanillaSilverRupees && this.isVanillaSilverRupeeItemId(itemId)) continue
         if (itemId === 'OOT_SMALL_KEY_TCG' && chestGameShuffle === 'vanilla') continue
         if (hideOwlStatues && this.isOwlStatueItemId(itemId)) continue
-        available.add(itemId)
-      }
-    }
-
-    if (hasMmItem) {
-      for (const itemId of MM_MANDATORY_BOTTLE_ITEM_IDS) {
         available.add(itemId)
       }
     }
@@ -788,12 +775,10 @@ export class OoTMMTracker implements TrackerPack {
   ): Map<string, number> {
     const counts = new Map<string, number>()
     if (!allItems) return counts
-    let hasMmItem = false
     for (const [playerItem, count] of allItems) {
       if (!count || count <= 0) continue
       const itemId = (playerItem as { item?: { id?: string } })?.item?.id
       if (!itemId) continue
-      if (itemId.startsWith('MM_')) hasMmItem = true
       counts.set(itemId, (counts.get(itemId) || 0) + count)
     }
 
@@ -839,12 +824,6 @@ export class OoTMMTracker implements TrackerPack {
 
     for (const itemId of SINGLE_COUNT_ITEM_IDS) {
       if (counts.has(itemId)) {
-        counts.set(itemId, 1)
-      }
-    }
-
-    if (hasMmItem) {
-      for (const itemId of MM_MANDATORY_BOTTLE_ITEM_IDS) {
         counts.set(itemId, 1)
       }
     }
