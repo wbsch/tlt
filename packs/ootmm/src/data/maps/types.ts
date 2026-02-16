@@ -8,6 +8,8 @@ export type MapMarkerOverlay =
   | 'day3'
   | 'night'
   | 'day'
+  | 'clear_state'
+  | 'cursed_state'
   | 'broken'
 
 export type MapSubmenuEntryDef = {

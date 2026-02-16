@@ -15,15 +15,14 @@ export function resolveMarkerImage(image: string): string {
   return `${MAP_ICON_BASE}/${image}.png`
 }
 
-export function resolveOverlayImage(overlay: Exclude<MapMarkerOverlay, 'broken'>): string {
+export function resolveOverlayImage(overlay: MapMarkerOverlay): string {
+  if (overlay === 'broken') {
+    return `${OVERLAY_BASE}/broken_actor.png`
+  }
   if (overlay === 'jp_only' || overlay === 'na_only') {
     return `${OVERLAY_WIDE_BASE}/${overlay}.png`
   }
   return `${OVERLAY_BASE}/${overlay}.png`
-}
-
-export function resolveBrokenOverlayImage(): string {
-  return `${OVERLAY_BASE}/broken_actor.png`
 }
 
 export function resolveDayComboOverlayImage(

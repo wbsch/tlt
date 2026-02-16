@@ -2,7 +2,6 @@
 import { computed, nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 import type { LocationInfo } from '@/types/tracker'
 import {
-  resolveBrokenOverlayImage,
   resolveDayComboOverlayImage,
   resolveDigitImage,
   resolveMapImage,
@@ -51,7 +50,7 @@ type MarkerRenderState = {
   popupEntries: MapPopupEntry[]
   topLeftOverlays: OverlayRender[]
   bottomLeftOverlays: OverlayRender[]
-  hasBrokenOverlay: boolean
+  topRightOverlays: OverlayRender[]
   countDigitImages: string[]
   isVisible: boolean
 }
@@ -79,7 +78,7 @@ type SubmenuMarkerRuntime = {
   overlays: MapMarkerOverlay[]
   topLeftOverlays: OverlayRender[]
   bottomLeftOverlays: OverlayRender[]
-  hasBrokenOverlay: boolean
+  topRightOverlays: OverlayRender[]
   submenuMarkers: SubmenuEntryRuntime[]
   allSubmenuCodeList: string[]
   isVisible: boolean
@@ -92,7 +91,7 @@ type PopupMarkerRuntime = {
   image: string
   topLeftOverlays: OverlayRender[]
   bottomLeftOverlays: OverlayRender[]
-  hasBrokenOverlay: boolean
+  topRightOverlays: OverlayRender[]
   checkedCount: number
   reachableUncheckedCount: number
   popupEntries: MapPopupEntry[]
@@ -401,6 +400,20 @@ function buildBottomLeftOverlays(overlays: MapMarkerOverlay[]): OverlayRender[] 
   return result
 }
 
+function buildTopRightOverlays(overlays: MapMarkerOverlay[]): OverlayRender[] {
+  const result: OverlayRender[] = []
+  const has = new Set(overlays)
+  for (const item of ['broken', 'clear_state', 'cursed_state'] as const) {
+    if (!has.has(item)) continue
+    result.push({
+      key: item,
+      src: resolveOverlayImage(item),
+      wide: false,
+    })
+  }
+  return result
+}
+
 function buildMarkerRenderState(
   markerId: string,
   codeList: string[],
@@ -468,7 +481,7 @@ function buildMarkerRenderState(
     popupEntries: popupEntriesForDisplay,
     topLeftOverlays: buildTopLeftOverlays(overlays),
     bottomLeftOverlays: buildBottomLeftOverlays(overlays),
-    hasBrokenOverlay: overlays.includes('broken'),
+    topRightOverlays: buildTopRightOverlays(overlays),
     countDigitImages,
     isVisible: props.devMode ? true : allCheckIds.length > 0,
   }
@@ -534,7 +547,7 @@ const markerViewModels = computed<MarkerRuntime[]>(() => {
         overlays,
         topLeftOverlays: buildTopLeftOverlays(overlays),
         bottomLeftOverlays: buildBottomLeftOverlays(overlays),
-        hasBrokenOverlay: overlays.includes('broken'),
+        topRightOverlays: buildTopRightOverlays(overlays),
         submenuMarkers: visibleSubmenuMarkers,
         allSubmenuCodeList: visibleSubmenuMarkers.flatMap((marker) => marker.codeList),
         isVisible: props.devMode ? true : visibleSubmenuMarkers.length > 0,
@@ -1542,8 +1555,15 @@ onBeforeUnmount(() => {
             />
           </span>
 
-          <span v-if="marker.hasBrokenOverlay" class="map-marker__corner map-marker__corner--top-right">
-            <img class="map-marker__overlay" :src="resolveBrokenOverlayImage()" alt="" draggable="false" />
+          <span v-if="marker.topRightOverlays.length > 0" class="map-marker__corner map-marker__corner--top-right">
+            <img
+              v-for="overlay in marker.topRightOverlays"
+              :key="`top-right:${overlay.key}`"
+              class="map-marker__overlay"
+              :src="overlay.src"
+              alt=""
+              draggable="false"
+            />
           </span>
 
           <span
@@ -1623,8 +1643,15 @@ onBeforeUnmount(() => {
                 draggable="false"
               />
             </span>
-            <span v-if="submenuMarker.hasBrokenOverlay" class="map-marker__corner map-marker__corner--top-right">
-              <img class="map-marker__overlay" :src="resolveBrokenOverlayImage()" alt="" draggable="false" />
+            <span v-if="submenuMarker.topRightOverlays.length > 0" class="map-marker__corner map-marker__corner--top-right">
+              <img
+                v-for="overlay in submenuMarker.topRightOverlays"
+                :key="`submenu-top-right:${overlay.key}`"
+                class="map-marker__overlay"
+                :src="overlay.src"
+                alt=""
+                draggable="false"
+              />
             </span>
             <span
               v-if="submenuMarker.countDigitImages.length > 0"
@@ -1690,8 +1717,18 @@ onBeforeUnmount(() => {
                 draggable="false"
               />
             </span>
-            <span v-if="activeSubmenuPopupMarker.hasBrokenOverlay" class="map-popup__corner map-popup__corner--top-right">
-              <img class="map-popup__overlay" :src="resolveBrokenOverlayImage()" alt="" draggable="false" />
+            <span
+              v-if="activeSubmenuPopupMarker.topRightOverlays.length > 0"
+              class="map-popup__corner map-popup__corner--top-right"
+            >
+              <img
+                v-for="overlay in activeSubmenuPopupMarker.topRightOverlays"
+                :key="`submenu-popup-top:${overlay.key}`"
+                class="map-popup__overlay"
+                :src="overlay.src"
+                alt=""
+                draggable="false"
+              />
             </span>
           </div>
           <div class="map-popup__titles">
@@ -1787,8 +1824,15 @@ onBeforeUnmount(() => {
                 draggable="false"
               />
             </span>
-            <span v-if="popupMarker.hasBrokenOverlay" class="map-popup__corner map-popup__corner--top-right">
-              <img class="map-popup__overlay" :src="resolveBrokenOverlayImage()" alt="" draggable="false" />
+            <span v-if="popupMarker.topRightOverlays.length > 0" class="map-popup__corner map-popup__corner--top-right">
+              <img
+                v-for="overlay in popupMarker.topRightOverlays"
+                :key="`popup-top:${overlay.key}`"
+                class="map-popup__overlay"
+                :src="overlay.src"
+                alt=""
+                draggable="false"
+              />
             </span>
           </div>
           <div class="map-popup__titles">

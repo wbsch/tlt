@@ -27,6 +27,8 @@ const MAP_MARKER_OVERLAYS: MapMarkerOverlay[] = [
   'day3',
   'night',
   'day',
+  'clear_state',
+  'cursed_state',
   'broken',
 ]
 

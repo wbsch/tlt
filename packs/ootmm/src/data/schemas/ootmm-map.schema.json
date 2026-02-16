@@ -185,6 +185,8 @@
         "adult",
         "broken",
         "child",
+        "clear_state",
+        "cursed_state",
         "day",
         "day1",
         "day2",
