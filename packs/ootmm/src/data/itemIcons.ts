@@ -32,16 +32,10 @@ const RAW_ITEM_ICONS: Record<string, string> = {
   // Equipment
   OOT_STICK: 'images/deku_stick.png',
   OOT_NUT: 'images/nut.png',
-  OOT_NUT_UPGRADE: 'images/nut.png',
-  OOT_BOMB_BAG: 'images/bomb.png',
-  OOT_BOW: 'images/bow.png',
-  OOT_SLINGSHOT: 'images/slingshot.png',
   OOT_BOOMERANG: 'images/boomerang.png',
-  OOT_HOOKSHOT: 'images/hookshot.png',
   OOT_LONGSHOT: 'images/longshot.png',
   OOT_LENS: 'images/lens.png',
   OOT_HAMMER: 'images/hammer.png',
-  OOT_OCARINA: 'images/fairyocarina.png',
   OOT_MAGIC_BEAN: 'images/bean.png',
 
   // Arrows
@@ -58,7 +52,6 @@ const RAW_ITEM_ICONS: Record<string, string> = {
   OOT_SWORD_KOKIRI: 'images/sword1.png',
   OOT_SWORD_MASTER: 'images/sword2.png',
   OOT_SWORD_GORON: 'images/sword3.png',
-  OOT_SWORD: 'images/sword1.png',
   OOT_SWORD_BIGGORON: 'images/sword3.png',
   OOT_SPIN_UPGRADE: 'images/items/mm_spin.png',
 
@@ -110,9 +103,6 @@ const RAW_ITEM_ICONS: Record<string, string> = {
   bottle1: 'images/bottle.png',
   bottle2: 'images/bottle.png',
   bottle3: 'images/bottle.png',
-
-  // Upgrades
-  OOT_MAGIC_UPGRADE: 'images/magic1.png',
 
   // Quest items
   OOT_SKELETON_KEY: 'images/key_skeleton.png',
@@ -266,19 +256,14 @@ const RAW_ITEM_ICONS: Record<string, string> = {
   // === MM ITEMS ===
 
   // Equipment
-  MM_OCARINA: 'images/items/mm_ocarina.png',
-  MM_BOW: 'images/items/mm_bow.png',
-  MM_BOMB_BAG: 'images/items/mm_bomb.png',
   MM_BOMBCHU: 'images/items/mm_bombchu.png',
   MM_BOMBCHU_BAG: 'images/bombchu_bag.png',
   MM_STICK: 'images/deku_stick.png',
   MM_NUTS_10: 'images/items/mm_nut.png',
-  MM_NUT_UPGRADE: 'images/items/mm_nut.png',
   MM_MAGIC_BEAN: 'images/items/mm_bean.png',
   MM_POWDER_KEG: 'images/items/mm_keg.png',
   MM_PICTOGRAPH_BOX: 'images/items/mm_box.png',
   MM_LENS: 'images/items/mm_lens.png',
-  MM_HOOKSHOT: 'images/items/mm_hookshot.png',
   MM_GREAT_FAIRY_SWORD: 'images/items/mm_fairysword.png',
   MM_HAMMER: 'images/hammer.png',
 
@@ -314,7 +299,6 @@ const RAW_ITEM_ICONS: Record<string, string> = {
   MM_SONG_SUN: 'images/song_sun.png',
   MM_SONG_AWAKENING: 'images/items/mm_sonata.png',
   MM_SONG_GORON: 'images/items/mm_lullaby.png',
-  MM_SONG_GORON_HALF: 'images/items/mm_half_lullaby.png',
   MM_SONG_ZORA: 'images/items/mm_bossanova.png',
   MM_SONG_EMPTINESS: 'images/items/mm_elegy.png',
   MM_SONG_ORDER: 'images/items/mm_oath.png',
@@ -331,14 +315,8 @@ const RAW_ITEM_ICONS: Record<string, string> = {
   MM_SONG_NOTE_ZORA: 'images/items/mm_bossanova.png',
 
   // Swords
-  MM_SWORD: 'images/items/mm_kokiri.png',
   MM_SPIN_UPGRADE: 'images/items/mm_spin.png',
 
-  // Upgrades
-  MM_WALLET: 'images/items/mm_wallet.png',
-  MM_MAGIC_UPGRADE: 'images/items/mm_magic1.png',
-  MM_STRENGTH: 'images/lift1.png',
-  MM_SCALE: 'images/scale1.png',
 
   // Rupees
   MM_RUPEE_SILVER: 'images/rupee.png',
@@ -496,16 +474,10 @@ const RAW_ITEM_ICONS: Record<string, string> = {
   oot_chestgame_label: 'images/lens.png',
 
   // === SHARED ITEMS ===
-  SHARED_BOW: 'images/bow.png',
-  SHARED_BOMB_BAG: 'images/bomb.png',
-  SHARED_MAGIC_UPGRADE: 'images/magic1.png',
   SHARED_ARROW_FIRE: 'images/arrow_fire.png',
   SHARED_ARROW_ICE: 'images/arrow_ice.png',
   SHARED_ARROW_LIGHT: 'images/arrow_light.png',
-  SHARED_HOOKSHOT: 'images/hookshot.png',
   SHARED_LENS: 'images/lens.png',
-  SHARED_OCARINA: 'images/fairyocarina.png',
-  SHARED_SWORD: 'images/sword1.png',
   SHARED_SHIELD: 'images/shield1.png',
   SHARED_MASK_GORON: 'images/items/mm_goron.png',
   SHARED_MASK_ZORA: 'images/items/mm_zora.png',
@@ -514,16 +486,11 @@ const RAW_ITEM_ICONS: Record<string, string> = {
   SHARED_MASK_TRUTH: 'images/truth.png',
   SHARED_MASK_BLAST: 'images/items/mm_blast.png',
   SHARED_MASK_STONE: 'images/items/mm_stone.png',
-  SHARED_WALLET: 'images/wallet.png',
   SHARED_RUPEE_SILVER: 'images/rupee.png',
   SHARED_HEART_CONTAINER: 'images/system/heartcontainer.png',
   SHARED_HEART_PIECE: 'images/system/heartpiece.png',
-  SHARED_STRENGTH: 'images/lift1.png',
-  SHARED_SCALE: 'images/scale1.png',
   SHARED_SPIN_UPGRADE: 'images/items/mm_spin.png',
   SHARED_STONE_OF_AGONY: 'images/agony.png',
-  SHARED_NUT_UPGRADE: 'images/nut.png',
-  SHARED_STICK_UPGRADE: 'images/deku_stick.png',
   SHARED_SPELL_FIRE: 'images/din.png',
   SHARED_SPELL_WIND: 'images/farore.png',
   SHARED_SPELL_LOVE: 'images/nayru.png',
