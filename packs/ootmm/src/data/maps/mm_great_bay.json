@@ -1,0 +1,857 @@
+{
+  "id": "mm_great_bay",
+  "title": "MM Great Bay",
+  "image": "mm_great_bay",
+  "width": 1000,
+  "height": 600,
+  "markers": [
+    {
+      "coords": [
+        316,
+        84
+      ],
+      "image": "chest",
+      "codes": "TODO KF 001 :: unnamed_stack > Ocean > Ocean Layers > Ocean Checks :: Pasted Layer :: 001-001-001-000.png"
+    },
+    {
+      "coords": [
+        355,
+        203
+      ],
+      "image": "chest",
+      "codes": "TODO KF 002 :: unnamed_stack > Ocean > Ocean Layers > Ocean Checks :: Pasted Layer #1 :: 001-001-001-001.png"
+    },
+    {
+      "coords": [
+        361,
+        164
+      ],
+      "image": "chest",
+      "codes": "TODO KF 003 :: unnamed_stack > Ocean > Ocean Layers > Ocean Checks :: Pasted Layer #2 :: 001-001-001-002.png"
+    },
+    {
+      "coords": [
+        663,
+        146
+      ],
+      "image": "chest",
+      "codes": "TODO KF 004 :: unnamed_stack > Ocean > Ocean Layers > Ocean Checks :: Pasted Layer #3 :: 001-001-001-003.png"
+    },
+    {
+      "coords": [
+        730,
+        96
+      ],
+      "image": "chest",
+      "codes": "TODO KF 005 :: unnamed_stack > Ocean > Ocean Layers > Ocean Checks :: Pasted Layer #5 :: 001-001-001-004.png"
+    },
+    {
+      "coords": [
+        914,
+        540
+      ],
+      "image": "chest",
+      "codes": "TODO KF 006 :: unnamed_stack > Ocean > Ocean Layers > Ocean Checks :: Pasted Layer #6 :: 001-001-001-005.png"
+    },
+    {
+      "coords": [
+        914,
+        556
+      ],
+      "image": "chest",
+      "codes": "TODO KF 007 :: unnamed_stack > Ocean > Ocean Layers > Ocean Checks :: Pasted Layer #7 :: 001-001-001-006.png"
+    },
+    {
+      "coords": [
+        619,
+        524
+      ],
+      "image": "chest",
+      "codes": "TODO KF 008 :: unnamed_stack > Ocean > Ocean Layers > Ocean Checks :: Pasted Layer #8 :: 001-001-001-007.png"
+    },
+    {
+      "coords": [
+        615,
+        479
+      ],
+      "image": "chest",
+      "codes": "TODO KF 009 :: unnamed_stack > Ocean > Ocean Layers > Ocean Checks :: Pasted Layer #9 :: 001-001-001-008.png"
+    },
+    {
+      "coords": [
+        585,
+        510
+      ],
+      "image": "chest",
+      "codes": "TODO KF 010 :: unnamed_stack > Ocean > Ocean Layers > Ocean Checks :: Pasted Layer #10 :: 001-001-001-009.png"
+    },
+    {
+      "coords": [
+        455,
+        528
+      ],
+      "image": "chest",
+      "codes": "TODO KF 011 :: unnamed_stack > Ocean > Ocean Layers > Ocean Checks :: Pasted Layer #11 :: 001-001-001-010.png"
+    },
+    {
+      "coords": [
+        176,
+        406
+      ],
+      "image": "chest",
+      "codes": "TODO KF 012 :: unnamed_stack > Ocean > Ocean Layers > Ocean Checks :: Pasted Layer #108 :: 001-001-001-011.png"
+    },
+    {
+      "coords": [
+        601,
+        288
+      ],
+      "image": "shop",
+      "codes": "TODO KF 013 :: unnamed_stack > Ocean > Ocean Layers > Ocean Shops :: Pasted Layer #12 :: 001-001-002-000.png"
+    },
+    {
+      "coords": [
+        606,
+        267
+      ],
+      "image": "owl_statue",
+      "codes": "TODO KF 014 :: unnamed_stack > Ocean > Ocean Layers > Ocean Owl Statues :: Pasted Layer #13 :: 001-001-003-000.png"
+    },
+    {
+      "coords": [
+        382,
+        460
+      ],
+      "image": "owl_statue",
+      "codes": "TODO KF 015 :: unnamed_stack > Ocean > Ocean Layers > Ocean Owl Statues :: Pasted Layer #14 :: 001-001-003-001.png"
+    },
+    {
+      "coords": [
+        261,
+        108
+      ],
+      "image": "pot",
+      "codes": "TODO KF 016 :: unnamed_stack > Ocean > Ocean Layers > Ocean Pots :: Pasted Layer #15 :: 001-001-004-000.png"
+    },
+    {
+      "coords": [
+        296,
+        126
+      ],
+      "image": "pot",
+      "codes": "TODO KF 017 :: unnamed_stack > Ocean > Ocean Layers > Ocean Pots :: Pasted Layer #16 :: 001-001-004-001.png"
+    },
+    {
+      "coords": [
+        309,
+        142
+      ],
+      "image": "pot",
+      "codes": "TODO KF 018 :: unnamed_stack > Ocean > Ocean Layers > Ocean Pots :: Pasted Layer #17 :: 001-001-004-002.png"
+    },
+    {
+      "coords": [
+        284,
+        202
+      ],
+      "image": "pot",
+      "codes": "TODO KF 019 :: unnamed_stack > Ocean > Ocean Layers > Ocean Pots :: Pasted Layer #18 :: 001-001-004-003.png"
+    },
+    {
+      "coords": [
+        281,
+        163
+      ],
+      "image": "pot",
+      "codes": "TODO KF 020 :: unnamed_stack > Ocean > Ocean Layers > Ocean Pots :: Pasted Layer #19 :: 001-001-004-004.png"
+    },
+    {
+      "coords": [
+        299,
+        180
+      ],
+      "image": "pot",
+      "codes": "TODO KF 021 :: unnamed_stack > Ocean > Ocean Layers > Ocean Pots :: Pasted Layer #20 :: 001-001-004-005.png"
+    },
+    {
+      "coords": [
+        313,
+        162
+      ],
+      "image": "pot",
+      "codes": "TODO KF 022 :: unnamed_stack > Ocean > Ocean Layers > Ocean Pots :: Pasted Layer #21 :: 001-001-004-006.png"
+    },
+    {
+      "coords": [
+        340,
+        146
+      ],
+      "image": "pot",
+      "codes": "TODO KF 023 :: unnamed_stack > Ocean > Ocean Layers > Ocean Pots :: Pasted Layer #22 :: 001-001-004-007.png"
+    },
+    {
+      "coords": [
+        363,
+        133
+      ],
+      "image": "pot",
+      "codes": "TODO KF 024 :: unnamed_stack > Ocean > Ocean Layers > Ocean Pots :: Pasted Layer #23 :: 001-001-004-008.png"
+    },
+    {
+      "coords": [
+        577,
+        278
+      ],
+      "image": "pot",
+      "codes": "TODO KF 025 :: unnamed_stack > Ocean > Ocean Layers > Ocean Pots :: Pasted Layer #24 :: 001-001-004-009.png"
+    },
+    {
+      "coords": [
+        610,
+        181
+      ],
+      "image": "pot",
+      "codes": "TODO KF 026 :: unnamed_stack > Ocean > Ocean Layers > Ocean Pots :: Pasted Layer #25 :: 001-001-004-010.png"
+    },
+    {
+      "coords": [
+        641,
+        78
+      ],
+      "image": "pot",
+      "codes": "TODO KF 027 :: unnamed_stack > Ocean > Ocean Layers > Ocean Pots :: Pasted Layer #26 :: 001-001-004-011.png"
+    },
+    {
+      "coords": [
+        729,
+        116
+      ],
+      "image": "pot",
+      "codes": "TODO KF 028 :: unnamed_stack > Ocean > Ocean Layers > Ocean Pots :: Pasted Layer #27 :: 001-001-004-012.png"
+    },
+    {
+      "coords": [
+        750,
+        143
+      ],
+      "image": "pot",
+      "codes": "TODO KF 029 :: unnamed_stack > Ocean > Ocean Layers > Ocean Pots :: Pasted Layer #28 :: 001-001-004-013.png"
+    },
+    {
+      "coords": [
+        732,
+        158
+      ],
+      "image": "pot",
+      "codes": "TODO KF 030 :: unnamed_stack > Ocean > Ocean Layers > Ocean Pots :: Pasted Layer #29 :: 001-001-004-014.png"
+    },
+    {
+      "coords": [
+        748,
+        159
+      ],
+      "image": "pot",
+      "codes": "TODO KF 031 :: unnamed_stack > Ocean > Ocean Layers > Ocean Pots :: Pasted Layer #30 :: 001-001-004-015.png"
+    },
+    {
+      "coords": [
+        738,
+        181
+      ],
+      "image": "pot",
+      "codes": "TODO KF 032 :: unnamed_stack > Ocean > Ocean Layers > Ocean Pots :: Pasted Layer #31 :: 001-001-004-016.png"
+    },
+    {
+      "coords": [
+        752,
+        175
+      ],
+      "image": "pot",
+      "codes": "TODO KF 033 :: unnamed_stack > Ocean > Ocean Layers > Ocean Pots :: Pasted Layer #32 :: 001-001-004-017.png"
+    },
+    {
+      "coords": [
+        603,
+        509
+      ],
+      "image": "pot",
+      "codes": "TODO KF 034 :: unnamed_stack > Ocean > Ocean Layers > Ocean Pots :: Pasted Layer #33 :: 001-001-004-018.png"
+    },
+    {
+      "coords": [
+        523,
+        438
+      ],
+      "image": "pot",
+      "codes": "TODO KF 035 :: unnamed_stack > Ocean > Ocean Layers > Ocean Pots :: Pasted Layer #34 :: 001-001-004-019.png"
+    },
+    {
+      "coords": [
+        390,
+        462
+      ],
+      "image": "pot",
+      "codes": "TODO KF 036 :: unnamed_stack > Ocean > Ocean Layers > Ocean Pots :: Pasted Layer #35 :: 001-001-004-020.png"
+    },
+    {
+      "coords": [
+        703,
+        280
+      ],
+      "image": "collectible",
+      "codes": "TODO KF 037 :: unnamed_stack > Ocean > Ocean Layers > Ocean Butterflies :: Pasted Layer #36 :: 001-001-005-000.png"
+    },
+    {
+      "coords": [
+        702,
+        302
+      ],
+      "image": "collectible",
+      "codes": "TODO KF 038 :: unnamed_stack > Ocean > Ocean Layers > Ocean Butterflies :: Pasted Layer #37 :: 001-001-005-001.png"
+    },
+    {
+      "coords": [
+        702,
+        289
+      ],
+      "image": "grass",
+      "codes": "TODO KF 039 :: unnamed_stack > Ocean > Ocean Layers > Ocean Grass :: Pasted Layer #38 :: 001-001-006-000.png"
+    },
+    {
+      "coords": [
+        633,
+        312
+      ],
+      "image": "rock",
+      "codes": "TODO KF 040 :: unnamed_stack > Ocean > Ocean Layers > Ocean Rocks :: Pasted Layer #4 :: 001-001-007-000.png"
+    },
+    {
+      "coords": [
+        602,
+        85
+      ],
+      "image": "rock",
+      "codes": "TODO KF 041 :: unnamed_stack > Ocean > Ocean Layers > Ocean Rocks :: Pasted Layer #39 :: 001-001-007-001.png"
+    },
+    {
+      "coords": [
+        714,
+        101
+      ],
+      "image": "rock",
+      "codes": "TODO KF 042 :: unnamed_stack > Ocean > Ocean Layers > Ocean Rocks :: Pasted Layer #40 :: 001-001-007-002.png"
+    },
+    {
+      "coords": [
+        685,
+        127
+      ],
+      "image": "rock",
+      "codes": "TODO KF 043 :: unnamed_stack > Ocean > Ocean Layers > Ocean Rocks :: Pasted Layer #41 :: 001-001-007-003.png"
+    },
+    {
+      "coords": [
+        641,
+        137
+      ],
+      "image": "rock",
+      "codes": "TODO KF 044 :: unnamed_stack > Ocean > Ocean Layers > Ocean Rocks :: Pasted Layer #42 :: 001-001-007-004.png"
+    },
+    {
+      "coords": [
+        691,
+        148
+      ],
+      "image": "rock",
+      "codes": "TODO KF 045 :: unnamed_stack > Ocean > Ocean Layers > Ocean Rocks :: Pasted Layer #43 :: 001-001-007-005.png"
+    },
+    {
+      "coords": [
+        731,
+        174
+      ],
+      "image": "rock",
+      "codes": "TODO KF 046 :: unnamed_stack > Ocean > Ocean Layers > Ocean Rocks :: Pasted Layer #44 :: 001-001-007-006.png"
+    },
+    {
+      "coords": [
+        713,
+        202
+      ],
+      "image": "rock",
+      "codes": "TODO KF 047 :: unnamed_stack > Ocean > Ocean Layers > Ocean Rocks :: Pasted Layer #45 :: 001-001-007-007.png"
+    },
+    {
+      "coords": [
+        677,
+        206
+      ],
+      "image": "rock",
+      "codes": "TODO KF 048 :: unnamed_stack > Ocean > Ocean Layers > Ocean Rocks :: Pasted Layer #46 :: 001-001-007-008.png"
+    },
+    {
+      "coords": [
+        665,
+        193
+      ],
+      "image": "rock",
+      "codes": "TODO KF 049 :: unnamed_stack > Ocean > Ocean Layers > Ocean Rocks :: Pasted Layer #47 :: 001-001-007-009.png"
+    },
+    {
+      "coords": [
+        642,
+        207
+      ],
+      "image": "rock",
+      "codes": "TODO KF 050 :: unnamed_stack > Ocean > Ocean Layers > Ocean Rocks :: Pasted Layer #48 :: 001-001-007-010.png"
+    },
+    {
+      "coords": [
+        650,
+        170
+      ],
+      "image": "rock",
+      "codes": "TODO KF 051 :: unnamed_stack > Ocean > Ocean Layers > Ocean Rocks :: Pasted Layer #49 :: 001-001-007-011.png"
+    },
+    {
+      "coords": [
+        635,
+        170
+      ],
+      "image": "rock",
+      "codes": "TODO KF 052 :: unnamed_stack > Ocean > Ocean Layers > Ocean Rocks :: Pasted Layer #50 :: 001-001-007-012.png"
+    },
+    {
+      "coords": [
+        612,
+        168
+      ],
+      "image": "rock",
+      "codes": "TODO KF 053 :: unnamed_stack > Ocean > Ocean Layers > Ocean Rocks :: Pasted Layer #51 :: 001-001-007-013.png"
+    },
+    {
+      "coords": [
+        590,
+        163
+      ],
+      "image": "rock",
+      "codes": "TODO KF 054 :: unnamed_stack > Ocean > Ocean Layers > Ocean Rocks :: Pasted Layer #52 :: 001-001-007-014.png"
+    },
+    {
+      "coords": [
+        562,
+        156
+      ],
+      "image": "rock",
+      "codes": "TODO KF 055 :: unnamed_stack > Ocean > Ocean Layers > Ocean Rocks :: Pasted Layer #53 :: 001-001-007-015.png"
+    },
+    {
+      "coords": [
+        559,
+        172
+      ],
+      "image": "rock",
+      "codes": "TODO KF 056 :: unnamed_stack > Ocean > Ocean Layers > Ocean Rocks :: Pasted Layer #54 :: 001-001-007-016.png"
+    },
+    {
+      "coords": [
+        583,
+        184
+      ],
+      "image": "rock",
+      "codes": "TODO KF 057 :: unnamed_stack > Ocean > Ocean Layers > Ocean Rocks :: Pasted Layer #55 :: 001-001-007-017.png"
+    },
+    {
+      "coords": [
+        603,
+        215
+      ],
+      "image": "rock",
+      "codes": "TODO KF 058 :: unnamed_stack > Ocean > Ocean Layers > Ocean Rocks :: Pasted Layer #56 :: 001-001-007-018.png"
+    },
+    {
+      "coords": [
+        557,
+        212
+      ],
+      "image": "rock",
+      "codes": "TODO KF 059 :: unnamed_stack > Ocean > Ocean Layers > Ocean Rocks :: Pasted Layer #57 :: 001-001-007-019.png"
+    },
+    {
+      "coords": [
+        586,
+        239
+      ],
+      "image": "rock",
+      "codes": "TODO KF 060 :: unnamed_stack > Ocean > Ocean Layers > Ocean Rocks :: Pasted Layer #58 :: 001-001-007-020.png"
+    },
+    {
+      "coords": [
+        602,
+        248
+      ],
+      "image": "rock",
+      "codes": "TODO KF 061 :: unnamed_stack > Ocean > Ocean Layers > Ocean Rocks :: Pasted Layer #59 :: 001-001-007-021.png"
+    },
+    {
+      "coords": [
+        617,
+        254
+      ],
+      "image": "rock",
+      "codes": "TODO KF 062 :: unnamed_stack > Ocean > Ocean Layers > Ocean Rocks :: Pasted Layer #60 :: 001-001-007-022.png"
+    },
+    {
+      "coords": [
+        559,
+        258
+      ],
+      "image": "rock",
+      "codes": "TODO KF 063 :: unnamed_stack > Ocean > Ocean Layers > Ocean Rocks :: Pasted Layer #61 :: 001-001-007-023.png"
+    },
+    {
+      "coords": [
+        598,
+        297
+      ],
+      "image": "rock",
+      "codes": "TODO KF 064 :: unnamed_stack > Ocean > Ocean Layers > Ocean Rocks :: Pasted Layer #62 :: 001-001-007-024.png"
+    },
+    {
+      "coords": [
+        620,
+        285
+      ],
+      "image": "rock",
+      "codes": "TODO KF 065 :: unnamed_stack > Ocean > Ocean Layers > Ocean Rocks :: Pasted Layer #63 :: 001-001-007-025.png"
+    },
+    {
+      "coords": [
+        613,
+        303
+      ],
+      "image": "rock",
+      "codes": "TODO KF 066 :: unnamed_stack > Ocean > Ocean Layers > Ocean Rocks :: Pasted Layer #64 :: 001-001-007-026.png"
+    },
+    {
+      "coords": [
+        613,
+        314
+      ],
+      "image": "rock",
+      "codes": "TODO KF 067 :: unnamed_stack > Ocean > Ocean Layers > Ocean Rocks :: Pasted Layer #65 :: 001-001-007-027.png"
+    },
+    {
+      "coords": [
+        629,
+        298
+      ],
+      "image": "rock",
+      "codes": "TODO KF 068 :: unnamed_stack > Ocean > Ocean Layers > Ocean Rocks :: Pasted Layer #66 :: 001-001-007-028.png"
+    },
+    {
+      "coords": [
+        644,
+        304
+      ],
+      "image": "rock",
+      "codes": "TODO KF 069 :: unnamed_stack > Ocean > Ocean Layers > Ocean Rocks :: Pasted Layer #67 :: 001-001-007-029.png"
+    },
+    {
+      "coords": [
+        670,
+        314
+      ],
+      "image": "rock",
+      "codes": "TODO KF 070 :: unnamed_stack > Ocean > Ocean Layers > Ocean Rocks :: Pasted Layer #68 :: 001-001-007-030.png"
+    },
+    {
+      "coords": [
+        683,
+        322
+      ],
+      "image": "rock",
+      "codes": "TODO KF 071 :: unnamed_stack > Ocean > Ocean Layers > Ocean Rocks :: Pasted Layer #69 :: 001-001-007-031.png"
+    },
+    {
+      "coords": [
+        691,
+        306
+      ],
+      "image": "rock",
+      "codes": "TODO KF 072 :: unnamed_stack > Ocean > Ocean Layers > Ocean Rocks :: Pasted Layer #70 :: 001-001-007-032.png"
+    },
+    {
+      "coords": [
+        705,
+        261
+      ],
+      "image": "rock",
+      "codes": "TODO KF 073 :: unnamed_stack > Ocean > Ocean Layers > Ocean Rocks :: Pasted Layer #71 :: 001-001-007-033.png"
+    },
+    {
+      "coords": [
+        673,
+        249
+      ],
+      "image": "rock",
+      "codes": "TODO KF 074 :: unnamed_stack > Ocean > Ocean Layers > Ocean Rocks :: Pasted Layer #72 :: 001-001-007-034.png"
+    },
+    {
+      "coords": [
+        602,
+        472
+      ],
+      "image": "rock",
+      "codes": "TODO KF 075 :: unnamed_stack > Ocean > Ocean Layers > Ocean Rocks :: Pasted Layer #73 :: 001-001-007-035.png"
+    },
+    {
+      "coords": [
+        596,
+        485
+      ],
+      "image": "rock",
+      "codes": "TODO KF 076 :: unnamed_stack > Ocean > Ocean Layers > Ocean Rocks :: Pasted Layer #74 :: 001-001-007-036.png"
+    },
+    {
+      "coords": [
+        574,
+        453
+      ],
+      "image": "rock",
+      "codes": "TODO KF 077 :: unnamed_stack > Ocean > Ocean Layers > Ocean Rocks :: Pasted Layer #75 :: 001-001-007-037.png"
+    },
+    {
+      "coords": [
+        552,
+        445
+      ],
+      "image": "rock",
+      "codes": "TODO KF 078 :: unnamed_stack > Ocean > Ocean Layers > Ocean Rocks :: Pasted Layer #76 :: 001-001-007-038.png"
+    },
+    {
+      "coords": [
+        535,
+        433
+      ],
+      "image": "rock",
+      "codes": "TODO KF 079 :: unnamed_stack > Ocean > Ocean Layers > Ocean Rocks :: Pasted Layer #77 :: 001-001-007-039.png"
+    },
+    {
+      "coords": [
+        516,
+        429
+      ],
+      "image": "rock",
+      "codes": "TODO KF 080 :: unnamed_stack > Ocean > Ocean Layers > Ocean Rocks :: Pasted Layer #78 :: 001-001-007-040.png"
+    },
+    {
+      "coords": [
+        457,
+        506
+      ],
+      "image": "rock",
+      "codes": "TODO KF 081 :: unnamed_stack > Ocean > Ocean Layers > Ocean Rocks :: Pasted Layer #79 :: 001-001-007-041.png"
+    },
+    {
+      "coords": [
+        738,
+        132
+      ],
+      "image": "soft_soil",
+      "codes": "TODO KF 082 :: unnamed_stack > Ocean > Ocean Layers > Ocean Soils :: Pasted Layer #80 :: 001-001-008-000.png"
+    },
+    {
+      "coords": [
+        673,
+        146
+      ],
+      "image": "collectible",
+      "codes": "TODO KF 083 :: unnamed_stack > Ocean > Ocean Layers > Ocean Trees :: Pasted Layer #81 :: 001-001-009-000.png"
+    },
+    {
+      "coords": [
+        677,
+        257
+      ],
+      "image": "collectible",
+      "codes": "TODO KF 084 :: unnamed_stack > Ocean > Ocean Layers > Ocean Trees :: Pasted Layer #82 :: 001-001-009-001.png"
+    },
+    {
+      "coords": [
+        682,
+        289
+      ],
+      "image": "collectible",
+      "codes": "TODO KF 085 :: unnamed_stack > Ocean > Ocean Layers > Ocean Trees :: Pasted Layer #83 :: 001-001-009-002.png"
+    },
+    {
+      "coords": [
+        664,
+        306
+      ],
+      "image": "collectible",
+      "codes": "TODO KF 086 :: unnamed_stack > Ocean > Ocean Layers > Ocean Trees :: Pasted Layer #84 :: 001-001-009-003.png"
+    },
+    {
+      "coords": [
+        526,
+        425
+      ],
+      "image": "collectible",
+      "codes": "TODO KF 087 :: unnamed_stack > Ocean > Ocean Layers > Ocean Trees :: Pasted Layer #85 :: 001-001-009-004.png"
+    },
+    {
+      "coords": [
+        464,
+        481
+      ],
+      "image": "collectible",
+      "codes": "TODO KF 088 :: unnamed_stack > Ocean > Ocean Layers > Ocean Trees :: Pasted Layer #86 :: 001-001-009-005.png"
+    },
+    {
+      "coords": [
+        446,
+        490
+      ],
+      "image": "collectible",
+      "codes": "TODO KF 089 :: unnamed_stack > Ocean > Ocean Layers > Ocean Trees :: Pasted Layer #87 :: 001-001-009-006.png"
+    },
+    {
+      "coords": [
+        450,
+        507
+      ],
+      "image": "collectible",
+      "codes": "TODO KF 090 :: unnamed_stack > Ocean > Ocean Layers > Ocean Trees :: Pasted Layer #88 :: 001-001-009-007.png"
+    },
+    {
+      "coords": [
+        716,
+        90
+      ],
+      "image": "npc",
+      "codes": "TODO KF 091 :: unnamed_stack > Ocean > Ocean Layers > Ocean Gossip :: Pasted Layer #89 :: 001-001-010-000.png"
+    },
+    {
+      "coords": [
+        581,
+        466
+      ],
+      "image": "npc",
+      "codes": "TODO KF 092 :: unnamed_stack > Ocean > Ocean Layers > Ocean Gossip :: Pasted Layer #90 :: 001-001-010-001.png"
+    },
+    {
+      "coords": [
+        678,
+        76
+      ],
+      "image": "overworld_entrance",
+      "codes": "TODO KF 093 :: unnamed_stack > Ocean > Ocean Layers > Ocean Entrances :: Pasted Layer #91 :: 001-001-011-000.png"
+    },
+    {
+      "coords": [
+        740,
+        166
+      ],
+      "image": "overworld_entrance",
+      "codes": "TODO KF 094 :: unnamed_stack > Ocean > Ocean Layers > Ocean Entrances :: Pasted Layer #92 :: 001-001-011-001.png"
+    },
+    {
+      "coords": [
+        590,
+        278
+      ],
+      "image": "overworld_entrance",
+      "codes": "TODO KF 095 :: unnamed_stack > Ocean > Ocean Layers > Ocean Entrances :: Pasted Layer #93 :: 001-001-011-002.png"
+    },
+    {
+      "coords": [
+        730,
+        280
+      ],
+      "image": "overworld_entrance",
+      "codes": "TODO KF 096 :: unnamed_stack > Ocean > Ocean Layers > Ocean Entrances :: Pasted Layer #94 :: 001-001-011-003.png"
+    },
+    {
+      "coords": [
+        718,
+        297
+      ],
+      "image": "overworld_entrance",
+      "codes": "TODO KF 097 :: unnamed_stack > Ocean > Ocean Layers > Ocean Entrances :: Pasted Layer #95 :: 001-001-011-004.png"
+    },
+    {
+      "coords": [
+        722,
+        312
+      ],
+      "image": "overworld_entrance",
+      "codes": "TODO KF 098 :: unnamed_stack > Ocean > Ocean Layers > Ocean Entrances :: Pasted Layer #96 :: 001-001-011-005.png"
+    },
+    {
+      "coords": [
+        491,
+        485
+      ],
+      "image": "overworld_entrance",
+      "codes": "TODO KF 099 :: unnamed_stack > Ocean > Ocean Layers > Ocean Entrances :: Pasted Layer #97 :: 001-001-011-006.png"
+    },
+    {
+      "coords": [
+        473,
+        523
+      ],
+      "image": "overworld_entrance",
+      "codes": "TODO KF 100 :: unnamed_stack > Ocean > Ocean Layers > Ocean Entrances :: Pasted Layer #98 :: 001-001-011-007.png"
+    },
+    {
+      "coords": [
+        371,
+        452
+      ],
+      "image": "overworld_entrance",
+      "codes": "TODO KF 101 :: unnamed_stack > Ocean > Ocean Layers > Ocean Entrances :: Pasted Layer #99 :: 001-001-011-008.png"
+    },
+    {
+      "coords": [
+        262,
+        485
+      ],
+      "image": "overworld_entrance",
+      "codes": "TODO KF 102 :: unnamed_stack > Ocean > Ocean Layers > Ocean Entrances :: Pasted Layer #100 :: 001-001-011-009.png"
+    },
+    {
+      "coords": [
+        248,
+        413
+      ],
+      "image": "overworld_entrance",
+      "codes": "TODO KF 103 :: unnamed_stack > Ocean > Ocean Layers > Ocean Entrances :: Pasted Layer #101 :: 001-001-011-010.png"
+    },
+    {
+      "coords": [
+        234,
+        377
+      ],
+      "image": "overworld_entrance",
+      "codes": "TODO KF 104 :: unnamed_stack > Ocean > Ocean Layers > Ocean Entrances :: Pasted Layer #102 :: 001-001-011-011.png"
+    },
+    {
+      "coords": [
+        161,
+        355
+      ],
+      "image": "overworld_entrance",
+      "codes": "TODO KF 105 :: unnamed_stack > Ocean > Ocean Layers > Ocean Entrances :: Pasted Layer #103 :: 001-001-011-012.png"
+    },
+    {
+      "coords": [
+        131,
+        375
+      ],
+      "image": "overworld_entrance",
+      "codes": "TODO KF 106 :: unnamed_stack > Ocean > Ocean Layers > Ocean Entrances :: Pasted Layer #104 :: 001-001-011-013.png"
+    }
+  ]
+}

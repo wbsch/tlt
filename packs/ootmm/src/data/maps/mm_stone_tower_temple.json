@@ -1,0 +1,585 @@
+{
+  "id": "mm_stone_tower_temple",
+  "title": "MM Stone Tower Temple",
+  "image": "mm_stone_tower_temple",
+  "width": 1000,
+  "height": 600,
+  "markers": [
+    {
+      "coords": [
+        259,
+        475
+      ],
+      "image": "chest",
+      "codes": "TODO KF 001 :: unnamed_stack > Stone Tower Temple > Tower Layers > Tower Checks :: Pasted Layer :: 001-001-001-000.png"
+    },
+    {
+      "coords": [
+        398,
+        510
+      ],
+      "image": "chest",
+      "codes": "TODO KF 002 :: unnamed_stack > Stone Tower Temple > Tower Layers > Tower Checks :: Pasted Layer #1 :: 001-001-001-001.png"
+    },
+    {
+      "coords": [
+        325,
+        386
+      ],
+      "image": "chest",
+      "codes": "TODO KF 003 :: unnamed_stack > Stone Tower Temple > Tower Layers > Tower Checks :: Pasted Layer #2 :: 001-001-001-002.png"
+    },
+    {
+      "coords": [
+        341,
+        386
+      ],
+      "image": "chest",
+      "codes": "TODO KF 004 :: unnamed_stack > Stone Tower Temple > Tower Layers > Tower Checks :: Pasted Layer #3 :: 001-001-001-003.png"
+    },
+    {
+      "coords": [
+        646,
+        536
+      ],
+      "image": "chest",
+      "codes": "TODO KF 005 :: unnamed_stack > Stone Tower Temple > Tower Layers > Tower Checks :: Pasted Layer #4 :: 001-001-001-004.png"
+    },
+    {
+      "coords": [
+        578,
+        515
+      ],
+      "image": "chest",
+      "codes": "TODO KF 006 :: unnamed_stack > Stone Tower Temple > Tower Layers > Tower Checks :: Pasted Layer #5 :: 001-001-001-005.png"
+    },
+    {
+      "coords": [
+        646,
+        481
+      ],
+      "image": "chest",
+      "codes": "TODO KF 007 :: unnamed_stack > Stone Tower Temple > Tower Layers > Tower Checks :: Pasted Layer #6 :: 001-001-001-006.png"
+    },
+    {
+      "coords": [
+        710,
+        511
+      ],
+      "image": "chest",
+      "codes": "TODO KF 008 :: unnamed_stack > Stone Tower Temple > Tower Layers > Tower Checks :: Pasted Layer #7 :: 001-001-001-007.png"
+    },
+    {
+      "coords": [
+        710,
+        473
+      ],
+      "image": "chest",
+      "codes": "TODO KF 009 :: unnamed_stack > Stone Tower Temple > Tower Layers > Tower Checks :: Pasted Layer #8 :: 001-001-001-008.png"
+    },
+    {
+      "coords": [
+        790,
+        485
+      ],
+      "image": "chest",
+      "codes": "TODO KF 010 :: unnamed_stack > Stone Tower Temple > Tower Layers > Tower Checks :: Pasted Layer #9 :: 001-001-001-009.png"
+    },
+    {
+      "coords": [
+        265,
+        233
+      ],
+      "image": "chest",
+      "codes": "TODO KF 011 :: unnamed_stack > Stone Tower Temple > Tower Layers > Tower Checks :: Pasted Layer #10 :: 001-001-001-010.png"
+    },
+    {
+      "coords": [
+        267,
+        206
+      ],
+      "image": "chest",
+      "codes": "TODO KF 012 :: unnamed_stack > Stone Tower Temple > Tower Layers > Tower Checks :: Pasted Layer #11 :: 001-001-001-011.png"
+    },
+    {
+      "coords": [
+        255,
+        185
+      ],
+      "image": "chest",
+      "codes": "TODO KF 013 :: unnamed_stack > Stone Tower Temple > Tower Layers > Tower Checks :: Pasted Layer #12 :: 001-001-001-012.png"
+    },
+    {
+      "coords": [
+        397,
+        221
+      ],
+      "image": "chest",
+      "codes": "TODO KF 014 :: unnamed_stack > Stone Tower Temple > Tower Layers > Tower Checks :: Pasted Layer #13 :: 001-001-001-013.png"
+    },
+    {
+      "coords": [
+        697,
+        239
+      ],
+      "image": "chest",
+      "codes": "TODO KF 015 :: unnamed_stack > Stone Tower Temple > Tower Layers > Tower Checks :: Pasted Layer #14 :: 001-001-001-014.png"
+    },
+    {
+      "coords": [
+        646,
+        245
+      ],
+      "image": "chest",
+      "codes": "TODO KF 016 :: unnamed_stack > Stone Tower Temple > Tower Layers > Tower Checks :: Pasted Layer #15 :: 001-001-001-015.png"
+    },
+    {
+      "coords": [
+        646,
+        259
+      ],
+      "image": "chest",
+      "codes": "TODO KF 017 :: unnamed_stack > Stone Tower Temple > Tower Layers > Tower Checks :: Pasted Layer #16 :: 001-001-001-016.png"
+    },
+    {
+      "coords": [
+        669,
+        196
+      ],
+      "image": "chest",
+      "codes": "TODO KF 018 :: unnamed_stack > Stone Tower Temple > Tower Layers > Tower Checks :: Pasted Layer #17 :: 001-001-001-017.png"
+    },
+    {
+      "coords": [
+        647,
+        176
+      ],
+      "image": "chest",
+      "codes": "TODO KF 019 :: unnamed_stack > Stone Tower Temple > Tower Layers > Tower Checks :: Pasted Layer #18 :: 001-001-001-018.png"
+    },
+    {
+      "coords": [
+        631,
+        176
+      ],
+      "image": "chest",
+      "codes": "TODO KF 020 :: unnamed_stack > Stone Tower Temple > Tower Layers > Tower Checks :: Pasted Layer #19 :: 001-001-001-019.png"
+    },
+    {
+      "coords": [
+        645,
+        156
+      ],
+      "image": "chest",
+      "codes": "TODO KF 021 :: unnamed_stack > Stone Tower Temple > Tower Layers > Tower Checks :: Pasted Layer #20 :: 001-001-001-020.png"
+    },
+    {
+      "coords": [
+        744,
+        143
+      ],
+      "image": "chest",
+      "codes": "TODO KF 022 :: unnamed_stack > Stone Tower Temple > Tower Layers > Tower Checks :: Pasted Layer #21 :: 001-001-001-021.png"
+    },
+    {
+      "coords": [
+        715,
+        143
+      ],
+      "image": "chest",
+      "codes": "TODO KF 023 :: unnamed_stack > Stone Tower Temple > Tower Layers > Tower Checks :: Pasted Layer #22 :: 001-001-001-022.png"
+    },
+    {
+      "coords": [
+        644,
+        98
+      ],
+      "image": "chest",
+      "codes": "TODO KF 024 :: unnamed_stack > Stone Tower Temple > Tower Layers > Tower Checks :: Pasted Layer #23 :: 001-001-001-023.png"
+    },
+    {
+      "coords": [
+        695,
+        96
+      ],
+      "image": "chest",
+      "codes": "TODO KF 025 :: unnamed_stack > Stone Tower Temple > Tower Layers > Tower Checks :: Pasted Layer #24 :: 001-001-001-024.png"
+    },
+    {
+      "coords": [
+        698,
+        75
+      ],
+      "image": "chest",
+      "codes": "TODO KF 026 :: unnamed_stack > Stone Tower Temple > Tower Layers > Tower Checks :: Pasted Layer #25 :: 001-001-001-025.png"
+    },
+    {
+      "coords": [
+        266,
+        516
+      ],
+      "image": "pot",
+      "codes": "TODO KF 027 :: unnamed_stack > Stone Tower Temple > Tower Layers > Tower Pots :: Pasted Layer #26 :: 001-001-002-000.png"
+    },
+    {
+      "coords": [
+        374,
+        485
+      ],
+      "image": "pot",
+      "codes": "TODO KF 028 :: unnamed_stack > Stone Tower Temple > Tower Layers > Tower Pots :: Pasted Layer #27 :: 001-001-002-001.png"
+    },
+    {
+      "coords": [
+        571,
+        479
+      ],
+      "image": "pot",
+      "codes": "TODO KF 029 :: unnamed_stack > Stone Tower Temple > Tower Layers > Tower Pots :: Pasted Layer #28 :: 001-001-002-002.png"
+    },
+    {
+      "coords": [
+        606,
+        479
+      ],
+      "image": "pot",
+      "codes": "TODO KF 030 :: unnamed_stack > Stone Tower Temple > Tower Layers > Tower Pots :: Pasted Layer #29 :: 001-001-002-003.png"
+    },
+    {
+      "coords": [
+        647,
+        450
+      ],
+      "image": "pot",
+      "codes": "TODO KF 031 :: unnamed_stack > Stone Tower Temple > Tower Layers > Tower Pots :: Pasted Layer #30 :: 001-001-002-004.png"
+    },
+    {
+      "coords": [
+        645,
+        465
+      ],
+      "image": "pot",
+      "codes": "TODO KF 032 :: unnamed_stack > Stone Tower Temple > Tower Layers > Tower Pots :: Pasted Layer #31 :: 001-001-002-005.png"
+    },
+    {
+      "coords": [
+        647,
+        434
+      ],
+      "image": "pot",
+      "codes": "TODO KF 033 :: unnamed_stack > Stone Tower Temple > Tower Layers > Tower Pots :: Pasted Layer #32 :: 001-001-002-006.png"
+    },
+    {
+      "coords": [
+        716,
+        506
+      ],
+      "image": "pot",
+      "codes": "TODO KF 034 :: unnamed_stack > Stone Tower Temple > Tower Layers > Tower Pots :: Pasted Layer #33 :: 001-001-002-007.png"
+    },
+    {
+      "coords": [
+        751,
+        500
+      ],
+      "image": "pot",
+      "codes": "TODO KF 035 :: unnamed_stack > Stone Tower Temple > Tower Layers > Tower Pots :: Pasted Layer #34 :: 001-001-002-008.png"
+    },
+    {
+      "coords": [
+        777,
+        500
+      ],
+      "image": "pot",
+      "codes": "TODO KF 036 :: unnamed_stack > Stone Tower Temple > Tower Layers > Tower Pots :: Pasted Layer #35 :: 001-001-002-009.png"
+    },
+    {
+      "coords": [
+        777,
+        471
+      ],
+      "image": "pot",
+      "codes": "TODO KF 037 :: unnamed_stack > Stone Tower Temple > Tower Layers > Tower Pots :: Pasted Layer #36 :: 001-001-002-010.png"
+    },
+    {
+      "coords": [
+        751,
+        471
+      ],
+      "image": "pot",
+      "codes": "TODO KF 038 :: unnamed_stack > Stone Tower Temple > Tower Layers > Tower Pots :: Pasted Layer #37 :: 001-001-002-011.png"
+    },
+    {
+      "coords": [
+        265,
+        218
+      ],
+      "image": "pot",
+      "codes": "TODO KF 039 :: unnamed_stack > Stone Tower Temple > Tower Layers > Tower Pots :: Pasted Layer #38 :: 001-001-002-012.png"
+    },
+    {
+      "coords": [
+        267,
+        193
+      ],
+      "image": "pot",
+      "codes": "TODO KF 040 :: unnamed_stack > Stone Tower Temple > Tower Layers > Tower Pots :: Pasted Layer #39 :: 001-001-002-013.png"
+    },
+    {
+      "coords": [
+        375,
+        197
+      ],
+      "image": "pot",
+      "codes": "TODO KF 041 :: unnamed_stack > Stone Tower Temple > Tower Layers > Tower Pots :: Pasted Layer #40 :: 001-001-002-014.png"
+    },
+    {
+      "coords": [
+        646,
+        231
+      ],
+      "image": "pot",
+      "codes": "TODO KF 042 :: unnamed_stack > Stone Tower Temple > Tower Layers > Tower Pots :: Pasted Layer #41 :: 001-001-002-015.png"
+    },
+    {
+      "coords": [
+        645,
+        162
+      ],
+      "image": "pot",
+      "codes": "TODO KF 043 :: unnamed_stack > Stone Tower Temple > Tower Layers > Tower Pots :: Pasted Layer #42 :: 001-001-002-016.png"
+    },
+    {
+      "coords": [
+        678,
+        96
+      ],
+      "image": "pot",
+      "codes": "TODO KF 044 :: unnamed_stack > Stone Tower Temple > Tower Layers > Tower Pots :: Pasted Layer #43 :: 001-001-002-017.png"
+    },
+    {
+      "coords": [
+        710,
+        167
+      ],
+      "image": "pot",
+      "codes": "TODO KF 045 :: unnamed_stack > Stone Tower Temple > Tower Layers > Tower Pots :: Pasted Layer #44 :: 001-001-002-018.png"
+    },
+    {
+      "coords": [
+        711,
+        193
+      ],
+      "image": "pot",
+      "codes": "TODO KF 046 :: unnamed_stack > Stone Tower Temple > Tower Layers > Tower Pots :: Pasted Layer #45 :: 001-001-002-019.png"
+    },
+    {
+      "coords": [
+        729,
+        209
+      ],
+      "image": "pot",
+      "codes": "TODO KF 047 :: unnamed_stack > Stone Tower Temple > Tower Layers > Tower Pots :: Pasted Layer #46 :: 001-001-002-020.png"
+    },
+    {
+      "coords": [
+        697,
+        526
+      ],
+      "image": "green_rupee",
+      "codes": "TODO KF 048 :: unnamed_stack > Stone Tower Temple > Tower Layers > Tower Freestanding Rupees :: Pasted Layer #47 :: 001-001-003-000.png"
+    },
+    {
+      "coords": [
+        664,
+        480
+      ],
+      "image": "green_rupee",
+      "codes": "TODO KF 049 :: unnamed_stack > Stone Tower Temple > Tower Layers > Tower Freestanding Rupees :: Pasted Layer #48 :: 001-001-003-001.png"
+    },
+    {
+      "coords": [
+        656,
+        464
+      ],
+      "image": "green_rupee",
+      "codes": "TODO KF 050 :: unnamed_stack > Stone Tower Temple > Tower Layers > Tower Freestanding Rupees :: Pasted Layer #49 :: 001-001-003-002.png"
+    },
+    {
+      "coords": [
+        672,
+        464
+      ],
+      "image": "green_rupee",
+      "codes": "TODO KF 051 :: unnamed_stack > Stone Tower Temple > Tower Layers > Tower Freestanding Rupees :: Pasted Layer #50 :: 001-001-003-003.png"
+    },
+    {
+      "coords": [
+        636,
+        439
+      ],
+      "image": "green_rupee",
+      "codes": "TODO KF 052 :: unnamed_stack > Stone Tower Temple > Tower Layers > Tower Freestanding Rupees :: Pasted Layer #51 :: 001-001-003-004.png"
+    },
+    {
+      "coords": [
+        655,
+        439
+      ],
+      "image": "green_rupee",
+      "codes": "TODO KF 053 :: unnamed_stack > Stone Tower Temple > Tower Layers > Tower Freestanding Rupees :: Pasted Layer #52 :: 001-001-003-005.png"
+    },
+    {
+      "coords": [
+        646,
+        423
+      ],
+      "image": "green_rupee",
+      "codes": "TODO KF 054 :: unnamed_stack > Stone Tower Temple > Tower Layers > Tower Freestanding Rupees :: Pasted Layer #53 :: 001-001-003-006.png"
+    },
+    {
+      "coords": [
+        622,
+        176
+      ],
+      "image": "green_rupee",
+      "codes": "TODO KF 055 :: unnamed_stack > Stone Tower Temple > Tower Layers > Tower Freestanding Rupees :: Pasted Layer #54 :: 001-001-003-007.png"
+    },
+    {
+      "coords": [
+        661,
+        175
+      ],
+      "image": "green_rupee",
+      "codes": "TODO KF 056 :: unnamed_stack > Stone Tower Temple > Tower Layers > Tower Freestanding Rupees :: Pasted Layer #55 :: 001-001-003-008.png"
+    },
+    {
+      "coords": [
+        636,
+        142
+      ],
+      "image": "green_rupee",
+      "codes": "TODO KF 057 :: unnamed_stack > Stone Tower Temple > Tower Layers > Tower Freestanding Rupees :: Pasted Layer #56 :: 001-001-003-009.png"
+    },
+    {
+      "coords": [
+        655,
+        142
+      ],
+      "image": "green_rupee",
+      "codes": "TODO KF 058 :: unnamed_stack > Stone Tower Temple > Tower Layers > Tower Freestanding Rupees :: Pasted Layer #57 :: 001-001-003-010.png"
+    },
+    {
+      "coords": [
+        697,
+        66
+      ],
+      "image": "green_rupee",
+      "codes": "TODO KF 059 :: unnamed_stack > Stone Tower Temple > Tower Layers > Tower Freestanding Rupees :: Pasted Layer #58 :: 001-001-003-011.png"
+    },
+    {
+      "coords": [
+        689,
+        50
+      ],
+      "image": "green_rupee",
+      "codes": "TODO KF 060 :: unnamed_stack > Stone Tower Temple > Tower Layers > Tower Freestanding Rupees :: Pasted Layer #59 :: 001-001-003-012.png"
+    },
+    {
+      "coords": [
+        705,
+        50
+      ],
+      "image": "green_rupee",
+      "codes": "TODO KF 061 :: unnamed_stack > Stone Tower Temple > Tower Layers > Tower Freestanding Rupees :: Pasted Layer #60 :: 001-001-003-013.png"
+    },
+    {
+      "coords": [
+        626,
+        533
+      ],
+      "image": "gossip_stone",
+      "codes": "TODO KF 062 :: unnamed_stack > Stone Tower Temple > Tower Layers > Tower Crates :: Pasted Layer #61 :: 001-001-004-000.png"
+    },
+    {
+      "coords": [
+        666,
+        513
+      ],
+      "image": "gossip_stone",
+      "codes": "TODO KF 063 :: unnamed_stack > Stone Tower Temple > Tower Layers > Tower Crates :: Pasted Layer #62 :: 001-001-004-001.png"
+    },
+    {
+      "coords": [
+        730,
+        484
+      ],
+      "image": "gossip_stone",
+      "codes": "TODO KF 064 :: unnamed_stack > Stone Tower Temple > Tower Layers > Tower Crates :: Pasted Layer #63 :: 001-001-004-002.png"
+    },
+    {
+      "coords": [
+        575,
+        240
+      ],
+      "image": "gossip_stone",
+      "codes": "TODO KF 065 :: unnamed_stack > Stone Tower Temple > Tower Layers > Tower Crates :: Pasted Layer #64 :: 001-001-004-003.png"
+    },
+    {
+      "coords": [
+        575,
+        224
+      ],
+      "image": "gossip_stone",
+      "codes": "TODO KF 066 :: unnamed_stack > Stone Tower Temple > Tower Layers > Tower Crates :: Pasted Layer #65 :: 001-001-004-004.png"
+    },
+    {
+      "coords": [
+        666,
+        228
+      ],
+      "image": "gossip_stone",
+      "codes": "TODO KF 067 :: unnamed_stack > Stone Tower Temple > Tower Layers > Tower Crates :: Pasted Layer #66 :: 001-001-004-005.png"
+    },
+    {
+      "coords": [
+        668,
+        209
+      ],
+      "image": "gossip_stone",
+      "codes": "TODO KF 068 :: unnamed_stack > Stone Tower Temple > Tower Layers > Tower Crates :: Pasted Layer #67 :: 001-001-004-006.png"
+    },
+    {
+      "coords": [
+        724,
+        120
+      ],
+      "image": "gossip_stone",
+      "codes": "TODO KF 069 :: unnamed_stack > Stone Tower Temple > Tower Layers > Tower Crates :: Pasted Layer #68 :: 001-001-004-007.png"
+    },
+    {
+      "coords": [
+        695,
+        120
+      ],
+      "image": "gossip_stone",
+      "codes": "TODO KF 070 :: unnamed_stack > Stone Tower Temple > Tower Layers > Tower Crates :: Pasted Layer #69 :: 001-001-004-008.png"
+    },
+    {
+      "coords": [
+        661,
+        236
+      ],
+      "image": "grass",
+      "codes": "TODO KF 071 :: unnamed_stack > Stone Tower Temple > Tower Layers > Tower Grass :: Pasted Layer #70 :: 001-001-005-000.png"
+    },
+    {
+      "coords": [
+        595,
+        190
+      ],
+      "image": "grass",
+      "codes": "TODO KF 072 :: unnamed_stack > Stone Tower Temple > Tower Layers > Tower Grass :: Pasted Layer #71 :: 001-001-005-001.png"
+    }
+  ]
+}

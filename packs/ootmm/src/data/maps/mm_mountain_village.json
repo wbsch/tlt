@@ -1,0 +1,1257 @@
+{
+  "id": "mm_mountain_village",
+  "title": "MM Mountain Village",
+  "image": "mm_mountain_village",
+  "width": 1000,
+  "height": 600,
+  "markers": [
+    {
+      "coords": [
+        263,
+        405
+      ],
+      "image": "chest",
+      "codes": "TODO KF 001 :: unnamed_stack > Mountain > Mountain Layers > Mountain Checks :: Pasted Layer :: 001-001-001-000.png"
+    },
+    {
+      "coords": [
+        332,
+        516
+      ],
+      "image": "chest",
+      "codes": "TODO KF 002 :: unnamed_stack > Mountain > Mountain Layers > Mountain Checks :: Pasted Layer #1 :: 001-001-001-001.png"
+    },
+    {
+      "coords": [
+        328,
+        491
+      ],
+      "image": "chest",
+      "codes": "TODO KF 003 :: unnamed_stack > Mountain > Mountain Layers > Mountain Checks :: Pasted Layer #2 :: 001-001-001-002.png"
+    },
+    {
+      "coords": [
+        312,
+        480
+      ],
+      "image": "chest",
+      "codes": "TODO KF 004 :: unnamed_stack > Mountain > Mountain Layers > Mountain Checks :: Pasted Layer #3 :: 001-001-001-003.png"
+    },
+    {
+      "coords": [
+        399,
+        148
+      ],
+      "image": "chest",
+      "codes": "TODO KF 005 :: unnamed_stack > Mountain > Mountain Layers > Mountain Checks :: Pasted Layer #4 :: 001-001-001-004.png"
+    },
+    {
+      "coords": [
+        554,
+        210
+      ],
+      "image": "chest",
+      "codes": "TODO KF 006 :: unnamed_stack > Mountain > Mountain Layers > Mountain Checks :: Pasted Layer #5 :: 001-001-001-005.png"
+    },
+    {
+      "coords": [
+        610,
+        376
+      ],
+      "image": "chest",
+      "codes": "TODO KF 007 :: unnamed_stack > Mountain > Mountain Layers > Mountain Checks :: Pasted Layer #6 :: 001-001-001-006.png"
+    },
+    {
+      "coords": [
+        630,
+        392
+      ],
+      "image": "chest",
+      "codes": "TODO KF 008 :: unnamed_stack > Mountain > Mountain Layers > Mountain Checks :: Pasted Layer #7 :: 001-001-001-007.png"
+    },
+    {
+      "coords": [
+        872,
+        541
+      ],
+      "image": "chest",
+      "codes": "TODO KF 009 :: unnamed_stack > Mountain > Mountain Layers > Mountain Checks :: Pasted Layer #8 :: 001-001-001-008.png"
+    },
+    {
+      "coords": [
+        878,
+        393
+      ],
+      "image": "chest",
+      "codes": "TODO KF 010 :: unnamed_stack > Mountain > Mountain Layers > Mountain Checks :: Pasted Layer #9 :: 001-001-001-009.png"
+    },
+    {
+      "coords": [
+        368,
+        440
+      ],
+      "image": "song",
+      "codes": "TODO KF 011 :: unnamed_stack > Mountain > Mountain Layers > Mountain Songs :: Pasted Layer #10 :: 001-001-002-000.png"
+    },
+    {
+      "coords": [
+        508,
+        152
+      ],
+      "image": "song",
+      "codes": "TODO KF 012 :: unnamed_stack > Mountain > Mountain Layers > Mountain Songs :: Pasted Layer #11 :: 001-001-002-001.png"
+    },
+    {
+      "coords": [
+        847,
+        546
+      ],
+      "image": "song",
+      "codes": "TODO KF 013 :: unnamed_stack > Mountain > Mountain Layers > Mountain Songs :: Pasted Layer #12 :: 001-001-002-002.png"
+    },
+    {
+      "coords": [
+        947,
+        461
+      ],
+      "image": "song",
+      "codes": "TODO KF 014 :: unnamed_stack > Mountain > Mountain Layers > Mountain Songs :: Pasted Layer #13 :: 001-001-002-003.png"
+    },
+    {
+      "coords": [
+        870,
+        462
+      ],
+      "image": "shop",
+      "codes": "TODO KF 015 :: unnamed_stack > Mountain > Mountain Layers > Mountain Shops :: Pasted Layer #14 :: 001-001-003-000.png"
+    },
+    {
+      "coords": [
+        626,
+        376
+      ],
+      "image": "business_scrub_oot",
+      "codes": "TODO KF 016 :: unnamed_stack > Mountain > Mountain Layers > Mountain Scrubs :: Pasted Layer #15 :: 001-001-004-000.png"
+    },
+    {
+      "coords": [
+        352,
+        456
+      ],
+      "image": "owl_statue",
+      "codes": "TODO KF 017 :: unnamed_stack > Mountain > Mountain Layers > Mountain Owl Statues :: Pasted Layer #16 :: 001-001-005-000.png"
+    },
+    {
+      "coords": [
+        52,
+        405
+      ],
+      "image": "owl_statue",
+      "codes": "TODO KF 018 :: unnamed_stack > Mountain > Mountain Layers > Mountain Owl Statues :: Pasted Layer #17 :: 001-001-005-001.png"
+    },
+    {
+      "coords": [
+        372,
+        504
+      ],
+      "image": "pot",
+      "codes": "TODO KF 019 :: unnamed_stack > Mountain > Mountain Layers > Mountain Pots :: Pasted Layer #18 :: 001-001-006-000.png"
+    },
+    {
+      "coords": [
+        394,
+        496
+      ],
+      "image": "pot",
+      "codes": "TODO KF 020 :: unnamed_stack > Mountain > Mountain Layers > Mountain Pots :: Pasted Layer #19 :: 001-001-006-001.png"
+    },
+    {
+      "coords": [
+        838,
+        116
+      ],
+      "image": "pot",
+      "codes": "TODO KF 021 :: unnamed_stack > Mountain > Mountain Layers > Mountain Pots :: Pasted Layer #20 :: 001-001-006-002.png"
+    },
+    {
+      "coords": [
+        719,
+        83
+      ],
+      "image": "pot",
+      "codes": "TODO KF 022 :: unnamed_stack > Mountain > Mountain Layers > Mountain Pots :: Pasted Layer #21 :: 001-001-006-003.png"
+    },
+    {
+      "coords": [
+        537,
+        131
+      ],
+      "image": "pot",
+      "codes": "TODO KF 023 :: unnamed_stack > Mountain > Mountain Layers > Mountain Pots :: Pasted Layer #22 :: 001-001-006-004.png"
+    },
+    {
+      "coords": [
+        325,
+        305
+      ],
+      "image": "pot",
+      "codes": "TODO KF 024 :: unnamed_stack > Mountain > Mountain Layers > Mountain Pots :: Pasted Layer #23 :: 001-001-006-005.png"
+    },
+    {
+      "coords": [
+        296,
+        274
+      ],
+      "image": "pot",
+      "codes": "TODO KF 025 :: unnamed_stack > Mountain > Mountain Layers > Mountain Pots :: Pasted Layer #24 :: 001-001-006-006.png"
+    },
+    {
+      "coords": [
+        311,
+        261
+      ],
+      "image": "pot",
+      "codes": "TODO KF 026 :: unnamed_stack > Mountain > Mountain Layers > Mountain Pots :: Pasted Layer #25 :: 001-001-006-007.png"
+    },
+    {
+      "coords": [
+        327,
+        259
+      ],
+      "image": "pot",
+      "codes": "TODO KF 027 :: unnamed_stack > Mountain > Mountain Layers > Mountain Pots :: Pasted Layer #26 :: 001-001-006-008.png"
+    },
+    {
+      "coords": [
+        292,
+        230
+      ],
+      "image": "pot",
+      "codes": "TODO KF 028 :: unnamed_stack > Mountain > Mountain Layers > Mountain Pots :: Pasted Layer #27 :: 001-001-006-009.png"
+    },
+    {
+      "coords": [
+        308,
+        236
+      ],
+      "image": "pot",
+      "codes": "TODO KF 029 :: unnamed_stack > Mountain > Mountain Layers > Mountain Pots :: Pasted Layer #28 :: 001-001-006-010.png"
+    },
+    {
+      "coords": [
+        326,
+        232
+      ],
+      "image": "pot",
+      "codes": "TODO KF 030 :: unnamed_stack > Mountain > Mountain Layers > Mountain Pots :: Pasted Layer #29 :: 001-001-006-011.png"
+    },
+    {
+      "coords": [
+        326,
+        206
+      ],
+      "image": "pot",
+      "codes": "TODO KF 031 :: unnamed_stack > Mountain > Mountain Layers > Mountain Pots :: Pasted Layer #30 :: 001-001-006-012.png"
+    },
+    {
+      "coords": [
+        341,
+        190
+      ],
+      "image": "pot",
+      "codes": "TODO KF 032 :: unnamed_stack > Mountain > Mountain Layers > Mountain Pots :: Pasted Layer #31 :: 001-001-006-013.png"
+    },
+    {
+      "coords": [
+        321,
+        164
+      ],
+      "image": "pot",
+      "codes": "TODO KF 033 :: unnamed_stack > Mountain > Mountain Layers > Mountain Pots :: Pasted Layer #32 :: 001-001-006-014.png"
+    },
+    {
+      "coords": [
+        290,
+        160
+      ],
+      "image": "pot",
+      "codes": "TODO KF 034 :: unnamed_stack > Mountain > Mountain Layers > Mountain Pots :: Pasted Layer #33 :: 001-001-006-015.png"
+    },
+    {
+      "coords": [
+        312,
+        124
+      ],
+      "image": "pot",
+      "codes": "TODO KF 035 :: unnamed_stack > Mountain > Mountain Layers > Mountain Pots :: Pasted Layer #34 :: 001-001-006-016.png"
+    },
+    {
+      "coords": [
+        364,
+        101
+      ],
+      "image": "pot",
+      "codes": "TODO KF 036 :: unnamed_stack > Mountain > Mountain Layers > Mountain Pots :: Pasted Layer #35 :: 001-001-006-017.png"
+    },
+    {
+      "coords": [
+        546,
+        224
+      ],
+      "image": "collectible",
+      "codes": "TODO KF 037 :: unnamed_stack > Mountain > Mountain Layers > Mountain Crates :: Pasted Layer #36 :: 001-001-007-000.png"
+    },
+    {
+      "coords": [
+        368,
+        512
+      ],
+      "image": "green_rupee",
+      "codes": "TODO KF 038 :: unnamed_stack > Mountain > Mountain Layers > Mountain Freestanding Rupees :: Pasted Layer #37 :: 001-001-008-000.png"
+    },
+    {
+      "coords": [
+        901,
+        536
+      ],
+      "image": "green_rupee",
+      "codes": "TODO KF 039 :: unnamed_stack > Mountain > Mountain Layers > Mountain Freestanding Rupees :: Pasted Layer #38 :: 001-001-008-001.png"
+    },
+    {
+      "coords": [
+        942,
+        485
+      ],
+      "image": "green_rupee",
+      "codes": "TODO KF 040 :: unnamed_stack > Mountain > Mountain Layers > Mountain Freestanding Rupees :: Pasted Layer #39 :: 001-001-008-002.png"
+    },
+    {
+      "coords": [
+        916,
+        454
+      ],
+      "image": "green_rupee",
+      "codes": "TODO KF 041 :: unnamed_stack > Mountain > Mountain Layers > Mountain Freestanding Rupees :: Pasted Layer #40 :: 001-001-008-003.png"
+    },
+    {
+      "coords": [
+        851,
+        453
+      ],
+      "image": "green_rupee",
+      "codes": "TODO KF 042 :: unnamed_stack > Mountain > Mountain Layers > Mountain Freestanding Rupees :: Pasted Layer #41 :: 001-001-008-004.png"
+    },
+    {
+      "coords": [
+        420,
+        508
+      ],
+      "image": "beehive",
+      "codes": "TODO KF 043 :: unnamed_stack > Mountain > Mountain Layers > Mountain Beehives :: Pasted Layer #42 :: 001-001-009-000.png"
+    },
+    {
+      "coords": [
+        351,
+        527
+      ],
+      "image": "collectible",
+      "codes": "TODO KF 044 :: unnamed_stack > Mountain > Mountain Layers > Mountain Butterflies :: Pasted Layer #43 :: 001-001-010-000.png"
+    },
+    {
+      "coords": [
+        396,
+        471
+      ],
+      "image": "collectible",
+      "codes": "TODO KF 045 :: unnamed_stack > Mountain > Mountain Layers > Mountain Butterflies :: Pasted Layer #44 :: 001-001-010-001.png"
+    },
+    {
+      "coords": [
+        776,
+        556
+      ],
+      "image": "grass",
+      "codes": "TODO KF 046 :: unnamed_stack > Mountain > Mountain Layers > Mountain Grass :: Pasted Layer #45 :: 001-001-011-000.png"
+    },
+    {
+      "coords": [
+        356,
+        540
+      ],
+      "image": "grass",
+      "codes": "TODO KF 047 :: unnamed_stack > Mountain > Mountain Layers > Mountain Grass :: Pasted Layer #46 :: 001-001-011-001.png"
+    },
+    {
+      "coords": [
+        408,
+        528
+      ],
+      "image": "grass",
+      "codes": "TODO KF 048 :: unnamed_stack > Mountain > Mountain Layers > Mountain Grass :: Pasted Layer #47 :: 001-001-011-002.png"
+    },
+    {
+      "coords": [
+        372,
+        518
+      ],
+      "image": "grass",
+      "codes": "TODO KF 049 :: unnamed_stack > Mountain > Mountain Layers > Mountain Grass :: Pasted Layer #48 :: 001-001-011-003.png"
+    },
+    {
+      "coords": [
+        379,
+        472
+      ],
+      "image": "grass",
+      "codes": "TODO KF 050 :: unnamed_stack > Mountain > Mountain Layers > Mountain Grass :: Pasted Layer #49 :: 001-001-011-004.png"
+    },
+    {
+      "coords": [
+        395,
+        480
+      ],
+      "image": "grass",
+      "codes": "TODO KF 051 :: unnamed_stack > Mountain > Mountain Layers > Mountain Grass :: Pasted Layer #50 :: 001-001-011-005.png"
+    },
+    {
+      "coords": [
+        411,
+        472
+      ],
+      "image": "grass",
+      "codes": "TODO KF 052 :: unnamed_stack > Mountain > Mountain Layers > Mountain Grass :: Pasted Layer #51 :: 001-001-011-006.png"
+    },
+    {
+      "coords": [
+        786,
+        448
+      ],
+      "image": "rock",
+      "codes": "TODO KF 053 :: unnamed_stack > Mountain > Mountain Layers > Mountain Rocks :: Pasted Layer #52 :: 001-001-012-000.png"
+    },
+    {
+      "coords": [
+        412,
+        515
+      ],
+      "image": "rock",
+      "codes": "TODO KF 054 :: unnamed_stack > Mountain > Mountain Layers > Mountain Rocks :: Pasted Layer #53 :: 001-001-012-001.png"
+    },
+    {
+      "coords": [
+        406,
+        405
+      ],
+      "image": "rock",
+      "codes": "TODO KF 055 :: unnamed_stack > Mountain > Mountain Layers > Mountain Rocks :: Pasted Layer #54 :: 001-001-012-002.png"
+    },
+    {
+      "coords": [
+        696,
+        192
+      ],
+      "image": "rock",
+      "codes": "TODO KF 056 :: unnamed_stack > Mountain > Mountain Layers > Mountain Rocks :: Pasted Layer #55 :: 001-001-012-003.png"
+    },
+    {
+      "coords": [
+        692,
+        116
+      ],
+      "image": "rock",
+      "codes": "TODO KF 057 :: unnamed_stack > Mountain > Mountain Layers > Mountain Rocks :: Pasted Layer #56 :: 001-001-012-004.png"
+    },
+    {
+      "coords": [
+        750,
+        90
+      ],
+      "image": "rock",
+      "codes": "TODO KF 058 :: unnamed_stack > Mountain > Mountain Layers > Mountain Rocks :: Pasted Layer #57 :: 001-001-012-005.png"
+    },
+    {
+      "coords": [
+        750,
+        188
+      ],
+      "image": "rock",
+      "codes": "TODO KF 059 :: unnamed_stack > Mountain > Mountain Layers > Mountain Rocks :: Pasted Layer #58 :: 001-001-012-006.png"
+    },
+    {
+      "coords": [
+        894,
+        196
+      ],
+      "image": "rock",
+      "codes": "TODO KF 060 :: unnamed_stack > Mountain > Mountain Layers > Mountain Rocks :: Pasted Layer #59 :: 001-001-012-007.png"
+    },
+    {
+      "coords": [
+        878,
+        127
+      ],
+      "image": "rock",
+      "codes": "TODO KF 061 :: unnamed_stack > Mountain > Mountain Layers > Mountain Rocks :: Pasted Layer #60 :: 001-001-012-008.png"
+    },
+    {
+      "coords": [
+        882,
+        92
+      ],
+      "image": "rock",
+      "codes": "TODO KF 062 :: unnamed_stack > Mountain > Mountain Layers > Mountain Rocks :: Pasted Layer #61 :: 001-001-012-009.png"
+    },
+    {
+      "coords": [
+        380,
+        523
+      ],
+      "image": "red_boulder",
+      "codes": "TODO KF 063 :: unnamed_stack > Mountain > Mountain Layers > Mountain Red Boulders :: Pasted Layer #62 :: 001-001-013-000.png"
+    },
+    {
+      "coords": [
+        760,
+        572
+      ],
+      "image": "collectible",
+      "codes": "TODO KF 064 :: unnamed_stack > Mountain > Mountain Layers > Mountain Snowballs :: Pasted Layer #63 :: 001-001-014-000.png"
+    },
+    {
+      "coords": [
+        776,
+        540
+      ],
+      "image": "collectible",
+      "codes": "TODO KF 065 :: unnamed_stack > Mountain > Mountain Layers > Mountain Snowballs :: Pasted Layer #64 :: 001-001-014-001.png"
+    },
+    {
+      "coords": [
+        812,
+        516
+      ],
+      "image": "collectible",
+      "codes": "TODO KF 066 :: unnamed_stack > Mountain > Mountain Layers > Mountain Snowballs :: Pasted Layer #65 :: 001-001-014-002.png"
+    },
+    {
+      "coords": [
+        847,
+        530
+      ],
+      "image": "collectible",
+      "codes": "TODO KF 067 :: unnamed_stack > Mountain > Mountain Layers > Mountain Snowballs :: Pasted Layer #66 :: 001-001-014-003.png"
+    },
+    {
+      "coords": [
+        896,
+        523
+      ],
+      "image": "collectible",
+      "codes": "TODO KF 068 :: unnamed_stack > Mountain > Mountain Layers > Mountain Snowballs :: Pasted Layer #67 :: 001-001-014-004.png"
+    },
+    {
+      "coords": [
+        927,
+        519
+      ],
+      "image": "collectible",
+      "codes": "TODO KF 069 :: unnamed_stack > Mountain > Mountain Layers > Mountain Snowballs :: Pasted Layer #68 :: 001-001-014-005.png"
+    },
+    {
+      "coords": [
+        937,
+        491
+      ],
+      "image": "collectible",
+      "codes": "TODO KF 070 :: unnamed_stack > Mountain > Mountain Layers > Mountain Snowballs :: Pasted Layer #69 :: 001-001-014-006.png"
+    },
+    {
+      "coords": [
+        931,
+        461
+      ],
+      "image": "collectible",
+      "codes": "TODO KF 071 :: unnamed_stack > Mountain > Mountain Layers > Mountain Snowballs :: Pasted Layer #70 :: 001-001-014-007.png"
+    },
+    {
+      "coords": [
+        902,
+        450
+      ],
+      "image": "collectible",
+      "codes": "TODO KF 072 :: unnamed_stack > Mountain > Mountain Layers > Mountain Snowballs :: Pasted Layer #71 :: 001-001-014-008.png"
+    },
+    {
+      "coords": [
+        875,
+        450
+      ],
+      "image": "collectible",
+      "codes": "TODO KF 073 :: unnamed_stack > Mountain > Mountain Layers > Mountain Snowballs :: Pasted Layer #72 :: 001-001-014-009.png"
+    },
+    {
+      "coords": [
+        855,
+        429
+      ],
+      "image": "collectible",
+      "codes": "TODO KF 074 :: unnamed_stack > Mountain > Mountain Layers > Mountain Snowballs :: Pasted Layer #73 :: 001-001-014-010.png"
+    },
+    {
+      "coords": [
+        842,
+        457
+      ],
+      "image": "collectible",
+      "codes": "TODO KF 075 :: unnamed_stack > Mountain > Mountain Layers > Mountain Snowballs :: Pasted Layer #74 :: 001-001-014-011.png"
+    },
+    {
+      "coords": [
+        870,
+        469
+      ],
+      "image": "collectible",
+      "codes": "TODO KF 076 :: unnamed_stack > Mountain > Mountain Layers > Mountain Snowballs :: Pasted Layer #75 :: 001-001-014-012.png"
+    },
+    {
+      "coords": [
+        870,
+        485
+      ],
+      "image": "collectible",
+      "codes": "TODO KF 077 :: unnamed_stack > Mountain > Mountain Layers > Mountain Snowballs :: Pasted Layer #76 :: 001-001-014-013.png"
+    },
+    {
+      "coords": [
+        870,
+        504
+      ],
+      "image": "collectible",
+      "codes": "TODO KF 078 :: unnamed_stack > Mountain > Mountain Layers > Mountain Snowballs :: Pasted Layer #77 :: 001-001-014-014.png"
+    },
+    {
+      "coords": [
+        808,
+        482
+      ],
+      "image": "collectible",
+      "codes": "TODO KF 079 :: unnamed_stack > Mountain > Mountain Layers > Mountain Snowballs :: Pasted Layer #78 :: 001-001-014-015.png"
+    },
+    {
+      "coords": [
+        787,
+        468
+      ],
+      "image": "collectible",
+      "codes": "TODO KF 080 :: unnamed_stack > Mountain > Mountain Layers > Mountain Snowballs :: Pasted Layer #79 :: 001-001-014-016.png"
+    },
+    {
+      "coords": [
+        542,
+        252
+      ],
+      "image": "collectible",
+      "codes": "TODO KF 081 :: unnamed_stack > Mountain > Mountain Layers > Mountain Snowballs :: Pasted Layer #80 :: 001-001-014-017.png"
+    },
+    {
+      "coords": [
+        534,
+        272
+      ],
+      "image": "collectible",
+      "codes": "TODO KF 082 :: unnamed_stack > Mountain > Mountain Layers > Mountain Snowballs :: Pasted Layer #81 :: 001-001-014-018.png"
+    },
+    {
+      "coords": [
+        552,
+        268
+      ],
+      "image": "collectible",
+      "codes": "TODO KF 083 :: unnamed_stack > Mountain > Mountain Layers > Mountain Snowballs :: Pasted Layer #82 :: 001-001-014-019.png"
+    },
+    {
+      "coords": [
+        574,
+        261
+      ],
+      "image": "collectible",
+      "codes": "TODO KF 084 :: unnamed_stack > Mountain > Mountain Layers > Mountain Snowballs :: Pasted Layer #83 :: 001-001-014-020.png"
+    },
+    {
+      "coords": [
+        597,
+        270
+      ],
+      "image": "collectible",
+      "codes": "TODO KF 085 :: unnamed_stack > Mountain > Mountain Layers > Mountain Snowballs :: Pasted Layer #84 :: 001-001-014-021.png"
+    },
+    {
+      "coords": [
+        614,
+        252
+      ],
+      "image": "collectible",
+      "codes": "TODO KF 086 :: unnamed_stack > Mountain > Mountain Layers > Mountain Snowballs :: Pasted Layer #85 :: 001-001-014-022.png"
+    },
+    {
+      "coords": [
+        634,
+        268
+      ],
+      "image": "collectible",
+      "codes": "TODO KF 087 :: unnamed_stack > Mountain > Mountain Layers > Mountain Snowballs :: Pasted Layer #86 :: 001-001-014-023.png"
+    },
+    {
+      "coords": [
+        667,
+        284
+      ],
+      "image": "collectible",
+      "codes": "TODO KF 088 :: unnamed_stack > Mountain > Mountain Layers > Mountain Snowballs :: Pasted Layer #87 :: 001-001-014-024.png"
+    },
+    {
+      "coords": [
+        682,
+        320
+      ],
+      "image": "collectible",
+      "codes": "TODO KF 089 :: unnamed_stack > Mountain > Mountain Layers > Mountain Snowballs :: Pasted Layer #88 :: 001-001-014-025.png"
+    },
+    {
+      "coords": [
+        670,
+        348
+      ],
+      "image": "collectible",
+      "codes": "TODO KF 090 :: unnamed_stack > Mountain > Mountain Layers > Mountain Snowballs :: Pasted Layer #89 :: 001-001-014-026.png"
+    },
+    {
+      "coords": [
+        654,
+        349
+      ],
+      "image": "collectible",
+      "codes": "TODO KF 091 :: unnamed_stack > Mountain > Mountain Layers > Mountain Snowballs :: Pasted Layer #90 :: 001-001-014-027.png"
+    },
+    {
+      "coords": [
+        600,
+        318
+      ],
+      "image": "collectible",
+      "codes": "TODO KF 092 :: unnamed_stack > Mountain > Mountain Layers > Mountain Snowballs :: Pasted Layer #91 :: 001-001-014-028.png"
+    },
+    {
+      "coords": [
+        606,
+        336
+      ],
+      "image": "collectible",
+      "codes": "TODO KF 093 :: unnamed_stack > Mountain > Mountain Layers > Mountain Snowballs :: Pasted Layer #92 :: 001-001-014-029.png"
+    },
+    {
+      "coords": [
+        606,
+        364
+      ],
+      "image": "collectible",
+      "codes": "TODO KF 094 :: unnamed_stack > Mountain > Mountain Layers > Mountain Snowballs :: Pasted Layer #93 :: 001-001-014-030.png"
+    },
+    {
+      "coords": [
+        601,
+        380
+      ],
+      "image": "collectible",
+      "codes": "TODO KF 095 :: unnamed_stack > Mountain > Mountain Layers > Mountain Snowballs :: Pasted Layer #94 :: 001-001-014-031.png"
+    },
+    {
+      "coords": [
+        580,
+        386
+      ],
+      "image": "collectible",
+      "codes": "TODO KF 096 :: unnamed_stack > Mountain > Mountain Layers > Mountain Snowballs :: Pasted Layer #95 :: 001-001-014-032.png"
+    },
+    {
+      "coords": [
+        572,
+        370
+      ],
+      "image": "collectible",
+      "codes": "TODO KF 097 :: unnamed_stack > Mountain > Mountain Layers > Mountain Snowballs :: Pasted Layer #96 :: 001-001-014-033.png"
+    },
+    {
+      "coords": [
+        530,
+        365
+      ],
+      "image": "collectible",
+      "codes": "TODO KF 098 :: unnamed_stack > Mountain > Mountain Layers > Mountain Snowballs :: Pasted Layer #97 :: 001-001-014-034.png"
+    },
+    {
+      "coords": [
+        523,
+        343
+      ],
+      "image": "collectible",
+      "codes": "TODO KF 099 :: unnamed_stack > Mountain > Mountain Layers > Mountain Snowballs :: Pasted Layer #98 :: 001-001-014-035.png"
+    },
+    {
+      "coords": [
+        518,
+        311
+      ],
+      "image": "collectible",
+      "codes": "TODO KF 100 :: unnamed_stack > Mountain > Mountain Layers > Mountain Snowballs :: Pasted Layer #99 :: 001-001-014-036.png"
+    },
+    {
+      "coords": [
+        502,
+        322
+      ],
+      "image": "collectible",
+      "codes": "TODO KF 101 :: unnamed_stack > Mountain > Mountain Layers > Mountain Snowballs :: Pasted Layer #100 :: 001-001-014-037.png"
+    },
+    {
+      "coords": [
+        464,
+        496
+      ],
+      "image": "collectible",
+      "codes": "TODO KF 102 :: unnamed_stack > Mountain > Mountain Layers > Mountain Snowballs :: Pasted Layer #101 :: 001-001-014-038.png"
+    },
+    {
+      "coords": [
+        444,
+        487
+      ],
+      "image": "collectible",
+      "codes": "TODO KF 103 :: unnamed_stack > Mountain > Mountain Layers > Mountain Snowballs :: Pasted Layer #102 :: 001-001-014-039.png"
+    },
+    {
+      "coords": [
+        436,
+        508
+      ],
+      "image": "collectible",
+      "codes": "TODO KF 104 :: unnamed_stack > Mountain > Mountain Layers > Mountain Snowballs :: Pasted Layer #103 :: 001-001-014-040.png"
+    },
+    {
+      "coords": [
+        407,
+        508
+      ],
+      "image": "collectible",
+      "codes": "TODO KF 105 :: unnamed_stack > Mountain > Mountain Layers > Mountain Snowballs :: Pasted Layer #104 :: 001-001-014-041.png"
+    },
+    {
+      "coords": [
+        396,
+        455
+      ],
+      "image": "collectible",
+      "codes": "TODO KF 106 :: unnamed_stack > Mountain > Mountain Layers > Mountain Snowballs :: Pasted Layer #105 :: 001-001-014-042.png"
+    },
+    {
+      "coords": [
+        393,
+        412
+      ],
+      "image": "collectible",
+      "codes": "TODO KF 107 :: unnamed_stack > Mountain > Mountain Layers > Mountain Snowballs :: Pasted Layer #106 :: 001-001-014-043.png"
+    },
+    {
+      "coords": [
+        368,
+        456
+      ],
+      "image": "collectible",
+      "codes": "TODO KF 108 :: unnamed_stack > Mountain > Mountain Layers > Mountain Snowballs :: Pasted Layer #107 :: 001-001-014-044.png"
+    },
+    {
+      "coords": [
+        336,
+        456
+      ],
+      "image": "collectible",
+      "codes": "TODO KF 109 :: unnamed_stack > Mountain > Mountain Layers > Mountain Snowballs :: Pasted Layer #108 :: 001-001-014-045.png"
+    },
+    {
+      "coords": [
+        332,
+        472
+      ],
+      "image": "collectible",
+      "codes": "TODO KF 110 :: unnamed_stack > Mountain > Mountain Layers > Mountain Snowballs :: Pasted Layer #109 :: 001-001-014-046.png"
+    },
+    {
+      "coords": [
+        320,
+        516
+      ],
+      "image": "collectible",
+      "codes": "TODO KF 111 :: unnamed_stack > Mountain > Mountain Layers > Mountain Snowballs :: Pasted Layer #110 :: 001-001-014-047.png"
+    },
+    {
+      "coords": [
+        244,
+        478
+      ],
+      "image": "collectible",
+      "codes": "TODO KF 112 :: unnamed_stack > Mountain > Mountain Layers > Mountain Snowballs :: Pasted Layer #111 :: 001-001-014-048.png"
+    },
+    {
+      "coords": [
+        260,
+        478
+      ],
+      "image": "collectible",
+      "codes": "TODO KF 113 :: unnamed_stack > Mountain > Mountain Layers > Mountain Snowballs :: Pasted Layer #112 :: 001-001-014-049.png"
+    },
+    {
+      "coords": [
+        196,
+        391
+      ],
+      "image": "collectible",
+      "codes": "TODO KF 114 :: unnamed_stack > Mountain > Mountain Layers > Mountain Snowballs :: Pasted Layer #113 :: 001-001-014-050.png"
+    },
+    {
+      "coords": [
+        180,
+        391
+      ],
+      "image": "collectible",
+      "codes": "TODO KF 115 :: unnamed_stack > Mountain > Mountain Layers > Mountain Snowballs :: Pasted Layer #114 :: 001-001-014-051.png"
+    },
+    {
+      "coords": [
+        197,
+        355
+      ],
+      "image": "collectible",
+      "codes": "TODO KF 116 :: unnamed_stack > Mountain > Mountain Layers > Mountain Snowballs :: Pasted Layer #115 :: 001-001-014-052.png"
+    },
+    {
+      "coords": [
+        178,
+        354
+      ],
+      "image": "collectible",
+      "codes": "TODO KF 117 :: unnamed_stack > Mountain > Mountain Layers > Mountain Snowballs :: Pasted Layer #116 :: 001-001-014-053.png"
+    },
+    {
+      "coords": [
+        162,
+        354
+      ],
+      "image": "collectible",
+      "codes": "TODO KF 118 :: unnamed_stack > Mountain > Mountain Layers > Mountain Snowballs :: Pasted Layer #117 :: 001-001-014-054.png"
+    },
+    {
+      "coords": [
+        160,
+        327
+      ],
+      "image": "collectible",
+      "codes": "TODO KF 119 :: unnamed_stack > Mountain > Mountain Layers > Mountain Snowballs :: Pasted Layer #118 :: 001-001-014-055.png"
+    },
+    {
+      "coords": [
+        144,
+        327
+      ],
+      "image": "collectible",
+      "codes": "TODO KF 120 :: unnamed_stack > Mountain > Mountain Layers > Mountain Snowballs :: Pasted Layer #119 :: 001-001-014-056.png"
+    },
+    {
+      "coords": [
+        43,
+        387
+      ],
+      "image": "collectible",
+      "codes": "TODO KF 121 :: unnamed_stack > Mountain > Mountain Layers > Mountain Snowballs :: Pasted Layer #120 :: 001-001-014-057.png"
+    },
+    {
+      "coords": [
+        100,
+        64
+      ],
+      "image": "collectible",
+      "codes": "TODO KF 122 :: unnamed_stack > Mountain > Mountain Layers > Mountain Snowballs :: Pasted Layer #121 :: 001-001-014-058.png"
+    },
+    {
+      "coords": [
+        114,
+        103
+      ],
+      "image": "collectible",
+      "codes": "TODO KF 123 :: unnamed_stack > Mountain > Mountain Layers > Mountain Snowballs :: Pasted Layer #122 :: 001-001-014-059.png"
+    },
+    {
+      "coords": [
+        130,
+        103
+      ],
+      "image": "collectible",
+      "codes": "TODO KF 124 :: unnamed_stack > Mountain > Mountain Layers > Mountain Snowballs :: Pasted Layer #123 :: 001-001-014-060.png"
+    },
+    {
+      "coords": [
+        112,
+        136
+      ],
+      "image": "collectible",
+      "codes": "TODO KF 125 :: unnamed_stack > Mountain > Mountain Layers > Mountain Snowballs :: Pasted Layer #124 :: 001-001-014-061.png"
+    },
+    {
+      "coords": [
+        96,
+        136
+      ],
+      "image": "collectible",
+      "codes": "TODO KF 126 :: unnamed_stack > Mountain > Mountain Layers > Mountain Snowballs :: Pasted Layer #125 :: 001-001-014-062.png"
+    },
+    {
+      "coords": [
+        63,
+        158
+      ],
+      "image": "collectible",
+      "codes": "TODO KF 127 :: unnamed_stack > Mountain > Mountain Layers > Mountain Snowballs :: Pasted Layer #126 :: 001-001-014-063.png"
+    },
+    {
+      "coords": [
+        47,
+        158
+      ],
+      "image": "collectible",
+      "codes": "TODO KF 128 :: unnamed_stack > Mountain > Mountain Layers > Mountain Snowballs :: Pasted Layer #127 :: 001-001-014-064.png"
+    },
+    {
+      "coords": [
+        33,
+        145
+      ],
+      "image": "collectible",
+      "codes": "TODO KF 129 :: unnamed_stack > Mountain > Mountain Layers > Mountain Snowballs :: Pasted Layer #128 :: 001-001-014-065.png"
+    },
+    {
+      "coords": [
+        17,
+        145
+      ],
+      "image": "collectible",
+      "codes": "TODO KF 130 :: unnamed_stack > Mountain > Mountain Layers > Mountain Snowballs :: Pasted Layer #129 :: 001-001-014-066.png"
+    },
+    {
+      "coords": [
+        33,
+        127
+      ],
+      "image": "collectible",
+      "codes": "TODO KF 131 :: unnamed_stack > Mountain > Mountain Layers > Mountain Snowballs :: Pasted Layer #130 :: 001-001-014-067.png"
+    },
+    {
+      "coords": [
+        17,
+        127
+      ],
+      "image": "collectible",
+      "codes": "TODO KF 132 :: unnamed_stack > Mountain > Mountain Layers > Mountain Snowballs :: Pasted Layer #131 :: 001-001-014-068.png"
+    },
+    {
+      "coords": [
+        912,
+        482
+      ],
+      "image": "collectible",
+      "codes": "TODO KF 133 :: unnamed_stack > Mountain > Mountain Layers > Mountain Trees :: Pasted Layer #132 :: 001-001-015-000.png"
+    },
+    {
+      "coords": [
+        896,
+        482
+      ],
+      "image": "collectible",
+      "codes": "TODO KF 134 :: unnamed_stack > Mountain > Mountain Layers > Mountain Trees :: Pasted Layer #133 :: 001-001-015-001.png"
+    },
+    {
+      "coords": [
+        846,
+        492
+      ],
+      "image": "collectible",
+      "codes": "TODO KF 135 :: unnamed_stack > Mountain > Mountain Layers > Mountain Trees :: Pasted Layer #134 :: 001-001-015-002.png"
+    },
+    {
+      "coords": [
+        830,
+        492
+      ],
+      "image": "collectible",
+      "codes": "TODO KF 136 :: unnamed_stack > Mountain > Mountain Layers > Mountain Trees :: Pasted Layer #135 :: 001-001-015-003.png"
+    },
+    {
+      "coords": [
+        802,
+        468
+      ],
+      "image": "collectible",
+      "codes": "TODO KF 137 :: unnamed_stack > Mountain > Mountain Layers > Mountain Trees :: Pasted Layer #136 :: 001-001-015-004.png"
+    },
+    {
+      "coords": [
+        802,
+        452
+      ],
+      "image": "collectible",
+      "codes": "TODO KF 138 :: unnamed_stack > Mountain > Mountain Layers > Mountain Trees :: Pasted Layer #137 :: 001-001-015-005.png"
+    },
+    {
+      "coords": [
+        274,
+        511
+      ],
+      "image": "collectible",
+      "codes": "TODO KF 139 :: unnamed_stack > Mountain > Mountain Layers > Mountain Trees :: Pasted Layer #138 :: 001-001-015-006.png"
+    },
+    {
+      "coords": [
+        185,
+        342
+      ],
+      "image": "collectible",
+      "codes": "TODO KF 140 :: unnamed_stack > Mountain > Mountain Layers > Mountain Trees :: Pasted Layer #139 :: 001-001-015-007.png"
+    },
+    {
+      "coords": [
+        151,
+        337
+      ],
+      "image": "collectible",
+      "codes": "TODO KF 141 :: unnamed_stack > Mountain > Mountain Layers > Mountain Trees :: Pasted Layer #140 :: 001-001-015-008.png"
+    },
+    {
+      "coords": [
+        124,
+        309
+      ],
+      "image": "collectible",
+      "codes": "TODO KF 142 :: unnamed_stack > Mountain > Mountain Layers > Mountain Trees :: Pasted Layer #141 :: 001-001-015-009.png"
+    },
+    {
+      "coords": [
+        351,
+        313
+      ],
+      "image": "collectible",
+      "codes": "TODO KF 143 :: unnamed_stack > Mountain > Mountain Layers > Mountain Trees :: Pasted Layer #142 :: 001-001-015-010.png"
+    },
+    {
+      "coords": [
+        485,
+        456
+      ],
+      "image": "npc",
+      "codes": "TODO KF 144 :: unnamed_stack > Mountain > Mountain Layers > Mountain Gossip :: Pasted Layer #143 :: 001-001-016-000.png"
+    },
+    {
+      "coords": [
+        336,
+        537
+      ],
+      "image": "npc",
+      "codes": "TODO KF 145 :: unnamed_stack > Mountain > Mountain Layers > Mountain Gossip :: Pasted Layer #144 :: 001-001-016-001.png"
+    },
+    {
+      "coords": [
+        905,
+        495
+      ],
+      "image": "overworld_entrance",
+      "codes": "TODO KF 146 :: unnamed_stack > Mountain > Mountain Layers > Mountain Entrances :: Pasted Layer #145 :: 001-001-017-000.png"
+    },
+    {
+      "coords": [
+        787,
+        461
+      ],
+      "image": "overworld_entrance",
+      "codes": "TODO KF 147 :: unnamed_stack > Mountain > Mountain Layers > Mountain Entrances :: Pasted Layer #146 :: 001-001-017-001.png"
+    },
+    {
+      "coords": [
+        380,
+        512
+      ],
+      "image": "overworld_entrance",
+      "codes": "TODO KF 148 :: unnamed_stack > Mountain > Mountain Layers > Mountain Entrances :: Pasted Layer #147 :: 001-001-017-002.png"
+    },
+    {
+      "coords": [
+        393,
+        381
+      ],
+      "image": "overworld_entrance",
+      "codes": "TODO KF 149 :: unnamed_stack > Mountain > Mountain Layers > Mountain Entrances :: Pasted Layer #148 :: 001-001-017-003.png"
+    },
+    {
+      "coords": [
+        474,
+        430
+      ],
+      "image": "overworld_entrance",
+      "codes": "TODO KF 150 :: unnamed_stack > Mountain > Mountain Layers > Mountain Entrances :: Pasted Layer #149 :: 001-001-017-004.png"
+    },
+    {
+      "coords": [
+        571,
+        355
+      ],
+      "image": "overworld_entrance",
+      "codes": "TODO KF 151 :: unnamed_stack > Mountain > Mountain Layers > Mountain Entrances :: Pasted Layer #150 :: 001-001-017-005.png"
+    },
+    {
+      "coords": [
+        778,
+        276
+      ],
+      "image": "overworld_entrance",
+      "codes": "TODO KF 152 :: unnamed_stack > Mountain > Mountain Layers > Mountain Entrances :: Pasted Layer #151 :: 001-001-017-006.png"
+    },
+    {
+      "coords": [
+        850,
+        195
+      ],
+      "image": "overworld_entrance",
+      "codes": "TODO KF 153 :: unnamed_stack > Mountain > Mountain Layers > Mountain Entrances :: Pasted Layer #152 :: 001-001-017-007.png"
+    },
+    {
+      "coords": [
+        198,
+        369
+      ],
+      "image": "overworld_entrance",
+      "codes": "TODO KF 154 :: unnamed_stack > Mountain > Mountain Layers > Mountain Entrances :: Pasted Layer #153 :: 001-001-017-008.png"
+    },
+    {
+      "coords": [
+        105,
+        118
+      ],
+      "image": "overworld_entrance",
+      "codes": "TODO KF 155 :: unnamed_stack > Mountain > Mountain Layers > Mountain Entrances :: Pasted Layer #154 :: 001-001-017-009.png"
+    },
+    {
+      "coords": [
+        66,
+        117
+      ],
+      "image": "overworld_entrance",
+      "codes": "TODO KF 156 :: unnamed_stack > Mountain > Mountain Layers > Mountain Entrances :: Pasted Layer #155 :: 001-001-017-010.png"
+    }
+  ]
+}

@@ -1,0 +1,105 @@
+{
+  "id": "mm_ikana_castle",
+  "title": "MM Ikana Castle",
+  "image": "mm_ikana_castle",
+  "width": 1000,
+  "height": 600,
+  "markers": [
+    {
+      "coords": [
+        522,
+        294
+      ],
+      "image": "song",
+      "codes": "TODO KF 001 :: unnamed_stack > Ikana Castle > Castle Layers > Castle Songs :: Pasted Layer :: 001-001-001-000.png"
+    },
+    {
+      "coords": [
+        697,
+        412
+      ],
+      "image": "pot",
+      "codes": "TODO KF 002 :: unnamed_stack > Ikana Castle > Castle Layers > Castle Pots :: Pasted Layer #1 :: 001-001-002-000.png"
+    },
+    {
+      "coords": [
+        697,
+        386
+      ],
+      "image": "pot",
+      "codes": "TODO KF 003 :: unnamed_stack > Ikana Castle > Castle Layers > Castle Pots :: Pasted Layer #2 :: 001-001-002-001.png"
+    },
+    {
+      "coords": [
+        499,
+        294
+      ],
+      "image": "pot",
+      "codes": "TODO KF 004 :: unnamed_stack > Ikana Castle > Castle Layers > Castle Pots :: Pasted Layer #3 :: 001-001-002-002.png"
+    },
+    {
+      "coords": [
+        477,
+        294
+      ],
+      "image": "pot",
+      "codes": "TODO KF 005 :: unnamed_stack > Ikana Castle > Castle Layers > Castle Pots :: Pasted Layer #4 :: 001-001-002-003.png"
+    },
+    {
+      "coords": [
+        304,
+        308
+      ],
+      "image": "pot",
+      "codes": "TODO KF 006 :: unnamed_stack > Ikana Castle > Castle Layers > Castle Pots :: Pasted Layer #5 :: 001-001-002-004.png"
+    },
+    {
+      "coords": [
+        304,
+        274
+      ],
+      "image": "pot",
+      "codes": "TODO KF 007 :: unnamed_stack > Ikana Castle > Castle Layers > Castle Pots :: Pasted Layer #6 :: 001-001-002-005.png"
+    },
+    {
+      "coords": [
+        336,
+        217
+      ],
+      "image": "pot",
+      "codes": "TODO KF 008 :: unnamed_stack > Ikana Castle > Castle Layers > Castle Pots :: Pasted Layer #7 :: 001-001-002-006.png"
+    },
+    {
+      "coords": [
+        358,
+        217
+      ],
+      "image": "pot",
+      "codes": "TODO KF 009 :: unnamed_stack > Ikana Castle > Castle Layers > Castle Pots :: Pasted Layer #8 :: 001-001-002-007.png"
+    },
+    {
+      "coords": [
+        558,
+        228
+      ],
+      "image": "pot",
+      "codes": "TODO KF 010 :: unnamed_stack > Ikana Castle > Castle Layers > Castle Pots :: Pasted Layer #9 :: 001-001-002-008.png"
+    },
+    {
+      "coords": [
+        697,
+        202
+      ],
+      "image": "pot",
+      "codes": "TODO KF 011 :: unnamed_stack > Ikana Castle > Castle Layers > Castle Pots :: Pasted Layer #10 :: 001-001-002-009.png"
+    },
+    {
+      "coords": [
+        697,
+        176
+      ],
+      "image": "pot",
+      "codes": "TODO KF 012 :: unnamed_stack > Ikana Castle > Castle Layers > Castle Pots :: Pasted Layer #11 :: 001-001-002-010.png"
+    }
+  ]
+}
