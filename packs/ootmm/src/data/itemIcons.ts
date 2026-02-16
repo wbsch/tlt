@@ -558,6 +558,20 @@ export const ITEM_ICONS: Record<string, string> = Object.fromEntries(
   Object.entries(RAW_ITEM_ICONS).map(([key, value]) => [key, withBasePath(value)]),
 )
 
+// Count-based icon variants used only by the Item Grid rendering.
+// Index 0 => count 1, index 1 => count 2, ...
+const RAW_GRID_ICON_VARIANTS: Record<string, string[]> = {
+  // Example: OOT Strength upgrade levels
+  'OOT_STRENGTH': ['images/lift1.png', 'images/lift2.png', 'images/lift3.png'],
+}
+
+export const GRID_ICON_VARIANTS: Record<string, string[]> = Object.fromEntries(
+  Object.entries(RAW_GRID_ICON_VARIANTS).map(([key, values]) => [
+    key,
+    values.map((value) => withBasePath(value)),
+  ]),
+)
+
 // Default fallback icon
 export const DEFAULT_ICON = withBasePath('images/unknown.png')
 
@@ -566,6 +580,29 @@ export const DEFAULT_ICON = withBasePath('images/unknown.png')
  */
 export function getItemIcon(itemId: string): string {
   return ITEM_ICONS[itemId] || DEFAULT_ICON
+}
+
+/**
+ * Get Item Grid icon path for an item ID and count.
+ * If variants are configured, count>0 uses the corresponding variant icon.
+ * Falls back to the regular item icon mapping for all other cases.
+ */
+export function getGridItemIcon(itemId: string, count: number): string {
+  const variants = GRID_ICON_VARIANTS[itemId]
+  if (!variants || variants.length === 0 || count <= 0) {
+    return getItemIcon(itemId)
+  }
+
+  const variantIndex = Math.min(count, variants.length) - 1
+  return variants[variantIndex] || getItemIcon(itemId)
+}
+
+/**
+ * Check whether an item has count-based Item Grid icon variants.
+ */
+export function hasGridIconVariants(itemId: string): boolean {
+  const variants = GRID_ICON_VARIANTS[itemId]
+  return !!variants && variants.length > 1
 }
 
 /**

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { getItemIcon, DEFAULT_ICON } from '../data/itemIcons'
+import { getGridItemIcon, hasGridIconVariants, DEFAULT_ICON } from '../data/itemIcons'
 import { getItemName } from '../data/items'
 
 //Type definitions
@@ -110,7 +110,11 @@ function parseMargin(margin?: string): { x: number; y: number } {
 }
 
 function getIconSrc(itemId: string): string {
-  return getItemIcon(itemId)
+  return getGridItemIcon(itemId, getItemCount(itemId))
+}
+
+function shouldShowItemCount(itemId: string): boolean {
+  return getItemCount(itemId) > 1 && !hasGridIconVariants(itemId)
 }
 
 function handleImageError(event: Event) {
@@ -207,7 +211,7 @@ function getEffectiveScale(element: unknown, parentScale: number): number {
               :class="{ disabled: !hasItem(itemId) }"
               @error="handleImageError"
             />
-            <span v-if="getItemCount(itemId) > 1" class="item-count">{{ getItemCount(itemId) }}</span>
+            <span v-if="shouldShowItemCount(itemId)" class="item-count">{{ getItemCount(itemId) }}</span>
           </div>
         </div>
       </div>
@@ -247,7 +251,7 @@ function getEffectiveScale(element: unknown, parentScale: number): number {
                   :class="{ disabled: !hasItem(itemId) }"
                   @error="handleImageError"
                 />
-                <span v-if="getItemCount(itemId) > 1" class="item-count">{{ getItemCount(itemId) }}</span>
+                <span v-if="shouldShowItemCount(itemId)" class="item-count">{{ getItemCount(itemId) }}</span>
               </div>
             </div>
           </div>
@@ -277,7 +281,7 @@ function getEffectiveScale(element: unknown, parentScale: number): number {
                   :class="{ disabled: !hasItem((ggchild as GridItem).item) }"
                   @error="handleImageError"
                 />
-                <span v-if="getItemCount((ggchild as GridItem).item) > 1" class="item-count">{{ getItemCount((ggchild as GridItem).item) }}</span>
+                <span v-if="shouldShowItemCount((ggchild as GridItem).item)" class="item-count">{{ getItemCount((ggchild as GridItem).item) }}</span>
               </div>
               
               <!-- Level 3 canvas -->
@@ -303,7 +307,7 @@ function getEffectiveScale(element: unknown, parentScale: number): number {
                     :class="{ disabled: !hasItem((canvasChild as GridItem).item) }"
                     @error="handleImageError"
                   />
-                  <span v-if="getItemCount((canvasChild as GridItem).item) > 1" class="item-count">{{ getItemCount((canvasChild as GridItem).item) }}</span>
+                  <span v-if="shouldShowItemCount((canvasChild as GridItem).item)" class="item-count">{{ getItemCount((canvasChild as GridItem).item) }}</span>
                 </div>
               </div>
               
@@ -331,7 +335,7 @@ function getEffectiveScale(element: unknown, parentScale: number): number {
                       :class="{ disabled: !hasItem((gggchild as GridItem).item) }"
                       @error="handleImageError"
                     />
-                    <span v-if="getItemCount((gggchild as GridItem).item) > 1" class="item-count">{{ getItemCount((gggchild as GridItem).item) }}</span>
+                    <span v-if="shouldShowItemCount((gggchild as GridItem).item)" class="item-count">{{ getItemCount((gggchild as GridItem).item) }}</span>
                   </div>
                 </template>
               </div>
@@ -355,7 +359,7 @@ function getEffectiveScale(element: unknown, parentScale: number): number {
               :class="{ disabled: !hasItem((grandchild as GridItem).item) }"
               @error="handleImageError"
             />
-            <span v-if="getItemCount((grandchild as GridItem).item) > 1" class="item-count">{{ getItemCount((grandchild as GridItem).item) }}</span>
+            <span v-if="shouldShowItemCount((grandchild as GridItem).item)" class="item-count">{{ getItemCount((grandchild as GridItem).item) }}</span>
           </div>
           
           <!-- Level 2 canvas -->
@@ -381,7 +385,7 @@ function getEffectiveScale(element: unknown, parentScale: number): number {
                 :class="{ disabled: !hasItem((canvasChild as GridItem).item) }"
                 @error="handleImageError"
               />
-              <span v-if="getItemCount((canvasChild as GridItem).item) > 1" class="item-count">{{ getItemCount((canvasChild as GridItem).item) }}</span>
+              <span v-if="shouldShowItemCount((canvasChild as GridItem).item)" class="item-count">{{ getItemCount((canvasChild as GridItem).item) }}</span>
             </div>
           </div>
         </template>
@@ -404,7 +408,7 @@ function getEffectiveScale(element: unknown, parentScale: number): number {
           :class="{ disabled: !hasItem((child as GridItem).item) }"
           @error="handleImageError"
         />
-        <span v-if="getItemCount((child as GridItem).item) > 1" class="item-count">{{ getItemCount((child as GridItem).item) }}</span>
+        <span v-if="shouldShowItemCount((child as GridItem).item)" class="item-count">{{ getItemCount((child as GridItem).item) }}</span>
       </div>
       
       <!-- Canvas at root level -->
@@ -430,7 +434,7 @@ function getEffectiveScale(element: unknown, parentScale: number): number {
             :class="{ disabled: !hasItem((canvasChild as GridItem).item) }"
             @error="handleImageError"
           />
-          <span v-if="getItemCount((canvasChild as GridItem).item) > 1" class="item-count">{{ getItemCount((canvasChild as GridItem).item) }}</span>
+          <span v-if="shouldShowItemCount((canvasChild as GridItem).item)" class="item-count">{{ getItemCount((canvasChild as GridItem).item) }}</span>
         </div>
       </div>
     </template>
