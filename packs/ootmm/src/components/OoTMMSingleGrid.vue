@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import {
   getGridItemIcon,
+  getGridItemOverlay,
   hasGridIconVariants,
   startsGridItemUndimmed,
   DEFAULT_ICON,
@@ -125,6 +126,15 @@ function getIconSrc(itemId: string): string {
   })
 }
 
+function getOverlaySrc(itemId: string): string | null {
+  return getGridItemOverlay(itemId, getItemCount(itemId), {
+    maxCount: getItemMaxCount(itemId),
+    availableItemIds: props.availableItemIds,
+    inventory: props.inventory,
+    settings: props.settings,
+  })
+}
+
 function shouldShowItemCount(itemId: string): boolean {
   return (
     getItemCount(itemId) > 1
@@ -152,6 +162,11 @@ function handleImageError(event: Event) {
   if (img.src !== DEFAULT_ICON) {
     img.src = DEFAULT_ICON
   }
+}
+
+function handleOverlayError(event: Event) {
+  const img = event.target as HTMLImageElement
+  img.style.display = 'none'
 }
 
 function getArrayStyle(element: GridArray) {
@@ -241,6 +256,14 @@ function getEffectiveScale(element: unknown, parentScale: number): number {
               :class="{ disabled: isItemIconDisabled(itemId) }"
               @error="handleImageError"
             />
+            <img
+              v-if="getOverlaySrc(itemId)"
+              :src="getOverlaySrc(itemId) as string"
+              :alt="`${itemId} overlay`"
+              class="item-overlay"
+              :class="{ disabled: isItemIconDisabled(itemId) }"
+              @error="handleOverlayError"
+            />
             <span v-if="shouldShowItemCount(itemId)" class="item-count">{{ getItemCount(itemId) }}</span>
           </div>
         </div>
@@ -281,6 +304,14 @@ function getEffectiveScale(element: unknown, parentScale: number): number {
                   :class="{ disabled: isItemIconDisabled(itemId) }"
                   @error="handleImageError"
                 />
+                <img
+                  v-if="getOverlaySrc(itemId)"
+                  :src="getOverlaySrc(itemId) as string"
+                  :alt="`${itemId} overlay`"
+                  class="item-overlay"
+                  :class="{ disabled: isItemIconDisabled(itemId) }"
+                  @error="handleOverlayError"
+                />
                 <span v-if="shouldShowItemCount(itemId)" class="item-count">{{ getItemCount(itemId) }}</span>
               </div>
             </div>
@@ -311,6 +342,14 @@ function getEffectiveScale(element: unknown, parentScale: number): number {
                   :class="{ disabled: isItemIconDisabled((ggchild as GridItem).item) }"
                   @error="handleImageError"
                 />
+                <img
+                  v-if="getOverlaySrc((ggchild as GridItem).item)"
+                  :src="getOverlaySrc((ggchild as GridItem).item) as string"
+                  :alt="`${(ggchild as GridItem).item} overlay`"
+                  class="item-overlay"
+                  :class="{ disabled: isItemIconDisabled((ggchild as GridItem).item) }"
+                  @error="handleOverlayError"
+                />
                 <span v-if="shouldShowItemCount((ggchild as GridItem).item)" class="item-count">{{ getItemCount((ggchild as GridItem).item) }}</span>
               </div>
               
@@ -336,6 +375,14 @@ function getEffectiveScale(element: unknown, parentScale: number): number {
                     class="item-icon"
                     :class="{ disabled: isItemIconDisabled((canvasChild as GridItem).item) }"
                     @error="handleImageError"
+                  />
+                  <img
+                    v-if="getOverlaySrc((canvasChild as GridItem).item)"
+                    :src="getOverlaySrc((canvasChild as GridItem).item) as string"
+                    :alt="`${(canvasChild as GridItem).item} overlay`"
+                    class="item-overlay"
+                    :class="{ disabled: isItemIconDisabled((canvasChild as GridItem).item) }"
+                    @error="handleOverlayError"
                   />
                   <span v-if="shouldShowItemCount((canvasChild as GridItem).item)" class="item-count">{{ getItemCount((canvasChild as GridItem).item) }}</span>
                 </div>
@@ -365,6 +412,14 @@ function getEffectiveScale(element: unknown, parentScale: number): number {
                       :class="{ disabled: isItemIconDisabled((gggchild as GridItem).item) }"
                       @error="handleImageError"
                     />
+                    <img
+                      v-if="getOverlaySrc((gggchild as GridItem).item)"
+                      :src="getOverlaySrc((gggchild as GridItem).item) as string"
+                      :alt="`${(gggchild as GridItem).item} overlay`"
+                      class="item-overlay"
+                      :class="{ disabled: isItemIconDisabled((gggchild as GridItem).item) }"
+                      @error="handleOverlayError"
+                    />
                     <span v-if="shouldShowItemCount((gggchild as GridItem).item)" class="item-count">{{ getItemCount((gggchild as GridItem).item) }}</span>
                   </div>
                 </template>
@@ -388,6 +443,14 @@ function getEffectiveScale(element: unknown, parentScale: number): number {
               class="item-icon"
               :class="{ disabled: isItemIconDisabled((grandchild as GridItem).item) }"
               @error="handleImageError"
+            />
+            <img
+              v-if="getOverlaySrc((grandchild as GridItem).item)"
+              :src="getOverlaySrc((grandchild as GridItem).item) as string"
+              :alt="`${(grandchild as GridItem).item} overlay`"
+              class="item-overlay"
+              :class="{ disabled: isItemIconDisabled((grandchild as GridItem).item) }"
+              @error="handleOverlayError"
             />
             <span v-if="shouldShowItemCount((grandchild as GridItem).item)" class="item-count">{{ getItemCount((grandchild as GridItem).item) }}</span>
           </div>
@@ -415,6 +478,14 @@ function getEffectiveScale(element: unknown, parentScale: number): number {
                 :class="{ disabled: isItemIconDisabled((canvasChild as GridItem).item) }"
                 @error="handleImageError"
               />
+              <img
+                v-if="getOverlaySrc((canvasChild as GridItem).item)"
+                :src="getOverlaySrc((canvasChild as GridItem).item) as string"
+                :alt="`${(canvasChild as GridItem).item} overlay`"
+                class="item-overlay"
+                :class="{ disabled: isItemIconDisabled((canvasChild as GridItem).item) }"
+                @error="handleOverlayError"
+              />
               <span v-if="shouldShowItemCount((canvasChild as GridItem).item)" class="item-count">{{ getItemCount((canvasChild as GridItem).item) }}</span>
             </div>
           </div>
@@ -437,6 +508,14 @@ function getEffectiveScale(element: unknown, parentScale: number): number {
           class="item-icon"
           :class="{ disabled: isItemIconDisabled((child as GridItem).item) }"
           @error="handleImageError"
+        />
+        <img
+          v-if="getOverlaySrc((child as GridItem).item)"
+          :src="getOverlaySrc((child as GridItem).item) as string"
+          :alt="`${(child as GridItem).item} overlay`"
+          class="item-overlay"
+          :class="{ disabled: isItemIconDisabled((child as GridItem).item) }"
+          @error="handleOverlayError"
         />
         <span v-if="shouldShowItemCount((child as GridItem).item)" class="item-count">{{ getItemCount((child as GridItem).item) }}</span>
       </div>
@@ -463,6 +542,14 @@ function getEffectiveScale(element: unknown, parentScale: number): number {
             class="item-icon"
             :class="{ disabled: isItemIconDisabled((canvasChild as GridItem).item) }"
             @error="handleImageError"
+          />
+          <img
+            v-if="getOverlaySrc((canvasChild as GridItem).item)"
+            :src="getOverlaySrc((canvasChild as GridItem).item) as string"
+            :alt="`${(canvasChild as GridItem).item} overlay`"
+            class="item-overlay"
+            :class="{ disabled: isItemIconDisabled((canvasChild as GridItem).item) }"
+            @error="handleOverlayError"
           />
           <span v-if="shouldShowItemCount((canvasChild as GridItem).item)" class="item-count">{{ getItemCount((canvasChild as GridItem).item) }}</span>
         </div>
@@ -541,6 +628,17 @@ function getEffectiveScale(element: unknown, parentScale: number): number {
   -webkit-backface-visibility: hidden;
 }
 
+.item-overlay {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  image-rendering: pixelated;
+  pointer-events: none;
+  z-index: 1;
+}
+
 .grid-item:hover .item-icon,
 .grid-item:focus-visible .item-icon,
 .grid-item:focus .item-icon {
@@ -549,6 +647,10 @@ function getEffectiveScale(element: unknown, parentScale: number): number {
 }
 
 .item-icon.disabled {
+  filter: grayscale(100%) brightness(0.4);
+}
+
+.item-overlay.disabled {
   filter: grayscale(100%) brightness(0.4);
 }
 

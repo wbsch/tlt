@@ -574,11 +574,13 @@ interface GridIconVariantWhen {
 interface GridIconVariantRule {
   when: GridIconVariantWhen;
   icons: string[];
+  overlays?: Array<string | null>;
   startUndimmed?: boolean;
 }
 
 interface GridIconDefaultConfig {
   icons: string[];
+  overlays?: Array<string | null>;
   startUndimmed?: boolean;
 }
 
@@ -626,6 +628,7 @@ const RAW_GRID_ICON_VARIANTS: Record<string, GridIconVariantConfig> = {
       {
         when: {
           settings: {
+            childWallets: false,
             colossalWallets: true,
             bottomlessWallets: false,
           },
@@ -641,6 +644,7 @@ const RAW_GRID_ICON_VARIANTS: Record<string, GridIconVariantConfig> = {
       {
         when: {
           settings: {
+            childWallets: false,
             colossalWallets: true,
             bottomlessWallets: true,
           },
@@ -654,12 +658,61 @@ const RAW_GRID_ICON_VARIANTS: Record<string, GridIconVariantConfig> = {
         ],
         startUndimmed: true,
       },
+            {
+        when: {
+          settings: {
+            childWallets: true,
+            colossalWallets: false,
+            bottomlessWallets: false,
+          },
+        },
+        icons: [
+          'images/wallet.png',
+          'images/wallet1.png',
+          'images/wallet2.png',
+        ],
+        startUndimmed: false,
+      },
+      {
+        when: {
+          settings: {
+            childWallets: true,
+            colossalWallets: true,
+            bottomlessWallets: false,
+          },
+        },
+        icons: [
+          'images/wallet.png',
+          'images/wallet1.png',
+          'images/wallet2.png',
+          'images/wallet3.png',
+        ],
+        startUndimmed: false,
+      },
+      {
+        when: {
+          settings: {
+            childWallets: true,
+            colossalWallets: true,
+            bottomlessWallets: true,
+          },
+        },
+        icons: [
+          'images/wallet.png',
+          'images/wallet1.png',
+          'images/wallet2.png',
+          'images/wallet3.png',
+          'images/wallet3.png',
+        ],
+        startUndimmed: false,
+      },
     ],
   },
 };
 
 interface ResolvedGridIconConfig {
   icons: string[];
+  overlays?: Array<string | null>;
   startUndimmed: boolean;
 }
 
@@ -667,10 +720,11 @@ function normalizeGridIconDefaultConfig(
   config: string[] | GridIconDefaultConfig,
 ): GridIconDefaultConfig {
   if (Array.isArray(config)) {
-    return { icons: config, startUndimmed: false };
+    return { icons: config, overlays: undefined, startUndimmed: false };
   }
   return {
     icons: config.icons,
+    overlays: config.overlays,
     startUndimmed: !!config.startUndimmed,
   };
 }
@@ -687,11 +741,17 @@ function withBasePathForVariantConfig(
   return {
     default: {
       icons: normalizedDefault.icons.map((value) => withBasePath(value)),
+      overlays: normalizedDefault.overlays?.map((value) =>
+        value ? withBasePath(value) : null,
+      ),
       startUndimmed: normalizedDefault.startUndimmed,
     },
     variants: config.variants?.map((variant) => ({
       when: variant.when,
       icons: variant.icons.map((value) => withBasePath(value)),
+      overlays: variant.overlays?.map((value) =>
+        value ? withBasePath(value) : null,
+      ),
       startUndimmed: variant.startUndimmed,
     })),
   };
@@ -816,6 +876,7 @@ function getResolvedGridIconVariants(
   if (Array.isArray(config)) {
     return {
       icons: config,
+      overlays: undefined,
       startUndimmed: false,
     };
   }
@@ -827,6 +888,7 @@ function getResolvedGridIconVariants(
     if (matched && matched.icons.length > 0) {
       return {
         icons: matched.icons,
+        overlays: matched.overlays,
         startUndimmed: !!matched.startUndimmed,
       };
     }
@@ -836,9 +898,21 @@ function getResolvedGridIconVariants(
   return normalizedDefault.icons.length > 0
     ? {
         icons: normalizedDefault.icons,
+        overlays: normalizedDefault.overlays,
         startUndimmed: normalizedDefault.startUndimmed || false,
       }
     : null;
+}
+
+function getResolvedGridVariantIndex(
+  count: number,
+  resolved: ResolvedGridIconConfig,
+): number {
+  const normalizedCount = Math.max(count, 0);
+  const levelCount = resolved.startUndimmed
+    ? normalizedCount + 1
+    : Math.max(normalizedCount, 1);
+  return Math.min(levelCount, resolved.icons.length) - 1;
 }
 
 // Default fallback icon
@@ -866,10 +940,26 @@ export function getGridItemIcon(
     return getItemIcon(itemId);
   }
 
-  const normalizedCount = Math.max(count, 0);
-  const levelCount = resolved.startUndimmed ? normalizedCount + 1 : Math.max(normalizedCount, 1);
-  const variantIndex = Math.min(levelCount, resolved.icons.length) - 1;
+  const variantIndex = getResolvedGridVariantIndex(count, resolved);
   return resolved.icons[variantIndex] || getItemIcon(itemId);
+}
+
+/**
+ * Get Item Grid overlay path for an item ID and count.
+ * Returns null when no overlay is configured for the active stage.
+ */
+export function getGridItemOverlay(
+  itemId: string,
+  count: number,
+  context: GridIconVariantContext = {},
+): string | null {
+  const resolved = getResolvedGridIconVariants(itemId, context);
+  if (!resolved || !resolved.overlays || resolved.overlays.length === 0) {
+    return null;
+  }
+
+  const variantIndex = getResolvedGridVariantIndex(count, resolved);
+  return resolved.overlays[variantIndex] || null;
 }
 
 /**
