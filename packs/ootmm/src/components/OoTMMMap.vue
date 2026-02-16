@@ -79,6 +79,7 @@ type SubmenuMarkerRuntime = {
   topLeftOverlays: OverlayRender[]
   bottomLeftOverlays: OverlayRender[]
   topRightOverlays: OverlayRender[]
+  countDigitImages: string[]
   submenuMarkers: SubmenuEntryRuntime[]
   allSubmenuCodeList: string[]
   isVisible: boolean
@@ -538,6 +539,14 @@ const markerViewModels = computed<MarkerRuntime[]>(() => {
       })
       const visibleSubmenuMarkers =
         props.devMode ? submenuMarkers : submenuMarkers.filter((marker) => marker.isVisible)
+      const visibleSubmenuCheckIds = new Set<string>()
+      visibleSubmenuMarkers.forEach((marker) => {
+        marker.allCheckIds.forEach((checkId) => visibleSubmenuCheckIds.add(checkId))
+      })
+      const countDigitImages =
+        visibleSubmenuCheckIds.size > 1
+          ? String(visibleSubmenuCheckIds.size).split('').map((digit) => resolveDigitImage(digit))
+          : []
 
       return {
         type: 'submenu',
@@ -549,6 +558,7 @@ const markerViewModels = computed<MarkerRuntime[]>(() => {
         topLeftOverlays: buildTopLeftOverlays(overlays),
         bottomLeftOverlays: buildBottomLeftOverlays(overlays),
         topRightOverlays: buildTopRightOverlays(overlays),
+        countDigitImages,
         submenuMarkers: visibleSubmenuMarkers,
         allSubmenuCodeList: visibleSubmenuMarkers.flatMap((marker) => marker.codeList),
         isVisible: props.devMode ? true : visibleSubmenuMarkers.length > 0,
@@ -1568,7 +1578,7 @@ onBeforeUnmount(() => {
           </span>
 
           <span
-            v-if="marker.type === 'check' && marker.countDigitImages.length > 0"
+            v-if="marker.countDigitImages.length > 0"
             class="map-marker__corner map-marker__corner--bottom-right"
           >
             <img
