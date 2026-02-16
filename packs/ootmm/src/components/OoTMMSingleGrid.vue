@@ -291,6 +291,11 @@ function getGridItemStyle(itemMargin: { x: number; y: number }, itemSize: number
 function getEffectiveScale(element: unknown, parentScale: number): number {
   return ((element as { scale?: number }).scale || 1) * parentScale
 }
+
+function elementType(element: unknown): string | undefined {
+  const maybeType = (element as { type?: unknown })?.type
+  return typeof maybeType === 'string' ? maybeType : undefined
+}
 </script>
 
 <template>
@@ -302,7 +307,7 @@ function getEffectiveScale(element: unknown, parentScale: number): number {
     <template v-for="(child, idx) in grid.content" :key="idx">
       <!-- ItemGrid (rows of items) -->
       <div 
-        v-if="child.type === 'itemgrid'"
+        v-if="elementType(child) === 'itemgrid'"
         class="item-grid"
       >
         <div 
@@ -342,7 +347,7 @@ function getEffectiveScale(element: unknown, parentScale: number): number {
       
       <!-- Nested array -->
       <div 
-        v-else-if="child.type === 'array'"
+        v-else-if="elementType(child) === 'array'"
         class="grid-array"
         :class="(child as GridArray).orientation"
         :style="getArrayStyle(child as GridArray)"
@@ -350,7 +355,7 @@ function getEffectiveScale(element: unknown, parentScale: number): number {
         <template v-for="(grandchild, gIdx) in (child as GridArray).content" :key="gIdx">
           <!-- Level 2 itemgrid -->
           <div 
-            v-if="grandchild.type === 'itemgrid'"
+            v-if="elementType(grandchild) === 'itemgrid'"
             class="item-grid"
           >
             <div 
@@ -390,7 +395,7 @@ function getEffectiveScale(element: unknown, parentScale: number): number {
           
           <!-- Level 2 nested array -->
           <div 
-            v-else-if="grandchild.type === 'array'"
+            v-else-if="elementType(grandchild) === 'array'"
             class="grid-array"
             :class="(grandchild as GridArray).orientation"
             :style="getArrayStyle(grandchild as GridArray)"
@@ -398,7 +403,7 @@ function getEffectiveScale(element: unknown, parentScale: number): number {
             <template v-for="(ggchild, ggIdx) in (grandchild as GridArray).content" :key="ggIdx">
               <!-- Level 3 item -->
               <div
-                v-if="ggchild.type === 'item'"
+                v-if="elementType(ggchild) === 'item'"
                 class="grid-item"
                 :class="{ owned: isItemOwnedForGrid((ggchild as GridItem).item) }"
                 :style="getItemStyle(ggchild as GridItem, getEffectiveScale(grandchild, getEffectiveScale(child, grid.scale || 1)))"
@@ -426,7 +431,7 @@ function getEffectiveScale(element: unknown, parentScale: number): number {
               
               <!-- Level 3 canvas -->
               <div
-                v-else-if="ggchild.type === 'canvas'"
+                v-else-if="elementType(ggchild) === 'canvas'"
                 class="grid-canvas"
                 :style="getCanvasStyle(ggchild as GridCanvas, getEffectiveScale(grandchild, getEffectiveScale(child, grid.scale || 1)))"
               >
@@ -461,14 +466,14 @@ function getEffectiveScale(element: unknown, parentScale: number): number {
               
               <!-- Level 3 nested array (for deeper nesting) -->
               <div 
-                v-else-if="ggchild.type === 'array'"
+                v-else-if="elementType(ggchild) === 'array'"
                 class="grid-array"
                 :class="(ggchild as GridArray).orientation"
                 :style="getArrayStyle(ggchild as GridArray)"
               >
                 <template v-for="(gggchild, gggIdx) in (ggchild as GridArray).content" :key="gggIdx">
                   <div
-                    v-if="gggchild.type === 'item'"
+                    v-if="elementType(gggchild) === 'item'"
                     class="grid-item"
                     :class="{ owned: isItemOwnedForGrid((gggchild as GridItem).item) }"
                     :style="getItemStyle(gggchild as GridItem, getEffectiveScale(ggchild, getEffectiveScale(grandchild, getEffectiveScale(child, grid.scale || 1))))"
@@ -500,7 +505,7 @@ function getEffectiveScale(element: unknown, parentScale: number): number {
           
           <!-- Level 2 item -->
           <div
-            v-else-if="grandchild.type === 'item'"
+            v-else-if="elementType(grandchild) === 'item'"
             class="grid-item"
             :class="{ owned: isItemOwnedForGrid((grandchild as GridItem).item) }"
             :style="getItemStyle(grandchild as GridItem, getEffectiveScale(child, grid.scale || 1))"
@@ -528,7 +533,7 @@ function getEffectiveScale(element: unknown, parentScale: number): number {
           
           <!-- Level 2 canvas -->
           <div
-            v-else-if="grandchild.type === 'canvas'"
+            v-else-if="elementType(grandchild) === 'canvas'"
             class="grid-canvas"
             :style="getCanvasStyle(grandchild as GridCanvas, getEffectiveScale(child, grid.scale || 1))"
           >
@@ -565,7 +570,7 @@ function getEffectiveScale(element: unknown, parentScale: number): number {
       
       <!-- Single item at root level -->
       <div
-        v-else-if="child.type === 'item'"
+        v-else-if="elementType(child) === 'item'"
         class="grid-item"
         :class="{ owned: isItemOwnedForGrid((child as GridItem).item) }"
         :style="getItemStyle(child as GridItem, grid.scale || 1)"
@@ -593,7 +598,7 @@ function getEffectiveScale(element: unknown, parentScale: number): number {
       
       <!-- Canvas at root level -->
       <div
-        v-else-if="child.type === 'canvas'"
+        v-else-if="elementType(child) === 'canvas'"
         class="grid-canvas"
         :style="getCanvasStyle(child as GridCanvas, grid.scale || 1)"
       >

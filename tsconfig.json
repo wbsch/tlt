@@ -15,7 +15,7 @@
     "module": "ESNext",
     "lib": ["ES2020", "DOM", "DOM.Iterable"],
     "moduleResolution": "bundler",
-    "types": ["node"],
+    "types": ["node", "vite/client"],
     "resolveJsonModule": true,
     "noEmit": true,
     "strict": true,

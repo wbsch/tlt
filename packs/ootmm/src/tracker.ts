@@ -201,8 +201,7 @@ export class OoTMMTracker implements TrackerPack {
       console.log('[OoTMM Tracker] checkReachability called with inventory:', JSON.stringify(Array.from(inventory.entries())));
     } catch (e) {
       console.log('[OoTMM Tracker] checkReachability called with inventory: (could not stringify) ', Array.from(inventory.entries()));
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      const _unusedError = e;
+      console.log('[OoTMM Tracker] Inventory stringify error:', e)
     }
     const isVanillaSilverRupees = this.isVanillaSilverRupeeShuffle()
     const baseInventory = isVanillaSilverRupees ? this.stripVanillaSilverRupees(inventory) : inventory
@@ -765,7 +764,7 @@ export class OoTMMTracker implements TrackerPack {
     if (ootSetting === 'vanilla' || mmSetting === 'vanilla' || hideoutSetting === 'vanilla' || chestGameSetting === 'vanilla') {
       const defaultSmallKeyCounts = ITEM_DATABASE
         .filter((item) => item.id.includes('SMALL_KEY') && typeof item.maxCount === 'number')
-        .map((item) => [item.id, item.maxCount as number])
+        .map((item): [string, number] => [item.id, item.maxCount as number])
 
       for (const [itemId, maxCount] of defaultSmallKeyCounts) {
         if (itemId === 'OOT_SMALL_KEY_GF') {
@@ -935,10 +934,16 @@ export class OoTMMTracker implements TrackerPack {
       throw new Error('Pathfinder returned undefined')
     }
 
-    const reachableCheckIds = Array.from(state.locations).filter((locId: string) => !this.hiddenLocationIds.has(locId)) as string[]
+    const typedState = state as {
+      locations: Iterable<string>
+      newLocations: Iterable<string>
+      gossips?: Array<Set<string>>
+    }
+
+    const reachableCheckIds = Array.from(typedState.locations).filter((locId) => !this.hiddenLocationIds.has(locId))
     const reachableGossipIds: string[] = []
-    if (Array.isArray(state.gossips)) {
-      state.gossips.forEach((worldGossips: Set<string>, worldId: number) => {
+    if (Array.isArray(typedState.gossips)) {
+      typedState.gossips.forEach((worldGossips: Set<string>, worldId: number) => {
         worldGossips.forEach((gossipName) => {
           const gossipLocationId = makeLocation(gossipName, worldId)
           if (!this.hiddenLocationIds.has(gossipLocationId)) {
@@ -948,7 +953,7 @@ export class OoTMMTracker implements TrackerPack {
       })
     }
     const reachableLocationIds = Array.from(new Set([...reachableCheckIds, ...reachableGossipIds]))
-    const newLocationIds = Array.from(state.newLocations).filter((locId: string) => !this.hiddenLocationIds.has(locId)) as string[]
+    const newLocationIds = Array.from(typedState.newLocations).filter((locId) => !this.hiddenLocationIds.has(locId))
 
     return { state, reachableLocationIds, newLocationIds }
   }
@@ -962,7 +967,7 @@ export class OoTMMTracker implements TrackerPack {
     // but in the browser it returns an Iterator which has no .length property.
     // We patch the map instance to return an array from entries().
     // See: https://github.com/microsoft/TypeScript/issues/33077 (maybe related?)
-    ;(playerItems as { entries?: () => unknown[] }).entries = function() {
+    ;(playerItems as unknown as { entries?: () => unknown[] }).entries = function() {
       return Array.from(Map.prototype.entries.call(this))
     }
 

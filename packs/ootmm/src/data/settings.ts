@@ -94,8 +94,18 @@ function transformOoTMMSetting(setting: unknown): SettingDefinition | null {
     }
   })
 
-  const min = typeof raw.min === 'function' || typeof raw.min === 'number' ? raw.min : undefined
-  const max = typeof raw.max === 'function' || typeof raw.max === 'number' ? raw.max : undefined
+  const min =
+    typeof raw.min === 'number'
+      ? raw.min
+      : typeof raw.min === 'function'
+        ? (raw.min as (settings: Record<string, unknown>) => number)
+        : undefined
+  const max =
+    typeof raw.max === 'number'
+      ? raw.max
+      : typeof raw.max === 'function'
+        ? (raw.max as (settings: Record<string, unknown>) => number)
+        : undefined
 
   switch (raw.type) {
     case 'boolean':

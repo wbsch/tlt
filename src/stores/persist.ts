@@ -145,7 +145,7 @@ export function piniaLocalStoragePlugin({ store }: PiniaPluginContext) {
     if (raw) {
       const parsed = JSON.parse(raw) as unknown;
       if (isPlainObject(parsed)) {
-        store.$patch(config.hydrate(parsed));
+        store.$patch(config.hydrate(parsed) as never);
       }
     }
   } catch (error) {

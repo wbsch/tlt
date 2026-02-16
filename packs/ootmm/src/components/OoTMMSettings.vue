@@ -133,13 +133,26 @@ function getNumberBound(
 
 function getMultiSelectValue(key: string): MultiSelectValue {
   const raw = localSettings.value[key]
-  if (raw && typeof raw === 'object' && typeof raw.type === 'string') {
+  if (
+    raw &&
+    typeof raw === 'object' &&
+    typeof (raw as { type?: unknown }).type === 'string'
+  ) {
     return raw as MultiSelectValue
   }
   if (raw === 'all' || raw === 'none') {
     return { type: raw }
   }
   return { type: 'none' }
+}
+
+function optionValueString(value: unknown): string {
+  return typeof value === 'string' ? value : String(value)
+}
+
+function optionKey(value: unknown): string | number {
+  if (typeof value === 'string' || typeof value === 'number') return value
+  return optionValueString(value)
 }
 
 function getMultiSelectMode(key: string) {
@@ -461,7 +474,7 @@ defineExpose({
                 v-if="setting.type === 'boolean'"
                 :id="setting.key"
                 type="checkbox"
-                :checked="localSettings[setting.key]"
+                :checked="Boolean(localSettings[setting.key])"
                 class="setting-checkbox"
                 @change="updateSetting(setting.key, ($event.target as HTMLInputElement).checked)"
               />
@@ -470,11 +483,15 @@ defineExpose({
               <select
                 v-else-if="setting.type === 'select'"
                 :id="setting.key"
-                :value="getSelectValue(setting)"
+                :value="optionValueString(getSelectValue(setting))"
                 class="setting-select"
                 @change="updateSetting(setting.key, ($event.target as HTMLSelectElement).value)"
               >
-                <option v-for="opt in getVisibleOptions(setting)" :key="opt.value" :value="opt.value">
+                <option
+                  v-for="opt in getVisibleOptions(setting)"
+                  :key="optionKey(opt.value)"
+                  :value="optionValueString(opt.value)"
+                >
                   {{ opt.label }}
                 </option>
               </select>
@@ -505,11 +522,15 @@ defineExpose({
                 </select>
 
                 <div v-if="getMultiSelectMode(setting.key) === 'specific'" class="setting-multiselect-options">
-                  <label v-for="opt in getVisibleOptions(setting)" :key="opt.value" class="multiselect-option">
+                  <label
+                    v-for="opt in getVisibleOptions(setting)"
+                    :key="optionKey(opt.value)"
+                    class="multiselect-option"
+                  >
                     <input
                       type="checkbox"
-                      :checked="isMultiSelectChecked(setting.key, opt.value)"
-                      @change="toggleMultiSelectValue(setting.key, opt.value, ($event.target as HTMLInputElement).checked)"
+                      :checked="isMultiSelectChecked(setting.key, optionValueString(opt.value))"
+                      @change="toggleMultiSelectValue(setting.key, optionValueString(opt.value), ($event.target as HTMLInputElement).checked)"
                     />
                     <span>{{ opt.label }}</span>
                   </label>

@@ -1,5 +1,12 @@
 {
   "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "paths": {
+      "@/*": ["./src/*"],
+      "@packs/ootmm": ["./src/shims/ootmm-pack.d.ts"],
+      "@packs/ootmm/*": ["./src/shims/ootmm-pack.d.ts"]
+    }
+  },
   "include": ["src/**/*.ts", "src/**/*.vue", "packs/**/*.ts", "packs/**/*.vue"],
   "exclude": ["node_modules", "OoTMM"]
 }

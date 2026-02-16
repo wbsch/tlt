@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, onBeforeUnmount, ref, watch } from 'vue'
+import { computed, onBeforeUnmount, ref, watch, type CSSProperties } from 'vue'
 import type { LocationInfo } from '@/types/tracker'
 import { MAP_ICON_INDEX } from '../data/maps/mapIconIndex'
 import {
@@ -76,7 +76,7 @@ let panelDragOffsetX = 0
 let panelDragOffsetY = 0
 
 const mapIconNames = [...MAP_ICON_INDEX].sort((a, b) => a.localeCompare(b))
-const mapIconNameSet = new Set(mapIconNames)
+const mapIconNameSet = new Set<string>(mapIconNames)
 
 function cloneSubmenuEntry(entry: MapSubmenuEntryDef): MapSubmenuEntryDef {
   return {
@@ -204,8 +204,8 @@ function ensurePanelPosition(): { left: number; top: number } | null {
   return nextPosition
 }
 
-const editorStyle = computed<Record<string, string>>(() => {
-  if (!panelPosition.value) return {}
+const editorStyle = computed<CSSProperties | undefined>(() => {
+  if (!panelPosition.value) return undefined
   return {
     left: `${panelPosition.value.left}px`,
     top: `${panelPosition.value.top}px`,

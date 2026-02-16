@@ -52,11 +52,27 @@ const resolveExport = <T,>(mod: unknown, key: string): T => {
   const modObj = mod as { default?: Record<string, T>; [k: string]: unknown }
   return (modObj[key] as T | undefined) ?? (modObj.default?.[key] as T)
 }
+
+type CoreSetting = {
+  key?: string
+  name?: string
+  type?: string
+  values?: Array<{ name?: string; value?: unknown }>
+}
+
 const Items = resolveExport<typeof ItemsMod.Items>(ItemsMod, 'Items')
 const itemName = resolveExport<typeof NamesMod.itemName>(NamesMod, 'itemName')
-const coreSettings = (SettingsDataMod as { SETTINGS?: unknown[] })?.SETTINGS ?? []
-const settingsByKey = new Map<string, unknown>(coreSettings.map((setting: unknown) => [(setting as { key: string }).key, setting]))
-const settingsByName = new Map<string, unknown>(coreSettings.map((setting: unknown) => [(setting as { name: string }).name, setting]))
+const coreSettings = ((SettingsDataMod as { SETTINGS?: unknown[] })?.SETTINGS ?? []) as CoreSetting[]
+const settingsByKey = new Map<string, CoreSetting>(
+  coreSettings
+    .filter((setting) => typeof setting.key === 'string')
+    .map((setting) => [setting.key as string, setting]),
+)
+const settingsByName = new Map<string, CoreSetting>(
+  coreSettings
+    .filter((setting) => typeof setting.name === 'string')
+    .map((setting) => [setting.name as string, setting]),
+)
 const supportedSettingKeys = new Set(Object.keys(TRACKER_DEFAULT_SETTINGS))
 const itemNameToId = new Map<string, string>()
 const ALL_TRICKS = TRICKS as Record<string, { name?: string }>
@@ -173,6 +189,11 @@ const visibleLocationIds = computed(() => {
 const allLocationsForCodeSearch = computed(() =>
   props.tracker.getAllLocationsForCodeSearch?.() ?? allLocations.value,
 )
+const trackerSpecialConds = computed<Record<string, unknown> | undefined>(() => {
+  const raw = trackerSettings.value?.specialConds
+  if (!raw || typeof raw !== 'object' || Array.isArray(raw)) return undefined
+  return raw as Record<string, unknown>
+})
 
 const MAJOR_DUNGEONS = [
   { id: 'DT', label: 'Deku Tree', game: 'oot' as const },
@@ -547,11 +568,7 @@ function applySpecialCondsPatch(patch: Record<string, unknown>) {
   sessionStore.applySpecialCondsPatch(patch)
 }
 
-interface SettingDef {
-  type?: string
-}
-
-function coerceSettingValue(raw: unknown, def?: SettingDef) {
+function coerceSettingValue(raw: unknown, def?: CoreSetting) {
   if (!def) return raw
   
   if (def.type === 'set') {
@@ -582,12 +599,7 @@ function coerceSettingValue(raw: unknown, def?: SettingDef) {
   return raw
 }
 
-interface WorldFlagDef {
-  type?: string
-  values?: Array<{ name?: string; value?: unknown }>
-}
-
-function coerceWorldFlagValue(raw: unknown, def?: WorldFlagDef) {
+function coerceWorldFlagValue(raw: unknown, def?: CoreSetting) {
   if (!def || def.type !== 'set') {
     return raw
   }
@@ -656,8 +668,9 @@ async function applySpoilerLog(text: string) {
 
   for (const [name, value] of Object.entries(parsed.worldFlags)) {
     const def = settingsByName.get(name)
-    if (!def || !supportedSettingKeys.has((def as { key?: string }).key)) continue
-    settingsPatch[(def as { key?: string }).key] = coerceWorldFlagValue(value, def)
+    const settingKey = def?.key
+    if (typeof settingKey !== 'string' || !supportedSettingKeys.has(settingKey)) continue
+    settingsPatch[settingKey] = coerceWorldFlagValue(value, def)
   }
 
   if (parsed.tricks) {
@@ -995,7 +1008,7 @@ onBeforeUnmount(() => {
           v-if="activeTab === 'settings'"
           ref="settingsRef"
           :settings="trackerSettings"
-          :special-conds="trackerSettings?.specialConds"
+          :special-conds="trackerSpecialConds"
           :is-applying-settings="isApplyingSettings"
           @update:settings="handleSettingsChange"
           @update:special-conds="applySpecialCondsPatch"
