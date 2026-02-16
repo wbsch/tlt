@@ -71,6 +71,21 @@ function hasItem(itemId: string): boolean {
   return getItemCount(itemId) > 0
 }
 
+function isItemOwnedForGrid(itemId: string): boolean {
+  if (hasItem(itemId)) return true
+
+  const preItemPoolToggleItemId = getGridItemPreItemPoolToggleItemId(itemId, {
+    maxCount: getItemMaxCount(itemId),
+    availableItemIds: props.availableItemIds,
+    inventory: props.inventory,
+    settings: props.settings,
+  })
+
+  return preItemPoolToggleItemId
+    ? (props.inventory.get(preItemPoolToggleItemId) || 0) > 0
+    : false
+}
+
 function toggleItem(itemId: string) {
   const newInventory = new Map(props.inventory)
   const current = newInventory.get(itemId) || 0
@@ -299,7 +314,7 @@ function getEffectiveScale(element: unknown, parentScale: number): number {
             v-for="(itemId, colIdx) in row"
             :key="colIdx"
             class="grid-item"
-            :class="{ owned: hasItem(itemId) }"
+            :class="{ owned: isItemOwnedForGrid(itemId) }"
             :style="getGridItemStyle(parseMargin((child as ItemGrid).item_margin), ((child as ItemGrid).item_size || 32) * getEffectiveScale(child, grid.scale || 1))"
             :title="getItemName(itemId)"
             @click="toggleItem(itemId)"
@@ -347,7 +362,7 @@ function getEffectiveScale(element: unknown, parentScale: number): number {
                 v-for="(itemId, colIdx) in row"
                 :key="colIdx"
                 class="grid-item"
-                :class="{ owned: hasItem(itemId) }"
+                :class="{ owned: isItemOwnedForGrid(itemId) }"
                 :style="getGridItemStyle(parseMargin((grandchild as ItemGrid).item_margin), ((grandchild as ItemGrid).item_size || 32) * getEffectiveScale(grandchild, getEffectiveScale(child, grid.scale || 1)))"
                 :title="getItemName(itemId)"
                 @click="toggleItem(itemId)"
@@ -385,7 +400,7 @@ function getEffectiveScale(element: unknown, parentScale: number): number {
               <div
                 v-if="ggchild.type === 'item'"
                 class="grid-item"
-                :class="{ owned: hasItem((ggchild as GridItem).item) }"
+                :class="{ owned: isItemOwnedForGrid((ggchild as GridItem).item) }"
                 :style="getItemStyle(ggchild as GridItem, getEffectiveScale(grandchild, getEffectiveScale(child, grid.scale || 1)))"
                 :title="getItemName((ggchild as GridItem).item)"
                 @click="toggleItem((ggchild as GridItem).item)"
@@ -419,7 +434,7 @@ function getEffectiveScale(element: unknown, parentScale: number): number {
                   v-for="(canvasChild, cIdx) in (ggchild as GridCanvas).content"
                   :key="cIdx"
                   class="grid-item canvas-item"
-                  :class="{ owned: hasItem((canvasChild as GridItem).item) }"
+                  :class="{ owned: isItemOwnedForGrid((canvasChild as GridItem).item) }"
                   :style="getItemStyle(canvasChild as GridItem, getEffectiveScale(grandchild, getEffectiveScale(child, grid.scale || 1)))"
                   :title="getItemName((canvasChild as GridItem).item)"
                   @click="toggleItem((canvasChild as GridItem).item)"
@@ -455,7 +470,7 @@ function getEffectiveScale(element: unknown, parentScale: number): number {
                   <div
                     v-if="gggchild.type === 'item'"
                     class="grid-item"
-                    :class="{ owned: hasItem((gggchild as GridItem).item) }"
+                    :class="{ owned: isItemOwnedForGrid((gggchild as GridItem).item) }"
                     :style="getItemStyle(gggchild as GridItem, getEffectiveScale(ggchild, getEffectiveScale(grandchild, getEffectiveScale(child, grid.scale || 1))))"
                     :title="getItemName((gggchild as GridItem).item)"
                     @click="toggleItem((gggchild as GridItem).item)"
@@ -487,7 +502,7 @@ function getEffectiveScale(element: unknown, parentScale: number): number {
           <div
             v-else-if="grandchild.type === 'item'"
             class="grid-item"
-            :class="{ owned: hasItem((grandchild as GridItem).item) }"
+            :class="{ owned: isItemOwnedForGrid((grandchild as GridItem).item) }"
             :style="getItemStyle(grandchild as GridItem, getEffectiveScale(child, grid.scale || 1))"
             :title="getItemName((grandchild as GridItem).item)"
             @click="toggleItem((grandchild as GridItem).item)"
@@ -521,7 +536,7 @@ function getEffectiveScale(element: unknown, parentScale: number): number {
               v-for="(canvasChild, cIdx) in (grandchild as GridCanvas).content"
               :key="cIdx"
               class="grid-item canvas-item"
-              :class="{ owned: hasItem((canvasChild as GridItem).item) }"
+              :class="{ owned: isItemOwnedForGrid((canvasChild as GridItem).item) }"
               :style="getItemStyle(canvasChild as GridItem, getEffectiveScale(child, grid.scale || 1))"
               :title="getItemName((canvasChild as GridItem).item)"
               @click="toggleItem((canvasChild as GridItem).item)"
@@ -552,7 +567,7 @@ function getEffectiveScale(element: unknown, parentScale: number): number {
       <div
         v-else-if="child.type === 'item'"
         class="grid-item"
-        :class="{ owned: hasItem((child as GridItem).item) }"
+        :class="{ owned: isItemOwnedForGrid((child as GridItem).item) }"
         :style="getItemStyle(child as GridItem, grid.scale || 1)"
         :title="getItemName((child as GridItem).item)"
         @click="toggleItem((child as GridItem).item)"
@@ -586,7 +601,7 @@ function getEffectiveScale(element: unknown, parentScale: number): number {
           v-for="(canvasChild, cIdx) in (child as GridCanvas).content"
           :key="cIdx"
           class="grid-item canvas-item"
-          :class="{ owned: hasItem((canvasChild as GridItem).item) }"
+          :class="{ owned: isItemOwnedForGrid((canvasChild as GridItem).item) }"
           :style="getItemStyle(canvasChild as GridItem, grid.scale || 1)"
           :title="getItemName((canvasChild as GridItem).item)"
           @click="toggleItem((canvasChild as GridItem).item)"
