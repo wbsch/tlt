@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import { getItemIcon, DEFAULT_ICON } from '../data/itemIcons'
-import { getItemName } from '../data/itemNames'
+import { getItemName } from '../data/items'
 
-// Type definitions
+//Type definitions
 interface GridItem {
   type: 'item'
   item: string
