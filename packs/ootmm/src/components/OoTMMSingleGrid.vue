@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import {
   getGridItemIcon,
+  getGridItemLinkedItemIds,
   getGridItemOverlay,
   getGridItemPreItemPoolToggleItemId,
   hasGridIconVariants,
@@ -46,9 +47,15 @@ interface GridArray {
   content: unknown[]
 }
 
+interface GridItemRefAlias {
+  item: string
+  title?: string
+}
+
 const props = defineProps<{
   inventory: Map<string, number>
   grid: GridArray
+  gridItemRefs?: Record<string, GridItemRefAlias>
   itemMaxCounts?: Map<string, number>
   availableItemIds?: Set<string>
   settings?: Record<string, unknown> | null
@@ -62,19 +69,161 @@ function getItemCount(itemId: string): number {
   return props.inventory.get(itemId) || 0
 }
 
+const GRID_REF_ALIAS_PREFIX = '__grid_ref__:'
+const GRID_REF_STATE_PREFIX = '__grid_ref_state__:'
+
+function isGridRefAliasKey(itemId: string): boolean {
+  return itemId.startsWith(GRID_REF_ALIAS_PREFIX)
+}
+
+function getGridRefAlias(itemId: string): GridItemRefAlias | null {
+  if (!isGridRefAliasKey(itemId)) return null
+  const ref = itemId.slice(GRID_REF_ALIAS_PREFIX.length)
+  return props.gridItemRefs?.[ref] || null
+}
+
+function getBaseItemId(itemId: string): string {
+  return getGridRefAlias(itemId)?.item || itemId
+}
+
+function getGridItemTitle(itemId: string): string {
+  const alias = getGridRefAlias(itemId)
+  if (alias?.title) return alias.title
+  return getItemName(getBaseItemId(itemId))
+}
+
+function changeItemCount(inventory: Map<string, number>, itemId: string, delta: number) {
+  const current = inventory.get(itemId) || 0
+  const next = current + delta
+  if (next > 0) {
+    inventory.set(itemId, next)
+  } else {
+    inventory.delete(itemId)
+  }
+}
+
+function getLinkedItemIds(itemId: string): string[] | null {
+  const baseItemId = getBaseItemId(itemId)
+  const linkedItemIds = getGridItemLinkedItemIds(baseItemId, {
+    availableItemIds: props.availableItemIds,
+    inventory: props.inventory,
+    settings: props.settings,
+  })
+
+  if (!isGridRefAliasKey(itemId)) {
+    return linkedItemIds
+  }
+
+  const logicalLinkedItemIds = linkedItemIds && linkedItemIds.length > 0
+    ? linkedItemIds
+    : [baseItemId]
+
+  return logicalLinkedItemIds.map((linkedItemId) =>
+    `${GRID_REF_STATE_PREFIX}${itemId}:${linkedItemId}`,
+  )
+}
+
+function getLogicalLinkedItemIds(itemId: string): string[] | null {
+  if (!isGridRefAliasKey(itemId)) {
+    return getLinkedItemIds(itemId)
+  }
+
+  const baseItemId = getBaseItemId(itemId)
+  const linkedItemIds = getGridItemLinkedItemIds(baseItemId, {
+    availableItemIds: props.availableItemIds,
+    inventory: props.inventory,
+    settings: props.settings,
+  })
+
+  if (linkedItemIds && linkedItemIds.length > 0) {
+    return linkedItemIds
+  }
+
+  return [baseItemId]
+}
+
+function getGridItemCount(itemId: string): number {
+  const linkedItemIds = getLinkedItemIds(itemId)
+  if (!linkedItemIds || linkedItemIds.length === 0) {
+    return getItemCount(itemId)
+  }
+
+  for (let i = linkedItemIds.length - 1; i >= 0; i--) {
+    if ((props.inventory.get(linkedItemIds[i]) || 0) > 0) {
+      return i + 1
+    }
+  }
+
+  return 0
+}
+
 function getItemMaxCount(itemId: string): number {
+  const linkedItemIds = getLinkedItemIds(itemId)
+  if (linkedItemIds && linkedItemIds.length > 0) {
+    return linkedItemIds.length
+  }
   const max = props.itemMaxCounts?.get(itemId)
   return max && max > 0 ? max : 1
 }
 
 function hasItem(itemId: string): boolean {
-  return getItemCount(itemId) > 0
+  return getGridItemCount(itemId) > 0
+}
+
+function applyLinkedItemLevel(
+  linkedItemIds: string[],
+  level: number,
+  inventory: Map<string, number>,
+) {
+  for (const linkedItemId of linkedItemIds) {
+    inventory.delete(linkedItemId)
+  }
+
+  if (level > 0) {
+    const activeItemId = linkedItemIds[level - 1]
+    if (activeItemId) {
+      inventory.set(activeItemId, 1)
+    }
+  }
+}
+
+function applyGridRefLinkedItemLevel(
+  itemId: string,
+  linkedItemIds: string[],
+  level: number,
+  inventory: Map<string, number>,
+) {
+  const previousLevel = getGridItemCount(itemId)
+  const logicalLinkedItemIds = getLogicalLinkedItemIds(itemId)
+
+  applyLinkedItemLevel(linkedItemIds, level, inventory)
+
+  if (!logicalLinkedItemIds || logicalLinkedItemIds.length === 0) {
+    return
+  }
+
+  const previousLogicalItemId = previousLevel > 0
+    ? logicalLinkedItemIds[previousLevel - 1]
+    : null
+  const nextLogicalItemId = level > 0
+    ? logicalLinkedItemIds[level - 1]
+    : null
+
+  if (previousLogicalItemId && previousLogicalItemId !== nextLogicalItemId) {
+    changeItemCount(inventory, previousLogicalItemId, -1)
+  }
+
+  if (nextLogicalItemId && nextLogicalItemId !== previousLogicalItemId) {
+    changeItemCount(inventory, nextLogicalItemId, 1)
+  }
 }
 
 function isItemOwnedForGrid(itemId: string): boolean {
   if (hasItem(itemId)) return true
 
-  const preItemPoolToggleItemId = getGridItemPreItemPoolToggleItemId(itemId, {
+  const baseItemId = getBaseItemId(itemId)
+
+  const preItemPoolToggleItemId = getGridItemPreItemPoolToggleItemId(baseItemId, {
     maxCount: getItemMaxCount(itemId),
     availableItemIds: props.availableItemIds,
     inventory: props.inventory,
@@ -88,7 +237,7 @@ function isItemOwnedForGrid(itemId: string): boolean {
 
 function isItemHighlightedForGrid(itemId: string): boolean {
   if (isItemOwnedForGrid(itemId)) return true
-  return startsGridItemUndimmed(itemId, {
+  return startsGridItemUndimmed(getBaseItemId(itemId), {
     maxCount: getItemMaxCount(itemId),
     availableItemIds: props.availableItemIds,
     inventory: props.inventory,
@@ -98,9 +247,30 @@ function isItemHighlightedForGrid(itemId: string): boolean {
 
 function toggleItem(itemId: string) {
   const newInventory = new Map(props.inventory)
-  const current = newInventory.get(itemId) || 0
+  const current = getGridItemCount(itemId)
   const max = getItemMaxCount(itemId)
-  const preItemPoolToggleItemId = getGridItemPreItemPoolToggleItemId(itemId, {
+  const linkedItemIds = getLinkedItemIds(itemId)
+
+  if (linkedItemIds && linkedItemIds.length > 0) {
+    if (current < max) {
+      if (isGridRefAliasKey(itemId)) {
+        applyGridRefLinkedItemLevel(itemId, linkedItemIds, current + 1, newInventory)
+      } else {
+        applyLinkedItemLevel(linkedItemIds, current + 1, newInventory)
+      }
+    } else {
+      if (isGridRefAliasKey(itemId)) {
+        applyGridRefLinkedItemLevel(itemId, linkedItemIds, 0, newInventory)
+      } else {
+        applyLinkedItemLevel(linkedItemIds, 0, newInventory)
+      }
+    }
+    emit('update:inventory', newInventory)
+    return
+  }
+
+  const baseItemId = getBaseItemId(itemId)
+  const preItemPoolToggleItemId = getGridItemPreItemPoolToggleItemId(baseItemId, {
     maxCount: max,
     availableItemIds: props.availableItemIds,
     inventory: props.inventory,
@@ -152,9 +322,30 @@ function toggleItem(itemId: string) {
 function decrementItem(itemId: string, event: MouseEvent) {
   event.preventDefault()
   const newInventory = new Map(props.inventory)
-  const current = newInventory.get(itemId) || 0
+  const current = getGridItemCount(itemId)
   const max = getItemMaxCount(itemId)
-  const preItemPoolToggleItemId = getGridItemPreItemPoolToggleItemId(itemId, {
+  const linkedItemIds = getLinkedItemIds(itemId)
+
+  if (linkedItemIds && linkedItemIds.length > 0) {
+    if (current > 0) {
+      if (isGridRefAliasKey(itemId)) {
+        applyGridRefLinkedItemLevel(itemId, linkedItemIds, current - 1, newInventory)
+      } else {
+        applyLinkedItemLevel(linkedItemIds, current - 1, newInventory)
+      }
+    } else {
+      if (isGridRefAliasKey(itemId)) {
+        applyGridRefLinkedItemLevel(itemId, linkedItemIds, max, newInventory)
+      } else {
+        applyLinkedItemLevel(linkedItemIds, max, newInventory)
+      }
+    }
+    emit('update:inventory', newInventory)
+    return
+  }
+
+  const baseItemId = getBaseItemId(itemId)
+  const preItemPoolToggleItemId = getGridItemPreItemPoolToggleItemId(baseItemId, {
     maxCount: max,
     availableItemIds: props.availableItemIds,
     inventory: props.inventory,
@@ -199,7 +390,8 @@ function parseMargin(margin?: string): { x: number; y: number } {
 }
 
 function getIconSrc(itemId: string): string {
-  return getGridItemIcon(itemId, getItemCount(itemId), {
+  const baseItemId = getBaseItemId(itemId)
+  return getGridItemIcon(baseItemId, getGridItemCount(itemId), {
     maxCount: getItemMaxCount(itemId),
     availableItemIds: props.availableItemIds,
     inventory: props.inventory,
@@ -208,7 +400,8 @@ function getIconSrc(itemId: string): string {
 }
 
 function getOverlaySrc(itemId: string): string | null {
-  return getGridItemOverlay(itemId, getItemCount(itemId), {
+  const baseItemId = getBaseItemId(itemId)
+  return getGridItemOverlay(baseItemId, getGridItemCount(itemId), {
     maxCount: getItemMaxCount(itemId),
     availableItemIds: props.availableItemIds,
     inventory: props.inventory,
@@ -218,8 +411,8 @@ function getOverlaySrc(itemId: string): string | null {
 
 function shouldShowItemCount(itemId: string): boolean {
   return (
-    getItemCount(itemId) > 1
-    && !hasGridIconVariants(itemId, {
+    getGridItemCount(itemId) > 1
+    && !hasGridIconVariants(getBaseItemId(itemId), {
       maxCount: getItemMaxCount(itemId),
       availableItemIds: props.availableItemIds,
       inventory: props.inventory,
@@ -230,7 +423,7 @@ function shouldShowItemCount(itemId: string): boolean {
 
 function isItemIconDisabled(itemId: string): boolean {
   if (hasItem(itemId)) return false
-  return !startsGridItemUndimmed(itemId, {
+  return !startsGridItemUndimmed(getBaseItemId(itemId), {
     maxCount: getItemMaxCount(itemId),
     availableItemIds: props.availableItemIds,
     inventory: props.inventory,
@@ -331,7 +524,7 @@ function elementType(element: unknown): string | undefined {
             class="grid-item"
             :class="{ owned: isItemHighlightedForGrid(itemId) }"
             :style="getGridItemStyle(parseMargin((child as ItemGrid).item_margin), ((child as ItemGrid).item_size || 32) * getEffectiveScale(child, grid.scale || 1))"
-            :title="getItemName(itemId)"
+            :title="getGridItemTitle(itemId)"
             @click="toggleItem(itemId)"
             @contextmenu="decrementItem(itemId, $event)"
           >
@@ -350,7 +543,7 @@ function elementType(element: unknown): string | undefined {
               :class="{ disabled: isItemIconDisabled(itemId) }"
               @error="handleOverlayError"
             />
-            <span v-if="shouldShowItemCount(itemId)" class="item-count">{{ getItemCount(itemId) }}</span>
+            <span v-if="shouldShowItemCount(itemId)" class="item-count">{{ getGridItemCount(itemId) }}</span>
           </div>
         </div>
       </div>
@@ -379,7 +572,7 @@ function elementType(element: unknown): string | undefined {
                 class="grid-item"
                 :class="{ owned: isItemHighlightedForGrid(itemId) }"
                 :style="getGridItemStyle(parseMargin((grandchild as ItemGrid).item_margin), ((grandchild as ItemGrid).item_size || 32) * getEffectiveScale(grandchild, getEffectiveScale(child, grid.scale || 1)))"
-                :title="getItemName(itemId)"
+                :title="getGridItemTitle(itemId)"
                 @click="toggleItem(itemId)"
                 @contextmenu="decrementItem(itemId, $event)"
               >
@@ -398,7 +591,7 @@ function elementType(element: unknown): string | undefined {
                   :class="{ disabled: isItemIconDisabled(itemId) }"
                   @error="handleOverlayError"
                 />
-                <span v-if="shouldShowItemCount(itemId)" class="item-count">{{ getItemCount(itemId) }}</span>
+                <span v-if="shouldShowItemCount(itemId)" class="item-count">{{ getGridItemCount(itemId) }}</span>
               </div>
             </div>
           </div>
@@ -417,7 +610,7 @@ function elementType(element: unknown): string | undefined {
                 class="grid-item"
                 :class="{ owned: isItemHighlightedForGrid((ggchild as GridItem).item) }"
                 :style="getItemStyle(ggchild as GridItem, getEffectiveScale(grandchild, getEffectiveScale(child, grid.scale || 1)))"
-                :title="getItemName((ggchild as GridItem).item)"
+                :title="getGridItemTitle((ggchild as GridItem).item)"
                 @click="toggleItem((ggchild as GridItem).item)"
                 @contextmenu="decrementItem((ggchild as GridItem).item, $event)"
               >
@@ -436,7 +629,7 @@ function elementType(element: unknown): string | undefined {
                   :class="{ disabled: isItemIconDisabled((ggchild as GridItem).item) }"
                   @error="handleOverlayError"
                 />
-                <span v-if="shouldShowItemCount((ggchild as GridItem).item)" class="item-count">{{ getItemCount((ggchild as GridItem).item) }}</span>
+                <span v-if="shouldShowItemCount((ggchild as GridItem).item)" class="item-count">{{ getGridItemCount((ggchild as GridItem).item) }}</span>
               </div>
               
               <!-- Level 3 canvas -->
@@ -451,7 +644,7 @@ function elementType(element: unknown): string | undefined {
                   class="grid-item canvas-item"
                   :class="{ owned: isItemHighlightedForGrid((canvasChild as GridItem).item) }"
                   :style="getItemStyle(canvasChild as GridItem, getEffectiveScale(grandchild, getEffectiveScale(child, grid.scale || 1)))"
-                  :title="getItemName((canvasChild as GridItem).item)"
+                  :title="getGridItemTitle((canvasChild as GridItem).item)"
                   @click="toggleItem((canvasChild as GridItem).item)"
                   @contextmenu="decrementItem((canvasChild as GridItem).item, $event)"
                 >
@@ -470,7 +663,7 @@ function elementType(element: unknown): string | undefined {
                     :class="{ disabled: isItemIconDisabled((canvasChild as GridItem).item) }"
                     @error="handleOverlayError"
                   />
-                  <span v-if="shouldShowItemCount((canvasChild as GridItem).item)" class="item-count">{{ getItemCount((canvasChild as GridItem).item) }}</span>
+                  <span v-if="shouldShowItemCount((canvasChild as GridItem).item)" class="item-count">{{ getGridItemCount((canvasChild as GridItem).item) }}</span>
                 </div>
               </div>
               
@@ -487,7 +680,7 @@ function elementType(element: unknown): string | undefined {
                     class="grid-item"
                     :class="{ owned: isItemHighlightedForGrid((gggchild as GridItem).item) }"
                     :style="getItemStyle(gggchild as GridItem, getEffectiveScale(ggchild, getEffectiveScale(grandchild, getEffectiveScale(child, grid.scale || 1))))"
-                    :title="getItemName((gggchild as GridItem).item)"
+                    :title="getGridItemTitle((gggchild as GridItem).item)"
                     @click="toggleItem((gggchild as GridItem).item)"
                     @contextmenu="decrementItem((gggchild as GridItem).item, $event)"
                   >
@@ -506,7 +699,7 @@ function elementType(element: unknown): string | undefined {
                       :class="{ disabled: isItemIconDisabled((gggchild as GridItem).item) }"
                       @error="handleOverlayError"
                     />
-                    <span v-if="shouldShowItemCount((gggchild as GridItem).item)" class="item-count">{{ getItemCount((gggchild as GridItem).item) }}</span>
+                    <span v-if="shouldShowItemCount((gggchild as GridItem).item)" class="item-count">{{ getGridItemCount((gggchild as GridItem).item) }}</span>
                   </div>
                 </template>
               </div>
@@ -519,7 +712,7 @@ function elementType(element: unknown): string | undefined {
             class="grid-item"
             :class="{ owned: isItemHighlightedForGrid((grandchild as GridItem).item) }"
             :style="getItemStyle(grandchild as GridItem, getEffectiveScale(child, grid.scale || 1))"
-            :title="getItemName((grandchild as GridItem).item)"
+            :title="getGridItemTitle((grandchild as GridItem).item)"
             @click="toggleItem((grandchild as GridItem).item)"
             @contextmenu="decrementItem((grandchild as GridItem).item, $event)"
           >
@@ -538,7 +731,7 @@ function elementType(element: unknown): string | undefined {
               :class="{ disabled: isItemIconDisabled((grandchild as GridItem).item) }"
               @error="handleOverlayError"
             />
-            <span v-if="shouldShowItemCount((grandchild as GridItem).item)" class="item-count">{{ getItemCount((grandchild as GridItem).item) }}</span>
+            <span v-if="shouldShowItemCount((grandchild as GridItem).item)" class="item-count">{{ getGridItemCount((grandchild as GridItem).item) }}</span>
           </div>
           
           <!-- Level 2 canvas -->
@@ -553,7 +746,7 @@ function elementType(element: unknown): string | undefined {
               class="grid-item canvas-item"
               :class="{ owned: isItemHighlightedForGrid((canvasChild as GridItem).item) }"
               :style="getItemStyle(canvasChild as GridItem, getEffectiveScale(child, grid.scale || 1))"
-              :title="getItemName((canvasChild as GridItem).item)"
+              :title="getGridItemTitle((canvasChild as GridItem).item)"
               @click="toggleItem((canvasChild as GridItem).item)"
               @contextmenu="decrementItem((canvasChild as GridItem).item, $event)"
             >
@@ -572,7 +765,7 @@ function elementType(element: unknown): string | undefined {
                 :class="{ disabled: isItemIconDisabled((canvasChild as GridItem).item) }"
                 @error="handleOverlayError"
               />
-              <span v-if="shouldShowItemCount((canvasChild as GridItem).item)" class="item-count">{{ getItemCount((canvasChild as GridItem).item) }}</span>
+              <span v-if="shouldShowItemCount((canvasChild as GridItem).item)" class="item-count">{{ getGridItemCount((canvasChild as GridItem).item) }}</span>
             </div>
           </div>
         </template>
@@ -584,7 +777,7 @@ function elementType(element: unknown): string | undefined {
         class="grid-item"
         :class="{ owned: isItemHighlightedForGrid((child as GridItem).item) }"
         :style="getItemStyle(child as GridItem, grid.scale || 1)"
-        :title="getItemName((child as GridItem).item)"
+        :title="getGridItemTitle((child as GridItem).item)"
         @click="toggleItem((child as GridItem).item)"
         @contextmenu="decrementItem((child as GridItem).item, $event)"
       >
@@ -603,7 +796,7 @@ function elementType(element: unknown): string | undefined {
           :class="{ disabled: isItemIconDisabled((child as GridItem).item) }"
           @error="handleOverlayError"
         />
-        <span v-if="shouldShowItemCount((child as GridItem).item)" class="item-count">{{ getItemCount((child as GridItem).item) }}</span>
+        <span v-if="shouldShowItemCount((child as GridItem).item)" class="item-count">{{ getGridItemCount((child as GridItem).item) }}</span>
       </div>
       
       <!-- Canvas at root level -->
@@ -618,7 +811,7 @@ function elementType(element: unknown): string | undefined {
           class="grid-item canvas-item"
           :class="{ owned: isItemHighlightedForGrid((canvasChild as GridItem).item) }"
           :style="getItemStyle(canvasChild as GridItem, grid.scale || 1)"
-          :title="getItemName((canvasChild as GridItem).item)"
+          :title="getGridItemTitle((canvasChild as GridItem).item)"
           @click="toggleItem((canvasChild as GridItem).item)"
           @contextmenu="decrementItem((canvasChild as GridItem).item, $event)"
         >
@@ -637,7 +830,7 @@ function elementType(element: unknown): string | undefined {
             :class="{ disabled: isItemIconDisabled((canvasChild as GridItem).item) }"
             @error="handleOverlayError"
           />
-          <span v-if="shouldShowItemCount((canvasChild as GridItem).item)" class="item-count">{{ getItemCount((canvasChild as GridItem).item) }}</span>
+          <span v-if="shouldShowItemCount((canvasChild as GridItem).item)" class="item-count">{{ getGridItemCount((canvasChild as GridItem).item) }}</span>
         </div>
       </div>
     </template>

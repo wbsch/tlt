@@ -86,6 +86,8 @@ const CLOCK_ITEM_IDS = new Set([
   'MM_CLOCK6',
 ])
 
+const GRID_REF_STATE_PREFIX = '__grid_ref_state__:'
+
 const VANILLA_SILVER_RUPEE_PREFIX = 'OOT_RUPEE_SILVER_'
 const OWL_STATUE_PREFIX = 'MM_OWL_'
 
@@ -984,6 +986,10 @@ export class OoTMMTracker implements TrackerPack {
     const playerItems: PlayerItems = new ArrayEntriesMap()
 
     for (const [itemId, count] of inventory) {
+      if (itemId.startsWith(GRID_REF_STATE_PREFIX)) {
+        continue
+      }
+
       let item = (Items as Record<string, unknown>)[itemId]
       if (!item) {
         try {

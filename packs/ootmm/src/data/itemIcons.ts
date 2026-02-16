@@ -100,6 +100,8 @@ const RAW_ITEM_ICONS: Record<string, string> = {
   // Bottles
   OOT_BOTTLE_RUTO_LETTER: 'images/bottle_letter.png',
   OOT_BOTTLE_EMPTY: 'images/bottle.png',
+  OOT_BOTTLE_POTION_RED: 'images/bottle_red.png',
+  OOT_BOTTLE_POTION_GREEN: 'images/bottle_green.png',
   bottle1: 'images/bottle.png',
   bottle2: 'images/bottle.png',
   bottle3: 'images/bottle.png',
@@ -563,6 +565,7 @@ interface GridIconVariantRule {
   overlays?: Array<string | null>;
   startUndimmed?: boolean;
   preItemPoolToggleItemId?: string;
+  linkedItemIds?: string[];
 }
 
 interface GridIconDefaultConfig {
@@ -570,6 +573,7 @@ interface GridIconDefaultConfig {
   overlays?: Array<string | null>;
   startUndimmed?: boolean;
   preItemPoolToggleItemId?: string;
+  linkedItemIds?: string[];
 }
 
 type GridIconVariantConfig =
@@ -914,6 +918,27 @@ const RAW_GRID_ICON_VARIANTS: Record<string, GridIconVariantConfig> = {
       startUndimmed: false,
     },
   },
+  OOT_BOTTLE_EMPTY: {
+    default: {
+      icons: [
+        'images/bottle.png',
+        'images/bottle_red.png',
+        'images/bottle_green.png',
+        'images/bottle_blue.png',
+        'images/bottle_fire.png',
+        'images/bottle_milk.png',
+      ],
+      startUndimmed: false,
+      linkedItemIds: [
+        'OOT_BOTTLE_EMPTY',
+        'OOT_BOTTLE_POTION_RED',
+        'OOT_BOTTLE_POTION_GREEN',
+        'OOT_BOTTLE_POTION_BLUE',
+        'OOT_BOTTLE_BLUE_FIRE',
+        'OOT_BOTTLE_MILK',
+      ],
+    },
+  },
   OOT_SLINGSHOT: {
     default: {
       icons: [
@@ -1034,6 +1059,7 @@ interface ResolvedGridIconConfig {
   overlays?: Array<string | null>;
   startUndimmed: boolean;
   preItemPoolToggleItemId?: string;
+  linkedItemIds?: string[];
 }
 
 function normalizeGridIconDefaultConfig(
@@ -1047,6 +1073,7 @@ function normalizeGridIconDefaultConfig(
     overlays: config.overlays,
     startUndimmed: !!config.startUndimmed,
     preItemPoolToggleItemId: config.preItemPoolToggleItemId,
+    linkedItemIds: config.linkedItemIds,
   };
 }
 
@@ -1067,6 +1094,7 @@ function withBasePathForVariantConfig(
       ),
       startUndimmed: normalizedDefault.startUndimmed,
       preItemPoolToggleItemId: normalizedDefault.preItemPoolToggleItemId,
+      linkedItemIds: normalizedDefault.linkedItemIds,
     },
     variants: config.variants?.map((variant) => ({
       when: variant.when,
@@ -1076,6 +1104,7 @@ function withBasePathForVariantConfig(
       ),
       startUndimmed: variant.startUndimmed,
       preItemPoolToggleItemId: variant.preItemPoolToggleItemId,
+      linkedItemIds: variant.linkedItemIds,
     })),
   };
 }
@@ -1213,6 +1242,7 @@ function getResolvedGridIconVariants(
         overlays: matched.overlays,
         startUndimmed: !!matched.startUndimmed,
         preItemPoolToggleItemId: matched.preItemPoolToggleItemId,
+        linkedItemIds: matched.linkedItemIds,
       };
     }
   }
@@ -1224,6 +1254,7 @@ function getResolvedGridIconVariants(
         overlays: normalizedDefault.overlays,
         startUndimmed: normalizedDefault.startUndimmed || false,
         preItemPoolToggleItemId: normalizedDefault.preItemPoolToggleItemId,
+        linkedItemIds: normalizedDefault.linkedItemIds,
       }
     : null;
 }
@@ -1333,6 +1364,18 @@ export function getGridItemPreItemPoolToggleItemId(
 ): string | null {
   const resolved = getResolvedGridIconVariants(itemId, context);
   return resolved?.preItemPoolToggleItemId || null;
+}
+
+/**
+ * Get linked inventory item IDs for a grid item progression.
+ * Stage 1 maps to index 0, stage 2 to index 1, etc.
+ */
+export function getGridItemLinkedItemIds(
+  itemId: string,
+  context: GridIconVariantContext = {},
+): string[] | null {
+  const resolved = getResolvedGridIconVariants(itemId, context);
+  return resolved?.linkedItemIds || null;
 }
 
 /**

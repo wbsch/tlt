@@ -173,9 +173,9 @@
           ],
           [
             "OOT_BOTTLE_RUTO_LETTER",
-            "OOT_BOTTLE_EMPTY",
-            "OOT_BOTTLE_EMPTY",
-            "OOT_BOTTLE_EMPTY",
+            { "ref": "Bottle1", "item": "OOT_BOTTLE_EMPTY", "title": "Bottle 1" },
+            { "ref": "Bottle2", "item": "OOT_BOTTLE_EMPTY", "title": "Bottle 2" },
+            { "ref": "Bottle3", "item": "OOT_BOTTLE_EMPTY", "title": "Bottle 3" },
             "OOT_SCALE",
             "OOT_MAGIC_UPGRADE",
             "OOT_STRENGTH",

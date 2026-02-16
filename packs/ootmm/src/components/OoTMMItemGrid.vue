@@ -1,7 +1,10 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import OoTMMSingleGrid from './OoTMMSingleGrid.vue'
-import { resolveItemGridRef } from '../utils/itemGridRef'
+import {
+  isItemGridAliasRef,
+  resolveItemGridRef,
+} from '../utils/itemGridRef'
 
 // Import the grid layout JSON
 import itemGridsData from '../../../../item_grids.json'
@@ -12,6 +15,11 @@ interface GridArray {
   margin?: string
   scale?: number
   content: unknown[]
+}
+
+interface GridItemRefAlias {
+  item: string
+  title?: string
 }
 
 const props = defineProps<{
@@ -30,6 +38,69 @@ const grids = itemGridsData as Record<string, GridArray>
 const sharedGrid = computed(() => grids['item_grid_shared'])
 const ootGrid = computed(() => grids['item_grid_tall_oot'])
 const mmGrid = computed(() => grids['item_grid_tall_mm'])
+
+const GRID_REF_ALIAS_PREFIX = '__grid_ref__:'
+
+function makeGridRefAliasKey(ref: string): string {
+  return `${GRID_REF_ALIAS_PREFIX}${ref}`
+}
+
+function isGridRefAliasKey(value: string): boolean {
+  return value.startsWith(GRID_REF_ALIAS_PREFIX)
+}
+
+function getGridRefFromAliasKey(value: string): string {
+  return value.slice(GRID_REF_ALIAS_PREFIX.length)
+}
+
+function collectGridItemRefAliases(
+  element: unknown,
+  aliases: Record<string, GridItemRefAlias>,
+) {
+  if (!element || typeof element !== 'object') return
+
+  if (isItemGridAliasRef(element)) {
+    aliases[element.ref] = {
+      item: element.item,
+      title: element.title,
+    }
+    return
+  }
+
+  if (Array.isArray(element)) {
+    for (const child of element) {
+      collectGridItemRefAliases(child, aliases)
+    }
+    return
+  }
+
+  const maybeRows = (element as { rows?: unknown }).rows
+  if (Array.isArray(maybeRows)) {
+    for (const row of maybeRows) {
+      collectGridItemRefAliases(row, aliases)
+    }
+  }
+
+  const maybeContent = (element as { content?: unknown }).content
+  if (Array.isArray(maybeContent)) {
+    for (const child of maybeContent) {
+      collectGridItemRefAliases(child, aliases)
+    }
+  }
+
+  const maybeItem = (element as { item?: unknown }).item
+  if (maybeItem !== undefined) {
+    collectGridItemRefAliases(maybeItem, aliases)
+  }
+}
+
+const gridItemRefAliases = computed<Record<string, GridItemRefAlias>>(() => {
+  const aliases: Record<string, GridItemRefAlias> = {}
+  collectGridItemRefAliases(sharedGrid.value, aliases)
+  collectGridItemRefAliases(ootGrid.value, aliases)
+  collectGridItemRefAliases(mmGrid.value, aliases)
+  return aliases
+})
 
 const hasOotItems = computed(() => {
   if (!props.availableItemIds || props.availableItemIds.size === 0) return true
@@ -117,6 +188,11 @@ const LABEL_KEY_MAP: Record<string, string[]> = {
 }
 
 function isItemVisible(itemId: string): boolean {
+  const alias = gridItemRefAliases.value[itemId]
+  if (alias) {
+    return isItemVisible(alias.item)
+  }
+
   if (itemId === 'OOT_SWORD_MASTER') return true
   if (!props.availableItemIds || props.availableItemIds.size === 0) return true
   const labelKeys = LABEL_KEY_MAP[itemId]
@@ -137,6 +213,24 @@ function isLabelItem(itemId: string): boolean {
 }
 
 function resolveVisibleItemRef(itemRef: unknown): string | null {
+  if (isItemGridAliasRef(itemRef)) {
+    if (!isItemVisible(itemRef.item)) return null
+    return makeGridRefAliasKey(itemRef.ref)
+  }
+
+  if (typeof itemRef === 'string') {
+    if (isGridRefAliasKey(itemRef)) {
+      const ref = getGridRefFromAliasKey(itemRef)
+      const alias = gridItemRefAliases.value[ref]
+      return alias && isItemVisible(alias.item) ? itemRef : null
+    }
+
+    const alias = gridItemRefAliases.value[itemRef]
+    if (alias) {
+      return isItemVisible(alias.item) ? makeGridRefAliasKey(itemRef) : null
+    }
+  }
+
   return resolveItemGridRef(itemRef, (candidate: string) => isItemVisible(candidate))
 }
 
@@ -213,6 +307,7 @@ function handleInventoryUpdate(newInventory: Map<string, number>) {
         <OoTMMSingleGrid
           :inventory="inventory"
           :grid="filteredSharedGrid"
+          :grid-item-refs="gridItemRefAliases"
           :item-max-counts="itemMaxCounts"
           :available-item-ids="availableItemIds"
           :settings="settings"
@@ -226,6 +321,7 @@ function handleInventoryUpdate(newInventory: Map<string, number>) {
         <OoTMMSingleGrid 
           :inventory="inventory"
           :grid="filteredOotGrid"
+          :grid-item-refs="gridItemRefAliases"
           :item-max-counts="itemMaxCounts"
           :available-item-ids="availableItemIds"
           :settings="settings"
@@ -239,6 +335,7 @@ function handleInventoryUpdate(newInventory: Map<string, number>) {
         <OoTMMSingleGrid 
           :inventory="inventory"
           :grid="filteredMmGrid"
+          :grid-item-refs="gridItemRefAliases"
           :item-max-counts="itemMaxCounts"
           :available-item-ids="availableItemIds"
           :settings="settings"
