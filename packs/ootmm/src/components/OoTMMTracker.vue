@@ -968,6 +968,7 @@ onBeforeUnmount(() => {
           :grid-id="'item_grid_tall_oot'"
           :available-item-ids="availableItemIds"
           :item-max-counts="itemMaxCounts"
+          :settings="trackerSettings"
           @update:inventory="handleInventoryChange"
         />
         

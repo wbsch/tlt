@@ -18,6 +18,7 @@ const props = defineProps<{
   inventory: Map<string, number>
   availableItemIds?: Set<string>
   itemMaxCounts?: Map<string, number>
+  settings?: Record<string, unknown> | null
 }>()
 
 const emit = defineEmits<{
@@ -213,6 +214,8 @@ function handleInventoryUpdate(newInventory: Map<string, number>) {
           :inventory="inventory"
           :grid="filteredSharedGrid"
           :item-max-counts="itemMaxCounts"
+          :available-item-ids="availableItemIds"
+          :settings="settings"
           @update:inventory="handleInventoryUpdate"
         />
       </div>
@@ -224,6 +227,8 @@ function handleInventoryUpdate(newInventory: Map<string, number>) {
           :inventory="inventory"
           :grid="filteredOotGrid"
           :item-max-counts="itemMaxCounts"
+          :available-item-ids="availableItemIds"
+          :settings="settings"
           @update:inventory="handleInventoryUpdate"
         />
       </div>
@@ -235,6 +240,8 @@ function handleInventoryUpdate(newInventory: Map<string, number>) {
           :inventory="inventory"
           :grid="filteredMmGrid"
           :item-max-counts="itemMaxCounts"
+          :available-item-ids="availableItemIds"
+          :settings="settings"
           @update:inventory="handleInventoryUpdate"
         />
       </div>

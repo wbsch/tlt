@@ -43,6 +43,8 @@ const props = defineProps<{
   inventory: Map<string, number>
   grid: GridArray
   itemMaxCounts?: Map<string, number>
+  availableItemIds?: Set<string>
+  settings?: Record<string, unknown> | null
 }>()
 
 const emit = defineEmits<{
@@ -110,11 +112,24 @@ function parseMargin(margin?: string): { x: number; y: number } {
 }
 
 function getIconSrc(itemId: string): string {
-  return getGridItemIcon(itemId, getItemCount(itemId))
+  return getGridItemIcon(itemId, getItemCount(itemId), {
+    maxCount: getItemMaxCount(itemId),
+    availableItemIds: props.availableItemIds,
+    inventory: props.inventory,
+    settings: props.settings,
+  })
 }
 
 function shouldShowItemCount(itemId: string): boolean {
-  return getItemCount(itemId) > 1 && !hasGridIconVariants(itemId)
+  return (
+    getItemCount(itemId) > 1
+    && !hasGridIconVariants(itemId, {
+      maxCount: getItemMaxCount(itemId),
+      availableItemIds: props.availableItemIds,
+      inventory: props.inventory,
+      settings: props.settings,
+    })
+  )
 }
 
 function handleImageError(event: Event) {

@@ -560,17 +560,160 @@ export const ITEM_ICONS: Record<string, string> = Object.fromEntries(
 
 // Count-based icon variants used only by the Item Grid rendering.
 // Index 0 => count 1, index 1 => count 2, ...
-const RAW_GRID_ICON_VARIANTS: Record<string, string[]> = {
-  // Example: OOT Strength upgrade levels
-  'OOT_STRENGTH': ['images/lift1.png', 'images/lift2.png', 'images/lift3.png'],
+interface GridIconVariantContext {
+  maxCount?: number
+  availableItemIds?: Set<string>
+  inventory?: Map<string, number>
+  settings?: Record<string, unknown> | null
 }
 
-export const GRID_ICON_VARIANTS: Record<string, string[]> = Object.fromEntries(
-  Object.entries(RAW_GRID_ICON_VARIANTS).map(([key, values]) => [
+interface GridIconVariantWhen {
+  settings?: Record<string, unknown | unknown[]>
+  hasAnyAvailableItemIds?: string[]
+  hasAllAvailableItemIds?: string[]
+  hasAnyInventoryItemIds?: string[]
+  hasAllInventoryItemIds?: string[]
+  minMaxCount?: number
+  maxMaxCount?: number
+}
+
+interface GridIconVariantRule {
+  when: GridIconVariantWhen
+  icons: string[]
+}
+
+type GridIconVariantConfig =
+  | string[]
+  | {
+      default: string[]
+      variants?: GridIconVariantRule[]
+    }
+
+const RAW_GRID_ICON_VARIANTS: Record<string, GridIconVariantConfig> = {
+  // Example: OOT Strength upgrade levels
+  'OOT_STRENGTH': ['images/lift1.png', 'images/lift2.png', 'images/lift3.png'],
+
+  // OOT Scale: default has 2 levels, bronze setting adds a 3rd pre-stage.
+  // Driven by tracker setting values.
+  'OOT_SCALE': {
+    default: ['images/scale1.png', 'images/scale2.png'],
+    variants: [
+      {
+        when: {
+          settings: {
+            bronzeScale: true,
+          },
+        },
+        icons: ['images/scale_bronze.png', 'images/scale1.png', 'images/scale2.png'],
+      },
+    ],
+  },
+}
+
+function withBasePathForVariantConfig(config: GridIconVariantConfig): GridIconVariantConfig {
+  if (Array.isArray(config)) {
+    return config.map((value) => withBasePath(value))
+  }
+
+  return {
+    default: config.default.map((value) => withBasePath(value)),
+    variants: config.variants?.map((variant) => ({
+      when: variant.when,
+      icons: variant.icons.map((value) => withBasePath(value)),
+    })),
+  }
+}
+
+export const GRID_ICON_VARIANTS: Record<string, GridIconVariantConfig> = Object.fromEntries(
+  Object.entries(RAW_GRID_ICON_VARIANTS).map(([key, config]) => [
     key,
-    values.map((value) => withBasePath(value)),
+    withBasePathForVariantConfig(config),
   ]),
 )
+
+function hasAny(set: Set<string>, values: string[]): boolean {
+  return values.some((value) => set.has(value))
+}
+
+function hasAll(set: Set<string>, values: string[]): boolean {
+  return values.every((value) => set.has(value))
+}
+
+function coerceBoolean(value: unknown): boolean | null {
+  if (typeof value === 'boolean') return value
+  if (typeof value === 'string') {
+    const normalized = value.trim().toLowerCase()
+    if (normalized === 'true') return true
+    if (normalized === 'false') return false
+  }
+  return null
+}
+
+function valueMatchesExpected(actual: unknown, expected: unknown | unknown[]): boolean {
+  const expectedValues = Array.isArray(expected) ? expected : [expected]
+  return expectedValues.some((expectedValue) => {
+    if (actual === expectedValue) return true
+
+    const expectedBool = coerceBoolean(expectedValue)
+    if (expectedBool !== null) {
+      const actualBool = coerceBoolean(actual)
+      if (actualBool !== null) return actualBool === expectedBool
+    }
+
+    return false
+  })
+}
+
+function matchesVariantRule(when: GridIconVariantWhen, context: GridIconVariantContext): boolean {
+  const settings = context.settings
+  const availableItemIds = context.availableItemIds
+  const inventory = context.inventory
+  const inventoryIds = inventory ? new Set([...inventory.entries()].filter(([, count]) => count > 0).map(([id]) => id)) : null
+
+  if (when.settings) {
+    if (!settings) return false
+    for (const [settingKey, expectedValue] of Object.entries(when.settings)) {
+      if (!valueMatchesExpected(settings[settingKey], expectedValue)) return false
+    }
+  }
+
+  if (typeof when.minMaxCount === 'number') {
+    if (typeof context.maxCount !== 'number' || context.maxCount < when.minMaxCount) return false
+  }
+  if (typeof when.maxMaxCount === 'number') {
+    if (typeof context.maxCount !== 'number' || context.maxCount > when.maxMaxCount) return false
+  }
+
+  if (when.hasAnyAvailableItemIds?.length) {
+    if (!availableItemIds || !hasAny(availableItemIds, when.hasAnyAvailableItemIds)) return false
+  }
+  if (when.hasAllAvailableItemIds?.length) {
+    if (!availableItemIds || !hasAll(availableItemIds, when.hasAllAvailableItemIds)) return false
+  }
+
+  if (when.hasAnyInventoryItemIds?.length) {
+    if (!inventoryIds || !hasAny(inventoryIds, when.hasAnyInventoryItemIds)) return false
+  }
+  if (when.hasAllInventoryItemIds?.length) {
+    if (!inventoryIds || !hasAll(inventoryIds, when.hasAllInventoryItemIds)) return false
+  }
+
+  return true
+}
+
+function getResolvedGridIconVariants(itemId: string, context: GridIconVariantContext): string[] | null {
+  const config = GRID_ICON_VARIANTS[itemId]
+  if (!config) return null
+
+  if (Array.isArray(config)) return config
+
+  if (config.variants && config.variants.length > 0) {
+    const matched = config.variants.find((variant) => matchesVariantRule(variant.when, context))
+    if (matched && matched.icons.length > 0) return matched.icons
+  }
+
+  return config.default.length > 0 ? config.default : null
+}
 
 // Default fallback icon
 export const DEFAULT_ICON = withBasePath('images/unknown.png')
@@ -587,21 +730,26 @@ export function getItemIcon(itemId: string): string {
  * If variants are configured, count>0 uses the corresponding variant icon.
  * Falls back to the regular item icon mapping for all other cases.
  */
-export function getGridItemIcon(itemId: string, count: number): string {
-  const variants = GRID_ICON_VARIANTS[itemId]
-  if (!variants || variants.length === 0 || count <= 0) {
+export function getGridItemIcon(
+  itemId: string,
+  count: number,
+  context: GridIconVariantContext = {},
+): string {
+  const variants = getResolvedGridIconVariants(itemId, context)
+  if (!variants || variants.length === 0) {
     return getItemIcon(itemId)
   }
 
-  const variantIndex = Math.min(count, variants.length) - 1
+  const safeCount = Math.max(count, 1)
+  const variantIndex = Math.min(safeCount, variants.length) - 1
   return variants[variantIndex] || getItemIcon(itemId)
 }
 
 /**
  * Check whether an item has count-based Item Grid icon variants.
  */
-export function hasGridIconVariants(itemId: string): boolean {
-  const variants = GRID_ICON_VARIANTS[itemId]
+export function hasGridIconVariants(itemId: string, context: GridIconVariantContext = {}): boolean {
+  const variants = getResolvedGridIconVariants(itemId, context)
   return !!variants && variants.length > 1
 }
 
