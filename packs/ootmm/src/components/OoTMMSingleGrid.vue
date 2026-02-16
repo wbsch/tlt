@@ -2,6 +2,7 @@
 import {
   getGridItemIcon,
   getGridItemOverlay,
+  getGridItemPreItemPoolToggleItemId,
   hasGridIconVariants,
   startsGridItemUndimmed,
   DEFAULT_ICON,
@@ -74,6 +75,34 @@ function toggleItem(itemId: string) {
   const newInventory = new Map(props.inventory)
   const current = newInventory.get(itemId) || 0
   const max = getItemMaxCount(itemId)
+  const preItemPoolToggleItemId = getGridItemPreItemPoolToggleItemId(itemId, {
+    maxCount: max,
+    availableItemIds: props.availableItemIds,
+    inventory: props.inventory,
+    settings: props.settings,
+  })
+  const preItemPoolToggleActive = preItemPoolToggleItemId
+    ? (newInventory.get(preItemPoolToggleItemId) || 0) > 0
+    : false
+
+  if (preItemPoolToggleItemId) {
+    if (current <= 0 && !preItemPoolToggleActive) {
+      newInventory.set(preItemPoolToggleItemId, 1)
+      emit('update:inventory', newInventory)
+      return
+    }
+
+    if (current < max) {
+      newInventory.set(itemId, current + 1)
+      newInventory.set(preItemPoolToggleItemId, 1)
+    } else {
+      newInventory.delete(itemId)
+      newInventory.delete(preItemPoolToggleItemId)
+    }
+
+    emit('update:inventory', newInventory)
+    return
+  }
   
   if (max <= 1) {
     if (current > 0) {
@@ -100,6 +129,33 @@ function decrementItem(itemId: string, event: MouseEvent) {
   const newInventory = new Map(props.inventory)
   const current = newInventory.get(itemId) || 0
   const max = getItemMaxCount(itemId)
+  const preItemPoolToggleItemId = getGridItemPreItemPoolToggleItemId(itemId, {
+    maxCount: max,
+    availableItemIds: props.availableItemIds,
+    inventory: props.inventory,
+    settings: props.settings,
+  })
+  const preItemPoolToggleActive = preItemPoolToggleItemId
+    ? (newInventory.get(preItemPoolToggleItemId) || 0) > 0
+    : false
+
+  if (preItemPoolToggleItemId) {
+    if (current > 1) {
+      newInventory.set(itemId, current - 1)
+      newInventory.set(preItemPoolToggleItemId, 1)
+    } else if (current === 1) {
+      newInventory.delete(itemId)
+      newInventory.set(preItemPoolToggleItemId, 1)
+    } else if (preItemPoolToggleActive) {
+      newInventory.delete(preItemPoolToggleItemId)
+    } else {
+      newInventory.set(itemId, max)
+      newInventory.set(preItemPoolToggleItemId, 1)
+    }
+    emit('update:inventory', newInventory)
+    return
+  }
+
   if (current > 1) {
     newInventory.set(itemId, current - 1)
   } else if (current === 1) {

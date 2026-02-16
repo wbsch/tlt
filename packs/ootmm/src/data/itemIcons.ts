@@ -576,12 +576,14 @@ interface GridIconVariantRule {
   icons: string[];
   overlays?: Array<string | null>;
   startUndimmed?: boolean;
+  preItemPoolToggleItemId?: string;
 }
 
 interface GridIconDefaultConfig {
   icons: string[];
   overlays?: Array<string | null>;
   startUndimmed?: boolean;
+  preItemPoolToggleItemId?: string;
 }
 
 type GridIconVariantConfig =
@@ -658,7 +660,7 @@ const RAW_GRID_ICON_VARIANTS: Record<string, GridIconVariantConfig> = {
         ],
         startUndimmed: true,
       },
-            {
+      {
         when: {
           settings: {
             childWallets: true,
@@ -708,12 +710,37 @@ const RAW_GRID_ICON_VARIANTS: Record<string, GridIconVariantConfig> = {
       },
     ],
   },
+  OOT_STICK_UPGRADE: {
+    default: {
+      icons: ['images/stick.png', 'images/stick.png', 'images/stick.png'],
+      overlays: [
+        'images/overlay_10.png',
+        'images/overlay_20.png',
+        'images/overlay_30_green.png',
+      ],
+      startUndimmed: false,
+      preItemPoolToggleItemId: 'OOT_STICK'
+    },
+  },
+  OOT_NUT_UPGRADE: {
+    default: {
+      icons: ['images/nut.png', 'images/nut.png', 'images/nut.png'],
+      overlays: [
+        'images/overlay_20.png',
+        'images/overlay_30.png',
+        'images/overlay_40_green.png',
+      ],
+      startUndimmed: false,
+      preItemPoolToggleItemId: 'OOT_NUTS_5',
+    },
+  },
 };
 
 interface ResolvedGridIconConfig {
   icons: string[];
   overlays?: Array<string | null>;
   startUndimmed: boolean;
+  preItemPoolToggleItemId?: string;
 }
 
 function normalizeGridIconDefaultConfig(
@@ -726,6 +753,7 @@ function normalizeGridIconDefaultConfig(
     icons: config.icons,
     overlays: config.overlays,
     startUndimmed: !!config.startUndimmed,
+    preItemPoolToggleItemId: config.preItemPoolToggleItemId,
   };
 }
 
@@ -745,6 +773,7 @@ function withBasePathForVariantConfig(
         value ? withBasePath(value) : null,
       ),
       startUndimmed: normalizedDefault.startUndimmed,
+      preItemPoolToggleItemId: normalizedDefault.preItemPoolToggleItemId,
     },
     variants: config.variants?.map((variant) => ({
       when: variant.when,
@@ -753,6 +782,7 @@ function withBasePathForVariantConfig(
         value ? withBasePath(value) : null,
       ),
       startUndimmed: variant.startUndimmed,
+      preItemPoolToggleItemId: variant.preItemPoolToggleItemId,
     })),
   };
 }
@@ -890,6 +920,7 @@ function getResolvedGridIconVariants(
         icons: matched.icons,
         overlays: matched.overlays,
         startUndimmed: !!matched.startUndimmed,
+        preItemPoolToggleItemId: matched.preItemPoolToggleItemId,
       };
     }
   }
@@ -900,8 +931,33 @@ function getResolvedGridIconVariants(
         icons: normalizedDefault.icons,
         overlays: normalizedDefault.overlays,
         startUndimmed: normalizedDefault.startUndimmed || false,
+        preItemPoolToggleItemId: normalizedDefault.preItemPoolToggleItemId,
       }
     : null;
+}
+
+function isPreItemPoolToggleActive(
+  resolved: ResolvedGridIconConfig,
+  context: GridIconVariantContext,
+): boolean {
+  if (!resolved.preItemPoolToggleItemId || !context.inventory) return false;
+  return (context.inventory.get(resolved.preItemPoolToggleItemId) || 0) > 0;
+}
+
+function getEffectiveGridCount(
+  count: number,
+  resolved: ResolvedGridIconConfig,
+  context: GridIconVariantContext,
+): number {
+  const normalized = Math.max(count, 0);
+  if (isPreItemPoolToggleActive(resolved, context)) {
+    // Extra pre-itempool stage shifts the progression by one:
+    // count 0 (pre-toggle) => stage 1
+    // count 1 => stage 2
+    // count 2 => stage 3
+    return normalized + 1;
+  }
+  return normalized;
 }
 
 function getResolvedGridVariantIndex(
@@ -940,7 +996,8 @@ export function getGridItemIcon(
     return getItemIcon(itemId);
   }
 
-  const variantIndex = getResolvedGridVariantIndex(count, resolved);
+  const effectiveCount = getEffectiveGridCount(count, resolved, context);
+  const variantIndex = getResolvedGridVariantIndex(effectiveCount, resolved);
   return resolved.icons[variantIndex] || getItemIcon(itemId);
 }
 
@@ -958,7 +1015,8 @@ export function getGridItemOverlay(
     return null;
   }
 
-  const variantIndex = getResolvedGridVariantIndex(count, resolved);
+  const effectiveCount = getEffectiveGridCount(count, resolved, context);
+  const variantIndex = getResolvedGridVariantIndex(effectiveCount, resolved);
   return resolved.overlays[variantIndex] || null;
 }
 
@@ -970,7 +1028,19 @@ export function startsGridItemUndimmed(
   context: GridIconVariantContext = {},
 ): boolean {
   const resolved = getResolvedGridIconVariants(itemId, context);
-  return !!resolved && resolved.startUndimmed;
+  if (!resolved) return false;
+  return resolved.startUndimmed || isPreItemPoolToggleActive(resolved, context);
+}
+
+/**
+ * Get the linked inventory item ID for an optional pre-itempool toggle state.
+ */
+export function getGridItemPreItemPoolToggleItemId(
+  itemId: string,
+  context: GridIconVariantContext = {},
+): string | null {
+  const resolved = getResolvedGridIconVariants(itemId, context);
+  return resolved?.preItemPoolToggleItemId || null;
 }
 
 /**
