@@ -644,7 +644,7 @@ const RAW_GRID_ICON_VARIANTS: Record<string, GridIconVariantConfig> = {
     ],
   },
 
-  OOT_WALLET: {
+  'OOT_WALLET|SHARED_WALLET': {
     default: {
       icons: ['images/wallet.png', 'images/wallet1.png', 'images/wallet2.png'],
       startUndimmed: true,
@@ -728,6 +728,135 @@ const RAW_GRID_ICON_VARIANTS: Record<string, GridIconVariantConfig> = {
           'images/wallet2.png',
           'images/wallet3.png',
           'images/wallet3.png',
+        ],
+        startUndimmed: false,
+      },
+    ],
+  },
+  MM_WALLET: {
+    default: {
+      icons: [
+        'images/items/mm_wallet99.png',
+        'images/items/mm_wallet.png',
+        'images/items/mm_giantwallet.png',
+      ],
+      overlays: [
+        'images/system/mm_overlay_99.png',
+        'images/system/mm_overlay_200.png',
+        'images/system/mm_overlay_500_green.png',
+      ],
+      startUndimmed: true,
+    },
+    variants: [
+      {
+        when: {
+          settings: {
+            childWallets: false,
+            colossalWallets: true,
+            bottomlessWallets: false,
+          },
+        },
+        icons: [
+          'images/items/mm_wallet99.png',
+          'images/items/mm_wallet.png',
+          'images/items/mm_giantwallet.png',
+          'images/wallet3.png',
+        ],
+        overlays: [
+          'images/system/mm_overlay_99.png',
+          'images/system/mm_overlay_200.png',
+          'images/system/mm_overlay_500_green.png',
+          null,
+        ],
+        startUndimmed: true,
+      },
+      {
+        when: {
+          settings: {
+            childWallets: false,
+            colossalWallets: true,
+            bottomlessWallets: true,
+          },
+        },
+        icons: [
+          'images/items/mm_wallet99.png',
+          'images/items/mm_wallet.png',
+          'images/items/mm_giantwallet.png',
+          'images/wallet3.png',
+          'images/wallet3.png',
+        ],
+        overlays: [
+          'images/system/mm_overlay_99.png',
+          'images/system/mm_overlay_200.png',
+          'images/system/mm_overlay_500_green.png',
+          null,
+          null,
+        ],
+        startUndimmed: true,
+      },
+      {
+        when: {
+          settings: {
+            childWallets: true,
+            colossalWallets: false,
+            bottomlessWallets: false,
+          },
+        },
+        icons: [
+          'images/items/mm_wallet99.png',
+          'images/items/mm_wallet.png',
+          'images/items/mm_giantwallet.png',
+        ],
+        overlays: [
+          'images/system/mm_overlay_99.png',
+          'images/system/mm_overlay_200.png',
+          'images/system/mm_overlay_500_green.png',
+        ],
+        startUndimmed: false,
+      },
+      {
+        when: {
+          settings: {
+            childWallets: true,
+            colossalWallets: true,
+            bottomlessWallets: false,
+          },
+        },
+        icons: [
+          'images/items/mm_wallet99.png',
+          'images/items/mm_wallet.png',
+          'images/items/mm_giantwallet.png',
+          'images/wallet3.png',
+        ],
+        overlays: [
+          'images/system/mm_overlay_99.png',
+          'images/system/mm_overlay_200.png',
+          'images/system/mm_overlay_500_green.png',
+          null,
+        ],
+        startUndimmed: false,
+      },
+      {
+        when: {
+          settings: {
+            childWallets: true,
+            colossalWallets: true,
+            bottomlessWallets: true,
+          },
+        },
+        icons: [
+          'images/items/mm_wallet99.png',
+          'images/items/mm_wallet.png',
+          'images/items/mm_giantwallet.png',
+          'images/wallet3.png',
+          'images/wallet3.png',
+        ],
+        overlays: [
+          'images/system/mm_overlay_99.png',
+          'images/system/mm_overlay_200.png',
+          'images/system/mm_overlay_500_green.png',
+          null,
+          null,
         ],
         startUndimmed: false,
       },
@@ -859,6 +988,18 @@ const RAW_GRID_ICON_VARIANTS: Record<string, GridIconVariantConfig> = {
   OOT_OCARINA: {
     default: {
       icons: ['images/fairyocarina.png', 'images/ocarina.png'],
+      startUndimmed: false,
+    },
+  },
+  'OOT_MAGIC_UPGRADE|SHARED_MAGIC_UPGRADE': {
+    default: {
+      icons: ['images/magic1.png', 'images/magic2.png'],
+      startUndimmed: false,
+    },
+  },
+  MM_MAGIC_UPGRADE: {
+    default: {
+      icons: ['images/items/mm_magic1.png', 'images/items/mm_magic2.png'],
       startUndimmed: false,
     },
   },
