@@ -109,8 +109,12 @@ const AUTO_SELECT_ON_OWNED_ITEM_IDS: Record<string, string> = {
 
 function syncAutoSelectedItemIds(inventory: Map<string, number>) {
   for (const [sourceItemId, targetItemId] of Object.entries(AUTO_SELECT_ON_OWNED_ITEM_IDS)) {
-    if ((inventory.get(sourceItemId) || 0) > 0 && (inventory.get(targetItemId) || 0) <= 0) {
-      inventory.set(targetItemId, 1)
+    if ((inventory.get(sourceItemId) || 0) > 0) {
+      if ((inventory.get(targetItemId) || 0) <= 0) {
+        inventory.set(targetItemId, 1)
+      }
+    } else {
+      inventory.delete(targetItemId)
     }
   }
 }
