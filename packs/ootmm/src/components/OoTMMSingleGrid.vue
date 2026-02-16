@@ -1,5 +1,10 @@
 <script setup lang="ts">
-import { getGridItemIcon, hasGridIconVariants, DEFAULT_ICON } from '../data/itemIcons'
+import {
+  getGridItemIcon,
+  hasGridIconVariants,
+  startsGridItemUndimmed,
+  DEFAULT_ICON,
+} from '../data/itemIcons'
 import { getItemName } from '../data/items'
 
 //Type definitions
@@ -132,6 +137,16 @@ function shouldShowItemCount(itemId: string): boolean {
   )
 }
 
+function isItemIconDisabled(itemId: string): boolean {
+  if (hasItem(itemId)) return false
+  return !startsGridItemUndimmed(itemId, {
+    maxCount: getItemMaxCount(itemId),
+    availableItemIds: props.availableItemIds,
+    inventory: props.inventory,
+    settings: props.settings,
+  })
+}
+
 function handleImageError(event: Event) {
   const img = event.target as HTMLImageElement
   if (img.src !== DEFAULT_ICON) {
@@ -223,7 +238,7 @@ function getEffectiveScale(element: unknown, parentScale: number): number {
               :src="getIconSrc(itemId)" 
               :alt="itemId"
               class="item-icon"
-              :class="{ disabled: !hasItem(itemId) }"
+              :class="{ disabled: isItemIconDisabled(itemId) }"
               @error="handleImageError"
             />
             <span v-if="shouldShowItemCount(itemId)" class="item-count">{{ getItemCount(itemId) }}</span>
@@ -263,7 +278,7 @@ function getEffectiveScale(element: unknown, parentScale: number): number {
                   :src="getIconSrc(itemId)" 
                   :alt="itemId"
                   class="item-icon"
-                  :class="{ disabled: !hasItem(itemId) }"
+                  :class="{ disabled: isItemIconDisabled(itemId) }"
                   @error="handleImageError"
                 />
                 <span v-if="shouldShowItemCount(itemId)" class="item-count">{{ getItemCount(itemId) }}</span>
@@ -293,7 +308,7 @@ function getEffectiveScale(element: unknown, parentScale: number): number {
                   :src="getIconSrc((ggchild as GridItem).item)" 
                   :alt="(ggchild as GridItem).item"
                   class="item-icon"
-                  :class="{ disabled: !hasItem((ggchild as GridItem).item) }"
+                  :class="{ disabled: isItemIconDisabled((ggchild as GridItem).item) }"
                   @error="handleImageError"
                 />
                 <span v-if="shouldShowItemCount((ggchild as GridItem).item)" class="item-count">{{ getItemCount((ggchild as GridItem).item) }}</span>
@@ -319,7 +334,7 @@ function getEffectiveScale(element: unknown, parentScale: number): number {
                     :src="getIconSrc((canvasChild as GridItem).item)" 
                     :alt="(canvasChild as GridItem).item"
                     class="item-icon"
-                    :class="{ disabled: !hasItem((canvasChild as GridItem).item) }"
+                    :class="{ disabled: isItemIconDisabled((canvasChild as GridItem).item) }"
                     @error="handleImageError"
                   />
                   <span v-if="shouldShowItemCount((canvasChild as GridItem).item)" class="item-count">{{ getItemCount((canvasChild as GridItem).item) }}</span>
@@ -347,7 +362,7 @@ function getEffectiveScale(element: unknown, parentScale: number): number {
                       :src="getIconSrc((gggchild as GridItem).item)" 
                       :alt="(gggchild as GridItem).item"
                       class="item-icon"
-                      :class="{ disabled: !hasItem((gggchild as GridItem).item) }"
+                      :class="{ disabled: isItemIconDisabled((gggchild as GridItem).item) }"
                       @error="handleImageError"
                     />
                     <span v-if="shouldShowItemCount((gggchild as GridItem).item)" class="item-count">{{ getItemCount((gggchild as GridItem).item) }}</span>
@@ -371,7 +386,7 @@ function getEffectiveScale(element: unknown, parentScale: number): number {
               :src="getIconSrc((grandchild as GridItem).item)" 
               :alt="(grandchild as GridItem).item"
               class="item-icon"
-              :class="{ disabled: !hasItem((grandchild as GridItem).item) }"
+              :class="{ disabled: isItemIconDisabled((grandchild as GridItem).item) }"
               @error="handleImageError"
             />
             <span v-if="shouldShowItemCount((grandchild as GridItem).item)" class="item-count">{{ getItemCount((grandchild as GridItem).item) }}</span>
@@ -397,7 +412,7 @@ function getEffectiveScale(element: unknown, parentScale: number): number {
                 :src="getIconSrc((canvasChild as GridItem).item)" 
                 :alt="(canvasChild as GridItem).item"
                 class="item-icon"
-                :class="{ disabled: !hasItem((canvasChild as GridItem).item) }"
+                :class="{ disabled: isItemIconDisabled((canvasChild as GridItem).item) }"
                 @error="handleImageError"
               />
               <span v-if="shouldShowItemCount((canvasChild as GridItem).item)" class="item-count">{{ getItemCount((canvasChild as GridItem).item) }}</span>
@@ -420,7 +435,7 @@ function getEffectiveScale(element: unknown, parentScale: number): number {
           :src="getIconSrc((child as GridItem).item)" 
           :alt="(child as GridItem).item"
           class="item-icon"
-          :class="{ disabled: !hasItem((child as GridItem).item) }"
+          :class="{ disabled: isItemIconDisabled((child as GridItem).item) }"
           @error="handleImageError"
         />
         <span v-if="shouldShowItemCount((child as GridItem).item)" class="item-count">{{ getItemCount((child as GridItem).item) }}</span>
@@ -446,7 +461,7 @@ function getEffectiveScale(element: unknown, parentScale: number): number {
             :src="getIconSrc((canvasChild as GridItem).item)" 
             :alt="(canvasChild as GridItem).item"
             class="item-icon"
-            :class="{ disabled: !hasItem((canvasChild as GridItem).item) }"
+            :class="{ disabled: isItemIconDisabled((canvasChild as GridItem).item) }"
             @error="handleImageError"
           />
           <span v-if="shouldShowItemCount((canvasChild as GridItem).item)" class="item-count">{{ getItemCount((canvasChild as GridItem).item) }}</span>
