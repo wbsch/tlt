@@ -36,6 +36,19 @@ const isShuffled = resolveExport<typeof IsShuffledMod.isShuffled>(IsShuffledMod,
 import type { World } from '@ootmm/core/logic/world'
 import type { PlayerItems, PlayerItem } from '@ootmm/core/items/index'
 
+/**
+ * WORKAROUND: The OoTMM core library seems to have been transpiled with an assumption
+ * that Map.entries() returns an array (or using a C-style for loop on the result),
+ * but in the browser it returns an Iterator which has no .length property.
+ * This wrapper Map overrides entries() to return an array instead of an iterator.
+ * See: https://github.com/microsoft/TypeScript/issues/33077 (maybe related?)
+ */
+class ArrayEntriesMap<K, V> extends Map<K, V> {
+  entries(): [K, V][] {
+    return Array.from(super.entries())
+  }
+}
+
 const PRECOMPLETED_MAJOR_DUNGEONS = new Set([
   'DT', 'DC', 'JJ', 'Forest', 'Fire', 'Water', 'Shadow', 'Spirit',
   'WF', 'SH', 'GB', 'ST',
@@ -960,16 +973,9 @@ export class OoTMMTracker implements TrackerPack {
 
   private buildPlayerItemsFromInventory(inventory: Map<string, number>): PlayerItems {
     // Convert inventory to PlayerItems format
-    const playerItems: PlayerItems = new Map()
-
-    // WORKAROUND: The OoTMM core library seems to have been transpiled with an assumption
-    // that Map.entries() returns an array (or using a C-style for loop on the result),
-    // but in the browser it returns an Iterator which has no .length property.
-    // We patch the map instance to return an array from entries().
-    // See: https://github.com/microsoft/TypeScript/issues/33077 (maybe related?)
-    ;(playerItems as unknown as { entries?: () => unknown[] }).entries = function() {
-      return Array.from(Map.prototype.entries.call(this))
-    }
+    // Use ArrayEntriesMap to ensure .entries() returns an array instead of an iterator,
+    // which is what the OoTMM library expects
+    const playerItems: PlayerItems = new ArrayEntriesMap()
 
     for (const [itemId, count] of inventory) {
       let item = (Items as Record<string, unknown>)[itemId]

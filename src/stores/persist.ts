@@ -145,7 +145,11 @@ export function piniaLocalStoragePlugin({ store }: PiniaPluginContext) {
     if (raw) {
       const parsed = JSON.parse(raw) as unknown;
       if (isPlainObject(parsed)) {
-        store.$patch(config.hydrate(parsed) as never);
+        // config.hydrate validates and returns a safe partial state update.
+        // TypeScript can't verify this matches the exact store type statically,
+        // but the hydrate function ensures type safety at runtime.
+        // @ts-expect-error - Pinia's $patch typing doesn't allow generic Record<string, unknown>
+        store.$patch(config.hydrate(parsed));
       }
     }
   } catch (error) {

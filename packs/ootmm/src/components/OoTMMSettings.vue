@@ -152,6 +152,10 @@ function optionValueString(value: unknown): string {
 
 function optionKey(value: unknown): string | number {
   if (typeof value === 'string' || typeof value === 'number') return value
+  // For objects, use JSON.stringify to ensure unique keys instead of "[object Object]"
+  if (typeof value === 'object' && value !== null) {
+    return JSON.stringify(value)
+  }
   return optionValueString(value)
 }
 

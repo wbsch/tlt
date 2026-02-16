@@ -2,45 +2,45 @@
 // This file allows TypeScript to accept OoTMM imports without type checking them
 
 declare module '@ootmm/core/logic/index' {
-  export function worldState(monitor: any, opts: any): Promise<any>
+  export function worldState(monitor: unknown, opts: unknown): Promise<unknown>
 }
 
 declare module '@ootmm/core/logic/pathfind' {
   export class Pathfinder {
-    constructor(worlds: any[], settings: any, startingItems: any)
-    run(state: any, options: any): any
+    constructor(worlds: unknown[], settings: unknown, startingItems: unknown)
+    run(state: unknown, options: unknown): unknown
   }
-  export type PathfinderState = any
+  export type PathfinderState = unknown
 }
 
 declare module '@ootmm/core/logic/locations' {
   export function makeLocation(id: string, worldId: number): string
   export function locationData(loc: string): { id: string; world: number }
   export function isLocationInDungeon(scene: string): boolean
-  export function isLocationOtherFairy(world: any, loc: string): boolean
+  export function isLocationOtherFairy(world: unknown, loc: string): boolean
 }
 
 declare module '@ootmm/core/logic/is-shuffled' {
-  export function isShuffled(settings: any, world: any, loc: string, dungeonLocations?: Set<string>): boolean
+  export function isShuffled(settings: unknown, world: unknown, loc: string, dungeonLocations?: Set<string>): boolean
 }
 
 declare module '@ootmm/core/logic/expr' {
-  export function exprTrue(): any
+  export function exprTrue(): unknown
 }
 
 declare module '@ootmm/core/logic/entrance' {
   export class LogicPassEntrances {
-    constructor(worldData: any)
-    run(): { worlds: any[] }
+    constructor(worldData: unknown)
+    run(): { worlds: unknown[] }
   }
 }
 
 declare module '@ootmm/core/items/index' {
-  export function makePlayerItem(item: any, player: number): any
-  export function itemByID(id: string): any
-  export const Items: Record<string, any>
-  export type PlayerItems = Map<any, number>
-  export type PlayerItem = any
+  export function makePlayerItem(item: unknown, player: number): unknown
+  export function itemByID(id: string): unknown
+  export const Items: Record<string, unknown>
+  export type PlayerItems = Map<unknown, number>
+  export type PlayerItem = unknown
 }
 
 declare module '@ootmm/core/monitor' {
@@ -50,15 +50,15 @@ declare module '@ootmm/core/monitor' {
 }
 
 declare module '@ootmm/core/settings/index' {
-  export function makeSettings(settings: any): any
-  export function mergeSettings(settings: any, patch: any): any
-  export const SPECIAL_CONDS: Record<string, any>
-  export const SPECIAL_CONDS_FIELDS: Record<string, any>
+  export function makeSettings(settings: unknown): unknown
+  export function mergeSettings(settings: unknown, patch: unknown): unknown
+  export const SPECIAL_CONDS: Record<string, unknown>
+  export const SPECIAL_CONDS_FIELDS: Record<string, unknown>
 }
 
 declare module '@ootmm/core/settings/data.js' {
-  export const SETTINGS: any[]
-  export const SUBCATEGORIES: any[]
+  export const SETTINGS: unknown[]
+  export const SUBCATEGORIES: unknown[]
 }
 
 declare module '@ootmm/core/settings/tricks' {
@@ -70,10 +70,10 @@ declare module '@ootmm/core/names' {
 }
 
 declare module '@ootmm/core/logic/world' {
-  export type World = any
+  export type World = unknown
 }
 
 declare module '@ootmm/data' {
-  export const POOL: any
-  export const WORLD: any
+  export const POOL: unknown
+  export const WORLD: unknown
 }
