@@ -6,223 +6,119 @@
   "height": 600,
   "markers": [
     {
-      "coords": [
-        243,
-        158
-      ],
+      "coords": [243, 158],
       "image": "npc",
-      "overlays": [
-        "child"
-      ],
+      "overlays": ["child"],
       "codes": "OOT Kakariko Sell Keaton Mask"
     },
     {
-      "coords": [
-        306,
-        411
-      ],
+      "coords": [306, 411],
       "image": "npc",
-      "overlays": [
-        "child",
-        "day"
-      ],
+      "overlays": ["child", "day"],
       "codes": "OOT Kakariko Anju Bottle"
     },
     {
-      "coords": [
-        322,
-        411
-      ],
+      "coords": [322, 411],
       "image": "npc",
-      "overlays": [
-        "adult",
-        "day"
-      ],
+      "overlays": ["adult", "day"],
       "codes": "OOT Kakariko Anju Egg"
     },
     {
-      "coords": [
-        322,
-        427
-      ],
+      "coords": [322, 427],
       "image": "npc",
-      "overlays": [
-        "adult",
-        "day"
-      ],
+      "overlays": ["adult", "day"],
       "codes": "OOT Kakariko Anju Cojiro"
     },
     {
-      "coords": [
-        609,
-        464
-      ],
+      "coords": [609, 464],
       "image": "heart_piece",
       "codes": "OOT Graveyard Crate HP"
     },
     {
-      "coords": [
-        662,
-        552
-      ],
+      "coords": [662, 552],
       "image": "npc",
-      "overlays": [
-        "child",
-        "day"
-      ],
+      "overlays": ["child", "day"],
       "codes": "OOT Graveyard Sell Spooky Mask"
     },
     {
-      "coords": [
-        720,
-        463
-      ],
+      "coords": [720, 463],
       "image": "npc",
-      "overlays": [
-        "child",
-        "night"
-      ],
+      "overlays": ["child", "night"],
       "codes": "OOT Graveyard Dampe Game"
     },
     {
-      "coords": [
-        293,
-        278
-      ],
+      "coords": [293, 278],
       "image": "npc",
       "codes": "OOT Kakariko Man on Roof"
     },
     {
-      "coords": [
-        944,
-        350
-      ],
+      "coords": [944, 350],
       "image": "chest",
       "codes": "OOT Graveyard Dampe Tomb Reward 1"
     },
     {
-      "coords": [
-        960,
-        350
-      ],
+      "coords": [960, 350],
       "image": "npc",
       "codes": "OOT Graveyard Dampe Tomb Reward 2"
     },
     {
-      "coords": [
-        290,
-        312
-      ],
+      "coords": [290, 312],
       "image": "song",
-      "overlays": [
-        "adult"
-      ],
+      "overlays": ["adult"],
       "codes": "OOT Kakariko Song Shadow"
     },
     {
-      "coords": [
-        216,
-        193
-      ],
+      "coords": [216, 193],
       "image": "gold_skulltula",
-      "overlays": [
-        "child",
-        "night"
-      ],
+      "overlays": ["child", "night"],
       "codes": "OOT Kakariko GS Bazaar"
     },
     {
-      "coords": [
-        249,
-        251
-      ],
+      "coords": [249, 251],
       "image": "gold_skulltula",
-      "overlays": [
-        "child",
-        "night"
-      ],
+      "overlays": ["child", "night"],
       "codes": "OOT Kakariko GS Ladder"
     },
     {
-      "coords": [
-        200,
-        311
-      ],
+      "coords": [200, 311],
       "image": "gold_skulltula",
-      "overlays": [
-        "child",
-        "night"
-      ],
+      "overlays": ["child", "night"],
       "codes": "OOT Kakariko GS Tree"
     },
     {
-      "coords": [
-        204,
-        381
-      ],
+      "coords": [204, 381],
       "image": "gold_skulltula",
-      "overlays": [
-        "child",
-        "night"
-      ],
+      "overlays": ["child", "night"],
       "codes": "OOT Kakariko GS House of Skulltula"
     },
     {
-      "coords": [
-        239,
-        435
-      ],
+      "coords": [239, 435],
       "image": "gold_skulltula",
-      "overlays": [
-        "adult",
-        "night"
-      ],
+      "overlays": ["adult", "night"],
       "codes": "OOT Kakariko GS Roof"
     },
     {
-      "coords": [
-        286,
-        359
-      ],
+      "coords": [286, 359],
       "image": "gold_skulltula",
-      "overlays": [
-        "child",
-        "night"
-      ],
+      "overlays": ["child", "night"],
       "codes": "OOT Kakariko GS Shooting Gallery"
     },
     {
-      "coords": [
-        644,
-        470
-      ],
+      "coords": [644, 470],
       "image": "gold_skulltula",
-      "overlays": [
-        "child"
-      ],
+      "overlays": ["child"],
       "codes": "OOT Graveyard GS Soil"
     },
     {
-      "coords": [
-        744,
-        568
-      ],
+      "coords": [744, 568],
       "image": "gold_skulltula",
-      "overlays": [
-        "child",
-        "night"
-      ],
+      "overlays": ["child", "night"],
       "codes": "OOT Graveyard GS Wall"
     },
     {
-      "coords": [
-        228,
-        190
-      ],
+      "coords": [228, 190],
       "image": "pot",
-      "overlays": [
-        "child"
-      ],
+      "overlays": ["child"],
       "codes": [
         "OOT Kakariko Pot 01",
         "OOT Kakariko Pot 02",
@@ -230,14 +126,9 @@
       ]
     },
     {
-      "coords": [
-        273,
-        252
-      ],
+      "coords": [273, 252],
       "image": "pot",
-      "overlays": [
-        "child"
-      ],
+      "overlays": ["child"],
       "codes": [
         "OOT Kakariko Pot 04",
         "OOT Kakariko Pot 05",
@@ -245,28 +136,15 @@
       ]
     },
     {
-      "coords": [
-        325,
-        268
-      ],
+      "coords": [325, 268],
       "image": "pot",
-      "overlays": [
-        "child"
-      ],
-      "codes": [
-        "OOT Kakariko Back Pot 1",
-        "OOT Kakariko Back Pot 2"
-      ]
+      "overlays": ["child"],
+      "codes": ["OOT Kakariko Back Pot 1", "OOT Kakariko Back Pot 2"]
     },
     {
-      "coords": [
-        215,
-        437
-      ],
+      "coords": [215, 437],
       "image": "pot",
-      "overlays": [
-        "child"
-      ],
+      "overlays": ["child"],
       "codes": [
         "OOT Kakariko Pot 07",
         "OOT Kakariko Pot 08",
@@ -274,10 +152,7 @@
       ]
     },
     {
-      "coords": [
-        728,
-        352
-      ],
+      "coords": [728, 352],
       "image": "pot",
       "codes": [
         "OOT Graveyard Dampe Tomb Pot 1",
@@ -286,10 +161,7 @@
       ]
     },
     {
-      "coords": [
-        772,
-        352
-      ],
+      "coords": [772, 352],
       "image": "pot",
       "codes": [
         "OOT Graveyard Dampe Tomb Pot 4",
@@ -298,10 +170,7 @@
       ]
     },
     {
-      "coords": [
-        184,
-        311
-      ],
+      "coords": [184, 311],
       "image": "grass",
       "codes": [
         "OOT Kakariko Grass 1",
@@ -312,10 +181,7 @@
       ]
     },
     {
-      "coords": [
-        357,
-        415
-      ],
+      "coords": [357, 415],
       "image": "grass",
       "codes": [
         "OOT Kakariko Grass 6",
@@ -324,10 +190,7 @@
       ]
     },
     {
-      "coords": [
-        597,
-        569
-      ],
+      "coords": [597, 569],
       "image": "grass",
       "codes": [
         "OOT Graveyard Grass 01",
@@ -345,254 +208,153 @@
       ]
     },
     {
-      "coords": [
-        782,
-        262
-      ],
+      "coords": [782, 262],
       "image": "green_rupee",
       "codes": "OOT Graveyard Dampe Tomb Rupee 1"
     },
     {
-      "coords": [
-        790,
-        226
-      ],
+      "coords": [790, 226],
       "image": "green_rupee",
       "codes": "OOT Graveyard Dampe Tomb Rupee 2"
     },
     {
-      "coords": [
-        807,
-        114
-      ],
+      "coords": [807, 114],
       "image": "green_rupee",
       "codes": "OOT Graveyard Dampe Tomb Rupee 3"
     },
     {
-      "coords": [
-        794,
-        62
-      ],
+      "coords": [794, 62],
       "image": "green_rupee",
       "codes": "OOT Graveyard Dampe Tomb Rupee 4"
     },
     {
-      "coords": [
-        854,
-        54
-      ],
+      "coords": [854, 54],
       "image": "green_rupee",
       "codes": "OOT Graveyard Dampe Tomb Rupee 5"
     },
     {
-      "coords": [
-        914,
-        126
-      ],
+      "coords": [914, 126],
       "image": "green_rupee",
       "codes": "OOT Graveyard Dampe Tomb Rupee 6"
     },
     {
-      "coords": [
-        926,
-        190
-      ],
+      "coords": [926, 190],
       "image": "green_rupee",
       "codes": [
-        "TODO KF 035 :: unnamed_stack > Kakariko > Kakariko Layers > Kakariko Freestanding :: Pasted Layer #98 :: 001-001-006-006.png",
         "OOT Graveyard Dampe Tomb Rupee 7"
       ]
     },
     {
-      "coords": [
-        858,
-        234
-      ],
+      "coords": [858, 234],
       "image": "green_rupee",
       "codes": "OOT Graveyard Dampe Tomb Rupee 8"
     },
     {
-      "coords": [
-        188,
-        237
-      ],
+      "coords": [188, 237],
       "image": "crate",
-      "overlays": [
-        "child"
-      ],
+      "overlays": ["child"],
       "codes": "OOT Kakariko Crate Child Near Trail"
     },
     {
-      "coords": [
-        204,
-        237
-      ],
+      "coords": [204, 237],
       "image": "crate",
-      "overlays": [
-        "adult"
-      ],
+      "overlays": ["adult"],
       "codes": [
         "OOT Kakariko Crate Adult Near Trail 1",
         "OOT Kakariko Crate Adult Near Trail 2"
       ]
     },
     {
-      "coords": [
-        271,
-        195
-      ],
+      "coords": [271, 195],
       "image": "crate",
-      "overlays": [
-        "adult"
-      ],
+      "overlays": ["adult"],
       "codes": "OOT Kakariko Crate Adult Near Potion Shop"
     },
     {
-      "coords": [
-        294,
-        253
-      ],
+      "coords": [294, 253],
       "image": "crate",
-      "overlays": [
-        "adult"
-      ],
+      "overlays": ["adult"],
       "codes": [
         "OOT Kakariko Crate Adult Back 3",
         "OOT Kakariko Crate Adult Back 4"
       ]
     },
     {
-      "coords": [
-        239,
-        271
-      ],
+      "coords": [239, 271],
       "image": "crate",
-      "overlays": [
-        "child"
-      ],
+      "overlays": ["child"],
       "codes": "OOT Kakariko Crate Child Near House"
     },
     {
-      "coords": [
-        253,
-        299
-      ],
+      "coords": [253, 299],
       "image": "crate",
-      "overlays": [
-        "adult"
-      ],
+      "overlays": ["adult"],
       "codes": [
         "OOT Kakariko Crate Adult Center 1",
         "OOT Kakariko Crate Adult Center 2"
       ]
     },
     {
-      "coords": [
-        336,
-        257
-      ],
+      "coords": [336, 257],
       "image": "crate",
-      "overlays": [
-        "adult"
-      ],
+      "overlays": ["adult"],
       "codes": [
         "OOT Kakariko Crate Adult Back 1",
         "OOT Kakariko Crate Adult Back 2"
       ]
     },
     {
-      "coords": [
-        353,
-        281
-      ],
+      "coords": [353, 281],
       "image": "crate",
-      "overlays": [
-        "child"
-      ],
+      "overlays": ["child"],
       "codes": "OOT Kakariko Crate Child Near Windmill Bottom"
     },
     {
-      "coords": [
-        352,
-        333
-      ],
+      "coords": [352, 333],
       "image": "crate",
-      "overlays": [
-        "child"
-      ],
+      "overlays": ["child"],
       "codes": "OOT Kakariko Crate Child Near Windmill Top"
     },
     {
-      "coords": [
-        270,
-        341
-      ],
+      "coords": [270, 341],
       "image": "crate",
-      "overlays": [
-        "adult"
-      ],
+      "overlays": ["adult"],
       "codes": "OOT Kakariko Crate Adult Near Archery"
     },
     {
-      "coords": [
-        189,
-        354
-      ],
+      "coords": [189, 354],
       "image": "crate",
-      "overlays": [
-        "adult"
-      ],
+      "overlays": ["adult"],
       "codes": "OOT Kakariko Crate Adult Near First House"
     },
     {
-      "coords": [
-        215,
-        415
-      ],
+      "coords": [215, 415],
       "image": "crate",
-      "overlays": [
-        "adult"
-      ],
+      "overlays": ["adult"],
       "codes": [
         "OOT Kakariko Crate Adult Near Impa 1",
         "OOT Kakariko Crate Adult Near Impa 2"
       ]
     },
     {
-      "coords": [
-        411,
-        389
-      ],
+      "coords": [411, 389],
       "image": "crate",
-      "overlays": [
-        "child"
-      ],
+      "overlays": ["child"],
       "codes": "OOT Kakariko Crate Child Near Graveyard"
     },
     {
-      "coords": [
-        601,
-        458
-      ],
+      "coords": [601, 458],
       "image": "crate",
       "codes": "OOT Graveyard Crate"
     },
     {
-      "coords": [
-        265,
-        382
-      ],
+      "coords": [265, 382],
       "image": "wonder_item_red_rupee",
-      "overlays": [
-        "child"
-      ],
+      "overlays": ["child"],
       "codes": "OOT Kakariko Wonder Item"
     },
     {
-      "coords": [
-        796,
-        274
-      ],
+      "coords": [796, 274],
       "image": "wonder_item_green_rupee",
       "codes": [
         "OOT Graveyard Dampe Tomb Wonder Item 01",
@@ -602,18 +364,12 @@
       ]
     },
     {
-      "coords": [
-        800,
-        226
-      ],
+      "coords": [800, 226],
       "image": "wonder_item_green_rupee",
       "codes": "OOT Graveyard Dampe Tomb Wonder Item 05"
     },
     {
-      "coords": [
-        780,
-        50
-      ],
+      "coords": [780, 50],
       "image": "wonder_item_green_rupee",
       "codes": [
         "OOT Graveyard Dampe Tomb Wonder Item 06",
@@ -622,18 +378,12 @@
       ]
     },
     {
-      "coords": [
-        868,
-        54
-      ],
+      "coords": [868, 54],
       "image": "wonder_item_green_rupee",
       "codes": "OOT Graveyard Dampe Tomb Wonder Item 09"
     },
     {
-      "coords": [
-        926,
-        115
-      ],
+      "coords": [926, 115],
       "image": "wonder_item_green_rupee",
       "codes": [
         "OOT Graveyard Dampe Tomb Wonder Item 10",
@@ -641,10 +391,7 @@
       ]
     },
     {
-      "coords": [
-        938,
-        198
-      ],
+      "coords": [938, 198],
       "image": "wonder_item_green_rupee",
       "codes": [
         "OOT Graveyard Dampe Tomb Wonder Item 12",
@@ -653,32 +400,18 @@
       ]
     },
     {
-      "coords": [
-        850,
-        234
-      ],
+      "coords": [850, 234],
       "image": "wonder_item_green_rupee",
       "codes": "OOT Graveyard Dampe Tomb Wonder Item 15"
     },
     {
-      "coords": [
-        249,
-        235
-      ],
+      "coords": [249, 235],
       "image": "butterfly",
-      "overlays": [
-        "child"
-      ],
-      "codes": [
-        "OOT Kakariko Butterfly 1",
-        "OOT Kakariko Butterfly 2"
-      ]
+      "overlays": ["child"],
+      "codes": ["OOT Kakariko Butterfly 1", "OOT Kakariko Butterfly 2"]
     },
     {
-      "coords": [
-        665,
-        516
-      ],
+      "coords": [665, 516],
       "image": "butterfly",
       "codes": [
         "OOT Graveyard Butterfly 1",
@@ -687,34 +420,22 @@
       ]
     },
     {
-      "coords": [
-        204,
-        395
-      ],
+      "coords": [204, 395],
       "image": "rock",
       "codes": "OOT Kakariko Rock Near Spider House"
     },
     {
-      "coords": [
-        266,
-        165
-      ],
+      "coords": [266, 165],
       "image": "rock",
       "codes": "OOT Kakariko Rock Near Gate"
     },
     {
-      "coords": [
-        590,
-        558
-      ],
+      "coords": [590, 558],
       "image": "rock",
       "codes": "OOT Graveyard Rock"
     },
     {
-      "coords": [
-        644,
-        454
-      ],
+      "coords": [644, 454],
       "image": "soft_soil",
       "codes": [
         "OOT Graveyard Soil 1",
@@ -723,192 +444,374 @@
       ]
     },
     {
-      "coords": [
-        838,
-        490
-      ],
+      "coords": [838, 490],
       "image": "gossip_stone",
       "codes": "OOT Graveyard Gossip"
     },
     {
-      "coords": [
-        229,
-        417
-      ],
+      "coords": [229, 417],
       "image": "interior_entrance",
-      "codes": "TODO KF 066 :: unnamed_stack > Kakariko > Kakariko Layers > Kakariko Entrances :: Pasted Layer #46 :: 001-001-013-000.png"
+      "type": "submenu",
+      "markers": [
+        {
+          "image": "wonder_item_red_rupee",
+          "codes": "OOT Kakariko Impa House Wonder Item"
+        },
+        {
+          "image": "heart_piece",
+          "codes": "OOT Kakariko Impa House HP"
+        },
+        {
+          "image": "cow",
+          "codes": "OOT Kakariko Cow"
+        }
+      ]
     },
     {
-      "coords": [
-        271,
-        431
-      ],
+      "coords": [271, 431],
       "image": "interior_entrance",
-      "codes": "TODO KF 067 :: unnamed_stack > Kakariko > Kakariko Layers > Kakariko Entrances :: Pasted Layer #47 :: 001-001-013-001.png"
+      "type": "submenu",
+      "markers": [
+        {
+          "image": "wonder_item_red_rupee",
+          "codes": "OOT Kakariko Impa House Wonder Item"
+        },
+        {
+          "image": "heart_piece",
+          "codes": "OOT Kakariko Impa House HP"
+        },
+        {
+          "image": "cow",
+          "codes": "OOT Kakariko Cow"
+        }
+      ]
     },
     {
-      "coords": [
-        229,
-        365
-      ],
+      "coords": [229, 365],
       "image": "interior_entrance",
-      "codes": "TODO KF 068 :: unnamed_stack > Kakariko > Kakariko Layers > Kakariko Entrances :: Pasted Layer #48 :: 001-001-013-002.png"
+      "type": "submenu",
+      "markers": [
+        {
+          "image": "npc",
+          "codes": "OOT Skulltula House 10 Tokens"
+        },
+        {
+          "image": "npc",
+          "codes": "OOT Skulltula House 20 Tokens"
+        },
+        {
+          "image": "npc",
+          "codes": "OOT Skulltula House 30 Tokens"
+        },
+        {
+          "image": "npc",
+          "codes": "OOT Skulltula House 40 Tokens"
+        },
+        {
+          "image": "npc",
+          "codes": "OOT Skulltula House 50 Tokens"
+        }
+      ]
     },
     {
-      "coords": [
-        270,
-        357
-      ],
+      "coords": [270, 357],
       "image": "interior_entrance",
-      "overlays": [
-        "adult",
-        "day"
-      ],
-      "codes": "TODO KF 069 :: unnamed_stack > Kakariko > Kakariko Layers > Kakariko Entrances :: Pasted Layer #49 :: 001-001-013-003.png"
+      "overlays": ["adult", "day"],
+      "type": "submenu",
+      "markers": [
+        {
+          "image": "npc",
+          "overlays": ["adult"],
+          "codes": "OOT Shooting Gallery Adult"
+        }
+      ]
     },
     {
-      "coords": [
-        252,
-        287
-      ],
+      "coords": [252, 287],
       "image": "interior_entrance",
       "codes": "TODO KF 070 :: unnamed_stack > Kakariko > Kakariko Layers > Kakariko Entrances :: Pasted Layer #50 :: 001-001-013-004.png"
     },
     {
-      "coords": [
-        229,
-        311
-      ],
+      "coords": [229, 311],
       "image": "bomb_grotto",
-      "codes": "TODO KF 071 :: unnamed_stack > Kakariko > Kakariko Layers > Kakariko Entrances :: Pasted Layer #51 :: 001-001-013-005.png"
+      "type": "submenu",
+      "markers": [
+        {
+          "image": "chest",
+          "codes": "OOT Kakariko Grotto Front"
+        }
+      ]
     },
     {
-      "coords": [
-        319,
-        328
-      ],
+      "coords": [319, 328],
       "image": "dungeon_entrance",
-      "overlays": [
-        "child"
-      ],
+      "overlays": ["child"],
       "codes": "TODO KF 072 :: unnamed_stack > Kakariko > Kakariko Layers > Kakariko Entrances :: Pasted Layer #52 :: 001-001-013-006.png"
     },
     {
-      "coords": [
-        230,
-        219
-      ],
+      "coords": [230, 219],
       "image": "interior_entrance",
-      "overlays": [
-        "adult",
-        "day"
-      ],
-      "codes": "TODO KF 073 :: unnamed_stack > Kakariko > Kakariko Layers > Kakariko Entrances :: Pasted Layer #53 :: 001-001-013-007.png"
+      "overlays": ["adult", "day"],
+      "type": "submenu",
+      "markers": [
+        {
+          "image": "shop",
+          "overlays": ["adult"],
+          "codes": [
+            "OOT Kakariko Bazaar Item 1",
+            "OOT Kakariko Bazaar Item 2",
+            "OOT Kakariko Bazaar Item 3",
+            "OOT Kakariko Bazaar Item 4",
+            "OOT Kakariko Bazaar Item 5",
+            "OOT Kakariko Bazaar Item 6",
+            "OOT Kakariko Bazaar Item 7",
+            "OOT Kakariko Bazaar Item 8"
+          ]
+        }
+      ]
     },
     {
-      "coords": [
-        276,
-        225
-      ],
+      "coords": [276, 225],
       "image": "interior_entrance",
-      "overlays": [
-        "adult",
-        "day"
-      ],
-      "codes": "TODO KF 074 :: unnamed_stack > Kakariko > Kakariko Layers > Kakariko Entrances :: Pasted Layer #54 :: 001-001-013-008.png"
+      "overlays": ["adult", "day"],
+      "type": "submenu",
+      "markers": [
+        {
+          "image": "shop",
+          "overlays": ["adult"],
+          "codes": [
+            "OOT Market Potion Shop Item 1",
+            "OOT Market Potion Shop Item 2",
+            "OOT Market Potion Shop Item 3",
+            "OOT Market Potion Shop Item 4",
+            "OOT Market Potion Shop Item 5",
+            "OOT Market Potion Shop Item 6",
+            "OOT Market Potion Shop Item 7",
+            "OOT Market Potion Shop Item 8"
+          ]
+        }
+      ]
     },
     {
-      "coords": [
-        302,
-        227
-      ],
+      "coords": [302, 227],
       "image": "interior_entrance",
-      "overlays": [
-        "adult",
-        "day"
-      ],
-      "codes": "TODO KF 075 :: unnamed_stack > Kakariko > Kakariko Layers > Kakariko Entrances :: Pasted Layer #55 :: 001-001-013-009.png"
+      "overlays": ["adult", "day"],
+      "type": "submenu",
+      "markers": [
+        {
+          "image": "shop",
+          "overlays": ["adult"],
+          "codes": [
+            "OOT Market Potion Shop Item 1",
+            "OOT Market Potion Shop Item 2",
+            "OOT Market Potion Shop Item 3",
+            "OOT Market Potion Shop Item 4",
+            "OOT Market Potion Shop Item 5",
+            "OOT Market Potion Shop Item 6",
+            "OOT Market Potion Shop Item 7",
+            "OOT Market Potion Shop Item 8"
+          ]
+        }
+      ]
     },
     {
-      "coords": [
-        314,
-        251
-      ],
-      "image": "overworld_entrance",
-      "codes": "TODO KF 076 :: unnamed_stack > Kakariko > Kakariko Layers > Kakariko Entrances :: Pasted Layer #56 :: 001-001-013-010.png"
+      "coords": [314, 251],
+      "image": "grotto",
+      "type": "submenu",
+      "markers": [
+        {
+          "image": "chest",
+          "codes": "OOT Kakariko Grotto Back"
+        },
+        {
+          "image": "grass",
+          "codes": [
+            "OOT Kakariko Grotto Back Grass 1",
+            "OOT Kakariko Grotto Back Grass 2",
+            "OOT Kakariko Grotto Back Grass 3",
+            "OOT Kakariko Grotto Back Grass 4"
+          ]
+        },
+        {
+          "image": "beehive",
+          "codes": [
+            "OOT Kakariko Grotto Back Hive 1",
+            "OOT Kakariko Grotto Back Hive 2"
+          ]
+        },
+        {
+          "image": "butterfly",
+          "codes": [
+            "OOT Kakariko Grotto Butterfly 1",
+            "OOT Kakariko Grotto Butterfly 2",
+            "OOT Kakariko Grotto Butterfly 3"
+          ]
+        },
+        {
+          "image": "gossip_stone",
+          "codes": "OOT Kakariko Gossip Grotto"
+        }
+      ]
     },
     {
-      "coords": [
-        314,
-        269
-      ],
+      "coords": [314, 269],
       "image": "interior_entrance",
-      "overlays": [
-        "day"
-      ],
-      "codes": "TODO KF 077 :: unnamed_stack > Kakariko > Kakariko Layers > Kakariko Entrances :: Pasted Layer #57 :: 001-001-013-011.png"
+      "overlays": ["day"],
+      "type": "submenu",
+      "markers": [
+        {
+          "image": "npc",
+          "overlays": ["adult"],
+          "codes": "OOT Kakariko Potion Shop Odd Potion"
+        },
+        {
+          "image": "shop",
+          "overlays": ["adult"],
+          "codes": "OOT Kakariko Potion Shop Buy Blue Potion"
+        }
+      ]
     },
     {
-      "coords": [
-        366,
-        323
-      ],
+      "coords": [366, 323],
       "image": "interior_entrance",
-      "codes": "TODO KF 078 :: unnamed_stack > Kakariko > Kakariko Layers > Kakariko Entrances :: Pasted Layer #58 :: 001-001-013-012.png"
+      "type": "submenu",
+      "markers": [
+        {
+          "image": "song",
+          "overlays": ["adult"],
+          "codes": "OOT Windmill Song of Storms"
+        },
+        {
+          "image": "heart_piece",
+          "codes": "OOT Windmill HP"
+        }
+      ]
     },
     {
-      "coords": [
-        632,
-        562
-      ],
+      "coords": [632, 562],
       "image": "interior_entrance",
       "codes": "TODO KF 079 :: unnamed_stack > Kakariko > Kakariko Layers > Kakariko Entrances :: Pasted Layer #59 :: 001-001-013-013.png"
     },
     {
-      "coords": [
-        681,
-        516
-      ],
+      "coords": [681, 516],
       "image": "grotto",
-      "codes": "TODO KF 080 :: unnamed_stack > Kakariko > Kakariko Layers > Kakariko Entrances :: Pasted Layer #60 :: 001-001-013-014.png"
+      "type": "submenu",
+      "markers": [
+        {
+          "image": "chest",
+          "codes": "OOT Graveyard Fairy Tomb"
+        },
+        {
+          "image": "fairy",
+          "codes": [
+            "OOT Graveyard Fairy Fountain Fairy 1",
+            "OOT Graveyard Fairy Fountain Fairy 2",
+            "OOT Graveyard Fairy Fountain Fairy 3",
+            "OOT Graveyard Fairy Fountain Fairy 4",
+            "OOT Graveyard Fairy Fountain Fairy 5",
+            "OOT Graveyard Fairy Fountain Fairy 6",
+            "OOT Graveyard Fairy Fountain Fairy 7",
+            "OOT Graveyard Fairy Fountain Fairy 8"
+          ]
+        }
+      ]
     },
     {
-      "coords": [
-        728,
-        538
-      ],
+      "coords": [728, 538],
       "image": "grotto",
-      "codes": "TODO KF 081 :: unnamed_stack > Kakariko > Kakariko Layers > Kakariko Entrances :: Pasted Layer #61 :: 001-001-013-015.png"
+      "type": "submenu",
+      "markers": [
+        {
+          "image": "chest",
+          "codes": "OOT Graveyard ReDead Tomb"
+        }
+      ]
     },
     {
-      "coords": [
-        668,
-        456
-      ],
+      "coords": [668, 456],
       "image": "grotto",
-      "codes": "TODO KF 082 :: unnamed_stack > Kakariko > Kakariko Layers > Kakariko Entrances :: Pasted Layer #62 :: 001-001-013-016.png"
+      "type": "submenu",
+      "markers": [
+        {
+          "image": "pot",
+          "codes": [
+            "OOT Graveyard Dampe Tomb Pot 1",
+            "OOT Graveyard Dampe Tomb Pot 2",
+            "OOT Graveyard Dampe Tomb Pot 3",
+            "OOT Graveyard Dampe Tomb Pot 4",
+            "OOT Graveyard Dampe Tomb Pot 5",
+            "OOT Graveyard Dampe Tomb Pot 6"
+          ]
+        },
+        {
+          "image": "green_rupee",
+          "codes": [
+            "OOT Graveyard Dampe Tomb Rupee 1",
+            "OOT Graveyard Dampe Tomb Rupee 2",
+            "OOT Graveyard Dampe Tomb Rupee 3",
+            "OOT Graveyard Dampe Tomb Rupee 4",
+            "OOT Graveyard Dampe Tomb Rupee 5",
+            "OOT Graveyard Dampe Tomb Rupee 6",
+            "OOT Graveyard Dampe Tomb Rupee 7",
+            "OOT Graveyard Dampe Tomb Rupee 8"
+          ]
+        },
+        {
+          "image": "wonder_item_green_rupee",
+          "codes": [
+            "OOT Graveyard Dampe Tomb Wonder Item 01",
+            "OOT Graveyard Dampe Tomb Wonder Item 02",
+            "OOT Graveyard Dampe Tomb Wonder Item 03",
+            "OOT Graveyard Dampe Tomb Wonder Item 04",
+            "OOT Graveyard Dampe Tomb Wonder Item 05",
+            "OOT Graveyard Dampe Tomb Wonder Item 06",
+            "OOT Graveyard Dampe Tomb Wonder Item 07",
+            "OOT Graveyard Dampe Tomb Wonder Item 08",
+            "OOT Graveyard Dampe Tomb Wonder Item 09",
+            "OOT Graveyard Dampe Tomb Wonder Item 10",
+            "OOT Graveyard Dampe Tomb Wonder Item 11",
+            "OOT Graveyard Dampe Tomb Wonder Item 12",
+            "OOT Graveyard Dampe Tomb Wonder Item 13",
+            "OOT Graveyard Dampe Tomb Wonder Item 14",
+            "OOT Graveyard Dampe Tomb Wonder Item 15"
+          ]
+        },
+        {
+          "image": "chest",
+          "codes": "OOT Graveyard Dampe Tomb Reward 1"
+        },
+        {
+          "image": "npc",
+          "codes": "OOT Graveyard Dampe Tomb Reward 2"
+        }
+      ]
     },
     {
-      "coords": [
-        788,
-        511
-      ],
+      "coords": [788, 511],
       "image": "grotto",
-      "codes": "TODO KF 083 :: unnamed_stack > Kakariko > Kakariko Layers > Kakariko Entrances :: Pasted Layer #63 :: 001-001-013-017.png"
+      "type": "submenu",
+      "markers": [
+        {
+          "image": "chest",
+          "codes": "OOT Graveyard Royal Tomb Chest"
+        },
+        {
+          "image": "big_fairy_spot",
+          "codes": "OOT Graveyard Royal Tomb Big Fairy"
+        },
+        {
+          "image": "song",
+          "codes": "OOT Graveyard Royal Tomb Song"
+        }
+      ]
     },
     {
-      "coords": [
-        825,
-        509
-      ],
+      "coords": [825, 509],
       "image": "warp_spot",
       "codes": "TODO KF 084 :: unnamed_stack > Kakariko > Kakariko Layers > Kakariko Entrances :: Pasted Layer #64 :: 001-001-013-018.png"
     },
     {
-      "coords": [
-        984,
-        509
-      ],
+      "coords": [984, 509],
       "image": "dungeon_entrance",
       "codes": "TODO KF 085 :: unnamed_stack > Kakariko > Kakariko Layers > Kakariko Entrances :: Pasted Layer #65 :: 001-001-013-019.png"
     }
