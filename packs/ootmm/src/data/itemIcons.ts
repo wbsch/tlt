@@ -1051,6 +1051,15 @@ const RAW_GRID_ICON_VARIANTS: Record<string, GridIconVariantConfig> = {
       startUndimmed: false,
     },
   },
+  MM_SONG_GORON_HALF: {
+    default: {
+      icons: [
+        'images/items/mm_half_lullaby.png',
+        'images/items/mm_lullaby.png',
+      ],
+      startUndimmed: false,
+    },
+  },
 };
 
 interface ResolvedGridIconConfig {
