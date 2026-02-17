@@ -22,6 +22,11 @@ export type TestCase = {
 
 export type RunMode = 'normal' | 'glitched';
 
+export type RunMeta = {
+  index: number;
+  workerId?: number;
+};
+
 export type RunDebug = {
   settingsPatch?: Record<string, unknown>;
   settingsWarnings?: string[];
@@ -40,7 +45,7 @@ export type PathfinderTestAdapter = {
   run: (
     test: TestCase,
     mode: RunMode,
-    meta: { index: number },
+    meta: RunMeta,
   ) => Promise<RunOutput>;
   normalizeLocation?: (locationId: string) => string;
   resolveEventName?: (expected: string, events: Set<string>) => string | null;
@@ -238,6 +243,7 @@ export type TestRunSummary = {
 export type TestRunOptions = {
   only?: Set<number>;
   verboseLevel?: number;
+  workers?: number;
 };
 
 const formatDuration = (ms: number): string => `${ms.toFixed(1)}ms`;
@@ -259,53 +265,63 @@ export const runTestCases = async (
     adapter.normalizeLocation ?? ((value: string) => value);
   const resolveEventName = adapter.resolveEventName ?? resolveEventNameDefault;
   const verboseLevel = options.verboseLevel ?? 0;
-  let executed = 0;
-  const totalPlanned = options.only
+  const plannedIndices = options.only
     ? Array.from(options.only).filter(
         (index) => index >= 0 && index < tests.length,
-      ).length
-    : tests.length;
+      ).sort((a, b) => a - b)
+    : Array.from({ length: tests.length }, (_, index) => index);
+  const totalPlanned = plannedIndices.length;
   const totalStart = Date.now();
+  const requestedWorkers = options.workers ?? 1;
+  const workerCount =
+    Number.isFinite(requestedWorkers) && requestedWorkers > 0
+      ? Math.max(1, Math.floor(requestedWorkers))
+      : 1;
+  const activeWorkers =
+    totalPlanned > 0 ? Math.min(workerCount, totalPlanned) : 1;
 
-  for (let i = 0; i < tests.length; i++) {
-    if (options.only && !options.only.has(i)) {
-      continue;
-    }
-    executed++;
-    const test = tests[i];
+  const runSingleTest = async (
+    index: number,
+    position: number,
+    workerId: number,
+  ): Promise<void> => {
+    const test = tests[index];
+    const ordinal = position + 1;
     const failureMessages: string[] = [];
     const runStart = Date.now();
 
     if (verboseLevel >= 1) {
-      console.log(`Running test ${executed}/${totalPlanned} (index ${i})`);
+      console.log(`Running test ${ordinal}/${totalPlanned} (index ${index})`);
     }
 
     if (verboseLevel >= 2) {
-      console.log(`Test ${i} input:\n${JSON.stringify(test.given, null, 2)}`);
       console.log(
-        `Test ${i} expected:\n${JSON.stringify(test.result, null, 2)}`,
+        `Test ${index} input:\n${JSON.stringify(test.given, null, 2)}`,
+      );
+      console.log(
+        `Test ${index} expected:\n${JSON.stringify(test.result, null, 2)}`,
       );
     }
 
-    const normal = await adapter.run(test, 'normal', { index: i });
-    const glitched = await adapter.run(test, 'glitched', { index: i });
+    const normal = await adapter.run(test, 'normal', { index, workerId });
+    const glitched = await adapter.run(test, 'glitched', { index, workerId });
 
     const debug = normal.debug;
     if (debug?.warnings && debug.warnings.length > 0) {
       for (const warning of debug.warnings) {
-        console.warn(`[pathfinder-tests] Test ${i}: ${warning}`);
+        console.warn(`[pathfinder-tests] Test ${index}: ${warning}`);
       }
     }
 
     if (verboseLevel >= 3) {
       if (debug?.settingsPatch) {
         console.log(
-          `Test ${i} settings patch:\n${JSON.stringify(debug.settingsPatch, null, 2)}`,
+          `Test ${index} settings patch:\n${JSON.stringify(debug.settingsPatch, null, 2)}`,
         );
       }
       if (debug?.settingsWarnings && debug.settingsWarnings.length > 0) {
         console.log(
-          `Test ${i} settings warnings: ${debug.settingsWarnings.join(', ')}`,
+          `Test ${index} settings warnings: ${debug.settingsWarnings.join(', ')}`,
         );
       }
     }
@@ -376,7 +392,7 @@ export const runTestCases = async (
 
     const testDuration = Date.now() - runStart;
     if (verboseLevel >= 1) {
-      console.log(`Test ${i} runtime: ${formatDuration(testDuration)}`);
+      console.log(`Test ${index} runtime: ${formatDuration(testDuration)}`);
     }
 
     if (failureMessages.length > 0) {
@@ -386,72 +402,72 @@ export const runTestCases = async (
         const tricksCount = test.given.tricks?.length ?? 0;
         const entrancesCount = test.given.entrances?.length ?? 0;
         console.log(
-          `Test ${i} failed (items=${itemsCount}, settings=${settingsCount}, tricks=${tricksCount}, entrances=${entrancesCount})`,
+          `Test ${index} failed (items=${itemsCount}, settings=${settingsCount}, tricks=${tricksCount}, entrances=${entrancesCount})`,
         );
       }
 
       if (verboseLevel >= 2) {
         console.log(
-          `Test ${i} actual reachable (normal): ${formatList(normal.reachable)}`,
+          `Test ${index} actual reachable (normal): ${formatList(normal.reachable)}`,
         );
         console.log(
-          `Test ${i} actual reachable (glitched): ${formatList(glitched.reachable)}`,
+          `Test ${index} actual reachable (glitched): ${formatList(glitched.reachable)}`,
         );
         console.log(
-          `Test ${i} actual events (normal): ${formatList(normal.events)}`,
+          `Test ${index} actual events (normal): ${formatList(normal.events)}`,
         );
         if (missingExpectedNormal.length > 0) {
           console.log(
-            `Test ${i} missing expected (normal): ${missingExpectedNormal.join(', ')}`,
+            `Test ${index} missing expected (normal): ${missingExpectedNormal.join(', ')}`,
           );
         }
         if (missingExpectedGlitched.length > 0) {
           console.log(
-            `Test ${i} missing expected (glitched): ${missingExpectedGlitched.join(', ')}`,
+            `Test ${index} missing expected (glitched): ${missingExpectedGlitched.join(', ')}`,
           );
         }
         if (unexpectedNormal.length > 0) {
           console.log(
-            `Test ${i} unexpected reachable (normal): ${unexpectedNormal.join(', ')}`,
+            `Test ${index} unexpected reachable (normal): ${unexpectedNormal.join(', ')}`,
           );
         }
         if (unexpectedGlitched.length > 0) {
           console.log(
-            `Test ${i} unexpected reachable (glitched): ${unexpectedGlitched.join(', ')}`,
+            `Test ${index} unexpected reachable (glitched): ${unexpectedGlitched.join(', ')}`,
           );
         }
         if (eventMismatches.length > 0) {
           console.log(
-            `Test ${i} event mismatches: ${eventMismatches.join('; ')}`,
+            `Test ${index} event mismatches: ${eventMismatches.join('; ')}`,
           );
         }
       }
 
       failures.push({
-        index: i,
+        index,
         messages: failureMessages,
       });
     } else if (verboseLevel >= 3) {
       console.log(
-        `Test ${i} actual reachable (normal): ${formatList(normal.reachable)}`,
+        `Test ${index} actual reachable (normal): ${formatList(normal.reachable)}`,
       );
       console.log(
-        `Test ${i} actual reachable (glitched): ${formatList(glitched.reachable)}`,
+        `Test ${index} actual reachable (glitched): ${formatList(glitched.reachable)}`,
       );
       console.log(
-        `Test ${i} actual events (normal): ${formatList(normal.events)}`,
+        `Test ${index} actual events (normal): ${formatList(normal.events)}`,
       );
     }
 
     if (verboseLevel >= 3) {
       if (normalReachable.size > 0) {
         console.log(
-          `Test ${i} normalized reachable ids (normal): ${formatList(normalReachable)}`,
+          `Test ${index} normalized reachable ids (normal): ${formatList(normalReachable)}`,
         );
       }
       if (glitchedReachable.size > 0) {
         console.log(
-          `Test ${i} normalized reachable ids (glitched): ${formatList(glitchedReachable)}`,
+          `Test ${index} normalized reachable ids (glitched): ${formatList(glitchedReachable)}`,
         );
       }
       if (eventMapping.length > 0) {
@@ -460,12 +476,33 @@ export const runTestCases = async (
             ([expected, resolved]) => `${expected} -> ${resolved ?? 'missing'}`,
           )
           .join(', ');
-        console.log(`Test ${i} event mapping: ${mappingText}`);
+        console.log(`Test ${index} event mapping: ${mappingText}`);
       }
     }
-  }
+  };
 
-  const total = options.only ? executed : tests.length;
+  let cursor = 0;
+  const workers: Promise<void>[] = [];
+  for (let workerId = 0; workerId < activeWorkers; workerId++) {
+    workers.push(
+      (async () => {
+        while (true) {
+          const position = cursor;
+          cursor++;
+          if (position >= plannedIndices.length) {
+            return;
+          }
+          const index = plannedIndices[position];
+          await runSingleTest(index, position, workerId);
+        }
+      })(),
+    );
+  }
+  await Promise.all(workers);
+
+  failures.sort((a, b) => a.index - b.index);
+
+  const total = totalPlanned;
   const failed = failures.length;
   const passed = total - failed;
 

@@ -5,6 +5,7 @@ import {
   type RunMode,
   type TestCase,
 } from './core';
+import os from 'node:os';
 import { chromium, type Browser, type BrowserContext, type Page } from 'playwright';
 import * as SettingsMod from '@ootmm/core/settings/index';
 
@@ -869,24 +870,45 @@ const parseCli = (): CliOptions => {
   };
 };
 
+const getDefaultWorkerCount = (): number => {
+  const parallelism = typeof os.availableParallelism === 'function'
+    ? os.availableParallelism()
+    : os.cpus().length;
+  return Math.max(1, Math.floor(parallelism / 2));
+};
+
 const main = async () => {
   const options = parseCli();
   for (const warning of options.warnings) {
     console.warn(`[pathfinder-tests] ${warning}`);
   }
 
-  const runner = new WebRunner(options.url, options.headed);
+  const workerCount = getDefaultWorkerCount();
+  const runners = new Map<number, WebRunner>();
+  const getRunner = (workerId: number): WebRunner => {
+    const existing = runners.get(workerId);
+    if (existing) return existing;
+    const created = new WebRunner(options.url, options.headed);
+    runners.set(workerId, created);
+    return created;
+  };
+
   const adapter: PathfinderTestAdapter = {
     name: 'ootmm-web-playwright',
-    run: (test, mode, meta) => runner.runTest(test, mode, meta),
+    run: (test, mode, meta) => getRunner(meta.workerId ?? 0).runTest(test, mode, meta),
     normalizeLocation: normalizeLocationId,
     resolveEventName: resolveEventNameDefault,
   };
 
   try {
+    if (options.verboseLevel >= 1) {
+      console.log(`[pathfinder-tests] Running with ${workerCount} workers`);
+    }
+
     const summary = await runTestCases(options.filePath, adapter, {
       only: options.onlySet,
       verboseLevel: options.verboseLevel,
+      workers: workerCount,
     });
 
     if (summary.failed === 0) {
@@ -903,7 +925,7 @@ const main = async () => {
     }
     process.exitCode = 1;
   } finally {
-    await runner.close();
+    await Promise.all(Array.from(runners.values(), (runner) => runner.close()));
   }
 };
 
