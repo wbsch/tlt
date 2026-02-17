@@ -245,9 +245,9 @@ const RAW_ITEM_ICONS: Record<string, string> = {
   OOT_BOSS_KEY_GANON: 'images/boss_key.png',
 
   // Dungeon rewards
-  OOT_STONE_EMERALD: 'images/stones.png',
-  OOT_STONE_RUBY: 'images/stones.png',
-  OOT_STONE_SAPPHIRE: 'images/stones.png',
+  OOT_STONE_EMERALD: 'images/spiritual_stone_kokiri.png',
+  OOT_STONE_RUBY: 'images/spiritual_stone_goron.png',
+  OOT_STONE_SAPPHIRE: 'images/spiritual_stone_zora.png',
   OOT_MEDALLION_FOREST: 'images/forestmedallion.png',
   OOT_MEDALLION_FIRE: 'images/firemedallion.png',
   OOT_MEDALLION_WATER: 'images/watermedallion.png',
@@ -454,10 +454,10 @@ const RAW_ITEM_ICONS: Record<string, string> = {
   // Labels
   free_label: 'images/label_free.png',
   th_label: 'images/label_th.png',
-  mm_woodfall_label: 'images/label_forest.png',
-  mm_snowhead_label: 'images/label_fire.png',
-  mm_greatbay_label: 'images/label_water.png',
-  mm_stonetower_label: 'images/label_spirit.png',
+  mm_woodfall_label: 'images/system/mm_label_woodfall.png',
+  mm_snowhead_label: 'images/system/mm_label_snowhead.png',
+  mm_greatbay_label: 'images/system/mm_label_greatbay.png',
+  mm_stonetower_label: 'images/system/mm_label_stonetower.png',
 
   // MQ settings
   oot_foresttemple_label: 'images/label_forest.png',
