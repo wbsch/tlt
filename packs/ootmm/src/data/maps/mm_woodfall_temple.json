@@ -10,16 +10,22 @@
         332,
         156
       ],
-      "image": "chest",
-      "codes": "TODO KF 001 :: unnamed_stack > Woodfall Temple > Woodfall Layers > Woodfall Checks :: Pasted Layer :: 001-001-001-000.png"
+      "image": "heart_container",
+      "codes": [
+        "TODO KF 001 :: unnamed_stack > Woodfall Temple > Woodfall Layers > Woodfall Checks :: Pasted Layer :: 001-001-001-000.png",
+        "MM Woodfall Temple Boss Container"
+      ]
     },
     {
       "coords": [
         348,
         156
       ],
-      "image": "chest",
-      "codes": "TODO KF 002 :: unnamed_stack > Woodfall Temple > Woodfall Layers > Woodfall Checks :: Pasted Layer #1 :: 001-001-001-001.png"
+      "image": "odolwas_remain",
+      "codes": [
+        "TODO KF 002 :: unnamed_stack > Woodfall Temple > Woodfall Layers > Woodfall Checks :: Pasted Layer #1 :: 001-001-001-001.png",
+        "MM Woodfall Temple Boss"
+      ]
     },
     {
       "coords": [
@@ -27,7 +33,10 @@
         184
       ],
       "image": "chest",
-      "codes": "TODO KF 003 :: unnamed_stack > Woodfall Temple > Woodfall Layers > Woodfall Checks :: Pasted Layer #2 :: 001-001-001-002.png"
+      "codes": [
+        "TODO KF 003 :: unnamed_stack > Woodfall Temple > Woodfall Layers > Woodfall Checks :: Pasted Layer #2 :: 001-001-001-002.png",
+        "MM Woodfall Temple Boss Key Chest"
+      ]
     },
     {
       "coords": [
@@ -35,7 +44,10 @@
         360
       ],
       "image": "chest",
-      "codes": "TODO KF 004 :: unnamed_stack > Woodfall Temple > Woodfall Layers > Woodfall Checks :: Pasted Layer #3 :: 001-001-001-003.png"
+      "codes": [
+        "TODO KF 004 :: unnamed_stack > Woodfall Temple > Woodfall Layers > Woodfall Checks :: Pasted Layer #3 :: 001-001-001-003.png",
+        "MM Woodfall Temple Compass"
+      ]
     },
     {
       "coords": [
@@ -43,7 +55,10 @@
         413
       ],
       "image": "chest",
-      "codes": "TODO KF 005 :: unnamed_stack > Woodfall Temple > Woodfall Layers > Woodfall Checks :: Pasted Layer #4 :: 001-001-001-004.png"
+      "codes": [
+        "TODO KF 005 :: unnamed_stack > Woodfall Temple > Woodfall Layers > Woodfall Checks :: Pasted Layer #4 :: 001-001-001-004.png",
+        "MM Woodfall Temple Entrance Chest"
+      ]
     },
     {
       "coords": [
@@ -51,7 +66,10 @@
         386
       ],
       "image": "chest",
-      "codes": "TODO KF 006 :: unnamed_stack > Woodfall Temple > Woodfall Layers > Woodfall Checks :: Pasted Layer #5 :: 001-001-001-005.png"
+      "codes": [
+        "TODO KF 006 :: unnamed_stack > Woodfall Temple > Woodfall Layers > Woodfall Checks :: Pasted Layer #5 :: 001-001-001-005.png",
+        "MM Woodfall Temple Bow"
+      ]
     },
     {
       "coords": [
@@ -59,7 +77,10 @@
         323
       ],
       "image": "chest",
-      "codes": "TODO KF 007 :: unnamed_stack > Woodfall Temple > Woodfall Layers > Woodfall Checks :: Pasted Layer #6 :: 001-001-001-006.png"
+      "codes": [
+        "TODO KF 007 :: unnamed_stack > Woodfall Temple > Woodfall Layers > Woodfall Checks :: Pasted Layer #6 :: 001-001-001-006.png",
+        "MM Woodfall Temple Center Chest"
+      ]
     },
     {
       "coords": [
@@ -67,7 +88,10 @@
         272
       ],
       "image": "chest",
-      "codes": "TODO KF 008 :: unnamed_stack > Woodfall Temple > Woodfall Layers > Woodfall Checks :: Pasted Layer #7 :: 001-001-001-007.png"
+      "codes": [
+        "TODO KF 008 :: unnamed_stack > Woodfall Temple > Woodfall Layers > Woodfall Checks :: Pasted Layer #7 :: 001-001-001-007.png",
+        "MM Woodfall Temple Water Chest"
+      ]
     },
     {
       "coords": [
@@ -75,7 +99,10 @@
         303
       ],
       "image": "chest",
-      "codes": "TODO KF 009 :: unnamed_stack > Woodfall Temple > Woodfall Layers > Woodfall Checks :: Pasted Layer #8 :: 001-001-001-008.png"
+      "codes": [
+        "TODO KF 009 :: unnamed_stack > Woodfall Temple > Woodfall Layers > Woodfall Checks :: Pasted Layer #8 :: 001-001-001-008.png",
+        "MM Woodfall Temple Map"
+      ]
     },
     {
       "coords": [
@@ -83,7 +110,10 @@
         324
       ],
       "image": "chest",
-      "codes": "TODO KF 010 :: unnamed_stack > Woodfall Temple > Woodfall Layers > Woodfall Checks :: Pasted Layer #9 :: 001-001-001-009.png"
+      "codes": [
+        "TODO KF 010 :: unnamed_stack > Woodfall Temple > Woodfall Layers > Woodfall Checks :: Pasted Layer #9 :: 001-001-001-009.png",
+        "MM Woodfall Temple Dark Chest"
+      ]
     },
     {
       "coords": [
@@ -91,103 +121,142 @@
         156
       ],
       "image": "song",
-      "codes": "TODO KF 011 :: unnamed_stack > Woodfall Temple > Woodfall Layers > Woodfall Songs :: Pasted Layer #10 :: 001-001-002-000.png"
+      "codes": [
+        "TODO KF 011 :: unnamed_stack > Woodfall Temple > Woodfall Layers > Woodfall Songs :: Pasted Layer #10 :: 001-001-002-000.png",
+        "MM Oath to Order"
+      ]
     },
     {
       "coords": [
         250,
         269
       ],
-      "image": "collectible",
-      "codes": "TODO KF 012 :: unnamed_stack > Woodfall Temple > Woodfall Layers > Woodfall Strays :: Pasted Layer #11 :: 001-001-003-000.png"
+      "image": "stray_fairy",
+      "codes": [
+        "TODO KF 012 :: unnamed_stack > Woodfall Temple > Woodfall Layers > Woodfall Strays :: Pasted Layer #11 :: 001-001-003-000.png",
+        "MM Woodfall Temple SF Maze Skulltula"
+      ]
     },
     {
       "coords": [
         266,
         285
       ],
-      "image": "collectible",
-      "codes": "TODO KF 013 :: unnamed_stack > Woodfall Temple > Woodfall Layers > Woodfall Strays :: Pasted Layer #12 :: 001-001-003-001.png"
+      "image": "stray_fairy",
+      "codes": [
+        "TODO KF 013 :: unnamed_stack > Woodfall Temple > Woodfall Layers > Woodfall Strays :: Pasted Layer #12 :: 001-001-003-001.png",
+        "MM Woodfall Temple SF Maze Beehive"
+      ]
     },
     {
       "coords": [
         266,
         301
       ],
-      "image": "collectible",
-      "codes": "TODO KF 014 :: unnamed_stack > Woodfall Temple > Woodfall Layers > Woodfall Strays :: Pasted Layer #13 :: 001-001-003-002.png"
+      "image": "stray_fairy",
+      "codes": [
+        "TODO KF 014 :: unnamed_stack > Woodfall Temple > Woodfall Layers > Woodfall Strays :: Pasted Layer #13 :: 001-001-003-002.png",
+        "MM Woodfall Temple SF Maze Bubble"
+      ]
     },
     {
       "coords": [
         301,
         294
       ],
-      "image": "collectible",
-      "codes": "TODO KF 015 :: unnamed_stack > Woodfall Temple > Woodfall Layers > Woodfall Strays :: Pasted Layer #14 :: 001-001-003-003.png"
+      "image": "stray_fairy",
+      "codes": [
+        "TODO KF 015 :: unnamed_stack > Woodfall Temple > Woodfall Layers > Woodfall Strays :: Pasted Layer #14 :: 001-001-003-003.png",
+        "MM Woodfall Temple SF Main Deku Baba"
+      ]
     },
     {
       "coords": [
         318,
         269
       ],
-      "image": "collectible",
-      "codes": "TODO KF 016 :: unnamed_stack > Woodfall Temple > Woodfall Layers > Woodfall Strays :: Pasted Layer #15 :: 001-001-003-004.png"
+      "image": "stray_fairy",
+      "codes": [
+        "TODO KF 016 :: unnamed_stack > Woodfall Temple > Woodfall Layers > Woodfall Strays :: Pasted Layer #15 :: 001-001-003-004.png",
+        "MM Woodfall Temple SF Main Bubble"
+      ]
     },
     {
       "coords": [
         295,
         225
       ],
-      "image": "collectible",
-      "codes": "TODO KF 017 :: unnamed_stack > Woodfall Temple > Woodfall Layers > Woodfall Strays :: Pasted Layer #16 :: 001-001-003-005.png"
+      "image": "stray_fairy",
+      "codes": [
+        "TODO KF 017 :: unnamed_stack > Woodfall Temple > Woodfall Layers > Woodfall Strays :: Pasted Layer #16 :: 001-001-003-005.png",
+        "MM Woodfall Temple SF Pre-Boss Left"
+      ]
     },
     {
       "coords": [
         324,
         219
       ],
-      "image": "collectible",
-      "codes": "TODO KF 018 :: unnamed_stack > Woodfall Temple > Woodfall Layers > Woodfall Strays :: Pasted Layer #17 :: 001-001-003-006.png"
+      "image": "stray_fairy",
+      "codes": [
+        "TODO KF 018 :: unnamed_stack > Woodfall Temple > Woodfall Layers > Woodfall Strays :: Pasted Layer #17 :: 001-001-003-006.png",
+        "MM Woodfall Temple SF Pre-Boss Pillar"
+      ]
     },
     {
       "coords": [
         349,
         236
       ],
-      "image": "collectible",
-      "codes": "TODO KF 019 :: unnamed_stack > Woodfall Temple > Woodfall Layers > Woodfall Strays :: Pasted Layer #18 :: 001-001-003-007.png"
+      "image": "stray_fairy",
+      "codes": [
+        "TODO KF 019 :: unnamed_stack > Woodfall Temple > Woodfall Layers > Woodfall Strays :: Pasted Layer #18 :: 001-001-003-007.png",
+        "MM Woodfall Temple SF Pre-Boss Bottom Right"
+      ]
     },
     {
       "coords": [
         349,
         252
       ],
-      "image": "collectible",
-      "codes": "TODO KF 020 :: unnamed_stack > Woodfall Temple > Woodfall Layers > Woodfall Strays :: Pasted Layer #19 :: 001-001-003-008.png"
+      "image": "stray_fairy",
+      "codes": [
+        "TODO KF 020 :: unnamed_stack > Woodfall Temple > Woodfall Layers > Woodfall Strays :: Pasted Layer #19 :: 001-001-003-008.png",
+        "MM Woodfall Temple SF Pre-Boss Top Right"
+      ]
     },
     {
       "coords": [
         329,
         403
       ],
-      "image": "collectible",
-      "codes": "TODO KF 021 :: unnamed_stack > Woodfall Temple > Woodfall Layers > Woodfall Strays :: Pasted Layer #20 :: 001-001-003-009.png"
+      "image": "stray_fairy",
+      "codes": [
+        "TODO KF 021 :: unnamed_stack > Woodfall Temple > Woodfall Layers > Woodfall Strays :: Pasted Layer #20 :: 001-001-003-009.png",
+        "MM Woodfall Temple SF Entrance"
+      ]
     },
     {
       "coords": [
         366,
         334
       ],
-      "image": "collectible",
-      "codes": "TODO KF 022 :: unnamed_stack > Woodfall Temple > Woodfall Layers > Woodfall Strays :: Pasted Layer #21 :: 001-001-003-010.png"
+      "image": "stray_fairy",
+      "codes": [
+        "TODO KF 022 :: unnamed_stack > Woodfall Temple > Woodfall Layers > Woodfall Strays :: Pasted Layer #21 :: 001-001-003-010.png",
+        "MM Woodfall Temple SF Main Pot"
+      ]
     },
     {
       "coords": [
         391,
         269
       ],
-      "image": "collectible",
-      "codes": "TODO KF 023 :: unnamed_stack > Woodfall Temple > Woodfall Layers > Woodfall Strays :: Pasted Layer #22 :: 001-001-003-011.png"
+      "image": "stray_fairy",
+      "codes": [
+        "TODO KF 023 :: unnamed_stack > Woodfall Temple > Woodfall Layers > Woodfall Strays :: Pasted Layer #22 :: 001-001-003-011.png",
+        "MM Woodfall Temple SF Water Room Beehive"
+      ]
     },
     {
       "coords": [
@@ -195,7 +264,11 @@
         176
       ],
       "image": "pot",
-      "codes": "TODO KF 024 :: unnamed_stack > Woodfall Temple > Woodfall Layers > Woodfall Pots :: Pasted Layer #23 :: 001-001-004-000.png"
+      "codes": [
+        "TODO KF 024 :: unnamed_stack > Woodfall Temple > Woodfall Layers > Woodfall Pots :: Pasted Layer #23 :: 001-001-004-000.png",
+        "MM Woodfall Temple Pot Pre-Boss 1",
+        "MM Woodfall Temple Pot Pre-Boss 2"
+      ]
     },
     {
       "coords": [
@@ -203,7 +276,13 @@
         183
       ],
       "image": "pot",
-      "codes": "TODO KF 025 :: unnamed_stack > Woodfall Temple > Woodfall Layers > Woodfall Pots :: Pasted Layer #24 :: 001-001-004-001.png"
+      "codes": [
+        "TODO KF 025 :: unnamed_stack > Woodfall Temple > Woodfall Layers > Woodfall Pots :: Pasted Layer #24 :: 001-001-004-001.png",
+        "MM Woodfall Temple Pot Miniboss Room 1",
+        "MM Woodfall Temple Pot Miniboss Room 2",
+        "MM Woodfall Temple Pot Miniboss Room 3",
+        "MM Woodfall Temple Pot Miniboss Room 4"
+      ]
     },
     {
       "coords": [
@@ -211,7 +290,10 @@
         423
       ],
       "image": "pot",
-      "codes": "TODO KF 026 :: unnamed_stack > Woodfall Temple > Woodfall Layers > Woodfall Pots :: Pasted Layer #25 :: 001-001-004-002.png"
+      "codes": [
+        "TODO KF 026 :: unnamed_stack > Woodfall Temple > Woodfall Layers > Woodfall Pots :: Pasted Layer #25 :: 001-001-004-002.png",
+        "MM Woodfall Temple Pot Entrance"
+      ]
     },
     {
       "coords": [
@@ -219,7 +301,13 @@
         335
       ],
       "image": "pot",
-      "codes": "TODO KF 027 :: unnamed_stack > Woodfall Temple > Woodfall Layers > Woodfall Pots :: Pasted Layer #26 :: 001-001-004-003.png"
+      "codes": [
+        "TODO KF 027 :: unnamed_stack > Woodfall Temple > Woodfall Layers > Woodfall Pots :: Pasted Layer #26 :: 001-001-004-003.png",
+        "MM Woodfall Temple Pot Water Room 1",
+        "MM Woodfall Temple Pot Water Room 2",
+        "MM Woodfall Temple Pot Water Room 3",
+        "MM Woodfall Temple Pot Water Room 4"
+      ]
     },
     {
       "coords": [
@@ -227,7 +315,11 @@
         300
       ],
       "image": "pot",
-      "codes": "TODO KF 028 :: unnamed_stack > Woodfall Temple > Woodfall Layers > Woodfall Pots :: Pasted Layer #27 :: 001-001-004-004.png"
+      "codes": [
+        "TODO KF 028 :: unnamed_stack > Woodfall Temple > Woodfall Layers > Woodfall Pots :: Pasted Layer #27 :: 001-001-004-004.png",
+        "MM Woodfall Temple Pot Main Room Lower 5",
+        "MM Woodfall Temple Pot Main Room Lower 6"
+      ]
     },
     {
       "coords": [
@@ -235,7 +327,11 @@
         306
       ],
       "image": "pot",
-      "codes": "TODO KF 029 :: unnamed_stack > Woodfall Temple > Woodfall Layers > Woodfall Pots :: Pasted Layer #28 :: 001-001-004-005.png"
+      "codes": [
+        "TODO KF 029 :: unnamed_stack > Woodfall Temple > Woodfall Layers > Woodfall Pots :: Pasted Layer #28 :: 001-001-004-005.png",
+        "MM Woodfall Temple Pot Main Room Upper 1",
+        "MM Woodfall Temple Pot Main Room Upper 2"
+      ]
     },
     {
       "coords": [
@@ -243,7 +339,13 @@
         332
       ],
       "image": "pot",
-      "codes": "TODO KF 030 :: unnamed_stack > Woodfall Temple > Woodfall Layers > Woodfall Pots :: Pasted Layer #29 :: 001-001-004-006.png"
+      "codes": [
+        "TODO KF 030 :: unnamed_stack > Woodfall Temple > Woodfall Layers > Woodfall Pots :: Pasted Layer #29 :: 001-001-004-006.png",
+        "MM Woodfall Temple Pot Main Room Lower 1",
+        "MM Woodfall Temple Pot Main Room Lower 2",
+        "MM Woodfall Temple Pot Main Room Lower 3",
+        "MM Woodfall Temple Pot Main Room Lower 4"
+      ]
     },
     {
       "coords": [
@@ -251,31 +353,47 @@
         290
       ],
       "image": "pot",
-      "codes": "TODO KF 031 :: unnamed_stack > Woodfall Temple > Woodfall Layers > Woodfall Pots :: Pasted Layer #30 :: 001-001-004-007.png"
+      "codes": [
+        "TODO KF 031 :: unnamed_stack > Woodfall Temple > Woodfall Layers > Woodfall Pots :: Pasted Layer #30 :: 001-001-004-007.png",
+        "MM Woodfall Temple Pot Maze 1",
+        "MM Woodfall Temple Pot Maze 2"
+      ]
     },
     {
       "coords": [
         316,
         194
       ],
-      "image": "green_rupee",
-      "codes": "TODO KF 032 :: unnamed_stack > Woodfall Temple > Woodfall Layers > Woodfall Freestanding Rupees :: Pasted Layer #31 :: 001-001-005-000.png"
+      "image": "red_rupee",
+      "codes": [
+        "TODO KF 032 :: unnamed_stack > Woodfall Temple > Woodfall Layers > Woodfall Freestanding Rupees :: Pasted Layer #31 :: 001-001-005-000.png",
+        "MM Woodfall Temple Rupee Upper Left"
+      ]
     },
     {
       "coords": [
         351,
         194
       ],
-      "image": "green_rupee",
-      "codes": "TODO KF 033 :: unnamed_stack > Woodfall Temple > Woodfall Layers > Woodfall Freestanding Rupees :: Pasted Layer #32 :: 001-001-005-001.png"
+      "image": "red_rupee",
+      "codes": [
+        "TODO KF 033 :: unnamed_stack > Woodfall Temple > Woodfall Layers > Woodfall Freestanding Rupees :: Pasted Layer #32 :: 001-001-005-001.png",
+        "MM Woodfall Temple Rupee Upper Right"
+      ]
     },
     {
       "coords": [
         335,
         218
       ],
-      "image": "green_rupee",
-      "codes": "TODO KF 034 :: unnamed_stack > Woodfall Temple > Woodfall Layers > Woodfall Freestanding Rupees :: Pasted Layer #33 :: 001-001-005-002.png"
+      "image": "blue_rupee",
+      "codes": [
+        "TODO KF 034 :: unnamed_stack > Woodfall Temple > Woodfall Layers > Woodfall Freestanding Rupees :: Pasted Layer #33 :: 001-001-005-002.png",
+        "MM Woodfall Temple Rupee Lower 1",
+        "MM Woodfall Temple Rupee Lower 2",
+        "MM Woodfall Temple Rupee Lower 3",
+        "MM Woodfall Temple Rupee Lower 4"
+      ]
     },
     {
       "coords": [
@@ -283,7 +401,10 @@
         392
       ],
       "image": "beehive",
-      "codes": "TODO KF 035 :: unnamed_stack > Woodfall Temple > Woodfall Layers > Woodfall Beehives :: Pasted Layer #34 :: 001-001-006-000.png"
+      "codes": [
+        "TODO KF 035 :: unnamed_stack > Woodfall Temple > Woodfall Layers > Woodfall Beehives :: Pasted Layer #34 :: 001-001-006-000.png",
+        "MM Woodfall Temple Hive Entrance"
+      ]
     },
     {
       "coords": [
@@ -291,7 +412,10 @@
         292
       ],
       "image": "beehive",
-      "codes": "TODO KF 036 :: unnamed_stack > Woodfall Temple > Woodfall Layers > Woodfall Beehives :: Pasted Layer #35 :: 001-001-006-001.png"
+      "codes": [
+        "TODO KF 036 :: unnamed_stack > Woodfall Temple > Woodfall Layers > Woodfall Beehives :: Pasted Layer #35 :: 001-001-006-001.png",
+        "MM Woodfall Temple Hive Maze"
+      ]
     },
     {
       "coords": [
@@ -299,7 +423,13 @@
         303
       ],
       "image": "grass",
-      "codes": "TODO KF 037 :: unnamed_stack > Woodfall Temple > Woodfall Layers > Woodfall Grass :: Pasted Layer #36 :: 001-001-007-000.png"
+      "codes": [
+        "TODO KF 037 :: unnamed_stack > Woodfall Temple > Woodfall Layers > Woodfall Grass :: Pasted Layer #36 :: 001-001-007-000.png",
+        "MM Woodfall Temple Grass Pits Room 01",
+        "MM Woodfall Temple Grass Pits Room 02",
+        "MM Woodfall Temple Grass Pits Room 03",
+        "MM Woodfall Temple Grass Pits Room 04"
+      ]
     },
     {
       "coords": [
@@ -307,7 +437,11 @@
         322
       ],
       "image": "grass",
-      "codes": "TODO KF 038 :: unnamed_stack > Woodfall Temple > Woodfall Layers > Woodfall Grass :: Pasted Layer #37 :: 001-001-007-001.png"
+      "codes": [
+        "TODO KF 038 :: unnamed_stack > Woodfall Temple > Woodfall Layers > Woodfall Grass :: Pasted Layer #37 :: 001-001-007-001.png",
+        "MM Woodfall Temple Grass Pits Room 05",
+        "MM Woodfall Temple Grass Pits Room 06"
+      ]
     },
     {
       "coords": [
@@ -315,7 +449,12 @@
         320
       ],
       "image": "grass",
-      "codes": "TODO KF 039 :: unnamed_stack > Woodfall Temple > Woodfall Layers > Woodfall Grass :: Pasted Layer #38 :: 001-001-007-002.png"
+      "codes": [
+        "TODO KF 039 :: unnamed_stack > Woodfall Temple > Woodfall Layers > Woodfall Grass :: Pasted Layer #38 :: 001-001-007-002.png",
+        "MM Woodfall Temple Grass Pits Room 09",
+        "MM Woodfall Temple Grass Pits Room 10",
+        "MM Woodfall Temple Grass Pits Room 11"
+      ]
     },
     {
       "coords": [
@@ -323,7 +462,11 @@
         303
       ],
       "image": "grass",
-      "codes": "TODO KF 040 :: unnamed_stack > Woodfall Temple > Woodfall Layers > Woodfall Grass :: Pasted Layer #39 :: 001-001-007-003.png"
+      "codes": [
+        "TODO KF 040 :: unnamed_stack > Woodfall Temple > Woodfall Layers > Woodfall Grass :: Pasted Layer #39 :: 001-001-007-003.png",
+        "MM Woodfall Temple Grass Pits Room 07",
+        "MM Woodfall Temple Grass Pits Room 08"
+      ]
     },
     {
       "coords": [
@@ -331,7 +474,11 @@
         312
       ],
       "image": "grass",
-      "codes": "TODO KF 041 :: unnamed_stack > Woodfall Temple > Woodfall Layers > Woodfall Grass :: Pasted Layer #40 :: 001-001-007-004.png"
+      "codes": [
+        "TODO KF 041 :: unnamed_stack > Woodfall Temple > Woodfall Layers > Woodfall Grass :: Pasted Layer #40 :: 001-001-007-004.png",
+        "MM Woodfall Temple Grass Map Room 4",
+        "MM Woodfall Temple Grass Map Room 5"
+      ]
     },
     {
       "coords": [
@@ -339,7 +486,12 @@
         310
       ],
       "image": "grass",
-      "codes": "TODO KF 042 :: unnamed_stack > Woodfall Temple > Woodfall Layers > Woodfall Grass :: Pasted Layer #41 :: 001-001-007-005.png"
+      "codes": [
+        "TODO KF 042 :: unnamed_stack > Woodfall Temple > Woodfall Layers > Woodfall Grass :: Pasted Layer #41 :: 001-001-007-005.png",
+        "MM Woodfall Temple Grass Map Room 1",
+        "MM Woodfall Temple Grass Map Room 2",
+        "MM Woodfall Temple Grass Map Room 3"
+      ]
     },
     {
       "coords": [
@@ -347,7 +499,11 @@
         308
       ],
       "image": "grass",
-      "codes": "TODO KF 043 :: unnamed_stack > Woodfall Temple > Woodfall Layers > Woodfall Grass :: Pasted Layer #42 :: 001-001-007-006.png"
+      "codes": [
+        "TODO KF 043 :: unnamed_stack > Woodfall Temple > Woodfall Layers > Woodfall Grass :: Pasted Layer #42 :: 001-001-007-006.png",
+        "MM Woodfall Temple Grass Water Room 1",
+        "MM Woodfall Temple Grass Water Room 2"
+      ]
     },
     {
       "coords": [
@@ -355,7 +511,25 @@
         140
       ],
       "image": "grass",
-      "codes": "TODO KF 044 :: unnamed_stack > Woodfall Temple > Woodfall Layers > Woodfall Grass :: Pasted Layer #43 :: 001-001-007-007.png"
+      "codes": [
+        "TODO KF 044 :: unnamed_stack > Woodfall Temple > Woodfall Layers > Woodfall Grass :: Pasted Layer #43 :: 001-001-007-007.png",
+        "MM Woodfall Temple Boss Grass 01",
+        "MM Woodfall Temple Boss Grass 02",
+        "MM Woodfall Temple Boss Grass 03",
+        "MM Woodfall Temple Boss Grass 04",
+        "MM Woodfall Temple Boss Grass 05",
+        "MM Woodfall Temple Boss Grass 06",
+        "MM Woodfall Temple Boss Grass 07",
+        "MM Woodfall Temple Boss Grass 08",
+        "MM Woodfall Temple Boss Grass 09",
+        "MM Woodfall Temple Boss Grass 10",
+        "MM Woodfall Temple Boss Grass 11",
+        "MM Woodfall Temple Boss Grass 12",
+        "MM Woodfall Temple Boss Grass 13",
+        "MM Woodfall Temple Boss Grass 14",
+        "MM Woodfall Temple Boss Grass 15",
+        "MM Woodfall Temple Boss Grass 16"
+      ]
     },
     {
       "coords": [
@@ -363,7 +537,11 @@
         244
       ],
       "image": "grass",
-      "codes": "TODO KF 045 :: unnamed_stack > Woodfall Temple > Woodfall Layers > Woodfall Grass :: Pasted Layer #44 :: 001-001-007-008.png"
+      "codes": [
+        "TODO KF 045 :: unnamed_stack > Woodfall Temple > Woodfall Layers > Woodfall Grass :: Pasted Layer #44 :: 001-001-007-008.png",
+        "MM Woodfall Temple Grass Pre-Boss 4",
+        "MM Woodfall Temple Grass Pre-Boss 5"
+      ]
     },
     {
       "coords": [
@@ -371,7 +549,12 @@
         252
       ],
       "image": "grass",
-      "codes": "TODO KF 046 :: unnamed_stack > Woodfall Temple > Woodfall Layers > Woodfall Grass :: Pasted Layer #45 :: 001-001-007-009.png"
+      "codes": [
+        "TODO KF 046 :: unnamed_stack > Woodfall Temple > Woodfall Layers > Woodfall Grass :: Pasted Layer #45 :: 001-001-007-009.png",
+        "MM Woodfall Temple Grass Pre-Boss 1",
+        "MM Woodfall Temple Grass Pre-Boss 2",
+        "MM Woodfall Temple Grass Pits Room 11"
+      ]
     },
     {
       "coords": [
@@ -379,7 +562,11 @@
         287
       ],
       "image": "grass",
-      "codes": "TODO KF 047 :: unnamed_stack > Woodfall Temple > Woodfall Layers > Woodfall Grass :: Pasted Layer #46 :: 001-001-007-010.png"
+      "codes": [
+        "TODO KF 047 :: unnamed_stack > Woodfall Temple > Woodfall Layers > Woodfall Grass :: Pasted Layer #46 :: 001-001-007-010.png",
+        "MM Woodfall Temple Grass Main Room 2",
+        "MM Woodfall Temple Grass Main Room 3"
+      ]
     },
     {
       "coords": [
@@ -387,7 +574,10 @@
         335
       ],
       "image": "grass",
-      "codes": "TODO KF 048 :: unnamed_stack > Woodfall Temple > Woodfall Layers > Woodfall Grass :: Pasted Layer #47 :: 001-001-007-011.png"
+      "codes": [
+        "TODO KF 048 :: unnamed_stack > Woodfall Temple > Woodfall Layers > Woodfall Grass :: Pasted Layer #47 :: 001-001-007-011.png",
+        "MM Woodfall Temple Grass Main Room 1"
+      ]
     },
     {
       "coords": [
@@ -395,7 +585,11 @@
         357
       ],
       "image": "grass",
-      "codes": "TODO KF 049 :: unnamed_stack > Woodfall Temple > Woodfall Layers > Woodfall Grass :: Pasted Layer #48 :: 001-001-007-012.png"
+      "codes": [
+        "TODO KF 049 :: unnamed_stack > Woodfall Temple > Woodfall Layers > Woodfall Grass :: Pasted Layer #48 :: 001-001-007-012.png",
+        "MM Woodfall Temple Grass Entrance Ledge 1",
+        "MM Woodfall Temple Grass Entrance Ledge 2"
+      ]
     },
     {
       "coords": [
@@ -403,7 +597,12 @@
         402
       ],
       "image": "grass",
-      "codes": "TODO KF 050 :: unnamed_stack > Woodfall Temple > Woodfall Layers > Woodfall Grass :: Pasted Layer #49 :: 001-001-007-013.png"
+      "codes": [
+        "TODO KF 050 :: unnamed_stack > Woodfall Temple > Woodfall Layers > Woodfall Grass :: Pasted Layer #49 :: 001-001-007-013.png",
+        "MM Woodfall Temple Grass Entrance Bottom 1",
+        "MM Woodfall Temple Grass Entrance Bottom 2",
+        "MM Woodfall Temple Grass Entrance Bottom 3"
+      ]
     },
     {
       "coords": [
@@ -411,7 +610,12 @@
         350
       ],
       "image": "grass",
-      "codes": "TODO KF 051 :: unnamed_stack > Woodfall Temple > Woodfall Layers > Woodfall Grass :: Pasted Layer #50 :: 001-001-007-014.png"
+      "codes": [
+        "TODO KF 051 :: unnamed_stack > Woodfall Temple > Woodfall Layers > Woodfall Grass :: Pasted Layer #50 :: 001-001-007-014.png",
+        "MM Woodfall Temple Grass Compass Room 1",
+        "MM Woodfall Temple Grass Compass Room 2",
+        "MM Woodfall Temple Grass Compass Room 3"
+      ]
     }
   ]
 }

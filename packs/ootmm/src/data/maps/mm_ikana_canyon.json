@@ -11,31 +11,45 @@
         66
       ],
       "image": "chest",
-      "codes": "TODO KF 001 :: unnamed_stack > Canyon > Canyon Layers > Canyon Checks :: Pasted Layer :: 001-001-001-000.png"
+      "codes": [
+        "TODO KF 001 :: unnamed_stack > Canyon > Canyon Layers > Canyon Checks :: Pasted Layer :: 001-001-001-000.png",
+        "MM Stone Tower Inverted Chest 1",
+        "MM Stone Tower Inverted Chest 2",
+        "MM Stone Tower Inverted Chest 3"
+      ]
     },
     {
       "coords": [
         966,
         377
       ],
-      "image": "chest",
-      "codes": "TODO KF 002 :: unnamed_stack > Canyon > Canyon Layers > Canyon Checks :: Pasted Layer #1 :: 001-001-001-001.png"
+      "image": "heart_piece",
+      "codes": [
+        "TODO KF 002 :: unnamed_stack > Canyon > Canyon Layers > Canyon Checks :: Pasted Layer #1 :: 001-001-001-001.png",
+        "MM Ancient Castle of Ikana HP"
+      ]
     },
     {
       "coords": [
         586,
         499
       ],
-      "image": "chest",
-      "codes": "TODO KF 003 :: unnamed_stack > Canyon > Canyon Layers > Canyon Checks :: Pasted Layer #2 :: 001-001-001-002.png"
+      "image": "heart_piece",
+      "codes": [
+        "TODO KF 003 :: unnamed_stack > Canyon > Canyon Layers > Canyon Checks :: Pasted Layer #2 :: 001-001-001-002.png",
+        "MM Ikana Valley Scrub HP"
+      ]
     },
     {
       "coords": [
         546,
         504
       ],
-      "image": "chest",
-      "codes": "TODO KF 004 :: unnamed_stack > Canyon > Canyon Layers > Canyon Checks :: Pasted Layer #3 :: 001-001-001-003.png"
+      "image": "npc",
+      "codes": [
+        "TODO KF 004 :: unnamed_stack > Canyon > Canyon Layers > Canyon Checks :: Pasted Layer #3 :: 001-001-001-003.png",
+        "MM Ikana Valley Scrub Rupee"
+      ]
     },
     {
       "coords": [
@@ -43,7 +57,10 @@
         392
       ],
       "image": "chest",
-      "codes": "TODO KF 005 :: unnamed_stack > Canyon > Canyon Layers > Canyon Checks :: Pasted Layer #4 :: 001-001-001-004.png"
+      "codes": [
+        "TODO KF 005 :: unnamed_stack > Canyon > Canyon Layers > Canyon Checks :: Pasted Layer #4 :: 001-001-001-004.png",
+        "MM Ikana Graveyard Captain Mask"
+      ]
     },
     {
       "coords": [
@@ -51,15 +68,21 @@
         390
       ],
       "image": "shop",
-      "codes": "TODO KF 006 :: unnamed_stack > Canyon > Canyon Layers > Canyon Shops :: Pasted Layer #5 :: 001-001-002-000.png"
+      "codes": [
+        "TODO KF 006 :: unnamed_stack > Canyon > Canyon Layers > Canyon Shops :: Pasted Layer #5 :: 001-001-002-000.png",
+        "MM Tingle Map Ikana"
+      ]
     },
     {
       "coords": [
         546,
         520
       ],
-      "image": "business_scrub_oot",
-      "codes": "TODO KF 007 :: unnamed_stack > Canyon > Canyon Layers > Canyon Scrubs :: Pasted Layer #6 :: 001-001-003-000.png"
+      "image": "business_scrub_mm",
+      "codes": [
+        "TODO KF 007 :: unnamed_stack > Canyon > Canyon Layers > Canyon Scrubs :: Pasted Layer #6 :: 001-001-003-000.png",
+        "MM Ikana Valley Scrub Shop"
+      ]
     },
     {
       "coords": [
@@ -67,7 +90,10 @@
         268
       ],
       "image": "owl_statue",
-      "codes": "TODO KF 008 :: unnamed_stack > Canyon > Canyon Layers > Canyon Owl Statues :: Pasted Layer #7 :: 001-001-004-000.png"
+      "codes": [
+        "TODO KF 008 :: unnamed_stack > Canyon > Canyon Layers > Canyon Owl Statues :: Pasted Layer #7 :: 001-001-004-000.png",
+        "MM Stone Tower Owl Statue"
+      ]
     },
     {
       "coords": [
@@ -75,7 +101,10 @@
         412
       ],
       "image": "owl_statue",
-      "codes": "TODO KF 009 :: unnamed_stack > Canyon > Canyon Layers > Canyon Owl Statues :: Pasted Layer #8 :: 001-001-004-001.png"
+      "codes": [
+        "TODO KF 009 :: unnamed_stack > Canyon > Canyon Layers > Canyon Owl Statues :: Pasted Layer #8 :: 001-001-004-001.png",
+        "MM Ikana Canyon Owl Statue"
+      ]
     },
     {
       "coords": [
@@ -83,7 +112,10 @@
         576
       ],
       "image": "pot",
-      "codes": "TODO KF 010 :: unnamed_stack > Canyon > Canyon Layers > Canyon Pots :: Pasted Layer #9 :: 001-001-005-000.png"
+      "codes": [
+        "TODO KF 010 :: unnamed_stack > Canyon > Canyon Layers > Canyon Pots :: Pasted Layer #9 :: 001-001-005-000.png",
+        "MM Ancient Castle of Ikana Pot Exterior"
+      ]
     },
     {
       "coords": [
@@ -91,7 +123,14 @@
         82
       ],
       "image": "pot",
-      "codes": "TODO KF 011 :: unnamed_stack > Canyon > Canyon Layers > Canyon Pots :: Pasted Layer #10 :: 001-001-005-001.png"
+      "codes": [
+        "TODO KF 011 :: unnamed_stack > Canyon > Canyon Layers > Canyon Pots :: Pasted Layer #10 :: 001-001-005-001.png",
+        "MM Stone Tower Inverted Pot 1",
+        "MM Stone Tower Inverted Pot 2",
+        "MM Stone Tower Inverted Pot 3",
+        "MM Stone Tower Inverted Pot 4",
+        "MM Stone Tower Inverted Pot 5"
+      ]
     },
     {
       "coords": [
@@ -99,7 +138,18 @@
         157
       ],
       "image": "pot",
-      "codes": "TODO KF 012 :: unnamed_stack > Canyon > Canyon Layers > Canyon Pots :: Pasted Layer #11 :: 001-001-005-002.png"
+      "codes": [
+        "TODO KF 012 :: unnamed_stack > Canyon > Canyon Layers > Canyon Pots :: Pasted Layer #11 :: 001-001-005-002.png",
+        "MM Stone Tower Pot Higher Scarecrow 1",
+        "MM Stone Tower Pot Higher Scarecrow 2",
+        "MM Stone Tower Pot Higher Scarecrow 3",
+        "MM Stone Tower Pot Higher Scarecrow 4",
+        "MM Stone Tower Pot Higher Scarecrow 5",
+        "MM Stone Tower Pot Higher Scarecrow 6",
+        "MM Stone Tower Pot Higher Scarecrow 7",
+        "MM Stone Tower Pot Higher Scarecrow 8",
+        "MM Stone Tower Pot Higher Scarecrow 9"
+      ]
     },
     {
       "coords": [
@@ -107,7 +157,13 @@
         268
       ],
       "image": "pot",
-      "codes": "TODO KF 013 :: unnamed_stack > Canyon > Canyon Layers > Canyon Pots :: Pasted Layer #12 :: 001-001-005-003.png"
+      "codes": [
+        "TODO KF 013 :: unnamed_stack > Canyon > Canyon Layers > Canyon Pots :: Pasted Layer #12 :: 001-001-005-003.png",
+        "MM Stone Tower Pot Owl Statue 1",
+        "MM Stone Tower Pot Owl Statue 2",
+        "MM Stone Tower Pot Owl Statue 3",
+        "MM Stone Tower Pot Owl Statue 4"
+      ]
     },
     {
       "coords": [
@@ -115,7 +171,11 @@
         92
       ],
       "image": "pot",
-      "codes": "TODO KF 014 :: unnamed_stack > Canyon > Canyon Layers > Canyon Pots :: Pasted Layer #13 :: 001-001-005-004.png"
+      "codes": [
+        "TODO KF 014 :: unnamed_stack > Canyon > Canyon Layers > Canyon Pots :: Pasted Layer #13 :: 001-001-005-004.png",
+        "MM Stone Tower Pot Climb 1",
+        "MM Stone Tower Pot Climb 2"
+      ]
     },
     {
       "coords": [
@@ -123,39 +183,73 @@
         109
       ],
       "image": "pot",
-      "codes": "TODO KF 015 :: unnamed_stack > Canyon > Canyon Layers > Canyon Pots :: Pasted Layer #14 :: 001-001-005-005.png"
+      "codes": [
+        "TODO KF 015 :: unnamed_stack > Canyon > Canyon Layers > Canyon Pots :: Pasted Layer #14 :: 001-001-005-005.png",
+        "MM Stone Tower Pot Lower Scarecrow 01",
+        "MM Stone Tower Pot Lower Scarecrow 02",
+        "MM Stone Tower Pot Lower Scarecrow 03",
+        "MM Stone Tower Pot Lower Scarecrow 04",
+        "MM Stone Tower Pot Lower Scarecrow 05",
+        "MM Stone Tower Pot Lower Scarecrow 06",
+        "MM Stone Tower Pot Lower Scarecrow 07",
+        "MM Stone Tower Pot Lower Scarecrow 08",
+        "MM Stone Tower Pot Lower Scarecrow 09",
+        "MM Stone Tower Pot Lower Scarecrow 10",
+        "MM Stone Tower Pot Lower Scarecrow 11",
+        "MM Stone Tower Pot Lower Scarecrow 12"
+      ]
     },
     {
       "coords": [
         68,
         568
       ],
-      "image": "wonder_item_random",
-      "codes": "TODO KF 016 :: unnamed_stack > Canyon > Canyon Layers > Canyon Wonder :: Pasted Layer #15 :: 001-001-006-000.png"
+      "image": "wonder_item_green_rupee",
+      "codes": [
+        "TODO KF 016 :: unnamed_stack > Canyon > Canyon Layers > Canyon Wonder :: Pasted Layer #15 :: 001-001-006-000.png",
+        "MM Ikana Graveyard Wonder Item 01",
+        "MM Ikana Graveyard Wonder Item 02",
+        "MM Ikana Graveyard Wonder Item 03"
+      ]
     },
     {
       "coords": [
         87,
         514
       ],
-      "image": "wonder_item_random",
-      "codes": "TODO KF 017 :: unnamed_stack > Canyon > Canyon Layers > Canyon Wonder :: Pasted Layer #16 :: 001-001-006-001.png"
+      "image": "wonder_item_green_rupee",
+      "codes": [
+        "TODO KF 017 :: unnamed_stack > Canyon > Canyon Layers > Canyon Wonder :: Pasted Layer #16 :: 001-001-006-001.png",
+        "MM Ikana Graveyard Wonder Item 07",
+        "MM Ikana Graveyard Wonder Item 08",
+        "MM Ikana Graveyard Wonder Item 09"
+      ]
     },
     {
       "coords": [
         36,
         520
       ],
-      "image": "wonder_item_random",
-      "codes": "TODO KF 018 :: unnamed_stack > Canyon > Canyon Layers > Canyon Wonder :: Pasted Layer #17 :: 001-001-006-002.png"
+      "image": "wonder_item_green_rupee",
+      "codes": [
+        "TODO KF 018 :: unnamed_stack > Canyon > Canyon Layers > Canyon Wonder :: Pasted Layer #17 :: 001-001-006-002.png",
+        "MM Ikana Graveyard Wonder Item 04",
+        "MM Ikana Graveyard Wonder Item 05",
+        "MM Ikana Graveyard Wonder Item 06"
+      ]
     },
     {
       "coords": [
         28,
         404
       ],
-      "image": "wonder_item_random",
-      "codes": "TODO KF 019 :: unnamed_stack > Canyon > Canyon Layers > Canyon Wonder :: Pasted Layer #18 :: 001-001-006-003.png"
+      "image": "wonder_item_green_rupee",
+      "codes": [
+        "TODO KF 019 :: unnamed_stack > Canyon > Canyon Layers > Canyon Wonder :: Pasted Layer #18 :: 001-001-006-003.png",
+        "MM Ikana Graveyard Wonder Item 10",
+        "MM Ikana Graveyard Wonder Item 11",
+        "MM Ikana Graveyard Wonder Item 12"
+      ]
     },
     {
       "coords": [
@@ -163,7 +257,12 @@
         349
       ],
       "image": "grass",
-      "codes": "TODO KF 020 :: unnamed_stack > Canyon > Canyon Layers > Canyon Grass :: Pasted Layer #19 :: 001-001-007-000.png"
+      "codes": [
+        "TODO KF 020 :: unnamed_stack > Canyon > Canyon Layers > Canyon Grass :: Pasted Layer #19 :: 001-001-007-000.png",
+        "MM Ancient Castle of Ikana Grass 01",
+        "MM Ancient Castle of Ikana Grass 02",
+        "MM Ancient Castle of Ikana Grass 03"
+      ]
     },
     {
       "coords": [
@@ -171,7 +270,10 @@
         377
       ],
       "image": "grass",
-      "codes": "TODO KF 021 :: unnamed_stack > Canyon > Canyon Layers > Canyon Grass :: Pasted Layer #20 :: 001-001-007-001.png"
+      "codes": [
+        "TODO KF 021 :: unnamed_stack > Canyon > Canyon Layers > Canyon Grass :: Pasted Layer #20 :: 001-001-007-001.png",
+        "MM Ancient Castle of Ikana Grass 04"
+      ]
     },
     {
       "coords": [
@@ -179,7 +281,12 @@
         489
       ],
       "image": "grass",
-      "codes": "TODO KF 022 :: unnamed_stack > Canyon > Canyon Layers > Canyon Grass :: Pasted Layer #21 :: 001-001-007-002.png"
+      "codes": [
+        "TODO KF 022 :: unnamed_stack > Canyon > Canyon Layers > Canyon Grass :: Pasted Layer #21 :: 001-001-007-002.png",
+        "MM Ancient Castle of Ikana Grass 05",
+        "MM Ancient Castle of Ikana Grass 06",
+        "MM Ancient Castle of Ikana Grass 07"
+      ]
     },
     {
       "coords": [
@@ -187,7 +294,10 @@
         553
       ],
       "image": "grass",
-      "codes": "TODO KF 023 :: unnamed_stack > Canyon > Canyon Layers > Canyon Grass :: Pasted Layer #22 :: 001-001-007-003.png"
+      "codes": [
+        "TODO KF 023 :: unnamed_stack > Canyon > Canyon Layers > Canyon Grass :: Pasted Layer #22 :: 001-001-007-003.png",
+        "MM Ancient Castle of Ikana Grass 08"
+      ]
     },
     {
       "coords": [
@@ -195,7 +305,10 @@
         553
       ],
       "image": "grass",
-      "codes": "TODO KF 024 :: unnamed_stack > Canyon > Canyon Layers > Canyon Grass :: Pasted Layer #23 :: 001-001-007-004.png"
+      "codes": [
+        "TODO KF 024 :: unnamed_stack > Canyon > Canyon Layers > Canyon Grass :: Pasted Layer #23 :: 001-001-007-004.png",
+        "MM Ancient Castle of Ikana Grass 09"
+      ]
     },
     {
       "coords": [
@@ -203,7 +316,12 @@
         552
       ],
       "image": "grass",
-      "codes": "TODO KF 025 :: unnamed_stack > Canyon > Canyon Layers > Canyon Grass :: Pasted Layer #24 :: 001-001-007-005.png"
+      "codes": [
+        "TODO KF 025 :: unnamed_stack > Canyon > Canyon Layers > Canyon Grass :: Pasted Layer #24 :: 001-001-007-005.png",
+        "MM Ancient Castle of Ikana Grass 10",
+        "MM Ancient Castle of Ikana Grass 11",
+        "MM Ancient Castle of Ikana Grass 12"
+      ]
     },
     {
       "coords": [
@@ -211,7 +329,12 @@
         401
       ],
       "image": "grass",
-      "codes": "TODO KF 026 :: unnamed_stack > Canyon > Canyon Layers > Canyon Grass :: Pasted Layer #25 :: 001-001-007-006.png"
+      "codes": [
+        "TODO KF 026 :: unnamed_stack > Canyon > Canyon Layers > Canyon Grass :: Pasted Layer #25 :: 001-001-007-006.png",
+        "MM Ikana Canyon Grass 2",
+        "MM Ikana Canyon Grass 3",
+        "MM Ikana Canyon Grass 4"
+      ]
     },
     {
       "coords": [
@@ -219,7 +342,10 @@
         423
       ],
       "image": "grass",
-      "codes": "TODO KF 027 :: unnamed_stack > Canyon > Canyon Layers > Canyon Grass :: Pasted Layer #26 :: 001-001-007-007.png"
+      "codes": [
+        "TODO KF 027 :: unnamed_stack > Canyon > Canyon Layers > Canyon Grass :: Pasted Layer #26 :: 001-001-007-007.png",
+        "MM Ikana Canyon Grass 1"
+      ]
     },
     {
       "coords": [
@@ -227,7 +353,11 @@
         560
       ],
       "image": "grass",
-      "codes": "TODO KF 028 :: unnamed_stack > Canyon > Canyon Layers > Canyon Grass :: Pasted Layer #27 :: 001-001-007-008.png"
+      "codes": [
+        "TODO KF 028 :: unnamed_stack > Canyon > Canyon Layers > Canyon Grass :: Pasted Layer #27 :: 001-001-007-008.png",
+        "MM Ikana Graveyard Grass 1",
+        "MM Ikana Graveyard Grass 2"
+      ]
     },
     {
       "coords": [
@@ -235,7 +365,10 @@
         544
       ],
       "image": "grass",
-      "codes": "TODO KF 029 :: unnamed_stack > Canyon > Canyon Layers > Canyon Grass :: Pasted Layer #28 :: 001-001-007-009.png"
+      "codes": [
+        "TODO KF 029 :: unnamed_stack > Canyon > Canyon Layers > Canyon Grass :: Pasted Layer #28 :: 001-001-007-009.png",
+        "MM Ikana Graveyard Grass 3"
+      ]
     },
     {
       "coords": [
@@ -243,7 +376,11 @@
         528
       ],
       "image": "grass",
-      "codes": "TODO KF 030 :: unnamed_stack > Canyon > Canyon Layers > Canyon Grass :: Pasted Layer #29 :: 001-001-007-010.png"
+      "codes": [
+        "TODO KF 030 :: unnamed_stack > Canyon > Canyon Layers > Canyon Grass :: Pasted Layer #29 :: 001-001-007-010.png",
+        "MM Ikana Graveyard Grass 4",
+        "MM Ikana Graveyard Grass 5"
+      ]
     },
     {
       "coords": [
@@ -251,7 +388,18 @@
         416
       ],
       "image": "grass",
-      "codes": "TODO KF 031 :: unnamed_stack > Canyon > Canyon Layers > Canyon Grass :: Pasted Layer #30 :: 001-001-007-011.png"
+      "codes": [
+        "TODO KF 031 :: unnamed_stack > Canyon > Canyon Layers > Canyon Grass :: Pasted Layer #30 :: 001-001-007-011.png",
+        "MM Ikana Graveyard Grass Pack Grass 1",
+        "MM Ikana Graveyard Grass Pack Grass 2",
+        "MM Ikana Graveyard Grass Pack Grass 3",
+        "MM Ikana Graveyard Grass Pack Grass 4",
+        "MM Ikana Graveyard Grass Pack Grass 5",
+        "MM Ikana Graveyard Grass Pack Grass 6",
+        "MM Ikana Graveyard Grass Pack Grass 7",
+        "MM Ikana Graveyard Grass Pack Grass 8",
+        "MM Ikana Graveyard Grass Pack Grass 9"
+      ]
     },
     {
       "coords": [
@@ -259,7 +407,10 @@
         63
       ],
       "image": "soft_soil",
-      "codes": "TODO KF 032 :: unnamed_stack > Canyon > Canyon Layers > Canyon Soils :: Pasted Layer #31 :: 001-001-008-000.png"
+      "codes": [
+        "TODO KF 032 :: unnamed_stack > Canyon > Canyon Layers > Canyon Soils :: Pasted Layer #31 :: 001-001-008-000.png",
+        "MM Stone Tower Inverted Soil Lower"
+      ]
     },
     {
       "coords": [
@@ -267,7 +418,10 @@
         81
       ],
       "image": "soft_soil",
-      "codes": "TODO KF 033 :: unnamed_stack > Canyon > Canyon Layers > Canyon Soils :: Pasted Layer #32 :: 001-001-008-001.png"
+      "codes": [
+        "TODO KF 033 :: unnamed_stack > Canyon > Canyon Layers > Canyon Soils :: Pasted Layer #32 :: 001-001-008-001.png",
+        "MM Stone Tower Inverted Soil Upper"
+      ]
     },
     {
       "coords": [
@@ -275,7 +429,10 @@
         52
       ],
       "image": "rock",
-      "codes": "TODO KF 034 :: unnamed_stack > Canyon > Canyon Layers > Canyon Rocks :: Pasted Layer #33 :: 001-001-009-000.png"
+      "codes": [
+        "TODO KF 034 :: unnamed_stack > Canyon > Canyon Layers > Canyon Rocks :: Pasted Layer #33 :: 001-001-009-000.png",
+        "MM Stone Tower Inverted Rock 1"
+      ]
     },
     {
       "coords": [
@@ -283,7 +440,10 @@
         92
       ],
       "image": "rock",
-      "codes": "TODO KF 035 :: unnamed_stack > Canyon > Canyon Layers > Canyon Rocks :: Pasted Layer #34 :: 001-001-009-001.png"
+      "codes": [
+        "TODO KF 035 :: unnamed_stack > Canyon > Canyon Layers > Canyon Rocks :: Pasted Layer #34 :: 001-001-009-001.png",
+        "MM Stone Tower Inverted Rock 2"
+      ]
     },
     {
       "coords": [
@@ -291,7 +451,17 @@
         424
       ],
       "image": "rock",
-      "codes": "TODO KF 036 :: unnamed_stack > Canyon > Canyon Layers > Canyon Rocks :: Pasted Layer #35 :: 001-001-009-002.png"
+      "codes": [
+        "TODO KF 036 :: unnamed_stack > Canyon > Canyon Layers > Canyon Rocks :: Pasted Layer #35 :: 001-001-009-002.png",
+        "MM Ikana Graveyard Rock Circle Rock 1",
+        "MM Ikana Graveyard Rock Circle Rock 2",
+        "MM Ikana Graveyard Rock Circle Rock 3",
+        "MM Ikana Graveyard Rock Circle Rock 4",
+        "MM Ikana Graveyard Rock Circle Rock 5",
+        "MM Ikana Graveyard Rock Circle Rock 6",
+        "MM Ikana Graveyard Rock Circle Rock 7",
+        "MM Ikana Graveyard Rock Circle Rock 8"
+      ]
     },
     {
       "coords": [
@@ -299,30 +469,43 @@
         358
       ],
       "image": "rock",
-      "codes": "TODO KF 037 :: unnamed_stack > Canyon > Canyon Layers > Canyon Rocks :: Pasted Layer #36 :: 001-001-009-003.png"
+      "codes": [
+        "TODO KF 037 :: unnamed_stack > Canyon > Canyon Layers > Canyon Rocks :: Pasted Layer #36 :: 001-001-009-003.png",
+        "MM Ikana Graveyard Rock Wall 1",
+        "MM Ikana Graveyard Rock Wall 2",
+        "MM Ikana Graveyard Rock Wall 3",
+        "MM Ikana Graveyard Rock Wall 4",
+        "MM Ikana Graveyard Rock Wall 5"
+      ]
     },
     {
       "coords": [
         390,
         491
       ],
-      "image": "npc",
-      "codes": "TODO KF 038 :: unnamed_stack > Canyon > Canyon Layers > Canyon Gossip :: Pasted Layer #37 :: 001-001-010-000.png"
+      "image": "gossip_stone",
+      "codes": [
+        "TODO KF 038 :: unnamed_stack > Canyon > Canyon Layers > Canyon Gossip :: Pasted Layer #37 :: 001-001-010-000.png",
+        "MM Ikana Valley Gossip Lower"
+      ]
     },
     {
       "coords": [
         304,
         264
       ],
-      "image": "npc",
-      "codes": "TODO KF 039 :: unnamed_stack > Canyon > Canyon Layers > Canyon Gossip :: Pasted Layer #38 :: 001-001-010-001.png"
+      "image": "gossip_stone",
+      "codes": [
+        "TODO KF 039 :: unnamed_stack > Canyon > Canyon Layers > Canyon Gossip :: Pasted Layer #38 :: 001-001-010-001.png",
+        "MM Ikana Canyon Gossip Upper"
+      ]
     },
     {
       "coords": [
         812,
         466
       ],
-      "image": "overworld_entrance",
+      "image": "dungeon_entrance",
       "codes": "TODO KF 040 :: unnamed_stack > Canyon > Canyon Layers > Canyon Entrances :: Pasted Layer #39 :: 001-001-011-000.png"
     },
     {
@@ -330,7 +513,7 @@
         946,
         368
       ],
-      "image": "overworld_entrance",
+      "image": "dungeon_entrance",
       "codes": "TODO KF 041 :: unnamed_stack > Canyon > Canyon Layers > Canyon Entrances :: Pasted Layer #40 :: 001-001-011-001.png"
     },
     {
@@ -338,7 +521,7 @@
         872,
         264
       ],
-      "image": "overworld_entrance",
+      "image": "dungeon_entrance",
       "codes": "TODO KF 042 :: unnamed_stack > Canyon > Canyon Layers > Canyon Entrances :: Pasted Layer #41 :: 001-001-011-002.png"
     },
     {
@@ -346,7 +529,7 @@
         633,
         44
       ],
-      "image": "overworld_entrance",
+      "image": "dungeon_entrance",
       "codes": "TODO KF 043 :: unnamed_stack > Canyon > Canyon Layers > Canyon Entrances :: Pasted Layer #42 :: 001-001-011-003.png"
     },
     {
@@ -354,7 +537,7 @@
         514,
         545
       ],
-      "image": "overworld_entrance",
+      "image": "interior_entrance",
       "codes": "TODO KF 044 :: unnamed_stack > Canyon > Canyon Layers > Canyon Entrances :: Pasted Layer #43 :: 001-001-011-004.png"
     },
     {
@@ -362,7 +545,7 @@
         424,
         302
       ],
-      "image": "overworld_entrance",
+      "image": "interior_entrance",
       "codes": "TODO KF 045 :: unnamed_stack > Canyon > Canyon Layers > Canyon Entrances :: Pasted Layer #44 :: 001-001-011-005.png"
     },
     {
@@ -370,7 +553,7 @@
         363,
         318
       ],
-      "image": "overworld_entrance",
+      "image": "interior_entrance",
       "codes": "TODO KF 046 :: unnamed_stack > Canyon > Canyon Layers > Canyon Entrances :: Pasted Layer #45 :: 001-001-011-006.png"
     },
     {
@@ -378,7 +561,7 @@
         325,
         257
       ],
-      "image": "overworld_entrance",
+      "image": "interior_entrance",
       "codes": "TODO KF 047 :: unnamed_stack > Canyon > Canyon Layers > Canyon Entrances :: Pasted Layer #46 :: 001-001-011-007.png"
     },
     {
@@ -386,7 +569,7 @@
         280,
         360
       ],
-      "image": "overworld_entrance",
+      "image": "dungeon_entrance",
       "codes": "TODO KF 048 :: unnamed_stack > Canyon > Canyon Layers > Canyon Entrances :: Pasted Layer #47 :: 001-001-011-008.png"
     },
     {
@@ -394,7 +577,7 @@
         234,
         406
       ],
-      "image": "overworld_entrance",
+      "image": "grotto",
       "codes": "TODO KF 049 :: unnamed_stack > Canyon > Canyon Layers > Canyon Entrances :: Pasted Layer #48 :: 001-001-011-009.png"
     },
     {
@@ -402,7 +585,7 @@
         184,
         422
       ],
-      "image": "overworld_entrance",
+      "image": "dungeon_entrance",
       "codes": "TODO KF 050 :: unnamed_stack > Canyon > Canyon Layers > Canyon Entrances :: Pasted Layer #49 :: 001-001-011-010.png"
     },
     {
@@ -410,7 +593,7 @@
         64,
         413
       ],
-      "image": "overworld_entrance",
+      "image": "bomb_grotto",
       "codes": "TODO KF 051 :: unnamed_stack > Canyon > Canyon Layers > Canyon Entrances :: Pasted Layer #50 :: 001-001-011-011.png"
     },
     {
@@ -418,7 +601,10 @@
         80,
         527
       ],
-      "image": "overworld_entrance",
+      "image": "grotto",
+      "overlays": [
+        "day3"
+      ],
       "codes": "TODO KF 052 :: unnamed_stack > Canyon > Canyon Layers > Canyon Entrances :: Pasted Layer #51 :: 001-001-011-012.png"
     },
     {
@@ -426,7 +612,10 @@
         36,
         536
       ],
-      "image": "overworld_entrance",
+      "image": "grotto",
+      "overlays": [
+        "day3"
+      ],
       "codes": "TODO KF 053 :: unnamed_stack > Canyon > Canyon Layers > Canyon Entrances :: Pasted Layer #52 :: 001-001-011-013.png"
     },
     {
@@ -434,7 +623,10 @@
         77,
         547
       ],
-      "image": "overworld_entrance",
+      "image": "grotto",
+      "overlays": [
+        "day1"
+      ],
       "codes": "TODO KF 054 :: unnamed_stack > Canyon > Canyon Layers > Canyon Entrances :: Pasted Layer #53 :: 001-001-011-014.png"
     }
   ]

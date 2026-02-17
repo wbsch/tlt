@@ -10,24 +10,39 @@
         263,
         405
       ],
-      "image": "chest",
-      "codes": "TODO KF 001 :: unnamed_stack > Mountain > Mountain Layers > Mountain Checks :: Pasted Layer :: 001-001-001-000.png"
+      "image": "heart_piece",
+      "codes": [
+        "TODO KF 001 :: unnamed_stack > Mountain > Mountain Layers > Mountain Checks :: Pasted Layer :: 001-001-001-000.png",
+        "MM Path to Snowhead HP"
+      ]
     },
     {
       "coords": [
         332,
         516
       ],
-      "image": "chest",
-      "codes": "TODO KF 002 :: unnamed_stack > Mountain > Mountain Layers > Mountain Checks :: Pasted Layer #1 :: 001-001-001-001.png"
+      "image": "npc",
+      "overlays": [
+        "clear_state"
+      ],
+      "codes": [
+        "TODO KF 002 :: unnamed_stack > Mountain > Mountain Layers > Mountain Checks :: Pasted Layer #1 :: 001-001-001-001.png",
+        "MM Mountain Village Frog Choir HP"
+      ]
     },
     {
       "coords": [
         328,
         491
       ],
-      "image": "chest",
-      "codes": "TODO KF 003 :: unnamed_stack > Mountain > Mountain Layers > Mountain Checks :: Pasted Layer #2 :: 001-001-001-002.png"
+      "image": "npc",
+      "overlays": [
+        "cursed_state"
+      ],
+      "codes": [
+        "TODO KF 003 :: unnamed_stack > Mountain > Mountain Layers > Mountain Checks :: Pasted Layer #2 :: 001-001-001-002.png",
+        "MM Mountain Village Don Gero Mask"
+      ]
     },
     {
       "coords": [
@@ -35,39 +50,60 @@
         480
       ],
       "image": "chest",
-      "codes": "TODO KF 004 :: unnamed_stack > Mountain > Mountain Layers > Mountain Checks :: Pasted Layer #3 :: 001-001-001-003.png"
+      "overlays": [
+        "clear_state"
+      ],
+      "codes": [
+        "TODO KF 004 :: unnamed_stack > Mountain > Mountain Layers > Mountain Checks :: Pasted Layer #3 :: 001-001-001-003.png",
+        "MM Mountain Village Waterfall Chest"
+      ]
     },
     {
       "coords": [
         399,
         148
       ],
-      "image": "chest",
-      "codes": "TODO KF 005 :: unnamed_stack > Mountain > Mountain Layers > Mountain Checks :: Pasted Layer #4 :: 001-001-001-004.png"
+      "image": "npc",
+      "overlays": [
+        "clear_state"
+      ],
+      "codes": [
+        "TODO KF 005 :: unnamed_stack > Mountain > Mountain Layers > Mountain Checks :: Pasted Layer #4 :: 001-001-001-004.png",
+        "MM Goron Race Reward"
+      ]
     },
     {
       "coords": [
         554,
         210
       ],
-      "image": "chest",
-      "codes": "TODO KF 006 :: unnamed_stack > Mountain > Mountain Layers > Mountain Checks :: Pasted Layer #5 :: 001-001-001-005.png"
+      "image": "npc",
+      "codes": [
+        "TODO KF 006 :: unnamed_stack > Mountain > Mountain Layers > Mountain Checks :: Pasted Layer #5 :: 001-001-001-005.png",
+        "MM Goron Powder Keg"
+      ]
     },
     {
       "coords": [
         610,
         376
       ],
-      "image": "chest",
-      "codes": "TODO KF 007 :: unnamed_stack > Mountain > Mountain Layers > Mountain Checks :: Pasted Layer #6 :: 001-001-001-006.png"
+      "image": "npc",
+      "codes": [
+        "TODO KF 007 :: unnamed_stack > Mountain > Mountain Layers > Mountain Checks :: Pasted Layer #6 :: 001-001-001-006.png",
+        "MM Goron Village Scrub Deed"
+      ]
     },
     {
       "coords": [
         630,
         392
       ],
-      "image": "chest",
-      "codes": "TODO KF 008 :: unnamed_stack > Mountain > Mountain Layers > Mountain Checks :: Pasted Layer #7 :: 001-001-001-007.png"
+      "image": "heart_piece",
+      "codes": [
+        "TODO KF 008 :: unnamed_stack > Mountain > Mountain Layers > Mountain Checks :: Pasted Layer #7 :: 001-001-001-007.png",
+        "MM Goron Village HP"
+      ]
     },
     {
       "coords": [
@@ -75,7 +111,13 @@
         541
       ],
       "image": "chest",
-      "codes": "TODO KF 009 :: unnamed_stack > Mountain > Mountain Layers > Mountain Checks :: Pasted Layer #8 :: 001-001-001-008.png"
+      "overlays": [
+        "clear_state"
+      ],
+      "codes": [
+        "TODO KF 009 :: unnamed_stack > Mountain > Mountain Layers > Mountain Checks :: Pasted Layer #8 :: 001-001-001-008.png",
+        "MM Twin Islands Underwater Chest 1"
+      ]
     },
     {
       "coords": [
@@ -83,7 +125,13 @@
         393
       ],
       "image": "chest",
-      "codes": "TODO KF 010 :: unnamed_stack > Mountain > Mountain Layers > Mountain Checks :: Pasted Layer #9 :: 001-001-001-009.png"
+      "overlays": [
+        "clear_state"
+      ],
+      "codes": [
+        "TODO KF 010 :: unnamed_stack > Mountain > Mountain Layers > Mountain Checks :: Pasted Layer #9 :: 001-001-001-009.png",
+        "MM Twin Islands Underwater Chest 2"
+      ]
     },
     {
       "coords": [
@@ -91,7 +139,14 @@
         440
       ],
       "image": "song",
-      "codes": "TODO KF 011 :: unnamed_stack > Mountain > Mountain Layers > Mountain Songs :: Pasted Layer #10 :: 001-001-002-000.png"
+      "overlays": [
+        "day3",
+        "cursed_state"
+      ],
+      "codes": [
+        "TODO KF 011 :: unnamed_stack > Mountain > Mountain Layers > Mountain Songs :: Pasted Layer #10 :: 001-001-002-000.png",
+        "MM Goron Elder"
+      ]
     },
     {
       "coords": [
@@ -99,7 +154,13 @@
         152
       ],
       "image": "song",
-      "codes": "TODO KF 012 :: unnamed_stack > Mountain > Mountain Layers > Mountain Songs :: Pasted Layer #11 :: 001-001-002-001.png"
+      "overlays": [
+        "cursed_state"
+      ],
+      "codes": [
+        "TODO KF 012 :: unnamed_stack > Mountain > Mountain Layers > Mountain Songs :: Pasted Layer #11 :: 001-001-002-001.png",
+        "MM Goron Baby"
+      ]
     },
     {
       "coords": [
@@ -107,7 +168,14 @@
         546
       ],
       "image": "song",
-      "codes": "TODO KF 013 :: unnamed_stack > Mountain > Mountain Layers > Mountain Songs :: Pasted Layer #12 :: 001-001-002-002.png"
+      "overlays": [
+        "day2",
+        "cursed_state"
+      ],
+      "codes": [
+        "TODO KF 013 :: unnamed_stack > Mountain > Mountain Layers > Mountain Songs :: Pasted Layer #12 :: 001-001-002-002.png",
+        "MM Goron Elder"
+      ]
     },
     {
       "coords": [
@@ -115,7 +183,14 @@
         461
       ],
       "image": "song",
-      "codes": "TODO KF 014 :: unnamed_stack > Mountain > Mountain Layers > Mountain Songs :: Pasted Layer #13 :: 001-001-002-003.png"
+      "overlays": [
+        "day1",
+        "cursed_state"
+      ],
+      "codes": [
+        "TODO KF 014 :: unnamed_stack > Mountain > Mountain Layers > Mountain Songs :: Pasted Layer #13 :: 001-001-002-003.png",
+        "MM Goron Elder"
+      ]
     },
     {
       "coords": [
@@ -123,15 +198,21 @@
         462
       ],
       "image": "shop",
-      "codes": "TODO KF 015 :: unnamed_stack > Mountain > Mountain Layers > Mountain Shops :: Pasted Layer #14 :: 001-001-003-000.png"
+      "codes": [
+        "TODO KF 015 :: unnamed_stack > Mountain > Mountain Layers > Mountain Shops :: Pasted Layer #14 :: 001-001-003-000.png",
+        "MM Tingle Map Snowhead"
+      ]
     },
     {
       "coords": [
         626,
         376
       ],
-      "image": "business_scrub_oot",
-      "codes": "TODO KF 016 :: unnamed_stack > Mountain > Mountain Layers > Mountain Scrubs :: Pasted Layer #15 :: 001-001-004-000.png"
+      "image": "business_scrub_mm",
+      "codes": [
+        "TODO KF 016 :: unnamed_stack > Mountain > Mountain Layers > Mountain Scrubs :: Pasted Layer #15 :: 001-001-004-000.png",
+        "MM Goron Village Scrub Bomb Bag"
+      ]
     },
     {
       "coords": [
@@ -139,7 +220,10 @@
         456
       ],
       "image": "owl_statue",
-      "codes": "TODO KF 017 :: unnamed_stack > Mountain > Mountain Layers > Mountain Owl Statues :: Pasted Layer #16 :: 001-001-005-000.png"
+      "codes": [
+        "TODO KF 017 :: unnamed_stack > Mountain > Mountain Layers > Mountain Owl Statues :: Pasted Layer #16 :: 001-001-005-000.png",
+        "MM Mountain Village Owl Statue"
+      ]
     },
     {
       "coords": [
@@ -147,7 +231,10 @@
         405
       ],
       "image": "owl_statue",
-      "codes": "TODO KF 018 :: unnamed_stack > Mountain > Mountain Layers > Mountain Owl Statues :: Pasted Layer #17 :: 001-001-005-001.png"
+      "codes": [
+        "TODO KF 018 :: unnamed_stack > Mountain > Mountain Layers > Mountain Owl Statues :: Pasted Layer #17 :: 001-001-005-001.png",
+        "MM Snowhead Owl Statue"
+      ]
     },
     {
       "coords": [
@@ -155,7 +242,14 @@
         504
       ],
       "image": "pot",
-      "codes": "TODO KF 019 :: unnamed_stack > Mountain > Mountain Layers > Mountain Pots :: Pasted Layer #18 :: 001-001-006-000.png"
+      "overlays": [
+        "day"
+      ],
+      "codes": [
+        "TODO KF 019 :: unnamed_stack > Mountain > Mountain Layers > Mountain Pots :: Pasted Layer #18 :: 001-001-006-000.png",
+        "MM Mountain Village Potted Plant 1 Pot",
+        "MM Mountain Village Potted Plant 2 Pot"
+      ]
     },
     {
       "coords": [
@@ -163,7 +257,10 @@
         496
       ],
       "image": "pot",
-      "codes": "TODO KF 020 :: unnamed_stack > Mountain > Mountain Layers > Mountain Pots :: Pasted Layer #19 :: 001-001-006-001.png"
+      "codes": [
+        "TODO KF 020 :: unnamed_stack > Mountain > Mountain Layers > Mountain Pots :: Pasted Layer #19 :: 001-001-006-001.png",
+        "MM Mountain Village Pot"
+      ]
     },
     {
       "coords": [
@@ -171,7 +268,13 @@
         116
       ],
       "image": "pot",
-      "codes": "TODO KF 021 :: unnamed_stack > Mountain > Mountain Layers > Mountain Pots :: Pasted Layer #20 :: 001-001-006-002.png"
+      "codes": [
+        "TODO KF 021 :: unnamed_stack > Mountain > Mountain Layers > Mountain Pots :: Pasted Layer #20 :: 001-001-006-002.png",
+        "MM Goron Shrine Pot 01",
+        "MM Goron Shrine Pot 02",
+        "MM Goron Shrine Pot 03",
+        "MM Goron Shrine Pot 04"
+      ]
     },
     {
       "coords": [
@@ -179,7 +282,13 @@
         83
       ],
       "image": "pot",
-      "codes": "TODO KF 022 :: unnamed_stack > Mountain > Mountain Layers > Mountain Pots :: Pasted Layer #21 :: 001-001-006-003.png"
+      "codes": [
+        "TODO KF 022 :: unnamed_stack > Mountain > Mountain Layers > Mountain Pots :: Pasted Layer #21 :: 001-001-006-003.png",
+        "MM Goron Shrine Pot 05",
+        "MM Goron Shrine Pot 06",
+        "MM Goron Shrine Pot 07",
+        "MM Goron Shrine Pot 08"
+      ]
     },
     {
       "coords": [
@@ -187,7 +296,12 @@
         131
       ],
       "image": "pot",
-      "codes": "TODO KF 023 :: unnamed_stack > Mountain > Mountain Layers > Mountain Pots :: Pasted Layer #22 :: 001-001-006-004.png"
+      "codes": [
+        "TODO KF 023 :: unnamed_stack > Mountain > Mountain Layers > Mountain Pots :: Pasted Layer #22 :: 001-001-006-004.png",
+        "MM Goron Shrine Pot 09",
+        "MM Goron Shrine Pot 10",
+        "MM Goron Shrine Pot 11"
+      ]
     },
     {
       "coords": [
@@ -195,7 +309,15 @@
         305
       ],
       "image": "pot",
-      "codes": "TODO KF 024 :: unnamed_stack > Mountain > Mountain Layers > Mountain Pots :: Pasted Layer #23 :: 001-001-006-005.png"
+      "codes": [
+        "TODO KF 024 :: unnamed_stack > Mountain > Mountain Layers > Mountain Pots :: Pasted Layer #23 :: 001-001-006-005.png",
+        "MM Goron Race Pot 12",
+        "MM Goron Race Pot 13",
+        "MM Goron Race Pot 14",
+        "MM Goron Race Pot 15",
+        "MM Goron Race Pot 16",
+        "MM Goron Race Pot 17"
+      ]
     },
     {
       "coords": [
@@ -203,7 +325,10 @@
         274
       ],
       "image": "pot",
-      "codes": "TODO KF 025 :: unnamed_stack > Mountain > Mountain Layers > Mountain Pots :: Pasted Layer #24 :: 001-001-006-006.png"
+      "codes": [
+        "TODO KF 025 :: unnamed_stack > Mountain > Mountain Layers > Mountain Pots :: Pasted Layer #24 :: 001-001-006-006.png",
+        "MM Goron Race Pot 18"
+      ]
     },
     {
       "coords": [
@@ -211,7 +336,10 @@
         261
       ],
       "image": "pot",
-      "codes": "TODO KF 026 :: unnamed_stack > Mountain > Mountain Layers > Mountain Pots :: Pasted Layer #25 :: 001-001-006-007.png"
+      "codes": [
+        "TODO KF 026 :: unnamed_stack > Mountain > Mountain Layers > Mountain Pots :: Pasted Layer #25 :: 001-001-006-007.png",
+        "MM Goron Race Pot 19"
+      ]
     },
     {
       "coords": [
@@ -219,7 +347,10 @@
         259
       ],
       "image": "pot",
-      "codes": "TODO KF 027 :: unnamed_stack > Mountain > Mountain Layers > Mountain Pots :: Pasted Layer #26 :: 001-001-006-008.png"
+      "codes": [
+        "TODO KF 027 :: unnamed_stack > Mountain > Mountain Layers > Mountain Pots :: Pasted Layer #26 :: 001-001-006-008.png",
+        "MM Goron Race Pot 11"
+      ]
     },
     {
       "coords": [
@@ -227,7 +358,10 @@
         230
       ],
       "image": "pot",
-      "codes": "TODO KF 028 :: unnamed_stack > Mountain > Mountain Layers > Mountain Pots :: Pasted Layer #27 :: 001-001-006-009.png"
+      "codes": [
+        "TODO KF 028 :: unnamed_stack > Mountain > Mountain Layers > Mountain Pots :: Pasted Layer #27 :: 001-001-006-009.png",
+        "MM Goron Race Pot 21"
+      ]
     },
     {
       "coords": [
@@ -235,7 +369,10 @@
         236
       ],
       "image": "pot",
-      "codes": "TODO KF 029 :: unnamed_stack > Mountain > Mountain Layers > Mountain Pots :: Pasted Layer #28 :: 001-001-006-010.png"
+      "codes": [
+        "TODO KF 029 :: unnamed_stack > Mountain > Mountain Layers > Mountain Pots :: Pasted Layer #28 :: 001-001-006-010.png",
+        "MM Goron Race Pot 20"
+      ]
     },
     {
       "coords": [
@@ -243,7 +380,10 @@
         232
       ],
       "image": "pot",
-      "codes": "TODO KF 030 :: unnamed_stack > Mountain > Mountain Layers > Mountain Pots :: Pasted Layer #29 :: 001-001-006-011.png"
+      "codes": [
+        "TODO KF 030 :: unnamed_stack > Mountain > Mountain Layers > Mountain Pots :: Pasted Layer #29 :: 001-001-006-011.png",
+        "MM Goron Race Pot 10"
+      ]
     },
     {
       "coords": [
@@ -251,7 +391,10 @@
         206
       ],
       "image": "pot",
-      "codes": "TODO KF 031 :: unnamed_stack > Mountain > Mountain Layers > Mountain Pots :: Pasted Layer #30 :: 001-001-006-012.png"
+      "codes": [
+        "TODO KF 031 :: unnamed_stack > Mountain > Mountain Layers > Mountain Pots :: Pasted Layer #30 :: 001-001-006-012.png",
+        "MM Goron Race Pot 09"
+      ]
     },
     {
       "coords": [
@@ -259,7 +402,14 @@
         190
       ],
       "image": "pot",
-      "codes": "TODO KF 032 :: unnamed_stack > Mountain > Mountain Layers > Mountain Pots :: Pasted Layer #31 :: 001-001-006-013.png"
+      "codes": [
+        "TODO KF 032 :: unnamed_stack > Mountain > Mountain Layers > Mountain Pots :: Pasted Layer #31 :: 001-001-006-013.png",
+        "MM Goron Race Pot 22",
+        "MM Goron Race Pot 23",
+        "MM Goron Race Pot 24",
+        "MM Goron Race Pot 25",
+        "MM Goron Race Pot 26"
+      ]
     },
     {
       "coords": [
@@ -267,7 +417,11 @@
         164
       ],
       "image": "pot",
-      "codes": "TODO KF 033 :: unnamed_stack > Mountain > Mountain Layers > Mountain Pots :: Pasted Layer #32 :: 001-001-006-014.png"
+      "codes": [
+        "TODO KF 033 :: unnamed_stack > Mountain > Mountain Layers > Mountain Pots :: Pasted Layer #32 :: 001-001-006-014.png",
+        "MM Goron Race Pot 07",
+        "MM Goron Race Pot 08"
+      ]
     },
     {
       "coords": [
@@ -275,7 +429,13 @@
         160
       ],
       "image": "pot",
-      "codes": "TODO KF 034 :: unnamed_stack > Mountain > Mountain Layers > Mountain Pots :: Pasted Layer #33 :: 001-001-006-015.png"
+      "codes": [
+        "TODO KF 034 :: unnamed_stack > Mountain > Mountain Layers > Mountain Pots :: Pasted Layer #33 :: 001-001-006-015.png",
+        "MM Goron Race Pot 30",
+        "MM Goron Race Pot 29",
+        "MM Goron Race Pot 28",
+        "MM Goron Race Pot 27"
+      ]
     },
     {
       "coords": [
@@ -283,7 +443,12 @@
         124
       ],
       "image": "pot",
-      "codes": "TODO KF 035 :: unnamed_stack > Mountain > Mountain Layers > Mountain Pots :: Pasted Layer #34 :: 001-001-006-016.png"
+      "codes": [
+        "TODO KF 035 :: unnamed_stack > Mountain > Mountain Layers > Mountain Pots :: Pasted Layer #34 :: 001-001-006-016.png",
+        "MM Goron Race Pot 04",
+        "MM Goron Race Pot 05",
+        "MM Goron Race Pot 06"
+      ]
     },
     {
       "coords": [
@@ -291,55 +456,93 @@
         101
       ],
       "image": "pot",
-      "codes": "TODO KF 036 :: unnamed_stack > Mountain > Mountain Layers > Mountain Pots :: Pasted Layer #35 :: 001-001-006-017.png"
+      "codes": [
+        "TODO KF 036 :: unnamed_stack > Mountain > Mountain Layers > Mountain Pots :: Pasted Layer #35 :: 001-001-006-017.png",
+        "MM Goron Race Pot 01",
+        "MM Goron Race Pot 02",
+        "MM Goron Race Pot 03"
+      ]
     },
     {
       "coords": [
         546,
         224
       ],
-      "image": "collectible",
-      "codes": "TODO KF 037 :: unnamed_stack > Mountain > Mountain Layers > Mountain Crates :: Pasted Layer #36 :: 001-001-007-000.png"
+      "image": "crate",
+      "codes": [
+        "TODO KF 037 :: unnamed_stack > Mountain > Mountain Layers > Mountain Crates :: Pasted Layer #36 :: 001-001-007-000.png",
+        "MM Goron Village Crate"
+      ]
     },
     {
       "coords": [
         368,
         512
       ],
-      "image": "green_rupee",
-      "codes": "TODO KF 038 :: unnamed_stack > Mountain > Mountain Layers > Mountain Freestanding Rupees :: Pasted Layer #37 :: 001-001-008-000.png"
+      "image": "red_rupee",
+      "overlays": [
+        "clear_state"
+      ],
+      "codes": [
+        "TODO KF 038 :: unnamed_stack > Mountain > Mountain Layers > Mountain Freestanding Rupees :: Pasted Layer #37 :: 001-001-008-000.png",
+        "MM Mountain Village Rupee"
+      ]
     },
     {
       "coords": [
         901,
         536
       ],
-      "image": "green_rupee",
-      "codes": "TODO KF 039 :: unnamed_stack > Mountain > Mountain Layers > Mountain Freestanding Rupees :: Pasted Layer #38 :: 001-001-008-001.png"
+      "image": "blue_rupee",
+      "overlays": [
+        "clear_state"
+      ],
+      "codes": [
+        "TODO KF 039 :: unnamed_stack > Mountain > Mountain Layers > Mountain Freestanding Rupees :: Pasted Layer #38 :: 001-001-008-001.png",
+        "MM Twin Islands Rupee 1"
+      ]
     },
     {
       "coords": [
         942,
         485
       ],
-      "image": "green_rupee",
-      "codes": "TODO KF 040 :: unnamed_stack > Mountain > Mountain Layers > Mountain Freestanding Rupees :: Pasted Layer #39 :: 001-001-008-002.png"
+      "image": "blue_rupee",
+      "overlays": [
+        "clear_state"
+      ],
+      "codes": [
+        "TODO KF 040 :: unnamed_stack > Mountain > Mountain Layers > Mountain Freestanding Rupees :: Pasted Layer #39 :: 001-001-008-002.png",
+        "MM Twin Islands Rupee 2"
+      ]
     },
     {
       "coords": [
         916,
         454
       ],
-      "image": "green_rupee",
-      "codes": "TODO KF 041 :: unnamed_stack > Mountain > Mountain Layers > Mountain Freestanding Rupees :: Pasted Layer #40 :: 001-001-008-003.png"
+      "image": "blue_rupee",
+      "overlays": [
+        "clear_state"
+      ],
+      "codes": [
+        "TODO KF 041 :: unnamed_stack > Mountain > Mountain Layers > Mountain Freestanding Rupees :: Pasted Layer #40 :: 001-001-008-003.png",
+        "MM Twin Islands Rupee 3"
+      ]
     },
     {
       "coords": [
         851,
         453
       ],
-      "image": "green_rupee",
-      "codes": "TODO KF 042 :: unnamed_stack > Mountain > Mountain Layers > Mountain Freestanding Rupees :: Pasted Layer #41 :: 001-001-008-004.png"
+      "image": "blue_rupee",
+      "overlays": [
+        "clear_state"
+      ],
+      "codes": [
+        "TODO KF 042 :: unnamed_stack > Mountain > Mountain Layers > Mountain Freestanding Rupees :: Pasted Layer #41 :: 001-001-008-004.png",
+        "MM Twin Islands Rupee 4"
+      ]
     },
     {
       "coords": [
@@ -347,23 +550,50 @@
         508
       ],
       "image": "beehive",
-      "codes": "TODO KF 043 :: unnamed_stack > Mountain > Mountain Layers > Mountain Beehives :: Pasted Layer #42 :: 001-001-009-000.png"
+      "overlays": [
+        "clear_state"
+      ],
+      "codes": [
+        "TODO KF 043 :: unnamed_stack > Mountain > Mountain Layers > Mountain Beehives :: Pasted Layer #42 :: 001-001-009-000.png",
+        "MM Mountain Village Hive"
+      ]
     },
     {
       "coords": [
         351,
         527
       ],
-      "image": "collectible",
-      "codes": "TODO KF 044 :: unnamed_stack > Mountain > Mountain Layers > Mountain Butterflies :: Pasted Layer #43 :: 001-001-010-000.png"
+      "image": "butterfly",
+      "overlays": [
+        "day",
+        "clear_state"
+      ],
+      "codes": [
+        "TODO KF 044 :: unnamed_stack > Mountain > Mountain Layers > Mountain Butterflies :: Pasted Layer #43 :: 001-001-010-000.png",
+        "MM Mountain Village Butterfly Pack 2 Butterfly 1",
+        "MM Mountain Village Butterfly Pack 2 Butterfly 2",
+        "MM Mountain Village Butterfly Pack 2 Butterfly 3",
+        "MM Mountain Village Butterfly Pack 2 Butterfly 4",
+        "MM Mountain Village Butterfly Pack 2 Butterfly 5"
+      ]
     },
     {
       "coords": [
         396,
         471
       ],
-      "image": "collectible",
-      "codes": "TODO KF 045 :: unnamed_stack > Mountain > Mountain Layers > Mountain Butterflies :: Pasted Layer #44 :: 001-001-010-001.png"
+      "image": "butterfly",
+      "overlays": [
+        "day",
+        "clear_state"
+      ],
+      "codes": [
+        "TODO KF 045 :: unnamed_stack > Mountain > Mountain Layers > Mountain Butterflies :: Pasted Layer #44 :: 001-001-010-001.png",
+        "MM Mountain Village Butterfly Pack 1 Butterfly 1",
+        "MM Mountain Village Butterfly Pack 1 Butterfly 2",
+        "MM Mountain Village Butterfly Pack 1 Butterfly 3",
+        "MM Mountain Village Butterfly Pack 1 Butterfly 4"
+      ]
     },
     {
       "coords": [
@@ -371,7 +601,24 @@
         556
       ],
       "image": "grass",
-      "codes": "TODO KF 046 :: unnamed_stack > Mountain > Mountain Layers > Mountain Grass :: Pasted Layer #45 :: 001-001-011-000.png"
+      "overlays": [
+        "clear_state"
+      ],
+      "codes": [
+        "TODO KF 046 :: unnamed_stack > Mountain > Mountain Layers > Mountain Grass :: Pasted Layer #45 :: 001-001-011-000.png",
+        "MM Twin Islands Grass 01",
+        "MM Twin Islands Grass 02",
+        "MM Twin Islands Grass 03",
+        "MM Twin Islands Grass 04",
+        "MM Twin Islands Grass 05",
+        "MM Twin Islands Grass 06",
+        "MM Twin Islands Grass 07",
+        "MM Twin Islands Grass 08",
+        "MM Twin Islands Grass 09",
+        "MM Twin Islands Grass 10",
+        "MM Twin Islands Grass 11",
+        "MM Twin Islands Grass 12"
+      ]
     },
     {
       "coords": [
@@ -379,15 +626,37 @@
         540
       ],
       "image": "grass",
-      "codes": "TODO KF 047 :: unnamed_stack > Mountain > Mountain Layers > Mountain Grass :: Pasted Layer #46 :: 001-001-011-001.png"
+      "overlays": [
+        "clear_state"
+      ],
+      "codes": [
+        "TODO KF 047 :: unnamed_stack > Mountain > Mountain Layers > Mountain Grass :: Pasted Layer #46 :: 001-001-011-001.png",
+        "MM Mountain Village Grass 1",
+        "MM Mountain Village Grass 2",
+        "MM Mountain Village Grass 3"
+      ]
     },
     {
       "coords": [
         408,
         528
       ],
-      "image": "grass",
-      "codes": "TODO KF 048 :: unnamed_stack > Mountain > Mountain Layers > Mountain Grass :: Pasted Layer #47 :: 001-001-011-002.png"
+      "image": "keaton_grass",
+      "overlays": [
+        "clear_state"
+      ],
+      "codes": [
+        "TODO KF 048 :: unnamed_stack > Mountain > Mountain Layers > Mountain Grass :: Pasted Layer #47 :: 001-001-011-002.png",
+        "MM Mountain Village Keaton Grass Reward 1",
+        "MM Mountain Village Keaton Grass Reward 2",
+        "MM Mountain Village Keaton Grass Reward 3",
+        "MM Mountain Village Keaton Grass Reward 4",
+        "MM Mountain Village Keaton Grass Reward 5",
+        "MM Mountain Village Keaton Grass Reward 6",
+        "MM Mountain Village Keaton Grass Reward 7",
+        "MM Mountain Village Keaton Grass Reward 8",
+        "MM Mountain Village Keaton Grass Reward 9"
+      ]
     },
     {
       "coords": [
@@ -395,7 +664,14 @@
         518
       ],
       "image": "grass",
-      "codes": "TODO KF 049 :: unnamed_stack > Mountain > Mountain Layers > Mountain Grass :: Pasted Layer #48 :: 001-001-011-003.png"
+      "overlays": [
+        "day"
+      ],
+      "codes": [
+        "TODO KF 049 :: unnamed_stack > Mountain > Mountain Layers > Mountain Grass :: Pasted Layer #48 :: 001-001-011-003.png",
+        "MM Mountain Village Potted Plant 1 Grass",
+        "MM Mountain Village Potted Plant 2 Grass"
+      ]
     },
     {
       "coords": [
@@ -403,7 +679,21 @@
         472
       ],
       "image": "grass",
-      "codes": "TODO KF 050 :: unnamed_stack > Mountain > Mountain Layers > Mountain Grass :: Pasted Layer #49 :: 001-001-011-004.png"
+      "overlays": [
+        "clear_state"
+      ],
+      "codes": [
+        "TODO KF 050 :: unnamed_stack > Mountain > Mountain Layers > Mountain Grass :: Pasted Layer #49 :: 001-001-011-004.png",
+        "MM Mountain Village Grass Pack 1 Grass 1",
+        "MM Mountain Village Grass Pack 1 Grass 2",
+        "MM Mountain Village Grass Pack 1 Grass 3",
+        "MM Mountain Village Grass Pack 1 Grass 4",
+        "MM Mountain Village Grass Pack 1 Grass 5",
+        "MM Mountain Village Grass Pack 1 Grass 6",
+        "MM Mountain Village Grass Pack 1 Grass 7",
+        "MM Mountain Village Grass Pack 1 Grass 8",
+        "MM Mountain Village Grass Pack 1 Grass 9"
+      ]
     },
     {
       "coords": [
@@ -411,7 +701,21 @@
         480
       ],
       "image": "grass",
-      "codes": "TODO KF 051 :: unnamed_stack > Mountain > Mountain Layers > Mountain Grass :: Pasted Layer #50 :: 001-001-011-005.png"
+      "overlays": [
+        "clear_state"
+      ],
+      "codes": [
+        "TODO KF 051 :: unnamed_stack > Mountain > Mountain Layers > Mountain Grass :: Pasted Layer #50 :: 001-001-011-005.png",
+        "MM Mountain Village Grass Pack 2 Grass 1",
+        "MM Mountain Village Grass Pack 2 Grass 2",
+        "MM Mountain Village Grass Pack 2 Grass 3",
+        "MM Mountain Village Grass Pack 2 Grass 4",
+        "MM Mountain Village Grass Pack 2 Grass 5",
+        "MM Mountain Village Grass Pack 2 Grass 6",
+        "MM Mountain Village Grass Pack 2 Grass 7",
+        "MM Mountain Village Grass Pack 2 Grass 8",
+        "MM Mountain Village Grass Pack 2 Grass 9"
+      ]
     },
     {
       "coords": [
@@ -419,7 +723,21 @@
         472
       ],
       "image": "grass",
-      "codes": "TODO KF 052 :: unnamed_stack > Mountain > Mountain Layers > Mountain Grass :: Pasted Layer #51 :: 001-001-011-006.png"
+      "overlays": [
+        "clear_state"
+      ],
+      "codes": [
+        "TODO KF 052 :: unnamed_stack > Mountain > Mountain Layers > Mountain Grass :: Pasted Layer #51 :: 001-001-011-006.png",
+        "MM Mountain Village Grass Pack 3 Grass 1",
+        "MM Mountain Village Grass Pack 3 Grass 2",
+        "MM Mountain Village Grass Pack 3 Grass 3",
+        "MM Mountain Village Grass Pack 3 Grass 4",
+        "MM Mountain Village Grass Pack 3 Grass 5",
+        "MM Mountain Village Grass Pack 3 Grass 6",
+        "MM Mountain Village Grass Pack 3 Grass 7",
+        "MM Mountain Village Grass Pack 3 Grass 8",
+        "MM Mountain Village Grass Pack 3 Grass 9"
+      ]
     },
     {
       "coords": [
@@ -427,7 +745,15 @@
         448
       ],
       "image": "rock",
-      "codes": "TODO KF 053 :: unnamed_stack > Mountain > Mountain Layers > Mountain Rocks :: Pasted Layer #52 :: 001-001-012-000.png"
+      "overlays": [
+        "clear_state"
+      ],
+      "codes": [
+        "TODO KF 053 :: unnamed_stack > Mountain > Mountain Layers > Mountain Rocks :: Pasted Layer #52 :: 001-001-012-000.png",
+        "MM Twin Islands Rock 1",
+        "MM Twin Islands Rock 2",
+        "MM Twin Islands Rock 3"
+      ]
     },
     {
       "coords": [
@@ -435,7 +761,17 @@
         515
       ],
       "image": "rock",
-      "codes": "TODO KF 054 :: unnamed_stack > Mountain > Mountain Layers > Mountain Rocks :: Pasted Layer #53 :: 001-001-012-001.png"
+      "overlays": [
+        "clear_state"
+      ],
+      "codes": [
+        "TODO KF 054 :: unnamed_stack > Mountain > Mountain Layers > Mountain Rocks :: Pasted Layer #53 :: 001-001-012-001.png",
+        "MM Mountain Village Rock Ground 1",
+        "MM Mountain Village Rock Ground 2",
+        "MM Mountain Village Rock Ground 3",
+        "MM Mountain Village Rock Ground 4",
+        "MM Mountain Village Rock Ground 5"
+      ]
     },
     {
       "coords": [
@@ -443,7 +779,14 @@
         405
       ],
       "image": "rock",
-      "codes": "TODO KF 055 :: unnamed_stack > Mountain > Mountain Layers > Mountain Rocks :: Pasted Layer #54 :: 001-001-012-002.png"
+      "overlays": [
+        "clear_state"
+      ],
+      "codes": [
+        "TODO KF 055 :: unnamed_stack > Mountain > Mountain Layers > Mountain Rocks :: Pasted Layer #54 :: 001-001-012-002.png",
+        "MM Mountain Village Rock Cliff 1",
+        "MM Mountain Village Rock Cliff 2"
+      ]
     },
     {
       "coords": [
@@ -451,7 +794,12 @@
         192
       ],
       "image": "rock",
-      "codes": "TODO KF 056 :: unnamed_stack > Mountain > Mountain Layers > Mountain Rocks :: Pasted Layer #55 :: 001-001-012-003.png"
+      "codes": [
+        "TODO KF 056 :: unnamed_stack > Mountain > Mountain Layers > Mountain Rocks :: Pasted Layer #55 :: 001-001-012-003.png",
+        "MM Goron Shrine Rock 09",
+        "MM Goron Shrine Rock 10",
+        "MM Goron Shrine Rock 11"
+      ]
     },
     {
       "coords": [
@@ -459,7 +807,14 @@
         116
       ],
       "image": "rock",
-      "codes": "TODO KF 057 :: unnamed_stack > Mountain > Mountain Layers > Mountain Rocks :: Pasted Layer #56 :: 001-001-012-004.png"
+      "codes": [
+        "TODO KF 057 :: unnamed_stack > Mountain > Mountain Layers > Mountain Rocks :: Pasted Layer #56 :: 001-001-012-004.png",
+        "MM Goron Shrine Rock 12",
+        "MM Goron Shrine Rock 13",
+        "MM Goron Shrine Rock 14",
+        "MM Goron Shrine Rock 15",
+        "MM Goron Shrine Rock 16"
+      ]
     },
     {
       "coords": [
@@ -467,7 +822,12 @@
         90
       ],
       "image": "rock",
-      "codes": "TODO KF 058 :: unnamed_stack > Mountain > Mountain Layers > Mountain Rocks :: Pasted Layer #57 :: 001-001-012-005.png"
+      "codes": [
+        "TODO KF 058 :: unnamed_stack > Mountain > Mountain Layers > Mountain Rocks :: Pasted Layer #57 :: 001-001-012-005.png",
+        "MM Goron Shrine Rock 02",
+        "MM Goron Shrine Rock 03",
+        "MM Goron Shrine Rock 04"
+      ]
     },
     {
       "coords": [
@@ -475,7 +835,10 @@
         188
       ],
       "image": "rock",
-      "codes": "TODO KF 059 :: unnamed_stack > Mountain > Mountain Layers > Mountain Rocks :: Pasted Layer #58 :: 001-001-012-006.png"
+      "codes": [
+        "TODO KF 059 :: unnamed_stack > Mountain > Mountain Layers > Mountain Rocks :: Pasted Layer #58 :: 001-001-012-006.png",
+        "MM Goron Shrine Rock 01"
+      ]
     },
     {
       "coords": [
@@ -483,7 +846,10 @@
         196
       ],
       "image": "rock",
-      "codes": "TODO KF 060 :: unnamed_stack > Mountain > Mountain Layers > Mountain Rocks :: Pasted Layer #59 :: 001-001-012-007.png"
+      "codes": [
+        "TODO KF 060 :: unnamed_stack > Mountain > Mountain Layers > Mountain Rocks :: Pasted Layer #59 :: 001-001-012-007.png",
+        "MM Goron Shrine Rock 08"
+      ]
     },
     {
       "coords": [
@@ -491,7 +857,10 @@
         127
       ],
       "image": "rock",
-      "codes": "TODO KF 061 :: unnamed_stack > Mountain > Mountain Layers > Mountain Rocks :: Pasted Layer #60 :: 001-001-012-008.png"
+      "codes": [
+        "TODO KF 061 :: unnamed_stack > Mountain > Mountain Layers > Mountain Rocks :: Pasted Layer #60 :: 001-001-012-008.png",
+        "MM Goron Shrine Rock 07"
+      ]
     },
     {
       "coords": [
@@ -499,7 +868,11 @@
         92
       ],
       "image": "rock",
-      "codes": "TODO KF 062 :: unnamed_stack > Mountain > Mountain Layers > Mountain Rocks :: Pasted Layer #61 :: 001-001-012-009.png"
+      "codes": [
+        "TODO KF 062 :: unnamed_stack > Mountain > Mountain Layers > Mountain Rocks :: Pasted Layer #61 :: 001-001-012-009.png",
+        "MM Goron Shrine Rock 05",
+        "MM Goron Shrine Rock 06"
+      ]
     },
     {
       "coords": [
@@ -507,670 +880,1173 @@
         523
       ],
       "image": "red_boulder",
-      "codes": "TODO KF 063 :: unnamed_stack > Mountain > Mountain Layers > Mountain Red Boulders :: Pasted Layer #62 :: 001-001-013-000.png"
+      "overlays": [
+        "clear_state"
+      ],
+      "codes": [
+        "TODO KF 063 :: unnamed_stack > Mountain > Mountain Layers > Mountain Red Boulders :: Pasted Layer #62 :: 001-001-013-000.png",
+        "MM Mountain Village Spring Red Boulder 1",
+        "MM Mountain Village Spring Red Boulder 2",
+        "MM Mountain Village Spring Red Boulder 3"
+      ]
     },
     {
       "coords": [
         760,
         572
       ],
-      "image": "collectible",
-      "codes": "TODO KF 064 :: unnamed_stack > Mountain > Mountain Layers > Mountain Snowballs :: Pasted Layer #63 :: 001-001-014-000.png"
+      "image": "small_snowball",
+      "overlays": [
+        "cursed_state"
+      ],
+      "codes": [
+        "TODO KF 064 :: unnamed_stack > Mountain > Mountain Layers > Mountain Snowballs :: Pasted Layer #63 :: 001-001-014-000.png",
+        "MM Twin Islands Small Snowball 1"
+      ]
     },
     {
       "coords": [
         776,
         540
       ],
-      "image": "collectible",
-      "codes": "TODO KF 065 :: unnamed_stack > Mountain > Mountain Layers > Mountain Snowballs :: Pasted Layer #64 :: 001-001-014-001.png"
+      "image": "small_snowball",
+      "overlays": [
+        "cursed_state"
+      ],
+      "codes": [
+        "TODO KF 065 :: unnamed_stack > Mountain > Mountain Layers > Mountain Snowballs :: Pasted Layer #64 :: 001-001-014-001.png",
+        "MM Twin Islands Small Snowball 2"
+      ]
     },
     {
       "coords": [
         812,
         516
       ],
-      "image": "collectible",
-      "codes": "TODO KF 066 :: unnamed_stack > Mountain > Mountain Layers > Mountain Snowballs :: Pasted Layer #65 :: 001-001-014-002.png"
+      "image": "big_snowball",
+      "overlays": [
+        "cursed_state"
+      ],
+      "codes": [
+        "TODO KF 066 :: unnamed_stack > Mountain > Mountain Layers > Mountain Snowballs :: Pasted Layer #65 :: 001-001-014-002.png",
+        "MM Twin Islands Big Snowball 02"
+      ]
     },
     {
       "coords": [
         847,
         530
       ],
-      "image": "collectible",
-      "codes": "TODO KF 067 :: unnamed_stack > Mountain > Mountain Layers > Mountain Snowballs :: Pasted Layer #66 :: 001-001-014-003.png"
+      "image": "big_snowball",
+      "overlays": [
+        "day1",
+        "day3",
+        "cursed_state"
+      ],
+      "codes": [
+        "TODO KF 067 :: unnamed_stack > Mountain > Mountain Layers > Mountain Snowballs :: Pasted Layer #66 :: 001-001-014-003.png",
+        "MM Twin Islands Big Snowball 01"
+      ]
     },
     {
       "coords": [
         896,
         523
       ],
-      "image": "collectible",
-      "codes": "TODO KF 068 :: unnamed_stack > Mountain > Mountain Layers > Mountain Snowballs :: Pasted Layer #67 :: 001-001-014-004.png"
+      "image": "big_snowball",
+      "overlays": [
+        "cursed_state"
+      ],
+      "codes": [
+        "TODO KF 068 :: unnamed_stack > Mountain > Mountain Layers > Mountain Snowballs :: Pasted Layer #67 :: 001-001-014-004.png",
+        "MM Twin Islands Big Snowball 11"
+      ]
     },
     {
       "coords": [
         927,
         519
       ],
-      "image": "collectible",
-      "codes": "TODO KF 069 :: unnamed_stack > Mountain > Mountain Layers > Mountain Snowballs :: Pasted Layer #68 :: 001-001-014-005.png"
+      "image": "big_snowball",
+      "overlays": [
+        "cursed_state"
+      ],
+      "codes": [
+        "TODO KF 069 :: unnamed_stack > Mountain > Mountain Layers > Mountain Snowballs :: Pasted Layer #68 :: 001-001-014-005.png",
+        "MM Twin Islands Big Snowball 10"
+      ]
     },
     {
       "coords": [
         937,
         491
       ],
-      "image": "collectible",
-      "codes": "TODO KF 070 :: unnamed_stack > Mountain > Mountain Layers > Mountain Snowballs :: Pasted Layer #69 :: 001-001-014-006.png"
+      "image": "big_snowball",
+      "overlays": [
+        "cursed_state"
+      ],
+      "codes": [
+        "TODO KF 070 :: unnamed_stack > Mountain > Mountain Layers > Mountain Snowballs :: Pasted Layer #69 :: 001-001-014-006.png",
+        "MM Twin Islands Big Snowball 09"
+      ]
     },
     {
       "coords": [
         931,
         461
       ],
-      "image": "collectible",
-      "codes": "TODO KF 071 :: unnamed_stack > Mountain > Mountain Layers > Mountain Snowballs :: Pasted Layer #70 :: 001-001-014-007.png"
+      "image": "big_snowball",
+      "overlays": [
+        "day2",
+        "cursed_state"
+      ],
+      "codes": [
+        "TODO KF 071 :: unnamed_stack > Mountain > Mountain Layers > Mountain Snowballs :: Pasted Layer #70 :: 001-001-014-007.png",
+        "MM Twin Islands Big Snowball 08"
+      ]
     },
     {
       "coords": [
         902,
         450
       ],
-      "image": "collectible",
-      "codes": "TODO KF 072 :: unnamed_stack > Mountain > Mountain Layers > Mountain Snowballs :: Pasted Layer #71 :: 001-001-014-008.png"
+      "image": "big_snowball",
+      "overlays": [
+        "cursed_state"
+      ],
+      "codes": [
+        "TODO KF 072 :: unnamed_stack > Mountain > Mountain Layers > Mountain Snowballs :: Pasted Layer #71 :: 001-001-014-008.png",
+        "MM Twin Islands Big Snowball 07"
+      ]
     },
     {
       "coords": [
         875,
         450
       ],
-      "image": "collectible",
-      "codes": "TODO KF 073 :: unnamed_stack > Mountain > Mountain Layers > Mountain Snowballs :: Pasted Layer #72 :: 001-001-014-009.png"
+      "image": "big_snowball",
+      "overlays": [
+        "cursed_state"
+      ],
+      "codes": [
+        "TODO KF 073 :: unnamed_stack > Mountain > Mountain Layers > Mountain Snowballs :: Pasted Layer #72 :: 001-001-014-009.png",
+        "MM Twin Islands Big Snowball 06"
+      ]
     },
     {
       "coords": [
         855,
         429
       ],
-      "image": "collectible",
-      "codes": "TODO KF 074 :: unnamed_stack > Mountain > Mountain Layers > Mountain Snowballs :: Pasted Layer #73 :: 001-001-014-010.png"
+      "image": "big_snowball",
+      "overlays": [
+        "cursed_state"
+      ],
+      "codes": [
+        "TODO KF 074 :: unnamed_stack > Mountain > Mountain Layers > Mountain Snowballs :: Pasted Layer #73 :: 001-001-014-010.png",
+        "MM Twin Islands Big Snowball 05"
+      ]
     },
     {
       "coords": [
         842,
         457
       ],
-      "image": "collectible",
-      "codes": "TODO KF 075 :: unnamed_stack > Mountain > Mountain Layers > Mountain Snowballs :: Pasted Layer #74 :: 001-001-014-011.png"
+      "image": "big_snowball",
+      "overlays": [
+        "cursed_state"
+      ],
+      "codes": [
+        "TODO KF 075 :: unnamed_stack > Mountain > Mountain Layers > Mountain Snowballs :: Pasted Layer #74 :: 001-001-014-011.png",
+        "MM Twin Islands Big Snowball 04"
+      ]
     },
     {
       "coords": [
         870,
         469
       ],
-      "image": "collectible",
-      "codes": "TODO KF 076 :: unnamed_stack > Mountain > Mountain Layers > Mountain Snowballs :: Pasted Layer #75 :: 001-001-014-012.png"
+      "image": "small_snowball",
+      "overlays": [
+        "cursed_state"
+      ],
+      "codes": [
+        "TODO KF 076 :: unnamed_stack > Mountain > Mountain Layers > Mountain Snowballs :: Pasted Layer #75 :: 001-001-014-012.png",
+        "MM Twin Islands Small Snowball 3"
+      ]
     },
     {
       "coords": [
         870,
         485
       ],
-      "image": "collectible",
-      "codes": "TODO KF 077 :: unnamed_stack > Mountain > Mountain Layers > Mountain Snowballs :: Pasted Layer #76 :: 001-001-014-013.png"
+      "image": "big_snowball",
+      "overlays": [
+        "cursed_state"
+      ],
+      "codes": [
+        "TODO KF 077 :: unnamed_stack > Mountain > Mountain Layers > Mountain Snowballs :: Pasted Layer #76 :: 001-001-014-013.png",
+        "MM Twin Islands Big Snowball 13"
+      ]
     },
     {
       "coords": [
         870,
         504
       ],
-      "image": "collectible",
-      "codes": "TODO KF 078 :: unnamed_stack > Mountain > Mountain Layers > Mountain Snowballs :: Pasted Layer #77 :: 001-001-014-014.png"
+      "image": "big_snowball",
+      "overlays": [
+        "cursed_state"
+      ],
+      "codes": [
+        "TODO KF 078 :: unnamed_stack > Mountain > Mountain Layers > Mountain Snowballs :: Pasted Layer #77 :: 001-001-014-014.png",
+        "MM Twin Islands Big Snowball 12"
+      ]
     },
     {
       "coords": [
         808,
         482
       ],
-      "image": "collectible",
-      "codes": "TODO KF 079 :: unnamed_stack > Mountain > Mountain Layers > Mountain Snowballs :: Pasted Layer #78 :: 001-001-014-015.png"
+      "image": "big_snowball",
+      "overlays": [
+        "cursed_state"
+      ],
+      "codes": [
+        "TODO KF 079 :: unnamed_stack > Mountain > Mountain Layers > Mountain Snowballs :: Pasted Layer #78 :: 001-001-014-015.png",
+        "MM Twin Islands Big Snowball 03"
+      ]
     },
     {
       "coords": [
         787,
         468
       ],
-      "image": "collectible",
-      "codes": "TODO KF 080 :: unnamed_stack > Mountain > Mountain Layers > Mountain Snowballs :: Pasted Layer #79 :: 001-001-014-016.png"
+      "image": "small_snowball",
+      "overlays": [
+        "cursed_state"
+      ],
+      "codes": [
+        "TODO KF 080 :: unnamed_stack > Mountain > Mountain Layers > Mountain Snowballs :: Pasted Layer #79 :: 001-001-014-016.png",
+        "MM Twin Islands Small Snowball Ramp 1",
+        "MM Twin Islands Small Snowball Ramp 2",
+        "MM Twin Islands Small Snowball Ramp 3"
+      ]
     },
     {
       "coords": [
         542,
         252
       ],
-      "image": "collectible",
-      "codes": "TODO KF 081 :: unnamed_stack > Mountain > Mountain Layers > Mountain Snowballs :: Pasted Layer #80 :: 001-001-014-017.png"
+      "image": "small_snowball",
+      "overlays": [
+        "cursed_state"
+      ],
+      "codes": [
+        "TODO KF 081 :: unnamed_stack > Mountain > Mountain Layers > Mountain Snowballs :: Pasted Layer #80 :: 001-001-014-017.png",
+        "MM Goron Village Small Snowball 10"
+      ]
     },
     {
       "coords": [
         534,
         272
       ],
-      "image": "collectible",
-      "codes": "TODO KF 082 :: unnamed_stack > Mountain > Mountain Layers > Mountain Snowballs :: Pasted Layer #81 :: 001-001-014-018.png"
+      "image": "big_snowball",
+      "overlays": [
+        "cursed_state"
+      ],
+      "codes": [
+        "TODO KF 082 :: unnamed_stack > Mountain > Mountain Layers > Mountain Snowballs :: Pasted Layer #81 :: 001-001-014-018.png",
+        "MM Goron Village Big Snowball 7"
+      ]
     },
     {
       "coords": [
         552,
         268
       ],
-      "image": "collectible",
-      "codes": "TODO KF 083 :: unnamed_stack > Mountain > Mountain Layers > Mountain Snowballs :: Pasted Layer #82 :: 001-001-014-019.png"
+      "image": "small_snowball",
+      "overlays": [
+        "cursed_state"
+      ],
+      "codes": [
+        "TODO KF 083 :: unnamed_stack > Mountain > Mountain Layers > Mountain Snowballs :: Pasted Layer #82 :: 001-001-014-019.png",
+        "MM Goron Village Small Snowball 09"
+      ]
     },
     {
       "coords": [
         574,
         261
       ],
-      "image": "collectible",
-      "codes": "TODO KF 084 :: unnamed_stack > Mountain > Mountain Layers > Mountain Snowballs :: Pasted Layer #83 :: 001-001-014-020.png"
+      "image": "big_snowball",
+      "overlays": [
+        "cursed_state"
+      ],
+      "codes": [
+        "TODO KF 084 :: unnamed_stack > Mountain > Mountain Layers > Mountain Snowballs :: Pasted Layer #83 :: 001-001-014-020.png",
+        "MM Goron Village Big Snowball 6"
+      ]
     },
     {
       "coords": [
         597,
         270
       ],
-      "image": "collectible",
-      "codes": "TODO KF 085 :: unnamed_stack > Mountain > Mountain Layers > Mountain Snowballs :: Pasted Layer #84 :: 001-001-014-021.png"
+      "image": "big_snowball",
+      "overlays": [
+        "cursed_state"
+      ],
+      "codes": [
+        "TODO KF 085 :: unnamed_stack > Mountain > Mountain Layers > Mountain Snowballs :: Pasted Layer #84 :: 001-001-014-021.png",
+        "MM Goron Village Big Snowball 5"
+      ]
     },
     {
       "coords": [
         614,
         252
       ],
-      "image": "collectible",
-      "codes": "TODO KF 086 :: unnamed_stack > Mountain > Mountain Layers > Mountain Snowballs :: Pasted Layer #85 :: 001-001-014-022.png"
+      "image": "small_snowball",
+      "overlays": [
+        "cursed_state"
+      ],
+      "codes": [
+        "TODO KF 086 :: unnamed_stack > Mountain > Mountain Layers > Mountain Snowballs :: Pasted Layer #85 :: 001-001-014-022.png",
+        "MM Goron Village Small Snowball 08"
+      ]
     },
     {
       "coords": [
         634,
         268
       ],
-      "image": "collectible",
-      "codes": "TODO KF 087 :: unnamed_stack > Mountain > Mountain Layers > Mountain Snowballs :: Pasted Layer #86 :: 001-001-014-023.png"
+      "image": "big_snowball",
+      "overlays": [
+        "cursed_state"
+      ],
+      "codes": [
+        "TODO KF 087 :: unnamed_stack > Mountain > Mountain Layers > Mountain Snowballs :: Pasted Layer #86 :: 001-001-014-023.png",
+        "MM Goron Village Big Snowball 4"
+      ]
     },
     {
       "coords": [
         667,
         284
       ],
-      "image": "collectible",
-      "codes": "TODO KF 088 :: unnamed_stack > Mountain > Mountain Layers > Mountain Snowballs :: Pasted Layer #87 :: 001-001-014-024.png"
+      "image": "small_snowball",
+      "overlays": [
+        "cursed_state"
+      ],
+      "codes": [
+        "TODO KF 088 :: unnamed_stack > Mountain > Mountain Layers > Mountain Snowballs :: Pasted Layer #87 :: 001-001-014-024.png",
+        "MM Goron Village Small Snowball 07"
+      ]
     },
     {
       "coords": [
         682,
         320
       ],
-      "image": "collectible",
-      "codes": "TODO KF 089 :: unnamed_stack > Mountain > Mountain Layers > Mountain Snowballs :: Pasted Layer #88 :: 001-001-014-025.png"
+      "image": "small_snowball",
+      "overlays": [
+        "cursed_state"
+      ],
+      "codes": [
+        "TODO KF 089 :: unnamed_stack > Mountain > Mountain Layers > Mountain Snowballs :: Pasted Layer #88 :: 001-001-014-025.png",
+        "MM Goron Village Small Snowball 06"
+      ]
     },
     {
       "coords": [
         670,
         348
       ],
-      "image": "collectible",
-      "codes": "TODO KF 090 :: unnamed_stack > Mountain > Mountain Layers > Mountain Snowballs :: Pasted Layer #89 :: 001-001-014-026.png"
+      "image": "big_snowball",
+      "overlays": [
+        "cursed_state"
+      ],
+      "codes": [
+        "TODO KF 090 :: unnamed_stack > Mountain > Mountain Layers > Mountain Snowballs :: Pasted Layer #89 :: 001-001-014-026.png",
+        "MM Goron Village Big Snowball 3"
+      ]
     },
     {
       "coords": [
         654,
         349
       ],
-      "image": "collectible",
-      "codes": "TODO KF 091 :: unnamed_stack > Mountain > Mountain Layers > Mountain Snowballs :: Pasted Layer #90 :: 001-001-014-027.png"
+      "image": "small_snowball",
+      "overlays": [
+        "cursed_state"
+      ],
+      "codes": [
+        "TODO KF 091 :: unnamed_stack > Mountain > Mountain Layers > Mountain Snowballs :: Pasted Layer #90 :: 001-001-014-027.png",
+        "MM Goron Village Small Snowball 05"
+      ]
     },
     {
       "coords": [
         600,
         318
       ],
-      "image": "collectible",
-      "codes": "TODO KF 092 :: unnamed_stack > Mountain > Mountain Layers > Mountain Snowballs :: Pasted Layer #91 :: 001-001-014-028.png"
+      "image": "small_snowball",
+      "overlays": [
+        "cursed_state"
+      ],
+      "codes": [
+        "TODO KF 092 :: unnamed_stack > Mountain > Mountain Layers > Mountain Snowballs :: Pasted Layer #91 :: 001-001-014-028.png",
+        "MM Goron Village Small Snowball 04"
+      ]
     },
     {
       "coords": [
         606,
         336
       ],
-      "image": "collectible",
-      "codes": "TODO KF 093 :: unnamed_stack > Mountain > Mountain Layers > Mountain Snowballs :: Pasted Layer #92 :: 001-001-014-029.png"
+      "image": "small_snowball",
+      "overlays": [
+        "cursed_state"
+      ],
+      "codes": [
+        "TODO KF 093 :: unnamed_stack > Mountain > Mountain Layers > Mountain Snowballs :: Pasted Layer #92 :: 001-001-014-029.png",
+        "MM Goron Village Small Snowball 03"
+      ]
     },
     {
       "coords": [
         606,
         364
       ],
-      "image": "collectible",
-      "codes": "TODO KF 094 :: unnamed_stack > Mountain > Mountain Layers > Mountain Snowballs :: Pasted Layer #93 :: 001-001-014-030.png"
+      "image": "big_snowball",
+      "overlays": [
+        "cursed_state"
+      ],
+      "codes": [
+        "TODO KF 094 :: unnamed_stack > Mountain > Mountain Layers > Mountain Snowballs :: Pasted Layer #93 :: 001-001-014-030.png",
+        "MM Goron Village Big Snowball 2"
+      ]
     },
     {
       "coords": [
         601,
         380
       ],
-      "image": "collectible",
-      "codes": "TODO KF 095 :: unnamed_stack > Mountain > Mountain Layers > Mountain Snowballs :: Pasted Layer #94 :: 001-001-014-031.png"
+      "image": "small_snowball",
+      "overlays": [
+        "cursed_state"
+      ],
+      "codes": [
+        "TODO KF 095 :: unnamed_stack > Mountain > Mountain Layers > Mountain Snowballs :: Pasted Layer #94 :: 001-001-014-031.png",
+        "MM Goron Village Small Snowball 02"
+      ]
     },
     {
       "coords": [
         580,
         386
       ],
-      "image": "collectible",
-      "codes": "TODO KF 096 :: unnamed_stack > Mountain > Mountain Layers > Mountain Snowballs :: Pasted Layer #95 :: 001-001-014-032.png"
+      "image": "small_snowball",
+      "overlays": [
+        "cursed_state"
+      ],
+      "codes": [
+        "TODO KF 096 :: unnamed_stack > Mountain > Mountain Layers > Mountain Snowballs :: Pasted Layer #95 :: 001-001-014-032.png",
+        "MM Goron Village Small Snowball 01"
+      ]
     },
     {
       "coords": [
         572,
         370
       ],
-      "image": "collectible",
-      "codes": "TODO KF 097 :: unnamed_stack > Mountain > Mountain Layers > Mountain Snowballs :: Pasted Layer #96 :: 001-001-014-033.png"
+      "image": "big_snowball",
+      "overlays": [
+        "cursed_state"
+      ],
+      "codes": [
+        "TODO KF 097 :: unnamed_stack > Mountain > Mountain Layers > Mountain Snowballs :: Pasted Layer #96 :: 001-001-014-033.png",
+        "MM Goron Village Big Snowball 1"
+      ]
     },
     {
       "coords": [
         530,
         365
       ],
-      "image": "collectible",
-      "codes": "TODO KF 098 :: unnamed_stack > Mountain > Mountain Layers > Mountain Snowballs :: Pasted Layer #97 :: 001-001-014-034.png"
+      "image": "big_snowball",
+      "overlays": [
+        "cursed_state"
+      ],
+      "codes": [
+        "TODO KF 098 :: unnamed_stack > Mountain > Mountain Layers > Mountain Snowballs :: Pasted Layer #97 :: 001-001-014-034.png",
+        "MM Goron Village Big Snowball 9"
+      ]
     },
     {
       "coords": [
         523,
         343
       ],
-      "image": "collectible",
-      "codes": "TODO KF 099 :: unnamed_stack > Mountain > Mountain Layers > Mountain Snowballs :: Pasted Layer #98 :: 001-001-014-035.png"
+      "image": "small_snowball",
+      "overlays": [
+        "cursed_state"
+      ],
+      "codes": [
+        "TODO KF 099 :: unnamed_stack > Mountain > Mountain Layers > Mountain Snowballs :: Pasted Layer #98 :: 001-001-014-035.png",
+        "MM Goron Village Small Snowball 12"
+      ]
     },
     {
       "coords": [
         518,
         311
       ],
-      "image": "collectible",
-      "codes": "TODO KF 100 :: unnamed_stack > Mountain > Mountain Layers > Mountain Snowballs :: Pasted Layer #99 :: 001-001-014-036.png"
+      "image": "small_snowball",
+      "overlays": [
+        "cursed_state"
+      ],
+      "codes": [
+        "TODO KF 100 :: unnamed_stack > Mountain > Mountain Layers > Mountain Snowballs :: Pasted Layer #99 :: 001-001-014-036.png",
+        "MM Goron Village Small Snowball 11"
+      ]
     },
     {
       "coords": [
         502,
         322
       ],
-      "image": "collectible",
-      "codes": "TODO KF 101 :: unnamed_stack > Mountain > Mountain Layers > Mountain Snowballs :: Pasted Layer #100 :: 001-001-014-037.png"
+      "image": "big_snowball",
+      "overlays": [
+        "cursed_state"
+      ],
+      "codes": [
+        "TODO KF 101 :: unnamed_stack > Mountain > Mountain Layers > Mountain Snowballs :: Pasted Layer #100 :: 001-001-014-037.png",
+        "MM Goron Village Big Snowball 8"
+      ]
     },
     {
       "coords": [
         464,
         496
       ],
-      "image": "collectible",
-      "codes": "TODO KF 102 :: unnamed_stack > Mountain > Mountain Layers > Mountain Snowballs :: Pasted Layer #101 :: 001-001-014-038.png"
+      "image": "big_snowball",
+      "overlays": [
+        "cursed_state"
+      ],
+      "codes": [
+        "TODO KF 102 :: unnamed_stack > Mountain > Mountain Layers > Mountain Snowballs :: Pasted Layer #101 :: 001-001-014-038.png",
+        "MM Mountain Village Big Snowball 5"
+      ]
     },
     {
       "coords": [
         444,
         487
       ],
-      "image": "collectible",
-      "codes": "TODO KF 103 :: unnamed_stack > Mountain > Mountain Layers > Mountain Snowballs :: Pasted Layer #102 :: 001-001-014-039.png"
+      "image": "small_snowball",
+      "overlays": [
+        "cursed_state"
+      ],
+      "codes": [
+        "TODO KF 103 :: unnamed_stack > Mountain > Mountain Layers > Mountain Snowballs :: Pasted Layer #102 :: 001-001-014-039.png",
+        "MM Mountain Village Small Snowball Winter 4"
+      ]
     },
     {
       "coords": [
         436,
         508
       ],
-      "image": "collectible",
-      "codes": "TODO KF 104 :: unnamed_stack > Mountain > Mountain Layers > Mountain Snowballs :: Pasted Layer #103 :: 001-001-014-040.png"
+      "image": "big_snowball",
+      "overlays": [
+        "cursed_state"
+      ],
+      "codes": [
+        "TODO KF 104 :: unnamed_stack > Mountain > Mountain Layers > Mountain Snowballs :: Pasted Layer #103 :: 001-001-014-040.png",
+        "MM Mountain Village Big Snowball 4"
+      ]
     },
     {
       "coords": [
         407,
         508
       ],
-      "image": "collectible",
-      "codes": "TODO KF 105 :: unnamed_stack > Mountain > Mountain Layers > Mountain Snowballs :: Pasted Layer #104 :: 001-001-014-041.png"
+      "image": "small_snowball",
+      "overlays": [
+        "cursed_state"
+      ],
+      "codes": [
+        "TODO KF 105 :: unnamed_stack > Mountain > Mountain Layers > Mountain Snowballs :: Pasted Layer #104 :: 001-001-014-041.png",
+        "MM Mountain Village Small Snowball Winter 3"
+      ]
     },
     {
       "coords": [
         396,
         455
       ],
-      "image": "collectible",
-      "codes": "TODO KF 106 :: unnamed_stack > Mountain > Mountain Layers > Mountain Snowballs :: Pasted Layer #105 :: 001-001-014-042.png"
+      "image": "small_snowball",
+      "overlays": [
+        "cursed_state"
+      ],
+      "codes": [
+        "TODO KF 106 :: unnamed_stack > Mountain > Mountain Layers > Mountain Snowballs :: Pasted Layer #105 :: 001-001-014-042.png",
+        "MM Mountain Village Small Snowball Winter 1",
+        "MM Mountain Village Small Snowball Winter 2"
+      ]
     },
     {
       "coords": [
         393,
         412
       ],
-      "image": "collectible",
-      "codes": "TODO KF 107 :: unnamed_stack > Mountain > Mountain Layers > Mountain Snowballs :: Pasted Layer #106 :: 001-001-014-043.png"
+      "image": "small_snowball",
+      "overlays": [
+        "cursed_state"
+      ],
+      "codes": [
+        "TODO KF 107 :: unnamed_stack > Mountain > Mountain Layers > Mountain Snowballs :: Pasted Layer #106 :: 001-001-014-043.png",
+        "MM Mountain Village Small Snowball Cliff 1",
+        "MM Mountain Village Small Snowball Cliff 2"
+      ]
     },
     {
       "coords": [
         368,
         456
       ],
-      "image": "collectible",
-      "codes": "TODO KF 108 :: unnamed_stack > Mountain > Mountain Layers > Mountain Snowballs :: Pasted Layer #107 :: 001-001-014-044.png"
+      "image": "big_snowball",
+      "overlays": [
+        "day1",
+        "day2",
+        "cursed_state"
+      ],
+      "codes": [
+        "TODO KF 108 :: unnamed_stack > Mountain > Mountain Layers > Mountain Snowballs :: Pasted Layer #107 :: 001-001-014-044.png",
+        "MM Mountain Village Big Snowball 3"
+      ]
     },
     {
       "coords": [
         336,
         456
       ],
-      "image": "collectible",
-      "codes": "TODO KF 109 :: unnamed_stack > Mountain > Mountain Layers > Mountain Snowballs :: Pasted Layer #108 :: 001-001-014-045.png"
+      "image": "small_snowball",
+      "codes": [
+        "TODO KF 109 :: unnamed_stack > Mountain > Mountain Layers > Mountain Snowballs :: Pasted Layer #108 :: 001-001-014-045.png",
+        "MM Mountain Village Small Snowball 1",
+        "MM Mountain Village Small Snowball 2",
+        "MM Mountain Village Small Snowball 3",
+        "MM Mountain Village Small Snowball 4",
+        "MM Mountain Village Small Snowball 5"
+      ]
     },
     {
       "coords": [
         332,
         472
       ],
-      "image": "collectible",
-      "codes": "TODO KF 110 :: unnamed_stack > Mountain > Mountain Layers > Mountain Snowballs :: Pasted Layer #109 :: 001-001-014-046.png"
+      "image": "big_snowball",
+      "overlays": [
+        "cursed_state"
+      ],
+      "codes": [
+        "TODO KF 110 :: unnamed_stack > Mountain > Mountain Layers > Mountain Snowballs :: Pasted Layer #109 :: 001-001-014-046.png",
+        "MM Mountain Village Big Snowball 2"
+      ]
     },
     {
       "coords": [
         320,
         516
       ],
-      "image": "collectible",
-      "codes": "TODO KF 111 :: unnamed_stack > Mountain > Mountain Layers > Mountain Snowballs :: Pasted Layer #110 :: 001-001-014-047.png"
+      "image": "big_snowball",
+      "overlays": [
+        "cursed_state"
+      ],
+      "codes": [
+        "TODO KF 111 :: unnamed_stack > Mountain > Mountain Layers > Mountain Snowballs :: Pasted Layer #110 :: 001-001-014-047.png",
+        "MM Mountain Village Big Snowball 1"
+      ]
     },
     {
       "coords": [
         244,
         478
       ],
-      "image": "collectible",
-      "codes": "TODO KF 112 :: unnamed_stack > Mountain > Mountain Layers > Mountain Snowballs :: Pasted Layer #111 :: 001-001-014-048.png"
+      "image": "small_snowball",
+      "overlays": [
+        "clear_state"
+      ],
+      "codes": [
+        "TODO KF 112 :: unnamed_stack > Mountain > Mountain Layers > Mountain Snowballs :: Pasted Layer #111 :: 001-001-014-048.png",
+        "MM Path to Snowhead Small Snowball Spring Middle 1"
+      ]
     },
     {
       "coords": [
         260,
         478
       ],
-      "image": "collectible",
-      "codes": "TODO KF 113 :: unnamed_stack > Mountain > Mountain Layers > Mountain Snowballs :: Pasted Layer #112 :: 001-001-014-049.png"
+      "image": "big_snowball",
+      "overlays": [
+        "cursed_state"
+      ],
+      "codes": [
+        "TODO KF 113 :: unnamed_stack > Mountain > Mountain Layers > Mountain Snowballs :: Pasted Layer #112 :: 001-001-014-049.png",
+        "MM Path to Snowhead Big Snowball Middle 1"
+      ]
     },
     {
       "coords": [
         196,
         391
       ],
-      "image": "collectible",
-      "codes": "TODO KF 114 :: unnamed_stack > Mountain > Mountain Layers > Mountain Snowballs :: Pasted Layer #113 :: 001-001-014-050.png"
+      "image": "big_snowball",
+      "overlays": [
+        "cursed_state"
+      ],
+      "codes": [
+        "TODO KF 114 :: unnamed_stack > Mountain > Mountain Layers > Mountain Snowballs :: Pasted Layer #113 :: 001-001-014-050.png",
+        "MM Path to Snowhead Big Snowball Middle 2"
+      ]
     },
     {
       "coords": [
         180,
         391
       ],
-      "image": "collectible",
-      "codes": "TODO KF 115 :: unnamed_stack > Mountain > Mountain Layers > Mountain Snowballs :: Pasted Layer #114 :: 001-001-014-051.png"
+      "image": "small_snowball",
+      "overlays": [
+        "clear_state"
+      ],
+      "codes": [
+        "TODO KF 115 :: unnamed_stack > Mountain > Mountain Layers > Mountain Snowballs :: Pasted Layer #114 :: 001-001-014-051.png",
+        "MM Path to Snowhead Small Snowball Spring Middle 2"
+      ]
     },
     {
       "coords": [
         197,
         355
       ],
-      "image": "collectible",
-      "codes": "TODO KF 116 :: unnamed_stack > Mountain > Mountain Layers > Mountain Snowballs :: Pasted Layer #115 :: 001-001-014-052.png"
+      "image": "small_snowball",
+      "codes": [
+        "TODO KF 116 :: unnamed_stack > Mountain > Mountain Layers > Mountain Snowballs :: Pasted Layer #115 :: 001-001-014-052.png",
+        "MM Path to Snowhead Small Snowball Back 1",
+        "MM Path to Snowhead Small Snowball Back 2",
+        "MM Path to Snowhead Small Snowball Back 3"
+      ]
     },
     {
       "coords": [
         178,
         354
       ],
-      "image": "collectible",
-      "codes": "TODO KF 117 :: unnamed_stack > Mountain > Mountain Layers > Mountain Snowballs :: Pasted Layer #116 :: 001-001-014-053.png"
+      "image": "big_snowball",
+      "overlays": [
+        "cursed_state"
+      ],
+      "codes": [
+        "TODO KF 117 :: unnamed_stack > Mountain > Mountain Layers > Mountain Snowballs :: Pasted Layer #116 :: 001-001-014-053.png",
+        "MM Path to Snowhead Big Snowball Back 1"
+      ]
     },
     {
       "coords": [
         162,
         354
       ],
-      "image": "collectible",
-      "codes": "TODO KF 118 :: unnamed_stack > Mountain > Mountain Layers > Mountain Snowballs :: Pasted Layer #117 :: 001-001-014-054.png"
+      "image": "small_snowball",
+      "overlays": [
+        "clear_state"
+      ],
+      "codes": [
+        "TODO KF 118 :: unnamed_stack > Mountain > Mountain Layers > Mountain Snowballs :: Pasted Layer #117 :: 001-001-014-054.png",
+        "MM Path to Snowhead Small Snowball Spring Back 1"
+      ]
     },
     {
       "coords": [
         160,
         327
       ],
-      "image": "collectible",
-      "codes": "TODO KF 119 :: unnamed_stack > Mountain > Mountain Layers > Mountain Snowballs :: Pasted Layer #118 :: 001-001-014-055.png"
+      "image": "small_snowball",
+      "overlays": [
+        "clear_state"
+      ],
+      "codes": [
+        "TODO KF 119 :: unnamed_stack > Mountain > Mountain Layers > Mountain Snowballs :: Pasted Layer #118 :: 001-001-014-055.png",
+        "MM Path to Snowhead Small Snowball Spring Back 2"
+      ]
     },
     {
       "coords": [
         144,
         327
       ],
-      "image": "collectible",
-      "codes": "TODO KF 120 :: unnamed_stack > Mountain > Mountain Layers > Mountain Snowballs :: Pasted Layer #119 :: 001-001-014-056.png"
+      "image": "big_snowball",
+      "overlays": [
+        "cursed_state"
+      ],
+      "codes": [
+        "TODO KF 120 :: unnamed_stack > Mountain > Mountain Layers > Mountain Snowballs :: Pasted Layer #119 :: 001-001-014-056.png",
+        "MM Path to Snowhead Big Snowball Back 2"
+      ]
     },
     {
       "coords": [
         43,
         387
       ],
-      "image": "collectible",
-      "codes": "TODO KF 121 :: unnamed_stack > Mountain > Mountain Layers > Mountain Snowballs :: Pasted Layer #120 :: 001-001-014-057.png"
+      "image": "small_snowball",
+      "codes": [
+        "TODO KF 121 :: unnamed_stack > Mountain > Mountain Layers > Mountain Snowballs :: Pasted Layer #120 :: 001-001-014-057.png",
+        "MM Snowhead Small Snowball 1",
+        "MM Snowhead Small Snowball 2",
+        "MM Snowhead Small Snowball 3",
+        "MM Snowhead Small Snowball 4"
+      ]
     },
     {
       "coords": [
         100,
         64
       ],
-      "image": "collectible",
-      "codes": "TODO KF 122 :: unnamed_stack > Mountain > Mountain Layers > Mountain Snowballs :: Pasted Layer #121 :: 001-001-014-058.png"
+      "image": "big_snowball",
+      "overlays": [
+        "cursed_state"
+      ],
+      "codes": [
+        "TODO KF 122 :: unnamed_stack > Mountain > Mountain Layers > Mountain Snowballs :: Pasted Layer #121 :: 001-001-014-058.png",
+        "MM Snowhead Big Snowball 6"
+      ]
     },
     {
       "coords": [
         114,
         103
       ],
-      "image": "collectible",
-      "codes": "TODO KF 123 :: unnamed_stack > Mountain > Mountain Layers > Mountain Snowballs :: Pasted Layer #122 :: 001-001-014-059.png"
+      "image": "big_snowball",
+      "overlays": [
+        "cursed_state"
+      ],
+      "codes": [
+        "TODO KF 123 :: unnamed_stack > Mountain > Mountain Layers > Mountain Snowballs :: Pasted Layer #122 :: 001-001-014-059.png",
+        "MM Snowhead Big Snowball 5"
+      ]
     },
     {
       "coords": [
         130,
         103
       ],
-      "image": "collectible",
-      "codes": "TODO KF 124 :: unnamed_stack > Mountain > Mountain Layers > Mountain Snowballs :: Pasted Layer #123 :: 001-001-014-060.png"
+      "image": "small_snowball",
+      "overlays": [
+        "clear_state"
+      ],
+      "codes": [
+        "TODO KF 124 :: unnamed_stack > Mountain > Mountain Layers > Mountain Snowballs :: Pasted Layer #123 :: 001-001-014-060.png",
+        "MM Snowhead Small Snowball Spring 5"
+      ]
     },
     {
       "coords": [
         112,
         136
       ],
-      "image": "collectible",
-      "codes": "TODO KF 125 :: unnamed_stack > Mountain > Mountain Layers > Mountain Snowballs :: Pasted Layer #124 :: 001-001-014-061.png"
+      "image": "small_snowball",
+      "overlays": [
+        "clear_state"
+      ],
+      "codes": [
+        "TODO KF 125 :: unnamed_stack > Mountain > Mountain Layers > Mountain Snowballs :: Pasted Layer #124 :: 001-001-014-061.png",
+        "MM Snowhead Small Snowball Spring 4"
+      ]
     },
     {
       "coords": [
         96,
         136
       ],
-      "image": "collectible",
-      "codes": "TODO KF 126 :: unnamed_stack > Mountain > Mountain Layers > Mountain Snowballs :: Pasted Layer #125 :: 001-001-014-062.png"
+      "image": "big_snowball",
+      "overlays": [
+        "cursed_state"
+      ],
+      "codes": [
+        "TODO KF 126 :: unnamed_stack > Mountain > Mountain Layers > Mountain Snowballs :: Pasted Layer #125 :: 001-001-014-062.png",
+        "MM Snowhead Big Snowball 4"
+      ]
     },
     {
       "coords": [
         63,
         158
       ],
-      "image": "collectible",
-      "codes": "TODO KF 127 :: unnamed_stack > Mountain > Mountain Layers > Mountain Snowballs :: Pasted Layer #126 :: 001-001-014-063.png"
+      "image": "big_snowball",
+      "overlays": [
+        "cursed_state"
+      ],
+      "codes": [
+        "TODO KF 127 :: unnamed_stack > Mountain > Mountain Layers > Mountain Snowballs :: Pasted Layer #126 :: 001-001-014-063.png",
+        "MM Snowhead Big Snowball 3"
+      ]
     },
     {
       "coords": [
         47,
         158
       ],
-      "image": "collectible",
-      "codes": "TODO KF 128 :: unnamed_stack > Mountain > Mountain Layers > Mountain Snowballs :: Pasted Layer #127 :: 001-001-014-064.png"
+      "image": "small_snowball",
+      "overlays": [
+        "clear_state"
+      ],
+      "codes": [
+        "TODO KF 128 :: unnamed_stack > Mountain > Mountain Layers > Mountain Snowballs :: Pasted Layer #127 :: 001-001-014-064.png",
+        "MM Snowhead Small Snowball Spring 3"
+      ]
     },
     {
       "coords": [
         33,
         145
       ],
-      "image": "collectible",
-      "codes": "TODO KF 129 :: unnamed_stack > Mountain > Mountain Layers > Mountain Snowballs :: Pasted Layer #128 :: 001-001-014-065.png"
+      "image": "small_snowball",
+      "overlays": [
+        "clear_state"
+      ],
+      "codes": [
+        "TODO KF 129 :: unnamed_stack > Mountain > Mountain Layers > Mountain Snowballs :: Pasted Layer #128 :: 001-001-014-065.png",
+        "MM Snowhead Small Snowball Spring 2"
+      ]
     },
     {
       "coords": [
         17,
         145
       ],
-      "image": "collectible",
-      "codes": "TODO KF 130 :: unnamed_stack > Mountain > Mountain Layers > Mountain Snowballs :: Pasted Layer #129 :: 001-001-014-066.png"
+      "image": "big_snowball",
+      "overlays": [
+        "cursed_state"
+      ],
+      "codes": [
+        "TODO KF 130 :: unnamed_stack > Mountain > Mountain Layers > Mountain Snowballs :: Pasted Layer #129 :: 001-001-014-066.png",
+        "MM Snowhead Big Snowball 2"
+      ]
     },
     {
       "coords": [
         33,
         127
       ],
-      "image": "collectible",
-      "codes": "TODO KF 131 :: unnamed_stack > Mountain > Mountain Layers > Mountain Snowballs :: Pasted Layer #130 :: 001-001-014-067.png"
+      "image": "big_snowball",
+      "overlays": [
+        "cursed_state"
+      ],
+      "codes": [
+        "TODO KF 131 :: unnamed_stack > Mountain > Mountain Layers > Mountain Snowballs :: Pasted Layer #130 :: 001-001-014-067.png",
+        "MM Snowhead Big Snowball 1"
+      ]
     },
     {
       "coords": [
         17,
         127
       ],
-      "image": "collectible",
-      "codes": "TODO KF 132 :: unnamed_stack > Mountain > Mountain Layers > Mountain Snowballs :: Pasted Layer #131 :: 001-001-014-068.png"
+      "image": "small_snowball",
+      "overlays": [
+        "clear_state"
+      ],
+      "codes": [
+        "TODO KF 132 :: unnamed_stack > Mountain > Mountain Layers > Mountain Snowballs :: Pasted Layer #131 :: 001-001-014-068.png",
+        "MM Snowhead Small Snowball Spring 1"
+      ]
     },
     {
       "coords": [
         912,
         482
       ],
-      "image": "collectible",
-      "codes": "TODO KF 133 :: unnamed_stack > Mountain > Mountain Layers > Mountain Trees :: Pasted Layer #132 :: 001-001-015-000.png"
+      "image": "tree",
+      "overlays": [
+        "clear_state"
+      ],
+      "codes": [
+        "TODO KF 133 :: unnamed_stack > Mountain > Mountain Layers > Mountain Trees :: Pasted Layer #132 :: 001-001-015-000.png",
+        "MM Twin Islands Tree Island 2"
+      ]
     },
     {
       "coords": [
         896,
         482
       ],
-      "image": "collectible",
-      "codes": "TODO KF 134 :: unnamed_stack > Mountain > Mountain Layers > Mountain Trees :: Pasted Layer #133 :: 001-001-015-001.png"
+      "image": "tree",
+      "overlays": [
+        "cursed_state"
+      ],
+      "codes": [
+        "TODO KF 134 :: unnamed_stack > Mountain > Mountain Layers > Mountain Trees :: Pasted Layer #133 :: 001-001-015-001.png",
+        "MM Twin Islands Snow Tree Island 2"
+      ]
     },
     {
       "coords": [
         846,
         492
       ],
-      "image": "collectible",
-      "codes": "TODO KF 135 :: unnamed_stack > Mountain > Mountain Layers > Mountain Trees :: Pasted Layer #134 :: 001-001-015-002.png"
+      "image": "tree",
+      "overlays": [
+        "clear_state"
+      ],
+      "codes": [
+        "TODO KF 135 :: unnamed_stack > Mountain > Mountain Layers > Mountain Trees :: Pasted Layer #134 :: 001-001-015-002.png",
+        "MM Twin Islands Tree Island 1"
+      ]
     },
     {
       "coords": [
         830,
         492
       ],
-      "image": "collectible",
-      "codes": "TODO KF 136 :: unnamed_stack > Mountain > Mountain Layers > Mountain Trees :: Pasted Layer #135 :: 001-001-015-003.png"
+      "image": "tree",
+      "overlays": [
+        "cursed_state"
+      ],
+      "codes": [
+        "TODO KF 136 :: unnamed_stack > Mountain > Mountain Layers > Mountain Trees :: Pasted Layer #135 :: 001-001-015-003.png",
+        "MM Twin Islands Snow Tree Island 1"
+      ]
     },
     {
       "coords": [
         802,
         468
       ],
-      "image": "collectible",
-      "codes": "TODO KF 137 :: unnamed_stack > Mountain > Mountain Layers > Mountain Trees :: Pasted Layer #136 :: 001-001-015-004.png"
+      "image": "tree",
+      "overlays": [
+        "cursed_state"
+      ],
+      "codes": [
+        "TODO KF 137 :: unnamed_stack > Mountain > Mountain Layers > Mountain Trees :: Pasted Layer #136 :: 001-001-015-004.png",
+        "MM Twin Islands Snow Tree Ramp"
+      ]
     },
     {
       "coords": [
         802,
         452
       ],
-      "image": "collectible",
-      "codes": "TODO KF 138 :: unnamed_stack > Mountain > Mountain Layers > Mountain Trees :: Pasted Layer #137 :: 001-001-015-005.png"
+      "image": "tree",
+      "overlays": [
+        "clear_state"
+      ],
+      "codes": [
+        "TODO KF 138 :: unnamed_stack > Mountain > Mountain Layers > Mountain Trees :: Pasted Layer #137 :: 001-001-015-005.png",
+        "MM Twin Islands Tree Ramp"
+      ]
     },
     {
       "coords": [
         274,
         511
       ],
-      "image": "collectible",
-      "codes": "TODO KF 139 :: unnamed_stack > Mountain > Mountain Layers > Mountain Trees :: Pasted Layer #138 :: 001-001-015-006.png"
+      "image": "tree",
+      "codes": [
+        "TODO KF 139 :: unnamed_stack > Mountain > Mountain Layers > Mountain Trees :: Pasted Layer #138 :: 001-001-015-006.png",
+        "MM Path to Snowhead Snow Tree Entrance"
+      ]
     },
     {
       "coords": [
         185,
         342
       ],
-      "image": "collectible",
-      "codes": "TODO KF 140 :: unnamed_stack > Mountain > Mountain Layers > Mountain Trees :: Pasted Layer #139 :: 001-001-015-007.png"
+      "image": "tree",
+      "codes": [
+        "TODO KF 140 :: unnamed_stack > Mountain > Mountain Layers > Mountain Trees :: Pasted Layer #139 :: 001-001-015-007.png",
+        "MM Path to Snowhead Snow Tree End 1"
+      ]
     },
     {
       "coords": [
         151,
         337
       ],
-      "image": "collectible",
-      "codes": "TODO KF 141 :: unnamed_stack > Mountain > Mountain Layers > Mountain Trees :: Pasted Layer #140 :: 001-001-015-008.png"
+      "image": "tree",
+      "codes": [
+        "TODO KF 141 :: unnamed_stack > Mountain > Mountain Layers > Mountain Trees :: Pasted Layer #140 :: 001-001-015-008.png",
+        "MM Path to Snowhead Snow Tree End 2"
+      ]
     },
     {
       "coords": [
         124,
         309
       ],
-      "image": "collectible",
-      "codes": "TODO KF 142 :: unnamed_stack > Mountain > Mountain Layers > Mountain Trees :: Pasted Layer #141 :: 001-001-015-009.png"
+      "image": "tree",
+      "codes": [
+        "TODO KF 142 :: unnamed_stack > Mountain > Mountain Layers > Mountain Trees :: Pasted Layer #141 :: 001-001-015-009.png",
+        "MM Path to Snowhead Snow Tree End 3"
+      ]
     },
     {
       "coords": [
         351,
         313
       ],
-      "image": "collectible",
-      "codes": "TODO KF 143 :: unnamed_stack > Mountain > Mountain Layers > Mountain Trees :: Pasted Layer #142 :: 001-001-015-010.png"
+      "image": "tree",
+      "codes": [
+        "TODO KF 143 :: unnamed_stack > Mountain > Mountain Layers > Mountain Trees :: Pasted Layer #142 :: 001-001-015-010.png",
+        "MM Goron Race Forked Tree 1",
+        "MM Goron Race Forked Tree 2",
+        "MM Goron Race Forked Tree 3",
+        "MM Goron Race Forked Tree 4",
+        "MM Goron Race Forked Tree 5",
+        "MM Goron Race Forked Tree 6",
+        "MM Goron Race Forked Tree 7",
+        "MM Goron Race Forked Tree 8",
+        "MM Goron Race Forked Tree 9",
+        "MM Goron Race Forked Tree 10"
+      ]
     },
     {
       "coords": [
         485,
         456
       ],
-      "image": "npc",
-      "codes": "TODO KF 144 :: unnamed_stack > Mountain > Mountain Layers > Mountain Gossip :: Pasted Layer #143 :: 001-001-016-000.png"
+      "image": "gossip_stone",
+      "overlays": [
+        "clear_state"
+      ],
+      "codes": [
+        "TODO KF 144 :: unnamed_stack > Mountain > Mountain Layers > Mountain Gossip :: Pasted Layer #143 :: 001-001-016-000.png",
+        "MM Mountain Village Gossip Tunnel"
+      ]
     },
     {
       "coords": [
         336,
         537
       ],
-      "image": "npc",
-      "codes": "TODO KF 145 :: unnamed_stack > Mountain > Mountain Layers > Mountain Gossip :: Pasted Layer #144 :: 001-001-016-001.png"
+      "image": "gossip_stone",
+      "overlays": [
+        "clear_state"
+      ],
+      "codes": [
+        "TODO KF 145 :: unnamed_stack > Mountain > Mountain Layers > Mountain Gossip :: Pasted Layer #144 :: 001-001-016-001.png",
+        "MM Mountain Village Gossip Outside"
+      ]
     },
     {
       "coords": [
         905,
         495
       ],
-      "image": "overworld_entrance",
+      "image": "grotto",
       "codes": "TODO KF 146 :: unnamed_stack > Mountain > Mountain Layers > Mountain Entrances :: Pasted Layer #145 :: 001-001-017-000.png"
     },
     {
@@ -1178,7 +2054,7 @@
         787,
         461
       ],
-      "image": "overworld_entrance",
+      "image": "bomb_grotto",
       "codes": "TODO KF 147 :: unnamed_stack > Mountain > Mountain Layers > Mountain Entrances :: Pasted Layer #146 :: 001-001-017-001.png"
     },
     {
@@ -1186,7 +2062,7 @@
         380,
         512
       ],
-      "image": "overworld_entrance",
+      "image": "interior_entrance",
       "codes": "TODO KF 148 :: unnamed_stack > Mountain > Mountain Layers > Mountain Entrances :: Pasted Layer #147 :: 001-001-017-002.png"
     },
     {
@@ -1194,7 +2070,7 @@
         393,
         381
       ],
-      "image": "overworld_entrance",
+      "image": "interior_entrance",
       "codes": "TODO KF 149 :: unnamed_stack > Mountain > Mountain Layers > Mountain Entrances :: Pasted Layer #148 :: 001-001-017-003.png"
     },
     {
@@ -1202,7 +2078,10 @@
         474,
         430
       ],
-      "image": "overworld_entrance",
+      "image": "grotto",
+      "overlays": [
+        "clear_state"
+      ],
       "codes": "TODO KF 150 :: unnamed_stack > Mountain > Mountain Layers > Mountain Entrances :: Pasted Layer #149 :: 001-001-017-004.png"
     },
     {
@@ -1210,7 +2089,7 @@
         571,
         355
       ],
-      "image": "overworld_entrance",
+      "image": "interior_entrance",
       "codes": "TODO KF 151 :: unnamed_stack > Mountain > Mountain Layers > Mountain Entrances :: Pasted Layer #150 :: 001-001-017-005.png"
     },
     {
@@ -1218,7 +2097,7 @@
         778,
         276
       ],
-      "image": "overworld_entrance",
+      "image": "interior_entrance",
       "codes": "TODO KF 152 :: unnamed_stack > Mountain > Mountain Layers > Mountain Entrances :: Pasted Layer #151 :: 001-001-017-006.png"
     },
     {
@@ -1226,7 +2105,7 @@
         850,
         195
       ],
-      "image": "overworld_entrance",
+      "image": "interior_entrance",
       "codes": "TODO KF 153 :: unnamed_stack > Mountain > Mountain Layers > Mountain Entrances :: Pasted Layer #152 :: 001-001-017-007.png"
     },
     {
@@ -1234,7 +2113,7 @@
         198,
         369
       ],
-      "image": "overworld_entrance",
+      "image": "bomb_grotto",
       "codes": "TODO KF 154 :: unnamed_stack > Mountain > Mountain Layers > Mountain Entrances :: Pasted Layer #153 :: 001-001-017-008.png"
     },
     {
@@ -1242,7 +2121,7 @@
         105,
         118
       ],
-      "image": "overworld_entrance",
+      "image": "interior_entrance",
       "codes": "TODO KF 155 :: unnamed_stack > Mountain > Mountain Layers > Mountain Entrances :: Pasted Layer #154 :: 001-001-017-009.png"
     },
     {
@@ -1250,7 +2129,7 @@
         66,
         117
       ],
-      "image": "overworld_entrance",
+      "image": "dungeon_entrance",
       "codes": "TODO KF 156 :: unnamed_stack > Mountain > Mountain Layers > Mountain Entrances :: Pasted Layer #155 :: 001-001-017-010.png"
     }
   ]
