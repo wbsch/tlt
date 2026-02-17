@@ -653,7 +653,8 @@ export class OoTMMTracker implements TrackerPack {
     const settings = this.settings as { skipZelda?: unknown; shuffleWonderItemsOot?: unknown }
     const hideZeldaLocations = Boolean(settings.skipZelda)
     const wonderItemsSetting = String(settings.shuffleWonderItemsOot ?? '')
-    const hideCourtyardWonderItem = wonderItemsSetting !== '' && wonderItemsSetting !== 'none'
+    const hideCourtyardWonderItem =
+      hideZeldaLocations && wonderItemsSetting !== '' && wonderItemsSetting !== 'none'
 
     if (!hideZeldaLocations && !hideCourtyardWonderItem) return hidden
 
