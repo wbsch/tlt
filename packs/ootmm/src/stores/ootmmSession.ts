@@ -295,9 +295,9 @@ export const useOoTMMSessionStore = defineStore('ootmm-session', () => {
       if (requiresSettingsReinitialize) {
         isApplyingSettings.value = true;
         try {
-          currentTracker.reset();
           await nextTick();
-          await new Promise<void>((resolve) => setTimeout(resolve, 0));
+          await new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve)));
+          currentTracker.reset();
           await currentTracker.initialize(targetSettings);
           trackerSettings.value = { ...currentTracker.getSettings() };
           availableItemIds.value = setToArray(
@@ -368,7 +368,7 @@ export const useOoTMMSessionStore = defineStore('ootmm-session', () => {
       isApplyingSettings.value = true;
       try {
         await nextTick();
-        await new Promise<void>((resolve) => setTimeout(resolve, 0));
+        await new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve)));
         await nextTracker.initialize(targetSettings);
       } catch (error) {
         console.error('Failed to initialize tracker settings:', error);
@@ -575,11 +575,12 @@ export const useOoTMMSessionStore = defineStore('ootmm-session', () => {
       { ...newSettings },
     );
 
-    currentTracker.reset();
     isApplyingSettings.value = true;
+    const overlayStartTime = performance.now();
     try {
       await nextTick();
-      await new Promise<void>((resolve) => setTimeout(resolve, 0));
+      await new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve)));
+      currentTracker.reset();
       await currentTracker.initialize(nextSettings);
       trackerSettings.value = { ...currentTracker.getSettings() };
       availableItemIds.value = setToArray(currentTracker.getAvailableItemIds?.() ?? new Set<string>());
@@ -594,6 +595,12 @@ export const useOoTMMSessionStore = defineStore('ootmm-session', () => {
     } catch (error) {
       console.error('Failed to apply settings:', error);
     } finally {
+      // Ensure overlay is visible for a minimum duration for UX and testability
+      const elapsed = performance.now() - overlayStartTime;
+      const minDuration = 100;
+      if (elapsed < minDuration) {
+        await new Promise(resolve => setTimeout(resolve, minDuration - elapsed));
+      }
       isApplyingSettings.value = false;
     }
     if (didApply) {
@@ -648,9 +655,9 @@ export const useOoTMMSessionStore = defineStore('ootmm-session', () => {
 
     isApplyingSettings.value = true;
     try {
-      currentTracker.reset();
       await nextTick();
-      await new Promise<void>((resolve) => setTimeout(resolve, 0));
+      await new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve)));
+      currentTracker.reset();
       await currentTracker.initialize({});
       trackerSettings.value = { ...currentTracker.getSettings() };
       availableItemIds.value = setToArray(currentTracker.getAvailableItemIds?.() ?? new Set<string>());

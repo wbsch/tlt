@@ -451,6 +451,7 @@ defineExpose({
       
       <input
         v-model="searchQuery"
+        data-testid="settings-search-input"
         type="text"
         placeholder="Search settings..."
         class="search-input"
@@ -464,7 +465,12 @@ defineExpose({
         <h3 class="category-name">{{ category }}</h3>
         
         <div class="settings-list">
-          <div v-for="setting in categorySettings" :key="setting.key" class="setting-block">
+          <div
+            v-for="setting in categorySettings"
+            :key="setting.key"
+            class="setting-block"
+            :data-testid="`setting-${setting.key}`"
+          >
             <div class="setting-item">
               <label :for="setting.key" class="setting-label">
                 {{ setting.label }}
@@ -477,6 +483,7 @@ defineExpose({
               <input
                 v-if="setting.type === 'boolean'"
                 :id="setting.key"
+                :data-testid="`setting-input-${setting.key}`"
                 type="checkbox"
                 :checked="Boolean(localSettings[setting.key])"
                 class="setting-checkbox"
@@ -487,6 +494,7 @@ defineExpose({
               <select
                 v-else-if="setting.type === 'select'"
                 :id="setting.key"
+                :data-testid="`setting-input-${setting.key}`"
                 :value="optionValueString(getSelectValue(setting))"
                 class="setting-select"
                 @change="updateSetting(setting.key, ($event.target as HTMLSelectElement).value)"
@@ -504,6 +512,7 @@ defineExpose({
               <input
                 v-else-if="setting.type === 'number'"
                 :id="setting.key"
+                :data-testid="`setting-input-${setting.key}`"
                 type="number"
                 :value="localSettings[setting.key]"
                 :min="getNumberBound(setting.min)"
@@ -516,6 +525,7 @@ defineExpose({
               <div v-else-if="setting.type === 'multi-select'" class="setting-multiselect">
                 <select
                   :id="setting.key"
+                  :data-testid="`setting-input-${setting.key}`"
                   :value="getMultiSelectMode(setting.key)"
                   class="setting-select"
                   @change="updateMultiSelectMode(setting.key, ($event.target as HTMLSelectElement).value)"
@@ -545,6 +555,7 @@ defineExpose({
               <input
                 v-else-if="setting.type === 'text'"
                 :id="setting.key"
+                :data-testid="`setting-input-${setting.key}`"
                 type="text"
                 :value="localSettings[setting.key]"
                 class="setting-input"
@@ -669,7 +680,7 @@ defineExpose({
       <button class="btn-secondary" @click="resetSettings">
         Reset to Defaults
       </button>
-      <button class="btn-primary" @click="applySettings">
+      <button class="btn-primary" data-testid="apply-settings-button" @click="applySettings">
         Apply Settings
       </button>
     </div>

@@ -947,7 +947,13 @@ onBeforeUnmount(() => {
     @dragleave="onSpoilerDragLeave"
     @drop="onSpoilerDrop"
   >
-    <div v-if="isApplyingSettings" class="applying-overlay" role="status" aria-live="polite">
+    <div
+      v-if="isApplyingSettings"
+      class="applying-overlay"
+      data-testid="applying-settings-overlay"
+      role="status"
+      aria-live="polite"
+    >
       <div class="applying-overlay__content">
         <span class="applying-overlay__title">Applying settings…</span>
         <span class="applying-overlay__subtitle">Recalculating tracker logic</span>
@@ -1000,15 +1006,17 @@ onBeforeUnmount(() => {
         <div v-if="!isStatsCollapsed" id="stats-panel-content" class="stats-grid">
           <div class="stat-item">
             <span class="stat-label">Reachable:</span>
-            <span class="stat-value">{{ stats.reachable }} / {{ stats.total }}</span>
+            <span class="stat-value" data-testid="stats-reachable-value">
+              {{ stats.reachable }} / {{ stats.total }}
+            </span>
           </div>
           <div class="stat-item">
             <span class="stat-label">Checked:</span>
-            <span class="stat-value">{{ stats.checked }}</span>
+            <span class="stat-value" data-testid="stats-checked-value">{{ stats.checked }}</span>
           </div>
           <div class="stat-item">
             <span class="stat-label">Remaining:</span>
-            <span class="stat-value">{{ stats.remaining }}</span>
+            <span class="stat-value" data-testid="stats-remaining-value">{{ stats.remaining }}</span>
           </div>
           <div class="stat-item goal" :class="{ complete: canComplete }">
             <span class="stat-label">Goal:</span>
@@ -1038,30 +1046,35 @@ onBeforeUnmount(() => {
       <div class="tabs">
         <button 
           :class="{ active: activeTab === 'grid' }"
+          data-testid="tab-items"
           @click="requestTabSwitch('grid')"
         >
           Items
         </button>
         <button 
           :class="{ active: activeTab === 'inventory' }"
+          data-testid="tab-inventory"
           @click="requestTabSwitch('inventory')"
         >
           All Items
         </button>
         <button 
           :class="{ active: activeTab === 'world' }"
+          data-testid="tab-world"
           @click="requestTabSwitch('world')"
         >
           World
         </button>
         <button 
           :class="{ active: activeTab === 'settings' }"
+          data-testid="tab-settings"
           @click="requestTabSwitch('settings')"
         >
           Settings
         </button>
         <button 
           :class="{ active: activeTab === 'tricks' }"
+          data-testid="tab-tricks"
           @click="requestTabSwitch('tricks')"
         >
           Tricks & Glitches

@@ -57,6 +57,7 @@ onMounted(() => {
           <label for="pack-select">Tracker Pack:</label>
           <select
             id="pack-select"
+            data-testid="pack-select"
             v-model="selectedPackId"
             :disabled="isLoading"
             @change="appStore.loadPack(selectedPackId)"
@@ -73,11 +74,17 @@ onMounted(() => {
         <button
           type="button"
           class="debug-activate-all-button"
+          data-testid="debug-activate-all-button"
           @click="debugActivateAll"
         >
           Debug: Activate All
         </button>
-        <button type="button" class="reset-button" @click="resetTrackerState">
+        <button
+          type="button"
+          class="reset-button"
+          data-testid="reset-tracker-state-button"
+          @click="resetTrackerState"
+        >
           RESET TRACKER STATE
         </button>
       </div>
