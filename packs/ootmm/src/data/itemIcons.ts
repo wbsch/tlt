@@ -53,7 +53,7 @@ const RAW_ITEM_ICONS: Record<string, string> = {
   OOT_SWORD_MASTER: 'images/sword2.png',
   OOT_SWORD_GORON: 'images/sword3.png',
   OOT_SWORD_BIGGORON: 'images/sword3.png',
-  OOT_SPIN_UPGRADE: 'images/items/mm_spin.png',
+  OOT_SPIN_UPGRADE: 'images/great_spin_attack.png',
 
   // Shields
   OOT_SHIELD_DEKU: 'images/shield1.png',
@@ -317,7 +317,7 @@ const RAW_ITEM_ICONS: Record<string, string> = {
   MM_SONG_NOTE_ZORA: 'images/items/mm_bossanova.png',
 
   // Swords
-  MM_SPIN_UPGRADE: 'images/items/mm_spin.png',
+  MM_SPIN_UPGRADE: 'images/great_spin_attack.png',
 
 
   // Rupees
@@ -491,7 +491,7 @@ const RAW_ITEM_ICONS: Record<string, string> = {
   SHARED_RUPEE_SILVER: 'images/rupee.png',
   SHARED_HEART_CONTAINER: 'images/system/heartcontainer.png',
   SHARED_HEART_PIECE: 'images/system/heartpiece.png',
-  SHARED_SPIN_UPGRADE: 'images/items/mm_spin.png',
+  SHARED_SPIN_UPGRADE: 'images/great_spin_attack.png',
   SHARED_STONE_OF_AGONY: 'images/agony.png',
   SHARED_SPELL_FIRE: 'images/din.png',
   SHARED_SPELL_WIND: 'images/farore.png',
