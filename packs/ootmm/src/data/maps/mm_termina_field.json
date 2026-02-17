@@ -977,9 +977,29 @@
     {
       "coords": [432, 561],
       "image": "red_boulder",
-      "codes": [
-        "TODO KF 087 :: unnamed_stack > Termina > Termina Layers > Termina Red Boulders :: Pasted Layer #86 :: 001-001-012-000.png",
-        "MM Road to Ikana Red Boulder"
+      "type": "submenu",
+      "markers": [
+        {
+          "image": "chest",
+          "codes": "MM Road to Ikana Grotto"
+        },
+        {
+          "image": "grass",
+          "codes": [
+            "MM Road to Ikana Grotto Grass 01",
+            "MM Road to Ikana Grotto Grass 02",
+            "MM Road to Ikana Grotto Grass 03",
+            "MM Road to Ikana Grotto Grass 04",
+            "MM Road to Ikana Grotto Grass 05",
+            "MM Road to Ikana Grotto Grass 06",
+            "MM Road to Ikana Grotto Grass 07",
+            "MM Road to Ikana Grotto Grass 08",
+            "MM Road to Ikana Grotto Grass 09",
+            "MM Road to Ikana Grotto Grass 10",
+            "MM Road to Ikana Grotto Grass 11",
+            "MM Road to Ikana Grotto Grass 12"
+          ]
+        }
       ]
     },
     {
@@ -1285,12 +1305,43 @@
     {
       "coords": [706, 460],
       "image": "grotto",
-      "codes": "TODO KF 122 :: unnamed_stack > Termina > Termina Layers > Termina Entrances :: Pasted Layer #121 :: 001-001-017-001.png"
+      "type": "submenu",
+      "markers": [
+        {
+          "image": "chest",
+          "codes": "MM Road to Southern Swamp Grotto"
+        },
+        {
+          "image": "grass",
+          "codes": [
+            "MM Road to Southern Swamp Grotto Grass 01",
+            "MM Road to Southern Swamp Grotto Grass 02",
+            "MM Road to Southern Swamp Grotto Grass 03",
+            "MM Road to Southern Swamp Grotto Grass 04",
+            "MM Road to Southern Swamp Grotto Grass 05",
+            "MM Road to Southern Swamp Grotto Grass 06",
+            "MM Road to Southern Swamp Grotto Grass 07",
+            "MM Road to Southern Swamp Grotto Grass 08",
+            "MM Road to Southern Swamp Grotto Grass 09",
+            "MM Road to Southern Swamp Grotto Grass 10",
+            "MM Road to Southern Swamp Grotto Grass 11",
+            "MM Road to Southern Swamp Grotto Grass 12",
+            "MM Road to Southern Swamp Grotto Grass 13",
+            "MM Road to Southern Swamp Grotto Grass 14"
+          ]
+        }
+      ]
     },
     {
       "coords": [900, 532],
       "image": "interior_entrance",
-      "codes": "TODO KF 123 :: unnamed_stack > Termina > Termina Layers > Termina Entrances :: Pasted Layer #122 :: 001-001-017-002.png"
+      "type": "submenu",
+      "markers": [
+        {
+          "image": "npc",
+          "codes": ["MM Swamp Archery Reward 1", "MM Swamp Archery Reward 2"]
+        }
+      ]
     },
     {
       "coords": [36, 292],
@@ -1459,11 +1510,19 @@
       "markers": [
         {
           "image": "npc",
-          "codes": ["MM Clock Tower Roof Skull Kid Ocarina", "MM Clock Tower Roof Skull Kid Song of Time"]
+          "codes": [
+            "MM Clock Tower Roof Skull Kid Ocarina",
+            "MM Clock Tower Roof Skull Kid Song of Time"
+          ]
         },
         {
           "image": "pot",
-          "codes": ["MM Clock Tower Roof Pot 1", "MM Clock Tower Roof Pot 2", "MM Clock Tower Roof Pot 3", "MM Clock Tower Roof Pot 4"]
+          "codes": [
+            "MM Clock Tower Roof Pot 1",
+            "MM Clock Tower Roof Pot 2",
+            "MM Clock Tower Roof Pot 3",
+            "MM Clock Tower Roof Pot 4"
+          ]
         }
       ]
     },
@@ -1674,17 +1733,67 @@
     {
       "coords": [764, 156],
       "image": "boulder_grotto",
-      "codes": "TODO KF 143 :: unnamed_stack > Termina > Termina Layers > Termina Entrances :: Pasted Layer #142 :: 001-001-017-022.png"
+      "type": "submenu",
+      "markers": [
+        {
+          "image": "heart_piece",
+          "codes": "MM Termina Field Bio Baba Grotto"
+        },
+        {
+          "image": "beehive",
+          "codes": [
+            "MM Termina Field Bio Baba Grotto Hive Left",
+            "MM Termina Field Bio Baba Grotto Hive Middle"
+          ]
+        },
+        {
+          "image": "grass",
+          "codes": ["MM Bio Baba Grotto Grass 1", "MM Bio Baba Grotto Grass 2"]
+        },
+        {
+          "image": "rock",
+          "codes": "MM Bio Baba Grotto Rock"
+        }
+      ]
     },
     {
       "coords": [815, 123],
       "image": "boulder_grotto",
-      "codes": "TODO KF 144 :: unnamed_stack > Termina > Termina Layers > Termina Entrances :: Pasted Layer #143 :: 001-001-017-023.png"
+      "type": "submenu",
+      "markers": [
+        {
+          "image": "grass",
+          "codes": [
+            "MM Ocean Gossip Grotto Grass 1",
+            "MM Ocean Gossip Grotto Grass 2",
+            "MM Ocean Gossip Grotto Grass 3",
+            "MM Ocean Gossip Grotto Grass 4",
+            "MM Ocean Gossip Grotto Grass 5"
+          ]
+        },
+        {
+          "image": "beehive",
+          "codes": "MM Ocean Gossip Grotto Hive"
+        },
+        {
+          "image": "butterfly",
+          "codes": [
+            "MM Ocean Gossip Grotto Butterfly 1",
+            "MM Ocean Gossip Grotto Butterfly 2"
+          ]
+        }
+      ]
     },
     {
       "coords": [828, 92],
       "image": "grotto",
-      "codes": "TODO KF 145 :: unnamed_stack > Termina > Termina Layers > Termina Entrances :: Pasted Layer #144 :: 001-001-017-024.png"
+      "type": "submenu",
+      "markers": [
+        {
+          "image": "chest",
+          "codes": "MM Termina Field Dodongo Grotto"
+        }
+      ]
     },
     {
       "coords": [878, 105],
@@ -1694,7 +1803,32 @@
     {
       "coords": [924, 163],
       "image": "grotto",
-      "codes": "TODO KF 147 :: unnamed_stack > Termina > Termina Layers > Termina Entrances :: Pasted Layer #146 :: 001-001-017-026.png"
+      "type": "submenu",
+      "markers": [
+        {
+          "image": "chest",
+          "codes": "MM Termina Field Pillar Grotto"
+        },
+        {
+          "image": "grass",
+          "codes": [
+            "MM Termina Field Pillar Grotto Grass 01",
+            "MM Termina Field Pillar Grotto Grass 02",
+            "MM Termina Field Pillar Grotto Grass 03",
+            "MM Termina Field Pillar Grotto Grass 04",
+            "MM Termina Field Pillar Grotto Grass 05",
+            "MM Termina Field Pillar Grotto Grass 06",
+            "MM Termina Field Pillar Grotto Grass 07",
+            "MM Termina Field Pillar Grotto Grass 08",
+            "MM Termina Field Pillar Grotto Grass 09",
+            "MM Termina Field Pillar Grotto Grass 10",
+            "MM Termina Field Pillar Grotto Grass 11",
+            "MM Termina Field Pillar Grotto Grass 12",
+            "MM Termina Field Pillar Grotto Grass 13",
+            "MM Termina Field Pillar Grotto Grass 14"
+          ]
+        }
+      ]
     },
     {
       "coords": [969, 181],
@@ -1704,27 +1838,194 @@
     {
       "coords": [939, 204],
       "image": "grotto",
-      "codes": "TODO KF 149 :: unnamed_stack > Termina > Termina Layers > Termina Entrances :: Pasted Layer #148 :: 001-001-017-028.png"
+      "type": "submenu",
+      "markers": [
+        {
+          "image": "business_scrub_mm",
+          "codes": "MM Termina Field Scrub"
+        },
+        {
+          "image": "pot",
+          "codes": "MM Termina Field Scrub Pot"
+        },
+        {
+          "image": "crate",
+          "codes": "MM Termina Field Scrub Crate"
+        }
+      ]
     },
     {
       "coords": [962, 201],
       "image": "interior_entrance",
-      "codes": "TODO KF 150 :: unnamed_stack > Termina > Termina Layers > Termina Entrances :: Pasted Layer #149 :: 001-001-017-029.png"
+      "type": "submenu",
+      "markers": [
+        {
+          "image": "pot",
+          "codes": [
+            "MM Astral Observatory Pot 1",
+            "MM Astral Observatory Pot 2",
+            "MM Astral Observatory Pot 3"
+          ]
+        }
+      ]
     },
     {
       "coords": [905, 252],
       "image": "grotto",
-      "codes": "TODO KF 151 :: unnamed_stack > Termina > Termina Layers > Termina Entrances :: Pasted Layer #150 :: 001-001-017-030.png"
+      "type": "submenu",
+      "markers": [
+        {
+          "image": "chest",
+          "codes": "MM Termina Field Tall Grass Grotto"
+        },
+        {
+          "image": "grass",
+          "codes": [
+            "MM Termina Field Tall Grass Grotto Grass 01",
+            "MM Termina Field Tall Grass Grotto Grass 02",
+            "MM Termina Field Tall Grass Grotto Grass 03",
+            "MM Termina Field Tall Grass Grotto Grass 04",
+            "MM Termina Field Tall Grass Grotto Grass 05",
+            "MM Termina Field Tall Grass Grotto Grass 06",
+            "MM Termina Field Tall Grass Grotto Grass 07",
+            "MM Termina Field Tall Grass Grotto Grass 08",
+            "MM Termina Field Tall Grass Grotto Grass 09",
+            "MM Termina Field Tall Grass Grotto Grass 10",
+            "MM Termina Field Tall Grass Grotto Grass 11",
+            "MM Termina Field Tall Grass Grotto Grass 12",
+            "MM Termina Field Tall Grass Grotto Grass 13",
+            "MM Termina Field Tall Grass Grotto Grass 14"
+          ]
+        }
+      ]
     },
     {
       "coords": [864, 250],
       "image": "bomb_grotto",
-      "codes": "TODO KF 152 :: unnamed_stack > Termina > Termina Layers > Termina Entrances :: Pasted Layer #151 :: 001-001-017-031.png"
+      "type": "submenu",
+      "markers": [
+        {
+          "image": "cow",
+          "codes": ["MM Termina Field Cow Back", "MM Termina Field Cow Front"]
+        },
+        {
+          "image": "grass",
+          "codes": [
+            "MM Termina Field Cow Grotto Grass 01",
+            "MM Termina Field Cow Grotto Grass 02",
+            "MM Termina Field Cow Grotto Grass 03",
+            "MM Termina Field Cow Grotto Grass 04",
+            "MM Termina Field Cow Grotto Grass 05",
+            "MM Termina Field Cow Grotto Grass 06",
+            "MM Termina Field Cow Grotto Grass 07",
+            "MM Termina Field Cow Grotto Grass 08",
+            "MM Termina Field Cow Grotto Grass 09",
+            "MM Termina Field Cow Grotto Grass 10",
+            "MM Termina Field Cow Grotto Grass 11",
+            "MM Termina Field Cow Grotto Grass 12",
+            "MM Termina Field Cow Grotto Grass 13",
+            "MM Termina Field Cow Grotto Grass 14",
+            "MM Termina Field Cow Grotto Grass 15",
+            "MM Termina Field Cow Grotto Grass 16",
+            "MM Termina Field Cow Grotto Grass 17",
+            "MM Termina Field Cow Grotto Grass 18",
+            "MM Termina Field Cow Grotto Grass 19",
+            "MM Termina Field Cow Grotto Grass 20",
+            "MM Termina Field Cow Grotto Grass 21",
+            "MM Termina Field Cow Grotto Grass 22",
+            "MM Termina Field Cow Grotto Grass 23",
+            "MM Termina Field Cow Grotto Grass 24",
+            "MM Termina Field Cow Grotto Grass 25",
+            "MM Termina Field Cow Grotto Grass 26",
+            "MM Termina Field Cow Grotto Grass 27",
+            "MM Termina Field Cow Grotto Grass 28",
+            "MM Termina Field Cow Grotto Grass 29",
+            "MM Termina Field Cow Grotto Grass 30",
+            "MM Termina Field Cow Grotto Grass 31",
+            "MM Termina Field Cow Grotto Grass 32",
+            "MM Termina Field Cow Grotto Grass 33",
+            "MM Termina Field Cow Grotto Grass 34",
+            "MM Termina Field Cow Grotto Grass 35",
+            "MM Termina Field Cow Grotto Grass 36",
+            "MM Termina Field Cow Grotto Grass 37",
+            "MM Termina Field Cow Grotto Grass 38",
+            "MM Termina Field Cow Grotto Grass 39",
+            "MM Termina Field Cow Grotto Grass 40",
+            "MM Termina Field Cow Grotto Grass 41",
+            "MM Termina Field Cow Grotto Grass 42",
+            "MM Termina Field Cow Grotto Grass 43",
+            "MM Termina Field Cow Grotto Grass 44",
+            "MM Termina Field Cow Grotto Grass 45",
+            "MM Termina Field Cow Grotto Grass 46",
+            "MM Termina Field Cow Grotto Grass 47",
+            "MM Termina Field Cow Grotto Grass 48",
+            "MM Termina Field Cow Grotto Grass 49",
+            "MM Termina Field Cow Grotto Grass 50",
+            "MM Termina Field Cow Grotto Grass 51",
+            "MM Termina Field Cow Grotto Grass 52",
+            "MM Termina Field Cow Grotto Grass 53",
+            "MM Termina Field Cow Grotto Grass 54",
+            "MM Termina Field Cow Grotto Grass 55",
+            "MM Termina Field Cow Grotto Grass 56",
+            "MM Termina Field Cow Grotto Grass 57",
+            "MM Termina Field Cow Grotto Grass 58",
+            "MM Termina Field Cow Grotto Grass 59",
+            "MM Termina Field Cow Grotto Grass 60",
+            "MM Termina Field Cow Grotto Grass 61",
+            "MM Termina Field Cow Grotto Grass 62",
+            "MM Termina Field Cow Grotto Grass 63",
+            "MM Termina Field Cow Grotto Grass 64",
+            "MM Termina Field Cow Grotto Grass 65",
+            "MM Termina Field Cow Grotto Grass 66",
+            "MM Termina Field Cow Grotto Grass 67",
+            "MM Termina Field Cow Grotto Grass 68",
+            "MM Termina Field Cow Grotto Grass 69",
+            "MM Termina Field Cow Grotto Grass 70",
+            "MM Termina Field Cow Grotto Grass 71",
+            "MM Termina Field Cow Grotto Grass 72"
+          ]
+        },
+        {
+          "image": "beehive",
+          "codes": "MM Termina Field Cow Grotto Hive"
+        },
+        {
+          "image": "butterfly",
+          "codes": [
+            "MM Termina Field Cow Grotto Butterfly 1",
+            "MM Termina Field Cow Grotto Butterfly 2",
+            "MM Termina Field Cow Grotto Butterfly 3"
+          ]
+        }
+      ]
     },
     {
       "coords": [835, 248],
       "image": "grotto",
-      "codes": "TODO KF 153 :: unnamed_stack > Termina > Termina Layers > Termina Entrances :: Pasted Layer #152 :: 001-001-017-032.png"
+      "type": "submenu",
+      "markers": [
+        {
+          "image": "chest",
+          "codes": "MM Termina Field Peahat Grotto"
+        },
+        {
+          "image": "grass",
+          "codes": [
+            "MM Peahat Grotto Grass 01",
+            "MM Peahat Grotto Grass 02",
+            "MM Peahat Grotto Grass 03",
+            "MM Peahat Grotto Grass 04",
+            "MM Peahat Grotto Grass 05",
+            "MM Peahat Grotto Grass 06",
+            "MM Peahat Grotto Grass 07",
+            "MM Peahat Grotto Grass 08",
+            "MM Peahat Grotto Grass 09",
+            "MM Peahat Grotto Grass 10",
+            "MM Peahat Grotto Grass 11",
+            "MM Peahat Grotto Grass 12"
+          ]
+        }
+      ]
     },
     {
       "coords": [832, 275],
