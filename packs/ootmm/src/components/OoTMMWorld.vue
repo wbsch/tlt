@@ -59,7 +59,7 @@ function toggleDungeon(id: string) {
         <div class="world-header">
           <h3>Pre-Completed Dungeons</h3>
           <p class="world-description">
-            Choose which major dungeons are already cleared. Locations inside will be hidden and logic will treat them as completed.
+            Choose which major dungeons are already cleared. Locations inside will be marked as collected and logic will treat them as completed.
           </p>
           <p class="world-hint">
             Stone Tower Temple includes the inverted dungeon.

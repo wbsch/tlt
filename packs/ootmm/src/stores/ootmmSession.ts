@@ -143,6 +143,7 @@ export const useOoTMMSessionStore = defineStore('ootmm-session', () => {
   const inventoryById = ref<Record<string, number>>({});
   const collectedLocationIds = ref<string[]>([]);
   const preCompletedDungeons = ref<string[]>([]);
+  const autoCollectedPreCompletedLocationIds = ref<string[]>([]);
   const songEvents = ref<Record<string, number>>({});
   const shopPrices = ref<Record<string, number>>({});
 
@@ -279,6 +280,7 @@ export const useOoTMMSessionStore = defineStore('ootmm-session', () => {
         inventoryById.value = targetInventoryById;
         collectedLocationIds.value = targetCollectedLocationIds;
         preCompletedDungeons.value = targetPreCompletedDungeons;
+        autoCollectedPreCompletedLocationIds.value = [];
         songEvents.value = targetSongEvents;
         shopPrices.value = targetShopPrices;
         trackerSettings.value = targetSettings;
@@ -315,6 +317,7 @@ export const useOoTMMSessionStore = defineStore('ootmm-session', () => {
       }
 
       preCompletedDungeons.value = targetPreCompletedDungeons;
+      autoCollectedPreCompletedLocationIds.value = [];
       songEvents.value = targetSongEvents;
       shopPrices.value = targetShopPrices;
       applyPreCompletedDungeons();
@@ -504,6 +507,19 @@ export const useOoTMMSessionStore = defineStore('ootmm-session', () => {
     if (!currentTracker || !currentTracker.setPreCompletedDungeons) return;
     const selected = preCompletedEnabled.value ? preCompletedDungeons.value : [];
     currentTracker.setPreCompletedDungeons(selected);
+
+    const previousAuto = new Set(autoCollectedPreCompletedLocationIds.value);
+    const nextCollected = new Set(collectedLocationIds.value);
+    previousAuto.forEach((locationId) => nextCollected.delete(locationId));
+
+    const nextAuto = new Set(
+      currentTracker.getPreCompletedLocationIds?.() ?? [],
+    );
+    nextAuto.forEach((locationId) => nextCollected.add(locationId));
+
+    autoCollectedPreCompletedLocationIds.value = Array.from(nextAuto);
+    collectedLocationIds.value = Array.from(nextCollected);
+
     locationsVersion.value += 1;
     recomputeReachability();
   }
@@ -636,6 +652,7 @@ export const useOoTMMSessionStore = defineStore('ootmm-session', () => {
     inventoryById.value = {};
     collectedLocationIds.value = [];
     preCompletedDungeons.value = [];
+    autoCollectedPreCompletedLocationIds.value = [];
     songEvents.value = {};
     shopPrices.value = {};
 

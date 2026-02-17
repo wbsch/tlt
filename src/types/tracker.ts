@@ -38,6 +38,9 @@ export interface TrackerPack {
   /** Optional: Mark pre-completed dungeons to adjust logic/UI */
   setPreCompletedDungeons?(dungeons: string[]): void;
 
+  /** Optional: Get location IDs that belong to currently selected pre-completed dungeons */
+  getPreCompletedLocationIds?(): string[];
+
   /** Optional: Override song-event requirements used in logic */
   setSongEvents?(events: Record<string, number>): void;
 

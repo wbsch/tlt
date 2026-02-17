@@ -418,6 +418,13 @@ export class OoTMMTracker implements TrackerPack {
     this.pathfinder = new Pathfinder(this.worlds, this.settings, new Map())
   }
 
+  getPreCompletedLocationIds(): string[] {
+    if (!this.worlds || this.worlds.length === 0 || this.preCompletedDungeonIds.size === 0) {
+      return []
+    }
+    return Array.from(this.collectPreCompletedLocationIds())
+  }
+
   setSongEvents(events: Record<string, number>): void {
     if (!this.worlds || !this.settings) return
     
@@ -668,7 +675,10 @@ export class OoTMMTracker implements TrackerPack {
   }
 
   private updatePreCompletedLocations(): void {
-    const hidden = new Set(this.baseHiddenLocationIds)
+    this.hiddenLocationIds = new Set(this.baseHiddenLocationIds)
+  }
+
+  private collectPreCompletedLocationIds(): Set<string> {
     const expanded = new Set(this.preCompletedDungeonIds)
     if (expanded.has('ST')) {
       expanded.add('IST')
@@ -684,11 +694,7 @@ export class OoTMMTracker implements TrackerPack {
         }
       }
     }
-
-    for (const locId of dungeonLocs) {
-      hidden.add(locId)
-    }
-    this.hiddenLocationIds = hidden
+    return dungeonLocs
   }
 
   private applyPreCompletedWispEvents(): void {
