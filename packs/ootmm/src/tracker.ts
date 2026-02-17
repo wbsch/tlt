@@ -339,6 +339,7 @@ export class OoTMMTracker implements TrackerPack {
 
   private applyAlwaysIncludedFishingPondConditions(worlds: World[]): void {
     if (!worlds || worlds.length === 0 || !exprHas || !exprOr || !exprAnd) return
+    if (!this.isFishingPondShuffleEnabled()) return
 
     const childFallbackIds = [
       'OOT_FISHING_POND_CHILD_FISH_13LBS',
@@ -855,7 +856,9 @@ export class OoTMMTracker implements TrackerPack {
     }
 
     for (const itemId of ALWAYS_INCLUDED_ITEM_POOL_IDS) {
-      available.add(itemId)
+      if (this.isFishingPondShuffleEnabled()) {
+        available.add(itemId)
+      }
     }
 
     return available
@@ -939,7 +942,9 @@ export class OoTMMTracker implements TrackerPack {
     }
 
     for (const itemId of ALWAYS_INCLUDED_ITEM_POOL_IDS) {
-      counts.set(itemId, 1)
+      if (this.isFishingPondShuffleEnabled()) {
+        counts.set(itemId, 1)
+      }
     }
 
     return counts
@@ -966,6 +971,17 @@ export class OoTMMTracker implements TrackerPack {
         counts.delete(itemId)
       }
     }
+  }
+
+  private isFishingPondShuffleEnabled(): boolean {
+    const value = (this.settings as { pondFishShuffle?: unknown })?.pondFishShuffle
+    if (typeof value === 'boolean') return value
+    if (typeof value === 'string') {
+      const normalized = value.trim().toLowerCase()
+      return normalized === 'true' || normalized === '1' || normalized === 'yes' || normalized === 'on'
+    }
+    if (typeof value === 'number') return value === 1
+    return false
   }
 
   private adjustFixedLocationCounts(counts: Map<string, number>): void {
