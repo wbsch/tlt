@@ -24,6 +24,9 @@ const Pathfinder = resolveExport<typeof PathfinderMod.Pathfinder>(PathfinderMod,
 const makeLocation = resolveExport<typeof LocationsMod.makeLocation>(LocationsMod, 'makeLocation')
 const locationData = resolveExport<typeof LocationsMod.locationData>(LocationsMod, 'locationData')
 const exprTrue = resolveExport<typeof ExprMod.exprTrue>(ExprMod, 'exprTrue')
+const exprHas = resolveExport<(item: unknown, count: number) => unknown>(ExprMod, 'exprHas')
+const exprOr = resolveExport<(exprs: unknown[]) => unknown>(ExprMod, 'exprOr')
+const exprAnd = resolveExport<(exprs: unknown[]) => unknown>(ExprMod, 'exprAnd')
 const Items = resolveExport<typeof ItemsMod.Items>(ItemsMod, 'Items')
 const makePlayerItem = resolveExport<typeof ItemsMod.makePlayerItem>(ItemsMod, 'makePlayerItem')
 const itemByID = resolveExport<typeof ItemsMod.itemByID>(ItemsMod, 'itemByID')
@@ -77,6 +80,14 @@ const SINGLE_COUNT_ITEM_IDS = new Set([
   'SHARED_TUNIC_ZORA',
   'MM_MAGIC_BEAN',
 ])
+
+const ALWAYS_INCLUDED_ITEM_POOL_IDS = new Set([
+  'OOT_FISHING_POND_CHILD_FISH_13LBS',
+  'OOT_FISHING_POND_ADULT_FISH_8LBS',
+  'OOT_FISHING_POND_CHILD_LOACH_16LBS',
+  'OOT_FISHING_POND_ADULT_LOACH_30LBS',
+])
+
 const CLOCK_ITEM_IDS = new Set([
   'MM_CLOCK1',
   'MM_CLOCK2',
@@ -204,6 +215,7 @@ export class OoTMMTracker implements TrackerPack {
     const entranceResult = entrancePass.run()
     this.worlds = entranceResult.worlds
     this.normalizeWorldItems(this.worlds)
+    this.applyAlwaysIncludedFishingPondConditions(this.worlds)
 
     // Create pathfinder with empty starting items
     this.pathfinder = new Pathfinder(
@@ -323,6 +335,93 @@ export class OoTMMTracker implements TrackerPack {
   private buildLocations(includeHidden: boolean): LocationInfo[] {
     const worldsForLocations = this.baseWorlds.length > 0 ? this.baseWorlds : this.worlds
     return this.buildLocationsFromWorlds(worldsForLocations, includeHidden)
+  }
+
+  private applyAlwaysIncludedFishingPondConditions(worlds: World[]): void {
+    if (!worlds || worlds.length === 0 || !exprHas || !exprOr || !exprAnd) return
+
+    const childFallbackIds = [
+      'OOT_FISHING_POND_CHILD_FISH_13LBS',
+      'OOT_FISHING_POND_CHILD_LOACH_16LBS',
+    ]
+    const adultFallbackIds = [
+      'OOT_FISHING_POND_ADULT_FISH_8LBS',
+      'OOT_FISHING_POND_ADULT_LOACH_30LBS',
+    ]
+
+    const toExprs = (itemIds: string[]) =>
+      itemIds
+        .map((itemId) => {
+          const item = (Items as Record<string, unknown>)?.[itemId]
+            || (() => {
+              try {
+                return itemByID ? itemByID(itemId) : undefined
+              } catch {
+                return undefined
+              }
+            })()
+          return item ? exprHas(item as never, 1) : null
+        })
+        .filter((expr): expr is NonNullable<typeof expr> => Boolean(expr))
+
+    const childExtraExprs = toExprs(childFallbackIds)
+    const adultExtraExprs = toExprs(adultFallbackIds)
+    if (childExtraExprs.length === 0 && adultExtraExprs.length === 0) return
+
+    const exprContainsItemPrefix = (expr: unknown, itemPrefix: string): boolean => {
+      if (!expr || typeof expr !== 'object') return false
+      const key = (expr as { key?: unknown }).key
+      if (typeof key === 'string' && key.includes(`HAS(${itemPrefix}`)) {
+        return true
+      }
+      const subExprs = (expr as { exprs?: unknown[] }).exprs
+      if (!Array.isArray(subExprs)) return false
+      return subExprs.some((subExpr) => exprContainsItemPrefix(subExpr, itemPrefix))
+    }
+
+    const patchFishRequirement = (expr: unknown, itemPrefix: string, extraExprs: unknown[]): unknown => {
+      if (!expr || extraExprs.length === 0) return expr
+      const isAnd = (expr as { constructor?: { name?: string } }).constructor?.name === 'ExprAnd'
+      const andExprs = (expr as { exprs?: unknown[] }).exprs
+      if (!isAnd || !Array.isArray(andExprs) || andExprs.length === 0) {
+        return expr
+      }
+
+      const fishExprIndex = andExprs.findIndex((subExpr) => exprContainsItemPrefix(subExpr, itemPrefix))
+      if (fishExprIndex < 0) {
+        return expr
+      }
+
+      const nextAndExprs = [...andExprs]
+      nextAndExprs[fishExprIndex] = exprOr([nextAndExprs[fishExprIndex] as never, ...extraExprs]) as never
+      return exprAnd(nextAndExprs as never[])
+    }
+
+    for (const world of worlds) {
+      const area = world.areas?.['OOT Fishing Pond']
+      const locations = area?.locations
+      if (!locations) continue
+
+      const childKey = 'OOT Fishing Pond Child'
+      const adultKey = 'OOT Fishing Pond Adult'
+      const childExpr = locations[childKey]
+      const adultExpr = locations[adultKey]
+
+      if (childExpr && childExtraExprs.length > 0) {
+        locations[childKey] = patchFishRequirement(
+          childExpr,
+          'OOT_FISHING_POND_CHILD_',
+          childExtraExprs,
+        ) as never
+      }
+      if (adultExpr && adultExtraExprs.length > 0) {
+        locations[adultKey] = patchFishRequirement(
+          adultExpr,
+          'OOT_FISHING_POND_ADULT_',
+          adultExtraExprs,
+        ) as never
+      }
+    }
   }
 
   private buildLocationsFromWorlds(worlds: World[], includeHidden: boolean): LocationInfo[] {
@@ -755,6 +854,10 @@ export class OoTMMTracker implements TrackerPack {
       }
     }
 
+    for (const itemId of ALWAYS_INCLUDED_ITEM_POOL_IDS) {
+      available.add(itemId)
+    }
+
     return available
   }
 
@@ -833,6 +936,10 @@ export class OoTMMTracker implements TrackerPack {
       if (counts.has(itemId)) {
         counts.set(itemId, 1)
       }
+    }
+
+    for (const itemId of ALWAYS_INCLUDED_ITEM_POOL_IDS) {
+      counts.set(itemId, 1)
     }
 
     return counts
