@@ -50,7 +50,14 @@ onMounted(() => {
 <template>
   <div class="app-container">
     <header class="app-header">
-      <h1>The Last Tracker</h1>
+      <div class="app-brand">
+        <img
+          src="/images/logo_last_tracker.png"
+          alt="The Last Tracker logo"
+          class="app-logo"
+        />
+        <h1>The Last Tracker</h1>
+      </div>
 
       <div class="header-actions">
         <div class="pack-selector">
@@ -122,6 +129,26 @@ onMounted(() => {
   align-items: center;
   gap: 1rem;
   flex-wrap: wrap;
+}
+
+.app-brand {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.app-brand h1 {
+  margin-left: 0.875rem;
+}
+
+.app-logo {
+  width: 1.5rem;
+  height: 1.5rem;
+  border-radius: 0.375rem;
+  object-fit: cover;
+  display: block;
+  transform: scale(2.3);
+  transform-origin: center;
 }
 
 .app-header h1 {
