@@ -374,12 +374,42 @@ function getMapSelectorMatches(rawQuery: string): MapDef[] {
   return [...exactMatches, ...prefixMatches, ...fuzzyMatches]
 }
 
-const filteredMapSelectorMaps = computed(() => {
-  if (isMapSelectorOpen.value && !hasMapSelectorUserInput.value) {
-    return mapDefs
+function compareMapSelectorMapsByVisibleCount(a: MapDef, b: MapDef): number {
+  const aCount = getMapSelectorVisibleCount(a)
+  const bCount = getMapSelectorVisibleCount(b)
+  const aIsZero = aCount === 0
+  const bIsZero = bCount === 0
+
+  if (aIsZero && bIsZero) {
+    return a.title.localeCompare(b.title)
   }
-  return getMapSelectorMatches(mapSelectorQuery.value)
+
+  if (aIsZero) return 1
+  if (bIsZero) return -1
+
+  if (aCount !== bCount) {
+    return bCount - aCount
+  }
+
+  return a.title.localeCompare(b.title)
+}
+
+const filteredMapSelectorMaps = computed(() => {
+  const maps =
+    isMapSelectorOpen.value && !hasMapSelectorUserInput.value
+      ? mapDefs
+      : getMapSelectorMatches(mapSelectorQuery.value)
+
+  return [...maps].sort(compareMapSelectorMapsByVisibleCount)
 })
+const mapSelectorFirstZeroCountIndex = computed(() =>
+  filteredMapSelectorMaps.value.findIndex((mapDef) => getMapSelectorVisibleCount(mapDef) === 0),
+)
+
+function isMapSelectorFirstZeroCountOption(index: number, mapDef: MapDef): boolean {
+  return getMapSelectorVisibleCount(mapDef) === 0 && index === mapSelectorFirstZeroCountIndex.value
+}
+
 const activeMapSelectorOptionId = computed(() => {
   if (
     !isMapSelectorOpen.value ||
@@ -1169,7 +1199,10 @@ onBeforeUnmount(() => {
                       :id="getMapSelectorOptionId(index)"
                       :key="mapDef.id"
                       class="map-selector-option"
-                      :class="{ 'is-highlighted': index === mapSelectorHighlightedIndex }"
+                      :class="{
+                        'is-highlighted': index === mapSelectorHighlightedIndex,
+                        'is-zero-separator': isMapSelectorFirstZeroCountOption(index, mapDef),
+                      }"
                       role="option"
                       :aria-selected="index === mapSelectorHighlightedIndex"
                       @mousedown.prevent
@@ -1714,6 +1747,12 @@ onBeforeUnmount(() => {
 .map-selector-option:hover,
 .map-selector-option.is-highlighted {
   background: #1f2937;
+}
+
+.map-selector-option.is-zero-separator {
+  margin-top: 0.3rem;
+  padding-top: 0.6rem;
+  border-top: 1px solid #374151;
 }
 
 .map-selector-option-title {
