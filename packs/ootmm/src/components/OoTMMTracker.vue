@@ -463,8 +463,6 @@ function commitMapSelectorSelection() {
 
 function handleMapSelectorFocus() {
   hasMapSelectorUserInput.value = false
-  openMapSelector()
-  mapSelectorInputRef.value?.select()
 }
 
 function handleMapSelectorClick() {
