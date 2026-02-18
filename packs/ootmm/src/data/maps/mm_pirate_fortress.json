@@ -11,7 +11,10 @@
         316
       ],
       "image": "chest",
-      "codes": "TODO KF 001 :: unnamed_stack > Pirate Fortess > Pirate Layers > Pirate Checks :: Pasted Layer :: 001-001-001-000.png"
+      "codes": [
+        "TODO KF 001 :: unnamed_stack > Pirate Fortess > Pirate Layers > Pirate Checks :: Pasted Layer :: 001-001-001-000.png",
+        "MM Pirate Fortress Entrance Chest 2"
+      ]
     },
     {
       "coords": [
@@ -19,7 +22,10 @@
         406
       ],
       "image": "chest",
-      "codes": "TODO KF 002 :: unnamed_stack > Pirate Fortess > Pirate Layers > Pirate Checks :: Pasted Layer #1 :: 001-001-001-001.png"
+      "codes": [
+        "TODO KF 002 :: unnamed_stack > Pirate Fortess > Pirate Layers > Pirate Checks :: Pasted Layer #1 :: 001-001-001-001.png",
+        "MM Pirate Fortress Entrance Chest 1"
+      ]
     },
     {
       "coords": [
@@ -27,7 +33,10 @@
         221
       ],
       "image": "chest",
-      "codes": "TODO KF 003 :: unnamed_stack > Pirate Fortess > Pirate Layers > Pirate Checks :: Pasted Layer #2 :: 001-001-001-002.png"
+      "codes": [
+        "TODO KF 003 :: unnamed_stack > Pirate Fortess > Pirate Layers > Pirate Checks :: Pasted Layer #2 :: 001-001-001-002.png",
+        "MM Pirate Fortress Entrance Chest 3"
+      ]
     },
     {
       "coords": [
@@ -35,15 +44,21 @@
         305
       ],
       "image": "chest",
-      "codes": "TODO KF 004 :: unnamed_stack > Pirate Fortess > Pirate Layers > Pirate Checks :: Pasted Layer #3 :: 001-001-001-003.png"
+      "codes": [
+        "TODO KF 004 :: unnamed_stack > Pirate Fortess > Pirate Layers > Pirate Checks :: Pasted Layer #3 :: 001-001-001-003.png",
+        "MM Pirate Fortress Sewers Chest 1"
+      ]
     },
     {
       "coords": [
         488,
         167
       ],
-      "image": "chest",
-      "codes": "TODO KF 005 :: unnamed_stack > Pirate Fortess > Pirate Layers > Pirate Checks :: Pasted Layer #4 :: 001-001-001-004.png"
+      "image": "heart_piece",
+      "codes": [
+        "TODO KF 005 :: unnamed_stack > Pirate Fortess > Pirate Layers > Pirate Checks :: Pasted Layer #4 :: 001-001-001-004.png",
+        "MM Pirate Fortress Sewers HP"
+      ]
     },
     {
       "coords": [
@@ -51,7 +66,10 @@
         110
       ],
       "image": "chest",
-      "codes": "TODO KF 006 :: unnamed_stack > Pirate Fortess > Pirate Layers > Pirate Checks :: Pasted Layer #5 :: 001-001-001-005.png"
+      "codes": [
+        "TODO KF 006 :: unnamed_stack > Pirate Fortess > Pirate Layers > Pirate Checks :: Pasted Layer #5 :: 001-001-001-005.png",
+        "MM Pirate Fortress Sewers Chest 2"
+      ]
     },
     {
       "coords": [
@@ -59,7 +77,10 @@
         113
       ],
       "image": "chest",
-      "codes": "TODO KF 007 :: unnamed_stack > Pirate Fortess > Pirate Layers > Pirate Checks :: Pasted Layer #6 :: 001-001-001-006.png"
+      "codes": [
+        "TODO KF 007 :: unnamed_stack > Pirate Fortess > Pirate Layers > Pirate Checks :: Pasted Layer #6 :: 001-001-001-006.png",
+        "MM Pirate Fortress Sewers Chest 3"
+      ]
     },
     {
       "coords": [
@@ -67,7 +88,10 @@
         236
       ],
       "image": "chest",
-      "codes": "TODO KF 008 :: unnamed_stack > Pirate Fortess > Pirate Layers > Pirate Checks :: Pasted Layer #7 :: 001-001-001-007.png"
+      "codes": [
+        "TODO KF 008 :: unnamed_stack > Pirate Fortess > Pirate Layers > Pirate Checks :: Pasted Layer #7 :: 001-001-001-007.png",
+        "MM Pirate Fortress Interior Aquarium"
+      ]
     },
     {
       "coords": [
@@ -75,7 +99,10 @@
         489
       ],
       "image": "chest",
-      "codes": "TODO KF 009 :: unnamed_stack > Pirate Fortess > Pirate Layers > Pirate Checks :: Pasted Layer #8 :: 001-001-001-008.png"
+      "codes": [
+        "TODO KF 009 :: unnamed_stack > Pirate Fortess > Pirate Layers > Pirate Checks :: Pasted Layer #8 :: 001-001-001-008.png",
+        "MM Pirate Fortress Interior Upper Chest"
+      ]
     },
     {
       "coords": [
@@ -83,7 +110,10 @@
         420
       ],
       "image": "chest",
-      "codes": "TODO KF 010 :: unnamed_stack > Pirate Fortess > Pirate Layers > Pirate Checks :: Pasted Layer #9 :: 001-001-001-009.png"
+      "codes": [
+        "TODO KF 010 :: unnamed_stack > Pirate Fortess > Pirate Layers > Pirate Checks :: Pasted Layer #9 :: 001-001-001-009.png",
+        "MM Pirate Fortress Interior Lower Chest"
+      ]
     },
     {
       "coords": [
@@ -91,7 +121,10 @@
         359
       ],
       "image": "chest",
-      "codes": "TODO KF 011 :: unnamed_stack > Pirate Fortess > Pirate Layers > Pirate Checks :: Pasted Layer #10 :: 001-001-001-010.png"
+      "codes": [
+        "TODO KF 011 :: unnamed_stack > Pirate Fortess > Pirate Layers > Pirate Checks :: Pasted Layer #10 :: 001-001-001-010.png",
+        "MM Pirate Fortress Interior Hookshot"
+      ]
     },
     {
       "coords": [
@@ -99,7 +132,10 @@
         239
       ],
       "image": "chest",
-      "codes": "TODO KF 012 :: unnamed_stack > Pirate Fortess > Pirate Layers > Pirate Checks :: Pasted Layer #11 :: 001-001-001-011.png"
+      "codes": [
+        "TODO KF 012 :: unnamed_stack > Pirate Fortess > Pirate Layers > Pirate Checks :: Pasted Layer #11 :: 001-001-001-011.png",
+        "MM Pirate Fortress Interior Silver Rupee Chest"
+      ]
     },
     {
       "coords": [
@@ -107,7 +143,11 @@
         167
       ],
       "image": "pot",
-      "codes": "TODO KF 013 :: unnamed_stack > Pirate Fortess > Pirate Layers > Pirate Pots :: Pasted Layer #12 :: 001-001-002-000.png"
+      "codes": [
+        "TODO KF 013 :: unnamed_stack > Pirate Fortess > Pirate Layers > Pirate Pots :: Pasted Layer #12 :: 001-001-002-000.png",
+        "MM Pirate Fortress Sewers Pot Heart Piece Room 1",
+        "MM Pirate Fortress Sewers Pot Heart Piece Room 2"
+      ]
     },
     {
       "coords": [
@@ -115,7 +155,11 @@
         211
       ],
       "image": "pot",
-      "codes": "TODO KF 014 :: unnamed_stack > Pirate Fortess > Pirate Layers > Pirate Pots :: Pasted Layer #13 :: 001-001-002-001.png"
+      "codes": [
+        "TODO KF 014 :: unnamed_stack > Pirate Fortess > Pirate Layers > Pirate Pots :: Pasted Layer #13 :: 001-001-002-001.png",
+        "MM Pirate Fortress Sewers Pot Waterway 1",
+        "MM Pirate Fortress Sewers Pot Waterway 2"
+      ]
     },
     {
       "coords": [
@@ -123,7 +167,10 @@
         265
       ],
       "image": "pot",
-      "codes": "TODO KF 015 :: unnamed_stack > Pirate Fortess > Pirate Layers > Pirate Pots :: Pasted Layer #14 :: 001-001-002-002.png"
+      "codes": [
+        "TODO KF 015 :: unnamed_stack > Pirate Fortess > Pirate Layers > Pirate Pots :: Pasted Layer #14 :: 001-001-002-002.png",
+        "MM Pirate Fortress Sewers Pot End 1"
+      ]
     },
     {
       "coords": [
@@ -131,7 +178,11 @@
         286
       ],
       "image": "pot",
-      "codes": "TODO KF 016 :: unnamed_stack > Pirate Fortess > Pirate Layers > Pirate Pots :: Pasted Layer #15 :: 001-001-002-003.png"
+      "codes": [
+        "TODO KF 016 :: unnamed_stack > Pirate Fortess > Pirate Layers > Pirate Pots :: Pasted Layer #15 :: 001-001-002-003.png",
+        "MM Pirate Fortress Sewers Pot End 2",
+        "MM Pirate Fortress Sewers Pot End 3"
+      ]
     },
     {
       "coords": [
@@ -139,7 +190,12 @@
         218
       ],
       "image": "pot",
-      "codes": "TODO KF 017 :: unnamed_stack > Pirate Fortess > Pirate Layers > Pirate Pots :: Pasted Layer #16 :: 001-001-002-004.png"
+      "codes": [
+        "TODO KF 017 :: unnamed_stack > Pirate Fortess > Pirate Layers > Pirate Pots :: Pasted Layer #16 :: 001-001-002-004.png",
+        "MM Pirate Fortress Interior Pot Chest Aquarium 1",
+        "MM Pirate Fortress Interior Pot Chest Aquarium 2",
+        "MM Pirate Fortress Interior Pot Chest Aquarium 3"
+      ]
     },
     {
       "coords": [
@@ -147,7 +203,12 @@
         445
       ],
       "image": "pot",
-      "codes": "TODO KF 018 :: unnamed_stack > Pirate Fortess > Pirate Layers > Pirate Pots :: Pasted Layer #17 :: 001-001-002-005.png"
+      "codes": [
+        "TODO KF 018 :: unnamed_stack > Pirate Fortess > Pirate Layers > Pirate Pots :: Pasted Layer #17 :: 001-001-002-005.png",
+        "MM Pirate Fortress Interior Pot Barrel Maze 1",
+        "MM Pirate Fortress Interior Pot Barrel Maze 2",
+        "MM Pirate Fortress Interior Pot Barrel Maze 3"
+      ]
     },
     {
       "coords": [
@@ -155,7 +216,11 @@
         373
       ],
       "image": "pot",
-      "codes": "TODO KF 019 :: unnamed_stack > Pirate Fortess > Pirate Layers > Pirate Pots :: Pasted Layer #18 :: 001-001-002-006.png"
+      "codes": [
+        "TODO KF 019 :: unnamed_stack > Pirate Fortess > Pirate Layers > Pirate Pots :: Pasted Layer #18 :: 001-001-002-006.png",
+        "MM Pirate Fortress Interior Pot Beehive 1",
+        "MM Pirate Fortress Interior Pot Beehive 2"
+      ]
     },
     {
       "coords": [
@@ -163,7 +228,11 @@
         285
       ],
       "image": "pot",
-      "codes": "TODO KF 020 :: unnamed_stack > Pirate Fortess > Pirate Layers > Pirate Pots :: Pasted Layer #19 :: 001-001-002-007.png"
+      "codes": [
+        "TODO KF 020 :: unnamed_stack > Pirate Fortess > Pirate Layers > Pirate Pots :: Pasted Layer #19 :: 001-001-002-007.png",
+        "MM Pirate Fortress Interior Pot Guarded 1",
+        "MM Pirate Fortress Interior Pot Guarded 2"
+      ]
     },
     {
       "coords": [
@@ -171,7 +240,11 @@
         97
       ],
       "image": "green_rupee",
-      "codes": "TODO KF 021 :: unnamed_stack > Pirate Fortess > Pirate Layers > Pirate Freestanding Rupees :: Pasted Layer #20 :: 001-001-003-000.png"
+      "codes": [
+        "TODO KF 021 :: unnamed_stack > Pirate Fortess > Pirate Layers > Pirate Freestanding Rupees :: Pasted Layer #20 :: 001-001-003-000.png",
+        "MM Pirate Fortress Sewers Rupee Near Cage 1",
+        "MM Pirate Fortress Sewers Rupee Near Cage 2"
+      ]
     },
     {
       "coords": [
@@ -179,7 +252,10 @@
         100
       ],
       "image": "green_rupee",
-      "codes": "TODO KF 022 :: unnamed_stack > Pirate Fortess > Pirate Layers > Pirate Freestanding Rupees :: Pasted Layer #21 :: 001-001-003-001.png"
+      "codes": [
+        "TODO KF 022 :: unnamed_stack > Pirate Fortess > Pirate Layers > Pirate Freestanding Rupees :: Pasted Layer #21 :: 001-001-003-001.png",
+        "MM Pirate Fortress Sewers Rupee Near Cage 3"
+      ]
     },
     {
       "coords": [
@@ -187,23 +263,34 @@
         124
       ],
       "image": "green_rupee",
-      "codes": "TODO KF 023 :: unnamed_stack > Pirate Fortess > Pirate Layers > Pirate Freestanding Rupees :: Pasted Layer #22 :: 001-001-003-002.png"
+      "codes": [
+        "TODO KF 023 :: unnamed_stack > Pirate Fortess > Pirate Layers > Pirate Freestanding Rupees :: Pasted Layer #22 :: 001-001-003-002.png",
+        "MM Pirate Fortress Sewers Rupee Near Cage 4"
+      ]
     },
     {
       "coords": [
         510,
         163
       ],
-      "image": "green_rupee",
-      "codes": "TODO KF 024 :: unnamed_stack > Pirate Fortess > Pirate Layers > Pirate Freestanding Rupees :: Pasted Layer #23 :: 001-001-003-003.png"
+      "image": "blue_rupee",
+      "codes": [
+        "TODO KF 024 :: unnamed_stack > Pirate Fortess > Pirate Layers > Pirate Freestanding Rupees :: Pasted Layer #23 :: 001-001-003-003.png",
+        "MM Pirate Fortress Sewers Rupee Cage"
+      ]
     },
     {
       "coords": [
         533,
         267
       ],
-      "image": "green_rupee",
-      "codes": "TODO KF 025 :: unnamed_stack > Pirate Fortess > Pirate Layers > Pirate Freestanding Rupees :: Pasted Layer #24 :: 001-001-003-004.png"
+      "image": "blue_rupee",
+      "codes": [
+        "TODO KF 025 :: unnamed_stack > Pirate Fortess > Pirate Layers > Pirate Freestanding Rupees :: Pasted Layer #24 :: 001-001-003-004.png",
+        "MM Pirate Fortress Sewers Rupee Water Elevator 1",
+        "MM Pirate Fortress Sewers Rupee Water Elevator 2",
+        "MM Pirate Fortress Sewers Rupee Water Elevator 3"
+      ]
     },
     {
       "coords": [
@@ -211,119 +298,190 @@
         273
       ],
       "image": "heart",
-      "codes": "TODO KF 026 :: unnamed_stack > Pirate Fortess > Pirate Layers > Pirate Freestanding Hearts :: Pasted Layer #25 :: 001-001-004-000.png"
+      "codes": [
+        "TODO KF 026 :: unnamed_stack > Pirate Fortess > Pirate Layers > Pirate Freestanding Hearts :: Pasted Layer #25 :: 001-001-004-000.png",
+        "MM Pirate Fortress Interior Heart 1",
+        "MM Pirate Fortress Interior Heart 2",
+        "MM Pirate Fortress Interior Heart 3"
+      ]
     },
     {
       "coords": [
         610,
         381
       ],
-      "image": "collectible",
-      "codes": "TODO KF 027 :: unnamed_stack > Pirate Fortess > Pirate Layers > Pirate Crates :: Pasted Layer #26 :: 001-001-005-000.png"
+      "image": "crate",
+      "codes": [
+        "TODO KF 027 :: unnamed_stack > Pirate Fortess > Pirate Layers > Pirate Crates :: Pasted Layer #26 :: 001-001-005-000.png",
+        "MM Pirate Fortress Interior Crate Middle 1",
+        "MM Pirate Fortress Interior Crate Middle 2"
+      ]
     },
     {
       "coords": [
         606,
         305
       ],
-      "image": "collectible",
-      "codes": "TODO KF 028 :: unnamed_stack > Pirate Fortess > Pirate Layers > Pirate Crates :: Pasted Layer #27 :: 001-001-005-001.png"
+      "image": "crate",
+      "codes": [
+        "TODO KF 028 :: unnamed_stack > Pirate Fortess > Pirate Layers > Pirate Crates :: Pasted Layer #27 :: 001-001-005-001.png",
+        "MM Pirate Fortress Interior Crate Entrance"
+      ]
     },
     {
       "coords": [
         313,
         351
       ],
-      "image": "collectible",
-      "codes": "TODO KF 029 :: unnamed_stack > Pirate Fortess > Pirate Layers > Pirate Barrels :: Pasted Layer #28 :: 001-001-006-000.png"
+      "image": "barrel",
+      "codes": [
+        "TODO KF 029 :: unnamed_stack > Pirate Fortess > Pirate Layers > Pirate Barrels :: Pasted Layer #28 :: 001-001-006-000.png",
+        "MM Pirate Fortress Entrance Barrel"
+      ]
     },
     {
       "coords": [
         465,
         106
       ],
-      "image": "collectible",
-      "codes": "TODO KF 030 :: unnamed_stack > Pirate Fortess > Pirate Layers > Pirate Barrels :: Pasted Layer #29 :: 001-001-006-001.png"
+      "image": "barrel",
+      "codes": [
+        "TODO KF 030 :: unnamed_stack > Pirate Fortess > Pirate Layers > Pirate Barrels :: Pasted Layer #29 :: 001-001-006-001.png",
+        "MM Pirate Fortress Sewers Barrel Cage Room 08",
+        "MM Pirate Fortress Sewers Barrel Cage Room 09",
+        "MM Pirate Fortress Sewers Barrel Cage Room 10",
+        "MM Pirate Fortress Sewers Barrel Cage Room 11",
+        "MM Pirate Fortress Sewers Barrel Cage Room 12",
+        "MM Pirate Fortress Sewers Barrel Cage Room 13"
+      ]
     },
     {
       "coords": [
         499,
         108
       ],
-      "image": "collectible",
-      "codes": "TODO KF 031 :: unnamed_stack > Pirate Fortess > Pirate Layers > Pirate Barrels :: Pasted Layer #30 :: 001-001-006-002.png"
+      "image": "barrel",
+      "codes": [
+        "TODO KF 031 :: unnamed_stack > Pirate Fortess > Pirate Layers > Pirate Barrels :: Pasted Layer #30 :: 001-001-006-002.png",
+        "MM Pirate Fortress Sewers Barrel Cage Room 04",
+        "MM Pirate Fortress Sewers Barrel Cage Room 05",
+        "MM Pirate Fortress Sewers Barrel Cage Room 06",
+        "MM Pirate Fortress Sewers Barrel Cage Room 07"
+      ]
     },
     {
       "coords": [
         485,
         132
       ],
-      "image": "collectible",
-      "codes": "TODO KF 032 :: unnamed_stack > Pirate Fortess > Pirate Layers > Pirate Barrels :: Pasted Layer #31 :: 001-001-006-003.png"
+      "image": "barrel",
+      "codes": [
+        "TODO KF 032 :: unnamed_stack > Pirate Fortess > Pirate Layers > Pirate Barrels :: Pasted Layer #31 :: 001-001-006-003.png",
+        "MM Pirate Fortress Sewers Barrel Cage Room 01",
+        "MM Pirate Fortress Sewers Barrel Cage Room 02",
+        "MM Pirate Fortress Sewers Barrel Cage Room 03"
+      ]
     },
     {
       "coords": [
         510,
         170
       ],
-      "image": "collectible",
-      "codes": "TODO KF 033 :: unnamed_stack > Pirate Fortess > Pirate Layers > Pirate Barrels :: Pasted Layer #32 :: 001-001-006-004.png"
+      "image": "barrel",
+      "codes": [
+        "TODO KF 033 :: unnamed_stack > Pirate Fortess > Pirate Layers > Pirate Barrels :: Pasted Layer #32 :: 001-001-006-004.png",
+        "MM Pirate Fortress Sewers Barrel Cage Room 14",
+        "MM Pirate Fortress Sewers Barrel Cage Room 15",
+        "MM Pirate Fortress Sewers Barrel Cage Room 16"
+      ]
     },
     {
       "coords": [
         526,
         274
       ],
-      "image": "collectible",
-      "codes": "TODO KF 034 :: unnamed_stack > Pirate Fortess > Pirate Layers > Pirate Barrels :: Pasted Layer #33 :: 001-001-006-005.png"
+      "image": "barrel",
+      "codes": [
+        "TODO KF 034 :: unnamed_stack > Pirate Fortess > Pirate Layers > Pirate Barrels :: Pasted Layer #33 :: 001-001-006-005.png",
+        "MM Pirate Fortress Sewers Barrel End 1",
+        "MM Pirate Fortress Sewers Barrel End 2",
+        "MM Pirate Fortress Sewers Barrel End 3",
+        "MM Pirate Fortress Sewers Barrel End 4",
+        "MM Pirate Fortress Sewers Barrel End 5"
+      ]
     },
     {
       "coords": [
         742,
         263
       ],
-      "image": "collectible",
-      "codes": "TODO KF 035 :: unnamed_stack > Pirate Fortess > Pirate Layers > Pirate Barrels :: Pasted Layer #34 :: 001-001-006-006.png"
+      "image": "barrel",
+      "codes": [
+        "TODO KF 035 :: unnamed_stack > Pirate Fortess > Pirate Layers > Pirate Barrels :: Pasted Layer #34 :: 001-001-006-006.png",
+        "MM Pirate Fortress Interior Barrel Outside"
+      ]
     },
     {
       "coords": [
         800,
         283
       ],
-      "image": "collectible",
-      "codes": "TODO KF 036 :: unnamed_stack > Pirate Fortess > Pirate Layers > Pirate Barrels :: Pasted Layer #35 :: 001-001-006-007.png"
+      "image": "barrel",
+      "codes": [
+        "TODO KF 036 :: unnamed_stack > Pirate Fortess > Pirate Layers > Pirate Barrels :: Pasted Layer #35 :: 001-001-006-007.png",
+        "MM Pirate Fortress Interior Barrel Aquarium"
+      ]
     },
     {
       "coords": [
         769,
         358
       ],
-      "image": "collectible",
-      "codes": "TODO KF 037 :: unnamed_stack > Pirate Fortess > Pirate Layers > Pirate Barrels :: Pasted Layer #36 :: 001-001-006-008.png"
+      "image": "barrel",
+      "codes": [
+        "TODO KF 037 :: unnamed_stack > Pirate Fortess > Pirate Layers > Pirate Barrels :: Pasted Layer #36 :: 001-001-006-008.png",
+        "MM Pirate Fortress Interior Barrel Hookshot Room 1",
+        "MM Pirate Fortress Interior Barrel Hookshot Room 2"
+      ]
     },
     {
       "coords": [
         689,
         348
       ],
-      "image": "wonder_item_random",
-      "codes": "TODO KF 038 :: unnamed_stack > Pirate Fortess > Pirate Layers > Pirate Wonder :: Pasted Layer #37 :: 001-001-007-000.png"
+      "image": "green_rupee",
+      "codes": [
+        "TODO KF 038 :: unnamed_stack > Pirate Fortess > Pirate Layers > Pirate Wonder :: Pasted Layer #37 :: 001-001-007-000.png",
+        "MM Pirate Fortress Interior Wonder Item Skull Eyes 4",
+        "MM Pirate Fortress Interior Wonder Item Skull Eyes 5",
+        "MM Pirate Fortress Interior Wonder Item Skull Eyes 6"
+      ]
     },
     {
       "coords": [
         689,
         365
       ],
-      "image": "wonder_item_random",
-      "codes": "TODO KF 039 :: unnamed_stack > Pirate Fortess > Pirate Layers > Pirate Wonder :: Pasted Layer #38 :: 001-001-007-001.png"
+      "image": "green_rupee",
+      "codes": [
+        "TODO KF 039 :: unnamed_stack > Pirate Fortess > Pirate Layers > Pirate Wonder :: Pasted Layer #38 :: 001-001-007-001.png",
+        "MM Pirate Fortress Interior Wonder Item Skull Eyes 1",
+        "MM Pirate Fortress Interior Wonder Item Skull Eyes 2",
+        "MM Pirate Fortress Interior Wonder Item Skull Eyes 3"
+      ]
     },
     {
       "coords": [
         835,
         357
       ],
-      "image": "wonder_item_random",
-      "codes": "TODO KF 040 :: unnamed_stack > Pirate Fortess > Pirate Layers > Pirate Wonder :: Pasted Layer #39 :: 001-001-007-002.png"
+      "image": "green_rupee",
+      "codes": [
+        "TODO KF 040 :: unnamed_stack > Pirate Fortess > Pirate Layers > Pirate Wonder :: Pasted Layer #39 :: 001-001-007-002.png",
+        "MM Pirate Fortress Interior Wonder Item Skull Forehead 1",
+        "MM Pirate Fortress Interior Wonder Item Skull Forehead 2",
+        "MM Pirate Fortress Interior Wonder Item Skull Forehead 3"
+      ]
     }
   ]
 }

@@ -11,7 +11,10 @@
         475
       ],
       "image": "chest",
-      "codes": "TODO KF 001 :: unnamed_stack > Stone Tower Temple > Tower Layers > Tower Checks :: Pasted Layer :: 001-001-001-000.png"
+      "codes": [
+        "TODO KF 001 :: unnamed_stack > Stone Tower Temple > Tower Layers > Tower Checks :: Pasted Layer :: 001-001-001-000.png",
+        "MM Stone Tower Temple Inverted Wizzrobe Chest"
+      ]
     },
     {
       "coords": [
@@ -19,23 +22,32 @@
         510
       ],
       "image": "chest",
-      "codes": "TODO KF 002 :: unnamed_stack > Stone Tower Temple > Tower Layers > Tower Checks :: Pasted Layer #1 :: 001-001-001-001.png"
+      "codes": [
+        "TODO KF 002 :: unnamed_stack > Stone Tower Temple > Tower Layers > Tower Checks :: Pasted Layer #1 :: 001-001-001-001.png",
+        "MM Stone Tower Temple Inverted East Lower Chest"
+      ]
     },
     {
       "coords": [
         325,
         386
       ],
-      "image": "chest",
-      "codes": "TODO KF 003 :: unnamed_stack > Stone Tower Temple > Tower Layers > Tower Checks :: Pasted Layer #2 :: 001-001-001-002.png"
+      "image": "heart_container",
+      "codes": [
+        "TODO KF 003 :: unnamed_stack > Stone Tower Temple > Tower Layers > Tower Checks :: Pasted Layer #2 :: 001-001-001-002.png",
+        "MM Stone Tower Temple Inverted Boss HC"
+      ]
     },
     {
       "coords": [
         341,
         386
       ],
-      "image": "chest",
-      "codes": "TODO KF 004 :: unnamed_stack > Stone Tower Temple > Tower Layers > Tower Checks :: Pasted Layer #3 :: 001-001-001-003.png"
+      "image": "twinmolds_remain",
+      "codes": [
+        "TODO KF 004 :: unnamed_stack > Stone Tower Temple > Tower Layers > Tower Checks :: Pasted Layer #3 :: 001-001-001-003.png",
+        "MM Stone Tower Temple Inverted Boss"
+      ]
     },
     {
       "coords": [
@@ -43,7 +55,10 @@
         536
       ],
       "image": "chest",
-      "codes": "TODO KF 005 :: unnamed_stack > Stone Tower Temple > Tower Layers > Tower Checks :: Pasted Layer #4 :: 001-001-001-004.png"
+      "codes": [
+        "TODO KF 005 :: unnamed_stack > Stone Tower Temple > Tower Layers > Tower Checks :: Pasted Layer #4 :: 001-001-001-004.png",
+        "MM Stone Tower Temple Inverted Entrance Chest"
+      ]
     },
     {
       "coords": [
@@ -51,7 +66,10 @@
         515
       ],
       "image": "chest",
-      "codes": "TODO KF 006 :: unnamed_stack > Stone Tower Temple > Tower Layers > Tower Checks :: Pasted Layer #5 :: 001-001-001-005.png"
+      "codes": [
+        "TODO KF 006 :: unnamed_stack > Stone Tower Temple > Tower Layers > Tower Checks :: Pasted Layer #5 :: 001-001-001-005.png",
+        "MM Stone Tower Temple Inverted Death Armos Chest"
+      ]
     },
     {
       "coords": [
@@ -59,7 +77,10 @@
         481
       ],
       "image": "chest",
-      "codes": "TODO KF 007 :: unnamed_stack > Stone Tower Temple > Tower Layers > Tower Checks :: Pasted Layer #6 :: 001-001-001-006.png"
+      "codes": [
+        "TODO KF 007 :: unnamed_stack > Stone Tower Temple > Tower Layers > Tower Checks :: Pasted Layer #6 :: 001-001-001-006.png",
+        "MM Stone Tower Temple Inverted Giant Mask"
+      ]
     },
     {
       "coords": [
@@ -67,7 +88,10 @@
         511
       ],
       "image": "chest",
-      "codes": "TODO KF 008 :: unnamed_stack > Stone Tower Temple > Tower Layers > Tower Checks :: Pasted Layer #7 :: 001-001-001-007.png"
+      "codes": [
+        "TODO KF 008 :: unnamed_stack > Stone Tower Temple > Tower Layers > Tower Checks :: Pasted Layer #7 :: 001-001-001-007.png",
+        "MM Stone Tower Temple Inverted East Upper Chest"
+      ]
     },
     {
       "coords": [
@@ -75,7 +99,10 @@
         473
       ],
       "image": "chest",
-      "codes": "TODO KF 009 :: unnamed_stack > Stone Tower Temple > Tower Layers > Tower Checks :: Pasted Layer #8 :: 001-001-001-008.png"
+      "codes": [
+        "TODO KF 009 :: unnamed_stack > Stone Tower Temple > Tower Layers > Tower Checks :: Pasted Layer #8 :: 001-001-001-008.png",
+        "MM Stone Tower Temple Inverted East Middle Chest"
+      ]
     },
     {
       "coords": [
@@ -83,7 +110,10 @@
         485
       ],
       "image": "chest",
-      "codes": "TODO KF 010 :: unnamed_stack > Stone Tower Temple > Tower Layers > Tower Checks :: Pasted Layer #9 :: 001-001-001-009.png"
+      "codes": [
+        "TODO KF 010 :: unnamed_stack > Stone Tower Temple > Tower Layers > Tower Checks :: Pasted Layer #9 :: 001-001-001-009.png",
+        "MM Stone Tower Temple Inverted Boss Key"
+      ]
     },
     {
       "coords": [
@@ -91,7 +121,10 @@
         233
       ],
       "image": "chest",
-      "codes": "TODO KF 011 :: unnamed_stack > Stone Tower Temple > Tower Layers > Tower Checks :: Pasted Layer #10 :: 001-001-001-010.png"
+      "codes": [
+        "TODO KF 011 :: unnamed_stack > Stone Tower Temple > Tower Layers > Tower Checks :: Pasted Layer #10 :: 001-001-001-010.png",
+        "MM Stone Tower Temple Map"
+      ]
     },
     {
       "coords": [
@@ -99,7 +132,10 @@
         206
       ],
       "image": "chest",
-      "codes": "TODO KF 012 :: unnamed_stack > Stone Tower Temple > Tower Layers > Tower Checks :: Pasted Layer #11 :: 001-001-001-011.png"
+      "codes": [
+        "TODO KF 012 :: unnamed_stack > Stone Tower Temple > Tower Layers > Tower Checks :: Pasted Layer #11 :: 001-001-001-011.png",
+        "MM Stone Tower Temple Under West Garden Lava Chest"
+      ]
     },
     {
       "coords": [
@@ -107,7 +143,10 @@
         185
       ],
       "image": "chest",
-      "codes": "TODO KF 013 :: unnamed_stack > Stone Tower Temple > Tower Layers > Tower Checks :: Pasted Layer #12 :: 001-001-001-012.png"
+      "codes": [
+        "TODO KF 013 :: unnamed_stack > Stone Tower Temple > Tower Layers > Tower Checks :: Pasted Layer #12 :: 001-001-001-012.png",
+        "MM Stone Tower Temple Under West Garden Ledge Chest"
+      ]
     },
     {
       "coords": [
@@ -115,7 +154,10 @@
         221
       ],
       "image": "chest",
-      "codes": "TODO KF 014 :: unnamed_stack > Stone Tower Temple > Tower Layers > Tower Checks :: Pasted Layer #13 :: 001-001-001-013.png"
+      "codes": [
+        "TODO KF 014 :: unnamed_stack > Stone Tower Temple > Tower Layers > Tower Checks :: Pasted Layer #13 :: 001-001-001-013.png",
+        "MM Stone Tower Temple Water Sun Switch Chest"
+      ]
     },
     {
       "coords": [
@@ -123,7 +165,10 @@
         239
       ],
       "image": "chest",
-      "codes": "TODO KF 015 :: unnamed_stack > Stone Tower Temple > Tower Layers > Tower Checks :: Pasted Layer #14 :: 001-001-001-014.png"
+      "codes": [
+        "TODO KF 015 :: unnamed_stack > Stone Tower Temple > Tower Layers > Tower Checks :: Pasted Layer #14 :: 001-001-001-014.png",
+        "MM Stone Tower Temple Compass"
+      ]
     },
     {
       "coords": [
@@ -131,7 +176,10 @@
         245
       ],
       "image": "chest",
-      "codes": "TODO KF 016 :: unnamed_stack > Stone Tower Temple > Tower Layers > Tower Checks :: Pasted Layer #15 :: 001-001-001-015.png"
+      "codes": [
+        "TODO KF 016 :: unnamed_stack > Stone Tower Temple > Tower Layers > Tower Checks :: Pasted Layer #15 :: 001-001-001-015.png",
+        "MM Stone Tower Temple Entrance Chest"
+      ]
     },
     {
       "coords": [
@@ -139,7 +187,10 @@
         259
       ],
       "image": "chest",
-      "codes": "TODO KF 017 :: unnamed_stack > Stone Tower Temple > Tower Layers > Tower Checks :: Pasted Layer #16 :: 001-001-001-016.png"
+      "codes": [
+        "TODO KF 017 :: unnamed_stack > Stone Tower Temple > Tower Layers > Tower Checks :: Pasted Layer #16 :: 001-001-001-016.png",
+        "MM Stone Tower Temple Entrance Switch Chest"
+      ]
     },
     {
       "coords": [
@@ -147,7 +198,10 @@
         196
       ],
       "image": "chest",
-      "codes": "TODO KF 018 :: unnamed_stack > Stone Tower Temple > Tower Layers > Tower Checks :: Pasted Layer #17 :: 001-001-001-017.png"
+      "codes": [
+        "TODO KF 018 :: unnamed_stack > Stone Tower Temple > Tower Layers > Tower Checks :: Pasted Layer #17 :: 001-001-001-017.png",
+        "MM Stone Tower Temple Center Across Water Chest"
+      ]
     },
     {
       "coords": [
@@ -155,7 +209,10 @@
         176
       ],
       "image": "chest",
-      "codes": "TODO KF 019 :: unnamed_stack > Stone Tower Temple > Tower Layers > Tower Checks :: Pasted Layer #18 :: 001-001-001-018.png"
+      "codes": [
+        "TODO KF 019 :: unnamed_stack > Stone Tower Temple > Tower Layers > Tower Checks :: Pasted Layer #18 :: 001-001-001-018.png",
+        "MM Stone Tower Temple Water Bridge Chest"
+      ]
     },
     {
       "coords": [
@@ -163,7 +220,10 @@
         176
       ],
       "image": "chest",
-      "codes": "TODO KF 020 :: unnamed_stack > Stone Tower Temple > Tower Layers > Tower Checks :: Pasted Layer #19 :: 001-001-001-019.png"
+      "codes": [
+        "TODO KF 020 :: unnamed_stack > Stone Tower Temple > Tower Layers > Tower Checks :: Pasted Layer #19 :: 001-001-001-019.png",
+        "MM Stone Tower Temple Center Sun Block Chest"
+      ]
     },
     {
       "coords": [
@@ -171,7 +231,10 @@
         156
       ],
       "image": "chest",
-      "codes": "TODO KF 021 :: unnamed_stack > Stone Tower Temple > Tower Layers > Tower Checks :: Pasted Layer #20 :: 001-001-001-020.png"
+      "codes": [
+        "TODO KF 021 :: unnamed_stack > Stone Tower Temple > Tower Layers > Tower Checks :: Pasted Layer #20 :: 001-001-001-020.png",
+        "MM Stone Tower Temple Before Water Bridge Chest"
+      ]
     },
     {
       "coords": [
@@ -179,7 +242,10 @@
         143
       ],
       "image": "chest",
-      "codes": "TODO KF 022 :: unnamed_stack > Stone Tower Temple > Tower Layers > Tower Checks :: Pasted Layer #21 :: 001-001-001-021.png"
+      "codes": [
+        "TODO KF 022 :: unnamed_stack > Stone Tower Temple > Tower Layers > Tower Checks :: Pasted Layer #21 :: 001-001-001-021.png",
+        "MM Stone Tower Temple Mirrors Room Right Chest"
+      ]
     },
     {
       "coords": [
@@ -187,7 +253,10 @@
         143
       ],
       "image": "chest",
-      "codes": "TODO KF 023 :: unnamed_stack > Stone Tower Temple > Tower Layers > Tower Checks :: Pasted Layer #22 :: 001-001-001-022.png"
+      "codes": [
+        "TODO KF 023 :: unnamed_stack > Stone Tower Temple > Tower Layers > Tower Checks :: Pasted Layer #22 :: 001-001-001-022.png",
+        "MM Stone Tower Temple Mirrors Room Center Chest"
+      ]
     },
     {
       "coords": [
@@ -195,7 +264,10 @@
         98
       ],
       "image": "chest",
-      "codes": "TODO KF 024 :: unnamed_stack > Stone Tower Temple > Tower Layers > Tower Checks :: Pasted Layer #23 :: 001-001-001-023.png"
+      "codes": [
+        "TODO KF 024 :: unnamed_stack > Stone Tower Temple > Tower Layers > Tower Checks :: Pasted Layer #23 :: 001-001-001-023.png",
+        "MM Stone Tower Temple Light Arrow"
+      ]
     },
     {
       "coords": [
@@ -203,7 +275,10 @@
         96
       ],
       "image": "chest",
-      "codes": "TODO KF 025 :: unnamed_stack > Stone Tower Temple > Tower Layers > Tower Checks :: Pasted Layer #24 :: 001-001-001-024.png"
+      "codes": [
+        "TODO KF 025 :: unnamed_stack > Stone Tower Temple > Tower Layers > Tower Checks :: Pasted Layer #24 :: 001-001-001-024.png",
+        "MM Stone Tower Temple Wind Room Ledge Chest"
+      ]
     },
     {
       "coords": [
@@ -211,7 +286,10 @@
         75
       ],
       "image": "chest",
-      "codes": "TODO KF 026 :: unnamed_stack > Stone Tower Temple > Tower Layers > Tower Checks :: Pasted Layer #25 :: 001-001-001-025.png"
+      "codes": [
+        "TODO KF 026 :: unnamed_stack > Stone Tower Temple > Tower Layers > Tower Checks :: Pasted Layer #25 :: 001-001-001-025.png",
+        "MM Stone Tower Temple Wind Room Jail Chest"
+      ]
     },
     {
       "coords": [
@@ -219,7 +297,14 @@
         516
       ],
       "image": "pot",
-      "codes": "TODO KF 027 :: unnamed_stack > Stone Tower Temple > Tower Layers > Tower Pots :: Pasted Layer #26 :: 001-001-002-000.png"
+      "codes": [
+        "TODO KF 027 :: unnamed_stack > Stone Tower Temple > Tower Layers > Tower Pots :: Pasted Layer #26 :: 001-001-002-000.png",
+        "MM Stone Tower Temple Inverted Pot Wizzrobe 1",
+        "MM Stone Tower Temple Inverted Pot Wizzrobe 2",
+        "MM Stone Tower Temple Inverted Pot Wizzrobe 3",
+        "MM Stone Tower Temple Inverted Pot Wizzrobe 4",
+        "MM Stone Tower Temple Inverted Pot Wizzrobe 5"
+      ]
     },
     {
       "coords": [
@@ -227,7 +312,13 @@
         485
       ],
       "image": "pot",
-      "codes": "TODO KF 028 :: unnamed_stack > Stone Tower Temple > Tower Layers > Tower Pots :: Pasted Layer #27 :: 001-001-002-001.png"
+      "codes": [
+        "TODO KF 028 :: unnamed_stack > Stone Tower Temple > Tower Layers > Tower Pots :: Pasted Layer #27 :: 001-001-002-001.png",
+        "MM Stone Tower Temple Inverted Pot Updrafts Ledge 1",
+        "MM Stone Tower Temple Inverted Pot Updrafts Ledge 2",
+        "MM Stone Tower Temple Inverted Pot Updrafts Ledge 3",
+        "MM Stone Tower Temple Inverted Pot Updrafts Ledge 4"
+      ]
     },
     {
       "coords": [
@@ -235,7 +326,11 @@
         479
       ],
       "image": "pot",
-      "codes": "TODO KF 029 :: unnamed_stack > Stone Tower Temple > Tower Layers > Tower Pots :: Pasted Layer #28 :: 001-001-002-002.png"
+      "codes": [
+        "TODO KF 029 :: unnamed_stack > Stone Tower Temple > Tower Layers > Tower Pots :: Pasted Layer #28 :: 001-001-002-002.png",
+        "MM Stone Tower Temple Inverted Pot Poe Wizzrobe Side 1",
+        "MM Stone Tower Temple Inverted Pot Poe Wizzrobe Side 2"
+      ]
     },
     {
       "coords": [
@@ -243,7 +338,11 @@
         479
       ],
       "image": "pot",
-      "codes": "TODO KF 030 :: unnamed_stack > Stone Tower Temple > Tower Layers > Tower Pots :: Pasted Layer #29 :: 001-001-002-003.png"
+      "codes": [
+        "TODO KF 030 :: unnamed_stack > Stone Tower Temple > Tower Layers > Tower Pots :: Pasted Layer #29 :: 001-001-002-003.png",
+        "MM Stone Tower Temple Inverted Pot Poe Maze Side 1",
+        "MM Stone Tower Temple Inverted Pot Poe Maze Side 2"
+      ]
     },
     {
       "coords": [
@@ -251,23 +350,43 @@
         450
       ],
       "image": "pot",
-      "codes": "TODO KF 031 :: unnamed_stack > Stone Tower Temple > Tower Layers > Tower Pots :: Pasted Layer #30 :: 001-001-002-004.png"
+      "codes": [
+        "TODO KF 031 :: unnamed_stack > Stone Tower Temple > Tower Layers > Tower Pots :: Pasted Layer #30 :: 001-001-002-004.png",
+        "MM Stone Tower Temple Inverted Pot Pre-Boss 1",
+        "MM Stone Tower Temple Inverted Pot Pre-Boss 2",
+        "MM Stone Tower Temple Inverted Pot Pre-Boss 3",
+        "MM Stone Tower Temple Inverted Pot Pre-Boss 4",
+        "MM Stone Tower Temple Inverted Pot Pre-Boss 5",
+        "MM Stone Tower Temple Inverted Pot Pre-Boss 6",
+        "MM Stone Tower Temple Inverted Pot Pre-Boss 7",
+        "MM Stone Tower Temple Inverted Pot Pre-Boss 8"
+      ]
     },
     {
       "coords": [
         645,
         465
       ],
-      "image": "pot",
-      "codes": "TODO KF 032 :: unnamed_stack > Stone Tower Temple > Tower Layers > Tower Pots :: Pasted Layer #31 :: 001-001-002-005.png"
+      "image": "flying_pot",
+      "codes": [
+        "TODO KF 032 :: unnamed_stack > Stone Tower Temple > Tower Layers > Tower Pots :: Pasted Layer #31 :: 001-001-002-005.png",
+        "MM Stone Tower Temple Inverted Flying Pot Center 1",
+        "MM Stone Tower Temple Inverted Flying Pot Center 2"
+      ]
     },
     {
       "coords": [
         647,
         434
       ],
-      "image": "pot",
-      "codes": "TODO KF 033 :: unnamed_stack > Stone Tower Temple > Tower Layers > Tower Pots :: Pasted Layer #32 :: 001-001-002-006.png"
+      "image": "flying_pot",
+      "codes": [
+        "TODO KF 033 :: unnamed_stack > Stone Tower Temple > Tower Layers > Tower Pots :: Pasted Layer #32 :: 001-001-002-006.png",
+        "MM Stone Tower Temple Inverted Flying Pot Pre-Boss 1",
+        "MM Stone Tower Temple Inverted Flying Pot Pre-Boss 2",
+        "MM Stone Tower Temple Inverted Flying Pot Pre-Boss 3",
+        "MM Stone Tower Temple Inverted Flying Pot Pre-Boss 4"
+      ]
     },
     {
       "coords": [
@@ -275,7 +394,11 @@
         506
       ],
       "image": "pot",
-      "codes": "TODO KF 034 :: unnamed_stack > Stone Tower Temple > Tower Layers > Tower Pots :: Pasted Layer #33 :: 001-001-002-007.png"
+      "codes": [
+        "TODO KF 034 :: unnamed_stack > Stone Tower Temple > Tower Layers > Tower Pots :: Pasted Layer #33 :: 001-001-002-007.png",
+        "MM Stone Tower Temple Inverted Pot Updrafts Bridge 1",
+        "MM Stone Tower Temple Inverted Pot Updrafts Bridge 2"
+      ]
     },
     {
       "coords": [
@@ -283,7 +406,10 @@
         500
       ],
       "image": "pot",
-      "codes": "TODO KF 035 :: unnamed_stack > Stone Tower Temple > Tower Layers > Tower Pots :: Pasted Layer #34 :: 001-001-002-008.png"
+      "codes": [
+        "TODO KF 035 :: unnamed_stack > Stone Tower Temple > Tower Layers > Tower Pots :: Pasted Layer #34 :: 001-001-002-008.png",
+        "MM Stone Tower Temple Inverted Pot Gomess 4"
+      ]
     },
     {
       "coords": [
@@ -291,7 +417,10 @@
         500
       ],
       "image": "pot",
-      "codes": "TODO KF 036 :: unnamed_stack > Stone Tower Temple > Tower Layers > Tower Pots :: Pasted Layer #35 :: 001-001-002-009.png"
+      "codes": [
+        "TODO KF 036 :: unnamed_stack > Stone Tower Temple > Tower Layers > Tower Pots :: Pasted Layer #35 :: 001-001-002-009.png",
+        "MM Stone Tower Temple Inverted Pot Gomess 3"
+      ]
     },
     {
       "coords": [
@@ -299,7 +428,10 @@
         471
       ],
       "image": "pot",
-      "codes": "TODO KF 037 :: unnamed_stack > Stone Tower Temple > Tower Layers > Tower Pots :: Pasted Layer #36 :: 001-001-002-010.png"
+      "codes": [
+        "TODO KF 037 :: unnamed_stack > Stone Tower Temple > Tower Layers > Tower Pots :: Pasted Layer #36 :: 001-001-002-010.png",
+        "MM Stone Tower Temple Inverted Pot Gomess 2"
+      ]
     },
     {
       "coords": [
@@ -307,7 +439,10 @@
         471
       ],
       "image": "pot",
-      "codes": "TODO KF 038 :: unnamed_stack > Stone Tower Temple > Tower Layers > Tower Pots :: Pasted Layer #37 :: 001-001-002-011.png"
+      "codes": [
+        "TODO KF 038 :: unnamed_stack > Stone Tower Temple > Tower Layers > Tower Pots :: Pasted Layer #37 :: 001-001-002-011.png",
+        "MM Stone Tower Temple Inverted Pot Gomess 1"
+      ]
     },
     {
       "coords": [
@@ -315,7 +450,13 @@
         218
       ],
       "image": "pot",
-      "codes": "TODO KF 039 :: unnamed_stack > Stone Tower Temple > Tower Layers > Tower Pots :: Pasted Layer #38 :: 001-001-002-012.png"
+      "codes": [
+        "TODO KF 039 :: unnamed_stack > Stone Tower Temple > Tower Layers > Tower Pots :: Pasted Layer #38 :: 001-001-002-012.png",
+        "MM Stone Tower Temple Pot Lava Room After Block 1",
+        "MM Stone Tower Temple Pot Lava Room After Block 2",
+        "MM Stone Tower Temple Pot Lava Room After Block 3",
+        "MM Stone Tower Temple Pot Lava Room After Block 4"
+      ]
     },
     {
       "coords": [
@@ -323,7 +464,13 @@
         193
       ],
       "image": "pot",
-      "codes": "TODO KF 040 :: unnamed_stack > Stone Tower Temple > Tower Layers > Tower Pots :: Pasted Layer #39 :: 001-001-002-013.png"
+      "codes": [
+        "TODO KF 040 :: unnamed_stack > Stone Tower Temple > Tower Layers > Tower Pots :: Pasted Layer #39 :: 001-001-002-013.png",
+        "MM Stone Tower Temple Pot Lava Room 1",
+        "MM Stone Tower Temple Pot Lava Room 2",
+        "MM Stone Tower Temple Pot Lava Room 3",
+        "MM Stone Tower Temple Pot Lava Room 4"
+      ]
     },
     {
       "coords": [
@@ -331,7 +478,12 @@
         197
       ],
       "image": "pot",
-      "codes": "TODO KF 041 :: unnamed_stack > Stone Tower Temple > Tower Layers > Tower Pots :: Pasted Layer #40 :: 001-001-002-014.png"
+      "codes": [
+        "TODO KF 041 :: unnamed_stack > Stone Tower Temple > Tower Layers > Tower Pots :: Pasted Layer #40 :: 001-001-002-014.png",
+        "MM Stone Tower Temple Pot Water Room Underwater Lower 1",
+        "MM Stone Tower Temple Pot Water Room Underwater Lower 2",
+        "MM Stone Tower Temple Pot Water Room Underwater Lower 3"
+      ]
     },
     {
       "coords": [
@@ -339,7 +491,11 @@
         231
       ],
       "image": "pot",
-      "codes": "TODO KF 042 :: unnamed_stack > Stone Tower Temple > Tower Layers > Tower Pots :: Pasted Layer #41 :: 001-001-002-015.png"
+      "codes": [
+        "TODO KF 042 :: unnamed_stack > Stone Tower Temple > Tower Layers > Tower Pots :: Pasted Layer #41 :: 001-001-002-015.png",
+        "MM Stone Tower Temple Pot Entrance 1",
+        "MM Stone Tower Temple Pot Entrance 2"
+      ]
     },
     {
       "coords": [
@@ -347,7 +503,17 @@
         162
       ],
       "image": "pot",
-      "codes": "TODO KF 043 :: unnamed_stack > Stone Tower Temple > Tower Layers > Tower Pots :: Pasted Layer #42 :: 001-001-002-016.png"
+      "codes": [
+        "TODO KF 043 :: unnamed_stack > Stone Tower Temple > Tower Layers > Tower Pots :: Pasted Layer #42 :: 001-001-002-016.png",
+        "MM Stone Tower Temple Pot Before Water Bridge 1",
+        "MM Stone Tower Temple Pot Before Water Bridge 2",
+        "MM Stone Tower Temple Pot Before Water Bridge 3",
+        "MM Stone Tower Temple Pot Before Water Bridge 4",
+        "MM Stone Tower Temple Pot Before Water Bridge 5",
+        "MM Stone Tower Temple Pot Before Water Bridge 6",
+        "MM Stone Tower Temple Pot Before Water Bridge 7",
+        "MM Stone Tower Temple Pot Before Water Bridge 8"
+      ]
     },
     {
       "coords": [
@@ -355,7 +521,13 @@
         96
       ],
       "image": "pot",
-      "codes": "TODO KF 044 :: unnamed_stack > Stone Tower Temple > Tower Layers > Tower Pots :: Pasted Layer #43 :: 001-001-002-017.png"
+      "codes": [
+        "TODO KF 044 :: unnamed_stack > Stone Tower Temple > Tower Layers > Tower Pots :: Pasted Layer #43 :: 001-001-002-017.png",
+        "MM Stone Tower Temple Pot Wind Room 1",
+        "MM Stone Tower Temple Pot Wind Room 2",
+        "MM Stone Tower Temple Pot Wind Room 3",
+        "MM Stone Tower Temple Pot Wind Room 4"
+      ]
     },
     {
       "coords": [
@@ -363,7 +535,11 @@
         167
       ],
       "image": "pot",
-      "codes": "TODO KF 045 :: unnamed_stack > Stone Tower Temple > Tower Layers > Tower Pots :: Pasted Layer #44 :: 001-001-002-018.png"
+      "codes": [
+        "TODO KF 045 :: unnamed_stack > Stone Tower Temple > Tower Layers > Tower Pots :: Pasted Layer #44 :: 001-001-002-018.png",
+        "MM Stone Tower Temple Pot Mirror Room 1",
+        "MM Stone Tower Temple Pot Mirror Room 2"
+      ]
     },
     {
       "coords": [
@@ -371,7 +547,11 @@
         193
       ],
       "image": "pot",
-      "codes": "TODO KF 046 :: unnamed_stack > Stone Tower Temple > Tower Layers > Tower Pots :: Pasted Layer #45 :: 001-001-002-019.png"
+      "codes": [
+        "TODO KF 046 :: unnamed_stack > Stone Tower Temple > Tower Layers > Tower Pots :: Pasted Layer #45 :: 001-001-002-019.png",
+        "MM Stone Tower Temple Pot Water Room Bridge 1",
+        "MM Stone Tower Temple Pot Water Room Bridge 2"
+      ]
     },
     {
       "coords": [
@@ -379,31 +559,45 @@
         209
       ],
       "image": "pot",
-      "codes": "TODO KF 047 :: unnamed_stack > Stone Tower Temple > Tower Layers > Tower Pots :: Pasted Layer #46 :: 001-001-002-020.png"
+      "codes": [
+        "TODO KF 047 :: unnamed_stack > Stone Tower Temple > Tower Layers > Tower Pots :: Pasted Layer #46 :: 001-001-002-020.png",
+        "MM Stone Tower Temple Pot Water Room Underwater Upper 1",
+        "MM Stone Tower Temple Pot Water Room Underwater Upper 2"
+      ]
     },
     {
       "coords": [
         697,
         526
       ],
-      "image": "green_rupee",
-      "codes": "TODO KF 048 :: unnamed_stack > Stone Tower Temple > Tower Layers > Tower Freestanding Rupees :: Pasted Layer #47 :: 001-001-003-000.png"
+      "image": "red_rupee",
+      "codes": [
+        "TODO KF 048 :: unnamed_stack > Stone Tower Temple > Tower Layers > Tower Freestanding Rupees :: Pasted Layer #47 :: 001-001-003-000.png",
+        "MM Stone Tower Temple Inverted Rupee Alcove 1",
+        "MM Stone Tower Temple Inverted Rupee Alcove 2"
+      ]
     },
     {
       "coords": [
         664,
         480
       ],
-      "image": "green_rupee",
-      "codes": "TODO KF 049 :: unnamed_stack > Stone Tower Temple > Tower Layers > Tower Freestanding Rupees :: Pasted Layer #48 :: 001-001-003-001.png"
+      "image": "red_rupee",
+      "codes": [
+        "TODO KF 049 :: unnamed_stack > Stone Tower Temple > Tower Layers > Tower Freestanding Rupees :: Pasted Layer #48 :: 001-001-003-001.png",
+        "MM Stone Tower Temple Inverted Rupee Dexihand 3"
+      ]
     },
     {
       "coords": [
         656,
         464
       ],
-      "image": "green_rupee",
-      "codes": "TODO KF 050 :: unnamed_stack > Stone Tower Temple > Tower Layers > Tower Freestanding Rupees :: Pasted Layer #49 :: 001-001-003-002.png"
+      "image": "blue_rupee",
+      "codes": [
+        "TODO KF 050 :: unnamed_stack > Stone Tower Temple > Tower Layers > Tower Freestanding Rupees :: Pasted Layer #49 :: 001-001-003-002.png",
+        "MM Stone Tower Temple Inverted Rupee Dexihand 2"
+      ]
     },
     {
       "coords": [
@@ -411,71 +605,112 @@
         464
       ],
       "image": "green_rupee",
-      "codes": "TODO KF 051 :: unnamed_stack > Stone Tower Temple > Tower Layers > Tower Freestanding Rupees :: Pasted Layer #50 :: 001-001-003-003.png"
+      "codes": [
+        "TODO KF 051 :: unnamed_stack > Stone Tower Temple > Tower Layers > Tower Freestanding Rupees :: Pasted Layer #50 :: 001-001-003-003.png",
+        "MM Stone Tower Temple Inverted Rupee Dexihand 1"
+      ]
     },
     {
       "coords": [
         636,
         439
       ],
-      "image": "green_rupee",
-      "codes": "TODO KF 052 :: unnamed_stack > Stone Tower Temple > Tower Layers > Tower Freestanding Rupees :: Pasted Layer #51 :: 001-001-003-004.png"
+      "image": "blue_rupee",
+      "codes": [
+        "TODO KF 052 :: unnamed_stack > Stone Tower Temple > Tower Layers > Tower Freestanding Rupees :: Pasted Layer #51 :: 001-001-003-004.png",
+        "MM Stone Tower Temple Inverted Rupee Pre-Boss Back 1",
+        "MM Stone Tower Temple Inverted Rupee Pre-Boss Back 2",
+        "MM Stone Tower Temple Inverted Rupee Pre-Boss Back 3",
+        "MM Stone Tower Temple Inverted Rupee Pre-Boss Back 4"
+      ]
     },
     {
       "coords": [
         655,
         439
       ],
-      "image": "green_rupee",
-      "codes": "TODO KF 053 :: unnamed_stack > Stone Tower Temple > Tower Layers > Tower Freestanding Rupees :: Pasted Layer #52 :: 001-001-003-005.png"
+      "image": "blue_rupee",
+      "codes": [
+        "TODO KF 053 :: unnamed_stack > Stone Tower Temple > Tower Layers > Tower Freestanding Rupees :: Pasted Layer #52 :: 001-001-003-005.png",
+        "MM Stone Tower Temple Inverted Rupee Pre-Boss Front 1",
+        "MM Stone Tower Temple Inverted Rupee Pre-Boss Front 2",
+        "MM Stone Tower Temple Inverted Rupee Pre-Boss Front 3",
+        "MM Stone Tower Temple Inverted Rupee Pre-Boss Front 4"
+      ]
     },
     {
       "coords": [
         646,
         423
       ],
-      "image": "green_rupee",
-      "codes": "TODO KF 054 :: unnamed_stack > Stone Tower Temple > Tower Layers > Tower Freestanding Rupees :: Pasted Layer #53 :: 001-001-003-006.png"
+      "image": "blue_rupee",
+      "codes": [
+        "TODO KF 054 :: unnamed_stack > Stone Tower Temple > Tower Layers > Tower Freestanding Rupees :: Pasted Layer #53 :: 001-001-003-006.png",
+        "MM Stone Tower Temple Inverted Rupee Pre-Boss Top 1",
+        "MM Stone Tower Temple Inverted Rupee Pre-Boss Top 2",
+        "MM Stone Tower Temple Inverted Rupee Pre-Boss Top 3"
+      ]
     },
     {
       "coords": [
         622,
         176
       ],
-      "image": "green_rupee",
-      "codes": "TODO KF 055 :: unnamed_stack > Stone Tower Temple > Tower Layers > Tower Freestanding Rupees :: Pasted Layer #54 :: 001-001-003-007.png"
+      "image": "red_rupee",
+      "codes": [
+        "TODO KF 055 :: unnamed_stack > Stone Tower Temple > Tower Layers > Tower Freestanding Rupees :: Pasted Layer #54 :: 001-001-003-007.png",
+        "MM Stone Tower Temple Rupee Center Room Left"
+      ]
     },
     {
       "coords": [
         661,
         175
       ],
-      "image": "green_rupee",
-      "codes": "TODO KF 056 :: unnamed_stack > Stone Tower Temple > Tower Layers > Tower Freestanding Rupees :: Pasted Layer #55 :: 001-001-003-008.png"
+      "image": "red_rupee",
+      "codes": [
+        "TODO KF 056 :: unnamed_stack > Stone Tower Temple > Tower Layers > Tower Freestanding Rupees :: Pasted Layer #55 :: 001-001-003-008.png",
+        "MM Stone Tower Temple Rupee Center Room Right"
+      ]
     },
     {
       "coords": [
         636,
         142
       ],
-      "image": "green_rupee",
-      "codes": "TODO KF 057 :: unnamed_stack > Stone Tower Temple > Tower Layers > Tower Freestanding Rupees :: Pasted Layer #56 :: 001-001-003-009.png"
+      "image": "blue_rupee",
+      "codes": [
+        "TODO KF 057 :: unnamed_stack > Stone Tower Temple > Tower Layers > Tower Freestanding Rupees :: Pasted Layer #56 :: 001-001-003-009.png",
+        "MM Stone Tower Temple Rupee Before Water Bridge 1",
+        "MM Stone Tower Temple Rupee Before Water Bridge 2",
+        "MM Stone Tower Temple Rupee Before Water Bridge 3",
+        "MM Stone Tower Temple Rupee Before Water Bridge 4"
+      ]
     },
     {
       "coords": [
         655,
         142
       ],
-      "image": "green_rupee",
-      "codes": "TODO KF 058 :: unnamed_stack > Stone Tower Temple > Tower Layers > Tower Freestanding Rupees :: Pasted Layer #57 :: 001-001-003-010.png"
+      "image": "blue_rupee",
+      "codes": [
+        "TODO KF 058 :: unnamed_stack > Stone Tower Temple > Tower Layers > Tower Freestanding Rupees :: Pasted Layer #57 :: 001-001-003-010.png",
+        "MM Stone Tower Temple Rupee Before Water Bridge 5",
+        "MM Stone Tower Temple Rupee Before Water Bridge 6",
+        "MM Stone Tower Temple Rupee Before Water Bridge 7",
+        "MM Stone Tower Temple Rupee Before Water Bridge 8"
+      ]
     },
     {
       "coords": [
         697,
         66
       ],
-      "image": "green_rupee",
-      "codes": "TODO KF 059 :: unnamed_stack > Stone Tower Temple > Tower Layers > Tower Freestanding Rupees :: Pasted Layer #58 :: 001-001-003-011.png"
+      "image": "red_rupee",
+      "codes": [
+        "TODO KF 059 :: unnamed_stack > Stone Tower Temple > Tower Layers > Tower Freestanding Rupees :: Pasted Layer #58 :: 001-001-003-011.png",
+        "MM Stone Tower Temple Rupee Wind Room 6"
+      ]
     },
     {
       "coords": [
@@ -483,87 +718,139 @@
         50
       ],
       "image": "green_rupee",
-      "codes": "TODO KF 060 :: unnamed_stack > Stone Tower Temple > Tower Layers > Tower Freestanding Rupees :: Pasted Layer #59 :: 001-001-003-012.png"
+      "codes": [
+        "TODO KF 060 :: unnamed_stack > Stone Tower Temple > Tower Layers > Tower Freestanding Rupees :: Pasted Layer #59 :: 001-001-003-012.png",
+        "MM Stone Tower Temple Rupee Wind Room 1",
+        "MM Stone Tower Temple Rupee Wind Room 2",
+        "MM Stone Tower Temple Rupee Wind Room 3"
+      ]
     },
     {
       "coords": [
         705,
         50
       ],
-      "image": "green_rupee",
-      "codes": "TODO KF 061 :: unnamed_stack > Stone Tower Temple > Tower Layers > Tower Freestanding Rupees :: Pasted Layer #60 :: 001-001-003-013.png"
+      "image": "blue_rupee",
+      "codes": [
+        "TODO KF 061 :: unnamed_stack > Stone Tower Temple > Tower Layers > Tower Freestanding Rupees :: Pasted Layer #60 :: 001-001-003-013.png",
+        "MM Stone Tower Temple Rupee Wind Room 4",
+        "MM Stone Tower Temple Rupee Wind Room 5"
+      ]
     },
     {
       "coords": [
         626,
         533
       ],
-      "image": "gossip_stone",
-      "codes": "TODO KF 062 :: unnamed_stack > Stone Tower Temple > Tower Layers > Tower Crates :: Pasted Layer #61 :: 001-001-004-000.png"
+      "image": "small_crate",
+      "codes": [
+        "TODO KF 062 :: unnamed_stack > Stone Tower Temple > Tower Layers > Tower Crates :: Pasted Layer #61 :: 001-001-004-000.png",
+        "MM Stone Tower Temple Inverted Crate Entrance Left 1",
+        "MM Stone Tower Temple Inverted Crate Entrance Left 2",
+        "MM Stone Tower Temple Inverted Crate Entrance Left 3"
+      ]
     },
     {
       "coords": [
         666,
         513
       ],
-      "image": "gossip_stone",
-      "codes": "TODO KF 063 :: unnamed_stack > Stone Tower Temple > Tower Layers > Tower Crates :: Pasted Layer #62 :: 001-001-004-001.png"
+      "image": "small_crate",
+      "codes": [
+        "TODO KF 063 :: unnamed_stack > Stone Tower Temple > Tower Layers > Tower Crates :: Pasted Layer #62 :: 001-001-004-001.png",
+        "MM Stone Tower Temple Inverted Crate Entrance Right 1",
+        "MM Stone Tower Temple Inverted Crate Entrance Right 2"
+      ]
     },
     {
       "coords": [
         730,
         484
       ],
-      "image": "gossip_stone",
-      "codes": "TODO KF 064 :: unnamed_stack > Stone Tower Temple > Tower Layers > Tower Crates :: Pasted Layer #63 :: 001-001-004-002.png"
+      "image": "small_crate",
+      "codes": [
+        "TODO KF 064 :: unnamed_stack > Stone Tower Temple > Tower Layers > Tower Crates :: Pasted Layer #63 :: 001-001-004-002.png",
+        "MM Stone Tower Temple Inverted Crate Before Gomess 1",
+        "MM Stone Tower Temple Inverted Crate Before Gomess 2",
+        "MM Stone Tower Temple Inverted Crate Before Gomess 3",
+        "MM Stone Tower Temple Inverted Crate Before Gomess 4",
+        "MM Stone Tower Temple Inverted Crate Before Gomess 5",
+        "MM Stone Tower Temple Inverted Crate Before Gomess 6"
+      ]
     },
     {
       "coords": [
         575,
         240
       ],
-      "image": "gossip_stone",
-      "codes": "TODO KF 065 :: unnamed_stack > Stone Tower Temple > Tower Layers > Tower Crates :: Pasted Layer #64 :: 001-001-004-003.png"
+      "image": "crate",
+      "codes": [
+        "TODO KF 065 :: unnamed_stack > Stone Tower Temple > Tower Layers > Tower Crates :: Pasted Layer #64 :: 001-001-004-003.png",
+        "MM Stone Tower Temple Crate Maze Large 1",
+        "MM Stone Tower Temple Crate Maze Large 2",
+        "MM Stone Tower Temple Crate Maze Large 3",
+        "MM Stone Tower Temple Crate Maze Large 4",
+        "MM Stone Tower Temple Crate Maze Large 5"
+      ]
     },
     {
       "coords": [
         575,
         224
       ],
-      "image": "gossip_stone",
-      "codes": "TODO KF 066 :: unnamed_stack > Stone Tower Temple > Tower Layers > Tower Crates :: Pasted Layer #65 :: 001-001-004-004.png"
+      "image": "small_crate",
+      "codes": [
+        "TODO KF 066 :: unnamed_stack > Stone Tower Temple > Tower Layers > Tower Crates :: Pasted Layer #65 :: 001-001-004-004.png",
+        "MM Stone Tower Temple Crate Maze Small 1",
+        "MM Stone Tower Temple Crate Maze Small 2"
+      ]
     },
     {
       "coords": [
         666,
         228
       ],
-      "image": "gossip_stone",
-      "codes": "TODO KF 067 :: unnamed_stack > Stone Tower Temple > Tower Layers > Tower Crates :: Pasted Layer #66 :: 001-001-004-005.png"
+      "image": "small_crate",
+      "codes": [
+        "TODO KF 067 :: unnamed_stack > Stone Tower Temple > Tower Layers > Tower Crates :: Pasted Layer #66 :: 001-001-004-005.png",
+        "MM Stone Tower Temple Crate Entrance 1",
+        "MM Stone Tower Temple Crate Entrance 2"
+      ]
     },
     {
       "coords": [
         668,
         209
       ],
-      "image": "gossip_stone",
-      "codes": "TODO KF 068 :: unnamed_stack > Stone Tower Temple > Tower Layers > Tower Crates :: Pasted Layer #67 :: 001-001-004-006.png"
+      "image": "small_crate",
+      "codes": [
+        "TODO KF 068 :: unnamed_stack > Stone Tower Temple > Tower Layers > Tower Crates :: Pasted Layer #67 :: 001-001-004-006.png",
+        "MM Stone Tower Temple Crate Water 1",
+        "MM Stone Tower Temple Crate Water 2",
+        "MM Stone Tower Temple Crate Water 3"
+      ]
     },
     {
       "coords": [
         724,
         120
       ],
-      "image": "gossip_stone",
-      "codes": "TODO KF 069 :: unnamed_stack > Stone Tower Temple > Tower Layers > Tower Crates :: Pasted Layer #68 :: 001-001-004-007.png"
+      "image": "crate",
+      "codes": [
+        "TODO KF 069 :: unnamed_stack > Stone Tower Temple > Tower Layers > Tower Crates :: Pasted Layer #68 :: 001-001-004-007.png",
+        "MM Stone Tower Temple Crate Mirrors 2"
+      ]
     },
     {
       "coords": [
         695,
         120
       ],
-      "image": "gossip_stone",
-      "codes": "TODO KF 070 :: unnamed_stack > Stone Tower Temple > Tower Layers > Tower Crates :: Pasted Layer #69 :: 001-001-004-008.png"
+      "image": "crate",
+      "codes": [
+        "TODO KF 070 :: unnamed_stack > Stone Tower Temple > Tower Layers > Tower Crates :: Pasted Layer #69 :: 001-001-004-008.png",
+        "MM Stone Tower Temple Crate Mirrors 1"
+      ]
     },
     {
       "coords": [
@@ -571,7 +858,12 @@
         236
       ],
       "image": "grass",
-      "codes": "TODO KF 071 :: unnamed_stack > Stone Tower Temple > Tower Layers > Tower Grass :: Pasted Layer #70 :: 001-001-005-000.png"
+      "codes": [
+        "TODO KF 071 :: unnamed_stack > Stone Tower Temple > Tower Layers > Tower Grass :: Pasted Layer #70 :: 001-001-005-000.png",
+        "MM Stone Tower Temple Grass Entrance 1",
+        "MM Stone Tower Temple Grass Entrance 2",
+        "MM Stone Tower Temple Grass Entrance 3"
+      ]
     },
     {
       "coords": [
@@ -579,7 +871,15 @@
         190
       ],
       "image": "grass",
-      "codes": "TODO KF 072 :: unnamed_stack > Stone Tower Temple > Tower Layers > Tower Grass :: Pasted Layer #71 :: 001-001-005-001.png"
+      "codes": [
+        "TODO KF 072 :: unnamed_stack > Stone Tower Temple > Tower Layers > Tower Grass :: Pasted Layer #71 :: 001-001-005-001.png",
+        "MM Stone Tower Temple Grass Garden 1",
+        "MM Stone Tower Temple Grass Garden 2",
+        "MM Stone Tower Temple Grass Garden 3",
+        "MM Stone Tower Temple Grass Garden 4",
+        "MM Stone Tower Temple Grass Garden 5",
+        "MM Stone Tower Temple Grass Garden 6"
+      ]
     }
   ]
 }

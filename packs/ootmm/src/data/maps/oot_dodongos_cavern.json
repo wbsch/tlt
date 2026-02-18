@@ -10,16 +10,22 @@
         248,
         266
       ],
-      "image": "chest",
-      "codes": "TODO KF 001 :: unnamed_stack > Dodongo's Cavern > Vanilla DC > DC Checks :: Pasted Layer :: 001-001-001-000.png"
+      "image": "goron_ruby",
+      "codes": [
+        "TODO KF 001 :: unnamed_stack > Dodongo's Cavern > Vanilla DC > DC Checks :: Pasted Layer :: 001-001-001-000.png",
+        "OOT Dodongo Cavern Boss"
+      ]
     },
     {
       "coords": [
         264,
         266
       ],
-      "image": "chest",
-      "codes": "TODO KF 002 :: unnamed_stack > Dodongo's Cavern > Vanilla DC > DC Checks :: Pasted Layer #1 :: 001-001-001-001.png"
+      "image": "heart_container",
+      "codes": [
+        "TODO KF 002 :: unnamed_stack > Dodongo's Cavern > Vanilla DC > DC Checks :: Pasted Layer #1 :: 001-001-001-001.png",
+        "OOT Dodongo Cavern Boss Container"
+      ]
     },
     {
       "coords": [
@@ -27,7 +33,10 @@
         266
       ],
       "image": "chest",
-      "codes": "TODO KF 003 :: unnamed_stack > Dodongo's Cavern > Vanilla DC > DC Checks :: Pasted Layer #2 :: 001-001-001-002.png"
+      "codes": [
+        "TODO KF 003 :: unnamed_stack > Dodongo's Cavern > Vanilla DC > DC Checks :: Pasted Layer #2 :: 001-001-001-002.png",
+        "OOT Dodongo Cavern Boss Chest"
+      ]
     },
     {
       "coords": [
@@ -35,7 +44,10 @@
         380
       ],
       "image": "chest",
-      "codes": "TODO KF 004 :: unnamed_stack > Dodongo's Cavern > Vanilla DC > DC Checks :: Pasted Layer #3 :: 001-001-001-003.png"
+      "codes": [
+        "TODO KF 004 :: unnamed_stack > Dodongo's Cavern > Vanilla DC > DC Checks :: Pasted Layer #3 :: 001-001-001-003.png",
+        "OOT Dodongo Cavern Compass Chest"
+      ]
     },
     {
       "coords": [
@@ -43,7 +55,10 @@
         337
       ],
       "image": "chest",
-      "codes": "TODO KF 005 :: unnamed_stack > Dodongo's Cavern > Vanilla DC > DC Checks :: Pasted Layer #4 :: 001-001-001-004.png"
+      "codes": [
+        "TODO KF 005 :: unnamed_stack > Dodongo's Cavern > Vanilla DC > DC Checks :: Pasted Layer #4 :: 001-001-001-004.png",
+        "OOT Dodongo Cavern Map Chest"
+      ]
     },
     {
       "coords": [
@@ -51,7 +66,10 @@
         312
       ],
       "image": "chest",
-      "codes": "TODO KF 006 :: unnamed_stack > Dodongo's Cavern > Vanilla DC > DC Checks :: Pasted Layer #5 :: 001-001-001-005.png"
+      "codes": [
+        "TODO KF 006 :: unnamed_stack > Dodongo's Cavern > Vanilla DC > DC Checks :: Pasted Layer #5 :: 001-001-001-005.png",
+        "OOT Dodongo Cavern Bridge Chest"
+      ]
     },
     {
       "coords": [
@@ -59,7 +77,10 @@
         370
       ],
       "image": "chest",
-      "codes": "TODO KF 007 :: unnamed_stack > Dodongo's Cavern > Vanilla DC > DC Checks :: Pasted Layer #6 :: 001-001-001-006.png"
+      "codes": [
+        "TODO KF 007 :: unnamed_stack > Dodongo's Cavern > Vanilla DC > DC Checks :: Pasted Layer #6 :: 001-001-001-006.png",
+        "OOT Dodongo Cavern Bomb Bag Side Chest"
+      ]
     },
     {
       "coords": [
@@ -67,7 +88,10 @@
         322
       ],
       "image": "chest",
-      "codes": "TODO KF 008 :: unnamed_stack > Dodongo's Cavern > Vanilla DC > DC Checks :: Pasted Layer #7 :: 001-001-001-007.png"
+      "codes": [
+        "TODO KF 008 :: unnamed_stack > Dodongo's Cavern > Vanilla DC > DC Checks :: Pasted Layer #7 :: 001-001-001-007.png",
+        "OOT Dodongo Cavern Bomb Bag Chest"
+      ]
     },
     {
       "coords": [
@@ -75,7 +99,10 @@
         197
       ],
       "image": "gold_skulltula",
-      "codes": "TODO KF 009 :: unnamed_stack > Dodongo's Cavern > Vanilla DC > DC Skulls :: Pasted Layer #8 :: 001-001-002-000.png"
+      "codes": [
+        "TODO KF 009 :: unnamed_stack > Dodongo's Cavern > Vanilla DC > DC Skulls :: Pasted Layer #8 :: 001-001-002-000.png",
+        "OOT Dodongo Cavern GS Near Boss"
+      ]
     },
     {
       "coords": [
@@ -83,7 +110,10 @@
         405
       ],
       "image": "gold_skulltula",
-      "codes": "TODO KF 010 :: unnamed_stack > Dodongo's Cavern > Vanilla DC > DC Skulls :: Pasted Layer #9 :: 001-001-002-001.png"
+      "codes": [
+        "TODO KF 010 :: unnamed_stack > Dodongo's Cavern > Vanilla DC > DC Skulls :: Pasted Layer #9 :: 001-001-002-001.png",
+        "OOT Dodongo Cavern GS Side Room"
+      ]
     },
     {
       "coords": [
@@ -91,7 +121,10 @@
         350
       ],
       "image": "gold_skulltula",
-      "codes": "TODO KF 011 :: unnamed_stack > Dodongo's Cavern > Vanilla DC > DC Skulls :: Pasted Layer #10 :: 001-001-002-002.png"
+      "codes": [
+        "TODO KF 011 :: unnamed_stack > Dodongo's Cavern > Vanilla DC > DC Skulls :: Pasted Layer #10 :: 001-001-002-002.png",
+        "OOT Dodongo Cavern GS Scarecrow"
+      ]
     },
     {
       "coords": [
@@ -99,7 +132,10 @@
         332
       ],
       "image": "gold_skulltula",
-      "codes": "TODO KF 012 :: unnamed_stack > Dodongo's Cavern > Vanilla DC > DC Skulls :: Pasted Layer #11 :: 001-001-002-003.png"
+      "codes": [
+        "TODO KF 012 :: unnamed_stack > Dodongo's Cavern > Vanilla DC > DC Skulls :: Pasted Layer #11 :: 001-001-002-003.png",
+        "OOT Dodongo Cavern GS Stairs Top"
+      ]
     },
     {
       "coords": [
@@ -107,7 +143,10 @@
         301
       ],
       "image": "gold_skulltula",
-      "codes": "TODO KF 013 :: unnamed_stack > Dodongo's Cavern > Vanilla DC > DC Skulls :: Pasted Layer #12 :: 001-001-002-004.png"
+      "codes": [
+        "TODO KF 013 :: unnamed_stack > Dodongo's Cavern > Vanilla DC > DC Skulls :: Pasted Layer #12 :: 001-001-002-004.png",
+        "OOT Dodongo Cavern GS Stairs Vines"
+      ]
     },
     {
       "coords": [
@@ -115,7 +154,10 @@
         365
       ],
       "image": "business_scrub_oot",
-      "codes": "TODO KF 014 :: unnamed_stack > Dodongo's Cavern > Vanilla DC > DC Scrubs :: Pasted Layer #13 :: 001-001-003-000.png"
+      "codes": [
+        "TODO KF 014 :: unnamed_stack > Dodongo's Cavern > Vanilla DC > DC Scrubs :: Pasted Layer #13 :: 001-001-003-000.png",
+        "OOT Dodongo Cavern Lobby Scrub"
+      ]
     },
     {
       "coords": [
@@ -123,7 +165,10 @@
         257
       ],
       "image": "business_scrub_oot",
-      "codes": "TODO KF 015 :: unnamed_stack > Dodongo's Cavern > Vanilla DC > DC Scrubs :: Pasted Layer #14 :: 001-001-003-001.png"
+      "codes": [
+        "TODO KF 015 :: unnamed_stack > Dodongo's Cavern > Vanilla DC > DC Scrubs :: Pasted Layer #14 :: 001-001-003-001.png",
+        "OOT Dodongo Cavern Green Side Room Scrub"
+      ]
     },
     {
       "coords": [
@@ -131,7 +176,11 @@
         296
       ],
       "image": "business_scrub_oot",
-      "codes": "TODO KF 016 :: unnamed_stack > Dodongo's Cavern > Vanilla DC > DC Scrubs :: Pasted Layer #15 :: 001-001-003-002.png"
+      "codes": [
+        "TODO KF 016 :: unnamed_stack > Dodongo's Cavern > Vanilla DC > DC Scrubs :: Pasted Layer #15 :: 001-001-003-002.png",
+        "OOT Dodongo Cavern Bomb Bag Side Room Left Scrub",
+        "OOT Dodongo Cavern Bomb Bag Side Room Right Scrub"
+      ]
     },
     {
       "coords": [
@@ -139,7 +188,11 @@
         223
       ],
       "image": "pot",
-      "codes": "TODO KF 017 :: unnamed_stack > Dodongo's Cavern > Vanilla DC > DC Pots :: Pasted Layer #16 :: 001-001-004-000.png"
+      "codes": [
+        "TODO KF 017 :: unnamed_stack > Dodongo's Cavern > Vanilla DC > DC Pots :: Pasted Layer #16 :: 001-001-004-000.png",
+        "OOT Dodongo Cavern Pot Skull 3",
+        "OOT Dodongo Cavern Pot Skull 4"
+      ]
     },
     {
       "coords": [
@@ -147,7 +200,11 @@
         240
       ],
       "image": "pot",
-      "codes": "TODO KF 018 :: unnamed_stack > Dodongo's Cavern > Vanilla DC > DC Pots :: Pasted Layer #17 :: 001-001-004-001.png"
+      "codes": [
+        "TODO KF 018 :: unnamed_stack > Dodongo's Cavern > Vanilla DC > DC Pots :: Pasted Layer #17 :: 001-001-004-001.png",
+        "OOT Dodongo Cavern Pot Skull 1",
+        "OOT Dodongo Cavern Pot Skull 2"
+      ]
     },
     {
       "coords": [
@@ -155,7 +212,13 @@
         327
       ],
       "image": "pot",
-      "codes": "TODO KF 019 :: unnamed_stack > Dodongo's Cavern > Vanilla DC > DC Pots :: Pasted Layer #18 :: 001-001-004-002.png"
+      "codes": [
+        "TODO KF 019 :: unnamed_stack > Dodongo's Cavern > Vanilla DC > DC Pots :: Pasted Layer #18 :: 001-001-004-002.png",
+        "OOT Dodongo Cavern Pot Green Room Pot 1",
+        "OOT Dodongo Cavern Pot Green Room Pot 2",
+        "OOT Dodongo Cavern Pot Green Room Pot 3",
+        "OOT Dodongo Cavern Pot Green Room Pot 4"
+      ]
     },
     {
       "coords": [
@@ -163,7 +226,11 @@
         303
       ],
       "image": "pot",
-      "codes": "TODO KF 020 :: unnamed_stack > Dodongo's Cavern > Vanilla DC > DC Pots :: Pasted Layer #19 :: 001-001-004-003.png"
+      "codes": [
+        "TODO KF 020 :: unnamed_stack > Dodongo's Cavern > Vanilla DC > DC Pots :: Pasted Layer #19 :: 001-001-004-003.png",
+        "OOT Dodongo Cavern Pot Miniboss 3",
+        "OOT Dodongo Cavern Pot Miniboss 4"
+      ]
     },
     {
       "coords": [
@@ -171,7 +238,11 @@
         279
       ],
       "image": "pot",
-      "codes": "TODO KF 021 :: unnamed_stack > Dodongo's Cavern > Vanilla DC > DC Pots :: Pasted Layer #20 :: 001-001-004-004.png"
+      "codes": [
+        "TODO KF 021 :: unnamed_stack > Dodongo's Cavern > Vanilla DC > DC Pots :: Pasted Layer #20 :: 001-001-004-004.png",
+        "OOT Dodongo Cavern Pot Miniboss 1",
+        "OOT Dodongo Cavern Pot Miniboss 2"
+      ]
     },
     {
       "coords": [
@@ -179,7 +250,11 @@
         339
       ],
       "image": "pot",
-      "codes": "TODO KF 022 :: unnamed_stack > Dodongo's Cavern > Vanilla DC > DC Pots :: Pasted Layer #21 :: 001-001-004-005.png"
+      "codes": [
+        "TODO KF 022 :: unnamed_stack > Dodongo's Cavern > Vanilla DC > DC Pots :: Pasted Layer #21 :: 001-001-004-005.png",
+        "OOT Dodongo Cavern Pot Right Corridor Pot 5",
+        "OOT Dodongo Cavern Pot Right Corridor Pot 6"
+      ]
     },
     {
       "coords": [
@@ -187,7 +262,11 @@
         359
       ],
       "image": "pot",
-      "codes": "TODO KF 023 :: unnamed_stack > Dodongo's Cavern > Vanilla DC > DC Pots :: Pasted Layer #22 :: 001-001-004-006.png"
+      "codes": [
+        "TODO KF 023 :: unnamed_stack > Dodongo's Cavern > Vanilla DC > DC Pots :: Pasted Layer #22 :: 001-001-004-006.png",
+        "OOT Dodongo Cavern Pot Right Corridor Pot 3",
+        "OOT Dodongo Cavern Pot Right Corridor Pot 4"
+      ]
     },
     {
       "coords": [
@@ -195,7 +274,11 @@
         358
       ],
       "image": "pot",
-      "codes": "TODO KF 024 :: unnamed_stack > Dodongo's Cavern > Vanilla DC > DC Pots :: Pasted Layer #23 :: 001-001-004-007.png"
+      "codes": [
+        "TODO KF 024 :: unnamed_stack > Dodongo's Cavern > Vanilla DC > DC Pots :: Pasted Layer #23 :: 001-001-004-007.png",
+        "OOT Dodongo Cavern Pot Right Corridor Pot 1",
+        "OOT Dodongo Cavern Pot Right Corridor Pot 2"
+      ]
     },
     {
       "coords": [
@@ -203,7 +286,11 @@
         306
       ],
       "image": "pot",
-      "codes": "TODO KF 025 :: unnamed_stack > Dodongo's Cavern > Vanilla DC > DC Pots :: Pasted Layer #24 :: 001-001-004-008.png"
+      "codes": [
+        "TODO KF 025 :: unnamed_stack > Dodongo's Cavern > Vanilla DC > DC Pots :: Pasted Layer #24 :: 001-001-004-008.png",
+        "OOT Dodongo Cavern Pot Stairs Pot 1",
+        "OOT Dodongo Cavern Pot Stairs Pot 2"
+      ]
     },
     {
       "coords": [
@@ -211,7 +298,11 @@
         306
       ],
       "image": "pot",
-      "codes": "TODO KF 026 :: unnamed_stack > Dodongo's Cavern > Vanilla DC > DC Pots :: Pasted Layer #25 :: 001-001-004-009.png"
+      "codes": [
+        "TODO KF 026 :: unnamed_stack > Dodongo's Cavern > Vanilla DC > DC Pots :: Pasted Layer #25 :: 001-001-004-009.png",
+        "OOT Dodongo Cavern Pot Stairs Pot 3",
+        "OOT Dodongo Cavern Pot Stairs Pot 4"
+      ]
     },
     {
       "coords": [
@@ -219,7 +310,11 @@
         347
       ],
       "image": "pot",
-      "codes": "TODO KF 027 :: unnamed_stack > Dodongo's Cavern > Vanilla DC > DC Pots :: Pasted Layer #26 :: 001-001-004-010.png"
+      "codes": [
+        "TODO KF 027 :: unnamed_stack > Dodongo's Cavern > Vanilla DC > DC Pots :: Pasted Layer #26 :: 001-001-004-010.png",
+        "OOT Dodongo Cavern Pot Bomb Bag Room 1",
+        "OOT Dodongo Cavern Pot Bomb Bag Room 2"
+      ]
     },
     {
       "coords": [
@@ -227,7 +322,11 @@
         356
       ],
       "image": "pot",
-      "codes": "TODO KF 028 :: unnamed_stack > Dodongo's Cavern > Vanilla DC > DC Pots :: Pasted Layer #27 :: 001-001-004-011.png"
+      "codes": [
+        "TODO KF 028 :: unnamed_stack > Dodongo's Cavern > Vanilla DC > DC Pots :: Pasted Layer #27 :: 001-001-004-011.png",
+        "OOT Dodongo Cavern Pot Room Before Miniboss 1",
+        "OOT Dodongo Cavern Pot Room Before Miniboss 2"
+      ]
     },
     {
       "coords": [
@@ -235,7 +334,11 @@
         326
       ],
       "image": "pot",
-      "codes": "TODO KF 029 :: unnamed_stack > Dodongo's Cavern > Vanilla DC > DC Pots :: Pasted Layer #28 :: 001-001-004-012.png"
+      "codes": [
+        "TODO KF 029 :: unnamed_stack > Dodongo's Cavern > Vanilla DC > DC Pots :: Pasted Layer #28 :: 001-001-004-012.png",
+        "OOT Dodongo Cavern Pot Room After Miniboss 1",
+        "OOT Dodongo Cavern Pot Room After Miniboss 2"
+      ]
     },
     {
       "coords": [
@@ -243,7 +346,10 @@
         274
       ],
       "image": "grass",
-      "codes": "TODO KF 030 :: unnamed_stack > Dodongo's Cavern > Vanilla DC > DC Grass :: Pasted Layer #29 :: 001-001-005-000.png"
+      "codes": [
+        "TODO KF 030 :: unnamed_stack > Dodongo's Cavern > Vanilla DC > DC Grass :: Pasted Layer #29 :: 001-001-005-000.png",
+        "OOT Dodongo Cavern Grass Pre-Boss"
+      ]
     },
     {
       "coords": [
@@ -251,7 +357,13 @@
         389
       ],
       "image": "grass",
-      "codes": "TODO KF 031 :: unnamed_stack > Dodongo's Cavern > Vanilla DC > DC Grass :: Pasted Layer #30 :: 001-001-005-001.png"
+      "overlays": [
+        "broken"
+      ],
+      "codes": [
+        "TODO KF 031 :: unnamed_stack > Dodongo's Cavern > Vanilla DC > DC Grass :: Pasted Layer #30 :: 001-001-005-001.png",
+        "OOT Dodongo Cavern Grass East Corridor Side Room"
+      ]
     },
     {
       "coords": [
@@ -259,7 +371,10 @@
         360
       ],
       "image": "grass",
-      "codes": "TODO KF 032 :: unnamed_stack > Dodongo's Cavern > Vanilla DC > DC Grass :: Pasted Layer #31 :: 001-001-005-002.png"
+      "codes": [
+        "TODO KF 032 :: unnamed_stack > Dodongo's Cavern > Vanilla DC > DC Grass :: Pasted Layer #31 :: 001-001-005-002.png",
+        "OOT Dodongo Cavern Grass Lobby"
+      ]
     },
     {
       "coords": [
@@ -267,7 +382,10 @@
         324
       ],
       "image": "grass",
-      "codes": "TODO KF 033 :: unnamed_stack > Dodongo's Cavern > Vanilla DC > DC Grass :: Pasted Layer #32 :: 001-001-005-003.png"
+      "codes": [
+        "TODO KF 033 :: unnamed_stack > Dodongo's Cavern > Vanilla DC > DC Grass :: Pasted Layer #32 :: 001-001-005-003.png",
+        "OOT Dodongo Cavern Grass Bomb Bag Room"
+      ]
     },
     {
       "coords": [
@@ -275,7 +393,10 @@
         357
       ],
       "image": "grass",
-      "codes": "TODO KF 034 :: unnamed_stack > Dodongo's Cavern > Vanilla DC > DC Grass :: Pasted Layer #33 :: 001-001-005-004.png"
+      "codes": [
+        "TODO KF 034 :: unnamed_stack > Dodongo's Cavern > Vanilla DC > DC Grass :: Pasted Layer #33 :: 001-001-005-004.png",
+        "OOT Dodongo Cavern Grass Pre-Miniboss"
+      ]
     },
     {
       "coords": [
@@ -283,7 +404,11 @@
         297
       ],
       "image": "heart",
-      "codes": "TODO KF 035 :: unnamed_stack > Dodongo's Cavern > Vanilla DC > DC Freestanding Hearts :: Pasted Layer #34 :: 001-001-006-000.png"
+      "codes": [
+        "TODO KF 035 :: unnamed_stack > Dodongo's Cavern > Vanilla DC > DC Freestanding Hearts :: Pasted Layer #34 :: 001-001-006-000.png",
+        "OOT Dodongo Cavern Heart Miniboss Upper 1",
+        "OOT Dodongo Cavern Heart Miniboss Upper 2"
+      ]
     },
     {
       "coords": [
@@ -291,7 +416,10 @@
         367
       ],
       "image": "heart",
-      "codes": "TODO KF 036 :: unnamed_stack > Dodongo's Cavern > Vanilla DC > DC Freestanding Hearts :: Pasted Layer #35 :: 001-001-006-001.png"
+      "codes": [
+        "TODO KF 036 :: unnamed_stack > Dodongo's Cavern > Vanilla DC > DC Freestanding Hearts :: Pasted Layer #35 :: 001-001-006-001.png",
+        "OOT Dodongo Cavern Heart Bomb Bag Room"
+      ]
     },
     {
       "coords": [
@@ -299,15 +427,21 @@
         301
       ],
       "image": "heart",
-      "codes": "TODO KF 037 :: unnamed_stack > Dodongo's Cavern > Vanilla DC > DC Freestanding Hearts :: Pasted Layer #36 :: 001-001-006-002.png"
+      "codes": [
+        "TODO KF 037 :: unnamed_stack > Dodongo's Cavern > Vanilla DC > DC Freestanding Hearts :: Pasted Layer #36 :: 001-001-006-002.png",
+        "OOT Dodongo Cavern Heart Miniboss Lava"
+      ]
     },
     {
       "coords": [
         341,
         313
       ],
-      "image": "npc",
-      "codes": "TODO KF 038 :: unnamed_stack > Dodongo's Cavern > Vanilla DC > DC Gossip :: Pasted Layer #37 :: 001-001-007-000.png"
+      "image": "gossip_stone",
+      "codes": [
+        "TODO KF 038 :: unnamed_stack > Dodongo's Cavern > Vanilla DC > DC Gossip :: Pasted Layer #37 :: 001-001-007-000.png",
+        "OOT Dodongo Cavern Gossip"
+      ]
     }
   ]
 }

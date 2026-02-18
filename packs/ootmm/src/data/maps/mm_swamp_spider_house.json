@@ -10,8 +10,11 @@
         489,
         483
       ],
-      "image": "chest",
-      "codes": "TODO KF 001 :: unnamed_stack > Swamp Spider House > SSH Layers > SSH Checks :: Pasted Layer :: 001-001-001-000.png"
+      "image": "npc",
+      "codes": [
+        "TODO KF 001 :: unnamed_stack > Swamp Spider House > SSH Layers > SSH Checks :: Pasted Layer :: 001-001-001-000.png",
+        "MM Swamp Spider House Mask of Truth"
+      ]
     },
     {
       "coords": [
@@ -19,7 +22,10 @@
         465
       ],
       "image": "gold_skulltula",
-      "codes": "TODO KF 002 :: unnamed_stack > Swamp Spider House > SSH Layers > SSH Skulls :: Pasted Layer #1 :: 001-001-002-000.png"
+      "codes": [
+        "TODO KF 002 :: unnamed_stack > Swamp Spider House > SSH Layers > SSH Skulls :: Pasted Layer #1 :: 001-001-002-000.png",
+        "MM Swamp Skulltula Main Room Jar"
+      ]
     },
     {
       "coords": [
@@ -27,7 +33,10 @@
         385
       ],
       "image": "gold_skulltula",
-      "codes": "TODO KF 003 :: unnamed_stack > Swamp Spider House > SSH Layers > SSH Skulls :: Pasted Layer #2 :: 001-001-002-001.png"
+      "codes": [
+        "TODO KF 003 :: unnamed_stack > Swamp Spider House > SSH Layers > SSH Skulls :: Pasted Layer #2 :: 001-001-002-001.png",
+        "MM Swamp Skulltula Main Room Water"
+      ]
     },
     {
       "coords": [
@@ -35,7 +44,10 @@
         365
       ],
       "image": "gold_skulltula",
-      "codes": "TODO KF 004 :: unnamed_stack > Swamp Spider House > SSH Layers > SSH Skulls :: Pasted Layer #3 :: 001-001-002-002.png"
+      "codes": [
+        "TODO KF 004 :: unnamed_stack > Swamp Spider House > SSH Layers > SSH Skulls :: Pasted Layer #3 :: 001-001-002-002.png",
+        "MM Swamp Skulltula Main Room Pillar"
+      ]
     },
     {
       "coords": [
@@ -43,7 +55,10 @@
         400
       ],
       "image": "gold_skulltula",
-      "codes": "TODO KF 005 :: unnamed_stack > Swamp Spider House > SSH Layers > SSH Skulls :: Pasted Layer #4 :: 001-001-002-003.png"
+      "codes": [
+        "TODO KF 005 :: unnamed_stack > Swamp Spider House > SSH Layers > SSH Skulls :: Pasted Layer #4 :: 001-001-002-003.png",
+        "MM Swamp Skulltula Main Room Lower Right Soft Soil"
+      ]
     },
     {
       "coords": [
@@ -51,7 +66,10 @@
         365
       ],
       "image": "gold_skulltula",
-      "codes": "TODO KF 006 :: unnamed_stack > Swamp Spider House > SSH Layers > SSH Skulls :: Pasted Layer #5 :: 001-001-002-004.png"
+      "codes": [
+        "TODO KF 006 :: unnamed_stack > Swamp Spider House > SSH Layers > SSH Skulls :: Pasted Layer #5 :: 001-001-002-004.png",
+        "MM Swamp Skulltula Main Room Lower Left Soft Soil"
+      ]
     },
     {
       "coords": [
@@ -59,7 +77,10 @@
         330
       ],
       "image": "gold_skulltula",
-      "codes": "TODO KF 007 :: unnamed_stack > Swamp Spider House > SSH Layers > SSH Skulls :: Pasted Layer #6 :: 001-001-002-005.png"
+      "codes": [
+        "TODO KF 007 :: unnamed_stack > Swamp Spider House > SSH Layers > SSH Skulls :: Pasted Layer #6 :: 001-001-002-005.png",
+        "MM Swamp Skulltula Main Room Upper Pillar"
+      ]
     },
     {
       "coords": [
@@ -67,7 +88,10 @@
         318
       ],
       "image": "gold_skulltula",
-      "codes": "TODO KF 008 :: unnamed_stack > Swamp Spider House > SSH Layers > SSH Skulls :: Pasted Layer #7 :: 001-001-002-006.png"
+      "codes": [
+        "TODO KF 008 :: unnamed_stack > Swamp Spider House > SSH Layers > SSH Skulls :: Pasted Layer #7 :: 001-001-002-006.png",
+        "MM Swamp Skulltula Main Room Near Ceiling"
+      ]
     },
     {
       "coords": [
@@ -75,7 +99,10 @@
         442
       ],
       "image": "gold_skulltula",
-      "codes": "TODO KF 009 :: unnamed_stack > Swamp Spider House > SSH Layers > SSH Skulls :: Pasted Layer #8 :: 001-001-002-007.png"
+      "codes": [
+        "TODO KF 009 :: unnamed_stack > Swamp Spider House > SSH Layers > SSH Skulls :: Pasted Layer #8 :: 001-001-002-007.png",
+        "MM Swamp Skulltula Monument Room Crate 2"
+      ]
     },
     {
       "coords": [
@@ -83,7 +110,10 @@
         413
       ],
       "image": "gold_skulltula",
-      "codes": "TODO KF 010 :: unnamed_stack > Swamp Spider House > SSH Layers > SSH Skulls :: Pasted Layer #9 :: 001-001-002-008.png"
+      "codes": [
+        "TODO KF 010 :: unnamed_stack > Swamp Spider House > SSH Layers > SSH Skulls :: Pasted Layer #9 :: 001-001-002-008.png",
+        "MM Swamp Skulltula Monument Room On Monument"
+      ]
     },
     {
       "coords": [
@@ -91,7 +121,10 @@
         405
       ],
       "image": "gold_skulltula",
-      "codes": "TODO KF 011 :: unnamed_stack > Swamp Spider House > SSH Layers > SSH Skulls :: Pasted Layer #10 :: 001-001-002-009.png"
+      "codes": [
+        "TODO KF 011 :: unnamed_stack > Swamp Spider House > SSH Layers > SSH Skulls :: Pasted Layer #10 :: 001-001-002-009.png",
+        "MM Swamp Skulltula Monument Room Lower Wall"
+      ]
     },
     {
       "coords": [
@@ -99,7 +132,10 @@
         366
       ],
       "image": "gold_skulltula",
-      "codes": "TODO KF 012 :: unnamed_stack > Swamp Spider House > SSH Layers > SSH Skulls :: Pasted Layer #11 :: 001-001-002-010.png"
+      "codes": [
+        "TODO KF 012 :: unnamed_stack > Swamp Spider House > SSH Layers > SSH Skulls :: Pasted Layer #11 :: 001-001-002-010.png",
+        "MM Swamp Skulltula Monument Room Crate 1"
+      ]
     },
     {
       "coords": [
@@ -107,7 +143,10 @@
         365
       ],
       "image": "gold_skulltula",
-      "codes": "TODO KF 013 :: unnamed_stack > Swamp Spider House > SSH Layers > SSH Skulls :: Pasted Layer #12 :: 001-001-002-011.png"
+      "codes": [
+        "TODO KF 013 :: unnamed_stack > Swamp Spider House > SSH Layers > SSH Skulls :: Pasted Layer #12 :: 001-001-002-011.png",
+        "MM Swamp Skulltula Monument Room Torch"
+      ]
     },
     {
       "coords": [
@@ -115,7 +154,10 @@
         293
       ],
       "image": "gold_skulltula",
-      "codes": "TODO KF 014 :: unnamed_stack > Swamp Spider House > SSH Layers > SSH Skulls :: Pasted Layer #13 :: 001-001-002-012.png"
+      "codes": [
+        "TODO KF 014 :: unnamed_stack > Swamp Spider House > SSH Layers > SSH Skulls :: Pasted Layer #13 :: 001-001-002-012.png",
+        "MM Swamp Skulltula Gold Room Wall"
+      ]
     },
     {
       "coords": [
@@ -123,7 +165,10 @@
         274
       ],
       "image": "gold_skulltula",
-      "codes": "TODO KF 015 :: unnamed_stack > Swamp Spider House > SSH Layers > SSH Skulls :: Pasted Layer #14 :: 001-001-002-013.png"
+      "codes": [
+        "TODO KF 015 :: unnamed_stack > Swamp Spider House > SSH Layers > SSH Skulls :: Pasted Layer #14 :: 001-001-002-013.png",
+        "MM Swamp Skulltula Gold Room Hive"
+      ]
     },
     {
       "coords": [
@@ -131,7 +176,10 @@
         253
       ],
       "image": "gold_skulltula",
-      "codes": "TODO KF 016 :: unnamed_stack > Swamp Spider House > SSH Layers > SSH Skulls :: Pasted Layer #15 :: 001-001-002-014.png"
+      "codes": [
+        "TODO KF 016 :: unnamed_stack > Swamp Spider House > SSH Layers > SSH Skulls :: Pasted Layer #15 :: 001-001-002-014.png",
+        "MM Swamp Skulltula Gold Room Pillar"
+      ]
     },
     {
       "coords": [
@@ -139,7 +187,10 @@
         240
       ],
       "image": "gold_skulltula",
-      "codes": "TODO KF 017 :: unnamed_stack > Swamp Spider House > SSH Layers > SSH Skulls :: Pasted Layer #16 :: 001-001-002-015.png"
+      "codes": [
+        "TODO KF 017 :: unnamed_stack > Swamp Spider House > SSH Layers > SSH Skulls :: Pasted Layer #16 :: 001-001-002-015.png",
+        "MM Swamp Skulltula Gold Room Near Ceiling"
+      ]
     },
     {
       "coords": [
@@ -147,7 +198,10 @@
         155
       ],
       "image": "gold_skulltula",
-      "codes": "TODO KF 018 :: unnamed_stack > Swamp Spider House > SSH Layers > SSH Skulls :: Pasted Layer #17 :: 001-001-002-016.png"
+      "codes": [
+        "TODO KF 018 :: unnamed_stack > Swamp Spider House > SSH Layers > SSH Skulls :: Pasted Layer #17 :: 001-001-002-016.png",
+        "MM Swamp Skulltula Tree Room Hive"
+      ]
     },
     {
       "coords": [
@@ -155,7 +209,10 @@
         101
       ],
       "image": "gold_skulltula",
-      "codes": "TODO KF 019 :: unnamed_stack > Swamp Spider House > SSH Layers > SSH Skulls :: Pasted Layer #18 :: 001-001-002-017.png"
+      "codes": [
+        "TODO KF 019 :: unnamed_stack > Swamp Spider House > SSH Layers > SSH Skulls :: Pasted Layer #18 :: 001-001-002-017.png",
+        "MM Swamp Skulltula Tree Room Grass 1"
+      ]
     },
     {
       "coords": [
@@ -163,7 +220,10 @@
         109
       ],
       "image": "gold_skulltula",
-      "codes": "TODO KF 020 :: unnamed_stack > Swamp Spider House > SSH Layers > SSH Skulls :: Pasted Layer #19 :: 001-001-002-018.png"
+      "codes": [
+        "TODO KF 020 :: unnamed_stack > Swamp Spider House > SSH Layers > SSH Skulls :: Pasted Layer #19 :: 001-001-002-018.png",
+        "MM Swamp Skulltula Tree Room Tree 1"
+      ]
     },
     {
       "coords": [
@@ -171,7 +231,10 @@
         125
       ],
       "image": "gold_skulltula",
-      "codes": "TODO KF 021 :: unnamed_stack > Swamp Spider House > SSH Layers > SSH Skulls :: Pasted Layer #20 :: 001-001-002-019.png"
+      "codes": [
+        "TODO KF 021 :: unnamed_stack > Swamp Spider House > SSH Layers > SSH Skulls :: Pasted Layer #20 :: 001-001-002-019.png",
+        "MM Swamp Skulltula Tree Room Tree 3"
+      ]
     },
     {
       "coords": [
@@ -179,7 +242,10 @@
         125
       ],
       "image": "gold_skulltula",
-      "codes": "TODO KF 022 :: unnamed_stack > Swamp Spider House > SSH Layers > SSH Skulls :: Pasted Layer #21 :: 001-001-002-020.png"
+      "codes": [
+        "TODO KF 022 :: unnamed_stack > Swamp Spider House > SSH Layers > SSH Skulls :: Pasted Layer #21 :: 001-001-002-020.png",
+        "MM Swamp Skulltula Tree Room Tree 2"
+      ]
     },
     {
       "coords": [
@@ -187,7 +253,10 @@
         101
       ],
       "image": "gold_skulltula",
-      "codes": "TODO KF 023 :: unnamed_stack > Swamp Spider House > SSH Layers > SSH Skulls :: Pasted Layer #22 :: 001-001-002-021.png"
+      "codes": [
+        "TODO KF 023 :: unnamed_stack > Swamp Spider House > SSH Layers > SSH Skulls :: Pasted Layer #22 :: 001-001-002-021.png",
+        "MM Swamp Skulltula Tree Room Grass 2"
+      ]
     },
     {
       "coords": [
@@ -195,7 +264,10 @@
         273
       ],
       "image": "gold_skulltula",
-      "codes": "TODO KF 024 :: unnamed_stack > Swamp Spider House > SSH Layers > SSH Skulls :: Pasted Layer #23 :: 001-001-002-022.png"
+      "codes": [
+        "TODO KF 024 :: unnamed_stack > Swamp Spider House > SSH Layers > SSH Skulls :: Pasted Layer #23 :: 001-001-002-022.png",
+        "MM Swamp Skulltula Pot Room Wall"
+      ]
     },
     {
       "coords": [
@@ -203,7 +275,10 @@
         295
       ],
       "image": "gold_skulltula",
-      "codes": "TODO KF 025 :: unnamed_stack > Swamp Spider House > SSH Layers > SSH Skulls :: Pasted Layer #24 :: 001-001-002-023.png"
+      "codes": [
+        "TODO KF 025 :: unnamed_stack > Swamp Spider House > SSH Layers > SSH Skulls :: Pasted Layer #24 :: 001-001-002-023.png",
+        "MM Swamp Skulltula Pot Room Behind Vines"
+      ]
     },
     {
       "coords": [
@@ -211,7 +286,10 @@
         325
       ],
       "image": "gold_skulltula",
-      "codes": "TODO KF 026 :: unnamed_stack > Swamp Spider House > SSH Layers > SSH Skulls :: Pasted Layer #25 :: 001-001-002-024.png"
+      "codes": [
+        "TODO KF 026 :: unnamed_stack > Swamp Spider House > SSH Layers > SSH Skulls :: Pasted Layer #25 :: 001-001-002-024.png",
+        "MM Swamp Skulltula Pot Room Pot 1"
+      ]
     },
     {
       "coords": [
@@ -219,7 +297,10 @@
         357
       ],
       "image": "gold_skulltula",
-      "codes": "TODO KF 027 :: unnamed_stack > Swamp Spider House > SSH Layers > SSH Skulls :: Pasted Layer #26 :: 001-001-002-025.png"
+      "codes": [
+        "TODO KF 027 :: unnamed_stack > Swamp Spider House > SSH Layers > SSH Skulls :: Pasted Layer #26 :: 001-001-002-025.png",
+        "MM Swamp Skulltula Pot Room Hive 1"
+      ]
     },
     {
       "coords": [
@@ -227,7 +308,10 @@
         357
       ],
       "image": "gold_skulltula",
-      "codes": "TODO KF 028 :: unnamed_stack > Swamp Spider House > SSH Layers > SSH Skulls :: Pasted Layer #27 :: 001-001-002-026.png"
+      "codes": [
+        "TODO KF 028 :: unnamed_stack > Swamp Spider House > SSH Layers > SSH Skulls :: Pasted Layer #27 :: 001-001-002-026.png",
+        "MM Swamp Skulltula Pot Room Hive 2"
+      ]
     },
     {
       "coords": [
@@ -235,7 +319,10 @@
         379
       ],
       "image": "gold_skulltula",
-      "codes": "TODO KF 029 :: unnamed_stack > Swamp Spider House > SSH Layers > SSH Skulls :: Pasted Layer #28 :: 001-001-002-027.png"
+      "codes": [
+        "TODO KF 029 :: unnamed_stack > Swamp Spider House > SSH Layers > SSH Skulls :: Pasted Layer #28 :: 001-001-002-027.png",
+        "MM Swamp Skulltula Pot Room Pot 2"
+      ]
     },
     {
       "coords": [
@@ -243,7 +330,10 @@
         419
       ],
       "image": "gold_skulltula",
-      "codes": "TODO KF 030 :: unnamed_stack > Swamp Spider House > SSH Layers > SSH Skulls :: Pasted Layer #29 :: 001-001-002-028.png"
+      "codes": [
+        "TODO KF 030 :: unnamed_stack > Swamp Spider House > SSH Layers > SSH Skulls :: Pasted Layer #29 :: 001-001-002-028.png",
+        "MM Swamp Skulltula Pot Room Jar"
+      ]
     },
     {
       "coords": [
@@ -251,7 +341,10 @@
         467
       ],
       "image": "gold_skulltula",
-      "codes": "TODO KF 031 :: unnamed_stack > Swamp Spider House > SSH Layers > SSH Skulls :: Pasted Layer #30 :: 001-001-002-029.png"
+      "codes": [
+        "TODO KF 031 :: unnamed_stack > Swamp Spider House > SSH Layers > SSH Skulls :: Pasted Layer #30 :: 001-001-002-029.png",
+        "MM Swamp Skulltula Main Room Upper Soft Soil"
+      ]
     },
     {
       "coords": [
@@ -259,7 +352,13 @@
         249
       ],
       "image": "pot",
-      "codes": "TODO KF 032 :: unnamed_stack > Swamp Spider House > SSH Layers > SSH Pots :: Pasted Layer #31 :: 001-001-003-000.png"
+      "codes": [
+        "TODO KF 032 :: unnamed_stack > Swamp Spider House > SSH Layers > SSH Pots :: Pasted Layer #31 :: 001-001-003-000.png",
+        "MM Swamp Spider House Pot Gold Room Upper 1",
+        "MM Swamp Spider House Pot Gold Room Upper 2",
+        "MM Swamp Spider House Pot Gold Room Upper 3",
+        "MM Swamp Spider House Pot Gold Room Upper 4"
+      ]
     },
     {
       "coords": [
@@ -267,7 +366,11 @@
         256
       ],
       "image": "pot",
-      "codes": "TODO KF 033 :: unnamed_stack > Swamp Spider House > SSH Layers > SSH Pots :: Pasted Layer #32 :: 001-001-003-001.png"
+      "codes": [
+        "TODO KF 033 :: unnamed_stack > Swamp Spider House > SSH Layers > SSH Pots :: Pasted Layer #32 :: 001-001-003-001.png",
+        "MM Swamp Spider House Pot Gold Room Lower 1",
+        "MM Swamp Spider House Pot Gold Room Lower 2"
+      ]
     },
     {
       "coords": [
@@ -275,7 +378,11 @@
         305
       ],
       "image": "pot",
-      "codes": "TODO KF 034 :: unnamed_stack > Swamp Spider House > SSH Layers > SSH Pots :: Pasted Layer #33 :: 001-001-003-002.png"
+      "codes": [
+        "TODO KF 034 :: unnamed_stack > Swamp Spider House > SSH Layers > SSH Pots :: Pasted Layer #33 :: 001-001-003-002.png",
+        "MM Swamp Spider House Pot Jar Room 6",
+        "MM Swamp Spider House Pot Jar Room 7"
+      ]
     },
     {
       "coords": [
@@ -283,7 +390,14 @@
         403
       ],
       "image": "pot",
-      "codes": "TODO KF 035 :: unnamed_stack > Swamp Spider House > SSH Layers > SSH Pots :: Pasted Layer #34 :: 001-001-003-003.png"
+      "codes": [
+        "TODO KF 035 :: unnamed_stack > Swamp Spider House > SSH Layers > SSH Pots :: Pasted Layer #34 :: 001-001-003-003.png",
+        "MM Swamp Spider House Pot Jar Room 1",
+        "MM Swamp Spider House Pot Jar Room 2",
+        "MM Swamp Spider House Pot Jar Room 3",
+        "MM Swamp Spider House Pot Jar Room 4",
+        "MM Swamp Spider House Pot Jar Room 5"
+      ]
     },
     {
       "coords": [
@@ -291,7 +405,11 @@
         461
       ],
       "image": "pot",
-      "codes": "TODO KF 036 :: unnamed_stack > Swamp Spider House > SSH Layers > SSH Pots :: Pasted Layer #35 :: 001-001-003-004.png"
+      "codes": [
+        "TODO KF 036 :: unnamed_stack > Swamp Spider House > SSH Layers > SSH Pots :: Pasted Layer #35 :: 001-001-003-004.png",
+        "MM Swamp Spider House Pot Main Upper Right 1",
+        "MM Swamp Spider House Pot Main Upper Right 2"
+      ]
     },
     {
       "coords": [
@@ -299,7 +417,11 @@
         461
       ],
       "image": "pot",
-      "codes": "TODO KF 037 :: unnamed_stack > Swamp Spider House > SSH Layers > SSH Pots :: Pasted Layer #36 :: 001-001-003-005.png"
+      "codes": [
+        "TODO KF 037 :: unnamed_stack > Swamp Spider House > SSH Layers > SSH Pots :: Pasted Layer #36 :: 001-001-003-005.png",
+        "MM Swamp Spider House Pot Main Lower 2",
+        "MM Swamp Spider House Pot Main Lower 3"
+      ]
     },
     {
       "coords": [
@@ -307,7 +429,10 @@
         449
       ],
       "image": "pot",
-      "codes": "TODO KF 038 :: unnamed_stack > Swamp Spider House > SSH Layers > SSH Pots :: Pasted Layer #37 :: 001-001-003-006.png"
+      "codes": [
+        "TODO KF 038 :: unnamed_stack > Swamp Spider House > SSH Layers > SSH Pots :: Pasted Layer #37 :: 001-001-003-006.png",
+        "MM Swamp Spider House Pot Main Lower 1"
+      ]
     },
     {
       "coords": [
@@ -315,7 +440,11 @@
         461
       ],
       "image": "pot",
-      "codes": "TODO KF 039 :: unnamed_stack > Swamp Spider House > SSH Layers > SSH Pots :: Pasted Layer #38 :: 001-001-003-007.png"
+      "codes": [
+        "TODO KF 039 :: unnamed_stack > Swamp Spider House > SSH Layers > SSH Pots :: Pasted Layer #38 :: 001-001-003-007.png",
+        "MM Swamp Spider House Pot Main Upper Left 1",
+        "MM Swamp Spider House Pot Main Upper Left 2"
+      ]
     },
     {
       "coords": [
@@ -323,39 +452,59 @@
         365
       ],
       "image": "pot",
-      "codes": "TODO KF 040 :: unnamed_stack > Swamp Spider House > SSH Layers > SSH Pots :: Pasted Layer #39 :: 001-001-003-008.png"
+      "codes": [
+        "TODO KF 040 :: unnamed_stack > Swamp Spider House > SSH Layers > SSH Pots :: Pasted Layer #39 :: 001-001-003-008.png",
+        "MM Swamp Spider House Pot Monument Room 1",
+        "MM Swamp Spider House Pot Monument Room 2"
+      ]
     },
     {
       "coords": [
         402,
         443
       ],
-      "image": "collectible",
-      "codes": "TODO KF 041 :: unnamed_stack > Swamp Spider House > SSH Layers > SSH Crates :: Pasted Layer #40 :: 001-001-004-000.png"
+      "image": "crate",
+      "codes": [
+        "TODO KF 041 :: unnamed_stack > Swamp Spider House > SSH Layers > SSH Crates :: Pasted Layer #40 :: 001-001-004-000.png",
+        "MM Swamp Spider House Crate Monument 5",
+        "MM Swamp Spider House Crate Monument 6"
+      ]
     },
     {
       "coords": [
         397,
         412
       ],
-      "image": "collectible",
-      "codes": "TODO KF 042 :: unnamed_stack > Swamp Spider House > SSH Layers > SSH Crates :: Pasted Layer #41 :: 001-001-004-001.png"
+      "image": "crate",
+      "codes": [
+        "TODO KF 042 :: unnamed_stack > Swamp Spider House > SSH Layers > SSH Crates :: Pasted Layer #41 :: 001-001-004-001.png",
+        "MM Swamp Spider House Crate Monument 4"
+      ]
     },
     {
       "coords": [
         397,
         381
       ],
-      "image": "collectible",
-      "codes": "TODO KF 043 :: unnamed_stack > Swamp Spider House > SSH Layers > SSH Crates :: Pasted Layer #42 :: 001-001-004-002.png"
+      "image": "crate",
+      "codes": [
+        "TODO KF 043 :: unnamed_stack > Swamp Spider House > SSH Layers > SSH Crates :: Pasted Layer #42 :: 001-001-004-002.png",
+        "MM Swamp Spider House Crate Monument 1",
+        "MM Swamp Spider House Crate Monument 2",
+        "MM Swamp Spider House Crate Monument 3"
+      ]
     },
     {
       "coords": [
         463,
         299
       ],
-      "image": "collectible",
-      "codes": "TODO KF 044 :: unnamed_stack > Swamp Spider House > SSH Layers > SSH Crates :: Pasted Layer #43 :: 001-001-004-003.png"
+      "image": "crate",
+      "codes": [
+        "TODO KF 044 :: unnamed_stack > Swamp Spider House > SSH Layers > SSH Crates :: Pasted Layer #43 :: 001-001-004-003.png",
+        "MM Swamp Spider House Crate Gold 1",
+        "MM Swamp Spider House Crate Gold 2"
+      ]
     },
     {
       "coords": [
@@ -363,7 +512,12 @@
         372
       ],
       "image": "beehive",
-      "codes": "TODO KF 045 :: unnamed_stack > Swamp Spider House > SSH Layers > SSH Beehives :: Pasted Layer #44 :: 001-001-005-000.png"
+      "codes": [
+        "TODO KF 045 :: unnamed_stack > Swamp Spider House > SSH Layers > SSH Beehives :: Pasted Layer #44 :: 001-001-005-000.png",
+        "MM Swamp Spider House Hive Jars Room 1",
+        "MM Swamp Spider House Hive Jars Room 2",
+        "MM Swamp Spider House Hive Jars Room 3"
+      ]
     },
     {
       "coords": [
@@ -371,7 +525,12 @@
         290
       ],
       "image": "beehive",
-      "codes": "TODO KF 046 :: unnamed_stack > Swamp Spider House > SSH Layers > SSH Beehives :: Pasted Layer #45 :: 001-001-005-001.png"
+      "codes": [
+        "TODO KF 046 :: unnamed_stack > Swamp Spider House > SSH Layers > SSH Beehives :: Pasted Layer #45 :: 001-001-005-001.png",
+        "MM Swamp Spider House Hive Gold Room 1",
+        "MM Swamp Spider House Hive Gold Room 2",
+        "MM Swamp Spider House Hive Gold Room 3"
+      ]
     },
     {
       "coords": [
@@ -379,79 +538,119 @@
         142
       ],
       "image": "beehive",
-      "codes": "TODO KF 047 :: unnamed_stack > Swamp Spider House > SSH Layers > SSH Beehives :: Pasted Layer #46 :: 001-001-005-002.png"
+      "codes": [
+        "TODO KF 047 :: unnamed_stack > Swamp Spider House > SSH Layers > SSH Beehives :: Pasted Layer #46 :: 001-001-005-002.png",
+        "MM Swamp Spider House Hive Tree Room 1",
+        "MM Swamp Spider House Hive Tree Room 2",
+        "MM Swamp Spider House Hive Tree Room 3"
+      ]
     },
     {
       "coords": [
         517,
         369
       ],
-      "image": "wonder_item_random",
-      "codes": "TODO KF 048 :: unnamed_stack > Swamp Spider House > SSH Layers > SSH Wonder :: Pasted Layer #47 :: 001-001-006-000.png"
+      "image": "wonder_item_green_rupee",
+      "codes": [
+        "TODO KF 048 :: unnamed_stack > Swamp Spider House > SSH Layers > SSH Wonder :: Pasted Layer #47 :: 001-001-006-000.png",
+        "MM Swamp Spider House Wonder Item Pillars 04",
+        "MM Swamp Spider House Wonder Item Pillars 05",
+        "MM Swamp Spider House Wonder Item Pillars 06"
+      ]
     },
     {
       "coords": [
         501,
         369
       ],
-      "image": "wonder_item_random",
-      "codes": "TODO KF 049 :: unnamed_stack > Swamp Spider House > SSH Layers > SSH Wonder :: Pasted Layer #48 :: 001-001-006-001.png"
+      "image": "wonder_item_green_rupee",
+      "codes": [
+        "TODO KF 049 :: unnamed_stack > Swamp Spider House > SSH Layers > SSH Wonder :: Pasted Layer #48 :: 001-001-006-001.png",
+        "MM Swamp Spider House Wonder Item Pillars 01",
+        "MM Swamp Spider House Wonder Item Pillars 02",
+        "MM Swamp Spider House Wonder Item Pillars 03"
+      ]
     },
     {
       "coords": [
         517,
         353
       ],
-      "image": "wonder_item_random",
-      "codes": "TODO KF 050 :: unnamed_stack > Swamp Spider House > SSH Layers > SSH Wonder :: Pasted Layer #49 :: 001-001-006-002.png"
+      "image": "wonder_item_green_rupee",
+      "codes": [
+        "TODO KF 050 :: unnamed_stack > Swamp Spider House > SSH Layers > SSH Wonder :: Pasted Layer #49 :: 001-001-006-002.png",
+        "MM Swamp Spider House Wonder Item Pillars 10",
+        "MM Swamp Spider House Wonder Item Pillars 11",
+        "MM Swamp Spider House Wonder Item Pillars 12"
+      ]
     },
     {
       "coords": [
         501,
         353
       ],
-      "image": "wonder_item_random",
-      "codes": "TODO KF 051 :: unnamed_stack > Swamp Spider House > SSH Layers > SSH Wonder :: Pasted Layer #50 :: 001-001-006-003.png"
+      "image": "wonder_item_green_rupee",
+      "codes": [
+        "TODO KF 051 :: unnamed_stack > Swamp Spider House > SSH Layers > SSH Wonder :: Pasted Layer #50 :: 001-001-006-003.png",
+        "MM Swamp Spider House Wonder Item Pillars 08",
+        "MM Swamp Spider House Wonder Item Pillars 09",
+        "MM Swamp Spider House Wonder Item Pillars 07"
+      ]
     },
     {
       "coords": [
         605,
         403
       ],
-      "image": "wonder_item_random",
-      "codes": "TODO KF 052 :: unnamed_stack > Swamp Spider House > SSH Layers > SSH Wonder :: Pasted Layer #51 :: 001-001-006-004.png"
+      "image": "wonder_item_red_rupee",
+      "codes": [
+        "TODO KF 052 :: unnamed_stack > Swamp Spider House > SSH Layers > SSH Wonder :: Pasted Layer #51 :: 001-001-006-004.png",
+        "MM Swamp Spider House Wonder Item Pots 5"
+      ]
     },
     {
       "coords": [
         611,
         379
       ],
-      "image": "wonder_item_random",
-      "codes": "TODO KF 053 :: unnamed_stack > Swamp Spider House > SSH Layers > SSH Wonder :: Pasted Layer #52 :: 001-001-006-005.png"
+      "image": "wonder_item_blue_rupee",
+      "codes": [
+        "TODO KF 053 :: unnamed_stack > Swamp Spider House > SSH Layers > SSH Wonder :: Pasted Layer #52 :: 001-001-006-005.png",
+        "MM Swamp Spider House Wonder Item Pots 4"
+      ]
     },
     {
       "coords": [
         611,
         361
       ],
-      "image": "wonder_item_random",
-      "codes": "TODO KF 054 :: unnamed_stack > Swamp Spider House > SSH Layers > SSH Wonder :: Pasted Layer #53 :: 001-001-006-006.png"
+      "image": "wonder_item_green_rupee",
+      "codes": [
+        "TODO KF 054 :: unnamed_stack > Swamp Spider House > SSH Layers > SSH Wonder :: Pasted Layer #53 :: 001-001-006-006.png",
+        "MM Swamp Spider House Wonder Item Pots 3"
+      ]
     },
     {
       "coords": [
         611,
         343
       ],
-      "image": "wonder_item_random",
-      "codes": "TODO KF 055 :: unnamed_stack > Swamp Spider House > SSH Layers > SSH Wonder :: Pasted Layer #54 :: 001-001-006-007.png"
+      "image": "wonder_item_green_rupee",
+      "codes": [
+        "TODO KF 055 :: unnamed_stack > Swamp Spider House > SSH Layers > SSH Wonder :: Pasted Layer #54 :: 001-001-006-007.png",
+        "MM Swamp Spider House Wonder Item Pots 2"
+      ]
     },
     {
       "coords": [
         611,
         325
       ],
-      "image": "wonder_item_random",
-      "codes": "TODO KF 056 :: unnamed_stack > Swamp Spider House > SSH Layers > SSH Wonder :: Pasted Layer #55 :: 001-001-006-008.png"
+      "image": "wonder_item_green_rupee",
+      "codes": [
+        "TODO KF 056 :: unnamed_stack > Swamp Spider House > SSH Layers > SSH Wonder :: Pasted Layer #55 :: 001-001-006-008.png",
+        "MM Swamp Spider House Wonder Item Pots 1"
+      ]
     },
     {
       "coords": [
@@ -459,7 +658,12 @@
         380
       ],
       "image": "soft_soil",
-      "codes": "TODO KF 057 :: unnamed_stack > Swamp Spider House > SSH Layers > SSH Soils :: Pasted Layer #56 :: 001-001-007-000.png"
+      "codes": [
+        "TODO KF 057 :: unnamed_stack > Swamp Spider House > SSH Layers > SSH Soils :: Pasted Layer #56 :: 001-001-007-000.png",
+        "MM Swamp Spider House Soil Monument Item 1",
+        "MM Swamp Spider House Soil Monument Item 2",
+        "MM Swamp Spider House Soil Monument Item 3"
+      ]
     },
     {
       "coords": [
@@ -467,7 +671,10 @@
         251
       ],
       "image": "soft_soil",
-      "codes": "TODO KF 058 :: unnamed_stack > Swamp Spider House > SSH Layers > SSH Soils :: Pasted Layer #57 :: 001-001-007-001.png"
+      "codes": [
+        "TODO KF 058 :: unnamed_stack > Swamp Spider House > SSH Layers > SSH Soils :: Pasted Layer #57 :: 001-001-007-001.png",
+        "MM Swamp Spider House Soil Gold"
+      ]
     },
     {
       "coords": [
@@ -475,7 +682,10 @@
         494
       ],
       "image": "rock",
-      "codes": "TODO KF 059 :: unnamed_stack > Swamp Spider House > SSH Layers > SSH Rocks :: Pasted Layer #58 :: 001-001-008-000.png"
+      "codes": [
+        "TODO KF 059 :: unnamed_stack > Swamp Spider House > SSH Layers > SSH Rocks :: Pasted Layer #58 :: 001-001-008-000.png",
+        "MM Swamp Spider House Rock Entrance 1"
+      ]
     },
     {
       "coords": [
@@ -483,7 +693,10 @@
         500
       ],
       "image": "rock",
-      "codes": "TODO KF 060 :: unnamed_stack > Swamp Spider House > SSH Layers > SSH Rocks :: Pasted Layer #59 :: 001-001-008-001.png"
+      "codes": [
+        "TODO KF 060 :: unnamed_stack > Swamp Spider House > SSH Layers > SSH Rocks :: Pasted Layer #59 :: 001-001-008-001.png",
+        "MM Swamp Spider House Rock Entrance 2"
+      ]
     },
     {
       "coords": [
@@ -491,15 +704,21 @@
         283
       ],
       "image": "rock",
-      "codes": "TODO KF 061 :: unnamed_stack > Swamp Spider House > SSH Layers > SSH Rocks :: Pasted Layer #60 :: 001-001-008-002.png"
+      "codes": [
+        "TODO KF 061 :: unnamed_stack > Swamp Spider House > SSH Layers > SSH Rocks :: Pasted Layer #60 :: 001-001-008-002.png",
+        "MM Swamp Spider House Rock Pots Room"
+      ]
     },
     {
       "coords": [
         509,
         141
       ],
-      "image": "npc",
-      "codes": "TODO KF 062 :: unnamed_stack > Swamp Spider House > SSH Layers > SSH Gossip :: Pasted Layer #61 :: 001-001-009-000.png"
+      "image": "gossip_stone",
+      "codes": [
+        "TODO KF 062 :: unnamed_stack > Swamp Spider House > SSH Layers > SSH Gossip :: Pasted Layer #61 :: 001-001-009-000.png",
+        "MM Swamp Spider House Gossip"
+      ]
     }
   ]
 }

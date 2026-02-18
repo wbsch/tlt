@@ -10,8 +10,11 @@
         418,
         418
       ],
-      "image": "chest",
-      "codes": "TODO KF 001 :: unnamed_stack > Ocean Spider House > OSH Layers > OSH Checks :: Pasted Layer :: 001-001-001-000.png"
+      "image": "npc",
+      "codes": [
+        "TODO KF 001 :: unnamed_stack > Ocean Spider House > OSH Layers > OSH Checks :: Pasted Layer :: 001-001-001-000.png",
+        "MM Ocean Spider House Wallet"
+      ]
     },
     {
       "coords": [
@@ -19,7 +22,10 @@
         192
       ],
       "image": "chest",
-      "codes": "TODO KF 002 :: unnamed_stack > Ocean Spider House > OSH Layers > OSH Checks :: Pasted Layer #1 :: 001-001-001-001.png"
+      "codes": [
+        "TODO KF 002 :: unnamed_stack > Ocean Spider House > OSH Layers > OSH Checks :: Pasted Layer #1 :: 001-001-001-001.png",
+        "MM Ocean Spider House Chest HP"
+      ]
     },
     {
       "coords": [
@@ -27,7 +33,10 @@
         374
       ],
       "image": "gold_skulltula",
-      "codes": "TODO KF 003 :: unnamed_stack > Ocean Spider House > OSH Layers > OSH Skulls :: Pasted Layer #2 :: 001-001-002-000.png"
+      "codes": [
+        "TODO KF 003 :: unnamed_stack > Ocean Spider House > OSH Layers > OSH Skulls :: Pasted Layer #2 :: 001-001-002-000.png",
+        "MM Ocean Skulltula Entrance Right Wall"
+      ]
     },
     {
       "coords": [
@@ -35,7 +44,10 @@
         328
       ],
       "image": "gold_skulltula",
-      "codes": "TODO KF 004 :: unnamed_stack > Ocean Spider House > OSH Layers > OSH Skulls :: Pasted Layer #3 :: 001-001-002-001.png"
+      "codes": [
+        "TODO KF 004 :: unnamed_stack > Ocean Spider House > OSH Layers > OSH Skulls :: Pasted Layer #3 :: 001-001-002-001.png",
+        "MM Ocean Skulltula Entrance Left Wall"
+      ]
     },
     {
       "coords": [
@@ -43,7 +55,10 @@
         263
       ],
       "image": "gold_skulltula",
-      "codes": "TODO KF 005 :: unnamed_stack > Ocean Spider House > OSH Layers > OSH Skulls :: Pasted Layer #4 :: 001-001-002-002.png"
+      "codes": [
+        "TODO KF 005 :: unnamed_stack > Ocean Spider House > OSH Layers > OSH Skulls :: Pasted Layer #4 :: 001-001-002-002.png",
+        "MM Ocean Skulltula Entrance Web"
+      ]
     },
     {
       "coords": [
@@ -51,7 +66,10 @@
         234
       ],
       "image": "gold_skulltula",
-      "codes": "TODO KF 006 :: unnamed_stack > Ocean Spider House > OSH Layers > OSH Skulls :: Pasted Layer #5 :: 001-001-002-003.png"
+      "codes": [
+        "TODO KF 006 :: unnamed_stack > Ocean Spider House > OSH Layers > OSH Skulls :: Pasted Layer #5 :: 001-001-002-003.png",
+        "MM Ocean Skulltula 2nd Room Ceiling Edge"
+      ]
     },
     {
       "coords": [
@@ -59,7 +77,10 @@
         215
       ],
       "image": "gold_skulltula",
-      "codes": "TODO KF 007 :: unnamed_stack > Ocean Spider House > OSH Layers > OSH Skulls :: Pasted Layer #6 :: 001-001-002-004.png"
+      "codes": [
+        "TODO KF 007 :: unnamed_stack > Ocean Spider House > OSH Layers > OSH Skulls :: Pasted Layer #6 :: 001-001-002-004.png",
+        "MM Ocean Skulltula 2nd Room Ceiling Plank"
+      ]
     },
     {
       "coords": [
@@ -67,7 +88,10 @@
         184
       ],
       "image": "gold_skulltula",
-      "codes": "TODO KF 008 :: unnamed_stack > Ocean Spider House > OSH Layers > OSH Skulls :: Pasted Layer #7 :: 001-001-002-005.png"
+      "codes": [
+        "TODO KF 008 :: unnamed_stack > Ocean Spider House > OSH Layers > OSH Skulls :: Pasted Layer #7 :: 001-001-002-005.png",
+        "MM Ocean Skulltula 2nd Room Lower Pot"
+      ]
     },
     {
       "coords": [
@@ -75,7 +99,10 @@
         154
       ],
       "image": "gold_skulltula",
-      "codes": "TODO KF 009 :: unnamed_stack > Ocean Spider House > OSH Layers > OSH Skulls :: Pasted Layer #8 :: 001-001-002-006.png"
+      "codes": [
+        "TODO KF 009 :: unnamed_stack > Ocean Spider House > OSH Layers > OSH Skulls :: Pasted Layer #8 :: 001-001-002-006.png",
+        "MM Ocean Skulltula 2nd Room Upper Pot"
+      ]
     },
     {
       "coords": [
@@ -83,7 +110,10 @@
         124
       ],
       "image": "gold_skulltula",
-      "codes": "TODO KF 010 :: unnamed_stack > Ocean Spider House > OSH Layers > OSH Skulls :: Pasted Layer #9 :: 001-001-002-007.png"
+      "codes": [
+        "TODO KF 010 :: unnamed_stack > Ocean Spider House > OSH Layers > OSH Skulls :: Pasted Layer #9 :: 001-001-002-007.png",
+        "MM Ocean Skulltula 2nd Room Webbed Pot"
+      ]
     },
     {
       "coords": [
@@ -91,7 +121,10 @@
         137
       ],
       "image": "gold_skulltula",
-      "codes": "TODO KF 011 :: unnamed_stack > Ocean Spider House > OSH Layers > OSH Skulls :: Pasted Layer #10 :: 001-001-002-008.png"
+      "codes": [
+        "TODO KF 011 :: unnamed_stack > Ocean Spider House > OSH Layers > OSH Skulls :: Pasted Layer #10 :: 001-001-002-008.png",
+        "MM Ocean Skulltula 2nd Room Jar"
+      ]
     },
     {
       "coords": [
@@ -99,7 +132,10 @@
         133
       ],
       "image": "gold_skulltula",
-      "codes": "TODO KF 012 :: unnamed_stack > Ocean Spider House > OSH Layers > OSH Skulls :: Pasted Layer #11 :: 001-001-002-009.png"
+      "codes": [
+        "TODO KF 012 :: unnamed_stack > Ocean Spider House > OSH Layers > OSH Skulls :: Pasted Layer #11 :: 001-001-002-009.png",
+        "MM Ocean Skulltula 2nd Room Webbed Hole"
+      ]
     },
     {
       "coords": [
@@ -107,7 +143,10 @@
         146
       ],
       "image": "gold_skulltula",
-      "codes": "TODO KF 013 :: unnamed_stack > Ocean Spider House > OSH Layers > OSH Skulls :: Pasted Layer #12 :: 001-001-002-010.png"
+      "codes": [
+        "TODO KF 013 :: unnamed_stack > Ocean Spider House > OSH Layers > OSH Skulls :: Pasted Layer #12 :: 001-001-002-010.png",
+        "MM Ocean Skulltula 2nd Room Behind Skull 2"
+      ]
     },
     {
       "coords": [
@@ -115,7 +154,10 @@
         162
       ],
       "image": "gold_skulltula",
-      "codes": "TODO KF 014 :: unnamed_stack > Ocean Spider House > OSH Layers > OSH Skulls :: Pasted Layer #13 :: 001-001-002-011.png"
+      "codes": [
+        "TODO KF 014 :: unnamed_stack > Ocean Spider House > OSH Layers > OSH Skulls :: Pasted Layer #13 :: 001-001-002-011.png",
+        "MM Ocean Skulltula 2nd Room Behind Skull 1"
+      ]
     },
     {
       "coords": [
@@ -123,7 +165,10 @@
         178
       ],
       "image": "gold_skulltula",
-      "codes": "TODO KF 015 :: unnamed_stack > Ocean Spider House > OSH Layers > OSH Skulls :: Pasted Layer #14 :: 001-001-002-012.png"
+      "codes": [
+        "TODO KF 015 :: unnamed_stack > Ocean Spider House > OSH Layers > OSH Skulls :: Pasted Layer #14 :: 001-001-002-012.png",
+        "MM Ocean Skulltula Library Ceiling Edge"
+      ]
     },
     {
       "coords": [
@@ -131,7 +176,10 @@
         178
       ],
       "image": "gold_skulltula",
-      "codes": "TODO KF 016 :: unnamed_stack > Ocean Spider House > OSH Layers > OSH Skulls :: Pasted Layer #15 :: 001-001-002-013.png"
+      "codes": [
+        "TODO KF 016 :: unnamed_stack > Ocean Spider House > OSH Layers > OSH Skulls :: Pasted Layer #15 :: 001-001-002-013.png",
+        "MM Ocean Skulltula Library Hole Behind Cabinet"
+      ]
     },
     {
       "coords": [
@@ -139,7 +187,10 @@
         184
       ],
       "image": "gold_skulltula",
-      "codes": "TODO KF 017 :: unnamed_stack > Ocean Spider House > OSH Layers > OSH Skulls :: Pasted Layer #16 :: 001-001-002-014.png"
+      "codes": [
+        "TODO KF 017 :: unnamed_stack > Ocean Spider House > OSH Layers > OSH Skulls :: Pasted Layer #16 :: 001-001-002-014.png",
+        "MM Ocean Skulltula Library Behind Picture"
+      ]
     },
     {
       "coords": [
@@ -147,7 +198,10 @@
         250
       ],
       "image": "gold_skulltula",
-      "codes": "TODO KF 018 :: unnamed_stack > Ocean Spider House > OSH Layers > OSH Skulls :: Pasted Layer #17 :: 001-001-002-015.png"
+      "codes": [
+        "TODO KF 018 :: unnamed_stack > Ocean Spider House > OSH Layers > OSH Skulls :: Pasted Layer #17 :: 001-001-002-015.png",
+        "MM Ocean Skulltula Library Behind Bookcase 1"
+      ]
     },
     {
       "coords": [
@@ -155,7 +209,10 @@
         266
       ],
       "image": "gold_skulltula",
-      "codes": "TODO KF 019 :: unnamed_stack > Ocean Spider House > OSH Layers > OSH Skulls :: Pasted Layer #18 :: 001-001-002-016.png"
+      "codes": [
+        "TODO KF 019 :: unnamed_stack > Ocean Spider House > OSH Layers > OSH Skulls :: Pasted Layer #18 :: 001-001-002-016.png",
+        "MM Ocean Skulltula Library Behind Bookcase 2"
+      ]
     },
     {
       "coords": [
@@ -163,7 +220,10 @@
         282
       ],
       "image": "gold_skulltula",
-      "codes": "TODO KF 020 :: unnamed_stack > Ocean Spider House > OSH Layers > OSH Skulls :: Pasted Layer #19 :: 001-001-002-017.png"
+      "codes": [
+        "TODO KF 020 :: unnamed_stack > Ocean Spider House > OSH Layers > OSH Skulls :: Pasted Layer #19 :: 001-001-002-017.png",
+        "MM Ocean Skulltula Library Hole Behind Picture"
+      ]
     },
     {
       "coords": [
@@ -171,7 +231,10 @@
         276
       ],
       "image": "gold_skulltula",
-      "codes": "TODO KF 021 :: unnamed_stack > Ocean Spider House > OSH Layers > OSH Skulls :: Pasted Layer #20 :: 001-001-002-018.png"
+      "codes": [
+        "TODO KF 021 :: unnamed_stack > Ocean Spider House > OSH Layers > OSH Skulls :: Pasted Layer #20 :: 001-001-002-018.png",
+        "MM Ocean Skulltula Library On Corner Bookshelf"
+      ]
     },
     {
       "coords": [
@@ -179,7 +242,10 @@
         168
       ],
       "image": "gold_skulltula",
-      "codes": "TODO KF 022 :: unnamed_stack > Ocean Spider House > OSH Layers > OSH Skulls :: Pasted Layer #21 :: 001-001-002-019.png"
+      "codes": [
+        "TODO KF 022 :: unnamed_stack > Ocean Spider House > OSH Layers > OSH Skulls :: Pasted Layer #21 :: 001-001-002-019.png",
+        "MM Ocean Skulltula Storage Room Behind Crate"
+      ]
     },
     {
       "coords": [
@@ -187,7 +253,10 @@
         139
       ],
       "image": "gold_skulltula",
-      "codes": "TODO KF 023 :: unnamed_stack > Ocean Spider House > OSH Layers > OSH Skulls :: Pasted Layer #22 :: 001-001-002-020.png"
+      "codes": [
+        "TODO KF 023 :: unnamed_stack > Ocean Spider House > OSH Layers > OSH Skulls :: Pasted Layer #22 :: 001-001-002-020.png",
+        "MM Ocean Skulltula Storage Room Behind Boat"
+      ]
     },
     {
       "coords": [
@@ -195,7 +264,10 @@
         144
       ],
       "image": "gold_skulltula",
-      "codes": "TODO KF 024 :: unnamed_stack > Ocean Spider House > OSH Layers > OSH Skulls :: Pasted Layer #23 :: 001-001-002-021.png"
+      "codes": [
+        "TODO KF 024 :: unnamed_stack > Ocean Spider House > OSH Layers > OSH Skulls :: Pasted Layer #23 :: 001-001-002-021.png",
+        "MM Ocean Skulltula Storage Room Ceiling Web"
+      ]
     },
     {
       "coords": [
@@ -203,7 +275,10 @@
         138
       ],
       "image": "gold_skulltula",
-      "codes": "TODO KF 025 :: unnamed_stack > Ocean Spider House > OSH Layers > OSH Skulls :: Pasted Layer #24 :: 001-001-002-022.png"
+      "codes": [
+        "TODO KF 025 :: unnamed_stack > Ocean Spider House > OSH Layers > OSH Skulls :: Pasted Layer #24 :: 001-001-002-022.png",
+        "MM Ocean Skulltula Storage Room Jar"
+      ]
     },
     {
       "coords": [
@@ -211,7 +286,10 @@
         100
       ],
       "image": "gold_skulltula",
-      "codes": "TODO KF 026 :: unnamed_stack > Ocean Spider House > OSH Layers > OSH Skulls :: Pasted Layer #25 :: 001-001-002-023.png"
+      "codes": [
+        "TODO KF 026 :: unnamed_stack > Ocean Spider House > OSH Layers > OSH Skulls :: Pasted Layer #25 :: 001-001-002-023.png",
+        "MM Ocean Skulltula Storage Room Crate"
+      ]
     },
     {
       "coords": [
@@ -219,7 +297,10 @@
         180
       ],
       "image": "gold_skulltula",
-      "codes": "TODO KF 027 :: unnamed_stack > Ocean Spider House > OSH Layers > OSH Skulls :: Pasted Layer #26 :: 001-001-002-024.png"
+      "codes": [
+        "TODO KF 027 :: unnamed_stack > Ocean Spider House > OSH Layers > OSH Skulls :: Pasted Layer #26 :: 001-001-002-024.png",
+        "MM Ocean Skulltula Colored Skulls Ceiling Edge"
+      ]
     },
     {
       "coords": [
@@ -227,7 +308,10 @@
         201
       ],
       "image": "gold_skulltula",
-      "codes": "TODO KF 028 :: unnamed_stack > Ocean Spider House > OSH Layers > OSH Skulls :: Pasted Layer #27 :: 001-001-002-025.png"
+      "codes": [
+        "TODO KF 028 :: unnamed_stack > Ocean Spider House > OSH Layers > OSH Skulls :: Pasted Layer #27 :: 001-001-002-025.png",
+        "MM Ocean Skulltula Colored Skulls Chandelier 3"
+      ]
     },
     {
       "coords": [
@@ -235,7 +319,10 @@
         185
       ],
       "image": "gold_skulltula",
-      "codes": "TODO KF 029 :: unnamed_stack > Ocean Spider House > OSH Layers > OSH Skulls :: Pasted Layer #28 :: 001-001-002-026.png"
+      "codes": [
+        "TODO KF 029 :: unnamed_stack > Ocean Spider House > OSH Layers > OSH Skulls :: Pasted Layer #28 :: 001-001-002-026.png",
+        "MM Ocean Skulltula Colored Skulls Chandelier 1"
+      ]
     },
     {
       "coords": [
@@ -243,7 +330,10 @@
         193
       ],
       "image": "gold_skulltula",
-      "codes": "TODO KF 030 :: unnamed_stack > Ocean Spider House > OSH Layers > OSH Skulls :: Pasted Layer #29 :: 001-001-002-027.png"
+      "codes": [
+        "TODO KF 030 :: unnamed_stack > Ocean Spider House > OSH Layers > OSH Skulls :: Pasted Layer #29 :: 001-001-002-027.png",
+        "MM Ocean Skulltula Colored Skulls Chandelier 2"
+      ]
     },
     {
       "coords": [
@@ -251,7 +341,10 @@
         154
       ],
       "image": "gold_skulltula",
-      "codes": "TODO KF 031 :: unnamed_stack > Ocean Spider House > OSH Layers > OSH Skulls :: Pasted Layer #30 :: 001-001-002-028.png"
+      "codes": [
+        "TODO KF 031 :: unnamed_stack > Ocean Spider House > OSH Layers > OSH Skulls :: Pasted Layer #30 :: 001-001-002-028.png",
+        "MM Ocean Skulltula Colored Skulls Behind Picture"
+      ]
     },
     {
       "coords": [
@@ -259,7 +352,10 @@
         154
       ],
       "image": "gold_skulltula",
-      "codes": "TODO KF 032 :: unnamed_stack > Ocean Spider House > OSH Layers > OSH Skulls :: Pasted Layer #31 :: 001-001-002-029.png"
+      "codes": [
+        "TODO KF 032 :: unnamed_stack > Ocean Spider House > OSH Layers > OSH Skulls :: Pasted Layer #31 :: 001-001-002-029.png",
+        "MM Ocean Skulltula Colored Skulls Pot"
+      ]
     },
     {
       "coords": [
@@ -267,7 +363,11 @@
         288
       ],
       "image": "pot",
-      "codes": "TODO KF 033 :: unnamed_stack > Ocean Spider House > OSH Layers > OSH Pots :: Pasted Layer #32 :: 001-001-003-000.png"
+      "codes": [
+        "TODO KF 033 :: unnamed_stack > Ocean Spider House > OSH Layers > OSH Pots :: Pasted Layer #32 :: 001-001-003-000.png",
+        "MM Ocean Spider House Pot Entrance 1",
+        "MM Ocean Spider House Pot Entrance 2"
+      ]
     },
     {
       "coords": [
@@ -275,7 +375,11 @@
         288
       ],
       "image": "pot",
-      "codes": "TODO KF 034 :: unnamed_stack > Ocean Spider House > OSH Layers > OSH Pots :: Pasted Layer #33 :: 001-001-003-001.png"
+      "codes": [
+        "TODO KF 034 :: unnamed_stack > Ocean Spider House > OSH Layers > OSH Pots :: Pasted Layer #33 :: 001-001-003-001.png",
+        "MM Ocean Spider House Pot Entrance 3",
+        "MM Ocean Spider House Pot Entrance 4"
+      ]
     },
     {
       "coords": [
@@ -283,7 +387,11 @@
         228
       ],
       "image": "pot",
-      "codes": "TODO KF 035 :: unnamed_stack > Ocean Spider House > OSH Layers > OSH Pots :: Pasted Layer #34 :: 001-001-003-002.png"
+      "codes": [
+        "TODO KF 035 :: unnamed_stack > Ocean Spider House > OSH Layers > OSH Pots :: Pasted Layer #34 :: 001-001-003-002.png",
+        "MM Ocean Spider House Pot Main Room 1",
+        "MM Ocean Spider House Pot Main Room 2"
+      ]
     },
     {
       "coords": [
@@ -291,7 +399,11 @@
         166
       ],
       "image": "pot",
-      "codes": "TODO KF 036 :: unnamed_stack > Ocean Spider House > OSH Layers > OSH Pots :: Pasted Layer #35 :: 001-001-003-003.png"
+      "codes": [
+        "TODO KF 036 :: unnamed_stack > Ocean Spider House > OSH Layers > OSH Pots :: Pasted Layer #35 :: 001-001-003-003.png",
+        "MM Ocean Spider House Pot Colored Skulls 1",
+        "MM Ocean Spider House Pot Colored Skulls 2"
+      ]
     },
     {
       "coords": [
@@ -299,7 +411,10 @@
         138
       ],
       "image": "pot",
-      "codes": "TODO KF 037 :: unnamed_stack > Ocean Spider House > OSH Layers > OSH Pots :: Pasted Layer #36 :: 001-001-003-004.png"
+      "codes": [
+        "TODO KF 037 :: unnamed_stack > Ocean Spider House > OSH Layers > OSH Pots :: Pasted Layer #36 :: 001-001-003-004.png",
+        "MM Ocean Spider House Pot Main Room Boe"
+      ]
     },
     {
       "coords": [
@@ -307,7 +422,10 @@
         121
       ],
       "image": "pot",
-      "codes": "TODO KF 038 :: unnamed_stack > Ocean Spider House > OSH Layers > OSH Pots :: Pasted Layer #37 :: 001-001-003-005.png"
+      "codes": [
+        "TODO KF 038 :: unnamed_stack > Ocean Spider House > OSH Layers > OSH Pots :: Pasted Layer #37 :: 001-001-003-005.png",
+        "MM Ocean Spider House Pot Main Room Web"
+      ]
     },
     {
       "coords": [
@@ -315,7 +433,11 @@
         167
       ],
       "image": "pot",
-      "codes": "TODO KF 039 :: unnamed_stack > Ocean Spider House > OSH Layers > OSH Pots :: Pasted Layer #38 :: 001-001-003-006.png"
+      "codes": [
+        "TODO KF 039 :: unnamed_stack > Ocean Spider House > OSH Layers > OSH Pots :: Pasted Layer #38 :: 001-001-003-006.png",
+        "MM Ocean Spider House Pot Storage 3",
+        "MM Ocean Spider House Pot Storage 4"
+      ]
     },
     {
       "coords": [
@@ -323,7 +445,12 @@
         123
       ],
       "image": "pot",
-      "codes": "TODO KF 040 :: unnamed_stack > Ocean Spider House > OSH Layers > OSH Pots :: Pasted Layer #39 :: 001-001-003-007.png"
+      "codes": [
+        "TODO KF 040 :: unnamed_stack > Ocean Spider House > OSH Layers > OSH Pots :: Pasted Layer #39 :: 001-001-003-007.png",
+        "MM Ocean Spider House Pot Storage Top 1",
+        "MM Ocean Spider House Pot Storage Top 2",
+        "MM Ocean Spider House Pot Storage Top 3"
+      ]
     },
     {
       "coords": [
@@ -331,39 +458,61 @@
         128
       ],
       "image": "pot",
-      "codes": "TODO KF 041 :: unnamed_stack > Ocean Spider House > OSH Layers > OSH Pots :: Pasted Layer #40 :: 001-001-003-008.png"
+      "codes": [
+        "TODO KF 041 :: unnamed_stack > Ocean Spider House > OSH Layers > OSH Pots :: Pasted Layer #40 :: 001-001-003-008.png",
+        "MM Ocean Spider House Pot Storage 1",
+        "MM Ocean Spider House Pot Storage 2"
+      ]
     },
     {
       "coords": [
         347,
         163
       ],
-      "image": "collectible",
-      "codes": "TODO KF 042 :: unnamed_stack > Ocean Spider House > OSH Layers > OSH Crates :: Pasted Layer #41 :: 001-001-004-000.png"
+      "image": "crate",
+      "codes": [
+        "TODO KF 042 :: unnamed_stack > Ocean Spider House > OSH Layers > OSH Crates :: Pasted Layer #41 :: 001-001-004-000.png",
+        "MM Ocean Spider House Crate"
+      ]
     },
     {
       "coords": [
         395,
         150
       ],
-      "image": "wonder_item_random",
-      "codes": "TODO KF 043 :: unnamed_stack > Ocean Spider House > OSH Layers > OSH Wonder :: Pasted Layer #42 :: 001-001-005-000.png"
+      "image": "wonder_item_green_rupee",
+      "codes": [
+        "TODO KF 043 :: unnamed_stack > Ocean Spider House > OSH Layers > OSH Wonder :: Pasted Layer #42 :: 001-001-005-000.png",
+        "MM Ocean Spider House Wonder Item Masks 7",
+        "MM Ocean Spider House Wonder Item Masks 8",
+        "MM Ocean Spider House Wonder Item Masks 9"
+      ]
     },
     {
       "coords": [
         449,
         165
       ],
-      "image": "wonder_item_random",
-      "codes": "TODO KF 044 :: unnamed_stack > Ocean Spider House > OSH Layers > OSH Wonder :: Pasted Layer #43 :: 001-001-005-001.png"
+      "image": "wonder_item_green_rupee",
+      "codes": [
+        "TODO KF 044 :: unnamed_stack > Ocean Spider House > OSH Layers > OSH Wonder :: Pasted Layer #43 :: 001-001-005-001.png",
+        "MM Ocean Spider House Wonder Item Masks 4",
+        "MM Ocean Spider House Wonder Item Masks 5",
+        "MM Ocean Spider House Wonder Item Masks 6"
+      ]
     },
     {
       "coords": [
         448,
         194
       ],
-      "image": "wonder_item_random",
-      "codes": "TODO KF 045 :: unnamed_stack > Ocean Spider House > OSH Layers > OSH Wonder :: Pasted Layer #44 :: 001-001-005-002.png"
+      "image": "wonder_item_green_rupee",
+      "codes": [
+        "TODO KF 045 :: unnamed_stack > Ocean Spider House > OSH Layers > OSH Wonder :: Pasted Layer #44 :: 001-001-005-002.png",
+        "MM Ocean Spider House Wonder Item Masks 1",
+        "MM Ocean Spider House Wonder Item Masks 2",
+        "MM Ocean Spider House Wonder Item Masks 3"
+      ]
     }
   ]
 }

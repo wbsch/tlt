@@ -11,7 +11,10 @@
         294
       ],
       "image": "song",
-      "codes": "TODO KF 001 :: unnamed_stack > Ikana Castle > Castle Layers > Castle Songs :: Pasted Layer :: 001-001-001-000.png"
+      "codes": [
+        "TODO KF 001 :: unnamed_stack > Ikana Castle > Castle Layers > Castle Songs :: Pasted Layer :: 001-001-001-000.png",
+        "MM Ancient Castle of Ikana Song Emptiness"
+      ]
     },
     {
       "coords": [
@@ -19,7 +22,10 @@
         412
       ],
       "image": "pot",
-      "codes": "TODO KF 002 :: unnamed_stack > Ikana Castle > Castle Layers > Castle Pots :: Pasted Layer #1 :: 001-001-002-000.png"
+      "codes": [
+        "TODO KF 002 :: unnamed_stack > Ikana Castle > Castle Layers > Castle Pots :: Pasted Layer #1 :: 001-001-002-000.png",
+        "MM Ancient Castle of Ikana Pot Right 2"
+      ]
     },
     {
       "coords": [
@@ -27,7 +33,10 @@
         386
       ],
       "image": "pot",
-      "codes": "TODO KF 003 :: unnamed_stack > Ikana Castle > Castle Layers > Castle Pots :: Pasted Layer #2 :: 001-001-002-001.png"
+      "codes": [
+        "TODO KF 003 :: unnamed_stack > Ikana Castle > Castle Layers > Castle Pots :: Pasted Layer #2 :: 001-001-002-001.png",
+        "MM Ancient Castle of Ikana Pot Right 1"
+      ]
     },
     {
       "coords": [
@@ -35,7 +44,13 @@
         294
       ],
       "image": "pot",
-      "codes": "TODO KF 004 :: unnamed_stack > Ikana Castle > Castle Layers > Castle Pots :: Pasted Layer #3 :: 001-001-002-002.png"
+      "codes": [
+        "TODO KF 004 :: unnamed_stack > Ikana Castle > Castle Layers > Castle Pots :: Pasted Layer #3 :: 001-001-002-002.png",
+        "MM Ancient Castle of Ikana Boss Pot 5",
+        "MM Ancient Castle of Ikana Boss Pot 6",
+        "MM Ancient Castle of Ikana Boss Pot 7",
+        "MM Ancient Castle of Ikana Boss Pot 8"
+      ]
     },
     {
       "coords": [
@@ -43,7 +58,13 @@
         294
       ],
       "image": "pot",
-      "codes": "TODO KF 005 :: unnamed_stack > Ikana Castle > Castle Layers > Castle Pots :: Pasted Layer #4 :: 001-001-002-003.png"
+      "codes": [
+        "TODO KF 005 :: unnamed_stack > Ikana Castle > Castle Layers > Castle Pots :: Pasted Layer #4 :: 001-001-002-003.png",
+        "MM Ancient Castle of Ikana Boss Pot 1",
+        "MM Ancient Castle of Ikana Boss Pot 2",
+        "MM Ancient Castle of Ikana Boss Pot 3",
+        "MM Ancient Castle of Ikana Boss Pot 4"
+      ]
     },
     {
       "coords": [
@@ -51,7 +72,10 @@
         308
       ],
       "image": "pot",
-      "codes": "TODO KF 006 :: unnamed_stack > Ikana Castle > Castle Layers > Castle Pots :: Pasted Layer #5 :: 001-001-002-004.png"
+      "codes": [
+        "TODO KF 006 :: unnamed_stack > Ikana Castle > Castle Layers > Castle Pots :: Pasted Layer #5 :: 001-001-002-004.png",
+        "MM Ancient Castle of Ikana Pot Entrance 2"
+      ]
     },
     {
       "coords": [
@@ -59,7 +83,10 @@
         274
       ],
       "image": "pot",
-      "codes": "TODO KF 007 :: unnamed_stack > Ikana Castle > Castle Layers > Castle Pots :: Pasted Layer #6 :: 001-001-002-005.png"
+      "codes": [
+        "TODO KF 007 :: unnamed_stack > Ikana Castle > Castle Layers > Castle Pots :: Pasted Layer #6 :: 001-001-002-005.png",
+        "MM Ancient Castle of Ikana Pot Entrance 1"
+      ]
     },
     {
       "coords": [
@@ -67,7 +94,10 @@
         217
       ],
       "image": "pot",
-      "codes": "TODO KF 008 :: unnamed_stack > Ikana Castle > Castle Layers > Castle Pots :: Pasted Layer #7 :: 001-001-002-006.png"
+      "codes": [
+        "TODO KF 008 :: unnamed_stack > Ikana Castle > Castle Layers > Castle Pots :: Pasted Layer #7 :: 001-001-002-006.png",
+        "MM Ancient Castle of Ikana Pot Left First Room 1"
+      ]
     },
     {
       "coords": [
@@ -75,7 +105,10 @@
         217
       ],
       "image": "pot",
-      "codes": "TODO KF 009 :: unnamed_stack > Ikana Castle > Castle Layers > Castle Pots :: Pasted Layer #8 :: 001-001-002-007.png"
+      "codes": [
+        "TODO KF 009 :: unnamed_stack > Ikana Castle > Castle Layers > Castle Pots :: Pasted Layer #8 :: 001-001-002-007.png",
+        "MM Ancient Castle of Ikana Pot Left First Room 2"
+      ]
     },
     {
       "coords": [
@@ -83,7 +116,13 @@
         228
       ],
       "image": "pot",
-      "codes": "TODO KF 010 :: unnamed_stack > Ikana Castle > Castle Layers > Castle Pots :: Pasted Layer #9 :: 001-001-002-008.png"
+      "codes": [
+        "TODO KF 010 :: unnamed_stack > Ikana Castle > Castle Layers > Castle Pots :: Pasted Layer #9 :: 001-001-002-008.png",
+        "MM Ancient Castle of Ikana Pot Left Second Room 1",
+        "MM Ancient Castle of Ikana Pot Left Second Room 2",
+        "MM Ancient Castle of Ikana Pot Left Second Room 3",
+        "MM Ancient Castle of Ikana Pot Left Second Room 4"
+      ]
     },
     {
       "coords": [
@@ -91,7 +130,10 @@
         202
       ],
       "image": "pot",
-      "codes": "TODO KF 011 :: unnamed_stack > Ikana Castle > Castle Layers > Castle Pots :: Pasted Layer #10 :: 001-001-002-009.png"
+      "codes": [
+        "TODO KF 011 :: unnamed_stack > Ikana Castle > Castle Layers > Castle Pots :: Pasted Layer #10 :: 001-001-002-009.png",
+        "MM Ancient Castle of Ikana Pot Left Third Room 2"
+      ]
     },
     {
       "coords": [
@@ -99,7 +141,10 @@
         176
       ],
       "image": "pot",
-      "codes": "TODO KF 012 :: unnamed_stack > Ikana Castle > Castle Layers > Castle Pots :: Pasted Layer #11 :: 001-001-002-010.png"
+      "codes": [
+        "TODO KF 012 :: unnamed_stack > Ikana Castle > Castle Layers > Castle Pots :: Pasted Layer #11 :: 001-001-002-010.png",
+        "MM Ancient Castle of Ikana Pot Left Third Room 1"
+      ]
     }
   ]
 }

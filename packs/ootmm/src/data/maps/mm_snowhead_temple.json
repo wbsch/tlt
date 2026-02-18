@@ -10,16 +10,22 @@
         792,
         80
       ],
-      "image": "chest",
-      "codes": "TODO KF 001 :: unnamed_stack > Snowhead Temple > Snowhead Layers > Snowhead Checks :: Pasted Layer :: 001-001-001-000.png"
+      "image": "heart_container",
+      "codes": [
+        "TODO KF 001 :: unnamed_stack > Snowhead Temple > Snowhead Layers > Snowhead Checks :: Pasted Layer :: 001-001-001-000.png",
+        "MM Snowhead Temple Boss HC"
+      ]
     },
     {
       "coords": [
         808,
         80
       ],
-      "image": "chest",
-      "codes": "TODO KF 002 :: unnamed_stack > Snowhead Temple > Snowhead Layers > Snowhead Checks :: Pasted Layer #1 :: 001-001-001-001.png"
+      "image": "gohts_remain",
+      "codes": [
+        "TODO KF 002 :: unnamed_stack > Snowhead Temple > Snowhead Layers > Snowhead Checks :: Pasted Layer #1 :: 001-001-001-001.png",
+        "MM Snowhead Temple Boss"
+      ]
     },
     {
       "coords": [
@@ -27,7 +33,10 @@
         99
       ],
       "image": "chest",
-      "codes": "TODO KF 003 :: unnamed_stack > Snowhead Temple > Snowhead Layers > Snowhead Checks :: Pasted Layer #2 :: 001-001-001-002.png"
+      "codes": [
+        "TODO KF 003 :: unnamed_stack > Snowhead Temple > Snowhead Layers > Snowhead Checks :: Pasted Layer #2 :: 001-001-001-002.png",
+        "MM Snowhead Temple Boss Key"
+      ]
     },
     {
       "coords": [
@@ -35,7 +44,10 @@
         482
       ],
       "image": "chest",
-      "codes": "TODO KF 004 :: unnamed_stack > Snowhead Temple > Snowhead Layers > Snowhead Checks :: Pasted Layer #3 :: 001-001-001-003.png"
+      "codes": [
+        "TODO KF 004 :: unnamed_stack > Snowhead Temple > Snowhead Layers > Snowhead Checks :: Pasted Layer #3 :: 001-001-001-003.png",
+        "MM Snowhead Temple Bridge Room"
+      ]
     },
     {
       "coords": [
@@ -43,7 +55,10 @@
         512
       ],
       "image": "chest",
-      "codes": "TODO KF 005 :: unnamed_stack > Snowhead Temple > Snowhead Layers > Snowhead Checks :: Pasted Layer #4 :: 001-001-001-004.png"
+      "codes": [
+        "TODO KF 005 :: unnamed_stack > Snowhead Temple > Snowhead Layers > Snowhead Checks :: Pasted Layer #4 :: 001-001-001-004.png",
+        "MM Snowhead Temple Compass Room Ledge"
+      ]
     },
     {
       "coords": [
@@ -51,7 +66,10 @@
         490
       ],
       "image": "chest",
-      "codes": "TODO KF 006 :: unnamed_stack > Snowhead Temple > Snowhead Layers > Snowhead Checks :: Pasted Layer #5 :: 001-001-001-005.png"
+      "codes": [
+        "TODO KF 006 :: unnamed_stack > Snowhead Temple > Snowhead Layers > Snowhead Checks :: Pasted Layer #5 :: 001-001-001-005.png",
+        "MM Snowhead Temple Compass"
+      ]
     },
     {
       "coords": [
@@ -59,7 +77,10 @@
         465
       ],
       "image": "chest",
-      "codes": "TODO KF 007 :: unnamed_stack > Snowhead Temple > Snowhead Layers > Snowhead Checks :: Pasted Layer #6 :: 001-001-001-006.png"
+      "codes": [
+        "TODO KF 007 :: unnamed_stack > Snowhead Temple > Snowhead Layers > Snowhead Checks :: Pasted Layer #6 :: 001-001-001-006.png",
+        "MM Snowhead Temple Block Room"
+      ]
     },
     {
       "coords": [
@@ -67,7 +88,10 @@
         423
       ],
       "image": "chest",
-      "codes": "TODO KF 008 :: unnamed_stack > Snowhead Temple > Snowhead Layers > Snowhead Checks :: Pasted Layer #7 :: 001-001-001-007.png"
+      "codes": [
+        "TODO KF 008 :: unnamed_stack > Snowhead Temple > Snowhead Layers > Snowhead Checks :: Pasted Layer #7 :: 001-001-001-007.png",
+        "MM Snowhead Temple Block Room Ledge"
+      ]
     },
     {
       "coords": [
@@ -75,7 +99,10 @@
         330
       ],
       "image": "chest",
-      "codes": "TODO KF 009 :: unnamed_stack > Snowhead Temple > Snowhead Layers > Snowhead Checks :: Pasted Layer #8 :: 001-001-001-008.png"
+      "codes": [
+        "TODO KF 009 :: unnamed_stack > Snowhead Temple > Snowhead Layers > Snowhead Checks :: Pasted Layer #8 :: 001-001-001-008.png",
+        "MM Snowhead Temple Pillars Room"
+      ]
     },
     {
       "coords": [
@@ -83,7 +110,10 @@
         447
       ],
       "image": "chest",
-      "codes": "TODO KF 010 :: unnamed_stack > Snowhead Temple > Snowhead Layers > Snowhead Checks :: Pasted Layer #9 :: 001-001-001-009.png"
+      "codes": [
+        "TODO KF 010 :: unnamed_stack > Snowhead Temple > Snowhead Layers > Snowhead Checks :: Pasted Layer #9 :: 001-001-001-009.png",
+        "MM Snowhead Temple Central Room Bottom"
+      ]
     },
     {
       "coords": [
@@ -91,7 +121,10 @@
         228
       ],
       "image": "chest",
-      "codes": "TODO KF 011 :: unnamed_stack > Snowhead Temple > Snowhead Layers > Snowhead Checks :: Pasted Layer #10 :: 001-001-001-010.png"
+      "codes": [
+        "TODO KF 011 :: unnamed_stack > Snowhead Temple > Snowhead Layers > Snowhead Checks :: Pasted Layer #10 :: 001-001-001-010.png",
+        "MM Snowhead Temple Icicle Room Alcove"
+      ]
     },
     {
       "coords": [
@@ -99,7 +132,10 @@
         186
       ],
       "image": "chest",
-      "codes": "TODO KF 012 :: unnamed_stack > Snowhead Temple > Snowhead Layers > Snowhead Checks :: Pasted Layer #11 :: 001-001-001-011.png"
+      "codes": [
+        "TODO KF 012 :: unnamed_stack > Snowhead Temple > Snowhead Layers > Snowhead Checks :: Pasted Layer #11 :: 001-001-001-011.png",
+        "MM Snowhead Temple Icicle Room"
+      ]
     },
     {
       "coords": [
@@ -107,7 +143,10 @@
         143
       ],
       "image": "chest",
-      "codes": "TODO KF 013 :: unnamed_stack > Snowhead Temple > Snowhead Layers > Snowhead Checks :: Pasted Layer #12 :: 001-001-001-012.png"
+      "codes": [
+        "TODO KF 013 :: unnamed_stack > Snowhead Temple > Snowhead Layers > Snowhead Checks :: Pasted Layer #12 :: 001-001-001-012.png",
+        "MM Snowhead Temple Fire Arrow"
+      ]
     },
     {
       "coords": [
@@ -115,7 +154,10 @@
         101
       ],
       "image": "chest",
-      "codes": "TODO KF 014 :: unnamed_stack > Snowhead Temple > Snowhead Layers > Snowhead Checks :: Pasted Layer #13 :: 001-001-001-013.png"
+      "codes": [
+        "TODO KF 014 :: unnamed_stack > Snowhead Temple > Snowhead Layers > Snowhead Checks :: Pasted Layer #13 :: 001-001-001-013.png",
+        "MM Snowhead Temple Central Room Alcove"
+      ]
     },
     {
       "coords": [
@@ -123,7 +165,10 @@
         121
       ],
       "image": "chest",
-      "codes": "TODO KF 015 :: unnamed_stack > Snowhead Temple > Snowhead Layers > Snowhead Checks :: Pasted Layer #14 :: 001-001-001-014.png"
+      "codes": [
+        "TODO KF 015 :: unnamed_stack > Snowhead Temple > Snowhead Layers > Snowhead Checks :: Pasted Layer #14 :: 001-001-001-014.png",
+        "MM Snowhead Temple Map Alcove"
+      ]
     },
     {
       "coords": [
@@ -131,71 +176,98 @@
         138
       ],
       "image": "chest",
-      "codes": "TODO KF 016 :: unnamed_stack > Snowhead Temple > Snowhead Layers > Snowhead Checks :: Pasted Layer #15 :: 001-001-001-015.png"
+      "codes": [
+        "TODO KF 016 :: unnamed_stack > Snowhead Temple > Snowhead Layers > Snowhead Checks :: Pasted Layer #15 :: 001-001-001-015.png",
+        "MM Snowhead Temple Map"
+      ]
     },
     {
       "coords": [
         738,
         144
       ],
-      "image": "collectible",
-      "codes": "TODO KF 017 :: unnamed_stack > Snowhead Temple > Snowhead Layers > Snowhead Strays :: Pasted Layer #16 :: 001-001-002-000.png"
+      "image": "stray_fairy",
+      "codes": [
+        "TODO KF 017 :: unnamed_stack > Snowhead Temple > Snowhead Layers > Snowhead Strays :: Pasted Layer #16 :: 001-001-002-000.png",
+        "MM Snowhead Temple SF Dinolfos 2"
+      ]
     },
     {
       "coords": [
         729,
         119
       ],
-      "image": "collectible",
-      "codes": "TODO KF 018 :: unnamed_stack > Snowhead Temple > Snowhead Layers > Snowhead Strays :: Pasted Layer #17 :: 001-001-002-001.png"
+      "image": "stray_fairy",
+      "codes": [
+        "TODO KF 018 :: unnamed_stack > Snowhead Temple > Snowhead Layers > Snowhead Strays :: Pasted Layer #17 :: 001-001-002-001.png",
+        "MM Snowhead Temple SF Dinolfos 1"
+      ]
     },
     {
       "coords": [
         403,
         149
       ],
-      "image": "collectible",
-      "codes": "TODO KF 019 :: unnamed_stack > Snowhead Temple > Snowhead Layers > Snowhead Strays :: Pasted Layer #18 :: 001-001-002-002.png"
+      "image": "stray_fairy",
+      "codes": [
+        "TODO KF 019 :: unnamed_stack > Snowhead Temple > Snowhead Layers > Snowhead Strays :: Pasted Layer #18 :: 001-001-002-002.png",
+        "MM Snowhead Temple SF Snow Room"
+      ]
     },
     {
       "coords": [
         244,
         138
       ],
-      "image": "collectible",
-      "codes": "TODO KF 020 :: unnamed_stack > Snowhead Temple > Snowhead Layers > Snowhead Strays :: Pasted Layer #19 :: 001-001-002-003.png"
+      "image": "stray_fairy",
+      "codes": [
+        "TODO KF 020 :: unnamed_stack > Snowhead Temple > Snowhead Layers > Snowhead Strays :: Pasted Layer #19 :: 001-001-002-003.png",
+        "MM Snowhead Temple SF Map Room"
+      ]
     },
     {
       "coords": [
         170,
         224
       ],
-      "image": "collectible",
-      "codes": "TODO KF 021 :: unnamed_stack > Snowhead Temple > Snowhead Layers > Snowhead Strays :: Pasted Layer #20 :: 001-001-002-004.png"
+      "image": "stray_fairy",
+      "codes": [
+        "TODO KF 021 :: unnamed_stack > Snowhead Temple > Snowhead Layers > Snowhead Strays :: Pasted Layer #20 :: 001-001-002-004.png",
+        "MM Snowhead Temple SF Dual Switches"
+      ]
     },
     {
       "coords": [
         729,
         426
       ],
-      "image": "collectible",
-      "codes": "TODO KF 022 :: unnamed_stack > Snowhead Temple > Snowhead Layers > Snowhead Strays :: Pasted Layer #21 :: 001-001-002-005.png"
+      "image": "stray_fairy",
+      "codes": [
+        "TODO KF 022 :: unnamed_stack > Snowhead Temple > Snowhead Layers > Snowhead Strays :: Pasted Layer #21 :: 001-001-002-005.png",
+        "MM Snowhead Temple SF Bridge Under Platform"
+      ]
     },
     {
       "coords": [
         729,
         451
       ],
-      "image": "collectible",
-      "codes": "TODO KF 023 :: unnamed_stack > Snowhead Temple > Snowhead Layers > Snowhead Strays :: Pasted Layer #22 :: 001-001-002-006.png"
+      "image": "stray_fairy",
+      "codes": [
+        "TODO KF 023 :: unnamed_stack > Snowhead Temple > Snowhead Layers > Snowhead Strays :: Pasted Layer #22 :: 001-001-002-006.png",
+        "MM Snowhead Temple SF Bridge Pillar"
+      ]
     },
     {
       "coords": [
         550,
         479
       ],
-      "image": "collectible",
-      "codes": "TODO KF 024 :: unnamed_stack > Snowhead Temple > Snowhead Layers > Snowhead Strays :: Pasted Layer #23 :: 001-001-002-007.png"
+      "image": "stray_fairy",
+      "codes": [
+        "TODO KF 024 :: unnamed_stack > Snowhead Temple > Snowhead Layers > Snowhead Strays :: Pasted Layer #23 :: 001-001-002-007.png",
+        "MM Snowhead Temple SF Compass Room Crate"
+      ]
     },
     {
       "coords": [
@@ -203,7 +275,14 @@
         100
       ],
       "image": "pot",
-      "codes": "TODO KF 025 :: unnamed_stack > Snowhead Temple > Snowhead Layers > Snowhead Pots :: Pasted Layer #24 :: 001-001-003-000.png"
+      "codes": [
+        "TODO KF 025 :: unnamed_stack > Snowhead Temple > Snowhead Layers > Snowhead Pots :: Pasted Layer #24 :: 001-001-003-000.png",
+        "MM Snowhead Temple Pot Wizzrobe 1",
+        "MM Snowhead Temple Pot Wizzrobe 2",
+        "MM Snowhead Temple Pot Wizzrobe 3",
+        "MM Snowhead Temple Pot Wizzrobe 4",
+        "MM Snowhead Temple Pot Wizzrobe 5"
+      ]
     },
     {
       "coords": [
@@ -211,7 +290,11 @@
         113
       ],
       "image": "pot",
-      "codes": "TODO KF 026 :: unnamed_stack > Snowhead Temple > Snowhead Layers > Snowhead Pots :: Pasted Layer #25 :: 001-001-003-001.png"
+      "codes": [
+        "TODO KF 026 :: unnamed_stack > Snowhead Temple > Snowhead Layers > Snowhead Pots :: Pasted Layer #25 :: 001-001-003-001.png",
+        "MM Snowhead Temple Pot Central Room Near Boss Key 1",
+        "MM Snowhead Temple Pot Central Room Near Boss Key 2"
+      ]
     },
     {
       "coords": [
@@ -219,7 +302,19 @@
         64
       ],
       "image": "pot",
-      "codes": "TODO KF 027 :: unnamed_stack > Snowhead Temple > Snowhead Layers > Snowhead Pots :: Pasted Layer #26 :: 001-001-003-002.png"
+      "codes": [
+        "TODO KF 027 :: unnamed_stack > Snowhead Temple > Snowhead Layers > Snowhead Pots :: Pasted Layer #26 :: 001-001-003-002.png",
+        "MM Snowhead Temple Boss Pot 01",
+        "MM Snowhead Temple Boss Pot 02",
+        "MM Snowhead Temple Boss Pot 03",
+        "MM Snowhead Temple Boss Pot 04",
+        "MM Snowhead Temple Boss Pot 05",
+        "MM Snowhead Temple Boss Pot 06",
+        "MM Snowhead Temple Boss Pot 07",
+        "MM Snowhead Temple Boss Pot 08",
+        "MM Snowhead Temple Boss Pot 09",
+        "MM Snowhead Temple Boss Pot 10"
+      ]
     },
     {
       "coords": [
@@ -227,7 +322,13 @@
         64
       ],
       "image": "pot",
-      "codes": "TODO KF 028 :: unnamed_stack > Snowhead Temple > Snowhead Layers > Snowhead Pots :: Pasted Layer #27 :: 001-001-003-003.png"
+      "codes": [
+        "TODO KF 028 :: unnamed_stack > Snowhead Temple > Snowhead Layers > Snowhead Pots :: Pasted Layer #27 :: 001-001-003-003.png",
+        "MM Snowhead Temple Boss Pot Early 1",
+        "MM Snowhead Temple Boss Pot Early 2",
+        "MM Snowhead Temple Boss Pot Early 3",
+        "MM Snowhead Temple Boss Pot Early 4"
+      ]
     },
     {
       "coords": [
@@ -235,7 +336,11 @@
         132
       ],
       "image": "pot",
-      "codes": "TODO KF 029 :: unnamed_stack > Snowhead Temple > Snowhead Layers > Snowhead Pots :: Pasted Layer #28 :: 001-001-003-004.png"
+      "codes": [
+        "TODO KF 029 :: unnamed_stack > Snowhead Temple > Snowhead Layers > Snowhead Pots :: Pasted Layer #28 :: 001-001-003-004.png",
+        "MM Snowhead Temple Pot Central Room Level 2 1",
+        "MM Snowhead Temple Pot Central Room Level 2 2"
+      ]
     },
     {
       "coords": [
@@ -243,7 +348,11 @@
         179
       ],
       "image": "pot",
-      "codes": "TODO KF 030 :: unnamed_stack > Snowhead Temple > Snowhead Layers > Snowhead Pots :: Pasted Layer #29 :: 001-001-003-005.png"
+      "codes": [
+        "TODO KF 030 :: unnamed_stack > Snowhead Temple > Snowhead Layers > Snowhead Pots :: Pasted Layer #29 :: 001-001-003-005.png",
+        "MM Snowhead Temple Pot Central Room Scarecrow 1",
+        "MM Snowhead Temple Pot Central Room Scarecrow 2"
+      ]
     },
     {
       "coords": [
@@ -251,7 +360,11 @@
         204
       ],
       "image": "pot",
-      "codes": "TODO KF 031 :: unnamed_stack > Snowhead Temple > Snowhead Layers > Snowhead Pots :: Pasted Layer #30 :: 001-001-003-006.png"
+      "codes": [
+        "TODO KF 031 :: unnamed_stack > Snowhead Temple > Snowhead Layers > Snowhead Pots :: Pasted Layer #30 :: 001-001-003-006.png",
+        "MM Snowhead Temple Pot Dual Switches 1",
+        "MM Snowhead Temple Pot Dual Switches 2"
+      ]
     },
     {
       "coords": [
@@ -259,7 +372,13 @@
         356
       ],
       "image": "pot",
-      "codes": "TODO KF 032 :: unnamed_stack > Snowhead Temple > Snowhead Layers > Snowhead Pots :: Pasted Layer #31 :: 001-001-003-007.png"
+      "codes": [
+        "TODO KF 032 :: unnamed_stack > Snowhead Temple > Snowhead Layers > Snowhead Pots :: Pasted Layer #31 :: 001-001-003-007.png",
+        "MM Snowhead Temple Pot Pillars Room Lower 4",
+        "MM Snowhead Temple Pot Pillars Room Lower 5",
+        "MM Snowhead Temple Pot Pillars Room Lower 6",
+        "MM Snowhead Temple Pot Pillars Room Lower 7"
+      ]
     },
     {
       "coords": [
@@ -267,7 +386,12 @@
         383
       ],
       "image": "pot",
-      "codes": "TODO KF 033 :: unnamed_stack > Snowhead Temple > Snowhead Layers > Snowhead Pots :: Pasted Layer #32 :: 001-001-003-008.png"
+      "codes": [
+        "TODO KF 033 :: unnamed_stack > Snowhead Temple > Snowhead Layers > Snowhead Pots :: Pasted Layer #32 :: 001-001-003-008.png",
+        "MM Snowhead Temple Pot Pillars Room Lower 1",
+        "MM Snowhead Temple Pot Pillars Room Lower 2",
+        "MM Snowhead Temple Pot Pillars Room Lower 3"
+      ]
     },
     {
       "coords": [
@@ -275,7 +399,11 @@
         389
       ],
       "image": "pot",
-      "codes": "TODO KF 034 :: unnamed_stack > Snowhead Temple > Snowhead Layers > Snowhead Pots :: Pasted Layer #33 :: 001-001-003-009.png"
+      "codes": [
+        "TODO KF 034 :: unnamed_stack > Snowhead Temple > Snowhead Layers > Snowhead Pots :: Pasted Layer #33 :: 001-001-003-009.png",
+        "MM Snowhead Temple Pot Central Room Bottom 1",
+        "MM Snowhead Temple Pot Central Room Bottom 2"
+      ]
     },
     {
       "coords": [
@@ -283,7 +411,11 @@
         355
       ],
       "image": "pot",
-      "codes": "TODO KF 035 :: unnamed_stack > Snowhead Temple > Snowhead Layers > Snowhead Pots :: Pasted Layer #34 :: 001-001-003-010.png"
+      "codes": [
+        "TODO KF 035 :: unnamed_stack > Snowhead Temple > Snowhead Layers > Snowhead Pots :: Pasted Layer #34 :: 001-001-003-010.png",
+        "MM Snowhead Temple Pot Pillars Room Upper 5",
+        "MM Snowhead Temple Pot Pillars Room Upper 6"
+      ]
     },
     {
       "coords": [
@@ -291,7 +423,11 @@
         334
       ],
       "image": "pot",
-      "codes": "TODO KF 036 :: unnamed_stack > Snowhead Temple > Snowhead Layers > Snowhead Pots :: Pasted Layer #35 :: 001-001-003-011.png"
+      "codes": [
+        "TODO KF 036 :: unnamed_stack > Snowhead Temple > Snowhead Layers > Snowhead Pots :: Pasted Layer #35 :: 001-001-003-011.png",
+        "MM Snowhead Temple Pot Pillars Room Upper 3",
+        "MM Snowhead Temple Pot Pillars Room Upper 4"
+      ]
     },
     {
       "coords": [
@@ -299,15 +435,23 @@
         408
       ],
       "image": "pot",
-      "codes": "TODO KF 037 :: unnamed_stack > Snowhead Temple > Snowhead Layers > Snowhead Pots :: Pasted Layer #36 :: 001-001-003-012.png"
+      "codes": [
+        "TODO KF 037 :: unnamed_stack > Snowhead Temple > Snowhead Layers > Snowhead Pots :: Pasted Layer #36 :: 001-001-003-012.png",
+        "MM Snowhead Temple Pot Pillars Room Upper 1",
+        "MM Snowhead Temple Pot Pillars Room Upper 2"
+      ]
     },
     {
       "coords": [
         557,
         414
       ],
-      "image": "pot",
-      "codes": "TODO KF 038 :: unnamed_stack > Snowhead Temple > Snowhead Layers > Snowhead Pots :: Pasted Layer #37 :: 001-001-003-013.png"
+      "image": "flying_pot",
+      "codes": [
+        "TODO KF 038 :: unnamed_stack > Snowhead Temple > Snowhead Layers > Snowhead Pots :: Pasted Layer #37 :: 001-001-003-013.png",
+        "MM Snowhead Temple Flying Pot 1",
+        "MM Snowhead Temple Flying Pot 2"
+      ]
     },
     {
       "coords": [
@@ -315,7 +459,11 @@
         446
       ],
       "image": "pot",
-      "codes": "TODO KF 039 :: unnamed_stack > Snowhead Temple > Snowhead Layers > Snowhead Pots :: Pasted Layer #38 :: 001-001-003-014.png"
+      "codes": [
+        "TODO KF 039 :: unnamed_stack > Snowhead Temple > Snowhead Layers > Snowhead Pots :: Pasted Layer #38 :: 001-001-003-014.png",
+        "MM Snowhead Temple Pot Block Room 1",
+        "MM Snowhead Temple Pot Block Room 2"
+      ]
     },
     {
       "coords": [
@@ -323,7 +471,12 @@
         472
       ],
       "image": "pot",
-      "codes": "TODO KF 040 :: unnamed_stack > Snowhead Temple > Snowhead Layers > Snowhead Pots :: Pasted Layer #39 :: 001-001-003-015.png"
+      "codes": [
+        "TODO KF 040 :: unnamed_stack > Snowhead Temple > Snowhead Layers > Snowhead Pots :: Pasted Layer #39 :: 001-001-003-015.png",
+        "MM Snowhead Temple Pot Compass Room 1",
+        "MM Snowhead Temple Pot Compass Room 2",
+        "MM Snowhead Temple Pot Compass Room 3"
+      ]
     },
     {
       "coords": [
@@ -331,7 +484,11 @@
         509
       ],
       "image": "pot",
-      "codes": "TODO KF 041 :: unnamed_stack > Snowhead Temple > Snowhead Layers > Snowhead Pots :: Pasted Layer #40 :: 001-001-003-016.png"
+      "codes": [
+        "TODO KF 041 :: unnamed_stack > Snowhead Temple > Snowhead Layers > Snowhead Pots :: Pasted Layer #40 :: 001-001-003-016.png",
+        "MM Snowhead Temple Pot Compass Room 4",
+        "MM Snowhead Temple Pot Compass Room 5"
+      ]
     },
     {
       "coords": [
@@ -339,7 +496,11 @@
         506
       ],
       "image": "pot",
-      "codes": "TODO KF 042 :: unnamed_stack > Snowhead Temple > Snowhead Layers > Snowhead Pots :: Pasted Layer #41 :: 001-001-003-017.png"
+      "codes": [
+        "TODO KF 042 :: unnamed_stack > Snowhead Temple > Snowhead Layers > Snowhead Pots :: Pasted Layer #41 :: 001-001-003-017.png",
+        "MM Snowhead Temple Pot Entrance 1",
+        "MM Snowhead Temple Pot Entrance 2"
+      ]
     },
     {
       "coords": [
@@ -347,7 +508,11 @@
         427
       ],
       "image": "pot",
-      "codes": "TODO KF 043 :: unnamed_stack > Snowhead Temple > Snowhead Layers > Snowhead Pots :: Pasted Layer #42 :: 001-001-003-018.png"
+      "codes": [
+        "TODO KF 043 :: unnamed_stack > Snowhead Temple > Snowhead Layers > Snowhead Pots :: Pasted Layer #42 :: 001-001-003-018.png",
+        "MM Snowhead Temple Pot Bridge Room After 1",
+        "MM Snowhead Temple Pot Bridge Room After 2"
+      ]
     },
     {
       "coords": [
@@ -355,55 +520,85 @@
         506
       ],
       "image": "pot",
-      "codes": "TODO KF 044 :: unnamed_stack > Snowhead Temple > Snowhead Layers > Snowhead Pots :: Pasted Layer #43 :: 001-001-003-019.png"
+      "codes": [
+        "TODO KF 044 :: unnamed_stack > Snowhead Temple > Snowhead Layers > Snowhead Pots :: Pasted Layer #43 :: 001-001-003-019.png",
+        "MM Snowhead Temple Pot Bridge Room 1",
+        "MM Snowhead Temple Pot Bridge Room 2",
+        "MM Snowhead Temple Pot Bridge Room 3",
+        "MM Snowhead Temple Pot Bridge Room 4",
+        "MM Snowhead Temple Pot Bridge Room 5"
+      ]
     },
     {
       "coords": [
         736,
         437
       ],
-      "image": "collectible",
-      "codes": "TODO KF 045 :: unnamed_stack > Snowhead Temple > Snowhead Layers > Snowhead Crates :: Pasted Layer #44 :: 001-001-004-000.png"
+      "image": "crate",
+      "codes": [
+        "TODO KF 045 :: unnamed_stack > Snowhead Temple > Snowhead Layers > Snowhead Crates :: Pasted Layer #44 :: 001-001-004-000.png",
+        "MM Snowhead Temple Crate Bridge"
+      ]
     },
     {
       "coords": [
         265,
         168
       ],
-      "image": "collectible",
-      "codes": "TODO KF 046 :: unnamed_stack > Snowhead Temple > Snowhead Layers > Snowhead Crates :: Pasted Layer #45 :: 001-001-004-001.png"
+      "image": "crate",
+      "codes": [
+        "TODO KF 046 :: unnamed_stack > Snowhead Temple > Snowhead Layers > Snowhead Crates :: Pasted Layer #45 :: 001-001-004-001.png",
+        "MM Snowhead Temple Crate Map Room 1",
+        "MM Snowhead Temple Crate Map Room 2",
+        "MM Snowhead Temple Crate Map Room 3",
+        "MM Snowhead Temple Crate Map Room 4",
+        "MM Snowhead Temple Crate Map Room 5"
+      ]
     },
     {
       "coords": [
         199,
         233
       ],
-      "image": "collectible",
-      "codes": "TODO KF 047 :: unnamed_stack > Snowhead Temple > Snowhead Layers > Snowhead Crates :: Pasted Layer #46 :: 001-001-004-002.png"
+      "image": "crate",
+      "codes": [
+        "TODO KF 047 :: unnamed_stack > Snowhead Temple > Snowhead Layers > Snowhead Crates :: Pasted Layer #46 :: 001-001-004-002.png",
+        "MM Snowhead Temple Crate Dual Switches 1",
+        "MM Snowhead Temple Crate Dual Switches 2"
+      ]
     },
     {
       "coords": [
         88,
         202
       ],
-      "image": "green_rupee",
-      "codes": "TODO KF 048 :: unnamed_stack > Snowhead Temple > Snowhead Layers > Snowhead Freestanding Rupees :: Pasted Layer #47 :: 001-001-005-000.png"
+      "image": "red_rupee",
+      "codes": [
+        "TODO KF 048 :: unnamed_stack > Snowhead Temple > Snowhead Layers > Snowhead Freestanding Rupees :: Pasted Layer #47 :: 001-001-005-000.png",
+        "MM Snowhead Temple Rupee 1"
+      ]
     },
     {
       "coords": [
         111,
         212
       ],
-      "image": "green_rupee",
-      "codes": "TODO KF 049 :: unnamed_stack > Snowhead Temple > Snowhead Layers > Snowhead Freestanding Rupees :: Pasted Layer #48 :: 001-001-005-001.png"
+      "image": "red_rupee",
+      "codes": [
+        "TODO KF 049 :: unnamed_stack > Snowhead Temple > Snowhead Layers > Snowhead Freestanding Rupees :: Pasted Layer #48 :: 001-001-005-001.png",
+        "MM Snowhead Temple Rupee 2"
+      ]
     },
     {
       "coords": [
         129,
         192
       ],
-      "image": "green_rupee",
-      "codes": "TODO KF 050 :: unnamed_stack > Snowhead Temple > Snowhead Layers > Snowhead Freestanding Rupees :: Pasted Layer #49 :: 001-001-005-002.png"
+      "image": "red_rupee",
+      "codes": [
+        "TODO KF 050 :: unnamed_stack > Snowhead Temple > Snowhead Layers > Snowhead Freestanding Rupees :: Pasted Layer #49 :: 001-001-005-002.png",
+        "MM Snowhead Temple Rupee 3"
+      ]
     },
     {
       "coords": [
@@ -411,119 +606,201 @@
         403
       ],
       "image": "grass",
-      "codes": "TODO KF 051 :: unnamed_stack > Snowhead Temple > Snowhead Layers > Snowhead Grass :: Pasted Layer #50 :: 001-001-006-000.png"
+      "codes": [
+        "TODO KF 051 :: unnamed_stack > Snowhead Temple > Snowhead Layers > Snowhead Grass :: Pasted Layer #50 :: 001-001-006-000.png",
+        "MM Snowhead Temple Grass 01",
+        "MM Snowhead Temple Grass 02",
+        "MM Snowhead Temple Grass 03",
+        "MM Snowhead Temple Grass 04",
+        "MM Snowhead Temple Grass 05",
+        "MM Snowhead Temple Grass 06",
+        "MM Snowhead Temple Grass 07",
+        "MM Snowhead Temple Grass 08",
+        "MM Snowhead Temple Grass 09",
+        "MM Snowhead Temple Grass 10"
+      ]
     },
     {
       "coords": [
         697,
         518
       ],
-      "image": "collectible",
-      "codes": "TODO KF 052 :: unnamed_stack > Snowhead Temple > Snowhead Layers > Snowhead Snowballs :: Pasted Layer #51 :: 001-001-007-000.png"
+      "image": "small_snowball",
+      "codes": [
+        "TODO KF 052 :: unnamed_stack > Snowhead Temple > Snowhead Layers > Snowhead Snowballs :: Pasted Layer #51 :: 001-001-007-000.png",
+        "MM Snowhead Temple Small Snowball Bridge Room 1",
+        "MM Snowhead Temple Small Snowball Bridge Room 2"
+      ]
     },
     {
       "coords": [
         99,
         181
       ],
-      "image": "collectible",
-      "codes": "TODO KF 053 :: unnamed_stack > Snowhead Temple > Snowhead Layers > Snowhead Snowballs :: Pasted Layer #52 :: 001-001-007-001.png"
+      "image": "big_snowball",
+      "codes": [
+        "TODO KF 053 :: unnamed_stack > Snowhead Temple > Snowhead Layers > Snowhead Snowballs :: Pasted Layer #52 :: 001-001-007-001.png",
+        "MM Snowhead Temple Big Snowball Icicle Room"
+      ]
     },
     {
       "coords": [
         113,
         182
       ],
-      "image": "collectible",
-      "codes": "TODO KF 054 :: unnamed_stack > Snowhead Temple > Snowhead Layers > Snowhead Snowballs :: Pasted Layer #53 :: 001-001-007-002.png"
+      "image": "small_snowball",
+      "codes": [
+        "TODO KF 054 :: unnamed_stack > Snowhead Temple > Snowhead Layers > Snowhead Snowballs :: Pasted Layer #53 :: 001-001-007-002.png",
+        "MM Snowhead Temple Small Snowball Icicles Room 1",
+        "MM Snowhead Temple Small Snowball Icicles Room 2",
+        "MM Snowhead Temple Small Snowball Icicles Room 3"
+      ]
     },
     {
       "coords": [
         129,
         177
       ],
-      "image": "collectible",
-      "codes": "TODO KF 055 :: unnamed_stack > Snowhead Temple > Snowhead Layers > Snowhead Snowballs :: Pasted Layer #54 :: 001-001-007-003.png"
+      "image": "small_snowball",
+      "codes": [
+        "TODO KF 055 :: unnamed_stack > Snowhead Temple > Snowhead Layers > Snowhead Snowballs :: Pasted Layer #54 :: 001-001-007-003.png",
+        "MM Snowhead Temple Small Snowball Icicles Room 4",
+        "MM Snowhead Temple Small Snowball Icicles Room 5"
+      ]
     },
     {
       "coords": [
         142,
         148
       ],
-      "image": "collectible",
-      "codes": "TODO KF 056 :: unnamed_stack > Snowhead Temple > Snowhead Layers > Snowhead Snowballs :: Pasted Layer #55 :: 001-001-007-004.png"
+      "image": "small_snowball",
+      "codes": [
+        "TODO KF 056 :: unnamed_stack > Snowhead Temple > Snowhead Layers > Snowhead Snowballs :: Pasted Layer #55 :: 001-001-007-004.png",
+        "MM Snowhead Temple Small Snowball Central Room 4",
+        "MM Snowhead Temple Small Snowball Central Room 5",
+        "MM Snowhead Temple Small Snowball Central Room 6"
+      ]
     },
     {
       "coords": [
         225,
         155
       ],
-      "image": "collectible",
-      "codes": "TODO KF 057 :: unnamed_stack > Snowhead Temple > Snowhead Layers > Snowhead Snowballs :: Pasted Layer #56 :: 001-001-007-005.png"
+      "image": "small_snowball",
+      "codes": [
+        "TODO KF 057 :: unnamed_stack > Snowhead Temple > Snowhead Layers > Snowhead Snowballs :: Pasted Layer #56 :: 001-001-007-005.png",
+        "MM Snowhead Temple Small Snowball Central Room 1",
+        "MM Snowhead Temple Small Snowball Central Room 2",
+        "MM Snowhead Temple Small Snowball Central Room 3"
+      ]
     },
     {
       "coords": [
         432,
         152
       ],
-      "image": "collectible",
-      "codes": "TODO KF 058 :: unnamed_stack > Snowhead Temple > Snowhead Layers > Snowhead Snowballs :: Pasted Layer #57 :: 001-001-007-006.png"
+      "image": "small_snowball",
+      "codes": [
+        "TODO KF 058 :: unnamed_stack > Snowhead Temple > Snowhead Layers > Snowhead Snowballs :: Pasted Layer #57 :: 001-001-007-006.png",
+        "MM Snowhead Temple Small Snowball Snow Room 1",
+        "MM Snowhead Temple Small Snowball Snow Room 2",
+        "MM Snowhead Temple Small Snowball Snow Room 3",
+        "MM Snowhead Temple Small Snowball Snow Room 4",
+        "MM Snowhead Temple Small Snowball Snow Room 5"
+      ]
     },
     {
       "coords": [
         404,
         103
       ],
-      "image": "collectible",
-      "codes": "TODO KF 059 :: unnamed_stack > Snowhead Temple > Snowhead Layers > Snowhead Snowballs :: Pasted Layer #58 :: 001-001-007-007.png"
+      "image": "small_snowball",
+      "codes": [
+        "TODO KF 059 :: unnamed_stack > Snowhead Temple > Snowhead Layers > Snowhead Snowballs :: Pasted Layer #58 :: 001-001-007-007.png",
+        "MM Snowhead Temple Small Snowball Snow Room 6",
+        "MM Snowhead Temple Small Snowball Snow Room 7",
+        "MM Snowhead Temple Small Snowball Snow Room 8"
+      ]
     },
     {
       "coords": [
         498,
         111
       ],
-      "image": "collectible",
-      "codes": "TODO KF 060 :: unnamed_stack > Snowhead Temple > Snowhead Layers > Snowhead Snowballs :: Pasted Layer #59 :: 001-001-007-008.png"
+      "image": "big_snowball",
+      "codes": [
+        "TODO KF 060 :: unnamed_stack > Snowhead Temple > Snowhead Layers > Snowhead Snowballs :: Pasted Layer #59 :: 001-001-007-008.png",
+        "MM Snowhead Temple Big Snowball Central Room 1",
+        "MM Snowhead Temple Big Snowball Central Room 2",
+        "MM Snowhead Temple Big Snowball Central Room 3",
+        "MM Snowhead Temple Big Snowball Central Room 4"
+      ]
     },
     {
       "coords": [
         653,
         537
       ],
-      "image": "collectible",
-      "codes": "TODO KF 061 :: unnamed_stack > Snowhead Temple > Snowhead Layers > Snowhead Icicles :: Pasted Layer #60 :: 001-001-008-000.png"
+      "image": "icicle",
+      "codes": [
+        "TODO KF 061 :: unnamed_stack > Snowhead Temple > Snowhead Layers > Snowhead Icicles :: Pasted Layer #60 :: 001-001-008-000.png",
+        "MM Snowhead Temple Icicle Entrance 1",
+        "MM Snowhead Temple Icicle Entrance 2",
+        "MM Snowhead Temple Icicle Entrance 3",
+        "MM Snowhead Temple Icicle Entrance 4",
+        "MM Snowhead Temple Icicle Entrance 5"
+      ]
     },
     {
       "coords": [
         640,
         505
       ],
-      "image": "collectible",
-      "codes": "TODO KF 062 :: unnamed_stack > Snowhead Temple > Snowhead Layers > Snowhead Icicles :: Pasted Layer #61 :: 001-001-008-001.png"
+      "image": "icicle",
+      "codes": [
+        "TODO KF 062 :: unnamed_stack > Snowhead Temple > Snowhead Layers > Snowhead Icicles :: Pasted Layer #61 :: 001-001-008-001.png",
+        "MM Snowhead Temple Icicle Entrance After Block 1",
+        "MM Snowhead Temple Icicle Entrance After Block 2"
+      ]
     },
     {
       "coords": [
         410,
         151
       ],
-      "image": "collectible",
-      "codes": "TODO KF 063 :: unnamed_stack > Snowhead Temple > Snowhead Layers > Snowhead Icicles :: Pasted Layer #62 :: 001-001-008-002.png"
+      "image": "icicle",
+      "codes": [
+        "TODO KF 063 :: unnamed_stack > Snowhead Temple > Snowhead Layers > Snowhead Icicles :: Pasted Layer #62 :: 001-001-008-002.png",
+        "MM Snowhead Temple Icicle Snow Room 1",
+        "MM Snowhead Temple Icicle Snow Room 2",
+        "MM Snowhead Temple Icicle Snow Room 3"
+      ]
     },
     {
       "coords": [
         846,
         142
       ],
-      "image": "collectible",
-      "codes": "TODO KF 064 :: unnamed_stack > Snowhead Temple > Snowhead Layers > Snowhead Icicles :: Pasted Layer #63 :: 001-001-008-003.png"
+      "image": "icicle",
+      "codes": [
+        "TODO KF 064 :: unnamed_stack > Snowhead Temple > Snowhead Layers > Snowhead Icicles :: Pasted Layer #63 :: 001-001-008-003.png",
+        "MM Snowhead Temple Icicle Central Room Near Boss Key 1",
+        "MM Snowhead Temple Icicle Central Room Near Boss Key 2"
+      ]
     },
     {
       "coords": [
         808,
         105
       ],
-      "image": "collectible",
-      "codes": "TODO KF 065 :: unnamed_stack > Snowhead Temple > Snowhead Layers > Snowhead Icicles :: Pasted Layer #64 :: 001-001-008-004.png"
+      "image": "icicle",
+      "codes": [
+        "TODO KF 065 :: unnamed_stack > Snowhead Temple > Snowhead Layers > Snowhead Icicles :: Pasted Layer #64 :: 001-001-008-004.png",
+        "MM Snowhead Temple Icicle Central Room Near Boss 1",
+        "MM Snowhead Temple Icicle Central Room Near Boss 2",
+        "MM Snowhead Temple Icicle Central Room Near Boss 3",
+        "MM Snowhead Temple Icicle Central Room Near Boss 4"
+      ]
     }
   ]
 }

@@ -11,15 +11,21 @@
         81
       ],
       "image": "chest",
-      "codes": "TODO KF 001 :: unnamed_stack > Desert > Desert Layers > Desert Checks :: Pasted Layer :: 001-001-001-000.png"
+      "codes": [
+        "TODO KF 001 :: unnamed_stack > Desert > Desert Layers > Desert Checks :: Pasted Layer :: 001-001-001-000.png",
+        "OOT Haunted Wasteland Chest"
+      ]
     },
     {
       "coords": [
         56,
         482
       ],
-      "image": "chest",
-      "codes": "TODO KF 002 :: unnamed_stack > Desert > Desert Layers > Desert Checks :: Pasted Layer #1 :: 001-001-001-001.png"
+      "image": "heart_piece",
+      "codes": [
+        "TODO KF 002 :: unnamed_stack > Desert > Desert Layers > Desert Checks :: Pasted Layer #1 :: 001-001-001-001.png",
+        "OOT Desert Colossus HP"
+      ]
     },
     {
       "coords": [
@@ -27,23 +33,37 @@
         214
       ],
       "image": "chest",
-      "codes": "TODO KF 003 :: unnamed_stack > Desert > Desert Layers > Desert Checks :: Pasted Layer #2 :: 001-001-001-002.png"
+      "codes": [
+        "TODO KF 003 :: unnamed_stack > Desert > Desert Layers > Desert Checks :: Pasted Layer #2 :: 001-001-001-002.png",
+        "OOT Gerudo Fortress Chest"
+      ]
     },
     {
       "coords": [
         668,
         349
       ],
-      "image": "chest",
-      "codes": "TODO KF 004 :: unnamed_stack > Desert > Desert Layers > Desert Checks :: Pasted Layer #3 :: 001-001-001-003.png"
+      "image": "npc",
+      "overlays": [
+        "adult",
+        "day"
+      ],
+      "codes": [
+        "TODO KF 004 :: unnamed_stack > Desert > Desert Layers > Desert Checks :: Pasted Layer #3 :: 001-001-001-003.png",
+        "OOT Gerudo Fortress Archery Reward 1",
+        "OOT Gerudo Fortress Archery Reward 2"
+      ]
     },
     {
       "coords": [
         864,
         507
       ],
-      "image": "chest",
-      "codes": "TODO KF 005 :: unnamed_stack > Desert > Desert Layers > Desert Checks :: Pasted Layer #4 :: 001-001-001-004.png"
+      "image": "heart_piece",
+      "codes": [
+        "TODO KF 005 :: unnamed_stack > Desert > Desert Layers > Desert Checks :: Pasted Layer #4 :: 001-001-001-004.png",
+        "OOT Gerudo Valley Crate HP"
+      ]
     },
     {
       "coords": [
@@ -51,23 +71,38 @@
         480
       ],
       "image": "chest",
-      "codes": "TODO KF 006 :: unnamed_stack > Desert > Desert Layers > Desert Checks :: Pasted Layer #5 :: 001-001-001-005.png"
+      "overlays": [
+        "adult"
+      ],
+      "codes": [
+        "TODO KF 006 :: unnamed_stack > Desert > Desert Layers > Desert Checks :: Pasted Layer #5 :: 001-001-001-005.png",
+        "OOT Gerudo Valley Chest"
+      ]
     },
     {
       "coords": [
         845,
         449
       ],
-      "image": "chest",
-      "codes": "TODO KF 007 :: unnamed_stack > Desert > Desert Layers > Desert Checks :: Pasted Layer #6 :: 001-001-001-006.png"
+      "image": "npc",
+      "overlays": [
+        "adult"
+      ],
+      "codes": [
+        "TODO KF 007 :: unnamed_stack > Desert > Desert Layers > Desert Checks :: Pasted Layer #6 :: 001-001-001-006.png",
+        "OOT Gerudo Valley Broken Goron Sword"
+      ]
     },
     {
       "coords": [
         883,
         359
       ],
-      "image": "chest",
-      "codes": "TODO KF 008 :: unnamed_stack > Desert > Desert Layers > Desert Checks :: Pasted Layer #7 :: 001-001-001-007.png"
+      "image": "heart_piece",
+      "codes": [
+        "TODO KF 008 :: unnamed_stack > Desert > Desert Layers > Desert Checks :: Pasted Layer #7 :: 001-001-001-007.png",
+        "OOT Gerudo Valley Waterfall HP"
+      ]
     },
     {
       "coords": [
@@ -75,7 +110,10 @@
         482
       ],
       "image": "song",
-      "codes": "TODO KF 009 :: unnamed_stack > Desert > Desert Layers > Desert Songs :: Pasted Layer #8 :: 001-001-002-000.png"
+      "codes": [
+        "TODO KF 009 :: unnamed_stack > Desert > Desert Layers > Desert Songs :: Pasted Layer #8 :: 001-001-002-000.png",
+        "OOT Desert Colossus Song Spirit"
+      ]
     },
     {
       "coords": [
@@ -83,7 +121,14 @@
         444
       ],
       "image": "gold_skulltula",
-      "codes": "TODO KF 010 :: unnamed_stack > Desert > Desert Layers > Desert Skulls :: Pasted Layer #9 :: 001-001-003-000.png"
+      "overlays": [
+        "child",
+        "night"
+      ],
+      "codes": [
+        "TODO KF 010 :: unnamed_stack > Desert > Desert Layers > Desert Skulls :: Pasted Layer #9 :: 001-001-003-000.png",
+        "OOT Gerudo Valley GS Wall"
+      ]
     },
     {
       "coords": [
@@ -91,7 +136,13 @@
         467
       ],
       "image": "gold_skulltula",
-      "codes": "TODO KF 011 :: unnamed_stack > Desert > Desert Layers > Desert Skulls :: Pasted Layer #10 :: 001-001-003-001.png"
+      "overlays": [
+        "child"
+      ],
+      "codes": [
+        "TODO KF 011 :: unnamed_stack > Desert > Desert Layers > Desert Skulls :: Pasted Layer #10 :: 001-001-003-001.png",
+        "OOT Gerudo Valley GS Soil"
+      ]
     },
     {
       "coords": [
@@ -99,7 +150,14 @@
         465
       ],
       "image": "gold_skulltula",
-      "codes": "TODO KF 012 :: unnamed_stack > Desert > Desert Layers > Desert Skulls :: Pasted Layer #11 :: 001-001-003-002.png"
+      "overlays": [
+        "adult",
+        "night"
+      ],
+      "codes": [
+        "TODO KF 012 :: unnamed_stack > Desert > Desert Layers > Desert Skulls :: Pasted Layer #11 :: 001-001-003-002.png",
+        "OOT Gerudo Valley GS Pillar"
+      ]
     },
     {
       "coords": [
@@ -107,7 +165,14 @@
         404
       ],
       "image": "gold_skulltula",
-      "codes": "TODO KF 013 :: unnamed_stack > Desert > Desert Layers > Desert Skulls :: Pasted Layer #12 :: 001-001-003-003.png"
+      "overlays": [
+        "adult",
+        "night"
+      ],
+      "codes": [
+        "TODO KF 013 :: unnamed_stack > Desert > Desert Layers > Desert Skulls :: Pasted Layer #12 :: 001-001-003-003.png",
+        "OOT Gerudo Valley GS Tent"
+      ]
     },
     {
       "coords": [
@@ -115,7 +180,14 @@
         66
       ],
       "image": "gold_skulltula",
-      "codes": "TODO KF 014 :: unnamed_stack > Desert > Desert Layers > Desert Skulls :: Pasted Layer #13 :: 001-001-003-004.png"
+      "overlays": [
+        "adult",
+        "night"
+      ],
+      "codes": [
+        "TODO KF 014 :: unnamed_stack > Desert > Desert Layers > Desert Skulls :: Pasted Layer #13 :: 001-001-003-004.png",
+        "OOT Gerudo Fortress GS Target"
+      ]
     },
     {
       "coords": [
@@ -123,7 +195,14 @@
         248
       ],
       "image": "gold_skulltula",
-      "codes": "TODO KF 015 :: unnamed_stack > Desert > Desert Layers > Desert Skulls :: Pasted Layer #14 :: 001-001-003-005.png"
+      "overlays": [
+        "adult",
+        "night"
+      ],
+      "codes": [
+        "TODO KF 015 :: unnamed_stack > Desert > Desert Layers > Desert Skulls :: Pasted Layer #14 :: 001-001-003-005.png",
+        "OOT Gerudo Fortress GS Wall"
+      ]
     },
     {
       "coords": [
@@ -131,7 +210,10 @@
         81
       ],
       "image": "gold_skulltula",
-      "codes": "TODO KF 016 :: unnamed_stack > Desert > Desert Layers > Desert Skulls :: Pasted Layer #15 :: 001-001-003-006.png"
+      "codes": [
+        "TODO KF 016 :: unnamed_stack > Desert > Desert Layers > Desert Skulls :: Pasted Layer #15 :: 001-001-003-006.png",
+        "OOT Haunted Wasteland GS"
+      ]
     },
     {
       "coords": [
@@ -139,7 +221,14 @@
         469
       ],
       "image": "gold_skulltula",
-      "codes": "TODO KF 017 :: unnamed_stack > Desert > Desert Layers > Desert Skulls :: Pasted Layer #16 :: 001-001-003-007.png"
+      "overlays": [
+        "adult",
+        "night"
+      ],
+      "codes": [
+        "TODO KF 017 :: unnamed_stack > Desert > Desert Layers > Desert Skulls :: Pasted Layer #16 :: 001-001-003-007.png",
+        "OOT Desert Colossus GS Plateau"
+      ]
     },
     {
       "coords": [
@@ -147,7 +236,14 @@
         558
       ],
       "image": "gold_skulltula",
-      "codes": "TODO KF 018 :: unnamed_stack > Desert > Desert Layers > Desert Skulls :: Pasted Layer #17 :: 001-001-003-008.png"
+      "overlays": [
+        "adult",
+        "night"
+      ],
+      "codes": [
+        "TODO KF 018 :: unnamed_stack > Desert > Desert Layers > Desert Skulls :: Pasted Layer #17 :: 001-001-003-008.png",
+        "OOT Desert Colossus GS Tree"
+      ]
     },
     {
       "coords": [
@@ -155,7 +251,13 @@
         498
       ],
       "image": "gold_skulltula",
-      "codes": "TODO KF 019 :: unnamed_stack > Desert > Desert Layers > Desert Skulls :: Pasted Layer #18 :: 001-001-003-009.png"
+      "overlays": [
+        "child"
+      ],
+      "codes": [
+        "TODO KF 019 :: unnamed_stack > Desert > Desert Layers > Desert Skulls :: Pasted Layer #18 :: 001-001-003-009.png",
+        "OOT Desert Colossus GS Soil"
+      ]
     },
     {
       "coords": [
@@ -163,7 +265,10 @@
         190
       ],
       "image": "shop",
-      "codes": "TODO KF 020 :: unnamed_stack > Desert > Desert Layers > Desert Shops :: Pasted Layer #19 :: 001-001-004-000.png"
+      "codes": [
+        "TODO KF 020 :: unnamed_stack > Desert > Desert Layers > Desert Shops :: Pasted Layer #19 :: 001-001-004-000.png",
+        "OOT Haunted Wasteland Carpet Merchant"
+      ]
     },
     {
       "coords": [
@@ -171,7 +276,13 @@
         452
       ],
       "image": "cow",
-      "codes": "TODO KF 021 :: unnamed_stack > Desert > Desert Layers > Desert Cows :: Pasted Layer #20 :: 001-001-005-000.png"
+      "overlays": [
+        "child"
+      ],
+      "codes": [
+        "TODO KF 021 :: unnamed_stack > Desert > Desert Layers > Desert Cows :: Pasted Layer #20 :: 001-001-005-000.png",
+        "OOT Gerudo Valley Cow"
+      ]
     },
     {
       "coords": [
@@ -179,23 +290,38 @@
         88
       ],
       "image": "pot",
-      "codes": "TODO KF 022 :: unnamed_stack > Desert > Desert Layers > Desert Pots :: Pasted Layer #21 :: 001-001-006-000.png"
+      "codes": [
+        "TODO KF 022 :: unnamed_stack > Desert > Desert Layers > Desert Pots :: Pasted Layer #21 :: 001-001-006-000.png",
+        "OOT Haunted Wasteland Pot 1",
+        "OOT Haunted Wasteland Pot 2",
+        "OOT Haunted Wasteland Pot 3",
+        "OOT Haunted Wasteland Pot 4"
+      ]
     },
     {
       "coords": [
         864,
         500
       ],
-      "image": "collectible",
-      "codes": "TODO KF 023 :: unnamed_stack > Desert > Desert Layers > Desert Crates :: Pasted Layer #22 :: 001-001-007-000.png"
+      "image": "crate",
+      "codes": [
+        "TODO KF 023 :: unnamed_stack > Desert > Desert Layers > Desert Crates :: Pasted Layer #22 :: 001-001-007-000.png",
+        "OOT Gerudo Valley Crate Ledge"
+      ]
     },
     {
       "coords": [
         871,
         459
       ],
-      "image": "collectible",
-      "codes": "TODO KF 024 :: unnamed_stack > Desert > Desert Layers > Desert Crates :: Pasted Layer #23 :: 001-001-007-001.png"
+      "image": "crate",
+      "overlays": [
+        "child"
+      ],
+      "codes": [
+        "TODO KF 024 :: unnamed_stack > Desert > Desert Layers > Desert Crates :: Pasted Layer #23 :: 001-001-007-001.png",
+        "OOT Gerudo Valley Crate Child Bottom"
+      ]
     },
     {
       "coords": [
@@ -203,39 +329,63 @@
         449
       ],
       "image": "collectible",
-      "codes": "TODO KF 025 :: unnamed_stack > Desert > Desert Layers > Desert Crates :: Pasted Layer #24 :: 001-001-007-002.png"
+      "codes": [
+        "TODO KF 025 :: unnamed_stack > Desert > Desert Layers > Desert Crates :: Pasted Layer #24 :: 001-001-007-002.png",
+        "ERROR"
+      ]
     },
     {
       "coords": [
         641,
         410
       ],
-      "image": "collectible",
-      "codes": "TODO KF 026 :: unnamed_stack > Desert > Desert Layers > Desert Crates :: Pasted Layer #25 :: 001-001-007-003.png"
+      "image": "crate",
+      "codes": [
+        "TODO KF 026 :: unnamed_stack > Desert > Desert Layers > Desert Crates :: Pasted Layer #25 :: 001-001-007-003.png",
+        "OOT Gerudo Fortress Crate Archery 01",
+        "OOT Gerudo Fortress Crate Archery 02"
+      ]
     },
     {
       "coords": [
         668,
         365
       ],
-      "image": "collectible",
-      "codes": "TODO KF 027 :: unnamed_stack > Desert > Desert Layers > Desert Crates :: Pasted Layer #26 :: 001-001-007-004.png"
+      "image": "crate",
+      "codes": [
+        "TODO KF 027 :: unnamed_stack > Desert > Desert Layers > Desert Crates :: Pasted Layer #26 :: 001-001-007-004.png",
+        "OOT Gerudo Fortress Crate Archery 03",
+        "OOT Gerudo Fortress Crate Archery 04"
+      ]
     },
     {
       "coords": [
         684,
         244
       ],
-      "image": "collectible",
-      "codes": "TODO KF 028 :: unnamed_stack > Desert > Desert Layers > Desert Crates :: Pasted Layer #27 :: 001-001-007-005.png"
+      "image": "crate",
+      "codes": [
+        "TODO KF 028 :: unnamed_stack > Desert > Desert Layers > Desert Crates :: Pasted Layer #27 :: 001-001-007-005.png",
+        "OOT Gerudo Fortress Crate Archery 05",
+        "OOT Gerudo Fortress Crate Archery 06",
+        "OOT Gerudo Fortress Crate Archery 07",
+        "OOT Gerudo Fortress Crate Archery 08",
+        "OOT Gerudo Fortress Crate Archery 09",
+        "OOT Gerudo Fortress Crate Archery 10",
+        "OOT Gerudo Fortress Crate Archery 11"
+      ]
     },
     {
       "coords": [
         641,
         81
       ],
-      "image": "collectible",
-      "codes": "TODO KF 029 :: unnamed_stack > Desert > Desert Layers > Desert Crates :: Pasted Layer #28 :: 001-001-007-006.png"
+      "image": "crate",
+      "codes": [
+        "TODO KF 029 :: unnamed_stack > Desert > Desert Layers > Desert Crates :: Pasted Layer #28 :: 001-001-007-006.png",
+        "OOT Gerudo Fortress Crate Archery 12",
+        "OOT Gerudo Fortress Crate Archery 13"
+      ]
     },
     {
       "coords": [
@@ -243,135 +393,208 @@
         66
       ],
       "image": "collectible",
-      "codes": "TODO KF 030 :: unnamed_stack > Desert > Desert Layers > Desert Crates :: Pasted Layer #29 :: 001-001-007-007.png"
+      "codes": [
+        "TODO KF 030 :: unnamed_stack > Desert > Desert Layers > Desert Crates :: Pasted Layer #29 :: 001-001-007-007.png",
+        "ERROR"
+      ]
     },
     {
       "coords": [
         453,
         265
       ],
-      "image": "collectible",
-      "codes": "TODO KF 031 :: unnamed_stack > Desert > Desert Layers > Desert Crates :: Pasted Layer #30 :: 001-001-007-008.png"
+      "image": "crate",
+      "codes": [
+        "TODO KF 031 :: unnamed_stack > Desert > Desert Layers > Desert Crates :: Pasted Layer #30 :: 001-001-007-008.png",
+        "OOT Gerudo Fortress Crate Main 3",
+        "OOT Gerudo Fortress Crate Main 4",
+        "OOT Gerudo Fortress Crate Main 5",
+        "OOT Gerudo Fortress Crate Main 6"
+      ]
     },
     {
       "coords": [
         424,
         252
       ],
-      "image": "collectible",
-      "codes": "TODO KF 032 :: unnamed_stack > Desert > Desert Layers > Desert Crates :: Pasted Layer #31 :: 001-001-007-009.png"
+      "image": "crate",
+      "codes": [
+        "TODO KF 032 :: unnamed_stack > Desert > Desert Layers > Desert Crates :: Pasted Layer #31 :: 001-001-007-009.png",
+        "OOT Gerudo Fortress Crate Main 1",
+        "OOT Gerudo Fortress Crate Main 2"
+      ]
     },
     {
       "coords": [
         439,
         186
       ],
-      "image": "collectible",
-      "codes": "TODO KF 033 :: unnamed_stack > Desert > Desert Layers > Desert Crates :: Pasted Layer #32 :: 001-001-007-010.png"
+      "image": "crate",
+      "codes": [
+        "TODO KF 033 :: unnamed_stack > Desert > Desert Layers > Desert Crates :: Pasted Layer #32 :: 001-001-007-010.png",
+        "OOT Gerudo Fortress Crate Jail Top"
+      ]
     },
     {
       "coords": [
         180,
         196
       ],
-      "image": "collectible",
-      "codes": "TODO KF 034 :: unnamed_stack > Desert > Desert Layers > Desert Crates :: Pasted Layer #33 :: 001-001-007-011.png"
+      "image": "crate",
+      "codes": [
+        "TODO KF 034 :: unnamed_stack > Desert > Desert Layers > Desert Crates :: Pasted Layer #33 :: 001-001-007-011.png",
+        "OOT Haunted Wasteland Crate Entrance"
+      ]
     },
     {
       "coords": [
         161,
         168
       ],
-      "image": "collectible",
-      "codes": "TODO KF 035 :: unnamed_stack > Desert > Desert Layers > Desert Crates :: Pasted Layer #34 :: 001-001-007-012.png"
+      "image": "crate",
+      "codes": [
+        "TODO KF 035 :: unnamed_stack > Desert > Desert Layers > Desert Crates :: Pasted Layer #34 :: 001-001-007-012.png",
+        "OOT Haunted Wasteland Crate After Pit 1",
+        "OOT Haunted Wasteland Crate After Pit 2",
+        "OOT Haunted Wasteland Crate After Pit 3"
+      ]
     },
     {
       "coords": [
         46,
         148
       ],
-      "image": "collectible",
-      "codes": "TODO KF 036 :: unnamed_stack > Desert > Desert Layers > Desert Crates :: Pasted Layer #35 :: 001-001-007-013.png"
+      "image": "crate",
+      "codes": [
+        "TODO KF 036 :: unnamed_stack > Desert > Desert Layers > Desert Crates :: Pasted Layer #35 :: 001-001-007-013.png",
+        "OOT Haunted Wasteland Crate Deep"
+      ]
     },
     {
       "coords": [
         879,
         437
       ],
-      "image": "wonder_item_random",
-      "codes": "TODO KF 037 :: unnamed_stack > Desert > Desert Layers > Desert Wonder :: Pasted Layer #36 :: 001-001-008-000.png"
+      "image": "wonder_item_red_rupee",
+      "overlays": [
+        "adult"
+      ],
+      "codes": [
+        "TODO KF 037 :: unnamed_stack > Desert > Desert Layers > Desert Wonder :: Pasted Layer #36 :: 001-001-008-000.png",
+        "OOT Gerudo Valley Wonder Item Lower"
+      ]
     },
     {
       "coords": [
         883,
         372
       ],
-      "image": "wonder_item_random",
-      "codes": "TODO KF 038 :: unnamed_stack > Desert > Desert Layers > Desert Wonder :: Pasted Layer #37 :: 001-001-008-001.png"
+      "image": "wonder_item_red_rupee",
+      "overlays": [
+        "adult"
+      ],
+      "codes": [
+        "TODO KF 038 :: unnamed_stack > Desert > Desert Layers > Desert Wonder :: Pasted Layer #37 :: 001-001-008-001.png",
+        "OOT Gerudo Valley Wonder Item Upper"
+      ]
     },
     {
       "coords": [
         496,
         353
       ],
-      "image": "wonder_item_random",
-      "codes": "TODO KF 039 :: unnamed_stack > Desert > Desert Layers > Desert Wonder :: Pasted Layer #38 :: 001-001-008-002.png"
+      "image": "wonder_item_red_rupee",
+      "codes": [
+        "TODO KF 039 :: unnamed_stack > Desert > Desert Layers > Desert Wonder :: Pasted Layer #38 :: 001-001-008-002.png",
+        "OOT Gerudo Fortress Wonder Item Sign Archery"
+      ]
     },
     {
       "coords": [
         383,
         332
       ],
-      "image": "wonder_item_random",
-      "codes": "TODO KF 040 :: unnamed_stack > Desert > Desert Layers > Desert Wonder :: Pasted Layer #39 :: 001-001-008-003.png"
+      "image": "wonder_item_red_rupee",
+      "codes": [
+        "TODO KF 040 :: unnamed_stack > Desert > Desert Layers > Desert Wonder :: Pasted Layer #39 :: 001-001-008-003.png",
+        "OOT Gerudo Fortress Wonder Item Sign Entrance"
+      ]
     },
     {
       "coords": [
         172,
         435
       ],
-      "image": "wonder_item_random",
-      "codes": "TODO KF 041 :: unnamed_stack > Desert > Desert Layers > Desert Wonder :: Pasted Layer #40 :: 001-001-008-004.png"
+      "image": "wonder_item_red_rupee",
+      "codes": [
+        "TODO KF 041 :: unnamed_stack > Desert > Desert Layers > Desert Wonder :: Pasted Layer #40 :: 001-001-008-004.png",
+        "OOT Desert Colossus Wonder Item Fountain 2"
+      ]
     },
     {
       "coords": [
         145,
         435
       ],
-      "image": "wonder_item_random",
-      "codes": "TODO KF 042 :: unnamed_stack > Desert > Desert Layers > Desert Wonder :: Pasted Layer #41 :: 001-001-008-005.png"
+      "image": "wonder_item_blue_rupee",
+      "codes": [
+        "TODO KF 042 :: unnamed_stack > Desert > Desert Layers > Desert Wonder :: Pasted Layer #41 :: 001-001-008-005.png",
+        "OOT Desert Colossus Wonder Item Fountain 1"
+      ]
     },
     {
       "coords": [
         136,
         549
       ],
-      "image": "wonder_item_random",
-      "codes": "TODO KF 043 :: unnamed_stack > Desert > Desert Layers > Desert Wonder :: Pasted Layer #42 :: 001-001-008-006.png"
+      "image": "wonder_item_blue_rupee",
+      "codes": [
+        "TODO KF 043 :: unnamed_stack > Desert > Desert Layers > Desert Wonder :: Pasted Layer #42 :: 001-001-008-006.png",
+        "OOT Desert Colossus Wonder Item Oasis 1"
+      ]
     },
     {
       "coords": [
         136,
         565
       ],
-      "image": "wonder_item_random",
-      "codes": "TODO KF 044 :: unnamed_stack > Desert > Desert Layers > Desert Wonder :: Pasted Layer #43 :: 001-001-008-007.png"
+      "image": "wonder_item_small_magic_jar",
+      "codes": [
+        "TODO KF 044 :: unnamed_stack > Desert > Desert Layers > Desert Wonder :: Pasted Layer #43 :: 001-001-008-007.png",
+        "OOT Desert Colossus Wonder Item Oasis 2"
+      ]
     },
     {
       "coords": [
         104,
         572
       ],
-      "image": "wonder_item_random",
-      "codes": "TODO KF 045 :: unnamed_stack > Desert > Desert Layers > Desert Wonder :: Pasted Layer #44 :: 001-001-008-008.png"
+      "image": "wonder_item_blue_rupee",
+      "overlays": [
+        "child"
+      ],
+      "codes": [
+        "TODO KF 045 :: unnamed_stack > Desert > Desert Layers > Desert Wonder :: Pasted Layer #44 :: 001-001-008-008.png",
+        "OOT Desert Colossus Wonder Item Oasis Child"
+      ]
     },
     {
       "coords": [
         117,
         560
       ],
-      "image": "collectible",
-      "codes": "TODO KF 046 :: unnamed_stack > Desert > Desert Layers > Desert Fairies :: Pasted Layer #45 :: 001-001-009-000.png"
+      "image": "fairy",
+      "codes": [
+        "TODO KF 046 :: unnamed_stack > Desert > Desert Layers > Desert Fairies :: Pasted Layer #45 :: 001-001-009-000.png",
+        "OOT Desert Colossus Oasis Fairy 1",
+        "OOT Desert Colossus Oasis Fairy 2",
+        "OOT Desert Colossus Oasis Fairy 3",
+        "OOT Desert Colossus Oasis Fairy 4",
+        "OOT Desert Colossus Oasis Fairy 5",
+        "OOT Desert Colossus Oasis Fairy 6",
+        "OOT Desert Colossus Oasis Fairy 7",
+        "OOT Desert Colossus Oasis Fairy 8"
+      ]
     },
     {
       "coords": [
@@ -379,7 +602,13 @@
         484
       ],
       "image": "red_boulder",
-      "codes": "TODO KF 047 :: unnamed_stack > Desert > Desert Layers > Desert Red Boulders :: Pasted Layer #46 :: 001-001-010-000.png"
+      "overlays": [
+        "adult"
+      ],
+      "codes": [
+        "TODO KF 047 :: unnamed_stack > Desert > Desert Layers > Desert Red Boulders :: Pasted Layer #46 :: 001-001-010-000.png",
+        "OOT Gerudo Valley Red Boulder Before Bridge 2"
+      ]
     },
     {
       "coords": [
@@ -387,7 +616,13 @@
         424
       ],
       "image": "red_boulder",
-      "codes": "TODO KF 048 :: unnamed_stack > Desert > Desert Layers > Desert Red Boulders :: Pasted Layer #47 :: 001-001-010-001.png"
+      "overlays": [
+        "adult"
+      ],
+      "codes": [
+        "TODO KF 048 :: unnamed_stack > Desert > Desert Layers > Desert Red Boulders :: Pasted Layer #47 :: 001-001-010-001.png",
+        "OOT Gerudo Valley Red Boulder Before Bridge 1"
+      ]
     },
     {
       "coords": [
@@ -395,7 +630,13 @@
         472
       ],
       "image": "red_boulder",
-      "codes": "TODO KF 049 :: unnamed_stack > Desert > Desert Layers > Desert Red Boulders :: Pasted Layer #48 :: 001-001-010-002.png"
+      "overlays": [
+        "adult"
+      ],
+      "codes": [
+        "TODO KF 049 :: unnamed_stack > Desert > Desert Layers > Desert Red Boulders :: Pasted Layer #48 :: 001-001-010-002.png",
+        "OOT Gerudo Valley Red Boulder After Bridge 1"
+      ]
     },
     {
       "coords": [
@@ -403,7 +644,16 @@
         484
       ],
       "image": "red_boulder",
-      "codes": "TODO KF 050 :: unnamed_stack > Desert > Desert Layers > Desert Red Boulders :: Pasted Layer #49 :: 001-001-010-003.png"
+      "overlays": [
+        "adult"
+      ],
+      "codes": [
+        "TODO KF 050 :: unnamed_stack > Desert > Desert Layers > Desert Red Boulders :: Pasted Layer #49 :: 001-001-010-003.png",
+        "OOT Gerudo Valley Red Boulder Around Chest 1",
+        "OOT Gerudo Valley Red Boulder Around Chest 2",
+        "OOT Gerudo Valley Red Boulder Around Chest 3",
+        "OOT Gerudo Valley Red Boulder Around Chest 4"
+      ]
     },
     {
       "coords": [
@@ -411,7 +661,13 @@
         440
       ],
       "image": "red_boulder",
-      "codes": "TODO KF 051 :: unnamed_stack > Desert > Desert Layers > Desert Red Boulders :: Pasted Layer #50 :: 001-001-010-004.png"
+      "overlays": [
+        "adult"
+      ],
+      "codes": [
+        "TODO KF 051 :: unnamed_stack > Desert > Desert Layers > Desert Red Boulders :: Pasted Layer #50 :: 001-001-010-004.png",
+        "OOT Gerudo Valley Red Boulder After Bridge 2"
+      ]
     },
     {
       "coords": [
@@ -419,7 +675,12 @@
         472
       ],
       "image": "rock",
-      "codes": "TODO KF 052 :: unnamed_stack > Desert > Desert Layers > Desert Rocks :: Pasted Layer #51 :: 001-001-011-000.png"
+      "codes": [
+        "TODO KF 052 :: unnamed_stack > Desert > Desert Layers > Desert Rocks :: Pasted Layer #51 :: 001-001-011-000.png",
+        "OOT Gerudo Valley Rock Entrance Ground 1",
+        "OOT Gerudo Valley Rock Entrance Ground 2",
+        "OOT Gerudo Valley Rock Entrance Ground 3"
+      ]
     },
     {
       "coords": [
@@ -427,7 +688,12 @@
         462
       ],
       "image": "rock",
-      "codes": "TODO KF 053 :: unnamed_stack > Desert > Desert Layers > Desert Rocks :: Pasted Layer #52 :: 001-001-011-001.png"
+      "codes": [
+        "TODO KF 053 :: unnamed_stack > Desert > Desert Layers > Desert Rocks :: Pasted Layer #52 :: 001-001-011-001.png",
+        "OOT Gerudo Valley Rock Entrance Water 1",
+        "OOT Gerudo Valley Rock Entrance Water 2",
+        "OOT Gerudo Valley Rock Entrance Water 3"
+      ]
     },
     {
       "coords": [
@@ -435,7 +701,16 @@
         420
       ],
       "image": "rock",
-      "codes": "TODO KF 054 :: unnamed_stack > Desert > Desert Layers > Desert Rocks :: Pasted Layer #53 :: 001-001-011-002.png"
+      "overlays": [
+        "adult"
+      ],
+      "codes": [
+        "TODO KF 054 :: unnamed_stack > Desert > Desert Layers > Desert Rocks :: Pasted Layer #53 :: 001-001-011-002.png",
+        "OOT Gerudo Valley Rock Adult 1",
+        "OOT Gerudo Valley Rock Adult 2",
+        "OOT Gerudo Valley Rock Adult 3",
+        "OOT Gerudo Valley Rock Adult 4"
+      ]
     },
     {
       "coords": [
@@ -443,7 +718,10 @@
         510
       ],
       "image": "rock",
-      "codes": "TODO KF 055 :: unnamed_stack > Desert > Desert Layers > Desert Rocks :: Pasted Layer #54 :: 001-001-011-003.png"
+      "codes": [
+        "TODO KF 055 :: unnamed_stack > Desert > Desert Layers > Desert Rocks :: Pasted Layer #54 :: 001-001-011-003.png",
+        "OOT Desert Colossus Rock"
+      ]
     },
     {
       "coords": [
@@ -451,7 +729,17 @@
         428
       ],
       "image": "rock",
-      "codes": "TODO KF 056 :: unnamed_stack > Desert > Desert Layers > Desert Rocks :: Pasted Layer #55 :: 001-001-011-004.png"
+      "codes": [
+        "TODO KF 056 :: unnamed_stack > Desert > Desert Layers > Desert Rocks :: Pasted Layer #55 :: 001-001-011-004.png",
+        "OOT Desert Colossus Rock Circle 1 Rock 1",
+        "OOT Desert Colossus Rock Circle 1 Rock 2",
+        "OOT Desert Colossus Rock Circle 1 Rock 3",
+        "OOT Desert Colossus Rock Circle 1 Rock 4",
+        "OOT Desert Colossus Rock Circle 1 Rock 5",
+        "OOT Desert Colossus Rock Circle 1 Rock 6",
+        "OOT Desert Colossus Rock Circle 1 Rock 7",
+        "OOT Desert Colossus Rock Circle 1 Rock 8"
+      ]
     },
     {
       "coords": [
@@ -459,7 +747,17 @@
         442
       ],
       "image": "rock",
-      "codes": "TODO KF 057 :: unnamed_stack > Desert > Desert Layers > Desert Rocks :: Pasted Layer #56 :: 001-001-011-005.png"
+      "codes": [
+        "TODO KF 057 :: unnamed_stack > Desert > Desert Layers > Desert Rocks :: Pasted Layer #56 :: 001-001-011-005.png",
+        "OOT Desert Colossus Rock Circle 2 Rock 1",
+        "OOT Desert Colossus Rock Circle 2 Rock 2",
+        "OOT Desert Colossus Rock Circle 2 Rock 3",
+        "OOT Desert Colossus Rock Circle 2 Rock 4",
+        "OOT Desert Colossus Rock Circle 2 Rock 5",
+        "OOT Desert Colossus Rock Circle 2 Rock 6",
+        "OOT Desert Colossus Rock Circle 2 Rock 7",
+        "OOT Desert Colossus Rock Circle 2 Rock 8"
+      ]
     },
     {
       "coords": [
@@ -467,7 +765,15 @@
         475
       ],
       "image": "soft_soil",
-      "codes": "TODO KF 058 :: unnamed_stack > Desert > Desert Layers > Desert Soils :: Pasted Layer #57 :: 001-001-012-000.png"
+      "overlays": [
+        "child"
+      ],
+      "codes": [
+        "TODO KF 058 :: unnamed_stack > Desert > Desert Layers > Desert Soils :: Pasted Layer #57 :: 001-001-012-000.png",
+        "OOT Gerudo Valley Soil 1",
+        "OOT Gerudo Valley Soil 2",
+        "OOT Gerudo Valley Soil 3"
+      ]
     },
     {
       "coords": [
@@ -475,30 +781,44 @@
         505
       ],
       "image": "soft_soil",
-      "codes": "TODO KF 059 :: unnamed_stack > Desert > Desert Layers > Desert Soils :: Pasted Layer #58 :: 001-001-012-001.png"
+      "overlays": [
+        "child"
+      ],
+      "codes": [
+        "TODO KF 059 :: unnamed_stack > Desert > Desert Layers > Desert Soils :: Pasted Layer #58 :: 001-001-012-001.png",
+        "OOT Desert Colossus Soil 1",
+        "OOT Desert Colossus Soil 2",
+        "OOT Desert Colossus Soil 3"
+      ]
     },
     {
       "coords": [
         862,
         370
       ],
-      "image": "npc",
-      "codes": "TODO KF 060 :: unnamed_stack > Desert > Desert Layers > Desert Gossip :: Pasted Layer #59 :: 001-001-013-000.png"
+      "image": "gossip_stone",
+      "codes": [
+        "TODO KF 060 :: unnamed_stack > Desert > Desert Layers > Desert Gossip :: Pasted Layer #59 :: 001-001-013-000.png",
+        "OOT Gerudo Valley Gossip"
+      ]
     },
     {
       "coords": [
         19,
         526
       ],
-      "image": "npc",
-      "codes": "TODO KF 061 :: unnamed_stack > Desert > Desert Layers > Desert Gossip :: Pasted Layer #60 :: 001-001-013-001.png"
+      "image": "gossip_stone",
+      "codes": [
+        "TODO KF 061 :: unnamed_stack > Desert > Desert Layers > Desert Gossip :: Pasted Layer #60 :: 001-001-013-001.png",
+        "OOT Desert Colossus Gossip"
+      ]
     },
     {
       "coords": [
         896,
         508
       ],
-      "image": "overworld_entrance",
+      "image": "silver_boulder_grotto",
       "codes": "TODO KF 062 :: unnamed_stack > Desert > Desert Layers > Desert Entrances :: Pasted Layer #61 :: 001-001-014-000.png"
     },
     {
@@ -506,7 +826,7 @@
         841,
         433
       ],
-      "image": "overworld_entrance",
+      "image": "interior_entrance",
       "codes": "TODO KF 063 :: unnamed_stack > Desert > Desert Layers > Desert Entrances :: Pasted Layer #62 :: 001-001-014-001.png"
     },
     {
@@ -514,7 +834,7 @@
         833,
         417
       ],
-      "image": "overworld_entrance",
+      "image": "song_grotto",
       "codes": "TODO KF 064 :: unnamed_stack > Desert > Desert Layers > Desert Entrances :: Pasted Layer #63 :: 001-001-014-002.png"
     },
     {
@@ -522,7 +842,10 @@
         440,
         318
       ],
-      "image": "overworld_entrance",
+      "image": "dungeon_entrance",
+      "overlays": [
+        "adult"
+      ],
       "codes": "TODO KF 065 :: unnamed_stack > Desert > Desert Layers > Desert Entrances :: Pasted Layer #64 :: 001-001-014-003.png"
     },
     {
@@ -530,7 +853,7 @@
         456,
         318
       ],
-      "image": "overworld_entrance",
+      "image": "interior_entrance",
       "codes": "TODO KF 066 :: unnamed_stack > Desert > Desert Layers > Desert Entrances :: Pasted Layer #65 :: 001-001-014-004.png"
     },
     {
@@ -538,7 +861,7 @@
         480,
         309
       ],
-      "image": "overworld_entrance",
+      "image": "interior_entrance",
       "codes": "TODO KF 067 :: unnamed_stack > Desert > Desert Layers > Desert Entrances :: Pasted Layer #66 :: 001-001-014-005.png"
     },
     {
@@ -546,7 +869,7 @@
         448,
         296
       ],
-      "image": "overworld_entrance",
+      "image": "interior_entrance",
       "codes": "TODO KF 068 :: unnamed_stack > Desert > Desert Layers > Desert Entrances :: Pasted Layer #67 :: 001-001-014-006.png"
     },
     {
@@ -554,7 +877,7 @@
         496,
         309
       ],
-      "image": "overworld_entrance",
+      "image": "interior_entrance",
       "codes": "TODO KF 069 :: unnamed_stack > Desert > Desert Layers > Desert Entrances :: Pasted Layer #68 :: 001-001-014-007.png"
     },
     {
@@ -562,7 +885,7 @@
         496,
         293
       ],
-      "image": "overworld_entrance",
+      "image": "interior_entrance",
       "codes": "TODO KF 070 :: unnamed_stack > Desert > Desert Layers > Desert Entrances :: Pasted Layer #69 :: 001-001-014-008.png"
     },
     {
@@ -570,7 +893,7 @@
         454,
         278
       ],
-      "image": "overworld_entrance",
+      "image": "song_grotto",
       "codes": "TODO KF 071 :: unnamed_stack > Desert > Desert Layers > Desert Entrances :: Pasted Layer #70 :: 001-001-014-009.png"
     },
     {
@@ -578,7 +901,7 @@
         479,
         271
       ],
-      "image": "overworld_entrance",
+      "image": "interior_entrance",
       "codes": "TODO KF 072 :: unnamed_stack > Desert > Desert Layers > Desert Entrances :: Pasted Layer #71 :: 001-001-014-010.png"
     },
     {
@@ -586,7 +909,7 @@
         510,
         270
       ],
-      "image": "overworld_entrance",
+      "image": "interior_entrance",
       "codes": "TODO KF 073 :: unnamed_stack > Desert > Desert Layers > Desert Entrances :: Pasted Layer #72 :: 001-001-014-011.png"
     },
     {
@@ -594,7 +917,7 @@
         466,
         254
       ],
-      "image": "overworld_entrance",
+      "image": "interior_entrance",
       "codes": "TODO KF 074 :: unnamed_stack > Desert > Desert Layers > Desert Entrances :: Pasted Layer #73 :: 001-001-014-012.png"
     },
     {
@@ -602,7 +925,7 @@
         510,
         246
       ],
-      "image": "overworld_entrance",
+      "image": "interior_entrance",
       "codes": "TODO KF 075 :: unnamed_stack > Desert > Desert Layers > Desert Entrances :: Pasted Layer #74 :: 001-001-014-013.png"
     },
     {
@@ -610,7 +933,7 @@
         482,
         238
       ],
-      "image": "overworld_entrance",
+      "image": "interior_entrance",
       "codes": "TODO KF 076 :: unnamed_stack > Desert > Desert Layers > Desert Entrances :: Pasted Layer #75 :: 001-001-014-014.png"
     },
     {
@@ -618,7 +941,7 @@
         455,
         214
       ],
-      "image": "overworld_entrance",
+      "image": "interior_entrance",
       "codes": "TODO KF 077 :: unnamed_stack > Desert > Desert Layers > Desert Entrances :: Pasted Layer #76 :: 001-001-014-015.png"
     },
     {
@@ -626,7 +949,7 @@
         486,
         214
       ],
-      "image": "overworld_entrance",
+      "image": "interior_entrance",
       "codes": "TODO KF 078 :: unnamed_stack > Desert > Desert Layers > Desert Entrances :: Pasted Layer #77 :: 001-001-014-016.png"
     },
     {
@@ -634,7 +957,7 @@
         478,
         187
       ],
-      "image": "overworld_entrance",
+      "image": "interior_entrance",
       "codes": "TODO KF 079 :: unnamed_stack > Desert > Desert Layers > Desert Entrances :: Pasted Layer #78 :: 001-001-014-017.png"
     },
     {
@@ -642,7 +965,7 @@
         158,
         420
       ],
-      "image": "overworld_entrance",
+      "image": "boulder_grotto",
       "codes": "TODO KF 080 :: unnamed_stack > Desert > Desert Layers > Desert Entrances :: Pasted Layer #79 :: 001-001-014-018.png"
     },
     {
@@ -650,7 +973,7 @@
         78,
         450
       ],
-      "image": "overworld_entrance",
+      "image": "silver_boulder_grotto",
       "codes": "TODO KF 081 :: unnamed_stack > Desert > Desert Layers > Desert Entrances :: Pasted Layer #80 :: 001-001-014-019.png"
     },
     {
@@ -658,7 +981,7 @@
         49,
         416
       ],
-      "image": "overworld_entrance",
+      "image": "warp_spot",
       "codes": "TODO KF 082 :: unnamed_stack > Desert > Desert Layers > Desert Entrances :: Pasted Layer #81 :: 001-001-014-020.png"
     },
     {
@@ -666,7 +989,7 @@
         24,
         482
       ],
-      "image": "overworld_entrance",
+      "image": "dungeon_entrance",
       "codes": "TODO KF 083 :: unnamed_stack > Desert > Desert Layers > Desert Entrances :: Pasted Layer #82 :: 001-001-014-021.png"
     }
   ]
