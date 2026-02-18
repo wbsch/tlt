@@ -9,7 +9,7 @@ import OoTMMItemGrid from './OoTMMItemGrid.vue'
 import OoTMMWorld from './OoTMMWorld.vue'
 import OoTMMMap from './OoTMMMap.vue'
 import OoTMMTricks from './OoTMMTricks.vue'
-import { TRACKER_DEFAULT_SETTINGS } from '../data/settings'
+import { SETTINGS_DEFINITIONS } from '../data/settings'
 import { parseSpoilerLog } from '../utils/spoiler'
 import { useLocationCodeLookup } from '../composables/useLocationCodeLookup'
 import {
@@ -74,7 +74,7 @@ const settingsByName = new Map<string, CoreSetting>(
     .filter((setting) => typeof setting.name === 'string')
     .map((setting) => [setting.name as string, setting]),
 )
-const supportedSettingKeys = new Set(Object.keys(TRACKER_DEFAULT_SETTINGS))
+const supportedSettingKeys = new Set(SETTINGS_DEFINITIONS.map((setting) => setting.key))
 const itemNameToId = new Map<string, string>()
 const ALL_TRICKS = TRICKS as Record<string, { name?: string }>
 const trickNameToKey = new Map<string, string>()
