@@ -962,6 +962,29 @@ const RAW_GRID_ICON_VARIANTS: Record<string, GridIconVariantConfig> = {
       ],
     },
   },
+    SHARED_BOTTLE_EMPTY: {
+    default: {
+      icons: [
+        'images/bottle.png',
+        'images/bottle_red.png',
+        'images/bottle_green.png',
+        'images/bottle_blue.png',
+        'images/bottle_fire.png',
+        'images/bottle_milk.png',
+        'images/items/mm_chateau.png',
+      ],
+      startUndimmed: false,
+      linkedItemIds: [
+        'SHARED_BOTTLE_EMPTY',
+        'SHARED_BOTTLE_POTION_RED',
+        'SHARED_BOTTLE_POTION_GREEN',
+        'SHARED_BOTTLE_POTION_BLUE',
+        'SHARED_BOTTLE_BLUE_FIRE',
+        'SHARED_BOTTLE_MILK',
+        'SHARED_BOTTLE_CHATEAU', 
+      ],
+    },
+  },
   OOT_SLINGSHOT: {
     default: {
       icons: [

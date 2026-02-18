@@ -81,11 +81,20 @@ const SINGLE_COUNT_ITEM_IDS = new Set([
   'MM_MAGIC_BEAN',
 ])
 
-const ALWAYS_INCLUDED_ITEM_POOL_IDS = new Set([
+const FISHING_POND_ALWAYS_INCLUDED_ITEM_IDS = new Set([
   'OOT_FISHING_POND_CHILD_FISH_13LBS',
   'OOT_FISHING_POND_ADULT_FISH_8LBS',
   'OOT_FISHING_POND_CHILD_LOACH_16LBS',
   'OOT_FISHING_POND_ADULT_LOACH_30LBS',
+])
+
+const BOTTLE_ALWAYS_INCLUDED_ITEM_IDS_OOT_MM = new Set([
+  'OOT_BOTTLE_EMPTY',
+  'MM_BOTTLE_EMPTY',
+])
+
+const BOTTLE_ALWAYS_INCLUDED_ITEM_IDS_SHARED = new Set([
+  'SHARED_BOTTLE_EMPTY',
 ])
 
 const CLOCK_ITEM_IDS = new Set([
@@ -855,8 +864,20 @@ export class OoTMMTracker implements TrackerPack {
       }
     }
 
-    for (const itemId of ALWAYS_INCLUDED_ITEM_POOL_IDS) {
-      if (this.isFishingPondShuffleEnabled()) {
+    for (const itemId of FISHING_POND_ALWAYS_INCLUDED_ITEM_IDS) {
+      if (this.shouldForceIncludeItem(itemId)) {
+        available.add(itemId)
+      }
+    }
+
+    for (const itemId of BOTTLE_ALWAYS_INCLUDED_ITEM_IDS_OOT_MM) {
+      if (this.shouldForceIncludeItem(itemId)) {
+        available.add(itemId)
+      }
+    }
+
+    for (const itemId of BOTTLE_ALWAYS_INCLUDED_ITEM_IDS_SHARED) {
+      if (this.shouldForceIncludeItem(itemId)) {
         available.add(itemId)
       }
     }
@@ -941,8 +962,20 @@ export class OoTMMTracker implements TrackerPack {
       }
     }
 
-    for (const itemId of ALWAYS_INCLUDED_ITEM_POOL_IDS) {
-      if (this.isFishingPondShuffleEnabled()) {
+    for (const itemId of FISHING_POND_ALWAYS_INCLUDED_ITEM_IDS) {
+      if (this.shouldForceIncludeItem(itemId)) {
+        counts.set(itemId, 1)
+      }
+    }
+
+    for (const itemId of BOTTLE_ALWAYS_INCLUDED_ITEM_IDS_OOT_MM) {
+      if (this.shouldForceIncludeItem(itemId)) {
+        counts.set(itemId, 1)
+      }
+    }
+
+    for (const itemId of BOTTLE_ALWAYS_INCLUDED_ITEM_IDS_SHARED) {
+      if (this.shouldForceIncludeItem(itemId)) {
         counts.set(itemId, 1)
       }
     }
@@ -975,6 +1008,33 @@ export class OoTMMTracker implements TrackerPack {
 
   private isFishingPondShuffleEnabled(): boolean {
     const value = (this.settings as { pondFishShuffle?: unknown })?.pondFishShuffle
+    if (typeof value === 'boolean') return value
+    if (typeof value === 'string') {
+      const normalized = value.trim().toLowerCase()
+      return normalized === 'true' || normalized === '1' || normalized === 'yes' || normalized === 'on'
+    }
+    if (typeof value === 'number') return value === 1
+    return false
+  }
+
+  private shouldForceIncludeItem(itemId: string): boolean {
+    if (FISHING_POND_ALWAYS_INCLUDED_ITEM_IDS.has(itemId)) {
+      return this.isFishingPondShuffleEnabled()
+    }
+
+    if (BOTTLE_ALWAYS_INCLUDED_ITEM_IDS_SHARED.has(itemId)) {
+      return this.isSharedBottlesEnabled()
+    }
+
+    if (BOTTLE_ALWAYS_INCLUDED_ITEM_IDS_OOT_MM.has(itemId)) {
+      return !this.isSharedBottlesEnabled()
+    }
+
+    return true
+  }
+
+  private isSharedBottlesEnabled(): boolean {
+    const value = (this.settings as { sharedBottles?: unknown })?.sharedBottles
     if (typeof value === 'boolean') return value
     if (typeof value === 'string') {
       const normalized = value.trim().toLowerCase()

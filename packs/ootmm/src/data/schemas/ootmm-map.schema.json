@@ -30,6 +30,7 @@
       "enum": [
         "mm_beneath_the_well",
         "mm_great_bay",
+        "mm_great_bay_temple",
         "mm_ikana_canyon",
         "mm_ikana_castle",
         "mm_moon",

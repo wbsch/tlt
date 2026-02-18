@@ -76,15 +76,15 @@
             "SHARED_BUTTON_C_DOWN",
             "SHARED_BUTTON_C_LEFT",
             "SHARED_BUTTON_C_RIGHT",
-            "SHARED_BUTTON_C_UP",
-            "SHARED_BOTTLE_EMPTY"
+            "SHARED_BUTTON_C_UP"
           ],
           [
-            "SHARED_BOTTLE_POTION_RED",
+            "SHARED_BOTTLE_RUTO_LETTER",
             "SHARED_BOTTLED_GOLD_DUST",
-            "SHARED_BOTTLE_CHATEAU",
-            "SHARED_BOTTLE_MILK",
-            "SHARED_BOTTLE_RUTO_LETTER"
+            { "ref": "Shared_Bottle1", "item": "SHARED_BOTTLE_EMPTY", "title": "Bottle 1" },
+            { "ref": "Shared_Bottle2", "item": "SHARED_BOTTLE_EMPTY", "title": "Bottle 2" },
+            { "ref": "Shared_Bottle3", "item": "SHARED_BOTTLE_EMPTY", "title": "Bottle 3" },
+            { "ref": "Shared_Bottle4", "item": "SHARED_BOTTLE_EMPTY", "title": "Bottle 4" }
           ]
         ]
       }
