@@ -6,10 +6,7 @@
   "height": 600,
   "markers": [
     {
-      "coords": [
-        442,
-        333
-      ],
+      "coords": [442, 333],
       "image": "chest",
       "codes": [
         "TODO KF 001 :: unnamed_stack > Ice Cavern > Vanilla Ice > Ice Checks :: Pasted Layer :: 001-001-001-000.png",
@@ -17,10 +14,7 @@
       ]
     },
     {
-      "coords": [
-        585,
-        329
-      ],
+      "coords": [585, 329],
       "image": "chest",
       "codes": [
         "TODO KF 002 :: unnamed_stack > Ice Cavern > Vanilla Ice > Ice Checks :: Pasted Layer #1 :: 001-001-001-001.png",
@@ -28,10 +22,7 @@
       ]
     },
     {
-      "coords": [
-        582,
-        304
-      ],
+      "coords": [582, 304],
       "image": "heart_piece",
       "codes": [
         "TODO KF 003 :: unnamed_stack > Ice Cavern > Vanilla Ice > Ice Checks :: Pasted Layer #2 :: 001-001-001-002.png",
@@ -39,10 +30,7 @@
       ]
     },
     {
-      "coords": [
-        549,
-        197
-      ],
+      "coords": [549, 197],
       "image": "chest",
       "codes": [
         "TODO KF 004 :: unnamed_stack > Ice Cavern > Vanilla Ice > Ice Checks :: Pasted Layer #3 :: 001-001-001-003.png",
@@ -50,10 +38,7 @@
       ]
     },
     {
-      "coords": [
-        426,
-        318
-      ],
+      "coords": [426, 318],
       "image": "song",
       "codes": [
         "TODO KF 005 :: unnamed_stack > Ice Cavern > Vanilla Ice > Ice Songs :: Pasted Layer #4 :: 001-001-002-000.png",
@@ -61,10 +46,7 @@
       ]
     },
     {
-      "coords": [
-        592,
-        308
-      ],
+      "coords": [592, 308],
       "image": "gold_skulltula",
       "codes": [
         "TODO KF 006 :: unnamed_stack > Ice Cavern > Vanilla Ice > Ice Skulls :: Pasted Layer #5 :: 001-001-003-000.png",
@@ -72,10 +54,7 @@
       ]
     },
     {
-      "coords": [
-        498,
-        282
-      ],
+      "coords": [498, 282],
       "image": "gold_skulltula",
       "codes": [
         "TODO KF 007 :: unnamed_stack > Ice Cavern > Vanilla Ice > Ice Skulls :: Pasted Layer #6 :: 001-001-003-001.png",
@@ -83,10 +62,7 @@
       ]
     },
     {
-      "coords": [
-        452,
-        249
-      ],
+      "coords": [452, 249],
       "image": "gold_skulltula",
       "codes": [
         "TODO KF 008 :: unnamed_stack > Ice Cavern > Vanilla Ice > Ice Skulls :: Pasted Layer #7 :: 001-001-003-002.png",
@@ -94,10 +70,7 @@
       ]
     },
     {
-      "coords": [
-        514,
-        267
-      ],
+      "coords": [514, 267],
       "image": "silver_rupee",
       "codes": [
         "TODO KF 009 :: unnamed_stack > Ice Cavern > Vanilla Ice > Ice Silver :: Pasted Layer #8 :: 001-001-004-000.png",
@@ -109,10 +82,55 @@
       ]
     },
     {
-      "coords": [
-        437,
-        234
-      ],
+      "coords": [514, 267],
+      "image": "silver_rupee",
+      "codes": [
+        "TODO KF 009 :: unnamed_stack > Ice Cavern > Vanilla Ice > Ice Silver :: Pasted Layer #8 :: 001-001-004-000.png",
+        "OOT Ice Cavern SR Scythe Back",
+        "OOT Ice Cavern SR Scythe Center Left",
+        "OOT Ice Cavern SR Scythe Center Right",
+        "OOT Ice Cavern SR Scythe Left",
+        "OOT Ice Cavern SR Scythe Midair"
+      ]
+    },
+    {
+      "coords": [514, 267],
+      "image": "silver_rupee",
+      "codes": [
+        "TODO KF 009 :: unnamed_stack > Ice Cavern > Vanilla Ice > Ice Silver :: Pasted Layer #8 :: 001-001-004-000.png",
+        "OOT Ice Cavern SR Scythe Back",
+        "OOT Ice Cavern SR Scythe Center Left",
+        "OOT Ice Cavern SR Scythe Center Right",
+        "OOT Ice Cavern SR Scythe Left",
+        "OOT Ice Cavern SR Scythe Midair"
+      ]
+    },
+    {
+      "coords": [514, 267],
+      "image": "silver_rupee",
+      "codes": [
+        "TODO KF 009 :: unnamed_stack > Ice Cavern > Vanilla Ice > Ice Silver :: Pasted Layer #8 :: 001-001-004-000.png",
+        "OOT Ice Cavern SR Scythe Back",
+        "OOT Ice Cavern SR Scythe Center Left",
+        "OOT Ice Cavern SR Scythe Center Right",
+        "OOT Ice Cavern SR Scythe Left",
+        "OOT Ice Cavern SR Scythe Midair"
+      ]
+    },
+    {
+      "coords": [514, 267],
+      "image": "silver_rupee",
+      "codes": [
+        "TODO KF 009 :: unnamed_stack > Ice Cavern > Vanilla Ice > Ice Silver :: Pasted Layer #8 :: 001-001-004-000.png",
+        "OOT Ice Cavern SR Scythe Back",
+        "OOT Ice Cavern SR Scythe Center Left",
+        "OOT Ice Cavern SR Scythe Center Right",
+        "OOT Ice Cavern SR Scythe Left",
+        "OOT Ice Cavern SR Scythe Midair"
+      ]
+    },
+    {
+      "coords": [437, 234],
       "image": "silver_rupee",
       "codes": [
         "TODO KF 010 :: unnamed_stack > Ice Cavern > Vanilla Ice > Ice Silver :: Pasted Layer #9 :: 001-001-004-001.png",
@@ -124,10 +142,55 @@
       ]
     },
     {
-      "coords": [
-        408,
-        303
-      ],
+      "coords": [437, 234],
+      "image": "silver_rupee",
+      "codes": [
+        "TODO KF 010 :: unnamed_stack > Ice Cavern > Vanilla Ice > Ice Silver :: Pasted Layer #9 :: 001-001-004-001.png",
+        "OOT Ice Cavern SR Blocks Alcove",
+        "OOT Ice Cavern SR Blocks Back Left",
+        "OOT Ice Cavern SR Blocks Back Right",
+        "OOT Ice Cavern SR Blocks Center",
+        "OOT Ice Cavern SR Blocks Front Left"
+      ]
+    },
+    {
+      "coords": [437, 234],
+      "image": "silver_rupee",
+      "codes": [
+        "TODO KF 010 :: unnamed_stack > Ice Cavern > Vanilla Ice > Ice Silver :: Pasted Layer #9 :: 001-001-004-001.png",
+        "OOT Ice Cavern SR Blocks Alcove",
+        "OOT Ice Cavern SR Blocks Back Left",
+        "OOT Ice Cavern SR Blocks Back Right",
+        "OOT Ice Cavern SR Blocks Center",
+        "OOT Ice Cavern SR Blocks Front Left"
+      ]
+    },
+    {
+      "coords": [437, 234],
+      "image": "silver_rupee",
+      "codes": [
+        "TODO KF 010 :: unnamed_stack > Ice Cavern > Vanilla Ice > Ice Silver :: Pasted Layer #9 :: 001-001-004-001.png",
+        "OOT Ice Cavern SR Blocks Alcove",
+        "OOT Ice Cavern SR Blocks Back Left",
+        "OOT Ice Cavern SR Blocks Back Right",
+        "OOT Ice Cavern SR Blocks Center",
+        "OOT Ice Cavern SR Blocks Front Left"
+      ]
+    },
+    {
+      "coords": [437, 234],
+      "image": "silver_rupee",
+      "codes": [
+        "TODO KF 010 :: unnamed_stack > Ice Cavern > Vanilla Ice > Ice Silver :: Pasted Layer #9 :: 001-001-004-001.png",
+        "OOT Ice Cavern SR Blocks Alcove",
+        "OOT Ice Cavern SR Blocks Back Left",
+        "OOT Ice Cavern SR Blocks Back Right",
+        "OOT Ice Cavern SR Blocks Center",
+        "OOT Ice Cavern SR Blocks Front Left"
+      ]
+    },
+    {
+      "coords": [408, 303],
       "image": "pot",
       "codes": [
         "TODO KF 011 :: unnamed_stack > Ice Cavern > Vanilla Ice > Ice Pots :: Pasted Layer #10 :: 001-001-005-000.png",
@@ -136,10 +199,7 @@
       ]
     },
     {
-      "coords": [
-        486,
-        308
-      ],
+      "coords": [486, 308],
       "image": "pot",
       "codes": [
         "TODO KF 012 :: unnamed_stack > Ice Cavern > Vanilla Ice > Ice Pots :: Pasted Layer #11 :: 001-001-005-001.png",
@@ -148,10 +208,7 @@
       ]
     },
     {
-      "coords": [
-        525,
-        280
-      ],
+      "coords": [525, 280],
       "image": "pot",
       "codes": [
         "TODO KF 013 :: unnamed_stack > Ice Cavern > Vanilla Ice > Ice Pots :: Pasted Layer #12 :: 001-001-005-002.png",
@@ -160,10 +217,7 @@
       ]
     },
     {
-      "coords": [
-        499,
-        246
-      ],
+      "coords": [499, 246],
       "image": "flying_pot",
       "codes": [
         "TODO KF 014 :: unnamed_stack > Ice Cavern > Vanilla Ice > Ice Pots :: Pasted Layer #13 :: 001-001-005-003.png",
@@ -171,10 +225,7 @@
       ]
     },
     {
-      "coords": [
-        525,
-        245
-      ],
+      "coords": [525, 245],
       "image": "pot",
       "codes": [
         "TODO KF 015 :: unnamed_stack > Ice Cavern > Vanilla Ice > Ice Pots :: Pasted Layer #14 :: 001-001-005-004.png",
@@ -182,10 +233,7 @@
       ]
     },
     {
-      "coords": [
-        549,
-        230
-      ],
+      "coords": [549, 230],
       "image": "pot",
       "codes": [
         "TODO KF 016 :: unnamed_stack > Ice Cavern > Vanilla Ice > Ice Pots :: Pasted Layer #15 :: 001-001-005-005.png",
@@ -193,10 +241,7 @@
       ]
     },
     {
-      "coords": [
-        492,
-        333
-      ],
+      "coords": [492, 333],
       "image": "blue_rupee",
       "codes": [
         "TODO KF 017 :: unnamed_stack > Ice Cavern > Vanilla Ice > Ice Freestanding Rupees :: Pasted Layer #16 :: 001-001-006-000.png",
@@ -204,10 +249,7 @@
       ]
     },
     {
-      "coords": [
-        410,
-        249
-      ],
+      "coords": [410, 249],
       "image": "red_rupee",
       "codes": [
         "TODO KF 018 :: unnamed_stack > Ice Cavern > Vanilla Ice > Ice Freestanding Rupees :: Pasted Layer #17 :: 001-001-006-001.png",
@@ -217,10 +259,7 @@
       ]
     },
     {
-      "coords": [
-        585,
-        199
-      ],
+      "coords": [585, 199],
       "image": "heart",
       "codes": [
         "TODO KF 019 :: unnamed_stack > Ice Cavern > Vanilla Ice > Ice Freestanding Hearts :: Pasted Layer #18 :: 001-001-007-000.png",
@@ -230,10 +269,7 @@
       ]
     },
     {
-      "coords": [
-        500,
-        346
-      ],
+      "coords": [500, 346],
       "image": "big_fairy_spot",
       "codes": [
         "TODO KF 020 :: unnamed_stack > Ice Cavern > Vanilla Ice > Ice Big Fairy :: Pasted Layer #19 :: 001-001-008-000.png",
@@ -241,10 +277,7 @@
       ]
     },
     {
-      "coords": [
-        505,
-        398
-      ],
+      "coords": [505, 398],
       "image": "icicle",
       "codes": [
         "TODO KF 021 :: unnamed_stack > Ice Cavern > Vanilla Ice > Ice Icicles :: Pasted Layer #20 :: 001-001-009-000.png",
@@ -254,10 +287,7 @@
       ]
     },
     {
-      "coords": [
-        496,
-        369
-      ],
+      "coords": [496, 369],
       "image": "icicle",
       "codes": [
         "TODO KF 022 :: unnamed_stack > Ice Cavern > Vanilla Ice > Ice Icicles :: Pasted Layer #21 :: 001-001-009-001.png",
@@ -267,10 +297,7 @@
       ]
     },
     {
-      "coords": [
-        600,
-        322
-      ],
+      "coords": [600, 322],
       "image": "icicle",
       "codes": [
         "TODO KF 023 :: unnamed_stack > Ice Cavern > Vanilla Ice > Ice Icicles :: Pasted Layer #22 :: 001-001-009-002.png",
@@ -290,10 +317,7 @@
       ]
     },
     {
-      "coords": [
-        498,
-        301
-      ],
+      "coords": [498, 301],
       "image": "icicle",
       "codes": [
         "TODO KF 024 :: unnamed_stack > Ice Cavern > Vanilla Ice > Ice Icicles :: Pasted Layer #23 :: 001-001-009-003.png",
@@ -304,10 +328,7 @@
       ]
     },
     {
-      "coords": [
-        582,
-        266
-      ],
+      "coords": [582, 266],
       "image": "icicle",
       "codes": [
         "TODO KF 025 :: unnamed_stack > Ice Cavern > Vanilla Ice > Ice Icicles :: Pasted Layer #24 :: 001-001-009-004.png",
@@ -317,10 +338,7 @@
       ]
     },
     {
-      "coords": [
-        506,
-        277
-      ],
+      "coords": [506, 277],
       "image": "icicle",
       "codes": [
         "TODO KF 026 :: unnamed_stack > Ice Cavern > Vanilla Ice > Ice Icicles :: Pasted Layer #25 :: 001-001-009-005.png",
@@ -330,10 +348,7 @@
       ]
     },
     {
-      "coords": [
-        478,
-        242
-      ],
+      "coords": [478, 242],
       "image": "icicle",
       "codes": [
         "TODO KF 027 :: unnamed_stack > Ice Cavern > Vanilla Ice > Ice Icicles :: Pasted Layer #26 :: 001-001-009-006.png",
@@ -345,10 +360,7 @@
       ]
     },
     {
-      "coords": [
-        413,
-        281
-      ],
+      "coords": [413, 281],
       "image": "icicle",
       "codes": [
         "TODO KF 028 :: unnamed_stack > Ice Cavern > Vanilla Ice > Ice Icicles :: Pasted Layer #27 :: 001-001-009-007.png",
@@ -363,10 +375,7 @@
       ]
     },
     {
-      "coords": [
-        513,
-        395
-      ],
+      "coords": [513, 395],
       "image": "red_ice",
       "codes": [
         "TODO KF 029 :: unnamed_stack > Ice Cavern > Vanilla Ice > Ice Red Ice :: Pasted Layer #28 :: 001-001-010-000.png",
@@ -374,10 +383,7 @@
       ]
     },
     {
-      "coords": [
-        512,
-        329
-      ],
+      "coords": [512, 329],
       "image": "red_ice",
       "codes": [
         "TODO KF 030 :: unnamed_stack > Ice Cavern > Vanilla Ice > Ice Red Ice :: Pasted Layer #29 :: 001-001-010-001.png",
@@ -385,10 +391,7 @@
       ]
     },
     {
-      "coords": [
-        490,
-        329
-      ],
+      "coords": [490, 329],
       "image": "red_ice",
       "codes": [
         "TODO KF 031 :: unnamed_stack > Ice Cavern > Vanilla Ice > Ice Red Ice :: Pasted Layer #30 :: 001-001-010-002.png",
@@ -396,10 +399,7 @@
       ]
     },
     {
-      "coords": [
-        575,
-        329
-      ],
+      "coords": [575, 329],
       "image": "red_ice",
       "codes": [
         "TODO KF 032 :: unnamed_stack > Ice Cavern > Vanilla Ice > Ice Red Ice :: Pasted Layer #31 :: 001-001-010-003.png",
@@ -407,10 +407,7 @@
       ]
     },
     {
-      "coords": [
-        575,
-        303
-      ],
+      "coords": [575, 303],
       "image": "red_ice",
       "codes": [
         "TODO KF 033 :: unnamed_stack > Ice Cavern > Vanilla Ice > Ice Red Ice :: Pasted Layer #32 :: 001-001-010-004.png",
@@ -418,10 +415,7 @@
       ]
     },
     {
-      "coords": [
-        544,
-        225
-      ],
+      "coords": [544, 225],
       "image": "red_ice",
       "codes": [
         "TODO KF 034 :: unnamed_stack > Ice Cavern > Vanilla Ice > Ice Red Ice :: Pasted Layer #33 :: 001-001-010-005.png",
@@ -429,10 +423,7 @@
       ]
     },
     {
-      "coords": [
-        543,
-        191
-      ],
+      "coords": [543, 191],
       "image": "red_ice",
       "codes": [
         "TODO KF 035 :: unnamed_stack > Ice Cavern > Vanilla Ice > Ice Red Ice :: Pasted Layer #34 :: 001-001-010-006.png",
@@ -440,10 +431,7 @@
       ]
     },
     {
-      "coords": [
-        435,
-        203
-      ],
+      "coords": [435, 203],
       "image": "red_ice",
       "codes": [
         "TODO KF 036 :: unnamed_stack > Ice Cavern > Vanilla Ice > Ice Red Ice :: Pasted Layer #35 :: 001-001-010-007.png",
@@ -451,10 +439,7 @@
       ]
     },
     {
-      "coords": [
-        414,
-        298
-      ],
+      "coords": [414, 298],
       "image": "red_ice",
       "codes": [
         "TODO KF 037 :: unnamed_stack > Ice Cavern > Vanilla Ice > Ice Red Ice :: Pasted Layer #36 :: 001-001-010-008.png",
