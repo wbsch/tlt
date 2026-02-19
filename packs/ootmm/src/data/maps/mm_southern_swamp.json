@@ -31,11 +31,6 @@
       "codes": ["MM Woodfall Near Owl Chest"]
     },
     {
-      "coords": [795, 541],
-      "image": "chest",
-      "codes": "ERROR"
-    },
-    {
       "coords": [939, 369],
       "image": "chest",
       "codes": ["MM Woodfall HP Chest"]
@@ -646,21 +641,6 @@
           ]
         }
       ]
-    },
-    {
-      "coords": [842, 456],
-      "image": "dungeon_entrance",
-      "codes": "TODO KF 075 :: unnamed_stack > Swamp > Swamp Layers > Swamp Entrances :: Pasted Layer #74 :: 001-001-012-005.png"
-    },
-    {
-      "coords": [932, 584],
-      "image": "interior_entrance",
-      "codes": "TODO KF 076 :: unnamed_stack > Swamp > Swamp Layers > Swamp Entrances :: Pasted Layer #75 :: 001-001-012-006.png"
-    },
-    {
-      "coords": [591, 415],
-      "image": "grotto",
-      "overlays": ["na_only"]
     },
     {
       "coords": [591, 415],

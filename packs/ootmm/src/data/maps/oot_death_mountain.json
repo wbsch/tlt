@@ -59,7 +59,7 @@
       "coords": [414, 401],
       "image": "heart_piece",
       "overlays": ["child"],
-      "codes": "TODO KF 010 :: unnamed_stack > Death Mountain > Death Mountain Layers > Death Mountain Checks :: Pasted Layer #9 :: 001-001-001-009.png"
+      "codes": "OOT Goron City Big Pot HP"
     },
     {
       "coords": [457, 350],
@@ -470,11 +470,6 @@
       "coords": [818, 190],
       "image": "warp_spot",
       "codes": "TODO KF 067 :: unnamed_stack > Death Mountain > Death Mountain Layers > Death Mountain Entrances :: Pasted Layer #66 :: 001-001-013-001.png"
-    },
-    {
-      "coords": [646, 160],
-      "image": "red_boulder",
-      "codes": "TODO KF 068 :: unnamed_stack > Death Mountain > Death Mountain Layers > Death Mountain Entrances :: Pasted Layer #67 :: 001-001-013-002.png"
     },
     {
       "coords": [813, 371],
