@@ -2,11 +2,13 @@
 import { defineAsyncComponent, onBeforeUnmount, onMounted, ref } from 'vue';
 import { storeToRefs } from 'pinia';
 import { useAppStore } from './stores/app';
+import { IMPRESSUM_HTML } from './content/impressum';
 
 const appStore = useAppStore();
 const { availablePacks, selectedPackId, currentPack, isLoading, error } =
   storeToRefs(appStore);
 const isResetConfirmOpen = ref(false);
+const isInfoModalOpen = ref(false);
 
 const packComponents: Record<
   string,
@@ -46,10 +48,29 @@ function confirmResetTrackerState() {
   performResetTrackerState();
 }
 
+function openInfoModal() {
+  isInfoModalOpen.value = true;
+}
+
+function closeInfoModal() {
+  isInfoModalOpen.value = false;
+}
+
 function handleWindowKeydown(event: KeyboardEvent) {
-  if (event.key !== 'Escape' || !isResetConfirmOpen.value) {
+  if (event.key !== 'Escape') {
     return;
   }
+
+  if (isInfoModalOpen.value) {
+    event.preventDefault();
+    closeInfoModal();
+    return;
+  }
+
+  if (!isResetConfirmOpen.value) {
+    return;
+  }
+
   event.preventDefault();
   cancelResetTrackerState();
 }
@@ -114,6 +135,14 @@ onBeforeUnmount(() => {
         </button>
         <button
           type="button"
+          class="info-button"
+          data-testid="info-impressum-button"
+          @click="openInfoModal"
+        >
+          Info
+        </button>
+        <button
+          type="button"
           class="reset-button"
           data-testid="reset-tracker-state-button"
           @click="requestResetTrackerState"
@@ -136,6 +165,41 @@ onBeforeUnmount(() => {
         :tracker="currentPack"
       />
     </main>
+
+    <div
+      v-if="isInfoModalOpen"
+      class="info-modal-backdrop"
+      data-testid="info-impressum-backdrop"
+      @click="closeInfoModal"
+    >
+      <div
+        class="info-modal"
+        data-testid="info-impressum-modal"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="info-impressum-title"
+        @click.stop
+      >
+        <div class="info-modal-header">
+          <img
+            src="/images/thelasttracker.png"
+            alt="The Last Tracker logo"
+            class="info-modal-logo"
+          />
+        </div>
+        <div class="info-modal-content" v-html="IMPRESSUM_HTML" />
+        <div class="info-modal-actions">
+          <button
+            type="button"
+            class="info-modal-close"
+            data-testid="info-impressum-close-button"
+            @click="closeInfoModal"
+          >
+            Close
+          </button>
+        </div>
+      </div>
+    </div>
 
     <div
       v-if="isResetConfirmOpen"
@@ -262,6 +326,17 @@ onBeforeUnmount(() => {
   background: #555;
 }
 
+.info-button {
+  background: #1f2937;
+  border: 1px solid #4b5563;
+  font-size: 0.75rem;
+  font-weight: 700;
+}
+
+.info-button:hover {
+  background: #374151;
+}
+
 .app-main {
   flex: 1;
   overflow: hidden;
@@ -278,6 +353,115 @@ onBeforeUnmount(() => {
 
 .error {
   color: #ef4444;
+}
+
+.info-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 1900;
+  background: rgb(0 0 0 / 45%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+}
+
+.info-modal {
+  width: min(36rem, 100%);
+  max-height: min(80vh, 44rem);
+  overflow: auto;
+  border: 1px solid #525252;
+  border-radius: 0.5rem;
+  background: #1f1f1f;
+  box-shadow: 0 16px 50px rgb(0 0 0 / 45%);
+  padding: 1rem 1rem 0.875rem;
+}
+
+.info-modal h2 {
+  margin: 0;
+  font-size: 1.1rem;
+  text-align: center;
+}
+
+.info-modal-header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  margin-bottom: 0.9rem;
+}
+
+.info-modal-logo {
+  width: auto;
+  max-width: min(100%, clamp(6.5rem, 22vw, 10rem));
+  max-height: clamp(6.5rem, 22vw, 10rem);
+  height: auto;
+  border-radius: 1rem;
+  object-fit: contain;
+  display: block;
+}
+
+.info-modal-content {
+  color: #d1d5db;
+  line-height: 1.42;
+}
+
+.info-modal-content :deep(section) {
+  margin: 0.875rem 0 0;
+}
+
+.info-modal-content :deep(section:first-child) {
+  margin-top: 0;
+}
+
+.info-modal-content :deep(h3) {
+  margin: 0 0 0.375rem;
+  font-size: 0.95rem;
+  color: #f3f4f6;
+}
+
+.info-modal-content :deep(p) {
+  margin: 0;
+}
+
+.info-modal-content :deep(ul) {
+  margin: 0;
+  padding-left: 1.2rem;
+}
+
+.info-modal-content :deep(li + li) {
+  margin-top: 0.2rem;
+}
+
+.info-modal-content :deep(a) {
+  color: #93c5fd;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.info-modal-content :deep(a:hover) {
+  color: #bfdbfe;
+}
+
+.info-modal-content :deep(.info-important) {
+  margin-top: 1rem;
+  border-top: 1px solid #3f3f46;
+  padding-top: 0.75rem;
+}
+
+.info-modal-actions {
+  margin-top: 1rem;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.info-modal-close {
+  background: #374151;
+}
+
+.info-modal-close:hover {
+  background: #4b5563;
 }
 
 .reset-confirm-backdrop {
