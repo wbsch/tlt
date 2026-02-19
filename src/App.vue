@@ -1,12 +1,12 @@
 <script setup lang="ts">
-import { onMounted } from 'vue';
+import { defineAsyncComponent, onBeforeUnmount, onMounted, ref } from 'vue';
 import { storeToRefs } from 'pinia';
-import { defineAsyncComponent } from 'vue';
 import { useAppStore } from './stores/app';
 
 const appStore = useAppStore();
 const { availablePacks, selectedPackId, currentPack, isLoading, error } =
   storeToRefs(appStore);
+const isResetConfirmOpen = ref(false);
 
 const packComponents: Record<
   string,
@@ -21,7 +21,7 @@ function getPackComponent(packId: string) {
   return packComponents[packId] ?? null;
 }
 
-function resetTrackerState() {
+function performResetTrackerState() {
   const resetFn = (
     window as Window & { __TLT_RESET_TRACKER_STATE__?: () => void }
   ).__TLT_RESET_TRACKER_STATE__;
@@ -31,6 +31,27 @@ function resetTrackerState() {
   }
   window.localStorage.clear();
   window.location.reload();
+}
+
+function requestResetTrackerState() {
+  isResetConfirmOpen.value = true;
+}
+
+function cancelResetTrackerState() {
+  isResetConfirmOpen.value = false;
+}
+
+function confirmResetTrackerState() {
+  isResetConfirmOpen.value = false;
+  performResetTrackerState();
+}
+
+function handleWindowKeydown(event: KeyboardEvent) {
+  if (event.key !== 'Escape' || !isResetConfirmOpen.value) {
+    return;
+  }
+  event.preventDefault();
+  cancelResetTrackerState();
 }
 
 function debugActivateAll() {
@@ -44,6 +65,11 @@ function debugActivateAll() {
 
 onMounted(() => {
   appStore.initialize();
+  window.addEventListener('keydown', handleWindowKeydown);
+});
+
+onBeforeUnmount(() => {
+  window.removeEventListener('keydown', handleWindowKeydown);
 });
 </script>
 
@@ -90,7 +116,7 @@ onMounted(() => {
           type="button"
           class="reset-button"
           data-testid="reset-tracker-state-button"
-          @click="resetTrackerState"
+          @click="requestResetTrackerState"
         >
           RESET TRACKER STATE
         </button>
@@ -110,6 +136,46 @@ onMounted(() => {
         :tracker="currentPack"
       />
     </main>
+
+    <div
+      v-if="isResetConfirmOpen"
+      class="reset-confirm-backdrop"
+      data-testid="reset-tracker-confirm-backdrop"
+      @click="cancelResetTrackerState"
+    >
+      <div
+        class="reset-confirm-modal"
+        data-testid="reset-tracker-confirm-modal"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="reset-tracker-confirm-title"
+        aria-describedby="reset-tracker-confirm-description"
+        @click.stop
+      >
+        <h2 id="reset-tracker-confirm-title">Reset tracker state?</h2>
+        <p id="reset-tracker-confirm-description">
+          This clears your current tracker progress and reloads the page.
+        </p>
+        <div class="reset-confirm-actions">
+          <button
+            type="button"
+            class="reset-confirm-cancel"
+            data-testid="reset-tracker-confirm-cancel-button"
+            @click="cancelResetTrackerState"
+          >
+            Cancel
+          </button>
+          <button
+            type="button"
+            class="reset-confirm-apply"
+            data-testid="reset-tracker-confirm-apply-button"
+            @click="confirmResetTrackerState"
+          >
+            Reset Tracker State
+          </button>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -212,6 +278,60 @@ onMounted(() => {
 
 .error {
   color: #ef4444;
+}
+
+.reset-confirm-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 2000;
+  background: rgb(0 0 0 / 55%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+}
+
+.reset-confirm-modal {
+  width: min(28rem, 100%);
+  border: 1px solid #525252;
+  border-radius: 0.5rem;
+  background: #1f1f1f;
+  box-shadow: 0 16px 50px rgb(0 0 0 / 45%);
+  padding: 1rem 1rem 0.875rem;
+}
+
+.reset-confirm-modal h2 {
+  margin: 0 0 0.5rem;
+  font-size: 1.1rem;
+}
+
+.reset-confirm-modal p {
+  margin: 0;
+  color: #d1d5db;
+}
+
+.reset-confirm-actions {
+  margin-top: 1rem;
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.5rem;
+}
+
+.reset-confirm-cancel {
+  background: #4b5563;
+}
+
+.reset-confirm-cancel:hover {
+  background: #6b7280;
+}
+
+.reset-confirm-apply {
+  background: #991b1b;
+  border: 1px solid #fca5a5;
+}
+
+.reset-confirm-apply:hover {
+  background: #b91c1c;
 }
 
 @media (max-width: 700px) {
