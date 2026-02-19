@@ -1159,7 +1159,7 @@ onBeforeUnmount(() => {
             :disabled="isApplyingSettings || !canUndo"
             @click="undo"
           >
-            Undo
+            ↶ Undo
           </button>
           <button
             type="button"
@@ -1167,7 +1167,7 @@ onBeforeUnmount(() => {
             :disabled="isApplyingSettings || !canRedo"
             @click="redo"
           >
-            Redo
+            Redo ↷
           </button>
         </div>
       </div>

@@ -4,7 +4,14 @@
   "title": "OoTMM Map Definition",
   "type": "object",
   "additionalProperties": false,
-  "required": ["id", "title", "image", "width", "height", "markers"],
+  "required": [
+    "id",
+    "title",
+    "image",
+    "width",
+    "height",
+    "markers"
+  ],
   "properties": {
     "$schema": {
       "type": "string",
@@ -5281,7 +5288,10 @@
     "submenuEntry": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["image", "codes"],
+      "required": [
+        "image",
+        "codes"
+      ],
       "properties": {
         "image": {
           "$ref": "#/$defs/markerImage"
@@ -5297,7 +5307,11 @@
     "checkMarker": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["coords", "image", "codes"],
+      "required": [
+        "coords",
+        "image",
+        "codes"
+      ],
       "properties": {
         "coords": {
           "$ref": "#/$defs/coords"
@@ -5319,7 +5333,12 @@
     "submenuMarker": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["coords", "image", "type", "markers"],
+      "required": [
+        "coords",
+        "image",
+        "type",
+        "markers"
+      ],
       "properties": {
         "coords": {
           "$ref": "#/$defs/coords"
