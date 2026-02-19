@@ -1048,11 +1048,6 @@
       "codes": ["MM Termina Field Gossip Near Kamaro"]
     },
     {
-      "coords": [432, 561],
-      "image": "red_boulder",
-      "codes": "TODO KF 121 :: unnamed_stack > Termina > Termina Layers > Termina Entrances :: Pasted Layer #120 :: 001-001-017-000.png"
-    },
-    {
       "coords": [706, 460],
       "image": "grotto",
       "type": "submenu",

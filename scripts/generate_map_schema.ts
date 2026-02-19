@@ -1,6 +1,8 @@
 import { mkdir, readdir, readFile, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 import { MAP_ICON_INDEX } from '../packs/ootmm/src/data/maps/mapIconIndex.ts';
+import { buildLocationCodeSet, toSortedUnique } from '../packs/ootmm/src/data/locationCodeSource.ts';
+import type { HintsLikeData, WorldLikeData } from '../packs/ootmm/src/data/locationCodeSource.ts';
 
 const TYPES_FILE = path.resolve('packs/ootmm/src/data/maps/types.ts');
 const MAP_IMAGES_DIR = path.resolve('public/images/maps');
@@ -16,10 +18,6 @@ const OUTPUT_FILE = path.resolve(
 
 type JsonRecord = Record<string, unknown>;
 type HintLocationRecord = { location?: unknown };
-
-function toSortedUnique(values: Iterable<string>): string[] {
-  return Array.from(new Set(values)).sort((a, b) => a.localeCompare(b));
-}
 
 function extractStringUnionValues(source: string, typeName: string): string[] {
   const typeMatch = source.match(
@@ -49,55 +47,14 @@ async function loadOverlayNames(): Promise<string[]> {
 
 async function loadWorldLocationCodes(): Promise<string[]> {
   const worldRaw = await readFile(WORLD_DATA_FILE, 'utf8');
-  const world = JSON.parse(worldRaw) as Record<
-    string,
-    Record<string, Record<string, { locations?: JsonRecord }>>
-  >;
-  const codes = new Set<string>();
-
-  const collectLocationCodes = (
-    game: 'oot' | 'mm',
-    areaSets: Record<string, Record<string, { locations?: JsonRecord }>>,
-  ) => {
-    for (const areaSet of Object.values(areaSets)) {
-      for (const area of Object.values(areaSet ?? {})) {
-        const locations = area?.locations ?? {};
-        for (const locationName of Object.keys(locations)) {
-          const prefixed = `${game.toUpperCase()} ${locationName}`.trim();
-          if (prefixed.length > 0) {
-            codes.add(prefixed);
-          }
-        }
-      }
-    }
-  };
-
-  for (const game of ['oot', 'mm'] as const) {
-    collectLocationCodes(game, world[game] ?? {});
-  }
-
-  for (const mmLayoutKey of ['mm_us', 'mm_jp'] as const) {
-    collectLocationCodes('mm', world[mmLayoutKey] ?? {});
-  }
-
-  return toSortedUnique(codes);
+  const world = JSON.parse(worldRaw) as WorldLikeData;
+  return buildLocationCodeSet(world);
 }
 
 async function loadHintLocationCodes(): Promise<string[]> {
   const hintsRaw = await readFile(HINTS_RAW_FILE, 'utf8');
-  const hints = JSON.parse(hintsRaw) as Record<string, HintLocationRecord[]>;
-  const codes = new Set<string>();
-  for (const game of ['oot', 'mm'] as const) {
-    for (const hint of hints[game] ?? []) {
-      if (!hint || typeof hint !== 'object') continue;
-      if (typeof hint.location !== 'string') continue;
-      const prefixed = `${game.toUpperCase()} ${hint.location}`.trim();
-      if (prefixed.length > 0) {
-        codes.add(prefixed);
-      }
-    }
-  }
-  return toSortedUnique(codes);
+  const hints = JSON.parse(hintsRaw) as HintsLikeData;
+  return buildLocationCodeSet({}, hints);
 }
 
 async function generateMapSchema(): Promise<void> {

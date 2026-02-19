@@ -148,11 +148,6 @@
       "codes": ["OOT Gerudo Valley Crate Child Bottom"]
     },
     {
-      "coords": [829, 449],
-      "image": "collectible",
-      "codes": ["ERROR"]
-    },
-    {
       "coords": [641, 410],
       "image": "crate",
       "codes": [
@@ -188,11 +183,6 @@
         "OOT Gerudo Fortress Crate Archery 12",
         "OOT Gerudo Fortress Crate Archery 13"
       ]
-    },
-    {
-      "coords": [658, 66],
-      "image": "collectible",
-      "codes": ["ERROR"]
     },
     {
       "coords": [453, 265],
@@ -613,10 +603,44 @@
     {
       "coords": [496, 293],
       "image": "interior_entrance",
-      "codes": "TODO KF 070 :: unnamed_stack > Desert > Desert Layers > Desert Entrances :: Pasted Layer #69 :: 001-001-014-008.png"
+      "type": "submenu",
+      "markers": [
+        {
+          "image": "big_fairy_spot",
+          "codes": "OOT Gerudo Fortress Kitchen Big Fairy"
+        },
+        {
+          "image": "crate",
+          "codes": [
+            "OOT Thieves Hideout Crate Kitchen Corridor 1",
+            "OOT Thieves Hideout Crate Kitchen Corridor 2",
+            "OOT Thieves Hideout Crate Kitchen Corridor 3",
+            "OOT Thieves Hideout Crate Kitchen Corridor 4",
+            "OOT Thieves Hideout Crate Kitchen"
+          ]
+        },
+        {
+          "image": "pot",
+          "codes": [
+            "OOT Gerudo Fortress Pot Kitchen 1",
+            "OOT Gerudo Fortress Pot Kitchen 2"
+          ]
+        },
+        {
+          "image": "wonder_item_random",
+          "codes": "OOT Gerudo Fortress Wonder Item Kitchen Skull"
+        },
+        {
+          "image": "wonder_item_red_rupee",
+          "codes": "OOT Gerudo Fortress Wonder Item Kitchen Soup"
+        }
+      ]
     },
     {
-      "coords": [454, 278],
+      "coords": [
+        454,
+        278
+      ],
       "image": "song_grotto",
       "type": "submenu",
       "markers": [

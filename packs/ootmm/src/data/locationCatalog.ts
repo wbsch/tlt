@@ -1,4 +1,5 @@
-import * as OoTMMDataMod from '@ootmm/data';
+import * as OoTMMDataMod from '@ootmm/data'
+import { collectWorldLocationNames, toLocationName } from './locationCodeSource'
 
 export type LocationCatalogEntry = {
   id: string;
@@ -15,9 +16,6 @@ type PoolRecord = {
   type?: unknown;
   item?: unknown;
 };
-type WorldAreaRecord = {
-  locations?: Record<string, unknown>;
-};
 
 const resolveExport = <T>(mod: unknown, key: string): T => {
   const modObj = mod as { default?: Record<string, T>; [k: string]: unknown };
@@ -25,15 +23,9 @@ const resolveExport = <T>(mod: unknown, key: string): T => {
 };
 
 const POOL = resolveExport<Record<GameId, PoolRecord[]>>(OoTMMDataMod, 'POOL');
-const WORLD = resolveExport<
-  Record<GameId, Record<string, Record<string, WorldAreaRecord>>>
->(OoTMMDataMod, 'WORLD');
+const WORLD = resolveExport<Record<string, Record<string, Record<string, { locations?: Record<string, unknown> }>>>>(OoTMMDataMod, 'WORLD');
 
 const GAMES: GameId[] = ['oot', 'mm'];
-
-function toLocationName(game: GameId, locationName: string): string {
-  return `${game.toUpperCase()} ${locationName}`;
-}
 
 function toItemId(game: GameId, itemName: string): string {
   if (!itemName || itemName === 'NOTHING') return itemName;
@@ -47,20 +39,7 @@ function getAreaFromLocation(locationName: string): string {
 }
 
 function buildWorldLocationSet(): Set<string> {
-  const locationNames = new Set<string>();
-
-  for (const game of GAMES) {
-    const worldByGame = WORLD?.[game];
-    for (const areaSet of Object.values(worldByGame ?? {})) {
-      for (const area of Object.values(areaSet ?? {})) {
-        for (const locationName of Object.keys(area?.locations ?? {})) {
-          locationNames.add(toLocationName(game, locationName));
-        }
-      }
-    }
-  }
-
-  return locationNames;
+  return collectWorldLocationNames(WORLD);
 }
 
 function buildCatalog(): LocationCatalogEntry[] {
