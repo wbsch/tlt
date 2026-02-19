@@ -769,20 +769,9 @@
       "markers": [
         {
           "image": "npc",
-          "overlays": ["day1"],
-          "codes": "MM Swamp Potion Shop Kotake"
-        },
-        {
-          "image": "shop",
-          "codes": [
-            "MM Swamp Potion Shop Item 1",
-            "MM Swamp Potion Shop Item 2",
-            "MM Swamp Potion Shop Item 3"
-          ]
-        },
-        {
-          "image": "green_rupee",
-          "codes": "MM Swamp Potion Shop Rupee"
+          "codes": 
+            "MM Woodfall Great Fairy"
+          
         }
       ]
     },
@@ -829,16 +818,7 @@
     {
       "coords": [591, 415],
       "image": "grotto",
-      "overlays": ["na_only"],
-      "type": "submenu",
-      "markers": [
-        {
-          "image": "npc",
-          "codes": 
-            "MM Woodfall Great Fairy"
-          
-        }
-      ]
+      "overlays": ["na_only"]
     },
     {
       "coords": [591, 415],
