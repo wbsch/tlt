@@ -6,330 +6,231 @@
   "height": 600,
   "markers": [
     {
-      "coords": [
-        418,
-        418
-      ],
+      "coords": [418, 418],
       "image": "npc",
       "codes": [
         "MM Ocean Spider House Wallet"
       ]
     },
     {
-      "coords": [
-        688,
-        192
-      ],
+      "coords": [688, 192],
       "image": "chest",
       "codes": [
         "MM Ocean Spider House Chest HP"
       ]
     },
     {
-      "coords": [
-        446,
-        374
-      ],
+      "coords": [446, 374],
       "image": "gold_skulltula",
       "codes": [
         "MM Ocean Skulltula Entrance Right Wall"
       ]
     },
     {
-      "coords": [
-        433,
-        328
-      ],
+      "coords": [433, 328],
       "image": "gold_skulltula",
       "codes": [
         "MM Ocean Skulltula Entrance Left Wall"
       ]
     },
     {
-      "coords": [
-        432,
-        263
-      ],
+      "coords": [432, 263],
       "image": "gold_skulltula",
       "codes": [
         "MM Ocean Skulltula Entrance Web"
       ]
     },
     {
-      "coords": [
-        423,
-        234
-      ],
+      "coords": [423, 234],
       "image": "gold_skulltula",
       "codes": [
         "MM Ocean Skulltula 2nd Room Ceiling Edge"
       ]
     },
     {
-      "coords": [
-        423,
-        215
-      ],
+      "coords": [423, 215],
       "image": "gold_skulltula",
       "codes": [
         "MM Ocean Skulltula 2nd Room Ceiling Plank"
       ]
     },
     {
-      "coords": [
-        442,
-        184
-      ],
+      "coords": [442, 184],
       "image": "gold_skulltula",
       "codes": [
         "MM Ocean Skulltula 2nd Room Lower Pot"
       ]
     },
     {
-      "coords": [
-        450,
-        154
-      ],
+      "coords": [450, 154],
       "image": "gold_skulltula",
       "codes": [
         "MM Ocean Skulltula 2nd Room Upper Pot"
       ]
     },
     {
-      "coords": [
-        450,
-        124
-      ],
+      "coords": [450, 124],
       "image": "gold_skulltula",
       "codes": [
         "MM Ocean Skulltula 2nd Room Webbed Pot"
       ]
     },
     {
-      "coords": [
-        434,
-        137
-      ],
+      "coords": [434, 137],
       "image": "gold_skulltula",
       "codes": [
         "MM Ocean Skulltula 2nd Room Jar"
       ]
     },
     {
-      "coords": [
-        416,
-        133
-      ],
+      "coords": [416, 133],
       "image": "gold_skulltula",
       "codes": [
         "MM Ocean Skulltula 2nd Room Webbed Hole"
       ]
     },
     {
-      "coords": [
-        400,
-        146
-      ],
+      "coords": [400, 146],
       "image": "gold_skulltula",
       "codes": [
         "MM Ocean Skulltula 2nd Room Behind Skull 2"
       ]
     },
     {
-      "coords": [
-        393,
-        162
-      ],
+      "coords": [393, 162],
       "image": "gold_skulltula",
       "codes": [
         "MM Ocean Skulltula 2nd Room Behind Skull 1"
       ]
     },
     {
-      "coords": [
-        378,
-        178
-      ],
+      "coords": [378, 178],
       "image": "gold_skulltula",
       "codes": [
         "MM Ocean Skulltula Library Ceiling Edge"
       ]
     },
     {
-      "coords": [
-        332,
-        178
-      ],
+      "coords": [332, 178],
       "image": "gold_skulltula",
       "codes": [
         "MM Ocean Skulltula Library Hole Behind Cabinet"
       ]
     },
     {
-      "coords": [
-        292,
-        184
-      ],
+      "coords": [292, 184],
       "image": "gold_skulltula",
       "codes": [
         "MM Ocean Skulltula Library Behind Picture"
       ]
     },
     {
-      "coords": [
-        276,
-        250
-      ],
+      "coords": [276, 250],
       "image": "gold_skulltula",
       "codes": [
         "MM Ocean Skulltula Library Behind Bookcase 1"
       ]
     },
     {
-      "coords": [
-        262,
-        266
-      ],
+      "coords": [262, 266],
       "image": "gold_skulltula",
       "codes": [
         "MM Ocean Skulltula Library Behind Bookcase 2"
       ]
     },
     {
-      "coords": [
-        311,
-        282
-      ],
+      "coords": [311, 282],
       "image": "gold_skulltula",
       "codes": [
         "MM Ocean Skulltula Library Hole Behind Picture"
       ]
     },
     {
-      "coords": [
-        378,
-        276
-      ],
+      "coords": [378, 276],
       "image": "gold_skulltula",
       "codes": [
         "MM Ocean Skulltula Library On Corner Bookshelf"
       ]
     },
     {
-      "coords": [
-        354,
-        168
-      ],
+      "coords": [354, 168],
       "image": "gold_skulltula",
       "codes": [
         "MM Ocean Skulltula Storage Room Behind Crate"
       ]
     },
     {
-      "coords": [
-        305,
-        139
-      ],
+      "coords": [305, 139],
       "image": "gold_skulltula",
       "codes": [
         "MM Ocean Skulltula Storage Room Behind Boat"
       ]
     },
     {
-      "coords": [
-        326,
-        144
-      ],
+      "coords": [326, 144],
       "image": "gold_skulltula",
       "codes": [
         "MM Ocean Skulltula Storage Room Ceiling Web"
       ]
     },
     {
-      "coords": [
-        344,
-        138
-      ],
+      "coords": [344, 138],
       "image": "gold_skulltula",
       "codes": [
         "MM Ocean Skulltula Storage Room Jar"
       ]
     },
     {
-      "coords": [
-        356,
-        100
-      ],
+      "coords": [356, 100],
       "image": "gold_skulltula",
       "codes": [
         "MM Ocean Skulltula Storage Room Crate"
       ]
     },
     {
-      "coords": [
-        460,
-        180
-      ],
+      "coords": [460, 180],
       "image": "gold_skulltula",
       "codes": [
         "MM Ocean Skulltula Colored Skulls Ceiling Edge"
       ]
     },
     {
-      "coords": [
-        492,
-        201
-      ],
+      "coords": [492, 201],
       "image": "gold_skulltula",
       "codes": [
         "MM Ocean Skulltula Colored Skulls Chandelier 3"
       ]
     },
     {
-      "coords": [
-        492,
-        185
-      ],
+      "coords": [492, 185],
       "image": "gold_skulltula",
       "codes": [
         "MM Ocean Skulltula Colored Skulls Chandelier 1"
       ]
     },
     {
-      "coords": [
-        508,
-        193
-      ],
+      "coords": [508, 193],
       "image": "gold_skulltula",
       "codes": [
         "MM Ocean Skulltula Colored Skulls Chandelier 2"
       ]
     },
     {
-      "coords": [
-        510,
-        154
-      ],
+      "coords": [510, 154],
       "image": "gold_skulltula",
       "codes": [
         "MM Ocean Skulltula Colored Skulls Behind Picture"
       ]
     },
     {
-      "coords": [
-        540,
-        154
-      ],
+      "coords": [540, 154],
       "image": "gold_skulltula",
       "codes": [
         "MM Ocean Skulltula Colored Skulls Pot"
       ]
     },
     {
-      "coords": [
-        406,
-        288
-      ],
+      "coords": [406, 288],
       "image": "pot",
       "codes": [
         "MM Ocean Spider House Pot Entrance 1",
@@ -337,10 +238,7 @@
       ]
     },
     {
-      "coords": [
-        474,
-        288
-      ],
+      "coords": [474, 288],
       "image": "pot",
       "codes": [
         "MM Ocean Spider House Pot Entrance 3",
@@ -348,10 +246,7 @@
       ]
     },
     {
-      "coords": [
-        444,
-        228
-      ],
+      "coords": [444, 228],
       "image": "pot",
       "codes": [
         "MM Ocean Spider House Pot Main Room 1",
@@ -359,10 +254,7 @@
       ]
     },
     {
-      "coords": [
-        463,
-        166
-      ],
+      "coords": [463, 166],
       "image": "pot",
       "codes": [
         "MM Ocean Spider House Pot Colored Skulls 1",
@@ -370,30 +262,21 @@
       ]
     },
     {
-      "coords": [
-        450,
-        138
-      ],
+      "coords": [450, 138],
       "image": "pot",
       "codes": [
         "MM Ocean Spider House Pot Main Room Boe"
       ]
     },
     {
-      "coords": [
-        434,
-        121
-      ],
+      "coords": [434, 121],
       "image": "pot",
       "codes": [
         "MM Ocean Spider House Pot Main Room Web"
       ]
     },
     {
-      "coords": [
-        362,
-        167
-      ],
+      "coords": [362, 167],
       "image": "pot",
       "codes": [
         "MM Ocean Spider House Pot Storage 3",
@@ -401,10 +284,7 @@
       ]
     },
     {
-      "coords": [
-        344,
-        123
-      ],
+      "coords": [344, 123],
       "image": "pot",
       "codes": [
         "MM Ocean Spider House Pot Storage Top 1",
@@ -413,10 +293,7 @@
       ]
     },
     {
-      "coords": [
-        326,
-        128
-      ],
+      "coords": [326, 128],
       "image": "pot",
       "codes": [
         "MM Ocean Spider House Pot Storage 1",
@@ -424,20 +301,14 @@
       ]
     },
     {
-      "coords": [
-        347,
-        163
-      ],
+      "coords": [347, 163],
       "image": "crate",
       "codes": [
         "MM Ocean Spider House Crate"
       ]
     },
     {
-      "coords": [
-        395,
-        150
-      ],
+      "coords": [395, 150],
       "image": "wonder_item_green_rupee",
       "codes": [
         "MM Ocean Spider House Wonder Item Masks 7",
@@ -446,10 +317,7 @@
       ]
     },
     {
-      "coords": [
-        449,
-        165
-      ],
+      "coords": [449, 165],
       "image": "wonder_item_green_rupee",
       "codes": [
         "MM Ocean Spider House Wonder Item Masks 4",
@@ -458,10 +326,7 @@
       ]
     },
     {
-      "coords": [
-        448,
-        194
-      ],
+      "coords": [448, 194],
       "image": "wonder_item_green_rupee",
       "codes": [
         "MM Ocean Spider House Wonder Item Masks 1",

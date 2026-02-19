@@ -1,52 +1,52 @@
 <script setup lang="ts">
-import { computed } from 'vue'
-import { storeToRefs } from 'pinia'
-import type { LocationInfo } from '@/types/tracker'
-import { useOoTMMUiStore } from '../stores/ootmmUi'
-import { useOoTMMSessionStore } from '../stores/ootmmSession'
+import { computed } from 'vue';
+import { storeToRefs } from 'pinia';
+import type { LocationInfo } from '@/types/tracker';
+import { useOoTMMUiStore } from '../stores/ootmmUi';
+import { useOoTMMSessionStore } from '../stores/ootmmSession';
 import {
   matchesLocationBaseVisibility,
   matchesLocationCollectionVisibility,
   matchesLocationReachabilityVisibility,
   type LocationVisibilityFilters,
-} from '../utils/locationVisibility'
-import { selectSearchInputText } from '../utils/input'
-import { stripGamePrefix } from '../composables/useLocationCodeLookup'
+} from '../utils/locationVisibility';
+import { selectSearchInputText } from '../utils/input';
+import { stripGamePrefix } from '../composables/useLocationCodeLookup';
 // Import pool data to get scene information
-import poolData from '../../../../OoTMM/packages/data/dist/data-pool.json'
+import poolData from '../../../../OoTMM/packages/data/dist/data-pool.json';
 
 const props = defineProps<{
-  locations: LocationInfo[]
-  reachableIds: Set<string>
-}>()
+  locations: LocationInfo[];
+  reachableIds: Set<string>;
+}>();
 
 // Create a mapping from location name to scene name
 const locationToSceneMap = computed(() => {
-  const map = new Map<string, string>()
+  const map = new Map<string, string>();
   if (poolData && poolData.oot) {
     for (const loc of poolData.oot) {
       if (loc.location && loc.scene) {
-        map.set(loc.location, loc.scene)
+        map.set(loc.location, loc.scene);
       }
     }
   }
   if (poolData && poolData.mm) {
     for (const loc of poolData.mm) {
       if (loc.location && loc.scene) {
-        map.set(loc.location, loc.scene)
+        map.set(loc.location, loc.scene);
       }
     }
   }
-  return map
-})
+  return map;
+});
 
 // Helper function to format scene name (replace underscores with spaces)
 function formatSceneName(sceneName: string): string {
-  return sceneName.replace(/_/g, ' ')
+  return sceneName.replace(/_/g, ' ');
 }
 
-const uiStore = useOoTMMUiStore()
-const sessionStore = useOoTMMSessionStore()
+const uiStore = useOoTMMUiStore();
+const sessionStore = useOoTMMSessionStore();
 
 const {
   locationsSearchQuery: searchQuery,
@@ -55,11 +55,12 @@ const {
   locationsShowUnshuffled: showUnshuffled,
   locationsShowGossipStones: showGossipStones,
   locationsCollectionFilter: collectionFilter,
-} = storeToRefs(uiStore)
+} = storeToRefs(uiStore);
 
-const { collectedLocationIds, trackerSettings, shopPrices } = storeToRefs(sessionStore)
+const { collectedLocationIds, trackerSettings, shopPrices } =
+  storeToRefs(sessionStore);
 
-const collectedIdSet = computed(() => new Set(collectedLocationIds.value))
+const collectedIdSet = computed(() => new Set(collectedLocationIds.value));
 const visibilityFilters = computed<LocationVisibilityFilters>(() => ({
   searchQuery: searchQuery.value,
   selectedCategory: selectedCategory.value,
@@ -67,35 +68,41 @@ const visibilityFilters = computed<LocationVisibilityFilters>(() => ({
   collectionFilter: collectionFilter.value,
   showUnshuffled: showUnshuffled.value,
   showGossipStones: showGossipStones.value,
-}))
+}));
 
 const categories = computed(() => {
-  const cats = new Set<string>()
-  props.locations.forEach(loc => cats.add(loc.category))
+  const cats = new Set<string>();
+  props.locations.forEach((loc) => cats.add(loc.category));
   return [
     { value: 'all', label: 'All Categories' },
-    ...Array.from(cats).sort().map(cat => ({
-      value: cat,
-      label: cat.charAt(0).toUpperCase() + cat.slice(1)
-    }))
-  ]
-})
+    ...Array.from(cats)
+      .sort()
+      .map((cat) => ({
+        value: cat,
+        label: cat.charAt(0).toUpperCase() + cat.slice(1),
+      })),
+  ];
+});
 
 const baseFilteredLocations = computed(() => {
-  return props.locations.filter(loc => matchesLocationBaseVisibility(loc, visibilityFilters.value))
-})
+  return props.locations.filter((loc) =>
+    matchesLocationBaseVisibility(loc, visibilityFilters.value),
+  );
+});
 
 function matchesReachabilityForLocation(loc: LocationInfo): boolean {
   return matchesLocationReachabilityVisibility(
     loc.id,
     props.reachableIds,
     visibilityFilters.value.reachabilityFilter,
-  )
+  );
 }
 
 const collectionScopedLocations = computed(() => {
-  return baseFilteredLocations.value.filter((loc) => matchesReachabilityForLocation(loc))
-})
+  return baseFilteredLocations.value.filter((loc) =>
+    matchesReachabilityForLocation(loc),
+  );
+});
 
 const filteredLocations = computed(() => {
   return collectionScopedLocations.value.filter((loc) =>
@@ -103,77 +110,81 @@ const filteredLocations = computed(() => {
       loc.id,
       collectedIdSet.value,
       visibilityFilters.value.collectionFilter,
-    )
-  )
-})
+    ),
+  );
+});
 
 const groupedLocations = computed(() => {
-  const groups = new Map<string, LocationInfo[]>()
-  
-  filteredLocations.value.forEach(loc => {
+  const groups = new Map<string, LocationInfo[]>();
+
+  filteredLocations.value.forEach((loc) => {
     // Detect game prefix (MM or OOT) from location name
-    const match = loc.name.match(/^(MM|OOT)\s+/)
-    const gamePrefix = match ? match[1] : ''
+    const match = loc.name.match(/^(MM|OOT)\s+/);
+    const gamePrefix = match ? match[1] : '';
     // Remove game prefix from location name for pool data lookup
-    const nameWithoutPrefix = loc.name.replace(/^(MM|OOT)\s+/, '')
-    
+    const nameWithoutPrefix = loc.name.replace(/^(MM|OOT)\s+/, '');
+
     // Special handling for "Oath to Order" - give it a generic heading
-    let groupKey: string
+    let groupKey: string;
     if (nameWithoutPrefix === 'Oath to Order') {
-      groupKey = gamePrefix ? `${gamePrefix} First Boss` : 'First Boss'
+      groupKey = gamePrefix ? `${gamePrefix} First Boss` : 'First Boss';
     } else {
       // Get scene name from pool data, fallback to area if not found
-      const sceneName = locationToSceneMap.value.get(nameWithoutPrefix)
+      const sceneName = locationToSceneMap.value.get(nameWithoutPrefix);
       // Prefix the scene/area with the game code when present
-      const baseGroup = sceneName ? formatSceneName(sceneName) : loc.area
-      groupKey = gamePrefix ? `${gamePrefix} ${baseGroup}` : baseGroup
+      const baseGroup = sceneName ? formatSceneName(sceneName) : loc.area;
+      groupKey = gamePrefix ? `${gamePrefix} ${baseGroup}` : baseGroup;
     }
-    
+
     if (!groups.has(groupKey)) {
-      groups.set(groupKey, [])
+      groups.set(groupKey, []);
     }
-    groups.get(groupKey)!.push(loc)
-  })
-  
-  return Array.from(groups.entries()).sort((a, b) => a[0].localeCompare(b[0]))
-})
+    groups.get(groupKey)!.push(loc);
+  });
+
+  return Array.from(groups.entries()).sort((a, b) => a[0].localeCompare(b[0]));
+});
 
 const stats = computed(() => {
-  const total = baseFilteredLocations.value.length
-  const reachable = baseFilteredLocations.value.filter(loc => props.reachableIds.has(loc.id)).length
-  const unreachable = total - reachable
-  return { total, reachable, unreachable }
-})
+  const total = baseFilteredLocations.value.length;
+  const reachable = baseFilteredLocations.value.filter((loc) =>
+    props.reachableIds.has(loc.id),
+  ).length;
+  const unreachable = total - reachable;
+  return { total, reachable, unreachable };
+});
 
 const collectionStats = computed(() => {
-  const total = collectionScopedLocations.value.length
-  const collected = collectionScopedLocations.value.filter(loc => collectedIdSet.value.has(loc.id)).length
-  const uncollected = total - collected
-  return { total, collected, uncollected }
-})
+  const total = collectionScopedLocations.value.length;
+  const collected = collectionScopedLocations.value.filter((loc) =>
+    collectedIdSet.value.has(loc.id),
+  ).length;
+  const uncollected = total - collected;
+  return { total, collected, uncollected };
+});
 
 function toggleCollected(id: string) {
-  sessionStore.toggleCollectedLocation(id)
+  sessionStore.toggleCollectedLocation(id);
 }
 
 function isRandomizedPriceMode(mode: unknown): boolean {
-  return mode === 'random' || mode === 'weighted'
+  return mode === 'random' || mode === 'weighted';
 }
 
-type LocationPriceKind = 'shop' | 'oot-scrub' | 'oot-merchant' | 'mm-tingle'
+type LocationPriceKind = 'shop' | 'oot-scrub' | 'oot-merchant' | 'mm-tingle';
 
 function getLocationGame(loc: LocationInfo): 'oot' | 'mm' | null {
-  if (loc.id.startsWith('OOT ') || loc.name.startsWith('OOT ')) return 'oot'
-  if (loc.id.startsWith('MM ') || loc.name.startsWith('MM ')) return 'mm'
-  return null
+  if (loc.id.startsWith('OOT ') || loc.name.startsWith('OOT ')) return 'oot';
+  if (loc.id.startsWith('MM ') || loc.name.startsWith('MM ')) return 'mm';
+  return null;
 }
 
 function getLocationPriceKind(loc: LocationInfo): LocationPriceKind | null {
   if (loc.category === 'shop') {
-    return 'shop'
+    return 'shop';
   }
   if (loc.category === 'scrub') {
-    return 'oot-scrub'
+    return 'oot-scrub';
   }
   if (loc.category === 'npc') {
     if (
@@ -182,46 +193,53 @@ function getLocationPriceKind(loc: LocationInfo): LocationPriceKind | null {
       loc.name.includes('Buy Blue Potion') ||
       loc.name.includes('Buy Milk')
     ) {
-      return 'oot-merchant'
+      return 'oot-merchant';
     }
   }
   if (loc.category === 'npc' && loc.name.includes('Tingle Map ')) {
-    return 'mm-tingle'
+    return 'mm-tingle';
   }
-  return null
+  return null;
 }
 
 function isShopPriceEditable(loc: LocationInfo): boolean {
-  if (!Object.prototype.hasOwnProperty.call(shopPrices.value, loc.id)) return false
+  if (!Object.prototype.hasOwnProperty.call(shopPrices.value, loc.id))
+    return false;
 
-  const kind = getLocationPriceKind(loc)
-  if (!kind) return false
+  const kind = getLocationPriceKind(loc);
+  if (!kind) return false;
 
-  const game = getLocationGame(loc)
+  const game = getLocationGame(loc);
 
   if (kind === 'shop') {
-    if (game === 'oot') return isRandomizedPriceMode(trackerSettings.value?.priceOotShops)
-    if (game === 'mm') return isRandomizedPriceMode(trackerSettings.value?.priceMmShops)
-    return false
+    if (game === 'oot')
+      return isRandomizedPriceMode(trackerSettings.value?.priceOotShops);
+    if (game === 'mm')
+      return isRandomizedPriceMode(trackerSettings.value?.priceMmShops);
+    return false;
   }
   if (kind === 'oot-scrub') {
-    return isRandomizedPriceMode(trackerSettings.value?.priceOotScrubs)
+    return isRandomizedPriceMode(trackerSettings.value?.priceOotScrubs);
   }
   if (kind === 'oot-merchant') {
-    return isRandomizedPriceMode(trackerSettings.value?.priceOotMerchants)
+    return isRandomizedPriceMode(trackerSettings.value?.priceOotMerchants);
   }
-  return isRandomizedPriceMode(trackerSettings.value?.priceMmTingle)
+  return isRandomizedPriceMode(trackerSettings.value?.priceMmTingle);
 }
 
 function getShopPrice(loc: LocationInfo): number {
-  const value = shopPrices.value[loc.id]
-  return typeof value === 'number' && Number.isFinite(value) ? Math.max(0, Math.floor(value)) : 0
+  const value = shopPrices.value[loc.id];
+  return typeof value === 'number' && Number.isFinite(value)
+    ? Math.max(0, Math.floor(value))
+    : 0;
 }
 
 function updateShopPrice(loc: LocationInfo, rawValue: string) {
-  const numeric = Number(rawValue)
-  const safePrice = Number.isFinite(numeric) ? Math.max(0, Math.floor(numeric)) : 0
-  sessionStore.setShopPriceForLocation(loc.id, safePrice)
+  const numeric = Number(rawValue);
+  const safePrice = Number.isFinite(numeric)
+    ? Math.max(0, Math.floor(numeric))
+    : 0;
+  sessionStore.setShopPriceForLocation(loc.id, safePrice);
 }
 </script>
 
@@ -236,7 +254,7 @@ function updateShopPrice(loc: LocationInfo, rawValue: string) {
         @focus="selectSearchInputText"
         @click="selectSearchInputText"
       />
-      
+
       <select v-model="selectedCategory" class="category-select">
         <option v-for="cat in categories" :key="cat.value" :value="cat.value">
           {{ cat.label }}
@@ -304,17 +322,21 @@ function updateShopPrice(loc: LocationInfo, rawValue: string) {
     </div>
 
     <div class="locations-list">
-      <div v-for="[area, locs] in groupedLocations" :key="area" class="location-group">
+      <div
+        v-for="[area, locs] in groupedLocations"
+        :key="area"
+        class="location-group"
+      >
         <h3 class="area-name">{{ area }}</h3>
         <div class="locations">
           <div
             v-for="loc in locs"
             :key="loc.id"
             class="location-item"
-            :class="{ 
+            :class="{
               reachable: reachableIds.has(loc.id),
               collected: collectedIdSet.has(loc.id),
-              [`category-${loc.category}`]: true
+              [`category-${loc.category}`]: true,
             }"
             role="button"
             tabindex="0"
@@ -324,9 +346,14 @@ function updateShopPrice(loc: LocationInfo, rawValue: string) {
             @keydown.space.prevent="toggleCollected(loc.id)"
           >
             <div class="location-status">
-              <span v-if="reachableIds.has(loc.id)" class="status-dot reachable"></span>
+              <span
+                v-if="reachableIds.has(loc.id)"
+                class="status-dot reachable"
+              ></span>
               <span v-else class="status-dot unreachable"></span>
-              <span v-if="collectedIdSet.has(loc.id)" class="status-check">✓</span>
+              <span v-if="collectedIdSet.has(loc.id)" class="status-check"
+                >✓</span
+              >
             </div>
             <div class="location-info">
               <div class="location-name">{{ stripGamePrefix(loc.name) }}</div>
@@ -347,7 +374,12 @@ function updateShopPrice(loc: LocationInfo, rawValue: string) {
                   @click.stop
                   @mousedown.stop
                   @keydown.stop
-                  @input="updateShopPrice(loc, ($event.target as HTMLInputElement).value)"
+                  @input="
+                    updateShopPrice(
+                      loc,
+                      ($event.target as HTMLInputElement).value,
+                    )
+                  "
                 />
               </label>
             </div>

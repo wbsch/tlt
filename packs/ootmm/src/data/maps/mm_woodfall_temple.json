@@ -6,240 +6,168 @@
   "height": 600,
   "markers": [
     {
-      "coords": [
-        332,
-        156
-      ],
+      "coords": [332, 156],
       "image": "heart_container",
       "codes": [
         "MM Woodfall Temple Boss Container"
       ]
     },
     {
-      "coords": [
-        348,
-        156
-      ],
+      "coords": [348, 156],
       "image": "odolwas_remain",
       "codes": [
         "MM Woodfall Temple Boss"
       ]
     },
     {
-      "coords": [
-        410,
-        184
-      ],
+      "coords": [410, 184],
       "image": "chest",
       "codes": [
         "MM Woodfall Temple Boss Key Chest"
       ]
     },
     {
-      "coords": [
-        264,
-        360
-      ],
+      "coords": [264, 360],
       "image": "chest",
       "codes": [
         "MM Woodfall Temple Compass"
       ]
     },
     {
-      "coords": [
-        359,
-        413
-      ],
+      "coords": [359, 413],
       "image": "chest",
       "codes": [
         "MM Woodfall Temple Entrance Chest"
       ]
     },
     {
-      "coords": [
-        410,
-        386
-      ],
+      "coords": [410, 386],
       "image": "chest",
       "codes": [
         "MM Woodfall Temple Bow"
       ]
     },
     {
-      "coords": [
-        334,
-        323
-      ],
+      "coords": [334, 323],
       "image": "chest",
       "codes": [
         "MM Woodfall Temple Center Chest"
       ]
     },
     {
-      "coords": [
-        410,
-        272
-      ],
+      "coords": [410, 272],
       "image": "chest",
       "codes": [
         "MM Woodfall Temple Water Chest"
       ]
     },
     {
-      "coords": [
-        470,
-        303
-      ],
+      "coords": [470, 303],
       "image": "chest",
       "codes": [
         "MM Woodfall Temple Map"
       ]
     },
     {
-      "coords": [
-        578,
-        324
-      ],
+      "coords": [578, 324],
       "image": "chest",
       "codes": [
         "MM Woodfall Temple Dark Chest"
       ]
     },
     {
-      "coords": [
-        316,
-        156
-      ],
+      "coords": [316, 156],
       "image": "song",
       "codes": [
         "MM Oath to Order"
       ]
     },
     {
-      "coords": [
-        250,
-        269
-      ],
+      "coords": [250, 269],
       "image": "stray_fairy",
       "codes": [
         "MM Woodfall Temple SF Maze Skulltula"
       ]
     },
     {
-      "coords": [
-        266,
-        285
-      ],
+      "coords": [266, 285],
       "image": "stray_fairy",
       "codes": [
         "MM Woodfall Temple SF Maze Beehive"
       ]
     },
     {
-      "coords": [
-        266,
-        301
-      ],
+      "coords": [266, 301],
       "image": "stray_fairy",
       "codes": [
         "MM Woodfall Temple SF Maze Bubble"
       ]
     },
     {
-      "coords": [
-        301,
-        294
-      ],
+      "coords": [301, 294],
       "image": "stray_fairy",
       "codes": [
         "MM Woodfall Temple SF Main Deku Baba"
       ]
     },
     {
-      "coords": [
-        318,
-        269
-      ],
+      "coords": [318, 269],
       "image": "stray_fairy",
       "codes": [
         "MM Woodfall Temple SF Main Bubble"
       ]
     },
     {
-      "coords": [
-        295,
-        225
-      ],
+      "coords": [295, 225],
       "image": "stray_fairy",
       "codes": [
         "MM Woodfall Temple SF Pre-Boss Left"
       ]
     },
     {
-      "coords": [
-        324,
-        219
-      ],
+      "coords": [324, 219],
       "image": "stray_fairy",
       "codes": [
         "MM Woodfall Temple SF Pre-Boss Pillar"
       ]
     },
     {
-      "coords": [
-        349,
-        236
-      ],
+      "coords": [349, 236],
       "image": "stray_fairy",
       "codes": [
         "MM Woodfall Temple SF Pre-Boss Bottom Right"
       ]
     },
     {
-      "coords": [
-        349,
-        252
-      ],
+      "coords": [349, 252],
       "image": "stray_fairy",
       "codes": [
         "MM Woodfall Temple SF Pre-Boss Top Right"
       ]
     },
     {
-      "coords": [
-        329,
-        403
-      ],
+      "coords": [329, 403],
       "image": "stray_fairy",
       "codes": [
         "MM Woodfall Temple SF Entrance"
       ]
     },
     {
-      "coords": [
-        366,
-        334
-      ],
+      "coords": [366, 334],
       "image": "stray_fairy",
       "codes": [
         "MM Woodfall Temple SF Main Pot"
       ]
     },
     {
-      "coords": [
-        391,
-        269
-      ],
+      "coords": [391, 269],
       "image": "stray_fairy",
       "codes": [
         "MM Woodfall Temple SF Water Room Beehive"
       ]
     },
     {
-      "coords": [
-        335,
-        176
-      ],
+      "coords": [335, 176],
       "image": "pot",
       "codes": [
         "MM Woodfall Temple Pot Pre-Boss 1",
@@ -247,10 +175,7 @@
       ]
     },
     {
-      "coords": [
-        425,
-        183
-      ],
+      "coords": [425, 183],
       "image": "pot",
       "codes": [
         "MM Woodfall Temple Pot Miniboss Room 1",
@@ -260,20 +185,14 @@
       ]
     },
     {
-      "coords": [
-        343,
-        423
-      ],
+      "coords": [343, 423],
       "image": "pot",
       "codes": [
         "MM Woodfall Temple Pot Entrance"
       ]
     },
     {
-      "coords": [
-        422,
-        335
-      ],
+      "coords": [422, 335],
       "image": "pot",
       "codes": [
         "MM Woodfall Temple Pot Water Room 1",
@@ -283,10 +202,7 @@
       ]
     },
     {
-      "coords": [
-        351,
-        300
-      ],
+      "coords": [351, 300],
       "image": "pot",
       "codes": [
         "MM Woodfall Temple Pot Main Room Lower 5",
@@ -294,10 +210,7 @@
       ]
     },
     {
-      "coords": [
-        366,
-        306
-      ],
+      "coords": [366, 306],
       "image": "pot",
       "codes": [
         "MM Woodfall Temple Pot Main Room Upper 1",
@@ -305,10 +218,7 @@
       ]
     },
     {
-      "coords": [
-        354,
-        332
-      ],
+      "coords": [354, 332],
       "image": "pot",
       "codes": [
         "MM Woodfall Temple Pot Main Room Lower 1",
@@ -318,10 +228,7 @@
       ]
     },
     {
-      "coords": [
-        282,
-        290
-      ],
+      "coords": [282, 290],
       "image": "pot",
       "codes": [
         "MM Woodfall Temple Pot Maze 1",
@@ -329,30 +236,21 @@
       ]
     },
     {
-      "coords": [
-        316,
-        194
-      ],
+      "coords": [316, 194],
       "image": "red_rupee",
       "codes": [
         "MM Woodfall Temple Rupee Upper Left"
       ]
     },
     {
-      "coords": [
-        351,
-        194
-      ],
+      "coords": [351, 194],
       "image": "red_rupee",
       "codes": [
         "MM Woodfall Temple Rupee Upper Right"
       ]
     },
     {
-      "coords": [
-        335,
-        218
-      ],
+      "coords": [335, 218],
       "image": "blue_rupee",
       "codes": [
         "MM Woodfall Temple Rupee Lower 1",
@@ -362,30 +260,21 @@
       ]
     },
     {
-      "coords": [
-        329,
-        392
-      ],
+      "coords": [329, 392],
       "image": "beehive",
       "codes": [
         "MM Woodfall Temple Hive Entrance"
       ]
     },
     {
-      "coords": [
-        266,
-        292
-      ],
+      "coords": [266, 292],
       "image": "beehive",
       "codes": [
         "MM Woodfall Temple Hive Maze"
       ]
     },
     {
-      "coords": [
-        640,
-        303
-      ],
+      "coords": [640, 303],
       "image": "grass",
       "codes": [
         "MM Woodfall Temple Grass Pits Room 01",
@@ -395,10 +284,7 @@
       ]
     },
     {
-      "coords": [
-        644,
-        322
-      ],
+      "coords": [644, 322],
       "image": "grass",
       "codes": [
         "MM Woodfall Temple Grass Pits Room 05",
@@ -406,10 +292,7 @@
       ]
     },
     {
-      "coords": [
-        617,
-        320
-      ],
+      "coords": [617, 320],
       "image": "grass",
       "codes": [
         "MM Woodfall Temple Grass Pits Room 09",
@@ -418,10 +301,7 @@
       ]
     },
     {
-      "coords": [
-        620,
-        303
-      ],
+      "coords": [620, 303],
       "image": "grass",
       "codes": [
         "MM Woodfall Temple Grass Pits Room 07",
@@ -429,10 +309,7 @@
       ]
     },
     {
-      "coords": [
-        484,
-        312
-      ],
+      "coords": [484, 312],
       "image": "grass",
       "codes": [
         "MM Woodfall Temple Grass Map Room 4",
@@ -440,10 +317,7 @@
       ]
     },
     {
-      "coords": [
-        456,
-        310
-      ],
+      "coords": [456, 310],
       "image": "grass",
       "codes": [
         "MM Woodfall Temple Grass Map Room 1",
@@ -452,10 +326,7 @@
       ]
     },
     {
-      "coords": [
-        431,
-        308
-      ],
+      "coords": [431, 308],
       "image": "grass",
       "codes": [
         "MM Woodfall Temple Grass Water Room 1",
@@ -463,10 +334,7 @@
       ]
     },
     {
-      "coords": [
-        332,
-        140
-      ],
+      "coords": [332, 140],
       "image": "grass",
       "codes": [
         "MM Woodfall Temple Boss Grass 01",
@@ -488,10 +356,7 @@
       ]
     },
     {
-      "coords": [
-        366,
-        244
-      ],
+      "coords": [366, 244],
       "image": "grass",
       "codes": [
         "MM Woodfall Temple Grass Pre-Boss 4",
@@ -499,10 +364,7 @@
       ]
     },
     {
-      "coords": [
-        350,
-        252
-      ],
+      "coords": [350, 252],
       "image": "grass",
       "codes": [
         "MM Woodfall Temple Grass Pre-Boss 1",
@@ -511,10 +373,7 @@
       ]
     },
     {
-      "coords": [
-        303,
-        287
-      ],
+      "coords": [303, 287],
       "image": "grass",
       "codes": [
         "MM Woodfall Temple Grass Main Room 2",
@@ -522,20 +381,14 @@
       ]
     },
     {
-      "coords": [
-        322,
-        335
-      ],
+      "coords": [322, 335],
       "image": "grass",
       "codes": [
         "MM Woodfall Temple Grass Main Room 1"
       ]
     },
     {
-      "coords": [
-        338,
-        357
-      ],
+      "coords": [338, 357],
       "image": "grass",
       "codes": [
         "MM Woodfall Temple Grass Entrance Ledge 1",
@@ -543,10 +396,7 @@
       ]
     },
     {
-      "coords": [
-        317,
-        402
-      ],
+      "coords": [317, 402],
       "image": "grass",
       "codes": [
         "MM Woodfall Temple Grass Entrance Bottom 1",
@@ -555,10 +405,7 @@
       ]
     },
     {
-      "coords": [
-        275,
-        350
-      ],
+      "coords": [275, 350],
       "image": "grass",
       "codes": [
         "MM Woodfall Temple Grass Compass Room 1",

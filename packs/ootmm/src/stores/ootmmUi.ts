@@ -5,7 +5,13 @@ export type TrackerTab = 'inventory' | 'settings' | 'grid' | 'world' | 'tricks';
 export type ReachabilityFilter = 'all' | 'reachable' | 'unreachable';
 export type CollectionFilter = 'all' | 'collected' | 'uncollected';
 
-const VALID_TABS: TrackerTab[] = ['grid', 'inventory', 'world', 'settings', 'tricks'];
+const VALID_TABS: TrackerTab[] = [
+  'grid',
+  'inventory',
+  'world',
+  'settings',
+  'tricks',
+];
 
 export const useOoTMMUiStore = defineStore('ootmm-ui', () => {
   const activeTab = ref<TrackerTab>('grid');

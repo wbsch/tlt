@@ -6,320 +6,224 @@
   "height": 600,
   "markers": [
     {
-      "coords": [
-        489,
-        483
-      ],
+      "coords": [489, 483],
       "image": "npc",
       "codes": [
         "MM Swamp Spider House Mask of Truth"
       ]
     },
     {
-      "coords": [
-        489,
-        465
-      ],
+      "coords": [489, 465],
       "image": "gold_skulltula",
       "codes": [
         "MM Swamp Skulltula Main Room Jar"
       ]
     },
     {
-      "coords": [
-        509,
-        385
-      ],
+      "coords": [509, 385],
       "image": "gold_skulltula",
       "codes": [
         "MM Swamp Skulltula Main Room Water"
       ]
     },
     {
-      "coords": [
-        545,
-        365
-      ],
+      "coords": [545, 365],
       "image": "gold_skulltula",
       "codes": [
         "MM Swamp Skulltula Main Room Pillar"
       ]
     },
     {
-      "coords": [
-        559,
-        400
-      ],
+      "coords": [559, 400],
       "image": "gold_skulltula",
       "codes": [
         "MM Swamp Skulltula Main Room Lower Right Soft Soil"
       ]
     },
     {
-      "coords": [
-        459,
-        365
-      ],
+      "coords": [459, 365],
       "image": "gold_skulltula",
       "codes": [
         "MM Swamp Skulltula Main Room Lower Left Soft Soil"
       ]
     },
     {
-      "coords": [
-        473,
-        330
-      ],
+      "coords": [473, 330],
       "image": "gold_skulltula",
       "codes": [
         "MM Swamp Skulltula Main Room Upper Pillar"
       ]
     },
     {
-      "coords": [
-        509,
-        318
-      ],
+      "coords": [509, 318],
       "image": "gold_skulltula",
       "codes": [
         "MM Swamp Skulltula Main Room Near Ceiling"
       ]
     },
     {
-      "coords": [
-        386,
-        442
-      ],
+      "coords": [386, 442],
       "image": "gold_skulltula",
       "codes": [
         "MM Swamp Skulltula Monument Room Crate 2"
       ]
     },
     {
-      "coords": [
-        416,
-        413
-      ],
+      "coords": [416, 413],
       "image": "gold_skulltula",
       "codes": [
         "MM Swamp Skulltula Monument Room On Monument"
       ]
     },
     {
-      "coords": [
-        379,
-        405
-      ],
+      "coords": [379, 405],
       "image": "gold_skulltula",
       "codes": [
         "MM Swamp Skulltula Monument Room Lower Wall"
       ]
     },
     {
-      "coords": [
-        403,
-        366
-      ],
+      "coords": [403, 366],
       "image": "gold_skulltula",
       "codes": [
         "MM Swamp Skulltula Monument Room Crate 1"
       ]
     },
     {
-      "coords": [
-        443,
-        365
-      ],
+      "coords": [443, 365],
       "image": "gold_skulltula",
       "codes": [
         "MM Swamp Skulltula Monument Room Torch"
       ]
     },
     {
-      "coords": [
-        485,
-        293
-      ],
+      "coords": [485, 293],
       "image": "gold_skulltula",
       "codes": [
         "MM Swamp Skulltula Gold Room Wall"
       ]
     },
     {
-      "coords": [
-        509,
-        274
-      ],
+      "coords": [509, 274],
       "image": "gold_skulltula",
       "codes": [
         "MM Swamp Skulltula Gold Room Hive"
       ]
     },
     {
-      "coords": [
-        527,
-        253
-      ],
+      "coords": [527, 253],
       "image": "gold_skulltula",
       "codes": [
         "MM Swamp Skulltula Gold Room Pillar"
       ]
     },
     {
-      "coords": [
-        509,
-        240
-      ],
+      "coords": [509, 240],
       "image": "gold_skulltula",
       "codes": [
         "MM Swamp Skulltula Gold Room Near Ceiling"
       ]
     },
     {
-      "coords": [
-        534,
-        155
-      ],
+      "coords": [534, 155],
       "image": "gold_skulltula",
       "codes": [
         "MM Swamp Skulltula Tree Room Hive"
       ]
     },
     {
-      "coords": [
-        535,
-        101
-      ],
+      "coords": [535, 101],
       "image": "gold_skulltula",
       "codes": [
         "MM Swamp Skulltula Tree Room Grass 1"
       ]
     },
     {
-      "coords": [
-        509,
-        109
-      ],
+      "coords": [509, 109],
       "image": "gold_skulltula",
       "codes": [
         "MM Swamp Skulltula Tree Room Tree 1"
       ]
     },
     {
-      "coords": [
-        517,
-        125
-      ],
+      "coords": [517, 125],
       "image": "gold_skulltula",
       "codes": [
         "MM Swamp Skulltula Tree Room Tree 3"
       ]
     },
     {
-      "coords": [
-        501,
-        125
-      ],
+      "coords": [501, 125],
       "image": "gold_skulltula",
       "codes": [
         "MM Swamp Skulltula Tree Room Tree 2"
       ]
     },
     {
-      "coords": [
-        469,
-        101
-      ],
+      "coords": [469, 101],
       "image": "gold_skulltula",
       "codes": [
         "MM Swamp Skulltula Tree Room Grass 2"
       ]
     },
     {
-      "coords": [
-        588,
-        273
-      ],
+      "coords": [588, 273],
       "image": "gold_skulltula",
       "codes": [
         "MM Swamp Skulltula Pot Room Wall"
       ]
     },
     {
-      "coords": [
-        609,
-        295
-      ],
+      "coords": [609, 295],
       "image": "gold_skulltula",
       "codes": [
         "MM Swamp Skulltula Pot Room Behind Vines"
       ]
     },
     {
-      "coords": [
-        600,
-        325
-      ],
+      "coords": [600, 325],
       "image": "gold_skulltula",
       "codes": [
         "MM Swamp Skulltula Pot Room Pot 1"
       ]
     },
     {
-      "coords": [
-        577,
-        357
-      ],
+      "coords": [577, 357],
       "image": "gold_skulltula",
       "codes": [
         "MM Swamp Skulltula Pot Room Hive 1"
       ]
     },
     {
-      "coords": [
-        593,
-        357
-      ],
+      "coords": [593, 357],
       "image": "gold_skulltula",
       "codes": [
         "MM Swamp Skulltula Pot Room Hive 2"
       ]
     },
     {
-      "coords": [
-        600,
-        379
-      ],
+      "coords": [600, 379],
       "image": "gold_skulltula",
       "codes": [
         "MM Swamp Skulltula Pot Room Pot 2"
       ]
     },
     {
-      "coords": [
-        581,
-        419
-      ],
+      "coords": [581, 419],
       "image": "gold_skulltula",
       "codes": [
         "MM Swamp Skulltula Pot Room Jar"
       ]
     },
     {
-      "coords": [
-        557,
-        467
-      ],
+      "coords": [557, 467],
       "image": "gold_skulltula",
       "codes": [
         "MM Swamp Skulltula Main Room Upper Soft Soil"
       ]
     },
     {
-      "coords": [
-        555,
-        249
-      ],
+      "coords": [555, 249],
       "image": "pot",
       "codes": [
         "MM Swamp Spider House Pot Gold Room Upper 1",
@@ -329,10 +233,7 @@
       ]
     },
     {
-      "coords": [
-        509,
-        256
-      ],
+      "coords": [509, 256],
       "image": "pot",
       "codes": [
         "MM Swamp Spider House Pot Gold Room Lower 1",
@@ -340,10 +241,7 @@
       ]
     },
     {
-      "coords": [
-        578,
-        305
-      ],
+      "coords": [578, 305],
       "image": "pot",
       "codes": [
         "MM Swamp Spider House Pot Jar Room 6",
@@ -351,10 +249,7 @@
       ]
     },
     {
-      "coords": [
-        581,
-        403
-      ],
+      "coords": [581, 403],
       "image": "pot",
       "codes": [
         "MM Swamp Spider House Pot Jar Room 1",
@@ -365,10 +260,7 @@
       ]
     },
     {
-      "coords": [
-        557,
-        461
-      ],
+      "coords": [557, 461],
       "image": "pot",
       "codes": [
         "MM Swamp Spider House Pot Main Upper Right 1",
@@ -376,10 +268,7 @@
       ]
     },
     {
-      "coords": [
-        529,
-        461
-      ],
+      "coords": [529, 461],
       "image": "pot",
       "codes": [
         "MM Swamp Spider House Pot Main Lower 2",
@@ -387,20 +276,14 @@
       ]
     },
     {
-      "coords": [
-        489,
-        449
-      ],
+      "coords": [489, 449],
       "image": "pot",
       "codes": [
         "MM Swamp Spider House Pot Main Lower 1"
       ]
     },
     {
-      "coords": [
-        461,
-        461
-      ],
+      "coords": [461, 461],
       "image": "pot",
       "codes": [
         "MM Swamp Spider House Pot Main Upper Left 1",
@@ -408,10 +291,7 @@
       ]
     },
     {
-      "coords": [
-        381,
-        365
-      ],
+      "coords": [381, 365],
       "image": "pot",
       "codes": [
         "MM Swamp Spider House Pot Monument Room 1",
@@ -419,10 +299,7 @@
       ]
     },
     {
-      "coords": [
-        402,
-        443
-      ],
+      "coords": [402, 443],
       "image": "crate",
       "codes": [
         "MM Swamp Spider House Crate Monument 5",
@@ -430,20 +307,14 @@
       ]
     },
     {
-      "coords": [
-        397,
-        412
-      ],
+      "coords": [397, 412],
       "image": "crate",
       "codes": [
         "MM Swamp Spider House Crate Monument 4"
       ]
     },
     {
-      "coords": [
-        397,
-        381
-      ],
+      "coords": [397, 381],
       "image": "crate",
       "codes": [
         "MM Swamp Spider House Crate Monument 1",
@@ -452,10 +323,7 @@
       ]
     },
     {
-      "coords": [
-        463,
-        299
-      ],
+      "coords": [463, 299],
       "image": "crate",
       "codes": [
         "MM Swamp Spider House Crate Gold 1",
@@ -463,10 +331,7 @@
       ]
     },
     {
-      "coords": [
-        585,
-        372
-      ],
+      "coords": [585, 372],
       "image": "beehive",
       "codes": [
         "MM Swamp Spider House Hive Jars Room 1",
@@ -475,10 +340,7 @@
       ]
     },
     {
-      "coords": [
-        509,
-        290
-      ],
+      "coords": [509, 290],
       "image": "beehive",
       "codes": [
         "MM Swamp Spider House Hive Gold Room 1",
@@ -487,10 +349,7 @@
       ]
     },
     {
-      "coords": [
-        485,
-        142
-      ],
+      "coords": [485, 142],
       "image": "beehive",
       "codes": [
         "MM Swamp Spider House Hive Tree Room 1",
@@ -499,10 +358,7 @@
       ]
     },
     {
-      "coords": [
-        517,
-        369
-      ],
+      "coords": [517, 369],
       "image": "wonder_item_green_rupee",
       "codes": [
         "MM Swamp Spider House Wonder Item Pillars 04",
@@ -511,10 +367,7 @@
       ]
     },
     {
-      "coords": [
-        501,
-        369
-      ],
+      "coords": [501, 369],
       "image": "wonder_item_green_rupee",
       "codes": [
         "MM Swamp Spider House Wonder Item Pillars 01",
@@ -523,10 +376,7 @@
       ]
     },
     {
-      "coords": [
-        517,
-        353
-      ],
+      "coords": [517, 353],
       "image": "wonder_item_green_rupee",
       "codes": [
         "MM Swamp Spider House Wonder Item Pillars 10",
@@ -535,10 +385,7 @@
       ]
     },
     {
-      "coords": [
-        501,
-        353
-      ],
+      "coords": [501, 353],
       "image": "wonder_item_green_rupee",
       "codes": [
         "MM Swamp Spider House Wonder Item Pillars 08",
@@ -547,60 +394,42 @@
       ]
     },
     {
-      "coords": [
-        605,
-        403
-      ],
+      "coords": [605, 403],
       "image": "wonder_item_red_rupee",
       "codes": [
         "MM Swamp Spider House Wonder Item Pots 5"
       ]
     },
     {
-      "coords": [
-        611,
-        379
-      ],
+      "coords": [611, 379],
       "image": "wonder_item_blue_rupee",
       "codes": [
         "MM Swamp Spider House Wonder Item Pots 4"
       ]
     },
     {
-      "coords": [
-        611,
-        361
-      ],
+      "coords": [611, 361],
       "image": "wonder_item_green_rupee",
       "codes": [
         "MM Swamp Spider House Wonder Item Pots 3"
       ]
     },
     {
-      "coords": [
-        611,
-        343
-      ],
+      "coords": [611, 343],
       "image": "wonder_item_green_rupee",
       "codes": [
         "MM Swamp Spider House Wonder Item Pots 2"
       ]
     },
     {
-      "coords": [
-        611,
-        325
-      ],
+      "coords": [611, 325],
       "image": "wonder_item_green_rupee",
       "codes": [
         "MM Swamp Spider House Wonder Item Pots 1"
       ]
     },
     {
-      "coords": [
-        433,
-        380
-      ],
+      "coords": [433, 380],
       "image": "soft_soil",
       "codes": [
         "MM Swamp Spider House Soil Monument Item 1",
@@ -609,50 +438,35 @@
       ]
     },
     {
-      "coords": [
-        470,
-        251
-      ],
+      "coords": [470, 251],
       "image": "soft_soil",
       "codes": [
         "MM Swamp Spider House Soil Gold"
       ]
     },
     {
-      "coords": [
-        481,
-        494
-      ],
+      "coords": [481, 494],
       "image": "rock",
       "codes": [
         "MM Swamp Spider House Rock Entrance 1"
       ]
     },
     {
-      "coords": [
-        537,
-        500
-      ],
+      "coords": [537, 500],
       "image": "rock",
       "codes": [
         "MM Swamp Spider House Rock Entrance 2"
       ]
     },
     {
-      "coords": [
-        601,
-        283
-      ],
+      "coords": [601, 283],
       "image": "rock",
       "codes": [
         "MM Swamp Spider House Rock Pots Room"
       ]
     },
     {
-      "coords": [
-        509,
-        141
-      ],
+      "coords": [509, 141],
       "image": "gossip_stone",
       "codes": [
         "MM Swamp Spider House Gossip"

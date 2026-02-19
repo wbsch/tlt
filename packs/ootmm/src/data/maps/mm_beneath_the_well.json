@@ -6,50 +6,35 @@
   "height": 600,
   "markers": [
     {
-      "coords": [
-        454,
-        353
-      ],
+      "coords": [454, 353],
       "image": "chest",
       "codes": [
         "MM Beneath The Well Skulltulla Chest"
       ]
     },
     {
-      "coords": [
-        502,
-        253
-      ],
+      "coords": [502, 253],
       "image": "chest",
       "codes": [
         "MM Beneath The Well Keese Chest"
       ]
     },
     {
-      "coords": [
-        600,
-        233
-      ],
+      "coords": [600, 233],
       "image": "chest",
       "codes": [
         "MM Beneath The Well Mirror Shield"
       ]
     },
     {
-      "coords": [
-        675,
-        419
-      ],
+      "coords": [675, 419],
       "image": "cow",
       "codes": [
         "MM Beneath The Well Cow"
       ]
     },
     {
-      "coords": [
-        452,
-        290
-      ],
+      "coords": [452, 290],
       "image": "pot",
       "codes": [
         "MM Beneath The Well Pot Left Side 1",
@@ -60,10 +45,7 @@
       ]
     },
     {
-      "coords": [
-        532,
-        356
-      ],
+      "coords": [532, 356],
       "image": "pot",
       "codes": [
         "MM Beneath The Well Pot Middle 01",
@@ -79,50 +61,35 @@
       ]
     },
     {
-      "coords": [
-        578,
-        313
-      ],
+      "coords": [578, 313],
       "image": "pot",
       "codes": [
         "MM Beneath The Well Pot Big Poe 2"
       ]
     },
     {
-      "coords": [
-        627,
-        313
-      ],
+      "coords": [627, 313],
       "image": "pot",
       "codes": [
         "MM Beneath The Well Pot Big Poe 3"
       ]
     },
     {
-      "coords": [
-        578,
-        357
-      ],
+      "coords": [578, 357],
       "image": "pot",
       "codes": [
         "MM Beneath The Well Pot Big Poe 1"
       ]
     },
     {
-      "coords": [
-        627,
-        357
-      ],
+      "coords": [627, 357],
       "image": "pot",
       "codes": [
         "MM Beneath The Well Pot Big Poe 4"
       ]
     },
     {
-      "coords": [
-        423,
-        110
-      ],
+      "coords": [423, 110],
       "image": "fairy",
       "codes": [
         "MM Beneath The Well Fairy Fountain Fairy 1",
@@ -136,10 +103,7 @@
       ]
     },
     {
-      "coords": [
-        394,
-        290
-      ],
+      "coords": [394, 290],
       "image": "grass",
       "codes": [
         "MM Beneath The Well Grass Left Side 1",
@@ -147,10 +111,7 @@
       ]
     },
     {
-      "coords": [
-        500,
-        288
-      ],
+      "coords": [500, 288],
       "image": "grass",
       "codes": [
         "MM Beneath The Well Grass Near End 1",
@@ -161,10 +122,7 @@
       ]
     },
     {
-      "coords": [
-        588,
-        456
-      ],
+      "coords": [588, 456],
       "image": "grass",
       "codes": [
         "MM Beneath The Well Grass Before Poe 1",
@@ -174,10 +132,7 @@
       ]
     },
     {
-      "coords": [
-        668,
-        426
-      ],
+      "coords": [668, 426],
       "image": "grass",
       "codes": [
         "MM Beneath The Well Grass Cow 1",
@@ -186,30 +141,21 @@
       ]
     },
     {
-      "coords": [
-        682,
-        430
-      ],
+      "coords": [682, 430],
       "image": "tree",
       "codes": [
         "MM Beneath The Well Tree"
       ]
     },
     {
-      "coords": [
-        668,
-        411
-      ],
+      "coords": [668, 411],
       "image": "bush",
       "codes": [
         "MM Beneath The Well Bush 1"
       ]
     },
     {
-      "coords": [
-        671,
-        436
-      ],
+      "coords": [671, 436],
       "image": "bush",
       "codes": [
         "MM Beneath The Well Bush 2"

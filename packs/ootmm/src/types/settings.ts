@@ -343,5 +343,5 @@ export const DEFAULT_OOTMM_SETTINGS: OoTMMSettings = {
   keepItemsReset: false,
   keepBottlesReset: false,
   autoInvert: 'never',
-  tricks: ['OOT_NIGHT_GS']
+  tricks: ['OOT_NIGHT_GS'],
 };

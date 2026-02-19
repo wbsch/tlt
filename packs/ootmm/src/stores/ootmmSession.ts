@@ -2,7 +2,10 @@ import { defineStore } from 'pinia';
 import { computed, markRaw, nextTick, ref } from 'vue';
 import type { TrackerPack } from '@/types/tracker';
 import { ITEM_DATABASE } from '../data/items';
-import { ALL_SETTINGS_DEFINITIONS, TRACKER_DEFAULT_SETTINGS } from '../data/settings';
+import {
+  ALL_SETTINGS_DEFINITIONS,
+  TRACKER_DEFAULT_SETTINGS,
+} from '../data/settings';
 import { VANILLA_SONG_EVENTS } from '../data/song-events';
 
 const HISTORY_LIMIT = 200;
@@ -25,7 +28,9 @@ function recordToMap(record: Record<string, number>): Map<string, number> {
   return new Map(Object.entries(record).filter(([, count]) => count > 0));
 }
 
-function sanitizeInventoryRecord(record: Record<string, number>): Record<string, number> {
+function sanitizeInventoryRecord(
+  record: Record<string, number>,
+): Record<string, number> {
   const next: Record<string, number> = {};
   for (const [itemId, count] of Object.entries(record)) {
     if (!Number.isFinite(count) || count <= 0) continue;
@@ -34,7 +39,9 @@ function sanitizeInventoryRecord(record: Record<string, number>): Record<string,
   return next;
 }
 
-function sanitizeNonNegativeNumberRecord(record: Record<string, number>): Record<string, number> {
+function sanitizeNonNegativeNumberRecord(
+  record: Record<string, number>,
+): Record<string, number> {
   const next: Record<string, number> = {};
   for (const [key, value] of Object.entries(record)) {
     const numeric = Number(value);
@@ -94,7 +101,9 @@ function deepCloneValue(value: unknown): unknown {
   }
   if (value && typeof value === 'object') {
     const cloned: Record<string, unknown> = {};
-    for (const [key, entry] of Object.entries(value as Record<string, unknown>)) {
+    for (const [key, entry] of Object.entries(
+      value as Record<string, unknown>,
+    )) {
       cloned[key] = deepCloneValue(entry);
     }
     return cloned;
@@ -102,7 +111,9 @@ function deepCloneValue(value: unknown): unknown {
   return value;
 }
 
-function cloneSettingsRecord(value: Record<string, unknown>): Record<string, unknown> {
+function cloneSettingsRecord(
+  value: Record<string, unknown>,
+): Record<string, unknown> {
   return deepCloneValue(value) as Record<string, unknown>;
 }
 
@@ -162,9 +173,15 @@ export const useOoTMMSessionStore = defineStore('ootmm-session', () => {
 
   const inventoryMap = computed(() => recordToMap(inventoryById.value));
   const availableItemIdSet = computed(() => new Set(availableItemIds.value));
-  const itemMaxCountsMap = computed(() => new Map(Object.entries(itemMaxCountsById.value)));
-  const reachableLocationIdSet = computed(() => new Set(reachableLocationIds.value));
-  const preCompletedEnabled = computed(() => Boolean(trackerSettings.value?.preCompletedDungeons));
+  const itemMaxCountsMap = computed(
+    () => new Map(Object.entries(itemMaxCountsById.value)),
+  );
+  const reachableLocationIdSet = computed(
+    () => new Set(reachableLocationIds.value),
+  );
+  const preCompletedEnabled = computed(() =>
+    Boolean(trackerSettings.value?.preCompletedDungeons),
+  );
   const canUndo = computed(() => undoHistory.value.length > 0);
   const canRedo = computed(() => redoHistory.value.length > 0);
 
@@ -174,7 +191,9 @@ export const useOoTMMSessionStore = defineStore('ootmm-session', () => {
   });
 
   const shuffledLocations = computed(() => {
-    return allLocations.value.filter((location) => location.isShuffled !== false);
+    return allLocations.value.filter(
+      (location) => location.isShuffled !== false,
+    );
   });
 
   const stats = computed(() => {
@@ -267,11 +286,19 @@ export const useOoTMMSessionStore = defineStore('ootmm-session', () => {
     if (isApplyingSettings.value) return false;
     const currentTracker = tracker.value;
 
-    const targetInventoryById = sanitizeInventoryRecord({ ...snapshot.inventoryById });
-    const targetCollectedLocationIds = uniqueStrings(snapshot.collectedLocationIds);
-    const targetPreCompletedDungeons = uniqueStrings(snapshot.preCompletedDungeons);
+    const targetInventoryById = sanitizeInventoryRecord({
+      ...snapshot.inventoryById,
+    });
+    const targetCollectedLocationIds = uniqueStrings(
+      snapshot.collectedLocationIds,
+    );
+    const targetPreCompletedDungeons = uniqueStrings(
+      snapshot.preCompletedDungeons,
+    );
     const targetSongEvents = { ...snapshot.songEvents };
-    const targetShopPrices = sanitizeNonNegativeNumberRecord({ ...snapshot.shopPrices });
+    const targetShopPrices = sanitizeNonNegativeNumberRecord({
+      ...snapshot.shopPrices,
+    });
     const targetSettings = cloneSettingsRecord(snapshot.trackerSettings);
 
     isNavigatingHistory.value = true;
@@ -298,7 +325,9 @@ export const useOoTMMSessionStore = defineStore('ootmm-session', () => {
         isApplyingSettings.value = true;
         try {
           await nextTick();
-          await new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve)));
+          await new Promise((resolve) =>
+            requestAnimationFrame(() => requestAnimationFrame(resolve)),
+          );
           currentTracker.reset();
           await currentTracker.initialize(targetSettings);
           trackerSettings.value = { ...currentTracker.getSettings() };
@@ -366,12 +395,17 @@ export const useOoTMMSessionStore = defineStore('ootmm-session', () => {
       ? persistedSettings
       : cloneSettingsRecord(TRACKER_DEFAULT_SETTINGS);
     const currentSettings = nextTracker.getSettings();
-    const shouldReinitializeWithTargetSettings = !areSettingsEqual(targetSettings, currentSettings);
+    const shouldReinitializeWithTargetSettings = !areSettingsEqual(
+      targetSettings,
+      currentSettings,
+    );
     if (shouldReinitializeWithTargetSettings) {
       isApplyingSettings.value = true;
       try {
         await nextTick();
-        await new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve)));
+        await new Promise((resolve) =>
+          requestAnimationFrame(() => requestAnimationFrame(resolve)),
+        );
         await nextTracker.initialize(targetSettings);
       } catch (error) {
         console.error('Failed to initialize tracker settings:', error);
@@ -380,8 +414,12 @@ export const useOoTMMSessionStore = defineStore('ootmm-session', () => {
       }
     }
     trackerSettings.value = { ...nextTracker.getSettings() };
-    availableItemIds.value = setToArray(nextTracker.getAvailableItemIds?.() ?? new Set<string>());
-    itemMaxCountsById.value = mapNumberToRecord(nextTracker.getItemMaxCounts?.() ?? new Map<string, number>());
+    availableItemIds.value = setToArray(
+      nextTracker.getAvailableItemIds?.() ?? new Set<string>(),
+    );
+    itemMaxCountsById.value = mapNumberToRecord(
+      nextTracker.getItemMaxCounts?.() ?? new Map<string, number>(),
+    );
     applyPreCompletedDungeons();
     applySongEvents();
     applyShopPrices();
@@ -390,8 +428,12 @@ export const useOoTMMSessionStore = defineStore('ootmm-session', () => {
   function initializeFromTracker() {
     if (!tracker.value) return;
     trackerSettings.value = { ...tracker.value.getSettings() };
-    availableItemIds.value = setToArray(tracker.value.getAvailableItemIds?.() ?? new Set<string>());
-    itemMaxCountsById.value = mapNumberToRecord(tracker.value.getItemMaxCounts?.() ?? new Map<string, number>());
+    availableItemIds.value = setToArray(
+      tracker.value.getAvailableItemIds?.() ?? new Set<string>(),
+    );
+    itemMaxCountsById.value = mapNumberToRecord(
+      tracker.value.getItemMaxCounts?.() ?? new Map<string, number>(),
+    );
     recomputeReachability();
   }
 
@@ -505,7 +547,9 @@ export const useOoTMMSessionStore = defineStore('ootmm-session', () => {
   function applyPreCompletedDungeons() {
     const currentTracker = tracker.value;
     if (!currentTracker || !currentTracker.setPreCompletedDungeons) return;
-    const selected = preCompletedEnabled.value ? preCompletedDungeons.value : [];
+    const selected = preCompletedEnabled.value
+      ? preCompletedDungeons.value
+      : [];
     currentTracker.setPreCompletedDungeons(selected);
 
     const previousAuto = new Set(autoCollectedPreCompletedLocationIds.value);
@@ -527,8 +571,10 @@ export const useOoTMMSessionStore = defineStore('ootmm-session', () => {
   function applySongEvents() {
     const currentTracker = tracker.value;
     if (!currentTracker || !currentTracker.setSongEvents) return;
-    const songEventsShuffleOot = Boolean(trackerSettings.value?.songEventsShuffleOot);
-    
+    const songEventsShuffleOot = Boolean(
+      trackerSettings.value?.songEventsShuffleOot,
+    );
+
     if (songEventsShuffleOot && Object.keys(songEvents.value).length === 0) {
       // Initialize with vanilla defaults from OoTMM core
       const vanillaDefaults: Record<string, number> = {};
@@ -537,7 +583,7 @@ export const useOoTMMSessionStore = defineStore('ootmm-session', () => {
       });
       songEvents.value = vanillaDefaults;
     }
-    
+
     const events = songEventsShuffleOot ? songEvents.value : {};
     currentTracker.setSongEvents(events);
     recomputeReachability();
@@ -547,7 +593,8 @@ export const useOoTMMSessionStore = defineStore('ootmm-session', () => {
     const currentTracker = tracker.value;
     if (!currentTracker || !currentTracker.setShopPrices) return;
 
-    const isRandomizedMode = (mode: string) => mode === 'random' || mode === 'weighted';
+    const isRandomizedMode = (mode: string) =>
+      mode === 'random' || mode === 'weighted';
     const hasEditableShops = [
       trackerSettings.value?.priceOotShops,
       trackerSettings.value?.priceOotScrubs,
@@ -557,7 +604,9 @@ export const useOoTMMSessionStore = defineStore('ootmm-session', () => {
     ].some((mode) => isRandomizedMode(String(mode ?? '')));
 
     if (hasEditableShops && currentTracker.getShopPrices) {
-      const trackerPrices = sanitizeNonNegativeNumberRecord(currentTracker.getShopPrices());
+      const trackerPrices = sanitizeNonNegativeNumberRecord(
+        currentTracker.getShopPrices(),
+      );
       shopPrices.value = sanitizeNonNegativeNumberRecord({
         ...trackerPrices,
         ...shopPrices.value,
@@ -595,11 +644,15 @@ export const useOoTMMSessionStore = defineStore('ootmm-session', () => {
     const overlayStartTime = performance.now();
     try {
       await nextTick();
-      await new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve)));
+      await new Promise((resolve) =>
+        requestAnimationFrame(() => requestAnimationFrame(resolve)),
+      );
       currentTracker.reset();
       await currentTracker.initialize(nextSettings);
       trackerSettings.value = { ...currentTracker.getSettings() };
-      availableItemIds.value = setToArray(currentTracker.getAvailableItemIds?.() ?? new Set<string>());
+      availableItemIds.value = setToArray(
+        currentTracker.getAvailableItemIds?.() ?? new Set<string>(),
+      );
       itemMaxCountsById.value = mapNumberToRecord(
         currentTracker.getItemMaxCounts?.() ?? new Map<string, number>(),
       );
@@ -615,7 +668,9 @@ export const useOoTMMSessionStore = defineStore('ootmm-session', () => {
       const elapsed = performance.now() - overlayStartTime;
       const minDuration = 100;
       if (elapsed < minDuration) {
-        await new Promise(resolve => setTimeout(resolve, minDuration - elapsed));
+        await new Promise((resolve) =>
+          setTimeout(resolve, minDuration - elapsed),
+        );
       }
       isApplyingSettings.value = false;
     }
@@ -637,7 +692,11 @@ export const useOoTMMSessionStore = defineStore('ootmm-session', () => {
     canComplete.value = result.canComplete;
     statsExtra.value = result.extra ?? {};
 
-    const autoCounts = (result.extra as { vanillaSilverRupeeCounts?: Record<string, number> } | undefined)?.vanillaSilverRupeeCounts;
+    const autoCounts = (
+      result.extra as
+        | { vanillaSilverRupeeCounts?: Record<string, number> }
+        | undefined
+    )?.vanillaSilverRupeeCounts;
     if (autoCounts && typeof autoCounts === 'object') {
       applyVanillaSilverRupeeCounts(autoCounts);
     }
@@ -673,11 +732,15 @@ export const useOoTMMSessionStore = defineStore('ootmm-session', () => {
     isApplyingSettings.value = true;
     try {
       await nextTick();
-      await new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve)));
+      await new Promise((resolve) =>
+        requestAnimationFrame(() => requestAnimationFrame(resolve)),
+      );
       currentTracker.reset();
       await currentTracker.initialize({});
       trackerSettings.value = { ...currentTracker.getSettings() };
-      availableItemIds.value = setToArray(currentTracker.getAvailableItemIds?.() ?? new Set<string>());
+      availableItemIds.value = setToArray(
+        currentTracker.getAvailableItemIds?.() ?? new Set<string>(),
+      );
       itemMaxCountsById.value = mapNumberToRecord(
         currentTracker.getItemMaxCounts?.() ?? new Map<string, number>(),
       );

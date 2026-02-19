@@ -1,7 +1,11 @@
-const rawBaseUrl = import.meta.env.BASE_URL || '/'
+const rawBaseUrl = import.meta.env.BASE_URL || '/';
 const normalizedBaseUrl =
-  rawBaseUrl === '/' ? './' : rawBaseUrl.endsWith('/') ? rawBaseUrl : `${rawBaseUrl}/`
+  rawBaseUrl === '/'
+    ? './'
+    : rawBaseUrl.endsWith('/')
+      ? rawBaseUrl
+      : `${rawBaseUrl}/`;
 
 export function withBasePath(path: string): string {
-  return `${normalizedBaseUrl}${path.replace(/^\/+/, '')}`
+  return `${normalizedBaseUrl}${path.replace(/^\/+/, '')}`;
 }

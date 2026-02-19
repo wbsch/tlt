@@ -1,18 +1,25 @@
 <script setup lang="ts">
-import { computed, nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue'
-import type { LocationInfo } from '@/types/tracker'
+import {
+  computed,
+  nextTick,
+  onBeforeUnmount,
+  onMounted,
+  ref,
+  watch,
+} from 'vue';
+import type { LocationInfo } from '@/types/tracker';
 import {
   resolveDayComboOverlayImage,
   resolveDigitImage,
   resolveMapImage,
   resolveMarkerImage,
   resolveOverlayImage,
-} from '../data/maps/assets'
-import OoTMMMapDevEditor from './OoTMMMapDevEditor.vue'
+} from '../data/maps/assets';
+import OoTMMMapDevEditor from './OoTMMMapDevEditor.vue';
 import {
   formatLocationDisplayName,
   useLocationCodeLookup,
-} from '../composables/useLocationCodeLookup'
+} from '../composables/useLocationCodeLookup';
 import type {
   MapDef,
   MapMarkerDef,
@@ -20,28 +27,28 @@ import type {
   MapPopupEntry,
   MapPopupPayload,
   MapSubmenuEntryDef,
-} from '../data/maps/types'
+} from '../data/maps/types';
 
-const MIN_SCALE = 0.5
-const MAX_SCALE = 3
-const WHEEL_ZOOM_FACTOR = 1.1
-const MARKER_SIZE = 16
-const MARKER_PANEL_GAP = 2
-const HOVER_POPUP_CLOSE_DELAY_MS = 160
-const MAP_POPUP_WIDTH = 260
-const MAP_POPUP_HEIGHT = 230
-const SUBMENU_PANEL_WIDTH = 320
-const SUBMENU_PANEL_HEIGHT = 220
+const MIN_SCALE = 0.5;
+const MAX_SCALE = 3;
+const WHEEL_ZOOM_FACTOR = 1.1;
+const MARKER_SIZE = 16;
+const MARKER_PANEL_GAP = 2;
+const HOVER_POPUP_CLOSE_DELAY_MS = 160;
+const MAP_POPUP_WIDTH = 260;
+const MAP_POPUP_HEIGHT = 230;
+const SUBMENU_PANEL_WIDTH = 320;
+const SUBMENU_PANEL_HEIGHT = 220;
 
 type OverlayRender = {
-  key: string
-  src: string
-  wide: boolean
-}
+  key: string;
+  src: string;
+  wide: boolean;
+};
 
 type PopupAttributeChip = OverlayRender & {
-  label: string
-}
+  label: string;
+};
 
 const POPUP_ATTRIBUTE_LABELS: Record<string, string> = {
   child: 'Child',
@@ -59,114 +66,114 @@ const POPUP_ATTRIBUTE_LABELS: Record<string, string> = {
   clear_state: 'Clear state',
   cursed_state: 'Cursed state',
   broken: 'Broken',
-}
+};
 
 type MarkerRenderState = {
-  overlays: MapMarkerOverlay[]
-  codeList: string[]
-  allCheckIds: string[]
-  reachableCheckIds: string[]
-  reachableUncheckedCheckIds: string[]
-  reachableUncheckedCount: number
-  checkedCount: number
-  popupEntries: MapPopupEntry[]
-  topLeftOverlays: OverlayRender[]
-  bottomLeftOverlays: OverlayRender[]
-  topRightOverlays: OverlayRender[]
-  countDigitImages: string[]
-  isVisible: boolean
-}
+  overlays: MapMarkerOverlay[];
+  codeList: string[];
+  allCheckIds: string[];
+  reachableCheckIds: string[];
+  reachableUncheckedCheckIds: string[];
+  reachableUncheckedCount: number;
+  checkedCount: number;
+  popupEntries: MapPopupEntry[];
+  topLeftOverlays: OverlayRender[];
+  bottomLeftOverlays: OverlayRender[];
+  topRightOverlays: OverlayRender[];
+  countDigitImages: string[];
+  isVisible: boolean;
+};
 
 type CheckMarkerRuntime = {
-  type: 'check'
-  id: string
-  markerIndex: number
-  coords: [number, number]
-  image: string
-} & MarkerRenderState
+  type: 'check';
+  id: string;
+  markerIndex: number;
+  coords: [number, number];
+  image: string;
+} & MarkerRenderState;
 
 type SubmenuEntryRuntime = MarkerRenderState & {
-  id: string
-  parentMarkerId: string
-  image: string
-}
+  id: string;
+  parentMarkerId: string;
+  image: string;
+};
 
 type SubmenuMarkerRuntime = {
-  type: 'submenu'
-  id: string
-  markerIndex: number
-  coords: [number, number]
-  image: string
-  overlays: MapMarkerOverlay[]
-  topLeftOverlays: OverlayRender[]
-  bottomLeftOverlays: OverlayRender[]
-  topRightOverlays: OverlayRender[]
-  countDigitImages: string[]
-  submenuMarkers: SubmenuEntryRuntime[]
-  allSubmenuCodeList: string[]
-  isVisible: boolean
-}
+  type: 'submenu';
+  id: string;
+  markerIndex: number;
+  coords: [number, number];
+  image: string;
+  overlays: MapMarkerOverlay[];
+  topLeftOverlays: OverlayRender[];
+  bottomLeftOverlays: OverlayRender[];
+  topRightOverlays: OverlayRender[];
+  countDigitImages: string[];
+  submenuMarkers: SubmenuEntryRuntime[];
+  allSubmenuCodeList: string[];
+  isVisible: boolean;
+};
 
-type MarkerRuntime = CheckMarkerRuntime | SubmenuMarkerRuntime
+type MarkerRuntime = CheckMarkerRuntime | SubmenuMarkerRuntime;
 
 type PopupMarkerRuntime = {
-  id: string
-  image: string
-  topLeftOverlays: OverlayRender[]
-  bottomLeftOverlays: OverlayRender[]
-  topRightOverlays: OverlayRender[]
-  checkedCount: number
-  reachableUncheckedCount: number
-  popupEntries: MapPopupEntry[]
-  reachableUncheckedCheckIds: string[]
-}
+  id: string;
+  image: string;
+  topLeftOverlays: OverlayRender[];
+  bottomLeftOverlays: OverlayRender[];
+  topRightOverlays: OverlayRender[];
+  checkedCount: number;
+  reachableUncheckedCount: number;
+  popupEntries: MapPopupEntry[];
+  reachableUncheckedCheckIds: string[];
+};
 
 type MapPopupState = {
-  markerId: string | null
-  hoverMarkerId: string | null
-  pinned: boolean
-  isHovered: boolean
-  layoutReady: boolean
-  position: { left: number; top: number } | null
-}
+  markerId: string | null;
+  hoverMarkerId: string | null;
+  pinned: boolean;
+  isHovered: boolean;
+  layoutReady: boolean;
+  position: { left: number; top: number } | null;
+};
 
 type SubmenuPopupState = {
-  markerId: string | null
-  hoverMarkerId: string | null
-  pinned: boolean
-  isHovered: boolean
-  layoutReady: boolean
-  position: { left: number; top: number } | null
-}
+  markerId: string | null;
+  hoverMarkerId: string | null;
+  pinned: boolean;
+  isHovered: boolean;
+  layoutReady: boolean;
+  position: { left: number; top: number } | null;
+};
 
 type SubmenuPanelState = {
-  markerId: string | null
-  hoverMarkerId: string | null
-  pinned: boolean
-  isHovered: boolean
-  layoutReady: boolean
-  position: { left: number; top: number } | null
-  frozenWidth: number | null
-  frozenHeight: number | null
-  frozenScale: number | null
-}
+  markerId: string | null;
+  hoverMarkerId: string | null;
+  pinned: boolean;
+  isHovered: boolean;
+  layoutReady: boolean;
+  position: { left: number; top: number } | null;
+  frozenWidth: number | null;
+  frozenHeight: number | null;
+  frozenScale: number | null;
+};
 
 type DevDraftIssue = {
-  markerIndex: number
-  message: string
-}
+  markerIndex: number;
+  message: string;
+};
 
 const props = withDefaults(
   defineProps<{
-    activeMap: MapDef | null
-    reachableIds: Set<string>
-    collectedIds: Set<string>
-    visibleLocationIds?: Set<string> | null
-    allLocations?: LocationInfo[]
-    allLocationsForCodeSearch?: LocationInfo[]
-    devMode?: boolean
-    devMarkerSelectRequest?: { markerIndex: number; nonce: number } | null
-    devMarkerHoverIndex?: number | null
+    activeMap: MapDef | null;
+    reachableIds: Set<string>;
+    collectedIds: Set<string>;
+    visibleLocationIds?: Set<string> | null;
+    allLocations?: LocationInfo[];
+    allLocationsForCodeSearch?: LocationInfo[];
+    devMode?: boolean;
+    devMarkerSelectRequest?: { markerIndex: number; nonce: number } | null;
+    devMarkerHoverIndex?: number | null;
   }>(),
   {
     visibleLocationIds: null,
@@ -176,25 +183,25 @@ const props = withDefaults(
     devMarkerSelectRequest: null,
     devMarkerHoverIndex: null,
   },
-)
+);
 
 const emit = defineEmits<{
-  (e: 'toggle-collected', checkId: string): void
-  (e: 'mark-all-reachable', checkIds: string[]): void
-  (e: 'open-popup', markerId: string): void
-  (e: 'close-popup'): void
-  (e: 'dev-warnings-change', warnings: DevDraftIssue[]): void
-}>()
+  (e: 'toggle-collected', checkId: string): void;
+  (e: 'mark-all-reachable', checkIds: string[]): void;
+  (e: 'open-popup', markerId: string): void;
+  (e: 'close-popup'): void;
+  (e: 'dev-warnings-change', warnings: DevDraftIssue[]): void;
+}>();
 
-const viewportRef = ref<HTMLDivElement | null>(null)
-const popupRef = ref<HTMLDivElement | null>(null)
-const submenuPanelRef = ref<HTMLDivElement | null>(null)
-const submenuPopupRef = ref<HTMLDivElement | null>(null)
+const viewportRef = ref<HTMLDivElement | null>(null);
+const popupRef = ref<HTMLDivElement | null>(null);
+const submenuPanelRef = ref<HTMLDivElement | null>(null);
+const submenuPopupRef = ref<HTMLDivElement | null>(null);
 
-const scale = ref(1)
-const panX = ref(0)
-const panY = ref(0)
-const isDragging = ref(false)
+const scale = ref(1);
+const panX = ref(0);
+const panY = ref(0);
+const isDragging = ref(false);
 const mapPopup = ref<MapPopupState>({
   markerId: null,
   hoverMarkerId: null,
@@ -202,7 +209,7 @@ const mapPopup = ref<MapPopupState>({
   isHovered: false,
   layoutReady: false,
   position: null,
-})
+});
 const submenuPanel = ref<SubmenuPanelState>({
   markerId: null,
   hoverMarkerId: null,
@@ -213,7 +220,7 @@ const submenuPanel = ref<SubmenuPanelState>({
   frozenWidth: null,
   frozenHeight: null,
   frozenScale: null,
-})
+});
 const submenuPopup = ref<SubmenuPopupState>({
   markerId: null,
   hoverMarkerId: null,
@@ -221,41 +228,41 @@ const submenuPopup = ref<SubmenuPopupState>({
   isHovered: false,
   layoutReady: false,
   position: null,
-})
+});
 
-const devDraftMap = ref<MapDef | null>(null)
-const devSelectedMarkerIndex = ref<number | null>(null)
+const devDraftMap = ref<MapDef | null>(null);
+const devSelectedMarkerIndex = ref<number | null>(null);
 
-const activePointers = new Map<number, { x: number; y: number }>()
-let lastDragPoint: { x: number; y: number } | null = null
-let pinchStartDistance = 0
-let pinchStartScale = 1
-let hoverPopupCloseTimer: ReturnType<typeof setTimeout> | null = null
-let submenuHoverPopupCloseTimer: ReturnType<typeof setTimeout> | null = null
-let submenuPanelCloseTimer: ReturnType<typeof setTimeout> | null = null
+const activePointers = new Map<number, { x: number; y: number }>();
+let lastDragPoint: { x: number; y: number } | null = null;
+let pinchStartDistance = 0;
+let pinchStartScale = 1;
+let hoverPopupCloseTimer: ReturnType<typeof setTimeout> | null = null;
+let submenuHoverPopupCloseTimer: ReturnType<typeof setTimeout> | null = null;
+let submenuPanelCloseTimer: ReturnType<typeof setTimeout> | null = null;
 
 const renderMapDef = computed<MapDef | null>(() =>
   props.devMode ? (devDraftMap.value ?? props.activeMap) : props.activeMap,
-)
-const isDevMode = computed(() => props.devMode)
+);
+const isDevMode = computed(() => props.devMode);
 
 function looksLikeLocationId(value: string): boolean {
-  return /@\d+$/.test(value)
+  return /@\d+$/.test(value);
 }
 
 function clamp(value: number, min: number, max: number): number {
-  return Math.min(max, Math.max(min, value))
+  return Math.min(max, Math.max(min, value));
 }
 
 function markerCodeList(marker: MapMarkerDef): string[] {
-  const rawCodes = marker.codes ?? ''
-  const rawList = Array.isArray(rawCodes) ? rawCodes : [rawCodes]
-  return rawList.map((code) => code.trim()).filter((code) => code.length > 0)
+  const rawCodes = marker.codes ?? '';
+  const rawList = Array.isArray(rawCodes) ? rawCodes : [rawCodes];
+  return rawList.map((code) => code.trim()).filter((code) => code.length > 0);
 }
 
 function submenuEntryCodeList(marker: MapSubmenuEntryDef): string[] {
-  const rawList = Array.isArray(marker.codes) ? marker.codes : [marker.codes]
-  return rawList.map((code) => code.trim()).filter((code) => code.length > 0)
+  const rawList = Array.isArray(marker.codes) ? marker.codes : [marker.codes];
+  return rawList.map((code) => code.trim()).filter((code) => code.length > 0);
 }
 
 const { resolveCodeToCheckIds } = useLocationCodeLookup(
@@ -266,181 +273,196 @@ const { resolveCodeToCheckIds } = useLocationCodeLookup(
   ),
   computed(() => props.reachableIds),
   computed(() => props.collectedIds),
-)
+);
 
 function syncPointerState(): void {
   if (activePointers.size < 2) {
-    pinchStartDistance = 0
+    pinchStartDistance = 0;
   }
 
   if (activePointers.size === 1) {
-    const [remaining] = Array.from(activePointers.values())
-    isDragging.value = true
-    lastDragPoint = { x: remaining.x, y: remaining.y }
-    return
+    const [remaining] = Array.from(activePointers.values());
+    isDragging.value = true;
+    lastDragPoint = { x: remaining.x, y: remaining.y };
+    return;
   }
 
-  isDragging.value = false
-  lastDragPoint = null
+  isDragging.value = false;
+  lastDragPoint = null;
 
   if (activePointers.size >= 2) {
-    beginPinch()
+    beginPinch();
   }
 }
 
-function clampPanForScale(nextScale: number, x: number, y: number): { x: number; y: number } {
-  const mapDef = renderMapDef.value
-  const viewport = viewportRef.value
+function clampPanForScale(
+  nextScale: number,
+  x: number,
+  y: number,
+): { x: number; y: number } {
+  const mapDef = renderMapDef.value;
+  const viewport = viewportRef.value;
   if (!mapDef || !viewport) {
-    return { x, y }
+    return { x, y };
   }
 
-  const viewportWidth = viewport.clientWidth
-  const viewportHeight = viewport.clientHeight
-  const scaledWidth = mapDef.width * nextScale
-  const scaledHeight = mapDef.height * nextScale
+  const viewportWidth = viewport.clientWidth;
+  const viewportHeight = viewport.clientHeight;
+  const scaledWidth = mapDef.width * nextScale;
+  const scaledHeight = mapDef.height * nextScale;
 
   const nextX =
     scaledWidth <= viewportWidth
       ? (viewportWidth - scaledWidth) / 2
-      : clamp(x, viewportWidth - scaledWidth, 0)
+      : clamp(x, viewportWidth - scaledWidth, 0);
   const nextY =
     scaledHeight <= viewportHeight
       ? (viewportHeight - scaledHeight) / 2
-      : clamp(y, viewportHeight - scaledHeight, 0)
+      : clamp(y, viewportHeight - scaledHeight, 0);
 
-  return { x: nextX, y: nextY }
+  return { x: nextX, y: nextY };
 }
 
 function fitMapToViewport(): void {
-  const mapDef = renderMapDef.value
-  const viewport = viewportRef.value
+  const mapDef = renderMapDef.value;
+  const viewport = viewportRef.value;
   if (!mapDef || !viewport) {
-    return
+    return;
   }
 
-  const viewportWidth = viewport.clientWidth
-  const viewportHeight = viewport.clientHeight
+  const viewportWidth = viewport.clientWidth;
+  const viewportHeight = viewport.clientHeight;
   if (viewportWidth <= 0 || viewportHeight <= 0) {
-    return
+    return;
   }
 
-  const containScale = Math.min(viewportWidth / mapDef.width, viewportHeight / mapDef.height)
-  const nextScale = clamp(containScale, MIN_SCALE, MAX_SCALE)
-  const centeredX = (viewportWidth - mapDef.width * nextScale) / 2
-  const centeredY = (viewportHeight - mapDef.height * nextScale) / 2
-  const bounded = clampPanForScale(nextScale, centeredX, centeredY)
-  scale.value = nextScale
-  panX.value = bounded.x
-  panY.value = bounded.y
+  const containScale = Math.min(
+    viewportWidth / mapDef.width,
+    viewportHeight / mapDef.height,
+  );
+  const nextScale = clamp(containScale, MIN_SCALE, MAX_SCALE);
+  const centeredX = (viewportWidth - mapDef.width * nextScale) / 2;
+  const centeredY = (viewportHeight - mapDef.height * nextScale) / 2;
+  const bounded = clampPanForScale(nextScale, centeredX, centeredY);
+  scale.value = nextScale;
+  panX.value = bounded.x;
+  panY.value = bounded.y;
 }
 
-function applyScaleAtClientPoint(nextScaleRaw: number, clientX: number, clientY: number): void {
-  const viewport = viewportRef.value
-  const mapDef = renderMapDef.value
+function applyScaleAtClientPoint(
+  nextScaleRaw: number,
+  clientX: number,
+  clientY: number,
+): void {
+  const viewport = viewportRef.value;
+  const mapDef = renderMapDef.value;
   if (!viewport || !mapDef) {
-    return
+    return;
   }
 
-  const nextScale = clamp(nextScaleRaw, MIN_SCALE, MAX_SCALE)
-  const rect = viewport.getBoundingClientRect()
-  const anchorX = clientX - rect.left
-  const anchorY = clientY - rect.top
+  const nextScale = clamp(nextScaleRaw, MIN_SCALE, MAX_SCALE);
+  const rect = viewport.getBoundingClientRect();
+  const anchorX = clientX - rect.left;
+  const anchorY = clientY - rect.top;
 
-  const mapX = (anchorX - panX.value) / scale.value
-  const mapY = (anchorY - panY.value) / scale.value
-  const projectedX = anchorX - mapX * nextScale
-  const projectedY = anchorY - mapY * nextScale
-  const bounded = clampPanForScale(nextScale, projectedX, projectedY)
+  const mapX = (anchorX - panX.value) / scale.value;
+  const mapY = (anchorY - panY.value) / scale.value;
+  const projectedX = anchorX - mapX * nextScale;
+  const projectedY = anchorY - mapY * nextScale;
+  const bounded = clampPanForScale(nextScale, projectedX, projectedY);
 
-  scale.value = nextScale
-  panX.value = bounded.x
-  panY.value = bounded.y
+  scale.value = nextScale;
+  panX.value = bounded.x;
+  panY.value = bounded.y;
 }
 
 function beginPinch(): void {
-  const pointers = Array.from(activePointers.values())
+  const pointers = Array.from(activePointers.values());
   if (pointers.length < 2) {
-    pinchStartDistance = 0
-    return
+    pinchStartDistance = 0;
+    return;
   }
-  const [first, second] = pointers
-  const distance = Math.hypot(second.x - first.x, second.y - first.y)
+  const [first, second] = pointers;
+  const distance = Math.hypot(second.x - first.x, second.y - first.y);
   if (distance <= 0) {
-    pinchStartDistance = 0
-    return
+    pinchStartDistance = 0;
+    return;
   }
-  pinchStartDistance = distance
-  pinchStartScale = scale.value
+  pinchStartDistance = distance;
+  pinchStartScale = scale.value;
 }
 
 function buildTopLeftOverlays(overlays: MapMarkerOverlay[]): OverlayRender[] {
-  const result: OverlayRender[] = []
-  const has = new Set(overlays)
+  const result: OverlayRender[] = [];
+  const has = new Set(overlays);
 
   for (const single of ['child', 'adult', 'jp_only', 'na_only'] as const) {
-    if (!has.has(single)) continue
+    if (!has.has(single)) continue;
     result.push({
       key: single,
       src: resolveOverlayImage(single),
       wide: single === 'jp_only' || single === 'na_only',
-    })
+    });
   }
 
-  const dayOverlays = (['day1', 'day2', 'day3'] as const).filter((day) => has.has(day))
+  const dayOverlays = (['day1', 'day2', 'day3'] as const).filter((day) =>
+    has.has(day),
+  );
   if (dayOverlays.length === 1) {
-    const onlyDay = dayOverlays[0]
+    const onlyDay = dayOverlays[0];
     result.push({
       key: onlyDay,
       src: resolveOverlayImage(onlyDay),
       wide: false,
-    })
+    });
   } else if (dayOverlays.length === 2) {
-    const combo = resolveDayComboOverlayImage(dayOverlays[0], dayOverlays[1])
+    const combo = resolveDayComboOverlayImage(dayOverlays[0], dayOverlays[1]);
     if (combo) {
       result.push({
         key: dayOverlays.join('+'),
         src: combo,
         wide: true,
-      })
+      });
     }
   }
 
-  return result
+  return result;
 }
 
-function buildBottomLeftOverlays(overlays: MapMarkerOverlay[]): OverlayRender[] {
-  const result: OverlayRender[] = []
-  const has = new Set(overlays)
+function buildBottomLeftOverlays(
+  overlays: MapMarkerOverlay[],
+): OverlayRender[] {
+  const result: OverlayRender[] = [];
+  const has = new Set(overlays);
   for (const item of ['night', 'day'] as const) {
-    if (!has.has(item)) continue
+    if (!has.has(item)) continue;
     result.push({
       key: item,
       src: resolveOverlayImage(item),
       wide: false,
-    })
+    });
   }
-  return result
+  return result;
 }
 
 function buildTopRightOverlays(overlays: MapMarkerOverlay[]): OverlayRender[] {
-  const result: OverlayRender[] = []
-  const has = new Set(overlays)
+  const result: OverlayRender[] = [];
+  const has = new Set(overlays);
   for (const item of ['broken', 'clear_state', 'cursed_state'] as const) {
-    if (!has.has(item)) continue
+    if (!has.has(item)) continue;
     result.push({
       key: item,
       src: resolveOverlayImage(item),
       wide: false,
-    })
+    });
   }
-  return result
+  return result;
 }
 
 function popupAttributeLabel(key: string): string {
-  const mapped = POPUP_ATTRIBUTE_LABELS[key]
-  if (mapped) return mapped
-  return key.replace(/_/g, ' ')
+  const mapped = POPUP_ATTRIBUTE_LABELS[key];
+  if (mapped) return mapped;
+  return key.replace(/_/g, ' ');
 }
 
 function buildPopupAttributeChips(
@@ -448,10 +470,12 @@ function buildPopupAttributeChips(
   bottomLeftOverlays: OverlayRender[],
   topRightOverlays: OverlayRender[],
 ): PopupAttributeChip[] {
-  return [...topLeftOverlays, ...bottomLeftOverlays, ...topRightOverlays].map((overlay) => ({
-    ...overlay,
-    label: popupAttributeLabel(overlay.key),
-  }))
+  return [...topLeftOverlays, ...bottomLeftOverlays, ...topRightOverlays].map(
+    (overlay) => ({
+      ...overlay,
+      label: popupAttributeLabel(overlay.key),
+    }),
+  );
 }
 
 function buildMarkerRenderState(
@@ -460,12 +484,13 @@ function buildMarkerRenderState(
   overlays: MapMarkerOverlay[],
   countUsesDigits: boolean,
 ): MarkerRenderState {
-  const popupEntries: MapPopupEntry[] = []
-  const resolvedCheckIds = new Set<string>()
+  const popupEntries: MapPopupEntry[] = [];
+  const resolvedCheckIds = new Set<string>();
 
   codeList.forEach((code, codeIndex) => {
-    const resolved = resolveCodeToCheckIds(code)
-    const candidateIds = resolved.length > 0 ? resolved : looksLikeLocationId(code) ? [code] : []
+    const resolved = resolveCodeToCheckIds(code);
+    const candidateIds =
+      resolved.length > 0 ? resolved : looksLikeLocationId(code) ? [code] : [];
 
     if (candidateIds.length === 0) {
       popupEntries.push({
@@ -474,42 +499,54 @@ function buildMarkerRenderState(
         checkId: null,
         isReachable: false,
         isChecked: false,
-      })
-      return
+      });
+      return;
     }
 
     candidateIds.forEach((checkId, candidateIndex) => {
-      resolvedCheckIds.add(checkId)
+      resolvedCheckIds.add(checkId);
       popupEntries.push({
         id: `${markerId}:${codeIndex}:${candidateIndex}`,
         code,
         checkId,
         isReachable: props.reachableIds.has(checkId),
         isChecked: props.collectedIds.has(checkId),
-      })
-    })
-  })
+      });
+    });
+  });
 
-  const allCheckIdsRaw = Array.from(resolvedCheckIds)
+  const allCheckIdsRaw = Array.from(resolvedCheckIds);
   const allCheckIds =
     props.devMode || !props.visibleLocationIds
       ? allCheckIdsRaw
-      : allCheckIdsRaw.filter((checkId) => props.visibleLocationIds?.has(checkId))
+      : allCheckIdsRaw.filter((checkId) =>
+          props.visibleLocationIds?.has(checkId),
+        );
   const popupEntriesForDisplay =
     props.devMode || !props.visibleLocationIds
       ? popupEntries
-      : popupEntries.filter((entry) => entry.checkId && props.visibleLocationIds?.has(entry.checkId))
-  const reachableCheckIds = allCheckIds.filter((checkId) => props.reachableIds.has(checkId))
-  const checkedCount = allCheckIds.filter((checkId) => props.collectedIds.has(checkId)).length
+      : popupEntries.filter(
+          (entry) =>
+            entry.checkId && props.visibleLocationIds?.has(entry.checkId),
+        );
+  const reachableCheckIds = allCheckIds.filter((checkId) =>
+    props.reachableIds.has(checkId),
+  );
+  const checkedCount = allCheckIds.filter((checkId) =>
+    props.collectedIds.has(checkId),
+  ).length;
   const reachableUncheckedCheckIds = allCheckIds.filter(
-    (checkId) => props.reachableIds.has(checkId) && !props.collectedIds.has(checkId),
-  )
-  const reachableUncheckedCount = reachableUncheckedCheckIds.length
-  const filteredCount = allCheckIds.length
+    (checkId) =>
+      props.reachableIds.has(checkId) && !props.collectedIds.has(checkId),
+  );
+  const reachableUncheckedCount = reachableUncheckedCheckIds.length;
+  const filteredCount = allCheckIds.length;
   const countDigitImages =
     countUsesDigits && filteredCount > 1
-      ? String(filteredCount).split('').map((digit) => resolveDigitImage(digit))
-      : []
+      ? String(filteredCount)
+          .split('')
+          .map((digit) => resolveDigitImage(digit))
+      : [];
 
   return {
     overlays,
@@ -525,17 +562,17 @@ function buildMarkerRenderState(
     topRightOverlays: buildTopRightOverlays(overlays),
     countDigitImages,
     isVisible: props.devMode ? true : allCheckIds.length > 0,
-  }
+  };
 }
 
 function markerPopupPayload(marker: PopupMarkerRuntime): MapPopupPayload {
   const title =
     marker.popupEntries.length === 1
       ? formatLocationDisplayName(marker.popupEntries[0].code)
-      : `${marker.popupEntries.length} checks`
+      : `${marker.popupEntries.length} checks`;
   const uncollectedCheckIds = marker.popupEntries
     .filter((entry) => entry.checkId && !entry.isChecked)
-    .map((entry) => entry.checkId as string)
+    .map((entry) => entry.checkId as string);
 
   return {
     markerId: marker.id,
@@ -543,49 +580,56 @@ function markerPopupPayload(marker: PopupMarkerRuntime): MapPopupPayload {
     entries: marker.popupEntries,
     canMarkAll: uncollectedCheckIds.length > 0,
     markAllAffectsReachableOnly: false,
-  }
+  };
 }
 
 const markerViewModels = computed<MarkerRuntime[]>(() => {
-  const mapDef = renderMapDef.value
+  const mapDef = renderMapDef.value;
   if (!mapDef) {
-    return []
+    return [];
   }
 
   return mapDef.markers.map((markerDef, markerIndex) => {
-    const markerId = `${mapDef.id}:${markerIndex}`
-    const overlays = markerDef.overlays ?? []
-    const markerType = markerDef.type === 'submenu' ? 'submenu' : 'check'
+    const markerId = `${mapDef.id}:${markerIndex}`;
+    const overlays = markerDef.overlays ?? [];
+    const markerType = markerDef.type === 'submenu' ? 'submenu' : 'check';
 
     if (markerType === 'submenu') {
-      const submenuMarkersRaw = markerDef.markers ?? []
-      const submenuMarkers = submenuMarkersRaw.map((submenuMarkerDef, submenuIndex) => {
-        const submenuMarkerId = `${markerId}:submenu:${submenuIndex}`
-        const codeList = submenuEntryCodeList(submenuMarkerDef)
-        const submenuOverlays = submenuMarkerDef.overlays ?? []
-        const state = buildMarkerRenderState(
-          submenuMarkerId,
-          codeList,
-          submenuOverlays,
-          Array.isArray(submenuMarkerDef.codes),
-        )
-        return {
-          ...state,
-          id: submenuMarkerId,
-          parentMarkerId: markerId,
-          image: submenuMarkerDef.image,
-        }
-      })
-      const visibleSubmenuMarkers =
-        props.devMode ? submenuMarkers : submenuMarkers.filter((marker) => marker.isVisible)
-      const visibleSubmenuCheckIds = new Set<string>()
+      const submenuMarkersRaw = markerDef.markers ?? [];
+      const submenuMarkers = submenuMarkersRaw.map(
+        (submenuMarkerDef, submenuIndex) => {
+          const submenuMarkerId = `${markerId}:submenu:${submenuIndex}`;
+          const codeList = submenuEntryCodeList(submenuMarkerDef);
+          const submenuOverlays = submenuMarkerDef.overlays ?? [];
+          const state = buildMarkerRenderState(
+            submenuMarkerId,
+            codeList,
+            submenuOverlays,
+            Array.isArray(submenuMarkerDef.codes),
+          );
+          return {
+            ...state,
+            id: submenuMarkerId,
+            parentMarkerId: markerId,
+            image: submenuMarkerDef.image,
+          };
+        },
+      );
+      const visibleSubmenuMarkers = props.devMode
+        ? submenuMarkers
+        : submenuMarkers.filter((marker) => marker.isVisible);
+      const visibleSubmenuCheckIds = new Set<string>();
       visibleSubmenuMarkers.forEach((marker) => {
-        marker.allCheckIds.forEach((checkId) => visibleSubmenuCheckIds.add(checkId))
-      })
+        marker.allCheckIds.forEach((checkId) =>
+          visibleSubmenuCheckIds.add(checkId),
+        );
+      });
       const countDigitImages =
         visibleSubmenuCheckIds.size > 1
-          ? String(visibleSubmenuCheckIds.size).split('').map((digit) => resolveDigitImage(digit))
-          : []
+          ? String(visibleSubmenuCheckIds.size)
+              .split('')
+              .map((digit) => resolveDigitImage(digit))
+          : [];
 
       return {
         type: 'submenu',
@@ -599,18 +643,20 @@ const markerViewModels = computed<MarkerRuntime[]>(() => {
         topRightOverlays: buildTopRightOverlays(overlays),
         countDigitImages,
         submenuMarkers: visibleSubmenuMarkers,
-        allSubmenuCodeList: visibleSubmenuMarkers.flatMap((marker) => marker.codeList),
+        allSubmenuCodeList: visibleSubmenuMarkers.flatMap(
+          (marker) => marker.codeList,
+        ),
         isVisible: props.devMode ? true : visibleSubmenuMarkers.length > 0,
-      }
+      };
     }
 
-    const codeList = markerCodeList(markerDef)
+    const codeList = markerCodeList(markerDef);
     const state = buildMarkerRenderState(
       markerId,
       codeList,
       overlays,
       Array.isArray(markerDef.codes),
-    )
+    );
     return {
       ...state,
       type: 'check',
@@ -618,79 +664,87 @@ const markerViewModels = computed<MarkerRuntime[]>(() => {
       markerIndex,
       coords: markerDef.coords,
       image: markerDef.image,
-    }
-  })
-})
+    };
+  });
+});
 
-const markerById = computed(() => new Map(markerViewModels.value.map((marker) => [marker.id, marker])))
-const visibleMarkers = computed(() => markerViewModels.value.filter((marker) => marker.isVisible))
+const markerById = computed(
+  () => new Map(markerViewModels.value.map((marker) => [marker.id, marker])),
+);
+const visibleMarkers = computed(() =>
+  markerViewModels.value.filter((marker) => marker.isVisible),
+);
 
 const popupMarker = computed<CheckMarkerRuntime | null>(() => {
-  if (!mapPopup.value.markerId) return null
-  const marker = markerById.value.get(mapPopup.value.markerId)
-  return marker && marker.type === 'check' ? marker : null
-})
+  if (!mapPopup.value.markerId) return null;
+  const marker = markerById.value.get(mapPopup.value.markerId);
+  return marker && marker.type === 'check' ? marker : null;
+});
 
 const activeSubmenuMarker = computed<SubmenuMarkerRuntime | null>(() => {
-  if (!submenuPanel.value.markerId) return null
-  const marker = markerById.value.get(submenuPanel.value.markerId)
-  return marker && marker.type === 'submenu' ? marker : null
-})
+  if (!submenuPanel.value.markerId) return null;
+  const marker = markerById.value.get(submenuPanel.value.markerId);
+  return marker && marker.type === 'submenu' ? marker : null;
+});
 
 const activeSubmenuPopupMarker = computed<SubmenuEntryRuntime | null>(() => {
-  if (!submenuPopup.value.markerId) return null
-  const submenu = activeSubmenuMarker.value
-  if (!submenu) return null
-  return submenu.submenuMarkers.find((marker) => marker.id === submenuPopup.value.markerId) ?? null
-})
+  if (!submenuPopup.value.markerId) return null;
+  const submenu = activeSubmenuMarker.value;
+  if (!submenu) return null;
+  return (
+    submenu.submenuMarkers.find(
+      (marker) => marker.id === submenuPopup.value.markerId,
+    ) ?? null
+  );
+});
 
 const activePopup = computed<MapPopupPayload | null>(() => {
-  const marker = popupMarker.value
-  if (!marker || props.devMode) return null
-  return markerPopupPayload(marker)
-})
+  const marker = popupMarker.value;
+  if (!marker || props.devMode) return null;
+  return markerPopupPayload(marker);
+});
 
 const activeSubmenuPopup = computed<MapPopupPayload | null>(() => {
-  const marker = activeSubmenuPopupMarker.value
-  if (!marker || props.devMode) return null
-  return markerPopupPayload(marker)
-})
+  const marker = activeSubmenuPopupMarker.value;
+  if (!marker || props.devMode) return null;
+  return markerPopupPayload(marker);
+});
 
 const activePopupAttributeChips = computed<PopupAttributeChip[]>(() => {
-  const marker = popupMarker.value
-  if (!marker) return []
+  const marker = popupMarker.value;
+  if (!marker) return [];
   return buildPopupAttributeChips(
     marker.topLeftOverlays,
     marker.bottomLeftOverlays,
     marker.topRightOverlays,
-  )
-})
+  );
+});
 
 const activeSubmenuPopupAttributeChips = computed<PopupAttributeChip[]>(() => {
-  const marker = activeSubmenuPopupMarker.value
-  if (!marker) return []
+  const marker = activeSubmenuPopupMarker.value;
+  if (!marker) return [];
   return buildPopupAttributeChips(
     marker.topLeftOverlays,
     marker.bottomLeftOverlays,
     marker.topRightOverlays,
-  )
-})
+  );
+});
 
 const sceneStyle = computed(() => {
-  const mapDef = renderMapDef.value
-  if (!mapDef) return {}
+  const mapDef = renderMapDef.value;
+  if (!mapDef) return {};
   return {
     width: `${mapDef.width}px`,
     height: `${mapDef.height}px`,
     transform: `translate(${panX.value}px, ${panY.value}px) scale(${scale.value})`,
-  }
-})
+  };
+});
 
 function markerStyle(marker: MarkerRuntime): Record<string, string> {
   return {
     left: `${marker.coords[0]}px`,
     top: `${marker.coords[1]}px`,
-  }
+  };
 }
 
 function panelSize(
@@ -701,11 +755,11 @@ function panelSize(
   return {
     width: element?.offsetWidth ?? fallbackWidth,
     height: element?.offsetHeight ?? fallbackHeight,
-  }
+  };
 }
 
 function scaledMarkerPanelGap(): number {
-  return MARKER_PANEL_GAP * scale.value
+  return MARKER_PANEL_GAP * scale.value;
 }
 
 function calculateAnchoredPanelPosition(
@@ -714,88 +768,97 @@ function calculateAnchoredPanelPosition(
   fallbackWidth: number,
   fallbackHeight: number,
 ): { left: number; top: number } | null {
-  const viewport = viewportRef.value
-  if (!viewport) return null
+  const viewport = viewportRef.value;
+  if (!viewport) return null;
 
   const { width: popupWidth, height: popupHeight } = panelSize(
     panelElement,
     fallbackWidth,
     fallbackHeight,
-  )
-  const markerX = markerCoords[0] * scale.value + panX.value
-  const markerY = markerCoords[1] * scale.value + panY.value
-  const markerHalfSize = MARKER_SIZE * scale.value * 0.5
-  const markerGap = scaledMarkerPanelGap()
-  const maxX = Math.max(8, viewport.clientWidth - popupWidth - 8)
-  const maxY = Math.max(8, viewport.clientHeight - popupHeight - 8)
-  const rightSideLeft = markerX + markerHalfSize + markerGap
-  const leftSideLeft = markerX - markerHalfSize - popupWidth - markerGap
-  const left = leftSideLeft >= 8 ? leftSideLeft : clamp(rightSideLeft, 8, maxX)
-  const top = clamp(markerY - popupHeight * 0.5, 8, maxY)
+  );
+  const markerX = markerCoords[0] * scale.value + panX.value;
+  const markerY = markerCoords[1] * scale.value + panY.value;
+  const markerHalfSize = MARKER_SIZE * scale.value * 0.5;
+  const markerGap = scaledMarkerPanelGap();
+  const maxX = Math.max(8, viewport.clientWidth - popupWidth - 8);
+  const maxY = Math.max(8, viewport.clientHeight - popupHeight - 8);
+  const rightSideLeft = markerX + markerHalfSize + markerGap;
+  const leftSideLeft = markerX - markerHalfSize - popupWidth - markerGap;
+  const left = leftSideLeft >= 8 ? leftSideLeft : clamp(rightSideLeft, 8, maxX);
+  const top = clamp(markerY - popupHeight * 0.5, 8, maxY);
 
-  return { left, top }
+  return { left, top };
 }
 
 function calculateMapPopupPosition(): { left: number; top: number } | null {
-  const marker = popupMarker.value
-  if (!marker) return null
-  return calculateAnchoredPanelPosition(marker.coords, popupRef.value, MAP_POPUP_WIDTH, MAP_POPUP_HEIGHT)
+  const marker = popupMarker.value;
+  if (!marker) return null;
+  return calculateAnchoredPanelPosition(
+    marker.coords,
+    popupRef.value,
+    MAP_POPUP_WIDTH,
+    MAP_POPUP_HEIGHT,
+  );
 }
 
 function calculateSubmenuPanelPosition(): { left: number; top: number } | null {
-  const marker = activeSubmenuMarker.value
-  if (!marker) return null
+  const marker = activeSubmenuMarker.value;
+  if (!marker) return null;
   return calculateAnchoredPanelPosition(
     marker.coords,
     submenuPanelRef.value,
     SUBMENU_PANEL_WIDTH,
     SUBMENU_PANEL_HEIGHT,
-  )
+  );
 }
 
 function calculateSubmenuPopupPosition(): { left: number; top: number } | null {
-  const marker = activeSubmenuPopupMarker.value
-  const panel = submenuPanelRef.value
-  const viewport = viewportRef.value
-  if (!marker || !panel || !submenuPopup.value.markerId || !viewport) return null
+  const marker = activeSubmenuPopupMarker.value;
+  const panel = submenuPanelRef.value;
+  const viewport = viewportRef.value;
+  if (!marker || !panel || !submenuPopup.value.markerId || !viewport)
+    return null;
 
-  const targetButton = panel.querySelectorAll<HTMLElement>('[data-submenu-marker-id]')
+  const targetButton = panel.querySelectorAll<HTMLElement>(
+    '[data-submenu-marker-id]',
+  );
   const markerButton = Array.from(targetButton).find(
     (button) => button.dataset.submenuMarkerId === submenuPopup.value.markerId,
-  )
-  if (!markerButton) return null
+  );
+  if (!markerButton) return null;
 
   const { width: popupWidth, height: popupHeight } = panelSize(
     submenuPopupRef.value,
     MAP_POPUP_WIDTH,
     MAP_POPUP_HEIGHT,
-  )
-  const viewportRect = viewport.getBoundingClientRect()
-  const markerRect = markerButton.getBoundingClientRect()
-  const markerCenterX = markerRect.left - viewportRect.left + markerRect.width / 2
-  const markerTop = markerRect.top - viewportRect.top
-  const markerBottom = markerRect.bottom - viewportRect.top
-  const maxX = Math.max(8, viewport.clientWidth - popupWidth - 8)
-  const maxY = Math.max(8, viewport.clientHeight - popupHeight - 8)
-  const centeredLeft = markerCenterX - popupWidth * 0.5
-  const markerGap = scaledMarkerPanelGap()
-  const belowTop = markerBottom + markerGap
-  const aboveTop = markerTop - popupHeight - markerGap
-  const top = belowTop <= maxY ? belowTop : clamp(aboveTop, 8, maxY)
-  const left = clamp(centeredLeft, 8, maxX)
-  return { left, top }
+  );
+  const viewportRect = viewport.getBoundingClientRect();
+  const markerRect = markerButton.getBoundingClientRect();
+  const markerCenterX =
+    markerRect.left - viewportRect.left + markerRect.width / 2;
+  const markerTop = markerRect.top - viewportRect.top;
+  const markerBottom = markerRect.bottom - viewportRect.top;
+  const maxX = Math.max(8, viewport.clientWidth - popupWidth - 8);
+  const maxY = Math.max(8, viewport.clientHeight - popupHeight - 8);
+  const centeredLeft = markerCenterX - popupWidth * 0.5;
+  const markerGap = scaledMarkerPanelGap();
+  const belowTop = markerBottom + markerGap;
+  const aboveTop = markerTop - popupHeight - markerGap;
+  const top = belowTop <= maxY ? belowTop : clamp(aboveTop, 8, maxY);
+  const left = clamp(centeredLeft, 8, maxX);
+  return { left, top };
 }
 
 function updateMapPopupPosition(): void {
-  mapPopup.value.position = calculateMapPopupPosition()
+  mapPopup.value.position = calculateMapPopupPosition();
 }
 
 function updateSubmenuPanelPosition(): void {
-  submenuPanel.value.position = calculateSubmenuPanelPosition()
+  submenuPanel.value.position = calculateSubmenuPanelPosition();
 }
 
 function updateSubmenuPopupPosition(): void {
-  submenuPopup.value.position = calculateSubmenuPopupPosition()
+  submenuPopup.value.position = calculateSubmenuPopupPosition();
 }
 
 function popupStyle(): Record<string, string> {
@@ -803,7 +866,7 @@ function popupStyle(): Record<string, string> {
     return {
       visibility: 'hidden',
       pointerEvents: 'none',
-    }
+    };
   }
 
   return {
@@ -811,22 +874,22 @@ function popupStyle(): Record<string, string> {
     top: `${mapPopup.value.position.top}px`,
     visibility: mapPopup.value.layoutReady ? 'visible' : 'hidden',
     pointerEvents: mapPopup.value.layoutReady ? 'auto' : 'none',
-  }
+  };
 }
 
 function submenuPanelStyle(): Record<string, string> {
-  const markerSize = MARKER_SIZE * scale.value
-  const overlaySize = 8 * scale.value
-  const overlayWideSize = 12 * scale.value
-  const digitWidth = 6 * scale.value
-  const digitHeight = 8 * scale.value
-  const cornerOffset = -2 * scale.value
-  const cornerGap = Math.max(1, scale.value)
+  const markerSize = MARKER_SIZE * scale.value;
+  const overlaySize = 8 * scale.value;
+  const overlayWideSize = 12 * scale.value;
+  const digitWidth = 6 * scale.value;
+  const digitHeight = 8 * scale.value;
+  const cornerOffset = -2 * scale.value;
+  const cornerGap = Math.max(1, scale.value);
 
   const sizeScaleFactor =
     submenuPanel.value.frozenScale && submenuPanel.value.frozenScale > 0
       ? scale.value / submenuPanel.value.frozenScale
-      : 1
+      : 1;
 
   if (!submenuPanel.value.position) {
     return {
@@ -845,7 +908,7 @@ function submenuPanelStyle(): Record<string, string> {
       ...(submenuPanel.value.frozenHeight !== null
         ? { height: `${submenuPanel.value.frozenHeight * sizeScaleFactor}px` }
         : {}),
-    }
+    };
   }
 
   return {
@@ -866,7 +929,7 @@ function submenuPanelStyle(): Record<string, string> {
     ...(submenuPanel.value.frozenHeight !== null
       ? { height: `${submenuPanel.value.frozenHeight * sizeScaleFactor}px` }
       : {}),
-  }
+  };
 }
 
 function submenuPopupStyle(): Record<string, string> {
@@ -874,7 +937,7 @@ function submenuPopupStyle(): Record<string, string> {
     return {
       visibility: 'hidden',
       pointerEvents: 'none',
-    }
+    };
   }
 
   return {
@@ -882,73 +945,78 @@ function submenuPopupStyle(): Record<string, string> {
     top: `${submenuPopup.value.position.top}px`,
     visibility: submenuPopup.value.layoutReady ? 'visible' : 'hidden',
     pointerEvents: submenuPopup.value.layoutReady ? 'auto' : 'none',
-  }
+  };
 }
 
 function clearHoverPopupCloseTimer(): void {
-  if (hoverPopupCloseTimer === null) return
-  clearTimeout(hoverPopupCloseTimer)
-  hoverPopupCloseTimer = null
+  if (hoverPopupCloseTimer === null) return;
+  clearTimeout(hoverPopupCloseTimer);
+  hoverPopupCloseTimer = null;
 }
 
 function scheduleHoverPopupClose(): void {
-  if (mapPopup.value.pinned || mapPopup.value.isHovered) return
-  clearHoverPopupCloseTimer()
+  if (mapPopup.value.pinned || mapPopup.value.isHovered) return;
+  clearHoverPopupCloseTimer();
   hoverPopupCloseTimer = setTimeout(() => {
-    if (mapPopup.value.pinned || mapPopup.value.isHovered || mapPopup.value.hoverMarkerId) return
-    closePopup()
-  }, HOVER_POPUP_CLOSE_DELAY_MS)
+    if (
+      mapPopup.value.pinned ||
+      mapPopup.value.isHovered ||
+      mapPopup.value.hoverMarkerId
+    )
+      return;
+    closePopup();
+  }, HOVER_POPUP_CLOSE_DELAY_MS);
 }
 
 function openPopup(markerId: string, options?: { pinned?: boolean }): void {
-  const shouldPin = Boolean(options?.pinned)
+  const shouldPin = Boolean(options?.pinned);
   if (shouldPin) {
-    mapPopup.value.pinned = true
+    mapPopup.value.pinned = true;
   }
-  clearHoverPopupCloseTimer()
-  if (mapPopup.value.markerId === markerId) return
-  mapPopup.value.markerId = markerId
-  mapPopup.value.layoutReady = false
-  emit('open-popup', markerId)
+  clearHoverPopupCloseTimer();
+  if (mapPopup.value.markerId === markerId) return;
+  mapPopup.value.markerId = markerId;
+  mapPopup.value.layoutReady = false;
+  emit('open-popup', markerId);
 }
 
 function closePopup(): void {
-  clearHoverPopupCloseTimer()
-  const hadPopup = Boolean(mapPopup.value.markerId)
-  mapPopup.value.hoverMarkerId = null
-  mapPopup.value.isHovered = false
-  mapPopup.value.pinned = false
-  mapPopup.value.layoutReady = false
-  mapPopup.value.position = null
-  mapPopup.value.markerId = null
-  if (hadPopup) emit('close-popup')
+  clearHoverPopupCloseTimer();
+  const hadPopup = Boolean(mapPopup.value.markerId);
+  mapPopup.value.hoverMarkerId = null;
+  mapPopup.value.isHovered = false;
+  mapPopup.value.pinned = false;
+  mapPopup.value.layoutReady = false;
+  mapPopup.value.position = null;
+  mapPopup.value.markerId = null;
+  if (hadPopup) emit('close-popup');
 }
 
 function clearSubmenuHoverPopupCloseTimer(): void {
-  if (submenuHoverPopupCloseTimer === null) return
-  clearTimeout(submenuHoverPopupCloseTimer)
-  submenuHoverPopupCloseTimer = null
+  if (submenuHoverPopupCloseTimer === null) return;
+  clearTimeout(submenuHoverPopupCloseTimer);
+  submenuHoverPopupCloseTimer = null;
 }
 
 function scheduleSubmenuHoverPopupClose(): void {
-  if (submenuPopup.value.pinned || submenuPopup.value.isHovered) return
-  clearSubmenuHoverPopupCloseTimer()
+  if (submenuPopup.value.pinned || submenuPopup.value.isHovered) return;
+  clearSubmenuHoverPopupCloseTimer();
   submenuHoverPopupCloseTimer = setTimeout(() => {
     if (
       submenuPopup.value.pinned ||
       submenuPopup.value.isHovered ||
       submenuPopup.value.hoverMarkerId
     ) {
-      return
+      return;
     }
-    closeSubmenuPopup()
-  }, HOVER_POPUP_CLOSE_DELAY_MS)
+    closeSubmenuPopup();
+  }, HOVER_POPUP_CLOSE_DELAY_MS);
 }
 
 function clearSubmenuPanelCloseTimer(): void {
-  if (submenuPanelCloseTimer === null) return
-  clearTimeout(submenuPanelCloseTimer)
-  submenuPanelCloseTimer = null
+  if (submenuPanelCloseTimer === null) return;
+  clearTimeout(submenuPanelCloseTimer);
+  submenuPanelCloseTimer = null;
 }
 
 function scheduleSubmenuPanelClose(): void {
@@ -958,9 +1026,9 @@ function scheduleSubmenuPanelClose(): void {
     submenuPopup.value.pinned ||
     submenuPopup.value.isHovered
   ) {
-    return
+    return;
   }
-  clearSubmenuPanelCloseTimer()
+  clearSubmenuPanelCloseTimer();
   submenuPanelCloseTimer = setTimeout(() => {
     if (
       submenuPanel.value.pinned ||
@@ -969,578 +1037,612 @@ function scheduleSubmenuPanelClose(): void {
       submenuPopup.value.pinned ||
       submenuPopup.value.isHovered
     ) {
-      return
+      return;
     }
-    closeSubmenuPanel()
-  }, HOVER_POPUP_CLOSE_DELAY_MS)
+    closeSubmenuPanel();
+  }, HOVER_POPUP_CLOSE_DELAY_MS);
 }
 
-function openSubmenuPanel(markerId: string, options?: { pinned?: boolean }): void {
-  closePopup()
-  const shouldPin = Boolean(options?.pinned)
+function openSubmenuPanel(
+  markerId: string,
+  options?: { pinned?: boolean },
+): void {
+  closePopup();
+  const shouldPin = Boolean(options?.pinned);
   if (shouldPin) {
-    submenuPanel.value.pinned = true
+    submenuPanel.value.pinned = true;
   }
-  clearSubmenuPanelCloseTimer()
+  clearSubmenuPanelCloseTimer();
   if (submenuPanel.value.markerId !== markerId) {
-    submenuPanel.value.frozenWidth = null
-    submenuPanel.value.frozenHeight = null
-    submenuPanel.value.frozenScale = null
+    submenuPanel.value.frozenWidth = null;
+    submenuPanel.value.frozenHeight = null;
+    submenuPanel.value.frozenScale = null;
   }
-  if (submenuPanel.value.markerId === markerId) return
-  submenuPanel.value.markerId = markerId
-  submenuPanel.value.layoutReady = false
-  submenuPanel.value.position = null
-  closeSubmenuPopup()
+  if (submenuPanel.value.markerId === markerId) return;
+  submenuPanel.value.markerId = markerId;
+  submenuPanel.value.layoutReady = false;
+  submenuPanel.value.position = null;
+  closeSubmenuPopup();
 }
 
 function closeSubmenuPanel(): void {
-  clearSubmenuPanelCloseTimer()
-  closeSubmenuPopup()
-  submenuPanel.value.markerId = null
-  submenuPanel.value.hoverMarkerId = null
-  submenuPanel.value.pinned = false
-  submenuPanel.value.isHovered = false
-  submenuPanel.value.layoutReady = false
-  submenuPanel.value.position = null
-  submenuPanel.value.frozenWidth = null
-  submenuPanel.value.frozenHeight = null
-  submenuPanel.value.frozenScale = null
+  clearSubmenuPanelCloseTimer();
+  closeSubmenuPopup();
+  submenuPanel.value.markerId = null;
+  submenuPanel.value.hoverMarkerId = null;
+  submenuPanel.value.pinned = false;
+  submenuPanel.value.isHovered = false;
+  submenuPanel.value.layoutReady = false;
+  submenuPanel.value.position = null;
+  submenuPanel.value.frozenWidth = null;
+  submenuPanel.value.frozenHeight = null;
+  submenuPanel.value.frozenScale = null;
 }
 
-function openSubmenuPopup(markerId: string, options?: { pinned?: boolean }): void {
-  const shouldPin = Boolean(options?.pinned)
+function openSubmenuPopup(
+  markerId: string,
+  options?: { pinned?: boolean },
+): void {
+  const shouldPin = Boolean(options?.pinned);
   if (shouldPin) {
-    submenuPopup.value.pinned = true
+    submenuPopup.value.pinned = true;
   }
-  clearSubmenuHoverPopupCloseTimer()
-  if (submenuPopup.value.markerId === markerId) return
-  submenuPopup.value.markerId = markerId
-  submenuPopup.value.layoutReady = false
+  clearSubmenuHoverPopupCloseTimer();
+  if (submenuPopup.value.markerId === markerId) return;
+  submenuPopup.value.markerId = markerId;
+  submenuPopup.value.layoutReady = false;
 }
 
 function closeSubmenuPopup(): void {
-  clearSubmenuHoverPopupCloseTimer()
-  submenuPopup.value.hoverMarkerId = null
-  submenuPopup.value.isHovered = false
-  submenuPopup.value.pinned = false
-  submenuPopup.value.layoutReady = false
-  submenuPopup.value.position = null
-  submenuPopup.value.markerId = null
+  clearSubmenuHoverPopupCloseTimer();
+  submenuPopup.value.hoverMarkerId = null;
+  submenuPopup.value.isHovered = false;
+  submenuPopup.value.pinned = false;
+  submenuPopup.value.layoutReady = false;
+  submenuPopup.value.position = null;
+  submenuPopup.value.markerId = null;
 }
 
 function handleMarkerClick(marker: MarkerRuntime): void {
   if (props.devMode) {
-    devSelectedMarkerIndex.value = marker.markerIndex
-    closePopup()
-    closeSubmenuPanel()
-    return
+    devSelectedMarkerIndex.value = marker.markerIndex;
+    closePopup();
+    closeSubmenuPanel();
+    return;
   }
   if (marker.type === 'submenu') {
-    openSubmenuPanel(marker.id, { pinned: true })
-    return
+    openSubmenuPanel(marker.id, { pinned: true });
+    return;
   }
   // If this marker has reachable, unchecked checks, mark them checked on click.
   // Works for single and multiple location markers.
-  if (marker.reachableUncheckedCheckIds && marker.reachableUncheckedCheckIds.length > 0) {
-    const ids = Array.from(new Set(marker.reachableUncheckedCheckIds))
-    emit('mark-all-reachable', ids)
-    return
+  if (
+    marker.reachableUncheckedCheckIds &&
+    marker.reachableUncheckedCheckIds.length > 0
+  ) {
+    const ids = Array.from(new Set(marker.reachableUncheckedCheckIds));
+    emit('mark-all-reachable', ids);
+    return;
   }
 
-  mapPopup.value.hoverMarkerId = marker.id
-  openPopup(marker.id, { pinned: true })
+  mapPopup.value.hoverMarkerId = marker.id;
+  openPopup(marker.id, { pinned: true });
 }
 
 function handleMarkerHoverStart(marker: MarkerRuntime): void {
-  if (props.devMode) return
+  if (props.devMode) return;
   if (marker.type === 'submenu') {
-    if (submenuPanel.value.pinned) return
-    submenuPanel.value.hoverMarkerId = marker.id
-    openSubmenuPanel(marker.id)
-    return
+    if (submenuPanel.value.pinned) return;
+    submenuPanel.value.hoverMarkerId = marker.id;
+    openSubmenuPanel(marker.id);
+    return;
   }
-  if (mapPopup.value.pinned) return
-  mapPopup.value.hoverMarkerId = marker.id
-  openPopup(marker.id)
+  if (mapPopup.value.pinned) return;
+  mapPopup.value.hoverMarkerId = marker.id;
+  openPopup(marker.id);
 }
 
 function handleMarkerHoverEnd(markerId: string): void {
-  const marker = markerById.value.get(markerId)
+  const marker = markerById.value.get(markerId);
   if (marker?.type === 'submenu') {
-    if (submenuPanel.value.pinned) return
+    if (submenuPanel.value.pinned) return;
     if (submenuPanel.value.hoverMarkerId === markerId) {
-      submenuPanel.value.hoverMarkerId = null
+      submenuPanel.value.hoverMarkerId = null;
     }
-    scheduleSubmenuPanelClose()
-    return
+    scheduleSubmenuPanelClose();
+    return;
   }
 
-  if (mapPopup.value.pinned) return
+  if (mapPopup.value.pinned) return;
   if (mapPopup.value.hoverMarkerId === markerId) {
-    mapPopup.value.hoverMarkerId = null
+    mapPopup.value.hoverMarkerId = null;
   }
-  scheduleHoverPopupClose()
+  scheduleHoverPopupClose();
 }
 
 function handlePopupHoverStart(): void {
-  if (props.devMode) return
-  mapPopup.value.isHovered = true
-  clearHoverPopupCloseTimer()
+  if (props.devMode) return;
+  mapPopup.value.isHovered = true;
+  clearHoverPopupCloseTimer();
 }
 
 function handlePopupHoverEnd(): void {
-  if (props.devMode || mapPopup.value.pinned) return
-  mapPopup.value.isHovered = false
-  scheduleHoverPopupClose()
+  if (props.devMode || mapPopup.value.pinned) return;
+  mapPopup.value.isHovered = false;
+  scheduleHoverPopupClose();
 }
 
 function handleSubmenuMarkerClick(marker: SubmenuEntryRuntime): void {
   if (marker.reachableUncheckedCheckIds.length > 0) {
-    const ids = Array.from(new Set(marker.reachableUncheckedCheckIds))
-    emit('mark-all-reachable', ids)
-    return
+    const ids = Array.from(new Set(marker.reachableUncheckedCheckIds));
+    emit('mark-all-reachable', ids);
+    return;
   }
 
-  submenuPopup.value.hoverMarkerId = marker.id
-  openSubmenuPopup(marker.id, { pinned: true })
+  submenuPopup.value.hoverMarkerId = marker.id;
+  openSubmenuPopup(marker.id, { pinned: true });
 }
 
 function handleSubmenuMarkerHoverStart(marker: SubmenuEntryRuntime): void {
-  if (props.devMode || submenuPopup.value.pinned) return
-  submenuPopup.value.hoverMarkerId = marker.id
-  openSubmenuPopup(marker.id)
+  if (props.devMode || submenuPopup.value.pinned) return;
+  submenuPopup.value.hoverMarkerId = marker.id;
+  openSubmenuPopup(marker.id);
 }
 
 function handleSubmenuMarkerHoverEnd(markerId: string): void {
-  if (submenuPopup.value.pinned) return
+  if (submenuPopup.value.pinned) return;
   if (submenuPopup.value.hoverMarkerId === markerId) {
-    submenuPopup.value.hoverMarkerId = null
+    submenuPopup.value.hoverMarkerId = null;
   }
-  scheduleSubmenuHoverPopupClose()
+  scheduleSubmenuHoverPopupClose();
 }
 
 function handleSubmenuPopupHoverStart(): void {
-  if (props.devMode) return
-  submenuPopup.value.isHovered = true
-  clearSubmenuHoverPopupCloseTimer()
-  clearSubmenuPanelCloseTimer()
+  if (props.devMode) return;
+  submenuPopup.value.isHovered = true;
+  clearSubmenuHoverPopupCloseTimer();
+  clearSubmenuPanelCloseTimer();
 }
 
 function handleSubmenuPopupHoverEnd(): void {
-  if (props.devMode || submenuPopup.value.pinned) return
-  submenuPopup.value.isHovered = false
-  scheduleSubmenuHoverPopupClose()
-  scheduleSubmenuPanelClose()
+  if (props.devMode || submenuPopup.value.pinned) return;
+  submenuPopup.value.isHovered = false;
+  scheduleSubmenuHoverPopupClose();
+  scheduleSubmenuPanelClose();
 }
 
 function handleSubmenuPanelHoverStart(): void {
-  if (props.devMode) return
-  submenuPanel.value.isHovered = true
-  clearSubmenuPanelCloseTimer()
+  if (props.devMode) return;
+  submenuPanel.value.isHovered = true;
+  clearSubmenuPanelCloseTimer();
 }
 
 function handleSubmenuPanelHoverEnd(): void {
-  if (props.devMode || submenuPanel.value.pinned) return
-  submenuPanel.value.isHovered = false
-  scheduleSubmenuPanelClose()
+  if (props.devMode || submenuPanel.value.pinned) return;
+  submenuPanel.value.isHovered = false;
+  scheduleSubmenuPanelClose();
 }
 
 function handleSubmenuPanelFocusIn(): void {
-  if (props.devMode) return
-  submenuPanel.value.isHovered = true
-  clearSubmenuPanelCloseTimer()
+  if (props.devMode) return;
+  submenuPanel.value.isHovered = true;
+  clearSubmenuPanelCloseTimer();
 }
 
 function handleSubmenuPanelFocusOut(event: FocusEvent): void {
-  if (props.devMode || submenuPanel.value.pinned) return
-  const panel = submenuPanelRef.value
-  const nextTarget = event.relatedTarget as Node | null
+  if (props.devMode || submenuPanel.value.pinned) return;
+  const panel = submenuPanelRef.value;
+  const nextTarget = event.relatedTarget as Node | null;
   if (panel && nextTarget && panel.contains(nextTarget)) {
-    return
+    return;
   }
   if (panel?.matches(':hover')) {
-    submenuPanel.value.isHovered = true
-    clearSubmenuPanelCloseTimer()
-    return
+    submenuPanel.value.isHovered = true;
+    clearSubmenuPanelCloseTimer();
+    return;
   }
-  submenuPanel.value.isHovered = false
-  scheduleSubmenuPanelClose()
+  submenuPanel.value.isHovered = false;
+  scheduleSubmenuPanelClose();
 }
 
 function handlePopupEntryClick(entry: MapPopupEntry): void {
-  if (!entry.checkId) return
-  emit('toggle-collected', entry.checkId)
+  if (!entry.checkId) return;
+  emit('toggle-collected', entry.checkId);
 }
 
 function popupUncheckedCheckIds(popup: MapPopupPayload): string[] {
   return popup.entries
     .filter((entry) => entry.checkId && !entry.isChecked)
-    .map((entry) => entry.checkId as string)
+    .map((entry) => entry.checkId as string);
 }
 
 function handlePopupMarkAllChecks(popup: MapPopupPayload): void {
-  const ids = Array.from(new Set(popupUncheckedCheckIds(popup)))
-  if (ids.length === 0) return
-  emit('mark-all-reachable', ids)
+  const ids = Array.from(new Set(popupUncheckedCheckIds(popup)));
+  if (ids.length === 0) return;
+  emit('mark-all-reachable', ids);
 }
 
 function handleWheel(event: WheelEvent): void {
   // If the wheel event occurred over the popup, allow the browser to scroll the popup list
-  const popupEl = popupRef.value
-  if (popupEl && event.target instanceof Node && popupEl.contains(event.target)) {
-    return
+  const popupEl = popupRef.value;
+  if (
+    popupEl &&
+    event.target instanceof Node &&
+    popupEl.contains(event.target)
+  ) {
+    return;
   }
-  const submenuPanelEl = submenuPanelRef.value
-  if (submenuPanelEl && event.target instanceof Node && submenuPanelEl.contains(event.target)) {
-    return
+  const submenuPanelEl = submenuPanelRef.value;
+  if (
+    submenuPanelEl &&
+    event.target instanceof Node &&
+    submenuPanelEl.contains(event.target)
+  ) {
+    return;
   }
-  const submenuPopupEl = submenuPopupRef.value
-  if (submenuPopupEl && event.target instanceof Node && submenuPopupEl.contains(event.target)) {
-    return
+  const submenuPopupEl = submenuPopupRef.value;
+  if (
+    submenuPopupEl &&
+    event.target instanceof Node &&
+    submenuPopupEl.contains(event.target)
+  ) {
+    return;
   }
 
-  if (!renderMapDef.value) return
-  if (event.cancelable) event.preventDefault()
-  const factor = event.deltaY < 0 ? WHEEL_ZOOM_FACTOR : 1 / WHEEL_ZOOM_FACTOR
-  applyScaleAtClientPoint(scale.value * factor, event.clientX, event.clientY)
+  if (!renderMapDef.value) return;
+  if (event.cancelable) event.preventDefault();
+  const factor = event.deltaY < 0 ? WHEEL_ZOOM_FACTOR : 1 / WHEEL_ZOOM_FACTOR;
+  applyScaleAtClientPoint(scale.value * factor, event.clientX, event.clientY);
 }
 
 function handlePointerDown(event: PointerEvent): void {
-  if (!renderMapDef.value) return
-  if (event.pointerType === 'mouse' && event.button !== 0) return
+  if (!renderMapDef.value) return;
+  if (event.pointerType === 'mouse' && event.button !== 0) return;
 
-  const target = event.target as HTMLElement | null
+  const target = event.target as HTMLElement | null;
   if (
     target?.closest('.map-marker') ||
     target?.closest('.map-popup') ||
     target?.closest('.map-submenu-panel') ||
     target?.closest('.map-dev-editor')
   ) {
-    return
+    return;
   }
 
   if (event.cancelable) {
-    event.preventDefault()
+    event.preventDefault();
   }
-  const viewport = viewportRef.value
+  const viewport = viewportRef.value;
   if (viewport && !viewport.hasPointerCapture(event.pointerId)) {
     try {
-      viewport.setPointerCapture(event.pointerId)
+      viewport.setPointerCapture(event.pointerId);
     } catch {
       // Ignore capture errors; drag still works while pointer remains over the viewport.
     }
   }
-  activePointers.set(event.pointerId, { x: event.clientX, y: event.clientY })
-  syncPointerState()
+  activePointers.set(event.pointerId, { x: event.clientX, y: event.clientY });
+  syncPointerState();
 
-  closePopup()
-  closeSubmenuPanel()
+  closePopup();
+  closeSubmenuPanel();
 }
 
 function handlePointerMove(event: PointerEvent): void {
-  if (!activePointers.has(event.pointerId)) return
+  if (!activePointers.has(event.pointerId)) return;
   if (event.cancelable) {
-    event.preventDefault()
+    event.preventDefault();
   }
 
-  activePointers.set(event.pointerId, { x: event.clientX, y: event.clientY })
+  activePointers.set(event.pointerId, { x: event.clientX, y: event.clientY });
 
   if (activePointers.size >= 2) {
     if (pinchStartDistance <= 0) {
-      beginPinch()
+      beginPinch();
     }
     if (pinchStartDistance <= 0) {
-      return
+      return;
     }
-    const pointers = Array.from(activePointers.values())
-    const [first, second] = pointers
-    const distance = Math.hypot(second.x - first.x, second.y - first.y)
+    const pointers = Array.from(activePointers.values());
+    const [first, second] = pointers;
+    const distance = Math.hypot(second.x - first.x, second.y - first.y);
     if (distance > 0) {
-      const centerX = (first.x + second.x) / 2
-      const centerY = (first.y + second.y) / 2
-      applyScaleAtClientPoint(pinchStartScale * (distance / pinchStartDistance), centerX, centerY)
+      const centerX = (first.x + second.x) / 2;
+      const centerY = (first.y + second.y) / 2;
+      applyScaleAtClientPoint(
+        pinchStartScale * (distance / pinchStartDistance),
+        centerX,
+        centerY,
+      );
     }
-    return
+    return;
   }
 
-  if (!isDragging.value || !lastDragPoint || !renderMapDef.value) return
+  if (!isDragging.value || !lastDragPoint || !renderMapDef.value) return;
 
-  const deltaX = event.clientX - lastDragPoint.x
-  const deltaY = event.clientY - lastDragPoint.y
-  const bounded = clampPanForScale(scale.value, panX.value + deltaX, panY.value + deltaY)
-  panX.value = bounded.x
-  panY.value = bounded.y
-  lastDragPoint = { x: event.clientX, y: event.clientY }
+  const deltaX = event.clientX - lastDragPoint.x;
+  const deltaY = event.clientY - lastDragPoint.y;
+  const bounded = clampPanForScale(
+    scale.value,
+    panX.value + deltaX,
+    panY.value + deltaY,
+  );
+  panX.value = bounded.x;
+  panY.value = bounded.y;
+  lastDragPoint = { x: event.clientX, y: event.clientY };
 }
 
 function handlePointerEnd(event: PointerEvent): void {
-  if (!activePointers.has(event.pointerId)) return
-  activePointers.delete(event.pointerId)
-  syncPointerState()
+  if (!activePointers.has(event.pointerId)) return;
+  activePointers.delete(event.pointerId);
+  syncPointerState();
 }
 
 function handleLostPointerCapture(event: PointerEvent): void {
-  if (!activePointers.has(event.pointerId)) return
-  activePointers.delete(event.pointerId)
-  syncPointerState()
+  if (!activePointers.has(event.pointerId)) return;
+  activePointers.delete(event.pointerId);
+  syncPointerState();
 }
 
 function handleWindowBlur(): void {
-  closePopup()
-  closeSubmenuPanel()
-  if (activePointers.size === 0) return
-  activePointers.clear()
-  syncPointerState()
+  closePopup();
+  closeSubmenuPanel();
+  if (activePointers.size === 0) return;
+  activePointers.clear();
+  syncPointerState();
 }
 
 function handleEscapeKey(event: KeyboardEvent): void {
-  if (event.key !== 'Escape') return
+  if (event.key !== 'Escape') return;
   if (props.devMode) {
-    devSelectedMarkerIndex.value = null
-    return
+    devSelectedMarkerIndex.value = null;
+    return;
   }
   if (submenuPopup.value.markerId) {
-    closeSubmenuPopup()
-    return
+    closeSubmenuPopup();
+    return;
   }
   if (submenuPanel.value.markerId) {
-    closeSubmenuPanel()
-    return
+    closeSubmenuPanel();
+    return;
   }
-  closePopup()
+  closePopup();
 }
 
 function handleDevWarningsChange(value: DevDraftIssue[]): void {
-  emit('dev-warnings-change', value)
+  emit('dev-warnings-change', value);
 }
-
 
 watch(
   [() => props.activeMap?.id, () => props.devMode],
   async () => {
-    closePopup()
-    closeSubmenuPanel()
+    closePopup();
+    closeSubmenuPanel();
     if (!props.devMode) {
-      devDraftMap.value = null
-      devSelectedMarkerIndex.value = null
-      emit('dev-warnings-change', [])
+      devDraftMap.value = null;
+      devSelectedMarkerIndex.value = null;
+      emit('dev-warnings-change', []);
     }
-    await nextTick()
-    fitMapToViewport()
+    await nextTick();
+    fitMapToViewport();
   },
   { immediate: true },
-)
+);
 
 watch(
   () => renderMapDef.value?.id,
   async () => {
-    await nextTick()
-    fitMapToViewport()
+    await nextTick();
+    fitMapToViewport();
   },
-)
+);
 
 watch(
   () => devDraftMap.value?.markers.length,
   (length) => {
-    if (devSelectedMarkerIndex.value === null || !length) return
+    if (devSelectedMarkerIndex.value === null || !length) return;
     if (devSelectedMarkerIndex.value >= length) {
-      devSelectedMarkerIndex.value = null
+      devSelectedMarkerIndex.value = null;
     }
   },
-)
+);
 
 watch(
   () => props.devMarkerSelectRequest?.nonce,
   () => {
-    const request = props.devMarkerSelectRequest
-    if (!props.devMode || !request) return
-    devSelectedMarkerIndex.value = request.markerIndex
+    const request = props.devMarkerSelectRequest;
+    if (!props.devMode || !request) return;
+    devSelectedMarkerIndex.value = request.markerIndex;
   },
-)
+);
 
 watch(markerViewModels, () => {
   if (mapPopup.value.hoverMarkerId) {
-    const hoveredMarker = markerById.value.get(mapPopup.value.hoverMarkerId)
+    const hoveredMarker = markerById.value.get(mapPopup.value.hoverMarkerId);
     if (!hoveredMarker || !hoveredMarker.isVisible) {
-      mapPopup.value.hoverMarkerId = null
+      mapPopup.value.hoverMarkerId = null;
     }
   }
 
   if (submenuPopup.value.hoverMarkerId) {
     const submenuMarker = activeSubmenuMarker.value?.submenuMarkers.find(
       (marker) => marker.id === submenuPopup.value.hoverMarkerId,
-    )
+    );
     if (!submenuMarker || !submenuMarker.isVisible) {
-      submenuPopup.value.hoverMarkerId = null
+      submenuPopup.value.hoverMarkerId = null;
     }
   }
 
-  if (props.devMode) return
+  if (props.devMode) return;
 
-  const activeMarkerId = mapPopup.value.markerId
+  const activeMarkerId = mapPopup.value.markerId;
   if (activeMarkerId) {
-    const marker = markerById.value.get(activeMarkerId)
+    const marker = markerById.value.get(activeMarkerId);
     if (!marker || !marker.isVisible || marker.type !== 'check') {
-      closePopup()
+      closePopup();
     }
   }
 
-  const activeSubmenuId = submenuPanel.value.markerId
+  const activeSubmenuId = submenuPanel.value.markerId;
   if (activeSubmenuId) {
-    const marker = markerById.value.get(activeSubmenuId)
+    const marker = markerById.value.get(activeSubmenuId);
     if (!marker || marker.type !== 'submenu') {
-      closeSubmenuPanel()
+      closeSubmenuPanel();
     }
   }
 
-  const activeSubmenuPopupId = submenuPopup.value.markerId
+  const activeSubmenuPopupId = submenuPopup.value.markerId;
   if (activeSubmenuPopupId) {
     const submenuMarker = activeSubmenuMarker.value?.submenuMarkers.find(
       (marker) => marker.id === activeSubmenuPopupId,
-    )
+    );
     if (!submenuMarker || !submenuMarker.isVisible) {
-      closeSubmenuPopup()
+      closeSubmenuPopup();
     }
   }
-})
+});
 
 watch(
   () => mapPopup.value.markerId,
   async (markerId, previousMarkerId) => {
     if (!markerId) {
-      mapPopup.value.layoutReady = false
-      mapPopup.value.position = null
-      return
+      mapPopup.value.layoutReady = false;
+      mapPopup.value.position = null;
+      return;
     }
 
     if (markerId !== previousMarkerId) {
-      mapPopup.value.layoutReady = false
+      mapPopup.value.layoutReady = false;
     }
 
-    await nextTick()
-    updateMapPopupPosition()
-    mapPopup.value.layoutReady = true
+    await nextTick();
+    updateMapPopupPosition();
+    mapPopup.value.layoutReady = true;
   },
-)
+);
 
 watch(
   () => submenuPanel.value.markerId,
   async (markerId, previousMarkerId) => {
     if (!markerId) {
-      submenuPanel.value.layoutReady = false
-      submenuPanel.value.position = null
-      submenuPanel.value.frozenWidth = null
-      submenuPanel.value.frozenHeight = null
-      submenuPanel.value.frozenScale = null
-      return
+      submenuPanel.value.layoutReady = false;
+      submenuPanel.value.position = null;
+      submenuPanel.value.frozenWidth = null;
+      submenuPanel.value.frozenHeight = null;
+      submenuPanel.value.frozenScale = null;
+      return;
     }
 
     if (markerId !== previousMarkerId) {
-      submenuPanel.value.layoutReady = false
+      submenuPanel.value.layoutReady = false;
     }
 
-    await nextTick()
+    await nextTick();
     if (submenuPanel.value.frozenWidth === null) {
-      submenuPanel.value.frozenWidth = submenuPanelRef.value?.offsetWidth ?? null
+      submenuPanel.value.frozenWidth =
+        submenuPanelRef.value?.offsetWidth ?? null;
     }
     if (submenuPanel.value.frozenHeight === null) {
-      submenuPanel.value.frozenHeight = submenuPanelRef.value?.offsetHeight ?? null
+      submenuPanel.value.frozenHeight =
+        submenuPanelRef.value?.offsetHeight ?? null;
     }
     if (submenuPanel.value.frozenScale === null) {
-      submenuPanel.value.frozenScale = scale.value
+      submenuPanel.value.frozenScale = scale.value;
     }
-    updateSubmenuPanelPosition()
-    submenuPanel.value.layoutReady = true
+    updateSubmenuPanelPosition();
+    submenuPanel.value.layoutReady = true;
   },
-)
+);
 
 watch(
   () => submenuPopup.value.markerId,
   async (markerId, previousMarkerId) => {
     if (!markerId) {
-      submenuPopup.value.layoutReady = false
-      submenuPopup.value.position = null
-      return
+      submenuPopup.value.layoutReady = false;
+      submenuPopup.value.position = null;
+      return;
     }
 
     if (markerId !== previousMarkerId) {
-      submenuPopup.value.layoutReady = false
+      submenuPopup.value.layoutReady = false;
     }
 
-    await nextTick()
-    updateSubmenuPopupPosition()
-    submenuPopup.value.layoutReady = true
+    await nextTick();
+    updateSubmenuPopupPosition();
+    submenuPopup.value.layoutReady = true;
   },
-)
+);
 
 watch([scale, panX, panY, () => renderMapDef.value?.id], () => {
   if (mapPopup.value.markerId) {
-    updateMapPopupPosition()
+    updateMapPopupPosition();
   }
   if (submenuPanel.value.markerId) {
-    updateSubmenuPanelPosition()
+    updateSubmenuPanelPosition();
     if (submenuPopup.value.markerId) {
-      updateSubmenuPopupPosition()
+      updateSubmenuPopupPosition();
     }
   }
-})
+});
 
 watch(activePopup, async (popup) => {
-  if (!popup || !mapPopup.value.pinned) return
-  await nextTick()
-  const target = popupRef.value?.querySelector<HTMLElement>('button:not(:disabled)')
-  target?.focus()
-})
+  if (!popup || !mapPopup.value.pinned) return;
+  await nextTick();
+  const target = popupRef.value?.querySelector<HTMLElement>(
+    'button:not(:disabled)',
+  );
+  target?.focus();
+});
 
 watch(activeSubmenuPopup, async (popup) => {
-  if (!popup || !submenuPopup.value.pinned) return
-  await nextTick()
-  const target = submenuPopupRef.value?.querySelector<HTMLElement>('button:not(:disabled)')
-  target?.focus()
-})
+  if (!popup || !submenuPopup.value.pinned) return;
+  await nextTick();
+  const target = submenuPopupRef.value?.querySelector<HTMLElement>(
+    'button:not(:disabled)',
+  );
+  target?.focus();
+});
 
 watch(activeSubmenuMarker, async (submenuMarker) => {
-  if (!submenuMarker || !submenuPopup.value.markerId) return
-  await nextTick()
-  updateSubmenuPopupPosition()
-})
+  if (!submenuMarker || !submenuPopup.value.markerId) return;
+  await nextTick();
+  updateSubmenuPopupPosition();
+});
 
-let resizeObserver: ResizeObserver | null = null
+let resizeObserver: ResizeObserver | null = null;
 
 onMounted(() => {
-  window.addEventListener('keydown', handleEscapeKey)
-  window.addEventListener('blur', handleWindowBlur)
+  window.addEventListener('keydown', handleEscapeKey);
+  window.addEventListener('blur', handleWindowBlur);
   if (viewportRef.value) {
     resizeObserver = new ResizeObserver(() => {
-      const bounded = clampPanForScale(scale.value, panX.value, panY.value)
-      panX.value = bounded.x
-      panY.value = bounded.y
+      const bounded = clampPanForScale(scale.value, panX.value, panY.value);
+      panX.value = bounded.x;
+      panY.value = bounded.y;
       if (mapPopup.value.markerId) {
-        updateMapPopupPosition()
+        updateMapPopupPosition();
       }
       if (submenuPanel.value.markerId) {
-        updateSubmenuPanelPosition()
+        updateSubmenuPanelPosition();
       }
       if (submenuPopup.value.markerId) {
-        updateSubmenuPopupPosition()
+        updateSubmenuPopupPosition();
       }
-    })
-    resizeObserver.observe(viewportRef.value)
+    });
+    resizeObserver.observe(viewportRef.value);
   }
-})
+});
 
 onBeforeUnmount(() => {
-  window.removeEventListener('keydown', handleEscapeKey)
-  window.removeEventListener('blur', handleWindowBlur)
-  clearHoverPopupCloseTimer()
-  clearSubmenuHoverPopupCloseTimer()
-  clearSubmenuPanelCloseTimer()
-  resizeObserver?.disconnect()
-  resizeObserver = null
-  activePointers.clear()
-  syncPointerState()
-})
+  window.removeEventListener('keydown', handleEscapeKey);
+  window.removeEventListener('blur', handleWindowBlur);
+  clearHoverPopupCloseTimer();
+  clearSubmenuHoverPopupCloseTimer();
+  clearSubmenuPanelCloseTimer();
+  resizeObserver?.disconnect();
+  resizeObserver = null;
+  activePointers.clear();
+  syncPointerState();
+});
 </script>
 
 <template>
@@ -1557,7 +1659,9 @@ onBeforeUnmount(() => {
     @dragstart.prevent
     @selectstart.prevent
   >
-    <div v-if="!renderMapDef" class="ootmm-map__empty">No active map selected.</div>
+    <div v-if="!renderMapDef" class="ootmm-map__empty">
+      No active map selected.
+    </div>
 
     <template v-else>
       <div class="ootmm-map__scene" :style="sceneStyle">
@@ -1576,8 +1680,10 @@ onBeforeUnmount(() => {
           type="button"
           class="map-marker"
           :class="{
-            'is-selected': isDevMode && devSelectedMarkerIndex === marker.markerIndex,
-            'is-hovered-by-warning': isDevMode && props.devMarkerHoverIndex === marker.markerIndex,
+            'is-selected':
+              isDevMode && devSelectedMarkerIndex === marker.markerIndex,
+            'is-hovered-by-warning':
+              isDevMode && props.devMarkerHoverIndex === marker.markerIndex,
           }"
           :style="markerStyle(marker)"
           :aria-label="
@@ -1599,7 +1705,10 @@ onBeforeUnmount(() => {
             draggable="false"
           />
 
-          <span v-if="marker.topLeftOverlays.length > 0" class="map-marker__corner map-marker__corner--top-left">
+          <span
+            v-if="marker.topLeftOverlays.length > 0"
+            class="map-marker__corner map-marker__corner--top-left"
+          >
             <img
               v-for="overlay in marker.topLeftOverlays"
               :key="overlay.key"
@@ -1625,7 +1734,10 @@ onBeforeUnmount(() => {
             />
           </span>
 
-          <span v-if="marker.topRightOverlays.length > 0" class="map-marker__corner map-marker__corner--top-right">
+          <span
+            v-if="marker.topRightOverlays.length > 0"
+            class="map-marker__corner map-marker__corner--top-right"
+          >
             <img
               v-for="overlay in marker.topRightOverlays"
               :key="`top-right:${overlay.key}`"
@@ -1713,7 +1825,10 @@ onBeforeUnmount(() => {
                 draggable="false"
               />
             </span>
-            <span v-if="submenuMarker.topRightOverlays.length > 0" class="map-marker__corner map-marker__corner--top-right">
+            <span
+              v-if="submenuMarker.topRightOverlays.length > 0"
+              class="map-marker__corner map-marker__corner--top-right"
+            >
               <img
                 v-for="overlay in submenuMarker.topRightOverlays"
                 :key="`submenu-top-right:${overlay.key}`"
@@ -1737,7 +1852,10 @@ onBeforeUnmount(() => {
               />
             </span>
           </button>
-          <p v-if="activeSubmenuMarker.submenuMarkers.length === 0" class="map-submenu-panel__empty">
+          <p
+            v-if="activeSubmenuMarker.submenuMarkers.length === 0"
+            class="map-submenu-panel__empty"
+          >
             No visible markers in this submenu.
           </p>
         </div>
@@ -1759,7 +1877,12 @@ onBeforeUnmount(() => {
       >
         <header class="map-popup__header">
           <div class="map-popup__icon">
-            <img class="map-popup__base" :src="resolveMarkerImage(activeSubmenuPopupMarker.image)" alt="" draggable="false" />
+            <img
+              class="map-popup__base"
+              :src="resolveMarkerImage(activeSubmenuPopupMarker.image)"
+              alt=""
+              draggable="false"
+            />
             <span
               v-if="activeSubmenuPopupMarker.topLeftOverlays.length > 0"
               class="map-popup__corner map-popup__corner--top-left"
@@ -1805,13 +1928,25 @@ onBeforeUnmount(() => {
             <h3>{{ activeSubmenuPopup.title }}</h3>
             <p>
               {{ activeSubmenuPopupMarker.checkedCount }} checked /
-              {{ activeSubmenuPopupMarker.reachableUncheckedCount }} reachable unchecked
+              {{ activeSubmenuPopupMarker.reachableUncheckedCount }} reachable
+              unchecked
             </p>
           </div>
-          <button type="button" class="map-popup__close" aria-label="Close popup" @click="closeSubmenuPopup">×</button>
+          <button
+            type="button"
+            class="map-popup__close"
+            aria-label="Close popup"
+            @click="closeSubmenuPopup"
+          >
+            ×
+          </button>
         </header>
 
-        <div v-if="activeSubmenuPopupAttributeChips.length > 0" class="map-popup__attributes" aria-label="Attributes">
+        <div
+          v-if="activeSubmenuPopupAttributeChips.length > 0"
+          class="map-popup__attributes"
+          aria-label="Attributes"
+        >
           <span
             v-for="attribute in activeSubmenuPopupAttributeChips"
             :key="`submenu-popup-attribute:${attribute.key}`"
@@ -1825,7 +1960,9 @@ onBeforeUnmount(() => {
               alt=""
               draggable="false"
             />
-            <span class="map-popup__attribute-label">{{ attribute.label }}</span>
+            <span class="map-popup__attribute-label">{{
+              attribute.label
+            }}</span>
           </span>
         </div>
 
@@ -1843,7 +1980,9 @@ onBeforeUnmount(() => {
             :disabled="!entry.checkId"
             @click="handlePopupEntryClick(entry)"
           >
-            <span class="map-popup__entry-name">{{ formatLocationDisplayName(entry.code) }}</span>
+            <span class="map-popup__entry-name">{{
+              formatLocationDisplayName(entry.code)
+            }}</span>
             <span
               class="map-popup__entry-check"
               :class="{
@@ -1851,7 +1990,8 @@ onBeforeUnmount(() => {
                 'is-checked': entry.isChecked,
               }"
               aria-hidden="true"
-            >{{ entry.isChecked ? '✓' : '' }}</span>
+              >{{ entry.isChecked ? '✓' : '' }}</span
+            >
           </button>
         </div>
 
@@ -1884,7 +2024,12 @@ onBeforeUnmount(() => {
       >
         <header class="map-popup__header">
           <div class="map-popup__icon">
-            <img class="map-popup__base" :src="resolveMarkerImage(popupMarker.image)" alt="" draggable="false" />
+            <img
+              class="map-popup__base"
+              :src="resolveMarkerImage(popupMarker.image)"
+              alt=""
+              draggable="false"
+            />
             <span
               v-if="popupMarker.topLeftOverlays.length > 0"
               class="map-popup__corner map-popup__corner--top-left"
@@ -1912,7 +2057,10 @@ onBeforeUnmount(() => {
                 draggable="false"
               />
             </span>
-            <span v-if="popupMarker.topRightOverlays.length > 0" class="map-popup__corner map-popup__corner--top-right">
+            <span
+              v-if="popupMarker.topRightOverlays.length > 0"
+              class="map-popup__corner map-popup__corner--top-right"
+            >
               <img
                 v-for="overlay in popupMarker.topRightOverlays"
                 :key="`popup-top:${overlay.key}`"
@@ -1925,12 +2073,26 @@ onBeforeUnmount(() => {
           </div>
           <div class="map-popup__titles">
             <h3>{{ activePopup.title }}</h3>
-            <p>{{ popupMarker.checkedCount }} checked / {{ popupMarker.reachableUncheckedCount }} reachable unchecked</p>
+            <p>
+              {{ popupMarker.checkedCount }} checked /
+              {{ popupMarker.reachableUncheckedCount }} reachable unchecked
+            </p>
           </div>
-          <button type="button" class="map-popup__close" aria-label="Close popup" @click="closePopup">×</button>
+          <button
+            type="button"
+            class="map-popup__close"
+            aria-label="Close popup"
+            @click="closePopup"
+          >
+            ×
+          </button>
         </header>
 
-        <div v-if="activePopupAttributeChips.length > 0" class="map-popup__attributes" aria-label="Attributes">
+        <div
+          v-if="activePopupAttributeChips.length > 0"
+          class="map-popup__attributes"
+          aria-label="Attributes"
+        >
           <span
             v-for="attribute in activePopupAttributeChips"
             :key="`popup-attribute:${attribute.key}`"
@@ -1944,7 +2106,9 @@ onBeforeUnmount(() => {
               alt=""
               draggable="false"
             />
-            <span class="map-popup__attribute-label">{{ attribute.label }}</span>
+            <span class="map-popup__attribute-label">{{
+              attribute.label
+            }}</span>
           </span>
         </div>
 
@@ -1962,7 +2126,9 @@ onBeforeUnmount(() => {
             :disabled="!entry.checkId"
             @click="handlePopupEntryClick(entry)"
           >
-            <span class="map-popup__entry-name">{{ formatLocationDisplayName(entry.code) }}</span>
+            <span class="map-popup__entry-name">{{
+              formatLocationDisplayName(entry.code)
+            }}</span>
             <span
               class="map-popup__entry-check"
               :class="{
@@ -1970,7 +2136,8 @@ onBeforeUnmount(() => {
                 'is-checked': entry.isChecked,
               }"
               aria-hidden="true"
-            >{{ entry.isChecked ? '✓' : '' }}</span>
+              >{{ entry.isChecked ? '✓' : '' }}</span
+            >
           </button>
         </div>
 

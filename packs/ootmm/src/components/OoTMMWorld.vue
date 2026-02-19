@@ -1,50 +1,54 @@
 <script setup lang="ts">
-import { computed } from 'vue'
-import { SONG_EVENTS, SONG_CHOICES } from '../data/song-events'
+import { computed } from 'vue';
+import { SONG_EVENTS, SONG_CHOICES } from '../data/song-events';
 
 type DungeonRow = {
-  id: string
-  label: string
-  game: 'oot' | 'mm'
-  note?: string
-}
+  id: string;
+  label: string;
+  game: 'oot' | 'mm';
+  note?: string;
+};
 
 const props = defineProps<{
-  enabled: boolean
-  dungeons: DungeonRow[]
-  selected: string[]
-  settings: Record<string, unknown>
-  songEvents?: Record<string, number>
-}>()
+  enabled: boolean;
+  dungeons: DungeonRow[];
+  selected: string[];
+  settings: Record<string, unknown>;
+  songEvents?: Record<string, number>;
+}>();
 
 const emit = defineEmits<{
-  'update:selected': [string[]]
-  'update:song-events': [Record<string, number>]
-}>()
+  'update:selected': [string[]];
+  'update:song-events': [Record<string, number>];
+}>();
 
-const selectedSet = computed(() => new Set(props.selected))
+const selectedSet = computed(() => new Set(props.selected));
 
-const showPreCompleted = computed(() => props.enabled)
-const songEventsEnabled = computed(() => Boolean(props.settings?.songEventsShuffleOot))
-const showEmptyState = computed(() => !showPreCompleted.value && !songEventsEnabled.value)
+const showPreCompleted = computed(() => props.enabled);
+const songEventsEnabled = computed(() =>
+  Boolean(props.settings?.songEventsShuffleOot),
+);
+const showEmptyState = computed(
+  () => !showPreCompleted.value && !songEventsEnabled.value,
+);
 
 function getSongEventSelection(eventId: number): number | undefined {
-  return props.songEvents?.[eventId]
+  return props.songEvents?.[eventId];
 }
 
 function updateSongEvent(eventId: number, songId: number) {
-  const next = { ...props.songEvents, [eventId]: songId }
-  emit('update:song-events', next)
+  const next = { ...props.songEvents, [eventId]: songId };
+  emit('update:song-events', next);
 }
 
 function toggleDungeon(id: string) {
-  const next = new Set(props.selected)
+  const next = new Set(props.selected);
   if (next.has(id)) {
-    next.delete(id)
+    next.delete(id);
   } else {
-    next.add(id)
+    next.add(id);
   }
-  emit('update:selected', Array.from(next))
+  emit('update:selected', Array.from(next));
 }
 </script>
 
@@ -52,14 +56,18 @@ function toggleDungeon(id: string) {
   <div class="world-panel">
     <div class="world-body">
       <div v-if="showEmptyState" class="world-empty">
-        <p>This tab is empty. Enable settings like Pre-Completed Dungeons to see world options here.</p>
+        <p>
+          This tab is empty. Enable settings like Pre-Completed Dungeons to see
+          world options here.
+        </p>
       </div>
 
       <section v-if="showPreCompleted" class="world-section">
         <div class="world-header">
           <h3>Pre-Completed Dungeons</h3>
           <p class="world-description">
-            Choose which major dungeons are already cleared. Locations inside will be marked as collected and logic will treat them as completed.
+            Choose which major dungeons are already cleared. Locations inside
+            will be marked as collected and logic will treat them as completed.
           </p>
           <p class="world-hint">
             Stone Tower Temple includes the inverted dungeon.
@@ -76,7 +84,9 @@ function toggleDungeon(id: string) {
               <span class="row-game" :class="`game-${dungeon.game}`">
                 {{ dungeon.game === 'oot' ? 'OoT' : 'MM' }}
               </span>
-              <span v-if="dungeon.note" class="row-note">{{ dungeon.note }}</span>
+              <span v-if="dungeon.note" class="row-note">{{
+                dungeon.note
+              }}</span>
             </div>
             <input
               type="checkbox"
@@ -92,7 +102,8 @@ function toggleDungeon(id: string) {
         <div class="world-header">
           <h3>Song Events</h3>
           <p class="world-description">
-            Choose which song is required to trigger each event. These events will require playing the selected song to proceed.
+            Choose which song is required to trigger each event. These events
+            will require playing the selected song to proceed.
           </p>
         </div>
 
@@ -108,7 +119,12 @@ function toggleDungeon(id: string) {
             <select
               :value="getSongEventSelection(event.id) ?? 0"
               class="song-select"
-              @change="updateSongEvent(event.id, Number(($event.target as HTMLSelectElement).value))"
+              @change="
+                updateSongEvent(
+                  event.id,
+                  Number(($event.target as HTMLSelectElement).value),
+                )
+              "
             >
               <option
                 v-for="song in SONG_CHOICES"
@@ -121,7 +137,6 @@ function toggleDungeon(id: string) {
           </div>
         </div>
       </section>
-
     </div>
   </div>
 </template>

@@ -6,83 +6,54 @@
   "height": 600,
   "markers": [
     {
-      "coords": [
-        104,
-        348
-      ],
+      "coords": [104, 348],
       "image": "heart_piece",
       "codes": [
         "OOT Lake Hylia HP"
       ]
     },
     {
-      "coords": [
-        180,
-        358
-      ],
+      "coords": [180, 358],
       "image": "collectible",
       "codes": [
         "OOT Lake Hylia Underwater Bottle"
       ]
     },
     {
-      "coords": [
-        248,
-        497
-      ],
+      "coords": [248, 497],
       "image": "collectible",
-      "overlays": [
-        "adult"
-      ],
+      "overlays": ["adult"],
       "codes": [
         "OOT Lake Hylia Fire Arrow"
       ]
     },
     {
-      "coords": [
-        547,
-        82
-      ],
+      "coords": [547, 82],
       "image": "heart_piece",
       "codes": [
         "OOT Zora River HP Pillar"
       ]
     },
     {
-      "coords": [
-        601,
-        78
-      ],
+      "coords": [601, 78],
       "image": "npc",
-      "overlays": [
-        "child"
-      ],
+      "overlays": ["child"],
       "codes": [
         "OOT Zora River Frogs Storms"
       ]
     },
     {
-      "coords": [
-        617,
-        78
-      ],
+      "coords": [617, 78],
       "image": "npc",
-      "overlays": [
-        "child"
-      ],
+      "overlays": ["child"],
       "codes": [
         "OOT Zora River Frogs Game"
       ]
     },
     {
-      "coords": [
-        609,
-        94
-      ],
+      "coords": [609, 94],
       "image": "npc",
-      "overlays": [
-        "child"
-      ],
+      "overlays": ["child"],
       "codes": [
         "OOT Zora River Frogs Eponas Song",
         "OOT Zora River Frogs Sarias Song",
@@ -92,24 +63,16 @@
       ]
     },
     {
-      "coords": [
-        811,
-        42
-      ],
+      "coords": [811, 42],
       "image": "heart_piece",
       "codes": [
         "OOT Zora River HP Platform"
       ]
     },
     {
-      "coords": [
-        576,
-        500
-      ],
+      "coords": [576, 500],
       "image": "npc",
-      "overlays": [
-        "child"
-      ],
+      "overlays": ["child"],
       "codes": [
         "OOT Zora Domain Diving Game Blue Rupee",
         "OOT Zora Domain Diving Game Green Rupee",
@@ -119,280 +82,168 @@
       ]
     },
     {
-      "coords": [
-        580,
-        472
-      ],
+      "coords": [580, 472],
       "image": "chest",
-      "overlays": [
-        "child"
-      ],
+      "overlays": ["child"],
       "codes": [
         "OOT Zora Domain Waterfall Chest"
       ]
     },
     {
-      "coords": [
-        580,
-        456
-      ],
+      "coords": [580, 456],
       "image": "npc",
-      "overlays": [
-        "child"
-      ],
+      "overlays": ["child"],
       "codes": [
         "OOT Zora Domain Diving Game"
       ]
     },
     {
-      "coords": [
-        636,
-        408
-      ],
+      "coords": [636, 408],
       "image": "npc",
-      "overlays": [
-        "adult"
-      ],
+      "overlays": ["adult"],
       "codes": [
         "OOT Zora Domain Eyeball Frog"
       ]
     },
     {
-      "coords": [
-        652,
-        408
-      ],
+      "coords": [652, 408],
       "image": "npc",
-      "overlays": [
-        "adult"
-      ],
+      "overlays": ["adult"],
       "codes": [
         "OOT Zora Domain Tunic"
       ]
     },
     {
-      "coords": [
-        925,
-        347
-      ],
+      "coords": [925, 347],
       "image": "heart_piece",
-      "overlays": [
-        "adult"
-      ],
+      "overlays": ["adult"],
       "codes": [
         "OOT Zora Fountain Bottom HP"
       ]
     },
     {
-      "coords": [
-        956,
-        315
-      ],
+      "coords": [956, 315],
       "image": "heart_piece",
-      "overlays": [
-        "adult"
-      ],
+      "overlays": ["adult"],
       "codes": [
         "OOT Zora Fountain Iceberg HP"
       ]
     },
     {
-      "coords": [
-        90,
-        313
-      ],
+      "coords": [90, 313],
       "image": "gold_skulltula",
-      "overlays": [
-        "child"
-      ],
+      "overlays": ["child"],
       "codes": [
         "OOT Lake Hylia GS Soil"
       ]
     },
     {
-      "coords": [
-        89,
-        354
-      ],
+      "coords": [89, 354],
       "image": "gold_skulltula",
-      "overlays": [
-        "child",
-        "night"
-      ],
+      "overlays": ["child", "night"],
       "codes": [
         "OOT Lake Hylia GS Lab Wall"
       ]
     },
     {
-      "coords": [
-        187,
-        505
-      ],
+      "coords": [187, 505],
       "image": "gold_skulltula",
-      "overlays": [
-        "adult",
-        "night"
-      ],
+      "overlays": ["adult", "night"],
       "codes": [
         "OOT Lake Hylia GS Big Tree"
       ]
     },
     {
-      "coords": [
-        264,
-        508
-      ],
+      "coords": [264, 508],
       "image": "gold_skulltula",
-      "overlays": [
-        "child",
-        "night"
-      ],
+      "overlays": ["child", "night"],
       "codes": [
         "OOT Lake Hylia GS Island"
       ]
     },
     {
-      "coords": [
-        373,
-        228
-      ],
+      "coords": [373, 228],
       "image": "gold_skulltula",
-      "overlays": [
-        "child"
-      ],
+      "overlays": ["child"],
       "codes": [
         "OOT Zora River GS Tree"
       ]
     },
     {
-      "coords": [
-        524,
-        210
-      ],
+      "coords": [524, 210],
       "image": "gold_skulltula",
-      "overlays": [
-        "adult",
-        "night"
-      ],
+      "overlays": ["adult", "night"],
       "codes": [
         "OOT Zora River GS Near Grotto"
       ]
     },
     {
-      "coords": [
-        745,
-        60
-      ],
+      "coords": [745, 60],
       "image": "gold_skulltula",
-      "overlays": [
-        "adult",
-        "night"
-      ],
+      "overlays": ["adult", "night"],
       "codes": [
         "OOT Zora River GS Near Bridge"
       ]
     },
     {
-      "coords": [
-        823,
-        56
-      ],
+      "coords": [823, 56],
       "image": "gold_skulltula",
-      "overlays": [
-        "child",
-        "night"
-      ],
+      "overlays": ["child", "night"],
       "codes": [
         "OOT Zora River GS Ladder"
       ]
     },
     {
-      "coords": [
-        596,
-        468
-      ],
+      "coords": [596, 468],
       "image": "gold_skulltula",
-      "overlays": [
-        "adult",
-        "night"
-      ],
+      "overlays": ["adult", "night"],
       "codes": [
         "OOT Zora Domain GS Waterfall"
       ]
     },
     {
-      "coords": [
-        831,
-        424
-      ],
+      "coords": [831, 424],
       "image": "gold_skulltula",
-      "overlays": [
-        "child",
-        "night"
-      ],
+      "overlays": ["child", "night"],
       "codes": [
         "OOT Zora Fountain GS Wall"
       ]
     },
     {
-      "coords": [
-        924,
-        446
-      ],
+      "coords": [924, 446],
       "image": "gold_skulltula",
-      "overlays": [
-        "child"
-      ],
+      "overlays": ["child"],
       "codes": [
         "OOT Zora Fountain GS Tree"
       ]
     },
     {
-      "coords": [
-        960,
-        427
-      ],
+      "coords": [960, 427],
       "image": "gold_skulltula",
-      "overlays": [
-        "adult",
-        "night"
-      ],
+      "overlays": ["adult", "night"],
       "codes": [
         "OOT Zora Fountain GS Upper"
       ]
     },
     {
-      "coords": [
-        447,
-        150
-      ],
+      "coords": [447, 150],
       "image": "shop",
-      "overlays": [
-        "child"
-      ],
+      "overlays": ["child"],
       "codes": [
         "OOT Zora River Bean Seller"
       ]
     },
     {
-      "coords": [
-        119,
-        336
-      ],
+      "coords": [119, 336],
       "image": "pot",
-      "overlays": [
-        "broken"
-      ],
+      "overlays": ["broken"],
       "codes": [
         "OOT Lake Hylia Pot 1",
         "OOT Lake Hylia Pot 2"
       ]
     },
     {
-      "coords": [
-        628,
-        576
-      ],
+      "coords": [628, 576],
       "image": "pot",
       "codes": [
         "OOT Zora Domain Pot 1",
@@ -403,14 +254,9 @@
       ]
     },
     {
-      "coords": [
-        828,
-        345
-      ],
+      "coords": [828, 345],
       "image": "pot",
-      "overlays": [
-        "child"
-      ],
+      "overlays": ["child"],
       "codes": [
         "OOT Zora Fountain Child Pot 1",
         "OOT Zora Fountain Child Pot 2",
@@ -419,10 +265,7 @@
       ]
     },
     {
-      "coords": [
-        956,
-        471
-      ],
+      "coords": [956, 471],
       "image": "pot",
       "codes": [
         "OOT Zora Fountain Adult Pot 1",
@@ -431,10 +274,7 @@
       ]
     },
     {
-      "coords": [
-        178,
-        341
-      ],
+      "coords": [178, 341],
       "image": "green_rupee",
       "codes": [
         "OOT Lake Hylia Rupee 1",
@@ -443,10 +283,7 @@
       ]
     },
     {
-      "coords": [
-        867,
-        64
-      ],
+      "coords": [867, 64],
       "image": "red_rupee",
       "codes": [
         "OOT Zora River Rupee 1",
@@ -456,14 +293,9 @@
       ]
     },
     {
-      "coords": [
-        925,
-        363
-      ],
+      "coords": [925, 363],
       "image": "green_rupee",
-      "overlays": [
-        "adult"
-      ],
+      "overlays": ["adult"],
       "codes": [
         "OOT Zora Fountain Rupee 01",
         "OOT Zora Fountain Rupee 02",
@@ -486,10 +318,7 @@
       ]
     },
     {
-      "coords": [
-        786,
-        52
-      ],
+      "coords": [786, 52],
       "image": "wonder_item_green_rupee",
       "codes": [
         "OOT Zora River Wonder Item Back 01",
@@ -499,10 +328,7 @@
       ]
     },
     {
-      "coords": [
-        613,
-        127
-      ],
+      "coords": [613, 127],
       "image": "wonder_item_green_rupee",
       "codes": [
         "OOT Zora River Wonder Item Back 05",
@@ -511,10 +337,7 @@
       ]
     },
     {
-      "coords": [
-        533,
-        82
-      ],
+      "coords": [533, 82],
       "image": "wonder_item_green_rupee",
       "codes": [
         "OOT Zora River Wonder Item Back 17",
@@ -524,20 +347,14 @@
       ]
     },
     {
-      "coords": [
-        503,
-        119
-      ],
+      "coords": [503, 119],
       "image": "wonder_item_blue_rupee",
       "codes": [
         "OOT Zora River Wonder Item Back 21"
       ]
     },
     {
-      "coords": [
-        503,
-        135
-      ],
+      "coords": [503, 135],
       "image": "wonder_item_green_rupee",
       "codes": [
         "OOT Zora River Wonder Item Back 22",
@@ -545,20 +362,14 @@
       ]
     },
     {
-      "coords": [
-        503,
-        151
-      ],
+      "coords": [503, 151],
       "image": "wonder_item_red_rupee",
       "codes": [
         "OOT Zora River Wonder Item Back 24"
       ]
     },
     {
-      "coords": [
-        584,
-        175
-      ],
+      "coords": [584, 175],
       "image": "wonder_item_green_rupee",
       "codes": [
         "OOT Zora River Wonder Item Back 08",
@@ -569,20 +380,14 @@
       ]
     },
     {
-      "coords": [
-        567,
-        181
-      ],
+      "coords": [567, 181],
       "image": "wonder_item_blue_rupee",
       "codes": [
         "OOT Zora River Wonder Item Back 13"
       ]
     },
     {
-      "coords": [
-        549,
-        181
-      ],
+      "coords": [549, 181],
       "image": "wonder_item_green_rupee",
       "codes": [
         "OOT Zora River Wonder Item Back 14",
@@ -591,10 +396,7 @@
       ]
     },
     {
-      "coords": [
-        470,
-        178
-      ],
+      "coords": [470, 178],
       "image": "wonder_item_green_rupee",
       "codes": [
         "OOT Zora River Wonder Item Back 25",
@@ -603,10 +405,7 @@
       ]
     },
     {
-      "coords": [
-        407,
-        230
-      ],
+      "coords": [407, 230],
       "image": "wonder_item_green_rupee",
       "codes": [
         "OOT Zora River Wonder Item Front 1",
@@ -616,49 +415,31 @@
       ]
     },
     {
-      "coords": [
-        624,
-        440
-      ],
+      "coords": [624, 440],
       "image": "beehive",
-      "overlays": [
-        "child"
-      ],
+      "overlays": ["child"],
       "codes": [
         "OOT Zora Domain Hive Front 1"
       ]
     },
     {
-      "coords": [
-        680,
-        420
-      ],
+      "coords": [680, 420],
       "image": "beehive",
-      "overlays": [
-        "child"
-      ],
+      "overlays": ["child"],
       "codes": [
         "OOT Zora Domain Hive Front 2"
       ]
     },
     {
-      "coords": [
-        652,
-        383
-      ],
+      "coords": [652, 383],
       "image": "beehive",
-      "overlays": [
-        "child"
-      ],
+      "overlays": ["child"],
       "codes": [
         "OOT Zora Domain Hive Back"
       ]
     },
     {
-      "coords": [
-        184,
-        487
-      ],
+      "coords": [184, 487],
       "image": "grass",
       "codes": [
         "OOT Lake Hylia Grass 1",
@@ -666,10 +447,7 @@
       ]
     },
     {
-      "coords": [
-        107,
-        295
-      ],
+      "coords": [107, 295],
       "image": "grass",
       "codes": [
         "OOT Lake Hylia Grass Pack 1 Bush 01",
@@ -687,10 +465,7 @@
       ]
     },
     {
-      "coords": [
-        136,
-        284
-      ],
+      "coords": [136, 284],
       "image": "grass",
       "codes": [
         "OOT Lake Hylia Grass Pack 2 Bush 01",
@@ -708,10 +483,7 @@
       ]
     },
     {
-      "coords": [
-        109,
-        268
-      ],
+      "coords": [109, 268],
       "image": "grass",
       "codes": [
         "OOT Lake Hylia Grass Pack 3 Bush 01",
@@ -729,14 +501,9 @@
       ]
     },
     {
-      "coords": [
-        218,
-        295
-      ],
+      "coords": [218, 295],
       "image": "grass",
-      "overlays": [
-        "child"
-      ],
+      "overlays": ["child"],
       "codes": [
         "OOT Lake Hylia Grass Child 1",
         "OOT Lake Hylia Grass Child 2",
@@ -745,24 +512,15 @@
       ]
     },
     {
-      "coords": [
-        236,
-        281
-      ],
+      "coords": [236, 281],
       "image": "grass",
-      "overlays": [
-        "child",
-        "broken"
-      ],
+      "overlays": ["child", "broken"],
       "codes": [
         "OOT Lake Hylia Grass Child 5"
       ]
     },
     {
-      "coords": [
-        387,
-        264
-      ],
+      "coords": [387, 264],
       "image": "grass",
       "codes": [
         "OOT Zora River Grass Pack Bush 01",
@@ -780,30 +538,21 @@
       ]
     },
     {
-      "coords": [
-        536,
-        60
-      ],
+      "coords": [536, 60],
       "image": "grass",
       "codes": [
         "OOT Zora River Grass"
       ]
     },
     {
-      "coords": [
-        264,
-        489
-      ],
+      "coords": [264, 489],
       "image": "big_fairy_spot",
       "codes": [
         "OOT Lake Hylia Island Big Fairy"
       ]
     },
     {
-      "coords": [
-        218,
-        282
-      ],
+      "coords": [218, 282],
       "image": "butterfly",
       "codes": [
         "OOT Lake Hylia Butterfly 1",
@@ -812,10 +561,7 @@
       ]
     },
     {
-      "coords": [
-        388,
-        162
-      ],
+      "coords": [388, 162],
       "image": "butterfly",
       "codes": [
         "OOT Zora River Butterfly Near Beans 1",
@@ -823,10 +569,7 @@
       ]
     },
     {
-      "coords": [
-        847,
-        407
-      ],
+      "coords": [847, 407],
       "image": "butterfly",
       "codes": [
         "OOT Zora Fountain Butterfly 1",
@@ -834,10 +577,7 @@
       ]
     },
     {
-      "coords": [
-        849,
-        62
-      ],
+      "coords": [849, 62],
       "image": "butterfly",
       "codes": [
         "OOT Zora River Butterfly Near Waterfall 1",
@@ -846,20 +586,14 @@
       ]
     },
     {
-      "coords": [
-        271,
-        358
-      ],
+      "coords": [271, 358],
       "image": "rock",
       "codes": [
         "OOT Lake Hylia Rock"
       ]
     },
     {
-      "coords": [
-        373,
-        175
-      ],
+      "coords": [373, 175],
       "image": "rock",
       "codes": [
         "OOT Zora River Rock Circle Lower Rock 1",
@@ -873,10 +607,7 @@
       ]
     },
     {
-      "coords": [
-        562,
-        139
-      ],
+      "coords": [562, 139],
       "image": "rock",
       "codes": [
         "OOT Zora River Rock Circle Upper Rock 1",
@@ -890,20 +621,14 @@
       ]
     },
     {
-      "coords": [
-        687,
-        114
-      ],
+      "coords": [687, 114],
       "image": "rock",
       "codes": [
         "OOT Zora River Rock Ground"
       ]
     },
     {
-      "coords": [
-        709,
-        142
-      ],
+      "coords": [709, 142],
       "image": "rock",
       "codes": [
         "OOT Zora River Rock Water 1",
@@ -913,10 +638,7 @@
       ]
     },
     {
-      "coords": [
-        659,
-        494
-      ],
+      "coords": [659, 494],
       "image": "rock",
       "codes": [
         "OOT Zora Domain Rock Circle Rock 1",
@@ -930,10 +652,7 @@
       ]
     },
     {
-      "coords": [
-        940,
-        455
-      ],
+      "coords": [940, 455],
       "image": "bush",
       "codes": [
         "OOT Zora Fountain Bush 1",
@@ -945,14 +664,9 @@
       ]
     },
     {
-      "coords": [
-        108,
-        318
-      ],
+      "coords": [108, 318],
       "image": "soft_soil",
-      "overlays": [
-        "child"
-      ],
+      "overlays": ["child"],
       "codes": [
         "OOT Lake Hylia Soil 1",
         "OOT Lake Hylia Soil 2",
@@ -960,14 +674,9 @@
       ]
     },
     {
-      "coords": [
-        447,
-        166
-      ],
+      "coords": [447, 166],
       "image": "soft_soil",
-      "overlays": [
-        "child"
-      ],
+      "overlays": ["child"],
       "codes": [
         "OOT Zora River Soil 1",
         "OOT Zora River Soil 2",
@@ -975,90 +684,63 @@
       ]
     },
     {
-      "coords": [
-        41,
-        323
-      ],
+      "coords": [41, 323],
       "image": "gossip_stone",
       "codes": [
         "OOT Lake Hylia Gossip Near River"
       ]
     },
     {
-      "coords": [
-        52,
-        524
-      ],
+      "coords": [52, 524],
       "image": "gossip_stone",
       "codes": [
         "OOT Lake Hylia Gossip Southwest Lake"
       ]
     },
     {
-      "coords": [
-        302,
-        546
-      ],
+      "coords": [302, 546],
       "image": "gossip_stone",
       "codes": [
         "OOT Lake Hylia Gossip Southeast Lake"
       ]
     },
     {
-      "coords": [
-        642,
-        423
-      ],
+      "coords": [642, 423],
       "image": "gossip_stone",
       "codes": [
         "OOT Zora Domain Gossip"
       ]
     },
     {
-      "coords": [
-        581,
-        91
-      ],
+      "coords": [581, 91],
       "image": "gossip_stone",
       "codes": [
         "OOT Zora River Gossip High Pillar"
       ]
     },
     {
-      "coords": [
-        840,
-        41
-      ],
+      "coords": [840, 41],
       "image": "gossip_stone",
       "codes": [
         "OOT Zora River Gossip Near Domain"
       ]
     },
     {
-      "coords": [
-        851,
-        292
-      ],
+      "coords": [851, 292],
       "image": "gossip_stone",
       "codes": [
         "OOT Zora Fountain Gossip Northwest"
       ]
     },
     {
-      "coords": [
-        943,
-        446
-      ],
+      "coords": [943, 446],
       "image": "gossip_stone",
       "codes": [
         "OOT Zora Fountain Gossip Near Fairy"
       ]
     },
     {
-      "coords": [
-        104,
-        334
-      ],
+      "coords": [104, 334],
       "image": "interior_entrance",
       "type": "submenu",
       "markers": [
@@ -1091,10 +773,7 @@
       ]
     },
     {
-      "coords": [
-        79,
-        443
-      ],
+      "coords": [79, 443],
       "image": "grotto",
       "type": "submenu",
       "markers": [
@@ -1113,26 +792,17 @@
       ]
     },
     {
-      "coords": [
-        182,
-        470
-      ],
+      "coords": [182, 470],
       "image": "dungeon_entrance",
       "codes": "TODO KF 082 :: unnamed_stack > River > River Layers > River Entrances :: Pasted Layer #81 :: 001-001-015-002.png"
     },
     {
-      "coords": [
-        169,
-        500
-      ],
+      "coords": [169, 500],
       "image": "warp_spot",
       "codes": "TODO KF 083 :: unnamed_stack > River > River Layers > River Entrances :: Pasted Layer #82 :: 001-001-015-003.png"
     },
     {
-      "coords": [
-        284,
-        336
-      ],
+      "coords": [284, 336],
       "image": "interior_entrance",
       "type": "submenu",
       "markers": [
@@ -1216,10 +886,7 @@
       ]
     },
     {
-      "coords": [
-        373,
-        162
-      ],
+      "coords": [373, 162],
       "image": "song_grotto",
       "type": "submenu",
       "markers": [
@@ -1237,10 +904,7 @@
       ]
     },
     {
-      "coords": [
-        543,
-        196
-      ],
+      "coords": [543, 196],
       "image": "grotto",
       "type": "submenu",
       "markers": [
@@ -1278,10 +942,7 @@
       ]
     },
     {
-      "coords": [
-        578,
-        139
-      ],
+      "coords": [578, 139],
       "image": "boulder_grotto",
       "type": "submenu",
       "markers": [
@@ -1301,10 +962,7 @@
       ]
     },
     {
-      "coords": [
-        532,
-        504
-      ],
+      "coords": [532, 504],
       "image": "song_grotto",
       "type": "submenu",
       "markers": [
@@ -1324,10 +982,7 @@
       ]
     },
     {
-      "coords": [
-        632,
-        560
-      ],
+      "coords": [632, 560],
       "image": "interior_entrance",
       "type": "submenu",
       "markers": [
@@ -1347,18 +1002,12 @@
       ]
     },
     {
-      "coords": [
-        852,
-        345
-      ],
+      "coords": [852, 345],
       "image": "dungeon_entrance",
       "codes": "TODO KF 090 :: unnamed_stack > River > River Layers > River Entrances :: Pasted Layer #89 :: 001-001-015-010.png"
     },
     {
-      "coords": [
-        932,
-        475
-      ],
+      "coords": [932, 475],
       "image": "boulder_grotto",
       "type": "submenu",
       "markers": [
@@ -1369,10 +1018,7 @@
       ]
     },
     {
-      "coords": [
-        904,
-        251
-      ],
+      "coords": [904, 251],
       "image": "dungeon_entrance",
       "codes": "TODO KF 092 :: unnamed_stack > River > River Layers > River Entrances :: Pasted Layer #91 :: 001-001-015-012.png"
     }

@@ -6,160 +6,112 @@
   "height": 600,
   "markers": [
     {
-      "coords": [
-        248,
-        266
-      ],
+      "coords": [248, 266],
       "image": "goron_ruby",
       "codes": [
         "OOT Dodongo Cavern Boss"
       ]
     },
     {
-      "coords": [
-        264,
-        266
-      ],
+      "coords": [264, 266],
       "image": "heart_container",
       "codes": [
         "OOT Dodongo Cavern Boss Container"
       ]
     },
     {
-      "coords": [
-        280,
-        266
-      ],
+      "coords": [280, 266],
       "image": "chest",
       "codes": [
         "OOT Dodongo Cavern Boss Chest"
       ]
     },
     {
-      "coords": [
-        243,
-        380
-      ],
+      "coords": [243, 380],
       "image": "chest",
       "codes": [
         "OOT Dodongo Cavern Compass Chest"
       ]
     },
     {
-      "coords": [
-        273,
-        337
-      ],
+      "coords": [273, 337],
       "image": "chest",
       "codes": [
         "OOT Dodongo Cavern Map Chest"
       ]
     },
     {
-      "coords": [
-        570,
-        312
-      ],
+      "coords": [570, 312],
       "image": "chest",
       "codes": [
         "OOT Dodongo Cavern Bridge Chest"
       ]
     },
     {
-      "coords": [
-        671,
-        370
-      ],
+      "coords": [671, 370],
       "image": "chest",
       "codes": [
         "OOT Dodongo Cavern Bomb Bag Side Chest"
       ]
     },
     {
-      "coords": [
-        657,
-        322
-      ],
+      "coords": [657, 322],
       "image": "chest",
       "codes": [
         "OOT Dodongo Cavern Bomb Bag Chest"
       ]
     },
     {
-      "coords": [
-        359,
-        197
-      ],
+      "coords": [359, 197],
       "image": "gold_skulltula",
       "codes": [
         "OOT Dodongo Cavern GS Near Boss"
       ]
     },
     {
-      "coords": [
-        397,
-        405
-      ],
+      "coords": [397, 405],
       "image": "gold_skulltula",
       "codes": [
         "OOT Dodongo Cavern GS Side Room"
       ]
     },
     {
-      "coords": [
-        392,
-        350
-      ],
+      "coords": [392, 350],
       "image": "gold_skulltula",
       "codes": [
         "OOT Dodongo Cavern GS Scarecrow"
       ]
     },
     {
-      "coords": [
-        543,
-        332
-      ],
+      "coords": [543, 332],
       "image": "gold_skulltula",
       "codes": [
         "OOT Dodongo Cavern GS Stairs Top"
       ]
     },
     {
-      "coords": [
-        543,
-        301
-      ],
+      "coords": [543, 301],
       "image": "gold_skulltula",
       "codes": [
         "OOT Dodongo Cavern GS Stairs Vines"
       ]
     },
     {
-      "coords": [
-        272,
-        365
-      ],
+      "coords": [272, 365],
       "image": "business_scrub_oot",
       "codes": [
         "OOT Dodongo Cavern Lobby Scrub"
       ]
     },
     {
-      "coords": [
-        392,
-        257
-      ],
+      "coords": [392, 257],
       "image": "business_scrub_oot",
       "codes": [
         "OOT Dodongo Cavern Green Side Room Scrub"
       ]
     },
     {
-      "coords": [
-        669,
-        296
-      ],
+      "coords": [669, 296],
       "image": "business_scrub_oot",
       "codes": [
         "OOT Dodongo Cavern Bomb Bag Side Room Left Scrub",
@@ -167,10 +119,7 @@
       ]
     },
     {
-      "coords": [
-        314,
-        223
-      ],
+      "coords": [314, 223],
       "image": "pot",
       "codes": [
         "OOT Dodongo Cavern Pot Skull 3",
@@ -178,10 +127,7 @@
       ]
     },
     {
-      "coords": [
-        347,
-        240
-      ],
+      "coords": [347, 240],
       "image": "pot",
       "codes": [
         "OOT Dodongo Cavern Pot Skull 1",
@@ -189,10 +135,7 @@
       ]
     },
     {
-      "coords": [
-        373,
-        327
-      ],
+      "coords": [373, 327],
       "image": "pot",
       "codes": [
         "OOT Dodongo Cavern Pot Green Room Pot 1",
@@ -202,10 +145,7 @@
       ]
     },
     {
-      "coords": [
-        408,
-        303
-      ],
+      "coords": [408, 303],
       "image": "pot",
       "codes": [
         "OOT Dodongo Cavern Pot Miniboss 3",
@@ -213,10 +153,7 @@
       ]
     },
     {
-      "coords": [
-        437,
-        279
-      ],
+      "coords": [437, 279],
       "image": "pot",
       "codes": [
         "OOT Dodongo Cavern Pot Miniboss 1",
@@ -224,10 +161,7 @@
       ]
     },
     {
-      "coords": [
-        437,
-        339
-      ],
+      "coords": [437, 339],
       "image": "pot",
       "codes": [
         "OOT Dodongo Cavern Pot Right Corridor Pot 5",
@@ -235,10 +169,7 @@
       ]
     },
     {
-      "coords": [
-        402,
-        359
-      ],
+      "coords": [402, 359],
       "image": "pot",
       "codes": [
         "OOT Dodongo Cavern Pot Right Corridor Pot 3",
@@ -246,10 +177,7 @@
       ]
     },
     {
-      "coords": [
-        368,
-        358
-      ],
+      "coords": [368, 358],
       "image": "pot",
       "codes": [
         "OOT Dodongo Cavern Pot Right Corridor Pot 1",
@@ -257,10 +185,7 @@
       ]
     },
     {
-      "coords": [
-        530,
-        306
-      ],
+      "coords": [530, 306],
       "image": "pot",
       "codes": [
         "OOT Dodongo Cavern Pot Stairs Pot 1",
@@ -268,10 +193,7 @@
       ]
     },
     {
-      "coords": [
-        553,
-        306
-      ],
+      "coords": [553, 306],
       "image": "pot",
       "codes": [
         "OOT Dodongo Cavern Pot Stairs Pot 3",
@@ -279,10 +201,7 @@
       ]
     },
     {
-      "coords": [
-        663,
-        347
-      ],
+      "coords": [663, 347],
       "image": "pot",
       "codes": [
         "OOT Dodongo Cavern Pot Bomb Bag Room 1",
@@ -290,10 +209,7 @@
       ]
     },
     {
-      "coords": [
-        698,
-        356
-      ],
+      "coords": [698, 356],
       "image": "pot",
       "codes": [
         "OOT Dodongo Cavern Pot Room Before Miniboss 1",
@@ -301,10 +217,7 @@
       ]
     },
     {
-      "coords": [
-        701,
-        326
-      ],
+      "coords": [701, 326],
       "image": "pot",
       "codes": [
         "OOT Dodongo Cavern Pot Room After Miniboss 1",
@@ -312,63 +225,43 @@
       ]
     },
     {
-      "coords": [
-        304,
-        274
-      ],
+      "coords": [304, 274],
       "image": "grass",
       "codes": [
         "OOT Dodongo Cavern Grass Pre-Boss"
       ]
     },
     {
-      "coords": [
-        386,
-        389
-      ],
+      "coords": [386, 389],
       "image": "grass",
-      "overlays": [
-        "broken"
-      ],
+      "overlays": ["broken"],
       "codes": [
         "OOT Dodongo Cavern Grass East Corridor Side Room"
       ]
     },
     {
-      "coords": [
-        583,
-        360
-      ],
+      "coords": [583, 360],
       "image": "grass",
       "codes": [
         "OOT Dodongo Cavern Grass Lobby"
       ]
     },
     {
-      "coords": [
-        666,
-        324
-      ],
+      "coords": [666, 324],
       "image": "grass",
       "codes": [
         "OOT Dodongo Cavern Grass Bomb Bag Room"
       ]
     },
     {
-      "coords": [
-        717,
-        357
-      ],
+      "coords": [717, 357],
       "image": "grass",
       "codes": [
         "OOT Dodongo Cavern Grass Pre-Miniboss"
       ]
     },
     {
-      "coords": [
-        732,
-        297
-      ],
+      "coords": [732, 297],
       "image": "heart",
       "codes": [
         "OOT Dodongo Cavern Heart Miniboss Upper 1",
@@ -376,30 +269,21 @@
       ]
     },
     {
-      "coords": [
-        679,
-        367
-      ],
+      "coords": [679, 367],
       "image": "heart",
       "codes": [
         "OOT Dodongo Cavern Heart Bomb Bag Room"
       ]
     },
     {
-      "coords": [
-        460,
-        301
-      ],
+      "coords": [460, 301],
       "image": "heart",
       "codes": [
         "OOT Dodongo Cavern Heart Miniboss Lava"
       ]
     },
     {
-      "coords": [
-        341,
-        313
-      ],
+      "coords": [341, 313],
       "image": "gossip_stone",
       "codes": [
         "OOT Dodongo Cavern Gossip"

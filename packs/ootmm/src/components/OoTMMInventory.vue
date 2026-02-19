@@ -1,26 +1,26 @@
 <script setup lang="ts">
-import { computed } from 'vue'
-import { storeToRefs } from 'pinia'
-import { ITEM_DATABASE } from '../data/items'
-import { useOoTMMUiStore } from '../stores/ootmmUi'
-import { matchesSearchTerms } from '../utils/search'
-import { selectSearchInputText } from '../utils/input'
+import { computed } from 'vue';
+import { storeToRefs } from 'pinia';
+import { ITEM_DATABASE } from '../data/items';
+import { useOoTMMUiStore } from '../stores/ootmmUi';
+import { matchesSearchTerms } from '../utils/search';
+import { selectSearchInputText } from '../utils/input';
 
 const props = defineProps<{
-  inventory: Map<string, number>
-  availableItemIds?: Set<string>
-  itemMaxCounts?: Map<string, number>
-}>()
+  inventory: Map<string, number>;
+  availableItemIds?: Set<string>;
+  itemMaxCounts?: Map<string, number>;
+}>();
 
 const emit = defineEmits<{
-  'update:inventory': [Map<string, number>]
-}>()
+  'update:inventory': [Map<string, number>];
+}>();
 
-const uiStore = useOoTMMUiStore()
+const uiStore = useOoTMMUiStore();
 const {
   inventorySearchQuery: searchQuery,
   inventorySelectedCategory: selectedCategory,
-} = storeToRefs(uiStore)
+} = storeToRefs(uiStore);
 
 const categories = [
   { value: 'all', label: 'All Items' },
@@ -35,61 +35,66 @@ const categories = [
   { value: 'soul', label: 'Souls' },
   { value: 'trap', label: 'Traps' },
   { value: 'misc', label: 'Misc' },
-]
+];
 
 const filteredItems = computed(() => {
-  return ITEM_DATABASE.filter(item => {
-    const matchesSearch = matchesSearchTerms([item.name], searchQuery.value)
-    const matchesCategory = selectedCategory.value === 'all' || item.category === selectedCategory.value
-    const matchesAvailability = !props.availableItemIds || props.availableItemIds.size === 0 || props.availableItemIds.has(item.id)
-    return matchesSearch && matchesCategory && matchesAvailability
-  })
-})
+  return ITEM_DATABASE.filter((item) => {
+    const matchesSearch = matchesSearchTerms([item.name], searchQuery.value);
+    const matchesCategory =
+      selectedCategory.value === 'all' ||
+      item.category === selectedCategory.value;
+    const matchesAvailability =
+      !props.availableItemIds ||
+      props.availableItemIds.size === 0 ||
+      props.availableItemIds.has(item.id);
+    return matchesSearch && matchesCategory && matchesAvailability;
+  });
+});
 
 function getItemCount(itemId: string): number {
-  return props.inventory.get(itemId) || 0
+  return props.inventory.get(itemId) || 0;
 }
 
 function getItemMaxCount(itemId: string, fallback?: number): number {
-  return props.itemMaxCounts?.get(itemId) ?? fallback ?? 1
+  return props.itemMaxCounts?.get(itemId) ?? fallback ?? 1;
 }
 
 function incrementItem(itemId: string) {
-  const item = ITEM_DATABASE.find(i => i.id === itemId)
-  if (!item) return
-  
-  const newInventory = new Map(props.inventory)
-  const current = newInventory.get(itemId) || 0
-  const max = getItemMaxCount(itemId, item.maxCount)
-  
+  const item = ITEM_DATABASE.find((i) => i.id === itemId);
+  if (!item) return;
+
+  const newInventory = new Map(props.inventory);
+  const current = newInventory.get(itemId) || 0;
+  const max = getItemMaxCount(itemId, item.maxCount);
+
   if (current < max) {
-    newInventory.set(itemId, current + 1)
-    emit('update:inventory', newInventory)
+    newInventory.set(itemId, current + 1);
+    emit('update:inventory', newInventory);
   }
 }
 
 function decrementItem(itemId: string) {
-  const newInventory = new Map(props.inventory)
-  const current = newInventory.get(itemId) || 0
-  
+  const newInventory = new Map(props.inventory);
+  const current = newInventory.get(itemId) || 0;
+
   if (current > 0) {
     if (current === 1) {
-      newInventory.delete(itemId)
+      newInventory.delete(itemId);
     } else {
-      newInventory.set(itemId, current - 1)
+      newInventory.set(itemId, current - 1);
     }
-    emit('update:inventory', newInventory)
+    emit('update:inventory', newInventory);
   }
 }
 
 function toggleItem(itemId: string) {
-  const current = getItemCount(itemId)
+  const current = getItemCount(itemId);
   if (current > 0) {
-    const newInventory = new Map(props.inventory)
-    newInventory.delete(itemId)
-    emit('update:inventory', newInventory)
+    const newInventory = new Map(props.inventory);
+    newInventory.delete(itemId);
+    emit('update:inventory', newInventory);
   } else {
-    incrementItem(itemId)
+    incrementItem(itemId);
   }
 }
 </script>
@@ -105,7 +110,7 @@ function toggleItem(itemId: string) {
         @focus="selectSearchInputText"
         @click="selectSearchInputText"
       />
-      
+
       <select v-model="selectedCategory" class="category-select">
         <option v-for="cat in categories" :key="cat.value" :value="cat.value">
           {{ cat.label }}
@@ -118,9 +123,9 @@ function toggleItem(itemId: string) {
         v-for="(item, index) in filteredItems"
         :key="`${item.id}-${index}`"
         class="item-card"
-        :class="{ 
+        :class="{
           owned: getItemCount(item.id) > 0,
-          [`category-${item.category}`]: true 
+          [`category-${item.category}`]: true,
         }"
         @click="toggleItem(item.id)"
       >
@@ -131,8 +136,11 @@ function toggleItem(itemId: string) {
           <div class="item-name">{{ item.name }}</div>
           <div class="item-game">{{ item.game.toUpperCase() }}</div>
         </div>
-        <div v-if="getItemMaxCount(item.id, item.maxCount) > 1" class="item-count">
-          <button 
+        <div
+          v-if="getItemMaxCount(item.id, item.maxCount) > 1"
+          class="item-count"
+        >
+          <button
             :disabled="getItemCount(item.id) === 0"
             class="count-btn"
             @click.stop="decrementItem(item.id)"
@@ -140,8 +148,10 @@ function toggleItem(itemId: string) {
             −
           </button>
           <span class="count-value">{{ getItemCount(item.id) }}</span>
-          <button 
-            :disabled="getItemCount(item.id) >= getItemMaxCount(item.id, item.maxCount)"
+          <button
+            :disabled="
+              getItemCount(item.id) >= getItemMaxCount(item.id, item.maxCount)
+            "
             class="count-btn"
             @click.stop="incrementItem(item.id)"
           >

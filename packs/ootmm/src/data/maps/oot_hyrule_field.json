@@ -6,152 +6,84 @@
   "height": 600,
   "markers": [
     {
-      "coords": [
-        398,
-        204
-      ],
+      "coords": [398, 204],
       "image": "npc",
       "codes": "OOT Malon Egg"
     },
     {
-      "coords": [
-        706,
-        172
-      ],
+      "coords": [706, 172],
       "image": "npc",
-      "overlays": [
-        "child"
-      ],
+      "overlays": ["child"],
       "codes": "OOT Hyrule Field Sell Bunny Mask"
     },
     {
-      "coords": [
-        850,
-        77
-      ],
+      "coords": [850, 77],
       "image": "collectible",
-      "overlays": [
-        "child"
-      ],
+      "overlays": ["child"],
       "codes": "OOT Hyrule Field Ocarina of Time"
     },
     {
-      "coords": [
-        936,
-        572
-      ],
+      "coords": [936, 572],
       "image": "wonder_item_random",
-      "overlays": [
-        "child"
-      ],
+      "overlays": ["child"],
       "codes": "OOT Hatch Chicken"
     },
     {
-      "coords": [
-        972,
-        572
-      ],
+      "coords": [972, 572],
       "image": "wonder_item_random",
-      "overlays": [
-        "adult"
-      ],
+      "overlays": ["adult"],
       "codes": "OOT Hatch Pocket Cucco"
     },
     {
-      "coords": [
-        97,
-        480
-      ],
+      "coords": [97, 480],
       "image": "song",
-      "overlays": [
-        "child",
-        "day"
-      ],
+      "overlays": ["child", "day"],
       "codes": "OOT Lon Lon Ranch Malon Song"
     },
     {
-      "coords": [
-        866,
-        77
-      ],
+      "coords": [866, 77],
       "image": "song",
-      "overlays": [
-        "child"
-      ],
+      "overlays": ["child"],
       "codes": "OOT Hyrule Field Song of Time"
     },
     {
-      "coords": [
-        127,
-        131
-      ],
+      "coords": [127, 131],
       "image": "gold_skulltula",
       "codes": "OOT Ganon Castle Exterior GS"
     },
     {
-      "coords": [
-        16,
-        533
-      ],
+      "coords": [16, 533],
       "image": "gold_skulltula",
-      "overlays": [
-        "child",
-        "night"
-      ],
+      "overlays": ["child", "night"],
       "codes": "OOT Lon Lon Ranch GS Back Wall"
     },
     {
-      "coords": [
-        128,
-        520
-      ],
+      "coords": [128, 520],
       "image": "gold_skulltula",
-      "overlays": [
-        "child",
-        "night"
-      ],
+      "overlays": ["child", "night"],
       "codes": "OOT Lon Lon Ranch GS Rain Shed"
     },
     {
-      "coords": [
-        154,
-        420
-      ],
+      "coords": [154, 420],
       "image": "gold_skulltula",
-      "overlays": [
-        "child"
-      ],
+      "overlays": ["child"],
       "codes": "OOT Lon Lon Ranch GS Tree"
     },
     {
-      "coords": [
-        141,
-        403
-      ],
+      "coords": [141, 403],
       "image": "gold_skulltula",
-      "overlays": [
-        "child",
-        "night"
-      ],
+      "overlays": ["child", "night"],
       "codes": "OOT Lon Lon Ranch GS House"
     },
     {
-      "coords": [
-        402,
-        184
-      ],
+      "coords": [402, 184],
       "image": "gold_skulltula",
       "codes": "OOT Hyrule Castle GS Tree"
     },
     {
-      "coords": [
-        124,
-        380
-      ],
+      "coords": [124, 380],
       "image": "pot",
-      "overlays": [
-        "child"
-      ],
+      "overlays": ["child"],
       "codes": [
         "OOT Lon Lon Ranch Pot 1",
         "OOT Lon Lon Ranch Pot 2",
@@ -160,14 +92,9 @@
       ]
     },
     {
-      "coords": [
-        128,
-        504
-      ],
+      "coords": [128, 504],
       "image": "pot",
-      "overlays": [
-        "child"
-      ],
+      "overlays": ["child"],
       "codes": [
         "OOT Lon Lon Ranch Pot 5",
         "OOT Lon Lon Ranch Pot 6",
@@ -175,74 +102,36 @@
       ]
     },
     {
-      "coords": [
-        450,
-        195
-      ],
+      "coords": [450, 195],
       "image": "pot",
-      "overlays": [
-        "broken"
-      ],
-      "codes": [
-        "OOT Hyrule Castle Pot 1",
-        "OOT Hyrule Castle Pot 2"
-      ]
+      "overlays": ["broken"],
+      "codes": ["OOT Hyrule Castle Pot 1", "OOT Hyrule Castle Pot 2"]
     },
     {
-      "coords": [
-        142,
-        419
-      ],
+      "coords": [142, 419],
       "image": "crate",
-      "overlays": [
-        "child"
-      ],
+      "overlays": ["child"],
       "codes": "OOT Lon Lon Ranch Crate"
     },
     {
-      "coords": [
-        405,
-        396
-      ],
+      "coords": [405, 396],
       "image": "crate",
-      "overlays": [
-        "child"
-      ],
-      "codes": [
-        "OOT Market Crate 3",
-        "OOT Market Crate 4"
-      ]
+      "overlays": ["child"],
+      "codes": ["OOT Market Crate 3", "OOT Market Crate 4"]
     },
     {
-      "coords": [
-        453,
-        466
-      ],
+      "coords": [453, 466],
       "image": "crate",
-      "overlays": [
-        "child"
-      ],
-      "codes": [
-        "OOT Market Crate 1",
-        "OOT Market Crate 2"
-      ]
+      "overlays": ["child"],
+      "codes": ["OOT Market Crate 1", "OOT Market Crate 2"]
     },
     {
-      "coords": [
-        399,
-        454
-      ],
+      "coords": [399, 454],
       "image": "grass",
-      "codes": [
-        "OOT Market Grass 7",
-        "OOT Market Grass 8"
-      ]
+      "codes": ["OOT Market Grass 7", "OOT Market Grass 8"]
     },
     {
-      "coords": [
-        429,
-        409
-      ],
+      "coords": [429, 409],
       "image": "grass",
       "codes": [
         "OOT Market Grass 4",
@@ -251,10 +140,7 @@
       ]
     },
     {
-      "coords": [
-        482,
-        392
-      ],
+      "coords": [482, 392],
       "image": "grass",
       "codes": [
         "OOT Market Grass 1",
@@ -263,21 +149,12 @@
       ]
     },
     {
-      "coords": [
-        426,
-        102
-      ],
+      "coords": [426, 102],
       "image": "grass",
-      "codes": [
-        "OOT Hyrule Castle Grass 1",
-        "OOT Hyrule Castle Grass 2"
-      ]
+      "codes": ["OOT Hyrule Castle Grass 1", "OOT Hyrule Castle Grass 2"]
     },
     {
-      "coords": [
-        826,
-        329
-      ],
+      "coords": [826, 329],
       "image": "grass",
       "codes": [
         "OOT Hyrule Field Grass Pack 4 Bush 01",
@@ -295,10 +172,7 @@
       ]
     },
     {
-      "coords": [
-        796,
-        298
-      ],
+      "coords": [796, 298],
       "image": "grass",
       "codes": [
         "OOT Hyrule Field Grass Pack 3 Bush 01",
@@ -316,10 +190,7 @@
       ]
     },
     {
-      "coords": [
-        891,
-        248
-      ],
+      "coords": [891, 248],
       "image": "grass",
       "codes": [
         "OOT Hyrule Field Grass Pack 2 Bush 01",
@@ -337,10 +208,7 @@
       ]
     },
     {
-      "coords": [
-        864,
-        138
-      ],
+      "coords": [864, 138],
       "image": "grass",
       "codes": [
         "OOT Hyrule Field Grass Pack 1 Bush 01",
@@ -358,32 +226,19 @@
       ]
     },
     {
-      "coords": [
-        76,
-        498
-      ],
+      "coords": [76, 498],
       "image": "wonder_item_blue_rupee",
-      "overlays": [
-        "adult"
-      ],
+      "overlays": ["adult"],
       "codes": "OOT Lon Lon Ranch Wonder Item 2"
     },
     {
-      "coords": [
-        123,
-        464
-      ],
+      "coords": [123, 464],
       "image": "wonder_item_blue_rupee",
-      "overlays": [
-        "adult"
-      ],
+      "overlays": ["adult"],
       "codes": "OOT Lon Lon Ranch Wonder Item 1"
     },
     {
-      "coords": [
-        358,
-        96
-      ],
+      "coords": [358, 96],
       "image": "wonder_item_green_rupee",
       "codes": [
         "OOT Hyrule Castle Wonder Item Moat 01",
@@ -398,54 +253,33 @@
       ]
     },
     {
-      "coords": [
-        378,
-        84
-      ],
+      "coords": [378, 84],
       "image": "wonder_item_red_rupee",
       "codes": "OOT Hyrule Castle Wonder Item Torch 1"
     },
     {
-      "coords": [
-        406,
-        84
-      ],
+      "coords": [406, 84],
       "image": "wonder_item_big_magic_jar",
       "codes": "OOT Hyrule Castle Wonder Item Torch 2"
     },
     {
-      "coords": [
-        430,
-        53
-      ],
+      "coords": [430, 53],
       "image": "wonder_item_blue_rupee",
       "codes": "OOT Hyrule Castle Wonder Item Moat 10"
     },
     {
-      "coords": [
-        381,
-        412
-      ],
+      "coords": [381, 412],
       "image": "wonder_item_blue_rupee",
-      "overlays": [
-        "child",
-        "night"
-      ],
+      "overlays": ["child", "night"],
       "codes": [
         "OOT Market Wonder Item Night 1",
         "OOT Market Wonder Item Night 2"
       ]
     },
     {
-      "coords": [
-        381,
-        428
-      ],
+      "coords": [381, 428],
       "image": "wonder_item_green_rupee",
-      "overlays": [
-        "child",
-        "day"
-      ],
+      "overlays": ["child", "day"],
       "codes": [
         "OOT Market Wonder Item Day 1",
         "OOT Market Wonder Item Day 2",
@@ -455,14 +289,9 @@
       ]
     },
     {
-      "coords": [
-        834,
-        68
-      ],
+      "coords": [834, 68],
       "image": "wonder_item_red_rupee",
-      "overlays": [
-        "child"
-      ],
+      "overlays": ["child"],
       "codes": [
         "OOT Hyrule Field Wonder Item 1",
         "OOT Hyrule Field Wonder Item 2",
@@ -470,18 +299,12 @@
       ]
     },
     {
-      "coords": [
-        964,
-        182
-      ],
+      "coords": [964, 182],
       "image": "big_fairy_spot",
       "codes": "OOT Hyrule Field River Big Fairy"
     },
     {
-      "coords": [
-        382,
-        163
-      ],
+      "coords": [382, 163],
       "image": "butterfly",
       "codes": [
         "OOT Hyrule Castle Butterfly Pack 4 Butterfly 1",
@@ -492,10 +315,7 @@
       ]
     },
     {
-      "coords": [
-        417,
-        134
-      ],
+      "coords": [417, 134],
       "image": "butterfly",
       "codes": [
         "OOT Hyrule Castle Butterfly Pack 3 Butterfly 3",
@@ -504,10 +324,7 @@
       ]
     },
     {
-      "coords": [
-        435,
-        163
-      ],
+      "coords": [435, 163],
       "image": "butterfly",
       "codes": [
         "OOT Hyrule Castle Butterfly Pack 2 Butterfly 1",
@@ -515,10 +332,7 @@
       ]
     },
     {
-      "coords": [
-        460,
-        142
-      ],
+      "coords": [460, 142],
       "image": "butterfly",
       "codes": [
         "OOT Hyrule Castle Butterfly Pack 1 Butterfly 1",
@@ -526,10 +340,7 @@
       ]
     },
     {
-      "coords": [
-        148,
-        123
-      ],
+      "coords": [148, 123],
       "image": "red_boulder",
       "codes": [
         "OOT Ganon Castle Exterior Red Boulder 1",
@@ -538,18 +349,12 @@
       ]
     },
     {
-      "coords": [
-        637,
-        210
-      ],
+      "coords": [637, 210],
       "image": "red_boulder",
       "codes": "OOT Hyrule Field Red Boulder 4"
     },
     {
-      "coords": [
-        647,
-        210
-      ],
+      "coords": [647, 210],
       "image": "bomb_grotto",
       "type": "submenu",
       "markers": [
@@ -582,10 +387,7 @@
       ]
     },
     {
-      "coords": [
-        640,
-        257
-      ],
+      "coords": [640, 257],
       "image": "red_boulder",
       "codes": [
         "OOT Hyrule Field Red Boulder 1",
@@ -593,18 +395,12 @@
       ]
     },
     {
-      "coords": [
-        682,
-        247
-      ],
+      "coords": [682, 247],
       "image": "red_boulder",
       "codes": "OOT Hyrule Field Red Boulder 3"
     },
     {
-      "coords": [
-        415,
-        183
-      ],
+      "coords": [415, 183],
       "image": "rock",
       "codes": [
         "OOT Hyrule Castle Rock 1",
@@ -613,10 +409,7 @@
       ]
     },
     {
-      "coords": [
-        646,
-        222
-      ],
+      "coords": [646, 222],
       "image": "rock",
       "codes": [
         "OOT Hyrule Field Rock Circle Rock 1",
@@ -630,34 +423,22 @@
       ]
     },
     {
-      "coords": [
-        393,
-        464
-      ],
+      "coords": [393, 464],
       "image": "tree",
       "codes": "OOT Market Tree"
     },
     {
-      "coords": [
-        441,
-        91
-      ],
+      "coords": [441, 91],
       "image": "tree",
       "codes": "OOT Hyrule Castle Tree 8"
     },
     {
-      "coords": [
-        385,
-        133
-      ],
+      "coords": [385, 133],
       "image": "tree",
       "codes": "OOT Hyrule Castle Tree Guarded"
     },
     {
-      "coords": [
-        441,
-        136
-      ],
+      "coords": [441, 136],
       "image": "tree",
       "codes": [
         "OOT Hyrule Castle Tree 1",
@@ -670,10 +451,7 @@
       ]
     },
     {
-      "coords": [
-        708,
-        62
-      ],
+      "coords": [708, 62],
       "image": "tree",
       "codes": [
         "OOT Hyrule Field Tree 01",
@@ -684,26 +462,17 @@
       ]
     },
     {
-      "coords": [
-        732,
-        87
-      ],
+      "coords": [732, 87],
       "image": "tree",
       "codes": "OOT Hyrule Field Tree 07"
     },
     {
-      "coords": [
-        702,
-        117
-      ],
+      "coords": [702, 117],
       "image": "tree",
       "codes": "OOT Hyrule Field Tree 06"
     },
     {
-      "coords": [
-        809,
-        88
-      ],
+      "coords": [809, 88],
       "image": "tree",
       "codes": [
         "OOT Hyrule Field Tree 08",
@@ -712,34 +481,22 @@
       ]
     },
     {
-      "coords": [
-        878,
-        45
-      ],
+      "coords": [878, 45],
       "image": "tree",
       "codes": "OOT Hyrule Field Tree 11"
     },
     {
-      "coords": [
-        923,
-        82
-      ],
+      "coords": [923, 82],
       "image": "tree",
       "codes": "OOT Hyrule Field Tree 12"
     },
     {
-      "coords": [
-        910,
-        158
-      ],
+      "coords": [910, 158],
       "image": "tree",
       "codes": "OOT Hyrule Field Tree 13"
     },
     {
-      "coords": [
-        916,
-        229
-      ],
+      "coords": [916, 229],
       "image": "tree",
       "codes": [
         "OOT Hyrule Field Tree 14",
@@ -751,22 +508,14 @@
       ]
     },
     {
-      "coords": [
-        785,
-        184
-      ],
+      "coords": [785, 184],
       "image": "tree",
       "codes": "OOT Hyrule Field Tree 20"
     },
     {
-      "coords": [
-        880,
-        352
-      ],
+      "coords": [880, 352],
       "image": "tree",
-      "overlays": [
-        "child"
-      ],
+      "overlays": ["child"],
       "codes": [
         "OOT Hyrule Field Tree Child Near Lake 1",
         "OOT Hyrule Field Tree Child Near Lake 2",
@@ -777,10 +526,7 @@
       ]
     },
     {
-      "coords": [
-        860,
-        356
-      ],
+      "coords": [860, 356],
       "image": "tree",
       "codes": [
         "OOT Hyrule Field Tree 21",
@@ -805,44 +551,26 @@
       ]
     },
     {
-      "coords": [
-        741,
-        383
-      ],
+      "coords": [741, 383],
       "image": "tree",
       "codes": "OOT Hyrule Field Tree 40"
     },
     {
-      "coords": [
-        688,
-        267
-      ],
+      "coords": [688, 267],
       "image": "tree",
-      "overlays": [
-        "child"
-      ],
+      "overlays": ["child"],
       "codes": "OOT Hyrule Field Tree Child Near Valley"
     },
     {
-      "coords": [
-        681,
-        209
-      ],
+      "coords": [681, 209],
       "image": "tree",
-      "overlays": [
-        "adult"
-      ],
+      "overlays": ["adult"],
       "codes": "OOT Hyrule Field Tree Adult"
     },
     {
-      "coords": [
-        740,
-        52
-      ],
+      "coords": [740, 52],
       "image": "bush",
-      "overlays": [
-        "child"
-      ],
+      "overlays": ["child"],
       "codes": [
         "OOT Hyrule Field Bush Child 02",
         "OOT Hyrule Field Bush Child 03",
@@ -857,21 +585,13 @@
       ]
     },
     {
-      "coords": [
-        758,
-        80
-      ],
+      "coords": [758, 80],
       "image": "bush",
-      "overlays": [
-        "child"
-      ],
+      "overlays": ["child"],
       "codes": "OOT Hyrule Field Bush Child 01"
     },
     {
-      "coords": [
-        714,
-        98
-      ],
+      "coords": [714, 98],
       "image": "bush",
       "codes": [
         "OOT Hyrule Field Bush 01",
@@ -883,10 +603,7 @@
       ]
     },
     {
-      "coords": [
-        670,
-        225
-      ],
+      "coords": [670, 225],
       "image": "bush",
       "codes": [
         "OOT Hyrule Field Bush 30",
@@ -898,10 +615,7 @@
       ]
     },
     {
-      "coords": [
-        712,
-        356
-      ],
+      "coords": [712, 356],
       "image": "bush",
       "codes": [
         "OOT Hyrule Field Bush 19",
@@ -918,14 +632,9 @@
       ]
     },
     {
-      "coords": [
-        826,
-        365
-      ],
+      "coords": [826, 365],
       "image": "bush",
-      "overlays": [
-        "child"
-      ],
+      "overlays": ["child"],
       "codes": [
         "OOT Hyrule Field Bush Child 12",
         "OOT Hyrule Field Bush Child 13",
@@ -942,10 +651,7 @@
       ]
     },
     {
-      "coords": [
-        843,
-        365
-      ],
+      "coords": [843, 365],
       "image": "bush",
       "codes": [
         "OOT Hyrule Field Bush 07",
@@ -963,26 +669,17 @@
       ]
     },
     {
-      "coords": [
-        360,
-        117
-      ],
+      "coords": [360, 117],
       "image": "gossip_stone",
       "codes": "OOT Hyrule Castle Gossip Before Moat"
     },
     {
-      "coords": [
-        416,
-        206
-      ],
+      "coords": [416, 206],
       "image": "gossip_stone",
       "codes": "OOT Hyrule Castle Gossip After Climb"
     },
     {
-      "coords": [
-        535,
-        387
-      ],
+      "coords": [535, 387],
       "image": "gossip_stone",
       "codes": [
         "OOT Market Gossip Outside Temple Leftmost",
@@ -992,18 +689,12 @@
       ]
     },
     {
-      "coords": [
-        72,
-        124
-      ],
+      "coords": [72, 124],
       "image": "dungeon_entrance",
       "codes": "TODO KF 076 :: unnamed_stack > Hyrule > Hyrule Layers > Hyrule Entrances :: Pasted Layer #75 :: 001-001-015-000.png"
     },
     {
-      "coords": [
-        189,
-        128
-      ],
+      "coords": [189, 128],
       "image": "black_pillar_entrance",
       "type": "submenu",
       "markers": [
@@ -1014,19 +705,14 @@
       ]
     },
     {
-      "coords": [
-        44,
-        564
-      ],
+      "coords": [44, 564],
       "image": "interior_entrance",
       "type": "submenu",
       "markers": [
         {
           "image": "heart_piece",
           "codes": "OOT Lon Lon Ranch Silo HP",
-          "overlays": [
-            "child"
-          ]
+          "overlays": ["child"]
         },
         {
           "image": "cow",
@@ -1038,15 +724,10 @@
       ]
     },
     {
-      "coords": [
-        169,
-        556
-      ],
+      "coords": [169, 556],
       "image": "grotto",
       "type": "submenu",
-      "overlays": [
-        "child"
-      ],
+      "overlays": ["child"],
       "markers": [
         {
           "image": "business_scrub_oot",
@@ -1063,10 +744,7 @@
       ]
     },
     {
-      "coords": [
-        122,
-        398
-      ],
+      "coords": [122, 398],
       "image": "interior_entrance",
       "type": "submenu",
       "markers": [
@@ -1080,28 +758,19 @@
       ]
     },
     {
-      "coords": [
-        144,
-        390
-      ],
+      "coords": [144, 390],
       "image": "interior_entrance",
       "type": "submenu",
       "markers": [
         {
           "image": "npc",
           "codes": "OOT Lon Lon Ranch Talon Bottle",
-          "overlays": [
-            "child",
-            "day"
-          ]
+          "overlays": ["child", "day"]
         },
         {
           "image": "shop",
           "codes": "OOT Lon Lon Ranch Talon Buy Milk",
-          "overlays": [
-            "child",
-            "day"
-          ]
+          "overlays": ["child", "day"]
         },
         {
           "image": "pot",
@@ -1114,16 +783,10 @@
       ]
     },
     {
-      "coords": [
-        301,
-        372
-      ],
+      "coords": [301, 372],
       "image": "interior_entrance",
       "type": "submenu",
-      "overlays": [
-        "child",
-        "night"
-      ],
+      "overlays": ["child", "night"],
       "markers": [
         {
           "image": "pot",
@@ -1136,15 +799,10 @@
       ]
     },
     {
-      "coords": [
-        365,
-        440
-      ],
+      "coords": [365, 440],
       "image": "interior_entrance",
       "type": "submenu",
-      "overlays": [
-        "child"
-      ],
+      "overlays": ["child"],
       "markers": [
         {
           "image": "npc",
@@ -1152,51 +810,33 @@
             "OOT Bombchu Bowling Reward 1",
             "OOT Bombchu Bowling Reward 2"
           ],
-          "overlays": [
-            "child"
-          ]
+          "overlays": ["child"]
         }
       ]
     },
     {
-      "coords": [
-        393,
-        380
-      ],
+      "coords": [393, 380],
       "image": "interior_entrance",
       "type": "submenu",
-      "overlays": [
-        "child",
-        "day"
-      ],
+      "overlays": ["child", "day"],
       "markers": [
         {
           "image": "npc",
           "codes": "OOT Shooting Gallery Child",
-          "overlays": [
-            "child"
-          ]
+          "overlays": ["child"]
         }
       ]
     },
     {
-      "coords": [
-        337,
-        504
-      ],
+      "coords": [337, 504],
       "image": "interior_entrance",
       "type": "submenu",
-      "overlays": [
-        "child",
-        "night"
-      ],
+      "overlays": ["child", "night"],
       "markers": [
         {
           "image": "npc",
           "codes": "OOT Market Dog Lady HP",
-          "overlays": [
-            "child"
-          ]
+          "overlays": ["child"]
         },
         {
           "image": "crate",
@@ -1205,16 +845,10 @@
       ]
     },
     {
-      "coords": [
-        361,
-        504
-      ],
+      "coords": [361, 504],
       "image": "interior_entrance",
       "type": "submenu",
-      "overlays": [
-        "child",
-        "night"
-      ],
+      "overlays": ["child", "night"],
       "markers": [
         {
           "image": "shop",
@@ -1232,16 +866,10 @@
       ]
     },
     {
-      "coords": [
-        385,
-        500
-      ],
+      "coords": [385, 500],
       "image": "interior_entrance",
       "type": "submenu",
-      "overlays": [
-        "child",
-        "night"
-      ],
+      "overlays": ["child", "night"],
       "markers": [
         {
           "image": "shop",
@@ -1266,19 +894,14 @@
       ]
     },
     {
-      "coords": [
-        445,
-        564
-      ],
+      "coords": [445, 564],
       "image": "interior_entrance",
       "type": "submenu",
       "markers": [
         {
           "image": "npc",
           "codes": "OOT Market Pot House Big Poes",
-          "overlays": [
-            "adult"
-          ]
+          "overlays": ["adult"]
         },
         {
           "image": "gold_skulltula",
@@ -1292,9 +915,7 @@
             "OOT Market Pot House Crate 3",
             "OOT Market Pot House Crate 4"
           ],
-          "overlays": [
-            "child"
-          ]
+          "overlays": ["child"]
         },
         {
           "image": "pot",
@@ -1344,9 +965,7 @@
             "OOT Market Pot House Child Pot Above 1",
             "OOT Market Pot House Child Pot Above 2"
           ],
-          "overlays": [
-            "child"
-          ]
+          "overlays": ["child"]
         },
         {
           "image": "pot",
@@ -1363,22 +982,15 @@
             "OOT Market Pot House Adult Pot 10",
             "OOT Market Pot House Adult Pot 11"
           ],
-          "overlays": [
-            "adult"
-          ]
+          "overlays": ["adult"]
         }
       ]
     },
     {
-      "coords": [
-        469,
-        456
-      ],
+      "coords": [469, 456],
       "image": "interior_entrance",
       "type": "submenu",
-      "overlays": [
-        "child"
-      ],
+      "overlays": ["child"],
       "markers": [
         {
           "image": "shop",
@@ -1396,15 +1008,10 @@
       ]
     },
     {
-      "coords": [
-        469,
-        432
-      ],
+      "coords": [469, 432],
       "image": "interior_entrance",
       "type": "submenu",
-      "overlays": [
-        "child"
-      ],
+      "overlays": ["child"],
       "markers": [
         {
           "image": "shop",
@@ -1422,44 +1029,30 @@
       ]
     },
     {
-      "coords": [
-        473,
-        380
-      ],
+      "coords": [473, 380],
       "image": "interior_entrance",
-      "overlays": [
-        "child"
-      ],
+      "overlays": ["child"],
       "codes": "TODO KF 091 :: unnamed_stack > Hyrule > Hyrule Layers > Hyrule Entrances :: Pasted Layer #90 :: 001-001-015-015.png"
     },
     {
-      "coords": [
-        573,
-        336
-      ],
+      "coords": [573, 336],
       "image": "interior_entrance",
       "type": "submenu",
       "markers": [
         {
           "image": "collectible",
           "codes": "OOT Temple of Time Master Sword",
-          "overlays": [
-            "child"
-          ]
+          "overlays": ["child"]
         },
         {
           "image": "song",
           "codes": "OOT Temple of Time Sheik Song",
-          "overlays": [
-            "adult"
-          ]
+          "overlays": ["adult"]
         },
         {
           "image": "npc",
           "codes": "OOT Temple of Time Light Arrows",
-          "overlays": [
-            "adult"
-          ]
+          "overlays": ["adult"]
         },
         {
           "image": "light_medallion",
@@ -1468,10 +1061,7 @@
       ]
     },
     {
-      "coords": [
-        725,
-        378
-      ],
+      "coords": [725, 378],
       "image": "bomb_grotto",
       "type": "submenu",
       "markers": [
@@ -1490,10 +1080,7 @@
       ]
     },
     {
-      "coords": [
-        754,
-        382
-      ],
+      "coords": [754, 382],
       "image": "grotto",
       "type": "submenu",
       "markers": [
@@ -1532,10 +1119,7 @@
       ]
     },
     {
-      "coords": [
-        841,
-        338
-      ],
+      "coords": [841, 338],
       "image": "boulder_grotto",
       "type": "submenu",
       "markers": [
@@ -1574,10 +1158,7 @@
       ]
     },
     {
-      "coords": [
-        704,
-        130
-      ],
+      "coords": [704, 130],
       "image": "bomb_grotto",
       "type": "submenu",
       "markers": [
@@ -1588,10 +1169,7 @@
       ]
     },
     {
-      "coords": [
-        724,
-        58
-      ],
+      "coords": [724, 58],
       "image": "boulder_grotto",
       "type": "submenu",
       "markers": [
@@ -1611,10 +1189,7 @@
       ]
     },
     {
-      "coords": [
-        794,
-        80
-      ],
+      "coords": [794, 80],
       "image": "boulder_grotto",
       "type": "submenu",
       "markers": [
@@ -1653,10 +1228,7 @@
       ]
     },
     {
-      "coords": [
-        886,
-        56
-      ],
+      "coords": [886, 56],
       "image": "bomb_grotto",
       "type": "submenu",
       "markers": [
@@ -1667,18 +1239,12 @@
       ]
     },
     {
-      "coords": [
-        506,
-        172
-      ],
+      "coords": [506, 172],
       "image": "boulder_grotto",
       "codes": "TODO KF 101 :: unnamed_stack > Hyrule > Hyrule Layers > Hyrule Entrances :: Pasted Layer #100 :: 001-001-015-025.png"
     },
     {
-      "coords": [
-        522,
-        172
-      ],
+      "coords": [522, 172],
       "image": "crawl_space",
       "type": "submenu",
       "markers": [
@@ -1689,10 +1255,7 @@
       ]
     },
     {
-      "coords": [
-        442,
-        104
-      ],
+      "coords": [442, 104],
       "image": "song_grotto",
       "type": "submenu",
       "markers": [
@@ -1729,15 +1292,10 @@
       ]
     },
     {
-      "coords": [
-        424,
-        69
-      ],
+      "coords": [424, 69],
       "image": "crawl_space",
       "type": "submenu",
-      "overlays": [
-        "day"
-      ],
+      "overlays": ["day"],
       "markers": [
         {
           "image": "npc",

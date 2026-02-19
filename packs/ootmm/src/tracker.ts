@@ -1,40 +1,82 @@
-import type { TrackerPack, TrackerCheckResult, LocationInfo } from '@/types/tracker'
-import type { OoTMMSettings } from './types/settings'
-import { DEFAULT_OOTMM_SETTINGS } from './types/settings'
-import { VANILLA_SONG_EVENTS } from './data/song-events'
+import type {
+  TrackerPack,
+  TrackerCheckResult,
+  LocationInfo,
+} from '@/types/tracker';
+import type { OoTMMSettings } from './types/settings';
+import { DEFAULT_OOTMM_SETTINGS } from './types/settings';
+import { VANILLA_SONG_EVENTS } from './data/song-events';
 
 // Import from OoTMM submodule - using default imports for CJS/TS interop
-import * as LogicMod from '@ootmm/core/logic/index'
-import * as PathfinderMod from '@ootmm/core/logic/pathfind'
-import * as LocationsMod from '@ootmm/core/logic/locations'
-import * as ExprMod from '@ootmm/core/logic/expr'
-import * as ItemsMod from '@ootmm/core/items/index'
-import * as MonitorMod from '@ootmm/core/monitor'
-import * as SettingsMod from '@ootmm/core/settings/index'
-import * as EntranceMod from '@ootmm/core/logic/entrance'
-import * as IsShuffledMod from '@ootmm/core/logic/is-shuffled'
+import * as LogicMod from '@ootmm/core/logic/index';
+import * as PathfinderMod from '@ootmm/core/logic/pathfind';
+import * as LocationsMod from '@ootmm/core/logic/locations';
+import * as ExprMod from '@ootmm/core/logic/expr';
+import * as ItemsMod from '@ootmm/core/items/index';
+import * as MonitorMod from '@ootmm/core/monitor';
+import * as SettingsMod from '@ootmm/core/settings/index';
+import * as EntranceMod from '@ootmm/core/logic/entrance';
+import * as IsShuffledMod from '@ootmm/core/logic/is-shuffled';
 
-import { ITEM_DATABASE } from './data/items'
-import { LOCATION_CODE_CATALOG } from './data/locationCatalog'
+import { ITEM_DATABASE } from './data/items';
+import { LOCATION_CODE_CATALOG } from './data/locationCatalog';
 
-const resolveExport = <T>(mod: unknown, key: string): T => (mod as Record<string, T>)?.[key] ?? (mod as { default: Record<string, T> })?.default?.[key]
+const resolveExport = <T>(mod: unknown, key: string): T =>
+  (mod as Record<string, T>)?.[key] ??
+  (mod as { default: Record<string, T> })?.default?.[key];
 
-const worldState = resolveExport<typeof LogicMod.worldState>(LogicMod, 'worldState')
-const Pathfinder = resolveExport<typeof PathfinderMod.Pathfinder>(PathfinderMod, 'Pathfinder')
-const makeLocation = resolveExport<typeof LocationsMod.makeLocation>(LocationsMod, 'makeLocation')
-const locationData = resolveExport<typeof LocationsMod.locationData>(LocationsMod, 'locationData')
-const exprTrue = resolveExport<typeof ExprMod.exprTrue>(ExprMod, 'exprTrue')
-const Items = resolveExport<typeof ItemsMod.Items>(ItemsMod, 'Items')
-const makePlayerItem = resolveExport<typeof ItemsMod.makePlayerItem>(ItemsMod, 'makePlayerItem')
-const itemByID = resolveExport<typeof ItemsMod.itemByID>(ItemsMod, 'itemByID')
-const Monitor = resolveExport<typeof MonitorMod.Monitor>(MonitorMod, 'Monitor')
-const makeSettings = resolveExport<typeof SettingsMod.makeSettings>(SettingsMod, 'makeSettings')
-const mergeSettings = resolveExport<typeof SettingsMod.mergeSettings>(SettingsMod, 'mergeSettings')
-const LogicPassEntrances = resolveExport<typeof EntranceMod.LogicPassEntrances>(EntranceMod, 'LogicPassEntrances')
-const isShuffled = resolveExport<typeof IsShuffledMod.isShuffled>(IsShuffledMod, 'isShuffled')
+const worldState = resolveExport<typeof LogicMod.worldState>(
+  LogicMod,
+  'worldState',
+);
+const Pathfinder = resolveExport<typeof PathfinderMod.Pathfinder>(
+  PathfinderMod,
+  'Pathfinder',
+);
+const makeLocation = resolveExport<typeof LocationsMod.makeLocation>(
+  LocationsMod,
+  'makeLocation',
+);
+const locationData = resolveExport<typeof LocationsMod.locationData>(
+  LocationsMod,
+  'locationData',
+);
+const exprTrue = resolveExport<typeof ExprMod.exprTrue>(ExprMod, 'exprTrue');
+const exprHas = resolveExport<(item: unknown, count: number) => unknown>(
+  ExprMod,
+  'exprHas',
+);
+const exprOr = resolveExport<(exprs: unknown[]) => unknown>(ExprMod, 'exprOr');
+const exprAnd = resolveExport<(exprs: unknown[]) => unknown>(
+  ExprMod,
+  'exprAnd',
+);
+const Items = resolveExport<typeof ItemsMod.Items>(ItemsMod, 'Items');
+const makePlayerItem = resolveExport<typeof ItemsMod.makePlayerItem>(
+  ItemsMod,
+  'makePlayerItem',
+);
+const itemByID = resolveExport<typeof ItemsMod.itemByID>(ItemsMod, 'itemByID');
+const Monitor = resolveExport<typeof MonitorMod.Monitor>(MonitorMod, 'Monitor');
+const makeSettings = resolveExport<typeof SettingsMod.makeSettings>(
+  SettingsMod,
+  'makeSettings',
+);
+const mergeSettings = resolveExport<typeof SettingsMod.mergeSettings>(
+  SettingsMod,
+  'mergeSettings',
+);
+const LogicPassEntrances = resolveExport<typeof EntranceMod.LogicPassEntrances>(
+  EntranceMod,
+  'LogicPassEntrances',
+);
+const isShuffled = resolveExport<typeof IsShuffledMod.isShuffled>(
+  IsShuffledMod,
+  'isShuffled',
+);
 
-import type { World } from '@ootmm/core/logic/world'
-import type { PlayerItems, PlayerItem } from '@ootmm/core/items/index'
+import type { World } from '@ootmm/core/logic/world';
+import type { PlayerItems, PlayerItem } from '@ootmm/core/items/index';
 
 /**
  * WORKAROUND: The OoTMM core library seems to have been transpiled with an assumption
@@ -45,14 +87,24 @@ import type { PlayerItems, PlayerItem } from '@ootmm/core/items/index'
  */
 class ArrayEntriesMap<K, V> extends Map<K, V> {
   entries(): [K, V][] {
-    return Array.from(super.entries())
+    return Array.from(super.entries());
   }
 }
 
 const PRECOMPLETED_MAJOR_DUNGEONS = new Set([
-  'DT', 'DC', 'JJ', 'Forest', 'Fire', 'Water', 'Shadow', 'Spirit',
-  'WF', 'SH', 'GB', 'ST',
-])
+  'DT',
+  'DC',
+  'JJ',
+  'Forest',
+  'Fire',
+  'Water',
+  'Shadow',
+  'Spirit',
+  'WF',
+  'SH',
+  'GB',
+  'ST',
+]);
 
 const PRECOMPLETED_WISPS: Record<string, string> = {
   Water: 'OOT_WISP_CLEAR_STATE_LAKE',
@@ -60,7 +112,7 @@ const PRECOMPLETED_WISPS: Record<string, string> = {
   SH: 'MM_WISP_CLEAR_STATE_SNOWHEAD',
   GB: 'MM_WISP_CLEAR_STATE_GREAT_BAY',
   IST: 'MM_WISP_CLEAR_STATE_IKANA',
-}
+};
 
 const SINGLE_COUNT_ITEM_IDS = new Set([
   'OOT_BOTTLE_EMPTY',
@@ -76,23 +128,23 @@ const SINGLE_COUNT_ITEM_IDS = new Set([
   'SHARED_TUNIC_GORON',
   'SHARED_TUNIC_ZORA',
   'MM_MAGIC_BEAN',
-])
+]);
 
 const FISHING_POND_ALWAYS_INCLUDED_ITEM_IDS = new Set([
   'OOT_FISHING_POND_CHILD_FISH_7LBS',
   'OOT_FISHING_POND_ADULT_FISH_8LBS',
-  'OOT_FISHING_POND_CHILD_LOACH_14LBS',
-  'OOT_FISHING_POND_ADULT_LOACH_29LBS',
-])
+  'OOT_FISHING_POND_CHILD_LOACH_16LBS',
+  'OOT_FISHING_POND_ADULT_LOACH_30LBS',
+]);
 
 const BOTTLE_ALWAYS_INCLUDED_ITEM_IDS_OOT_MM = new Set([
   'OOT_BOTTLE_EMPTY',
   'MM_BOTTLE_EMPTY',
-])
+]);
 
 const BOTTLE_ALWAYS_INCLUDED_ITEM_IDS_SHARED = new Set([
   'SHARED_BOTTLE_EMPTY',
-])
+]);
 
 const CLOCK_ITEM_IDS = new Set([
   'MM_CLOCK1',
@@ -101,9 +153,9 @@ const CLOCK_ITEM_IDS = new Set([
   'MM_CLOCK4',
   'MM_CLOCK5',
   'MM_CLOCK6',
-])
+]);
 
-const GRID_REF_STATE_PREFIX = '__grid_ref_state__:'
+const GRID_REF_STATE_PREFIX = '__grid_ref_state__:';
 
 const BOTTLE_CONTENT_BASE_ITEM_IDS: Record<string, string> = {
   OOT_BOTTLE_POTION_RED: 'OOT_BOTTLE_EMPTY',
@@ -118,80 +170,88 @@ const BOTTLE_CONTENT_BASE_ITEM_IDS: Record<string, string> = {
   SHARED_BOTTLE_POTION_GREEN: 'SHARED_BOTTLE_EMPTY',
   SHARED_BOTTLE_POTION_BLUE: 'SHARED_BOTTLE_EMPTY',
   SHARED_BOTTLE_BLUE_FIRE: 'SHARED_BOTTLE_EMPTY',
-}
+};
 
-const VANILLA_SILVER_RUPEE_PREFIX = 'OOT_RUPEE_SILVER_'
-const OWL_STATUE_PREFIX = 'MM_OWL_'
+const VANILLA_SILVER_RUPEE_PREFIX = 'OOT_RUPEE_SILVER_';
+const OWL_STATUE_PREFIX = 'MM_OWL_';
 
-const PRICE_COUNT_OOT_SHOPS = 64
-const PRICE_COUNT_OOT_SCRUBS = 38
-const PRICE_COUNT_OOT_MERCHANTS = 4
-const PRICE_COUNT_MM_SHOPS = 22
-const PRICE_COUNT_MM_SHOPS_EX = 1
-const PRICE_COUNT_MM_TINGLE = 12
-const PRICE_RANGE_OOT_SHOPS = 0
-const PRICE_RANGE_OOT_SCRUBS = PRICE_RANGE_OOT_SHOPS + PRICE_COUNT_OOT_SHOPS
-const PRICE_RANGE_OOT_MERCHANTS = PRICE_RANGE_OOT_SCRUBS + PRICE_COUNT_OOT_SCRUBS
-const PRICE_RANGE_MM_SHOPS = PRICE_RANGE_OOT_MERCHANTS + PRICE_COUNT_OOT_MERCHANTS
-const PRICE_RANGE_MM_SHOPS_EX = PRICE_RANGE_MM_SHOPS + PRICE_COUNT_MM_SHOPS
-const PRICE_RANGE_MM_TINGLE = PRICE_RANGE_MM_SHOPS_EX + PRICE_COUNT_MM_SHOPS_EX
+const PRICE_COUNT_OOT_SHOPS = 64;
+const PRICE_COUNT_OOT_SCRUBS = 38;
+const PRICE_COUNT_OOT_MERCHANTS = 4;
+const PRICE_COUNT_MM_SHOPS = 22;
+const PRICE_COUNT_MM_SHOPS_EX = 1;
+const PRICE_COUNT_MM_TINGLE = 12;
+const PRICE_RANGE_OOT_SHOPS = 0;
+const PRICE_RANGE_OOT_SCRUBS = PRICE_RANGE_OOT_SHOPS + PRICE_COUNT_OOT_SHOPS;
+const PRICE_RANGE_OOT_MERCHANTS =
+  PRICE_RANGE_OOT_SCRUBS + PRICE_COUNT_OOT_SCRUBS;
+const PRICE_RANGE_MM_SHOPS =
+  PRICE_RANGE_OOT_MERCHANTS + PRICE_COUNT_OOT_MERCHANTS;
+const PRICE_RANGE_MM_SHOPS_EX = PRICE_RANGE_MM_SHOPS + PRICE_COUNT_MM_SHOPS;
+const PRICE_RANGE_MM_TINGLE = PRICE_RANGE_MM_SHOPS_EX + PRICE_COUNT_MM_SHOPS_EX;
 
 type ShopPriceSlot = {
-  worldId: number
-  slots: number[]
-}
+  worldId: number;
+  slots: number[];
+};
 
 const OOT_MERCHANT_SLOT_BY_ID: Record<string, number> = {
   OOT_MEDIGORON: 0,
   OOT_CARPET_MERCHANT: 1,
   OOT_WITCH_BLUE_POTION: 2,
   OOT_TALON_MILK: 3,
-}
+};
 
 export class OoTMMTracker implements TrackerPack {
-  id = 'ootmm'
-  name = 'OoTMM'
-  description = 'Ocarina of Time / Majora\'s Mask Randomizer Tracker'
+  id = 'ootmm';
+  name = 'OoTMM';
+  description = "Ocarina of Time / Majora's Mask Randomizer Tracker";
 
-  private pathfinder!: InstanceType<typeof Pathfinder>
-  private worlds!: World[]
-  private baseWorlds!: World[]
-  private settings!: Record<string, unknown>
-  private currentItems: Map<unknown, PlayerItem> = new Map()
-  private allLocationIds: string[] = []
-  private fixedLocationIds: Set<string> = new Set()
-  private hiddenLocationIds: Set<string> = new Set()
-  private baseHiddenLocationIds: Set<string> = new Set()
-  private preCompletedDungeonIds: Set<string> = new Set()
-  private baseWispEvents: Map<number, Map<string, unknown>> = new Map()
-  private availableItemIds: Set<string> = new Set()
-  private itemMaxCounts: Map<string, number> = new Map()
-  private silverRupeeLocationIdsByItemId: Map<string, string[]> = new Map()
-  private shopPriceSlotsByLocationId: Map<string, ShopPriceSlot> = new Map()
-  private baseShopPricesByLocationId: Map<string, number[]> = new Map()
-  private devLocationCatalog: LocationInfo[] = []
+  private pathfinder!: InstanceType<typeof Pathfinder>;
+  private worlds!: World[];
+  private baseWorlds!: World[];
+  private settings!: Record<string, unknown>;
+  private currentItems: Map<unknown, PlayerItem> = new Map();
+  private allLocationIds: string[] = [];
+  private fixedLocationIds: Set<string> = new Set();
+  private hiddenLocationIds: Set<string> = new Set();
+  private baseHiddenLocationIds: Set<string> = new Set();
+  private preCompletedDungeonIds: Set<string> = new Set();
+  private baseWispEvents: Map<number, Map<string, unknown>> = new Map();
+  private availableItemIds: Set<string> = new Set();
+  private itemMaxCounts: Map<string, number> = new Map();
+  private silverRupeeLocationIdsByItemId: Map<string, string[]> = new Map();
+  private shopPriceSlotsByLocationId: Map<string, ShopPriceSlot> = new Map();
+  private baseShopPricesByLocationId: Map<string, number[]> = new Map();
+  private devLocationCatalog: LocationInfo[] = [];
 
   async initialize(userSettings: Partial<OoTMMSettings> = {}): Promise<void> {
-    console.log('[OoTMM Tracker] Initializing...')
-    
+    console.log('[OoTMM Tracker] Initializing...');
+
     // Merge with defaults
     const ootmmSettings = {
       ...DEFAULT_OOTMM_SETTINGS,
       ...userSettings,
-    }
-    console.log('[OoTMM Tracker] Merged settings:', ootmmSettings)
-    
+    };
+    console.log('[OoTMM Tracker] Merged settings:', ootmmSettings);
+
     // Convert to OoTMM settings format
-    this.settings = makeSettings(ootmmSettings) as Record<string, unknown>
-    console.log('[OoTMM Tracker] Final settings after makeSettings:', this.settings)
-    
+    this.settings = makeSettings(ootmmSettings) as Record<string, unknown>;
+    console.log(
+      '[OoTMM Tracker] Final settings after makeSettings:',
+      this.settings,
+    );
+
     // Create monitor for progress tracking
-    const monitor = new Monitor({
-      onLog: (msg: string) => console.log(`[OoTMM] ${msg}`),
-      onProgress: (current: number, total: number) => {
-        console.log(`[OoTMM] Building world: ${current}/${total}`)
+    const monitor = new Monitor(
+      {
+        onLog: (msg: string) => console.log(`[OoTMM] ${msg}`),
+        onProgress: (current: number, total: number) => {
+          console.log(`[OoTMM] Building world: ${current}/${total}`);
+        },
       },
-    }, false)
+      false,
+    );
 
     const opts = {
       settings: this.settings,
@@ -200,118 +260,167 @@ export class OoTMMTracker implements TrackerPack {
       mode: 'seed' as const,
       cosmetics: {},
       random: {},
-    }
-    
-    console.log('[OoTMM Tracker] Building world graph...')
-    const worldData = await worldState(monitor, opts as Record<string, unknown>)
-    this.baseWorlds = (worldData as { worlds?: World[] }).worlds ?? []
-    this.normalizeWorldItems(this.baseWorlds)
-    
+    };
+
+    console.log('[OoTMM Tracker] Building world graph...');
+    const worldData = await worldState(
+      monitor,
+      opts as Record<string, unknown>,
+    );
+    this.baseWorlds = (worldData as { worlds?: World[] }).worlds ?? [];
+    this.normalizeWorldItems(this.baseWorlds);
+
     // Run entrance pass to connect games
-    console.log('[OoTMM Tracker] Running entrance pass...')
-    const entrancePass = new LogicPassEntrances({
-      ...worldData,
-      startingItems: new Map(), // Provide empty starting items if missing from worldData, though worldState likely provides it internally if it was returned.
-                                // Actually worldState might NOT return startingItems if it wasn't requested in options?
-                                // Let's check if worldData has it or we invoke config pass separately.
-                                // worldState pipeline runs LogicPassConfig which returns { settings, startingItems }.
-                                // So worldData has startingItems.
-    } as Record<string, unknown>)
-    
-    const entranceResult = entrancePass.run()
-    this.worlds = entranceResult.worlds
-    this.normalizeWorldItems(this.worlds)
+    console.log('[OoTMM Tracker] Running entrance pass...');
+    const hasPlandoEntrances = Boolean(
+      ootmmSettings.plando &&
+      typeof ootmmSettings.plando === 'object' &&
+      Object.keys(
+        ((ootmmSettings.plando as Record<string, unknown>).entrances as
+          | Record<string, unknown>
+          | undefined) ?? {},
+      ).length > 0,
+    );
+    const entranceInput = hasPlandoEntrances
+      ? {
+          ...(worldData as Record<string, unknown>),
+          startingItems: new Map(),
+          settings: {
+            ...(this.settings as Record<string, unknown>),
+            logic: 'none',
+          },
+        }
+      : { ...(worldData as Record<string, unknown>), startingItems: new Map() };
+    const entrancePass = new LogicPassEntrances(
+      entranceInput as Record<string, unknown>,
+    );
+
+    const entranceResult = entrancePass.run();
+    this.worlds = entranceResult.worlds;
+    this.normalizeWorldItems(this.worlds);
+    this.applyAlwaysIncludedFishingPondConditions(this.worlds);
 
     // Create pathfinder with empty starting items
-    this.pathfinder = new Pathfinder(
-      this.worlds,
-      this.settings,
-      new Map()
-    )
-    
+    this.pathfinder = new Pathfinder(this.worlds, this.settings, new Map());
+
     // Cache all location IDs
-    this.allLocationIds = this.worlds.flatMap((world, worldId) => 
-      Object.keys(world.checks).map(loc => makeLocation(loc, worldId))
-    )
-    this.fixedLocationIds = this.buildFixedLocationIds(worldData?.fixedLocations)
-    this.baseHiddenLocationIds = this.buildBaseHiddenLocationIds()
-    this.hiddenLocationIds = new Set(this.baseHiddenLocationIds)
-    this.preCompletedDungeonIds.clear()
-    this.baseWispEvents.clear()
-    this.availableItemIds = this.buildAvailableItemIds(worldData?.allItems)
-    this.itemMaxCounts = this.buildItemMaxCounts(worldData?.allItems, worldData?.startingItems)
-    this.silverRupeeLocationIdsByItemId = this.buildSilverRupeeLocationIndex(this.worlds)
-    const shopPriceIndex = this.buildShopPriceIndex(this.worlds)
-    this.shopPriceSlotsByLocationId = shopPriceIndex.slotsByLocationId
-    this.baseShopPricesByLocationId = shopPriceIndex.basePricesByLocationId
-    this.devLocationCatalog = this.buildCodeSearchLocationCatalog()
-    
-    console.log(`[OoTMM Tracker] Initialized with ${this.allLocationIds.length} locations`)
+    this.allLocationIds = this.worlds.flatMap((world, worldId) =>
+      Object.keys(world.checks).map((loc) => makeLocation(loc, worldId)),
+    );
+    this.fixedLocationIds = this.buildFixedLocationIds(
+      worldData?.fixedLocations,
+    );
+    this.baseHiddenLocationIds = this.buildBaseHiddenLocationIds();
+    this.hiddenLocationIds = new Set(this.baseHiddenLocationIds);
+    this.preCompletedDungeonIds.clear();
+    this.baseWispEvents.clear();
+    this.availableItemIds = this.buildAvailableItemIds(worldData?.allItems);
+    this.itemMaxCounts = this.buildItemMaxCounts(
+      worldData?.allItems,
+      worldData?.startingItems,
+    );
+    this.silverRupeeLocationIdsByItemId = this.buildSilverRupeeLocationIndex(
+      this.worlds,
+    );
+    const shopPriceIndex = this.buildShopPriceIndex(this.worlds);
+    this.shopPriceSlotsByLocationId = shopPriceIndex.slotsByLocationId;
+    this.baseShopPricesByLocationId = shopPriceIndex.basePricesByLocationId;
+    this.devLocationCatalog = this.buildCodeSearchLocationCatalog();
+
+    console.log(
+      `[OoTMM Tracker] Initialized with ${this.allLocationIds.length} locations`,
+    );
   }
 
   checkReachability(inventory: Map<string, number>): TrackerCheckResult {
     try {
-      console.log('[OoTMM Tracker] checkReachability called with inventory:', JSON.stringify(Array.from(inventory.entries())));
+      console.log(
+        '[OoTMM Tracker] checkReachability called with inventory:',
+        JSON.stringify(Array.from(inventory.entries())),
+      );
     } catch (e) {
-      console.log('[OoTMM Tracker] checkReachability called with inventory: (could not stringify) ', Array.from(inventory.entries()));
-      console.log('[OoTMM Tracker] Inventory stringify error:', e)
+      console.log(
+        '[OoTMM Tracker] checkReachability called with inventory: (could not stringify) ',
+        Array.from(inventory.entries()),
+      );
+      console.log('[OoTMM Tracker] Inventory stringify error:', e);
     }
-    const isVanillaSilverRupees = this.isVanillaSilverRupeeShuffle()
-    const baseInventory = isVanillaSilverRupees ? this.stripVanillaSilverRupees(inventory) : inventory
+    const isVanillaSilverRupees = this.isVanillaSilverRupeeShuffle();
+    const baseInventory = isVanillaSilverRupees
+      ? this.stripVanillaSilverRupees(inventory)
+      : inventory;
 
-    let assumedInventory = baseInventory
-    let state
-    let reachableLocationIds: string[] = []
-    let newLocationIds: string[] = []
-    let silverRupeeCounts = new Map<string, number>()
-    let iterations = 0
+    let assumedInventory = baseInventory;
+    let state;
+    let reachableLocationIds: string[] = [];
+    let newLocationIds: string[] = [];
+    let silverRupeeCounts = new Map<string, number>();
+    let iterations = 0;
 
     while (true) {
-      const result = this.runPathfinder(assumedInventory)
-      state = result.state
-      reachableLocationIds = result.reachableLocationIds
-      newLocationIds = result.newLocationIds
+      const result = this.runPathfinder(assumedInventory);
+      state = result.state;
+      reachableLocationIds = result.reachableLocationIds;
+      newLocationIds = result.newLocationIds;
 
-      if (!isVanillaSilverRupees || this.silverRupeeLocationIdsByItemId.size === 0) {
-        break
+      if (
+        !isVanillaSilverRupees ||
+        this.silverRupeeLocationIdsByItemId.size === 0
+      ) {
+        break;
       }
 
-      const nextCounts = this.computeVanillaSilverRupeeCounts(reachableLocationIds)
+      const nextCounts =
+        this.computeVanillaSilverRupeeCounts(reachableLocationIds);
       if (this.areCountMapsEqual(nextCounts, silverRupeeCounts)) {
-        silverRupeeCounts = nextCounts
-        break
+        silverRupeeCounts = nextCounts;
+        break;
       }
-      silverRupeeCounts = nextCounts
-      assumedInventory = this.mergeInventoryWithCounts(baseInventory, silverRupeeCounts)
-      iterations += 1
+      silverRupeeCounts = nextCounts;
+      assumedInventory = this.mergeInventoryWithCounts(
+        baseInventory,
+        silverRupeeCounts,
+      );
+      iterations += 1;
       if (iterations >= 10) {
-        console.warn('[OoTMM Tracker] Vanilla silver rupee auto-tracking did not stabilize after 10 iterations')
-        break
+        console.warn(
+          '[OoTMM Tracker] Vanilla silver rupee auto-tracking did not stabilize after 10 iterations',
+        );
+        break;
       }
     }
 
     if (!state) {
-      console.error('[OoTMM Tracker] Pathfinder returned undefined!')
-      throw new Error('Pathfinder returned undefined')
+      console.error('[OoTMM Tracker] Pathfinder returned undefined!');
+      throw new Error('Pathfinder returned undefined');
     }
 
     console.log('[OoTMM Tracker] State after pathfinder:', {
       locations: state.locations.size,
       goal: state.goal,
       started: state.started,
-    })
+    });
 
-    console.log('[OoTMM Tracker] Pathfinder result: reachable =', reachableLocationIds.length, 'new =', newLocationIds.length)
+    console.log(
+      '[OoTMM Tracker] Pathfinder result: reachable =',
+      reachableLocationIds.length,
+      'new =',
+      newLocationIds.length,
+    );
 
     const extra: Record<string, unknown> = {
       canReachBosses: state.ganonMajora,
       gossipStones: Array.isArray(state.gossips)
-        ? state.gossips.reduce((count: number, worldGossips: Set<string>) => count + worldGossips.size, 0)
+        ? state.gossips.reduce(
+            (count: number, worldGossips: Set<string>) =>
+              count + worldGossips.size,
+            0,
+          )
         : 0,
-    }
+    };
 
     if (isVanillaSilverRupees) {
-      extra.vanillaSilverRupeeCounts = this.countMapToRecord(silverRupeeCounts)
+      extra.vanillaSilverRupeeCounts = this.countMapToRecord(silverRupeeCounts);
     }
 
     return {
@@ -319,48 +428,166 @@ export class OoTMMTracker implements TrackerPack {
       newLocationIds,
       canComplete: state.goal,
       extra,
-    }
+    };
   }
 
   getAllLocations(): LocationInfo[] {
-    return this.buildLocations(false)
+    return this.buildLocations(false);
   }
 
   getAllLocationsForCodeSearch(): LocationInfo[] {
-    const byId = new Map<string, LocationInfo>()
-    this.buildLocations(true).forEach((location) => byId.set(location.id, location))
+    const byId = new Map<string, LocationInfo>();
+    this.buildLocations(true).forEach((location) =>
+      byId.set(location.id, location),
+    );
     this.devLocationCatalog.forEach((location) => {
       if (!byId.has(location.id)) {
-        byId.set(location.id, location)
+        byId.set(location.id, location);
       }
-    })
-    return Array.from(byId.values()).sort((a, b) => a.id.localeCompare(b.id))
+    });
+    return Array.from(byId.values()).sort((a, b) => a.id.localeCompare(b.id));
   }
 
   private buildLocations(includeHidden: boolean): LocationInfo[] {
-    const worldsForLocations = this.baseWorlds.length > 0 ? this.baseWorlds : this.worlds
-    return this.buildLocationsFromWorlds(worldsForLocations, includeHidden)
+    const worldsForLocations =
+      this.baseWorlds.length > 0 ? this.baseWorlds : this.worlds;
+    return this.buildLocationsFromWorlds(worldsForLocations, includeHidden);
   }
 
-  private buildLocationsFromWorlds(worlds: World[], includeHidden: boolean): LocationInfo[] {
-    const locations: LocationInfo[] = []
+  private applyAlwaysIncludedFishingPondConditions(worlds: World[]): void {
+    if (!worlds || worlds.length === 0 || !exprHas || !exprOr || !exprAnd)
+      return;
+    if (!this.isFishingPondShuffleEnabled()) return;
+
+    const childFallbackIds = [
+      'OOT_FISHING_POND_CHILD_FISH_13LBS',
+      'OOT_FISHING_POND_CHILD_LOACH_16LBS',
+    ];
+    const adultFallbackIds = [
+      'OOT_FISHING_POND_ADULT_FISH_8LBS',
+      'OOT_FISHING_POND_ADULT_LOACH_30LBS',
+    ];
+
+    const toExprs = (itemIds: string[]) =>
+      itemIds
+        .map((itemId) => {
+          const item =
+            (Items as Record<string, unknown>)?.[itemId] ||
+            (() => {
+              try {
+                return itemByID ? itemByID(itemId) : undefined;
+              } catch {
+                return undefined;
+              }
+            })();
+          return item ? exprHas(item as never, 1) : null;
+        })
+        .filter((expr): expr is NonNullable<typeof expr> => Boolean(expr));
+
+    const childExtraExprs = toExprs(childFallbackIds);
+    const adultExtraExprs = toExprs(adultFallbackIds);
+    if (childExtraExprs.length === 0 && adultExtraExprs.length === 0) return;
+
+    const exprContainsItemPrefix = (
+      expr: unknown,
+      itemPrefix: string,
+    ): boolean => {
+      if (!expr || typeof expr !== 'object') return false;
+      const key = (expr as { key?: unknown }).key;
+      if (typeof key === 'string' && key.includes(`HAS(${itemPrefix}`)) {
+        return true;
+      }
+      const subExprs = (expr as { exprs?: unknown[] }).exprs;
+      if (!Array.isArray(subExprs)) return false;
+      return subExprs.some((subExpr) =>
+        exprContainsItemPrefix(subExpr, itemPrefix),
+      );
+    };
+
+    const patchFishRequirement = (
+      expr: unknown,
+      itemPrefix: string,
+      extraExprs: unknown[],
+    ): unknown => {
+      if (!expr || extraExprs.length === 0) return expr;
+      const isAnd =
+        (expr as { constructor?: { name?: string } }).constructor?.name ===
+        'ExprAnd';
+      const andExprs = (expr as { exprs?: unknown[] }).exprs;
+      if (!isAnd || !Array.isArray(andExprs) || andExprs.length === 0) {
+        return expr;
+      }
+
+      const fishExprIndex = andExprs.findIndex((subExpr) =>
+        exprContainsItemPrefix(subExpr, itemPrefix),
+      );
+      if (fishExprIndex < 0) {
+        return expr;
+      }
+
+      const nextAndExprs = [...andExprs];
+      nextAndExprs[fishExprIndex] = exprOr([
+        nextAndExprs[fishExprIndex] as never,
+        ...extraExprs,
+      ]) as never;
+      return exprAnd(nextAndExprs as never[]);
+    };
+
+    for (const world of worlds) {
+      const area = world.areas?.['OOT Fishing Pond'];
+      const locations = area?.locations;
+      if (!locations) continue;
+
+      const childKey = 'OOT Fishing Pond Child';
+      const adultKey = 'OOT Fishing Pond Adult';
+      const childExpr = locations[childKey];
+      const adultExpr = locations[adultKey];
+
+      if (childExpr && childExtraExprs.length > 0) {
+        locations[childKey] = patchFishRequirement(
+          childExpr,
+          'OOT_FISHING_POND_CHILD_',
+          childExtraExprs,
+        ) as never;
+      }
+      if (adultExpr && adultExtraExprs.length > 0) {
+        locations[adultKey] = patchFishRequirement(
+          adultExpr,
+          'OOT_FISHING_POND_ADULT_',
+          adultExtraExprs,
+        ) as never;
+      }
+    }
+  }
+
+  private buildLocationsFromWorlds(
+    worlds: World[],
+    includeHidden: boolean,
+  ): LocationInfo[] {
+    const locations: LocationInfo[] = [];
     for (const [worldId, world] of worlds.entries()) {
-      const dungeonLocations = this.buildDungeonLocationIds(world)
+      const dungeonLocations = this.buildDungeonLocationIds(world);
       for (const locId of Object.keys(world.checks)) {
-        const fullId = makeLocation(locId, worldId)
-        if (!includeHidden && this.hiddenLocationIds.has(fullId)) continue
-        const check = world.checks?.[locId]
-        const itemId = (check as { item?: { id?: string } })?.item?.id
+        const fullId = makeLocation(locId, worldId);
+        if (!includeHidden && this.hiddenLocationIds.has(fullId)) continue;
+        const check = world.checks?.[locId];
+        const itemId = (check as { item?: { id?: string } })?.item?.id;
         const isSkulltulaToken =
           itemId === 'OOT_GS_TOKEN' ||
           itemId === 'MM_GS_TOKEN_SWAMP' ||
-          itemId === 'MM_GS_TOKEN_OCEAN'
+          itemId === 'MM_GS_TOKEN_OCEAN';
         const isStrayFairy =
           typeof itemId === 'string' &&
           itemId.startsWith('MM_STRAY_FAIRY_') &&
-          itemId !== 'MM_STRAY_FAIRY_TOWN'
-        const shuffled = this.computeIsShuffled(world, locId, fullId, check, dungeonLocations)
-        const showWhenUnshuffled = this.shouldShowVanillaKeyLocation(itemId)
+          itemId !== 'MM_STRAY_FAIRY_TOWN';
+        const shuffled = this.computeIsShuffled(
+          world,
+          locId,
+          fullId,
+          check,
+          dungeonLocations,
+        );
+        const showWhenUnshuffled = this.shouldShowVanillaKeyLocation(itemId);
         locations.push({
           id: fullId,
           name: locId,
@@ -370,12 +597,14 @@ export class OoTMMTracker implements TrackerPack {
           isStrayFairy,
           isShuffled: shuffled,
           showWhenUnshuffled,
-        })
+        });
       }
 
-      for (const gossipName of Object.keys((world as { gossip?: Record<string, unknown> }).gossip ?? {})) {
-        const fullId = makeLocation(gossipName, worldId)
-        if (!includeHidden && this.hiddenLocationIds.has(fullId)) continue
+      for (const gossipName of Object.keys(
+        (world as { gossip?: Record<string, unknown> }).gossip ?? {},
+      )) {
+        const fullId = makeLocation(gossipName, worldId);
+        if (!includeHidden && this.hiddenLocationIds.has(fullId)) continue;
         locations.push({
           id: fullId,
           name: gossipName,
@@ -383,16 +612,16 @@ export class OoTMMTracker implements TrackerPack {
           area: this.getAreaFromGossipName(gossipName),
           isGossipStone: true,
           isShuffled: true,
-        })
+        });
       }
     }
-    return locations
+    return locations;
   }
 
   private buildCodeSearchLocationCatalog(): LocationInfo[] {
-    const byId = new Map<string, LocationInfo>()
+    const byId = new Map<string, LocationInfo>();
     for (const entry of LOCATION_CODE_CATALOG) {
-      if (!entry.id) continue
+      if (!entry.id) continue;
       byId.set(entry.id, {
         id: entry.id,
         name: entry.name || entry.id,
@@ -400,139 +629,212 @@ export class OoTMMTracker implements TrackerPack {
         area: entry.area || this.getAreaFromLocation(entry.name || entry.id),
         isSkulltulaToken: entry.isSkulltulaToken,
         isStrayFairy: entry.isStrayFairy,
-      })
+      });
     }
-    return Array.from(byId.values()).sort((a, b) => a.id.localeCompare(b.id))
+    return Array.from(byId.values()).sort((a, b) => a.id.localeCompare(b.id));
   }
 
   getSettings(): Record<string, unknown> {
-    return this.settings
+    return this.settings;
   }
 
   getAvailableItemIds(): Set<string> {
-    return new Set(this.availableItemIds)
+    return new Set(this.availableItemIds);
   }
 
   getItemMaxCounts(): Map<string, number> {
-    return new Map(this.itemMaxCounts)
+    return new Map(this.itemMaxCounts);
   }
 
   reset(): void {
-    this.currentItems.clear()
+    this.currentItems.clear();
   }
 
   setPreCompletedDungeons(dungeons: string[]): void {
-    if (!this.worlds || !this.settings) return
-    const next = new Set(dungeons.filter((id) => PRECOMPLETED_MAJOR_DUNGEONS.has(id)))
-    this.preCompletedDungeonIds = next
+    if (!this.worlds || !this.settings) return;
+    const next = new Set(
+      dungeons.filter((id) => PRECOMPLETED_MAJOR_DUNGEONS.has(id)),
+    );
+    this.preCompletedDungeonIds = next;
 
     for (const world of this.worlds) {
-      world.preCompleted = new Set(next)
+      world.preCompleted = new Set(next);
     }
 
-    this.updatePreCompletedLocations()
-    this.applyPreCompletedWispEvents()
-    this.pathfinder = new Pathfinder(this.worlds, this.settings, new Map())
+    this.updatePreCompletedLocations();
+    this.applyPreCompletedWispEvents();
+    this.pathfinder = new Pathfinder(this.worlds, this.settings, new Map());
   }
 
   getPreCompletedLocationIds(): string[] {
-    if (!this.worlds || this.worlds.length === 0 || this.preCompletedDungeonIds.size === 0) {
-      return []
+    if (
+      !this.worlds ||
+      this.worlds.length === 0 ||
+      this.preCompletedDungeonIds.size === 0
+    ) {
+      return [];
     }
-    return Array.from(this.collectPreCompletedLocationIds())
+    return Array.from(this.collectPreCompletedLocationIds());
   }
 
   setSongEvents(events: Record<string, number>): void {
-    if (!this.worlds || !this.settings) return
-    
+    if (!this.worlds || !this.settings) return;
+
     for (const world of this.worlds) {
       // Start with vanilla defaults from OoTMM core
-      world.songEvents = [...VANILLA_SONG_EVENTS]
-      
+      world.songEvents = [...VANILLA_SONG_EVENTS];
+
       // If Song Events Shuffle is enabled, apply user selections
       if (Object.keys(events).length > 0) {
         for (const [eventKey, songId] of Object.entries(events)) {
-          const eventId = parseInt(eventKey, 10)
-          if (!isNaN(eventId) && songId >= 0 && songId <= 5 && eventId >= 0 && eventId < world.songEvents.length) {
-            world.songEvents[eventId] = songId
+          const eventId = parseInt(eventKey, 10);
+          if (
+            !isNaN(eventId) &&
+            songId >= 0 &&
+            songId <= 5 &&
+            eventId >= 0 &&
+            eventId < world.songEvents.length
+          ) {
+            world.songEvents[eventId] = songId;
           }
         }
       }
     }
 
-    this.pathfinder = new Pathfinder(this.worlds, this.settings, new Map())
+    this.pathfinder = new Pathfinder(this.worlds, this.settings, new Map());
   }
 
   getShopPrices(): Record<string, number> {
-    const prices: Record<string, number> = {}
-    if (!this.worlds || this.shopPriceSlotsByLocationId.size === 0) return prices
+    const prices: Record<string, number> = {};
+    if (!this.worlds || this.shopPriceSlotsByLocationId.size === 0)
+      return prices;
 
-    for (const [locationId, slotData] of this.shopPriceSlotsByLocationId.entries()) {
-      const world = this.worlds[slotData.worldId]
-      const slot = slotData.slots[0]
-      const value = typeof slot === 'number' ? world?.prices?.[slot] : undefined
+    for (const [
+      locationId,
+      slotData,
+    ] of this.shopPriceSlotsByLocationId.entries()) {
+      const world = this.worlds[slotData.worldId];
+      const slot = slotData.slots[0];
+      const value =
+        typeof slot === 'number' ? world?.prices?.[slot] : undefined;
       if (typeof value === 'number' && Number.isFinite(value)) {
-        prices[locationId] = value
+        prices[locationId] = value;
       }
     }
 
-    return prices
+    return prices;
   }
 
   setShopPrices(pricesByLocation: Record<string, number>): void {
-    if (!this.worlds || !this.settings || this.shopPriceSlotsByLocationId.size === 0) return
+    if (
+      !this.worlds ||
+      !this.settings ||
+      this.shopPriceSlotsByLocationId.size === 0
+    )
+      return;
 
-    for (const [locationId, slotData] of this.shopPriceSlotsByLocationId.entries()) {
-      const base = this.baseShopPricesByLocationId.get(locationId)
-      if (!Array.isArray(base) || base.length !== slotData.slots.length) continue
-      const world = this.worlds[slotData.worldId]
-      if (!world?.prices) continue
+    for (const [
+      locationId,
+      slotData,
+    ] of this.shopPriceSlotsByLocationId.entries()) {
+      const base = this.baseShopPricesByLocationId.get(locationId);
+      if (!Array.isArray(base) || base.length !== slotData.slots.length)
+        continue;
+      const world = this.worlds[slotData.worldId];
+      if (!world?.prices) continue;
       for (let i = 0; i < slotData.slots.length; i += 1) {
-        const slot = slotData.slots[i]
-        const value = base[i]
-        if (!Number.isFinite(value) || slot < 0 || slot >= world.prices.length) continue
-        world.prices[slot] = value
+        const slot = slotData.slots[i];
+        const value = base[i];
+        if (!Number.isFinite(value) || slot < 0 || slot >= world.prices.length)
+          continue;
+        world.prices[slot] = value;
       }
     }
 
     for (const world of this.worlds) {
-      this.applyAffordableModeToRange(world, PRICE_RANGE_OOT_SHOPS, PRICE_COUNT_OOT_SHOPS, String((this.settings as { priceOotShops?: unknown }).priceOotShops ?? ''))
-      this.applyAffordableModeToRange(world, PRICE_RANGE_OOT_SCRUBS, PRICE_COUNT_OOT_SCRUBS, String((this.settings as { priceOotScrubs?: unknown }).priceOotScrubs ?? ''))
-      this.applyAffordableModeToRange(world, PRICE_RANGE_OOT_MERCHANTS, PRICE_COUNT_OOT_MERCHANTS, String((this.settings as { priceOotMerchants?: unknown }).priceOotMerchants ?? ''))
-      this.applyAffordableModeToRange(world, PRICE_RANGE_MM_SHOPS, PRICE_COUNT_MM_SHOPS, String((this.settings as { priceMmShops?: unknown }).priceMmShops ?? ''))
-      this.applyAffordableModeToRange(world, PRICE_RANGE_MM_SHOPS_EX, PRICE_COUNT_MM_SHOPS_EX, String((this.settings as { priceMmShops?: unknown }).priceMmShops ?? ''))
-      this.applyAffordableModeToRange(world, PRICE_RANGE_MM_TINGLE, PRICE_COUNT_MM_TINGLE, String((this.settings as { priceMmTingle?: unknown }).priceMmTingle ?? ''))
+      this.applyAffordableModeToRange(
+        world,
+        PRICE_RANGE_OOT_SHOPS,
+        PRICE_COUNT_OOT_SHOPS,
+        String(
+          (this.settings as { priceOotShops?: unknown }).priceOotShops ?? '',
+        ),
+      );
+      this.applyAffordableModeToRange(
+        world,
+        PRICE_RANGE_OOT_SCRUBS,
+        PRICE_COUNT_OOT_SCRUBS,
+        String(
+          (this.settings as { priceOotScrubs?: unknown }).priceOotScrubs ?? '',
+        ),
+      );
+      this.applyAffordableModeToRange(
+        world,
+        PRICE_RANGE_OOT_MERCHANTS,
+        PRICE_COUNT_OOT_MERCHANTS,
+        String(
+          (this.settings as { priceOotMerchants?: unknown })
+            .priceOotMerchants ?? '',
+        ),
+      );
+      this.applyAffordableModeToRange(
+        world,
+        PRICE_RANGE_MM_SHOPS,
+        PRICE_COUNT_MM_SHOPS,
+        String(
+          (this.settings as { priceMmShops?: unknown }).priceMmShops ?? '',
+        ),
+      );
+      this.applyAffordableModeToRange(
+        world,
+        PRICE_RANGE_MM_SHOPS_EX,
+        PRICE_COUNT_MM_SHOPS_EX,
+        String(
+          (this.settings as { priceMmShops?: unknown }).priceMmShops ?? '',
+        ),
+      );
+      this.applyAffordableModeToRange(
+        world,
+        PRICE_RANGE_MM_TINGLE,
+        PRICE_COUNT_MM_TINGLE,
+        String(
+          (this.settings as { priceMmTingle?: unknown }).priceMmTingle ?? '',
+        ),
+      );
     }
 
     for (const [locationId, rawValue] of Object.entries(pricesByLocation)) {
-      const slotData = this.shopPriceSlotsByLocationId.get(locationId)
-      if (!slotData) continue
-      if (!this.isShopPriceEditableForLocation(slotData)) continue
+      const slotData = this.shopPriceSlotsByLocationId.get(locationId);
+      if (!slotData) continue;
+      if (!this.isShopPriceEditableForLocation(slotData)) continue;
 
-      const safeValue = Math.max(0, Math.floor(Number(rawValue)))
-      if (!Number.isFinite(safeValue)) continue
+      const safeValue = Math.max(0, Math.floor(Number(rawValue)));
+      if (!Number.isFinite(safeValue)) continue;
 
-      const world = this.worlds[slotData.worldId]
-      if (!world?.prices) continue
+      const world = this.worlds[slotData.worldId];
+      if (!world?.prices) continue;
       for (const slot of slotData.slots) {
-        if (slot < 0 || slot >= world.prices.length) continue
-        world.prices[slot] = safeValue
+        if (slot < 0 || slot >= world.prices.length) continue;
+        world.prices[slot] = safeValue;
       }
     }
 
-    this.pathfinder = new Pathfinder(this.worlds, this.settings, new Map())
+    this.pathfinder = new Pathfinder(this.worlds, this.settings, new Map());
   }
 
   setSpecialConds(patch: Record<string, unknown>): void {
-    if (!this.worlds || !this.settings || !mergeSettings) return
-    this.settings = mergeSettings(this.settings, { specialConds: patch } as Record<string, unknown>)
-    this.pathfinder = new Pathfinder(this.worlds, this.settings, new Map())
+    if (!this.worlds || !this.settings || !mergeSettings) return;
+    this.settings = mergeSettings(this.settings, {
+      specialConds: patch,
+    } as Record<string, unknown>);
+    this.pathfinder = new Pathfinder(this.worlds, this.settings, new Map());
   }
 
   // Helper methods
   private categorizeLocation(check?: unknown): string {
-    if ((check as { type?: unknown })?.type) return String((check as { type?: unknown }).type)
-    return 'None'
+    if ((check as { type?: unknown })?.type)
+      return String((check as { type?: unknown }).type);
+    return 'None';
   }
 
   private computeIsShuffled(
@@ -542,270 +844,300 @@ export class OoTMMTracker implements TrackerPack {
     check: unknown,
     dungeonLocations: Set<string>,
   ): boolean {
-    if (this.fixedLocationIds.has(fullId)) return false
-    const base = isShuffled ? Boolean(isShuffled(this.settings, world, locId, dungeonLocations)) : true
-    const itemId = (check as { item?: { id?: string } })?.item?.id
-    if (!itemId) return base
+    if (this.fixedLocationIds.has(fullId)) return false;
+    const base = isShuffled
+      ? Boolean(isShuffled(this.settings, world, locId, dungeonLocations))
+      : true;
+    const itemId = (check as { item?: { id?: string } })?.item?.id;
+    if (!itemId) return base;
 
     if (itemId === 'OOT_GS_TOKEN') {
-      const mode = String((this.settings as { goldSkulltulaTokens?: unknown }).goldSkulltulaTokens ?? '')
-      if (mode === 'none') return false
-      const isDungeon = dungeonLocations.has(locId)
-      if (mode === 'overworld' && isDungeon) return false
-      if (mode === 'dungeons' && !isDungeon) return false
-      return true
+      const mode = String(
+        (this.settings as { goldSkulltulaTokens?: unknown })
+          .goldSkulltulaTokens ?? '',
+      );
+      if (mode === 'none') return false;
+      const isDungeon = dungeonLocations.has(locId);
+      if (mode === 'overworld' && isDungeon) return false;
+      if (mode === 'dungeons' && !isDungeon) return false;
+      return true;
     }
 
     if (itemId === 'MM_GS_TOKEN_SWAMP' || itemId === 'MM_GS_TOKEN_OCEAN') {
-      const mode = String((this.settings as { housesSkulltulaTokens?: unknown }).housesSkulltulaTokens ?? '')
-      if (mode === 'none') return false
-      return true
+      const mode = String(
+        (this.settings as { housesSkulltulaTokens?: unknown })
+          .housesSkulltulaTokens ?? '',
+      );
+      if (mode === 'none') return false;
+      return true;
     }
 
     if (itemId === 'MM_STRAY_FAIRY_TOWN') {
-      const mode = String((this.settings as { townFairyShuffle?: unknown }).townFairyShuffle ?? '')
-      if (mode === 'vanilla') return false
-      return true
+      const mode = String(
+        (this.settings as { townFairyShuffle?: unknown }).townFairyShuffle ??
+          '',
+      );
+      if (mode === 'vanilla') return false;
+      return true;
     }
 
-    return base
+    return base;
   }
 
   private shouldShowVanillaKeyLocation(itemId?: string): boolean {
-    if (!itemId) return false
-    if (itemId === 'OOT_SMALL_KEY_TCG') return false
-    const smallKeySetting = this.getSmallKeyShuffleSetting(itemId)
-    if (smallKeySetting === 'vanilla') return true
-    const bossKeySetting = this.getBossKeyShuffleSetting(itemId)
-    if (bossKeySetting === 'vanilla') return true
-    return false
+    if (!itemId) return false;
+    if (itemId === 'OOT_SMALL_KEY_TCG') return false;
+    const smallKeySetting = this.getSmallKeyShuffleSetting(itemId);
+    if (smallKeySetting === 'vanilla') return true;
+    const bossKeySetting = this.getBossKeyShuffleSetting(itemId);
+    if (bossKeySetting === 'vanilla') return true;
+    return false;
   }
 
   private getSmallKeyShuffleSetting(itemId: string): string | null {
     const settings = this.settings as {
-      smallKeyShuffleOot?: unknown
-      smallKeyShuffleMm?: unknown
-      smallKeyShuffleHideout?: unknown
-      smallKeyShuffleChestGame?: unknown
-    }
+      smallKeyShuffleOot?: unknown;
+      smallKeyShuffleMm?: unknown;
+      smallKeyShuffleHideout?: unknown;
+      smallKeyShuffleChestGame?: unknown;
+    };
     if (itemId === 'OOT_SMALL_KEY_TCG') {
-      return String(settings.smallKeyShuffleChestGame ?? '')
+      return String(settings.smallKeyShuffleChestGame ?? '');
     }
     if (itemId === 'OOT_SMALL_KEY_GF') {
-      return String(settings.smallKeyShuffleHideout ?? '')
+      return String(settings.smallKeyShuffleHideout ?? '');
     }
-    if (itemId.startsWith('OOT_SMALL_KEY_') || itemId === 'OOT_SMALL_KEY' || itemId === 'OOT_TC_SMALL_KEY') {
-      return String(settings.smallKeyShuffleOot ?? '')
+    if (
+      itemId.startsWith('OOT_SMALL_KEY_') ||
+      itemId === 'OOT_SMALL_KEY' ||
+      itemId === 'OOT_TC_SMALL_KEY'
+    ) {
+      return String(settings.smallKeyShuffleOot ?? '');
     }
     if (itemId.startsWith('MM_SMALL_KEY_') || itemId === 'MM_SMALL_KEY') {
-      return String(settings.smallKeyShuffleMm ?? '')
+      return String(settings.smallKeyShuffleMm ?? '');
     }
-    return null
+    return null;
   }
 
   private getBossKeyShuffleSetting(itemId: string): string | null {
     const settings = this.settings as {
-      bossKeyShuffleOot?: unknown
-      bossKeyShuffleMm?: unknown
-      ganonBossKey?: unknown
-    }
+      bossKeyShuffleOot?: unknown;
+      bossKeyShuffleMm?: unknown;
+      ganonBossKey?: unknown;
+    };
     if (itemId === 'OOT_BOSS_KEY_GANON') {
-      return String(settings.ganonBossKey ?? '')
+      return String(settings.ganonBossKey ?? '');
     }
     if (itemId.startsWith('OOT_BOSS_KEY_') || itemId === 'OOT_BOSS_KEY') {
-      return String(settings.bossKeyShuffleOot ?? '')
+      return String(settings.bossKeyShuffleOot ?? '');
     }
     if (itemId.startsWith('MM_BOSS_KEY_') || itemId === 'MM_BOSS_KEY') {
-      return String(settings.bossKeyShuffleMm ?? '')
+      return String(settings.bossKeyShuffleMm ?? '');
     }
-    return null
+    return null;
   }
 
   private getAreaFromLocation(locId: string): string {
     // Extract area from location ID (e.g., "OOT Kokiri Forest" -> "Kokiri Forest")
-    const parts = locId.split(' ')
+    const parts = locId.split(' ');
     if (parts.length > 1) {
-      return parts.slice(1).join(' ')
+      return parts.slice(1).join(' ');
     }
-    return locId
+    return locId;
   }
 
   private getAreaFromGossipName(locId: string): string {
-    const trimmed = locId.trim()
-    const prefixMatch = trimmed.match(/^(OOT|MM)\s+(.+)$/)
-    const withoutGamePrefix = prefixMatch ? prefixMatch[2] : trimmed
-    const gossipIndex = withoutGamePrefix.indexOf(' Gossip')
+    const trimmed = locId.trim();
+    const prefixMatch = trimmed.match(/^(OOT|MM)\s+(.+)$/);
+    const withoutGamePrefix = prefixMatch ? prefixMatch[2] : trimmed;
+    const gossipIndex = withoutGamePrefix.indexOf(' Gossip');
     if (gossipIndex > 0) {
-      return withoutGamePrefix.slice(0, gossipIndex)
+      return withoutGamePrefix.slice(0, gossipIndex);
     }
-    return this.getAreaFromLocation(locId)
+    return this.getAreaFromLocation(locId);
   }
 
   private buildFixedLocationIds(fixedLocations?: Set<string>): Set<string> {
-    const fixed = new Set<string>()
-    if (!fixedLocations) return fixed
+    const fixed = new Set<string>();
+    if (!fixedLocations) return fixed;
     for (const loc of fixedLocations) {
-      fixed.add(String(loc))
+      fixed.add(String(loc));
     }
-    return fixed
+    return fixed;
   }
 
   private buildDungeonLocationIds(world: World): Set<string> {
-    const dungeonLocations = new Set<string>()
-    const dungeons = (world as { dungeons?: Record<string, string[]> }).dungeons
-    if (!dungeons) return dungeonLocations
+    const dungeonLocations = new Set<string>();
+    const dungeons = (world as { dungeons?: Record<string, string[]> })
+      .dungeons;
+    if (!dungeons) return dungeonLocations;
     for (const locs of Object.values(dungeons)) {
-      if (!locs) continue
+      if (!locs) continue;
       for (const loc of locs) {
-        dungeonLocations.add(String(loc))
+        dungeonLocations.add(String(loc));
       }
     }
-    return dungeonLocations
+    return dungeonLocations;
   }
 
   private buildBaseHiddenLocationIds(): Set<string> {
-    const hidden = new Set<string>()
-    if (!this.worlds || this.worlds.length === 0) return hidden
+    const hidden = new Set<string>();
+    if (!this.worlds || this.worlds.length === 0) return hidden;
 
-    const settings = this.settings as { skipZelda?: unknown; shuffleWonderItemsOot?: unknown }
-    const hideZeldaLocations = Boolean(settings.skipZelda)
-    const wonderItemsSetting = String(settings.shuffleWonderItemsOot ?? '')
+    const settings = this.settings as {
+      skipZelda?: unknown;
+      shuffleWonderItemsOot?: unknown;
+    };
+    const hideZeldaLocations = Boolean(settings.skipZelda);
+    const wonderItemsSetting = String(settings.shuffleWonderItemsOot ?? '');
     const hideCourtyardWonderItem =
-      hideZeldaLocations && wonderItemsSetting !== '' && wonderItemsSetting !== 'none'
+      hideZeldaLocations &&
+      wonderItemsSetting !== '' &&
+      wonderItemsSetting !== 'none';
 
-    if (!hideZeldaLocations && !hideCourtyardWonderItem) return hidden
+    if (!hideZeldaLocations && !hideCourtyardWonderItem) return hidden;
 
-    const locationNames: string[] = []
+    const locationNames: string[] = [];
     if (hideZeldaLocations) {
-      locationNames.push("OOT Zelda's Letter", "OOT Zelda's Song")
+      locationNames.push("OOT Zelda's Letter", "OOT Zelda's Song");
     }
     if (hideCourtyardWonderItem) {
-      locationNames.push('OOT Castle Courtyard Wonder Item')
+      locationNames.push('OOT Castle Courtyard Wonder Item');
     }
 
     for (let worldId = 0; worldId < this.worlds.length; worldId += 1) {
       for (const locationName of locationNames) {
-        hidden.add(makeLocation(locationName, worldId))
+        hidden.add(makeLocation(locationName, worldId));
       }
     }
 
-    return hidden
+    return hidden;
   }
 
   private updatePreCompletedLocations(): void {
-    this.hiddenLocationIds = new Set(this.baseHiddenLocationIds)
+    this.hiddenLocationIds = new Set(this.baseHiddenLocationIds);
   }
 
   private collectPreCompletedLocationIds(): Set<string> {
-    const expanded = new Set(this.preCompletedDungeonIds)
+    const expanded = new Set(this.preCompletedDungeonIds);
     if (expanded.has('ST')) {
-      expanded.add('IST')
+      expanded.add('IST');
     }
 
-    const dungeonLocs = new Set<string>()
+    const dungeonLocs = new Set<string>();
     for (const [worldId, world] of this.worlds.entries()) {
       for (const dungeonId of expanded) {
-        const locNames = world.dungeons?.[dungeonId]
-        if (!locNames) continue
+        const locNames = world.dungeons?.[dungeonId];
+        if (!locNames) continue;
         for (const locName of locNames) {
-          dungeonLocs.add(makeLocation(locName, worldId))
+          dungeonLocs.add(makeLocation(locName, worldId));
         }
       }
     }
-    return dungeonLocs
+    return dungeonLocs;
   }
 
   private applyPreCompletedWispEvents(): void {
     const shouldApply =
       Boolean(this.settings?.preCompletedDungeons) &&
-      this.settings?.regionState === 'dungeonBeaten'
+      this.settings?.regionState === 'dungeonBeaten';
 
-    const expanded = new Set(this.preCompletedDungeonIds)
+    const expanded = new Set(this.preCompletedDungeonIds);
     if (expanded.has('ST')) {
-      expanded.add('IST')
+      expanded.add('IST');
     }
 
     for (const [worldId, world] of this.worlds.entries()) {
-      const spawnArea = world.areas?.['OOT SPAWN']
-      if (!spawnArea) continue
+      const spawnArea = world.areas?.['OOT SPAWN'];
+      if (!spawnArea) continue;
 
-      let base = this.baseWispEvents.get(worldId)
+      let base = this.baseWispEvents.get(worldId);
       if (!base) {
-        base = new Map()
-        this.baseWispEvents.set(worldId, base)
+        base = new Map();
+        this.baseWispEvents.set(worldId, base);
       }
 
       for (const [dungeonId, eventName] of Object.entries(PRECOMPLETED_WISPS)) {
         if (!base.has(eventName)) {
-          base.set(eventName, spawnArea.events[eventName] ?? null)
+          base.set(eventName, spawnArea.events[eventName] ?? null);
         }
 
         if (shouldApply && expanded.has(dungeonId)) {
-          spawnArea.events[eventName] = exprTrue()
-          continue
+          spawnArea.events[eventName] = exprTrue();
+          continue;
         }
 
-        const original = base.get(eventName)
+        const original = base.get(eventName);
         if (original === null || original === undefined) {
-          delete spawnArea.events[eventName]
+          delete spawnArea.events[eventName];
         } else {
-          spawnArea.events[eventName] = original
+          spawnArea.events[eventName] = original;
         }
       }
     }
   }
 
   private buildAvailableItemIds(allItems?: Map<unknown, number>): Set<string> {
-    const available = new Set<string>()
-    if (!allItems) return available
-    const chestGameShuffle = String((this.settings as { smallKeyShuffleChestGame?: unknown })?.smallKeyShuffleChestGame ?? '')
-    const hideVanillaSilverRupees = this.isVanillaSilverRupeeShuffle()
-    const hideOwlStatues = String((this.settings as { owlShuffle?: unknown })?.owlShuffle ?? '') === 'none'
+    const available = new Set<string>();
+    if (!allItems) return available;
+    const chestGameShuffle = String(
+      (this.settings as { smallKeyShuffleChestGame?: unknown })
+        ?.smallKeyShuffleChestGame ?? '',
+    );
+    const hideVanillaSilverRupees = this.isVanillaSilverRupeeShuffle();
+    const hideOwlStatues =
+      String((this.settings as { owlShuffle?: unknown })?.owlShuffle ?? '') ===
+      'none';
     for (const [playerItem, count] of allItems) {
-      if (!count || count <= 0) continue
-      const itemId = (playerItem as { item?: { id?: string } })?.item?.id
+      if (!count || count <= 0) continue;
+      const itemId = (playerItem as { item?: { id?: string } })?.item?.id;
       if (itemId) {
-        if (hideVanillaSilverRupees && this.isVanillaSilverRupeeItemId(itemId)) continue
-        if (itemId === 'OOT_SMALL_KEY_TCG' && chestGameShuffle === 'vanilla') continue
-        if (hideOwlStatues && this.isOwlStatueItemId(itemId)) continue
-        available.add(itemId)
+        if (hideVanillaSilverRupees && this.isVanillaSilverRupeeItemId(itemId))
+          continue;
+        if (itemId === 'OOT_SMALL_KEY_TCG' && chestGameShuffle === 'vanilla')
+          continue;
+        if (hideOwlStatues && this.isOwlStatueItemId(itemId)) continue;
+        available.add(itemId);
       }
     }
 
     for (const itemId of FISHING_POND_ALWAYS_INCLUDED_ITEM_IDS) {
       if (this.shouldForceIncludeItem(itemId)) {
-        available.add(itemId)
+        available.add(itemId);
       }
     }
 
     for (const itemId of BOTTLE_ALWAYS_INCLUDED_ITEM_IDS_OOT_MM) {
       if (this.shouldForceIncludeItem(itemId)) {
-        available.add(itemId)
+        available.add(itemId);
       }
     }
 
     for (const itemId of BOTTLE_ALWAYS_INCLUDED_ITEM_IDS_SHARED) {
       if (this.shouldForceIncludeItem(itemId)) {
-        available.add(itemId)
+        available.add(itemId);
       }
     }
 
-    return available
+    return available;
   }
 
   private normalizeWorldItems(worlds: World[]): void {
-    if (!worlds || !Items) return
-    const itemsById = Items as Record<string, unknown>
+    if (!worlds || !Items) return;
+    const itemsById = Items as Record<string, unknown>;
     for (const world of worlds) {
-      const checks = (world as { checks?: Record<string, { item?: { id?: string } }> }).checks
-      if (!checks) continue
+      const checks = (
+        world as { checks?: Record<string, { item?: { id?: string } }> }
+      ).checks;
+      if (!checks) continue;
       for (const check of Object.values(checks)) {
-        const item = check?.item
-        const id = item?.id
-        if (!id) continue
-        const canonical = itemsById[id]
+        const item = check?.item;
+        const id = item?.id;
+        if (!id) continue;
+        const canonical = itemsById[id];
         if (canonical) {
-          check.item = canonical
+          check.item = canonical;
         }
       }
     }
@@ -815,114 +1147,126 @@ export class OoTMMTracker implements TrackerPack {
     allItems?: Map<unknown, number>,
     startingItems?: Map<unknown, number>,
   ): Map<string, number> {
-    const counts = new Map<string, number>()
-    if (!allItems) return counts
+    const counts = new Map<string, number>();
+    if (!allItems) return counts;
     for (const [playerItem, count] of allItems) {
-      if (!count || count <= 0) continue
-      const itemId = (playerItem as { item?: { id?: string } })?.item?.id
-      if (!itemId) continue
-      counts.set(itemId, (counts.get(itemId) || 0) + count)
+      if (!count || count <= 0) continue;
+      const itemId = (playerItem as { item?: { id?: string } })?.item?.id;
+      if (!itemId) continue;
+      counts.set(itemId, (counts.get(itemId) || 0) + count);
     }
 
     // Core allItems includes fixed locations on top of the initial pool snapshot,
     // which effectively double-counts fixed items. Remove one per fixed location.
-    this.adjustFixedLocationCounts(counts)
-    this.adjustStartingClockCounts(counts, startingItems)
+    this.adjustFixedLocationCounts(counts);
+    this.adjustStartingClockCounts(counts, startingItems);
 
     const settings = this.settings as {
-      smallKeyShuffleOot?: unknown
-      smallKeyShuffleMm?: unknown
-      smallKeyShuffleHideout?: unknown
-      smallKeyShuffleChestGame?: unknown
-    }
-    const ootSetting = String(settings.smallKeyShuffleOot ?? '')
-    const mmSetting = String(settings.smallKeyShuffleMm ?? '')
-    const hideoutSetting = String(settings.smallKeyShuffleHideout ?? '')
-    const chestGameSetting = String(settings.smallKeyShuffleChestGame ?? '')
+      smallKeyShuffleOot?: unknown;
+      smallKeyShuffleMm?: unknown;
+      smallKeyShuffleHideout?: unknown;
+      smallKeyShuffleChestGame?: unknown;
+    };
+    const ootSetting = String(settings.smallKeyShuffleOot ?? '');
+    const mmSetting = String(settings.smallKeyShuffleMm ?? '');
+    const hideoutSetting = String(settings.smallKeyShuffleHideout ?? '');
+    const chestGameSetting = String(settings.smallKeyShuffleChestGame ?? '');
 
-    if (ootSetting === 'vanilla' || mmSetting === 'vanilla' || hideoutSetting === 'vanilla' || chestGameSetting === 'vanilla') {
-      const defaultSmallKeyCounts = ITEM_DATABASE
-        .filter((item) => item.id.includes('SMALL_KEY') && typeof item.maxCount === 'number')
-        .map((item): [string, number] => [item.id, item.maxCount as number])
+    if (
+      ootSetting === 'vanilla' ||
+      mmSetting === 'vanilla' ||
+      hideoutSetting === 'vanilla' ||
+      chestGameSetting === 'vanilla'
+    ) {
+      const defaultSmallKeyCounts = ITEM_DATABASE.filter(
+        (item) =>
+          item.id.includes('SMALL_KEY') && typeof item.maxCount === 'number',
+      ).map((item): [string, number] => [item.id, item.maxCount as number]);
 
       for (const [itemId, maxCount] of defaultSmallKeyCounts) {
         if (itemId === 'OOT_SMALL_KEY_GF') {
-          if (hideoutSetting === 'vanilla') counts.set(itemId, maxCount)
-          continue
+          if (hideoutSetting === 'vanilla') counts.set(itemId, maxCount);
+          continue;
         }
         if (itemId === 'OOT_SMALL_KEY_TCG') {
-          if (chestGameSetting === 'vanilla') counts.set(itemId, maxCount)
-          continue
+          if (chestGameSetting === 'vanilla') counts.set(itemId, maxCount);
+          continue;
         }
         if (itemId.startsWith('OOT_SMALL_KEY_')) {
-          if (ootSetting === 'vanilla') counts.set(itemId, maxCount)
-          continue
+          if (ootSetting === 'vanilla') counts.set(itemId, maxCount);
+          continue;
         }
         if (itemId.startsWith('MM_SMALL_KEY_')) {
-          if (mmSetting === 'vanilla') counts.set(itemId, maxCount)
+          if (mmSetting === 'vanilla') counts.set(itemId, maxCount);
         }
       }
     }
 
     for (const itemId of SINGLE_COUNT_ITEM_IDS) {
       if (counts.has(itemId)) {
-        counts.set(itemId, 1)
+        counts.set(itemId, 1);
       }
     }
 
     for (const itemId of FISHING_POND_ALWAYS_INCLUDED_ITEM_IDS) {
       if (this.shouldForceIncludeItem(itemId)) {
-        counts.set(itemId, 1)
+        counts.set(itemId, 1);
       }
     }
 
     for (const itemId of BOTTLE_ALWAYS_INCLUDED_ITEM_IDS_OOT_MM) {
       if (this.shouldForceIncludeItem(itemId)) {
-        counts.set(itemId, 1)
+        counts.set(itemId, 1);
       }
     }
 
     for (const itemId of BOTTLE_ALWAYS_INCLUDED_ITEM_IDS_SHARED) {
       if (this.shouldForceIncludeItem(itemId)) {
-        counts.set(itemId, 1)
+        counts.set(itemId, 1);
       }
     }
 
-    return counts
+    return counts;
   }
 
   private adjustStartingClockCounts(
     counts: Map<string, number>,
     startingItems?: Map<unknown, number>,
   ): void {
-    if (!startingItems || startingItems.size === 0) return
+    if (!startingItems || startingItems.size === 0) return;
 
     for (const [playerItem, count] of startingItems) {
-      if (!count || count <= 0) continue
-      const itemId = (playerItem as { item?: { id?: string } })?.item?.id
-      if (!itemId || !CLOCK_ITEM_IDS.has(itemId)) continue
+      if (!count || count <= 0) continue;
+      const itemId = (playerItem as { item?: { id?: string } })?.item?.id;
+      if (!itemId || !CLOCK_ITEM_IDS.has(itemId)) continue;
 
-      const current = counts.get(itemId)
-      if (!current) continue
+      const current = counts.get(itemId);
+      if (!current) continue;
 
-      const next = current - count
+      const next = current - count;
       if (next > 0) {
-        counts.set(itemId, next)
+        counts.set(itemId, next);
       } else {
-        counts.delete(itemId)
+        counts.delete(itemId);
       }
     }
   }
 
   private isFishingPondShuffleEnabled(): boolean {
-    const value = (this.settings as { pondFishShuffle?: unknown })?.pondFishShuffle
-    if (typeof value === 'boolean') return value
+    const value = (this.settings as { pondFishShuffle?: unknown })
+      ?.pondFishShuffle;
+    if (typeof value === 'boolean') return value;
     if (typeof value === 'string') {
-      const normalized = value.trim().toLowerCase()
-      return normalized === 'true' || normalized === '1' || normalized === 'yes' || normalized === 'on'
+      const normalized = value.trim().toLowerCase();
+      return (
+        normalized === 'true' ||
+        normalized === '1' ||
+        normalized === 'yes' ||
+        normalized === 'on'
+      );
     }
-    if (typeof value === 'number') return value === 1
-    return false
+    if (typeof value === 'number') return value === 1;
+    return false;
   }
 
   private shouldForceIncludeItem(itemId: string): boolean {
@@ -953,231 +1297,282 @@ export class OoTMMTracker implements TrackerPack {
   }
 
   private adjustFixedLocationCounts(counts: Map<string, number>): void {
-    if (!this.fixedLocationIds || this.fixedLocationIds.size === 0) return
-    const worlds = this.baseWorlds.length > 0 ? this.baseWorlds : this.worlds
-    if (!worlds || worlds.length === 0) return
+    if (!this.fixedLocationIds || this.fixedLocationIds.size === 0) return;
+    const worlds = this.baseWorlds.length > 0 ? this.baseWorlds : this.worlds;
+    if (!worlds || worlds.length === 0) return;
 
     for (const loc of this.fixedLocationIds) {
-      let locId: string | undefined
-      let worldId: number | null | undefined
+      let locId: string | undefined;
+      let worldId: number | null | undefined;
 
       if (locationData) {
-        const data = locationData(loc as unknown as ReturnType<typeof makeLocation>)
+        const data = locationData(
+          loc as unknown as ReturnType<typeof makeLocation>,
+        );
         if (data) {
-          locId = data.id
-          worldId = data.world
+          locId = data.id;
+          worldId = data.world;
         }
       }
 
       if (!locId) {
-        const atIndex = loc.lastIndexOf('@')
+        const atIndex = loc.lastIndexOf('@');
         if (atIndex >= 0) {
-          locId = loc.slice(0, atIndex)
-          worldId = Number(loc.slice(atIndex + 1))
+          locId = loc.slice(0, atIndex);
+          worldId = Number(loc.slice(atIndex + 1));
         } else {
-          locId = loc
-          worldId = 0
+          locId = loc;
+          worldId = 0;
         }
       }
 
-      if (worldId === null || worldId === undefined || Number.isNaN(worldId)) continue
-      const world = worlds[worldId]
-      const itemId = world?.checks?.[locId]?.item?.id
-      if (!itemId) continue
+      if (worldId === null || worldId === undefined || Number.isNaN(worldId))
+        continue;
+      const world = worlds[worldId];
+      const itemId = world?.checks?.[locId]?.item?.id;
+      if (!itemId) continue;
 
-      const current = counts.get(itemId)
-      if (!current) continue
-      const next = current - 1
+      const current = counts.get(itemId);
+      if (!current) continue;
+      const next = current - 1;
       if (next > 0) {
-        counts.set(itemId, next)
+        counts.set(itemId, next);
       } else {
-        counts.delete(itemId)
+        counts.delete(itemId);
       }
     }
   }
 
   private isVanillaSilverRupeeShuffle(): boolean {
-    return String((this.settings as { silverRupeeShuffle?: unknown })?.silverRupeeShuffle ?? '') === 'vanilla'
+    return (
+      String(
+        (this.settings as { silverRupeeShuffle?: unknown })
+          ?.silverRupeeShuffle ?? '',
+      ) === 'vanilla'
+    );
   }
 
   private isVanillaSilverRupeeItemId(itemId: string): boolean {
-    return itemId.startsWith(VANILLA_SILVER_RUPEE_PREFIX)
+    return itemId.startsWith(VANILLA_SILVER_RUPEE_PREFIX);
   }
 
   private isOwlStatueItemId(itemId: string): boolean {
-    return itemId.startsWith(OWL_STATUE_PREFIX)
+    return itemId.startsWith(OWL_STATUE_PREFIX);
   }
 
-  private stripVanillaSilverRupees(inventory: Map<string, number>): Map<string, number> {
-    if (!inventory || inventory.size === 0) return new Map()
-    const next = new Map<string, number>()
+  private stripVanillaSilverRupees(
+    inventory: Map<string, number>,
+  ): Map<string, number> {
+    if (!inventory || inventory.size === 0) return new Map();
+    const next = new Map<string, number>();
     for (const [itemId, count] of inventory) {
-      if (this.isVanillaSilverRupeeItemId(itemId)) continue
-      next.set(itemId, count)
+      if (this.isVanillaSilverRupeeItemId(itemId)) continue;
+      next.set(itemId, count);
     }
-    return next
+    return next;
   }
 
-  private mergeInventoryWithCounts(baseInventory: Map<string, number>, counts: Map<string, number>): Map<string, number> {
-    const next = new Map<string, number>(baseInventory)
+  private mergeInventoryWithCounts(
+    baseInventory: Map<string, number>,
+    counts: Map<string, number>,
+  ): Map<string, number> {
+    const next = new Map<string, number>(baseInventory);
     for (const [itemId, count] of counts) {
       if (count > 0) {
-        next.set(itemId, count)
+        next.set(itemId, count);
       }
     }
-    return next
+    return next;
   }
 
-  private areCountMapsEqual(a: Map<string, number>, b: Map<string, number>): boolean {
-    if (a.size !== b.size) return false
+  private areCountMapsEqual(
+    a: Map<string, number>,
+    b: Map<string, number>,
+  ): boolean {
+    if (a.size !== b.size) return false;
     for (const [itemId, count] of a) {
-      if (b.get(itemId) !== count) return false
+      if (b.get(itemId) !== count) return false;
     }
-    return true
+    return true;
   }
 
-  private countMapToRecord(counts: Map<string, number>): Record<string, number> {
-    return Object.fromEntries(counts.entries())
+  private countMapToRecord(
+    counts: Map<string, number>,
+  ): Record<string, number> {
+    return Object.fromEntries(counts.entries());
   }
 
   private runPathfinder(inventory: Map<string, number>): {
-    state: ReturnType<InstanceType<typeof Pathfinder>['run']>
-    reachableLocationIds: string[]
-    newLocationIds: string[]
+    state: ReturnType<InstanceType<typeof Pathfinder>['run']>;
+    reachableLocationIds: string[];
+    newLocationIds: string[];
   } {
-    const playerItems = this.buildPlayerItemsFromInventory(inventory)
+    const playerItems = this.buildPlayerItemsFromInventory(inventory);
 
     // Run pathfinding. Use a fresh state each run so that removals
     // of items (decrements) are correctly handled. The
     // Pathfinder only applies deltas for increased items
     // when given a previous state, which prevents reductions from
     // taking effect. Using `null` forces a full recalculation.
-    let state
+    let state;
     try {
       state = this.pathfinder.run(null, {
-        assumedItems: playerItems,  // Items the player has
+        assumedItems: playerItems, // Items the player has
         recursive: true,
         inPlace: false,
         gossips: true,
-      })
+      });
     } catch (e) {
-      console.error('[OoTMM Tracker] Pathfinder error:', e)
-      throw e
+      console.error('[OoTMM Tracker] Pathfinder error:', e);
+      throw e;
     }
 
     if (!state) {
-      console.error('[OoTMM Tracker] Pathfinder returned undefined!')
-      throw new Error('Pathfinder returned undefined')
+      console.error('[OoTMM Tracker] Pathfinder returned undefined!');
+      throw new Error('Pathfinder returned undefined');
     }
 
     const typedState = state as {
-      locations: Iterable<string>
-      newLocations: Iterable<string>
-      gossips?: Array<Set<string>>
-    }
+      locations: Iterable<string>;
+      newLocations: Iterable<string>;
+      gossips?: Array<Set<string>>;
+    };
 
-    const reachableCheckIds = Array.from(typedState.locations).filter((locId) => !this.hiddenLocationIds.has(locId))
-    const reachableGossipIds: string[] = []
+    const reachableCheckIds = Array.from(typedState.locations).filter(
+      (locId) => !this.hiddenLocationIds.has(locId),
+    );
+    const reachableGossipIds: string[] = [];
     if (Array.isArray(typedState.gossips)) {
-      typedState.gossips.forEach((worldGossips: Set<string>, worldId: number) => {
-        worldGossips.forEach((gossipName) => {
-          const gossipLocationId = makeLocation(gossipName, worldId)
-          if (!this.hiddenLocationIds.has(gossipLocationId)) {
-            reachableGossipIds.push(gossipLocationId)
-          }
-        })
-      })
+      typedState.gossips.forEach(
+        (worldGossips: Set<string>, worldId: number) => {
+          worldGossips.forEach((gossipName) => {
+            const gossipLocationId = makeLocation(gossipName, worldId);
+            if (!this.hiddenLocationIds.has(gossipLocationId)) {
+              reachableGossipIds.push(gossipLocationId);
+            }
+          });
+        },
+      );
     }
-    const reachableLocationIds = Array.from(new Set([...reachableCheckIds, ...reachableGossipIds]))
-    const newLocationIds = Array.from(typedState.newLocations).filter((locId) => !this.hiddenLocationIds.has(locId))
+    const reachableLocationIds = Array.from(
+      new Set([...reachableCheckIds, ...reachableGossipIds]),
+    );
+    const newLocationIds = Array.from(typedState.newLocations).filter(
+      (locId) => !this.hiddenLocationIds.has(locId),
+    );
 
-    return { state, reachableLocationIds, newLocationIds }
+    return { state, reachableLocationIds, newLocationIds };
   }
 
-  private buildPlayerItemsFromInventory(inventory: Map<string, number>): PlayerItems {
+  private buildPlayerItemsFromInventory(
+    inventory: Map<string, number>,
+  ): PlayerItems {
     // Convert inventory to PlayerItems format
     // Use ArrayEntriesMap to ensure .entries() returns an array instead of an iterator,
     // which is what the OoTMM library expects
-    const playerItems: PlayerItems = new ArrayEntriesMap()
-    const expandedInventory = new Map<string, number>(inventory)
+    const playerItems: PlayerItems = new ArrayEntriesMap();
+    const expandedInventory = new Map<string, number>(inventory);
 
     for (const [itemId, count] of inventory) {
-      if (count <= 0) continue
-      const baseItemId = BOTTLE_CONTENT_BASE_ITEM_IDS[itemId]
-      if (!baseItemId) continue
-      expandedInventory.set(baseItemId, (expandedInventory.get(baseItemId) || 0) + count)
+      if (count <= 0) continue;
+      const baseItemId = BOTTLE_CONTENT_BASE_ITEM_IDS[itemId];
+      if (!baseItemId) continue;
+      expandedInventory.set(
+        baseItemId,
+        (expandedInventory.get(baseItemId) || 0) + count,
+      );
     }
 
     for (const [itemId, count] of expandedInventory) {
       if (itemId.startsWith(GRID_REF_STATE_PREFIX)) {
-        continue
+        continue;
       }
 
-      let item = (Items as Record<string, unknown>)[itemId]
+      let item = (Items as Record<string, unknown>)[itemId];
       if (!item) {
         try {
-          item = itemByID(itemId)
+          item = itemByID(itemId);
         } catch (e) {
-          console.log('[OoTMM Tracker] Could not resolve item:', itemId, e)
-          item = undefined
+          console.log('[OoTMM Tracker] Could not resolve item:', itemId, e);
+          item = undefined;
         }
       }
       if (item && count > 0) {
-        const pi = makePlayerItem(item, 0)
-        playerItems.set(pi, count)
-        console.log('[OoTMM Tracker] Added item to playerItems:', itemId, 'as', pi.item.id, 'count:', count)
+        const pi = makePlayerItem(item, 0);
+        playerItems.set(pi, count);
+        console.log(
+          '[OoTMM Tracker] Added item to playerItems:',
+          itemId,
+          'as',
+          pi.item.id,
+          'count:',
+          count,
+        );
       }
     }
-    return playerItems
+    return playerItems;
   }
 
-  private buildSilverRupeeLocationIndex(worlds: World[]): Map<string, string[]> {
-    const map = new Map<string, string[]>()
-    if (!worlds || worlds.length === 0) return map
+  private buildSilverRupeeLocationIndex(
+    worlds: World[],
+  ): Map<string, string[]> {
+    const map = new Map<string, string[]>();
+    if (!worlds || worlds.length === 0) return map;
 
     for (const [worldId, world] of worlds.entries()) {
       for (const [locId, check] of Object.entries(world.checks ?? {})) {
-        const itemId = (check as { item?: { id?: string } })?.item?.id
-        if (!itemId || !this.isVanillaSilverRupeeItemId(itemId)) continue
-        const fullId = makeLocation(locId, worldId)
-        const list = map.get(itemId) ?? []
-        list.push(fullId)
-        map.set(itemId, list)
+        const itemId = (check as { item?: { id?: string } })?.item?.id;
+        if (!itemId || !this.isVanillaSilverRupeeItemId(itemId)) continue;
+        const fullId = makeLocation(locId, worldId);
+        const list = map.get(itemId) ?? [];
+        list.push(fullId);
+        map.set(itemId, list);
       }
     }
-    return map
+    return map;
   }
 
   private buildShopPriceIndex(worlds: World[]): {
-    slotsByLocationId: Map<string, ShopPriceSlot>
-    basePricesByLocationId: Map<string, number[]>
+    slotsByLocationId: Map<string, ShopPriceSlot>;
+    basePricesByLocationId: Map<string, number[]>;
   } {
-    const slotsByLocationId = new Map<string, ShopPriceSlot>()
-    const basePricesByLocationId = new Map<string, number[]>()
+    const slotsByLocationId = new Map<string, ShopPriceSlot>();
+    const basePricesByLocationId = new Map<string, number[]>();
     if (!worlds || worlds.length === 0) {
-      return { slotsByLocationId, basePricesByLocationId }
+      return { slotsByLocationId, basePricesByLocationId };
     }
 
     for (const [worldId, world] of worlds.entries()) {
-      const locationPriceSlots = this.buildLocationPriceSlotIndex(world)
+      const locationPriceSlots = this.buildLocationPriceSlotIndex(world);
       for (const [locId, check] of Object.entries(world.checks ?? {})) {
-        const typedCheck = check as { type?: string; id?: number | string; game?: 'oot' | 'mm' }
-        if (typedCheck.game !== 'oot' && typedCheck.game !== 'mm') continue
+        const typedCheck = check as {
+          type?: string;
+          id?: number | string;
+          game?: 'oot' | 'mm';
+        };
+        if (typedCheck.game !== 'oot' && typedCheck.game !== 'mm') continue;
 
-        const slots = this.computePriceSlots(typedCheck, locId, locationPriceSlots)
-        if (slots.length === 0) continue
-        if (!world.prices) continue
+        const slots = this.computePriceSlots(
+          typedCheck,
+          locId,
+          locationPriceSlots,
+        );
+        if (slots.length === 0) continue;
+        if (!world.prices) continue;
 
-        const fullId = makeLocation(locId, worldId)
+        const fullId = makeLocation(locId, worldId);
         slotsByLocationId.set(fullId, {
           worldId,
           slots,
-        })
-        basePricesByLocationId.set(fullId, slots.map((slot) => world.prices[slot]))
+        });
+        basePricesByLocationId.set(
+          fullId,
+          slots.map((slot) => world.prices[slot]),
+        );
       }
     }
 
-    return { slotsByLocationId, basePricesByLocationId }
+    return { slotsByLocationId, basePricesByLocationId };
   }
 
   private computePriceSlots(
@@ -1185,144 +1580,217 @@ export class OoTMMTracker implements TrackerPack {
     locationId: string,
     locationPriceSlots: Map<string, number[]>,
   ): number[] {
-    const slots = new Set<number>()
+    const slots = new Set<number>();
 
-    if (check.type === 'shop' && typeof check.id === 'number' && Number.isInteger(check.id) && check.id >= 0) {
+    if (
+      check.type === 'shop' &&
+      typeof check.id === 'number' &&
+      Number.isInteger(check.id) &&
+      check.id >= 0
+    ) {
       if (check.game === 'oot') {
-        slots.add(PRICE_RANGE_OOT_SHOPS + check.id)
+        slots.add(PRICE_RANGE_OOT_SHOPS + check.id);
       } else if (check.game === 'mm') {
-        slots.add(PRICE_RANGE_MM_SHOPS + check.id)
+        slots.add(PRICE_RANGE_MM_SHOPS + check.id);
       }
     }
 
-    if (check.type === 'shop_ex' && check.game === 'mm' && typeof check.id === 'number' && Number.isInteger(check.id) && check.id >= 0) {
-      slots.add(PRICE_RANGE_MM_SHOPS_EX + check.id)
+    if (
+      check.type === 'shop_ex' &&
+      check.game === 'mm' &&
+      typeof check.id === 'number' &&
+      Number.isInteger(check.id) &&
+      check.id >= 0
+    ) {
+      slots.add(PRICE_RANGE_MM_SHOPS_EX + check.id);
     }
 
-    if (check.type === 'scrub' && check.game === 'oot' && typeof check.id === 'number' && Number.isInteger(check.id) && check.id >= 0) {
-      slots.add(PRICE_RANGE_OOT_SCRUBS + check.id)
+    if (
+      check.type === 'scrub' &&
+      check.game === 'oot' &&
+      typeof check.id === 'number' &&
+      Number.isInteger(check.id) &&
+      check.id >= 0
+    ) {
+      slots.add(PRICE_RANGE_OOT_SCRUBS + check.id);
     }
 
-    if (check.type === 'npc' && check.game === 'oot' && typeof check.id === 'string') {
-      const merchantSlot = OOT_MERCHANT_SLOT_BY_ID[check.id]
+    if (
+      check.type === 'npc' &&
+      check.game === 'oot' &&
+      typeof check.id === 'string'
+    ) {
+      const merchantSlot = OOT_MERCHANT_SLOT_BY_ID[check.id];
       if (typeof merchantSlot === 'number') {
-        slots.add(PRICE_RANGE_OOT_MERCHANTS + merchantSlot)
+        slots.add(PRICE_RANGE_OOT_MERCHANTS + merchantSlot);
       }
     }
 
-    if (check.type === 'npc' && check.game === 'mm' && typeof check.id === 'string' && check.id.startsWith('MM_TINGLE_MAP_')) {
-      const candidates = locationPriceSlots.get(locationId) ?? []
+    if (
+      check.type === 'npc' &&
+      check.game === 'mm' &&
+      typeof check.id === 'string' &&
+      check.id.startsWith('MM_TINGLE_MAP_')
+    ) {
+      const candidates = locationPriceSlots.get(locationId) ?? [];
       for (const slot of candidates) {
-        if (slot >= PRICE_RANGE_MM_TINGLE && slot < PRICE_RANGE_MM_TINGLE + PRICE_COUNT_MM_TINGLE) {
-          slots.add(slot)
+        if (
+          slot >= PRICE_RANGE_MM_TINGLE &&
+          slot < PRICE_RANGE_MM_TINGLE + PRICE_COUNT_MM_TINGLE
+        ) {
+          slots.add(slot);
         }
       }
     }
 
     return Array.from(slots)
       .filter((slot) => Number.isInteger(slot) && slot >= 0)
-      .sort((a, b) => a - b)
+      .sort((a, b) => a - b);
   }
 
   private buildLocationPriceSlotIndex(world: World): Map<string, number[]> {
-    const byLocation = new Map<string, Set<number>>()
+    const byLocation = new Map<string, Set<number>>();
 
-    for (const area of Object.values((world as { areas?: Record<string, { locations?: Record<string, unknown> }> }).areas ?? {})) {
+    for (const area of Object.values(
+      (
+        world as {
+          areas?: Record<string, { locations?: Record<string, unknown> }>;
+        }
+      ).areas ?? {},
+    )) {
       for (const [locationId, expr] of Object.entries(area.locations ?? {})) {
-        const slots = byLocation.get(locationId) ?? new Set<number>()
-        this.collectPriceSlotsFromExpr(expr, slots, new WeakSet<object>())
+        const slots = byLocation.get(locationId) ?? new Set<number>();
+        this.collectPriceSlotsFromExpr(expr, slots, new WeakSet<object>());
         if (slots.size > 0) {
-          byLocation.set(locationId, slots)
+          byLocation.set(locationId, slots);
         }
       }
     }
 
-    const normalized = new Map<string, number[]>()
+    const normalized = new Map<string, number[]>();
     for (const [locationId, slots] of byLocation.entries()) {
-      normalized.set(locationId, Array.from(slots).sort((a, b) => a - b))
+      normalized.set(
+        locationId,
+        Array.from(slots).sort((a, b) => a - b),
+      );
     }
-    return normalized
+    return normalized;
   }
 
-  private collectPriceSlotsFromExpr(expr: unknown, out: Set<number>, seen: WeakSet<object>): void {
-    if (!expr || typeof expr !== 'object') return
-    if (seen.has(expr)) return
-    seen.add(expr)
-    const maybeSlot = (expr as { slot?: unknown }).slot
-    if (typeof maybeSlot === 'number' && Number.isInteger(maybeSlot) && maybeSlot >= 0) {
-      out.add(maybeSlot)
+  private collectPriceSlotsFromExpr(
+    expr: unknown,
+    out: Set<number>,
+    seen: WeakSet<object>,
+  ): void {
+    if (!expr || typeof expr !== 'object') return;
+    if (seen.has(expr)) return;
+    seen.add(expr);
+    const maybeSlot = (expr as { slot?: unknown }).slot;
+    if (
+      typeof maybeSlot === 'number' &&
+      Number.isInteger(maybeSlot) &&
+      maybeSlot >= 0
+    ) {
+      out.add(maybeSlot);
     }
     for (const value of Object.values(expr as Record<string, unknown>)) {
       if (Array.isArray(value)) {
-        value.forEach((entry) => this.collectPriceSlotsFromExpr(entry, out, seen))
+        value.forEach((entry) =>
+          this.collectPriceSlotsFromExpr(entry, out, seen),
+        );
       } else if (value && typeof value === 'object') {
-        this.collectPriceSlotsFromExpr(value, out, seen)
+        this.collectPriceSlotsFromExpr(value, out, seen);
       }
     }
   }
 
-  private applyAffordableModeToRange(world: World, base: number, size: number, mode: string): void {
-    if (!world?.prices || mode !== 'affordable') return
+  private applyAffordableModeToRange(
+    world: World,
+    base: number,
+    size: number,
+    mode: string,
+  ): void {
+    if (!world?.prices || mode !== 'affordable') return;
     for (let i = 0; i < size; i += 1) {
-      const slot = base + i
+      const slot = base + i;
       if (slot >= 0 && slot < world.prices.length) {
-        world.prices[slot] = 10
+        world.prices[slot] = 10;
       }
     }
   }
 
   private isShopPriceEditableForLocation(slotData: ShopPriceSlot): boolean {
     for (const slot of slotData.slots) {
-      const mode = this.getShopPriceModeForSlot(slot)
+      const mode = this.getShopPriceModeForSlot(slot);
       if (mode === 'random' || mode === 'weighted') {
-        return true
+        return true;
       }
     }
-    return false
+    return false;
   }
 
   private getShopPriceModeForSlot(slot: number): string {
     const settings = this.settings as {
-      priceOotShops?: unknown
-      priceOotScrubs?: unknown
-      priceOotMerchants?: unknown
-      priceMmShops?: unknown
-      priceMmTingle?: unknown
+      priceOotShops?: unknown;
+      priceOotScrubs?: unknown;
+      priceOotMerchants?: unknown;
+      priceMmShops?: unknown;
+      priceMmTingle?: unknown;
+    };
+    if (
+      slot >= PRICE_RANGE_OOT_SHOPS &&
+      slot < PRICE_RANGE_OOT_SHOPS + PRICE_COUNT_OOT_SHOPS
+    ) {
+      return String(settings.priceOotShops ?? '');
     }
-    if (slot >= PRICE_RANGE_OOT_SHOPS && slot < PRICE_RANGE_OOT_SHOPS + PRICE_COUNT_OOT_SHOPS) {
-      return String(settings.priceOotShops ?? '')
+    if (
+      slot >= PRICE_RANGE_OOT_SCRUBS &&
+      slot < PRICE_RANGE_OOT_SCRUBS + PRICE_COUNT_OOT_SCRUBS
+    ) {
+      return String(settings.priceOotScrubs ?? '');
     }
-    if (slot >= PRICE_RANGE_OOT_SCRUBS && slot < PRICE_RANGE_OOT_SCRUBS + PRICE_COUNT_OOT_SCRUBS) {
-      return String(settings.priceOotScrubs ?? '')
+    if (
+      slot >= PRICE_RANGE_OOT_MERCHANTS &&
+      slot < PRICE_RANGE_OOT_MERCHANTS + PRICE_COUNT_OOT_MERCHANTS
+    ) {
+      return String(settings.priceOotMerchants ?? '');
     }
-    if (slot >= PRICE_RANGE_OOT_MERCHANTS && slot < PRICE_RANGE_OOT_MERCHANTS + PRICE_COUNT_OOT_MERCHANTS) {
-      return String(settings.priceOotMerchants ?? '')
+    if (
+      slot >= PRICE_RANGE_MM_SHOPS &&
+      slot < PRICE_RANGE_MM_SHOPS + PRICE_COUNT_MM_SHOPS
+    ) {
+      return String(settings.priceMmShops ?? '');
     }
-    if (slot >= PRICE_RANGE_MM_SHOPS && slot < PRICE_RANGE_MM_SHOPS + PRICE_COUNT_MM_SHOPS) {
-      return String(settings.priceMmShops ?? '')
+    if (
+      slot >= PRICE_RANGE_MM_SHOPS_EX &&
+      slot < PRICE_RANGE_MM_SHOPS_EX + PRICE_COUNT_MM_SHOPS_EX
+    ) {
+      return String(settings.priceMmShops ?? '');
     }
-    if (slot >= PRICE_RANGE_MM_SHOPS_EX && slot < PRICE_RANGE_MM_SHOPS_EX + PRICE_COUNT_MM_SHOPS_EX) {
-      return String(settings.priceMmShops ?? '')
+    if (
+      slot >= PRICE_RANGE_MM_TINGLE &&
+      slot < PRICE_RANGE_MM_TINGLE + PRICE_COUNT_MM_TINGLE
+    ) {
+      return String(settings.priceMmTingle ?? '');
     }
-    if (slot >= PRICE_RANGE_MM_TINGLE && slot < PRICE_RANGE_MM_TINGLE + PRICE_COUNT_MM_TINGLE) {
-      return String(settings.priceMmTingle ?? '')
-    }
-    return ''
+    return '';
   }
 
-  private computeVanillaSilverRupeeCounts(reachableLocationIds: string[]): Map<string, number> {
-    const counts = new Map<string, number>()
-    if (this.silverRupeeLocationIdsByItemId.size === 0) return counts
-    const reachable = new Set(reachableLocationIds)
+  private computeVanillaSilverRupeeCounts(
+    reachableLocationIds: string[],
+  ): Map<string, number> {
+    const counts = new Map<string, number>();
+    if (this.silverRupeeLocationIdsByItemId.size === 0) return counts;
+    const reachable = new Set(reachableLocationIds);
     for (const [itemId, locationIds] of this.silverRupeeLocationIdsByItemId) {
-      let count = 0
+      let count = 0;
       for (const locId of locationIds) {
-        if (reachable.has(locId)) count += 1
+        if (reachable.has(locId)) count += 1;
       }
       if (count > 0) {
-        counts.set(itemId, count)
+        counts.set(itemId, count);
       }
     }
-    return counts
+    return counts;
   }
 }

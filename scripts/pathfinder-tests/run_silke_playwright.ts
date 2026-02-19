@@ -6,8 +6,14 @@ import {
   type TestCase,
 } from './core';
 import os from 'node:os';
-import { chromium, type Browser, type BrowserContext, type Page } from 'playwright';
+import {
+  chromium,
+  type Browser,
+  type BrowserContext,
+  type Page,
+} from 'playwright';
 import * as SettingsMod from '@ootmm/core/settings/index';
+import * as DataMod from '../../OoTMM/packages/data/src/index';
 
 type CliOptions = {
   filePath: string;
@@ -31,11 +37,13 @@ type RunContext = {
   settingsWarnings: string[];
 };
 
-const resolveExport = <T,>(mod: unknown, key: string): T =>
+const resolveExport = <T>(mod: unknown, key: string): T =>
   (mod as Record<string, T>)?.[key] ??
   (mod as { default: Record<string, T> })?.default?.[key];
 
-const TRICKS = resolveExport<Record<string, { glitch?: boolean }>>(SettingsMod, 'TRICKS') ?? {};
+const TRICKS =
+  resolveExport<Record<string, { glitch?: boolean }>>(SettingsMod, 'TRICKS') ??
+  {};
 
 const MQ_DUNGEON_MAP: Record<string, string> = {
   DekuTree: 'DT',
@@ -56,8 +64,60 @@ const nonGlitchTricks = Object.entries(TRICKS)
   .filter((entry) => !entry[1]?.glitch)
   .map((entry) => entry[0]);
 
+const ENTRANCES: Record<string, unknown> =
+  (DataMod as Record<string, unknown>)?.['ENTRANCES'] ??
+  (DataMod as { default?: Record<string, unknown> })?.default?.['ENTRANCES'] ??
+  {};
+
+const findEntranceByAreas = (
+  fromArea: string,
+  toArea: string,
+): string | null => {
+  for (const [key, value] of Object.entries(ENTRANCES)) {
+    const entry = value as { from?: string; to?: string };
+    if (entry.from === fromArea && entry.to === toArea) return key;
+  }
+  return null;
+};
+
+const findEntranceByToArea = (toArea: string): string | null => {
+  for (const [key, value] of Object.entries(ENTRANCES)) {
+    const entry = value as { to?: string };
+    if (entry.to === toArea) return key;
+  }
+  return null;
+};
+
+const buildEntranceOverrides = (
+  entries: TestCase['given']['entrances'],
+): { overrides: Record<string, string> | null; warnings: string[] } => {
+  if (!entries || entries.length === 0)
+    return { overrides: null, warnings: [] };
+  const overrides: Record<string, string> = {};
+  const warnings: string[] = [];
+  for (const entry of entries) {
+    const src = findEntranceByAreas(entry.from, entry.to);
+    if (!src) {
+      warnings.push(`Unknown entrance from "${entry.from}" to "${entry.to}"`);
+      continue;
+    }
+    const targetArea = entry.capture_to ?? entry.to;
+    const dst = findEntranceByToArea(targetArea);
+    if (!dst) {
+      warnings.push(`Unknown entrance destination area: "${targetArea}"`);
+      continue;
+    }
+    overrides[src] = dst;
+  }
+  return {
+    overrides: Object.keys(overrides).length > 0 ? overrides : null,
+    warnings,
+  };
+};
+
 const nowMs = (): number => Number(process.hrtime.bigint()) / 1_000_000;
-const formatMs = (startMs: number): string => `${(nowMs() - startMs).toFixed(1)}ms`;
+const formatMs = (startMs: number): string =>
+  `${(nowMs() - startMs).toFixed(1)}ms`;
 
 const parseValueToken = (raw: string): string | number | boolean => {
   if (raw === 'true') return true;
@@ -75,7 +135,9 @@ const parseSettings = (
 
   for (const token of tokens) {
     if (!token.startsWith('setting_')) {
-      warnings.push(`Unknown setting token (missing setting_ prefix): ${token}`);
+      warnings.push(
+        `Unknown setting token (missing setting_ prefix): ${token}`,
+      );
       continue;
     }
     const body = token.slice('setting_'.length);
@@ -128,8 +190,13 @@ const parseSettings = (
 
 const normalizeItemsForUi = (
   items: string[],
-): { counts: Map<string, number>; warnings: string[] } => {
+): {
+  counts: Map<string, number>;
+  inventoryPatches: Map<string, number>;
+  warnings: string[];
+} => {
   const counts = new Map<string, number>();
+  const inventoryPatches = new Map<string, number>();
   const warnings: string[] = [];
   let ootWalletLevel = 0;
   let mmWalletLevel = 0;
@@ -137,6 +204,7 @@ const normalizeItemsForUi = (
   let mmHookshotLevel = 0;
   let ootStrengthLevel = 0;
   let mmSwordLevel = 0;
+  let bottleCount = 0;
 
   const medallions = [
     'OOT_MEDALLION_FOREST',
@@ -150,6 +218,11 @@ const normalizeItemsForUi = (
   const addCount = (id: string, count: number) => {
     if (count <= 0) return;
     counts.set(id, (counts.get(id) ?? 0) + count);
+  };
+
+  const addInventoryPatch = (id: string, count: number) => {
+    if (count <= 0) return;
+    inventoryPatches.set(id, (inventoryPatches.get(id) ?? 0) + count);
   };
 
   for (const token of items) {
@@ -193,7 +266,7 @@ const normalizeItemsForUi = (
       continue;
     }
     if (rawId === 'MM_HOOKSHOT') {
-      mmHookshotLevel = Math.max(mmHookshotLevel, 1);
+      mmHookshotLevel = Math.max(mmHookshotLevel, 2);
       continue;
     }
     if (rawId === 'MM_LONGSHOT') {
@@ -243,17 +316,52 @@ const normalizeItemsForUi = (
       continue;
     }
 
+    if (
+      rawId === 'OOT_STICK' ||
+      rawId === 'OOT_STICKS_5' ||
+      rawId === 'OOT_STICKS_10'
+    ) {
+      addCount('OOT_STICK_UPGRADE', 1);
+      continue;
+    }
+
+    if (
+      rawId === 'OOT_NUT' ||
+      rawId === 'OOT_NUTS_5' ||
+      rawId === 'OOT_NUTS_10'
+    ) {
+      addCount('OOT_NUT_UPGRADE', 1);
+      continue;
+    }
+
+    if (rawId === 'OOT_BOTTLE_EMPTY') {
+      bottleCount += count;
+      continue;
+    }
+
+    if (rawId.startsWith('MM_SOUL_') || rawId.startsWith('OOT_SOUL_')) {
+      addInventoryPatch(rawId, count); // Try raw ID first
+      // Also try adding 'SOUL_' prefix or similar if needed?
+      // Logic check: MM_SOUL_NPC_KAFEI matches search results in giItems.ts.
+      continue;
+    }
+
     addCount(rawId, count);
   }
 
   if (ootWalletLevel > 0) addCount('OOT_WALLET', ootWalletLevel);
   if (mmWalletLevel > 0) addCount('MM_WALLET', mmWalletLevel);
   if (ootHookshotLevel > 0) addCount('OOT_HOOKSHOT', ootHookshotLevel);
-  if (mmHookshotLevel > 0) addCount('MM_HOOKSHOT', mmHookshotLevel);
+  if (mmHookshotLevel > 0) addInventoryPatch('MM_HOOKSHOT', mmHookshotLevel);
   if (ootStrengthLevel > 0) addCount('OOT_STRENGTH', ootStrengthLevel);
   if (mmSwordLevel > 0) addCount('MM_SWORD', mmSwordLevel);
 
-  return { counts, warnings };
+  if (bottleCount > 0) {
+    // OOT_BOTTLE_EMPTY is not a clickable item in the grid UI; inject directly via the store.
+    addInventoryPatch('OOT_BOTTLE_EMPTY', bottleCount);
+  }
+
+  return { counts, inventoryPatches, warnings };
 };
 
 const normalizeLocationId = (locationId: string): string => {
@@ -299,7 +407,10 @@ class WebRunner {
   private context: BrowserContext | null = null;
   private page: Page | null = null;
 
-  constructor(private readonly url: string, private readonly headed: boolean) {}
+  constructor(
+    private readonly url: string,
+    private readonly headed: boolean,
+  ) {}
 
   async close(): Promise<void> {
     await this.context?.close();
@@ -309,7 +420,11 @@ class WebRunner {
     this.browser = null;
   }
 
-  async runTest(test: TestCase, mode: RunMode, meta: { index: number }): Promise<{
+  async runTest(
+    test: TestCase,
+    mode: RunMode,
+    meta: { index: number },
+  ): Promise<{
     reachable: Set<string>;
     events: Set<string>;
     eventNames: Set<string>;
@@ -324,7 +439,9 @@ class WebRunner {
     const page = await this.ensurePage();
     await this.resetToCleanState(page);
 
-    const { patch: settingsPatch, warnings: settingsWarnings } = parseSettings(test.given.settings ?? []);
+    const { patch: settingsPatch, warnings: settingsWarnings } = parseSettings(
+      test.given.settings ?? [],
+    );
     warnings.push(...settingsWarnings);
     const context: RunContext = {
       warnings,
@@ -343,14 +460,32 @@ class WebRunner {
     }
     await this.applyTricksViaStore(page, Array.from(trickSet).sort(), context);
 
+    if (test.given.entrances && test.given.entrances.length > 0) {
+      const { overrides, warnings: entranceWarnings } = buildEntranceOverrides(
+        test.given.entrances,
+      );
+      warnings.push(...entranceWarnings);
+      if (overrides) {
+        await this.applyPlandoEntrancesViaStore(page, overrides, context);
+      }
+    }
+
     await page.getByTestId('tab-items').click();
     await this.waitForReachableReady(page);
 
-    const { counts, warnings: itemWarnings } = normalizeItemsForUi(test.given.items ?? []);
+    const {
+      counts,
+      inventoryPatches,
+      warnings: itemWarnings,
+    } = normalizeItemsForUi(test.given.items ?? []);
     warnings.push(...itemWarnings);
     await this.clickItems(page, counts, context);
+    await this.applyInventoryPatchesViaStore(page, inventoryPatches, context);
 
-    const pageResult = await this.readResultFromPage(page, test.given.events ?? {});
+    const pageResult = await this.readResultFromPage(
+      page,
+      test.given.events ?? {},
+    );
     warnings.push(...pageResult.warnings);
 
     console.log(
@@ -373,7 +508,9 @@ class WebRunner {
   private async ensurePage(): Promise<Page> {
     if (this.page) return this.page;
     this.browser = await chromium.launch({ headless: !this.headed });
-    this.context = await this.browser.newContext({ viewport: { width: 1440, height: 1000 } });
+    this.context = await this.browser.newContext({
+      viewport: { width: 1440, height: 1000 },
+    });
     this.page = await this.context.newPage();
     return this.page;
   }
@@ -386,8 +523,12 @@ class WebRunner {
   }
 
   private async waitForBoot(page: Page): Promise<void> {
-    await page.getByRole('heading', { name: 'The Last Tracker' }).waitFor({ state: 'visible', timeout: 15_000 });
-    await page.getByTestId('pack-select').waitFor({ state: 'visible', timeout: 15_000 });
+    await page
+      .getByRole('heading', { name: 'The Last Tracker' })
+      .waitFor({ state: 'visible', timeout: 15_000 });
+    await page
+      .getByTestId('pack-select')
+      .waitFor({ state: 'visible', timeout: 15_000 });
     await page.getByTestId('pack-select').selectOption('ootmm');
     await this.waitForReachableReady(page);
   }
@@ -399,18 +540,25 @@ class WebRunner {
     if (expanded !== 'true') {
       await toggle.click();
     }
-    await page.getByTestId('stats-reachable-value').waitFor({ state: 'visible', timeout: 15_000 });
+    await page
+      .getByTestId('stats-reachable-value')
+      .waitFor({ state: 'visible', timeout: 15_000 });
   }
 
   private async waitForReachableReady(page: Page): Promise<void> {
     await this.ensureStatsExpanded(page);
-    await page.waitForFunction(() => {
-      const el = document.querySelector('[data-testid="stats-reachable-value"]');
-      const raw = el?.textContent ?? '';
-      const match = raw.match(/(\d+)\s*\/\s*(\d+)/);
-      if (!match) return false;
-      return Number(match[2]) > 0;
-    }, { timeout: 15_000 });
+    await page.waitForFunction(
+      () => {
+        const el = document.querySelector(
+          '[data-testid="stats-reachable-value"]',
+        );
+        const raw = el?.textContent ?? '';
+        const match = raw.match(/(\d+)\s*\/\s*(\d+)/);
+        if (!match) return false;
+        return Number(match[2]) > 0;
+      },
+      { timeout: 15_000 },
+    );
   }
 
   private async applySettingsViaUi(
@@ -425,18 +573,20 @@ class WebRunner {
     await searchInput.fill('');
 
     const unsupportedPatch: Record<string, unknown> = {};
-    const entries = Object.entries(settingsPatch).sort((a, b) => a[0].localeCompare(b[0]));
+    const entries = Object.entries(settingsPatch).sort((a, b) =>
+      a[0].localeCompare(b[0]),
+    );
 
     for (const [key, value] of entries) {
       // Try to find the input directly first
       let input = page.getByTestId(`setting-input-${key}`);
-      
+
       // If finding fails (e.g. not rendered or filtered out), check if we need to search
       if ((await input.count()) === 0) {
         // Try searching for the specific setting
         await searchInput.fill(key);
         input = page.getByTestId(`setting-input-${key}`);
-        
+
         if ((await input.count()) === 0) {
           unsupportedPatch[key] = value;
           context.warnings.push(`Setting not exposed in settings tab: ${key}`);
@@ -448,8 +598,10 @@ class WebRunner {
 
       const control = input.first();
       // Wait for element to be attached to DOM
-      await control.waitFor({ state: 'attached', timeout: 2000 }).catch(() => {});
-      
+      await control
+        .waitFor({ state: 'attached', timeout: 2000 })
+        .catch(() => {});
+
       const kind = await control.evaluate((el) => {
         const htmlEl = el as HTMLInputElement | HTMLSelectElement;
         return {
@@ -470,7 +622,9 @@ class WebRunner {
         if (kind.tagName === 'select') {
           if (typeof value === 'object' && value !== null) {
             unsupportedPatch[key] = value;
-            context.warnings.push(`Cannot map complex setting value to select input: ${key}`);
+            context.warnings.push(
+              `Cannot map complex setting value to select input: ${key}`,
+            );
             if ((await searchInput.inputValue()) !== '') {
               await searchInput.fill('');
             }
@@ -487,14 +641,19 @@ class WebRunner {
             await control.fill(String(value));
           } else {
             unsupportedPatch[key] = value;
-            context.warnings.push(`Cannot map non-numeric value to number input: ${key}`);
+            context.warnings.push(
+              `Cannot map non-numeric value to number input: ${key}`,
+            );
           }
           if ((await searchInput.inputValue()) !== '') {
             await searchInput.fill('');
           }
           continue;
         }
-        if (kind.tagName === 'input' && (kind.type === 'text' || kind.type === 'search')) {
+        if (
+          kind.tagName === 'input' &&
+          (kind.type === 'text' || kind.type === 'search')
+        ) {
           await control.fill(String(value));
           if ((await searchInput.inputValue()) !== '') {
             await searchInput.fill('');
@@ -503,14 +662,16 @@ class WebRunner {
         }
 
         unsupportedPatch[key] = value;
-        context.warnings.push(`Unsupported settings control for ${key}: ${kind.tagName}/${kind.type}`);
+        context.warnings.push(
+          `Unsupported settings control for ${key}: ${kind.tagName}/${kind.type}`,
+        );
       } catch (error) {
         unsupportedPatch[key] = value;
         context.warnings.push(
           `Failed to set setting ${key} in UI: ${error instanceof Error ? error.message : String(error)}`,
         );
       }
-      
+
       // Clear search if we had to use it
       if ((await searchInput.inputValue()) !== '') {
         await searchInput.fill('');
@@ -545,13 +706,22 @@ class WebRunner {
     context: RunContext,
   ): Promise<void> {
     const response = await page.evaluate(async (settingsPatch) => {
-      const root = document.querySelector('.ootmm-tracker') as { __vueParentComponent?: unknown } | null;
-      const component = (root as { __vueParentComponent?: { setupState?: Record<string, unknown> } } | null)
-        ?.__vueParentComponent;
-      const sessionStore = component?.setupState?.sessionStore as {
-        trackerSettings?: Record<string, unknown>;
-        applySettings?: (settings: Record<string, unknown>) => Promise<void>;
-      } | undefined;
+      const root = document.querySelector('.ootmm-tracker') as {
+        __vueParentComponent?: unknown;
+      } | null;
+      const component = (
+        root as {
+          __vueParentComponent?: { setupState?: Record<string, unknown> };
+        } | null
+      )?.__vueParentComponent;
+      const sessionStore = component?.setupState?.sessionStore as
+        | {
+            trackerSettings?: Record<string, unknown>;
+            applySettings?: (
+              settings: Record<string, unknown>,
+            ) => Promise<void>;
+          }
+        | undefined;
       if (!sessionStore || typeof sessionStore.applySettings !== 'function') {
         return { ok: false, message: 'Session store unavailable' };
       }
@@ -564,7 +734,9 @@ class WebRunner {
     }, patch);
 
     if (!response.ok) {
-      context.warnings.push(`Failed to apply fallback settings patch: ${response.message}`);
+      context.warnings.push(
+        `Failed to apply fallback settings patch: ${response.message}`,
+      );
       return;
     }
 
@@ -577,12 +749,19 @@ class WebRunner {
     context: RunContext,
   ): Promise<void> {
     const needsApply = await page.evaluate((nextTricks) => {
-      const root = document.querySelector('.ootmm-tracker') as { __vueParentComponent?: unknown } | null;
-      const component = (root as { __vueParentComponent?: { setupState?: Record<string, unknown> } } | null)
-        ?.__vueParentComponent;
-      const sessionStore = component?.setupState?.sessionStore as {
-        trackerSettings?: Record<string, unknown>;
-      } | undefined;
+      const root = document.querySelector('.ootmm-tracker') as {
+        __vueParentComponent?: unknown;
+      } | null;
+      const component = (
+        root as {
+          __vueParentComponent?: { setupState?: Record<string, unknown> };
+        } | null
+      )?.__vueParentComponent;
+      const sessionStore = component?.setupState?.sessionStore as
+        | {
+            trackerSettings?: Record<string, unknown>;
+          }
+        | undefined;
       if (!sessionStore) return false;
       const current = Array.isArray(sessionStore.trackerSettings?.tricks)
         ? (sessionStore.trackerSettings?.tricks as string[]).slice().sort()
@@ -599,13 +778,22 @@ class WebRunner {
     }
 
     const response = await page.evaluate(async (nextTricks) => {
-      const root = document.querySelector('.ootmm-tracker') as { __vueParentComponent?: unknown } | null;
-      const component = (root as { __vueParentComponent?: { setupState?: Record<string, unknown> } } | null)
-        ?.__vueParentComponent;
-      const sessionStore = component?.setupState?.sessionStore as {
-        trackerSettings?: Record<string, unknown>;
-        applySettings?: (settings: Record<string, unknown>) => Promise<void>;
-      } | undefined;
+      const root = document.querySelector('.ootmm-tracker') as {
+        __vueParentComponent?: unknown;
+      } | null;
+      const component = (
+        root as {
+          __vueParentComponent?: { setupState?: Record<string, unknown> };
+        } | null
+      )?.__vueParentComponent;
+      const sessionStore = component?.setupState?.sessionStore as
+        | {
+            trackerSettings?: Record<string, unknown>;
+            applySettings?: (
+              settings: Record<string, unknown>,
+            ) => Promise<void>;
+          }
+        | undefined;
       if (!sessionStore || typeof sessionStore.applySettings !== 'function') {
         return { ok: false, message: 'Session store unavailable' };
       }
@@ -619,7 +807,52 @@ class WebRunner {
     }, tricks);
 
     if (!response.ok) {
-      context.warnings.push(`Failed to apply tricks through store: ${response.message}`);
+      context.warnings.push(
+        `Failed to apply tricks through store: ${response.message}`,
+      );
+      return;
+    }
+
+    await this.waitForReachableReady(page);
+  }
+
+  private async applyPlandoEntrancesViaStore(
+    page: Page,
+    overrides: Record<string, string>,
+    context: RunContext,
+  ): Promise<void> {
+    const response = await page.evaluate(async (plandoEntrances) => {
+      const root = document.querySelector('.ootmm-tracker') as {
+        __vueParentComponent?: unknown;
+      } | null;
+      const component = (
+        root as {
+          __vueParentComponent?: { setupState?: Record<string, unknown> };
+        } | null
+      )?.__vueParentComponent;
+      const sessionStore = component?.setupState?.sessionStore as
+        | {
+            trackerSettings?: Record<string, unknown>;
+            applySettings?: (
+              settings: Record<string, unknown>,
+            ) => Promise<void>;
+          }
+        | undefined;
+      if (!sessionStore || typeof sessionStore.applySettings !== 'function') {
+        return { ok: false as const, message: 'Session store unavailable' };
+      }
+      const nextSettings = {
+        ...(sessionStore.trackerSettings ?? {}),
+        plando: { entrances: plandoEntrances },
+      };
+      await sessionStore.applySettings(nextSettings);
+      return { ok: true as const };
+    }, overrides);
+
+    if (!response.ok) {
+      context.warnings.push(
+        `Failed to apply plando entrances: ${response.message}`,
+      );
       return;
     }
 
@@ -631,8 +864,23 @@ class WebRunner {
     counts: Map<string, number>,
     context: RunContext,
   ): Promise<void> {
-    const entries = Array.from(counts.entries()).sort((a, b) => a[0].localeCompare(b[0]));
+    const entries = Array.from(counts.entries()).sort((a, b) =>
+      a[0].localeCompare(b[0]),
+    );
     for (const [itemId, count] of entries) {
+      if (itemId === 'OOT_BOTTLE_EMPTY') {
+        const icons = page.locator(`img.item-icon[alt="${itemId}"]`);
+        const total = await icons.count();
+        if (total === 0) {
+          context.warnings.push(`Item not present in grid UI: ${itemId}`);
+          continue;
+        }
+        for (let i = 0; i < Math.min(count, total); i++) {
+          await icons.nth(i).click({ force: true, timeout: 60000 });
+        }
+        continue;
+      }
+
       const icon = page.locator(`img.item-icon[alt="${itemId}"]`).first();
       if ((await icon.count()) === 0) {
         context.warnings.push(`Item not present in grid UI: ${itemId}`);
@@ -642,6 +890,59 @@ class WebRunner {
       for (let i = 0; i < count; i++) {
         await icon.click({ force: true, timeout: 60000 });
       }
+    }
+
+    await this.waitForReachableReady(page);
+  }
+
+  private async applyInventoryPatchesViaStore(
+    page: Page,
+    patches: Map<string, number>,
+    context: RunContext,
+  ): Promise<void> {
+    const items = Array.from(patches.entries());
+    if (items.length === 0) return;
+
+    const response = await page.evaluate(async (items) => {
+      const root = document.querySelector('.ootmm-tracker') as {
+        __vueParentComponent?: unknown;
+      } | null;
+      const component = (
+        root as {
+          __vueParentComponent?: { setupState?: Record<string, unknown> };
+        } | null
+      )?.__vueParentComponent;
+      const sessionStore = component?.setupState?.sessionStore as
+        | { setInventoryCount?: (id: string, count: number) => void }
+        | undefined;
+
+      if (!sessionStore) {
+        return { ok: false, message: 'Session store unavailable' };
+      }
+
+      let added = 0;
+      // In JS execution context, items is just an array of arrays.
+      const entries = items;
+
+      if (typeof sessionStore.setInventoryCount === 'function') {
+        for (const [id, count] of entries) {
+          sessionStore.setInventoryCount(id, count);
+          added++;
+        }
+      } else {
+        return {
+          ok: false,
+          message: 'setInventoryCount not available on session store',
+        };
+      }
+
+      return { ok: true, added };
+    }, items);
+
+    if (!response.ok) {
+      context.warnings.push(
+        `Failed to apply inventory patches: ${response.message}`,
+      );
     }
 
     await this.waitForReachableReady(page);
@@ -776,22 +1077,30 @@ class WebRunner {
       };
     `;
 
-    return page.evaluate(({ body, overrides }) => {
-      // eslint-disable-next-line no-new-func
-      const func = new Function('overrides', body);
-      return func(overrides);
-    }, { body: funcBody, overrides: eventOverrides });
+    return page.evaluate(
+      ({ body, overrides }) => {
+        const func = new Function('overrides', body);
+        return func(overrides);
+      },
+      { body: funcBody, overrides: eventOverrides },
+    );
   }
 }
 
 const printHelp = (): void => {
-  console.log('Usage: tsx scripts/pathfinder-tests/run_silke_playwright.ts [options] [file]');
+  console.log(
+    'Usage: tsx scripts/pathfinder-tests/run_silke_playwright.ts [options] [file]',
+  );
   console.log('Options:');
   console.log('  -h, --help           Show this help and exit');
   console.log('  -v, -vv, -vvv        Increase verbosity');
-  console.log('  --only <list>        Only run specified test indices (e.g. 1,3-5)');
+  console.log(
+    '  --only <list>        Only run specified test indices (e.g. 1,3-5)',
+  );
   console.log('  --only=<list>        Same as above');
-  console.log('  --url <url>          App URL (default: http://localhost:5173/)');
+  console.log(
+    '  --url <url>          App URL (default: http://localhost:5173/)',
+  );
   console.log('  --url=<url>          Same as above');
   console.log('  --headed             Run browser headed');
   console.log('If file is omitted, defaults to tests_silke.jsonc');
@@ -871,9 +1180,10 @@ const parseCli = (): CliOptions => {
 };
 
 const getDefaultWorkerCount = (): number => {
-  const parallelism = typeof os.availableParallelism === 'function'
-    ? os.availableParallelism()
-    : os.cpus().length;
+  const parallelism =
+    typeof os.availableParallelism === 'function'
+      ? os.availableParallelism()
+      : os.cpus().length;
   return Math.max(1, Math.floor(parallelism / 2));
 };
 
@@ -895,7 +1205,8 @@ const main = async () => {
 
   const adapter: PathfinderTestAdapter = {
     name: 'ootmm-web-playwright',
-    run: (test, mode, meta) => getRunner(meta.workerId ?? 0).runTest(test, mode, meta),
+    run: (test, mode, meta) =>
+      getRunner(meta.workerId ?? 0).runTest(test, mode, meta),
     normalizeLocation: normalizeLocationId,
     resolveEventName: resolveEventNameDefault,
   };
@@ -912,11 +1223,15 @@ const main = async () => {
     });
 
     if (summary.failed === 0) {
-      console.log(`[pathfinder-tests:${adapter.name}] ${summary.passed}/${summary.total} passed`);
+      console.log(
+        `[pathfinder-tests:${adapter.name}] ${summary.passed}/${summary.total} passed`,
+      );
       return;
     }
 
-    console.log(`[pathfinder-tests:${adapter.name}] ${summary.failed}/${summary.total} failed`);
+    console.log(
+      `[pathfinder-tests:${adapter.name}] ${summary.failed}/${summary.total} failed`,
+    );
     for (const failure of summary.failures) {
       console.log(`Test ${failure.index}:`);
       for (const message of failure.messages) {

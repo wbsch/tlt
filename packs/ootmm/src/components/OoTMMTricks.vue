@@ -1,93 +1,96 @@
 <script setup lang="ts">
-import { ref, computed } from 'vue'
-import { TRICKS } from '@ootmm/core/settings/tricks'
-import { matchesSearchTerms } from '../utils/search'
-import { selectSearchInputText } from '../utils/input'
+import { ref, computed } from 'vue';
+import { TRICKS } from '@ootmm/core/settings/tricks';
+import { matchesSearchTerms } from '../utils/search';
+import { selectSearchInputText } from '../utils/input';
 
 const props = defineProps<{
-  settings: Record<string, unknown>
-}>()
+  settings: Record<string, unknown>;
+}>();
 
 const emit = defineEmits<{
-  'update:settings': [Record<string, unknown>]
-}>()
+  'update:settings': [Record<string, unknown>];
+}>();
 
 type Trick = {
-  game: 'oot' | 'mm'
-  name: string
-  glitch?: boolean
-  tooltip?: string
-  linkVideo?: string
-  linkText?: string
-}
+  game: 'oot' | 'mm';
+  name: string;
+  glitch?: boolean;
+  tooltip?: string;
+  linkVideo?: string;
+  linkText?: string;
+};
 
-const ALL_TRICKS = TRICKS as Record<string, Trick>
+const ALL_TRICKS = TRICKS as Record<string, Trick>;
 
-const searchQuery = ref('')
-const selectedGame = ref<'all' | 'oot' | 'mm'>('all')
+const searchQuery = ref('');
+const selectedGame = ref<'all' | 'oot' | 'mm'>('all');
 
 const enabledTricks = computed(() => {
-  const tricks = props.settings.tricks
+  const tricks = props.settings.tricks;
   if (Array.isArray(tricks)) {
-    return new Set(tricks as string[])
+    return new Set(tricks as string[]);
   }
-  return new Set<string>()
-})
+  return new Set<string>();
+});
 
 const filteredTricks = computed(() => {
   return Object.entries(ALL_TRICKS)
     .filter(([key, trick]) => {
       // Filter by game
       if (selectedGame.value !== 'all' && trick.game !== selectedGame.value) {
-        return false
+        return false;
       }
 
-      return matchesSearchTerms([trick.name, key, trick.tooltip ?? ''], searchQuery.value)
+      return matchesSearchTerms(
+        [trick.name, key, trick.tooltip ?? ''],
+        searchQuery.value,
+      );
     })
     .sort((a, b) => {
       // Sort glitches to the bottom
       if (a[1].glitch !== b[1].glitch) {
-        return a[1].glitch ? 1 : -1
+        return a[1].glitch ? 1 : -1;
       }
       // Then sort by name
-      return a[1].name.localeCompare(b[1].name)
-    })
-})
+      return a[1].name.localeCompare(b[1].name);
+    });
+});
 
 const ootTricksCount = computed(() => {
-  return Object.values(ALL_TRICKS).filter(t => t.game === 'oot').length
-})
+  return Object.values(ALL_TRICKS).filter((t) => t.game === 'oot').length;
+});
 
 const mmTricksCount = computed(() => {
-  return Object.values(ALL_TRICKS).filter(t => t.game === 'mm').length
-})
+  return Object.values(ALL_TRICKS).filter((t) => t.game === 'mm').length;
+});
 
 const enabledTricksCount = computed(() => {
-  return enabledTricks.value.size
-})
+  return enabledTricks.value.size;
+});
 
 function toggleTrick(trickKey: string) {
-  const currentTricks = Array.isArray(props.settings.tricks) 
-    ? [...(props.settings.tricks as string[])] 
-    : []
-  
-  const index = currentTricks.indexOf(trickKey)
+  const currentTricks = Array.isArray(props.settings.tricks)
+    ? [...(props.settings.tricks as string[])]
+    : [];
+
+  const index = currentTricks.indexOf(trickKey);
   if (index >= 0) {
-    currentTricks.splice(index, 1)
+    currentTricks.splice(index, 1);
   } else {
-    currentTricks.push(trickKey)
+    currentTricks.push(trickKey);
   }
-  
+
   emit('update:settings', {
     ...props.settings,
-    tricks: currentTricks
-  })
+    tricks: currentTricks,
+  });
 }
 
 defineExpose({
   hasUnsavedChanges: () => false,
-  getLocalSettingsSnapshot: () => props.settings
-})
+  getLocalSettingsSnapshot: () => props.settings,
+});
 </script>
 
 <template>
@@ -95,8 +98,9 @@ defineExpose({
     <div class="tricks-header">
       <h2>Tricks & Glitches</h2>
       <p class="tricks-description">
-        Enable tricks and glitches to allow the logic to expect more advanced techniques.
-        Enabled: {{ enabledTricksCount }} / {{ Object.keys(ALL_TRICKS).length }}
+        Enable tricks and glitches to allow the logic to expect more advanced
+        techniques. Enabled: {{ enabledTricksCount }} /
+        {{ Object.keys(ALL_TRICKS).length }}
       </p>
     </div>
 
@@ -110,11 +114,13 @@ defineExpose({
           @focus="selectSearchInputText"
           @click="selectSearchInputText"
         />
-        
+
         <div class="filter-group">
           <label class="filter-label">Game:</label>
           <select v-model="selectedGame" class="filter-select">
-            <option value="all">All ({{ Object.keys(ALL_TRICKS).length }})</option>
+            <option value="all">
+              All ({{ Object.keys(ALL_TRICKS).length }})
+            </option>
             <option value="oot">OoT ({{ ootTricksCount }})</option>
             <option value="mm">MM ({{ mmTricksCount }})</option>
           </select>
@@ -127,9 +133,9 @@ defineExpose({
         v-for="[key, trick] in filteredTricks"
         :key="key"
         class="trick-item"
-        :class="{ 
+        :class="{
           enabled: enabledTricks.has(key),
-          glitch: trick.glitch 
+          glitch: trick.glitch,
         }"
       >
         <label class="trick-label">
@@ -273,7 +279,7 @@ defineExpose({
   user-select: none;
 }
 
-.checkbox-label input[type="checkbox"] {
+.checkbox-label input[type='checkbox'] {
   cursor: pointer;
 }
 
@@ -333,7 +339,7 @@ defineExpose({
   user-select: none;
 }
 
-.trick-label input[type="checkbox"] {
+.trick-label input[type='checkbox'] {
   margin-top: 0.25rem;
   cursor: pointer;
   flex-shrink: 0;

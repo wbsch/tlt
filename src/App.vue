@@ -64,8 +64,8 @@ onMounted(() => {
           <label for="pack-select">Tracker Pack:</label>
           <select
             id="pack-select"
-            data-testid="pack-select"
             v-model="selectedPackId"
+            data-testid="pack-select"
             :disabled="isLoading"
             @change="appStore.loadPack(selectedPackId)"
           >

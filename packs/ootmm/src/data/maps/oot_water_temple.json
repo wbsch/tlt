@@ -6,180 +6,126 @@
   "height": 600,
   "markers": [
     {
-      "coords": [
-        426,
-        561
-      ],
+      "coords": [426, 561],
       "image": "chest",
       "codes": [
         "OOT Water Temple Under Center"
       ]
     },
     {
-      "coords": [
-        771,
-        547
-      ],
+      "coords": [771, 547],
       "image": "chest",
       "codes": [
         "OOT Water Temple Shell Chest"
       ]
     },
     {
-      "coords": [
-        607,
-        456
-      ],
+      "coords": [607, 456],
       "image": "chest",
       "codes": [
         "OOT Water Temple Dragon Chest"
       ]
     },
     {
-      "coords": [
-        644,
-        412
-      ],
+      "coords": [644, 412],
       "image": "chest",
       "codes": [
         "OOT Water Temple Boss Key Chest"
       ]
     },
     {
-      "coords": [
-        625,
-        426
-      ],
+      "coords": [625, 426],
       "image": "chest",
       "codes": [
         "OOT Water Temple River Chest"
       ]
     },
     {
-      "coords": [
-        770,
-        280
-      ],
+      "coords": [770, 280],
       "image": "chest",
       "codes": [
         "OOT Water Temple Map"
       ]
     },
     {
-      "coords": [
-        759,
-        228
-      ],
+      "coords": [759, 228],
       "image": "chest",
       "codes": [
         "OOT Water Temple Compass"
       ]
     },
     {
-      "coords": [
-        684,
-        170
-      ],
+      "coords": [684, 170],
       "image": "heart_container",
       "codes": [
         "OOT Water Temple Boss HC"
       ]
     },
     {
-      "coords": [
-        700,
-        170
-      ],
+      "coords": [700, 170],
       "image": "water_medallion",
       "codes": [
         "OOT Water Temple Boss"
       ]
     },
     {
-      "coords": [
-        575,
-        106
-      ],
+      "coords": [575, 106],
       "image": "chest",
       "codes": [
         "OOT Water Temple Longshot"
       ]
     },
     {
-      "coords": [
-        427,
-        316
-      ],
+      "coords": [427, 316],
       "image": "chest",
       "codes": [
         "OOT Water Temple Corridor Chest"
       ]
     },
     {
-      "coords": [
-        461,
-        279
-      ],
+      "coords": [461, 279],
       "image": "chest",
       "codes": [
         "OOT Water Temple Bombable Chest"
       ]
     },
     {
-      "coords": [
-        302,
-        567
-      ],
+      "coords": [302, 567],
       "image": "gold_skulltula",
       "codes": [
         "OOT Water Temple GS Cage"
       ]
     },
     {
-      "coords": [
-        652,
-        440
-      ],
+      "coords": [652, 440],
       "image": "gold_skulltula",
       "codes": [
         "OOT Water Temple GS Waterfalls"
       ]
     },
     {
-      "coords": [
-        599,
-        398
-      ],
+      "coords": [599, 398],
       "image": "gold_skulltula",
       "codes": [
         "OOT Water Temple GS River"
       ]
     },
     {
-      "coords": [
-        688,
-        257
-      ],
+      "coords": [688, 257],
       "image": "gold_skulltula",
       "codes": [
         "OOT Water Temple GS Center"
       ]
     },
     {
-      "coords": [
-        621,
-        247
-      ],
+      "coords": [621, 247],
       "image": "gold_skulltula",
       "codes": [
         "OOT Water Temple GS Large Pit"
       ]
     },
     {
-      "coords": [
-        310,
-        570
-      ],
+      "coords": [310, 570],
       "image": "pot",
       "codes": [
         "OOT Water Temple Pot Skull Cage 1",
@@ -189,10 +135,7 @@
       ]
     },
     {
-      "coords": [
-        749,
-        554
-      ],
+      "coords": [749, 554],
       "image": "pot",
       "codes": [
         "OOT Water Temple Pot Ruto Room 1",
@@ -200,10 +143,7 @@
       ]
     },
     {
-      "coords": [
-        595,
-        433
-      ],
+      "coords": [595, 433],
       "image": "pot",
       "codes": [
         "OOT Water Temple Pot River 1",
@@ -211,10 +151,7 @@
       ]
     },
     {
-      "coords": [
-        651,
-        416
-      ],
+      "coords": [651, 416],
       "image": "pot",
       "codes": [
         "OOT Water Temple Pot Boss Key Room 1",
@@ -222,10 +159,7 @@
       ]
     },
     {
-      "coords": [
-        703,
-        376
-      ],
+      "coords": [703, 376],
       "image": "pot",
       "codes": [
         "OOT Water Temple Pot Blocks Room 1",
@@ -233,10 +167,7 @@
       ]
     },
     {
-      "coords": [
-        748,
-        241
-      ],
+      "coords": [748, 241],
       "image": "pot",
       "codes": [
         "OOT Water Temple Pot Compass Room 1",
@@ -245,10 +176,7 @@
       ]
     },
     {
-      "coords": [
-        692,
-        223
-      ],
+      "coords": [692, 223],
       "image": "pot",
       "codes": [
         "OOT Water Temple Pot Main Room Near Boss 1",
@@ -256,10 +184,7 @@
       ]
     },
     {
-      "coords": [
-        573,
-        210
-      ],
+      "coords": [573, 210],
       "image": "pot",
       "codes": [
         "OOT Water Temple Pot Before Dark Link 1",
@@ -267,10 +192,7 @@
       ]
     },
     {
-      "coords": [
-        436,
-        316
-      ],
+      "coords": [436, 316],
       "image": "pot",
       "codes": [
         "OOT Water Temple Pot Corridor 1",
@@ -278,10 +200,7 @@
       ]
     },
     {
-      "coords": [
-        418,
-        261
-      ],
+      "coords": [418, 261],
       "image": "pot",
       "codes": [
         "OOT Water Temple Pot Main Room Near Block 1",
@@ -289,10 +208,7 @@
       ]
     },
     {
-      "coords": [
-        576,
-        430
-      ],
+      "coords": [576, 430],
       "image": "heart",
       "codes": [
         "OOT Water Temple Heart 1",
@@ -300,20 +216,14 @@
       ]
     },
     {
-      "coords": [
-        585,
-        400
-      ],
+      "coords": [585, 400],
       "image": "heart",
       "codes": [
         "OOT Water Temple Heart 3"
       ]
     },
     {
-      "coords": [
-        598,
-        411
-      ],
+      "coords": [598, 411],
       "image": "heart",
       "codes": [
         "OOT Water Temple Heart 4"

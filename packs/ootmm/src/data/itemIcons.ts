@@ -305,6 +305,9 @@ const RAW_ITEM_ICONS: Record<string, string> = {
   // Swords
   MM_SPIN_UPGRADE: 'images/great_spin_attack.png',
 
+  // Rupees
+  MM_RUPEE_SILVER: 'images/rupee.png',
+
   // Quest items
   MM_STRAY_FAIRY_TOWN: 'images/items/mm_clocktown_stray_fairy.png',
   MM_STRAY_FAIRY_WF: 'images/items/mm_woodfall_stray_fairy.png',
@@ -882,7 +885,7 @@ const RAW_GRID_ICON_VARIANTS: Record<string, GridIconVariantConfig> = {
       ],
     },
   },
-    MM_BOTTLE_EMPTY: {
+  MM_BOTTLE_EMPTY: {
     default: {
       icons: [
         'images/bottle.png',
@@ -901,7 +904,7 @@ const RAW_GRID_ICON_VARIANTS: Record<string, GridIconVariantConfig> = {
         'MM_BOTTLE_POTION_BLUE',
         'MM_BOTTLE_BLUE_FIRE',
         'MM_BOTTLE_MILK',
-        'MM_BOTTLE_CHATEAU', 
+        'MM_BOTTLE_CHATEAU',
       ],
     },
   },

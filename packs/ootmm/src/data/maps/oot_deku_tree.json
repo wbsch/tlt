@@ -6,122 +6,77 @@
   "height": 600,
   "markers": [
     {
-      "coords": [
-        600,
-        217
-      ],
+      "coords": [600, 217],
       "image": "chest",
       "codes": "OOT Deku Tree Map Chest"
     },
     {
-      "coords": [
-        494,
-        287
-      ],
+      "coords": [494, 287],
       "image": "chest",
       "codes": "OOT Deku Tree Slingshot Chest"
     },
     {
-      "coords": [
-        517,
-        293
-      ],
+      "coords": [517, 293],
       "image": "chest",
       "codes": "OOT Deku Tree Slingshot Side Chest"
     },
     {
-      "coords": [
-        765,
-        197
-      ],
+      "coords": [765, 197],
       "image": "chest",
       "codes": "OOT Deku Tree Compass Chest"
     },
     {
-      "coords": [
-        803,
-        214
-      ],
+      "coords": [803, 214],
       "image": "chest",
       "codes": "OOT Deku Tree Compass Room Side Chest"
     },
     {
-      "coords": [
-        729,
-        443
-      ],
+      "coords": [729, 443],
       "image": "chest",
       "codes": "OOT Deku Tree Basement Chest"
     },
     {
-      "coords": [
-        368,
-        367
-      ],
+      "coords": [368, 367],
       "image": "heart_container",
       "codes": "OOT Deku Tree Boss Container"
     },
     {
-      "coords": [
-        384,
-        367
-      ],
+      "coords": [384, 367],
       "image": "kokiri_emerald",
       "codes": "OOT Deku Tree Boss"
     },
     {
-      "coords": [
-        815,
-        220
-      ],
+      "coords": [815, 220],
       "image": "gold_skulltula",
       "codes": "OOT Deku Tree GS Compass"
     },
     {
-      "coords": [
-        548,
-        419
-      ],
+      "coords": [548, 419],
       "image": "gold_skulltula",
       "codes": "OOT Deku Tree GS Basement Back Room"
     },
     {
-      "coords": [
-        712,
-        431
-      ],
+      "coords": [712, 431],
       "image": "gold_skulltula",
       "codes": "OOT Deku Tree GS Basement Gate"
     },
     {
-      "coords": [
-        744,
-        464
-      ],
+      "coords": [744, 464],
       "image": "gold_skulltula",
       "codes": "OOT Deku Tree GS Basement Vines"
     },
     {
-      "coords": [
-        585,
-        189
-      ],
+      "coords": [585, 189],
       "image": "heart",
       "codes": "OOT Deku Tree Heart Main Room Lower"
     },
     {
-      "coords": [
-        885,
-        181
-      ],
+      "coords": [885, 181],
       "image": "heart",
       "codes": "OOT Deku Tree Heart Main Room Upper"
     },
     {
-      "coords": [
-        385,
-        448
-      ],
+      "coords": [385, 448],
       "image": "heart",
       "codes": [
         "OOT Deku Tree Heart Pre-Boss 1",
@@ -130,10 +85,7 @@
       ]
     },
     {
-      "coords": [
-        307,
-        183
-      ],
+      "coords": [307, 183],
       "image": "grass",
       "codes": [
         "OOT Deku Tree Grass Lobby 1",
@@ -142,10 +94,7 @@
       ]
     },
     {
-      "coords": [
-        502,
-        259
-      ],
+      "coords": [502, 259],
       "image": "grass",
       "codes": [
         "OOT Deku Tree Grass Slingshot Room 1",
@@ -153,10 +102,7 @@
       ]
     },
     {
-      "coords": [
-        527,
-        273
-      ],
+      "coords": [527, 273],
       "image": "grass",
       "codes": [
         "OOT Deku Tree Grass Slingshot Room 3",
@@ -164,21 +110,12 @@
       ]
     },
     {
-      "coords": [
-        586,
-        164
-      ],
+      "coords": [586, 164],
       "image": "grass",
-      "codes": [
-        "OOT Deku Tree Grass Lobby 4",
-        "OOT Deku Tree Grass Lobby 5"
-      ]
+      "codes": ["OOT Deku Tree Grass Lobby 4", "OOT Deku Tree Grass Lobby 5"]
     },
     {
-      "coords": [
-        772,
-        182
-      ],
+      "coords": [772, 182],
       "image": "grass",
       "codes": [
         "OOT Deku Tree Grass Compass Room 1",
@@ -186,10 +123,7 @@
       ]
     },
     {
-      "coords": [
-        352,
-        367
-      ],
+      "coords": [352, 367],
       "image": "grass",
       "codes": [
         "OOT Deku Tree Boss Grass 1",
@@ -203,10 +137,7 @@
       ]
     },
     {
-      "coords": [
-        409,
-        432
-      ],
+      "coords": [409, 432],
       "image": "grass",
       "codes": [
         "OOT Deku Tree Grass Pre-Boss Room 1",
@@ -215,10 +146,7 @@
       ]
     },
     {
-      "coords": [
-        598,
-        446
-      ],
+      "coords": [598, 446],
       "image": "grass",
       "codes": [
         "OOT Deku Tree Grass Larva Room 1",
@@ -226,10 +154,7 @@
       ]
     },
     {
-      "coords": [
-        591,
-        530
-      ],
+      "coords": [591, 530],
       "image": "grass",
       "codes": [
         "OOT Deku Tree Grass Torch Room 1",
@@ -237,10 +162,7 @@
       ]
     },
     {
-      "coords": [
-        643,
-        521
-      ],
+      "coords": [643, 521],
       "image": "grass",
       "codes": [
         "OOT Deku Tree Grass Water Room 1",
@@ -248,10 +170,7 @@
       ]
     },
     {
-      "coords": [
-        717,
-        520
-      ],
+      "coords": [717, 520],
       "image": "grass",
       "codes": [
         "OOT Deku Tree Grass Eye Switch Room 3",
@@ -259,10 +178,7 @@
       ]
     },
     {
-      "coords": [
-        742,
-        520
-      ],
+      "coords": [742, 520],
       "image": "grass",
       "codes": [
         "OOT Deku Tree Grass Eye Switch Room 1",
@@ -270,10 +186,7 @@
       ]
     },
     {
-      "coords": [
-        732,
-        472
-      ],
+      "coords": [732, 472],
       "image": "grass",
       "codes": [
         "OOT Deku Tree Grass Basement Main 1",

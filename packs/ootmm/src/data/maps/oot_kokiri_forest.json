@@ -6,222 +6,123 @@
   "height": 600,
   "markers": [
     {
-      "coords": [
-        555,
-        582
-      ],
+      "coords": [555, 582],
       "image": "chest",
       "codes": "OOT Kokiri Forest Kokiri Sword Chest"
     },
     {
-      "coords": [
-        174,
-        327
-      ],
+      "coords": [174, 327],
       "image": "npc",
       "codes": "OOT Lost Woods Target",
-      "overlays": [
-        "child"
-      ]
+      "overlays": ["child"]
     },
     {
-      "coords": [
-        167,
-        343
-      ],
+      "coords": [167, 343],
       "image": "npc",
       "codes": "OOT Lost Woods Memory Game",
-      "overlays": [
-        "child"
-      ]
+      "overlays": ["child"]
     },
     {
-      "coords": [
-        56,
-        328
-      ],
+      "coords": [56, 328],
       "image": "npc",
       "codes": "OOT Lost Woods Sell Skull Mask",
-      "overlays": [
-        "child"
-      ]
+      "overlays": ["child"]
     },
     {
-      "coords": [
-        72,
-        328
-      ],
+      "coords": [72, 328],
       "image": "npc",
       "codes": "OOT Lost Woods Skull Kid",
-      "overlays": [
-        "child"
-      ]
+      "overlays": ["child"]
     },
     {
-      "coords": [
-        88,
-        328
-      ],
+      "coords": [88, 328],
       "image": "npc",
       "codes": "OOT Lost Woods Poacher's Saw",
-      "overlays": [
-        "adult"
-      ]
+      "overlays": ["adult"]
     },
     {
-      "coords": [
-        72,
-        344
-      ],
+      "coords": [72, 344],
       "image": "npc",
       "codes": "OOT Lost Woods Odd Mushroom",
-      "overlays": [
-        "adult"
-      ]
+      "overlays": ["adult"]
     },
     {
-      "coords": [
-        72,
-        399
-      ],
+      "coords": [72, 399],
       "image": "npc",
       "codes": "OOT Lost Woods Gift from Saria",
-      "overlays": [
-        "child"
-      ]
+      "overlays": ["child"]
     },
     {
-      "coords": [
-        325,
-        65
-      ],
+      "coords": [325, 65],
       "image": "song",
       "codes": "OOT Sacred Meadow Sheik Song",
-      "overlays": [
-        "adult"
-      ]
+      "overlays": ["adult"]
     },
     {
-      "coords": [
-        354,
-        65
-      ],
+      "coords": [354, 65],
       "image": "song",
       "codes": "OOT Saria's Song",
-      "overlays": [
-        "child"
-      ]
+      "overlays": ["child"]
     },
     {
-      "coords": [
-        61,
-        372
-      ],
+      "coords": [61, 372],
       "image": "gold_skulltula",
       "codes": "OOT Lost Woods GS Soil Bridge",
-      "overlays": [
-        "child"
-      ]
+      "overlays": ["child"]
     },
     {
-      "coords": [
-        126,
-        258
-      ],
+      "coords": [126, 258],
       "image": "gold_skulltula",
       "codes": "OOT Lost Woods GS Soil Theater",
-      "overlays": [
-        "child"
-      ]
+      "overlays": ["child"]
     },
     {
-      "coords": [
-        148,
-        260
-      ],
+      "coords": [148, 260],
       "image": "gold_skulltula",
       "codes": "OOT Lost Woods GS Bean Ride",
-      "overlays": [
-        "adult"
-      ]
+      "overlays": ["adult"]
     },
     {
-      "coords": [
-        376,
-        238
-      ],
+      "coords": [376, 238],
       "image": "gold_skulltula",
       "codes": "OOT Sacred Meadow GS Night Adult",
-      "overlays": [
-        "adult",
-        "night"
-      ]
+      "overlays": ["adult", "night"]
     },
     {
-      "coords": [
-        479,
-        443
-      ],
+      "coords": [479, 443],
       "image": "gold_skulltula",
       "codes": "OOT Kokiri Forest GS Night Child",
-      "overlays": [
-        "child",
-        "night"
-      ]
+      "overlays": ["child", "night"]
     },
     {
-      "coords": [
-        662,
-        382
-      ],
+      "coords": [662, 382],
       "image": "gold_skulltula",
       "codes": "OOT Kokiri Forest GS Soil",
-      "overlays": [
-        "child"
-      ]
+      "overlays": ["child"]
     },
     {
-      "coords": [
-        663,
-        460
-      ],
+      "coords": [663, 460],
       "image": "gold_skulltula",
       "codes": "OOT Kokiri Forest GS Night Adult",
-      "overlays": [
-        "adult",
-        "night"
-      ]
+      "overlays": ["adult", "night"]
     },
     {
-      "coords": [
-        77,
-        419
-      ],
+      "coords": [77, 419],
       "image": "business_scrub_oot",
       "codes": "OOT Lost Woods Scrub Sticks Upgrade",
-      "overlays": [
-        "child"
-      ]
+      "overlays": ["child"]
     },
     {
-      "coords": [
-        140,
-        279
-      ],
+      "coords": [140, 279],
       "image": "business_scrub_oot",
       "codes": [
         "OOT Lost Woods Scrub Near Theater Left",
         "OOT Lost Woods Scrub Near Theater Right"
       ],
-      "overlays": [
-        "child"
-      ]
+      "overlays": ["child"]
     },
     {
-      "coords": [
-        140,
-        311
-      ],
+      "coords": [140, 311],
       "image": "grass",
       "codes": [
         "OOT Lost Woods Grass 1",
@@ -230,10 +131,7 @@
       ]
     },
     {
-      "coords": [
-        156,
-        247
-      ],
+      "coords": [156, 247],
       "image": "grass",
       "codes": [
         "OOT Lost Woods Grass Deep 4",
@@ -242,10 +140,7 @@
       ]
     },
     {
-      "coords": [
-        172,
-        247
-      ],
+      "coords": [172, 247],
       "image": "grass",
       "codes": [
         "OOT Lost Woods Grass Deep 1",
@@ -254,10 +149,7 @@
       ]
     },
     {
-      "coords": [
-        532,
-        445
-      ],
+      "coords": [532, 445],
       "image": "grass",
       "codes": [
         "OOT Kokiri Forest Grass Child Near Crawl 1",
@@ -269,15 +161,10 @@
         "OOT Kokiri Forest Grass Child Near Crawl 7",
         "OOT Kokiri Forest Grass Child Near Crawl 8"
       ],
-      "overlays": [
-        "child"
-      ]
+      "overlays": ["child"]
     },
     {
-      "coords": [
-        532,
-        461
-      ],
+      "coords": [532, 461],
       "image": "grass",
       "codes": [
         "OOT Kokiri Forest Grass Adult Near Crawl 1",
@@ -289,39 +176,25 @@
         "OOT Kokiri Forest Grass Adult Near Crawl 7",
         "OOT Kokiri Forest Grass Adult Near Crawl 8"
       ],
-      "overlays": [
-        "adult"
-      ]
+      "overlays": ["adult"]
     },
     {
-      "coords": [
-        490,
-        531
-      ],
+      "coords": [490, 531],
       "image": "grass",
       "codes": "OOT Kokiri Forest Grass Child Crawl 1"
     },
     {
-      "coords": [
-        518,
-        571
-      ],
+      "coords": [518, 571],
       "image": "grass",
       "codes": "OOT Kokiri Forest Grass Child Crawl 2"
     },
     {
-      "coords": [
-        547,
-        588
-      ],
+      "coords": [547, 588],
       "image": "grass",
       "codes": "OOT Kokiri Forest Grass Child Crawl 3"
     },
     {
-      "coords": [
-        598,
-        456
-      ],
+      "coords": [598, 456],
       "image": "grass",
       "codes": [
         "OOT Kokiri Forest Grass Child 1",
@@ -329,26 +202,16 @@
         "OOT Kokiri Forest Grass Child 3",
         "OOT Kokiri Forest Grass Child 4"
       ],
-      "overlays": [
-        "child"
-      ]
+      "overlays": ["child"]
     },
     {
-      "coords": [
-        626,
-        456
-      ],
+      "coords": [626, 456],
       "image": "grass",
       "codes": "OOT Kokiri Forest Grass Child Kokiri",
-      "overlays": [
-        "child"
-      ]
+      "overlays": ["child"]
     },
     {
-      "coords": [
-        638,
-        472
-      ],
+      "coords": [638, 472],
       "image": "grass",
       "codes": [
         "OOT Kokiri Forest Grass Adult 01",
@@ -364,52 +227,32 @@
         "OOT Kokiri Forest Grass Adult 11",
         "OOT Kokiri Forest Grass Adult 12"
       ],
-      "overlays": [
-        "adult"
-      ]
+      "overlays": ["adult"]
     },
     {
-      "coords": [
-        617,
-        475
-      ],
+      "coords": [617, 475],
       "image": "heart",
       "codes": [
         "OOT Kokiri Forest Heart 1",
         "OOT Kokiri Forest Heart 2",
         "OOT Kokiri Forest Heart 3"
       ],
-      "overlays": [
-        "child"
-      ]
+      "overlays": ["child"]
     },
     {
-      "coords": [
-        580,
-        420
-      ],
+      "coords": [580, 420],
       "image": "blue_rupee",
       "codes": "OOT Kokiri Forest Rupee Child 2",
-      "overlays": [
-        "child"
-      ]
+      "overlays": ["child"]
     },
     {
-      "coords": [
-        543,
-        358
-      ],
+      "coords": [543, 358],
       "image": "blue_rupee",
       "codes": "OOT Kokiri Forest Rupee Child 1",
-      "overlays": [
-        "child"
-      ]
+      "overlays": ["child"]
     },
     {
-      "coords": [
-        670,
-        364
-      ],
+      "coords": [670, 364],
       "image": "green_rupee",
       "codes": [
         "OOT Kokiri Forest Rupee Adult 1",
@@ -419,42 +262,26 @@
         "OOT Kokiri Forest Rupee Adult 5",
         "OOT Kokiri Forest Rupee Adult 6"
       ],
-      "overlays": [
-        "adult"
-      ]
+      "overlays": ["adult"]
     },
     {
-      "coords": [
-        687,
-        372
-      ],
+      "coords": [687, 372],
       "image": "red_rupee",
       "codes": "OOT Kokiri Forest Rupee Adult 7",
-      "overlays": [
-        "adult"
-      ]
+      "overlays": ["adult"]
     },
     {
-      "coords": [
-        490,
-        547
-      ],
+      "coords": [490, 547],
       "image": "blue_rupee",
       "codes": "OOT Kokiri Forest Rupee Crawl 1"
     },
     {
-      "coords": [
-        518,
-        555
-      ],
+      "coords": [518, 555],
       "image": "blue_rupee",
       "codes": "OOT Kokiri Forest Rupee Crawl 2"
     },
     {
-      "coords": [
-        201,
-        303
-      ],
+      "coords": [201, 303],
       "image": "green_rupee",
       "codes": [
         "OOT Lost Woods Rupee Arrow 1",
@@ -466,111 +293,62 @@
         "OOT Lost Woods Rupee Arrow 7",
         "OOT Lost Woods Rupee Arrow 8"
       ],
-      "overlays": [
-        "child"
-      ]
+      "overlays": ["child"]
     },
     {
-      "coords": [
-        187,
-        232
-      ],
+      "coords": [187, 232],
       "image": "blue_rupee",
       "codes": "OOT Lost Woods Rupee Boulder"
     },
     {
-      "coords": [
-        159,
-        362
-      ],
+      "coords": [159, 362],
       "image": "wonder_item_blue_rupee",
       "codes": "OOT Lost Woods Wonder Item 1",
-      "overlays": [
-        "child"
-      ]
+      "overlays": ["child"]
     },
     {
-      "coords": [
-        175,
-        362
-      ],
+      "coords": [175, 362],
       "image": "wonder_item_green_rupee",
-      "codes": [
-        "OOT Lost Woods Wonder Item 2",
-        "OOT Lost Woods Wonder Item 3"
-      ],
-      "overlays": [
-        "child"
-      ]
+      "codes": ["OOT Lost Woods Wonder Item 2", "OOT Lost Woods Wonder Item 3"],
+      "overlays": ["child"]
     },
     {
-      "coords": [
-        319,
-        336
-      ],
+      "coords": [319, 336],
       "image": "wonder_item_blue_rupee",
       "codes": "OOT Sacred Meadow Wonder Item Entrance"
     },
     {
-      "coords": [
-        345,
-        304
-      ],
+      "coords": [345, 304],
       "image": "wonder_item_green_rupee",
       "codes": "OOT Sacred Meadow Wonder Item Maze 1",
-      "overlays": [
-        "child"
-      ]
+      "overlays": ["child"]
     },
     {
-      "coords": [
-        328,
-        297
-      ],
+      "coords": [328, 297],
       "image": "wonder_item_green_rupee",
       "codes": "OOT Sacred Meadow Wonder Item Maze 2",
-      "overlays": [
-        "child"
-      ]
+      "overlays": ["child"]
     },
     {
-      "coords": [
-        345,
-        286
-      ],
+      "coords": [345, 286],
       "image": "wonder_item_blue_rupee",
       "codes": "OOT Sacred Meadow Wonder Item Maze 3",
-      "overlays": [
-        "child"
-      ]
+      "overlays": ["child"]
     },
     {
-      "coords": [
-        328,
-        237
-      ],
+      "coords": [328, 237],
       "image": "wonder_item_blue_rupee",
       "codes": "OOT Sacred Meadow Wonder Item Maze 4",
-      "overlays": [
-        "child"
-      ]
+      "overlays": ["child"]
     },
     {
-      "coords": [
-        357,
-        239
-      ],
+      "coords": [357, 239],
       "image": "wonder_item_green_rupee",
       "codes": "OOT Sacred Meadow Wonder Item Maze 5",
-      "overlays": [
-        "child"
-      ]
+      "overlays": ["child"]
     },
     {
-      "coords": [
-        531,
-        550
-      ],
+      "coords": [531, 550],
       "image": "wonder_item_green_rupee",
       "codes": [
         "OOT Kokiri Forest Wonder Item Crawl 1",
@@ -578,104 +356,63 @@
       ]
     },
     {
-      "coords": [
-        533,
-        479
-      ],
+      "coords": [533, 479],
       "image": "wonder_item_green_rupee",
       "codes": [
         "OOT Kokiri Forest Wonder Item Midair 2",
         "OOT Kokiri Forest Wonder Item Midair 3"
       ],
-      "overlays": [
-        "child"
-      ]
+      "overlays": ["child"]
     },
     {
-      "coords": [
-        549,
-        479
-      ],
+      "coords": [549, 479],
       "image": "wonder_item_blue_rupee",
       "codes": "OOT Kokiri Forest Wonder Item Midair 1",
-      "overlays": [
-        "child"
-      ]
+      "overlays": ["child"]
     },
     {
-      "coords": [
-        549,
-        450
-      ],
+      "coords": [549, 450],
       "image": "wonder_item_blue_rupee",
       "codes": "OOT Kokiri Forest Wonder Item Sign",
-      "overlays": [
-        "child"
-      ]
+      "overlays": ["child"]
     },
     {
-      "coords": [
-        553,
-        409
-      ],
+      "coords": [553, 409],
       "image": "wonder_item_green_rupee",
       "codes": [
         "OOT Kokiri Forest Wonder Item Invisible Rupee 1",
         "OOT Kokiri Forest Wonder Item Invisible Rupee 2"
       ],
-      "overlays": [
-        "child"
-      ]
+      "overlays": ["child"]
     },
     {
-      "coords": [
-        580,
-        385
-      ],
+      "coords": [580, 385],
       "image": "wonder_item_green_rupee",
       "codes": [
         "OOT Kokiri Forest Wonder Item Invisible Rupee 3",
         "OOT Kokiri Forest Wonder Item Invisible Rupee 4"
       ],
-      "overlays": [
-        "child"
-      ]
+      "overlays": ["child"]
     },
     {
-      "coords": [
-        602,
-        402
-      ],
+      "coords": [602, 402],
       "image": "wonder_item_blue_rupee",
       "codes": "OOT Kokiri Forest Wonder Item Platforms 1",
-      "overlays": [
-        "child"
-      ]
+      "overlays": ["child"]
     },
     {
-      "coords": [
-        659,
-        424
-      ],
+      "coords": [659, 424],
       "image": "wonder_item_blue_rupee",
       "codes": "OOT Kokiri Forest Wonder Item Platforms 2",
-      "overlays": [
-        "child"
-      ]
+      "overlays": ["child"]
     },
     {
-      "coords": [
-        216,
-        303
-      ],
+      "coords": [216, 303],
       "image": "big_fairy_spot",
       "codes": "OOT Lost Woods Pool Big Fairy"
     },
     {
-      "coords": [
-        124,
-        279
-      ],
+      "coords": [124, 279],
       "image": "butterfly",
       "codes": [
         "OOT Lost Woods Butterfly 1",
@@ -684,15 +421,10 @@
         "OOT Lost Woods Butterfly 4",
         "OOT Lost Woods Butterfly 5"
       ],
-      "overlays": [
-        "child"
-      ]
+      "overlays": ["child"]
     },
     {
-      "coords": [
-        556,
-        376
-      ],
+      "coords": [556, 376],
       "image": "rock",
       "codes": [
         "OOT Kokiri Forest Rock Circle Rock 1",
@@ -707,26 +439,17 @@
       ]
     },
     {
-      "coords": [
-        526,
-        376
-      ],
+      "coords": [526, 376],
       "image": "rock",
       "codes": "OOT Kokiri Forest Rock Child 1"
     },
     {
-      "coords": [
-        482,
-        430
-      ],
+      "coords": [482, 430],
       "image": "rock",
       "codes": "OOT Kokiri Forest Rock Child 5"
     },
     {
-      "coords": [
-        502,
-        480
-      ],
+      "coords": [502, 480],
       "image": "rock",
       "codes": [
         "OOT Kokiri Forest Rock Child 6",
@@ -734,34 +457,22 @@
       ]
     },
     {
-      "coords": [
-        550,
-        490
-      ],
+      "coords": [550, 490],
       "image": "rock",
       "codes": "OOT Kokiri Forest Rock Child 4"
     },
     {
-      "coords": [
-        604,
-        487
-      ],
+      "coords": [604, 487],
       "image": "rock",
       "codes": "OOT Kokiri Forest Rock Child 3"
     },
     {
-      "coords": [
-        598,
-        465
-      ],
+      "coords": [598, 465],
       "image": "rock",
       "codes": "OOT Kokiri Forest Rock Child 2"
     },
     {
-      "coords": [
-        662,
-        393
-      ],
+      "coords": [662, 393],
       "image": "soft_soil",
       "codes": [
         "OOT Kokiri Forest Soil 1",
@@ -770,10 +481,7 @@
       ]
     },
     {
-      "coords": [
-        136,
-        265
-      ],
+      "coords": [136, 265],
       "image": "soft_soil",
       "codes": [
         "OOT Lost Woods Soil Late 1",
@@ -782,10 +490,7 @@
       ]
     },
     {
-      "coords": [
-        77,
-        372
-      ],
+      "coords": [77, 372],
       "image": "soft_soil",
       "codes": [
         "OOT Lost Woods Soil Early 1",
@@ -794,77 +499,48 @@
       ]
     },
     {
-      "coords": [
-        850,
-        259
-      ],
+      "coords": [850, 259],
       "image": "gossip_stone",
       "codes": "OOT Kokiri Gossip Left of Deku Tree"
     },
     {
-      "coords": [
-        944,
-        339
-      ],
+      "coords": [944, 339],
       "image": "gossip_stone",
       "codes": "OOT Kokiri Gossip Right of Deku Tree"
     },
     {
-      "coords": [
-        532,
-        324
-      ],
+      "coords": [532, 324],
       "image": "gossip_stone",
       "codes": "OOT Kokiri Gossip Near Lost Woods Open"
     },
     {
-      "coords": [
-        351,
-        299
-      ],
+      "coords": [351, 299],
       "image": "gossip_stone",
       "codes": "OOT Sacred Meadow Gossip Atop Maze Woods Side"
     },
     {
-      "coords": [
-        312,
-        265
-      ],
+      "coords": [312, 265],
       "image": "gossip_stone",
       "codes": "OOT Sacred Meadow Gossip Atop Maze Temple Side"
     },
     {
-      "coords": [
-        66,
-        431
-      ],
+      "coords": [66, 431],
       "image": "gossip_stone",
       "codes": "OOT Lost Woods Gossip Under Bridge"
     },
     {
-      "coords": [
-        318,
-        99
-      ],
+      "coords": [318, 99],
       "image": "gossip_stone",
       "codes": "OOT Sacred Meadow Gossip Near Forest Temple"
     },
     {
-      "coords": [
-        863,
-        337
-      ],
+      "coords": [863, 337],
       "image": "dungeon_entrance",
       "codes": "TODO KF 075 :: unnamed_stack > Forest > Forest Layers > Forest Entrances :: Pasted Layer #74 :: 001-001-014-000.png",
-      "overlays": [
-        "child"
-      ]
+      "overlays": ["child"]
     },
     {
-      "coords": [
-        573,
-        497
-      ],
+      "coords": [573, 497],
       "image": "interior_entrance",
       "type": "submenu",
       "markers": [
@@ -879,10 +555,7 @@
       ]
     },
     {
-      "coords": [
-        615,
-        464
-      ],
+      "coords": [615, 464],
       "image": "interior_entrance",
       "type": "submenu",
       "markers": [
@@ -898,27 +571,18 @@
       ]
     },
     {
-      "coords": [
-        656,
-        454
-      ],
+      "coords": [656, 454],
       "image": "interior_entrance",
       "type": "submenu",
       "markers": [
         {
           "image": "pot",
-          "codes": [
-            "OOT Twins House Pot 1",
-            "OOT Twins House Pot 2"
-          ]
+          "codes": ["OOT Twins House Pot 1", "OOT Twins House Pot 2"]
         }
       ]
     },
     {
-      "coords": [
-        645,
-        383
-      ],
+      "coords": [645, 383],
       "image": "interior_entrance",
       "type": "submenu",
       "markers": [
@@ -942,10 +606,7 @@
       ]
     },
     {
-      "coords": [
-        500,
-        443
-      ],
+      "coords": [500, 443],
       "image": "interior_entrance",
       "type": "submenu",
       "markers": [
@@ -959,10 +620,7 @@
       ]
     },
     {
-      "coords": [
-        543,
-        376
-      ],
+      "coords": [543, 376],
       "image": "interior_entrance",
       "type": "submenu",
       "markers": [
@@ -978,10 +636,7 @@
       ]
     },
     {
-      "coords": [
-        548,
-        330
-      ],
+      "coords": [548, 330],
       "image": "song_grotto",
       "type": "submenu",
       "markers": [
@@ -1020,10 +675,7 @@
       ]
     },
     {
-      "coords": [
-        332,
-        328
-      ],
+      "coords": [332, 328],
       "image": "bomb_grotto",
       "type": "submenu",
       "markers": [
@@ -1034,10 +686,7 @@
       ]
     },
     {
-      "coords": [
-        343,
-        238
-      ],
+      "coords": [343, 238],
       "image": "grotto",
       "type": "submenu",
       "markers": [
@@ -1057,10 +706,7 @@
       ]
     },
     {
-      "coords": [
-        357,
-        96
-      ],
+      "coords": [357, 96],
       "image": "grotto",
       "type": "submenu",
       "markers": [
@@ -1078,26 +724,17 @@
       ]
     },
     {
-      "coords": [
-        341,
-        79
-      ],
+      "coords": [341, 79],
       "image": "warp_spot",
       "codes": "TODO KF 086 :: unnamed_stack > Forest > Forest Layers > Forest Entrances :: Pasted Layer #85 :: 001-001-014-011.png"
     },
     {
-      "coords": [
-        341,
-        42
-      ],
+      "coords": [341, 42],
       "image": "dungeon_entrance",
       "codes": "TODO KF 087 :: unnamed_stack > Forest > Forest Layers > Forest Entrances :: Pasted Layer #86 :: 001-001-014-012.png"
     },
     {
-      "coords": [
-        144,
-        235
-      ],
+      "coords": [144, 235],
       "image": "boulder_grotto",
       "type": "submenu",
       "markers": [
@@ -1119,34 +756,24 @@
       ]
     },
     {
-      "coords": [
-        124,
-        271
-      ],
+      "coords": [124, 271],
       "image": "grotto",
       "type": "submenu",
       "markers": [
         {
           "image": "npc",
-          "overlays": [
-            "child"
-          ],
+          "overlays": ["child"],
           "codes": "OOT Deku Theater Sticks Upgrade"
         },
         {
           "image": "npc",
-          "overlays": [
-            "child"
-          ],
+          "overlays": ["child"],
           "codes": "OOT Deku Theater Nuts Upgrade"
         }
       ]
     },
     {
-      "coords": [
-        156,
-        296
-      ],
+      "coords": [156, 296],
       "image": "boulder_grotto",
       "type": "submenu",
       "markers": [
@@ -1185,10 +812,7 @@
       ]
     },
     {
-      "coords": [
-        108,
-        228
-      ],
+      "coords": [108, 228],
       "image": "interior_entrance",
       "codes": "TODO KF 091 :: unnamed_stack > Forest > Forest Layers > Forest Interiors > Layer Group :: Pasted Layer #112 :: 001-001-015-011-000.png"
     }

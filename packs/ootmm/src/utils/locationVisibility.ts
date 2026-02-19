@@ -1,20 +1,20 @@
-import type { LocationInfo } from '@/types/tracker'
-import type { CollectionFilter, ReachabilityFilter } from '../stores/ootmmUi'
-import { matchesSearchTerms } from './search'
+import type { LocationInfo } from '@/types/tracker';
+import type { CollectionFilter, ReachabilityFilter } from '../stores/ootmmUi';
+import { matchesSearchTerms } from './search';
 
 export type LocationVisibilityFilters = {
-  searchQuery: string
-  selectedCategory: string
-  reachabilityFilter: ReachabilityFilter
-  collectionFilter: CollectionFilter
-  showUnshuffled: boolean
-  showGossipStones: boolean
-}
+  searchQuery: string;
+  selectedCategory: string;
+  reachabilityFilter: ReachabilityFilter;
+  collectionFilter: CollectionFilter;
+  showUnshuffled: boolean;
+  showGossipStones: boolean;
+};
 
-type SetMembershipFilter = 'all' | 'included' | 'excluded'
+type SetMembershipFilter = 'all' | 'included' | 'excluded';
 
 function isToggleEligibleWhenUnshuffled(location: LocationInfo): boolean {
-  return Boolean(location.isSkulltulaToken || location.isStrayFairy)
+  return Boolean(location.isSkulltulaToken || location.isStrayFairy);
 }
 
 function matchesSetMembership(
@@ -22,9 +22,9 @@ function matchesSetMembership(
   idSet: ReadonlySet<string>,
   filter: SetMembershipFilter,
 ): boolean {
-  if (filter === 'included') return idSet.has(locationId)
-  if (filter === 'excluded') return !idSet.has(locationId)
-  return true
+  if (filter === 'included') return idSet.has(locationId);
+  if (filter === 'excluded') return !idSet.has(locationId);
+  return true;
 }
 
 export function matchesLocationBaseVisibility(
@@ -32,15 +32,19 @@ export function matchesLocationBaseVisibility(
   filters: LocationVisibilityFilters,
 ): boolean {
   const matchesShuffle =
-    location.isShuffled !== false
-    || location.showWhenUnshuffled
-    || (filters.showUnshuffled && isToggleEligibleWhenUnshuffled(location))
-  const matchesSearch = matchesSearchTerms([location.name], filters.searchQuery)
+    location.isShuffled !== false ||
+    location.showWhenUnshuffled ||
+    (filters.showUnshuffled && isToggleEligibleWhenUnshuffled(location));
+  const matchesSearch = matchesSearchTerms(
+    [location.name],
+    filters.searchQuery,
+  );
   const matchesCategory =
-    filters.selectedCategory === 'all' || location.category === filters.selectedCategory
-  const matchesGossip = !location.isGossipStone || filters.showGossipStones
+    filters.selectedCategory === 'all' ||
+    location.category === filters.selectedCategory;
+  const matchesGossip = !location.isGossipStone || filters.showGossipStones;
 
-  return matchesShuffle && matchesSearch && matchesCategory && matchesGossip
+  return matchesShuffle && matchesSearch && matchesCategory && matchesGossip;
 }
 
 export function matchesLocationReachabilityVisibility(
@@ -53,8 +57,8 @@ export function matchesLocationReachabilityVisibility(
       ? 'included'
       : reachabilityFilter === 'unreachable'
         ? 'excluded'
-        : 'all'
-  return matchesSetMembership(locationId, reachableIds, membershipFilter)
+        : 'all';
+  return matchesSetMembership(locationId, reachableIds, membershipFilter);
 }
 
 export function matchesLocationCollectionVisibility(
@@ -67,8 +71,8 @@ export function matchesLocationCollectionVisibility(
       ? 'included'
       : collectionFilter === 'uncollected'
         ? 'excluded'
-        : 'all'
-  return matchesSetMembership(locationId, collectedIds, membershipFilter)
+        : 'all';
+  return matchesSetMembership(locationId, collectedIds, membershipFilter);
 }
 
 export function isLocationVisibleInSidebar(
@@ -78,8 +82,16 @@ export function isLocationVisibleInSidebar(
   collectedIds: ReadonlySet<string>,
 ): boolean {
   return (
-    matchesLocationBaseVisibility(location, filters)
-    && matchesLocationReachabilityVisibility(location.id, reachableIds, filters.reachabilityFilter)
-    && matchesLocationCollectionVisibility(location.id, collectedIds, filters.collectionFilter)
-  )
+    matchesLocationBaseVisibility(location, filters) &&
+    matchesLocationReachabilityVisibility(
+      location.id,
+      reachableIds,
+      filters.reachabilityFilter,
+    ) &&
+    matchesLocationCollectionVisibility(
+      location.id,
+      collectedIds,
+      filters.collectionFilter,
+    )
+  );
 }

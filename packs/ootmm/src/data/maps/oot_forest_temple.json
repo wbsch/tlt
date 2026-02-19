@@ -6,210 +6,147 @@
   "height": 600,
   "markers": [
     {
-      "coords": [
-        296,
-        450
-      ],
+      "coords": [296, 450],
       "image": "chest",
       "codes": [
         "OOT Forest Temple Well"
       ]
     },
     {
-      "coords": [
-        628,
-        487
-      ],
+      "coords": [628, 487],
       "image": "chest",
       "codes": [
         "OOT Forest Temple Antichamber"
       ]
     },
     {
-      "coords": [
-        645,
-        385
-      ],
+      "coords": [645, 385],
       "image": "heart_container",
       "codes": [
         "OOT Forest Temple Boss Container"
       ]
     },
     {
-      "coords": [
-        661,
-        385
-      ],
+      "coords": [661, 385],
       "image": "forest_medallion",
       "codes": [
         "OOT Forest Temple Boss"
       ]
     },
     {
-      "coords": [
-        642,
-        297
-      ],
+      "coords": [642, 297],
       "image": "chest",
       "codes": [
         "OOT Forest Temple Tree Small Key"
       ]
     },
     {
-      "coords": [
-        565,
-        209
-      ],
+      "coords": [565, 209],
       "image": "chest",
       "codes": [
         "OOT Forest Temple Maze"
       ]
     },
     {
-      "coords": [
-        652,
-        132
-      ],
+      "coords": [652, 132],
       "image": "chest",
       "codes": [
         "OOT Forest Temple Map"
       ]
     },
     {
-      "coords": [
-        682,
-        94
-      ],
+      "coords": [682, 94],
       "image": "chest",
       "codes": [
         "OOT Forest Temple Compass"
       ]
     },
     {
-      "coords": [
-        651,
-        106
-      ],
+      "coords": [651, 106],
       "image": "chest",
       "codes": [
         "OOT Forest Temple Bow"
       ]
     },
     {
-      "coords": [
-        620,
-        95
-      ],
+      "coords": [620, 95],
       "image": "chest",
       "codes": [
         "OOT Forest Temple Poe Key"
       ]
     },
     {
-      "coords": [
-        553,
-        102
-      ],
+      "coords": [553, 102],
       "image": "chest",
       "codes": [
         "OOT Forest Temple Boss Key"
       ]
     },
     {
-      "coords": [
-        451,
-        157
-      ],
+      "coords": [451, 157],
       "image": "chest",
       "codes": [
         "OOT Forest Temple Checkerboard"
       ]
     },
     {
-      "coords": [
-        428,
-        148
-      ],
+      "coords": [428, 148],
       "image": "chest",
       "codes": [
         "OOT Forest Temple Garden"
       ]
     },
     {
-      "coords": [
-        352,
-        109
-      ],
+      "coords": [352, 109],
       "image": "chest",
       "codes": [
         "OOT Forest Temple Mini-Boss Key"
       ]
     },
     {
-      "coords": [
-        237,
-        174
-      ],
+      "coords": [237, 174],
       "image": "chest",
       "codes": [
         "OOT Forest Temple Floormaster"
       ]
     },
     {
-      "coords": [
-        621,
-        481
-      ],
+      "coords": [621, 481],
       "image": "gold_skulltula",
       "codes": [
         "OOT Forest Temple GS Antichamber"
       ]
     },
     {
-      "coords": [
-        666,
-        306
-      ],
+      "coords": [666, 306],
       "image": "gold_skulltula",
       "codes": [
         "OOT Forest Temple GS Entrance"
       ]
     },
     {
-      "coords": [
-        414,
-        138
-      ],
+      "coords": [414, 138],
       "image": "gold_skulltula",
       "codes": [
         "OOT Forest Temple GS Garden East"
       ]
     },
     {
-      "coords": [
-        365,
-        153
-      ],
+      "coords": [365, 153],
       "image": "gold_skulltula",
       "codes": [
         "OOT Forest Temple GS Main"
       ]
     },
     {
-      "coords": [
-        299,
-        120
-      ],
+      "coords": [299, 120],
       "image": "gold_skulltula",
       "codes": [
         "OOT Forest Temple GS Garden West"
       ]
     },
     {
-      "coords": [
-        765,
-        226
-      ],
+      "coords": [765, 226],
       "image": "pot",
       "codes": [
         "OOT Forest Temple Pot Rotating Room 1",
@@ -217,10 +154,7 @@
       ]
     },
     {
-      "coords": [
-        693,
-        91
-      ],
+      "coords": [693, 91],
       "image": "pot",
       "codes": [
         "OOT Forest Temple Pot Blue Poe 1",
@@ -229,10 +163,7 @@
       ]
     },
     {
-      "coords": [
-        651,
-        88
-      ],
+      "coords": [651, 88],
       "image": "pot",
       "codes": [
         "OOT Forest Temple Pot Miniboss Upper 1",
@@ -242,10 +173,7 @@
       ]
     },
     {
-      "coords": [
-        436,
-        194
-      ],
+      "coords": [436, 194],
       "image": "pot",
       "codes": [
         "OOT Forest Temple Pot Green Poe Pot 1",
@@ -253,10 +181,7 @@
       ]
     },
     {
-      "coords": [
-        352,
-        91
-      ],
+      "coords": [352, 91],
       "image": "pot",
       "codes": [
         "OOT Forest Temple Pot Miniboss Lower 1",
@@ -264,10 +189,7 @@
       ]
     },
     {
-      "coords": [
-        377,
-        228
-      ],
+      "coords": [377, 228],
       "image": "pot",
       "codes": [
         "OOT Forest Temple Pot Main Room 4",
@@ -276,10 +198,7 @@
       ]
     },
     {
-      "coords": [
-        326,
-        228
-      ],
+      "coords": [326, 228],
       "image": "pot",
       "codes": [
         "OOT Forest Temple Pot Main Room 1",
@@ -288,10 +207,7 @@
       ]
     },
     {
-      "coords": [
-        358,
-        450
-      ],
+      "coords": [358, 450],
       "image": "heart",
       "codes": [
         "OOT Forest Temple Heart Well 1",
@@ -299,10 +215,7 @@
       ]
     },
     {
-      "coords": [
-        291,
-        134
-      ],
+      "coords": [291, 134],
       "image": "heart",
       "codes": [
         "OOT Forest Temple Heart Garden 1",

@@ -6,130 +6,91 @@
   "height": 600,
   "markers": [
     {
-      "coords": [
-        141,
-        316
-      ],
+      "coords": [141, 316],
       "image": "chest",
       "codes": [
         "MM Pirate Fortress Entrance Chest 2"
       ]
     },
     {
-      "coords": [
-        329,
-        406
-      ],
+      "coords": [329, 406],
       "image": "chest",
       "codes": [
         "MM Pirate Fortress Entrance Chest 1"
       ]
     },
     {
-      "coords": [
-        235,
-        221
-      ],
+      "coords": [235, 221],
       "image": "chest",
       "codes": [
         "MM Pirate Fortress Entrance Chest 3"
       ]
     },
     {
-      "coords": [
-        442,
-        305
-      ],
+      "coords": [442, 305],
       "image": "chest",
       "codes": [
         "MM Pirate Fortress Sewers Chest 1"
       ]
     },
     {
-      "coords": [
-        488,
-        167
-      ],
+      "coords": [488, 167],
       "image": "heart_piece",
       "codes": [
         "MM Pirate Fortress Sewers HP"
       ]
     },
     {
-      "coords": [
-        481,
-        110
-      ],
+      "coords": [481, 110],
       "image": "chest",
       "codes": [
         "MM Pirate Fortress Sewers Chest 2"
       ]
     },
     {
-      "coords": [
-        515,
-        113
-      ],
+      "coords": [515, 113],
       "image": "chest",
       "codes": [
         "MM Pirate Fortress Sewers Chest 3"
       ]
     },
     {
-      "coords": [
-        565,
-        236
-      ],
+      "coords": [565, 236],
       "image": "chest",
       "codes": [
         "MM Pirate Fortress Interior Aquarium"
       ]
     },
     {
-      "coords": [
-        640,
-        489
-      ],
+      "coords": [640, 489],
       "image": "chest",
       "codes": [
         "MM Pirate Fortress Interior Upper Chest"
       ]
     },
     {
-      "coords": [
-        696,
-        420
-      ],
+      "coords": [696, 420],
       "image": "chest",
       "codes": [
         "MM Pirate Fortress Interior Lower Chest"
       ]
     },
     {
-      "coords": [
-        808,
-        359
-      ],
+      "coords": [808, 359],
       "image": "chest",
       "codes": [
         "MM Pirate Fortress Interior Hookshot"
       ]
     },
     {
-      "coords": [
-        855,
-        239
-      ],
+      "coords": [855, 239],
       "image": "chest",
       "codes": [
         "MM Pirate Fortress Interior Silver Rupee Chest"
       ]
     },
     {
-      "coords": [
-        497,
-        167
-      ],
+      "coords": [497, 167],
       "image": "pot",
       "codes": [
         "MM Pirate Fortress Sewers Pot Heart Piece Room 1",
@@ -137,10 +98,7 @@
       ]
     },
     {
-      "coords": [
-        490,
-        211
-      ],
+      "coords": [490, 211],
       "image": "pot",
       "codes": [
         "MM Pirate Fortress Sewers Pot Waterway 1",
@@ -148,20 +106,14 @@
       ]
     },
     {
-      "coords": [
-        525,
-        265
-      ],
+      "coords": [525, 265],
       "image": "pot",
       "codes": [
         "MM Pirate Fortress Sewers Pot End 1"
       ]
     },
     {
-      "coords": [
-        548,
-        286
-      ],
+      "coords": [548, 286],
       "image": "pot",
       "codes": [
         "MM Pirate Fortress Sewers Pot End 2",
@@ -169,10 +121,7 @@
       ]
     },
     {
-      "coords": [
-        581,
-        218
-      ],
+      "coords": [581, 218],
       "image": "pot",
       "codes": [
         "MM Pirate Fortress Interior Pot Chest Aquarium 1",
@@ -181,10 +130,7 @@
       ]
     },
     {
-      "coords": [
-        830,
-        445
-      ],
+      "coords": [830, 445],
       "image": "pot",
       "codes": [
         "MM Pirate Fortress Interior Pot Barrel Maze 1",
@@ -193,10 +139,7 @@
       ]
     },
     {
-      "coords": [
-        838,
-        373
-      ],
+      "coords": [838, 373],
       "image": "pot",
       "codes": [
         "MM Pirate Fortress Interior Pot Beehive 1",
@@ -204,10 +147,7 @@
       ]
     },
     {
-      "coords": [
-        824,
-        285
-      ],
+      "coords": [824, 285],
       "image": "pot",
       "codes": [
         "MM Pirate Fortress Interior Pot Guarded 1",
@@ -215,10 +155,7 @@
       ]
     },
     {
-      "coords": [
-        468,
-        97
-      ],
+      "coords": [468, 97],
       "image": "green_rupee",
       "codes": [
         "MM Pirate Fortress Sewers Rupee Near Cage 1",
@@ -226,40 +163,28 @@
       ]
     },
     {
-      "coords": [
-        499,
-        100
-      ],
+      "coords": [499, 100],
       "image": "green_rupee",
       "codes": [
         "MM Pirate Fortress Sewers Rupee Near Cage 3"
       ]
     },
     {
-      "coords": [
-        483,
-        124
-      ],
+      "coords": [483, 124],
       "image": "green_rupee",
       "codes": [
         "MM Pirate Fortress Sewers Rupee Near Cage 4"
       ]
     },
     {
-      "coords": [
-        510,
-        163
-      ],
+      "coords": [510, 163],
       "image": "blue_rupee",
       "codes": [
         "MM Pirate Fortress Sewers Rupee Cage"
       ]
     },
     {
-      "coords": [
-        533,
-        267
-      ],
+      "coords": [533, 267],
       "image": "blue_rupee",
       "codes": [
         "MM Pirate Fortress Sewers Rupee Water Elevator 1",
@@ -268,10 +193,7 @@
       ]
     },
     {
-      "coords": [
-        718,
-        273
-      ],
+      "coords": [718, 273],
       "image": "heart",
       "codes": [
         "MM Pirate Fortress Interior Heart 1",
@@ -280,10 +202,7 @@
       ]
     },
     {
-      "coords": [
-        610,
-        381
-      ],
+      "coords": [610, 381],
       "image": "crate",
       "codes": [
         "MM Pirate Fortress Interior Crate Middle 1",
@@ -291,30 +210,21 @@
       ]
     },
     {
-      "coords": [
-        606,
-        305
-      ],
+      "coords": [606, 305],
       "image": "crate",
       "codes": [
         "MM Pirate Fortress Interior Crate Entrance"
       ]
     },
     {
-      "coords": [
-        313,
-        351
-      ],
+      "coords": [313, 351],
       "image": "barrel",
       "codes": [
         "MM Pirate Fortress Entrance Barrel"
       ]
     },
     {
-      "coords": [
-        465,
-        106
-      ],
+      "coords": [465, 106],
       "image": "barrel",
       "codes": [
         "MM Pirate Fortress Sewers Barrel Cage Room 08",
@@ -326,10 +236,7 @@
       ]
     },
     {
-      "coords": [
-        499,
-        108
-      ],
+      "coords": [499, 108],
       "image": "barrel",
       "codes": [
         "MM Pirate Fortress Sewers Barrel Cage Room 04",
@@ -339,10 +246,7 @@
       ]
     },
     {
-      "coords": [
-        485,
-        132
-      ],
+      "coords": [485, 132],
       "image": "barrel",
       "codes": [
         "MM Pirate Fortress Sewers Barrel Cage Room 01",
@@ -351,10 +255,7 @@
       ]
     },
     {
-      "coords": [
-        510,
-        170
-      ],
+      "coords": [510, 170],
       "image": "barrel",
       "codes": [
         "MM Pirate Fortress Sewers Barrel Cage Room 14",
@@ -363,10 +264,7 @@
       ]
     },
     {
-      "coords": [
-        526,
-        274
-      ],
+      "coords": [526, 274],
       "image": "barrel",
       "codes": [
         "MM Pirate Fortress Sewers Barrel End 1",
@@ -377,30 +275,21 @@
       ]
     },
     {
-      "coords": [
-        742,
-        263
-      ],
+      "coords": [742, 263],
       "image": "barrel",
       "codes": [
         "MM Pirate Fortress Interior Barrel Outside"
       ]
     },
     {
-      "coords": [
-        800,
-        283
-      ],
+      "coords": [800, 283],
       "image": "barrel",
       "codes": [
         "MM Pirate Fortress Interior Barrel Aquarium"
       ]
     },
     {
-      "coords": [
-        769,
-        358
-      ],
+      "coords": [769, 358],
       "image": "barrel",
       "codes": [
         "MM Pirate Fortress Interior Barrel Hookshot Room 1",
@@ -408,10 +297,7 @@
       ]
     },
     {
-      "coords": [
-        689,
-        348
-      ],
+      "coords": [689, 348],
       "image": "green_rupee",
       "codes": [
         "MM Pirate Fortress Interior Wonder Item Skull Eyes 4",
@@ -420,10 +306,7 @@
       ]
     },
     {
-      "coords": [
-        689,
-        365
-      ],
+      "coords": [689, 365],
       "image": "green_rupee",
       "codes": [
         "MM Pirate Fortress Interior Wonder Item Skull Eyes 1",
@@ -432,10 +315,7 @@
       ]
     },
     {
-      "coords": [
-        835,
-        357
-      ],
+      "coords": [835, 357],
       "image": "green_rupee",
       "codes": [
         "MM Pirate Fortress Interior Wonder Item Skull Forehead 1",

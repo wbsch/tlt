@@ -42,11 +42,7 @@ export type RunOutput = {
 
 export type PathfinderTestAdapter = {
   name: string;
-  run: (
-    test: TestCase,
-    mode: RunMode,
-    meta: RunMeta,
-  ) => Promise<RunOutput>;
+  run: (test: TestCase, mode: RunMode, meta: RunMeta) => Promise<RunOutput>;
   normalizeLocation?: (locationId: string) => string;
   resolveEventName?: (expected: string, events: Set<string>) => string | null;
 };
@@ -266,9 +262,9 @@ export const runTestCases = async (
   const resolveEventName = adapter.resolveEventName ?? resolveEventNameDefault;
   const verboseLevel = options.verboseLevel ?? 0;
   const plannedIndices = options.only
-    ? Array.from(options.only).filter(
-        (index) => index >= 0 && index < tests.length,
-      ).sort((a, b) => a - b)
+    ? Array.from(options.only)
+        .filter((index) => index >= 0 && index < tests.length)
+        .sort((a, b) => a - b)
     : Array.from({ length: tests.length }, (_, index) => index);
   const totalPlanned = plannedIndices.length;
   const totalStart = Date.now();

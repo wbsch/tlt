@@ -6,270 +6,189 @@
   "height": 600,
   "markers": [
     {
-      "coords": [
-        259,
-        475
-      ],
+      "coords": [259, 475],
       "image": "chest",
       "codes": [
         "MM Stone Tower Temple Inverted Wizzrobe Chest"
       ]
     },
     {
-      "coords": [
-        398,
-        510
-      ],
+      "coords": [398, 510],
       "image": "chest",
       "codes": [
         "MM Stone Tower Temple Inverted East Lower Chest"
       ]
     },
     {
-      "coords": [
-        325,
-        386
-      ],
+      "coords": [325, 386],
       "image": "heart_container",
       "codes": [
         "MM Stone Tower Temple Inverted Boss HC"
       ]
     },
     {
-      "coords": [
-        341,
-        386
-      ],
+      "coords": [341, 386],
       "image": "twinmolds_remain",
       "codes": [
         "MM Stone Tower Temple Inverted Boss"
       ]
     },
     {
-      "coords": [
-        646,
-        536
-      ],
+      "coords": [646, 536],
       "image": "chest",
       "codes": [
         "MM Stone Tower Temple Inverted Entrance Chest"
       ]
     },
     {
-      "coords": [
-        578,
-        515
-      ],
+      "coords": [578, 515],
       "image": "chest",
       "codes": [
         "MM Stone Tower Temple Inverted Death Armos Chest"
       ]
     },
     {
-      "coords": [
-        646,
-        481
-      ],
+      "coords": [646, 481],
       "image": "chest",
       "codes": [
         "MM Stone Tower Temple Inverted Giant Mask"
       ]
     },
     {
-      "coords": [
-        710,
-        511
-      ],
+      "coords": [710, 511],
       "image": "chest",
       "codes": [
         "MM Stone Tower Temple Inverted East Upper Chest"
       ]
     },
     {
-      "coords": [
-        710,
-        473
-      ],
+      "coords": [710, 473],
       "image": "chest",
       "codes": [
         "MM Stone Tower Temple Inverted East Middle Chest"
       ]
     },
     {
-      "coords": [
-        790,
-        485
-      ],
+      "coords": [790, 485],
       "image": "chest",
       "codes": [
         "MM Stone Tower Temple Inverted Boss Key"
       ]
     },
     {
-      "coords": [
-        265,
-        233
-      ],
+      "coords": [265, 233],
       "image": "chest",
       "codes": [
         "MM Stone Tower Temple Map"
       ]
     },
     {
-      "coords": [
-        267,
-        206
-      ],
+      "coords": [267, 206],
       "image": "chest",
       "codes": [
         "MM Stone Tower Temple Under West Garden Lava Chest"
       ]
     },
     {
-      "coords": [
-        255,
-        185
-      ],
+      "coords": [255, 185],
       "image": "chest",
       "codes": [
         "MM Stone Tower Temple Under West Garden Ledge Chest"
       ]
     },
     {
-      "coords": [
-        397,
-        221
-      ],
+      "coords": [397, 221],
       "image": "chest",
       "codes": [
         "MM Stone Tower Temple Water Sun Switch Chest"
       ]
     },
     {
-      "coords": [
-        697,
-        239
-      ],
+      "coords": [697, 239],
       "image": "chest",
       "codes": [
         "MM Stone Tower Temple Compass"
       ]
     },
     {
-      "coords": [
-        646,
-        245
-      ],
+      "coords": [646, 245],
       "image": "chest",
       "codes": [
         "MM Stone Tower Temple Entrance Chest"
       ]
     },
     {
-      "coords": [
-        646,
-        259
-      ],
+      "coords": [646, 259],
       "image": "chest",
       "codes": [
         "MM Stone Tower Temple Entrance Switch Chest"
       ]
     },
     {
-      "coords": [
-        669,
-        196
-      ],
+      "coords": [669, 196],
       "image": "chest",
       "codes": [
         "MM Stone Tower Temple Center Across Water Chest"
       ]
     },
     {
-      "coords": [
-        647,
-        176
-      ],
+      "coords": [647, 176],
       "image": "chest",
       "codes": [
         "MM Stone Tower Temple Water Bridge Chest"
       ]
     },
     {
-      "coords": [
-        631,
-        176
-      ],
+      "coords": [631, 176],
       "image": "chest",
       "codes": [
         "MM Stone Tower Temple Center Sun Block Chest"
       ]
     },
     {
-      "coords": [
-        645,
-        156
-      ],
+      "coords": [645, 156],
       "image": "chest",
       "codes": [
         "MM Stone Tower Temple Before Water Bridge Chest"
       ]
     },
     {
-      "coords": [
-        744,
-        143
-      ],
+      "coords": [744, 143],
       "image": "chest",
       "codes": [
         "MM Stone Tower Temple Mirrors Room Right Chest"
       ]
     },
     {
-      "coords": [
-        715,
-        143
-      ],
+      "coords": [715, 143],
       "image": "chest",
       "codes": [
         "MM Stone Tower Temple Mirrors Room Center Chest"
       ]
     },
     {
-      "coords": [
-        644,
-        98
-      ],
+      "coords": [644, 98],
       "image": "chest",
       "codes": [
         "MM Stone Tower Temple Light Arrow"
       ]
     },
     {
-      "coords": [
-        695,
-        96
-      ],
+      "coords": [695, 96],
       "image": "chest",
       "codes": [
         "MM Stone Tower Temple Wind Room Ledge Chest"
       ]
     },
     {
-      "coords": [
-        698,
-        75
-      ],
+      "coords": [698, 75],
       "image": "chest",
       "codes": [
         "MM Stone Tower Temple Wind Room Jail Chest"
       ]
     },
     {
-      "coords": [
-        266,
-        516
-      ],
+      "coords": [266, 516],
       "image": "pot",
       "codes": [
         "MM Stone Tower Temple Inverted Pot Wizzrobe 1",
@@ -280,10 +199,7 @@
       ]
     },
     {
-      "coords": [
-        374,
-        485
-      ],
+      "coords": [374, 485],
       "image": "pot",
       "codes": [
         "MM Stone Tower Temple Inverted Pot Updrafts Ledge 1",
@@ -293,10 +209,7 @@
       ]
     },
     {
-      "coords": [
-        571,
-        479
-      ],
+      "coords": [571, 479],
       "image": "pot",
       "codes": [
         "MM Stone Tower Temple Inverted Pot Poe Wizzrobe Side 1",
@@ -304,10 +217,7 @@
       ]
     },
     {
-      "coords": [
-        606,
-        479
-      ],
+      "coords": [606, 479],
       "image": "pot",
       "codes": [
         "MM Stone Tower Temple Inverted Pot Poe Maze Side 1",
@@ -315,10 +225,7 @@
       ]
     },
     {
-      "coords": [
-        647,
-        450
-      ],
+      "coords": [647, 450],
       "image": "pot",
       "codes": [
         "MM Stone Tower Temple Inverted Pot Pre-Boss 1",
@@ -332,10 +239,7 @@
       ]
     },
     {
-      "coords": [
-        645,
-        465
-      ],
+      "coords": [645, 465],
       "image": "flying_pot",
       "codes": [
         "MM Stone Tower Temple Inverted Flying Pot Center 1",
@@ -343,10 +247,7 @@
       ]
     },
     {
-      "coords": [
-        647,
-        434
-      ],
+      "coords": [647, 434],
       "image": "flying_pot",
       "codes": [
         "MM Stone Tower Temple Inverted Flying Pot Pre-Boss 1",
@@ -356,10 +257,7 @@
       ]
     },
     {
-      "coords": [
-        716,
-        506
-      ],
+      "coords": [716, 506],
       "image": "pot",
       "codes": [
         "MM Stone Tower Temple Inverted Pot Updrafts Bridge 1",
@@ -367,50 +265,35 @@
       ]
     },
     {
-      "coords": [
-        751,
-        500
-      ],
+      "coords": [751, 500],
       "image": "pot",
       "codes": [
         "MM Stone Tower Temple Inverted Pot Gomess 4"
       ]
     },
     {
-      "coords": [
-        777,
-        500
-      ],
+      "coords": [777, 500],
       "image": "pot",
       "codes": [
         "MM Stone Tower Temple Inverted Pot Gomess 3"
       ]
     },
     {
-      "coords": [
-        777,
-        471
-      ],
+      "coords": [777, 471],
       "image": "pot",
       "codes": [
         "MM Stone Tower Temple Inverted Pot Gomess 2"
       ]
     },
     {
-      "coords": [
-        751,
-        471
-      ],
+      "coords": [751, 471],
       "image": "pot",
       "codes": [
         "MM Stone Tower Temple Inverted Pot Gomess 1"
       ]
     },
     {
-      "coords": [
-        265,
-        218
-      ],
+      "coords": [265, 218],
       "image": "pot",
       "codes": [
         "MM Stone Tower Temple Pot Lava Room After Block 1",
@@ -420,10 +303,7 @@
       ]
     },
     {
-      "coords": [
-        267,
-        193
-      ],
+      "coords": [267, 193],
       "image": "pot",
       "codes": [
         "MM Stone Tower Temple Pot Lava Room 1",
@@ -433,10 +313,7 @@
       ]
     },
     {
-      "coords": [
-        375,
-        197
-      ],
+      "coords": [375, 197],
       "image": "pot",
       "codes": [
         "MM Stone Tower Temple Pot Water Room Underwater Lower 1",
@@ -445,10 +322,7 @@
       ]
     },
     {
-      "coords": [
-        646,
-        231
-      ],
+      "coords": [646, 231],
       "image": "pot",
       "codes": [
         "MM Stone Tower Temple Pot Entrance 1",
@@ -456,10 +330,7 @@
       ]
     },
     {
-      "coords": [
-        645,
-        162
-      ],
+      "coords": [645, 162],
       "image": "pot",
       "codes": [
         "MM Stone Tower Temple Pot Before Water Bridge 1",
@@ -473,10 +344,7 @@
       ]
     },
     {
-      "coords": [
-        678,
-        96
-      ],
+      "coords": [678, 96],
       "image": "pot",
       "codes": [
         "MM Stone Tower Temple Pot Wind Room 1",
@@ -486,10 +354,7 @@
       ]
     },
     {
-      "coords": [
-        710,
-        167
-      ],
+      "coords": [710, 167],
       "image": "pot",
       "codes": [
         "MM Stone Tower Temple Pot Mirror Room 1",
@@ -497,10 +362,7 @@
       ]
     },
     {
-      "coords": [
-        711,
-        193
-      ],
+      "coords": [711, 193],
       "image": "pot",
       "codes": [
         "MM Stone Tower Temple Pot Water Room Bridge 1",
@@ -508,10 +370,7 @@
       ]
     },
     {
-      "coords": [
-        729,
-        209
-      ],
+      "coords": [729, 209],
       "image": "pot",
       "codes": [
         "MM Stone Tower Temple Pot Water Room Underwater Upper 1",
@@ -519,10 +378,7 @@
       ]
     },
     {
-      "coords": [
-        697,
-        526
-      ],
+      "coords": [697, 526],
       "image": "red_rupee",
       "codes": [
         "MM Stone Tower Temple Inverted Rupee Alcove 1",
@@ -530,40 +386,28 @@
       ]
     },
     {
-      "coords": [
-        664,
-        480
-      ],
+      "coords": [664, 480],
       "image": "red_rupee",
       "codes": [
         "MM Stone Tower Temple Inverted Rupee Dexihand 3"
       ]
     },
     {
-      "coords": [
-        656,
-        464
-      ],
+      "coords": [656, 464],
       "image": "blue_rupee",
       "codes": [
         "MM Stone Tower Temple Inverted Rupee Dexihand 2"
       ]
     },
     {
-      "coords": [
-        672,
-        464
-      ],
+      "coords": [672, 464],
       "image": "green_rupee",
       "codes": [
         "MM Stone Tower Temple Inverted Rupee Dexihand 1"
       ]
     },
     {
-      "coords": [
-        636,
-        439
-      ],
+      "coords": [636, 439],
       "image": "blue_rupee",
       "codes": [
         "MM Stone Tower Temple Inverted Rupee Pre-Boss Back 1",
@@ -573,10 +417,7 @@
       ]
     },
     {
-      "coords": [
-        655,
-        439
-      ],
+      "coords": [655, 439],
       "image": "blue_rupee",
       "codes": [
         "MM Stone Tower Temple Inverted Rupee Pre-Boss Front 1",
@@ -586,10 +427,7 @@
       ]
     },
     {
-      "coords": [
-        646,
-        423
-      ],
+      "coords": [646, 423],
       "image": "blue_rupee",
       "codes": [
         "MM Stone Tower Temple Inverted Rupee Pre-Boss Top 1",
@@ -598,30 +436,21 @@
       ]
     },
     {
-      "coords": [
-        622,
-        176
-      ],
+      "coords": [622, 176],
       "image": "red_rupee",
       "codes": [
         "MM Stone Tower Temple Rupee Center Room Left"
       ]
     },
     {
-      "coords": [
-        661,
-        175
-      ],
+      "coords": [661, 175],
       "image": "red_rupee",
       "codes": [
         "MM Stone Tower Temple Rupee Center Room Right"
       ]
     },
     {
-      "coords": [
-        636,
-        142
-      ],
+      "coords": [636, 142],
       "image": "blue_rupee",
       "codes": [
         "MM Stone Tower Temple Rupee Before Water Bridge 1",
@@ -631,10 +460,7 @@
       ]
     },
     {
-      "coords": [
-        655,
-        142
-      ],
+      "coords": [655, 142],
       "image": "blue_rupee",
       "codes": [
         "MM Stone Tower Temple Rupee Before Water Bridge 5",
@@ -644,20 +470,14 @@
       ]
     },
     {
-      "coords": [
-        697,
-        66
-      ],
+      "coords": [697, 66],
       "image": "red_rupee",
       "codes": [
         "MM Stone Tower Temple Rupee Wind Room 6"
       ]
     },
     {
-      "coords": [
-        689,
-        50
-      ],
+      "coords": [689, 50],
       "image": "green_rupee",
       "codes": [
         "MM Stone Tower Temple Rupee Wind Room 1",
@@ -666,10 +486,7 @@
       ]
     },
     {
-      "coords": [
-        705,
-        50
-      ],
+      "coords": [705, 50],
       "image": "blue_rupee",
       "codes": [
         "MM Stone Tower Temple Rupee Wind Room 4",
@@ -677,10 +494,7 @@
       ]
     },
     {
-      "coords": [
-        626,
-        533
-      ],
+      "coords": [626, 533],
       "image": "small_crate",
       "codes": [
         "MM Stone Tower Temple Inverted Crate Entrance Left 1",
@@ -689,10 +503,7 @@
       ]
     },
     {
-      "coords": [
-        666,
-        513
-      ],
+      "coords": [666, 513],
       "image": "small_crate",
       "codes": [
         "MM Stone Tower Temple Inverted Crate Entrance Right 1",
@@ -700,10 +511,7 @@
       ]
     },
     {
-      "coords": [
-        730,
-        484
-      ],
+      "coords": [730, 484],
       "image": "small_crate",
       "codes": [
         "MM Stone Tower Temple Inverted Crate Before Gomess 1",
@@ -715,10 +523,7 @@
       ]
     },
     {
-      "coords": [
-        575,
-        240
-      ],
+      "coords": [575, 240],
       "image": "crate",
       "codes": [
         "MM Stone Tower Temple Crate Maze Large 1",
@@ -729,10 +534,7 @@
       ]
     },
     {
-      "coords": [
-        575,
-        224
-      ],
+      "coords": [575, 224],
       "image": "small_crate",
       "codes": [
         "MM Stone Tower Temple Crate Maze Small 1",
@@ -740,10 +542,7 @@
       ]
     },
     {
-      "coords": [
-        666,
-        228
-      ],
+      "coords": [666, 228],
       "image": "small_crate",
       "codes": [
         "MM Stone Tower Temple Crate Entrance 1",
@@ -751,10 +550,7 @@
       ]
     },
     {
-      "coords": [
-        668,
-        209
-      ],
+      "coords": [668, 209],
       "image": "small_crate",
       "codes": [
         "MM Stone Tower Temple Crate Water 1",
@@ -763,30 +559,21 @@
       ]
     },
     {
-      "coords": [
-        724,
-        120
-      ],
+      "coords": [724, 120],
       "image": "crate",
       "codes": [
         "MM Stone Tower Temple Crate Mirrors 2"
       ]
     },
     {
-      "coords": [
-        695,
-        120
-      ],
+      "coords": [695, 120],
       "image": "crate",
       "codes": [
         "MM Stone Tower Temple Crate Mirrors 1"
       ]
     },
     {
-      "coords": [
-        661,
-        236
-      ],
+      "coords": [661, 236],
       "image": "grass",
       "codes": [
         "MM Stone Tower Temple Grass Entrance 1",
@@ -795,10 +582,7 @@
       ]
     },
     {
-      "coords": [
-        595,
-        190
-      ],
+      "coords": [595, 190],
       "image": "grass",
       "codes": [
         "MM Stone Tower Temple Grass Garden 1",

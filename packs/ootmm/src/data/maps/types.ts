@@ -10,58 +10,58 @@ export type MapMarkerOverlay =
   | 'day'
   | 'clear_state'
   | 'cursed_state'
-  | 'broken'
+  | 'broken';
 
 export type MapSubmenuEntryDef = {
-  image: string
-  overlays?: MapMarkerOverlay[]
-  codes: string | string[]
-}
+  image: string;
+  overlays?: MapMarkerOverlay[];
+  codes: string | string[];
+};
 
 export type MapMarkerDef = {
-  coords: [number, number]
-  image: string
-  overlays?: MapMarkerOverlay[]
-  type?: 'check' | 'submenu'
-  codes?: string | string[]
-  markers?: MapSubmenuEntryDef[]
-}
+  coords: [number, number];
+  image: string;
+  overlays?: MapMarkerOverlay[];
+  type?: 'check' | 'submenu';
+  codes?: string | string[];
+  markers?: MapSubmenuEntryDef[];
+};
 
 export type MapDef = {
-  id: string
-  title: string
-  image: string
-  width: number
-  height: number
-  markers: MapMarkerDef[]
-}
+  id: string;
+  title: string;
+  image: string;
+  width: number;
+  height: number;
+  markers: MapMarkerDef[];
+};
 
-export type MarkerVisibilityMode = 'reachable-unchecked' | 'reachable-any'
+export type MarkerVisibilityMode = 'reachable-unchecked' | 'reachable-any';
 
 export type MapMarkerViewModel = {
-  id: string
-  coords: [number, number]
-  image: string
-  overlays: MapMarkerOverlay[]
-  type: 'check' | 'submenu'
-  codes?: string | string[]
-  reachableCount: number
-  checkedCount: number
-  isVisible: boolean
-}
+  id: string;
+  coords: [number, number];
+  image: string;
+  overlays: MapMarkerOverlay[];
+  type: 'check' | 'submenu';
+  codes?: string | string[];
+  reachableCount: number;
+  checkedCount: number;
+  isVisible: boolean;
+};
 
 export type MapPopupEntry = {
-  id: string
-  code: string
-  checkId: string | null
-  isReachable: boolean
-  isChecked: boolean
-}
+  id: string;
+  code: string;
+  checkId: string | null;
+  isReachable: boolean;
+  isChecked: boolean;
+};
 
 export type MapPopupPayload = {
-  markerId: string
-  title: string
-  entries: MapPopupEntry[]
-  canMarkAll: boolean
-  markAllAffectsReachableOnly: boolean
-}
+  markerId: string;
+  title: string;
+  entries: MapPopupEntry[];
+  canMarkAll: boolean;
+  markAllAffectsReachableOnly: boolean;
+};

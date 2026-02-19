@@ -1,21 +1,26 @@
 <script setup lang="ts">
-import { computed, onBeforeUnmount, ref, watch, type CSSProperties } from 'vue'
-import type { LocationInfo } from '@/types/tracker'
-import { MAP_ICON_INDEX } from '../data/maps/mapIconIndex'
+import { computed, onBeforeUnmount, ref, watch, type CSSProperties } from 'vue';
+import type { LocationInfo } from '@/types/tracker';
+import { MAP_ICON_INDEX } from '../data/maps/mapIconIndex';
 import {
   normalizeCode,
   stripWorldSuffix,
   useLocationCodeLookup,
-} from '../composables/useLocationCodeLookup'
-import type { MapDef, MapMarkerDef, MapMarkerOverlay, MapSubmenuEntryDef } from '../data/maps/types'
+} from '../composables/useLocationCodeLookup';
+import type {
+  MapDef,
+  MapMarkerDef,
+  MapMarkerOverlay,
+  MapSubmenuEntryDef,
+} from '../data/maps/types';
 import {
   getSearchTerms,
   matchesNormalizedSearchTerms,
   normalizeSearchText,
-} from '../utils/search'
-import { selectSearchInputText } from '../utils/input'
+} from '../utils/search';
+import { selectSearchInputText } from '../utils/input';
 
-const LOCATION_SEARCH_LIMIT = 80
+const LOCATION_SEARCH_LIMIT = 80;
 
 const MAP_MARKER_OVERLAYS: MapMarkerOverlay[] = [
   'child',
@@ -30,60 +35,60 @@ const MAP_MARKER_OVERLAYS: MapMarkerOverlay[] = [
   'clear_state',
   'cursed_state',
   'broken',
-]
+];
 
 type DraftIssue = {
-  markerIndex: number
-  message: string
-}
+  markerIndex: number;
+  message: string;
+};
 
 const props = withDefaults(
   defineProps<{
-    activeMap: MapDef | null
-    allLocations?: LocationInfo[]
-    allLocationsForCodeSearch?: LocationInfo[]
-    reachableIds: Set<string>
-    collectedIds: Set<string>
-    selectedMarkerIndex: number | null
+    activeMap: MapDef | null;
+    allLocations?: LocationInfo[];
+    allLocationsForCodeSearch?: LocationInfo[];
+    reachableIds: Set<string>;
+    collectedIds: Set<string>;
+    selectedMarkerIndex: number | null;
   }>(),
   {
     allLocations: () => [],
     allLocationsForCodeSearch: () => [],
   },
-)
+);
 
 const emit = defineEmits<{
-  (e: 'update:draft-map', value: MapDef | null): void
-  (e: 'update:selected-marker-index', value: number | null): void
-  (e: 'warnings-change', value: DraftIssue[]): void
-}>()
+  (e: 'update:draft-map', value: MapDef | null): void;
+  (e: 'update:selected-marker-index', value: number | null): void;
+  (e: 'warnings-change', value: DraftIssue[]): void;
+}>();
 
-const draftMap = ref<MapDef | null>(null)
-const codeSearchQuery = ref('')
-const manualCodeInput = ref('')
-const copyStatus = ref<'idle' | 'ok' | 'error'>('idle')
-const editorRef = ref<HTMLElement | null>(null)
-const panelPosition = ref<{ left: number; top: number } | null>(null)
-const isDraggingPanel = ref(false)
-const markerIconQuery = ref('')
-const markerIconInputRef = ref<HTMLInputElement | null>(null)
-const isMarkerIconSelectorOpen = ref(false)
-const markerIconHighlightedIndex = ref(-1)
+const draftMap = ref<MapDef | null>(null);
+const codeSearchQuery = ref('');
+const manualCodeInput = ref('');
+const copyStatus = ref<'idle' | 'ok' | 'error'>('idle');
+const editorRef = ref<HTMLElement | null>(null);
+const panelPosition = ref<{ left: number; top: number } | null>(null);
+const isDraggingPanel = ref(false);
+const markerIconQuery = ref('');
+const markerIconInputRef = ref<HTMLInputElement | null>(null);
+const isMarkerIconSelectorOpen = ref(false);
+const markerIconHighlightedIndex = ref(-1);
 
-let copyStatusTimer: number | null = null
-let panelDragPointerId: number | null = null
-let panelDragOffsetX = 0
-let panelDragOffsetY = 0
+let copyStatusTimer: number | null = null;
+let panelDragPointerId: number | null = null;
+let panelDragOffsetX = 0;
+let panelDragOffsetY = 0;
 
-const mapIconNames = [...MAP_ICON_INDEX].sort((a, b) => a.localeCompare(b))
-const mapIconNameSet = new Set<string>(mapIconNames)
+const mapIconNames = [...MAP_ICON_INDEX].sort((a, b) => a.localeCompare(b));
+const mapIconNameSet = new Set<string>(mapIconNames);
 
 function cloneSubmenuEntry(entry: MapSubmenuEntryDef): MapSubmenuEntryDef {
   return {
     image: entry.image,
     overlays: entry.overlays ? [...entry.overlays] : undefined,
     codes: Array.isArray(entry.codes) ? [...entry.codes] : entry.codes,
-  }
+  };
 }
 
 function cloneMarker(marker: MapMarkerDef): MapMarkerDef {
@@ -94,7 +99,7 @@ function cloneMarker(marker: MapMarkerDef): MapMarkerDef {
     overlays: marker.overlays ? [...marker.overlays] : undefined,
     codes: Array.isArray(marker.codes) ? [...marker.codes] : marker.codes,
     markers: marker.markers?.map((entry) => cloneSubmenuEntry(entry)),
-  }
+  };
 }
 
 function cloneMapDef(mapDef: MapDef): MapDef {
@@ -105,135 +110,140 @@ function cloneMapDef(mapDef: MapDef): MapDef {
     width: mapDef.width,
     height: mapDef.height,
     markers: mapDef.markers.map((marker) => cloneMarker(marker)),
-  }
+  };
 }
 
 function formatOverlayLabel(overlay: MapMarkerOverlay): string {
-  return overlay.replace(/_/g, ' ')
+  return overlay.replace(/_/g, ' ');
 }
 
 function markerCodeList(marker: MapMarkerDef): string[] {
-  const rawCodes = marker.codes ?? ''
-  const rawList = Array.isArray(rawCodes) ? rawCodes : [rawCodes]
-  return rawList.map((code) => code.trim()).filter((code) => code.length > 0)
+  const rawCodes = marker.codes ?? '';
+  const rawList = Array.isArray(rawCodes) ? rawCodes : [rawCodes];
+  return rawList.map((code) => code.trim()).filter((code) => code.length > 0);
 }
 
 function normalizeLocationCode(value: string): string {
-  return normalizeCode(stripWorldSuffix(value))
+  return normalizeCode(stripWorldSuffix(value));
 }
 
 function assignMarkerCodes(marker: MapMarkerDef, nextCodes: string[]): void {
   if (marker.type === 'submenu') {
-    return
+    return;
   }
-  const cleaned = nextCodes.map((value) => value.trim()).filter((value) => value.length > 0)
+  const cleaned = nextCodes
+    .map((value) => value.trim())
+    .filter((value) => value.length > 0);
   if (cleaned.length === 0) {
-    marker.codes = ''
-    return
+    marker.codes = '';
+    return;
   }
-  marker.codes = cleaned.length === 1 ? cleaned[0] : cleaned
+  marker.codes = cleaned.length === 1 ? cleaned[0] : cleaned;
 }
 
 function findDuplicateCodes(values: string[]): string[] {
-  const duplicates = new Set<string>()
-  const seen = new Set<string>()
+  const duplicates = new Set<string>();
+  const seen = new Set<string>();
   for (const value of values) {
-    const normalized = normalizeCode(value)
-    if (!normalized) continue
+    const normalized = normalizeCode(value);
+    if (!normalized) continue;
     if (seen.has(normalized)) {
-      duplicates.add(normalized)
+      duplicates.add(normalized);
     } else {
-      seen.add(normalized)
+      seen.add(normalized);
     }
   }
-  return Array.from(duplicates)
+  return Array.from(duplicates);
 }
 
 function setCopyStatus(status: 'idle' | 'ok' | 'error'): void {
-  copyStatus.value = status
+  copyStatus.value = status;
   if (copyStatusTimer !== null) {
-    window.clearTimeout(copyStatusTimer)
-    copyStatusTimer = null
+    window.clearTimeout(copyStatusTimer);
+    copyStatusTimer = null;
   }
-  if (status === 'idle') return
+  if (status === 'idle') return;
   copyStatusTimer = window.setTimeout(() => {
-    copyStatus.value = 'idle'
-    copyStatusTimer = null
-  }, 1800)
+    copyStatus.value = 'idle';
+    copyStatusTimer = null;
+  }, 1800);
 }
 
 function clamp(value: number, min: number, max: number): number {
-  return Math.min(max, Math.max(min, value))
+  return Math.min(max, Math.max(min, value));
 }
 
 function getPanelContainer(): HTMLElement | null {
-  return editorRef.value?.parentElement ?? null
+  return editorRef.value?.parentElement ?? null;
 }
 
-function clampPanelPosition(left: number, top: number): { left: number; top: number } {
-  const panel = editorRef.value
-  const container = getPanelContainer()
+function clampPanelPosition(
+  left: number,
+  top: number,
+): { left: number; top: number } {
+  const panel = editorRef.value;
+  const container = getPanelContainer();
   if (!panel || !container) {
-    return { left, top }
+    return { left, top };
   }
 
-  const maxLeft = Math.max(0, container.clientWidth - panel.offsetWidth)
-  const maxTop = Math.max(0, container.clientHeight - panel.offsetHeight)
+  const maxLeft = Math.max(0, container.clientWidth - panel.offsetWidth);
+  const maxTop = Math.max(0, container.clientHeight - panel.offsetHeight);
   return {
     left: clamp(left, 0, maxLeft),
     top: clamp(top, 0, maxTop),
-  }
+  };
 }
 
 function ensurePanelPosition(): { left: number; top: number } | null {
   if (panelPosition.value) {
-    return panelPosition.value
+    return panelPosition.value;
   }
-  const panel = editorRef.value
-  const container = getPanelContainer()
+  const panel = editorRef.value;
+  const container = getPanelContainer();
   if (!panel || !container) {
-    return null
+    return null;
   }
-  const panelRect = panel.getBoundingClientRect()
-  const containerRect = container.getBoundingClientRect()
+  const panelRect = panel.getBoundingClientRect();
+  const containerRect = container.getBoundingClientRect();
   const nextPosition = clampPanelPosition(
     panelRect.left - containerRect.left,
     panelRect.top - containerRect.top,
-  )
-  panelPosition.value = nextPosition
-  return nextPosition
+  );
+  panelPosition.value = nextPosition;
+  return nextPosition;
 }
 
 const editorStyle = computed<CSSProperties | undefined>(() => {
-  if (!panelPosition.value) return undefined
+  if (!panelPosition.value) return undefined;
   return {
     left: `${panelPosition.value.left}px`,
     top: `${panelPosition.value.top}px`,
     right: 'auto',
-  }
-})
+  };
+});
 
 function handleHeaderPointerDown(event: PointerEvent): void {
-  if (event.pointerType === 'mouse' && event.button !== 0) return
+  if (event.pointerType === 'mouse' && event.button !== 0) return;
 
-  const panel = editorRef.value
-  const container = getPanelContainer()
-  const position = ensurePanelPosition()
-  if (!panel || !container || !position) return
+  const panel = editorRef.value;
+  const container = getPanelContainer();
+  const position = ensurePanelPosition();
+  if (!panel || !container || !position) return;
 
   if (event.cancelable) {
-    event.preventDefault()
+    event.preventDefault();
   }
 
-  const containerRect = container.getBoundingClientRect()
-  panelDragPointerId = event.pointerId
-  panelDragOffsetX = event.clientX - containerRect.left - position.left
-  panelDragOffsetY = event.clientY - containerRect.top - position.top
-  isDraggingPanel.value = true
+  const containerRect = container.getBoundingClientRect();
+  panelDragPointerId = event.pointerId;
+  panelDragOffsetX = event.clientX - containerRect.left - position.left;
+  panelDragOffsetY = event.clientY - containerRect.top - position.top;
+  isDraggingPanel.value = true;
 
   if (!panel.hasPointerCapture(event.pointerId)) {
     try {
-      panel.setPointerCapture(event.pointerId)
+      panel.setPointerCapture(event.pointerId);
     } catch {
       // Ignore capture errors; drag still works while pointer remains over the panel.
     }
@@ -241,51 +251,51 @@ function handleHeaderPointerDown(event: PointerEvent): void {
 }
 
 function handleEditorPointerMove(event: PointerEvent): void {
-  if (!isDraggingPanel.value || panelDragPointerId !== event.pointerId) return
+  if (!isDraggingPanel.value || panelDragPointerId !== event.pointerId) return;
 
-  const container = getPanelContainer()
-  if (!container) return
+  const container = getPanelContainer();
+  if (!container) return;
 
   if (event.cancelable) {
-    event.preventDefault()
+    event.preventDefault();
   }
 
-  const containerRect = container.getBoundingClientRect()
+  const containerRect = container.getBoundingClientRect();
   panelPosition.value = clampPanelPosition(
     event.clientX - containerRect.left - panelDragOffsetX,
     event.clientY - containerRect.top - panelDragOffsetY,
-  )
+  );
 }
 
 function stopPanelDrag(pointerId: number): void {
-  if (panelDragPointerId !== pointerId) return
-  panelDragPointerId = null
-  panelDragOffsetX = 0
-  panelDragOffsetY = 0
-  isDraggingPanel.value = false
+  if (panelDragPointerId !== pointerId) return;
+  panelDragPointerId = null;
+  panelDragOffsetX = 0;
+  panelDragOffsetY = 0;
+  isDraggingPanel.value = false;
 }
 
 function handleEditorPointerEnd(event: PointerEvent): void {
-  stopPanelDrag(event.pointerId)
+  stopPanelDrag(event.pointerId);
 }
 
 function handleEditorLostPointerCapture(event: PointerEvent): void {
-  stopPanelDrag(event.pointerId)
+  stopPanelDrag(event.pointerId);
 }
 
 function emitDraftMap(): void {
-  emit('update:draft-map', draftMap.value)
+  emit('update:draft-map', draftMap.value);
 }
 
 function resetDraftFromActiveMap(): void {
-  draftMap.value = props.activeMap ? cloneMapDef(props.activeMap) : null
-  codeSearchQuery.value = ''
-  manualCodeInput.value = ''
-  isMarkerIconSelectorOpen.value = false
-  markerIconHighlightedIndex.value = -1
-  markerIconQuery.value = ''
-  setCopyStatus('idle')
-  emitDraftMap()
+  draftMap.value = props.activeMap ? cloneMapDef(props.activeMap) : null;
+  codeSearchQuery.value = '';
+  manualCodeInput.value = '';
+  isMarkerIconSelectorOpen.value = false;
+  markerIconHighlightedIndex.value = -1;
+  markerIconQuery.value = '';
+  setCopyStatus('idle');
+  emitDraftMap();
 }
 
 const { locationIndex, resolveCodeToCheckIds } = useLocationCodeLookup(
@@ -296,361 +306,391 @@ const { locationIndex, resolveCodeToCheckIds } = useLocationCodeLookup(
   ),
   computed(() => props.reachableIds),
   computed(() => props.collectedIds),
-)
+);
 
 const selectedDraftMarker = computed<MapMarkerDef | null>(() => {
-  if (!draftMap.value || props.selectedMarkerIndex === null) return null
-  return draftMap.value.markers[props.selectedMarkerIndex] ?? null
-})
+  if (!draftMap.value || props.selectedMarkerIndex === null) return null;
+  return draftMap.value.markers[props.selectedMarkerIndex] ?? null;
+});
 
 const selectedMarkerCodeList = computed(() =>
   selectedDraftMarker.value ? markerCodeList(selectedDraftMarker.value) : [],
-)
+);
 
 const selectedMarkerCodeSet = computed(() => {
-  const values = new Set<string>()
+  const values = new Set<string>();
   selectedMarkerCodeList.value.forEach((code) => {
-    const normalized = normalizeCode(code)
-    if (normalized) values.add(normalized)
-    const normalizedBase = normalizeLocationCode(code)
-    if (normalizedBase) values.add(normalizedBase)
-  })
-  return values
-})
+    const normalized = normalizeCode(code);
+    if (normalized) values.add(normalized);
+    const normalizedBase = normalizeLocationCode(code);
+    if (normalizedBase) values.add(normalizedBase);
+  });
+  return values;
+});
 
 const selectedMarkerDuplicateCodes = computed(() =>
   findDuplicateCodes(selectedMarkerCodeList.value),
-)
+);
 
 const selectedMarkerUnresolvedCodes = computed(() => {
-  return selectedMarkerCodeList.value.filter((code) => resolveCodeToCheckIds(code).length === 0)
-})
+  return selectedMarkerCodeList.value.filter(
+    (code) => resolveCodeToCheckIds(code).length === 0,
+  );
+});
 
-const selectedMarkerIsSubmenu = computed(() => selectedDraftMarker.value?.type === 'submenu')
+const selectedMarkerIsSubmenu = computed(
+  () => selectedDraftMarker.value?.type === 'submenu',
+);
 
 const selectedMarkerImageUnknown = computed(() => {
-  const marker = selectedDraftMarker.value
-  if (!marker) return false
-  const image = marker.image.trim()
-  if (!image) return true
-  return !mapIconNameSet.has(image)
-})
+  const marker = selectedDraftMarker.value;
+  if (!marker) return false;
+  const image = marker.image.trim();
+  if (!image) return true;
+  return !mapIconNameSet.has(image);
+});
 
 function getMarkerIconSuggestions(rawQuery: string): string[] {
-  const query = normalizeSearchText(rawQuery)
-  const terms = getSearchTerms(rawQuery)
-  if (terms.length === 0) return mapIconNames
+  const query = normalizeSearchText(rawQuery);
+  const terms = getSearchTerms(rawQuery);
+  if (terms.length === 0) return mapIconNames;
 
-  const exactMatches: string[] = []
-  const prefixMatches: string[] = []
-  const fuzzyMatches: string[] = []
+  const exactMatches: string[] = [];
+  const prefixMatches: string[] = [];
+  const fuzzyMatches: string[] = [];
 
   for (const icon of mapIconNames) {
-    const normalized = normalizeSearchText(icon)
+    const normalized = normalizeSearchText(icon);
     if (!matchesNormalizedSearchTerms([normalized], terms)) {
-      continue
+      continue;
     }
     if (normalized === query) {
-      exactMatches.push(icon)
-      continue
+      exactMatches.push(icon);
+      continue;
     }
     if (normalized.startsWith(query)) {
-      prefixMatches.push(icon)
-      continue
+      prefixMatches.push(icon);
+      continue;
     }
     if (normalized.includes(query)) {
-      fuzzyMatches.push(icon)
+      fuzzyMatches.push(icon);
     }
   }
 
-  return [...exactMatches, ...prefixMatches, ...fuzzyMatches]
+  return [...exactMatches, ...prefixMatches, ...fuzzyMatches];
 }
 
-const markerIconSuggestions = computed(() => getMarkerIconSuggestions(markerIconQuery.value))
+const markerIconSuggestions = computed(() =>
+  getMarkerIconSuggestions(markerIconQuery.value),
+);
 const activeMarkerIconOptionId = computed(() => {
   if (
     !isMarkerIconSelectorOpen.value ||
     markerIconHighlightedIndex.value < 0 ||
     markerIconHighlightedIndex.value >= markerIconSuggestions.value.length
   ) {
-    return undefined
+    return undefined;
   }
-  return getMarkerIconOptionId(markerIconHighlightedIndex.value)
-})
+  return getMarkerIconOptionId(markerIconHighlightedIndex.value);
+});
 
 function getMarkerIconOptionId(index: number): string {
-  return `marker-icon-option-${index}`
+  return `marker-icon-option-${index}`;
 }
 
 function findMarkerIconForQuery(rawQuery: string): string | null {
-  const query = normalizeSearchText(rawQuery)
-  if (!query) return null
+  const query = normalizeSearchText(rawQuery);
+  if (!query) return null;
 
-  const exactMatch = mapIconNames.find((icon) => normalizeSearchText(icon) === query)
-  if (exactMatch) return exactMatch
+  const exactMatch = mapIconNames.find(
+    (icon) => normalizeSearchText(icon) === query,
+  );
+  if (exactMatch) return exactMatch;
 
-  const matches = getMarkerIconSuggestions(rawQuery)
-  return matches.length === 1 ? matches[0] : null
+  const matches = getMarkerIconSuggestions(rawQuery);
+  return matches.length === 1 ? matches[0] : null;
 }
 
 function syncMarkerIconQueryFromSelection() {
-  markerIconQuery.value = selectedDraftMarker.value?.image ?? ''
-  markerIconHighlightedIndex.value = -1
+  markerIconQuery.value = selectedDraftMarker.value?.image ?? '';
+  markerIconHighlightedIndex.value = -1;
 }
 
 function openMarkerIconSelector() {
-  isMarkerIconSelectorOpen.value = true
-  const suggestions = markerIconSuggestions.value
+  isMarkerIconSelectorOpen.value = true;
+  const suggestions = markerIconSuggestions.value;
   if (suggestions.length === 0) {
-    markerIconHighlightedIndex.value = -1
-    return
+    markerIconHighlightedIndex.value = -1;
+    return;
   }
-  const activeImage = selectedDraftMarker.value?.image.trim() ?? ''
-  const activeIndex = suggestions.findIndex((icon) => icon === activeImage)
-  markerIconHighlightedIndex.value = activeIndex >= 0 ? activeIndex : 0
+  const activeImage = selectedDraftMarker.value?.image.trim() ?? '';
+  const activeIndex = suggestions.findIndex((icon) => icon === activeImage);
+  markerIconHighlightedIndex.value = activeIndex >= 0 ? activeIndex : 0;
 }
 
 function closeMarkerIconSelector(options?: { syncInput?: boolean }) {
-  const shouldSyncInput = options?.syncInput ?? true
-  isMarkerIconSelectorOpen.value = false
+  const shouldSyncInput = options?.syncInput ?? true;
+  isMarkerIconSelectorOpen.value = false;
   if (shouldSyncInput) {
-    syncMarkerIconQueryFromSelection()
+    syncMarkerIconQueryFromSelection();
   }
 }
 
 function setMarkerIconHighlight(index: number) {
-  const suggestionCount = markerIconSuggestions.value.length
+  const suggestionCount = markerIconSuggestions.value.length;
   if (suggestionCount === 0) {
-    markerIconHighlightedIndex.value = -1
-    return
+    markerIconHighlightedIndex.value = -1;
+    return;
   }
-  markerIconHighlightedIndex.value = Math.min(Math.max(index, 0), suggestionCount - 1)
+  markerIconHighlightedIndex.value = Math.min(
+    Math.max(index, 0),
+    suggestionCount - 1,
+  );
 }
 
 function selectMarkerIcon(icon: string, options?: { close?: boolean }) {
-  markerIconQuery.value = icon
-  setSelectedMarkerImage(icon)
-  const shouldClose = options?.close ?? true
+  markerIconQuery.value = icon;
+  setSelectedMarkerImage(icon);
+  const shouldClose = options?.close ?? true;
   if (shouldClose) {
-    isMarkerIconSelectorOpen.value = false
+    isMarkerIconSelectorOpen.value = false;
   }
-  const selectedIndex = markerIconSuggestions.value.findIndex((candidate) => candidate === icon)
-  markerIconHighlightedIndex.value = selectedIndex >= 0 ? selectedIndex : -1
+  const selectedIndex = markerIconSuggestions.value.findIndex(
+    (candidate) => candidate === icon,
+  );
+  markerIconHighlightedIndex.value = selectedIndex >= 0 ? selectedIndex : -1;
 }
 
 function commitMarkerIconSelection() {
-  const suggestions = markerIconSuggestions.value
+  const suggestions = markerIconSuggestions.value;
   if (suggestions.length === 0) {
-    closeMarkerIconSelector()
-    return
+    closeMarkerIconSelector();
+    return;
   }
-  const highlightedIndex = markerIconHighlightedIndex.value
+  const highlightedIndex = markerIconHighlightedIndex.value;
   const selectedIcon =
     highlightedIndex >= 0 && highlightedIndex < suggestions.length
       ? suggestions[highlightedIndex]
-      : suggestions[0]
-  selectMarkerIcon(selectedIcon)
+      : suggestions[0];
+  selectMarkerIcon(selectedIcon);
 }
 
 function handleMarkerIconFocus() {
-  openMarkerIconSelector()
-  markerIconInputRef.value?.select()
+  openMarkerIconSelector();
+  markerIconInputRef.value?.select();
 }
 
 function handleMarkerIconClick() {
-  openMarkerIconSelector()
-  markerIconInputRef.value?.select()
+  openMarkerIconSelector();
+  markerIconInputRef.value?.select();
 }
 
 function handleMarkerIconBlur() {
-  closeMarkerIconSelector()
+  closeMarkerIconSelector();
 }
 
 function handleMarkerIconInput(value: string) {
-  markerIconQuery.value = value
-  setSelectedMarkerImage(value)
-  openMarkerIconSelector()
-  setMarkerIconHighlight(0)
-  const match = findMarkerIconForQuery(value)
-  if (!match) return
-  const exactMatchIndex = markerIconSuggestions.value.findIndex((icon) => icon === match)
+  markerIconQuery.value = value;
+  setSelectedMarkerImage(value);
+  openMarkerIconSelector();
+  setMarkerIconHighlight(0);
+  const match = findMarkerIconForQuery(value);
+  if (!match) return;
+  const exactMatchIndex = markerIconSuggestions.value.findIndex(
+    (icon) => icon === match,
+  );
   if (exactMatchIndex >= 0) {
-    markerIconHighlightedIndex.value = exactMatchIndex
+    markerIconHighlightedIndex.value = exactMatchIndex;
   }
 }
 
 function handleMarkerIconOptionClick(icon: string) {
-  selectMarkerIcon(icon)
+  selectMarkerIcon(icon);
 }
 
 function handleMarkerIconKeydown(event: KeyboardEvent) {
   if (event.key === 'ArrowDown') {
-    event.preventDefault()
+    event.preventDefault();
     if (!isMarkerIconSelectorOpen.value) {
-      openMarkerIconSelector()
-      return
+      openMarkerIconSelector();
+      return;
     }
-    const suggestions = markerIconSuggestions.value
-    if (suggestions.length === 0) return
+    const suggestions = markerIconSuggestions.value;
+    if (suggestions.length === 0) return;
     const nextIndex =
       markerIconHighlightedIndex.value < 0
         ? 0
-        : (markerIconHighlightedIndex.value + 1) % suggestions.length
-    setMarkerIconHighlight(nextIndex)
-    return
+        : (markerIconHighlightedIndex.value + 1) % suggestions.length;
+    setMarkerIconHighlight(nextIndex);
+    return;
   }
 
   if (event.key === 'ArrowUp') {
-    event.preventDefault()
+    event.preventDefault();
     if (!isMarkerIconSelectorOpen.value) {
-      openMarkerIconSelector()
-      return
+      openMarkerIconSelector();
+      return;
     }
-    const suggestions = markerIconSuggestions.value
-    if (suggestions.length === 0) return
+    const suggestions = markerIconSuggestions.value;
+    if (suggestions.length === 0) return;
     const nextIndex =
       markerIconHighlightedIndex.value < 0
         ? suggestions.length - 1
-        : (markerIconHighlightedIndex.value - 1 + suggestions.length) % suggestions.length
-    setMarkerIconHighlight(nextIndex)
-    return
+        : (markerIconHighlightedIndex.value - 1 + suggestions.length) %
+          suggestions.length;
+    setMarkerIconHighlight(nextIndex);
+    return;
   }
 
   if (event.key === 'Enter') {
-    event.preventDefault()
-    commitMarkerIconSelection()
-    return
+    event.preventDefault();
+    commitMarkerIconSelection();
+    return;
   }
 
   if (event.key === 'Tab') {
-    if (!isMarkerIconSelectorOpen.value) return
-    if (markerIconSuggestions.value.length === 0) return
-    commitMarkerIconSelection()
-    return
+    if (!isMarkerIconSelectorOpen.value) return;
+    if (markerIconSuggestions.value.length === 0) return;
+    commitMarkerIconSelection();
+    return;
   }
 
   if (event.key === 'Escape') {
-    event.preventDefault()
-    closeMarkerIconSelector()
+    event.preventDefault();
+    closeMarkerIconSelector();
   }
 }
 
 const locationSearchResults = computed(() => {
-  const terms = getSearchTerms(codeSearchQuery.value)
-  const filtered = (terms.length === 0
-    ? locationIndex.value
-    : locationIndex.value.filter(
-      (entry) =>
-        matchesNormalizedSearchTerms(
-          [entry.normalizedId, entry.normalizedBaseId, entry.normalizedName],
-          terms,
-        ),
-    ))
-    .filter(
-      (entry) =>
-        !selectedMarkerCodeSet.value.has(entry.normalizedId) &&
-        !selectedMarkerCodeSet.value.has(entry.normalizedBaseId),
-    )
-  return filtered
-    .slice(0, LOCATION_SEARCH_LIMIT)
-})
+  const terms = getSearchTerms(codeSearchQuery.value);
+  const filtered = (
+    terms.length === 0
+      ? locationIndex.value
+      : locationIndex.value.filter((entry) =>
+          matchesNormalizedSearchTerms(
+            [entry.normalizedId, entry.normalizedBaseId, entry.normalizedName],
+            terms,
+          ),
+        )
+  ).filter(
+    (entry) =>
+      !selectedMarkerCodeSet.value.has(entry.normalizedId) &&
+      !selectedMarkerCodeSet.value.has(entry.normalizedBaseId),
+  );
+  return filtered.slice(0, LOCATION_SEARCH_LIMIT);
+});
 
 function addLocationCode(locationId: string): void {
-  const baseCode = stripWorldSuffix(locationId)
-  addCodeToSelectedMarker(baseCode)
+  const baseCode = stripWorldSuffix(locationId);
+  addCodeToSelectedMarker(baseCode);
 }
 
 const draftErrors = computed<DraftIssue[]>(() => {
-  if (!draftMap.value) return []
-  const issues: DraftIssue[] = []
+  if (!draftMap.value) return [];
+  const issues: DraftIssue[] = [];
   draftMap.value.markers.forEach((marker, markerIndex) => {
-    const [x, y] = marker.coords
+    const [x, y] = marker.coords;
     if (!Number.isFinite(x) || !Number.isFinite(y)) {
       issues.push({
         markerIndex,
         message: 'Coords must be finite numbers',
-      })
+      });
     }
     if (marker.type === 'submenu') {
-      const submenuMarkers = marker.markers ?? []
+      const submenuMarkers = marker.markers ?? [];
       if (submenuMarkers.length === 0) {
         issues.push({
           markerIndex,
           message: 'Submenu marker must include at least one submenu marker',
-        })
+        });
       }
       submenuMarkers.forEach((submenuMarker, submenuIndex) => {
-        const codes = Array.isArray(submenuMarker.codes) ? submenuMarker.codes : [submenuMarker.codes]
-        const trimmedCodes = codes.map((code) => code.trim()).filter((code) => code.length > 0)
+        const codes = Array.isArray(submenuMarker.codes)
+          ? submenuMarker.codes
+          : [submenuMarker.codes];
+        const trimmedCodes = codes
+          .map((code) => code.trim())
+          .filter((code) => code.length > 0);
         if (trimmedCodes.length === 0) {
           issues.push({
             markerIndex,
             message: `Submenu marker #${submenuIndex + 1} must include at least one code`,
-          })
+          });
         }
-      })
-      return
+      });
+      return;
     }
 
-    const codes = markerCodeList(marker)
+    const codes = markerCodeList(marker);
     if (codes.length === 0) {
       issues.push({
         markerIndex,
         message: 'Marker must include at least one code',
-      })
+      });
     }
-    const duplicateCodes = findDuplicateCodes(codes)
+    const duplicateCodes = findDuplicateCodes(codes);
     if (duplicateCodes.length > 0) {
       issues.push({
         markerIndex,
         message: `Duplicate codes are not allowed (${duplicateCodes.join(', ')})`,
-      })
+      });
     }
-  })
-  return issues
-})
+  });
+  return issues;
+});
 
 const draftWarnings = computed<DraftIssue[]>(() => {
-  if (!draftMap.value) return []
-  const issues: DraftIssue[] = []
+  if (!draftMap.value) return [];
+  const issues: DraftIssue[] = [];
   draftMap.value.markers.forEach((marker, markerIndex) => {
     if (!mapIconNameSet.has(marker.image.trim())) {
       issues.push({
         markerIndex,
         message: `Unknown image key: "${marker.image}"`,
-      })
+      });
     }
     if (marker.type === 'submenu') {
-      const submenuUnresolved = (marker.markers ?? []).flatMap((submenuMarker, submenuIndex) =>
-        (Array.isArray(submenuMarker.codes) ? submenuMarker.codes : [submenuMarker.codes])
-          .map((code) => code.trim())
-          .filter((code) => code.length > 0 && resolveCodeToCheckIds(code).length === 0)
-          .map((code) => `#${submenuIndex + 1}: ${code}`),
-      )
+      const submenuUnresolved = (marker.markers ?? []).flatMap(
+        (submenuMarker, submenuIndex) =>
+          (Array.isArray(submenuMarker.codes)
+            ? submenuMarker.codes
+            : [submenuMarker.codes]
+          )
+            .map((code) => code.trim())
+            .filter(
+              (code) =>
+                code.length > 0 && resolveCodeToCheckIds(code).length === 0,
+            )
+            .map((code) => `#${submenuIndex + 1}: ${code}`),
+      );
       if (submenuUnresolved.length > 0) {
         issues.push({
           markerIndex,
           message: `Unresolved submenu codes: ${submenuUnresolved.join(', ')}`,
-        })
+        });
       }
-      return
+      return;
     }
 
-    const unresolved = markerCodeList(marker).filter((code) => resolveCodeToCheckIds(code).length === 0)
+    const unresolved = markerCodeList(marker).filter(
+      (code) => resolveCodeToCheckIds(code).length === 0,
+    );
     if (unresolved.length > 0) {
       issues.push({
         markerIndex,
         message: `Unresolved/manual codes: ${unresolved.join(', ')}`,
-      })
+      });
     }
-  })
-  return issues
-})
+  });
+  return issues;
+});
 
-const canExportDraft = computed(() => Boolean(draftMap.value) && draftErrors.value.length === 0)
+const canExportDraft = computed(
+  () => Boolean(draftMap.value) && draftErrors.value.length === 0,
+);
 
 function buildDraftExportMap(): MapDef | null {
-  if (!draftMap.value) return null
+  if (!draftMap.value) return null;
   return {
     id: draftMap.value.id,
     title: draftMap.value.title,
@@ -661,199 +701,212 @@ function buildDraftExportMap(): MapDef | null {
       const exportMarker: MapMarkerDef = {
         coords: [Number(marker.coords[0]), Number(marker.coords[1])],
         image: marker.image.trim(),
-      }
+      };
       if (marker.type) {
-        exportMarker.type = marker.type
+        exportMarker.type = marker.type;
       }
       if (marker.overlays && marker.overlays.length > 0) {
-        exportMarker.overlays = [...marker.overlays]
+        exportMarker.overlays = [...marker.overlays];
       }
       if (marker.type === 'submenu') {
         exportMarker.markers = (marker.markers ?? []).map((submenuMarker) => {
-          const codes = (Array.isArray(submenuMarker.codes) ? submenuMarker.codes : [submenuMarker.codes])
+          const codes = (
+            Array.isArray(submenuMarker.codes)
+              ? submenuMarker.codes
+              : [submenuMarker.codes]
+          )
             .map((code) => code.trim())
-            .filter((code) => code.length > 0)
+            .filter((code) => code.length > 0);
           const exportSubmenuMarker: MapSubmenuEntryDef = {
             image: submenuMarker.image.trim(),
             codes: codes.length > 1 ? [...codes] : (codes[0] ?? ''),
-          }
+          };
           if (submenuMarker.overlays && submenuMarker.overlays.length > 0) {
-            exportSubmenuMarker.overlays = [...submenuMarker.overlays]
+            exportSubmenuMarker.overlays = [...submenuMarker.overlays];
           }
-          return exportSubmenuMarker
-        })
+          return exportSubmenuMarker;
+        });
       } else {
-        const codes = markerCodeList(marker)
-        exportMarker.codes = codes.length > 1 ? [...codes] : (codes[0] ?? '')
+        const codes = markerCodeList(marker);
+        exportMarker.codes = codes.length > 1 ? [...codes] : (codes[0] ?? '');
       }
-      return exportMarker
+      return exportMarker;
     }),
-  }
+  };
 }
 
-function markerHasOverlay(marker: MapMarkerDef, overlay: MapMarkerOverlay): boolean {
-  return (marker.overlays ?? []).includes(overlay)
+function markerHasOverlay(
+  marker: MapMarkerDef,
+  overlay: MapMarkerOverlay,
+): boolean {
+  return (marker.overlays ?? []).includes(overlay);
 }
 
 function toggleSelectedOverlay(overlay: MapMarkerOverlay): void {
-  const marker = selectedDraftMarker.value
-  if (!marker) return
-  const next = new Set(marker.overlays ?? [])
+  const marker = selectedDraftMarker.value;
+  if (!marker) return;
+  const next = new Set(marker.overlays ?? []);
   if (next.has(overlay)) {
-    next.delete(overlay)
+    next.delete(overlay);
   } else {
-    next.add(overlay)
+    next.add(overlay);
   }
-  marker.overlays = MAP_MARKER_OVERLAYS.filter((entry) => next.has(entry))
+  marker.overlays = MAP_MARKER_OVERLAYS.filter((entry) => next.has(entry));
   if (marker.overlays.length === 0) {
-    marker.overlays = undefined
+    marker.overlays = undefined;
   }
 }
 
 function setSelectedMarkerImage(value: string): void {
-  const marker = selectedDraftMarker.value
-  if (!marker) return
-  marker.image = value.trim()
+  const marker = selectedDraftMarker.value;
+  if (!marker) return;
+  marker.image = value.trim();
 }
 
 function parseNumberInput(raw: string): number {
-  const value = raw.trim()
-  if (!value) return Number.NaN
-  return Number(value)
+  const value = raw.trim();
+  if (!value) return Number.NaN;
+  return Number(value);
 }
 
 function setSelectedCoord(axis: 0 | 1, value: number): void {
-  const marker = selectedDraftMarker.value
-  if (!marker) return
-  marker.coords[axis] = value
+  const marker = selectedDraftMarker.value;
+  if (!marker) return;
+  marker.coords[axis] = value;
 }
 
 function addCodeToSelectedMarker(code: string): void {
-  const marker = selectedDraftMarker.value
-  if (!marker || marker.type === 'submenu') return
-  const trimmed = code.trim()
-  if (!trimmed) return
-  const normalized = normalizeCode(trimmed)
-  const existingCodes = markerCodeList(marker)
-  if (existingCodes.some((existing) => normalizeCode(existing) === normalized)) {
-    return
+  const marker = selectedDraftMarker.value;
+  if (!marker || marker.type === 'submenu') return;
+  const trimmed = code.trim();
+  if (!trimmed) return;
+  const normalized = normalizeCode(trimmed);
+  const existingCodes = markerCodeList(marker);
+  if (
+    existingCodes.some((existing) => normalizeCode(existing) === normalized)
+  ) {
+    return;
   }
-  assignMarkerCodes(marker, [...existingCodes, trimmed])
+  assignMarkerCodes(marker, [...existingCodes, trimmed]);
 }
 
 function removeCodeFromSelectedMarker(code: string): void {
-  const marker = selectedDraftMarker.value
-  if (!marker || marker.type === 'submenu') return
-  const normalized = normalizeCode(code)
-  const nextCodes = markerCodeList(marker).filter((entry) => normalizeCode(entry) !== normalized)
-  assignMarkerCodes(marker, nextCodes)
+  const marker = selectedDraftMarker.value;
+  if (!marker || marker.type === 'submenu') return;
+  const normalized = normalizeCode(code);
+  const nextCodes = markerCodeList(marker).filter(
+    (entry) => normalizeCode(entry) !== normalized,
+  );
+  assignMarkerCodes(marker, nextCodes);
 }
 
 function addManualCode(): void {
-  addCodeToSelectedMarker(manualCodeInput.value)
-  manualCodeInput.value = ''
+  addCodeToSelectedMarker(manualCodeInput.value);
+  manualCodeInput.value = '';
 }
 
 function resetDraft(): void {
-  resetDraftFromActiveMap()
-  emit('update:selected-marker-index', null)
+  resetDraftFromActiveMap();
+  emit('update:selected-marker-index', null);
 }
 
 function exportMapJson(): void {
-  if (!canExportDraft.value) return
-  const exportMap = buildDraftExportMap()
-  if (!exportMap) return
-  const json = `${JSON.stringify(exportMap, null, 2)}\n`
-  const blob = new Blob([json], { type: 'application/json' })
-  const url = URL.createObjectURL(blob)
-  const link = document.createElement('a')
-  link.href = url
-  link.download = `${exportMap.id}.json`
-  link.click()
-  URL.revokeObjectURL(url)
+  if (!canExportDraft.value) return;
+  const exportMap = buildDraftExportMap();
+  if (!exportMap) return;
+  const json = `${JSON.stringify(exportMap, null, 2)}\n`;
+  const blob = new Blob([json], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement('a');
+  link.href = url;
+  link.download = `${exportMap.id}.json`;
+  link.click();
+  URL.revokeObjectURL(url);
 }
 
 async function copyMapJson(): Promise<void> {
-  if (!canExportDraft.value) return
-  const exportMap = buildDraftExportMap()
+  if (!canExportDraft.value) return;
+  const exportMap = buildDraftExportMap();
   if (!exportMap || !navigator.clipboard) {
-    setCopyStatus('error')
-    return
+    setCopyStatus('error');
+    return;
   }
   try {
-    await navigator.clipboard.writeText(`${JSON.stringify(exportMap, null, 2)}\n`)
-    setCopyStatus('ok')
+    await navigator.clipboard.writeText(
+      `${JSON.stringify(exportMap, null, 2)}\n`,
+    );
+    setCopyStatus('ok');
   } catch {
-    setCopyStatus('error')
+    setCopyStatus('error');
   }
 }
 
 watch(
   draftMap,
   () => {
-    emitDraftMap()
+    emitDraftMap();
   },
   { deep: true },
-)
+);
 
 watch(
   () => props.activeMap?.id,
   () => {
-    resetDraftFromActiveMap()
-    emit('update:selected-marker-index', null)
+    resetDraftFromActiveMap();
+    emit('update:selected-marker-index', null);
   },
   { immediate: true },
-)
+);
 
 watch(
   () => draftMap.value?.markers.length,
   (length) => {
-    const selectedIndex = props.selectedMarkerIndex
-    if (selectedIndex === null || !length) return
+    const selectedIndex = props.selectedMarkerIndex;
+    if (selectedIndex === null || !length) return;
     if (selectedIndex >= length) {
-      emit('update:selected-marker-index', null)
+      emit('update:selected-marker-index', null);
     }
   },
-)
+);
 
 watch(
   () => selectedDraftMarker.value?.image ?? '',
   () => {
-    if (isMarkerIconSelectorOpen.value) return
-    syncMarkerIconQueryFromSelection()
+    if (isMarkerIconSelectorOpen.value) return;
+    syncMarkerIconQueryFromSelection();
   },
   { immediate: true },
-)
+);
 
 watch(markerIconSuggestions, (suggestions) => {
   if (suggestions.length === 0) {
-    markerIconHighlightedIndex.value = -1
-    return
+    markerIconHighlightedIndex.value = -1;
+    return;
   }
   if (
     markerIconHighlightedIndex.value < 0 ||
     markerIconHighlightedIndex.value >= suggestions.length
   ) {
-    markerIconHighlightedIndex.value = 0
+    markerIconHighlightedIndex.value = 0;
   }
-})
+});
 
 watch(
   draftWarnings,
   (warnings) => {
-    emit('warnings-change', warnings)
+    emit('warnings-change', warnings);
   },
   { immediate: true },
-)
+);
 
 onBeforeUnmount(() => {
   if (copyStatusTimer !== null) {
-    window.clearTimeout(copyStatusTimer)
-    copyStatusTimer = null
+    window.clearTimeout(copyStatusTimer);
+    copyStatusTimer = null;
   }
-  panelDragPointerId = null
-  isDraggingPanel.value = false
-})
+  panelDragPointerId = null;
+  isDraggingPanel.value = false;
+});
 </script>
 
 <template>
@@ -868,9 +921,14 @@ onBeforeUnmount(() => {
     @pointercancel="handleEditorPointerEnd"
     @lostpointercapture="handleEditorLostPointerCapture"
   >
-    <header class="map-dev-editor__header" @pointerdown.stop="handleHeaderPointerDown">
+    <header
+      class="map-dev-editor__header"
+      @pointerdown.stop="handleHeaderPointerDown"
+    >
       <h3>Marker Editor</h3>
-      <p v-if="selectedMarkerIndex !== null">Marker #{{ selectedMarkerIndex + 1 }}</p>
+      <p v-if="selectedMarkerIndex !== null">
+        Marker #{{ selectedMarkerIndex + 1 }}
+      </p>
       <p v-else>Select a marker to edit.</p>
     </header>
 
@@ -908,13 +966,21 @@ onBeforeUnmount(() => {
         'is-error': copyStatus === 'error',
       }"
     >
-      {{ copyStatus === 'ok' ? 'Map JSON copied to clipboard.' : 'Copy failed.' }}
+      {{
+        copyStatus === 'ok' ? 'Map JSON copied to clipboard.' : 'Copy failed.'
+      }}
     </p>
 
-    <div v-if="draftErrors.length > 0" class="map-dev-editor__issue-group map-dev-editor__issue-group--error">
+    <div
+      v-if="draftErrors.length > 0"
+      class="map-dev-editor__issue-group map-dev-editor__issue-group--error"
+    >
       <div class="map-dev-editor__issue-title">Export blocked</div>
       <ul>
-        <li v-for="(issue, index) in draftErrors" :key="`error:${issue.markerIndex}:${index}`">
+        <li
+          v-for="(issue, index) in draftErrors"
+          :key="`error:${issue.markerIndex}:${index}`"
+        >
           Marker #{{ issue.markerIndex + 1 }}: {{ issue.message }}
         </li>
       </ul>
@@ -929,8 +995,17 @@ onBeforeUnmount(() => {
             <input
               type="number"
               step="0.1"
-              :value="Number.isFinite(selectedDraftMarker.coords[0]) ? selectedDraftMarker.coords[0] : ''"
-              @input="setSelectedCoord(0, parseNumberInput(($event.target as HTMLInputElement).value))"
+              :value="
+                Number.isFinite(selectedDraftMarker.coords[0])
+                  ? selectedDraftMarker.coords[0]
+                  : ''
+              "
+              @input="
+                setSelectedCoord(
+                  0,
+                  parseNumberInput(($event.target as HTMLInputElement).value),
+                )
+              "
             />
           </label>
           <label>
@@ -938,8 +1013,17 @@ onBeforeUnmount(() => {
             <input
               type="number"
               step="0.1"
-              :value="Number.isFinite(selectedDraftMarker.coords[1]) ? selectedDraftMarker.coords[1] : ''"
-              @input="setSelectedCoord(1, parseNumberInput(($event.target as HTMLInputElement).value))"
+              :value="
+                Number.isFinite(selectedDraftMarker.coords[1])
+                  ? selectedDraftMarker.coords[1]
+                  : ''
+              "
+              @input="
+                setSelectedCoord(
+                  1,
+                  parseNumberInput(($event.target as HTMLInputElement).value),
+                )
+              "
             />
           </label>
         </div>
@@ -962,7 +1046,9 @@ onBeforeUnmount(() => {
               :aria-activedescendant="activeMarkerIconOptionId"
               @focus="handleMarkerIconFocus"
               @click="handleMarkerIconClick"
-              @input="handleMarkerIconInput(($event.target as HTMLInputElement).value)"
+              @input="
+                handleMarkerIconInput(($event.target as HTMLInputElement).value)
+              "
               @blur="handleMarkerIconBlur"
               @keydown="handleMarkerIconKeydown"
             />
@@ -978,7 +1064,9 @@ onBeforeUnmount(() => {
                 :id="getMarkerIconOptionId(index)"
                 :key="icon"
                 class="map-dev-editor__combobox-option"
-                :class="{ 'is-highlighted': index === markerIconHighlightedIndex }"
+                :class="{
+                  'is-highlighted': index === markerIconHighlightedIndex,
+                }"
                 role="option"
                 :aria-selected="index === markerIconHighlightedIndex"
                 @mousedown.prevent
@@ -986,13 +1074,19 @@ onBeforeUnmount(() => {
               >
                 {{ icon }}
               </li>
-              <li v-if="markerIconSuggestions.length === 0" class="map-dev-editor__combobox-empty">
+              <li
+                v-if="markerIconSuggestions.length === 0"
+                class="map-dev-editor__combobox-empty"
+              >
                 No icon keys found.
               </li>
             </ul>
           </div>
         </label>
-        <p v-if="selectedMarkerImageUnknown" class="map-dev-editor__inline-warning">
+        <p
+          v-if="selectedMarkerImageUnknown"
+          class="map-dev-editor__inline-warning"
+        >
           Unknown image key. Marker still renders but icon may be missing.
         </p>
       </section>
@@ -1005,7 +1099,9 @@ onBeforeUnmount(() => {
             :key="overlay"
             type="button"
             class="map-dev-editor__chip"
-            :class="{ 'is-active': markerHasOverlay(selectedDraftMarker, overlay) }"
+            :class="{
+              'is-active': markerHasOverlay(selectedDraftMarker, overlay),
+            }"
             @click="toggleSelectedOverlay(overlay)"
           >
             {{ formatOverlayLabel(overlay) }}
@@ -1035,7 +1131,10 @@ onBeforeUnmount(() => {
           >
             <span class="map-dev-editor__location-id">{{ entry.name }}</span>
           </button>
-          <p v-if="locationSearchResults.length === 0" class="map-dev-editor__location-empty">
+          <p
+            v-if="locationSearchResults.length === 0"
+            class="map-dev-editor__location-empty"
+          >
             No location matches.
           </p>
         </div>
@@ -1050,7 +1149,11 @@ onBeforeUnmount(() => {
               @keydown.enter.prevent="addManualCode"
             />
           </label>
-          <button type="button" class="map-dev-editor__action map-dev-editor__action--small" @click="addManualCode">
+          <button
+            type="button"
+            class="map-dev-editor__action map-dev-editor__action--small"
+            @click="addManualCode"
+          >
             Add
           </button>
         </div>
@@ -1068,11 +1171,18 @@ onBeforeUnmount(() => {
             >
               unresolved
             </span>
-            <button type="button" class="map-dev-editor__remove" @click="removeCodeFromSelectedMarker(code)">
+            <button
+              type="button"
+              class="map-dev-editor__remove"
+              @click="removeCodeFromSelectedMarker(code)"
+            >
               Remove
             </button>
           </div>
-          <p v-if="selectedMarkerCodeList.length === 0" class="map-dev-editor__location-empty">
+          <p
+            v-if="selectedMarkerCodeList.length === 0"
+            class="map-dev-editor__location-empty"
+          >
             Marker has no codes.
           </p>
         </div>
@@ -1081,24 +1191,26 @@ onBeforeUnmount(() => {
           v-if="selectedMarkerDuplicateCodes.length > 0"
           class="map-dev-editor__inline-warning"
         >
-          Duplicate codes in marker: {{ selectedMarkerDuplicateCodes.join(', ') }}
+          Duplicate codes in marker:
+          {{ selectedMarkerDuplicateCodes.join(', ') }}
         </div>
         <div
           v-if="selectedMarkerUnresolvedCodes.length > 0"
           class="map-dev-editor__inline-warning"
         >
-          Unresolved/manual codes: {{ selectedMarkerUnresolvedCodes.join(', ') }}
+          Unresolved/manual codes:
+          {{ selectedMarkerUnresolvedCodes.join(', ') }}
         </div>
       </section>
 
       <section v-else class="map-dev-editor__section">
         <h4>Codes</h4>
         <p class="map-dev-editor__location-empty">
-          Submenu markers use nested marker lists. Editing nested submenu markers is not supported in dev mode yet.
+          Submenu markers use nested marker lists. Editing nested submenu
+          markers is not supported in dev mode yet.
         </p>
       </section>
     </template>
-
   </aside>
 </template>
 
