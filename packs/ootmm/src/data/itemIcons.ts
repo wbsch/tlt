@@ -30,10 +30,7 @@ const RAW_ITEM_ICONS: Record<string, string> = {
   // === OOT ITEMS ===
 
   // Equipment
-  OOT_STICK: 'images/deku_stick.png',
-  OOT_NUT: 'images/nut.png',
   OOT_BOOMERANG: 'images/boomerang.png',
-  OOT_LONGSHOT: 'images/longshot.png',
   OOT_LENS: 'images/lens.png',
   OOT_HAMMER: 'images/hammer.png',
   OOT_MAGIC_BEAN: 'images/bean.png',
@@ -51,7 +48,6 @@ const RAW_ITEM_ICONS: Record<string, string> = {
   // Swords
   OOT_SWORD_KOKIRI: 'images/sword1.png',
   OOT_SWORD_MASTER: 'images/sword2.png',
-  OOT_SWORD_GORON: 'images/sword3.png',
   OOT_SWORD_BIGGORON: 'images/sword3.png',
   OOT_SPIN_UPGRADE: 'images/great_spin_attack.png',
 
@@ -59,7 +55,6 @@ const RAW_ITEM_ICONS: Record<string, string> = {
   OOT_SHIELD_DEKU: 'images/shield1.png',
   OOT_SHIELD_HYLIAN: 'images/shield2.png',
   OOT_SHIELD_MIRROR: 'images/shield3.png',
-  OOT_SHIELD: 'images/shield1.png',
 
   // Boots
   OOT_BOOTS_IRON: 'images/boots_iron.png',
@@ -100,11 +95,6 @@ const RAW_ITEM_ICONS: Record<string, string> = {
   // Bottles
   OOT_BOTTLE_RUTO_LETTER: 'images/bottle_letter.png',
   OOT_BOTTLE_EMPTY: 'images/bottle.png',
-  OOT_BOTTLE_POTION_RED: 'images/bottle_red.png',
-  OOT_BOTTLE_POTION_GREEN: 'images/bottle_green.png',
-  bottle1: 'images/bottle.png',
-  bottle2: 'images/bottle.png',
-  bottle3: 'images/bottle.png',
 
   // Quest items
   OOT_SKELETON_KEY: 'images/key_skeleton.png',
@@ -207,11 +197,7 @@ const RAW_ITEM_ICONS: Record<string, string> = {
   OOT_CLAIM_CHECK: 'images/claim.png',
 
   // Bombchus
-  EVENT_OOT_BOMBCHU: 'images/bombchu.png',
-  OOT_BOMBCHU: 'images/bombchu.png',
-  OOT_BOMBCHU_5: 'images/bombchu.png',
   OOT_BOMBCHU_10: 'images/bombchu.png',
-  OOT_BOMBCHU_20: 'images/bombchu.png',
   OOT_BOMBCHU_BAG: 'images/bombchu_bag.png',
 
   // Dungeon items - keys
@@ -319,10 +305,6 @@ const RAW_ITEM_ICONS: Record<string, string> = {
   // Swords
   MM_SPIN_UPGRADE: 'images/great_spin_attack.png',
 
-
-  // Rupees
-  MM_RUPEE_SILVER: 'images/rupee.png',
-
   // Quest items
   MM_STRAY_FAIRY_TOWN: 'images/items/mm_clocktown_stray_fairy.png',
   MM_STRAY_FAIRY_WF: 'images/items/mm_woodfall_stray_fairy.png',
@@ -356,11 +338,6 @@ const RAW_ITEM_ICONS: Record<string, string> = {
   // Bottles
   MM_BOTTLE_EMPTY: 'images/items/mm_bottle.png',
   MM_BOTTLED_GOLD_DUST: 'images/items/mm_dust.png',
-  mm_bottle1: 'images/items/mm_bottle.png',
-  mm_bottle2: 'images/items/mm_bottle.png',
-  mm_bottle3: 'images/items/mm_bottle.png',
-  mm_bottle4: 'images/items/mm_bottle.png',
-  mm_bottle5: 'images/items/mm_bottle.png',
 
   // Transformation masks
   MM_MASK_DEKU: 'images/items/mm_deku.png',
@@ -425,35 +402,11 @@ const RAW_ITEM_ICONS: Record<string, string> = {
   MM_CLOCK4: 'images/clock_4.png',
   MM_CLOCK5: 'images/clock_5.png',
   MM_CLOCK6: 'images/clock_6.png',
-  MM_CLOCK: 'images/clock_1.png',
 
   // === SPECIAL GRID ITEMS ===
   // These are custom items used in item_grids.json that aren't actual game items
 
-  triforce: 'images/triforce_piece.png',
-  gossip_stone: 'images/gossip_stone.png',
-  mm_spinattack: 'images/items/mm_spin.png',
-
-  // Dungeon indicators
-  forest: 'images/forestmedallion.png',
-  fire: 'images/firemedallion.png',
-  water: 'images/watermedallion.png',
-  spirit: 'images/spiritmedallion.png',
-  shadow: 'images/shadowmedallion.png',
-  light: 'images/lightmedallion.png',
-  free: 'images/lightmedallion.png',
-  deku: 'images/emerald.png',
-  dodongo: 'images/ruby.png',
-  jabu: 'images/sapphire.png',
-
-  mm_woodfall: 'images/items/mm_odolwa.png',
-  mm_snowhead: 'images/items/mm_goht.png',
-  mm_great_bay: 'images/items/mm_gyorg.png',
-  mm_stone_tower: 'images/items/mm_twinmold.png',
-
   // Labels
-  free_label: 'images/label_free.png',
-  th_label: 'images/label_th.png',
   mm_woodfall_label: 'images/system/mm_label_woodfall.png',
   mm_snowhead_label: 'images/system/mm_label_snowhead.png',
   mm_greatbay_label: 'images/system/mm_label_greatbay.png',
@@ -468,9 +421,6 @@ const RAW_ITEM_ICONS: Record<string, string> = {
   oot_ganoncastle_label: 'images/label_gc.png',
   oot_gerudotraining_label: 'images/label_gtg.png',
   oot_gerudofortress_label: 'images/label_th.png',
-  setting_mq_DekuTree: 'images/label_deku.png',
-  setting_mq_DodongoCavern: 'images/label_dodongo.png',
-  'setting_mq_Jabu-Jabu': 'images/label_jabu.png',
   oot_ice_label: 'images/label_ice.png',
   oot_well_label: 'images/label_botw.png',
   oot_chestgame_label: 'images/lens.png',
@@ -480,7 +430,6 @@ const RAW_ITEM_ICONS: Record<string, string> = {
   SHARED_ARROW_ICE: 'images/arrow_ice.png',
   SHARED_ARROW_LIGHT: 'images/arrow_light.png',
   SHARED_LENS: 'images/lens.png',
-  SHARED_SHIELD: 'images/shield1.png',
   SHARED_MASK_GORON: 'images/items/mm_goron.png',
   SHARED_MASK_ZORA: 'images/items/mm_zora.png',
   SHARED_MASK_BUNNY: 'images/bunny.png',
@@ -488,9 +437,6 @@ const RAW_ITEM_ICONS: Record<string, string> = {
   SHARED_MASK_TRUTH: 'images/truth.png',
   SHARED_MASK_BLAST: 'images/items/mm_blast.png',
   SHARED_MASK_STONE: 'images/items/mm_stone.png',
-  SHARED_RUPEE_SILVER: 'images/rupee.png',
-  SHARED_HEART_CONTAINER: 'images/system/heartcontainer.png',
-  SHARED_HEART_PIECE: 'images/system/heartpiece.png',
   SHARED_SPIN_UPGRADE: 'images/great_spin_attack.png',
   SHARED_STONE_OF_AGONY: 'images/agony.png',
   SHARED_SPELL_FIRE: 'images/din.png',
@@ -520,10 +466,7 @@ const RAW_ITEM_ICONS: Record<string, string> = {
   SHARED_BUTTON_C_RIGHT: 'images/button_right.png',
   SHARED_BUTTON_C_UP: 'images/button_up.png',
   SHARED_BOTTLE_EMPTY: 'images/bottle.png',
-  SHARED_BOTTLE_POTION_RED: 'images/bottle_red.png',
   SHARED_BOTTLED_GOLD_DUST: 'images/items/mm_dust.png',
-  SHARED_BOTTLE_CHATEAU: 'images/items/mm_chateau.png',
-  SHARED_BOTTLE_MILK: 'images/bottle_milk.png',
   SHARED_BOTTLE_RUTO_LETTER: 'images/bottle_letter.png',
   SHARED_TRIFORCE: 'images/triforce_piece.png',
   SHARED_TRIFORCE_POWER: 'images/triforce_piece.png',
