@@ -8,149 +8,107 @@
     {
       "coords": [739, 470],
       "image": "chest",
-      "codes": [
-        "OOT Fire Temple Below Maze Chest"
-      ]
+      "codes": ["OOT Fire Temple Below Maze Chest"]
     },
     {
       "coords": [407, 540],
       "image": "chest",
-      "codes": [
-        "OOT Fire Temple Lava Room South Jail Chest"
-      ]
+      "codes": ["OOT Fire Temple Lava Room South Jail Chest"]
     },
     {
       "coords": [315, 502],
       "image": "chest",
-      "codes": [
-        "OOT Fire Temple Jail 1 Chest"
-      ]
+      "codes": ["OOT Fire Temple Jail 1 Chest"]
     },
     {
       "coords": [285, 466],
       "image": "heart_container",
-      "codes": [
-        "OOT Fire Temple Boss Container"
-      ]
+      "codes": ["OOT Fire Temple Boss Container"]
     },
     {
       "coords": [269, 466],
       "image": "fire_medallion",
-      "codes": [
-        "OOT Fire Temple Boss"
-      ]
+      "codes": ["OOT Fire Temple Boss"]
     },
     {
       "coords": [344, 454],
       "image": "chest",
-      "codes": [
-        "OOT Fire Temple Boss Key Side Chest"
-      ]
+      "codes": ["OOT Fire Temple Boss Key Side Chest"]
     },
     {
       "coords": [344, 438],
       "image": "chest",
-      "codes": [
-        "OOT Fire Temple Boss Key Chest"
-      ]
+      "codes": ["OOT Fire Temple Boss Key Chest"]
     },
     {
       "coords": [427, 408],
       "image": "chest",
-      "codes": [
-        "OOT Fire Temple Lava Room North Jail Chest"
-      ]
+      "codes": ["OOT Fire Temple Lava Room North Jail Chest"]
     },
     {
       "coords": [724, 219],
       "image": "chest",
-      "codes": [
-        "OOT Fire Temple Hammer"
-      ]
+      "codes": ["OOT Fire Temple Hammer"]
     },
     {
       "coords": [871, 187],
       "image": "chest",
-      "codes": [
-        "OOT Fire Temple Scarecrow Chest"
-      ]
+      "codes": ["OOT Fire Temple Scarecrow Chest"]
     },
     {
       "coords": [282, 236],
       "image": "chest",
-      "codes": [
-        "OOT Fire Temple Maze Chest"
-      ]
+      "codes": ["OOT Fire Temple Maze Chest"]
     },
     {
       "coords": [268, 250],
       "image": "chest",
-      "codes": [
-        "OOT Fire Temple Above Maze Chest"
-      ]
+      "codes": ["OOT Fire Temple Above Maze Chest"]
     },
     {
       "coords": [240, 191],
       "image": "chest",
-      "codes": [
-        "OOT Fire Temple Map"
-      ]
+      "codes": ["OOT Fire Temple Map"]
     },
     {
       "coords": [248, 135],
       "image": "chest",
-      "codes": [
-        "OOT Fire Temple Maze Jail Chest"
-      ]
+      "codes": ["OOT Fire Temple Maze Jail Chest"]
     },
     {
       "coords": [183, 152],
       "image": "chest",
-      "codes": [
-        "OOT Fire Temple Compass"
-      ]
+      "codes": ["OOT Fire Temple Compass"]
     },
     {
       "coords": [148, 200],
       "image": "chest",
-      "codes": [
-        "OOT Fire Temple Ring Jail"
-      ]
+      "codes": ["OOT Fire Temple Ring Jail"]
     },
     {
       "coords": [393, 407],
       "image": "gold_skulltula",
-      "codes": [
-        "OOT Fire Temple GS Lava Side Room"
-      ]
+      "codes": ["OOT Fire Temple GS Lava Side Room"]
     },
     {
       "coords": [374, 407],
       "image": "gold_skulltula",
-      "codes": [
-        "OOT Fire Temple GS Hammer Statues"
-      ]
+      "codes": ["OOT Fire Temple GS Hammer Statues"]
     },
     {
       "coords": [281, 158],
       "image": "gold_skulltula",
-      "codes": [
-        "OOT Fire Temple GS Maze"
-      ]
+      "codes": ["OOT Fire Temple GS Maze"]
     },
     {
       "coords": [550, 168],
       "image": "gold_skulltula",
-      "codes": [
-        "OOT Fire Temple GS Scarecrow Wall"
-      ]
+      "codes": ["OOT Fire Temple GS Scarecrow Wall"]
     },
     {
       "coords": [863, 194],
       "image": "gold_skulltula",
-      "codes": [
-        "OOT Fire Temple GS Scarecrow Top"
-      ]
+      "codes": ["OOT Fire Temple GS Scarecrow Top"]
     },
     {
       "coords": [439, 442],
@@ -194,10 +152,7 @@
     {
       "coords": [434, 150],
       "image": "small_crate",
-      "codes": [
-        "OOT Fire Temple Crate 1",
-        "OOT Fire Temple Crate 2"
-      ]
+      "codes": ["OOT Fire Temple Crate 1", "OOT Fire Temple Crate 2"]
     },
     {
       "coords": [468, 455],
@@ -228,9 +183,7 @@
     {
       "coords": [240, 163],
       "image": "heart",
-      "codes": [
-        "OOT Fire Temple Heart Map Room 1"
-      ]
+      "codes": ["OOT Fire Temple Heart Map Room 1"]
     }
   ]
 }

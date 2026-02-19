@@ -6,10 +6,7 @@
   "height": 600,
   "markers": [
     {
-      "coords": [
-        874,
-        66
-      ],
+      "coords": [874, 66],
       "image": "chest",
       "codes": [
         "MM Stone Tower Inverted Chest 1",
@@ -18,100 +15,52 @@
       ]
     },
     {
-      "coords": [
-        966,
-        377
-      ],
+      "coords": [966, 377],
       "image": "heart_piece",
-      "codes": [
-        "MM Ancient Castle of Ikana HP"
-      ]
+      "codes": ["MM Ancient Castle of Ikana HP"]
     },
     {
-      "coords": [
-        586,
-        499
-      ],
+      "coords": [586, 499],
       "image": "heart_piece",
-      "codes": [
-        "MM Ikana Valley Scrub HP"
-      ]
+      "codes": ["MM Ikana Valley Scrub HP"]
     },
     {
-      "coords": [
-        546,
-        504
-      ],
+      "coords": [546, 504],
       "image": "npc",
-      "codes": [
-        "MM Ikana Valley Scrub Rupee"
-      ]
+      "codes": ["MM Ikana Valley Scrub Rupee"]
     },
     {
-      "coords": [
-        28,
-        392
-      ],
+      "coords": [28, 392],
       "image": "chest",
-      "codes": [
-        "MM Ikana Graveyard Captain Mask"
-      ]
+      "codes": ["MM Ikana Graveyard Captain Mask"]
     },
     {
-      "coords": [
-        313,
-        390
-      ],
+      "coords": [313, 390],
       "image": "shop",
-      "codes": [
-        "MM Tingle Map Ikana"
-      ]
+      "codes": ["MM Tingle Map Ikana"]
     },
     {
-      "coords": [
-        546,
-        520
-      ],
+      "coords": [546, 520],
       "image": "business_scrub_mm",
-      "codes": [
-        "MM Ikana Valley Scrub Shop"
-      ]
+      "codes": ["MM Ikana Valley Scrub Shop"]
     },
     {
-      "coords": [
-        636,
-        268
-      ],
+      "coords": [636, 268],
       "image": "owl_statue",
-      "codes": [
-        "MM Stone Tower Owl Statue"
-      ]
+      "codes": ["MM Stone Tower Owl Statue"]
     },
     {
-      "coords": [
-        340,
-        412
-      ],
+      "coords": [340, 412],
       "image": "owl_statue",
-      "codes": [
-        "MM Ikana Canyon Owl Statue"
-      ]
+      "codes": ["MM Ikana Canyon Owl Statue"]
     },
     {
-      "coords": [
-        976,
-        576
-      ],
+      "coords": [976, 576],
       "image": "pot",
-      "codes": [
-        "MM Ancient Castle of Ikana Pot Exterior"
-      ]
+      "codes": ["MM Ancient Castle of Ikana Pot Exterior"]
     },
     {
-      "coords": [
-        874,
-        82
-      ],
+      "coords": [874, 82],
       "image": "pot",
       "codes": [
         "MM Stone Tower Inverted Pot 1",
@@ -122,10 +71,7 @@
       ]
     },
     {
-      "coords": [
-        771,
-        157
-      ],
+      "coords": [771, 157],
       "image": "pot",
       "codes": [
         "MM Stone Tower Pot Higher Scarecrow 1",
@@ -140,10 +86,7 @@
       ]
     },
     {
-      "coords": [
-        624,
-        268
-      ],
+      "coords": [624, 268],
       "image": "pot",
       "codes": [
         "MM Stone Tower Pot Owl Statue 1",
@@ -153,21 +96,12 @@
       ]
     },
     {
-      "coords": [
-        559,
-        92
-      ],
+      "coords": [559, 92],
       "image": "pot",
-      "codes": [
-        "MM Stone Tower Pot Climb 1",
-        "MM Stone Tower Pot Climb 2"
-      ]
+      "codes": ["MM Stone Tower Pot Climb 1", "MM Stone Tower Pot Climb 2"]
     },
     {
-      "coords": [
-        515,
-        109
-      ],
+      "coords": [515, 109],
       "image": "pot",
       "codes": [
         "MM Stone Tower Pot Lower Scarecrow 01",
@@ -185,10 +119,7 @@
       ]
     },
     {
-      "coords": [
-        68,
-        568
-      ],
+      "coords": [68, 568],
       "image": "wonder_item_green_rupee",
       "codes": [
         "MM Ikana Graveyard Wonder Item 01",
@@ -197,10 +128,7 @@
       ]
     },
     {
-      "coords": [
-        87,
-        514
-      ],
+      "coords": [87, 514],
       "image": "wonder_item_green_rupee",
       "codes": [
         "MM Ikana Graveyard Wonder Item 07",
@@ -209,10 +137,7 @@
       ]
     },
     {
-      "coords": [
-        36,
-        520
-      ],
+      "coords": [36, 520],
       "image": "wonder_item_green_rupee",
       "codes": [
         "MM Ikana Graveyard Wonder Item 04",
@@ -221,10 +146,7 @@
       ]
     },
     {
-      "coords": [
-        28,
-        404
-      ],
+      "coords": [28, 404],
       "image": "wonder_item_green_rupee",
       "codes": [
         "MM Ikana Graveyard Wonder Item 10",
@@ -233,10 +155,7 @@
       ]
     },
     {
-      "coords": [
-        976,
-        349
-      ],
+      "coords": [976, 349],
       "image": "grass",
       "codes": [
         "MM Ancient Castle of Ikana Grass 01",
@@ -245,20 +164,12 @@
       ]
     },
     {
-      "coords": [
-        898,
-        377
-      ],
+      "coords": [898, 377],
       "image": "grass",
-      "codes": [
-        "MM Ancient Castle of Ikana Grass 04"
-      ]
+      "codes": ["MM Ancient Castle of Ikana Grass 04"]
     },
     {
-      "coords": [
-        839,
-        489
-      ],
+      "coords": [839, 489],
       "image": "grass",
       "codes": [
         "MM Ancient Castle of Ikana Grass 05",
@@ -267,30 +178,17 @@
       ]
     },
     {
-      "coords": [
-        867,
-        553
-      ],
+      "coords": [867, 553],
       "image": "grass",
-      "codes": [
-        "MM Ancient Castle of Ikana Grass 08"
-      ]
+      "codes": ["MM Ancient Castle of Ikana Grass 08"]
     },
     {
-      "coords": [
-        897,
-        553
-      ],
+      "coords": [897, 553],
       "image": "grass",
-      "codes": [
-        "MM Ancient Castle of Ikana Grass 09"
-      ]
+      "codes": ["MM Ancient Castle of Ikana Grass 09"]
     },
     {
-      "coords": [
-        928,
-        552
-      ],
+      "coords": [928, 552],
       "image": "grass",
       "codes": [
         "MM Ancient Castle of Ikana Grass 10",
@@ -299,10 +197,7 @@
       ]
     },
     {
-      "coords": [
-        365,
-        401
-      ],
+      "coords": [365, 401],
       "image": "grass",
       "codes": [
         "MM Ikana Canyon Grass 2",
@@ -311,52 +206,27 @@
       ]
     },
     {
-      "coords": [
-        338,
-        423
-      ],
+      "coords": [338, 423],
       "image": "grass",
-      "codes": [
-        "MM Ikana Canyon Grass 1"
-      ]
+      "codes": ["MM Ikana Canyon Grass 1"]
     },
     {
-      "coords": [
-        44,
-        560
-      ],
+      "coords": [44, 560],
       "image": "grass",
-      "codes": [
-        "MM Ikana Graveyard Grass 1",
-        "MM Ikana Graveyard Grass 2"
-      ]
+      "codes": ["MM Ikana Graveyard Grass 1", "MM Ikana Graveyard Grass 2"]
     },
     {
-      "coords": [
-        64,
-        544
-      ],
+      "coords": [64, 544],
       "image": "grass",
-      "codes": [
-        "MM Ikana Graveyard Grass 3"
-      ]
+      "codes": ["MM Ikana Graveyard Grass 3"]
     },
     {
-      "coords": [
-        68,
-        528
-      ],
+      "coords": [68, 528],
       "image": "grass",
-      "codes": [
-        "MM Ikana Graveyard Grass 4",
-        "MM Ikana Graveyard Grass 5"
-      ]
+      "codes": ["MM Ikana Graveyard Grass 4", "MM Ikana Graveyard Grass 5"]
     },
     {
-      "coords": [
-        24,
-        416
-      ],
+      "coords": [24, 416],
       "image": "grass",
       "codes": [
         "MM Ikana Graveyard Grass Pack Grass 1",
@@ -371,50 +241,27 @@
       ]
     },
     {
-      "coords": [
-        934,
-        63
-      ],
+      "coords": [934, 63],
       "image": "soft_soil",
-      "codes": [
-        "MM Stone Tower Inverted Soil Lower"
-      ]
+      "codes": ["MM Stone Tower Inverted Soil Lower"]
     },
     {
-      "coords": [
-        897,
-        81
-      ],
+      "coords": [897, 81],
       "image": "soft_soil",
-      "codes": [
-        "MM Stone Tower Inverted Soil Upper"
-      ]
+      "codes": ["MM Stone Tower Inverted Soil Upper"]
     },
     {
-      "coords": [
-        860,
-        52
-      ],
+      "coords": [860, 52],
       "image": "rock",
-      "codes": [
-        "MM Stone Tower Inverted Rock 1"
-      ]
+      "codes": ["MM Stone Tower Inverted Rock 1"]
     },
     {
-      "coords": [
-        902,
-        92
-      ],
+      "coords": [902, 92],
       "image": "rock",
-      "codes": [
-        "MM Stone Tower Inverted Rock 2"
-      ]
+      "codes": ["MM Stone Tower Inverted Rock 2"]
     },
     {
-      "coords": [
-        64,
-        424
-      ],
+      "coords": [64, 424],
       "image": "rock",
       "codes": [
         "MM Ikana Graveyard Rock Circle Rock 1",
@@ -428,10 +275,7 @@
       ]
     },
     {
-      "coords": [
-        37,
-        358
-      ],
+      "coords": [37, 358],
       "image": "rock",
       "codes": [
         "MM Ikana Graveyard Rock Wall 1",
@@ -442,62 +286,37 @@
       ]
     },
     {
-      "coords": [
-        390,
-        491
-      ],
+      "coords": [390, 491],
       "image": "gossip_stone",
-      "codes": [
-        "MM Ikana Valley Gossip Lower"
-      ]
+      "codes": ["MM Ikana Valley Gossip Lower"]
     },
     {
-      "coords": [
-        304,
-        264
-      ],
+      "coords": [304, 264],
       "image": "gossip_stone",
-      "codes": [
-        "MM Ikana Canyon Gossip Upper"
-      ]
+      "codes": ["MM Ikana Canyon Gossip Upper"]
     },
     {
-      "coords": [
-        812,
-        466
-      ],
+      "coords": [812, 466],
       "image": "dungeon_entrance",
       "codes": "TODO KF 040 :: unnamed_stack > Canyon > Canyon Layers > Canyon Entrances :: Pasted Layer #39 :: 001-001-011-000.png"
     },
     {
-      "coords": [
-        946,
-        368
-      ],
+      "coords": [946, 368],
       "image": "dungeon_entrance",
       "codes": "TODO KF 041 :: unnamed_stack > Canyon > Canyon Layers > Canyon Entrances :: Pasted Layer #40 :: 001-001-011-001.png"
     },
     {
-      "coords": [
-        872,
-        264
-      ],
+      "coords": [872, 264],
       "image": "dungeon_entrance",
       "codes": "TODO KF 042 :: unnamed_stack > Canyon > Canyon Layers > Canyon Entrances :: Pasted Layer #41 :: 001-001-011-002.png"
     },
     {
-      "coords": [
-        633,
-        44
-      ],
+      "coords": [633, 44],
       "image": "dungeon_entrance",
       "codes": "TODO KF 043 :: unnamed_stack > Canyon > Canyon Layers > Canyon Entrances :: Pasted Layer #42 :: 001-001-011-003.png"
     },
     {
-      "coords": [
-        514,
-        545
-      ],
+      "coords": [514, 545],
       "image": "interior_entrance",
       "type": "submenu",
       "markers": [
@@ -522,10 +341,7 @@
       ]
     },
     {
-      "coords": [
-        424,
-        302
-      ],
+      "coords": [424, 302],
       "image": "interior_entrance",
       "type": "submenu",
       "markers": [
@@ -536,10 +352,7 @@
       ]
     },
     {
-      "coords": [
-        363,
-        318
-      ],
+      "coords": [363, 318],
       "image": "interior_entrance",
       "type": "submenu",
       "markers": [
@@ -550,10 +363,7 @@
       ]
     },
     {
-      "coords": [
-        325,
-        257
-      ],
+      "coords": [325, 257],
       "image": "interior_entrance",
       "type": "submenu",
       "markers": [
@@ -564,18 +374,12 @@
       ]
     },
     {
-      "coords": [
-        280,
-        360
-      ],
+      "coords": [280, 360],
       "image": "dungeon_entrance",
       "codes": "TODO KF 048 :: unnamed_stack > Canyon > Canyon Layers > Canyon Entrances :: Pasted Layer #47 :: 001-001-011-008.png"
     },
     {
-      "coords": [
-        234,
-        406
-      ],
+      "coords": [234, 406],
       "image": "grotto",
       "type": "submenu",
       "markers": [
@@ -605,18 +409,12 @@
       ]
     },
     {
-      "coords": [
-        184,
-        422
-      ],
+      "coords": [184, 422],
       "image": "dungeon_entrance",
       "codes": "TODO KF 050 :: unnamed_stack > Canyon > Canyon Layers > Canyon Entrances :: Pasted Layer #49 :: 001-001-011-010.png"
     },
     {
-      "coords": [
-        64,
-        413
-      ],
+      "coords": [64, 413],
       "image": "bomb_grotto",
       "type": "submenu",
       "markers": [
@@ -646,14 +444,9 @@
       ]
     },
     {
-      "coords": [
-        80,
-        527
-      ],
+      "coords": [80, 527],
       "image": "grotto",
-      "overlays": [
-        "day3"
-      ],
+      "overlays": ["day3"],
       "type": "submenu",
       "markers": [
         {
@@ -698,14 +491,9 @@
       ]
     },
     {
-      "coords": [
-        36,
-        536
-      ],
+      "coords": [36, 536],
       "image": "grotto",
-      "overlays": [
-        "day3"
-      ],
+      "overlays": ["day3"],
       "type": "submenu",
       "markers": [
         {
@@ -730,14 +518,9 @@
       ]
     },
     {
-      "coords": [
-        77,
-        547
-      ],
+      "coords": [77, 547],
       "image": "grotto",
-      "overlays": [
-        "day1"
-      ],
+      "overlays": ["day1"],
       "type": "submenu",
       "markers": [
         {

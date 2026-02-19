@@ -8,86 +8,62 @@
     {
       "coords": [141, 316],
       "image": "chest",
-      "codes": [
-        "MM Pirate Fortress Entrance Chest 2"
-      ]
+      "codes": ["MM Pirate Fortress Entrance Chest 2"]
     },
     {
       "coords": [329, 406],
       "image": "chest",
-      "codes": [
-        "MM Pirate Fortress Entrance Chest 1"
-      ]
+      "codes": ["MM Pirate Fortress Entrance Chest 1"]
     },
     {
       "coords": [235, 221],
       "image": "chest",
-      "codes": [
-        "MM Pirate Fortress Entrance Chest 3"
-      ]
+      "codes": ["MM Pirate Fortress Entrance Chest 3"]
     },
     {
       "coords": [442, 305],
       "image": "chest",
-      "codes": [
-        "MM Pirate Fortress Sewers Chest 1"
-      ]
+      "codes": ["MM Pirate Fortress Sewers Chest 1"]
     },
     {
       "coords": [488, 167],
       "image": "heart_piece",
-      "codes": [
-        "MM Pirate Fortress Sewers HP"
-      ]
+      "codes": ["MM Pirate Fortress Sewers HP"]
     },
     {
       "coords": [481, 110],
       "image": "chest",
-      "codes": [
-        "MM Pirate Fortress Sewers Chest 2"
-      ]
+      "codes": ["MM Pirate Fortress Sewers Chest 2"]
     },
     {
       "coords": [515, 113],
       "image": "chest",
-      "codes": [
-        "MM Pirate Fortress Sewers Chest 3"
-      ]
+      "codes": ["MM Pirate Fortress Sewers Chest 3"]
     },
     {
       "coords": [565, 236],
       "image": "chest",
-      "codes": [
-        "MM Pirate Fortress Interior Aquarium"
-      ]
+      "codes": ["MM Pirate Fortress Interior Aquarium"]
     },
     {
       "coords": [640, 489],
       "image": "chest",
-      "codes": [
-        "MM Pirate Fortress Interior Upper Chest"
-      ]
+      "codes": ["MM Pirate Fortress Interior Upper Chest"]
     },
     {
       "coords": [696, 420],
       "image": "chest",
-      "codes": [
-        "MM Pirate Fortress Interior Lower Chest"
-      ]
+      "codes": ["MM Pirate Fortress Interior Lower Chest"]
     },
     {
       "coords": [808, 359],
       "image": "chest",
-      "codes": [
-        "MM Pirate Fortress Interior Hookshot"
-      ]
+      "codes": ["MM Pirate Fortress Interior Hookshot"]
     },
     {
       "coords": [855, 239],
       "image": "chest",
-      "codes": [
-        "MM Pirate Fortress Interior Silver Rupee Chest"
-      ]
+      "codes": ["MM Pirate Fortress Interior Silver Rupee Chest"]
     },
     {
       "coords": [497, 167],
@@ -108,9 +84,7 @@
     {
       "coords": [525, 265],
       "image": "pot",
-      "codes": [
-        "MM Pirate Fortress Sewers Pot End 1"
-      ]
+      "codes": ["MM Pirate Fortress Sewers Pot End 1"]
     },
     {
       "coords": [548, 286],
@@ -165,23 +139,17 @@
     {
       "coords": [499, 100],
       "image": "green_rupee",
-      "codes": [
-        "MM Pirate Fortress Sewers Rupee Near Cage 3"
-      ]
+      "codes": ["MM Pirate Fortress Sewers Rupee Near Cage 3"]
     },
     {
       "coords": [483, 124],
       "image": "green_rupee",
-      "codes": [
-        "MM Pirate Fortress Sewers Rupee Near Cage 4"
-      ]
+      "codes": ["MM Pirate Fortress Sewers Rupee Near Cage 4"]
     },
     {
       "coords": [510, 163],
       "image": "blue_rupee",
-      "codes": [
-        "MM Pirate Fortress Sewers Rupee Cage"
-      ]
+      "codes": ["MM Pirate Fortress Sewers Rupee Cage"]
     },
     {
       "coords": [533, 267],
@@ -212,16 +180,12 @@
     {
       "coords": [606, 305],
       "image": "crate",
-      "codes": [
-        "MM Pirate Fortress Interior Crate Entrance"
-      ]
+      "codes": ["MM Pirate Fortress Interior Crate Entrance"]
     },
     {
       "coords": [313, 351],
       "image": "barrel",
-      "codes": [
-        "MM Pirate Fortress Entrance Barrel"
-      ]
+      "codes": ["MM Pirate Fortress Entrance Barrel"]
     },
     {
       "coords": [465, 106],
@@ -277,16 +241,12 @@
     {
       "coords": [742, 263],
       "image": "barrel",
-      "codes": [
-        "MM Pirate Fortress Interior Barrel Outside"
-      ]
+      "codes": ["MM Pirate Fortress Interior Barrel Outside"]
     },
     {
       "coords": [800, 283],
       "image": "barrel",
-      "codes": [
-        "MM Pirate Fortress Interior Barrel Aquarium"
-      ]
+      "codes": ["MM Pirate Fortress Interior Barrel Aquarium"]
     },
     {
       "coords": [769, 358],

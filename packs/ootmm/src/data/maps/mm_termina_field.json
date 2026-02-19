@@ -6,128 +6,64 @@
   "height": 600,
   "markers": [
     {
-      "coords": [
-        353,
-        559
-      ],
+      "coords": [353, 559],
       "image": "chest",
-      "codes": [
-        "MM Road to Ikana Chest"
-      ]
+      "codes": ["MM Road to Ikana Chest"]
     },
     {
-      "coords": [
-        478,
-        572
-      ],
+      "coords": [478, 572],
       "image": "npc",
-      "codes": [
-        "MM Road to Ikana Stone Mask"
-      ]
+      "codes": ["MM Road to Ikana Stone Mask"]
     },
     {
-      "coords": [
-        722,
-        440
-      ],
+      "coords": [722, 440],
       "image": "heart_piece",
-      "codes": [
-        "MM Road to Southern Swamp HP"
-      ]
+      "codes": ["MM Road to Southern Swamp HP"]
     },
     {
-      "coords": [
-        920,
-        269
-      ],
+      "coords": [920, 269],
       "image": "chest",
-      "codes": [
-        "MM Termina Field Tall Grass Chest"
-      ]
+      "codes": ["MM Termina Field Tall Grass Chest"]
     },
     {
-      "coords": [
-        880,
-        250
-      ],
+      "coords": [880, 250],
       "image": "chest",
-      "codes": [
-        "MM Termina Field Tree Stump Chest"
-      ]
+      "codes": ["MM Termina Field Tree Stump Chest"]
     },
     {
-      "coords": [
-        954,
-        211
-      ],
+      "coords": [954, 211],
       "image": "collectible",
-      "codes": [
-        "MM Astral Observatory Moon Tear"
-      ]
+      "codes": ["MM Astral Observatory Moon Tear"]
     },
     {
-      "coords": [
-        808,
-        108
-      ],
+      "coords": [808, 108],
       "image": "npc",
-      "overlays": [
-        "night"
-      ],
-      "codes": [
-        "MM Termina Field Kamaro Mask"
-      ]
+      "overlays": ["night"],
+      "codes": ["MM Termina Field Kamaro Mask"]
     },
     {
-      "coords": [
-        770,
-        210
-      ],
+      "coords": [770, 210],
       "image": "chest",
-      "codes": [
-        "MM Termina Field Water Chest"
-      ]
+      "codes": ["MM Termina Field Water Chest"]
     },
     {
-      "coords": [
-        331,
-        382
-      ],
+      "coords": [331, 382],
       "image": "chest",
-      "codes": [
-        "MM Clock Town Silver Rupee Chest"
-      ]
+      "codes": ["MM Clock Town Silver Rupee Chest"]
     },
     {
-      "coords": [
-        290,
-        382
-      ],
+      "coords": [290, 382],
       "image": "chest",
-      "codes": [
-        "MM Clock Town South Chest Lower"
-      ]
+      "codes": ["MM Clock Town South Chest Lower"]
     },
     {
-      "coords": [
-        76,
-        386
-      ],
+      "coords": [76, 386],
       "image": "npc",
-      "overlays": [
-        "day1",
-        "day2",
-        "night"
-      ],
-      "codes": [
-        "MM Clock Town Guru Guru Mask Bremen"
-      ]
+      "overlays": ["day1", "day2", "night"],
+      "codes": ["MM Clock Town Guru Guru Mask Bremen"]
     },
     {
-      "coords": [
-        109,
-        270
-      ],
+      "coords": [109, 270],
       "image": "npc",
       "codes": [
         "MM Clock Town Bank Reward 1",
@@ -136,206 +72,101 @@
       ]
     },
     {
-      "coords": [
-        198,
-        278
-      ],
+      "coords": [198, 278],
       "image": "npc",
-      "codes": [
-        "MM Clock Town Business Scrub"
-      ]
+      "codes": ["MM Clock Town Business Scrub"]
     },
     {
-      "coords": [
-        100,
-        217
-      ],
+      "coords": [100, 217],
       "image": "npc",
-      "overlays": [
-        "day1",
-        "day2",
-        "night"
-      ],
-      "codes": [
-        "MM Clock Town Rosa Sisters HP"
-      ]
+      "overlays": ["day1", "day2", "night"],
+      "codes": ["MM Clock Town Rosa Sisters HP"]
     },
     {
-      "coords": [
-        248,
-        244
-      ],
+      "coords": [248, 244],
       "image": "song",
-      "codes": [
-        "MM Initial Song of Healing"
-      ]
+      "codes": ["MM Initial Song of Healing"]
     },
     {
-      "coords": [
-        248,
-        212
-      ],
+      "coords": [248, 212],
       "image": "heart_piece",
-      "codes": [
-        "MM Clock Town Platform HP"
-      ]
+      "codes": ["MM Clock Town Platform HP"]
     },
     {
-      "coords": [
-        416,
-        230
-      ],
+      "coords": [416, 230],
       "image": "npc",
-      "overlays": [
-        "day3",
-        "night"
-      ],
-      "codes": [
-        "MM Clock Town Postman Hat"
-      ]
+      "overlays": ["day3", "night"],
+      "codes": ["MM Clock Town Postman Hat"]
     },
     {
-      "coords": [
-        289,
-        112
-      ],
+      "coords": [289, 112],
       "image": "npc",
-      "overlays": [
-        "day1",
-        "night"
-      ],
-      "codes": [
-        "MM Clock Town Blast Mask"
-      ]
+      "overlays": ["day1", "night"],
+      "codes": ["MM Clock Town Blast Mask"]
     },
     {
-      "coords": [
-        225,
-        89
-      ],
+      "coords": [225, 89],
       "image": "npc",
-      "codes": [
-        "MM Clock Town Bomber Notebook"
-      ]
+      "codes": ["MM Clock Town Bomber Notebook"]
     },
     {
-      "coords": [
-        286,
-        57
-      ],
+      "coords": [286, 57],
       "image": "heart_piece",
-      "codes": [
-        "MM Clock Town Tree HP"
-      ]
+      "codes": ["MM Clock Town Tree HP"]
     },
     {
-      "coords": [
-        283,
-        38
-      ],
+      "coords": [283, 38],
       "image": "npc",
-      "codes": [
-        "MM Clock Town Keaton HP"
-      ]
+      "codes": ["MM Clock Town Keaton HP"]
     },
     {
-      "coords": [
-        248,
-        326
-      ],
+      "coords": [248, 326],
       "image": "chest",
-      "overlays": [
-        "day3"
-      ],
-      "codes": [
-        "MM Clock Town South Chest Upper"
-      ]
+      "overlays": ["day3"],
+      "codes": ["MM Clock Town South Chest Upper"]
     },
     {
-      "coords": [
-        12,
-        29
-      ],
+      "coords": [12, 29],
       "image": "heart_piece",
-      "codes": [
-        "MM Clock Town Post Box"
-      ]
+      "codes": ["MM Clock Town Post Box"]
     },
     {
-      "coords": [
-        738,
-        520
-      ],
+      "coords": [738, 520],
       "image": "shop",
-      "codes": [
-        "MM Tingle Map Woodfall"
-      ]
+      "codes": ["MM Tingle Map Woodfall"]
     },
     {
-      "coords": [
-        113,
-        548
-      ],
+      "coords": [113, 548],
       "image": "shop",
-      "codes": [
-        "MM Tingle Map Ranch"
-      ]
+      "codes": ["MM Tingle Map Ranch"]
     },
     {
-      "coords": [
-        254,
-        56
-      ],
+      "coords": [254, 56],
       "image": "shop",
-      "codes": [
-        "MM Tingle Map Clock Town"
-      ]
+      "codes": ["MM Tingle Map Clock Town"]
     },
     {
-      "coords": [
-        172,
-        556
-      ],
+      "coords": [172, 556],
       "image": "owl_statue",
-      "codes": [
-        "MM Milk Road Owl Statue"
-      ]
+      "codes": ["MM Milk Road Owl Statue"]
     },
     {
-      "coords": [
-        218,
-        196
-      ],
+      "coords": [218, 196],
       "image": "owl_statue",
-      "codes": [
-        "MM Clock Town Owl Statue"
-      ]
+      "codes": ["MM Clock Town Owl Statue"]
     },
     {
-      "coords": [
-        963,
-        141
-      ],
+      "coords": [963, 141],
       "image": "pot",
-      "codes": [
-        "MM Termina Field Pot"
-      ]
+      "codes": ["MM Termina Field Pot"]
     },
     {
-      "coords": [
-        452,
-        567
-      ],
+      "coords": [452, 567],
       "image": "pot",
-      "codes": [
-        "MM Road to Ikana Pot"
-      ]
+      "codes": ["MM Road to Ikana Pot"]
     },
     {
-      "coords": [
-        882,
-        526
-      ],
+      "coords": [882, 526],
       "image": "pot",
       "codes": [
         "MM Road to Southern Swamp Potted Plant 1 Pot",
@@ -343,81 +174,41 @@
       ]
     },
     {
-      "coords": [
-        90,
-        383
-      ],
+      "coords": [90, 383],
       "image": "small_crate",
-      "codes": [
-        "MM Clock Town Laundry Pool Small Crate"
-      ]
+      "codes": ["MM Clock Town Laundry Pool Small Crate"]
     },
     {
-      "coords": [
-        388,
-        269
-      ],
+      "coords": [388, 269],
       "image": "small_crate",
-      "codes": [
-        "MM Clock Town East Small Crate 2"
-      ]
+      "codes": ["MM Clock Town East Small Crate 2"]
     },
     {
-      "coords": [
-        364,
-        269
-      ],
+      "coords": [364, 269],
       "image": "small_crate",
-      "codes": [
-        "MM Clock Town East Small Crate 1"
-      ]
+      "codes": ["MM Clock Town East Small Crate 1"]
     },
     {
-      "coords": [
-        343,
-        284
-      ],
+      "coords": [343, 284],
       "image": "stray_fairy",
-      "overlays": [
-        "night"
-      ],
-      "codes": [
-        "MM Clock Town Stray Fairy"
-      ]
+      "overlays": ["night"],
+      "codes": ["MM Clock Town Stray Fairy"]
     },
     {
-      "coords": [
-        46,
-        360
-      ],
+      "coords": [46, 360],
       "image": "stray_fairy",
-      "overlays": [
-        "day"
-      ],
-      "codes": [
-        "MM Clock Town Stray Fairy"
-      ]
+      "overlays": ["day"],
+      "codes": ["MM Clock Town Stray Fairy"]
     },
     {
-      "coords": [
-        946,
-        141
-      ],
+      "coords": [946, 141],
       "image": "red_rupee",
-      "codes": [
-        "MM Termina Field Rupee"
-      ]
+      "codes": ["MM Termina Field Rupee"]
     },
     {
-      "coords": [
-        48,
-        332
-      ],
+      "coords": [48, 332],
       "image": "red_rupee",
-      "overlays": [
-        "day2",
-        "night"
-      ],
+      "overlays": ["day2", "night"],
       "codes": [
         "MM Clock Town Laundry Pool Rupee 1",
         "MM Clock Town Laundry Pool Rupee 2",
@@ -425,10 +216,7 @@
       ]
     },
     {
-      "coords": [
-        256,
-        212
-      ],
+      "coords": [256, 212],
       "image": "wonder_item_green_rupee",
       "codes": [
         "MM Clock Town South Wonder Item 1",
@@ -437,10 +225,7 @@
       ]
     },
     {
-      "coords": [
-        428,
-        294
-      ],
+      "coords": [428, 294],
       "image": "wonder_item_green_rupee",
       "codes": [
         "MM Clock Town East Wonder Item Basket 1",
@@ -455,20 +240,12 @@
       ]
     },
     {
-      "coords": [
-        864,
-        87
-      ],
+      "coords": [864, 87],
       "image": "wonder_item_blue_rupee",
-      "codes": [
-        "MM Termina Field Wonder Item North Ramp"
-      ]
+      "codes": ["MM Termina Field Wonder Item North Ramp"]
     },
     {
-      "coords": [
-        820,
-        146
-      ],
+      "coords": [820, 146],
       "image": "wonder_item_green_rupee",
       "codes": [
         "MM Termina Field Wonder Item Shell Side 1",
@@ -477,30 +254,17 @@
       ]
     },
     {
-      "coords": [
-        800,
-        146
-      ],
+      "coords": [800, 146],
       "image": "wonder_item_blue_rupee",
-      "codes": [
-        "MM Termina Field Wonder Item Fountains 2"
-      ]
+      "codes": ["MM Termina Field Wonder Item Fountains 2"]
     },
     {
-      "coords": [
-        800,
-        162
-      ],
+      "coords": [800, 162],
       "image": "wonder_item_blue_rupee",
-      "codes": [
-        "MM Termina Field Wonder Item West Ramp"
-      ]
+      "codes": ["MM Termina Field Wonder Item West Ramp"]
     },
     {
-      "coords": [
-        824,
-        162
-      ],
+      "coords": [824, 162],
       "image": "wonder_item_green_rupee",
       "codes": [
         "MM Termina Field Wonder Item Shell 1",
@@ -509,70 +273,37 @@
       ]
     },
     {
-      "coords": [
-        800,
-        178
-      ],
+      "coords": [800, 178],
       "image": "wonder_item_blue_rupee",
-      "codes": [
-        "MM Termina Field Wonder Item Fountains 1"
-      ]
+      "codes": ["MM Termina Field Wonder Item Fountains 1"]
     },
     {
-      "coords": [
-        781,
-        209
-      ],
+      "coords": [781, 209],
       "image": "wonder_item_blue_rupee",
-      "codes": [
-        "MM Termina Field Wonder Item South West Ramp"
-      ]
+      "codes": ["MM Termina Field Wonder Item South West Ramp"]
     },
     {
-      "coords": [
-        826,
-        238
-      ],
+      "coords": [826, 238],
       "image": "wonder_item_green_rupee",
-      "codes": [
-        "MM Termina Field Wonder Item Grass 1"
-      ]
+      "codes": ["MM Termina Field Wonder Item Grass 1"]
     },
     {
-      "coords": [
-        839,
-        253
-      ],
+      "coords": [839, 253],
       "image": "wonder_item_green_rupee",
-      "codes": [
-        "MM Termina Field Wonder Item Grass 2"
-      ]
+      "codes": ["MM Termina Field Wonder Item Grass 2"]
     },
     {
-      "coords": [
-        864,
-        261
-      ],
+      "coords": [864, 261],
       "image": "wonder_item_blue_rupee",
-      "codes": [
-        "MM Termina Field Wonder Item Hollow Trunk"
-      ]
+      "codes": ["MM Termina Field Wonder Item Hollow Trunk"]
     },
     {
-      "coords": [
-        846,
-        275
-      ],
+      "coords": [846, 275],
       "image": "wonder_item_green_rupee",
-      "codes": [
-        "MM Termina Field Wonder Item Grass 3"
-      ]
+      "codes": ["MM Termina Field Wonder Item Grass 3"]
     },
     {
-      "coords": [
-        857,
-        285
-      ],
+      "coords": [857, 285],
       "image": "wonder_item_green_rupee",
       "codes": [
         "MM Termina Field Wonder Item Graffiti 1",
@@ -581,41 +312,22 @@
       ]
     },
     {
-      "coords": [
-        888,
-        272
-      ],
+      "coords": [888, 272],
       "image": "wonder_item_green_rupee",
-      "codes": [
-        "MM Termina Field Wonder Item Grass 4"
-      ]
+      "codes": ["MM Termina Field Wonder Item Grass 4"]
     },
     {
-      "coords": [
-        896,
-        240
-      ],
+      "coords": [896, 240],
       "image": "wonder_item_green_rupee",
-      "codes": [
-        "MM Termina Field Wonder Item Grass 5"
-      ]
+      "codes": ["MM Termina Field Wonder Item Grass 5"]
     },
     {
-      "coords": [
-        823,
-        249
-      ],
+      "coords": [823, 249],
       "image": "butterfly",
-      "codes": [
-        "MM Termina Field Butterfly 1",
-        "MM Termina Field Butterfly 2"
-      ]
+      "codes": ["MM Termina Field Butterfly 1", "MM Termina Field Butterfly 2"]
     },
     {
-      "coords": [
-        467,
-        574
-      ],
+      "coords": [467, 574],
       "image": "rock",
       "codes": [
         "MM Road to Ikana Rock Circle Rock 1",
@@ -629,10 +341,7 @@
       ]
     },
     {
-      "coords": [
-        799,
-        206
-      ],
+      "coords": [799, 206],
       "image": "rock",
       "codes": [
         "MM Termina Field Rock Wall Ocean 1",
@@ -643,20 +352,12 @@
       ]
     },
     {
-      "coords": [
-        710,
-        154
-      ],
+      "coords": [710, 154],
       "image": "rock",
-      "codes": [
-        "MM Termina Field Rock Near Ocean"
-      ]
+      "codes": ["MM Termina Field Rock Near Ocean"]
     },
     {
-      "coords": [
-        798,
-        126
-      ],
+      "coords": [798, 126],
       "image": "rock",
       "codes": [
         "MM Termina Field Rock Wall Mountain 1",
@@ -669,10 +370,7 @@
       ]
     },
     {
-      "coords": [
-        814,
-        105
-      ],
+      "coords": [814, 105],
       "image": "rock",
       "codes": [
         "MM Termina Field Rock Circle Rock 1",
@@ -686,10 +384,7 @@
       ]
     },
     {
-      "coords": [
-        66,
-        344
-      ],
+      "coords": [66, 344],
       "image": "grass",
       "codes": [
         "MM Clock Town Laundry Pool Grass 1",
@@ -698,10 +393,7 @@
       ]
     },
     {
-      "coords": [
-        101,
-        524
-      ],
+      "coords": [101, 524],
       "image": "keaton_grass",
       "codes": [
         "MM Milk Road Keaton Grass Reward 1",
@@ -716,10 +408,7 @@
       ]
     },
     {
-      "coords": [
-        156,
-        548
-      ],
+      "coords": [156, 548],
       "image": "grass",
       "codes": [
         "MM Milk Road Grass 1",
@@ -728,10 +417,7 @@
       ]
     },
     {
-      "coords": [
-        270,
-        26
-      ],
+      "coords": [270, 26],
       "image": "keaton_grass",
       "codes": [
         "MM Clock Town Keaton Grass Reward 1",
@@ -746,10 +432,7 @@
       ]
     },
     {
-      "coords": [
-        889,
-        515
-      ],
+      "coords": [889, 515],
       "image": "grass",
       "codes": [
         "MM Road to Southern Swamp Potted Plant 1 Grass",
@@ -757,10 +440,7 @@
       ]
     },
     {
-      "coords": [
-        867,
-        511
-      ],
+      "coords": [867, 511],
       "image": "grass",
       "codes": [
         "MM Road to Southern Swamp Grass 1",
@@ -768,10 +448,7 @@
       ]
     },
     {
-      "coords": [
-        696,
-        428
-      ],
+      "coords": [696, 428],
       "image": "grass",
       "codes": [
         "MM Road to Southern Swamp Grass Pack 2 Grass 01",
@@ -786,10 +463,7 @@
       ]
     },
     {
-      "coords": [
-        712,
-        412
-      ],
+      "coords": [712, 412],
       "image": "grass",
       "codes": [
         "MM Road to Southern Swamp Grass Pack 1 Grass 01",
@@ -804,10 +478,7 @@
       ]
     },
     {
-      "coords": [
-        838,
-        112
-      ],
+      "coords": [838, 112],
       "image": "grass",
       "codes": [
         "MM Termina Field Grass Pack 01 Grass 01",
@@ -825,10 +496,7 @@
       ]
     },
     {
-      "coords": [
-        814,
-        135
-      ],
+      "coords": [814, 135],
       "image": "grass",
       "codes": [
         "MM Termina Field Grass Pack 02 Grass 01",
@@ -846,10 +514,7 @@
       ]
     },
     {
-      "coords": [
-        898,
-        118
-      ],
+      "coords": [898, 118],
       "image": "grass",
       "codes": [
         "MM Termina Field Grass Pack 18 Grass 01",
@@ -867,10 +532,7 @@
       ]
     },
     {
-      "coords": [
-        914,
-        137
-      ],
+      "coords": [914, 137],
       "image": "grass",
       "codes": [
         "MM Termina Field Grass Pack 17 Grass 01",
@@ -888,10 +550,7 @@
       ]
     },
     {
-      "coords": [
-        788,
-        219
-      ],
+      "coords": [788, 219],
       "image": "grass",
       "codes": [
         "MM Termina Field Grass Pack 03 Grass 01",
@@ -909,10 +568,7 @@
       ]
     },
     {
-      "coords": [
-        820,
-        212
-      ],
+      "coords": [820, 212],
       "image": "grass",
       "codes": [
         "MM Termina Field Grass Pack 04 Grass 01",
@@ -930,10 +586,7 @@
       ]
     },
     {
-      "coords": [
-        807,
-        233
-      ],
+      "coords": [807, 233],
       "image": "grass",
       "codes": [
         "MM Termina Field Grass Pack 05 Grass 01",
@@ -951,10 +604,7 @@
       ]
     },
     {
-      "coords": [
-        811,
-        266
-      ],
+      "coords": [811, 266],
       "image": "grass",
       "codes": [
         "MM Termina Field Grass Pack 06 Grass 01",
@@ -972,10 +622,7 @@
       ]
     },
     {
-      "coords": [
-        840,
-        260
-      ],
+      "coords": [840, 260],
       "image": "grass",
       "codes": [
         "MM Termina Field Grass Pack 07 Grass 01",
@@ -993,10 +640,7 @@
       ]
     },
     {
-      "coords": [
-        863,
-        232
-      ],
+      "coords": [863, 232],
       "image": "grass",
       "codes": [
         "MM Termina Field Grass Pack 08 Grass 01",
@@ -1014,10 +658,7 @@
       ]
     },
     {
-      "coords": [
-        904,
-        212
-      ],
+      "coords": [904, 212],
       "image": "grass",
       "codes": [
         "MM Termina Field Grass Pack 11 Grass 01",
@@ -1035,10 +676,7 @@
       ]
     },
     {
-      "coords": [
-        931,
-        208
-      ],
+      "coords": [931, 208],
       "image": "grass",
       "codes": [
         "MM Termina Field Grass Pack 13 Grass 01",
@@ -1056,10 +694,7 @@
       ]
     },
     {
-      "coords": [
-        946,
-        221
-      ],
+      "coords": [946, 221],
       "image": "grass",
       "codes": [
         "MM Termina Field Grass Pack 12 Grass 01",
@@ -1077,10 +712,7 @@
       ]
     },
     {
-      "coords": [
-        925,
-        227
-      ],
+      "coords": [925, 227],
       "image": "grass",
       "codes": [
         "MM Termina Field Grass Pack 10 Grass 01",
@@ -1098,10 +730,7 @@
       ]
     },
     {
-      "coords": [
-        913,
-        238
-      ],
+      "coords": [913, 238],
       "image": "grass",
       "codes": [
         "MM Termina Field Grass Pack 09 Grass 01",
@@ -1119,10 +748,7 @@
       ]
     },
     {
-      "coords": [
-        924,
-        192
-      ],
+      "coords": [924, 192],
       "image": "grass",
       "codes": [
         "MM Termina Field Grass Pack 14 Grass 01",
@@ -1140,10 +766,7 @@
       ]
     },
     {
-      "coords": [
-        951,
-        183
-      ],
+      "coords": [951, 183],
       "image": "grass",
       "codes": [
         "MM Termina Field Grass Pack 15 Grass 01",
@@ -1161,10 +784,7 @@
       ]
     },
     {
-      "coords": [
-        968,
-        169
-      ],
+      "coords": [968, 169],
       "image": "grass",
       "codes": [
         "MM Termina Field Grass Pack 16 Grass 01",
@@ -1182,10 +802,7 @@
       ]
     },
     {
-      "coords": [
-        432,
-        561
-      ],
+      "coords": [432, 561],
       "image": "red_boulder",
       "type": "submenu",
       "markers": [
@@ -1213,97 +830,60 @@
       ]
     },
     {
-      "coords": [
-        563,
-        200
-      ],
+      "coords": [563, 200],
       "image": "big_snowball",
-      "overlays": [
-        "cursed_state"
-      ],
+      "overlays": ["cursed_state"],
       "codes": [
         "MM Path to Mountain Village Big Snowball Lower 3",
         "MM Path to Mountain Village Big Snowball Lower 4"
       ]
     },
     {
-      "coords": [
-        640,
-        206
-      ],
+      "coords": [640, 206],
       "image": "small_snowball",
-      "overlays": [
-        "cursed_state"
-      ],
-      "codes": [
-        "MM Path to Mountain Village Small Snowball Lower Winter 1"
-      ]
+      "overlays": ["cursed_state"],
+      "codes": ["MM Path to Mountain Village Small Snowball Lower Winter 1"]
     },
     {
-      "coords": [
-        640,
-        222
-      ],
+      "coords": [640, 222],
       "image": "small_snowball",
-      "overlays": [
-        "clear_state"
-      ],
+      "overlays": ["clear_state"],
       "codes": [
         "MM Path to Mountain Village Small Snowball Lower Spring 1",
         "MM Path to Mountain Village Small Snowball Lower Spring 2"
       ]
     },
     {
-      "coords": [
-        624,
-        222
-      ],
+      "coords": [624, 222],
       "image": "big_snowball",
-      "overlays": [
-        "cursed_state"
-      ],
+      "overlays": ["cursed_state"],
       "codes": [
         "MM Path to Mountain Village Big Snowball Lower 1",
         "MM Path to Mountain Village Big Snowball Lower 2"
       ]
     },
     {
-      "coords": [
-        547,
-        208
-      ],
+      "coords": [547, 208],
       "image": "small_snowball",
-      "overlays": [
-        "cursed_state"
-      ],
+      "overlays": ["cursed_state"],
       "codes": [
         "MM Path to Mountain Village Small Snowball Lower Winter 2",
         "MM Path to Mountain Village Small Snowball Lower Winter 3"
       ]
     },
     {
-      "coords": [
-        547,
-        192
-      ],
+      "coords": [547, 192],
       "image": "small_snowball",
-      "overlays": [
-        "clear_state"
-      ],
+      "overlays": ["clear_state"],
       "codes": [
         "MM Path to Mountain Village Small Snowball Lower Spring 3",
         "MM Path to Mountain Village Small Snowball Lower Spring 4"
       ]
     },
     {
-      "coords": [
-        555,
-        160
-      ],
+      "coords": [555, 160],
       "image": "big_snowball",
-      "overlays": [
-        "cursed_state"
-      ],
+      "overlays": ["cursed_state"],
       "codes": [
         "MM Path to Mountain Village Big Snowball Middle 1",
         "MM Path to Mountain Village Big Snowball Middle 2",
@@ -1312,14 +892,9 @@
       ]
     },
     {
-      "coords": [
-        588,
-        88
-      ],
+      "coords": [588, 88],
       "image": "small_snowball",
-      "overlays": [
-        "clear_state"
-      ],
+      "overlays": ["clear_state"],
       "codes": [
         "MM Path to Mountain Village Small Snowball Upper Spring 1",
         "MM Path to Mountain Village Small Snowball Upper Spring 2",
@@ -1327,14 +902,9 @@
       ]
     },
     {
-      "coords": [
-        588,
-        104
-      ],
+      "coords": [588, 104],
       "image": "big_snowball",
-      "overlays": [
-        "cursed_state"
-      ],
+      "overlays": ["cursed_state"],
       "codes": [
         "MM Path to Mountain Village Big Snowball Upper 1",
         "MM Path to Mountain Village Big Snowball Upper 2",
@@ -1342,33 +912,18 @@
       ]
     },
     {
-      "coords": [
-        572,
-        112
-      ],
+      "coords": [572, 112],
       "image": "small_snowball",
-      "overlays": [
-        "cursed_state"
-      ],
-      "codes": [
-        "MM Path to Mountain Village Small Snowball Upper Winter"
-      ]
+      "overlays": ["cursed_state"],
+      "codes": ["MM Path to Mountain Village Small Snowball Upper Winter"]
     },
     {
-      "coords": [
-        880,
-        261
-      ],
+      "coords": [880, 261],
       "image": "soft_soil",
-      "codes": [
-        "MM Termina Field Soil Tree Stump"
-      ]
+      "codes": ["MM Termina Field Soil Tree Stump"]
     },
     {
-      "coords": [
-        966,
-        217
-      ],
+      "coords": [966, 217],
       "image": "soft_soil",
       "codes": [
         "MM Termina Field Soil Observatory Item 1",
@@ -1377,10 +932,7 @@
       ]
     },
     {
-      "coords": [
-        894,
-        191
-      ],
+      "coords": [894, 191],
       "image": "soft_soil",
       "codes": [
         "MM Termina Field Soil Wall Item 1",
@@ -1389,40 +941,22 @@
       ]
     },
     {
-      "coords": [
-        924,
-        142
-      ],
+      "coords": [924, 142],
       "image": "soft_soil",
-      "codes": [
-        "MM Termina Field Soil Pillar"
-      ]
+      "codes": ["MM Termina Field Soil Pillar"]
     },
     {
-      "coords": [
-        204,
-        118
-      ],
+      "coords": [204, 118],
       "image": "tree",
-      "codes": [
-        "MM Clock Town North Forked Tree 1"
-      ]
+      "codes": ["MM Clock Town North Forked Tree 1"]
     },
     {
-      "coords": [
-        286,
-        65
-      ],
+      "coords": [286, 65],
       "image": "tree",
-      "codes": [
-        "MM Clock Town North Forked Tree 2"
-      ]
+      "codes": ["MM Clock Town North Forked Tree 2"]
     },
     {
-      "coords": [
-        812,
-        468
-      ],
+      "coords": [812, 468],
       "image": "tree",
       "codes": [
         "MM Road to Southern Swamp Forked Tree 1",
@@ -1434,178 +968,92 @@
       ]
     },
     {
-      "coords": [
-        943,
-        186
-      ],
+      "coords": [943, 186],
       "image": "tree",
-      "codes": [
-        "MM Termina Field Tree 2"
-      ]
+      "codes": ["MM Termina Field Tree 2"]
     },
     {
-      "coords": [
-        922,
-        215
-      ],
+      "coords": [922, 215],
       "image": "tree",
-      "codes": [
-        "MM Termina Field Tree 1"
-      ]
+      "codes": ["MM Termina Field Tree 1"]
     },
     {
-      "coords": [
-        619,
-        206
-      ],
+      "coords": [619, 206],
       "image": "tree",
-      "codes": [
-        "MM Path to Mountain Village Snow Tree Lower 1"
-      ]
+      "codes": ["MM Path to Mountain Village Snow Tree Lower 1"]
     },
     {
-      "coords": [
-        567,
-        180
-      ],
+      "coords": [567, 180],
       "image": "tree",
-      "codes": [
-        "MM Path to Mountain Village Snow Tree Lower 2"
-      ]
+      "codes": ["MM Path to Mountain Village Snow Tree Lower 2"]
     },
     {
-      "coords": [
-        555,
-        132
-      ],
+      "coords": [555, 132],
       "image": "tree",
-      "codes": [
-        "MM Path to Mountain Village Snow Tree Upper 1"
-      ]
+      "codes": ["MM Path to Mountain Village Snow Tree Upper 1"]
     },
     {
-      "coords": [
-        563,
-        100
-      ],
+      "coords": [563, 100],
       "image": "tree",
-      "codes": [
-        "MM Path to Mountain Village Snow Tree Upper 2"
-      ]
+      "codes": ["MM Path to Mountain Village Snow Tree Upper 2"]
     },
     {
-      "coords": [
-        127,
-        520
-      ],
+      "coords": [127, 520],
       "image": "gossip_stone",
-      "codes": [
-        "MM Milk Road Gossip"
-      ]
+      "codes": ["MM Milk Road Gossip"]
     },
     {
-      "coords": [
-        467,
-        528
-      ],
+      "coords": [467, 528],
       "image": "gossip_stone",
-      "codes": [
-        "MM Road to Ikana Gossip"
-      ]
+      "codes": ["MM Road to Ikana Gossip"]
     },
     {
-      "coords": [
-        830,
-        470
-      ],
+      "coords": [830, 470],
       "image": "gossip_stone",
-      "codes": [
-        "MM Road to Southern Swamp Gossip"
-      ]
+      "codes": ["MM Road to Southern Swamp Gossip"]
     },
     {
-      "coords": [
-        539,
-        209
-      ],
+      "coords": [539, 209],
       "image": "gossip_stone",
-      "codes": [
-        "MM Mountain Village Path Gossip"
-      ]
+      "codes": ["MM Mountain Village Path Gossip"]
     },
     {
-      "coords": [
-        812,
-        255
-      ],
+      "coords": [812, 255],
       "image": "gossip_stone",
-      "codes": [
-        "MM Termina Field Gossip Southwest"
-      ]
+      "codes": ["MM Termina Field Gossip Southwest"]
     },
     {
-      "coords": [
-        898,
-        261
-      ],
+      "coords": [898, 261],
       "image": "gossip_stone",
-      "codes": [
-        "MM Termina Field Gossip Southeast"
-      ]
+      "codes": ["MM Termina Field Gossip Southeast"]
     },
     {
-      "coords": [
-        973,
-        197
-      ],
+      "coords": [973, 197],
       "image": "gossip_stone",
-      "codes": [
-        "MM Termina Field Gossip Near Observatory"
-      ]
+      "codes": ["MM Termina Field Gossip Near Observatory"]
     },
     {
-      "coords": [
-        952,
-        115
-      ],
+      "coords": [952, 115],
       "image": "gossip_stone",
-      "codes": [
-        "MM Termina Field Gossip Northeast"
-      ]
+      "codes": ["MM Termina Field Gossip Northeast"]
     },
     {
-      "coords": [
-        881,
-        78
-      ],
+      "coords": [881, 78],
       "image": "gossip_stone",
-      "codes": [
-        "MM Termina Field Gossip Near Mountain"
-      ]
+      "codes": ["MM Termina Field Gossip Near Mountain"]
     },
     {
-      "coords": [
-        829,
-        108
-      ],
+      "coords": [829, 108],
       "image": "gossip_stone",
-      "codes": [
-        "MM Termina Field Gossip Near Kamaro"
-      ]
+      "codes": ["MM Termina Field Gossip Near Kamaro"]
     },
     {
-      "coords": [
-        432,
-        561
-      ],
+      "coords": [432, 561],
       "image": "red_boulder",
       "codes": "TODO KF 121 :: unnamed_stack > Termina > Termina Layers > Termina Entrances :: Pasted Layer #120 :: 001-001-017-000.png"
     },
     {
-      "coords": [
-        706,
-        460
-      ],
+      "coords": [706, 460],
       "image": "grotto",
       "type": "submenu",
       "markers": [
@@ -1635,49 +1083,30 @@
       ]
     },
     {
-      "coords": [
-        900,
-        532
-      ],
+      "coords": [900, 532],
       "image": "interior_entrance",
       "type": "submenu",
       "markers": [
         {
           "image": "npc",
-          "codes": [
-            "MM Swamp Archery Reward 1",
-            "MM Swamp Archery Reward 2"
-          ]
+          "codes": ["MM Swamp Archery Reward 1", "MM Swamp Archery Reward 2"]
         }
       ]
     },
     {
-      "coords": [
-        36,
-        292
-      ],
+      "coords": [36, 292],
       "image": "interior_entrance",
-      "overlays": [
-        "day2",
-        "day3",
-        "day"
-      ],
+      "overlays": ["day2", "day3", "day"],
       "type": "submenu",
       "markers": [
         {
           "image": "npc",
-          "overlays": [
-            "day2",
-            "day"
-          ],
+          "overlays": ["day2", "day"],
           "codes": "MM Kafei Hideout Pendant of Memories"
         },
         {
           "image": "npc",
-          "overlays": [
-            "day3",
-            "day"
-          ],
+          "overlays": ["day3", "day"],
           "codes": [
             "MM Kafei Hideout Owner Reward 1",
             "MM Kafei Hideout Owner Reward 2"
@@ -1686,30 +1115,20 @@
       ]
     },
     {
-      "coords": [
-        102,
-        316
-      ],
+      "coords": [102, 316],
       "image": "interior_entrance",
-      "overlays": [
-        "night"
-      ],
+      "overlays": ["night"],
       "type": "submenu",
       "markers": [
         {
           "image": "shop",
-          "overlays": [
-            "day3"
-          ],
+          "overlays": ["day3"],
           "codes": "MM Curiosity Shop All-Night Mask"
         }
       ]
     },
     {
-      "coords": [
-        78,
-        298
-      ],
+      "coords": [78, 298],
       "image": "interior_entrance",
       "type": "submenu",
       "markers": [
@@ -1742,10 +1161,7 @@
       ]
     },
     {
-      "coords": [
-        60,
-        274
-      ],
+      "coords": [60, 274],
       "image": "interior_entrance",
       "type": "submenu",
       "markers": [
@@ -1761,21 +1177,13 @@
       ]
     },
     {
-      "coords": [
-        116,
-        232
-      ],
+      "coords": [116, 232],
       "image": "interior_entrance",
-      "overlays": [
-        "day"
-      ],
+      "overlays": ["day"],
       "codes": "TODO KF 128 :: unnamed_stack > Termina > Termina Layers > Termina Entrances :: Pasted Layer #127 :: 001-001-017-007.png"
     },
     {
-      "coords": [
-        54,
-        154
-      ],
+      "coords": [54, 154],
       "image": "interior_entrance",
       "type": "submenu",
       "markers": [
@@ -1785,10 +1193,7 @@
         },
         {
           "image": "pot",
-          "overlays": [
-            "night",
-            "day3"
-          ],
+          "overlays": ["night", "day3"],
           "codes": [
             "MM Swordsman School Pot 1",
             "MM Swordsman School Pot 2",
@@ -1800,29 +1205,19 @@
       ]
     },
     {
-      "coords": [
-        103,
-        154
-      ],
+      "coords": [103, 154],
       "image": "interior_entrance",
       "type": "submenu",
       "markers": [
         {
           "image": "npc",
-          "overlays": [
-            "day",
-            "day1",
-            "day2"
-          ],
+          "overlays": ["day", "day1", "day2"],
           "codes": "MM Post Office HP"
         }
       ]
     },
     {
-      "coords": [
-        138,
-        93
-      ],
+      "coords": [138, 93],
       "image": "interior_entrance",
       "type": "submenu",
       "markers": [
@@ -1837,10 +1232,7 @@
       ]
     },
     {
-      "coords": [
-        169,
-        123
-      ],
+      "coords": [169, 123],
       "image": "grotto",
       "type": "submenu",
       "markers": [
@@ -1850,31 +1242,20 @@
         },
         {
           "image": "npc",
-          "overlays": [
-            "day3"
-          ],
+          "overlays": ["day3"],
           "codes": "MM Deku Playground Reward All Days"
         }
       ]
     },
     {
-      "coords": [
-        248,
-        228
-      ],
+      "coords": [248, 228],
       "image": "interior_entrance",
       "codes": "TODO KF 133 :: unnamed_stack > Termina > Termina Layers > Termina Entrances :: Pasted Layer #132 :: 001-001-017-012.png"
     },
     {
-      "coords": [
-        248,
-        196
-      ],
+      "coords": [248, 196],
       "image": "dungeon_entrance",
-      "overlays": [
-        "day3",
-        "night"
-      ],
+      "overlays": ["day3", "night"],
       "type": "submenu",
       "markers": [
         {
@@ -1896,34 +1277,21 @@
       ]
     },
     {
-      "coords": [
-        402,
-        350
-      ],
+      "coords": [402, 350],
       "image": "interior_entrance",
-      "overlays": [
-        "day"
-      ],
+      "overlays": ["day"],
       "type": "submenu",
       "markers": [
         {
           "image": "npc",
-          "codes": [
-            "MM Town Archery Reward 1",
-            "MM Town Archery Reward 2"
-          ]
+          "codes": ["MM Town Archery Reward 1", "MM Town Archery Reward 2"]
         }
       ]
     },
     {
-      "coords": [
-        444,
-        294
-      ],
+      "coords": [444, 294],
       "image": "interior_entrance",
-      "overlays": [
-        "day"
-      ],
+      "overlays": ["day"],
       "type": "submenu",
       "markers": [
         {
@@ -1932,22 +1300,15 @@
         },
         {
           "image": "npc",
-          "overlays": [
-            "day3"
-          ],
+          "overlays": ["day3"],
           "codes": "MM Honey & Darling Reward All Days"
         }
       ]
     },
     {
-      "coords": [
-        332,
-        303
-      ],
+      "coords": [332, 303],
       "image": "interior_entrance",
-      "overlays": [
-        "day"
-      ],
+      "overlays": ["day"],
       "type": "submenu",
       "markers": [
         {
@@ -1957,14 +1318,9 @@
       ]
     },
     {
-      "coords": [
-        354,
-        230
-      ],
+      "coords": [354, 230],
       "image": "interior_entrance",
-      "overlays": [
-        "day"
-      ],
+      "overlays": ["day"],
       "type": "submenu",
       "markers": [
         {
@@ -1973,43 +1329,27 @@
         },
         {
           "image": "chest",
-          "overlays": [
-            "day3",
-            "night"
-          ],
+          "overlays": ["day3", "night"],
           "codes": "MM Stock Pot Inn Staff Room Chest"
         },
         {
           "image": "npc",
-          "overlays": [
-            "day",
-            "day1"
-          ],
+          "overlays": ["day", "day1"],
           "codes": "MM Stock Pot Inn Room Key"
         },
         {
           "image": "npc",
-          "overlays": [
-            "night",
-            "day1"
-          ],
+          "overlays": ["night", "day1"],
           "codes": "MM Stock Pot Inn Letter to Kafei"
         },
         {
           "image": "npc",
-          "overlays": [
-            "day3",
-            "night"
-          ],
+          "overlays": ["day3", "night"],
           "codes": "MM Stock Pot Inn Couple's Mask"
         },
         {
           "image": "npc",
-          "overlays": [
-            "day1",
-            "day2",
-            "day"
-          ],
+          "overlays": ["day1", "day2", "day"],
           "codes": [
             "MM Stock Pot Inn Grandma HP 1",
             "MM Stock Pot Inn Grandma HP 2"
@@ -2017,9 +1357,7 @@
         },
         {
           "image": "npc",
-          "overlays": [
-            "night"
-          ],
+          "overlays": ["night"],
           "codes": "MM Stock Pot Inn ??? HP"
         },
         {
@@ -2033,47 +1371,29 @@
       ]
     },
     {
-      "coords": [
-        402,
-        214
-      ],
+      "coords": [402, 214],
       "image": "interior_entrance",
-      "overlays": [
-        "night"
-      ],
+      "overlays": ["night"],
       "type": "submenu",
       "markers": [
         {
           "image": "npc",
-          "overlays": [
-            "night",
-            "day1",
-            "day2"
-          ],
+          "overlays": ["night", "day1", "day2"],
           "codes": "MM Milk Bar Troupe Leader Mask"
         },
         {
           "image": "npc",
-          "overlays": [
-            "day3",
-            "night"
-          ],
+          "overlays": ["day3", "night"],
           "codes": "MM Milk Bar Madame Aroma Bottle"
         },
         {
           "image": "shop",
-          "codes": [
-            "MM Milk Bar Purchase Chateau",
-            "MM Milk Bar Purchase Milk"
-          ]
+          "codes": ["MM Milk Bar Purchase Chateau", "MM Milk Bar Purchase Milk"]
         }
       ]
     },
     {
-      "coords": [
-        330,
-        182
-      ],
+      "coords": [330, 182],
       "image": "interior_entrance",
       "type": "submenu",
       "markers": [
@@ -2083,43 +1403,27 @@
         },
         {
           "image": "chest",
-          "overlays": [
-            "day3",
-            "night"
-          ],
+          "overlays": ["day3", "night"],
           "codes": "MM Stock Pot Inn Staff Room Chest"
         },
         {
           "image": "npc",
-          "overlays": [
-            "day",
-            "day1"
-          ],
+          "overlays": ["day", "day1"],
           "codes": "MM Stock Pot Inn Room Key"
         },
         {
           "image": "npc",
-          "overlays": [
-            "night",
-            "day1"
-          ],
+          "overlays": ["night", "day1"],
           "codes": "MM Stock Pot Inn Letter to Kafei"
         },
         {
           "image": "npc",
-          "overlays": [
-            "day3",
-            "night"
-          ],
+          "overlays": ["day3", "night"],
           "codes": "MM Stock Pot Inn Couple's Mask"
         },
         {
           "image": "npc",
-          "overlays": [
-            "day1",
-            "day2",
-            "day"
-          ],
+          "overlays": ["day1", "day2", "day"],
           "codes": [
             "MM Stock Pot Inn Grandma HP 1",
             "MM Stock Pot Inn Grandma HP 2"
@@ -2127,9 +1431,7 @@
         },
         {
           "image": "npc",
-          "overlays": [
-            "night"
-          ],
+          "overlays": ["night"],
           "codes": "MM Stock Pot Inn ??? HP"
         },
         {
@@ -2143,14 +1445,9 @@
       ]
     },
     {
-      "coords": [
-        404,
-        88
-      ],
+      "coords": [404, 88],
       "image": "interior_entrance",
-      "overlays": [
-        "day"
-      ],
+      "overlays": ["day"],
       "type": "submenu",
       "markers": [
         {
@@ -2164,10 +1461,7 @@
       ]
     },
     {
-      "coords": [
-        460,
-        117
-      ],
+      "coords": [460, 117],
       "image": "interior_entrance",
       "type": "submenu",
       "markers": [
@@ -2187,10 +1481,7 @@
       ]
     },
     {
-      "coords": [
-        764,
-        156
-      ],
+      "coords": [764, 156],
       "image": "boulder_grotto",
       "type": "submenu",
       "markers": [
@@ -2207,10 +1498,7 @@
         },
         {
           "image": "grass",
-          "codes": [
-            "MM Bio Baba Grotto Grass 1",
-            "MM Bio Baba Grotto Grass 2"
-          ]
+          "codes": ["MM Bio Baba Grotto Grass 1", "MM Bio Baba Grotto Grass 2"]
         },
         {
           "image": "rock",
@@ -2219,10 +1507,7 @@
       ]
     },
     {
-      "coords": [
-        815,
-        123
-      ],
+      "coords": [815, 123],
       "image": "boulder_grotto",
       "type": "submenu",
       "markers": [
@@ -2250,10 +1535,7 @@
       ]
     },
     {
-      "coords": [
-        828,
-        92
-      ],
+      "coords": [828, 92],
       "image": "grotto",
       "type": "submenu",
       "markers": [
@@ -2264,18 +1546,12 @@
       ]
     },
     {
-      "coords": [
-        878,
-        105
-      ],
+      "coords": [878, 105],
       "image": "grotto",
       "codes": "TODO KF 146 :: unnamed_stack > Termina > Termina Layers > Termina Entrances :: Pasted Layer #145 :: 001-001-017-025.png"
     },
     {
-      "coords": [
-        924,
-        163
-      ],
+      "coords": [924, 163],
       "image": "grotto",
       "type": "submenu",
       "markers": [
@@ -2305,18 +1581,12 @@
       ]
     },
     {
-      "coords": [
-        969,
-        181
-      ],
+      "coords": [969, 181],
       "image": "grotto",
       "codes": "TODO KF 148 :: unnamed_stack > Termina > Termina Layers > Termina Entrances :: Pasted Layer #147 :: 001-001-017-027.png"
     },
     {
-      "coords": [
-        939,
-        204
-      ],
+      "coords": [939, 204],
       "image": "grotto",
       "type": "submenu",
       "markers": [
@@ -2335,10 +1605,7 @@
       ]
     },
     {
-      "coords": [
-        962,
-        201
-      ],
+      "coords": [962, 201],
       "image": "interior_entrance",
       "type": "submenu",
       "markers": [
@@ -2353,10 +1620,7 @@
       ]
     },
     {
-      "coords": [
-        905,
-        252
-      ],
+      "coords": [905, 252],
       "image": "grotto",
       "type": "submenu",
       "markers": [
@@ -2386,19 +1650,13 @@
       ]
     },
     {
-      "coords": [
-        864,
-        250
-      ],
+      "coords": [864, 250],
       "image": "bomb_grotto",
       "type": "submenu",
       "markers": [
         {
           "image": "cow",
-          "codes": [
-            "MM Termina Field Cow Back",
-            "MM Termina Field Cow Front"
-          ]
+          "codes": ["MM Termina Field Cow Back", "MM Termina Field Cow Front"]
         },
         {
           "image": "grass",
@@ -2492,10 +1750,7 @@
       ]
     },
     {
-      "coords": [
-        835,
-        248
-      ],
+      "coords": [835, 248],
       "image": "grotto",
       "type": "submenu",
       "markers": [
@@ -2523,10 +1778,7 @@
       ]
     },
     {
-      "coords": [
-        832,
-        275
-      ],
+      "coords": [832, 275],
       "image": "grotto",
       "codes": "TODO KF 154 :: unnamed_stack > Termina > Termina Layers > Termina Entrances :: Pasted Layer #153 :: 001-001-017-033.png"
     }

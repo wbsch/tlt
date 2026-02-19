@@ -8,107 +8,77 @@
     {
       "coords": [248, 266],
       "image": "goron_ruby",
-      "codes": [
-        "OOT Dodongo Cavern Boss"
-      ]
+      "codes": ["OOT Dodongo Cavern Boss"]
     },
     {
       "coords": [264, 266],
       "image": "heart_container",
-      "codes": [
-        "OOT Dodongo Cavern Boss Container"
-      ]
+      "codes": ["OOT Dodongo Cavern Boss Container"]
     },
     {
       "coords": [280, 266],
       "image": "chest",
-      "codes": [
-        "OOT Dodongo Cavern Boss Chest"
-      ]
+      "codes": ["OOT Dodongo Cavern Boss Chest"]
     },
     {
       "coords": [243, 380],
       "image": "chest",
-      "codes": [
-        "OOT Dodongo Cavern Compass Chest"
-      ]
+      "codes": ["OOT Dodongo Cavern Compass Chest"]
     },
     {
       "coords": [273, 337],
       "image": "chest",
-      "codes": [
-        "OOT Dodongo Cavern Map Chest"
-      ]
+      "codes": ["OOT Dodongo Cavern Map Chest"]
     },
     {
       "coords": [570, 312],
       "image": "chest",
-      "codes": [
-        "OOT Dodongo Cavern Bridge Chest"
-      ]
+      "codes": ["OOT Dodongo Cavern Bridge Chest"]
     },
     {
       "coords": [671, 370],
       "image": "chest",
-      "codes": [
-        "OOT Dodongo Cavern Bomb Bag Side Chest"
-      ]
+      "codes": ["OOT Dodongo Cavern Bomb Bag Side Chest"]
     },
     {
       "coords": [657, 322],
       "image": "chest",
-      "codes": [
-        "OOT Dodongo Cavern Bomb Bag Chest"
-      ]
+      "codes": ["OOT Dodongo Cavern Bomb Bag Chest"]
     },
     {
       "coords": [359, 197],
       "image": "gold_skulltula",
-      "codes": [
-        "OOT Dodongo Cavern GS Near Boss"
-      ]
+      "codes": ["OOT Dodongo Cavern GS Near Boss"]
     },
     {
       "coords": [397, 405],
       "image": "gold_skulltula",
-      "codes": [
-        "OOT Dodongo Cavern GS Side Room"
-      ]
+      "codes": ["OOT Dodongo Cavern GS Side Room"]
     },
     {
       "coords": [392, 350],
       "image": "gold_skulltula",
-      "codes": [
-        "OOT Dodongo Cavern GS Scarecrow"
-      ]
+      "codes": ["OOT Dodongo Cavern GS Scarecrow"]
     },
     {
       "coords": [543, 332],
       "image": "gold_skulltula",
-      "codes": [
-        "OOT Dodongo Cavern GS Stairs Top"
-      ]
+      "codes": ["OOT Dodongo Cavern GS Stairs Top"]
     },
     {
       "coords": [543, 301],
       "image": "gold_skulltula",
-      "codes": [
-        "OOT Dodongo Cavern GS Stairs Vines"
-      ]
+      "codes": ["OOT Dodongo Cavern GS Stairs Vines"]
     },
     {
       "coords": [272, 365],
       "image": "business_scrub_oot",
-      "codes": [
-        "OOT Dodongo Cavern Lobby Scrub"
-      ]
+      "codes": ["OOT Dodongo Cavern Lobby Scrub"]
     },
     {
       "coords": [392, 257],
       "image": "business_scrub_oot",
-      "codes": [
-        "OOT Dodongo Cavern Green Side Room Scrub"
-      ]
+      "codes": ["OOT Dodongo Cavern Green Side Room Scrub"]
     },
     {
       "coords": [669, 296],
@@ -227,38 +197,28 @@
     {
       "coords": [304, 274],
       "image": "grass",
-      "codes": [
-        "OOT Dodongo Cavern Grass Pre-Boss"
-      ]
+      "codes": ["OOT Dodongo Cavern Grass Pre-Boss"]
     },
     {
       "coords": [386, 389],
       "image": "grass",
       "overlays": ["broken"],
-      "codes": [
-        "OOT Dodongo Cavern Grass East Corridor Side Room"
-      ]
+      "codes": ["OOT Dodongo Cavern Grass East Corridor Side Room"]
     },
     {
       "coords": [583, 360],
       "image": "grass",
-      "codes": [
-        "OOT Dodongo Cavern Grass Lobby"
-      ]
+      "codes": ["OOT Dodongo Cavern Grass Lobby"]
     },
     {
       "coords": [666, 324],
       "image": "grass",
-      "codes": [
-        "OOT Dodongo Cavern Grass Bomb Bag Room"
-      ]
+      "codes": ["OOT Dodongo Cavern Grass Bomb Bag Room"]
     },
     {
       "coords": [717, 357],
       "image": "grass",
-      "codes": [
-        "OOT Dodongo Cavern Grass Pre-Miniboss"
-      ]
+      "codes": ["OOT Dodongo Cavern Grass Pre-Miniboss"]
     },
     {
       "coords": [732, 297],
@@ -271,23 +231,17 @@
     {
       "coords": [679, 367],
       "image": "heart",
-      "codes": [
-        "OOT Dodongo Cavern Heart Bomb Bag Room"
-      ]
+      "codes": ["OOT Dodongo Cavern Heart Bomb Bag Room"]
     },
     {
       "coords": [460, 301],
       "image": "heart",
-      "codes": [
-        "OOT Dodongo Cavern Heart Miniboss Lava"
-      ]
+      "codes": ["OOT Dodongo Cavern Heart Miniboss Lava"]
     },
     {
       "coords": [341, 313],
       "image": "gossip_stone",
-      "codes": [
-        "OOT Dodongo Cavern Gossip"
-      ]
+      "codes": ["OOT Dodongo Cavern Gossip"]
     }
   ]
 }

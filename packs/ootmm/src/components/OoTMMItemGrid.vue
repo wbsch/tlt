@@ -24,9 +24,9 @@ interface GridItemRefAlias {
 }
 
 interface GridItemMultiActivation {
-  item: string
-  title?: string
-  activateAlso: string[]
+  item: string;
+  title?: string;
+  activateAlso: string[];
 }
 
 const props = defineProps<{
@@ -61,12 +61,15 @@ function getGridRefFromAliasKey(value: string): string {
   return value.slice(GRID_REF_ALIAS_PREFIX.length);
 }
 
-function makeGridMultiActivateKey(item: string, activateAlso: string[]): string {
-  return `${GRID_MULTI_ACTIVATE_PREFIX}${item}::${activateAlso.join('|')}`
+function makeGridMultiActivateKey(
+  item: string,
+  activateAlso: string[],
+): string {
+  return `${GRID_MULTI_ACTIVATE_PREFIX}${item}::${activateAlso.join('|')}`;
 }
 
 function isGridMultiActivateKey(value: string): boolean {
-  return value.startsWith(GRID_MULTI_ACTIVATE_PREFIX)
+  return value.startsWith(GRID_MULTI_ACTIVATE_PREFIX);
 }
 
 function collectGridItemRefAliases(
@@ -114,42 +117,42 @@ function collectGridMultiActivations(
   element: unknown,
   activations: Record<string, GridItemMultiActivation>,
 ) {
-  if (!element || typeof element !== 'object') return
+  if (!element || typeof element !== 'object') return;
 
   if (isItemGridMultiActivateRef(element)) {
-    const key = makeGridMultiActivateKey(element.item, element.activateAlso)
+    const key = makeGridMultiActivateKey(element.item, element.activateAlso);
     activations[key] = {
       item: element.item,
       title: element.title,
       activateAlso: element.activateAlso,
-    }
-    return
+    };
+    return;
   }
 
   if (Array.isArray(element)) {
     for (const child of element) {
-      collectGridMultiActivations(child, activations)
+      collectGridMultiActivations(child, activations);
     }
-    return
+    return;
   }
 
-  const maybeRows = (element as { rows?: unknown }).rows
+  const maybeRows = (element as { rows?: unknown }).rows;
   if (Array.isArray(maybeRows)) {
     for (const row of maybeRows) {
-      collectGridMultiActivations(row, activations)
+      collectGridMultiActivations(row, activations);
     }
   }
 
-  const maybeContent = (element as { content?: unknown }).content
+  const maybeContent = (element as { content?: unknown }).content;
   if (Array.isArray(maybeContent)) {
     for (const child of maybeContent) {
-      collectGridMultiActivations(child, activations)
+      collectGridMultiActivations(child, activations);
     }
   }
 
-  const maybeItem = (element as { item?: unknown }).item
+  const maybeItem = (element as { item?: unknown }).item;
   if (maybeItem !== undefined) {
-    collectGridMultiActivations(maybeItem, activations)
+    collectGridMultiActivations(maybeItem, activations);
   }
 }
 
@@ -161,13 +164,15 @@ const gridItemRefAliases = computed<Record<string, GridItemRefAlias>>(() => {
   return aliases;
 });
 
-const gridItemMultiActivations = computed<Record<string, GridItemMultiActivation>>(() => {
-  const activations: Record<string, GridItemMultiActivation> = {}
-  collectGridMultiActivations(sharedGrid.value, activations)
-  collectGridMultiActivations(ootGrid.value, activations)
-  collectGridMultiActivations(mmGrid.value, activations)
-  return activations
-})
+const gridItemMultiActivations = computed<
+  Record<string, GridItemMultiActivation>
+>(() => {
+  const activations: Record<string, GridItemMultiActivation> = {};
+  collectGridMultiActivations(sharedGrid.value, activations);
+  collectGridMultiActivations(ootGrid.value, activations);
+  collectGridMultiActivations(mmGrid.value, activations);
+  return activations;
+});
 
 const hasOotItems = computed(() => {
   if (!props.availableItemIds || props.availableItemIds.size === 0) return true;
@@ -298,8 +303,8 @@ function isLabelItem(itemId: string): boolean {
 
 function resolveVisibleItemRef(itemRef: unknown): string | null {
   if (isItemGridMultiActivateRef(itemRef)) {
-    if (!isItemVisible(itemRef.item)) return null
-    return makeGridMultiActivateKey(itemRef.item, itemRef.activateAlso)
+    if (!isItemVisible(itemRef.item)) return null;
+    return makeGridMultiActivateKey(itemRef.item, itemRef.activateAlso);
   }
 
   if (isItemGridAliasRef(itemRef)) {

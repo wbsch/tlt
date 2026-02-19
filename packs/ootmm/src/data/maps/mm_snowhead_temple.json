@@ -8,170 +8,122 @@
     {
       "coords": [792, 80],
       "image": "heart_container",
-      "codes": [
-        "MM Snowhead Temple Boss HC"
-      ]
+      "codes": ["MM Snowhead Temple Boss HC"]
     },
     {
       "coords": [808, 80],
       "image": "gohts_remain",
-      "codes": [
-        "MM Snowhead Temple Boss"
-      ]
+      "codes": ["MM Snowhead Temple Boss"]
     },
     {
       "coords": [843, 99],
       "image": "chest",
-      "codes": [
-        "MM Snowhead Temple Boss Key"
-      ]
+      "codes": ["MM Snowhead Temple Boss Key"]
     },
     {
       "coords": [700, 482],
       "image": "chest",
-      "codes": [
-        "MM Snowhead Temple Bridge Room"
-      ]
+      "codes": ["MM Snowhead Temple Bridge Room"]
     },
     {
       "coords": [611, 512],
       "image": "chest",
-      "codes": [
-        "MM Snowhead Temple Compass Room Ledge"
-      ]
+      "codes": ["MM Snowhead Temple Compass Room Ledge"]
     },
     {
       "coords": [574, 490],
       "image": "chest",
-      "codes": [
-        "MM Snowhead Temple Compass"
-      ]
+      "codes": ["MM Snowhead Temple Compass"]
     },
     {
       "coords": [593, 465],
       "image": "chest",
-      "codes": [
-        "MM Snowhead Temple Block Room"
-      ]
+      "codes": ["MM Snowhead Temple Block Room"]
     },
     {
       "coords": [573, 423],
       "image": "chest",
-      "codes": [
-        "MM Snowhead Temple Block Room Ledge"
-      ]
+      "codes": ["MM Snowhead Temple Block Room Ledge"]
     },
     {
       "coords": [589, 330],
       "image": "chest",
-      "codes": [
-        "MM Snowhead Temple Pillars Room"
-      ]
+      "codes": ["MM Snowhead Temple Pillars Room"]
     },
     {
       "coords": [356, 447],
       "image": "chest",
-      "codes": [
-        "MM Snowhead Temple Central Room Bottom"
-      ]
+      "codes": ["MM Snowhead Temple Central Room Bottom"]
     },
     {
       "coords": [121, 228],
       "image": "chest",
-      "codes": [
-        "MM Snowhead Temple Icicle Room Alcove"
-      ]
+      "codes": ["MM Snowhead Temple Icicle Room Alcove"]
     },
     {
       "coords": [103, 186],
       "image": "chest",
-      "codes": [
-        "MM Snowhead Temple Icicle Room"
-      ]
+      "codes": ["MM Snowhead Temple Icicle Room"]
     },
     {
       "coords": [105, 143],
       "image": "chest",
-      "codes": [
-        "MM Snowhead Temple Fire Arrow"
-      ]
+      "codes": ["MM Snowhead Temple Fire Arrow"]
     },
     {
       "coords": [144, 101],
       "image": "chest",
-      "codes": [
-        "MM Snowhead Temple Central Room Alcove"
-      ]
+      "codes": ["MM Snowhead Temple Central Room Alcove"]
     },
     {
       "coords": [261, 121],
       "image": "chest",
-      "codes": [
-        "MM Snowhead Temple Map Alcove"
-      ]
+      "codes": ["MM Snowhead Temple Map Alcove"]
     },
     {
       "coords": [276, 138],
       "image": "chest",
-      "codes": [
-        "MM Snowhead Temple Map"
-      ]
+      "codes": ["MM Snowhead Temple Map"]
     },
     {
       "coords": [738, 144],
       "image": "stray_fairy",
-      "codes": [
-        "MM Snowhead Temple SF Dinolfos 2"
-      ]
+      "codes": ["MM Snowhead Temple SF Dinolfos 2"]
     },
     {
       "coords": [729, 119],
       "image": "stray_fairy",
-      "codes": [
-        "MM Snowhead Temple SF Dinolfos 1"
-      ]
+      "codes": ["MM Snowhead Temple SF Dinolfos 1"]
     },
     {
       "coords": [403, 149],
       "image": "stray_fairy",
-      "codes": [
-        "MM Snowhead Temple SF Snow Room"
-      ]
+      "codes": ["MM Snowhead Temple SF Snow Room"]
     },
     {
       "coords": [244, 138],
       "image": "stray_fairy",
-      "codes": [
-        "MM Snowhead Temple SF Map Room"
-      ]
+      "codes": ["MM Snowhead Temple SF Map Room"]
     },
     {
       "coords": [170, 224],
       "image": "stray_fairy",
-      "codes": [
-        "MM Snowhead Temple SF Dual Switches"
-      ]
+      "codes": ["MM Snowhead Temple SF Dual Switches"]
     },
     {
       "coords": [729, 426],
       "image": "stray_fairy",
-      "codes": [
-        "MM Snowhead Temple SF Bridge Under Platform"
-      ]
+      "codes": ["MM Snowhead Temple SF Bridge Under Platform"]
     },
     {
       "coords": [729, 451],
       "image": "stray_fairy",
-      "codes": [
-        "MM Snowhead Temple SF Bridge Pillar"
-      ]
+      "codes": ["MM Snowhead Temple SF Bridge Pillar"]
     },
     {
       "coords": [550, 479],
       "image": "stray_fairy",
-      "codes": [
-        "MM Snowhead Temple SF Compass Room Crate"
-      ]
+      "codes": ["MM Snowhead Temple SF Compass Room Crate"]
     },
     {
       "coords": [905, 100],
@@ -356,9 +308,7 @@
     {
       "coords": [736, 437],
       "image": "crate",
-      "codes": [
-        "MM Snowhead Temple Crate Bridge"
-      ]
+      "codes": ["MM Snowhead Temple Crate Bridge"]
     },
     {
       "coords": [265, 168],
@@ -382,23 +332,17 @@
     {
       "coords": [88, 202],
       "image": "red_rupee",
-      "codes": [
-        "MM Snowhead Temple Rupee 1"
-      ]
+      "codes": ["MM Snowhead Temple Rupee 1"]
     },
     {
       "coords": [111, 212],
       "image": "red_rupee",
-      "codes": [
-        "MM Snowhead Temple Rupee 2"
-      ]
+      "codes": ["MM Snowhead Temple Rupee 2"]
     },
     {
       "coords": [129, 192],
       "image": "red_rupee",
-      "codes": [
-        "MM Snowhead Temple Rupee 3"
-      ]
+      "codes": ["MM Snowhead Temple Rupee 3"]
     },
     {
       "coords": [369, 403],
@@ -427,9 +371,7 @@
     {
       "coords": [99, 181],
       "image": "big_snowball",
-      "codes": [
-        "MM Snowhead Temple Big Snowball Icicle Room"
-      ]
+      "codes": ["MM Snowhead Temple Big Snowball Icicle Room"]
     },
     {
       "coords": [113, 182],

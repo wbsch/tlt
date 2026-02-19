@@ -6,10 +6,7 @@
   "height": 600,
   "markers": [
     {
-      "coords": [
-        400,
-        182
-      ],
+      "coords": [400, 182],
       "image": "chest",
       "codes": [
         "OOT Gerudo Training Grounds Behind Block Enemy Back",
@@ -19,190 +16,97 @@
       ]
     },
     {
-      "coords": [
-        412,
-        239
-      ],
+      "coords": [412, 239],
       "image": "chest",
-      "codes": [
-        "OOT Gerudo Training Grounds Near Block"
-      ]
+      "codes": ["OOT Gerudo Training Grounds Near Block"]
     },
     {
-      "coords": [
-        480,
-        265
-      ],
+      "coords": [480, 265],
       "image": "chest",
-      "codes": [
-        "OOT Gerudo Training Grounds Eye Statue"
-      ]
+      "codes": ["OOT Gerudo Training Grounds Eye Statue"]
     },
     {
-      "coords": [
-        387,
-        375
-      ],
+      "coords": [387, 375],
       "image": "chest",
-      "codes": [
-        "OOT Gerudo Training Grounds Stalfos"
-      ]
+      "codes": ["OOT Gerudo Training Grounds Stalfos"]
     },
     {
-      "coords": [
-        468,
-        384
-      ],
+      "coords": [468, 384],
       "image": "chest",
-      "codes": [
-        "OOT Gerudo Training Grounds Entrance 1"
-      ]
+      "codes": ["OOT Gerudo Training Grounds Entrance 1"]
     },
     {
-      "coords": [
-        496,
-        384
-      ],
+      "coords": [496, 384],
       "image": "chest",
-      "codes": [
-        "OOT Gerudo Training Grounds Entrance 2"
-      ]
+      "codes": ["OOT Gerudo Training Grounds Entrance 2"]
     },
     {
-      "coords": [
-        568,
-        389
-      ],
+      "coords": [568, 389],
       "image": "chest",
-      "codes": [
-        "OOT Gerudo Training Grounds Lizalfos"
-      ]
+      "codes": ["OOT Gerudo Training Grounds Lizalfos"]
     },
     {
-      "coords": [
-        548,
-        317
-      ],
+      "coords": [548, 317],
       "image": "collectible",
-      "codes": [
-        "OOT Gerudo Training Freestanding Key"
-      ]
+      "codes": ["OOT Gerudo Training Freestanding Key"]
     },
     {
-      "coords": [
-        602,
-        308
-      ],
+      "coords": [602, 308],
       "image": "chest",
-      "codes": [
-        "OOT Gerudo Training Water"
-      ]
+      "codes": ["OOT Gerudo Training Water"]
     },
     {
-      "coords": [
-        565,
-        251
-      ],
+      "coords": [565, 251],
       "image": "chest",
-      "codes": [
-        "OOT Gerudo Training Grounds Hammer Room Switch"
-      ]
+      "codes": ["OOT Gerudo Training Grounds Hammer Room Switch"]
     },
     {
-      "coords": [
-        565,
-        231
-      ],
+      "coords": [565, 231],
       "image": "chest",
-      "codes": [
-        "OOT Gerudo Training Grounds Hammer Room"
-      ]
+      "codes": ["OOT Gerudo Training Grounds Hammer Room"]
     },
     {
-      "coords": [
-        463,
-        339
-      ],
+      "coords": [463, 339],
       "image": "chest",
-      "codes": [
-        "OOT Gerudo Training Maze Upper Fake Ceiling"
-      ]
+      "codes": ["OOT Gerudo Training Maze Upper Fake Ceiling"]
     },
     {
-      "coords": [
-        506,
-        300
-      ],
+      "coords": [506, 300],
       "image": "chest",
-      "codes": [
-        "OOT Gerudo Training Maze Side Chest 2"
-      ]
+      "codes": ["OOT Gerudo Training Maze Side Chest 2"]
     },
     {
-      "coords": [
-        499,
-        316
-      ],
+      "coords": [499, 316],
       "image": "chest",
-      "codes": [
-        "OOT Gerudo Training Maze Side Chest 1"
-      ]
+      "codes": ["OOT Gerudo Training Maze Side Chest 1"]
     },
     {
-      "coords": [
-        482,
-        313
-      ],
+      "coords": [482, 313],
       "image": "chest",
-      "codes": [
-        "OOT Gerudo Training Maze Chest 4"
-      ]
+      "codes": ["OOT Gerudo Training Maze Chest 4"]
     },
     {
-      "coords": [
-        447,
-        313
-      ],
+      "coords": [447, 313],
       "image": "chest",
-      "codes": [
-        "OOT Gerudo Training Maze Chest 1"
-      ]
+      "codes": ["OOT Gerudo Training Maze Chest 1"]
     },
     {
-      "coords": [
-        448,
-        288
-      ],
+      "coords": [448, 288],
       "image": "chest",
-      "codes": [
-        "OOT Gerudo Training Maze Chest 2"
-      ]
+      "codes": ["OOT Gerudo Training Maze Chest 2"]
     },
     {
-      "coords": [
-        464,
-        288
-      ],
+      "coords": [464, 288],
       "image": "chest",
-      "codes": [
-        "OOT Gerudo Training Maze Chest 3"
-      ]
+      "codes": ["OOT Gerudo Training Maze Chest 3"]
     },
     {
-      "coords": [
-        480,
-        286
-      ],
+      "coords": [480, 286],
       "image": "chest",
-      "codes": [
-        "OOT Gerudo Training Maze Upper Cage"
-      ]
+      "codes": ["OOT Gerudo Training Maze Upper Cage"]
     },
     {
-      "coords": [
-        613,
-        321
-      ],
+      "coords": [613, 321],
       "image": "silver_rupee",
       "codes": [
         "OOT Gerudo Training Grounds SR Water 1",
@@ -213,10 +117,7 @@
       ]
     },
     {
-      "coords": [
-        613,
-        321
-      ],
+      "coords": [613, 321],
       "image": "silver_rupee",
       "codes": [
         "OOT Gerudo Training Grounds SR Water 1",
@@ -227,10 +128,7 @@
       ]
     },
     {
-      "coords": [
-        613,
-        321
-      ],
+      "coords": [613, 321],
       "image": "silver_rupee",
       "codes": [
         "OOT Gerudo Training Grounds SR Water 1",
@@ -241,10 +139,7 @@
       ]
     },
     {
-      "coords": [
-        613,
-        321
-      ],
+      "coords": [613, 321],
       "image": "silver_rupee",
       "codes": [
         "OOT Gerudo Training Grounds SR Water 1",
@@ -255,10 +150,7 @@
       ]
     },
     {
-      "coords": [
-        613,
-        321
-      ],
+      "coords": [613, 321],
       "image": "silver_rupee",
       "codes": [
         "OOT Gerudo Training Grounds SR Water 1",
@@ -269,10 +161,7 @@
       ]
     },
     {
-      "coords": [
-        565,
-        302
-      ],
+      "coords": [565, 302],
       "image": "silver_rupee",
       "codes": [
         "OOT Gerudo Training Grounds SR Lava Back Center",
@@ -283,10 +172,7 @@
       ]
     },
     {
-      "coords": [
-        565,
-        302
-      ],
+      "coords": [565, 302],
       "image": "silver_rupee",
       "codes": [
         "OOT Gerudo Training Grounds SR Lava Back Center",
@@ -297,10 +183,7 @@
       ]
     },
     {
-      "coords": [
-        565,
-        302
-      ],
+      "coords": [565, 302],
       "image": "silver_rupee",
       "codes": [
         "OOT Gerudo Training Grounds SR Lava Back Center",
@@ -311,10 +194,7 @@
       ]
     },
     {
-      "coords": [
-        565,
-        302
-      ],
+      "coords": [565, 302],
       "image": "silver_rupee",
       "codes": [
         "OOT Gerudo Training Grounds SR Lava Back Center",
@@ -325,10 +205,7 @@
       ]
     },
     {
-      "coords": [
-        565,
-        302
-      ],
+      "coords": [565, 302],
       "image": "silver_rupee",
       "codes": [
         "OOT Gerudo Training Grounds SR Lava Back Center",
@@ -339,10 +216,7 @@
       ]
     },
     {
-      "coords": [
-        399,
-        315
-      ],
+      "coords": [399, 315],
       "image": "silver_rupee",
       "codes": [
         "OOT Gerudo Training Grounds SR Slope Back",
@@ -353,10 +227,7 @@
       ]
     },
     {
-      "coords": [
-        399,
-        315
-      ],
+      "coords": [399, 315],
       "image": "silver_rupee",
       "codes": [
         "OOT Gerudo Training Grounds SR Slope Back",
@@ -367,10 +238,7 @@
       ]
     },
     {
-      "coords": [
-        399,
-        315
-      ],
+      "coords": [399, 315],
       "image": "silver_rupee",
       "codes": [
         "OOT Gerudo Training Grounds SR Slope Back",
@@ -381,10 +249,7 @@
       ]
     },
     {
-      "coords": [
-        399,
-        315
-      ],
+      "coords": [399, 315],
       "image": "silver_rupee",
       "codes": [
         "OOT Gerudo Training Grounds SR Slope Back",
@@ -395,10 +260,7 @@
       ]
     },
     {
-      "coords": [
-        399,
-        315
-      ],
+      "coords": [399, 315],
       "image": "silver_rupee",
       "codes": [
         "OOT Gerudo Training Grounds SR Slope Back",
@@ -409,10 +271,7 @@
       ]
     },
     {
-      "coords": [
-        580,
-        401
-      ],
+      "coords": [580, 401],
       "image": "heart",
       "codes": [
         "OOT Gerudo Training Grounds Heart 1",
@@ -420,44 +279,24 @@
       ]
     },
     {
-      "coords": [
-        568,
-        362
-      ],
+      "coords": [568, 362],
       "image": "wonder_item_random",
-      "codes": [
-        "OOT Gerudo Training Grounds Wonder Item Beamos Room"
-      ]
+      "codes": ["OOT Gerudo Training Grounds Wonder Item Beamos Room"]
     },
     {
-      "coords": [
-        565,
-        267
-      ],
+      "coords": [565, 267],
       "image": "wonder_item_red_rupee",
-      "codes": [
-        "OOT Gerudo Training Grounds Wonder Item Torch Slugs Room"
-      ]
+      "codes": ["OOT Gerudo Training Grounds Wonder Item Torch Slugs Room"]
     },
     {
-      "coords": [
-        480,
-        249
-      ],
+      "coords": [480, 249],
       "image": "wonder_item_big_magic_jar",
-      "codes": [
-        "OOT Gerudo Training Grounds Wonder Item Eye Statue Room"
-      ]
+      "codes": ["OOT Gerudo Training Grounds Wonder Item Eye Statue Room"]
     },
     {
-      "coords": [
-        482,
-        391
-      ],
+      "coords": [482, 391],
       "image": "big_fairy_spot",
-      "codes": [
-        "OOT Gerudo Training Grounds Entrance Big Fairy"
-      ]
+      "codes": ["OOT Gerudo Training Grounds Entrance Big Fairy"]
     }
   ]
 }

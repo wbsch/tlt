@@ -8,121 +8,87 @@
     {
       "coords": [426, 561],
       "image": "chest",
-      "codes": [
-        "OOT Water Temple Under Center"
-      ]
+      "codes": ["OOT Water Temple Under Center"]
     },
     {
       "coords": [771, 547],
       "image": "chest",
-      "codes": [
-        "OOT Water Temple Shell Chest"
-      ]
+      "codes": ["OOT Water Temple Shell Chest"]
     },
     {
       "coords": [607, 456],
       "image": "chest",
-      "codes": [
-        "OOT Water Temple Dragon Chest"
-      ]
+      "codes": ["OOT Water Temple Dragon Chest"]
     },
     {
       "coords": [644, 412],
       "image": "chest",
-      "codes": [
-        "OOT Water Temple Boss Key Chest"
-      ]
+      "codes": ["OOT Water Temple Boss Key Chest"]
     },
     {
       "coords": [625, 426],
       "image": "chest",
-      "codes": [
-        "OOT Water Temple River Chest"
-      ]
+      "codes": ["OOT Water Temple River Chest"]
     },
     {
       "coords": [770, 280],
       "image": "chest",
-      "codes": [
-        "OOT Water Temple Map"
-      ]
+      "codes": ["OOT Water Temple Map"]
     },
     {
       "coords": [759, 228],
       "image": "chest",
-      "codes": [
-        "OOT Water Temple Compass"
-      ]
+      "codes": ["OOT Water Temple Compass"]
     },
     {
       "coords": [684, 170],
       "image": "heart_container",
-      "codes": [
-        "OOT Water Temple Boss HC"
-      ]
+      "codes": ["OOT Water Temple Boss HC"]
     },
     {
       "coords": [700, 170],
       "image": "water_medallion",
-      "codes": [
-        "OOT Water Temple Boss"
-      ]
+      "codes": ["OOT Water Temple Boss"]
     },
     {
       "coords": [575, 106],
       "image": "chest",
-      "codes": [
-        "OOT Water Temple Longshot"
-      ]
+      "codes": ["OOT Water Temple Longshot"]
     },
     {
       "coords": [427, 316],
       "image": "chest",
-      "codes": [
-        "OOT Water Temple Corridor Chest"
-      ]
+      "codes": ["OOT Water Temple Corridor Chest"]
     },
     {
       "coords": [461, 279],
       "image": "chest",
-      "codes": [
-        "OOT Water Temple Bombable Chest"
-      ]
+      "codes": ["OOT Water Temple Bombable Chest"]
     },
     {
       "coords": [302, 567],
       "image": "gold_skulltula",
-      "codes": [
-        "OOT Water Temple GS Cage"
-      ]
+      "codes": ["OOT Water Temple GS Cage"]
     },
     {
       "coords": [652, 440],
       "image": "gold_skulltula",
-      "codes": [
-        "OOT Water Temple GS Waterfalls"
-      ]
+      "codes": ["OOT Water Temple GS Waterfalls"]
     },
     {
       "coords": [599, 398],
       "image": "gold_skulltula",
-      "codes": [
-        "OOT Water Temple GS River"
-      ]
+      "codes": ["OOT Water Temple GS River"]
     },
     {
       "coords": [688, 257],
       "image": "gold_skulltula",
-      "codes": [
-        "OOT Water Temple GS Center"
-      ]
+      "codes": ["OOT Water Temple GS Center"]
     },
     {
       "coords": [621, 247],
       "image": "gold_skulltula",
-      "codes": [
-        "OOT Water Temple GS Large Pit"
-      ]
+      "codes": ["OOT Water Temple GS Large Pit"]
     },
     {
       "coords": [310, 570],
@@ -145,10 +111,7 @@
     {
       "coords": [595, 433],
       "image": "pot",
-      "codes": [
-        "OOT Water Temple Pot River 1",
-        "OOT Water Temple Pot River 2"
-      ]
+      "codes": ["OOT Water Temple Pot River 1", "OOT Water Temple Pot River 2"]
     },
     {
       "coords": [651, 416],
@@ -210,24 +173,17 @@
     {
       "coords": [576, 430],
       "image": "heart",
-      "codes": [
-        "OOT Water Temple Heart 1",
-        "OOT Water Temple Heart 2"
-      ]
+      "codes": ["OOT Water Temple Heart 1", "OOT Water Temple Heart 2"]
     },
     {
       "coords": [585, 400],
       "image": "heart",
-      "codes": [
-        "OOT Water Temple Heart 3"
-      ]
+      "codes": ["OOT Water Temple Heart 3"]
     },
     {
       "coords": [598, 411],
       "image": "heart",
-      "codes": [
-        "OOT Water Temple Heart 4"
-      ]
+      "codes": ["OOT Water Temple Heart 4"]
     }
   ]
 }

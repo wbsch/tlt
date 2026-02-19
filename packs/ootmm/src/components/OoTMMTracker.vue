@@ -75,7 +75,9 @@ const settingsByName = new Map<string, CoreSetting>(
     .filter((setting) => typeof setting.name === 'string')
     .map((setting) => [setting.name as string, setting]),
 );
-const supportedSettingKeys = new Set(SETTINGS_DEFINITIONS.map((setting) => setting.key));
+const supportedSettingKeys = new Set(
+  SETTINGS_DEFINITIONS.map((setting) => setting.key),
+);
 const itemNameToId = new Map<string, string>();
 const ALL_TRICKS = TRICKS as Record<string, { name?: string }>;
 const trickNameToKey = new Map<string, string>();
@@ -427,11 +429,19 @@ const filteredMapSelectorMaps = computed(() => {
   return [...maps].sort(compareMapSelectorMapsByVisibleCount);
 });
 const mapSelectorFirstZeroCountIndex = computed(() =>
-  filteredMapSelectorMaps.value.findIndex((mapDef) => getMapSelectorVisibleCount(mapDef) === 0),
+  filteredMapSelectorMaps.value.findIndex(
+    (mapDef) => getMapSelectorVisibleCount(mapDef) === 0,
+  ),
 );
 
-function isMapSelectorFirstZeroCountOption(index: number, mapDef: MapDef): boolean {
-  return getMapSelectorVisibleCount(mapDef) === 0 && index === mapSelectorFirstZeroCountIndex.value;
+function isMapSelectorFirstZeroCountOption(
+  index: number,
+  mapDef: MapDef,
+): boolean {
+  return (
+    getMapSelectorVisibleCount(mapDef) === 0 &&
+    index === mapSelectorFirstZeroCountIndex.value
+  );
 }
 
 const activeMapSelectorOptionId = computed(() => {
@@ -1292,7 +1302,10 @@ onBeforeUnmount(() => {
                       class="map-selector-option"
                       :class="{
                         'is-highlighted': index === mapSelectorHighlightedIndex,
-                        'is-zero-separator': isMapSelectorFirstZeroCountOption(index, mapDef),
+                        'is-zero-separator': isMapSelectorFirstZeroCountOption(
+                          index,
+                          mapDef,
+                        ),
                       }"
                       role="option"
                       :aria-selected="index === mapSelectorHighlightedIndex"

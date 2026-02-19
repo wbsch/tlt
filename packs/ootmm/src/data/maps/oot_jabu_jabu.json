@@ -8,72 +8,52 @@
     {
       "coords": [286, 232],
       "image": "chest",
-      "codes": [
-        "OOT Jabu-Jabu Map Chest"
-      ]
+      "codes": ["OOT Jabu-Jabu Map Chest"]
     },
     {
       "coords": [320, 190],
       "image": "chest",
-      "codes": [
-        "OOT Jabu-Jabu Compass Chest"
-      ]
+      "codes": ["OOT Jabu-Jabu Compass Chest"]
     },
     {
       "coords": [408, 232],
       "image": "chest",
-      "codes": [
-        "OOT Jabu-Jabu Boomerang Chest"
-      ]
+      "codes": ["OOT Jabu-Jabu Boomerang Chest"]
     },
     {
       "coords": [399, 304],
       "image": "heart_container",
-      "codes": [
-        "OOT Jabu-Jabu Boss Container"
-      ]
+      "codes": ["OOT Jabu-Jabu Boss Container"]
     },
     {
       "coords": [415, 304],
       "image": "zora_sapphire",
-      "codes": [
-        "OOT Jabu-Jabu Boss"
-      ]
+      "codes": ["OOT Jabu-Jabu Boss"]
     },
     {
       "coords": [404, 349],
       "image": "gold_skulltula",
-      "codes": [
-        "OOT Jabu-Jabu GS Near Boss"
-      ]
+      "codes": ["OOT Jabu-Jabu GS Near Boss"]
     },
     {
       "coords": [638, 264],
       "image": "gold_skulltula",
-      "codes": [
-        "OOT Jabu-Jabu GS Bottom Upper"
-      ]
+      "codes": ["OOT Jabu-Jabu GS Bottom Upper"]
     },
     {
       "coords": [662, 265],
       "image": "gold_skulltula",
-      "codes": [
-        "OOT Jabu-Jabu GS Bottom Lower"
-      ]
+      "codes": ["OOT Jabu-Jabu GS Bottom Lower"]
     },
     {
       "coords": [683, 308],
       "image": "gold_skulltula",
-      "codes": [
-        "OOT Jabu-Jabu GS Water Switch"
-      ]
+      "codes": ["OOT Jabu-Jabu GS Water Switch"]
     },
     {
       "coords": [613, 340],
       "image": "business_scrub_oot",
-      "codes": [
-        "OOT Jabu-Jabu Scrub"
-      ]
+      "codes": ["OOT Jabu-Jabu Scrub"]
     },
     {
       "coords": [299, 266],
@@ -119,10 +99,7 @@
     {
       "coords": [340, 327],
       "image": "small_crate",
-      "codes": [
-        "OOT Jabu-Jabu Small Crate 1",
-        "OOT Jabu-Jabu Small Crate 2"
-      ]
+      "codes": ["OOT Jabu-Jabu Small Crate 1", "OOT Jabu-Jabu Small Crate 2"]
     }
   ]
 }

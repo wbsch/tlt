@@ -6,255 +6,128 @@
   "height": 600,
   "markers": [
     {
-      "coords": [
-        316,
-        84
-      ],
+      "coords": [316, 84],
       "image": "chest",
-      "codes": [
-        "MM Pinnacle Rock Chest 1"
-      ]
+      "codes": ["MM Pinnacle Rock Chest 1"]
     },
     {
-      "coords": [
-        355,
-        203
-      ],
+      "coords": [355, 203],
       "image": "chest",
-      "codes": [
-        "MM Pinnacle Rock Chest 2"
-      ]
+      "codes": ["MM Pinnacle Rock Chest 2"]
     },
     {
-      "coords": [
-        361,
-        164
-      ],
+      "coords": [361, 164],
       "image": "npc",
-      "codes": [
-        "MM Pinnacle Rock HP"
-      ]
+      "codes": ["MM Pinnacle Rock HP"]
     },
     {
-      "coords": [
-        663,
-        146
-      ],
+      "coords": [663, 146],
       "image": "npc",
-      "overlays": [
-        "clear_state"
-      ],
-      "codes": [
-        "MM Great Bay Coast Fisherman HP"
-      ]
+      "overlays": ["clear_state"],
+      "codes": ["MM Great Bay Coast Fisherman HP"]
     },
     {
-      "coords": [
-        730,
-        96
-      ],
+      "coords": [730, 96],
       "image": "heart_piece",
-      "codes": [
-        "MM Great Bay Coast HP"
-      ]
+      "codes": ["MM Great Bay Coast HP"]
     },
     {
-      "coords": [
-        914,
-        540
-      ],
+      "coords": [914, 540],
       "image": "npc",
-      "codes": [
-        "MM Waterfall Rapids Beaver Race 2"
-      ]
+      "codes": ["MM Waterfall Rapids Beaver Race 2"]
     },
     {
-      "coords": [
-        914,
-        556
-      ],
+      "coords": [914, 556],
       "image": "npc",
-      "codes": [
-        "MM Waterfall Rapids Beaver Race 1"
-      ]
+      "codes": ["MM Waterfall Rapids Beaver Race 1"]
     },
     {
-      "coords": [
-        619,
-        524
-      ],
+      "coords": [619, 524],
       "image": "heart_piece",
-      "codes": [
-        "MM Zora Cape Waterfall HP"
-      ]
+      "codes": ["MM Zora Cape Waterfall HP"]
     },
     {
-      "coords": [
-        615,
-        479
-      ],
+      "coords": [615, 479],
       "image": "chest",
-      "codes": [
-        "MM Zora Cape Ledge Chest 2"
-      ]
+      "codes": ["MM Zora Cape Ledge Chest 2"]
     },
     {
-      "coords": [
-        585,
-        510
-      ],
+      "coords": [585, 510],
       "image": "chest",
-      "codes": [
-        "MM Zora Cape Ledge Chest 1"
-      ]
+      "codes": ["MM Zora Cape Ledge Chest 1"]
     },
     {
-      "coords": [
-        455,
-        528
-      ],
+      "coords": [455, 528],
       "image": "chest",
-      "codes": [
-        "MM Zora Cape Underwater Chest"
-      ]
+      "codes": ["MM Zora Cape Underwater Chest"]
     },
     {
-      "coords": [
-        176,
-        406
-      ],
+      "coords": [176, 406],
       "image": "npc",
-      "codes": [
-        "MM Zora Hall Scene Lights"
-      ]
+      "codes": ["MM Zora Hall Scene Lights"]
     },
     {
-      "coords": [
-        601,
-        288
-      ],
+      "coords": [601, 288],
       "image": "shop",
-      "codes": [
-        "MM Tingle Map Great Bay"
-      ]
+      "codes": ["MM Tingle Map Great Bay"]
     },
     {
-      "coords": [
-        606,
-        267
-      ],
+      "coords": [606, 267],
       "image": "owl_statue",
-      "codes": [
-        "MM Great Bay Coast Owl Statue"
-      ]
+      "codes": ["MM Great Bay Coast Owl Statue"]
     },
     {
-      "coords": [
-        382,
-        460
-      ],
+      "coords": [382, 460],
       "image": "owl_statue",
-      "codes": [
-        "MM Zora Cape Owl Statue"
-      ]
+      "codes": ["MM Zora Cape Owl Statue"]
     },
     {
-      "coords": [
-        261,
-        108
-      ],
+      "coords": [261, 108],
       "image": "pot",
-      "codes": [
-        "MM Pinnacle Rock Pot 01",
-        "MM Pinnacle Rock Pot 02"
-      ]
+      "codes": ["MM Pinnacle Rock Pot 01", "MM Pinnacle Rock Pot 02"]
     },
     {
-      "coords": [
-        296,
-        126
-      ],
+      "coords": [296, 126],
       "image": "pot",
-      "codes": [
-        "MM Pinnacle Rock Pot 10"
-      ]
+      "codes": ["MM Pinnacle Rock Pot 10"]
     },
     {
-      "coords": [
-        309,
-        142
-      ],
+      "coords": [309, 142],
       "image": "pot",
-      "codes": [
-        "MM Pinnacle Rock Pot 09"
-      ]
+      "codes": ["MM Pinnacle Rock Pot 09"]
     },
     {
-      "coords": [
-        284,
-        202
-      ],
+      "coords": [284, 202],
       "image": "pot",
-      "codes": [
-        "MM Pinnacle Rock Pot 05"
-      ]
+      "codes": ["MM Pinnacle Rock Pot 05"]
     },
     {
-      "coords": [
-        281,
-        163
-      ],
+      "coords": [281, 163],
       "image": "pot",
-      "codes": [
-        "MM Pinnacle Rock Pot 07"
-      ]
+      "codes": ["MM Pinnacle Rock Pot 07"]
     },
     {
-      "coords": [
-        299,
-        180
-      ],
+      "coords": [299, 180],
       "image": "pot",
-      "codes": [
-        "MM Pinnacle Rock Pot 06"
-      ]
+      "codes": ["MM Pinnacle Rock Pot 06"]
     },
     {
-      "coords": [
-        313,
-        162
-      ],
+      "coords": [313, 162],
       "image": "pot",
-      "codes": [
-        "MM Pinnacle Rock Pot 08"
-      ]
+      "codes": ["MM Pinnacle Rock Pot 08"]
     },
     {
-      "coords": [
-        340,
-        146
-      ],
+      "coords": [340, 146],
       "image": "pot",
-      "codes": [
-        "MM Pinnacle Rock Pot 11"
-      ]
+      "codes": ["MM Pinnacle Rock Pot 11"]
     },
     {
-      "coords": [
-        363,
-        133
-      ],
+      "coords": [363, 133],
       "image": "pot",
-      "codes": [
-        "MM Pinnacle Rock Pot 03",
-        "MM Pinnacle Rock Pot 04"
-      ]
+      "codes": ["MM Pinnacle Rock Pot 03", "MM Pinnacle Rock Pot 04"]
     },
     {
-      "coords": [
-        577,
-        278
-      ],
+      "coords": [577, 278],
       "image": "pot",
       "codes": [
         "MM Great Bay Coast Pot 01",
@@ -264,93 +137,47 @@
       ]
     },
     {
-      "coords": [
-        610,
-        181
-      ],
+      "coords": [610, 181],
       "image": "pot",
-      "codes": [
-        "MM Great Bay Coast Pot 05",
-        "MM Great Bay Coast Pot 06"
-      ]
+      "codes": ["MM Great Bay Coast Pot 05", "MM Great Bay Coast Pot 06"]
     },
     {
-      "coords": [
-        641,
-        78
-      ],
+      "coords": [641, 78],
       "image": "pot",
-      "codes": [
-        "MM Great Bay Coast Pot 11",
-        "MM Great Bay Coast Pot 12"
-      ]
+      "codes": ["MM Great Bay Coast Pot 11", "MM Great Bay Coast Pot 12"]
     },
     {
-      "coords": [
-        729,
-        116
-      ],
+      "coords": [729, 116],
       "image": "pot",
-      "codes": [
-        "MM Great Bay Coast Pot 09",
-        "MM Great Bay Coast Pot 10"
-      ]
+      "codes": ["MM Great Bay Coast Pot 09", "MM Great Bay Coast Pot 10"]
     },
     {
-      "coords": [
-        750,
-        143
-      ],
+      "coords": [750, 143],
       "image": "pot",
-      "codes": [
-        "MM Great Bay Coast Pot Ledge 3"
-      ]
+      "codes": ["MM Great Bay Coast Pot Ledge 3"]
     },
     {
-      "coords": [
-        732,
-        158
-      ],
+      "coords": [732, 158],
       "image": "pot",
-      "codes": [
-        "MM Great Bay Coast Pot 08"
-      ]
+      "codes": ["MM Great Bay Coast Pot 08"]
     },
     {
-      "coords": [
-        748,
-        159
-      ],
+      "coords": [748, 159],
       "image": "pot",
-      "codes": [
-        "MM Great Bay Coast Pot Ledge 2"
-      ]
+      "codes": ["MM Great Bay Coast Pot Ledge 2"]
     },
     {
-      "coords": [
-        738,
-        181
-      ],
+      "coords": [738, 181],
       "image": "pot",
-      "codes": [
-        "MM Great Bay Coast Pot 07"
-      ]
+      "codes": ["MM Great Bay Coast Pot 07"]
     },
     {
-      "coords": [
-        752,
-        175
-      ],
+      "coords": [752, 175],
       "image": "pot",
-      "codes": [
-        "MM Great Bay Coast Pot Ledge 1"
-      ]
+      "codes": ["MM Great Bay Coast Pot Ledge 1"]
     },
     {
-      "coords": [
-        603,
-        509
-      ],
+      "coords": [603, 509],
       "image": "pot",
       "codes": [
         "MM Zora Cape Pot Near Beavers 1",
@@ -358,14 +185,9 @@
       ]
     },
     {
-      "coords": [
-        523,
-        438
-      ],
+      "coords": [523, 438],
       "image": "pot",
-      "overlays": [
-        "day"
-      ],
+      "overlays": ["day"],
       "codes": [
         "MM Zora Cape Pot Game 1",
         "MM Zora Cape Pot Game 2",
@@ -375,10 +197,7 @@
       ]
     },
     {
-      "coords": [
-        390,
-        462
-      ],
+      "coords": [390, 462],
       "image": "pot",
       "codes": [
         "MM Zora Cape Pot Near Owl Statue 1",
@@ -388,10 +207,7 @@
       ]
     },
     {
-      "coords": [
-        703,
-        280
-      ],
+      "coords": [703, 280],
       "image": "butterfly",
       "codes": [
         "MM Great Bay Coast Common Butterfly 1",
@@ -399,24 +215,16 @@
       ]
     },
     {
-      "coords": [
-        702,
-        302
-      ],
+      "coords": [702, 302],
       "image": "butterfly",
-      "overlays": [
-        "clear_state"
-      ],
+      "overlays": ["clear_state"],
       "codes": [
         "MM Great Bay Coast Cleared Butterfly 1",
         "MM Great Bay Coast Cleared Butterfly 2"
       ]
     },
     {
-      "coords": [
-        702,
-        289
-      ],
+      "coords": [702, 289],
       "image": "grass",
       "codes": [
         "MM Great Bay Coast Grass 1",
@@ -427,306 +235,154 @@
       ]
     },
     {
-      "coords": [
-        633,
-        312
-      ],
+      "coords": [633, 312],
       "image": "rock",
-      "overlays": [
-        "clear_state"
-      ],
-      "codes": [
-        "MM Great Bay Coast Rock Water Cleared 1"
-      ]
+      "overlays": ["clear_state"],
+      "codes": ["MM Great Bay Coast Rock Water Cleared 1"]
     },
     {
-      "coords": [
-        602,
-        85
-      ],
+      "coords": [602, 85],
       "image": "rock",
-      "codes": [
-        "MM Great Bay Coast Rock Water 28"
-      ]
+      "codes": ["MM Great Bay Coast Rock Water 28"]
     },
     {
-      "coords": [
-        714,
-        101
-      ],
+      "coords": [714, 101],
       "image": "rock",
-      "codes": [
-        "MM Great Bay Coast Rock Ledge 3"
-      ]
+      "codes": ["MM Great Bay Coast Rock Ledge 3"]
     },
     {
-      "coords": [
-        685,
-        127
-      ],
+      "coords": [685, 127],
       "image": "rock",
-      "codes": [
-        "MM Great Bay Coast Rock Water 26"
-      ]
+      "codes": ["MM Great Bay Coast Rock Water 26"]
     },
     {
-      "coords": [
-        641,
-        137
-      ],
+      "coords": [641, 137],
       "image": "rock",
-      "codes": [
-        "MM Great Bay Coast Rock Water 27"
-      ]
+      "codes": ["MM Great Bay Coast Rock Water 27"]
     },
     {
-      "coords": [
-        691,
-        148
-      ],
+      "coords": [691, 148],
       "image": "rock",
-      "codes": [
-        "MM Great Bay Coast Rock Water 25"
-      ]
+      "codes": ["MM Great Bay Coast Rock Water 25"]
     },
     {
-      "coords": [
-        731,
-        174
-      ],
+      "coords": [731, 174],
       "image": "rock",
-      "codes": [
-        "MM Great Bay Coast Rock Ledge 2"
-      ]
+      "codes": ["MM Great Bay Coast Rock Ledge 2"]
     },
     {
-      "coords": [
-        713,
-        202
-      ],
+      "coords": [713, 202],
       "image": "rock",
-      "codes": [
-        "MM Great Bay Coast Rock Ledge 1"
-      ]
+      "codes": ["MM Great Bay Coast Rock Ledge 1"]
     },
     {
-      "coords": [
-        677,
-        206
-      ],
+      "coords": [677, 206],
       "image": "rock",
-      "codes": [
-        "MM Great Bay Coast Rock Water 24"
-      ]
+      "codes": ["MM Great Bay Coast Rock Water 24"]
     },
     {
-      "coords": [
-        665,
-        193
-      ],
+      "coords": [665, 193],
       "image": "rock",
-      "codes": [
-        "MM Great Bay Coast Rock Water 23"
-      ]
+      "codes": ["MM Great Bay Coast Rock Water 23"]
     },
     {
-      "coords": [
-        642,
-        207
-      ],
+      "coords": [642, 207],
       "image": "rock",
-      "codes": [
-        "MM Great Bay Coast Rock Water 22"
-      ]
+      "codes": ["MM Great Bay Coast Rock Water 22"]
     },
     {
-      "coords": [
-        650,
-        170
-      ],
+      "coords": [650, 170],
       "image": "rock",
-      "codes": [
-        "MM Great Bay Coast Rock Water 21"
-      ]
+      "codes": ["MM Great Bay Coast Rock Water 21"]
     },
     {
-      "coords": [
-        635,
-        170
-      ],
+      "coords": [635, 170],
       "image": "rock",
-      "codes": [
-        "MM Great Bay Coast Rock Water 20"
-      ]
+      "codes": ["MM Great Bay Coast Rock Water 20"]
     },
     {
-      "coords": [
-        612,
-        168
-      ],
+      "coords": [612, 168],
       "image": "rock",
-      "codes": [
-        "MM Great Bay Coast Rock Water 19"
-      ]
+      "codes": ["MM Great Bay Coast Rock Water 19"]
     },
     {
-      "coords": [
-        590,
-        163
-      ],
+      "coords": [590, 163],
       "image": "rock",
-      "codes": [
-        "MM Great Bay Coast Rock Water 18"
-      ]
+      "codes": ["MM Great Bay Coast Rock Water 18"]
     },
     {
-      "coords": [
-        562,
-        156
-      ],
+      "coords": [562, 156],
       "image": "rock",
-      "codes": [
-        "MM Great Bay Coast Rock Water 17"
-      ]
+      "codes": ["MM Great Bay Coast Rock Water 17"]
     },
     {
-      "coords": [
-        559,
-        172
-      ],
+      "coords": [559, 172],
       "image": "rock",
-      "codes": [
-        "MM Great Bay Coast Rock Water 16"
-      ]
+      "codes": ["MM Great Bay Coast Rock Water 16"]
     },
     {
-      "coords": [
-        583,
-        184
-      ],
+      "coords": [583, 184],
       "image": "rock",
-      "codes": [
-        "MM Great Bay Coast Rock Water 15"
-      ]
+      "codes": ["MM Great Bay Coast Rock Water 15"]
     },
     {
-      "coords": [
-        603,
-        215
-      ],
+      "coords": [603, 215],
       "image": "rock",
-      "codes": [
-        "MM Great Bay Coast Rock Water 13"
-      ]
+      "codes": ["MM Great Bay Coast Rock Water 13"]
     },
     {
-      "coords": [
-        557,
-        212
-      ],
+      "coords": [557, 212],
       "image": "rock",
-      "codes": [
-        "MM Great Bay Coast Rock Water 14"
-      ]
+      "codes": ["MM Great Bay Coast Rock Water 14"]
     },
     {
-      "coords": [
-        586,
-        239
-      ],
+      "coords": [586, 239],
       "image": "rock",
-      "codes": [
-        "MM Great Bay Coast Rock Water 12"
-      ]
+      "codes": ["MM Great Bay Coast Rock Water 12"]
     },
     {
-      "coords": [
-        602,
-        248
-      ],
+      "coords": [602, 248],
       "image": "rock",
-      "codes": [
-        "MM Great Bay Coast Rock Water 11"
-      ]
+      "codes": ["MM Great Bay Coast Rock Water 11"]
     },
     {
-      "coords": [
-        617,
-        254
-      ],
+      "coords": [617, 254],
       "image": "rock",
-      "codes": [
-        "MM Great Bay Coast Rock Water 10"
-      ]
+      "codes": ["MM Great Bay Coast Rock Water 10"]
     },
     {
-      "coords": [
-        559,
-        258
-      ],
+      "coords": [559, 258],
       "image": "rock",
-      "codes": [
-        "MM Great Bay Coast Rock Water 09"
-      ]
+      "codes": ["MM Great Bay Coast Rock Water 09"]
     },
     {
-      "coords": [
-        598,
-        297
-      ],
+      "coords": [598, 297],
       "image": "rock",
-      "codes": [
-        "MM Great Bay Coast Rock Water 08"
-      ]
+      "codes": ["MM Great Bay Coast Rock Water 08"]
     },
     {
-      "coords": [
-        620,
-        285
-      ],
+      "coords": [620, 285],
       "image": "rock",
-      "codes": [
-        "MM Great Bay Coast Rock Water 07"
-      ]
+      "codes": ["MM Great Bay Coast Rock Water 07"]
     },
     {
-      "coords": [
-        613,
-        303
-      ],
+      "coords": [613, 303],
       "image": "rock",
-      "overlays": [
-        "clear_state"
-      ],
-      "codes": [
-        "MM Great Bay Coast Rock Water Cleared 2"
-      ]
+      "overlays": ["clear_state"],
+      "codes": ["MM Great Bay Coast Rock Water Cleared 2"]
     },
     {
-      "coords": [
-        613,
-        314
-      ],
+      "coords": [613, 314],
       "image": "rock",
-      "codes": [
-        "MM Great Bay Coast Rock Water 05"
-      ]
+      "codes": ["MM Great Bay Coast Rock Water 05"]
     },
     {
-      "coords": [
-        629,
-        298
-      ],
+      "coords": [629, 298],
       "image": "rock",
-      "codes": [
-        "MM Great Bay Coast Rock Water 06"
-      ]
+      "codes": ["MM Great Bay Coast Rock Water 06"]
     },
     {
-      "coords": [
-        644,
-        304
-      ],
+      "coords": [644, 304],
       "image": "rock",
       "codes": [
         "MM Great Bay Coast Rock Water 01",
@@ -736,73 +392,38 @@
       ]
     },
     {
-      "coords": [
-        670,
-        314
-      ],
+      "coords": [670, 314],
       "image": "rock",
-      "codes": [
-        "MM Great Bay Coast Rock Sand 5"
-      ]
+      "codes": ["MM Great Bay Coast Rock Sand 5"]
     },
     {
-      "coords": [
-        683,
-        322
-      ],
+      "coords": [683, 322],
       "image": "rock",
-      "codes": [
-        "MM Great Bay Coast Rock Sand 4"
-      ]
+      "codes": ["MM Great Bay Coast Rock Sand 4"]
     },
     {
-      "coords": [
-        691,
-        306
-      ],
+      "coords": [691, 306],
       "image": "rock",
-      "codes": [
-        "MM Great Bay Coast Rock Sand 3"
-      ]
+      "codes": ["MM Great Bay Coast Rock Sand 3"]
     },
     {
-      "coords": [
-        705,
-        261
-      ],
+      "coords": [705, 261],
       "image": "rock",
-      "codes": [
-        "MM Great Bay Coast Rock Sand 1"
-      ]
+      "codes": ["MM Great Bay Coast Rock Sand 1"]
     },
     {
-      "coords": [
-        673,
-        249
-      ],
+      "coords": [673, 249],
       "image": "rock",
-      "codes": [
-        "MM Great Bay Coast Rock Sand 2"
-      ]
+      "codes": ["MM Great Bay Coast Rock Sand 2"]
     },
     {
-      "coords": [
-        602,
-        472
-      ],
+      "coords": [602, 472],
       "image": "rock",
-      "overlays": [
-        "cursed_state"
-      ],
-      "codes": [
-        "MM Zora Cape Rock Sand 5"
-      ]
+      "overlays": ["cursed_state"],
+      "codes": ["MM Zora Cape Rock Sand 5"]
     },
     {
-      "coords": [
-        596,
-        485
-      ],
+      "coords": [596, 485],
       "image": "rock",
       "codes": [
         "MM Zora Cape Rock Water 1",
@@ -813,62 +434,31 @@
       ]
     },
     {
-      "coords": [
-        574,
-        453
-      ],
+      "coords": [574, 453],
       "image": "rock",
-      "overlays": [
-        "cursed_state"
-      ],
-      "codes": [
-        "MM Zora Cape Rock Sand 4"
-      ]
+      "overlays": ["cursed_state"],
+      "codes": ["MM Zora Cape Rock Sand 4"]
     },
     {
-      "coords": [
-        552,
-        445
-      ],
+      "coords": [552, 445],
       "image": "rock",
-      "overlays": [
-        "cursed_state"
-      ],
-      "codes": [
-        "MM Zora Cape Rock Sand 3"
-      ]
+      "overlays": ["cursed_state"],
+      "codes": ["MM Zora Cape Rock Sand 3"]
     },
     {
-      "coords": [
-        535,
-        433
-      ],
+      "coords": [535, 433],
       "image": "rock",
-      "overlays": [
-        "cursed_state"
-      ],
-      "codes": [
-        "MM Zora Cape Rock Sand 2"
-      ]
+      "overlays": ["cursed_state"],
+      "codes": ["MM Zora Cape Rock Sand 2"]
     },
     {
-      "coords": [
-        516,
-        429
-      ],
+      "coords": [516, 429],
       "image": "rock",
-      "overlays": [
-        "cursed_state"
-      ],
-      "codes": [
-        "MM Zora Cape Rock Sand 1"
-      ]
+      "overlays": ["cursed_state"],
+      "codes": ["MM Zora Cape Rock Sand 1"]
     },
     {
-      "coords": [
-        457,
-        506
-      ],
+      "coords": [457, 506],
       "image": "rock",
       "codes": [
         "MM Zora Cape Rock Island 1",
@@ -879,60 +469,32 @@
       ]
     },
     {
-      "coords": [
-        738,
-        132
-      ],
+      "coords": [738, 132],
       "image": "soft_soil",
-      "codes": [
-        "MM Great Bay Coast Soil"
-      ]
+      "codes": ["MM Great Bay Coast Soil"]
     },
     {
-      "coords": [
-        673,
-        146
-      ],
+      "coords": [673, 146],
       "image": "tree",
-      "codes": [
-        "MM Great Bay Coast Palm Tree Island"
-      ]
+      "codes": ["MM Great Bay Coast Palm Tree Island"]
     },
     {
-      "coords": [
-        677,
-        257
-      ],
+      "coords": [677, 257],
       "image": "tree",
-      "codes": [
-        "MM Great Bay Coast Palm Tree Beach 1"
-      ]
+      "codes": ["MM Great Bay Coast Palm Tree Beach 1"]
     },
     {
-      "coords": [
-        682,
-        289
-      ],
+      "coords": [682, 289],
       "image": "tree",
-      "codes": [
-        "MM Great Bay Coast Palm Tree Beach 2"
-      ]
+      "codes": ["MM Great Bay Coast Palm Tree Beach 2"]
     },
     {
-      "coords": [
-        664,
-        306
-      ],
+      "coords": [664, 306],
       "image": "tree",
-      "codes": [
-        "MM Great Bay Coast Palm Tree Beach 3"
-      ]
+      "codes": ["MM Great Bay Coast Palm Tree Beach 3"]
     },
     {
-      "coords": [
-        526,
-        425
-      ],
+      "coords": [526, 425],
       "image": "tree",
       "codes": [
         "MM Zora Cape Palm Tree Beach 1",
@@ -940,68 +502,37 @@
       ]
     },
     {
-      "coords": [
-        464,
-        481
-      ],
+      "coords": [464, 481],
       "image": "tree",
-      "codes": [
-        "MM Zora Cape Palm Tree Island Near Beach"
-      ]
+      "codes": ["MM Zora Cape Palm Tree Island Near Beach"]
     },
     {
-      "coords": [
-        446,
-        490
-      ],
+      "coords": [446, 490],
       "image": "tree",
-      "codes": [
-        "MM Zora Cape Palm Tree Island Center"
-      ]
+      "codes": ["MM Zora Cape Palm Tree Island Center"]
     },
     {
-      "coords": [
-        450,
-        507
-      ],
+      "coords": [450, 507],
       "image": "tree",
-      "codes": [
-        "MM Zora Cape Palm Tree Island Near Fountain"
-      ]
+      "codes": ["MM Zora Cape Palm Tree Island Near Fountain"]
     },
     {
-      "coords": [
-        716,
-        90
-      ],
+      "coords": [716, 90],
       "image": "gossip_stone",
-      "codes": [
-        "MM Great Bay Coast Gossip"
-      ]
+      "codes": ["MM Great Bay Coast Gossip"]
     },
     {
-      "coords": [
-        581,
-        466
-      ],
+      "coords": [581, 466],
       "image": "gossip_stone",
-      "codes": [
-        "MM Zora Cape Gossip"
-      ]
+      "codes": ["MM Zora Cape Gossip"]
     },
     {
-      "coords": [
-        678,
-        76
-      ],
+      "coords": [678, 76],
       "image": "dungeon_entrance",
       "codes": "TODO KF 093 :: unnamed_stack > Ocean > Ocean Layers > Ocean Entrances :: Pasted Layer #91 :: 001-001-011-000.png"
     },
     {
-      "coords": [
-        740,
-        166
-      ],
+      "coords": [740, 166],
       "image": "grotto",
       "type": "submenu",
       "markers": [
@@ -1104,10 +635,7 @@
       ]
     },
     {
-      "coords": [
-        590,
-        278
-      ],
+      "coords": [590, 278],
       "image": "interior_entrance",
       "type": "submenu",
       "markers": [
@@ -1122,34 +650,23 @@
       ]
     },
     {
-      "coords": [
-        730,
-        280
-      ],
+      "coords": [730, 280],
       "image": "dungeon_entrance",
       "codes": "TODO KF 096 :: unnamed_stack > Ocean > Ocean Layers > Ocean Entrances :: Pasted Layer #94 :: 001-001-011-003.png"
     },
     {
-      "coords": [
-        718,
-        297
-      ],
+      "coords": [718, 297],
       "image": "interior_entrance",
       "codes": "TODO KF 097 :: unnamed_stack > Ocean > Ocean Layers > Ocean Entrances :: Pasted Layer #95 :: 001-001-011-004.png"
     },
     {
-      "coords": [
-        722,
-        312
-      ],
+      "coords": [722, 312],
       "image": "grotto",
       "type": "submenu",
       "markers": [
         {
           "image": "chest",
-          "codes": [
-            "MM Great Bay Coast Fisherman Grotto"
-          ]
+          "codes": ["MM Great Bay Coast Fisherman Grotto"]
         },
         {
           "image": "grass",
@@ -1173,10 +690,7 @@
       ]
     },
     {
-      "coords": [
-        491,
-        485
-      ],
+      "coords": [491, 485],
       "image": "boulder_grotto",
       "type": "submenu",
       "markers": [
@@ -1206,10 +720,7 @@
       ]
     },
     {
-      "coords": [
-        473,
-        523
-      ],
+      "coords": [473, 523],
       "image": "boulder_grotto",
       "type": "submenu",
       "markers": [
@@ -1220,18 +731,12 @@
       ]
     },
     {
-      "coords": [
-        371,
-        452
-      ],
+      "coords": [371, 452],
       "image": "dungeon_entrance",
       "codes": "TODO KF 101 :: unnamed_stack > Ocean > Ocean Layers > Ocean Entrances :: Pasted Layer #99 :: 001-001-011-008.png"
     },
     {
-      "coords": [
-        262,
-        485
-      ],
+      "coords": [262, 485],
       "image": "interior_entrance",
       "type": "submenu",
       "markers": [
@@ -1246,26 +751,17 @@
       ]
     },
     {
-      "coords": [
-        248,
-        413
-      ],
+      "coords": [248, 413],
       "image": "interior_entrance",
       "codes": "TODO KF 103 :: unnamed_stack > Ocean > Ocean Layers > Ocean Entrances :: Pasted Layer #101 :: 001-001-011-010.png"
     },
     {
-      "coords": [
-        234,
-        377
-      ],
+      "coords": [234, 377],
       "image": "interior_entrance",
       "codes": "TODO KF 104 :: unnamed_stack > Ocean > Ocean Layers > Ocean Entrances :: Pasted Layer #102 :: 001-001-011-011.png"
     },
     {
-      "coords": [
-        161,
-        355
-      ],
+      "coords": [161, 355],
       "image": "interior_entrance",
       "type": "submenu",
       "markers": [
@@ -1276,10 +772,7 @@
       ]
     },
     {
-      "coords": [
-        131,
-        375
-      ],
+      "coords": [131, 375],
       "image": "interior_entrance",
       "type": "submenu",
       "markers": [

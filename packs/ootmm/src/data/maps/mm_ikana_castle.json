@@ -8,23 +8,17 @@
     {
       "coords": [522, 294],
       "image": "song",
-      "codes": [
-        "MM Ancient Castle of Ikana Song Emptiness"
-      ]
+      "codes": ["MM Ancient Castle of Ikana Song Emptiness"]
     },
     {
       "coords": [697, 412],
       "image": "pot",
-      "codes": [
-        "MM Ancient Castle of Ikana Pot Right 2"
-      ]
+      "codes": ["MM Ancient Castle of Ikana Pot Right 2"]
     },
     {
       "coords": [697, 386],
       "image": "pot",
-      "codes": [
-        "MM Ancient Castle of Ikana Pot Right 1"
-      ]
+      "codes": ["MM Ancient Castle of Ikana Pot Right 1"]
     },
     {
       "coords": [499, 294],
@@ -49,30 +43,22 @@
     {
       "coords": [304, 308],
       "image": "pot",
-      "codes": [
-        "MM Ancient Castle of Ikana Pot Entrance 2"
-      ]
+      "codes": ["MM Ancient Castle of Ikana Pot Entrance 2"]
     },
     {
       "coords": [304, 274],
       "image": "pot",
-      "codes": [
-        "MM Ancient Castle of Ikana Pot Entrance 1"
-      ]
+      "codes": ["MM Ancient Castle of Ikana Pot Entrance 1"]
     },
     {
       "coords": [336, 217],
       "image": "pot",
-      "codes": [
-        "MM Ancient Castle of Ikana Pot Left First Room 1"
-      ]
+      "codes": ["MM Ancient Castle of Ikana Pot Left First Room 1"]
     },
     {
       "coords": [358, 217],
       "image": "pot",
-      "codes": [
-        "MM Ancient Castle of Ikana Pot Left First Room 2"
-      ]
+      "codes": ["MM Ancient Castle of Ikana Pot Left First Room 2"]
     },
     {
       "coords": [558, 228],
@@ -87,16 +73,12 @@
     {
       "coords": [697, 202],
       "image": "pot",
-      "codes": [
-        "MM Ancient Castle of Ikana Pot Left Third Room 2"
-      ]
+      "codes": ["MM Ancient Castle of Ikana Pot Left Third Room 2"]
     },
     {
       "coords": [697, 176],
       "image": "pot",
-      "codes": [
-        "MM Ancient Castle of Ikana Pot Left Third Room 1"
-      ]
+      "codes": ["MM Ancient Castle of Ikana Pot Left Third Room 1"]
     }
   ]
 }

@@ -6,247 +6,121 @@
   "height": 600,
   "markers": [
     {
-      "coords": [
-        263,
-        405
-      ],
+      "coords": [263, 405],
       "image": "heart_piece",
-      "codes": [
-        "MM Path to Snowhead HP"
-      ]
+      "codes": ["MM Path to Snowhead HP"]
     },
     {
-      "coords": [
-        332,
-        516
-      ],
+      "coords": [332, 516],
       "image": "npc",
-      "overlays": [
-        "clear_state"
-      ],
-      "codes": [
-        "MM Mountain Village Frog Choir HP"
-      ]
+      "overlays": ["clear_state"],
+      "codes": ["MM Mountain Village Frog Choir HP"]
     },
     {
-      "coords": [
-        328,
-        491
-      ],
+      "coords": [328, 491],
       "image": "npc",
-      "overlays": [
-        "cursed_state"
-      ],
-      "codes": [
-        "MM Mountain Village Don Gero Mask"
-      ]
+      "overlays": ["cursed_state"],
+      "codes": ["MM Mountain Village Don Gero Mask"]
     },
     {
-      "coords": [
-        312,
-        480
-      ],
+      "coords": [312, 480],
       "image": "chest",
-      "overlays": [
-        "clear_state"
-      ],
-      "codes": [
-        "MM Mountain Village Waterfall Chest"
-      ]
+      "overlays": ["clear_state"],
+      "codes": ["MM Mountain Village Waterfall Chest"]
     },
     {
-      "coords": [
-        399,
-        148
-      ],
+      "coords": [399, 148],
       "image": "npc",
-      "overlays": [
-        "clear_state"
-      ],
-      "codes": [
-        "MM Goron Race Reward"
-      ]
+      "overlays": ["clear_state"],
+      "codes": ["MM Goron Race Reward"]
     },
     {
-      "coords": [
-        554,
-        210
-      ],
+      "coords": [554, 210],
       "image": "npc",
-      "codes": [
-        "MM Goron Powder Keg"
-      ]
+      "codes": ["MM Goron Powder Keg"]
     },
     {
-      "coords": [
-        610,
-        376
-      ],
+      "coords": [610, 376],
       "image": "npc",
-      "codes": [
-        "MM Goron Village Scrub Deed"
-      ]
+      "codes": ["MM Goron Village Scrub Deed"]
     },
     {
-      "coords": [
-        630,
-        392
-      ],
+      "coords": [630, 392],
       "image": "heart_piece",
-      "codes": [
-        "MM Goron Village HP"
-      ]
+      "codes": ["MM Goron Village HP"]
     },
     {
-      "coords": [
-        872,
-        541
-      ],
+      "coords": [872, 541],
       "image": "chest",
-      "overlays": [
-        "clear_state"
-      ],
-      "codes": [
-        "MM Twin Islands Underwater Chest 1"
-      ]
+      "overlays": ["clear_state"],
+      "codes": ["MM Twin Islands Underwater Chest 1"]
     },
     {
-      "coords": [
-        878,
-        393
-      ],
+      "coords": [878, 393],
       "image": "chest",
-      "overlays": [
-        "clear_state"
-      ],
-      "codes": [
-        "MM Twin Islands Underwater Chest 2"
-      ]
+      "overlays": ["clear_state"],
+      "codes": ["MM Twin Islands Underwater Chest 2"]
     },
     {
-      "coords": [
-        368,
-        440
-      ],
+      "coords": [368, 440],
       "image": "song",
-      "overlays": [
-        "day3",
-        "cursed_state"
-      ],
-      "codes": [
-        "MM Goron Elder"
-      ]
+      "overlays": ["day3", "cursed_state"],
+      "codes": ["MM Goron Elder"]
     },
     {
-      "coords": [
-        508,
-        152
-      ],
+      "coords": [508, 152],
       "image": "song",
-      "overlays": [
-        "cursed_state"
-      ],
-      "codes": [
-        "MM Goron Baby"
-      ]
+      "overlays": ["cursed_state"],
+      "codes": ["MM Goron Baby"]
     },
     {
-      "coords": [
-        847,
-        546
-      ],
+      "coords": [847, 546],
       "image": "song",
-      "overlays": [
-        "day2",
-        "cursed_state"
-      ],
-      "codes": [
-        "MM Goron Elder"
-      ]
+      "overlays": ["day2", "cursed_state"],
+      "codes": ["MM Goron Elder"]
     },
     {
-      "coords": [
-        947,
-        461
-      ],
+      "coords": [947, 461],
       "image": "song",
-      "overlays": [
-        "day1",
-        "cursed_state"
-      ],
-      "codes": [
-        "MM Goron Elder"
-      ]
+      "overlays": ["day1", "cursed_state"],
+      "codes": ["MM Goron Elder"]
     },
     {
-      "coords": [
-        870,
-        462
-      ],
+      "coords": [870, 462],
       "image": "shop",
-      "codes": [
-        "MM Tingle Map Snowhead"
-      ]
+      "codes": ["MM Tingle Map Snowhead"]
     },
     {
-      "coords": [
-        626,
-        376
-      ],
+      "coords": [626, 376],
       "image": "business_scrub_mm",
-      "codes": [
-        "MM Goron Village Scrub Bomb Bag"
-      ]
+      "codes": ["MM Goron Village Scrub Bomb Bag"]
     },
     {
-      "coords": [
-        352,
-        456
-      ],
+      "coords": [352, 456],
       "image": "owl_statue",
-      "codes": [
-        "MM Mountain Village Owl Statue"
-      ]
+      "codes": ["MM Mountain Village Owl Statue"]
     },
     {
-      "coords": [
-        52,
-        405
-      ],
+      "coords": [52, 405],
       "image": "owl_statue",
-      "codes": [
-        "MM Snowhead Owl Statue"
-      ]
+      "codes": ["MM Snowhead Owl Statue"]
     },
     {
-      "coords": [
-        372,
-        504
-      ],
+      "coords": [372, 504],
       "image": "pot",
-      "overlays": [
-        "day"
-      ],
+      "overlays": ["day"],
       "codes": [
         "MM Mountain Village Potted Plant 1 Pot",
         "MM Mountain Village Potted Plant 2 Pot"
       ]
     },
     {
-      "coords": [
-        394,
-        496
-      ],
+      "coords": [394, 496],
       "image": "pot",
-      "codes": [
-        "MM Mountain Village Pot"
-      ]
+      "codes": ["MM Mountain Village Pot"]
     },
     {
-      "coords": [
-        838,
-        116
-      ],
+      "coords": [838, 116],
       "image": "pot",
       "codes": [
         "MM Goron Shrine Pot 01",
@@ -256,10 +130,7 @@
       ]
     },
     {
-      "coords": [
-        719,
-        83
-      ],
+      "coords": [719, 83],
       "image": "pot",
       "codes": [
         "MM Goron Shrine Pot 05",
@@ -269,10 +140,7 @@
       ]
     },
     {
-      "coords": [
-        537,
-        131
-      ],
+      "coords": [537, 131],
       "image": "pot",
       "codes": [
         "MM Goron Shrine Pot 09",
@@ -281,10 +149,7 @@
       ]
     },
     {
-      "coords": [
-        325,
-        305
-      ],
+      "coords": [325, 305],
       "image": "pot",
       "codes": [
         "MM Goron Race Pot 12",
@@ -296,80 +161,42 @@
       ]
     },
     {
-      "coords": [
-        296,
-        274
-      ],
+      "coords": [296, 274],
       "image": "pot",
-      "codes": [
-        "MM Goron Race Pot 18"
-      ]
+      "codes": ["MM Goron Race Pot 18"]
     },
     {
-      "coords": [
-        311,
-        261
-      ],
+      "coords": [311, 261],
       "image": "pot",
-      "codes": [
-        "MM Goron Race Pot 19"
-      ]
+      "codes": ["MM Goron Race Pot 19"]
     },
     {
-      "coords": [
-        327,
-        259
-      ],
+      "coords": [327, 259],
       "image": "pot",
-      "codes": [
-        "MM Goron Race Pot 11"
-      ]
+      "codes": ["MM Goron Race Pot 11"]
     },
     {
-      "coords": [
-        292,
-        230
-      ],
+      "coords": [292, 230],
       "image": "pot",
-      "codes": [
-        "MM Goron Race Pot 21"
-      ]
+      "codes": ["MM Goron Race Pot 21"]
     },
     {
-      "coords": [
-        308,
-        236
-      ],
+      "coords": [308, 236],
       "image": "pot",
-      "codes": [
-        "MM Goron Race Pot 20"
-      ]
+      "codes": ["MM Goron Race Pot 20"]
     },
     {
-      "coords": [
-        326,
-        232
-      ],
+      "coords": [326, 232],
       "image": "pot",
-      "codes": [
-        "MM Goron Race Pot 10"
-      ]
+      "codes": ["MM Goron Race Pot 10"]
     },
     {
-      "coords": [
-        326,
-        206
-      ],
+      "coords": [326, 206],
       "image": "pot",
-      "codes": [
-        "MM Goron Race Pot 09"
-      ]
+      "codes": ["MM Goron Race Pot 09"]
     },
     {
-      "coords": [
-        341,
-        190
-      ],
+      "coords": [341, 190],
       "image": "pot",
       "codes": [
         "MM Goron Race Pot 22",
@@ -380,21 +207,12 @@
       ]
     },
     {
-      "coords": [
-        321,
-        164
-      ],
+      "coords": [321, 164],
       "image": "pot",
-      "codes": [
-        "MM Goron Race Pot 07",
-        "MM Goron Race Pot 08"
-      ]
+      "codes": ["MM Goron Race Pot 07", "MM Goron Race Pot 08"]
     },
     {
-      "coords": [
-        290,
-        160
-      ],
+      "coords": [290, 160],
       "image": "pot",
       "codes": [
         "MM Goron Race Pot 30",
@@ -404,10 +222,7 @@
       ]
     },
     {
-      "coords": [
-        312,
-        124
-      ],
+      "coords": [312, 124],
       "image": "pot",
       "codes": [
         "MM Goron Race Pot 04",
@@ -416,10 +231,7 @@
       ]
     },
     {
-      "coords": [
-        364,
-        101
-      ],
+      "coords": [364, 101],
       "image": "pot",
       "codes": [
         "MM Goron Race Pot 01",
@@ -428,103 +240,50 @@
       ]
     },
     {
-      "coords": [
-        546,
-        224
-      ],
+      "coords": [546, 224],
       "image": "crate",
-      "codes": [
-        "MM Goron Village Crate"
-      ]
+      "codes": ["MM Goron Village Crate"]
     },
     {
-      "coords": [
-        368,
-        512
-      ],
+      "coords": [368, 512],
       "image": "red_rupee",
-      "overlays": [
-        "clear_state"
-      ],
-      "codes": [
-        "MM Mountain Village Rupee"
-      ]
+      "overlays": ["clear_state"],
+      "codes": ["MM Mountain Village Rupee"]
     },
     {
-      "coords": [
-        901,
-        536
-      ],
+      "coords": [901, 536],
       "image": "blue_rupee",
-      "overlays": [
-        "clear_state"
-      ],
-      "codes": [
-        "MM Twin Islands Rupee 1"
-      ]
+      "overlays": ["clear_state"],
+      "codes": ["MM Twin Islands Rupee 1"]
     },
     {
-      "coords": [
-        942,
-        485
-      ],
+      "coords": [942, 485],
       "image": "blue_rupee",
-      "overlays": [
-        "clear_state"
-      ],
-      "codes": [
-        "MM Twin Islands Rupee 2"
-      ]
+      "overlays": ["clear_state"],
+      "codes": ["MM Twin Islands Rupee 2"]
     },
     {
-      "coords": [
-        916,
-        454
-      ],
+      "coords": [916, 454],
       "image": "blue_rupee",
-      "overlays": [
-        "clear_state"
-      ],
-      "codes": [
-        "MM Twin Islands Rupee 3"
-      ]
+      "overlays": ["clear_state"],
+      "codes": ["MM Twin Islands Rupee 3"]
     },
     {
-      "coords": [
-        851,
-        453
-      ],
+      "coords": [851, 453],
       "image": "blue_rupee",
-      "overlays": [
-        "clear_state"
-      ],
-      "codes": [
-        "MM Twin Islands Rupee 4"
-      ]
+      "overlays": ["clear_state"],
+      "codes": ["MM Twin Islands Rupee 4"]
     },
     {
-      "coords": [
-        420,
-        508
-      ],
+      "coords": [420, 508],
       "image": "beehive",
-      "overlays": [
-        "clear_state"
-      ],
-      "codes": [
-        "MM Mountain Village Hive"
-      ]
+      "overlays": ["clear_state"],
+      "codes": ["MM Mountain Village Hive"]
     },
     {
-      "coords": [
-        351,
-        527
-      ],
+      "coords": [351, 527],
       "image": "butterfly",
-      "overlays": [
-        "day",
-        "clear_state"
-      ],
+      "overlays": ["day", "clear_state"],
       "codes": [
         "MM Mountain Village Butterfly Pack 2 Butterfly 1",
         "MM Mountain Village Butterfly Pack 2 Butterfly 2",
@@ -534,15 +293,9 @@
       ]
     },
     {
-      "coords": [
-        396,
-        471
-      ],
+      "coords": [396, 471],
       "image": "butterfly",
-      "overlays": [
-        "day",
-        "clear_state"
-      ],
+      "overlays": ["day", "clear_state"],
       "codes": [
         "MM Mountain Village Butterfly Pack 1 Butterfly 1",
         "MM Mountain Village Butterfly Pack 1 Butterfly 2",
@@ -551,14 +304,9 @@
       ]
     },
     {
-      "coords": [
-        776,
-        556
-      ],
+      "coords": [776, 556],
       "image": "grass",
-      "overlays": [
-        "clear_state"
-      ],
+      "overlays": ["clear_state"],
       "codes": [
         "MM Twin Islands Grass 01",
         "MM Twin Islands Grass 02",
@@ -575,14 +323,9 @@
       ]
     },
     {
-      "coords": [
-        356,
-        540
-      ],
+      "coords": [356, 540],
       "image": "grass",
-      "overlays": [
-        "clear_state"
-      ],
+      "overlays": ["clear_state"],
       "codes": [
         "MM Mountain Village Grass 1",
         "MM Mountain Village Grass 2",
@@ -590,14 +333,9 @@
       ]
     },
     {
-      "coords": [
-        408,
-        528
-      ],
+      "coords": [408, 528],
       "image": "keaton_grass",
-      "overlays": [
-        "clear_state"
-      ],
+      "overlays": ["clear_state"],
       "codes": [
         "MM Mountain Village Keaton Grass Reward 1",
         "MM Mountain Village Keaton Grass Reward 2",
@@ -611,28 +349,18 @@
       ]
     },
     {
-      "coords": [
-        372,
-        518
-      ],
+      "coords": [372, 518],
       "image": "grass",
-      "overlays": [
-        "day"
-      ],
+      "overlays": ["day"],
       "codes": [
         "MM Mountain Village Potted Plant 1 Grass",
         "MM Mountain Village Potted Plant 2 Grass"
       ]
     },
     {
-      "coords": [
-        379,
-        472
-      ],
+      "coords": [379, 472],
       "image": "grass",
-      "overlays": [
-        "clear_state"
-      ],
+      "overlays": ["clear_state"],
       "codes": [
         "MM Mountain Village Grass Pack 1 Grass 1",
         "MM Mountain Village Grass Pack 1 Grass 2",
@@ -646,14 +374,9 @@
       ]
     },
     {
-      "coords": [
-        395,
-        480
-      ],
+      "coords": [395, 480],
       "image": "grass",
-      "overlays": [
-        "clear_state"
-      ],
+      "overlays": ["clear_state"],
       "codes": [
         "MM Mountain Village Grass Pack 2 Grass 1",
         "MM Mountain Village Grass Pack 2 Grass 2",
@@ -667,14 +390,9 @@
       ]
     },
     {
-      "coords": [
-        411,
-        472
-      ],
+      "coords": [411, 472],
       "image": "grass",
-      "overlays": [
-        "clear_state"
-      ],
+      "overlays": ["clear_state"],
       "codes": [
         "MM Mountain Village Grass Pack 3 Grass 1",
         "MM Mountain Village Grass Pack 3 Grass 2",
@@ -688,14 +406,9 @@
       ]
     },
     {
-      "coords": [
-        786,
-        448
-      ],
+      "coords": [786, 448],
       "image": "rock",
-      "overlays": [
-        "clear_state"
-      ],
+      "overlays": ["clear_state"],
       "codes": [
         "MM Twin Islands Rock 1",
         "MM Twin Islands Rock 2",
@@ -703,14 +416,9 @@
       ]
     },
     {
-      "coords": [
-        412,
-        515
-      ],
+      "coords": [412, 515],
       "image": "rock",
-      "overlays": [
-        "clear_state"
-      ],
+      "overlays": ["clear_state"],
       "codes": [
         "MM Mountain Village Rock Ground 1",
         "MM Mountain Village Rock Ground 2",
@@ -720,24 +428,16 @@
       ]
     },
     {
-      "coords": [
-        406,
-        405
-      ],
+      "coords": [406, 405],
       "image": "rock",
-      "overlays": [
-        "clear_state"
-      ],
+      "overlays": ["clear_state"],
       "codes": [
         "MM Mountain Village Rock Cliff 1",
         "MM Mountain Village Rock Cliff 2"
       ]
     },
     {
-      "coords": [
-        696,
-        192
-      ],
+      "coords": [696, 192],
       "image": "rock",
       "codes": [
         "MM Goron Shrine Rock 09",
@@ -746,10 +446,7 @@
       ]
     },
     {
-      "coords": [
-        692,
-        116
-      ],
+      "coords": [692, 116],
       "image": "rock",
       "codes": [
         "MM Goron Shrine Rock 12",
@@ -760,10 +457,7 @@
       ]
     },
     {
-      "coords": [
-        750,
-        90
-      ],
+      "coords": [750, 90],
       "image": "rock",
       "codes": [
         "MM Goron Shrine Rock 02",
@@ -772,55 +466,29 @@
       ]
     },
     {
-      "coords": [
-        750,
-        188
-      ],
+      "coords": [750, 188],
       "image": "rock",
-      "codes": [
-        "MM Goron Shrine Rock 01"
-      ]
+      "codes": ["MM Goron Shrine Rock 01"]
     },
     {
-      "coords": [
-        894,
-        196
-      ],
+      "coords": [894, 196],
       "image": "rock",
-      "codes": [
-        "MM Goron Shrine Rock 08"
-      ]
+      "codes": ["MM Goron Shrine Rock 08"]
     },
     {
-      "coords": [
-        878,
-        127
-      ],
+      "coords": [878, 127],
       "image": "rock",
-      "codes": [
-        "MM Goron Shrine Rock 07"
-      ]
+      "codes": ["MM Goron Shrine Rock 07"]
     },
     {
-      "coords": [
-        882,
-        92
-      ],
+      "coords": [882, 92],
       "image": "rock",
-      "codes": [
-        "MM Goron Shrine Rock 05",
-        "MM Goron Shrine Rock 06"
-      ]
+      "codes": ["MM Goron Shrine Rock 05", "MM Goron Shrine Rock 06"]
     },
     {
-      "coords": [
-        380,
-        523
-      ],
+      "coords": [380, 523],
       "image": "red_boulder",
-      "overlays": [
-        "clear_state"
-      ],
+      "overlays": ["clear_state"],
       "codes": [
         "MM Mountain Village Spring Red Boulder 1",
         "MM Mountain Village Spring Red Boulder 2",
@@ -828,225 +496,105 @@
       ]
     },
     {
-      "coords": [
-        760,
-        572
-      ],
+      "coords": [760, 572],
       "image": "small_snowball",
-      "overlays": [
-        "cursed_state"
-      ],
-      "codes": [
-        "MM Twin Islands Small Snowball 1"
-      ]
+      "overlays": ["cursed_state"],
+      "codes": ["MM Twin Islands Small Snowball 1"]
     },
     {
-      "coords": [
-        776,
-        540
-      ],
+      "coords": [776, 540],
       "image": "small_snowball",
-      "overlays": [
-        "cursed_state"
-      ],
-      "codes": [
-        "MM Twin Islands Small Snowball 2"
-      ]
+      "overlays": ["cursed_state"],
+      "codes": ["MM Twin Islands Small Snowball 2"]
     },
     {
-      "coords": [
-        812,
-        516
-      ],
+      "coords": [812, 516],
       "image": "big_snowball",
-      "overlays": [
-        "cursed_state"
-      ],
-      "codes": [
-        "MM Twin Islands Big Snowball 02"
-      ]
+      "overlays": ["cursed_state"],
+      "codes": ["MM Twin Islands Big Snowball 02"]
     },
     {
-      "coords": [
-        847,
-        530
-      ],
+      "coords": [847, 530],
       "image": "big_snowball",
-      "overlays": [
-        "day1",
-        "day3",
-        "cursed_state"
-      ],
-      "codes": [
-        "MM Twin Islands Big Snowball 01"
-      ]
+      "overlays": ["day1", "day3", "cursed_state"],
+      "codes": ["MM Twin Islands Big Snowball 01"]
     },
     {
-      "coords": [
-        896,
-        523
-      ],
+      "coords": [896, 523],
       "image": "big_snowball",
-      "overlays": [
-        "cursed_state"
-      ],
-      "codes": [
-        "MM Twin Islands Big Snowball 11"
-      ]
+      "overlays": ["cursed_state"],
+      "codes": ["MM Twin Islands Big Snowball 11"]
     },
     {
-      "coords": [
-        927,
-        519
-      ],
+      "coords": [927, 519],
       "image": "big_snowball",
-      "overlays": [
-        "cursed_state"
-      ],
-      "codes": [
-        "MM Twin Islands Big Snowball 10"
-      ]
+      "overlays": ["cursed_state"],
+      "codes": ["MM Twin Islands Big Snowball 10"]
     },
     {
-      "coords": [
-        937,
-        491
-      ],
+      "coords": [937, 491],
       "image": "big_snowball",
-      "overlays": [
-        "cursed_state"
-      ],
-      "codes": [
-        "MM Twin Islands Big Snowball 09"
-      ]
+      "overlays": ["cursed_state"],
+      "codes": ["MM Twin Islands Big Snowball 09"]
     },
     {
-      "coords": [
-        931,
-        461
-      ],
+      "coords": [931, 461],
       "image": "big_snowball",
-      "overlays": [
-        "day2",
-        "cursed_state"
-      ],
-      "codes": [
-        "MM Twin Islands Big Snowball 08"
-      ]
+      "overlays": ["day2", "cursed_state"],
+      "codes": ["MM Twin Islands Big Snowball 08"]
     },
     {
-      "coords": [
-        902,
-        450
-      ],
+      "coords": [902, 450],
       "image": "big_snowball",
-      "overlays": [
-        "cursed_state"
-      ],
-      "codes": [
-        "MM Twin Islands Big Snowball 07"
-      ]
+      "overlays": ["cursed_state"],
+      "codes": ["MM Twin Islands Big Snowball 07"]
     },
     {
-      "coords": [
-        875,
-        450
-      ],
+      "coords": [875, 450],
       "image": "big_snowball",
-      "overlays": [
-        "cursed_state"
-      ],
-      "codes": [
-        "MM Twin Islands Big Snowball 06"
-      ]
+      "overlays": ["cursed_state"],
+      "codes": ["MM Twin Islands Big Snowball 06"]
     },
     {
-      "coords": [
-        855,
-        429
-      ],
+      "coords": [855, 429],
       "image": "big_snowball",
-      "overlays": [
-        "cursed_state"
-      ],
-      "codes": [
-        "MM Twin Islands Big Snowball 05"
-      ]
+      "overlays": ["cursed_state"],
+      "codes": ["MM Twin Islands Big Snowball 05"]
     },
     {
-      "coords": [
-        842,
-        457
-      ],
+      "coords": [842, 457],
       "image": "big_snowball",
-      "overlays": [
-        "cursed_state"
-      ],
-      "codes": [
-        "MM Twin Islands Big Snowball 04"
-      ]
+      "overlays": ["cursed_state"],
+      "codes": ["MM Twin Islands Big Snowball 04"]
     },
     {
-      "coords": [
-        870,
-        469
-      ],
+      "coords": [870, 469],
       "image": "small_snowball",
-      "overlays": [
-        "cursed_state"
-      ],
-      "codes": [
-        "MM Twin Islands Small Snowball 3"
-      ]
+      "overlays": ["cursed_state"],
+      "codes": ["MM Twin Islands Small Snowball 3"]
     },
     {
-      "coords": [
-        870,
-        485
-      ],
+      "coords": [870, 485],
       "image": "big_snowball",
-      "overlays": [
-        "cursed_state"
-      ],
-      "codes": [
-        "MM Twin Islands Big Snowball 13"
-      ]
+      "overlays": ["cursed_state"],
+      "codes": ["MM Twin Islands Big Snowball 13"]
     },
     {
-      "coords": [
-        870,
-        504
-      ],
+      "coords": [870, 504],
       "image": "big_snowball",
-      "overlays": [
-        "cursed_state"
-      ],
-      "codes": [
-        "MM Twin Islands Big Snowball 12"
-      ]
+      "overlays": ["cursed_state"],
+      "codes": ["MM Twin Islands Big Snowball 12"]
     },
     {
-      "coords": [
-        808,
-        482
-      ],
+      "coords": [808, 482],
       "image": "big_snowball",
-      "overlays": [
-        "cursed_state"
-      ],
-      "codes": [
-        "MM Twin Islands Big Snowball 03"
-      ]
+      "overlays": ["cursed_state"],
+      "codes": ["MM Twin Islands Big Snowball 03"]
     },
     {
-      "coords": [
-        787,
-        468
-      ],
+      "coords": [787, 468],
       "image": "small_snowball",
-      "overlays": [
-        "cursed_state"
-      ],
+      "overlays": ["cursed_state"],
       "codes": [
         "MM Twin Islands Small Snowball Ramp 1",
         "MM Twin Islands Small Snowball Ramp 2",
@@ -1054,378 +602,181 @@
       ]
     },
     {
-      "coords": [
-        542,
-        252
-      ],
+      "coords": [542, 252],
       "image": "small_snowball",
-      "overlays": [
-        "cursed_state"
-      ],
-      "codes": [
-        "MM Goron Village Small Snowball 10"
-      ]
+      "overlays": ["cursed_state"],
+      "codes": ["MM Goron Village Small Snowball 10"]
     },
     {
-      "coords": [
-        534,
-        272
-      ],
+      "coords": [534, 272],
       "image": "big_snowball",
-      "overlays": [
-        "cursed_state"
-      ],
-      "codes": [
-        "MM Goron Village Big Snowball 7"
-      ]
+      "overlays": ["cursed_state"],
+      "codes": ["MM Goron Village Big Snowball 7"]
     },
     {
-      "coords": [
-        552,
-        268
-      ],
+      "coords": [552, 268],
       "image": "small_snowball",
-      "overlays": [
-        "cursed_state"
-      ],
-      "codes": [
-        "MM Goron Village Small Snowball 09"
-      ]
+      "overlays": ["cursed_state"],
+      "codes": ["MM Goron Village Small Snowball 09"]
     },
     {
-      "coords": [
-        574,
-        261
-      ],
+      "coords": [574, 261],
       "image": "big_snowball",
-      "overlays": [
-        "cursed_state"
-      ],
-      "codes": [
-        "MM Goron Village Big Snowball 6"
-      ]
+      "overlays": ["cursed_state"],
+      "codes": ["MM Goron Village Big Snowball 6"]
     },
     {
-      "coords": [
-        597,
-        270
-      ],
+      "coords": [597, 270],
       "image": "big_snowball",
-      "overlays": [
-        "cursed_state"
-      ],
-      "codes": [
-        "MM Goron Village Big Snowball 5"
-      ]
+      "overlays": ["cursed_state"],
+      "codes": ["MM Goron Village Big Snowball 5"]
     },
     {
-      "coords": [
-        614,
-        252
-      ],
+      "coords": [614, 252],
       "image": "small_snowball",
-      "overlays": [
-        "cursed_state"
-      ],
-      "codes": [
-        "MM Goron Village Small Snowball 08"
-      ]
+      "overlays": ["cursed_state"],
+      "codes": ["MM Goron Village Small Snowball 08"]
     },
     {
-      "coords": [
-        634,
-        268
-      ],
+      "coords": [634, 268],
       "image": "big_snowball",
-      "overlays": [
-        "cursed_state"
-      ],
-      "codes": [
-        "MM Goron Village Big Snowball 4"
-      ]
+      "overlays": ["cursed_state"],
+      "codes": ["MM Goron Village Big Snowball 4"]
     },
     {
-      "coords": [
-        667,
-        284
-      ],
+      "coords": [667, 284],
       "image": "small_snowball",
-      "overlays": [
-        "cursed_state"
-      ],
-      "codes": [
-        "MM Goron Village Small Snowball 07"
-      ]
+      "overlays": ["cursed_state"],
+      "codes": ["MM Goron Village Small Snowball 07"]
     },
     {
-      "coords": [
-        682,
-        320
-      ],
+      "coords": [682, 320],
       "image": "small_snowball",
-      "overlays": [
-        "cursed_state"
-      ],
-      "codes": [
-        "MM Goron Village Small Snowball 06"
-      ]
+      "overlays": ["cursed_state"],
+      "codes": ["MM Goron Village Small Snowball 06"]
     },
     {
-      "coords": [
-        670,
-        348
-      ],
+      "coords": [670, 348],
       "image": "big_snowball",
-      "overlays": [
-        "cursed_state"
-      ],
-      "codes": [
-        "MM Goron Village Big Snowball 3"
-      ]
+      "overlays": ["cursed_state"],
+      "codes": ["MM Goron Village Big Snowball 3"]
     },
     {
-      "coords": [
-        654,
-        349
-      ],
+      "coords": [654, 349],
       "image": "small_snowball",
-      "overlays": [
-        "cursed_state"
-      ],
-      "codes": [
-        "MM Goron Village Small Snowball 05"
-      ]
+      "overlays": ["cursed_state"],
+      "codes": ["MM Goron Village Small Snowball 05"]
     },
     {
-      "coords": [
-        600,
-        318
-      ],
+      "coords": [600, 318],
       "image": "small_snowball",
-      "overlays": [
-        "cursed_state"
-      ],
-      "codes": [
-        "MM Goron Village Small Snowball 04"
-      ]
+      "overlays": ["cursed_state"],
+      "codes": ["MM Goron Village Small Snowball 04"]
     },
     {
-      "coords": [
-        606,
-        336
-      ],
+      "coords": [606, 336],
       "image": "small_snowball",
-      "overlays": [
-        "cursed_state"
-      ],
-      "codes": [
-        "MM Goron Village Small Snowball 03"
-      ]
+      "overlays": ["cursed_state"],
+      "codes": ["MM Goron Village Small Snowball 03"]
     },
     {
-      "coords": [
-        606,
-        364
-      ],
+      "coords": [606, 364],
       "image": "big_snowball",
-      "overlays": [
-        "cursed_state"
-      ],
-      "codes": [
-        "MM Goron Village Big Snowball 2"
-      ]
+      "overlays": ["cursed_state"],
+      "codes": ["MM Goron Village Big Snowball 2"]
     },
     {
-      "coords": [
-        601,
-        380
-      ],
+      "coords": [601, 380],
       "image": "small_snowball",
-      "overlays": [
-        "cursed_state"
-      ],
-      "codes": [
-        "MM Goron Village Small Snowball 02"
-      ]
+      "overlays": ["cursed_state"],
+      "codes": ["MM Goron Village Small Snowball 02"]
     },
     {
-      "coords": [
-        580,
-        386
-      ],
+      "coords": [580, 386],
       "image": "small_snowball",
-      "overlays": [
-        "cursed_state"
-      ],
-      "codes": [
-        "MM Goron Village Small Snowball 01"
-      ]
+      "overlays": ["cursed_state"],
+      "codes": ["MM Goron Village Small Snowball 01"]
     },
     {
-      "coords": [
-        572,
-        370
-      ],
+      "coords": [572, 370],
       "image": "big_snowball",
-      "overlays": [
-        "cursed_state"
-      ],
-      "codes": [
-        "MM Goron Village Big Snowball 1"
-      ]
+      "overlays": ["cursed_state"],
+      "codes": ["MM Goron Village Big Snowball 1"]
     },
     {
-      "coords": [
-        530,
-        365
-      ],
+      "coords": [530, 365],
       "image": "big_snowball",
-      "overlays": [
-        "cursed_state"
-      ],
-      "codes": [
-        "MM Goron Village Big Snowball 9"
-      ]
+      "overlays": ["cursed_state"],
+      "codes": ["MM Goron Village Big Snowball 9"]
     },
     {
-      "coords": [
-        523,
-        343
-      ],
+      "coords": [523, 343],
       "image": "small_snowball",
-      "overlays": [
-        "cursed_state"
-      ],
-      "codes": [
-        "MM Goron Village Small Snowball 12"
-      ]
+      "overlays": ["cursed_state"],
+      "codes": ["MM Goron Village Small Snowball 12"]
     },
     {
-      "coords": [
-        518,
-        311
-      ],
+      "coords": [518, 311],
       "image": "small_snowball",
-      "overlays": [
-        "cursed_state"
-      ],
-      "codes": [
-        "MM Goron Village Small Snowball 11"
-      ]
+      "overlays": ["cursed_state"],
+      "codes": ["MM Goron Village Small Snowball 11"]
     },
     {
-      "coords": [
-        502,
-        322
-      ],
+      "coords": [502, 322],
       "image": "big_snowball",
-      "overlays": [
-        "cursed_state"
-      ],
-      "codes": [
-        "MM Goron Village Big Snowball 8"
-      ]
+      "overlays": ["cursed_state"],
+      "codes": ["MM Goron Village Big Snowball 8"]
     },
     {
-      "coords": [
-        464,
-        496
-      ],
+      "coords": [464, 496],
       "image": "big_snowball",
-      "overlays": [
-        "cursed_state"
-      ],
-      "codes": [
-        "MM Mountain Village Big Snowball 5"
-      ]
+      "overlays": ["cursed_state"],
+      "codes": ["MM Mountain Village Big Snowball 5"]
     },
     {
-      "coords": [
-        444,
-        487
-      ],
+      "coords": [444, 487],
       "image": "small_snowball",
-      "overlays": [
-        "cursed_state"
-      ],
-      "codes": [
-        "MM Mountain Village Small Snowball Winter 4"
-      ]
+      "overlays": ["cursed_state"],
+      "codes": ["MM Mountain Village Small Snowball Winter 4"]
     },
     {
-      "coords": [
-        436,
-        508
-      ],
+      "coords": [436, 508],
       "image": "big_snowball",
-      "overlays": [
-        "cursed_state"
-      ],
-      "codes": [
-        "MM Mountain Village Big Snowball 4"
-      ]
+      "overlays": ["cursed_state"],
+      "codes": ["MM Mountain Village Big Snowball 4"]
     },
     {
-      "coords": [
-        407,
-        508
-      ],
+      "coords": [407, 508],
       "image": "small_snowball",
-      "overlays": [
-        "cursed_state"
-      ],
-      "codes": [
-        "MM Mountain Village Small Snowball Winter 3"
-      ]
+      "overlays": ["cursed_state"],
+      "codes": ["MM Mountain Village Small Snowball Winter 3"]
     },
     {
-      "coords": [
-        396,
-        455
-      ],
+      "coords": [396, 455],
       "image": "small_snowball",
-      "overlays": [
-        "cursed_state"
-      ],
+      "overlays": ["cursed_state"],
       "codes": [
         "MM Mountain Village Small Snowball Winter 1",
         "MM Mountain Village Small Snowball Winter 2"
       ]
     },
     {
-      "coords": [
-        393,
-        412
-      ],
+      "coords": [393, 412],
       "image": "small_snowball",
-      "overlays": [
-        "cursed_state"
-      ],
+      "overlays": ["cursed_state"],
       "codes": [
         "MM Mountain Village Small Snowball Cliff 1",
         "MM Mountain Village Small Snowball Cliff 2"
       ]
     },
     {
-      "coords": [
-        368,
-        456
-      ],
+      "coords": [368, 456],
       "image": "big_snowball",
-      "overlays": [
-        "day1",
-        "day2",
-        "cursed_state"
-      ],
-      "codes": [
-        "MM Mountain Village Big Snowball 3"
-      ]
+      "overlays": ["day1", "day2", "cursed_state"],
+      "codes": ["MM Mountain Village Big Snowball 3"]
     },
     {
-      "coords": [
-        336,
-        456
-      ],
+      "coords": [336, 456],
       "image": "small_snowball",
       "codes": [
         "MM Mountain Village Small Snowball 1",
@@ -1436,88 +787,43 @@
       ]
     },
     {
-      "coords": [
-        332,
-        472
-      ],
+      "coords": [332, 472],
       "image": "big_snowball",
-      "overlays": [
-        "cursed_state"
-      ],
-      "codes": [
-        "MM Mountain Village Big Snowball 2"
-      ]
+      "overlays": ["cursed_state"],
+      "codes": ["MM Mountain Village Big Snowball 2"]
     },
     {
-      "coords": [
-        320,
-        516
-      ],
+      "coords": [320, 516],
       "image": "big_snowball",
-      "overlays": [
-        "cursed_state"
-      ],
-      "codes": [
-        "MM Mountain Village Big Snowball 1"
-      ]
+      "overlays": ["cursed_state"],
+      "codes": ["MM Mountain Village Big Snowball 1"]
     },
     {
-      "coords": [
-        244,
-        478
-      ],
+      "coords": [244, 478],
       "image": "small_snowball",
-      "overlays": [
-        "clear_state"
-      ],
-      "codes": [
-        "MM Path to Snowhead Small Snowball Spring Middle 1"
-      ]
+      "overlays": ["clear_state"],
+      "codes": ["MM Path to Snowhead Small Snowball Spring Middle 1"]
     },
     {
-      "coords": [
-        260,
-        478
-      ],
+      "coords": [260, 478],
       "image": "big_snowball",
-      "overlays": [
-        "cursed_state"
-      ],
-      "codes": [
-        "MM Path to Snowhead Big Snowball Middle 1"
-      ]
+      "overlays": ["cursed_state"],
+      "codes": ["MM Path to Snowhead Big Snowball Middle 1"]
     },
     {
-      "coords": [
-        196,
-        391
-      ],
+      "coords": [196, 391],
       "image": "big_snowball",
-      "overlays": [
-        "cursed_state"
-      ],
-      "codes": [
-        "MM Path to Snowhead Big Snowball Middle 2"
-      ]
+      "overlays": ["cursed_state"],
+      "codes": ["MM Path to Snowhead Big Snowball Middle 2"]
     },
     {
-      "coords": [
-        180,
-        391
-      ],
+      "coords": [180, 391],
       "image": "small_snowball",
-      "overlays": [
-        "clear_state"
-      ],
-      "codes": [
-        "MM Path to Snowhead Small Snowball Spring Middle 2"
-      ]
+      "overlays": ["clear_state"],
+      "codes": ["MM Path to Snowhead Small Snowball Spring Middle 2"]
     },
     {
-      "coords": [
-        197,
-        355
-      ],
+      "coords": [197, 355],
       "image": "small_snowball",
       "codes": [
         "MM Path to Snowhead Small Snowball Back 1",
@@ -1526,62 +832,31 @@
       ]
     },
     {
-      "coords": [
-        178,
-        354
-      ],
+      "coords": [178, 354],
       "image": "big_snowball",
-      "overlays": [
-        "cursed_state"
-      ],
-      "codes": [
-        "MM Path to Snowhead Big Snowball Back 1"
-      ]
+      "overlays": ["cursed_state"],
+      "codes": ["MM Path to Snowhead Big Snowball Back 1"]
     },
     {
-      "coords": [
-        162,
-        354
-      ],
+      "coords": [162, 354],
       "image": "small_snowball",
-      "overlays": [
-        "clear_state"
-      ],
-      "codes": [
-        "MM Path to Snowhead Small Snowball Spring Back 1"
-      ]
+      "overlays": ["clear_state"],
+      "codes": ["MM Path to Snowhead Small Snowball Spring Back 1"]
     },
     {
-      "coords": [
-        160,
-        327
-      ],
+      "coords": [160, 327],
       "image": "small_snowball",
-      "overlays": [
-        "clear_state"
-      ],
-      "codes": [
-        "MM Path to Snowhead Small Snowball Spring Back 2"
-      ]
+      "overlays": ["clear_state"],
+      "codes": ["MM Path to Snowhead Small Snowball Spring Back 2"]
     },
     {
-      "coords": [
-        144,
-        327
-      ],
+      "coords": [144, 327],
       "image": "big_snowball",
-      "overlays": [
-        "cursed_state"
-      ],
-      "codes": [
-        "MM Path to Snowhead Big Snowball Back 2"
-      ]
+      "overlays": ["cursed_state"],
+      "codes": ["MM Path to Snowhead Big Snowball Back 2"]
     },
     {
-      "coords": [
-        43,
-        387
-      ],
+      "coords": [43, 387],
       "image": "small_snowball",
       "codes": [
         "MM Snowhead Small Snowball 1",
@@ -1591,271 +866,129 @@
       ]
     },
     {
-      "coords": [
-        100,
-        64
-      ],
+      "coords": [100, 64],
       "image": "big_snowball",
-      "overlays": [
-        "cursed_state"
-      ],
-      "codes": [
-        "MM Snowhead Big Snowball 6"
-      ]
+      "overlays": ["cursed_state"],
+      "codes": ["MM Snowhead Big Snowball 6"]
     },
     {
-      "coords": [
-        114,
-        103
-      ],
+      "coords": [114, 103],
       "image": "big_snowball",
-      "overlays": [
-        "cursed_state"
-      ],
-      "codes": [
-        "MM Snowhead Big Snowball 5"
-      ]
+      "overlays": ["cursed_state"],
+      "codes": ["MM Snowhead Big Snowball 5"]
     },
     {
-      "coords": [
-        130,
-        103
-      ],
+      "coords": [130, 103],
       "image": "small_snowball",
-      "overlays": [
-        "clear_state"
-      ],
-      "codes": [
-        "MM Snowhead Small Snowball Spring 5"
-      ]
+      "overlays": ["clear_state"],
+      "codes": ["MM Snowhead Small Snowball Spring 5"]
     },
     {
-      "coords": [
-        112,
-        136
-      ],
+      "coords": [112, 136],
       "image": "small_snowball",
-      "overlays": [
-        "clear_state"
-      ],
-      "codes": [
-        "MM Snowhead Small Snowball Spring 4"
-      ]
+      "overlays": ["clear_state"],
+      "codes": ["MM Snowhead Small Snowball Spring 4"]
     },
     {
-      "coords": [
-        96,
-        136
-      ],
+      "coords": [96, 136],
       "image": "big_snowball",
-      "overlays": [
-        "cursed_state"
-      ],
-      "codes": [
-        "MM Snowhead Big Snowball 4"
-      ]
+      "overlays": ["cursed_state"],
+      "codes": ["MM Snowhead Big Snowball 4"]
     },
     {
-      "coords": [
-        63,
-        158
-      ],
+      "coords": [63, 158],
       "image": "big_snowball",
-      "overlays": [
-        "cursed_state"
-      ],
-      "codes": [
-        "MM Snowhead Big Snowball 3"
-      ]
+      "overlays": ["cursed_state"],
+      "codes": ["MM Snowhead Big Snowball 3"]
     },
     {
-      "coords": [
-        47,
-        158
-      ],
+      "coords": [47, 158],
       "image": "small_snowball",
-      "overlays": [
-        "clear_state"
-      ],
-      "codes": [
-        "MM Snowhead Small Snowball Spring 3"
-      ]
+      "overlays": ["clear_state"],
+      "codes": ["MM Snowhead Small Snowball Spring 3"]
     },
     {
-      "coords": [
-        33,
-        145
-      ],
+      "coords": [33, 145],
       "image": "small_snowball",
-      "overlays": [
-        "clear_state"
-      ],
-      "codes": [
-        "MM Snowhead Small Snowball Spring 2"
-      ]
+      "overlays": ["clear_state"],
+      "codes": ["MM Snowhead Small Snowball Spring 2"]
     },
     {
-      "coords": [
-        17,
-        145
-      ],
+      "coords": [17, 145],
       "image": "big_snowball",
-      "overlays": [
-        "cursed_state"
-      ],
-      "codes": [
-        "MM Snowhead Big Snowball 2"
-      ]
+      "overlays": ["cursed_state"],
+      "codes": ["MM Snowhead Big Snowball 2"]
     },
     {
-      "coords": [
-        33,
-        127
-      ],
+      "coords": [33, 127],
       "image": "big_snowball",
-      "overlays": [
-        "cursed_state"
-      ],
-      "codes": [
-        "MM Snowhead Big Snowball 1"
-      ]
+      "overlays": ["cursed_state"],
+      "codes": ["MM Snowhead Big Snowball 1"]
     },
     {
-      "coords": [
-        17,
-        127
-      ],
+      "coords": [17, 127],
       "image": "small_snowball",
-      "overlays": [
-        "clear_state"
-      ],
-      "codes": [
-        "MM Snowhead Small Snowball Spring 1"
-      ]
+      "overlays": ["clear_state"],
+      "codes": ["MM Snowhead Small Snowball Spring 1"]
     },
     {
-      "coords": [
-        912,
-        482
-      ],
+      "coords": [912, 482],
       "image": "tree",
-      "overlays": [
-        "clear_state"
-      ],
-      "codes": [
-        "MM Twin Islands Tree Island 2"
-      ]
+      "overlays": ["clear_state"],
+      "codes": ["MM Twin Islands Tree Island 2"]
     },
     {
-      "coords": [
-        896,
-        482
-      ],
+      "coords": [896, 482],
       "image": "tree",
-      "overlays": [
-        "cursed_state"
-      ],
-      "codes": [
-        "MM Twin Islands Snow Tree Island 2"
-      ]
+      "overlays": ["cursed_state"],
+      "codes": ["MM Twin Islands Snow Tree Island 2"]
     },
     {
-      "coords": [
-        846,
-        492
-      ],
+      "coords": [846, 492],
       "image": "tree",
-      "overlays": [
-        "clear_state"
-      ],
-      "codes": [
-        "MM Twin Islands Tree Island 1"
-      ]
+      "overlays": ["clear_state"],
+      "codes": ["MM Twin Islands Tree Island 1"]
     },
     {
-      "coords": [
-        830,
-        492
-      ],
+      "coords": [830, 492],
       "image": "tree",
-      "overlays": [
-        "cursed_state"
-      ],
-      "codes": [
-        "MM Twin Islands Snow Tree Island 1"
-      ]
+      "overlays": ["cursed_state"],
+      "codes": ["MM Twin Islands Snow Tree Island 1"]
     },
     {
-      "coords": [
-        802,
-        468
-      ],
+      "coords": [802, 468],
       "image": "tree",
-      "overlays": [
-        "cursed_state"
-      ],
-      "codes": [
-        "MM Twin Islands Snow Tree Ramp"
-      ]
+      "overlays": ["cursed_state"],
+      "codes": ["MM Twin Islands Snow Tree Ramp"]
     },
     {
-      "coords": [
-        802,
-        452
-      ],
+      "coords": [802, 452],
       "image": "tree",
-      "overlays": [
-        "clear_state"
-      ],
-      "codes": [
-        "MM Twin Islands Tree Ramp"
-      ]
+      "overlays": ["clear_state"],
+      "codes": ["MM Twin Islands Tree Ramp"]
     },
     {
-      "coords": [
-        274,
-        511
-      ],
+      "coords": [274, 511],
       "image": "tree",
-      "codes": [
-        "MM Path to Snowhead Snow Tree Entrance"
-      ]
+      "codes": ["MM Path to Snowhead Snow Tree Entrance"]
     },
     {
-      "coords": [
-        185,
-        342
-      ],
+      "coords": [185, 342],
       "image": "tree",
-      "codes": [
-        "MM Path to Snowhead Snow Tree End 1"
-      ]
+      "codes": ["MM Path to Snowhead Snow Tree End 1"]
     },
     {
-      "coords": [
-        151,
-        337
-      ],
+      "coords": [151, 337],
       "image": "tree",
-      "codes": [
-        "MM Path to Snowhead Snow Tree End 2"
-      ]
+      "codes": ["MM Path to Snowhead Snow Tree End 2"]
     },
     {
-      "coords": [
-        124,
-        309
-      ],
+      "coords": [124, 309],
       "image": "tree",
-      "codes": [
-        "MM Path to Snowhead Snow Tree End 3"
-      ]
+      "codes": ["MM Path to Snowhead Snow Tree End 3"]
     },
     {
-      "coords": [
-        351,
-        313
-      ],
+      "coords": [351, 313],
       "image": "tree",
       "codes": [
         "MM Goron Race Forked Tree 1",
@@ -1871,36 +1004,19 @@
       ]
     },
     {
-      "coords": [
-        485,
-        456
-      ],
+      "coords": [485, 456],
       "image": "gossip_stone",
-      "overlays": [
-        "clear_state"
-      ],
-      "codes": [
-        "MM Mountain Village Gossip Tunnel"
-      ]
+      "overlays": ["clear_state"],
+      "codes": ["MM Mountain Village Gossip Tunnel"]
     },
     {
-      "coords": [
-        336,
-        537
-      ],
+      "coords": [336, 537],
       "image": "gossip_stone",
-      "overlays": [
-        "clear_state"
-      ],
-      "codes": [
-        "MM Mountain Village Gossip Outside"
-      ]
+      "overlays": ["clear_state"],
+      "codes": ["MM Mountain Village Gossip Outside"]
     },
     {
-      "coords": [
-        905,
-        495
-      ],
+      "coords": [905, 495],
       "image": "grotto",
       "type": "submenu",
       "markers": [
@@ -1911,10 +1027,7 @@
       ]
     },
     {
-      "coords": [
-        787,
-        461
-      ],
+      "coords": [787, 461],
       "image": "bomb_grotto",
       "type": "submenu",
       "markers": [
@@ -1944,10 +1057,7 @@
       ]
     },
     {
-      "coords": [
-        380,
-        512
-      ],
+      "coords": [380, 512],
       "image": "interior_entrance",
       "type": "submenu",
       "markers": [
@@ -1961,9 +1071,7 @@
         },
         {
           "image": "pot",
-          "overlays": [
-            "night"
-          ],
+          "overlays": ["night"],
           "codes": [
             "MM Blacksmith Potted Plant 1 Pot",
             "MM Blacksmith Potted Plant 2 Pot"
@@ -1971,9 +1079,7 @@
         },
         {
           "image": "grass",
-          "overlays": [
-            "night"
-          ],
+          "overlays": ["night"],
           "codes": [
             "MM Blacksmith Potted Plant 1 Grass",
             "MM Blacksmith Potted Plant 2 Grass"
@@ -1982,10 +1088,7 @@
       ]
     },
     {
-      "coords": [
-        393,
-        381
-      ],
+      "coords": [393, 381],
       "image": "interior_entrance",
       "type": "submenu",
       "markers": [
@@ -1996,14 +1099,9 @@
       ]
     },
     {
-      "coords": [
-        474,
-        430
-      ],
+      "coords": [474, 430],
       "image": "grotto",
-      "overlays": [
-        "clear_state"
-      ],
+      "overlays": ["clear_state"],
       "type": "submenu",
       "markers": [
         {
@@ -2032,18 +1130,12 @@
       ]
     },
     {
-      "coords": [
-        571,
-        355
-      ],
+      "coords": [571, 355],
       "image": "interior_entrance",
       "codes": "TODO KF 151 :: unnamed_stack > Mountain > Mountain Layers > Mountain Entrances :: Pasted Layer #150 :: 001-001-017-005.png"
     },
     {
-      "coords": [
-        778,
-        276
-      ],
+      "coords": [778, 276],
       "image": "interior_entrance",
       "type": "submenu",
       "markers": [
@@ -2091,10 +1183,7 @@
       ]
     },
     {
-      "coords": [
-        850,
-        195
-      ],
+      "coords": [850, 195],
       "image": "interior_entrance",
       "type": "submenu",
       "markers": [
@@ -2109,10 +1198,7 @@
       ]
     },
     {
-      "coords": [
-        198,
-        369
-      ],
+      "coords": [198, 369],
       "image": "bomb_grotto",
       "type": "submenu",
       "markers": [
@@ -2142,10 +1228,7 @@
       ]
     },
     {
-      "coords": [
-        105,
-        118
-      ],
+      "coords": [105, 118],
       "image": "interior_entrance",
       "type": "submenu",
       "markers": [
@@ -2156,10 +1239,7 @@
       ]
     },
     {
-      "coords": [
-        66,
-        117
-      ],
+      "coords": [66, 117],
       "image": "dungeon_entrance",
       "codes": "TODO KF 156 :: unnamed_stack > Mountain > Mountain Layers > Mountain Entrances :: Pasted Layer #155 :: 001-001-017-010.png"
     }

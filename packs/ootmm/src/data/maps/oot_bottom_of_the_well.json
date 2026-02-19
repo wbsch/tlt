@@ -6,180 +6,92 @@
   "height": 600,
   "markers": [
     {
-      "coords": [
-        269,
-        290
-      ],
+      "coords": [269, 290],
       "image": "chest",
-      "codes": [
-        "OOT Bottom of the Well Map"
-      ]
+      "codes": ["OOT Bottom of the Well Map"]
     },
     {
-      "coords": [
-        441,
-        244
-      ],
+      "coords": [441, 244],
       "image": "chest",
-      "codes": [
-        "OOT Bottom of the Well Underwater"
-      ]
+      "codes": ["OOT Bottom of the Well Underwater"]
     },
     {
-      "coords": [
-        514,
-        272
-      ],
+      "coords": [514, 272],
       "image": "chest",
-      "codes": [
-        "OOT Bottom of the Well Under Debris"
-      ]
+      "codes": ["OOT Bottom of the Well Under Debris"]
     },
     {
-      "coords": [
-        524,
-        304
-      ],
+      "coords": [524, 304],
       "image": "chest",
-      "codes": [
-        "OOT Bottom of the Well Underwater 2"
-      ]
+      "codes": ["OOT Bottom of the Well Underwater 2"]
     },
     {
-      "coords": [
-        679,
-        252
-      ],
+      "coords": [679, 252],
       "image": "collectible",
-      "codes": [
-        "OOT Bottom of the Well Coffin"
-      ]
+      "codes": ["OOT Bottom of the Well Coffin"]
     },
     {
-      "coords": [
-        749,
-        192
-      ],
+      "coords": [749, 192],
       "image": "chest",
-      "codes": [
-        "OOT Bottom of the Well Back West"
-      ]
+      "codes": ["OOT Bottom of the Well Back West"]
     },
     {
-      "coords": [
-        795,
-        276
-      ],
+      "coords": [795, 276],
       "image": "chest",
-      "codes": [
-        "OOT Bottom of the Well Front West"
-      ]
+      "codes": ["OOT Bottom of the Well Front West"]
     },
     {
-      "coords": [
-        806,
-        260
-      ],
+      "coords": [806, 260],
       "image": "chest",
-      "codes": [
-        "OOT Bottom of the Well Compass"
-      ]
+      "codes": ["OOT Bottom of the Well Compass"]
     },
     {
-      "coords": [
-        840,
-        260
-      ],
+      "coords": [840, 260],
       "image": "chest",
-      "codes": [
-        "OOT Bottom of the Well Blood Chest"
-      ]
+      "codes": ["OOT Bottom of the Well Blood Chest"]
     },
     {
-      "coords": [
-        848,
-        275
-      ],
+      "coords": [848, 275],
       "image": "chest",
-      "codes": [
-        "OOT Bottom of the Well East"
-      ]
+      "codes": ["OOT Bottom of the Well East"]
     },
     {
-      "coords": [
-        902,
-        228
-      ],
+      "coords": [902, 228],
       "image": "chest",
-      "codes": [
-        "OOT Bottom of the Well Pits"
-      ]
+      "codes": ["OOT Bottom of the Well Pits"]
     },
     {
-      "coords": [
-        893,
-        249
-      ],
+      "coords": [893, 249],
       "image": "chest",
-      "codes": [
-        "OOT Bottom of the Well East Cage"
-      ]
+      "codes": ["OOT Bottom of the Well East Cage"]
     },
     {
-      "coords": [
-        906,
-        304
-      ],
+      "coords": [906, 304],
       "image": "chest",
-      "codes": [
-        "OOT Bottom of the Well Lens"
-      ]
+      "codes": ["OOT Bottom of the Well Lens"]
     },
     {
-      "coords": [
-        926,
-        304
-      ],
+      "coords": [926, 304],
       "image": "chest",
-      "codes": [
-        "OOT Bottom of the Well Lens Side Chest"
-      ]
+      "codes": ["OOT Bottom of the Well Lens Side Chest"]
     },
     {
-      "coords": [
-        903,
-        247
-      ],
+      "coords": [903, 247],
       "image": "gold_skulltula",
-      "codes": [
-        "OOT Bottom of the Well GS East Cage"
-      ]
+      "codes": ["OOT Bottom of the Well GS East Cage"]
     },
     {
-      "coords": [
-        841,
-        216
-      ],
+      "coords": [841, 216],
       "image": "gold_skulltula",
-      "codes": [
-        "OOT Bottom of the Well GS Inner East"
-      ]
+      "codes": ["OOT Bottom of the Well GS Inner East"]
     },
     {
-      "coords": [
-        799,
-        214
-      ],
+      "coords": [799, 214],
       "image": "gold_skulltula",
-      "codes": [
-        "OOT Bottom of the Well GS Inner West"
-      ]
+      "codes": ["OOT Bottom of the Well GS Inner West"]
     },
     {
-      "coords": [
-        207,
-        271
-      ],
+      "coords": [207, 271],
       "image": "silver_rupee",
       "codes": [
         "OOT Bottom of the Well SR 1",
@@ -190,10 +102,7 @@
       ]
     },
     {
-      "coords": [
-        207,
-        271
-      ],
+      "coords": [207, 271],
       "image": "silver_rupee",
       "codes": [
         "OOT Bottom of the Well SR 1",
@@ -204,10 +113,7 @@
       ]
     },
     {
-      "coords": [
-        207,
-        271
-      ],
+      "coords": [207, 271],
       "image": "silver_rupee",
       "codes": [
         "OOT Bottom of the Well SR 1",
@@ -218,10 +124,7 @@
       ]
     },
     {
-      "coords": [
-        207,
-        271
-      ],
+      "coords": [207, 271],
       "image": "silver_rupee",
       "codes": [
         "OOT Bottom of the Well SR 1",
@@ -232,10 +135,7 @@
       ]
     },
     {
-      "coords": [
-        207,
-        271
-      ],
+      "coords": [207, 271],
       "image": "silver_rupee",
       "codes": [
         "OOT Bottom of the Well SR 1",
@@ -246,10 +146,7 @@
       ]
     },
     {
-      "coords": [
-        220,
-        249
-      ],
+      "coords": [220, 249],
       "image": "pot",
       "codes": [
         "OOT Bottom of the Well Pot Basement 01",
@@ -257,10 +154,7 @@
       ]
     },
     {
-      "coords": [
-        232,
-        220
-      ],
+      "coords": [232, 220],
       "image": "pot",
       "codes": [
         "OOT Bottom of the Well Pot Basement 03",
@@ -271,10 +165,7 @@
       ]
     },
     {
-      "coords": [
-        250,
-        212
-      ],
+      "coords": [250, 212],
       "image": "pot",
       "codes": [
         "OOT Bottom of the Well Pot Basement 09",
@@ -285,10 +176,7 @@
       ]
     },
     {
-      "coords": [
-        821,
-        308
-      ],
+      "coords": [821, 308],
       "image": "pot",
       "codes": [
         "OOT Bottom of the Well Pot Main Room 1",
@@ -296,10 +184,7 @@
       ]
     },
     {
-      "coords": [
-        753,
-        290
-      ],
+      "coords": [753, 290],
       "image": "pot",
       "codes": [
         "OOT Bottom of the Well Pot Main Room 3",
@@ -308,10 +193,7 @@
       ]
     },
     {
-      "coords": [
-        794,
-        224
-      ],
+      "coords": [794, 224],
       "image": "flying_pot",
       "codes": [
         "OOT Bottom of the Well Flying Pot 1",
@@ -320,30 +202,17 @@
       ]
     },
     {
-      "coords": [
-        824,
-        185
-      ],
+      "coords": [824, 185],
       "image": "pot",
-      "codes": [
-        "OOT Bottom of the Well Pot Main Room Underwater"
-      ]
+      "codes": ["OOT Bottom of the Well Pot Main Room Underwater"]
     },
     {
-      "coords": [
-        884,
-        214
-      ],
+      "coords": [884, 214],
       "image": "pot",
-      "codes": [
-        "OOT Bottom of the Well Pot Side Room"
-      ]
+      "codes": ["OOT Bottom of the Well Pot Side Room"]
     },
     {
-      "coords": [
-        226,
-        241
-      ],
+      "coords": [226, 241],
       "image": "blue_rupee",
       "codes": [
         "OOT Bottom of the Well Rupee 1",
@@ -354,40 +223,22 @@
       ]
     },
     {
-      "coords": [
-        706,
-        254
-      ],
+      "coords": [706, 254],
       "image": "heart",
-      "codes": [
-        "OOT Bottom of the Well Heart 1"
-      ]
+      "codes": ["OOT Bottom of the Well Heart 1"]
     },
     {
-      "coords": [
-        692,
-        233
-      ],
+      "coords": [692, 233],
       "image": "heart",
-      "codes": [
-        "OOT Bottom of the Well Heart 2"
-      ]
+      "codes": ["OOT Bottom of the Well Heart 2"]
     },
     {
-      "coords": [
-        263,
-        196
-      ],
+      "coords": [263, 196],
       "image": "big_fairy_spot",
-      "codes": [
-        "OOT Bottom of the Well Basement Big Fairy"
-      ]
+      "codes": ["OOT Bottom of the Well Basement Big Fairy"]
     },
     {
-      "coords": [
-        191,
-        250
-      ],
+      "coords": [191, 250],
       "image": "grass",
       "codes": [
         "OOT Bottom of the Well Grass 01",
@@ -396,10 +247,7 @@
       ]
     },
     {
-      "coords": [
-        171,
-        211
-      ],
+      "coords": [171, 211],
       "image": "grass",
       "codes": [
         "OOT Bottom of the Well Grass 04",

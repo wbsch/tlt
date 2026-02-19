@@ -6,108 +6,52 @@
   "height": 600,
   "markers": [
     {
-      "coords": [
-        117,
-        130
-      ],
+      "coords": [117, 130],
       "image": "npc",
-      "codes": [
-        "MM Cucco Shack Bunny Mask"
-      ]
+      "codes": ["MM Cucco Shack Bunny Mask"]
     },
     {
-      "coords": [
-        101,
-        536
-      ],
+      "coords": [101, 536],
       "image": "chest",
-      "codes": [
-        "MM Doggy Racetrack Chest"
-      ]
+      "codes": ["MM Doggy Racetrack Chest"]
     },
     {
-      "coords": [
-        196,
-        444
-      ],
+      "coords": [196, 444],
       "image": "npc",
-      "codes": [
-        "MM Doggy Racetrack HP"
-      ]
+      "codes": ["MM Doggy Racetrack HP"]
     },
     {
-      "coords": [
-        469,
-        259
-      ],
+      "coords": [469, 259],
       "image": "npc",
-      "overlays": [
-        "day1",
-        "night"
-      ],
-      "codes": [
-        "MM Romani Ranch Aliens"
-      ]
+      "overlays": ["day1", "night"],
+      "codes": ["MM Romani Ranch Aliens"]
     },
     {
-      "coords": [
-        485,
-        259
-      ],
+      "coords": [485, 259],
       "image": "npc",
-      "overlays": [
-        "day2",
-        "night"
-      ],
-      "codes": [
-        "MM Romani Ranch Cremia Escort"
-      ]
+      "overlays": ["day2", "night"],
+      "codes": ["MM Romani Ranch Cremia Escort"]
     },
     {
-      "coords": [
-        828,
-        404
-      ],
+      "coords": [828, 404],
       "image": "npc",
-      "overlays": [
-        "day"
-      ],
-      "codes": [
-        "MM Gorman Track Garo Mask"
-      ]
+      "overlays": ["day"],
+      "codes": ["MM Gorman Track Garo Mask"]
     },
     {
-      "coords": [
-        469,
-        243
-      ],
+      "coords": [469, 243],
       "image": "song",
-      "overlays": [
-        "day1",
-        "day"
-      ],
-      "codes": [
-        "MM Romani Ranch Epona Song"
-      ]
+      "overlays": ["day1", "day"],
+      "codes": ["MM Romani Ranch Epona Song"]
     },
     {
-      "coords": [
-        828,
-        388
-      ],
+      "coords": [828, 388],
       "image": "shop",
-      "overlays": [
-        "day"
-      ],
-      "codes": [
-        "MM Gorman Track Milk Purchase"
-      ]
+      "overlays": ["day"],
+      "codes": ["MM Gorman Track Milk Purchase"]
     },
     {
-      "coords": [
-        117,
-        521
-      ],
+      "coords": [117, 521],
       "image": "pot",
       "codes": [
         "MM Doggy Racetrack Pot 1",
@@ -117,10 +61,7 @@
       ]
     },
     {
-      "coords": [
-        188,
-        204
-      ],
+      "coords": [188, 204],
       "image": "pot",
       "codes": [
         "MM Cucco Shack Potted Plant 1 Pot",
@@ -128,30 +69,17 @@
       ]
     },
     {
-      "coords": [
-        843,
-        396
-      ],
+      "coords": [843, 396],
       "image": "crate",
-      "codes": [
-        "MM Gorman Track Crate"
-      ]
+      "codes": ["MM Gorman Track Crate"]
     },
     {
-      "coords": [
-        485,
-        243
-      ],
+      "coords": [485, 243],
       "image": "crate",
-      "codes": [
-        "MM Romani Ranch Crate"
-      ]
+      "codes": ["MM Romani Ranch Crate"]
     },
     {
-      "coords": [
-        241,
-        174
-      ],
+      "coords": [241, 174],
       "image": "crate",
       "codes": [
         "MM Cucco Shack Crate 1",
@@ -160,10 +88,7 @@
       ]
     },
     {
-      "coords": [
-        639,
-        350
-      ],
+      "coords": [639, 350],
       "image": "wonder_item_green_rupee",
       "codes": [
         "MM Romani Ranch Wonder Item Fence 5",
@@ -171,10 +96,7 @@
       ]
     },
     {
-      "coords": [
-        642,
-        330
-      ],
+      "coords": [642, 330],
       "image": "wonder_item_blue_rupee",
       "codes": [
         "MM Romani Ranch Wonder Item Fence 3",
@@ -182,10 +104,7 @@
       ]
     },
     {
-      "coords": [
-        651,
-        312
-      ],
+      "coords": [651, 312],
       "image": "wonder_item_green_rupee",
       "codes": [
         "MM Romani Ranch Wonder Item Fence 1",
@@ -193,10 +112,7 @@
       ]
     },
     {
-      "coords": [
-        81,
-        127
-      ],
+      "coords": [81, 127],
       "image": "wonder_item_green_rupee",
       "codes": [
         "MM Cucco Shack Wonder Item 1",
@@ -205,10 +121,7 @@
       ]
     },
     {
-      "coords": [
-        91,
-        104
-      ],
+      "coords": [91, 104],
       "image": "wonder_item_green_rupee",
       "codes": [
         "MM Cucco Shack Wonder Item 4",
@@ -217,10 +130,7 @@
       ]
     },
     {
-      "coords": [
-        974,
-        432
-      ],
+      "coords": [974, 432],
       "image": "grass",
       "codes": [
         "MM Gorman Track Grass Pack 2 Grass 01",
@@ -238,10 +148,7 @@
       ]
     },
     {
-      "coords": [
-        965,
-        407
-      ],
+      "coords": [965, 407],
       "image": "grass",
       "codes": [
         "MM Gorman Track Grass Pack 1 Grass 01",
@@ -259,10 +166,7 @@
       ]
     },
     {
-      "coords": [
-        419,
-        386
-      ],
+      "coords": [419, 386],
       "image": "grass",
       "codes": [
         "MM Romani Ranch Grass Pack 3 Grass 01",
@@ -280,10 +184,7 @@
       ]
     },
     {
-      "coords": [
-        495,
-        397
-      ],
+      "coords": [495, 397],
       "image": "grass",
       "codes": [
         "MM Romani Ranch Grass Pack 2 Grass 01",
@@ -301,10 +202,7 @@
       ]
     },
     {
-      "coords": [
-        598,
-        362
-      ],
+      "coords": [598, 362],
       "image": "grass",
       "codes": [
         "MM Romani Ranch Grass Pack 1 Grass 01",
@@ -322,10 +220,7 @@
       ]
     },
     {
-      "coords": [
-        581,
-        235
-      ],
+      "coords": [581, 235],
       "image": "grass",
       "codes": [
         "MM Romani Ranch Grass Pack 4 Grass 01",
@@ -343,10 +238,7 @@
       ]
     },
     {
-      "coords": [
-        489,
-        167
-      ],
+      "coords": [489, 167],
       "image": "grass",
       "codes": [
         "MM Romani Ranch Grass Pack 5 Grass 01",
@@ -361,10 +253,7 @@
       ]
     },
     {
-      "coords": [
-        204,
-        204
-      ],
+      "coords": [204, 204],
       "image": "grass",
       "codes": [
         "MM Cucco Shack Potted Plant 1 Grass",
@@ -372,15 +261,9 @@
       ]
     },
     {
-      "coords": [
-        405,
-        188
-      ],
+      "coords": [405, 188],
       "image": "soft_soil",
-      "overlays": [
-        "day2",
-        "day3"
-      ],
+      "overlays": ["day2", "day3"],
       "codes": [
         "MM Romani Ranch Soil Days 2-3 Item 1",
         "MM Romani Ranch Soil Days 2-3 Item 2",
@@ -388,33 +271,18 @@
       ]
     },
     {
-      "coords": [
-        389,
-        188
-      ],
+      "coords": [389, 188],
       "image": "soft_soil",
-      "overlays": [
-        "day1"
-      ],
-      "codes": [
-        "MM Romani Ranch Soil Day 1"
-      ]
+      "overlays": ["day1"],
+      "codes": ["MM Romani Ranch Soil Day 1"]
     },
     {
-      "coords": [
-        164,
-        510
-      ],
+      "coords": [164, 510],
       "image": "soft_soil",
-      "codes": [
-        "MM Doggy Racetrack Soil"
-      ]
+      "codes": ["MM Doggy Racetrack Soil"]
     },
     {
-      "coords": [
-        910,
-        575
-      ],
+      "coords": [910, 575],
       "image": "tree",
       "codes": [
         "MM Gorman Track Tree 14",
@@ -432,10 +300,7 @@
       ]
     },
     {
-      "coords": [
-        927,
-        340
-      ],
+      "coords": [927, 340],
       "image": "tree",
       "codes": [
         "MM Gorman Track Tree 01",
@@ -454,259 +319,133 @@
       ]
     },
     {
-      "coords": [
-        613,
-        308
-      ],
+      "coords": [613, 308],
       "image": "tree",
-      "codes": [
-        "MM Romani Ranch Tree 1"
-      ]
+      "codes": ["MM Romani Ranch Tree 1"]
     },
     {
-      "coords": [
-        607,
-        330
-      ],
+      "coords": [607, 330],
       "image": "tree",
-      "codes": [
-        "MM Romani Ranch Tree 2"
-      ]
+      "codes": ["MM Romani Ranch Tree 2"]
     },
     {
-      "coords": [
-        453,
-        422
-      ],
+      "coords": [453, 422],
       "image": "tree",
-      "codes": [
-        "MM Romani Ranch Tree 7"
-      ]
+      "codes": ["MM Romani Ranch Tree 7"]
     },
     {
-      "coords": [
-        492,
-        290
-      ],
+      "coords": [492, 290],
       "image": "tree",
-      "codes": [
-        "MM Romani Ranch Tree 3"
-      ]
+      "codes": ["MM Romani Ranch Tree 3"]
     },
     {
-      "coords": [
-        487,
-        312
-      ],
+      "coords": [487, 312],
       "image": "tree",
-      "codes": [
-        "MM Romani Ranch Tree 4"
-      ]
+      "codes": ["MM Romani Ranch Tree 4"]
     },
     {
-      "coords": [
-        447,
-        324
-      ],
+      "coords": [447, 324],
       "image": "tree",
-      "codes": [
-        "MM Romani Ranch Tree 5"
-      ]
+      "codes": ["MM Romani Ranch Tree 5"]
     },
     {
-      "coords": [
-        367,
-        336
-      ],
+      "coords": [367, 336],
       "image": "tree",
-      "codes": [
-        "MM Romani Ranch Tree 6"
-      ]
+      "codes": ["MM Romani Ranch Tree 6"]
     },
     {
-      "coords": [
-        105,
-        123
-      ],
+      "coords": [105, 123],
       "image": "tree",
-      "codes": [
-        "MM Cucco Shack Tree"
-      ]
+      "codes": ["MM Cucco Shack Tree"]
     },
     {
-      "coords": [
-        561,
-        393
-      ],
+      "coords": [561, 393],
       "image": "bush",
-      "codes": [
-        "MM Romani Ranch Bush 1"
-      ]
+      "codes": ["MM Romani Ranch Bush 1"]
     },
     {
-      "coords": [
-        462,
-        344
-      ],
+      "coords": [462, 344],
       "image": "bush",
-      "codes": [
-        "MM Romani Ranch Bush 2"
-      ]
+      "codes": ["MM Romani Ranch Bush 2"]
     },
     {
-      "coords": [
-        388,
-        295
-      ],
+      "coords": [388, 295],
       "image": "bush",
-      "codes": [
-        "MM Romani Ranch Bush 3"
-      ]
+      "codes": ["MM Romani Ranch Bush 3"]
     },
     {
-      "coords": [
-        387,
-        218
-      ],
+      "coords": [387, 218],
       "image": "bush",
-      "codes": [
-        "MM Romani Ranch Bush 4"
-      ]
+      "codes": ["MM Romani Ranch Bush 4"]
     },
     {
-      "coords": [
-        156,
-        179
-      ],
+      "coords": [156, 179],
       "image": "bush",
-      "codes": [
-        "MM Cucco Shack Bush 1"
-      ]
+      "codes": ["MM Cucco Shack Bush 1"]
     },
     {
-      "coords": [
-        164,
-        120
-      ],
+      "coords": [164, 120],
       "image": "bush",
-      "codes": [
-        "MM Cucco Shack Bush 2"
-      ]
+      "codes": ["MM Cucco Shack Bush 2"]
     },
     {
-      "coords": [
-        183,
-        112
-      ],
+      "coords": [183, 112],
       "image": "bush",
-      "codes": [
-        "MM Cucco Shack Bush 3"
-      ]
+      "codes": ["MM Cucco Shack Bush 3"]
     },
     {
-      "coords": [
-        119,
-        80
-      ],
+      "coords": [119, 80],
       "image": "bush",
-      "codes": [
-        "MM Cucco Shack Bush 4"
-      ]
+      "codes": ["MM Cucco Shack Bush 4"]
     },
     {
-      "coords": [
-        82,
-        98
-      ],
+      "coords": [82, 98],
       "image": "bush",
-      "codes": [
-        "MM Cucco Shack Bush 5"
-      ]
+      "codes": ["MM Cucco Shack Bush 5"]
     },
     {
-      "coords": [
-        95,
-        126
-      ],
+      "coords": [95, 126],
       "image": "bush",
-      "codes": [
-        "MM Cucco Shack Bush 6"
-      ]
+      "codes": ["MM Cucco Shack Bush 6"]
     },
     {
-      "coords": [
-        49,
-        148
-      ],
+      "coords": [49, 148],
       "image": "bush",
-      "codes": [
-        "MM Cucco Shack Bush 7"
-      ]
+      "codes": ["MM Cucco Shack Bush 7"]
     },
     {
-      "coords": [
-        661,
-        351
-      ],
+      "coords": [661, 351],
       "image": "gossip_stone",
-      "codes": [
-        "MM Romani Ranch Gossip Entrance"
-      ]
+      "codes": ["MM Romani Ranch Gossip Entrance"]
     },
     {
-      "coords": [
-        459,
-        428
-      ],
+      "coords": [459, 428],
       "image": "gossip_stone",
-      "codes": [
-        "MM Romani Ranch Gossip Near Tree"
-      ]
+      "codes": ["MM Romani Ranch Gossip Near Tree"]
     },
     {
-      "coords": [
-        464,
-        183
-      ],
+      "coords": [464, 183],
       "image": "gossip_stone",
-      "codes": [
-        "MM Romani Ranch Gossip Behind House"
-      ]
+      "codes": ["MM Romani Ranch Gossip Behind House"]
     },
     {
-      "coords": [
-        90,
-        575
-      ],
+      "coords": [90, 575],
       "image": "gossip_stone",
-      "codes": [
-        "MM Doggy Racetrack Gossip"
-      ]
+      "codes": ["MM Doggy Racetrack Gossip"]
     },
     {
-      "coords": [
-        222,
-        124
-      ],
+      "coords": [222, 124],
       "image": "gossip_stone",
-      "codes": [
-        "MM Cucco Shack Gossip"
-      ]
+      "codes": ["MM Cucco Shack Gossip"]
     },
     {
-      "coords": [
-        482,
-        210
-      ],
+      "coords": [482, 210],
       "image": "interior_entrance",
       "type": "submenu",
       "markers": [
         {
           "image": "cow",
-          "overlays": [
-            "day1",
-            "day2"
-          ],
+          "overlays": ["day1", "day2"],
           "codes": [
             "MM Romani Ranch Barn Cow Left",
             "MM Romani Ranch Barn Cow Right Back",
@@ -723,10 +462,7 @@
       ]
     },
     {
-      "coords": [
-        433,
-        219
-      ],
+      "coords": [433, 219],
       "image": "interior_entrance",
       "codes": "TODO KF 057 :: unnamed_stack > Ranch > Ranch Layers > Ranch Entrances :: Pasted Layer #56 :: 001-001-012-001.png"
     }

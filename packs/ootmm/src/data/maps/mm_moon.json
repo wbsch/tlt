@@ -8,65 +8,47 @@
     {
       "coords": [131, 214],
       "image": "heart_piece",
-      "codes": [
-        "MM Moon Trial Zora HP"
-      ]
+      "codes": ["MM Moon Trial Zora HP"]
     },
     {
       "coords": [217, 509],
       "image": "heart_piece",
-      "codes": [
-        "MM Moon Trial Deku HP"
-      ]
+      "codes": ["MM Moon Trial Deku HP"]
     },
     {
       "coords": [829, 460],
       "image": "heart_piece",
-      "codes": [
-        "MM Moon Trial Link HP"
-      ]
+      "codes": ["MM Moon Trial Link HP"]
     },
     {
       "coords": [785, 460],
       "image": "chest",
-      "codes": [
-        "MM Moon Trial Link Iron Knuckle Chest"
-      ]
+      "codes": ["MM Moon Trial Link Iron Knuckle Chest"]
     },
     {
       "coords": [723, 460],
       "image": "chest",
-      "codes": [
-        "MM Moon Trial Link Garo Master Chest"
-      ]
+      "codes": ["MM Moon Trial Link Garo Master Chest"]
     },
     {
       "coords": [708, 99],
       "image": "heart_piece",
-      "codes": [
-        "MM Moon Trial Goron HP"
-      ]
+      "codes": ["MM Moon Trial Goron HP"]
     },
     {
       "coords": [512, 376],
       "image": "npc",
-      "codes": [
-        "MM Moon Fierce Deity Mask"
-      ]
+      "codes": ["MM Moon Fierce Deity Mask"]
     },
     {
       "coords": [487, 347],
       "image": "pot",
-      "codes": [
-        "MM Moon Majora Pot 1"
-      ]
+      "codes": ["MM Moon Majora Pot 1"]
     },
     {
       "coords": [516, 347],
       "image": "pot",
-      "codes": [
-        "MM Moon Majora Pot 2"
-      ]
+      "codes": ["MM Moon Majora Pot 2"]
     },
     {
       "coords": [606, 478],
@@ -110,18 +92,12 @@
     {
       "coords": [731, 175],
       "image": "pot",
-      "codes": [
-        "MM Moon Trial Goron Pot 10",
-        "MM Moon Trial Goron Pot 11"
-      ]
+      "codes": ["MM Moon Trial Goron Pot 10", "MM Moon Trial Goron Pot 11"]
     },
     {
       "coords": [768, 144],
       "image": "pot",
-      "codes": [
-        "MM Moon Trial Goron Pot 01",
-        "MM Moon Trial Goron Pot 02"
-      ]
+      "codes": ["MM Moon Trial Goron Pot 01", "MM Moon Trial Goron Pot 02"]
     },
     {
       "coords": [731, 78],
@@ -165,142 +141,102 @@
     {
       "coords": [209, 517],
       "image": "gossip_stone",
-      "codes": [
-        "MM Moon Trial Deku Gossip Back"
-      ]
+      "codes": ["MM Moon Trial Deku Gossip Back"]
     },
     {
       "coords": [311, 416],
       "image": "gossip_stone",
-      "codes": [
-        "MM Moon Trial Deku Gossip Mid-Left"
-      ]
+      "codes": ["MM Moon Trial Deku Gossip Mid-Left"]
     },
     {
       "coords": [226, 421],
       "image": "gossip_stone",
-      "codes": [
-        "MM Moon Trial Deku Gossip Mid-Right"
-      ]
+      "codes": ["MM Moon Trial Deku Gossip Mid-Right"]
     },
     {
       "coords": [313, 344],
       "image": "gossip_stone",
-      "codes": [
-        "MM Moon Trial Deku Gossip Front-Left"
-      ]
+      "codes": ["MM Moon Trial Deku Gossip Front-Left"]
     },
     {
       "coords": [231, 345],
       "image": "gossip_stone",
-      "codes": [
-        "MM Moon Trial Deku Gossip Front-Right"
-      ]
+      "codes": ["MM Moon Trial Deku Gossip Front-Right"]
     },
     {
       "coords": [141, 238],
       "image": "gossip_stone",
-      "codes": [
-        "MM Moon Trial Zora Gossip Outer Left"
-      ]
+      "codes": ["MM Moon Trial Zora Gossip Outer Left"]
     },
     {
       "coords": [141, 214],
       "image": "gossip_stone",
-      "codes": [
-        "MM Moon Trial Zora Gossip Middle Left"
-      ]
+      "codes": ["MM Moon Trial Zora Gossip Middle Left"]
     },
     {
       "coords": [141, 166],
       "image": "gossip_stone",
-      "codes": [
-        "MM Moon Trial Zora Gossip Inner Right"
-      ]
+      "codes": ["MM Moon Trial Zora Gossip Inner Right"]
     },
     {
       "coords": [141, 142],
       "image": "gossip_stone",
-      "codes": [
-        "MM Moon Trial Zora Gossip Middle Right"
-      ]
+      "codes": ["MM Moon Trial Zora Gossip Middle Right"]
     },
     {
       "coords": [141, 118],
       "image": "gossip_stone",
-      "codes": [
-        "MM Moon Trial Zora Gossip Outer Right"
-      ]
+      "codes": ["MM Moon Trial Zora Gossip Outer Right"]
     },
     {
       "coords": [671, 460],
       "image": "gossip_stone",
-      "codes": [
-        "MM Moon Trial Link Gossip 1"
-      ]
+      "codes": ["MM Moon Trial Link Gossip 1"]
     },
     {
       "coords": [746, 460],
       "image": "gossip_stone",
-      "codes": [
-        "MM Moon Trial Link Gossip 2"
-      ]
+      "codes": ["MM Moon Trial Link Gossip 2"]
     },
     {
       "coords": [803, 448],
       "image": "gossip_stone",
-      "codes": [
-        "MM Moon Trial Link Gossip Left"
-      ]
+      "codes": ["MM Moon Trial Link Gossip Left"]
     },
     {
       "coords": [803, 472],
       "image": "gossip_stone",
-      "codes": [
-        "MM Moon Trial Link Gossip Right"
-      ]
+      "codes": ["MM Moon Trial Link Gossip Right"]
     },
     {
       "coords": [838, 460],
       "image": "gossip_stone",
-      "codes": [
-        "MM Moon Trial Link Gossip Last"
-      ]
+      "codes": ["MM Moon Trial Link Gossip Last"]
     },
     {
       "coords": [778, 261],
       "image": "gossip_stone",
-      "codes": [
-        "MM Moon Trial Goron Gossip West Right"
-      ]
+      "codes": ["MM Moon Trial Goron Gossip West Right"]
     },
     {
       "coords": [778, 245],
       "image": "gossip_stone",
-      "codes": [
-        "MM Moon Trial Goron Gossip West Left"
-      ]
+      "codes": ["MM Moon Trial Goron Gossip West Left"]
     },
     {
       "coords": [768, 184],
       "image": "gossip_stone",
-      "codes": [
-        "MM Moon Trial Goron Gossip Center Right"
-      ]
+      "codes": ["MM Moon Trial Goron Gossip Center Right"]
     },
     {
       "coords": [768, 168],
       "image": "gossip_stone",
-      "codes": [
-        "MM Moon Trial Goron Gossip Center Left"
-      ]
+      "codes": ["MM Moon Trial Goron Gossip Center Left"]
     },
     {
       "coords": [736, 97],
       "image": "gossip_stone",
-      "codes": [
-        "MM Moon Trial Goron Gossip By Heart Piece"
-      ]
+      "codes": ["MM Moon Trial Goron Gossip By Heart Piece"]
     }
   ]
 }

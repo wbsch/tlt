@@ -908,7 +908,7 @@ const RAW_GRID_ICON_VARIANTS: Record<string, GridIconVariantConfig> = {
       ],
     },
   },
-    SHARED_BOTTLE_EMPTY: {
+  SHARED_BOTTLE_EMPTY: {
     default: {
       icons: [
         'images/bottle.png',
@@ -927,7 +927,7 @@ const RAW_GRID_ICON_VARIANTS: Record<string, GridIconVariantConfig> = {
         'SHARED_BOTTLE_POTION_BLUE',
         'SHARED_BOTTLE_BLUE_FIRE',
         'SHARED_BOTTLE_MILK',
-        'SHARED_BOTTLE_CHATEAU', 
+        'SHARED_BOTTLE_CHATEAU',
       ],
     },
   },

@@ -6,90 +6,47 @@
   "height": 600,
   "markers": [
     {
-      "coords": [
-        442,
-        333
-      ],
+      "coords": [442, 333],
       "image": "chest",
-      "codes": [
-        "OOT Ice Cavern Iron Boots"
-      ]
+      "codes": ["OOT Ice Cavern Iron Boots"]
     },
     {
-      "coords": [
-        585,
-        329
-      ],
+      "coords": [585, 329],
       "image": "chest",
-      "codes": [
-        "OOT Ice Cavern Compass"
-      ]
+      "codes": ["OOT Ice Cavern Compass"]
     },
     {
-      "coords": [
-        582,
-        304
-      ],
+      "coords": [582, 304],
       "image": "heart_piece",
-      "codes": [
-        "OOT Ice Cavern HP"
-      ]
+      "codes": ["OOT Ice Cavern HP"]
     },
     {
-      "coords": [
-        549,
-        197
-      ],
+      "coords": [549, 197],
       "image": "chest",
-      "codes": [
-        "OOT Ice Cavern Map"
-      ]
+      "codes": ["OOT Ice Cavern Map"]
     },
     {
-      "coords": [
-        426,
-        318
-      ],
+      "coords": [426, 318],
       "image": "song",
-      "codes": [
-        "OOT Ice Cavern Sheik Song"
-      ]
+      "codes": ["OOT Ice Cavern Sheik Song"]
     },
     {
-      "coords": [
-        592,
-        308
-      ],
+      "coords": [592, 308],
       "image": "gold_skulltula",
-      "codes": [
-        "OOT Ice Cavern GS HP Room"
-      ]
+      "codes": ["OOT Ice Cavern GS HP Room"]
     },
     {
-      "coords": [
-        498,
-        282
-      ],
+      "coords": [498, 282],
       "image": "gold_skulltula",
-      "codes": [
-        "OOT Ice Cavern GS Scythe Room"
-      ]
+      "codes": ["OOT Ice Cavern GS Scythe Room"]
     },
     {
-      "coords": [
-        452,
-        249
-      ],
+      "coords": [452, 249],
       "image": "gold_skulltula",
-      "codes": [
-        "OOT Ice Cavern GS Block Room"
-      ]
+      "codes": ["OOT Ice Cavern GS Block Room"]
     },
     {
-      "coords": [
-        514,
-        267
-      ],
+      "coords": [514, 267],
       "image": "silver_rupee",
       "codes": [
         "OOT Ice Cavern SR Scythe Back",
@@ -100,10 +57,7 @@
       ]
     },
     {
-      "coords": [
-        514,
-        267
-      ],
+      "coords": [514, 267],
       "image": "silver_rupee",
       "codes": [
         "OOT Ice Cavern SR Scythe Back",
@@ -114,10 +68,7 @@
       ]
     },
     {
-      "coords": [
-        514,
-        267
-      ],
+      "coords": [514, 267],
       "image": "silver_rupee",
       "codes": [
         "OOT Ice Cavern SR Scythe Back",
@@ -128,10 +79,7 @@
       ]
     },
     {
-      "coords": [
-        514,
-        267
-      ],
+      "coords": [514, 267],
       "image": "silver_rupee",
       "codes": [
         "OOT Ice Cavern SR Scythe Back",
@@ -142,10 +90,7 @@
       ]
     },
     {
-      "coords": [
-        514,
-        267
-      ],
+      "coords": [514, 267],
       "image": "silver_rupee",
       "codes": [
         "OOT Ice Cavern SR Scythe Back",
@@ -156,10 +101,7 @@
       ]
     },
     {
-      "coords": [
-        437,
-        234
-      ],
+      "coords": [437, 234],
       "image": "silver_rupee",
       "codes": [
         "OOT Ice Cavern SR Blocks Alcove",
@@ -170,10 +112,7 @@
       ]
     },
     {
-      "coords": [
-        437,
-        234
-      ],
+      "coords": [437, 234],
       "image": "silver_rupee",
       "codes": [
         "OOT Ice Cavern SR Blocks Alcove",
@@ -184,10 +123,7 @@
       ]
     },
     {
-      "coords": [
-        437,
-        234
-      ],
+      "coords": [437, 234],
       "image": "silver_rupee",
       "codes": [
         "OOT Ice Cavern SR Blocks Alcove",
@@ -198,10 +134,7 @@
       ]
     },
     {
-      "coords": [
-        437,
-        234
-      ],
+      "coords": [437, 234],
       "image": "silver_rupee",
       "codes": [
         "OOT Ice Cavern SR Blocks Alcove",
@@ -212,10 +145,7 @@
       ]
     },
     {
-      "coords": [
-        437,
-        234
-      ],
+      "coords": [437, 234],
       "image": "silver_rupee",
       "codes": [
         "OOT Ice Cavern SR Blocks Alcove",
@@ -226,21 +156,12 @@
       ]
     },
     {
-      "coords": [
-        408,
-        303
-      ],
+      "coords": [408, 303],
       "image": "pot",
-      "codes": [
-        "OOT Ice Cavern Pot Red Ice 1",
-        "OOT Ice Cavern Pot Red Ice 2"
-      ]
+      "codes": ["OOT Ice Cavern Pot Red Ice 1", "OOT Ice Cavern Pot Red Ice 2"]
     },
     {
-      "coords": [
-        486,
-        308
-      ],
+      "coords": [486, 308],
       "image": "pot",
       "codes": [
         "OOT Ice Cavern Pot First Corridor 1",
@@ -248,10 +169,7 @@
       ]
     },
     {
-      "coords": [
-        525,
-        280
-      ],
+      "coords": [525, 280],
       "image": "pot",
       "codes": [
         "OOT Ice Cavern Pot Scythe Room 2",
@@ -259,50 +177,27 @@
       ]
     },
     {
-      "coords": [
-        499,
-        246
-      ],
+      "coords": [499, 246],
       "image": "flying_pot",
-      "codes": [
-        "OOT Ice Cavern Flying Pot Scythe Room"
-      ]
+      "codes": ["OOT Ice Cavern Flying Pot Scythe Room"]
     },
     {
-      "coords": [
-        525,
-        245
-      ],
+      "coords": [525, 245],
       "image": "pot",
-      "codes": [
-        "OOT Ice Cavern Pot Scythe Room 1"
-      ]
+      "codes": ["OOT Ice Cavern Pot Scythe Room 1"]
     },
     {
-      "coords": [
-        549,
-        230
-      ],
+      "coords": [549, 230],
       "image": "pot",
-      "codes": [
-        "OOT Ice Cavern Pot Map Room"
-      ]
+      "codes": ["OOT Ice Cavern Pot Map Room"]
     },
     {
-      "coords": [
-        492,
-        333
-      ],
+      "coords": [492, 333],
       "image": "blue_rupee",
-      "codes": [
-        "OOT Ice Cavern Rupee Ice"
-      ]
+      "codes": ["OOT Ice Cavern Rupee Ice"]
     },
     {
-      "coords": [
-        410,
-        249
-      ],
+      "coords": [410, 249],
       "image": "red_rupee",
       "codes": [
         "OOT Ice Cavern Rupee Midair 1",
@@ -311,10 +206,7 @@
       ]
     },
     {
-      "coords": [
-        585,
-        199
-      ],
+      "coords": [585, 199],
       "image": "heart",
       "codes": [
         "OOT Ice Cavern Heart 1",
@@ -323,20 +215,12 @@
       ]
     },
     {
-      "coords": [
-        500,
-        346
-      ],
+      "coords": [500, 346],
       "image": "big_fairy_spot",
-      "codes": [
-        "OOT Ice Cavern Entrance Big Fairy"
-      ]
+      "codes": ["OOT Ice Cavern Entrance Big Fairy"]
     },
     {
-      "coords": [
-        505,
-        398
-      ],
+      "coords": [505, 398],
       "image": "icicle",
       "codes": [
         "OOT Ice Cavern Icicle Before Entrance 1",
@@ -345,10 +229,7 @@
       ]
     },
     {
-      "coords": [
-        496,
-        369
-      ],
+      "coords": [496, 369],
       "image": "icicle",
       "codes": [
         "OOT Ice Cavern Icicle Entrance 1",
@@ -357,10 +238,7 @@
       ]
     },
     {
-      "coords": [
-        600,
-        322
-      ],
+      "coords": [600, 322],
       "image": "icicle",
       "codes": [
         "OOT Ice Cavern Icicle Compass 01",
@@ -379,10 +257,7 @@
       ]
     },
     {
-      "coords": [
-        498,
-        301
-      ],
+      "coords": [498, 301],
       "image": "icicle",
       "codes": [
         "OOT Ice Cavern Icicle Before Scythe 1",
@@ -392,10 +267,7 @@
       ]
     },
     {
-      "coords": [
-        582,
-        266
-      ],
+      "coords": [582, 266],
       "image": "icicle",
       "codes": [
         "OOT Ice Cavern Icicle Before Map 1",
@@ -404,10 +276,7 @@
       ]
     },
     {
-      "coords": [
-        506,
-        277
-      ],
+      "coords": [506, 277],
       "image": "icicle",
       "codes": [
         "OOT Ice Cavern Icicle Scythe 1",
@@ -416,10 +285,7 @@
       ]
     },
     {
-      "coords": [
-        478,
-        242
-      ],
+      "coords": [478, 242],
       "image": "icicle",
       "codes": [
         "OOT Ice Cavern Icicle Before Block 1",
@@ -430,10 +296,7 @@
       ]
     },
     {
-      "coords": [
-        413,
-        281
-      ],
+      "coords": [413, 281],
       "image": "icicle",
       "codes": [
         "OOT Ice Cavern Icicle After Block 1",
@@ -447,90 +310,47 @@
       ]
     },
     {
-      "coords": [
-        513,
-        395
-      ],
+      "coords": [513, 395],
       "image": "red_ice",
-      "codes": [
-        "OOT Ice Cavern Red Ice Entrance"
-      ]
+      "codes": ["OOT Ice Cavern Red Ice Entrance"]
     },
     {
-      "coords": [
-        512,
-        329
-      ],
+      "coords": [512, 329],
       "image": "red_ice",
-      "codes": [
-        "OOT Ice Cavern Red Ice Freezard 2"
-      ]
+      "codes": ["OOT Ice Cavern Red Ice Freezard 2"]
     },
     {
-      "coords": [
-        490,
-        329
-      ],
+      "coords": [490, 329],
       "image": "red_ice",
-      "codes": [
-        "OOT Ice Cavern Red Ice Freezard 1"
-      ]
+      "codes": ["OOT Ice Cavern Red Ice Freezard 1"]
     },
     {
-      "coords": [
-        575,
-        329
-      ],
+      "coords": [575, 329],
       "image": "red_ice",
-      "codes": [
-        "OOT Ice Cavern Red Ice Compass 2"
-      ]
+      "codes": ["OOT Ice Cavern Red Ice Compass 2"]
     },
     {
-      "coords": [
-        575,
-        303
-      ],
+      "coords": [575, 303],
       "image": "red_ice",
-      "codes": [
-        "OOT Ice Cavern Red Ice Compass 1"
-      ]
+      "codes": ["OOT Ice Cavern Red Ice Compass 1"]
     },
     {
-      "coords": [
-        544,
-        225
-      ],
+      "coords": [544, 225],
       "image": "red_ice",
-      "codes": [
-        "OOT Ice Cavern Red Ice Map 2"
-      ]
+      "codes": ["OOT Ice Cavern Red Ice Map 2"]
     },
     {
-      "coords": [
-        543,
-        191
-      ],
+      "coords": [543, 191],
       "image": "red_ice",
-      "codes": [
-        "OOT Ice Cavern Red Ice Map 1"
-      ]
+      "codes": ["OOT Ice Cavern Red Ice Map 1"]
     },
     {
-      "coords": [
-        435,
-        203
-      ],
+      "coords": [435, 203],
       "image": "red_ice",
-      "codes": [
-        "OOT Ice Cavern Red Ice Block"
-      ]
+      "codes": ["OOT Ice Cavern Red Ice Block"]
     },
     {
-      "coords": [
-        414,
-        298
-      ],
+      "coords": [414, 298],
       "image": "red_ice",
       "codes": [
         "OOT Ice Cavern Red Ice After Block 1",

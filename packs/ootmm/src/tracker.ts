@@ -142,9 +142,7 @@ const BOTTLE_ALWAYS_INCLUDED_ITEM_IDS_OOT_MM = new Set([
   'MM_BOTTLE_EMPTY',
 ]);
 
-const BOTTLE_ALWAYS_INCLUDED_ITEM_IDS_SHARED = new Set([
-  'SHARED_BOTTLE_EMPTY',
-]);
+const BOTTLE_ALWAYS_INCLUDED_ITEM_IDS_SHARED = new Set(['SHARED_BOTTLE_EMPTY']);
 
 const CLOCK_ITEM_IDS = new Set([
   'MM_CLOCK1',
@@ -1271,29 +1269,34 @@ export class OoTMMTracker implements TrackerPack {
 
   private shouldForceIncludeItem(itemId: string): boolean {
     if (FISHING_POND_ALWAYS_INCLUDED_ITEM_IDS.has(itemId)) {
-      return this.isFishingPondShuffleEnabled()
+      return this.isFishingPondShuffleEnabled();
     }
 
     if (BOTTLE_ALWAYS_INCLUDED_ITEM_IDS_SHARED.has(itemId)) {
-      return this.isSharedBottlesEnabled()
+      return this.isSharedBottlesEnabled();
     }
 
     if (BOTTLE_ALWAYS_INCLUDED_ITEM_IDS_OOT_MM.has(itemId)) {
-      return !this.isSharedBottlesEnabled()
+      return !this.isSharedBottlesEnabled();
     }
 
-    return true
+    return true;
   }
 
   private isSharedBottlesEnabled(): boolean {
-    const value = (this.settings as { sharedBottles?: unknown })?.sharedBottles
-    if (typeof value === 'boolean') return value
+    const value = (this.settings as { sharedBottles?: unknown })?.sharedBottles;
+    if (typeof value === 'boolean') return value;
     if (typeof value === 'string') {
-      const normalized = value.trim().toLowerCase()
-      return normalized === 'true' || normalized === '1' || normalized === 'yes' || normalized === 'on'
+      const normalized = value.trim().toLowerCase();
+      return (
+        normalized === 'true' ||
+        normalized === '1' ||
+        normalized === 'yes' ||
+        normalized === 'on'
+      );
     }
-    if (typeof value === 'number') return value === 1
-    return false
+    if (typeof value === 'number') return value === 1;
+    return false;
   }
 
   private adjustFixedLocationCounts(counts: Map<string, number>): void {

@@ -53,9 +53,9 @@ interface GridItemRefAlias {
 }
 
 interface GridItemMultiActivation {
-  item: string
-  title?: string
-  activateAlso: string[]
+  item: string;
+  title?: string;
+  activateAlso: string[];
 }
 
 const props = defineProps<{
@@ -91,12 +91,14 @@ function getGridRefAlias(itemId: string): GridItemRefAlias | null {
 }
 
 function isGridMultiActivateKey(itemId: string): boolean {
-  return itemId.startsWith(GRID_MULTI_ACTIVATE_PREFIX)
+  return itemId.startsWith(GRID_MULTI_ACTIVATE_PREFIX);
 }
 
-function getGridMultiActivation(itemId: string): GridItemMultiActivation | null {
-  if (!isGridMultiActivateKey(itemId)) return null
-  return props.gridItemMultiActivations?.[itemId] || null
+function getGridMultiActivation(
+  itemId: string,
+): GridItemMultiActivation | null {
+  if (!isGridMultiActivateKey(itemId)) return null;
+  return props.gridItemMultiActivations?.[itemId] || null;
 }
 
 function getBaseItemId(itemId: string): string {
@@ -280,14 +282,14 @@ function setAdditionalToggleItems(
   active: boolean,
   inventory: Map<string, number>,
 ) {
-  const additionalItemIds = getAdditionalToggleItemIds(itemId)
-  if (additionalItemIds.length === 0) return
+  const additionalItemIds = getAdditionalToggleItemIds(itemId);
+  if (additionalItemIds.length === 0) return;
 
   for (const additionalItemId of additionalItemIds) {
     if (active) {
-      inventory.set(additionalItemId, 1)
+      inventory.set(additionalItemId, 1);
     } else {
-      inventory.delete(additionalItemId)
+      inventory.delete(additionalItemId);
     }
   }
 }
@@ -334,7 +336,12 @@ function toggleItem(itemId: string) {
     if (current < max) {
       nextLevel = current + 1;
       if (isGridRefAliasKey(itemId)) {
-        applyGridRefLinkedItemLevel(itemId, linkedItemIds, nextLevel, newInventory);
+        applyGridRefLinkedItemLevel(
+          itemId,
+          linkedItemIds,
+          nextLevel,
+          newInventory,
+        );
       } else {
         applyLinkedItemLevel(linkedItemIds, nextLevel, newInventory);
       }
@@ -418,11 +425,16 @@ function decrementItem(itemId: string, event: MouseEvent) {
   const baseItemId = getBaseItemId(itemId);
 
   if (linkedItemIds && linkedItemIds.length > 0) {
-    let nextLevel = max
+    let nextLevel = max;
     if (current > 0) {
-      nextLevel = current - 1
+      nextLevel = current - 1;
       if (isGridRefAliasKey(itemId)) {
-        applyGridRefLinkedItemLevel(itemId, linkedItemIds, nextLevel, newInventory);
+        applyGridRefLinkedItemLevel(
+          itemId,
+          linkedItemIds,
+          nextLevel,
+          newInventory,
+        );
       } else {
         applyLinkedItemLevel(linkedItemIds, nextLevel, newInventory);
       }

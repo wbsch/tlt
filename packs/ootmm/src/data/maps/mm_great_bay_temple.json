@@ -6,230 +6,117 @@
   "height": 600,
   "markers": [
     {
-      "coords": [
-        445,
-        327
-      ],
+      "coords": [445, 327],
       "image": "gyorgs_remain",
-      "codes": [
-        "MM Great Bay Temple Boss"
-      ]
+      "codes": ["MM Great Bay Temple Boss"]
     },
     {
-      "coords": [
-        462,
-        327
-      ],
+      "coords": [462, 327],
       "image": "heart_container",
-      "codes": [
-        "MM Great Bay Temple Boss HC"
-      ]
+      "codes": ["MM Great Bay Temple Boss HC"]
     },
     {
-      "coords": [
-        528,
-        224
-      ],
+      "coords": [528, 224],
       "image": "chest",
-      "codes": [
-        "MM Great Bay Temple Compass"
-      ]
+      "codes": ["MM Great Bay Temple Compass"]
     },
     {
-      "coords": [
-        548,
-        227
-      ],
+      "coords": [548, 227],
       "image": "chest",
-      "codes": [
-        "MM Great Bay Temple Compass Room Underwater"
-      ]
+      "codes": ["MM Great Bay Temple Compass Room Underwater"]
     },
     {
-      "coords": [
-        559,
-        211
-      ],
+      "coords": [559, 211],
       "image": "chest",
-      "codes": [
-        "MM Great Bay Temple Boss Key"
-      ]
+      "codes": ["MM Great Bay Temple Boss Key"]
     },
     {
-      "coords": [
-        584,
-        260
-      ],
+      "coords": [584, 260],
       "image": "chest",
-      "codes": [
-        "MM Great Bay Temple Baba Chest"
-      ]
+      "codes": ["MM Great Bay Temple Baba Chest"]
     },
     {
-      "coords": [
-        748,
-        189
-      ],
+      "coords": [748, 189],
       "image": "chest",
-      "codes": [
-        "MM Great Bay Temple Ice Arrow"
-      ]
+      "codes": ["MM Great Bay Temple Ice Arrow"]
     },
     {
-      "coords": [
-        814,
-        219
-      ],
+      "coords": [814, 219],
       "image": "chest",
-      "codes": [
-        "MM Great Bay Temple Green Pipe 1 Chest"
-      ]
+      "codes": ["MM Great Bay Temple Green Pipe 1 Chest"]
     },
     {
-      "coords": [
-        926,
-        218
-      ],
+      "coords": [926, 218],
       "image": "chest",
-      "codes": [
-        "MM Great Bay Temple Green Pipe 2 Upper Chest"
-      ]
+      "codes": ["MM Great Bay Temple Green Pipe 2 Upper Chest"]
     },
     {
-      "coords": [
-        949,
-        244
-      ],
+      "coords": [949, 244],
       "image": "chest",
-      "codes": [
-        "MM Great Bay Temple Green Pipe 2 Lower Chest"
-      ]
+      "codes": ["MM Great Bay Temple Green Pipe 2 Lower Chest"]
     },
     {
-      "coords": [
-        904,
-        299
-      ],
+      "coords": [904, 299],
       "image": "chest",
-      "codes": [
-        "MM Great Bay Temple Green Pipe 3 Chest"
-      ]
+      "codes": ["MM Great Bay Temple Green Pipe 3 Chest"]
     },
     {
-      "coords": [
-        859,
-        305
-      ],
+      "coords": [859, 305],
       "image": "chest",
-      "codes": [
-        "MM Great Bay Temple Map"
-      ]
+      "codes": ["MM Great Bay Temple Map"]
     },
     {
-      "coords": [
-        812,
-        369
-      ],
+      "coords": [812, 369],
       "image": "chest",
-      "codes": [
-        "MM Great Bay Temple Entrance Chest"
-      ]
+      "codes": ["MM Great Bay Temple Entrance Chest"]
     },
     {
-      "coords": [
-        190,
-        268
-      ],
+      "coords": [190, 268],
       "image": "stray_fairy",
-      "codes": [
-        "MM Great Bay Temple SF Central Room Underwater Pot"
-      ]
+      "codes": ["MM Great Bay Temple SF Central Room Underwater Pot"]
     },
     {
-      "coords": [
-        169,
-        307
-      ],
+      "coords": [169, 307],
       "image": "stray_fairy",
-      "codes": [
-        "MM Great Bay Temple SF Pre-Boss Underwater"
-      ]
+      "codes": ["MM Great Bay Temple SF Pre-Boss Underwater"]
     },
     {
-      "coords": [
-        497,
-        328
-      ],
+      "coords": [497, 328],
       "image": "stray_fairy",
-      "codes": [
-        "MM Great Bay Temple SF Pre-Boss Above Water"
-      ]
+      "codes": ["MM Great Bay Temple SF Pre-Boss Above Water"]
     },
     {
-      "coords": [
-        559,
-        231
-      ],
+      "coords": [559, 231],
       "image": "stray_fairy",
-      "codes": [
-        "MM Great Bay Temple SF Compass Room Pot"
-      ]
+      "codes": ["MM Great Bay Temple SF Compass Room Pot"]
     },
     {
-      "coords": [
-        909,
-        276
-      ],
+      "coords": [909, 276],
       "image": "stray_fairy",
-      "codes": [
-        "MM Great Bay Temple SF Green Pipe 3 Barrel"
-      ]
+      "codes": ["MM Great Bay Temple SF Green Pipe 3 Barrel"]
     },
     {
-      "coords": [
-        869,
-        319
-      ],
+      "coords": [869, 319],
       "image": "stray_fairy",
-      "codes": [
-        "MM Great Bay Temple SF Map Room Pot"
-      ]
+      "codes": ["MM Great Bay Temple SF Map Room Pot"]
     },
     {
-      "coords": [
-        795,
-        267
-      ],
+      "coords": [795, 267],
       "image": "stray_fairy",
-      "codes": [
-        "MM Great Bay Temple SF Central Room Barrel"
-      ]
+      "codes": ["MM Great Bay Temple SF Central Room Barrel"]
     },
     {
-      "coords": [
-        814,
-        343
-      ],
+      "coords": [814, 343],
       "image": "stray_fairy",
-      "codes": [
-        "MM Great Bay Temple SF Water Wheel Platform"
-      ]
+      "codes": ["MM Great Bay Temple SF Water Wheel Platform"]
     },
     {
-      "coords": [
-        791,
-        340
-      ],
+      "coords": [791, 340],
       "image": "stray_fairy",
-      "codes": [
-        "MM Great Bay Temple SF Water Wheel Skulltula"
-      ]
+      "codes": ["MM Great Bay Temple SF Water Wheel Skulltula"]
     },
     {
-      "coords": [
-        116,
-        265
-      ],
+      "coords": [116, 265],
       "image": "pot",
       "codes": [
         "MM Great Bay Temple Pot Red Pipe Before Wart 1",
@@ -237,10 +124,7 @@
       ]
     },
     {
-      "coords": [
-        138,
-        265
-      ],
+      "coords": [138, 265],
       "image": "pot",
       "codes": [
         "MM Great Bay Temple Pot Red Pipe Before Wart 3",
@@ -248,10 +132,7 @@
       ]
     },
     {
-      "coords": [
-        174,
-        328
-      ],
+      "coords": [174, 328],
       "image": "pot",
       "codes": [
         "MM Great Bay Temple Pot Pre-Boss 1",
@@ -265,10 +146,7 @@
       ]
     },
     {
-      "coords": [
-        446,
-        311
-      ],
+      "coords": [446, 311],
       "image": "pot",
       "codes": [
         "MM Great Bay Temple Boss Pot 1",
@@ -278,10 +156,7 @@
       ]
     },
     {
-      "coords": [
-        462,
-        311
-      ],
+      "coords": [462, 311],
       "image": "pot",
       "codes": [
         "MM Great Bay Temple Boss Pot Underwater 1",
@@ -291,10 +166,7 @@
       ]
     },
     {
-      "coords": [
-        549,
-        322
-      ],
+      "coords": [549, 322],
       "image": "pot",
       "codes": [
         "MM Great Bay Temple Pot Map Room Water 5",
@@ -304,10 +176,7 @@
       ]
     },
     {
-      "coords": [
-        549,
-        304
-      ],
+      "coords": [549, 304],
       "image": "pot",
       "codes": [
         "MM Great Bay Temple Pot Map Room Water 3",
@@ -315,10 +184,7 @@
       ]
     },
     {
-      "coords": [
-        549,
-        288
-      ],
+      "coords": [549, 288],
       "image": "pot",
       "codes": [
         "MM Great Bay Temple Pot Map Room Water 1",
@@ -326,10 +192,7 @@
       ]
     },
     {
-      "coords": [
-        536,
-        232
-      ],
+      "coords": [536, 232],
       "image": "pot",
       "codes": [
         "MM Great Bay Temple Pot Compass Room Water 1",
@@ -338,10 +201,7 @@
       ]
     },
     {
-      "coords": [
-        551,
-        236
-      ],
+      "coords": [551, 236],
       "image": "pot",
       "codes": [
         "MM Great Bay Temple Pot Compass Room Surface 1",
@@ -351,10 +211,7 @@
       ]
     },
     {
-      "coords": [
-        597,
-        231
-      ],
+      "coords": [597, 231],
       "image": "pot",
       "codes": [
         "MM Great Bay Temple Pot Green Pipe 2 1",
@@ -362,10 +219,7 @@
       ]
     },
     {
-      "coords": [
-        597,
-        247
-      ],
+      "coords": [597, 247],
       "image": "pot",
       "codes": [
         "MM Great Bay Temple Pot Green Pipe 2 3",
@@ -375,10 +229,7 @@
       ]
     },
     {
-      "coords": [
-        622,
-        241
-      ],
+      "coords": [622, 241],
       "image": "pot",
       "codes": [
         "MM Great Bay Temple Pot Green Pipe 2 7",
@@ -386,10 +237,7 @@
       ]
     },
     {
-      "coords": [
-        735,
-        176
-      ],
+      "coords": [735, 176],
       "image": "pot",
       "codes": [
         "MM Great Bay Temple Pot Wart 3",
@@ -397,10 +245,7 @@
       ]
     },
     {
-      "coords": [
-        759,
-        176
-      ],
+      "coords": [759, 176],
       "image": "pot",
       "codes": [
         "MM Great Bay Temple Pot Wart 5",
@@ -408,10 +253,7 @@
       ]
     },
     {
-      "coords": [
-        735,
-        202
-      ],
+      "coords": [735, 202],
       "image": "pot",
       "codes": [
         "MM Great Bay Temple Pot Wart 1",
@@ -419,10 +261,7 @@
       ]
     },
     {
-      "coords": [
-        759,
-        202
-      ],
+      "coords": [759, 202],
       "image": "pot",
       "codes": [
         "MM Great Bay Temple Pot Wart 7",
@@ -430,10 +269,7 @@
       ]
     },
     {
-      "coords": [
-        746,
-        221
-      ],
+      "coords": [746, 221],
       "image": "pot",
       "codes": [
         "MM Great Bay Temple Pot Before Wart 01",
@@ -451,50 +287,27 @@
       ]
     },
     {
-      "coords": [
-        799,
-        203
-      ],
+      "coords": [799, 203],
       "image": "pot",
-      "codes": [
-        "MM Great Bay Temple Pot Green Pipe 1 2"
-      ]
+      "codes": ["MM Great Bay Temple Pot Green Pipe 1 2"]
     },
     {
-      "coords": [
-        828,
-        203
-      ],
+      "coords": [828, 203],
       "image": "pot",
-      "codes": [
-        "MM Great Bay Temple Pot Green Pipe 1 3"
-      ]
+      "codes": ["MM Great Bay Temple Pot Green Pipe 1 3"]
     },
     {
-      "coords": [
-        799,
-        235
-      ],
+      "coords": [799, 235],
       "image": "pot",
-      "codes": [
-        "MM Great Bay Temple Pot Green Pipe 1 1"
-      ]
+      "codes": ["MM Great Bay Temple Pot Green Pipe 1 1"]
     },
     {
-      "coords": [
-        828,
-        235
-      ],
+      "coords": [828, 235],
       "image": "pot",
-      "codes": [
-        "MM Great Bay Temple Pot Green Pipe 1 4"
-      ]
+      "codes": ["MM Great Bay Temple Pot Green Pipe 1 4"]
     },
     {
-      "coords": [
-        832,
-        267
-      ],
+      "coords": [832, 267],
       "image": "pot",
       "codes": [
         "MM Great Bay Temple Pot Central Room 1",
@@ -502,10 +315,7 @@
       ]
     },
     {
-      "coords": [
-        861,
-        283
-      ],
+      "coords": [861, 283],
       "image": "pot",
       "codes": [
         "MM Great Bay Temple Pot Map Room Surface 1",
@@ -513,30 +323,17 @@
       ]
     },
     {
-      "coords": [
-        869,
-        307
-      ],
+      "coords": [869, 307],
       "image": "pot",
-      "codes": [
-        "MM Great Bay Temple Pot Map Room Surface 3"
-      ]
+      "codes": ["MM Great Bay Temple Pot Map Room Surface 3"]
     },
     {
-      "coords": [
-        896,
-        262
-      ],
+      "coords": [896, 262],
       "image": "pot",
-      "codes": [
-        "MM Great Bay Temple Pot Green Pipe 3 Lower"
-      ]
+      "codes": ["MM Great Bay Temple Pot Green Pipe 3 Lower"]
     },
     {
-      "coords": [
-        921,
-        298
-      ],
+      "coords": [921, 298],
       "image": "pot",
       "codes": [
         "MM Great Bay Temple Pot Green Pipe 3 Upper 1",
@@ -544,10 +341,7 @@
       ]
     },
     {
-      "coords": [
-        565,
-        226
-      ],
+      "coords": [565, 226],
       "image": "red_rupee",
       "codes": [
         "MM Great Bay Temple Rupee Compass Room 1",
@@ -555,10 +349,7 @@
       ]
     },
     {
-      "coords": [
-        804,
-        344
-      ],
+      "coords": [804, 344],
       "image": "green_rupee",
       "codes": [
         "MM Great Bay Temple Rupee Entrance 4",
@@ -566,10 +357,7 @@
       ]
     },
     {
-      "coords": [
-        804,
-        328
-      ],
+      "coords": [804, 328],
       "image": "blue_rupee",
       "codes": [
         "MM Great Bay Temple Rupee Entrance 2",
@@ -577,40 +365,22 @@
       ]
     },
     {
-      "coords": [
-        791,
-        330
-      ],
+      "coords": [791, 330],
       "image": "red_rupee",
-      "codes": [
-        "MM Great Bay Temple Rupee Entrance 1"
-      ]
+      "codes": ["MM Great Bay Temple Rupee Entrance 1"]
     },
     {
-      "coords": [
-        814,
-        235
-      ],
+      "coords": [814, 235],
       "image": "red_rupee",
-      "codes": [
-        "MM Great Bay Temple Rupee Hookshot 2"
-      ]
+      "codes": ["MM Great Bay Temple Rupee Hookshot 2"]
     },
     {
-      "coords": [
-        828,
-        195
-      ],
+      "coords": [828, 195],
       "image": "red_rupee",
-      "codes": [
-        "MM Great Bay Temple Rupee Hookshot 1"
-      ]
+      "codes": ["MM Great Bay Temple Rupee Hookshot 1"]
     },
     {
-      "coords": [
-        539,
-        173
-      ],
+      "coords": [539, 173],
       "image": "small_crate",
       "codes": [
         "MM Great Bay Temple Crate Before Boss Key 05",
@@ -620,10 +390,7 @@
       ]
     },
     {
-      "coords": [
-        539,
-        193
-      ],
+      "coords": [539, 193],
       "image": "small_crate",
       "codes": [
         "MM Great Bay Temple Crate Before Boss Key 01",
@@ -633,10 +400,7 @@
       ]
     },
     {
-      "coords": [
-        560,
-        173
-      ],
+      "coords": [560, 173],
       "image": "small_crate",
       "codes": [
         "MM Great Bay Temple Crate Before Boss Key 09",
@@ -646,10 +410,7 @@
       ]
     },
     {
-      "coords": [
-        560,
-        193
-      ],
+      "coords": [560, 193],
       "image": "small_crate",
       "codes": [
         "MM Great Bay Temple Crate Before Boss Key 13",
@@ -659,10 +420,7 @@
       ]
     },
     {
-      "coords": [
-        850,
-        337
-      ],
+      "coords": [850, 337],
       "image": "crate",
       "codes": [
         "MM Great Bay Temple Crate Chu Room 1",
@@ -670,10 +428,7 @@
       ]
     },
     {
-      "coords": [
-        879,
-        337
-      ],
+      "coords": [879, 337],
       "image": "crate",
       "codes": [
         "MM Great Bay Temple Crate Chu Room 3",
@@ -682,10 +437,7 @@
       ]
     },
     {
-      "coords": [
-        904,
-        286
-      ],
+      "coords": [904, 286],
       "image": "crate",
       "codes": [
         "MM Great Bay Temple Crate Green Pipe 4",
@@ -695,10 +447,7 @@
       ]
     },
     {
-      "coords": [
-        897,
-        269
-      ],
+      "coords": [897, 269],
       "image": "crate",
       "codes": [
         "MM Great Bay Temple Crate Green Pipe 1",
@@ -707,10 +456,7 @@
       ]
     },
     {
-      "coords": [
-        799,
-        213
-      ],
+      "coords": [799, 213],
       "image": "barrel",
       "codes": [
         "MM Great Bay Temple Barrel Green Pipe 1 1",
@@ -719,10 +465,7 @@
       ]
     },
     {
-      "coords": [
-        908,
-        230
-      ],
+      "coords": [908, 230],
       "image": "barrel",
       "codes": [
         "MM Great Bay Temple Barrel Green Pipe 2 1",
@@ -730,10 +473,7 @@
       ]
     },
     {
-      "coords": [
-        874,
-        344
-      ],
+      "coords": [874, 344],
       "image": "barrel",
       "codes": [
         "MM Great Bay Temple Barrel Chu Room 1",
@@ -742,10 +482,7 @@
       ]
     },
     {
-      "coords": [
-        854,
-        344
-      ],
+      "coords": [854, 344],
       "image": "barrel",
       "codes": [
         "MM Great Bay Temple Barrel Chu Room 1",
@@ -753,10 +490,7 @@
       ]
     },
     {
-      "coords": [
-        826,
-        390
-      ],
+      "coords": [826, 390],
       "image": "barrel",
       "codes": [
         "MM Great Bay Temple Barrel Entrance 5",
@@ -766,10 +500,7 @@
       ]
     },
     {
-      "coords": [
-        797,
-        390
-      ],
+      "coords": [797, 390],
       "image": "barrel",
       "codes": [
         "MM Great Bay Temple Barrel Entrance 1",
@@ -779,10 +510,7 @@
       ]
     },
     {
-      "coords": [
-        540,
-        208
-      ],
+      "coords": [540, 208],
       "image": "icicle",
       "codes": [
         "MM Great Bay Temple Icicle Compass Room 1",

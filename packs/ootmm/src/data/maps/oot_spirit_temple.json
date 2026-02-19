@@ -6,10 +6,7 @@
   "height": 600,
   "markers": [
     {
-      "coords": [
-        719,
-        429
-      ],
+      "coords": [719, 429],
       "image": "chest",
       "codes": [
         "OOT Spirit Temple Adult Suns on Wall 1",
@@ -17,30 +14,17 @@
       ]
     },
     {
-      "coords": [
-        645,
-        415
-      ],
+      "coords": [645, 415],
       "image": "chest",
-      "codes": [
-        "OOT Spirit Temple Statue Base"
-      ]
+      "codes": ["OOT Spirit Temple Statue Base"]
     },
     {
-      "coords": [
-        629,
-        406
-      ],
+      "coords": [629, 406],
       "image": "chest",
-      "codes": [
-        "OOT Spirit Temple Statue Hands"
-      ]
+      "codes": ["OOT Spirit Temple Statue Hands"]
     },
     {
-      "coords": [
-        591,
-        414
-      ],
+      "coords": [591, 414],
       "image": "chest",
       "codes": [
         "OOT Spirit Temple Child Climb 1",
@@ -48,90 +32,47 @@
       ]
     },
     {
-      "coords": [
-        247,
-        413
-      ],
+      "coords": [247, 413],
       "image": "chest",
-      "codes": [
-        "OOT Spirit Temple Child First Chest"
-      ]
+      "codes": ["OOT Spirit Temple Child First Chest"]
     },
     {
-      "coords": [
-        323,
-        408
-      ],
+      "coords": [323, 408],
       "image": "chest",
-      "codes": [
-        "OOT Spirit Temple Child Second Chest"
-      ]
+      "codes": ["OOT Spirit Temple Child Second Chest"]
     },
     {
-      "coords": [
-        366,
-        400
-      ],
+      "coords": [366, 400],
       "image": "chest",
-      "codes": [
-        "OOT Spirit Temple Adult Lullaby"
-      ]
+      "codes": ["OOT Spirit Temple Adult Lullaby"]
     },
     {
-      "coords": [
-        437,
-        374
-      ],
+      "coords": [437, 374],
       "image": "chest",
-      "codes": [
-        "OOT Spirit Temple Adult Silver Rupees"
-      ]
+      "codes": ["OOT Spirit Temple Adult Silver Rupees"]
     },
     {
-      "coords": [
-        683,
-        122
-      ],
+      "coords": [683, 122],
       "image": "chest",
-      "codes": [
-        "OOT Spirit Temple Adult Boss Key Chest"
-      ]
+      "codes": ["OOT Spirit Temple Adult Boss Key Chest"]
     },
     {
-      "coords": [
-        600,
-        165
-      ],
+      "coords": [600, 165],
       "image": "chest",
-      "codes": [
-        "OOT Spirit Temple Adult Topmost Sun on Wall"
-      ]
+      "codes": ["OOT Spirit Temple Adult Topmost Sun on Wall"]
     },
     {
-      "coords": [
-        410,
-        301
-      ],
+      "coords": [410, 301],
       "image": "chest",
-      "codes": [
-        "OOT Spirit Temple Mirror Shield"
-      ]
+      "codes": ["OOT Spirit Temple Mirror Shield"]
     },
     {
-      "coords": [
-        290,
-        301
-      ],
+      "coords": [290, 301],
       "image": "chest",
-      "codes": [
-        "OOT Spirit Temple Silver Gauntlets"
-      ]
+      "codes": ["OOT Spirit Temple Silver Gauntlets"]
     },
     {
-      "coords": [
-        455,
-        262
-      ],
+      "coords": [455, 262],
       "image": "chest",
       "codes": [
         "OOT Spirit Temple Adult Invisible 1",
@@ -139,110 +80,57 @@
       ]
     },
     {
-      "coords": [
-        268,
-        230
-      ],
+      "coords": [268, 230],
       "image": "chest",
-      "codes": [
-        "OOT Spirit Temple Sun Block Room Torches"
-      ]
+      "codes": ["OOT Spirit Temple Sun Block Room Torches"]
     },
     {
-      "coords": [
-        452,
-        172
-      ],
+      "coords": [452, 172],
       "image": "chest",
-      "codes": [
-        "OOT Spirit Temple Adult Late Sun on Wall"
-      ]
+      "codes": ["OOT Spirit Temple Adult Late Sun on Wall"]
     },
     {
-      "coords": [
-        375,
-        137
-      ],
+      "coords": [375, 137],
       "image": "chest",
-      "codes": [
-        "OOT Spirit Temple Statue Upper Right"
-      ]
+      "codes": ["OOT Spirit Temple Statue Upper Right"]
     },
     {
-      "coords": [
-        336,
-        105
-      ],
+      "coords": [336, 105],
       "image": "heart_container",
-      "codes": [
-        "OOT Spirit Temple Boss HC"
-      ]
+      "codes": ["OOT Spirit Temple Boss HC"]
     },
     {
-      "coords": [
-        352,
-        105
-      ],
+      "coords": [352, 105],
       "image": "spirit_medallion",
-      "codes": [
-        "OOT Spirit Temple Boss"
-      ]
+      "codes": ["OOT Spirit Temple Boss"]
     },
     {
-      "coords": [
-        573,
-        419
-      ],
+      "coords": [573, 419],
       "image": "gold_skulltula",
-      "codes": [
-        "OOT Spirit Temple GS Child Climb"
-      ]
+      "codes": ["OOT Spirit Temple GS Child Climb"]
     },
     {
-      "coords": [
-        428,
-        421
-      ],
+      "coords": [428, 421],
       "image": "gold_skulltula",
-      "codes": [
-        "OOT Spirit Temple GS Boulders"
-      ]
+      "codes": ["OOT Spirit Temple GS Boulders"]
     },
     {
-      "coords": [
-        326,
-        426
-      ],
+      "coords": [326, 426],
       "image": "gold_skulltula",
-      "codes": [
-        "OOT Spirit Temple GS Child Fence"
-      ]
+      "codes": ["OOT Spirit Temple GS Child Fence"]
     },
     {
-      "coords": [
-        245,
-        251
-      ],
+      "coords": [245, 251],
       "image": "gold_skulltula",
-      "codes": [
-        "OOT Spirit Temple GS Iron Knuckle"
-      ]
+      "codes": ["OOT Spirit Temple GS Iron Knuckle"]
     },
     {
-      "coords": [
-        311,
-        132
-      ],
+      "coords": [311, 132],
       "image": "gold_skulltula",
-      "codes": [
-        "OOT Spirit Temple GS Statue"
-      ]
+      "codes": ["OOT Spirit Temple GS Statue"]
     },
     {
-      "coords": [
-        437,
-        429
-      ],
+      "coords": [437, 429],
       "image": "silver_rupee",
       "codes": [
         "OOT Spirit Temple SR Boulders 1",
@@ -253,10 +141,7 @@
       ]
     },
     {
-      "coords": [
-        437,
-        429
-      ],
+      "coords": [437, 429],
       "image": "silver_rupee",
       "codes": [
         "OOT Spirit Temple SR Boulders 1",
@@ -267,10 +152,7 @@
       ]
     },
     {
-      "coords": [
-        437,
-        429
-      ],
+      "coords": [437, 429],
       "image": "silver_rupee",
       "codes": [
         "OOT Spirit Temple SR Boulders 1",
@@ -281,10 +163,7 @@
       ]
     },
     {
-      "coords": [
-        437,
-        429
-      ],
+      "coords": [437, 429],
       "image": "silver_rupee",
       "codes": [
         "OOT Spirit Temple SR Boulders 1",
@@ -295,10 +174,7 @@
       ]
     },
     {
-      "coords": [
-        437,
-        429
-      ],
+      "coords": [437, 429],
       "image": "silver_rupee",
       "codes": [
         "OOT Spirit Temple SR Boulders 1",
@@ -309,10 +185,7 @@
       ]
     },
     {
-      "coords": [
-        311,
-        422
-      ],
+      "coords": [311, 422],
       "image": "silver_rupee",
       "codes": [
         "OOT Spirit Temple SR Child 1",
@@ -323,10 +196,7 @@
       ]
     },
     {
-      "coords": [
-        311,
-        422
-      ],
+      "coords": [311, 422],
       "image": "silver_rupee",
       "codes": [
         "OOT Spirit Temple SR Child 1",
@@ -337,10 +207,7 @@
       ]
     },
     {
-      "coords": [
-        311,
-        422
-      ],
+      "coords": [311, 422],
       "image": "silver_rupee",
       "codes": [
         "OOT Spirit Temple SR Child 1",
@@ -351,10 +218,7 @@
       ]
     },
     {
-      "coords": [
-        311,
-        422
-      ],
+      "coords": [311, 422],
       "image": "silver_rupee",
       "codes": [
         "OOT Spirit Temple SR Child 1",
@@ -365,10 +229,7 @@
       ]
     },
     {
-      "coords": [
-        311,
-        422
-      ],
+      "coords": [311, 422],
       "image": "silver_rupee",
       "codes": [
         "OOT Spirit Temple SR Child 1",
@@ -379,10 +240,7 @@
       ]
     },
     {
-      "coords": [
-        258,
-        208
-      ],
+      "coords": [258, 208],
       "image": "silver_rupee",
       "codes": [
         "OOT Spirit Temple SR Sun 1",
@@ -393,10 +251,7 @@
       ]
     },
     {
-      "coords": [
-        258,
-        208
-      ],
+      "coords": [258, 208],
       "image": "silver_rupee",
       "codes": [
         "OOT Spirit Temple SR Sun 1",
@@ -407,10 +262,7 @@
       ]
     },
     {
-      "coords": [
-        258,
-        208
-      ],
+      "coords": [258, 208],
       "image": "silver_rupee",
       "codes": [
         "OOT Spirit Temple SR Sun 1",
@@ -421,10 +273,7 @@
       ]
     },
     {
-      "coords": [
-        258,
-        208
-      ],
+      "coords": [258, 208],
       "image": "silver_rupee",
       "codes": [
         "OOT Spirit Temple SR Sun 1",
@@ -435,10 +284,7 @@
       ]
     },
     {
-      "coords": [
-        258,
-        208
-      ],
+      "coords": [258, 208],
       "image": "silver_rupee",
       "codes": [
         "OOT Spirit Temple SR Sun 1",
@@ -449,10 +295,7 @@
       ]
     },
     {
-      "coords": [
-        678,
-        416
-      ],
+      "coords": [678, 416],
       "image": "pot",
       "codes": [
         "OOT Spirit Temple Pot Statue Room 4",
@@ -461,30 +304,17 @@
       ]
     },
     {
-      "coords": [
-        672,
-        390
-      ],
+      "coords": [672, 390],
       "image": "flying_pot",
-      "codes": [
-        "OOT Spirit Temple Flying Pot Statue Room 2"
-      ]
+      "codes": ["OOT Spirit Temple Flying Pot Statue Room 2"]
     },
     {
-      "coords": [
-        619,
-        390
-      ],
+      "coords": [619, 390],
       "image": "flying_pot",
-      "codes": [
-        "OOT Spirit Temple Flying Pot Statue Room 1"
-      ]
+      "codes": ["OOT Spirit Temple Flying Pot Statue Room 1"]
     },
     {
-      "coords": [
-        613,
-        416
-      ],
+      "coords": [613, 416],
       "image": "pot",
       "codes": [
         "OOT Spirit Temple Pot Statue Room 1",
@@ -493,10 +323,7 @@
       ]
     },
     {
-      "coords": [
-        643,
-        147
-      ],
+      "coords": [643, 147],
       "image": "flying_pot",
       "codes": [
         "OOT Spirit Temple Flying Pot Topmost 1",
@@ -508,20 +335,12 @@
       ]
     },
     {
-      "coords": [
-        391,
-        190
-      ],
+      "coords": [391, 190],
       "image": "pot",
-      "codes": [
-        "OOT Spirit Temple Pot Adult Upper"
-      ]
+      "codes": ["OOT Spirit Temple Pot Adult Upper"]
     },
     {
-      "coords": [
-        237,
-        261
-      ],
+      "coords": [237, 261],
       "image": "pot",
       "codes": [
         "OOT Spirit Temple Pot Child Hand Stairway 1",
@@ -529,10 +348,7 @@
       ]
     },
     {
-      "coords": [
-        413,
-        427
-      ],
+      "coords": [413, 427],
       "image": "flying_pot",
       "codes": [
         "OOT Spirit Temple Flying Pot Adult Climb 1",
@@ -540,10 +356,7 @@
       ]
     },
     {
-      "coords": [
-        351,
-        509
-      ],
+      "coords": [351, 509],
       "image": "flying_pot",
       "codes": [
         "OOT Spirit Temple Flying Pot Lobby 1",
@@ -551,10 +364,7 @@
       ]
     },
     {
-      "coords": [
-        335,
-        509
-      ],
+      "coords": [335, 509],
       "image": "pot",
       "codes": [
         "OOT Spirit Temple Pot Lobby 1",
@@ -562,20 +372,12 @@
       ]
     },
     {
-      "coords": [
-        289,
-        410
-      ],
+      "coords": [289, 410],
       "image": "pot",
-      "codes": [
-        "OOT Spirit Temple Pot Child Climb"
-      ]
+      "codes": ["OOT Spirit Temple Pot Child Climb"]
     },
     {
-      "coords": [
-        279,
-        383
-      ],
+      "coords": [279, 383],
       "image": "pot",
       "codes": [
         "OOT Spirit Temple Pot Child Anubis Room 1",
@@ -585,10 +387,7 @@
       ]
     },
     {
-      "coords": [
-        236,
-        399
-      ],
+      "coords": [236, 399],
       "image": "flying_pot",
       "codes": [
         "OOT Spirit Temple Flying Pot Child After Bridge 1",
@@ -596,46 +395,24 @@
       ]
     },
     {
-      "coords": [
-        281,
-        430
-      ],
+      "coords": [281, 430],
       "image": "small_crate",
-      "codes": [
-        "OOT Spirit Temple Crate 1",
-        "OOT Spirit Temple Crate 2"
-      ]
+      "codes": ["OOT Spirit Temple Crate 1", "OOT Spirit Temple Crate 2"]
     },
     {
-      "coords": [
-        683,
-        224
-      ],
+      "coords": [683, 224],
       "image": "heart",
-      "codes": [
-        "OOT Spirit Temple Heart 1",
-        "OOT Spirit Temple Heart 2"
-      ]
+      "codes": ["OOT Spirit Temple Heart 1", "OOT Spirit Temple Heart 2"]
     },
     {
-      "coords": [
-        437,
-        360
-      ],
+      "coords": [437, 360],
       "image": "big_fairy_spot",
-      "codes": [
-        "OOT Spirit Temple Adult Silver Rupees Big Fairy"
-      ]
+      "codes": ["OOT Spirit Temple Adult Silver Rupees Big Fairy"]
     },
     {
-      "coords": [
-        457,
-        203
-      ],
+      "coords": [457, 203],
       "image": "big_fairy_spot",
-      "codes": [
-        "OOT Spirit Temple Adult Sunlight Big Fairy"
-      ]
+      "codes": ["OOT Spirit Temple Adult Sunlight Big Fairy"]
     }
   ]
 }

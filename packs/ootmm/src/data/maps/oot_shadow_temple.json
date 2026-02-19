@@ -6,50 +6,27 @@
   "height": 600,
   "markers": [
     {
-      "coords": [
-        626,
-        149
-      ],
+      "coords": [626, 149],
       "image": "chest",
-      "codes": [
-        "OOT Shadow Temple Map"
-      ]
+      "codes": ["OOT Shadow Temple Map"]
     },
     {
-      "coords": [
-        583,
-        170
-      ],
+      "coords": [583, 170],
       "image": "chest",
-      "codes": [
-        "OOT Shadow Temple Hover Boots"
-      ]
+      "codes": ["OOT Shadow Temple Hover Boots"]
     },
     {
-      "coords": [
-        442,
-        156
-      ],
+      "coords": [442, 156],
       "image": "chest",
-      "codes": [
-        "OOT Shadow Temple Silver Rupees"
-      ]
+      "codes": ["OOT Shadow Temple Silver Rupees"]
     },
     {
-      "coords": [
-        425,
-        210
-      ],
+      "coords": [425, 210],
       "image": "chest",
-      "codes": [
-        "OOT Shadow Temple Compass"
-      ]
+      "codes": ["OOT Shadow Temple Compass"]
     },
     {
-      "coords": [
-        787,
-        525
-      ],
+      "coords": [787, 525],
       "image": "chest",
       "codes": [
         "OOT Shadow Temple Spinning Blades Invisible",
@@ -57,190 +34,97 @@
       ]
     },
     {
-      "coords": [
-        248,
-        372
-      ],
+      "coords": [248, 372],
       "image": "chest",
-      "codes": [
-        "OOT Shadow Temple Boss Key Room 1"
-      ]
+      "codes": ["OOT Shadow Temple Boss Key Room 1"]
     },
     {
-      "coords": [
-        278,
-        372
-      ],
+      "coords": [278, 372],
       "image": "chest",
-      "codes": [
-        "OOT Shadow Temple Boss Key Room 2"
-      ]
+      "codes": ["OOT Shadow Temple Boss Key Room 2"]
     },
     {
-      "coords": [
-        263,
-        454
-      ],
+      "coords": [263, 454],
       "image": "chest",
-      "codes": [
-        "OOT Shadow Temple Invisible Floormaster"
-      ]
+      "codes": ["OOT Shadow Temple Invisible Floormaster"]
     },
     {
-      "coords": [
-        291,
-        494
-      ],
+      "coords": [291, 494],
       "image": "shadow_medallion",
-      "codes": [
-        "OOT Shadow Temple Boss"
-      ]
+      "codes": ["OOT Shadow Temple Boss"]
     },
     {
-      "coords": [
-        307,
-        494
-      ],
+      "coords": [307, 494],
       "image": "heart_container",
-      "codes": [
-        "OOT Shadow Temple Boss HC"
-      ]
+      "codes": ["OOT Shadow Temple Boss HC"]
     },
     {
-      "coords": [
-        353,
-        492
-      ],
+      "coords": [353, 492],
       "image": "collectible",
-      "codes": [
-        "OOT Shadow Temple Skull"
-      ]
+      "codes": ["OOT Shadow Temple Skull"]
     },
     {
-      "coords": [
-        386,
-        489
-      ],
+      "coords": [386, 489],
       "image": "chest",
-      "codes": [
-        "OOT Shadow Temple Invisible Spike Room"
-      ]
+      "codes": ["OOT Shadow Temple Invisible Spike Room"]
     },
     {
-      "coords": [
-        303,
-        581
-      ],
+      "coords": [303, 581],
       "image": "chest",
-      "codes": [
-        "OOT Shadow Temple Falling Spikes Upper 2"
-      ]
+      "codes": ["OOT Shadow Temple Falling Spikes Upper 2"]
     },
     {
-      "coords": [
-        318,
-        564
-      ],
+      "coords": [318, 564],
       "image": "chest",
-      "codes": [
-        "OOT Shadow Temple Falling Spikes Lower"
-      ]
+      "codes": ["OOT Shadow Temple Falling Spikes Lower"]
     },
     {
-      "coords": [
-        340,
-        564
-      ],
+      "coords": [340, 564],
       "image": "chest",
-      "codes": [
-        "OOT Shadow Temple Falling Spikes Upper 1"
-      ]
+      "codes": ["OOT Shadow Temple Falling Spikes Upper 1"]
     },
     {
-      "coords": [
-        485,
-        447
-      ],
+      "coords": [485, 447],
       "image": "chest",
-      "codes": [
-        "OOT Shadow Temple Wind Room Hint"
-      ]
+      "codes": ["OOT Shadow Temple Wind Room Hint"]
     },
     {
-      "coords": [
-        468,
-        425
-      ],
+      "coords": [468, 425],
       "image": "chest",
-      "codes": [
-        "OOT Shadow Temple After Wind Invisible"
-      ]
+      "codes": ["OOT Shadow Temple After Wind Invisible"]
     },
     {
-      "coords": [
-        459,
-        416
-      ],
+      "coords": [459, 416],
       "image": "chest",
-      "codes": [
-        "OOT Shadow Temple After Wind"
-      ]
+      "codes": ["OOT Shadow Temple After Wind"]
     },
     {
-      "coords": [
-        211,
-        411
-      ],
+      "coords": [211, 411],
       "image": "gold_skulltula",
-      "codes": [
-        "OOT Shadow Temple GS Triple Skull Pot"
-      ]
+      "codes": ["OOT Shadow Temple GS Triple Skull Pot"]
     },
     {
-      "coords": [
-        329,
-        582
-      ],
+      "coords": [329, 582],
       "image": "gold_skulltula",
-      "codes": [
-        "OOT Shadow Temple GS Falling Spikes"
-      ]
+      "codes": ["OOT Shadow Temple GS Falling Spikes"]
     },
     {
-      "coords": [
-        343,
-        492
-      ],
+      "coords": [343, 492],
       "image": "gold_skulltula",
-      "codes": [
-        "OOT Shadow Temple GS Skull Pot"
-      ]
+      "codes": ["OOT Shadow Temple GS Skull Pot"]
     },
     {
-      "coords": [
-        431,
-        413
-      ],
+      "coords": [431, 413],
       "image": "gold_skulltula",
-      "codes": [
-        "OOT Shadow Temple GS Near Boat"
-      ]
+      "codes": ["OOT Shadow Temple GS Near Boat"]
     },
     {
-      "coords": [
-        793,
-        518
-      ],
+      "coords": [793, 518],
       "image": "gold_skulltula",
-      "codes": [
-        "OOT Shadow Temple GS Invisible Scythe"
-      ]
+      "codes": ["OOT Shadow Temple GS Invisible Scythe"]
     },
     {
-      "coords": [
-        389,
-        562
-      ],
+      "coords": [389, 562],
       "image": "silver_rupee",
       "codes": [
         "OOT Shadow Temple SR Pit 1",
@@ -251,10 +135,7 @@
       ]
     },
     {
-      "coords": [
-        389,
-        562
-      ],
+      "coords": [389, 562],
       "image": "silver_rupee",
       "codes": [
         "OOT Shadow Temple SR Pit 1",
@@ -265,10 +146,7 @@
       ]
     },
     {
-      "coords": [
-        389,
-        562
-      ],
+      "coords": [389, 562],
       "image": "silver_rupee",
       "codes": [
         "OOT Shadow Temple SR Pit 1",
@@ -279,10 +157,7 @@
       ]
     },
     {
-      "coords": [
-        389,
-        562
-      ],
+      "coords": [389, 562],
       "image": "silver_rupee",
       "codes": [
         "OOT Shadow Temple SR Pit 1",
@@ -293,10 +168,7 @@
       ]
     },
     {
-      "coords": [
-        389,
-        562
-      ],
+      "coords": [389, 562],
       "image": "silver_rupee",
       "codes": [
         "OOT Shadow Temple SR Pit 1",
@@ -307,10 +179,7 @@
       ]
     },
     {
-      "coords": [
-        394,
-        496
-      ],
+      "coords": [394, 496],
       "image": "silver_rupee",
       "codes": [
         "OOT Shadow Temple SR Spikes Back Left",
@@ -321,10 +190,7 @@
       ]
     },
     {
-      "coords": [
-        394,
-        496
-      ],
+      "coords": [394, 496],
       "image": "silver_rupee",
       "codes": [
         "OOT Shadow Temple SR Spikes Back Left",
@@ -335,10 +201,7 @@
       ]
     },
     {
-      "coords": [
-        394,
-        496
-      ],
+      "coords": [394, 496],
       "image": "silver_rupee",
       "codes": [
         "OOT Shadow Temple SR Spikes Back Left",
@@ -349,10 +212,7 @@
       ]
     },
     {
-      "coords": [
-        394,
-        496
-      ],
+      "coords": [394, 496],
       "image": "silver_rupee",
       "codes": [
         "OOT Shadow Temple SR Spikes Back Left",
@@ -363,10 +223,7 @@
       ]
     },
     {
-      "coords": [
-        394,
-        496
-      ],
+      "coords": [394, 496],
       "image": "silver_rupee",
       "codes": [
         "OOT Shadow Temple SR Spikes Back Left",
@@ -377,10 +234,7 @@
       ]
     },
     {
-      "coords": [
-        425,
-        150
-      ],
+      "coords": [425, 150],
       "image": "silver_rupee",
       "codes": [
         "OOT Shadow Temple SR Scythe 1",
@@ -391,10 +245,7 @@
       ]
     },
     {
-      "coords": [
-        425,
-        150
-      ],
+      "coords": [425, 150],
       "image": "silver_rupee",
       "codes": [
         "OOT Shadow Temple SR Scythe 1",
@@ -405,10 +256,7 @@
       ]
     },
     {
-      "coords": [
-        425,
-        150
-      ],
+      "coords": [425, 150],
       "image": "silver_rupee",
       "codes": [
         "OOT Shadow Temple SR Scythe 1",
@@ -419,10 +267,7 @@
       ]
     },
     {
-      "coords": [
-        425,
-        150
-      ],
+      "coords": [425, 150],
       "image": "silver_rupee",
       "codes": [
         "OOT Shadow Temple SR Scythe 1",
@@ -433,10 +278,7 @@
       ]
     },
     {
-      "coords": [
-        425,
-        150
-      ],
+      "coords": [425, 150],
       "image": "silver_rupee",
       "codes": [
         "OOT Shadow Temple SR Scythe 1",
@@ -447,20 +289,12 @@
       ]
     },
     {
-      "coords": [
-        602,
-        163
-      ],
+      "coords": [602, 163],
       "image": "flying_pot",
-      "codes": [
-        "OOT Shadow Temple Flying Pot Early Maze"
-      ]
+      "codes": ["OOT Shadow Temple Flying Pot Early Maze"]
     },
     {
-      "coords": [
-        602,
-        185
-      ],
+      "coords": [602, 185],
       "image": "pot",
       "codes": [
         "OOT Shadow Temple Pot Early Maze 3",
@@ -470,10 +304,7 @@
       ]
     },
     {
-      "coords": [
-        618,
-        175
-      ],
+      "coords": [618, 175],
       "image": "pot",
       "codes": [
         "OOT Shadow Temple Pot Early Maze 1",
@@ -481,10 +312,7 @@
       ]
     },
     {
-      "coords": [
-        634,
-        159
-      ],
+      "coords": [634, 159],
       "image": "pot",
       "codes": [
         "OOT Shadow Temple Pot Map Room 1",
@@ -492,10 +320,7 @@
       ]
     },
     {
-      "coords": [
-        324,
-        558
-      ],
+      "coords": [324, 558],
       "image": "pot",
       "codes": [
         "OOT Shadow Temple Pot Falling Spikes Bottom 1",
@@ -503,10 +328,7 @@
       ]
     },
     {
-      "coords": [
-        341,
-        550
-      ],
+      "coords": [341, 550],
       "image": "pot",
       "codes": [
         "OOT Shadow Temple Pot Falling Spikes Top 1",
@@ -514,10 +336,7 @@
       ]
     },
     {
-      "coords": [
-        450,
-        424
-      ],
+      "coords": [450, 424],
       "image": "pot",
       "codes": [
         "OOT Shadow Temple Pot After Wind 1",
@@ -525,10 +344,7 @@
       ]
     },
     {
-      "coords": [
-        473,
-        411
-      ],
+      "coords": [473, 411],
       "image": "flying_pot",
       "codes": [
         "OOT Shadow Temple Flying Pot After Wind 1",
@@ -536,10 +352,7 @@
       ]
     },
     {
-      "coords": [
-        310,
-        394
-      ],
+      "coords": [310, 394],
       "image": "pot",
       "codes": [
         "OOT Shadow Temple Pot Boat Before Bridge 1",
@@ -547,10 +360,7 @@
       ]
     },
     {
-      "coords": [
-        289,
-        439
-      ],
+      "coords": [289, 439],
       "image": "pot",
       "codes": [
         "OOT Shadow Temple Pot Boat After Bridge 1",
@@ -558,10 +368,7 @@
       ]
     },
     {
-      "coords": [
-        255,
-        440
-      ],
+      "coords": [255, 440],
       "image": "pot",
       "codes": [
         "OOT Shadow Temple Pot Invisible Floormaster Room 1",
@@ -569,20 +376,12 @@
       ]
     },
     {
-      "coords": [
-        263,
-        367
-      ],
+      "coords": [263, 367],
       "image": "pot",
-      "codes": [
-        "OOT Shadow Temple Pot Boss Key Room"
-      ]
+      "codes": ["OOT Shadow Temple Pot Boss Key Room"]
     },
     {
-      "coords": [
-        776,
-        509
-      ],
+      "coords": [776, 509],
       "image": "heart",
       "codes": [
         "OOT Shadow Temple Heart Scythe 1",
@@ -590,10 +389,7 @@
       ]
     },
     {
-      "coords": [
-        436,
-        407
-      ],
+      "coords": [436, 407],
       "image": "heart",
       "codes": [
         "OOT Shadow Temple Heart Shortcut 1",
@@ -601,10 +397,7 @@
       ]
     },
     {
-      "coords": [
-        287,
-        423
-      ],
+      "coords": [287, 423],
       "image": "heart",
       "codes": [
         "OOT Shadow Temple Heart Pre-Boss 2",
@@ -612,54 +405,29 @@
       ]
     },
     {
-      "coords": [
-        303,
-        432
-      ],
+      "coords": [303, 432],
       "image": "heart",
-      "codes": [
-        "OOT Shadow Temple Heart Pre-Boss 1"
-      ]
+      "codes": ["OOT Shadow Temple Heart Pre-Boss 1"]
     },
     {
-      "coords": [
-        235,
-        411
-      ],
+      "coords": [235, 411],
       "image": "wonder_item_arrows",
-      "codes": [
-        "OOT Shadow Temple Wonder Item"
-      ]
+      "codes": ["OOT Shadow Temple Wonder Item"]
     },
     {
-      "coords": [
-        717,
-        565
-      ],
+      "coords": [717, 565],
       "image": "big_fairy_spot",
-      "codes": [
-        "OOT Shadow Temple Stalfos Big Fairy"
-      ]
+      "codes": ["OOT Shadow Temple Stalfos Big Fairy"]
     },
     {
-      "coords": [
-        459,
-        430
-      ],
+      "coords": [459, 430],
       "image": "big_fairy_spot",
-      "codes": [
-        "OOT Shadow Temple Big Fairy After Wind"
-      ]
+      "codes": ["OOT Shadow Temple Big Fairy After Wind"]
     },
     {
-      "coords": [
-        425,
-        180
-      ],
+      "coords": [425, 180],
       "image": "big_fairy_spot",
-      "codes": [
-        "OOT Shadow Temple Beamos Big Fairy"
-      ]
+      "codes": ["OOT Shadow Temple Beamos Big Fairy"]
     }
   ]
 }

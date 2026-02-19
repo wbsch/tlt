@@ -6,268 +6,128 @@
   "height": 600,
   "markers": [
     {
-      "coords": [
-        148,
-        81
-      ],
+      "coords": [148, 81],
       "image": "chest",
-      "codes": [
-        "OOT Haunted Wasteland Chest"
-      ]
+      "codes": ["OOT Haunted Wasteland Chest"]
     },
     {
-      "coords": [
-        56,
-        482
-      ],
+      "coords": [56, 482],
       "image": "heart_piece",
-      "codes": [
-        "OOT Desert Colossus HP"
-      ]
+      "codes": ["OOT Desert Colossus HP"]
     },
     {
-      "coords": [
-        497,
-        214
-      ],
+      "coords": [497, 214],
       "image": "chest",
-      "codes": [
-        "OOT Gerudo Fortress Chest"
-      ]
+      "codes": ["OOT Gerudo Fortress Chest"]
     },
     {
-      "coords": [
-        668,
-        349
-      ],
+      "coords": [668, 349],
       "image": "npc",
-      "overlays": [
-        "adult",
-        "day"
-      ],
+      "overlays": ["adult", "day"],
       "codes": [
         "OOT Gerudo Fortress Archery Reward 1",
         "OOT Gerudo Fortress Archery Reward 2"
       ]
     },
     {
-      "coords": [
-        864,
-        507
-      ],
+      "coords": [864, 507],
       "image": "heart_piece",
-      "codes": [
-        "OOT Gerudo Valley Crate HP"
-      ]
+      "codes": ["OOT Gerudo Valley Crate HP"]
     },
     {
-      "coords": [
-        824,
-        480
-      ],
+      "coords": [824, 480],
       "image": "chest",
-      "overlays": [
-        "adult"
-      ],
-      "codes": [
-        "OOT Gerudo Valley Chest"
-      ]
+      "overlays": ["adult"],
+      "codes": ["OOT Gerudo Valley Chest"]
     },
     {
-      "coords": [
-        845,
-        449
-      ],
+      "coords": [845, 449],
       "image": "npc",
-      "overlays": [
-        "adult"
-      ],
-      "codes": [
-        "OOT Gerudo Valley Broken Goron Sword"
-      ]
+      "overlays": ["adult"],
+      "codes": ["OOT Gerudo Valley Broken Goron Sword"]
     },
     {
-      "coords": [
-        883,
-        359
-      ],
+      "coords": [883, 359],
       "image": "heart_piece",
-      "codes": [
-        "OOT Gerudo Valley Waterfall HP"
-      ]
+      "codes": ["OOT Gerudo Valley Waterfall HP"]
     },
     {
-      "coords": [
-        40,
-        482
-      ],
+      "coords": [40, 482],
       "image": "song",
-      "codes": [
-        "OOT Desert Colossus Song Spirit"
-      ]
+      "codes": ["OOT Desert Colossus Song Spirit"]
     },
     {
-      "coords": [
-        948,
-        444
-      ],
+      "coords": [948, 444],
       "image": "gold_skulltula",
-      "overlays": [
-        "child",
-        "night"
-      ],
-      "codes": [
-        "OOT Gerudo Valley GS Wall"
-      ]
+      "overlays": ["child", "night"],
+      "codes": ["OOT Gerudo Valley GS Wall"]
     },
     {
-      "coords": [
-        864,
-        467
-      ],
+      "coords": [864, 467],
       "image": "gold_skulltula",
-      "overlays": [
-        "child"
-      ],
-      "codes": [
-        "OOT Gerudo Valley GS Soil"
-      ]
+      "overlays": ["child"],
+      "codes": ["OOT Gerudo Valley GS Soil"]
     },
     {
-      "coords": [
-        830,
-        465
-      ],
+      "coords": [830, 465],
       "image": "gold_skulltula",
-      "overlays": [
-        "adult",
-        "night"
-      ],
-      "codes": [
-        "OOT Gerudo Valley GS Pillar"
-      ]
+      "overlays": ["adult", "night"],
+      "codes": ["OOT Gerudo Valley GS Pillar"]
     },
     {
-      "coords": [
-        840,
-        404
-      ],
+      "coords": [840, 404],
       "image": "gold_skulltula",
-      "overlays": [
-        "adult",
-        "night"
-      ],
-      "codes": [
-        "OOT Gerudo Valley GS Tent"
-      ]
+      "overlays": ["adult", "night"],
+      "codes": ["OOT Gerudo Valley GS Tent"]
     },
     {
-      "coords": [
-        641,
-        66
-      ],
+      "coords": [641, 66],
       "image": "gold_skulltula",
-      "overlays": [
-        "adult",
-        "night"
-      ],
-      "codes": [
-        "OOT Gerudo Fortress GS Target"
-      ]
+      "overlays": ["adult", "night"],
+      "codes": ["OOT Gerudo Fortress GS Target"]
     },
     {
-      "coords": [
-        537,
-        248
-      ],
+      "coords": [537, 248],
       "image": "gold_skulltula",
-      "overlays": [
-        "adult",
-        "night"
-      ],
-      "codes": [
-        "OOT Gerudo Fortress GS Wall"
-      ]
+      "overlays": ["adult", "night"],
+      "codes": ["OOT Gerudo Fortress GS Wall"]
     },
     {
-      "coords": [
-        118,
-        81
-      ],
+      "coords": [118, 81],
       "image": "gold_skulltula",
-      "codes": [
-        "OOT Haunted Wasteland GS"
-      ]
+      "codes": ["OOT Haunted Wasteland GS"]
     },
     {
-      "coords": [
-        132,
-        469
-      ],
+      "coords": [132, 469],
       "image": "gold_skulltula",
-      "overlays": [
-        "adult",
-        "night"
-      ],
-      "codes": [
-        "OOT Desert Colossus GS Plateau"
-      ]
+      "overlays": ["adult", "night"],
+      "codes": ["OOT Desert Colossus GS Plateau"]
     },
     {
-      "coords": [
-        100,
-        558
-      ],
+      "coords": [100, 558],
       "image": "gold_skulltula",
-      "overlays": [
-        "adult",
-        "night"
-      ],
-      "codes": [
-        "OOT Desert Colossus GS Tree"
-      ]
+      "overlays": ["adult", "night"],
+      "codes": ["OOT Desert Colossus GS Tree"]
     },
     {
-      "coords": [
-        40,
-        498
-      ],
+      "coords": [40, 498],
       "image": "gold_skulltula",
-      "overlays": [
-        "child"
-      ],
-      "codes": [
-        "OOT Desert Colossus GS Soil"
-      ]
+      "overlays": ["child"],
+      "codes": ["OOT Desert Colossus GS Soil"]
     },
     {
-      "coords": [
-        110,
-        190
-      ],
+      "coords": [110, 190],
       "image": "shop",
-      "codes": [
-        "OOT Haunted Wasteland Carpet Merchant"
-      ]
+      "codes": ["OOT Haunted Wasteland Carpet Merchant"]
     },
     {
-      "coords": [
-        861,
-        452
-      ],
+      "coords": [861, 452],
       "image": "cow",
-      "overlays": [
-        "child"
-      ],
-      "codes": [
-        "OOT Gerudo Valley Cow"
-      ]
+      "overlays": ["child"],
+      "codes": ["OOT Gerudo Valley Cow"]
     },
     {
-      "coords": [
-        133,
-        88
-      ],
+      "coords": [133, 88],
       "image": "pot",
       "codes": [
         "OOT Haunted Wasteland Pot 1",
@@ -277,43 +137,23 @@
       ]
     },
     {
-      "coords": [
-        864,
-        500
-      ],
+      "coords": [864, 500],
       "image": "crate",
-      "codes": [
-        "OOT Gerudo Valley Crate Ledge"
-      ]
+      "codes": ["OOT Gerudo Valley Crate Ledge"]
     },
     {
-      "coords": [
-        871,
-        459
-      ],
+      "coords": [871, 459],
       "image": "crate",
-      "overlays": [
-        "child"
-      ],
-      "codes": [
-        "OOT Gerudo Valley Crate Child Bottom"
-      ]
+      "overlays": ["child"],
+      "codes": ["OOT Gerudo Valley Crate Child Bottom"]
     },
     {
-      "coords": [
-        829,
-        449
-      ],
+      "coords": [829, 449],
       "image": "collectible",
-      "codes": [
-        "ERROR"
-      ]
+      "codes": ["ERROR"]
     },
     {
-      "coords": [
-        641,
-        410
-      ],
+      "coords": [641, 410],
       "image": "crate",
       "codes": [
         "OOT Gerudo Fortress Crate Archery 01",
@@ -321,10 +161,7 @@
       ]
     },
     {
-      "coords": [
-        668,
-        365
-      ],
+      "coords": [668, 365],
       "image": "crate",
       "codes": [
         "OOT Gerudo Fortress Crate Archery 03",
@@ -332,10 +169,7 @@
       ]
     },
     {
-      "coords": [
-        684,
-        244
-      ],
+      "coords": [684, 244],
       "image": "crate",
       "codes": [
         "OOT Gerudo Fortress Crate Archery 05",
@@ -348,10 +182,7 @@
       ]
     },
     {
-      "coords": [
-        641,
-        81
-      ],
+      "coords": [641, 81],
       "image": "crate",
       "codes": [
         "OOT Gerudo Fortress Crate Archery 12",
@@ -359,20 +190,12 @@
       ]
     },
     {
-      "coords": [
-        658,
-        66
-      ],
+      "coords": [658, 66],
       "image": "collectible",
-      "codes": [
-        "ERROR"
-      ]
+      "codes": ["ERROR"]
     },
     {
-      "coords": [
-        453,
-        265
-      ],
+      "coords": [453, 265],
       "image": "crate",
       "codes": [
         "OOT Gerudo Fortress Crate Main 3",
@@ -382,10 +205,7 @@
       ]
     },
     {
-      "coords": [
-        424,
-        252
-      ],
+      "coords": [424, 252],
       "image": "crate",
       "codes": [
         "OOT Gerudo Fortress Crate Main 1",
@@ -393,30 +213,17 @@
       ]
     },
     {
-      "coords": [
-        439,
-        186
-      ],
+      "coords": [439, 186],
       "image": "crate",
-      "codes": [
-        "OOT Gerudo Fortress Crate Jail Top"
-      ]
+      "codes": ["OOT Gerudo Fortress Crate Jail Top"]
     },
     {
-      "coords": [
-        180,
-        196
-      ],
+      "coords": [180, 196],
       "image": "crate",
-      "codes": [
-        "OOT Haunted Wasteland Crate Entrance"
-      ]
+      "codes": ["OOT Haunted Wasteland Crate Entrance"]
     },
     {
-      "coords": [
-        161,
-        168
-      ],
+      "coords": [161, 168],
       "image": "crate",
       "codes": [
         "OOT Haunted Wasteland Crate After Pit 1",
@@ -425,119 +232,60 @@
       ]
     },
     {
-      "coords": [
-        46,
-        148
-      ],
+      "coords": [46, 148],
       "image": "crate",
-      "codes": [
-        "OOT Haunted Wasteland Crate Deep"
-      ]
+      "codes": ["OOT Haunted Wasteland Crate Deep"]
     },
     {
-      "coords": [
-        879,
-        437
-      ],
+      "coords": [879, 437],
       "image": "wonder_item_red_rupee",
-      "overlays": [
-        "adult"
-      ],
-      "codes": [
-        "OOT Gerudo Valley Wonder Item Lower"
-      ]
+      "overlays": ["adult"],
+      "codes": ["OOT Gerudo Valley Wonder Item Lower"]
     },
     {
-      "coords": [
-        883,
-        372
-      ],
+      "coords": [883, 372],
       "image": "wonder_item_red_rupee",
-      "overlays": [
-        "adult"
-      ],
-      "codes": [
-        "OOT Gerudo Valley Wonder Item Upper"
-      ]
+      "overlays": ["adult"],
+      "codes": ["OOT Gerudo Valley Wonder Item Upper"]
     },
     {
-      "coords": [
-        496,
-        353
-      ],
+      "coords": [496, 353],
       "image": "wonder_item_red_rupee",
-      "codes": [
-        "OOT Gerudo Fortress Wonder Item Sign Archery"
-      ]
+      "codes": ["OOT Gerudo Fortress Wonder Item Sign Archery"]
     },
     {
-      "coords": [
-        383,
-        332
-      ],
+      "coords": [383, 332],
       "image": "wonder_item_red_rupee",
-      "codes": [
-        "OOT Gerudo Fortress Wonder Item Sign Entrance"
-      ]
+      "codes": ["OOT Gerudo Fortress Wonder Item Sign Entrance"]
     },
     {
-      "coords": [
-        172,
-        435
-      ],
+      "coords": [172, 435],
       "image": "wonder_item_red_rupee",
-      "codes": [
-        "OOT Desert Colossus Wonder Item Fountain 2"
-      ]
+      "codes": ["OOT Desert Colossus Wonder Item Fountain 2"]
     },
     {
-      "coords": [
-        145,
-        435
-      ],
+      "coords": [145, 435],
       "image": "wonder_item_blue_rupee",
-      "codes": [
-        "OOT Desert Colossus Wonder Item Fountain 1"
-      ]
+      "codes": ["OOT Desert Colossus Wonder Item Fountain 1"]
     },
     {
-      "coords": [
-        136,
-        549
-      ],
+      "coords": [136, 549],
       "image": "wonder_item_blue_rupee",
-      "codes": [
-        "OOT Desert Colossus Wonder Item Oasis 1"
-      ]
+      "codes": ["OOT Desert Colossus Wonder Item Oasis 1"]
     },
     {
-      "coords": [
-        136,
-        565
-      ],
+      "coords": [136, 565],
       "image": "wonder_item_small_magic_jar",
-      "codes": [
-        "OOT Desert Colossus Wonder Item Oasis 2"
-      ]
+      "codes": ["OOT Desert Colossus Wonder Item Oasis 2"]
     },
     {
-      "coords": [
-        104,
-        572
-      ],
+      "coords": [104, 572],
       "image": "wonder_item_blue_rupee",
-      "overlays": [
-        "child"
-      ],
-      "codes": [
-        "OOT Desert Colossus Wonder Item Oasis Child"
-      ]
+      "overlays": ["child"],
+      "codes": ["OOT Desert Colossus Wonder Item Oasis Child"]
     },
     {
-      "coords": [
-        117,
-        560
-      ],
+      "coords": [117, 560],
       "image": "fairy",
       "codes": [
         "OOT Desert Colossus Oasis Fairy 1",
@@ -551,53 +299,27 @@
       ]
     },
     {
-      "coords": [
-        900,
-        484
-      ],
+      "coords": [900, 484],
       "image": "red_boulder",
-      "overlays": [
-        "adult"
-      ],
-      "codes": [
-        "OOT Gerudo Valley Red Boulder Before Bridge 2"
-      ]
+      "overlays": ["adult"],
+      "codes": ["OOT Gerudo Valley Red Boulder Before Bridge 2"]
     },
     {
-      "coords": [
-        904,
-        424
-      ],
+      "coords": [904, 424],
       "image": "red_boulder",
-      "overlays": [
-        "adult"
-      ],
-      "codes": [
-        "OOT Gerudo Valley Red Boulder Before Bridge 1"
-      ]
+      "overlays": ["adult"],
+      "codes": ["OOT Gerudo Valley Red Boulder Before Bridge 1"]
     },
     {
-      "coords": [
-        853,
-        472
-      ],
+      "coords": [853, 472],
       "image": "red_boulder",
-      "overlays": [
-        "adult"
-      ],
-      "codes": [
-        "OOT Gerudo Valley Red Boulder After Bridge 1"
-      ]
+      "overlays": ["adult"],
+      "codes": ["OOT Gerudo Valley Red Boulder After Bridge 1"]
     },
     {
-      "coords": [
-        840,
-        484
-      ],
+      "coords": [840, 484],
       "image": "red_boulder",
-      "overlays": [
-        "adult"
-      ],
+      "overlays": ["adult"],
       "codes": [
         "OOT Gerudo Valley Red Boulder Around Chest 1",
         "OOT Gerudo Valley Red Boulder Around Chest 2",
@@ -606,23 +328,13 @@
       ]
     },
     {
-      "coords": [
-        812,
-        440
-      ],
+      "coords": [812, 440],
       "image": "red_boulder",
-      "overlays": [
-        "adult"
-      ],
-      "codes": [
-        "OOT Gerudo Valley Red Boulder After Bridge 2"
-      ]
+      "overlays": ["adult"],
+      "codes": ["OOT Gerudo Valley Red Boulder After Bridge 2"]
     },
     {
-      "coords": [
-        972,
-        472
-      ],
+      "coords": [972, 472],
       "image": "rock",
       "codes": [
         "OOT Gerudo Valley Rock Entrance Ground 1",
@@ -631,10 +343,7 @@
       ]
     },
     {
-      "coords": [
-        940,
-        462
-      ],
+      "coords": [940, 462],
       "image": "rock",
       "codes": [
         "OOT Gerudo Valley Rock Entrance Water 1",
@@ -643,14 +352,9 @@
       ]
     },
     {
-      "coords": [
-        856,
-        420
-      ],
+      "coords": [856, 420],
       "image": "rock",
-      "overlays": [
-        "adult"
-      ],
+      "overlays": ["adult"],
       "codes": [
         "OOT Gerudo Valley Rock Adult 1",
         "OOT Gerudo Valley Rock Adult 2",
@@ -659,20 +363,12 @@
       ]
     },
     {
-      "coords": [
-        141,
-        510
-      ],
+      "coords": [141, 510],
       "image": "rock",
-      "codes": [
-        "OOT Desert Colossus Rock"
-      ]
+      "codes": ["OOT Desert Colossus Rock"]
     },
     {
-      "coords": [
-        68,
-        428
-      ],
+      "coords": [68, 428],
       "image": "rock",
       "codes": [
         "OOT Desert Colossus Rock Circle 1 Rock 1",
@@ -686,10 +382,7 @@
       ]
     },
     {
-      "coords": [
-        45,
-        442
-      ],
+      "coords": [45, 442],
       "image": "rock",
       "codes": [
         "OOT Desert Colossus Rock Circle 2 Rock 1",
@@ -703,14 +396,9 @@
       ]
     },
     {
-      "coords": [
-        873,
-        475
-      ],
+      "coords": [873, 475],
       "image": "soft_soil",
-      "overlays": [
-        "child"
-      ],
+      "overlays": ["child"],
       "codes": [
         "OOT Gerudo Valley Soil 1",
         "OOT Gerudo Valley Soil 2",
@@ -718,14 +406,9 @@
       ]
     },
     {
-      "coords": [
-        40,
-        505
-      ],
+      "coords": [40, 505],
       "image": "soft_soil",
-      "overlays": [
-        "child"
-      ],
+      "overlays": ["child"],
       "codes": [
         "OOT Desert Colossus Soil 1",
         "OOT Desert Colossus Soil 2",
@@ -733,30 +416,17 @@
       ]
     },
     {
-      "coords": [
-        862,
-        370
-      ],
+      "coords": [862, 370],
       "image": "gossip_stone",
-      "codes": [
-        "OOT Gerudo Valley Gossip"
-      ]
+      "codes": ["OOT Gerudo Valley Gossip"]
     },
     {
-      "coords": [
-        19,
-        526
-      ],
+      "coords": [19, 526],
       "image": "gossip_stone",
-      "codes": [
-        "OOT Desert Colossus Gossip"
-      ]
+      "codes": ["OOT Desert Colossus Gossip"]
     },
     {
-      "coords": [
-        896,
-        508
-      ],
+      "coords": [896, 508],
       "image": "silver_boulder_grotto",
       "type": "submenu",
       "markers": [
@@ -779,25 +449,17 @@
         },
         {
           "image": "red_rupee",
-          "codes": [
-            "OOT Gerudo Valley Octorok Grotto Rupee 8"
-          ]
+          "codes": ["OOT Gerudo Valley Octorok Grotto Rupee 8"]
         }
       ]
     },
     {
-      "coords": [
-        841,
-        433
-      ],
+      "coords": [841, 433],
       "image": "interior_entrance",
       "codes": "TODO KF 063 :: unnamed_stack > Desert > Desert Layers > Desert Entrances :: Pasted Layer #62 :: 001-001-014-001.png"
     },
     {
-      "coords": [
-        833,
-        417
-      ],
+      "coords": [833, 417],
       "image": "song_grotto",
       "type": "submenu",
       "markers": [
@@ -815,21 +477,13 @@
       ]
     },
     {
-      "coords": [
-        440,
-        318
-      ],
+      "coords": [440, 318],
       "image": "dungeon_entrance",
-      "overlays": [
-        "adult"
-      ],
+      "overlays": ["adult"],
       "codes": "TODO KF 065 :: unnamed_stack > Desert > Desert Layers > Desert Entrances :: Pasted Layer #64 :: 001-001-014-003.png"
     },
     {
-      "coords": [
-        456,
-        318
-      ],
+      "coords": [456, 318],
       "image": "interior_entrance",
       "type": "submenu",
       "markers": [
@@ -866,10 +520,7 @@
       ]
     },
     {
-      "coords": [
-        480,
-        309
-      ],
+      "coords": [480, 309],
       "image": "interior_entrance",
       "type": "submenu",
       "markers": [
@@ -905,18 +556,13 @@
       ]
     },
     {
-      "coords": [
-        448,
-        296
-      ],
+      "coords": [448, 296],
       "image": "interior_entrance",
       "type": "submenu",
       "markers": [
         {
           "image": "collectible",
-          "codes": [
-            "OOT Gerudo Fortress Jail 4"
-          ]
+          "codes": ["OOT Gerudo Fortress Jail 4"]
         },
         {
           "image": "wonder_item_random",
@@ -928,10 +574,7 @@
       ]
     },
     {
-      "coords": [
-        496,
-        309
-      ],
+      "coords": [496, 309],
       "image": "interior_entrance",
       "type": "submenu",
       "markers": [
@@ -968,18 +611,12 @@
       ]
     },
     {
-      "coords": [
-        496,
-        293
-      ],
+      "coords": [496, 293],
       "image": "interior_entrance",
       "codes": "TODO KF 070 :: unnamed_stack > Desert > Desert Layers > Desert Entrances :: Pasted Layer #69 :: 001-001-014-008.png"
     },
     {
-      "coords": [
-        454,
-        278
-      ],
+      "coords": [454, 278],
       "image": "song_grotto",
       "type": "submenu",
       "markers": [
@@ -999,10 +636,7 @@
       ]
     },
     {
-      "coords": [
-        479,
-        271
-      ],
+      "coords": [479, 271],
       "image": "interior_entrance",
       "type": "submenu",
       "markers": [
@@ -1038,10 +672,7 @@
       ]
     },
     {
-      "coords": [
-        510,
-        270
-      ],
+      "coords": [510, 270],
       "image": "interior_entrance",
       "type": "submenu",
       "markers": [
@@ -1077,24 +708,17 @@
       ]
     },
     {
-      "coords": [
-        466,
-        254
-      ],
+      "coords": [466, 254],
       "image": "interior_entrance",
       "type": "submenu",
       "markers": [
         {
           "image": "collectible",
-          "codes": [
-            "OOT Gerudo Fortress Jail 1"
-          ]
+          "codes": ["OOT Gerudo Fortress Jail 1"]
         },
         {
           "image": "crate",
-          "codes": [
-            "OOT Thieves Hideout Crate Jail 1"
-          ]
+          "codes": ["OOT Thieves Hideout Crate Jail 1"]
         },
         {
           "image": "pot",
@@ -1114,18 +738,13 @@
       ]
     },
     {
-      "coords": [
-        510,
-        246
-      ],
+      "coords": [510, 246],
       "image": "interior_entrance",
       "type": "submenu",
       "markers": [
         {
           "image": "collectible",
-          "codes": [
-            "OOT Gerudo Fortress Jail 3"
-          ]
+          "codes": ["OOT Gerudo Fortress Jail 3"]
         },
         {
           "image": "pot",
@@ -1148,18 +767,13 @@
       ]
     },
     {
-      "coords": [
-        482,
-        238
-      ],
+      "coords": [482, 238],
       "image": "interior_entrance",
       "type": "submenu",
       "markers": [
         {
           "image": "collectible",
-          "codes": [
-            "OOT Gerudo Fortress Jail 4"
-          ]
+          "codes": ["OOT Gerudo Fortress Jail 4"]
         },
         {
           "image": "wonder_item_random",
@@ -1171,24 +785,17 @@
       ]
     },
     {
-      "coords": [
-        455,
-        214
-      ],
+      "coords": [455, 214],
       "image": "interior_entrance",
       "type": "submenu",
       "markers": [
         {
           "image": "collectible",
-          "codes": [
-            "OOT Gerudo Fortress Jail 1"
-          ]
+          "codes": ["OOT Gerudo Fortress Jail 1"]
         },
         {
           "image": "crate",
-          "codes": [
-            "OOT Thieves Hideout Crate Jail 1"
-          ]
+          "codes": ["OOT Thieves Hideout Crate Jail 1"]
         },
         {
           "image": "pot",
@@ -1208,10 +815,7 @@
       ]
     },
     {
-      "coords": [
-        486,
-        214
-      ],
+      "coords": [486, 214],
       "image": "interior_entrance",
       "type": "submenu",
       "markers": [
@@ -1241,10 +845,7 @@
       ]
     },
     {
-      "coords": [
-        478,
-        187
-      ],
+      "coords": [478, 187],
       "image": "interior_entrance",
       "type": "submenu",
       "markers": [
@@ -1274,26 +875,18 @@
       ]
     },
     {
-      "coords": [
-        158,
-        420
-      ],
+      "coords": [158, 420],
       "image": "boulder_grotto",
       "type": "submenu",
       "markers": [
         {
           "image": "npc",
-          "codes": [
-            "OOT Great Fairy Nayru's Love"
-          ]
+          "codes": ["OOT Great Fairy Nayru's Love"]
         }
       ]
     },
     {
-      "coords": [
-        78,
-        450
-      ],
+      "coords": [78, 450],
       "image": "silver_boulder_grotto",
       "type": "submenu",
       "markers": [
@@ -1306,25 +899,17 @@
         },
         {
           "image": "beehive",
-          "codes": [
-            "OOT Desert Colossus Grotto Hive"
-          ]
+          "codes": ["OOT Desert Colossus Grotto Hive"]
         }
       ]
     },
     {
-      "coords": [
-        49,
-        416
-      ],
+      "coords": [49, 416],
       "image": "warp_spot",
       "codes": "TODO KF 082 :: unnamed_stack > Desert > Desert Layers > Desert Entrances :: Pasted Layer #81 :: 001-001-014-020.png"
     },
     {
-      "coords": [
-        24,
-        482
-      ],
+      "coords": [24, 482],
       "image": "dungeon_entrance",
       "codes": "TODO KF 083 :: unnamed_stack > Desert > Desert Layers > Desert Entrances :: Pasted Layer #82 :: 001-001-014-021.png"
     }
