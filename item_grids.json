@@ -111,7 +111,19 @@
             "OOT_SWORD_KOKIRI",
             "OOT_SWORD",
             "OOT_SHIELD_DEKU",
-            "OOT_FISHING_POND_CHILD_FISH_13LBS"
+            {
+              "item": "OOT_FISHING_POND_CHILD_FISH_7LBS",
+              "activateAlso": [
+                "OOT_FISHING_POND_CHILD_FISH_8LBS",
+                "OOT_FISHING_POND_CHILD_FISH_9LBS",
+                "OOT_FISHING_POND_CHILD_FISH_10LBS",
+                "OOT_FISHING_POND_CHILD_FISH_11LBS",
+                "OOT_FISHING_POND_CHILD_FISH_12LBS",
+                "OOT_FISHING_POND_CHILD_FISH_13LBS",
+                "OOT_FISHING_POND_CHILD_FISH_14LBS"
+              ],
+              "title": "Child Fish (over 7 pounds)"
+            }
           ],
           [
             "OOT_SLINGSHOT",

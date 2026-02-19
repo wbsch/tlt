@@ -8,7 +8,13 @@ export interface ItemGridAliasRef {
   title?: string
 }
 
-export type ItemGridRef = string | ItemGridOrRef | ItemGridAliasRef
+export interface ItemGridMultiActivateRef {
+  item: string
+  activateAlso: string[]
+  title?: string
+}
+
+export type ItemGridRef = string | ItemGridOrRef | ItemGridAliasRef | ItemGridMultiActivateRef
 
 export function isItemGridOrRef(value: unknown): value is ItemGridOrRef {
   if (!value || typeof value !== 'object') return false
@@ -24,6 +30,23 @@ export function isItemGridAliasRef(value: unknown): value is ItemGridAliasRef {
   if (typeof ref !== 'string' || typeof item !== 'string') return false
   if (title !== undefined && typeof title !== 'string') return false
   return ref.length > 0 && item.length > 0
+}
+
+export function isItemGridMultiActivateRef(value: unknown): value is ItemGridMultiActivateRef {
+  if (!value || typeof value !== 'object') return false
+  if ('ref' in (value as Record<string, unknown>)) return false
+
+  const item = (value as { item?: unknown }).item
+  const activateAlso = (value as { activateAlso?: unknown }).activateAlso
+  const title = (value as { title?: unknown }).title
+
+  if (typeof item !== 'string' || item.length === 0) return false
+  if (!Array.isArray(activateAlso) || !activateAlso.every((candidate) => typeof candidate === 'string' && candidate.length > 0)) {
+    return false
+  }
+  if (title !== undefined && typeof title !== 'string') return false
+
+  return true
 }
 
 export function resolveItemGridRef(

@@ -52,10 +52,17 @@ interface GridItemRefAlias {
   title?: string
 }
 
+interface GridItemMultiActivation {
+  item: string
+  title?: string
+  activateAlso: string[]
+}
+
 const props = defineProps<{
   inventory: Map<string, number>
   grid: GridArray
   gridItemRefs?: Record<string, GridItemRefAlias>
+  gridItemMultiActivations?: Record<string, GridItemMultiActivation>
   itemMaxCounts?: Map<string, number>
   availableItemIds?: Set<string>
   settings?: Record<string, unknown> | null
@@ -71,6 +78,7 @@ function getItemCount(itemId: string): number {
 
 const GRID_REF_ALIAS_PREFIX = '__grid_ref__:'
 const GRID_REF_STATE_PREFIX = '__grid_ref_state__:'
+const GRID_MULTI_ACTIVATE_PREFIX = '__grid_multi_activate__:'
 
 function isGridRefAliasKey(itemId: string): boolean {
   return itemId.startsWith(GRID_REF_ALIAS_PREFIX)
@@ -82,14 +90,32 @@ function getGridRefAlias(itemId: string): GridItemRefAlias | null {
   return props.gridItemRefs?.[ref] || null
 }
 
+function isGridMultiActivateKey(itemId: string): boolean {
+  return itemId.startsWith(GRID_MULTI_ACTIVATE_PREFIX)
+}
+
+function getGridMultiActivation(itemId: string): GridItemMultiActivation | null {
+  if (!isGridMultiActivateKey(itemId)) return null
+  return props.gridItemMultiActivations?.[itemId] || null
+}
+
 function getBaseItemId(itemId: string): string {
+  const multiActivation = getGridMultiActivation(itemId)
+  if (multiActivation) return multiActivation.item
   return getGridRefAlias(itemId)?.item || itemId
 }
 
 function getGridItemTitle(itemId: string): string {
+  const multiActivation = getGridMultiActivation(itemId)
+  if (multiActivation?.title) return multiActivation.title
+
   const alias = getGridRefAlias(itemId)
   if (alias?.title) return alias.title
   return getItemName(getBaseItemId(itemId))
+}
+
+function getAdditionalToggleItemIds(itemId: string): string[] {
+  return getGridMultiActivation(itemId)?.activateAlso || []
 }
 
 function changeItemCount(inventory: Map<string, number>, itemId: string, delta: number) {
@@ -167,7 +193,14 @@ function getLogicalLinkedItemIds(itemId: string): string[] | null {
 function getGridItemCount(itemId: string): number {
   const linkedItemIds = getLinkedItemIds(itemId)
   if (!linkedItemIds || linkedItemIds.length === 0) {
-    return getItemCount(itemId)
+    let maxCount = getItemCount(getBaseItemId(itemId))
+    for (const additionalItemId of getAdditionalToggleItemIds(itemId)) {
+      const count = getItemCount(additionalItemId)
+      if (count > maxCount) {
+        maxCount = count
+      }
+    }
+    return maxCount
   }
 
   for (let i = linkedItemIds.length - 1; i >= 0; i--) {
@@ -240,6 +273,23 @@ function applyGridRefLinkedItemLevel(
   }
 }
 
+function setAdditionalToggleItems(
+  itemId: string,
+  active: boolean,
+  inventory: Map<string, number>,
+) {
+  const additionalItemIds = getAdditionalToggleItemIds(itemId)
+  if (additionalItemIds.length === 0) return
+
+  for (const additionalItemId of additionalItemIds) {
+    if (active) {
+      inventory.set(additionalItemId, 1)
+    } else {
+      inventory.delete(additionalItemId)
+    }
+  }
+}
+
 function isItemOwnedForGrid(itemId: string): boolean {
   if (hasItem(itemId)) return true
 
@@ -272,13 +322,16 @@ function toggleItem(itemId: string) {
   const current = getGridItemCount(itemId)
   const max = getItemMaxCount(itemId)
   const linkedItemIds = getLinkedItemIds(itemId)
+  const baseItemId = getBaseItemId(itemId)
 
   if (linkedItemIds && linkedItemIds.length > 0) {
+    let nextLevel = 0
     if (current < max) {
+      nextLevel = current + 1
       if (isGridRefAliasKey(itemId)) {
-        applyGridRefLinkedItemLevel(itemId, linkedItemIds, current + 1, newInventory)
+        applyGridRefLinkedItemLevel(itemId, linkedItemIds, nextLevel, newInventory)
       } else {
-        applyLinkedItemLevel(linkedItemIds, current + 1, newInventory)
+        applyLinkedItemLevel(linkedItemIds, nextLevel, newInventory)
       }
     } else {
       if (isGridRefAliasKey(itemId)) {
@@ -287,11 +340,11 @@ function toggleItem(itemId: string) {
         applyLinkedItemLevel(linkedItemIds, 0, newInventory)
       }
     }
+    setAdditionalToggleItems(itemId, nextLevel > 0, newInventory)
     emitInventoryUpdate(newInventory)
     return
   }
 
-  const baseItemId = getBaseItemId(itemId)
   const preItemPoolToggleItemId = getGridItemPreItemPoolToggleItemId(baseItemId, {
     maxCount: max,
     availableItemIds: props.availableItemIds,
@@ -305,16 +358,19 @@ function toggleItem(itemId: string) {
   if (preItemPoolToggleItemId) {
     if (current <= 0 && !preItemPoolToggleActive) {
       newInventory.set(preItemPoolToggleItemId, 1)
+      setAdditionalToggleItems(itemId, false, newInventory)
       emitInventoryUpdate(newInventory)
       return
     }
 
     if (current < max) {
-      newInventory.set(itemId, current + 1)
+      newInventory.set(baseItemId, current + 1)
       newInventory.set(preItemPoolToggleItemId, 1)
+      setAdditionalToggleItems(itemId, true, newInventory)
     } else {
-      newInventory.delete(itemId)
+      newInventory.delete(baseItemId)
       newInventory.delete(preItemPoolToggleItemId)
+      setAdditionalToggleItems(itemId, false, newInventory)
     }
 
     emitInventoryUpdate(newInventory)
@@ -323,19 +379,23 @@ function toggleItem(itemId: string) {
   
   if (max <= 1) {
     if (current > 0) {
-      newInventory.delete(itemId)
+      newInventory.delete(baseItemId)
+      setAdditionalToggleItems(itemId, false, newInventory)
     } else {
-      newInventory.set(itemId, 1)
+      newInventory.set(baseItemId, 1)
+      setAdditionalToggleItems(itemId, true, newInventory)
     }
     emitInventoryUpdate(newInventory)
     return
   }
 
   if (current < max) {
-    newInventory.set(itemId, current + 1)
+    newInventory.set(baseItemId, current + 1)
+    setAdditionalToggleItems(itemId, true, newInventory)
   } else {
     // at or above max: wrap around to 0 (remove the item)
-    newInventory.delete(itemId)
+    newInventory.delete(baseItemId)
+    setAdditionalToggleItems(itemId, false, newInventory)
   }
 
   emitInventoryUpdate(newInventory)
@@ -347,13 +407,16 @@ function decrementItem(itemId: string, event: MouseEvent) {
   const current = getGridItemCount(itemId)
   const max = getItemMaxCount(itemId)
   const linkedItemIds = getLinkedItemIds(itemId)
+  const baseItemId = getBaseItemId(itemId)
 
   if (linkedItemIds && linkedItemIds.length > 0) {
+    let nextLevel = max
     if (current > 0) {
+      nextLevel = current - 1
       if (isGridRefAliasKey(itemId)) {
-        applyGridRefLinkedItemLevel(itemId, linkedItemIds, current - 1, newInventory)
+        applyGridRefLinkedItemLevel(itemId, linkedItemIds, nextLevel, newInventory)
       } else {
-        applyLinkedItemLevel(linkedItemIds, current - 1, newInventory)
+        applyLinkedItemLevel(linkedItemIds, nextLevel, newInventory)
       }
     } else {
       if (isGridRefAliasKey(itemId)) {
@@ -362,11 +425,11 @@ function decrementItem(itemId: string, event: MouseEvent) {
         applyLinkedItemLevel(linkedItemIds, max, newInventory)
       }
     }
+    setAdditionalToggleItems(itemId, nextLevel > 0, newInventory)
     emitInventoryUpdate(newInventory)
     return
   }
 
-  const baseItemId = getBaseItemId(itemId)
   const preItemPoolToggleItemId = getGridItemPreItemPoolToggleItemId(baseItemId, {
     maxCount: max,
     availableItemIds: props.availableItemIds,
@@ -379,28 +442,35 @@ function decrementItem(itemId: string, event: MouseEvent) {
 
   if (preItemPoolToggleItemId) {
     if (current > 1) {
-      newInventory.set(itemId, current - 1)
+      newInventory.set(baseItemId, current - 1)
       newInventory.set(preItemPoolToggleItemId, 1)
+      setAdditionalToggleItems(itemId, true, newInventory)
     } else if (current === 1) {
-      newInventory.delete(itemId)
+      newInventory.delete(baseItemId)
       newInventory.set(preItemPoolToggleItemId, 1)
+      setAdditionalToggleItems(itemId, false, newInventory)
     } else if (preItemPoolToggleActive) {
       newInventory.delete(preItemPoolToggleItemId)
+      setAdditionalToggleItems(itemId, false, newInventory)
     } else {
-      newInventory.set(itemId, max)
+      newInventory.set(baseItemId, max)
       newInventory.set(preItemPoolToggleItemId, 1)
+      setAdditionalToggleItems(itemId, true, newInventory)
     }
     emitInventoryUpdate(newInventory)
     return
   }
 
   if (current > 1) {
-    newInventory.set(itemId, current - 1)
+    newInventory.set(baseItemId, current - 1)
+    setAdditionalToggleItems(itemId, true, newInventory)
   } else if (current === 1) {
-    newInventory.delete(itemId)
+    newInventory.delete(baseItemId)
+    setAdditionalToggleItems(itemId, false, newInventory)
   } else {
     // current is 0: wrap to max
-    newInventory.set(itemId, max)
+    newInventory.set(baseItemId, max)
+    setAdditionalToggleItems(itemId, true, newInventory)
   }
   emitInventoryUpdate(newInventory)
 }

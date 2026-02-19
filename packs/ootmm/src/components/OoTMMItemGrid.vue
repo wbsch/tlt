@@ -3,6 +3,7 @@ import { computed } from 'vue'
 import OoTMMSingleGrid from './OoTMMSingleGrid.vue'
 import {
   isItemGridAliasRef,
+  isItemGridMultiActivateRef,
   resolveItemGridRef,
 } from '../utils/itemGridRef'
 
@@ -20,6 +21,12 @@ interface GridArray {
 interface GridItemRefAlias {
   item: string
   title?: string
+}
+
+interface GridItemMultiActivation {
+  item: string
+  title?: string
+  activateAlso: string[]
 }
 
 const props = defineProps<{
@@ -40,6 +47,7 @@ const ootGrid = computed(() => grids['item_grid_tall_oot'])
 const mmGrid = computed(() => grids['item_grid_tall_mm'])
 
 const GRID_REF_ALIAS_PREFIX = '__grid_ref__:'
+const GRID_MULTI_ACTIVATE_PREFIX = '__grid_multi_activate__:'
 
 function makeGridRefAliasKey(ref: string): string {
   return `${GRID_REF_ALIAS_PREFIX}${ref}`
@@ -51,6 +59,14 @@ function isGridRefAliasKey(value: string): boolean {
 
 function getGridRefFromAliasKey(value: string): string {
   return value.slice(GRID_REF_ALIAS_PREFIX.length)
+}
+
+function makeGridMultiActivateKey(item: string, activateAlso: string[]): string {
+  return `${GRID_MULTI_ACTIVATE_PREFIX}${item}::${activateAlso.join('|')}`
+}
+
+function isGridMultiActivateKey(value: string): boolean {
+  return value.startsWith(GRID_MULTI_ACTIVATE_PREFIX)
 }
 
 function collectGridItemRefAliases(
@@ -94,12 +110,63 @@ function collectGridItemRefAliases(
   }
 }
 
+function collectGridMultiActivations(
+  element: unknown,
+  activations: Record<string, GridItemMultiActivation>,
+) {
+  if (!element || typeof element !== 'object') return
+
+  if (isItemGridMultiActivateRef(element)) {
+    const key = makeGridMultiActivateKey(element.item, element.activateAlso)
+    activations[key] = {
+      item: element.item,
+      title: element.title,
+      activateAlso: element.activateAlso,
+    }
+    return
+  }
+
+  if (Array.isArray(element)) {
+    for (const child of element) {
+      collectGridMultiActivations(child, activations)
+    }
+    return
+  }
+
+  const maybeRows = (element as { rows?: unknown }).rows
+  if (Array.isArray(maybeRows)) {
+    for (const row of maybeRows) {
+      collectGridMultiActivations(row, activations)
+    }
+  }
+
+  const maybeContent = (element as { content?: unknown }).content
+  if (Array.isArray(maybeContent)) {
+    for (const child of maybeContent) {
+      collectGridMultiActivations(child, activations)
+    }
+  }
+
+  const maybeItem = (element as { item?: unknown }).item
+  if (maybeItem !== undefined) {
+    collectGridMultiActivations(maybeItem, activations)
+  }
+}
+
 const gridItemRefAliases = computed<Record<string, GridItemRefAlias>>(() => {
   const aliases: Record<string, GridItemRefAlias> = {}
   collectGridItemRefAliases(sharedGrid.value, aliases)
   collectGridItemRefAliases(ootGrid.value, aliases)
   collectGridItemRefAliases(mmGrid.value, aliases)
   return aliases
+})
+
+const gridItemMultiActivations = computed<Record<string, GridItemMultiActivation>>(() => {
+  const activations: Record<string, GridItemMultiActivation> = {}
+  collectGridMultiActivations(sharedGrid.value, activations)
+  collectGridMultiActivations(ootGrid.value, activations)
+  collectGridMultiActivations(mmGrid.value, activations)
+  return activations
 })
 
 const hasOotItems = computed(() => {
@@ -188,6 +255,11 @@ const LABEL_KEY_MAP: Record<string, string[]> = {
 }
 
 function isItemVisible(itemId: string): boolean {
+  if (isGridMultiActivateKey(itemId)) {
+    const config = gridItemMultiActivations.value[itemId]
+    return config ? isItemVisible(config.item) : false
+  }
+
   const alias = gridItemRefAliases.value[itemId]
   if (alias) {
     return isItemVisible(alias.item)
@@ -213,6 +285,11 @@ function isLabelItem(itemId: string): boolean {
 }
 
 function resolveVisibleItemRef(itemRef: unknown): string | null {
+  if (isItemGridMultiActivateRef(itemRef)) {
+    if (!isItemVisible(itemRef.item)) return null
+    return makeGridMultiActivateKey(itemRef.item, itemRef.activateAlso)
+  }
+
   if (isItemGridAliasRef(itemRef)) {
     if (!isItemVisible(itemRef.item)) return null
     return makeGridRefAliasKey(itemRef.ref)
@@ -308,6 +385,7 @@ function handleInventoryUpdate(newInventory: Map<string, number>) {
           :inventory="inventory"
           :grid="filteredSharedGrid"
           :grid-item-refs="gridItemRefAliases"
+          :grid-item-multi-activations="gridItemMultiActivations"
           :item-max-counts="itemMaxCounts"
           :available-item-ids="availableItemIds"
           :settings="settings"
@@ -322,6 +400,7 @@ function handleInventoryUpdate(newInventory: Map<string, number>) {
           :inventory="inventory"
           :grid="filteredOotGrid"
           :grid-item-refs="gridItemRefAliases"
+          :grid-item-multi-activations="gridItemMultiActivations"
           :item-max-counts="itemMaxCounts"
           :available-item-ids="availableItemIds"
           :settings="settings"
@@ -336,6 +415,7 @@ function handleInventoryUpdate(newInventory: Map<string, number>) {
           :inventory="inventory"
           :grid="filteredMmGrid"
           :grid-item-refs="gridItemRefAliases"
+          :grid-item-multi-activations="gridItemMultiActivations"
           :item-max-counts="itemMaxCounts"
           :available-item-ids="availableItemIds"
           :settings="settings"
