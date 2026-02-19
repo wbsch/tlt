@@ -168,8 +168,8 @@ const RAW_ITEM_ICONS: Record<string, string> = {
   // Fish
   OOT_FISHING_POND_CHILD_FISH_7LBS: 'images/Fish.png',
   OOT_FISHING_POND_ADULT_FISH_8LBS: 'images/Fish.png',
-  OOT_FISHING_POND_CHILD_LOACH_16LBS: 'images/Fish.png',
-  OOT_FISHING_POND_ADULT_LOACH_30LBS: 'images/Fish.png',
+  OOT_FISHING_POND_CHILD_LOACH_14LBS: 'images/Fish.png',
+  OOT_FISHING_POND_ADULT_LOACH_29LBS: 'images/Fish.png',
 
   // Buttons
   OOT_BUTTON_A: 'images/button_a.png',

@@ -81,10 +81,26 @@
           [
             "SHARED_BOTTLE_RUTO_LETTER",
             "SHARED_BOTTLED_GOLD_DUST",
-            { "ref": "Shared_Bottle1", "item": "SHARED_BOTTLE_EMPTY", "title": "Bottle 1" },
-            { "ref": "Shared_Bottle2", "item": "SHARED_BOTTLE_EMPTY", "title": "Bottle 2" },
-            { "ref": "Shared_Bottle3", "item": "SHARED_BOTTLE_EMPTY", "title": "Bottle 3" },
-            { "ref": "Shared_Bottle4", "item": "SHARED_BOTTLE_EMPTY", "title": "Bottle 4" }
+            {
+              "ref": "Shared_Bottle1",
+              "item": "SHARED_BOTTLE_EMPTY",
+              "title": "Bottle 1"
+            },
+            {
+              "ref": "Shared_Bottle2",
+              "item": "SHARED_BOTTLE_EMPTY",
+              "title": "Bottle 2"
+            },
+            {
+              "ref": "Shared_Bottle3",
+              "item": "SHARED_BOTTLE_EMPTY",
+              "title": "Bottle 3"
+            },
+            {
+              "ref": "Shared_Bottle4",
+              "item": "SHARED_BOTTLE_EMPTY",
+              "title": "Bottle 4"
+            }
           ]
         ]
       }
@@ -136,7 +152,30 @@
             "OOT_SPELL_WIND",
             "OOT_SWORD_MASTER",
             "OOT_SHIELD_HYLIAN",
-            "OOT_FISHING_POND_ADULT_FISH_8LBS"
+            {
+              "item": "OOT_FISHING_POND_ADULT_FISH_8LBS",
+              "activateAlso": [
+                "OOT_FISHING_POND_ADULT_FISH_8LBS",
+                "OOT_FISHING_POND_ADULT_FISH_9LBS",
+                "OOT_FISHING_POND_ADULT_FISH_10LBS",
+                "OOT_FISHING_POND_ADULT_FISH_11LBS",
+                "OOT_FISHING_POND_ADULT_FISH_12LBS",
+                "OOT_FISHING_POND_ADULT_FISH_13LBS",
+                "OOT_FISHING_POND_ADULT_FISH_14LBS",
+                "OOT_FISHING_POND_ADULT_FISH_15LBS",
+                "OOT_FISHING_POND_ADULT_FISH_16LBS",
+                "OOT_FISHING_POND_ADULT_FISH_17LBS",
+                "OOT_FISHING_POND_ADULT_FISH_18LBS",
+                "OOT_FISHING_POND_ADULT_FISH_19LBS",
+                "OOT_FISHING_POND_ADULT_FISH_20LBS",
+                "OOT_FISHING_POND_ADULT_FISH_21LBS",
+                "OOT_FISHING_POND_ADULT_FISH_22LBS",
+                "OOT_FISHING_POND_ADULT_FISH_23LBS",
+                "OOT_FISHING_POND_ADULT_FISH_24LBS",
+                "OOT_FISHING_POND_ADULT_FISH_25LBS"
+              ],
+              "title": "Adult Fish (over 8 pounds)"
+            }
           ],
           [
             "OOT_BOOMERANG",
@@ -147,7 +186,18 @@
             "OOT_SPELL_LOVE",
             "OOT_SWORD_BIGGORON",
             "OOT_SHIELD_MIRROR",
-            "OOT_FISHING_POND_CHILD_LOACH_16LBS"
+            {
+              "item": "OOT_FISHING_POND_CHILD_LOACH_14LBS",
+              "activateAlso": [
+                "OOT_FISHING_POND_CHILD_LOACH_14LBS",
+                "OOT_FISHING_POND_CHILD_LOACH_15LBS",
+                "OOT_FISHING_POND_CHILD_LOACH_16LBS",
+                "OOT_FISHING_POND_CHILD_LOACH_17LBS",
+                "OOT_FISHING_POND_CHILD_LOACH_18LBS",
+                "OOT_FISHING_POND_CHILD_LOACH_19LBS"
+              ],
+              "title": "Child Loach (over 14 pounds)"
+            }
           ],
           [
             "OOT_SONG_ZELDA",
@@ -164,7 +214,20 @@
             "OOT_SONG_NOTE_STORMS",
             "OOT_BOOTS_IRON",
             "OOT_BOOTS_HOVER",
-            "OOT_FISHING_POND_ADULT_LOACH_30LBS"
+            {
+              "item": "OOT_FISHING_POND_ADULT_LOACH_29LBS",
+              "activateAlso": [
+                "OOT_FISHING_POND_ADULT_LOACH_29LBS",
+                "OOT_FISHING_POND_ADULT_LOACH_30LBS",
+                "OOT_FISHING_POND_ADULT_LOACH_31LBS",
+                "OOT_FISHING_POND_ADULT_LOACH_32LBS",
+                "OOT_FISHING_POND_ADULT_LOACH_33LBS",
+                "OOT_FISHING_POND_ADULT_LOACH_34LBS",
+                "OOT_FISHING_POND_ADULT_LOACH_35LBS",
+                "OOT_FISHING_POND_ADULT_LOACH_36LBS"
+              ],
+              "title": "Adult Loach (over 29 pounds)"
+            }
           ],
           [
             "OOT_SONG_TP_FOREST",
@@ -185,9 +248,21 @@
           ],
           [
             "OOT_BOTTLE_RUTO_LETTER",
-            { "ref": "Bottle1", "item": "OOT_BOTTLE_EMPTY", "title": "Bottle 1" },
-            { "ref": "Bottle2", "item": "OOT_BOTTLE_EMPTY", "title": "Bottle 2" },
-            { "ref": "Bottle3", "item": "OOT_BOTTLE_EMPTY", "title": "Bottle 3" },
+            {
+              "ref": "Bottle1",
+              "item": "OOT_BOTTLE_EMPTY",
+              "title": "Bottle 1"
+            },
+            {
+              "ref": "Bottle2",
+              "item": "OOT_BOTTLE_EMPTY",
+              "title": "Bottle 2"
+            },
+            {
+              "ref": "Bottle3",
+              "item": "OOT_BOTTLE_EMPTY",
+              "title": "Bottle 3"
+            },
             "OOT_SCALE",
             "OOT_MAGIC_UPGRADE",
             "OOT_STRENGTH",
@@ -402,8 +477,16 @@
             },
             "MM_MAGIC_BEAN",
             "MM_BOTTLED_GOLD_DUST",
-            { "ref": "MM_Bottle1", "item": "MM_BOTTLE_EMPTY", "title": "Bottle 1" },
-            { "ref": "MM_Bottle2", "item": "MM_BOTTLE_EMPTY", "title": "Bottle 2" },
+            {
+              "ref": "MM_Bottle1",
+              "item": "MM_BOTTLE_EMPTY",
+              "title": "Bottle 1"
+            },
+            {
+              "ref": "MM_Bottle2",
+              "item": "MM_BOTTLE_EMPTY",
+              "title": "Bottle 2"
+            },
             "MM_STONE_OF_AGONY"
           ],
           [
@@ -412,9 +495,21 @@
             "MM_LENS",
             "MM_HOOKSHOT",
             "MM_GREAT_FAIRY_SWORD",
-            { "ref": "MM_Bottle3", "item": "MM_BOTTLE_EMPTY", "title": "Bottle 3" },
-            { "ref": "MM_Bottle4", "item": "MM_BOTTLE_EMPTY", "title": "Bottle 4" },
-            { "ref": "MM_Bottle5", "item": "MM_BOTTLE_EMPTY", "title": "Bottle 5" },
+            {
+              "ref": "MM_Bottle3",
+              "item": "MM_BOTTLE_EMPTY",
+              "title": "Bottle 3"
+            },
+            {
+              "ref": "MM_Bottle4",
+              "item": "MM_BOTTLE_EMPTY",
+              "title": "Bottle 4"
+            },
+            {
+              "ref": "MM_Bottle5",
+              "item": "MM_BOTTLE_EMPTY",
+              "title": "Bottle 5"
+            },
             "MM_SHIELD_DEKU"
           ],
           [
