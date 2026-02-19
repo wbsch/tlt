@@ -6,79 +6,110 @@
   "height": 600,
   "markers": [
     {
-      "coords": [117, 130],
+      "coords": [
+        117,
+        130
+      ],
       "image": "npc",
       "codes": [
-        "TODO KF 001 :: unnamed_stack > Ranch > Ranch Layers > Ranch Checks :: Pasted Layer :: 001-001-001-000.png",
         "MM Cucco Shack Bunny Mask"
       ]
     },
     {
-      "coords": [101, 536],
+      "coords": [
+        101,
+        536
+      ],
       "image": "chest",
       "codes": [
-        "TODO KF 002 :: unnamed_stack > Ranch > Ranch Layers > Ranch Checks :: Pasted Layer #1 :: 001-001-001-001.png",
         "MM Doggy Racetrack Chest"
       ]
     },
     {
-      "coords": [196, 444],
+      "coords": [
+        196,
+        444
+      ],
       "image": "npc",
       "codes": [
-        "TODO KF 003 :: unnamed_stack > Ranch > Ranch Layers > Ranch Checks :: Pasted Layer #2 :: 001-001-001-002.png",
         "MM Doggy Racetrack HP"
       ]
     },
     {
-      "coords": [469, 259],
+      "coords": [
+        469,
+        259
+      ],
       "image": "npc",
-      "overlays": ["day1", "night"],
+      "overlays": [
+        "day1",
+        "night"
+      ],
       "codes": [
-        "TODO KF 004 :: unnamed_stack > Ranch > Ranch Layers > Ranch Checks :: Pasted Layer #3 :: 001-001-001-003.png",
         "MM Romani Ranch Aliens"
       ]
     },
     {
-      "coords": [485, 259],
+      "coords": [
+        485,
+        259
+      ],
       "image": "npc",
-      "overlays": ["day2", "night"],
+      "overlays": [
+        "day2",
+        "night"
+      ],
       "codes": [
-        "TODO KF 005 :: unnamed_stack > Ranch > Ranch Layers > Ranch Checks :: Pasted Layer #4 :: 001-001-001-004.png",
         "MM Romani Ranch Cremia Escort"
       ]
     },
     {
-      "coords": [828, 404],
+      "coords": [
+        828,
+        404
+      ],
       "image": "npc",
-      "overlays": ["day"],
+      "overlays": [
+        "day"
+      ],
       "codes": [
-        "TODO KF 006 :: unnamed_stack > Ranch > Ranch Layers > Ranch Checks :: Pasted Layer #5 :: 001-001-001-005.png",
         "MM Gorman Track Garo Mask"
       ]
     },
     {
-      "coords": [469, 243],
+      "coords": [
+        469,
+        243
+      ],
       "image": "song",
-      "overlays": ["day1", "day"],
+      "overlays": [
+        "day1",
+        "day"
+      ],
       "codes": [
-        "TODO KF 007 :: unnamed_stack > Ranch > Ranch Layers > Ranch Songs :: Pasted Layer #6 :: 001-001-002-000.png",
         "MM Romani Ranch Epona Song"
       ]
     },
     {
-      "coords": [828, 388],
+      "coords": [
+        828,
+        388
+      ],
       "image": "shop",
-      "overlays": ["day"],
+      "overlays": [
+        "day"
+      ],
       "codes": [
-        "TODO KF 008 :: unnamed_stack > Ranch > Ranch Layers > Ranch Shops :: Pasted Layer #7 :: 001-001-003-000.png",
         "MM Gorman Track Milk Purchase"
       ]
     },
     {
-      "coords": [117, 521],
+      "coords": [
+        117,
+        521
+      ],
       "image": "pot",
       "codes": [
-        "TODO KF 009 :: unnamed_stack > Ranch > Ranch Layers > Ranch Pots :: Pasted Layer #8 :: 001-001-004-000.png",
         "MM Doggy Racetrack Pot 1",
         "MM Doggy Racetrack Pot 2",
         "MM Doggy Racetrack Pot 3",
@@ -86,92 +117,112 @@
       ]
     },
     {
-      "coords": [188, 204],
+      "coords": [
+        188,
+        204
+      ],
       "image": "pot",
       "codes": [
-        "TODO KF 010 :: unnamed_stack > Ranch > Ranch Layers > Ranch Pots :: Pasted Layer #9 :: 001-001-004-001.png",
         "MM Cucco Shack Potted Plant 1 Pot",
         "MM Cucco Shack Potted Plant 2 Pot"
       ]
     },
     {
-      "coords": [843, 396],
+      "coords": [
+        843,
+        396
+      ],
       "image": "crate",
       "codes": [
-        "TODO KF 011 :: unnamed_stack > Ranch > Ranch Layers > Ranch Crates :: Pasted Layer #10 :: 001-001-005-000.png",
         "MM Gorman Track Crate"
       ]
     },
     {
-      "coords": [485, 243],
+      "coords": [
+        485,
+        243
+      ],
       "image": "crate",
       "codes": [
-        "TODO KF 012 :: unnamed_stack > Ranch > Ranch Layers > Ranch Crates :: Pasted Layer #11 :: 001-001-005-001.png",
         "MM Romani Ranch Crate"
       ]
     },
     {
-      "coords": [241, 174],
+      "coords": [
+        241,
+        174
+      ],
       "image": "crate",
       "codes": [
-        "TODO KF 013 :: unnamed_stack > Ranch > Ranch Layers > Ranch Crates :: Pasted Layer #12 :: 001-001-005-002.png",
         "MM Cucco Shack Crate 1",
         "MM Cucco Shack Crate 2",
         "MM Cucco Shack Crate 3"
       ]
     },
     {
-      "coords": [639, 350],
+      "coords": [
+        639,
+        350
+      ],
       "image": "wonder_item_green_rupee",
       "codes": [
-        "TODO KF 014 :: unnamed_stack > Ranch > Ranch Layers > Ranch Wonder :: Pasted Layer #13 :: 001-001-006-000.png",
         "MM Romani Ranch Wonder Item Fence 5",
         "MM Romani Ranch Wonder Item Fence 6"
       ]
     },
     {
-      "coords": [642, 330],
+      "coords": [
+        642,
+        330
+      ],
       "image": "wonder_item_blue_rupee",
       "codes": [
-        "TODO KF 015 :: unnamed_stack > Ranch > Ranch Layers > Ranch Wonder :: Pasted Layer #14 :: 001-001-006-001.png",
         "MM Romani Ranch Wonder Item Fence 3",
         "MM Romani Ranch Wonder Item Fence 4"
       ]
     },
     {
-      "coords": [651, 312],
+      "coords": [
+        651,
+        312
+      ],
       "image": "wonder_item_green_rupee",
       "codes": [
-        "TODO KF 016 :: unnamed_stack > Ranch > Ranch Layers > Ranch Wonder :: Pasted Layer #15 :: 001-001-006-002.png",
         "MM Romani Ranch Wonder Item Fence 1",
         "MM Romani Ranch Wonder Item Fence 2"
       ]
     },
     {
-      "coords": [81, 127],
+      "coords": [
+        81,
+        127
+      ],
       "image": "wonder_item_green_rupee",
       "codes": [
-        "TODO KF 017 :: unnamed_stack > Ranch > Ranch Layers > Ranch Wonder :: Pasted Layer #16 :: 001-001-006-003.png",
         "MM Cucco Shack Wonder Item 1",
         "MM Cucco Shack Wonder Item 2",
         "MM Cucco Shack Wonder Item 3"
       ]
     },
     {
-      "coords": [91, 104],
+      "coords": [
+        91,
+        104
+      ],
       "image": "wonder_item_green_rupee",
       "codes": [
-        "TODO KF 018 :: unnamed_stack > Ranch > Ranch Layers > Ranch Wonder :: Pasted Layer #17 :: 001-001-006-004.png",
         "MM Cucco Shack Wonder Item 4",
         "MM Cucco Shack Wonder Item 5",
         "MM Cucco Shack Wonder Item 6"
       ]
     },
     {
-      "coords": [974, 432],
+      "coords": [
+        974,
+        432
+      ],
       "image": "grass",
       "codes": [
-        "TODO KF 019 :: unnamed_stack > Ranch > Ranch Layers > Ranch Grass :: Pasted Layer #18 :: 001-001-007-000.png",
         "MM Gorman Track Grass Pack 2 Grass 01",
         "MM Gorman Track Grass Pack 2 Grass 02",
         "MM Gorman Track Grass Pack 2 Grass 03",
@@ -187,10 +238,12 @@
       ]
     },
     {
-      "coords": [965, 407],
+      "coords": [
+        965,
+        407
+      ],
       "image": "grass",
       "codes": [
-        "TODO KF 020 :: unnamed_stack > Ranch > Ranch Layers > Ranch Grass :: Pasted Layer #19 :: 001-001-007-001.png",
         "MM Gorman Track Grass Pack 1 Grass 01",
         "MM Gorman Track Grass Pack 1 Grass 02",
         "MM Gorman Track Grass Pack 1 Grass 03",
@@ -206,10 +259,12 @@
       ]
     },
     {
-      "coords": [419, 386],
+      "coords": [
+        419,
+        386
+      ],
       "image": "grass",
       "codes": [
-        "TODO KF 021 :: unnamed_stack > Ranch > Ranch Layers > Ranch Grass :: Pasted Layer #20 :: 001-001-007-002.png",
         "MM Romani Ranch Grass Pack 3 Grass 01",
         "MM Romani Ranch Grass Pack 3 Grass 02",
         "MM Romani Ranch Grass Pack 3 Grass 03",
@@ -225,10 +280,12 @@
       ]
     },
     {
-      "coords": [495, 397],
+      "coords": [
+        495,
+        397
+      ],
       "image": "grass",
       "codes": [
-        "TODO KF 022 :: unnamed_stack > Ranch > Ranch Layers > Ranch Grass :: Pasted Layer #21 :: 001-001-007-003.png",
         "MM Romani Ranch Grass Pack 2 Grass 01",
         "MM Romani Ranch Grass Pack 2 Grass 02",
         "MM Romani Ranch Grass Pack 2 Grass 03",
@@ -244,10 +301,12 @@
       ]
     },
     {
-      "coords": [598, 362],
+      "coords": [
+        598,
+        362
+      ],
       "image": "grass",
       "codes": [
-        "TODO KF 023 :: unnamed_stack > Ranch > Ranch Layers > Ranch Grass :: Pasted Layer #22 :: 001-001-007-004.png",
         "MM Romani Ranch Grass Pack 1 Grass 01",
         "MM Romani Ranch Grass Pack 1 Grass 02",
         "MM Romani Ranch Grass Pack 1 Grass 03",
@@ -263,10 +322,12 @@
       ]
     },
     {
-      "coords": [581, 235],
+      "coords": [
+        581,
+        235
+      ],
       "image": "grass",
       "codes": [
-        "TODO KF 024 :: unnamed_stack > Ranch > Ranch Layers > Ranch Grass :: Pasted Layer #23 :: 001-001-007-005.png",
         "MM Romani Ranch Grass Pack 4 Grass 01",
         "MM Romani Ranch Grass Pack 4 Grass 02",
         "MM Romani Ranch Grass Pack 4 Grass 03",
@@ -282,10 +343,12 @@
       ]
     },
     {
-      "coords": [489, 167],
+      "coords": [
+        489,
+        167
+      ],
       "image": "grass",
       "codes": [
-        "TODO KF 025 :: unnamed_stack > Ranch > Ranch Layers > Ranch Grass :: Pasted Layer #24 :: 001-001-007-006.png",
         "MM Romani Ranch Grass Pack 5 Grass 01",
         "MM Romani Ranch Grass Pack 5 Grass 02",
         "MM Romani Ranch Grass Pack 5 Grass 03",
@@ -298,47 +361,62 @@
       ]
     },
     {
-      "coords": [204, 204],
+      "coords": [
+        204,
+        204
+      ],
       "image": "grass",
       "codes": [
-        "TODO KF 026 :: unnamed_stack > Ranch > Ranch Layers > Ranch Grass :: Pasted Layer #25 :: 001-001-007-007.png",
         "MM Cucco Shack Potted Plant 1 Grass",
         "MM Cucco Shack Potted Plant 2 Grass"
       ]
     },
     {
-      "coords": [405, 188],
+      "coords": [
+        405,
+        188
+      ],
       "image": "soft_soil",
-      "overlays": ["day2", "day3"],
+      "overlays": [
+        "day2",
+        "day3"
+      ],
       "codes": [
-        "TODO KF 027 :: unnamed_stack > Ranch > Ranch Layers > Ranch Soils :: Pasted Layer #26 :: 001-001-008-000.png",
         "MM Romani Ranch Soil Days 2-3 Item 1",
         "MM Romani Ranch Soil Days 2-3 Item 2",
         "MM Romani Ranch Soil Days 2-3 Item 3"
       ]
     },
     {
-      "coords": [389, 188],
+      "coords": [
+        389,
+        188
+      ],
       "image": "soft_soil",
-      "overlays": ["day1"],
+      "overlays": [
+        "day1"
+      ],
       "codes": [
-        "TODO KF 028 :: unnamed_stack > Ranch > Ranch Layers > Ranch Soils :: Pasted Layer #27 :: 001-001-008-001.png",
         "MM Romani Ranch Soil Day 1"
       ]
     },
     {
-      "coords": [164, 510],
+      "coords": [
+        164,
+        510
+      ],
       "image": "soft_soil",
       "codes": [
-        "TODO KF 029 :: unnamed_stack > Ranch > Ranch Layers > Ranch Soils :: Pasted Layer #28 :: 001-001-008-002.png",
         "MM Doggy Racetrack Soil"
       ]
     },
     {
-      "coords": [910, 575],
+      "coords": [
+        910,
+        575
+      ],
       "image": "tree",
       "codes": [
-        "TODO KF 030 :: unnamed_stack > Ranch > Ranch Layers > Ranch Trees :: Pasted Layer #29 :: 001-001-009-000.png",
         "MM Gorman Track Tree 14",
         "MM Gorman Track Tree 15",
         "MM Gorman Track Tree 16",
@@ -354,10 +432,12 @@
       ]
     },
     {
-      "coords": [927, 340],
+      "coords": [
+        927,
+        340
+      ],
       "image": "tree",
       "codes": [
-        "TODO KF 031 :: unnamed_stack > Ranch > Ranch Layers > Ranch Trees :: Pasted Layer #30 :: 001-001-009-001.png",
         "MM Gorman Track Tree 01",
         "MM Gorman Track Tree 02",
         "MM Gorman Track Tree 03",
@@ -374,205 +454,259 @@
       ]
     },
     {
-      "coords": [613, 308],
+      "coords": [
+        613,
+        308
+      ],
       "image": "tree",
       "codes": [
-        "TODO KF 032 :: unnamed_stack > Ranch > Ranch Layers > Ranch Trees :: Pasted Layer #31 :: 001-001-009-002.png",
         "MM Romani Ranch Tree 1"
       ]
     },
     {
-      "coords": [607, 330],
+      "coords": [
+        607,
+        330
+      ],
       "image": "tree",
       "codes": [
-        "TODO KF 033 :: unnamed_stack > Ranch > Ranch Layers > Ranch Trees :: Pasted Layer #32 :: 001-001-009-003.png",
         "MM Romani Ranch Tree 2"
       ]
     },
     {
-      "coords": [453, 422],
+      "coords": [
+        453,
+        422
+      ],
       "image": "tree",
       "codes": [
-        "TODO KF 034 :: unnamed_stack > Ranch > Ranch Layers > Ranch Trees :: Pasted Layer #33 :: 001-001-009-004.png",
         "MM Romani Ranch Tree 7"
       ]
     },
     {
-      "coords": [492, 290],
+      "coords": [
+        492,
+        290
+      ],
       "image": "tree",
       "codes": [
-        "TODO KF 035 :: unnamed_stack > Ranch > Ranch Layers > Ranch Trees :: Pasted Layer #34 :: 001-001-009-005.png",
         "MM Romani Ranch Tree 3"
       ]
     },
     {
-      "coords": [487, 312],
+      "coords": [
+        487,
+        312
+      ],
       "image": "tree",
       "codes": [
-        "TODO KF 036 :: unnamed_stack > Ranch > Ranch Layers > Ranch Trees :: Pasted Layer #35 :: 001-001-009-006.png",
         "MM Romani Ranch Tree 4"
       ]
     },
     {
-      "coords": [447, 324],
+      "coords": [
+        447,
+        324
+      ],
       "image": "tree",
       "codes": [
-        "TODO KF 037 :: unnamed_stack > Ranch > Ranch Layers > Ranch Trees :: Pasted Layer #36 :: 001-001-009-007.png",
         "MM Romani Ranch Tree 5"
       ]
     },
     {
-      "coords": [367, 336],
+      "coords": [
+        367,
+        336
+      ],
       "image": "tree",
       "codes": [
-        "TODO KF 038 :: unnamed_stack > Ranch > Ranch Layers > Ranch Trees :: Pasted Layer #37 :: 001-001-009-008.png",
         "MM Romani Ranch Tree 6"
       ]
     },
     {
-      "coords": [105, 123],
+      "coords": [
+        105,
+        123
+      ],
       "image": "tree",
       "codes": [
-        "TODO KF 039 :: unnamed_stack > Ranch > Ranch Layers > Ranch Trees :: Pasted Layer #38 :: 001-001-009-009.png",
         "MM Cucco Shack Tree"
       ]
     },
     {
-      "coords": [561, 393],
+      "coords": [
+        561,
+        393
+      ],
       "image": "bush",
       "codes": [
-        "TODO KF 040 :: unnamed_stack > Ranch > Ranch Layers > Ranch Bushes :: Pasted Layer #39 :: 001-001-010-000.png",
         "MM Romani Ranch Bush 1"
       ]
     },
     {
-      "coords": [462, 344],
+      "coords": [
+        462,
+        344
+      ],
       "image": "bush",
       "codes": [
-        "TODO KF 041 :: unnamed_stack > Ranch > Ranch Layers > Ranch Bushes :: Pasted Layer #40 :: 001-001-010-001.png",
         "MM Romani Ranch Bush 2"
       ]
     },
     {
-      "coords": [388, 295],
+      "coords": [
+        388,
+        295
+      ],
       "image": "bush",
       "codes": [
-        "TODO KF 042 :: unnamed_stack > Ranch > Ranch Layers > Ranch Bushes :: Pasted Layer #41 :: 001-001-010-002.png",
         "MM Romani Ranch Bush 3"
       ]
     },
     {
-      "coords": [387, 218],
+      "coords": [
+        387,
+        218
+      ],
       "image": "bush",
       "codes": [
-        "TODO KF 043 :: unnamed_stack > Ranch > Ranch Layers > Ranch Bushes :: Pasted Layer #42 :: 001-001-010-003.png",
         "MM Romani Ranch Bush 4"
       ]
     },
     {
-      "coords": [156, 179],
+      "coords": [
+        156,
+        179
+      ],
       "image": "bush",
       "codes": [
-        "TODO KF 044 :: unnamed_stack > Ranch > Ranch Layers > Ranch Bushes :: Pasted Layer #43 :: 001-001-010-004.png",
         "MM Cucco Shack Bush 1"
       ]
     },
     {
-      "coords": [164, 120],
+      "coords": [
+        164,
+        120
+      ],
       "image": "bush",
       "codes": [
-        "TODO KF 045 :: unnamed_stack > Ranch > Ranch Layers > Ranch Bushes :: Pasted Layer #44 :: 001-001-010-005.png",
         "MM Cucco Shack Bush 2"
       ]
     },
     {
-      "coords": [183, 112],
+      "coords": [
+        183,
+        112
+      ],
       "image": "bush",
       "codes": [
-        "TODO KF 046 :: unnamed_stack > Ranch > Ranch Layers > Ranch Bushes :: Pasted Layer #45 :: 001-001-010-006.png",
         "MM Cucco Shack Bush 3"
       ]
     },
     {
-      "coords": [119, 80],
+      "coords": [
+        119,
+        80
+      ],
       "image": "bush",
       "codes": [
-        "TODO KF 047 :: unnamed_stack > Ranch > Ranch Layers > Ranch Bushes :: Pasted Layer #46 :: 001-001-010-007.png",
         "MM Cucco Shack Bush 4"
       ]
     },
     {
-      "coords": [82, 98],
+      "coords": [
+        82,
+        98
+      ],
       "image": "bush",
       "codes": [
-        "TODO KF 048 :: unnamed_stack > Ranch > Ranch Layers > Ranch Bushes :: Pasted Layer #47 :: 001-001-010-008.png",
         "MM Cucco Shack Bush 5"
       ]
     },
     {
-      "coords": [95, 126],
+      "coords": [
+        95,
+        126
+      ],
       "image": "bush",
       "codes": [
-        "TODO KF 049 :: unnamed_stack > Ranch > Ranch Layers > Ranch Bushes :: Pasted Layer #48 :: 001-001-010-009.png",
         "MM Cucco Shack Bush 6"
       ]
     },
     {
-      "coords": [49, 148],
+      "coords": [
+        49,
+        148
+      ],
       "image": "bush",
       "codes": [
-        "TODO KF 050 :: unnamed_stack > Ranch > Ranch Layers > Ranch Bushes :: Pasted Layer #49 :: 001-001-010-010.png",
         "MM Cucco Shack Bush 7"
       ]
     },
     {
-      "coords": [661, 351],
+      "coords": [
+        661,
+        351
+      ],
       "image": "gossip_stone",
       "codes": [
-        "TODO KF 051 :: unnamed_stack > Ranch > Ranch Layers > Ranch Gossip :: Pasted Layer #50 :: 001-001-011-000.png",
         "MM Romani Ranch Gossip Entrance"
       ]
     },
     {
-      "coords": [459, 428],
+      "coords": [
+        459,
+        428
+      ],
       "image": "gossip_stone",
       "codes": [
-        "TODO KF 052 :: unnamed_stack > Ranch > Ranch Layers > Ranch Gossip :: Pasted Layer #51 :: 001-001-011-001.png",
         "MM Romani Ranch Gossip Near Tree"
       ]
     },
     {
-      "coords": [464, 183],
+      "coords": [
+        464,
+        183
+      ],
       "image": "gossip_stone",
       "codes": [
-        "TODO KF 053 :: unnamed_stack > Ranch > Ranch Layers > Ranch Gossip :: Pasted Layer #52 :: 001-001-011-002.png",
         "MM Romani Ranch Gossip Behind House"
       ]
     },
     {
-      "coords": [90, 575],
+      "coords": [
+        90,
+        575
+      ],
       "image": "gossip_stone",
       "codes": [
-        "TODO KF 054 :: unnamed_stack > Ranch > Ranch Layers > Ranch Gossip :: Pasted Layer #53 :: 001-001-011-003.png",
         "MM Doggy Racetrack Gossip"
       ]
     },
     {
-      "coords": [222, 124],
+      "coords": [
+        222,
+        124
+      ],
       "image": "gossip_stone",
       "codes": [
-        "TODO KF 055 :: unnamed_stack > Ranch > Ranch Layers > Ranch Gossip :: Pasted Layer #54 :: 001-001-011-004.png",
         "MM Cucco Shack Gossip"
       ]
     },
     {
-      "coords": [482, 210],
+      "coords": [
+        482,
+        210
+      ],
       "image": "interior_entrance",
       "type": "submenu",
       "markers": [
         {
           "image": "cow",
-          "overlays": ["day1", "day2"],
+          "overlays": [
+            "day1",
+            "day2"
+          ],
           "codes": [
             "MM Romani Ranch Barn Cow Left",
             "MM Romani Ranch Barn Cow Right Back",
@@ -589,7 +723,10 @@
       ]
     },
     {
-      "coords": [433, 219],
+      "coords": [
+        433,
+        219
+      ],
       "image": "interior_entrance",
       "codes": "TODO KF 057 :: unnamed_stack > Ranch > Ranch Layers > Ranch Entrances :: Pasted Layer #56 :: 001-001-012-001.png"
     }
