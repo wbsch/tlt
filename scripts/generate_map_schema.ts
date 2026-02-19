@@ -54,9 +54,12 @@ async function loadWorldLocationCodes(): Promise<string[]> {
     Record<string, Record<string, { locations?: JsonRecord }>>
   >;
   const codes = new Set<string>();
-  for (const game of ['oot', 'mm'] as const) {
-    const worldByGame = world[game] ?? {};
-    for (const areaSet of Object.values(worldByGame)) {
+
+  const collectLocationCodes = (
+    game: 'oot' | 'mm',
+    areaSets: Record<string, Record<string, { locations?: JsonRecord }>>,
+  ) => {
+    for (const areaSet of Object.values(areaSets)) {
       for (const area of Object.values(areaSet ?? {})) {
         const locations = area?.locations ?? {};
         for (const locationName of Object.keys(locations)) {
@@ -67,7 +70,16 @@ async function loadWorldLocationCodes(): Promise<string[]> {
         }
       }
     }
+  };
+
+  for (const game of ['oot', 'mm'] as const) {
+    collectLocationCodes(game, world[game] ?? {});
   }
+
+  for (const mmLayoutKey of ['mm_us', 'mm_jp'] as const) {
+    collectLocationCodes('mm', world[mmLayoutKey] ?? {});
+  }
+
   return toSortedUnique(codes);
 }
 
