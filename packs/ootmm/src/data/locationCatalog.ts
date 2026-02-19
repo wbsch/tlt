@@ -1,5 +1,8 @@
-import * as OoTMMDataMod from '@ootmm/data'
-import { collectWorldLocationNames, toLocationName } from './locationCodeSource'
+import * as OoTMMDataMod from '@ootmm/data';
+import {
+  collectWorldLocationNames,
+  toLocationName,
+} from './locationCodeSource';
 
 export type LocationCatalogEntry = {
   id: string;
@@ -23,7 +26,12 @@ const resolveExport = <T>(mod: unknown, key: string): T => {
 };
 
 const POOL = resolveExport<Record<GameId, PoolRecord[]>>(OoTMMDataMod, 'POOL');
-const WORLD = resolveExport<Record<string, Record<string, Record<string, { locations?: Record<string, unknown> }>>>>(OoTMMDataMod, 'WORLD');
+const WORLD = resolveExport<
+  Record<
+    string,
+    Record<string, Record<string, { locations?: Record<string, unknown> }>>
+  >
+>(OoTMMDataMod, 'WORLD');
 
 const GAMES: GameId[] = ['oot', 'mm'];
 
