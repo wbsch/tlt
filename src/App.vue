@@ -10,6 +10,7 @@ const { availablePacks, selectedPackId, currentPack, isLoading, error } =
   storeToRefs(appStore);
 const isResetConfirmOpen = ref(false);
 const isInfoModalOpen = ref(false);
+const isDebugMode = ref(false);
 
 const packComponents: Record<
   string,
@@ -85,7 +86,13 @@ function debugActivateAll() {
   }
 }
 
+function initializeDebugMode() {
+  const params = new URLSearchParams(window.location.search);
+  isDebugMode.value = params.get('debug') === '1';
+}
+
 onMounted(() => {
+  initializeDebugMode();
   appStore.initialize();
   window.addEventListener('keydown', handleWindowKeydown);
 });
@@ -149,6 +156,7 @@ onBeforeUnmount(() => {
           </select>
         </div>
         <button
+          v-if="isDebugMode"
           type="button"
           class="debug-activate-all-button"
           data-testid="debug-activate-all-button"

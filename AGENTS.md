@@ -15,6 +15,8 @@ Feel free to temporarily edit `test_reachability.ts` in order to test other thin
 
 If you have changed relevant files, make sure the build still runs successfully before you're done: Run `npm run build`
 
+The "Debug: Activate All" button is hidden unless the current page URL includes `?debug=1`.
+
 Before returning control to the user, also make sure that when clicking on "Debug: Activate All", ALL checks are actually reachable. Meaning that e.g. 697/697 are reachable, not just some of them.
 
 ### Timeouts
