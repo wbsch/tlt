@@ -1,5 +1,6 @@
 import { mkdir, readdir, readFile, writeFile } from 'node:fs/promises';
 import path from 'node:path';
+import prettier from 'prettier';
 import { MAP_ICON_INDEX } from '../packs/ootmm/src/data/maps/mapIconIndex.ts';
 import {
   buildLocationCodeSet,
@@ -188,8 +189,13 @@ async function generateMapSchema(): Promise<void> {
   };
 
   const output = `${JSON.stringify(schema, null, 2)}\n`;
+  const formattedOutput = await prettier.format(output, {
+    ...(await prettier.resolveConfig(OUTPUT_FILE)),
+    filepath: OUTPUT_FILE,
+  });
+
   await mkdir(path.dirname(OUTPUT_FILE), { recursive: true });
-  await writeFile(OUTPUT_FILE, output, 'utf8');
+  await writeFile(OUTPUT_FILE, formattedOutput, 'utf8');
   console.log(
     `Generated schema -> ${path.relative(process.cwd(), OUTPUT_FILE)} (${markerImages.length} marker images, ${overlays.length} overlays, ${codes.length} codes)`,
   );

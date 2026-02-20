@@ -1,5 +1,6 @@
 import { readdir, writeFile } from 'node:fs/promises';
 import path from 'node:path';
+import prettier from 'prettier';
 
 const ICONS_DIR = path.resolve('public/images/map_icons');
 const OUTPUT_FILE = path.resolve('packs/ootmm/src/data/maps/mapIconIndex.ts');
@@ -17,7 +18,12 @@ async function generateMapIconIndex(): Promise<void> {
 export const MAP_ICON_INDEX = ${JSON.stringify(iconNames, null, 2)} as const
 `;
 
-  await writeFile(OUTPUT_FILE, output, 'utf8');
+  const formattedOutput = await prettier.format(output, {
+    ...(await prettier.resolveConfig(OUTPUT_FILE)),
+    filepath: OUTPUT_FILE,
+  });
+
+  await writeFile(OUTPUT_FILE, formattedOutput, 'utf8');
   console.log(
     `Generated ${iconNames.length} map icons -> ${path.relative(process.cwd(), OUTPUT_FILE)}`,
   );
