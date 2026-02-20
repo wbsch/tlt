@@ -1852,12 +1852,6 @@ onBeforeUnmount(() => {
               />
             </span>
           </button>
-          <p
-            v-if="activeSubmenuMarker.submenuMarkers.length === 0"
-            class="map-submenu-panel__empty"
-          >
-            No visible markers in this submenu.
-          </p>
         </div>
       </div>
 
@@ -2369,13 +2363,6 @@ onBeforeUnmount(() => {
   align-items: flex-start;
   gap: 0;
   overflow: hidden;
-}
-
-.map-submenu-panel__empty {
-  margin: 0;
-  grid-column: 1 / -1;
-  font-size: 0.72rem;
-  color: #94a3b8;
 }
 
 .map-submenu-marker {
