@@ -9,6 +9,7 @@ from typing import Any, Iterable
 
 
 GAMES = ("oot", "mm")
+DEFAULT_DUPLICATE_WHITELIST_FILE = Path("scripts/map_duplicate_whitelist.txt")
 
 
 def to_location_name(game: str, location_name: str) -> str:
@@ -86,6 +87,19 @@ def is_todo_code(code: str) -> bool:
     return code.startswith("TODO ")
 
 
+def load_duplicate_whitelist(file_path: Path) -> set[str]:
+    if not file_path.is_file():
+        return set()
+
+    whitelist: set[str] = set()
+    for raw_line in file_path.read_text(encoding="utf-8").splitlines():
+        line = raw_line.strip()
+        if not line or line.startswith("#"):
+            continue
+        whitelist.add(line)
+    return whitelist
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(
         description=(
@@ -116,12 +130,28 @@ def main() -> int:
         action="store_true",
         help="TODO-Codes in der Map-Auswertung berücksichtigen (standardmäßig ignoriert)",
     )
+    parser.add_argument(
+        "--duplicate-whitelist-file",
+        type=Path,
+        default=DEFAULT_DUPLICATE_WHITELIST_FILE,
+        help=(
+            "Datei mit erlaubten Duplicate-Locations (eine pro Zeile, # als Kommentar). "
+            "Default: scripts/map_duplicate_whitelist.txt"
+        ),
+    )
+    parser.add_argument(
+        "--allow-duplicate",
+        action="append",
+        default=[],
+        help="Zusätzliche erlaubte Duplicate-Location (mehrfach nutzbar)",
+    )
     args = parser.parse_args()
 
     repo_root = Path(__file__).resolve().parents[1]
     maps_dir = (repo_root / args.maps_dir).resolve()
     world_file = (repo_root / args.world_file).resolve()
     hints_file = (repo_root / args.hints_file).resolve()
+    duplicate_whitelist_file = (repo_root / args.duplicate_whitelist_file).resolve()
 
     if not maps_dir.is_dir():
         raise SystemExit(f"Map-Verzeichnis nicht gefunden: {maps_dir}")
@@ -132,6 +162,9 @@ def main() -> int:
 
     world = json.loads(world_file.read_text(encoding="utf-8"))
     hints = json.loads(hints_file.read_text(encoding="utf-8"))
+
+    duplicate_whitelist = load_duplicate_whitelist(duplicate_whitelist_file)
+    duplicate_whitelist.update(args.allow_duplicate)
 
     devtool_reference = collect_world_location_names(world)
     mapschema_reference = devtool_reference | collect_hint_location_names(hints)
@@ -146,7 +179,11 @@ def main() -> int:
                 continue
             counter[code] += 1
 
-    duplicate_locations = sorted(code for code, count in counter.items() if count > 1)
+    duplicate_locations = sorted(
+        code
+        for code, count in counter.items()
+        if count > 1 and code not in duplicate_whitelist
+    )
     map_locations = set(counter.keys())
     missing_locations = sorted(reference_universe - map_locations)
 

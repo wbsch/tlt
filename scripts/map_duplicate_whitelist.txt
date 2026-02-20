@@ -1,0 +1,218 @@
+# Eine Location pro Zeile, die mehrfach in den Maps vorkommen darf.
+# Diese Einträge werden in Abschnitt 1 nicht gelistet.
+# Beispiel:
+# MM Clock Town Stray Fairy
+MM Clock Town Stray Fairy
+MM Deku Palace Grotto Butterfly 1
+MM Deku Palace Grotto Butterfly 2
+MM Deku Palace Grotto Butterfly 3
+MM Deku Palace Grotto Butterfly 4
+MM Deku Palace Grotto Chest
+MM Deku Palace Grotto Grass 01
+MM Deku Palace Grotto Grass 02
+MM Deku Palace Grotto Grass 03
+MM Deku Palace Grotto Grass 04
+MM Deku Palace Grotto Grass 05
+MM Deku Palace Grotto Grass 06
+MM Deku Palace Grotto Grass 07
+MM Deku Palace Grotto Grass 08
+MM Deku Palace Grotto Grass 09
+MM Deku Palace Grotto Grass 10
+MM Deku Palace Grotto Grass 11
+MM Deku Palace Grotto Grass 12
+MM Deku Palace JP Line Grotto Butterfly 1
+MM Deku Palace JP Line Grotto Butterfly 2
+MM Deku Palace JP Line Grotto Butterfly 3
+MM Deku Palace JP Line Grotto Butterfly 4
+MM Deku Palace JP Line Grotto Butterfly 5
+MM Deku Palace JP Line Grotto Grass 1
+MM Deku Palace JP Line Grotto Grass 2
+MM Deku Palace JP Line Grotto Grass 3
+MM Deku Palace JP Line Grotto Grass 4
+MM Deku Palace JP Line Grotto Grass 5
+MM Deku Palace Rupee Layout-Dependant 1
+MM Deku Palace Rupee Layout-Dependant 2
+MM Goron Elder
+MM Stock Pot Inn ??? HP
+MM Stock Pot Inn Couple's Mask
+MM Stock Pot Inn Grandma HP 1
+MM Stock Pot Inn Grandma HP 2
+MM Stock Pot Inn Guest Room Chest
+MM Stock Pot Inn Letter to Kafei
+MM Stock Pot Inn Room Key
+MM Stock Pot Inn Staff Room Chest
+MM Stock Pot Inn Wonder Item 1
+MM Stock Pot Inn Wonder Item 2
+MM Stock Pot Inn Wonder Item 3
+MM Swamp Potion Shop Kotake
+MM Termina Field Gossip Grotto Left-Center
+MM Termina Field Gossip Grotto Leftmost
+MM Termina Field Gossip Grotto Right-Center
+MM Termina Field Gossip Grotto Rightmost
+MM Termina Field Gossip Stones HP
+OOT Bottom of the Well SR 1
+OOT Bottom of the Well SR 2
+OOT Bottom of the Well SR 3
+OOT Bottom of the Well SR 4
+OOT Bottom of the Well SR 5
+OOT Ganon Castle SR Fire Back Right
+OOT Ganon Castle SR Fire Black Pillar
+OOT Ganon Castle SR Fire Far Right
+OOT Ganon Castle SR Fire Front Right
+OOT Ganon Castle SR Fire Left
+OOT Ganon Castle SR Forest Back Middle
+OOT Ganon Castle SR Forest Back Right
+OOT Ganon Castle SR Forest Center Left
+OOT Ganon Castle SR Forest Center Right
+OOT Ganon Castle SR Forest Front
+OOT Ganon Castle SR Light Alcove Left
+OOT Ganon Castle SR Light Alcove Right
+OOT Ganon Castle SR Light Center Left
+OOT Ganon Castle SR Light Center Right
+OOT Ganon Castle SR Light Center Top
+OOT Ganon Castle SR Spirit Back Left
+OOT Ganon Castle SR Spirit Back Right
+OOT Ganon Castle SR Spirit Center Bottom
+OOT Ganon Castle SR Spirit Center Midair
+OOT Ganon Castle SR Spirit Front Right
+OOT Gerudo Fortress Jail 1
+OOT Gerudo Fortress Jail 2
+OOT Gerudo Fortress Jail 4
+OOT Gerudo Fortress Kitchen Big Fairy
+OOT Gerudo Fortress Pot Break Room 1
+OOT Gerudo Fortress Pot Break Room 2
+OOT Gerudo Fortress Pot Jail 1 1
+OOT Gerudo Fortress Pot Jail 1 2
+OOT Gerudo Fortress Pot Jail 1 3
+OOT Gerudo Fortress Pot Jail 2 1
+OOT Gerudo Fortress Pot Jail 2 2
+OOT Gerudo Fortress Pot Jail 2 3
+OOT Gerudo Fortress Pot Jail 2 4
+OOT Gerudo Fortress Pot Jail 2 5
+OOT Gerudo Fortress Pot Jail 2 6
+OOT Gerudo Fortress Pot Jail 2 7
+OOT Gerudo Fortress Pot Kitchen 1
+OOT Gerudo Fortress Pot Kitchen 2
+OOT Gerudo Fortress Wonder Item Break Room Bottom
+OOT Gerudo Fortress Wonder Item Break Room Top
+OOT Gerudo Fortress Wonder Item Jail 1 1
+OOT Gerudo Fortress Wonder Item Jail 1 2
+OOT Gerudo Fortress Wonder Item Jail 2 1
+OOT Gerudo Fortress Wonder Item Jail 2 2
+OOT Gerudo Fortress Wonder Item Jail 4 1
+OOT Gerudo Fortress Wonder Item Jail 4 2
+OOT Gerudo Fortress Wonder Item Kitchen Skull
+OOT Gerudo Fortress Wonder Item Kitchen Soup
+OOT Gerudo Training Grounds SR Lava Back Center
+OOT Gerudo Training Grounds SR Lava Back Left
+OOT Gerudo Training Grounds SR Lava Back Right
+OOT Gerudo Training Grounds SR Lava Front Left
+OOT Gerudo Training Grounds SR Lava Front Right
+OOT Gerudo Training Grounds SR Slope Back
+OOT Gerudo Training Grounds SR Slope Center
+OOT Gerudo Training Grounds SR Slope Front Above
+OOT Gerudo Training Grounds SR Slope Front Left
+OOT Gerudo Training Grounds SR Slope Front Right
+OOT Gerudo Training Grounds SR Water 1
+OOT Gerudo Training Grounds SR Water 2
+OOT Gerudo Training Grounds SR Water 3
+OOT Gerudo Training Grounds SR Water 4
+OOT Gerudo Training Grounds SR Water 5
+OOT Graveyard Dampe Tomb Pot 1
+OOT Graveyard Dampe Tomb Pot 2
+OOT Graveyard Dampe Tomb Pot 3
+OOT Graveyard Dampe Tomb Pot 4
+OOT Graveyard Dampe Tomb Pot 5
+OOT Graveyard Dampe Tomb Pot 6
+OOT Graveyard Dampe Tomb Reward 1
+OOT Graveyard Dampe Tomb Reward 2
+OOT Graveyard Dampe Tomb Rupee 1
+OOT Graveyard Dampe Tomb Rupee 2
+OOT Graveyard Dampe Tomb Rupee 3
+OOT Graveyard Dampe Tomb Rupee 4
+OOT Graveyard Dampe Tomb Rupee 5
+OOT Graveyard Dampe Tomb Rupee 6
+OOT Graveyard Dampe Tomb Rupee 7
+OOT Graveyard Dampe Tomb Rupee 8
+OOT Graveyard Dampe Tomb Wonder Item 01
+OOT Graveyard Dampe Tomb Wonder Item 02
+OOT Graveyard Dampe Tomb Wonder Item 03
+OOT Graveyard Dampe Tomb Wonder Item 04
+OOT Graveyard Dampe Tomb Wonder Item 05
+OOT Graveyard Dampe Tomb Wonder Item 06
+OOT Graveyard Dampe Tomb Wonder Item 07
+OOT Graveyard Dampe Tomb Wonder Item 08
+OOT Graveyard Dampe Tomb Wonder Item 09
+OOT Graveyard Dampe Tomb Wonder Item 10
+OOT Graveyard Dampe Tomb Wonder Item 11
+OOT Graveyard Dampe Tomb Wonder Item 12
+OOT Graveyard Dampe Tomb Wonder Item 13
+OOT Graveyard Dampe Tomb Wonder Item 14
+OOT Graveyard Dampe Tomb Wonder Item 15
+OOT Ice Cavern SR Blocks Alcove
+OOT Ice Cavern SR Blocks Back Left
+OOT Ice Cavern SR Blocks Back Right
+OOT Ice Cavern SR Blocks Center
+OOT Ice Cavern SR Blocks Front Left
+OOT Ice Cavern SR Scythe Back
+OOT Ice Cavern SR Scythe Center Left
+OOT Ice Cavern SR Scythe Center Right
+OOT Ice Cavern SR Scythe Left
+OOT Ice Cavern SR Scythe Midair
+OOT Kakariko Cow
+OOT Kakariko Impa House HP
+OOT Kakariko Impa House Wonder Item
+OOT Kakariko Potion Shop Item 1
+OOT Kakariko Potion Shop Item 2
+OOT Kakariko Potion Shop Item 3
+OOT Kakariko Potion Shop Item 4
+OOT Kakariko Potion Shop Item 5
+OOT Kakariko Potion Shop Item 6
+OOT Kakariko Potion Shop Item 7
+OOT Kakariko Potion Shop Item 8
+OOT Shadow Temple SR Pit 1
+OOT Shadow Temple SR Pit 2
+OOT Shadow Temple SR Pit 3
+OOT Shadow Temple SR Pit 4
+OOT Shadow Temple SR Pit 5
+OOT Shadow Temple SR Scythe 1
+OOT Shadow Temple SR Scythe 2
+OOT Shadow Temple SR Scythe 3
+OOT Shadow Temple SR Scythe 4
+OOT Shadow Temple SR Scythe 5
+OOT Shadow Temple SR Spikes Back Left
+OOT Shadow Temple SR Spikes Center
+OOT Shadow Temple SR Spikes Front Left
+OOT Shadow Temple SR Spikes Midair
+OOT Shadow Temple SR Spikes Right
+OOT Spirit Temple SR Boulders 1
+OOT Spirit Temple SR Boulders 2
+OOT Spirit Temple SR Boulders 3
+OOT Spirit Temple SR Boulders 4
+OOT Spirit Temple SR Boulders 5
+OOT Spirit Temple SR Child 1
+OOT Spirit Temple SR Child 2
+OOT Spirit Temple SR Child 3
+OOT Spirit Temple SR Child 4
+OOT Spirit Temple SR Child 5
+OOT Spirit Temple SR Sun 1
+OOT Spirit Temple SR Sun 2
+OOT Spirit Temple SR Sun 3
+OOT Spirit Temple SR Sun 4
+OOT Spirit Temple SR Sun 5
+OOT Thieves Hideout Crate Break Room 1
+OOT Thieves Hideout Crate Break Room 2
+OOT Thieves Hideout Crate Break Room 3
+OOT Thieves Hideout Crate Break Room 4
+OOT Thieves Hideout Crate Jail 1
+OOT Thieves Hideout Crate Jail 2 1
+OOT Thieves Hideout Crate Jail 2 2
+OOT Thieves Hideout Crate Kitchen
+OOT Thieves Hideout Crate Kitchen Corridor 1
+OOT Thieves Hideout Crate Kitchen Corridor 2
+OOT Thieves Hideout Crate Kitchen Corridor 3
+OOT Thieves Hideout Crate Kitchen Corridor 4
+MM Beans Grotto Soil Item 1
+MM Beans Grotto Soil Item 2
+MM Beans Grotto Soil Item 3
+MM Clock Town Post Box

@@ -567,36 +567,6 @@
       ]
     },
     {
-      "coords": [949, 218],
-      "image": "grotto",
-      "type": "submenu",
-      "markers": [
-        {
-          "image": "chest",
-          "codes": "MM Woods of Mystery Grotto"
-        },
-        {
-          "image": "grass",
-          "codes": [
-            "MM Woods of Mystery Grotto Grass 01",
-            "MM Woods of Mystery Grotto Grass 02",
-            "MM Woods of Mystery Grotto Grass 03",
-            "MM Woods of Mystery Grotto Grass 04",
-            "MM Woods of Mystery Grotto Grass 05",
-            "MM Woods of Mystery Grotto Grass 06",
-            "MM Woods of Mystery Grotto Grass 07",
-            "MM Woods of Mystery Grotto Grass 08",
-            "MM Woods of Mystery Grotto Grass 09",
-            "MM Woods of Mystery Grotto Grass 10",
-            "MM Woods of Mystery Grotto Grass 11",
-            "MM Woods of Mystery Grotto Grass 12",
-            "MM Woods of Mystery Grotto Grass 13",
-            "MM Woods of Mystery Grotto Grass 14"
-          ]
-        }
-      ]
-    },
-    {
       "coords": [842, 456],
       "image": "dungeon_entrance",
       "codes": "TODO KF 075 :: unnamed_stack > Swamp > Swamp Layers > Swamp Entrances :: Pasted Layer #74 :: 001-001-012-005.png"
@@ -681,9 +651,9 @@
         {
           "image": "soft_soil",
           "codes": [
-            "MM Deku Palace Soil Item 1",
-            "MM Deku Palace Soil Item 2",
-            "MM Deku Palace Soil Item 3"
+            "MM Beans Grotto Soil Item 1",
+            "MM Beans Grotto Soil Item 2",
+            "MM Beans Grotto Soil Item 3"
           ]
         }
       ]
