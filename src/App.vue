@@ -97,7 +97,7 @@ onBeforeUnmount(() => {
 <template>
   <div class="app-container">
     <header class="app-header">
-      <div class="app-brand">
+      <div class="app-brand" @click="openInfoModal">
         <img
           src="/images/logo_last_tracker.png"
           alt="The Last Tracker logo"
@@ -265,6 +265,8 @@ onBeforeUnmount(() => {
   display: flex;
   align-items: center;
   gap: 0.75rem;
+  cursor: pointer;
+  user-select: none;
 }
 
 .app-brand h1 {
