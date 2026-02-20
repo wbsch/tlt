@@ -994,7 +994,7 @@ onBeforeUnmount(() => {
             X
             <input
               type="number"
-              step="0.1"
+              step="1"
               :value="
                 Number.isFinite(selectedDraftMarker.coords[0])
                   ? selectedDraftMarker.coords[0]
@@ -1012,7 +1012,7 @@ onBeforeUnmount(() => {
             Y
             <input
               type="number"
-              step="0.1"
+              step="1"
               :value="
                 Number.isFinite(selectedDraftMarker.coords[1])
                   ? selectedDraftMarker.coords[1]
