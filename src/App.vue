@@ -103,7 +103,29 @@ onBeforeUnmount(() => {
           alt="The Last Tracker logo"
           class="app-logo"
         />
-        <h1>The Last Tracker</h1>
+        <div class="app-brand-title">
+          <h1>The Last Tracker</h1>
+          <button
+            type="button"
+            class="info-icon-button"
+            data-testid="info-impressum-button"
+            aria-label="Open info"
+            title="Open info"
+            @click="openInfoModal"
+          >
+            <svg
+              viewBox="0 0 24 24"
+              width="16"
+              height="16"
+              aria-hidden="true"
+              focusable="false"
+            >
+              <path
+                d="M12 2a10 10 0 1 0 10 10A10.01 10.01 0 0 0 12 2zm0 4.5a1.25 1.25 0 1 1-1.25 1.25A1.25 1.25 0 0 1 12 6.5zm1.5 10h-3a1 1 0 0 1 0-2H11v-3h-.5a1 1 0 0 1 0-2H12a1 1 0 0 1 1 1v4h.5a1 1 0 0 1 0 2z"
+              />
+            </svg>
+          </button>
+        </div>
       </div>
 
       <div class="header-actions">
@@ -132,14 +154,6 @@ onBeforeUnmount(() => {
           @click="debugActivateAll"
         >
           Debug: Activate All
-        </button>
-        <button
-          type="button"
-          class="info-button"
-          data-testid="info-impressum-button"
-          @click="openInfoModal"
-        >
-          Info
         </button>
         <button
           type="button"
@@ -182,7 +196,7 @@ onBeforeUnmount(() => {
       >
         <div class="info-modal-header">
           <img
-            src="/images/thelasttracker.png"
+            src="/images/thelasttracker.avif"
             alt="The Last Tracker logo"
             class="info-modal-logo"
           />
@@ -269,6 +283,12 @@ onBeforeUnmount(() => {
   user-select: none;
 }
 
+.app-brand-title {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+}
+
 .app-brand h1 {
   margin-left: 0.875rem;
 }
@@ -328,15 +348,31 @@ onBeforeUnmount(() => {
   background: #555;
 }
 
-.info-button {
-  background: #1f2937;
+.info-icon-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.9rem;
+  height: 1.9rem;
+  border-radius: 999px;
   border: 1px solid #4b5563;
-  font-size: 0.75rem;
-  font-weight: 700;
+  background: #1f2937;
+  color: #d1d5db;
+  padding: 0;
+  flex-shrink: 0;
 }
 
-.info-button:hover {
+.info-icon-button svg {
+  fill: currentcolor;
+}
+
+.info-icon-button:hover {
   background: #374151;
+}
+
+.info-icon-button:focus-visible {
+  outline: 2px solid #60a5fa;
+  outline-offset: 2px;
 }
 
 .app-main {
