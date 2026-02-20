@@ -538,7 +538,7 @@
         },
         {
           "image": "npc",
-          "codes": "MM Tourist Information Tingle Picture"
+          "codes": "MM Tourist Information Boat Archery"
         }
       ]
     },
@@ -727,9 +727,9 @@
         {
           "image": "soft_soil",
           "codes": [
-            "MM Deku Palace Soil Item 1",
-            "MM Deku Palace Soil Item 2",
-            "MM Deku Palace Soil Item 3"
+            "MM Beans Grotto Soil Item 1",
+            "MM Beans Grotto Soil Item 2",
+            "MM Beans Grotto Soil Item 3"
           ]
         }
       ]

@@ -20,9 +20,14 @@
       "codes": ["MM Ancient Castle of Ikana HP"]
     },
     {
-      "coords": [586, 499],
+      "coords": [583, 493],
       "image": "heart_piece",
       "codes": ["MM Ikana Valley Scrub HP"]
+    },
+    {
+      "coords": [592, 503],
+      "image": "gossip_stone",
+      "codes": ["MM Ikana Valley Gossip Scrub"]
     },
     {
       "coords": [546, 504],

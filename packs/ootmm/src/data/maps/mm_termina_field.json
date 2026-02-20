@@ -126,11 +126,6 @@
       "codes": ["MM Clock Town South Chest Upper"]
     },
     {
-      "coords": [12, 29],
-      "image": "heart_piece",
-      "codes": ["MM Clock Town Post Box"]
-    },
-    {
       "coords": [738, 520],
       "image": "shop",
       "codes": ["MM Tingle Map Woodfall"]
@@ -807,6 +802,10 @@
       "type": "submenu",
       "markers": [
         {
+          "image": "red_boulder",
+          "codes": "MM Road to Ikana Red Boulder"
+        },
+        {
           "image": "chest",
           "codes": "MM Road to Ikana Grotto"
         },
@@ -824,7 +823,9 @@
             "MM Road to Ikana Grotto Grass 09",
             "MM Road to Ikana Grotto Grass 10",
             "MM Road to Ikana Grotto Grass 11",
-            "MM Road to Ikana Grotto Grass 12"
+            "MM Road to Ikana Grotto Grass 12",
+            "MM Road to Ikana Grotto Grass 13",
+            "MM Road to Ikana Grotto Grass 14"
           ]
         }
       ]
@@ -1248,6 +1249,31 @@
       "codes": "TODO KF 133 :: unnamed_stack > Termina > Termina Layers > Termina Entrances :: Pasted Layer #132 :: 001-001-017-012.png"
     },
     {
+      "coords": [291, 218],
+      "image": "heart_piece",
+      "codes": "MM Clock Town Post Box"
+    },
+    {
+      "coords": [289, 97],
+      "image": "heart_piece",
+      "codes": "MM Clock Town Post Box"
+    },
+    {
+      "coords": [398, 153],
+      "image": "heart_piece",
+      "codes": "MM Clock Town Post Box"
+    },
+    {
+      "coords": [216, 360],
+      "image": "heart_piece",
+      "codes": "MM Clock Town Post Box"
+    },
+    {
+      "coords": [419, 307],
+      "image": "heart_piece",
+      "codes": "MM Clock Town Post Box"
+    },
+    {
       "coords": [248, 196],
       "image": "dungeon_entrance",
       "overlays": ["day3", "night"],
@@ -1507,6 +1533,19 @@
       "type": "submenu",
       "markers": [
         {
+          "image": "gossip_stone",
+          "codes": [
+            "MM Termina Field Gossip Grotto Leftmost",
+            "MM Termina Field Gossip Grotto Left-Center",
+            "MM Termina Field Gossip Grotto Right-Center",
+            "MM Termina Field Gossip Grotto Rightmost"
+          ]
+        },
+        {
+          "image": "heart_piece",
+          "codes": "MM Termina Field Gossip Stones HP"
+        },
+        {
           "image": "grass",
           "codes": [
             "MM Ocean Gossip Grotto Grass 1",
@@ -1543,7 +1582,22 @@
     {
       "coords": [878, 105],
       "image": "grotto",
-      "codes": "TODO KF 146 :: unnamed_stack > Termina > Termina Layers > Termina Entrances :: Pasted Layer #145 :: 001-001-017-025.png"
+      "type": "submenu",
+      "markers": [
+        {
+          "image": "gossip_stone",
+          "codes": [
+            "MM Termina Field Gossip Grotto Leftmost",
+            "MM Termina Field Gossip Grotto Left-Center",
+            "MM Termina Field Gossip Grotto Right-Center",
+            "MM Termina Field Gossip Grotto Rightmost"
+          ]
+        },
+        {
+          "image": "heart_piece",
+          "codes": "MM Termina Field Gossip Stones HP"
+        }
+      ]
     },
     {
       "coords": [924, 163],
@@ -1578,7 +1632,32 @@
     {
       "coords": [969, 181],
       "image": "grotto",
-      "codes": "TODO KF 148 :: unnamed_stack > Termina > Termina Layers > Termina Entrances :: Pasted Layer #147 :: 001-001-017-027.png"
+      "type": "submenu",
+      "markers": [
+        {
+          "image": "gossip_stone",
+          "codes": [
+            "MM Termina Field Gossip Grotto Leftmost",
+            "MM Termina Field Gossip Grotto Left-Center",
+            "MM Termina Field Gossip Grotto Right-Center",
+            "MM Termina Field Gossip Grotto Rightmost"
+          ]
+        },
+        {
+          "image": "heart_piece",
+          "codes": "MM Termina Field Gossip Stones HP"
+        },
+        {
+          "image": "grass",
+          "codes": [
+            "MM Canyon Gossip Grotto Grass 1",
+            "MM Canyon Gossip Grotto Grass 2",
+            "MM Canyon Gossip Grotto Grass 3",
+            "MM Canyon Gossip Grotto Grass 4",
+            "MM Canyon Gossip Grotto Grass 5"
+          ]
+        }
+      ]
     },
     {
       "coords": [939, 204],
@@ -1775,7 +1854,22 @@
     {
       "coords": [832, 275],
       "image": "grotto",
-      "codes": "TODO KF 154 :: unnamed_stack > Termina > Termina Layers > Termina Entrances :: Pasted Layer #153 :: 001-001-017-033.png"
+      "type": "submenu",
+      "markers": [
+        {
+          "image": "gossip_stone",
+          "codes": [
+            "MM Termina Field Gossip Grotto Leftmost",
+            "MM Termina Field Gossip Grotto Left-Center",
+            "MM Termina Field Gossip Grotto Right-Center",
+            "MM Termina Field Gossip Grotto Rightmost"
+          ]
+        },
+        {
+          "image": "heart_piece",
+          "codes": "MM Termina Field Gossip Stones HP"
+        }
+      ]
     }
   ]
 }

@@ -489,6 +489,11 @@
       "codes": ["MM Great Bay Coast Palm Tree Beach 2"]
     },
     {
+      "coords": [666, 284],
+      "image": "npc",
+      "codes": ["MM Great Bay Coast Zora Mask"]
+    },
+    {
       "coords": [664, 306],
       "image": "tree",
       "codes": ["MM Great Bay Coast Palm Tree Beach 3"]

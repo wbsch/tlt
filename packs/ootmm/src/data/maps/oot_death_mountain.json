@@ -321,6 +321,10 @@
       "type": "submenu",
       "markers": [
         {
+          "image": "red_boulder",
+          "codes": "OOT Death Mountain Crater Red Boulder Grotto"
+        },
+        {
           "image": "business_scrub_oot",
           "codes": [
             "OOT Death Mountain Crater Grotto Left Scrub",
@@ -500,7 +504,8 @@
           "image": "butterfly",
           "codes": [
             "OOT Death Mountain Crater Grotto Butterfly 1",
-            "OOT Death Mountain Crater Grotto Butterfly 2"
+            "OOT Death Mountain Crater Grotto Butterfly 2",
+            "OOT Death Mountain Crater Grotto Butterfly 3"
           ]
         },
         {
@@ -553,6 +558,13 @@
       "image": "boulder_grotto",
       "type": "submenu",
       "markers": [
+        {
+          "image": "red_boulder",
+          "codes": [
+            "OOT Death Mountain Crater Red Boulder Great Fairy 1",
+            "OOT Death Mountain Crater Red Boulder Great Fairy 2"
+          ]
+        },
         {
           "image": "npc",
           "codes": "OOT Great Fairy Magic Upgrade"

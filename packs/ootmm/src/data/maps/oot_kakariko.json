@@ -578,14 +578,14 @@
           "image": "shop",
           "overlays": ["adult"],
           "codes": [
-            "OOT Market Potion Shop Item 1",
-            "OOT Market Potion Shop Item 2",
-            "OOT Market Potion Shop Item 3",
-            "OOT Market Potion Shop Item 4",
-            "OOT Market Potion Shop Item 5",
-            "OOT Market Potion Shop Item 6",
-            "OOT Market Potion Shop Item 7",
-            "OOT Market Potion Shop Item 8"
+            "OOT Kakariko Potion Shop Item 1",
+            "OOT Kakariko Potion Shop Item 2",
+            "OOT Kakariko Potion Shop Item 3",
+            "OOT Kakariko Potion Shop Item 4",
+            "OOT Kakariko Potion Shop Item 5",
+            "OOT Kakariko Potion Shop Item 6",
+            "OOT Kakariko Potion Shop Item 7",
+            "OOT Kakariko Potion Shop Item 8"
           ]
         }
       ]
