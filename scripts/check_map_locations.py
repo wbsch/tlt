@@ -1,0 +1,178 @@
+#!/usr/bin/env python3
+from __future__ import annotations
+
+import argparse
+import json
+from collections import Counter
+from pathlib import Path
+from typing import Any, Iterable
+
+
+GAMES = ("oot", "mm")
+
+
+def to_location_name(game: str, location_name: str) -> str:
+    return f"{game.upper()} {location_name}"
+
+
+def layout_to_game(layout: str) -> str | None:
+    if layout == "oot":
+        return "oot"
+    if layout == "mm" or layout.startswith("mm_"):
+        return "mm"
+    return None
+
+
+def collect_world_location_names(world: dict[str, Any]) -> set[str]:
+    names: set[str] = set()
+
+    for layout_key, world_by_layout in (world or {}).items():
+        game = layout_to_game(layout_key)
+        if game is None or not isinstance(world_by_layout, dict):
+            continue
+
+        for area_set in world_by_layout.values():
+            if not isinstance(area_set, dict):
+                continue
+            for area in area_set.values():
+                if not isinstance(area, dict):
+                    continue
+                locations = area.get("locations", {})
+                if not isinstance(locations, dict):
+                    continue
+                for location_name in locations.keys():
+                    if isinstance(location_name, str):
+                        names.add(to_location_name(game, location_name))
+
+    return names
+
+
+def collect_hint_location_names(hints: dict[str, Any]) -> set[str]:
+    names: set[str] = set()
+
+    for game in GAMES:
+        records = hints.get(game, []) if isinstance(hints, dict) else []
+        if not isinstance(records, list):
+            continue
+        for record in records:
+            if not isinstance(record, dict):
+                continue
+            location = record.get("location")
+            if isinstance(location, str):
+                names.add(to_location_name(game, location))
+
+    return names
+
+
+def extract_codes(node: Any) -> Iterable[str]:
+    if isinstance(node, dict):
+        for key in ("codes", "Codes"):
+            value = node.get(key)
+            if isinstance(value, str):
+                yield value
+            elif isinstance(value, list):
+                for entry in value:
+                    if isinstance(entry, str):
+                        yield entry
+
+        for child in node.values():
+            yield from extract_codes(child)
+    elif isinstance(node, list):
+        for item in node:
+            yield from extract_codes(item)
+
+
+def is_todo_code(code: str) -> bool:
+    return code.startswith("TODO ")
+
+
+def main() -> int:
+    parser = argparse.ArgumentParser(
+        description=(
+            "Durchsucht alle Map-JSON-Dateien und gibt doppelte Codes sowie fehlende "
+            "Codes gegenüber der Grundgesamtheit (Devtool + Mapschema) aus."
+        )
+    )
+    parser.add_argument(
+        "--maps-dir",
+        type=Path,
+        default=Path("packs/ootmm/src/data/maps"),
+        help="Verzeichnis mit den Map-Dateien (Default: packs/ootmm/src/data/maps)",
+    )
+    parser.add_argument(
+        "--world-file",
+        type=Path,
+        default=Path("OoTMM/packages/data/dist/data-world.json"),
+        help="Pfad zu data-world.json",
+    )
+    parser.add_argument(
+        "--hints-file",
+        type=Path,
+        default=Path("OoTMM/packages/data/dist/data-hints-raw.json"),
+        help="Pfad zu data-hints-raw.json",
+    )
+    parser.add_argument(
+        "--include-todo",
+        action="store_true",
+        help="TODO-Codes in der Map-Auswertung berücksichtigen (standardmäßig ignoriert)",
+    )
+    args = parser.parse_args()
+
+    repo_root = Path(__file__).resolve().parents[1]
+    maps_dir = (repo_root / args.maps_dir).resolve()
+    world_file = (repo_root / args.world_file).resolve()
+    hints_file = (repo_root / args.hints_file).resolve()
+
+    if not maps_dir.is_dir():
+        raise SystemExit(f"Map-Verzeichnis nicht gefunden: {maps_dir}")
+    if not world_file.is_file():
+        raise SystemExit(f"World-Datei nicht gefunden: {world_file}")
+    if not hints_file.is_file():
+        raise SystemExit(f"Hints-Datei nicht gefunden: {hints_file}")
+
+    world = json.loads(world_file.read_text(encoding="utf-8"))
+    hints = json.loads(hints_file.read_text(encoding="utf-8"))
+
+    devtool_reference = collect_world_location_names(world)
+    mapschema_reference = devtool_reference | collect_hint_location_names(hints)
+    reference_universe = devtool_reference | mapschema_reference
+
+    counter: Counter[str] = Counter()
+    map_files = sorted(maps_dir.glob("*.json"))
+    for map_file in map_files:
+        data = json.loads(map_file.read_text(encoding="utf-8"))
+        for code in extract_codes(data):
+            if not args.include_todo and is_todo_code(code):
+                continue
+            counter[code] += 1
+
+    duplicate_locations = sorted(code for code, count in counter.items() if count > 1)
+    map_locations = set(counter.keys())
+    missing_locations = sorted(reference_universe - map_locations)
+
+    print(f"Map-Dateien gescannt: {len(map_files)}")
+    print()
+
+    print("1) Locations, die doppelt in Maps vorkommen:")
+    if duplicate_locations:
+        for location in duplicate_locations:
+            print(location)
+    else:
+        print("(keine)")
+
+    print()
+    print(
+        "2) Locations aus der Grundgesamtheit (Devtool + Mapschema), "
+        "die in den Maps fehlen:"
+    )
+    if missing_locations:
+        for location in missing_locations:
+            print(location)
+    else:
+        print("(keine)")
+
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())
