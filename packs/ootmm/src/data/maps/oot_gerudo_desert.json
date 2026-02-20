@@ -637,10 +637,7 @@
       ]
     },
     {
-      "coords": [
-        454,
-        278
-      ],
+      "coords": [454, 278],
       "image": "song_grotto",
       "type": "submenu",
       "markers": [

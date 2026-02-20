@@ -1,8 +1,14 @@
 import { mkdir, readdir, readFile, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 import { MAP_ICON_INDEX } from '../packs/ootmm/src/data/maps/mapIconIndex.ts';
-import { buildLocationCodeSet, toSortedUnique } from '../packs/ootmm/src/data/locationCodeSource.ts';
-import type { HintsLikeData, WorldLikeData } from '../packs/ootmm/src/data/locationCodeSource.ts';
+import {
+  buildLocationCodeSet,
+  toSortedUnique,
+} from '../packs/ootmm/src/data/locationCodeSource.ts';
+import type {
+  HintsLikeData,
+  WorldLikeData,
+} from '../packs/ootmm/src/data/locationCodeSource.ts';
 
 const TYPES_FILE = path.resolve('packs/ootmm/src/data/maps/types.ts');
 const MAP_IMAGES_DIR = path.resolve('public/images/maps');
