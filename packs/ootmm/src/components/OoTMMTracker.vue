@@ -135,8 +135,6 @@ const {
 } = storeToRefs(uiStore);
 
 const settingsRef = ref<SettingsPanelHandle | null>(null);
-const statsMenuRef = ref<HTMLDetailsElement | null>(null);
-const isStatsMenuOpen = ref(false);
 const isStatsCollapsed = ref(true);
 const mapDefs = OOTMM_MAP_DEFS;
 const DEFAULT_MAP_ID = 'oot_kokiri_forest';
@@ -356,12 +354,6 @@ watch(
   },
   { immediate: true },
 );
-
-watch(isApplyingSettings, (applying) => {
-  if (applying) {
-    closeStatsMenu();
-  }
-});
 
 function syncMapSelectorToActiveMap() {
   syncMapSelectorQueryToActiveMap();
@@ -723,13 +715,11 @@ function handleMapWarningGlobalPointerDown(event: PointerEvent) {
 
 async function undo() {
   if (isApplyingSettings.value || !canUndo.value) return;
-  closeStatsMenu();
   await sessionStore.undo();
 }
 
 async function redo() {
   if (isApplyingSettings.value || !canRedo.value) return;
-  closeStatsMenu();
   await sessionStore.redo();
 }
 
@@ -969,35 +959,8 @@ async function requestTabSwitch(nextTab: TrackerTab) {
   uiStore.setActiveTab(nextTab);
 }
 
-function handleStatsMenuToggle(event: Event) {
-  isStatsMenuOpen.value = (event.target as HTMLDetailsElement).open;
-}
-
-function closeStatsMenu() {
-  isStatsMenuOpen.value = false;
-  if (statsMenuRef.value) {
-    statsMenuRef.value.open = false;
-  }
-}
-
 function toggleStatsCollapsed() {
   isStatsCollapsed.value = !isStatsCollapsed.value;
-  if (isStatsCollapsed.value) {
-    closeStatsMenu();
-  }
-}
-
-function resetTrackerState() {
-  closeStatsMenu();
-  const resetFn = (
-    window as Window & { __TLT_RESET_TRACKER_STATE__?: () => void }
-  ).__TLT_RESET_TRACKER_STATE__;
-  if (typeof resetFn === 'function') {
-    resetFn();
-    return;
-  }
-  window.localStorage.clear();
-  window.location.reload();
 }
 
 function isEditableTarget(target: EventTarget | null) {
@@ -1069,13 +1032,6 @@ onBeforeUnmount(() => {
         >
       </div>
     </div>
-    <button
-      v-if="isStatsMenuOpen"
-      type="button"
-      class="stats-menu-backdrop"
-      aria-label="Close tracker menu"
-      @click="closeStatsMenu"
-    />
     <div
       v-if="isSpoilerDragActive"
       class="spoiler-drop-overlay"
@@ -1102,25 +1058,6 @@ onBeforeUnmount(() => {
               {{ stats.reachable }} / {{ stats.total }}
             </span>
           </button>
-          <details
-            ref="statsMenuRef"
-            class="stats-menu"
-            :class="{ 'is-open': isStatsMenuOpen }"
-            @toggle="handleStatsMenuToggle"
-          >
-            <summary class="stats-menu-trigger" aria-label="Open tracker menu">
-              ⋮
-            </summary>
-            <div class="stats-menu-content" role="menu">
-              <button
-                class="stats-menu-item"
-                type="button"
-                @click="resetTrackerState"
-              >
-                RESET TRACKER STATE
-              </button>
-            </div>
-          </details>
         </div>
         <div
           v-if="!isStatsCollapsed"
@@ -1567,16 +1504,6 @@ onBeforeUnmount(() => {
   letter-spacing: 0.02em;
 }
 
-.stats-menu-backdrop {
-  position: absolute;
-  inset: 0;
-  z-index: 8;
-  border: none;
-  background: rgba(0, 0, 0, 0.35);
-  margin: 0;
-  padding: 0;
-}
-
 .spoiler-drop-overlay {
   position: absolute;
   inset: 0;
@@ -1666,73 +1593,6 @@ onBeforeUnmount(() => {
   color: #f3f4f6;
   font-weight: 600;
   letter-spacing: 0.01em;
-}
-
-.stats-menu {
-  position: relative;
-}
-
-.stats-menu.is-open {
-  z-index: 10;
-}
-
-.stats-menu-trigger {
-  list-style: none;
-  width: 1.75rem;
-  height: 1.75rem;
-  border-radius: 0.35rem;
-  border: 1px solid #4b5563;
-  color: #d1d5db;
-  background: #1f2937;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  line-height: 1;
-  cursor: pointer;
-  user-select: none;
-}
-
-.stats-menu-trigger::-webkit-details-marker {
-  display: none;
-}
-
-.stats-menu-trigger:hover {
-  background: #111827;
-}
-
-.stats-menu-content {
-  position: absolute;
-  right: 0;
-  top: calc(100% + 0.4rem);
-  background: #111827;
-  border: 1px solid #374151;
-  border-radius: 0.4rem;
-  min-width: 12rem;
-  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.35);
-  overflow: hidden;
-  z-index: 11;
-}
-
-.stats-menu-item {
-  width: 100%;
-  border: none;
-  border-radius: 0;
-  background: transparent;
-  color: #f3f4f6;
-  text-align: left;
-  padding: 0.55rem 0.7rem;
-  font-size: 0.8rem;
-  text-transform: uppercase;
-  letter-spacing: 0.03em;
-}
-
-.stats-menu-item:hover:not(:disabled) {
-  background: #1f2937;
-}
-
-.stats-menu-item:disabled {
-  opacity: 0.6;
-  cursor: not-allowed;
 }
 
 .stats-grid {
