@@ -9,6 +9,7 @@ import OoTMMItemGrid from './OoTMMItemGrid.vue';
 import OoTMMWorld from './OoTMMWorld.vue';
 import OoTMMMap from './OoTMMMap.vue';
 import OoTMMTricks from './OoTMMTricks.vue';
+import FairyLoader from '@/components/FairyLoader.vue';
 import { SETTINGS_DEFINITIONS } from '../data/settings';
 import { parseSpoilerLog } from '../utils/spoiler';
 import { useLocationCodeLookup } from '../composables/useLocationCodeLookup';
@@ -1026,10 +1027,11 @@ onBeforeUnmount(() => {
       aria-live="polite"
     >
       <div class="applying-overlay__content">
-        <span class="applying-overlay__title">Applying settings…</span>
-        <span class="applying-overlay__subtitle"
-          >Recalculating tracker logic</span
-        >
+        <FairyLoader
+          size="sm"
+          label="Applying settings..."
+          subtitle="Recalculating tracker logic"
+        />
       </div>
     </div>
     <div
@@ -1485,23 +1487,9 @@ onBeforeUnmount(() => {
   background: rgba(31, 41, 55, 0.9);
   border: 1px solid #374151;
   border-radius: 12px;
-  padding: 1rem 1.5rem;
-  display: flex;
-  flex-direction: column;
-  gap: 0.35rem;
+  padding: 1rem 1.25rem;
   min-width: 220px;
   box-shadow: 0 12px 30px rgba(0, 0, 0, 0.45);
-}
-
-.applying-overlay__title {
-  font-size: 1rem;
-  font-weight: 600;
-}
-
-.applying-overlay__subtitle {
-  font-size: 0.8rem;
-  color: #d1d5db;
-  letter-spacing: 0.02em;
 }
 
 .spoiler-drop-overlay {

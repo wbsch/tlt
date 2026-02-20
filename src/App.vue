@@ -3,6 +3,7 @@ import { defineAsyncComponent, onBeforeUnmount, onMounted, ref } from 'vue';
 import { storeToRefs } from 'pinia';
 import { useAppStore } from './stores/app';
 import { IMPRESSUM_HTML } from './content/impressum';
+import FairyLoader from './components/FairyLoader.vue';
 
 const appStore = useAppStore();
 const { availablePacks, selectedPackId, currentPack, isLoading, error } =
@@ -167,7 +168,9 @@ onBeforeUnmount(() => {
     </header>
 
     <main class="app-main">
-      <div v-if="isLoading" class="loading">Loading tracker...</div>
+      <div v-if="isLoading" class="loading" role="status" aria-live="polite">
+        <FairyLoader label="Loading tracker..." />
+      </div>
 
       <div v-else-if="error" class="error">
         {{ error }}
