@@ -144,6 +144,157 @@
         background: #991b1b;
       }
 
+      #tlt-shell-loading {
+        min-height: calc(100vh - 6rem);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-direction: column;
+        gap: 0.875rem;
+        padding: 1rem 2rem;
+        color: #d1d5db;
+      }
+
+      .tlt-loader {
+        width: 5.5rem;
+        height: 5.5rem;
+        position: relative;
+        display: inline-block;
+        --tri-size: 2.2rem;
+        --tri-height: calc(var(--tri-size) * 0.8660254);
+        filter: drop-shadow(0 6px 10px rgba(0, 0, 0, 0.25));
+      }
+
+      .tlt-loader .triforce {
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        width: calc(var(--tri-size) * 2);
+        height: calc(var(--tri-height) * 2);
+        transform: translate(-50%, -50%);
+      }
+
+      .tlt-loader .triforce .tri {
+        position: absolute;
+        width: var(--tri-size);
+        height: var(--tri-height);
+        background: linear-gradient(180deg, #f9e27f 0%, #d5b22b 100%);
+        clip-path: polygon(50% 0%, 100% 100%, 0% 100%);
+        opacity: 0.12;
+        transform-origin: center;
+        animation: tlt-tri 1.2s ease-in-out infinite;
+      }
+
+      .tlt-loader .triforce .tri-a {
+        left: 50%;
+        top: 0;
+        transform: translateX(-50%);
+        animation-delay: 0s;
+      }
+
+      .tlt-loader .triforce .tri-b {
+        left: 0;
+        top: var(--tri-height);
+        animation-delay: 0.12s;
+      }
+
+      .tlt-loader .triforce .tri-c {
+        right: 0;
+        top: var(--tri-height);
+        animation-delay: 0.24s;
+      }
+
+      .tlt-loader .rupee {
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        width: 1.2rem;
+        height: 1.95rem;
+        background: linear-gradient(180deg, #b6ffe9 0%, #4ce7c5 40%, #0e8f72 100%);
+        clip-path: polygon(
+          50% 0%,
+          100% 30%,
+          100% 70%,
+          50% 100%,
+          0% 70%,
+          0% 30%
+        );
+        transform: translate(-50%, -50%);
+        animation: tlt-orbit 1.2s linear infinite;
+        box-shadow:
+          0 0 0 1px rgba(255, 255, 255, 0.24) inset,
+          0 0 0 1px rgba(6, 74, 60, 0.7);
+        filter: drop-shadow(0 0 5px rgba(70, 255, 221, 0.45));
+      }
+
+      .tlt-loader .rupee::before,
+      .tlt-loader .rupee::after {
+        content: '';
+        position: absolute;
+        inset: 0;
+        clip-path: inherit;
+      }
+
+      .tlt-loader .rupee::before {
+        background: linear-gradient(
+          90deg,
+          rgba(255, 255, 255, 0.28) 0%,
+          rgba(255, 255, 255, 0) 52%
+        );
+      }
+
+      .tlt-loader .rupee::after {
+        background: linear-gradient(
+          145deg,
+          rgba(255, 255, 255, 0.45) 0%,
+          rgba(255, 255, 255, 0.08) 38%,
+          rgba(8, 81, 65, 0.16) 72%,
+          rgba(8, 81, 65, 0.4) 100%
+        );
+      }
+
+      .tlt-loader-text {
+        font-size: 1rem;
+        letter-spacing: 0.02em;
+      }
+
+      @keyframes tlt-tri {
+        0%,
+        20% {
+          opacity: 0.12;
+        }
+
+        35% {
+          opacity: 1;
+        }
+
+        60% {
+          opacity: 0.65;
+        }
+
+        100% {
+          opacity: 0.12;
+        }
+      }
+
+      @keyframes tlt-orbit {
+        0% {
+          transform: translate(-50%, -50%) rotate(0deg) translateY(-2.05rem)
+            rotate(0deg);
+          opacity: 0.9;
+        }
+
+        50% {
+          opacity: 0.45;
+        }
+
+        100% {
+          transform: translate(-50%, -50%) rotate(360deg) translateY(-2.05rem)
+            rotate(-360deg);
+          opacity: 0.9;
+        }
+      }
+
       @media (max-width: 700px) {
         #tlt-shell-header {
           padding: 1rem;
@@ -166,6 +317,10 @@
       }
 
       body.tlt-app-mounted #tlt-shell-header {
+        display: none;
+      }
+
+      body.tlt-app-mounted #tlt-shell-loading {
         display: none;
       }
     </style>
@@ -195,6 +350,17 @@
           RESET TRACKER STATE
         </button>
       </div>
+    </div>
+    <div id="tlt-shell-loading" aria-live="polite">
+      <div class="tlt-loader" aria-label="Loading tracker" role="status">
+        <span class="triforce" aria-hidden="true">
+          <span class="tri tri-a"></span>
+          <span class="tri tri-b"></span>
+          <span class="tri tri-c"></span>
+        </span>
+        <span class="rupee"></span>
+      </div>
+      <div class="tlt-loader-text">Loading tracker...</div>
     </div>
     <div id="app"></div>
     <script type="module" src="/src/main.ts"></script>

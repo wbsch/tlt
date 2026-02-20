@@ -19,7 +19,7 @@ export const useAppStore = defineStore('app', () => {
   ]);
   const selectedPackId = ref('ootmm');
   const currentPack = ref<TrackerPack | null>(null);
-  const isLoading = ref(false);
+  const isLoading = ref(true);
   const error = ref<string | null>(null);
 
   async function loadPack(packId: string) {
