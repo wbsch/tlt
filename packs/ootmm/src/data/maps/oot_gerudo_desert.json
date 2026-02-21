@@ -482,6 +482,10 @@
           "codes": "OOT Gerudo Fortress Jail 2"
         },
         {
+          "image": "npc",
+          "codes": ["OOT Gerudo Member Card"]
+        },
+        {
           "image": "crate",
           "codes": [
             "OOT Thieves Hideout Crate Jail 2 1",
@@ -555,6 +559,10 @@
           "codes": ["OOT Gerudo Fortress Jail 4"]
         },
         {
+          "image": "npc",
+          "codes": ["OOT Gerudo Member Card"]
+        },
+        {
           "image": "wonder_item_random",
           "codes": [
             "OOT Gerudo Fortress Wonder Item Jail 4 1",
@@ -571,6 +579,10 @@
         {
           "image": "collectible",
           "codes": "OOT Gerudo Fortress Jail 2"
+        },
+        {
+          "image": "npc",
+          "codes": ["OOT Gerudo Member Card"]
         },
         {
           "image": "crate",
@@ -738,6 +750,10 @@
           "codes": ["OOT Gerudo Fortress Jail 1"]
         },
         {
+          "image": "npc",
+          "codes": ["OOT Gerudo Member Card"]
+        },
+        {
           "image": "crate",
           "codes": ["OOT Thieves Hideout Crate Jail 1"]
         },
@@ -766,6 +782,10 @@
         {
           "image": "collectible",
           "codes": ["OOT Gerudo Fortress Jail 3"]
+        },
+        {
+          "image": "npc",
+          "codes": ["OOT Gerudo Member Card"]
         },
         {
           "image": "pot",
@@ -797,6 +817,10 @@
           "codes": ["OOT Gerudo Fortress Jail 4"]
         },
         {
+          "image": "npc",
+          "codes": ["OOT Gerudo Member Card"]
+        },
+        {
           "image": "wonder_item_random",
           "codes": [
             "OOT Gerudo Fortress Wonder Item Jail 4 1",
@@ -813,6 +837,10 @@
         {
           "image": "collectible",
           "codes": ["OOT Gerudo Fortress Jail 1"]
+        },
+        {
+          "image": "npc",
+          "codes": ["OOT Gerudo Member Card"]
         },
         {
           "image": "crate",
