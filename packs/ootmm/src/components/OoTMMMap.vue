@@ -804,11 +804,22 @@ function calculateMapPopupPosition(): { left: number; top: number } | null {
 function calculateSubmenuPanelPosition(): { left: number; top: number } | null {
   const marker = activeSubmenuMarker.value;
   if (!marker) return null;
+
+  const frozenScale = submenuPanel.value.frozenScale;
+  const hasFrozenScale = frozenScale !== null && frozenScale > 0;
+  const sizeScaleFactor = hasFrozenScale ? scale.value / frozenScale : 1;
+  const predictedWidth =
+    (submenuPanel.value.frozenWidth ?? SUBMENU_PANEL_WIDTH) * sizeScaleFactor;
+  const predictedHeight =
+    (submenuPanel.value.frozenHeight ?? SUBMENU_PANEL_HEIGHT) * sizeScaleFactor;
+  const usePredictedSize =
+    submenuPanel.value.frozenWidth !== null && hasFrozenScale;
+
   return calculateAnchoredPanelPosition(
     marker.coords,
-    submenuPanelRef.value,
-    SUBMENU_PANEL_WIDTH,
-    SUBMENU_PANEL_HEIGHT,
+    usePredictedSize ? null : submenuPanelRef.value,
+    predictedWidth,
+    predictedHeight,
   );
 }
 
@@ -2361,7 +2372,7 @@ onBeforeUnmount(() => {
   display: flex;
   flex-wrap: nowrap;
   align-items: flex-start;
-  gap: 0;
+  gap: max(0px, calc(var(--submenu-corner-offset) * -2));
   overflow: hidden;
 }
 
