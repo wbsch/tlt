@@ -138,6 +138,7 @@ const {
 const settingsRef = ref<SettingsPanelHandle | null>(null);
 const isStatsCollapsed = ref(true);
 const mapDefs = OOTMM_MAP_DEFS;
+type SelectedGamesSetting = 'ootmm' | 'oot' | 'mm';
 const DEFAULT_MAP_ID = 'oot_kokiri_forest';
 
 // ensure there's a sensible active map id in the UI store
@@ -161,10 +162,44 @@ const mapWarningPanelRef = ref<HTMLElement | null>(null);
 const mapMarkerSelectRequest = ref<DevMarkerSelectRequest | null>(null);
 const mapMarkerHoverIndex = ref<number | null>(null);
 let mapMarkerSelectNonce = 0;
+
+function resolveSelectedGamesSetting(value: unknown): SelectedGamesSetting {
+  if (value === 'oot' || value === 'mm' || value === 'ootmm') {
+    return value;
+  }
+  return 'ootmm';
+}
+
+function getMapGameFromId(mapId: string): 'oot' | 'mm' | null {
+  if (mapId.startsWith('oot_')) return 'oot';
+  if (mapId.startsWith('mm_')) return 'mm';
+  return null;
+}
+
+function isMapVisibleForSelectedGames(
+  mapDef: MapDef,
+  selectedGames: SelectedGamesSetting,
+): boolean {
+  if (selectedGames === 'ootmm') return true;
+  const mapGame = getMapGameFromId(mapDef.id);
+  if (!mapGame) return true;
+  return mapGame === selectedGames;
+}
+
+const selectedGamesSetting = computed<SelectedGamesSetting>(() =>
+  resolveSelectedGamesSetting(trackerSettings.value?.games),
+);
+const selectableMapDefs = computed(() =>
+  mapDefs.filter((mapDef) =>
+    isMapVisibleForSelectedGames(mapDef, selectedGamesSetting.value),
+  ),
+);
+
 const activeMap = computed<MapDef | null>(() => {
-  if (mapDefs.length === 0) return null;
+  if (selectableMapDefs.value.length === 0) return null;
   return (
-    mapDefs.find((mapDef) => mapDef.id === activeMapId.value) ?? mapDefs[0]
+    selectableMapDefs.value.find((mapDef) => mapDef.id === activeMapId.value) ??
+    selectableMapDefs.value[0]
   );
 });
 const collectedLocationIdSet = computed(
@@ -238,7 +273,7 @@ function addResolvedMapSelectorCode(checkIds: Set<string>, code: string): void {
 const mapSelectorCheckIdsByMap = computed(() => {
   const byMap = new Map<string, Set<string>>();
 
-  for (const mapDef of mapDefs) {
+  for (const mapDef of selectableMapDefs.value) {
     const checkIds = new Set<string>();
     for (const marker of mapDef.markers) {
       if (
@@ -265,7 +300,7 @@ const mapSelectorCheckIdsByMap = computed(() => {
 
 const mapSelectorVisibleCountByMap = computed(() => {
   const byMap = new Map<string, number>();
-  for (const mapDef of mapDefs) {
+  for (const mapDef of selectableMapDefs.value) {
     const checkIds = mapSelectorCheckIdsByMap.value.get(mapDef.id);
     if (!checkIds || checkIds.size === 0) {
       byMap.set(mapDef.id, 0);
@@ -319,6 +354,21 @@ const MAJOR_DUNGEONS = [
 ];
 
 watch(
+  selectableMapDefs,
+  (availableMapDefs) => {
+    if (availableMapDefs.length === 0) {
+      activeMapId.value = '';
+      return;
+    }
+    if (availableMapDefs.some((mapDef) => mapDef.id === activeMapId.value)) {
+      return;
+    }
+    activeMapId.value = availableMapDefs[0].id;
+  },
+  { immediate: true },
+);
+
+watch(
   () => props.tracker,
   (nextTracker) => {
     sessionStore.attachTracker(nextTracker);
@@ -365,13 +415,13 @@ function syncMapSelectorToActiveMap() {
 function getMapSelectorMatches(rawQuery: string): MapDef[] {
   const query = normalizeSearchText(rawQuery);
   const terms = getSearchTerms(rawQuery);
-  if (terms.length === 0) return mapDefs;
+  if (terms.length === 0) return selectableMapDefs.value;
 
   const exactMatches: MapDef[] = [];
   const prefixMatches: MapDef[] = [];
   const fuzzyMatches: MapDef[] = [];
 
-  for (const mapDef of mapDefs) {
+  for (const mapDef of selectableMapDefs.value) {
     const mapId = normalizeSearchText(mapDef.id);
     const mapTitle = normalizeSearchText(mapDef.title);
     if (!matchesNormalizedSearchTerms([mapId, mapTitle], terms)) {
@@ -416,7 +466,7 @@ function compareMapSelectorMapsByVisibleCount(a: MapDef, b: MapDef): number {
 const filteredMapSelectorMaps = computed(() => {
   const maps =
     isMapSelectorOpen.value && !hasMapSelectorUserInput.value
-      ? mapDefs
+      ? selectableMapDefs.value
       : getMapSelectorMatches(mapSelectorQuery.value);
 
   return [...maps].sort(compareMapSelectorMapsByVisibleCount);
@@ -503,12 +553,12 @@ function findMapForSelectorQuery(rawQuery: string): MapDef | null {
   const query = normalizeSearchText(rawQuery);
   if (!query) return null;
 
-  const byIdExact = mapDefs.find(
+  const byIdExact = selectableMapDefs.value.find(
     (mapDef) => normalizeSearchText(mapDef.id) === query,
   );
   if (byIdExact) return byIdExact;
 
-  const byTitleExact = mapDefs.find(
+  const byTitleExact = selectableMapDefs.value.find(
     (mapDef) => normalizeSearchText(mapDef.title) === query,
   );
   if (byTitleExact) return byTitleExact;
@@ -1202,8 +1252,11 @@ onBeforeUnmount(() => {
     <div class="tracker-main">
       <div class="map-panel">
         <div class="map-shell">
-          <div v-if="mapDefs.length > 1 || isMapDevMode" class="map-toolbar">
-            <template v-if="mapDefs.length > 1">
+          <div
+            v-if="selectableMapDefs.length > 1 || isMapDevMode"
+            class="map-toolbar"
+          >
+            <template v-if="selectableMapDefs.length > 1">
               <div class="map-selector-combobox">
                 <label class="map-toolbar-label" for="map-selector">Map</label>
                 <div class="map-selector-input-wrap">
