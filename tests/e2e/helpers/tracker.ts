@@ -132,7 +132,7 @@ export async function waitForBoot(page: Page): Promise<void> {
 }
 
 export async function resetLocalStorageAndReload(page: Page): Promise<void> {
-  await page.goto('/');
+  await page.goto('/?debug=1');
   await page.evaluate(() => window.localStorage.clear());
   await page.reload({ waitUntil: 'domcontentloaded' });
   await waitForBoot(page);
