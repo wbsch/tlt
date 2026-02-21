@@ -1,5 +1,5 @@
 <h1 align="center">
-  <img src="public/images/thelasttracker.avif" alt="The Last Tracker icon" width="192" />
+  <img src="https://www.thelasttracker.org/images/thelasttracker.avif" alt="definitely not a unicorn" width="192" />
   <br />
   The Last Tracker
 </h1>
@@ -11,6 +11,7 @@ It is live at [www.thelasttracker.org](https://www.thelasttracker.org/)
 Yes, the tracker name and logo are a reference to an 80s movie. No, it does not make a whole lot of sense. It was the best name we could come up with though. Plus, there's a ~~unicorn~~ horsey, so deal with it.
 
 Right now, this repository ships with one tracker pack only:
+
 - `OoTMM`: Ocarina of Time / Majora's Mask Randomizer
 
 ## What It Does
@@ -18,6 +19,7 @@ Right now, this repository ships with one tracker pack only:
 The OoTMM pack is a map tracker with full logic, meaning it knows which checks are currently accessible based on the settings used as well as the items the player has found so far.
 
 It:
+
 - Tracks inventory and checked locations.
 - Computes reachability using OoTMMR logic.
 - Shows map-based check markers with reachability and collected state.
@@ -39,6 +41,7 @@ npm run dev
 ```
 
 Dev server default:
+
 - `http://localhost:5173`
 
 Production build:
@@ -63,6 +66,7 @@ npm run build
   - Enables map-dev mode UI for map marker diagnostics.
 
 Example:
+
 - `http://localhost:5173/?debug=1`
 - `http://localhost:5173/?debug=1&devmode=1`
 

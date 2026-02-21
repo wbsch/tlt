@@ -30,7 +30,9 @@ withDefaults(
     </div>
     <div v-if="label || subtitle" class="tlt-fairy-loader__copy">
       <span v-if="label" class="tlt-fairy-loader__label">{{ label }}</span>
-      <span v-if="subtitle" class="tlt-fairy-loader__subtitle">{{ subtitle }}</span>
+      <span v-if="subtitle" class="tlt-fairy-loader__subtitle">{{
+        subtitle
+      }}</span>
     </div>
   </div>
 </template>
@@ -146,10 +148,7 @@ withDefaults(
   height: calc(var(--loader-size) * 0.272);
   transform: translate(-50%, -50%);
   background: center / contain no-repeat url('/images/Fairy.png');
-  filter:
-    hue-rotate(155deg)
-    saturate(1.6)
-    brightness(1.14)
+  filter: hue-rotate(155deg) saturate(1.6) brightness(1.14)
     drop-shadow(0 0 4px rgba(186, 237, 255, 0.95))
     drop-shadow(0 0 10px rgba(84, 191, 255, 0.9));
   animation: tlt-loader-fairy-hover 0.2s ease-in-out infinite alternate;
