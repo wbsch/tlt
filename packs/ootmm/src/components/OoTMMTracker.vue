@@ -14,6 +14,7 @@ import { SETTINGS_DEFINITIONS } from '../data/settings';
 import { parseSpoilerLog } from '../utils/spoiler';
 import { useLocationCodeLookup } from '../composables/useLocationCodeLookup';
 import {
+  matchesLocationBaseVisibility,
   isLocationVisibleInSidebar,
   type LocationVisibilityFilters,
 } from '../utils/locationVisibility';
@@ -109,7 +110,6 @@ const {
   availableItemIdSet: availableItemIds,
   itemMaxCountsMap: itemMaxCounts,
   canComplete,
-  stats,
   trackerSettings,
   preCompletedDungeons,
   songEvents,
@@ -213,6 +213,34 @@ const locationVisibilityFilters = computed<LocationVisibilityFilters>(() => ({
   showUnshuffled: locationsShowUnshuffled.value,
   showGossipStones: locationsShowGossipStones.value,
 }));
+const sidebarStatsBaseFilters = computed<LocationVisibilityFilters>(() => ({
+  searchQuery: '',
+  selectedCategory: 'all',
+  reachabilityFilter: 'all',
+  collectionFilter: 'all',
+  showUnshuffled: false,
+  showGossipStones: false,
+}));
+const sidebarStats = computed(() => {
+  let total = 0;
+  let reachable = 0;
+  let checked = 0;
+
+  for (const location of allLocations.value) {
+    if (!matchesLocationBaseVisibility(location, sidebarStatsBaseFilters.value))
+      continue;
+    total += 1;
+    if (reachableLocationIds.value.has(location.id)) reachable += 1;
+    if (collectedLocationIdSet.value.has(location.id)) checked += 1;
+  }
+
+  return {
+    total,
+    reachable,
+    checked,
+    remaining: total - checked,
+  };
+});
 const mapLocationVisibilityFilters = computed<LocationVisibilityFilters>(
   () => ({
     ...locationVisibilityFilters.value,
@@ -1107,7 +1135,7 @@ onBeforeUnmount(() => {
             }}</span>
             <span class="stats-collapse-title">Statistics</span>
             <span v-if="isStatsCollapsed" class="stats-collapse-summary">
-              {{ stats.reachable }} / {{ stats.total }}
+              {{ sidebarStats.reachable }} / {{ sidebarStats.total }}
             </span>
           </button>
         </div>
@@ -1119,19 +1147,19 @@ onBeforeUnmount(() => {
           <div class="stat-item">
             <span class="stat-label">Reachable:</span>
             <span class="stat-value" data-testid="stats-reachable-value">
-              {{ stats.reachable }} / {{ stats.total }}
+              {{ sidebarStats.reachable }} / {{ sidebarStats.total }}
             </span>
           </div>
           <div class="stat-item">
             <span class="stat-label">Checked:</span>
             <span class="stat-value" data-testid="stats-checked-value">{{
-              stats.checked
+              sidebarStats.checked
             }}</span>
           </div>
           <div class="stat-item">
             <span class="stat-label">Remaining:</span>
             <span class="stat-value" data-testid="stats-remaining-value">{{
-              stats.remaining
+              sidebarStats.remaining
             }}</span>
           </div>
           <div class="stat-item goal" :class="{ complete: canComplete }">

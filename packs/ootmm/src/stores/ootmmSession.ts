@@ -190,29 +190,6 @@ export const useOoTMMSessionStore = defineStore('ootmm-session', () => {
     return tracker.value?.getAllLocations() ?? [];
   });
 
-  const shuffledLocations = computed(() => {
-    return allLocations.value.filter(
-      (location) => location.isShuffled !== false,
-    );
-  });
-
-  const stats = computed(() => {
-    const total = shuffledLocations.value.length;
-    const reachable = shuffledLocations.value.filter((location) =>
-      reachableLocationIdSet.value.has(location.id),
-    ).length;
-    const collectedSet = new Set(collectedLocationIds.value);
-    const checked = shuffledLocations.value.filter((location) =>
-      collectedSet.has(location.id),
-    ).length;
-    return {
-      total,
-      reachable,
-      checked,
-      remaining: total - checked,
-    };
-  });
-
   function captureSessionSnapshot(): SessionSnapshot {
     return {
       inventoryById: sanitizeInventoryRecord({ ...inventoryById.value }),
@@ -803,8 +780,6 @@ export const useOoTMMSessionStore = defineStore('ootmm-session', () => {
     reachableLocationIdSet,
     preCompletedEnabled,
     allLocations,
-    shuffledLocations,
-    stats,
     attachTracker,
     initializeFromTracker,
     setInventoryFromMap,
