@@ -200,6 +200,11 @@ const OOT_MERCHANT_SLOT_BY_ID: Record<string, number> = {
   OOT_TALON_MILK: 3,
 };
 
+const isTrackerDebugModeEnabled = (): boolean => {
+  if (typeof window === 'undefined') return false;
+  return new URLSearchParams(window.location.search).get('debug') === '1';
+};
+
 export class OoTMMTracker implements TrackerPack {
   id = 'ootmm';
   name = 'OoTMM';
@@ -222,20 +227,26 @@ export class OoTMMTracker implements TrackerPack {
   private shopPriceSlotsByLocationId: Map<string, ShopPriceSlot> = new Map();
   private baseShopPricesByLocationId: Map<string, number[]> = new Map();
   private devLocationCatalog: LocationInfo[] = [];
+  private readonly debugModeEnabled = isTrackerDebugModeEnabled();
+
+  private debugLog(...args: unknown[]): void {
+    if (!this.debugModeEnabled) return;
+    console.log(...args);
+  }
 
   async initialize(userSettings: Partial<OoTMMSettings> = {}): Promise<void> {
-    console.log('[OoTMM Tracker] Initializing...');
+    this.debugLog('[OoTMM Tracker] Initializing...');
 
     // Merge with defaults
     const ootmmSettings = {
       ...DEFAULT_OOTMM_SETTINGS,
       ...userSettings,
     };
-    console.log('[OoTMM Tracker] Merged settings:', ootmmSettings);
+    this.debugLog('[OoTMM Tracker] Merged settings:', ootmmSettings);
 
     // Convert to OoTMM settings format
     this.settings = makeSettings(ootmmSettings) as Record<string, unknown>;
-    console.log(
+    this.debugLog(
       '[OoTMM Tracker] Final settings after makeSettings:',
       this.settings,
     );
@@ -243,9 +254,9 @@ export class OoTMMTracker implements TrackerPack {
     // Create monitor for progress tracking
     const monitor = new Monitor(
       {
-        onLog: (msg: string) => console.log(`[OoTMM] ${msg}`),
+        onLog: (msg: string) => this.debugLog(`[OoTMM] ${msg}`),
         onProgress: (current: number, total: number) => {
-          console.log(`[OoTMM] Building world: ${current}/${total}`);
+          this.debugLog(`[OoTMM] Building world: ${current}/${total}`);
         },
       },
       false,
@@ -260,7 +271,7 @@ export class OoTMMTracker implements TrackerPack {
       random: {},
     };
 
-    console.log('[OoTMM Tracker] Building world graph...');
+    this.debugLog('[OoTMM Tracker] Building world graph...');
     const worldData = await worldState(
       monitor,
       opts as Record<string, unknown>,
@@ -269,7 +280,7 @@ export class OoTMMTracker implements TrackerPack {
     this.normalizeWorldItems(this.baseWorlds);
 
     // Run entrance pass to connect games
-    console.log('[OoTMM Tracker] Running entrance pass...');
+    this.debugLog('[OoTMM Tracker] Running entrance pass...');
     const hasPlandoEntrances = Boolean(
       ootmmSettings.plando &&
       typeof ootmmSettings.plando === 'object' &&
@@ -325,23 +336,23 @@ export class OoTMMTracker implements TrackerPack {
     this.baseShopPricesByLocationId = shopPriceIndex.basePricesByLocationId;
     this.devLocationCatalog = this.buildCodeSearchLocationCatalog();
 
-    console.log(
+    this.debugLog(
       `[OoTMM Tracker] Initialized with ${this.allLocationIds.length} locations`,
     );
   }
 
   checkReachability(inventory: Map<string, number>): TrackerCheckResult {
     try {
-      console.log(
+      this.debugLog(
         '[OoTMM Tracker] checkReachability called with inventory:',
         JSON.stringify(Array.from(inventory.entries())),
       );
     } catch (e) {
-      console.log(
+      this.debugLog(
         '[OoTMM Tracker] checkReachability called with inventory: (could not stringify) ',
         Array.from(inventory.entries()),
       );
-      console.log('[OoTMM Tracker] Inventory stringify error:', e);
+      this.debugLog('[OoTMM Tracker] Inventory stringify error:', e);
     }
     const isVanillaSilverRupees = this.isVanillaSilverRupeeShuffle();
     const baseInventory = isVanillaSilverRupees
@@ -393,13 +404,13 @@ export class OoTMMTracker implements TrackerPack {
       throw new Error('Pathfinder returned undefined');
     }
 
-    console.log('[OoTMM Tracker] State after pathfinder:', {
+    this.debugLog('[OoTMM Tracker] State after pathfinder:', {
       locations: state.locations.size,
       goal: state.goal,
       started: state.started,
     });
 
-    console.log(
+    this.debugLog(
       '[OoTMM Tracker] Pathfinder result: reachable =',
       reachableLocationIds.length,
       'new =',
@@ -1496,14 +1507,14 @@ export class OoTMMTracker implements TrackerPack {
         try {
           item = itemByID(itemId);
         } catch (e) {
-          console.log('[OoTMM Tracker] Could not resolve item:', itemId, e);
+          this.debugLog('[OoTMM Tracker] Could not resolve item:', itemId, e);
           item = undefined;
         }
       }
       if (item && count > 0) {
         const pi = makePlayerItem(item, 0);
         playerItems.set(pi, count);
-        console.log(
+        this.debugLog(
           '[OoTMM Tracker] Added item to playerItems:',
           itemId,
           'as',
