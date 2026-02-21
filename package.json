@@ -2,6 +2,7 @@
   "name": "tlt",
   "version": "0.1.0",
   "description": "The Last Tracker - Modular game tracker supporting multiple games",
+  "license": "MIT",
   "type": "module",
   "engines": {
     "node": ">=24"

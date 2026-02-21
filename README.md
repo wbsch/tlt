@@ -8,7 +8,7 @@ The Last Tracker (TLT) is a modular web tracker for randomized games.
 
 It is live at [www.thelasttracker.org](https://www.thelasttracker.org/)
 
-Yes, the tracker name and logo are a reference to an 80s movie. No, it does not make a whole lot of sense. It was the best name we could come up with though, so deal with it.
+Yes, the tracker name and logo are a reference to an 80s movie. No, it does not make a whole lot of sense. It was the best name we could come up with though. Plus, there's a ~~unicorn~~ horsey, so deal with it.
 
 Right now, this repository ships with one tracker pack only:
 - `OoTMM`: Ocarina of Time / Majora's Mask Randomizer
@@ -70,5 +70,9 @@ Example:
 
 - Reachability calculation makes direct use of the [OoTMM randomizer core logic](https://github.com/OoTMM/OoTMM)
 - Maps, map marker icons, and certain other images used throughout the tracker are Copyright (c) BusinessAlex. Contact for those assets: BusinessAlex on Discord.
-- Important: The MIT license applies to source code only; images and map assets are not covered by MIT.
 - If you clone/reuse the tracker, these assets must be replaced unless you have explicit permission from BusinessAlex to continue using them.
+
+## Licensing
+
+- Source code: [MIT License](./LICENSE.txt)
+- Images and map-related assets: [Asset License Notice](./LICENSE_ASSETS.md)
