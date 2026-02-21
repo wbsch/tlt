@@ -23,9 +23,6 @@ const OUTPUT_FILE = path.resolve(
   'packs/ootmm/src/data/schemas/ootmm-map.schema.json',
 );
 
-type JsonRecord = Record<string, unknown>;
-type HintLocationRecord = { location?: unknown };
-
 function extractStringUnionValues(source: string, typeName: string): string[] {
   const typeMatch = source.match(
     new RegExp(`export type ${typeName} =([\\s\\S]*?)\\n\\nexport type`, 'm'),

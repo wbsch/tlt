@@ -212,6 +212,7 @@ onBeforeUnmount(() => {
             class="info-modal-logo"
           />
         </div>
+        <!-- eslint-disable-next-line vue/no-v-html -->
         <div class="info-modal-content" v-html="IMPRESSUM_HTML" />
         <div class="info-modal-actions">
           <button
