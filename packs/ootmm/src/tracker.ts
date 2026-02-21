@@ -78,6 +78,14 @@ const isShuffled = resolveExport<typeof IsShuffledMod.isShuffled>(
 import type { World } from '@ootmm/core/logic/world';
 import type { PlayerItems, PlayerItem } from '@ootmm/core/items/index';
 
+type WorldData = {
+  worlds: World[];
+  fixedLocations?: unknown;
+  allItems?: unknown;
+  startingItems?: unknown;
+  [key: string]: unknown;
+};
+
 /**
  * WORKAROUND: The OoTMM core library seems to have been transpiled with an assumption
  * that Map.entries() returns an array (or using a C-style for loop on the result),
@@ -86,6 +94,7 @@ import type { PlayerItems, PlayerItem } from '@ootmm/core/items/index';
  * See: https://github.com/microsoft/TypeScript/issues/33077 (maybe related?)
  */
 class ArrayEntriesMap<K, V> extends Map<K, V> {
+  // @ts-expect-error OoTMM core iterates entries() with .length; return array instead of MapIterator
   entries(): [K, V][] {
     return Array.from(super.entries());
   }
@@ -272,11 +281,11 @@ export class OoTMMTracker implements TrackerPack {
     };
 
     this.debugLog('[OoTMM Tracker] Building world graph...');
-    const worldData = await worldState(
+    const worldData: WorldData = await worldState(
       monitor,
       opts as Record<string, unknown>,
     );
-    this.baseWorlds = (worldData as { worlds?: World[] }).worlds ?? [];
+    this.baseWorlds = worldData.worlds ?? [];
     this.normalizeWorldItems(this.baseWorlds);
 
     // Run entrance pass to connect games
@@ -317,16 +326,18 @@ export class OoTMMTracker implements TrackerPack {
       Object.keys(world.checks).map((loc) => makeLocation(loc, worldId)),
     );
     this.fixedLocationIds = this.buildFixedLocationIds(
-      worldData?.fixedLocations,
+      worldData?.fixedLocations as Set<string> | undefined,
     );
     this.baseHiddenLocationIds = this.buildBaseHiddenLocationIds();
     this.hiddenLocationIds = new Set(this.baseHiddenLocationIds);
     this.preCompletedDungeonIds.clear();
     this.baseWispEvents.clear();
-    this.availableItemIds = this.buildAvailableItemIds(worldData?.allItems);
+    this.availableItemIds = this.buildAvailableItemIds(
+      worldData?.allItems as Map<unknown, number> | undefined,
+    );
     this.itemMaxCounts = this.buildItemMaxCounts(
-      worldData?.allItems,
-      worldData?.startingItems,
+      worldData?.allItems as Map<unknown, number> | undefined,
+      worldData?.startingItems as Map<unknown, number> | undefined,
     );
     this.silverRupeeLocationIdsByItemId = this.buildSilverRupeeLocationIndex(
       this.worlds,
@@ -978,8 +989,7 @@ export class OoTMMTracker implements TrackerPack {
 
   private buildDungeonLocationIds(world: World): Set<string> {
     const dungeonLocations = new Set<string>();
-    const dungeons = (world as { dungeons?: Record<string, string[]> })
-      .dungeons;
+    const dungeons = world.dungeons;
     if (!dungeons) return dungeonLocations;
     for (const locs of Object.values(dungeons)) {
       if (!locs) continue;
@@ -1069,19 +1079,19 @@ export class OoTMMTracker implements TrackerPack {
 
       for (const [dungeonId, eventName] of Object.entries(PRECOMPLETED_WISPS)) {
         if (!base.has(eventName)) {
-          base.set(eventName, spawnArea.events[eventName] ?? null);
+          base.set(eventName, spawnArea.events?.[eventName] ?? null);
         }
 
         if (shouldApply && expanded.has(dungeonId)) {
-          spawnArea.events[eventName] = exprTrue();
+          if (spawnArea.events) spawnArea.events[eventName] = exprTrue();
           continue;
         }
 
         const original = base.get(eventName);
         if (original === null || original === undefined) {
-          delete spawnArea.events[eventName];
+          if (spawnArea.events) delete spawnArea.events[eventName];
         } else {
-          spawnArea.events[eventName] = original;
+          if (spawnArea.events) spawnArea.events[eventName] = original;
         }
       }
     }
@@ -1484,7 +1494,8 @@ export class OoTMMTracker implements TrackerPack {
     // Convert inventory to PlayerItems format
     // Use ArrayEntriesMap to ensure .entries() returns an array instead of an iterator,
     // which is what the OoTMM library expects
-    const playerItems: PlayerItems = new ArrayEntriesMap();
+    // @ts-expect-error ArrayEntriesMap overrides entries() for OoTMM compatibility
+    const playerItems: PlayerItems = new ArrayEntriesMap<PlayerItem, number>();
     const expandedInventory = new Map<string, number>(inventory);
 
     for (const [itemId, count] of inventory) {
