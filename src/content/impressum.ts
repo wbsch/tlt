@@ -1,5 +1,13 @@
 export const IMPRESSUM_HTML = `
 <section>
+  <h3>Bug Reports and Suggestions</h3>
+  <ul>
+    <li>
+      If you notice a bug or have a suggestion for improvement, you can open an issue on GitHub or contact wbsch/Jupiterfire on the OOTMM-Discord in the #tracker-support channel.
+  </ul>
+</section>
+
+<section>
   <h3>Image and Asset Credits</h3>
   <ul>
     <li>

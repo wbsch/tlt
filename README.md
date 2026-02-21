@@ -1,7 +1,5 @@
 <h1 align="center">
   <img src="https://www.thelasttracker.org/images/thelasttracker.avif" alt="definitely not a unicorn" width="192" />
-  <br />
-  The Last Tracker
 </h1>
 
 The Last Tracker (TLT) is a modular web tracker for randomized games.
@@ -27,6 +25,16 @@ It:
 - Supports most relevant settings and tricks.
 - Includes undo/redo functionality.
 - Automatically persists tracker/UI state across browser sessions.
+
+## Unsupported Settings
+
+All settings that were available in the randomizer's code on January 21, 2026 (Dev version) are supported by this tracker. Excluded from this are:
+
+- Master Quest Dungeons
+- All Entrance Randomizer settings
+
+There are a few settings the tracker does not represent because they are not relevant for tracking (e.g., OoT Shields). Nevertheless, The Last Tracker can be used for all options within those settings -
+you will still see what's available for you.
 
 ## Dev / Build Requirements
 
