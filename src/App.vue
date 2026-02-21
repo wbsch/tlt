@@ -418,7 +418,8 @@ onBeforeUnmount(() => {
 
 .info-modal {
   width: min(36rem, 100%);
-  max-height: min(80vh, 44rem);
+  max-height: calc(100vh - 2rem);
+  max-height: calc(100dvh - 2rem);
   overflow: auto;
   border: 1px solid #525252;
   border-radius: 0.5rem;
