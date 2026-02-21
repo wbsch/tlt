@@ -14,6 +14,7 @@ import {
 } from 'playwright';
 import * as SettingsMod from '@ootmm/core/settings/index';
 import * as DataMod from '../../OoTMM/packages/data/src/index';
+import { DEFAULT_OOTMM_SETTINGS } from '../../packs/ootmm/src/types/settings';
 
 type CliOptions = {
   filePath: string;
@@ -63,6 +64,49 @@ const MQ_DUNGEON_MAP: Record<string, string> = {
 const nonGlitchTricks = Object.entries(TRICKS)
   .filter((entry) => !entry[1]?.glitch)
   .map((entry) => entry[0]);
+
+const defaultTricksSorted = (DEFAULT_OOTMM_SETTINGS.tricks ?? ([] as string[]))
+  .slice()
+  .sort();
+
+const deepEqual = (a: unknown, b: unknown): boolean => {
+  if (a === b) return true;
+  if (a == null || b == null) return false;
+  if (typeof a !== typeof b) return false;
+  if (typeof a !== 'object') return false;
+  if (Array.isArray(a) !== Array.isArray(b)) return false;
+  if (Array.isArray(a)) {
+    const bArr = b as unknown[];
+    if (a.length !== bArr.length) return false;
+    return a.every((v, i) => deepEqual(v, bArr[i]));
+  }
+  const aObj = a as Record<string, unknown>;
+  const bObj = b as Record<string, unknown>;
+  const keys = new Set([...Object.keys(aObj), ...Object.keys(bObj)]);
+  for (const k of keys) {
+    if (!deepEqual(aObj[k], bObj[k])) return false;
+  }
+  return true;
+};
+
+const settingsDifferFromDefault = (patch: Record<string, unknown>): boolean => {
+  for (const [key, value] of Object.entries(patch)) {
+    if (key === 'tricks') continue;
+    const defaultValue = (DEFAULT_OOTMM_SETTINGS as Record<string, unknown>)[
+      key
+    ];
+    if (!deepEqual(value, defaultValue)) return true;
+  }
+  return false;
+};
+
+const tricksMatchDefault = (tricks: string[]): boolean => {
+  if (tricks.length !== defaultTricksSorted.length) return false;
+  for (let i = 0; i < tricks.length; i++) {
+    if (tricks[i] !== defaultTricksSorted[i]) return false;
+  }
+  return true;
+};
 
 const ENTRANCES: Record<string, unknown> =
   (DataMod as Record<string, unknown>)?.['ENTRANCES'] ??
@@ -406,6 +450,8 @@ class WebRunner {
   private browser: Browser | null = null;
   private context: BrowserContext | null = null;
   private page: Page | null = null;
+  private isBooted = false;
+  private lastTestIndex = -1;
 
   constructor(
     private readonly url: string,
@@ -437,7 +483,6 @@ class WebRunner {
     const runStart = nowMs();
     const warnings: string[] = [];
     const page = await this.ensurePage();
-    await this.resetToCleanState(page);
 
     const { patch: settingsPatch, warnings: settingsWarnings } = parseSettings(
       test.given.settings ?? [],
@@ -449,8 +494,7 @@ class WebRunner {
       settingsWarnings,
     };
 
-    await this.applySettingsViaUi(page, settingsPatch, context);
-
+    // Compute tricks for this mode
     const baseTricks = test.given.tricks ?? [];
     const trickSet = new Set(baseTricks);
     if (mode === 'glitched') {
@@ -458,29 +502,89 @@ class WebRunner {
         trickSet.add(trick);
       }
     }
-    await this.applyTricksViaStore(page, Array.from(trickSet).sort(), context);
+    const tricks = Array.from(trickSet).sort();
 
+    // Compute entrance overrides
+    let entranceOverrides: Record<string, string> | null = null;
     if (test.given.entrances && test.given.entrances.length > 0) {
       const { overrides, warnings: entranceWarnings } = buildEntranceOverrides(
         test.given.entrances,
       );
       warnings.push(...entranceWarnings);
-      if (overrides) {
-        await this.applyPlandoEntrancesViaStore(page, overrides, context);
-      }
+      entranceOverrides = overrides;
     }
 
-    await page.getByTestId('tab-items').click();
-    await this.waitForReachableReady(page);
+    // Build the full desired settings patch (settings + tricks + entrances)
+    const fullStorePatch: Record<string, unknown> = { ...settingsPatch };
+    fullStorePatch.tricks = tricks;
+    if (entranceOverrides) {
+      fullStorePatch.plando = { entrances: entranceOverrides };
+    }
 
-    const {
-      counts,
-      inventoryPatches,
-      warnings: itemWarnings,
-    } = normalizeItemsForUi(test.given.items ?? []);
-    warnings.push(...itemWarnings);
-    await this.clickItems(page, counts, context);
-    await this.applyInventoryPatchesViaStore(page, inventoryPatches, context);
+    // Determine the run strategy:
+    // - If same test, different mode (normal→glitched): just change tricks
+    // - If page not booted yet: full boot + apply
+    // - If different test, page already booted: clear state + apply (skip reload)
+    const isGlitchedFollowUp =
+      mode === 'glitched' && this.lastTestIndex === meta.index && this.isBooted;
+
+    if (isGlitchedFollowUp) {
+      // Same test, switching from normal to glitched.
+      // Items are already set. Only tricks differ. Apply via store.
+      await this.applyCombinedStorePatch(page, fullStorePatch, context);
+    } else if (!this.isBooted) {
+      // First test ever: full boot
+      await this.resetToCleanState(page);
+      this.isBooted = true;
+
+      // Apply settings + tricks + entrances
+      const hasUiSettingsChanges = settingsDifferFromDefault(settingsPatch);
+      const hasTricksChanges = !tricksMatchDefault(tricks);
+      const hasEntrances = entranceOverrides !== null;
+      const needsAnyChange =
+        hasUiSettingsChanges || hasTricksChanges || hasEntrances;
+
+      if (needsAnyChange) {
+        const extraPatch: Record<string, unknown> = {};
+        if (hasTricksChanges) extraPatch.tricks = tricks;
+        if (hasEntrances) extraPatch.plando = { entrances: entranceOverrides };
+
+        if (hasUiSettingsChanges) {
+          await this.applySettingsAndExtrasViaUi(
+            page,
+            settingsPatch,
+            extraPatch,
+            context,
+          );
+        } else {
+          await this.applyCombinedStorePatch(page, extraPatch, context);
+        }
+      }
+    } else {
+      // Different test, page already booted: soft reset + apply via store
+      // Clear inventory and state, then apply new settings in one reinit.
+      // Use defaults as base (not current settings) to avoid leaking
+      // settings from previous tests.
+      await this.softResetState(page, context);
+      await this.applyFullSettingsViaStore(page, fullStorePatch, context);
+    }
+
+    this.lastTestIndex = meta.index;
+
+    // For glitched follow-up, items are already clicked. Otherwise click them.
+    if (!isGlitchedFollowUp) {
+      await page.getByTestId('tab-items').click();
+      await this.waitForReachableReady(page);
+
+      const {
+        counts,
+        inventoryPatches,
+        warnings: itemWarnings,
+      } = normalizeItemsForUi(test.given.items ?? []);
+      warnings.push(...itemWarnings);
+      await this.clickItems(page, counts, context);
+      await this.applyInventoryPatchesViaStore(page, inventoryPatches, context);
+    }
 
     const pageResult = await this.readResultFromPage(
       page,
@@ -522,6 +626,47 @@ class WebRunner {
     await this.waitForBoot(page);
   }
 
+  /**
+   * Soft reset: clear inventory and collected state via JS without reloading
+   * the page. This avoids the expensive boot/pack-init cycle.
+   */
+  private async softResetState(page: Page, context: RunContext): Promise<void> {
+    const response = await page.evaluate(() => {
+      const root = document.querySelector('.ootmm-tracker') as {
+        __vueParentComponent?: unknown;
+      } | null;
+      const component = (
+        root as {
+          __vueParentComponent?: { setupState?: Record<string, unknown> };
+        } | null
+      )?.__vueParentComponent;
+      const sessionStore = component?.setupState?.sessionStore as
+        | Record<string, unknown>
+        | undefined;
+      if (!sessionStore)
+        return { ok: false, message: 'Session store unavailable' };
+
+      // Pinia stores are proxied — setting properties directly works.
+      sessionStore.inventoryById = {};
+      sessionStore.collectedLocationIds = [];
+      sessionStore.preCompletedDungeons = [];
+      sessionStore.songEvents = {};
+      sessionStore.shopPrices = {};
+      // Clear undo/redo stacks
+      sessionStore.undoHistory = [];
+      sessionStore.redoHistory = [];
+
+      return { ok: true };
+    });
+
+    if (!response.ok) {
+      context.warnings.push(
+        `Soft reset failed: ${(response as { message?: string }).message}. Falling back to full reset.`,
+      );
+      await this.resetToCleanState(page);
+    }
+  }
+
   private async waitForBoot(page: Page): Promise<void> {
     await page
       .getByRole('heading', { name: 'The Last Tracker' })
@@ -561,9 +706,10 @@ class WebRunner {
     );
   }
 
-  private async applySettingsViaUi(
+  private async applySettingsAndExtrasViaUi(
     page: Page,
     settingsPatch: Record<string, unknown>,
+    extraPatch: Record<string, unknown>,
     context: RunContext,
   ): Promise<void> {
     await page.getByTestId('tab-settings').click();
@@ -679,11 +825,45 @@ class WebRunner {
     }
 
     await searchInput.fill('');
-    await this.clickApplySettings(page);
 
-    if (Object.keys(unsupportedPatch).length > 0) {
-      await this.applySettingsPatchViaStore(page, unsupportedPatch, context);
+    // Combine unsupported settings with extras (tricks, entrances, etc.)
+    // and inject into localSettings before clicking Apply, so everything
+    // is applied in a single rebuild.
+    const injectionPatch = { ...unsupportedPatch, ...extraPatch };
+    if (Object.keys(injectionPatch).length > 0) {
+      const injResult = await page.evaluate((patch) => {
+        const settingsPanel = document.querySelector('.settings-panel');
+        if (!settingsPanel)
+          return { ok: false, reason: 'no .settings-panel element' };
+        const component = (
+          settingsPanel as unknown as {
+            __vueParentComponent?: { setupState?: Record<string, unknown> };
+          }
+        ).__vueParentComponent;
+        if (!component) return { ok: false, reason: 'no __vueParentComponent' };
+        if (!component.setupState)
+          return { ok: false, reason: 'no setupState' };
+        const current = component.setupState.localSettings as
+          | Record<string, unknown>
+          | undefined;
+        if (!current || typeof current !== 'object')
+          return { ok: false, reason: `localSettings is ${typeof current}` };
+        // Replace with merged object to trigger Vue reactivity
+        component.setupState.localSettings = { ...current, ...patch };
+        return { ok: true, keys: Object.keys(patch) };
+      }, injectionPatch);
+      if (!injResult?.ok) {
+        // Fallback: apply extras via store after the UI apply
+        context.warnings.push(
+          `Could not inject extras into localSettings (${(injResult as { reason?: string })?.reason}), will apply via store after UI apply`,
+        );
+        await this.clickApplySettings(page);
+        await this.applyCombinedStorePatch(page, injectionPatch, context);
+        return;
+      }
     }
+
+    await this.clickApplySettings(page);
   }
 
   private async clickApplySettings(page: Page): Promise<void> {
@@ -700,11 +880,13 @@ class WebRunner {
     await this.waitForReachableReady(page);
   }
 
-  private async applySettingsPatchViaStore(
+  private async applyCombinedStorePatch(
     page: Page,
     patch: Record<string, unknown>,
     context: RunContext,
   ): Promise<void> {
+    if (Object.keys(patch).length === 0) return;
+
     const response = await page.evaluate(async (settingsPatch) => {
       const root = document.querySelector('.ootmm-tracker') as {
         __vueParentComponent?: unknown;
@@ -735,7 +917,7 @@ class WebRunner {
 
     if (!response.ok) {
       context.warnings.push(
-        `Failed to apply fallback settings patch: ${response.message}`,
+        `Failed to apply combined store patch: ${response.message}`,
       );
       return;
     }
@@ -743,118 +925,52 @@ class WebRunner {
     await this.waitForReachableReady(page);
   }
 
-  private async applyTricksViaStore(
+  /**
+   * Apply settings from scratch (defaults + patch), not merging with current.
+   * Used when switching between different tests to avoid settings leakage.
+   */
+  private async applyFullSettingsViaStore(
     page: Page,
-    tricks: string[],
+    patch: Record<string, unknown>,
     context: RunContext,
   ): Promise<void> {
-    const needsApply = await page.evaluate((nextTricks) => {
-      const root = document.querySelector('.ootmm-tracker') as {
-        __vueParentComponent?: unknown;
-      } | null;
-      const component = (
-        root as {
-          __vueParentComponent?: { setupState?: Record<string, unknown> };
-        } | null
-      )?.__vueParentComponent;
-      const sessionStore = component?.setupState?.sessionStore as
-        | {
-            trackerSettings?: Record<string, unknown>;
-          }
-        | undefined;
-      if (!sessionStore) return false;
-      const current = Array.isArray(sessionStore.trackerSettings?.tricks)
-        ? (sessionStore.trackerSettings?.tricks as string[]).slice().sort()
-        : [];
-      if (current.length !== nextTricks.length) return true;
-      for (let i = 0; i < current.length; i++) {
-        if (current[i] !== nextTricks[i]) return true;
-      }
-      return false;
-    }, tricks);
+    const defaults = { ...DEFAULT_OOTMM_SETTINGS };
 
-    if (!needsApply) {
-      return;
-    }
-
-    const response = await page.evaluate(async (nextTricks) => {
-      const root = document.querySelector('.ootmm-tracker') as {
-        __vueParentComponent?: unknown;
-      } | null;
-      const component = (
-        root as {
-          __vueParentComponent?: { setupState?: Record<string, unknown> };
-        } | null
-      )?.__vueParentComponent;
-      const sessionStore = component?.setupState?.sessionStore as
-        | {
-            trackerSettings?: Record<string, unknown>;
-            applySettings?: (
-              settings: Record<string, unknown>,
-            ) => Promise<void>;
-          }
-        | undefined;
-      if (!sessionStore || typeof sessionStore.applySettings !== 'function') {
-        return { ok: false, message: 'Session store unavailable' };
-      }
-
-      const nextSettings = {
-        ...(sessionStore.trackerSettings ?? {}),
-        tricks: nextTricks,
-      };
-      await sessionStore.applySettings(nextSettings);
-      return { ok: true as const };
-    }, tricks);
+    const response = await page.evaluate(
+      async ({ defaults: base, patch: settingsPatch }) => {
+        const root = document.querySelector('.ootmm-tracker') as {
+          __vueParentComponent?: unknown;
+        } | null;
+        const component = (
+          root as {
+            __vueParentComponent?: { setupState?: Record<string, unknown> };
+          } | null
+        )?.__vueParentComponent;
+        const sessionStore = component?.setupState?.sessionStore as
+          | {
+              applySettings?: (
+                settings: Record<string, unknown>,
+              ) => Promise<void>;
+            }
+          | undefined;
+        if (!sessionStore || typeof sessionStore.applySettings !== 'function') {
+          return { ok: false, message: 'Session store unavailable' };
+        }
+        const fullSettings = { ...base, ...settingsPatch };
+        await sessionStore.applySettings(fullSettings);
+        return { ok: true as const };
+      },
+      { defaults, patch },
+    );
 
     if (!response.ok) {
       context.warnings.push(
-        `Failed to apply tricks through store: ${response.message}`,
+        `Failed to apply full settings via store: ${(response as { message?: string }).message}`,
       );
       return;
     }
 
     await this.waitForReachableReady(page);
-  }
-
-  private async applyPlandoEntrancesViaStore(
-    page: Page,
-    overrides: Record<string, string>,
-    context: RunContext,
-  ): Promise<void> {
-    const response = await page.evaluate(async (plandoEntrances) => {
-      const root = document.querySelector('.ootmm-tracker') as {
-        __vueParentComponent?: unknown;
-      } | null;
-      const component = (
-        root as {
-          __vueParentComponent?: { setupState?: Record<string, unknown> };
-        } | null
-      )?.__vueParentComponent;
-      const sessionStore = component?.setupState?.sessionStore as
-        | {
-            trackerSettings?: Record<string, unknown>;
-            applySettings?: (
-              settings: Record<string, unknown>,
-            ) => Promise<void>;
-          }
-        | undefined;
-      if (!sessionStore || typeof sessionStore.applySettings !== 'function') {
-        return { ok: false as const, message: 'Session store unavailable' };
-      }
-      const nextSettings = {
-        ...(sessionStore.trackerSettings ?? {}),
-        plando: { entrances: plandoEntrances },
-      };
-      await sessionStore.applySettings(nextSettings);
-      return { ok: true as const };
-    }, overrides);
-
-    if (!response.ok) {
-      context.warnings.push(
-        `Failed to apply plando entrances: ${response.message}`,
-      );
-      return;
-    }
 
     await this.waitForReachableReady(page);
   }
