@@ -24,13 +24,13 @@
     },
     {
       "coords": [936, 572],
-      "image": "wonder_item_random",
+      "image": "collectible",
       "overlays": ["child"],
       "codes": "OOT Hatch Chicken"
     },
     {
       "coords": [972, 572],
-      "image": "wonder_item_random",
+      "image": "collectible",
       "overlays": ["adult"],
       "codes": "OOT Hatch Pocket Cucco"
     },
