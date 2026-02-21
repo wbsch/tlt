@@ -74,224 +74,104 @@
       ]
     },
     {
-      "coords": [549, 383],
+      "coords": [556, 394],
       "image": "silver_rupee",
-      "codes": [
-        "OOT Ganon Castle SR Forest Back Middle",
-        "OOT Ganon Castle SR Forest Back Right",
-        "OOT Ganon Castle SR Forest Center Left",
-        "OOT Ganon Castle SR Forest Center Right",
-        "OOT Ganon Castle SR Forest Front"
-      ]
+      "codes": ["OOT Ganon Castle SR Forest Back Middle"]
     },
     {
-      "coords": [549, 383],
+      "coords": [549, 402],
       "image": "silver_rupee",
-      "codes": [
-        "OOT Ganon Castle SR Forest Back Middle",
-        "OOT Ganon Castle SR Forest Back Right",
-        "OOT Ganon Castle SR Forest Center Left",
-        "OOT Ganon Castle SR Forest Center Right",
-        "OOT Ganon Castle SR Forest Front"
-      ]
+      "codes": ["OOT Ganon Castle SR Forest Back Right"]
     },
     {
-      "coords": [549, 383],
+      "coords": [558, 378],
       "image": "silver_rupee",
-      "codes": [
-        "OOT Ganon Castle SR Forest Back Middle",
-        "OOT Ganon Castle SR Forest Back Right",
-        "OOT Ganon Castle SR Forest Center Left",
-        "OOT Ganon Castle SR Forest Center Right",
-        "OOT Ganon Castle SR Forest Front"
-      ]
+      "codes": ["OOT Ganon Castle SR Forest Center Left"]
     },
     {
-      "coords": [549, 383],
+      "coords": [542, 385],
       "image": "silver_rupee",
-      "codes": [
-        "OOT Ganon Castle SR Forest Back Middle",
-        "OOT Ganon Castle SR Forest Back Right",
-        "OOT Ganon Castle SR Forest Center Left",
-        "OOT Ganon Castle SR Forest Center Right",
-        "OOT Ganon Castle SR Forest Front"
-      ]
+      "codes": ["OOT Ganon Castle SR Forest Center Right"]
     },
     {
-      "coords": [549, 383],
+      "coords": [550, 370],
       "image": "silver_rupee",
-      "codes": [
-        "OOT Ganon Castle SR Forest Back Middle",
-        "OOT Ganon Castle SR Forest Back Right",
-        "OOT Ganon Castle SR Forest Center Left",
-        "OOT Ganon Castle SR Forest Center Right",
-        "OOT Ganon Castle SR Forest Front"
-      ]
+      "codes": ["OOT Ganon Castle SR Forest Front"]
     },
     {
-      "coords": [477, 344],
+      "coords": [477, 352],
       "image": "silver_rupee",
-      "codes": [
-        "OOT Ganon Castle SR Spirit Back Left",
-        "OOT Ganon Castle SR Spirit Back Right",
-        "OOT Ganon Castle SR Spirit Center Bottom",
-        "OOT Ganon Castle SR Spirit Center Midair",
-        "OOT Ganon Castle SR Spirit Front Right"
-      ]
+      "codes": ["OOT Ganon Castle SR Spirit Center Midair"]
     },
     {
-      "coords": [477, 344],
+      "coords": [474, 358],
       "image": "silver_rupee",
-      "codes": [
-        "OOT Ganon Castle SR Spirit Back Left",
-        "OOT Ganon Castle SR Spirit Back Right",
-        "OOT Ganon Castle SR Spirit Center Bottom",
-        "OOT Ganon Castle SR Spirit Center Midair",
-        "OOT Ganon Castle SR Spirit Front Right"
-      ]
+      "codes": ["OOT Ganon Castle SR Spirit Center Bottom"]
     },
     {
-      "coords": [477, 344],
+      "coords": [466, 356],
       "image": "silver_rupee",
-      "codes": [
-        "OOT Ganon Castle SR Spirit Back Left",
-        "OOT Ganon Castle SR Spirit Back Right",
-        "OOT Ganon Castle SR Spirit Center Bottom",
-        "OOT Ganon Castle SR Spirit Center Midair",
-        "OOT Ganon Castle SR Spirit Front Right"
-      ]
+      "codes": ["OOT Ganon Castle SR Spirit Back Right"]
     },
     {
-      "coords": [477, 344],
+      "coords": [477, 364],
       "image": "silver_rupee",
-      "codes": [
-        "OOT Ganon Castle SR Spirit Back Left",
-        "OOT Ganon Castle SR Spirit Back Right",
-        "OOT Ganon Castle SR Spirit Center Bottom",
-        "OOT Ganon Castle SR Spirit Center Midair",
-        "OOT Ganon Castle SR Spirit Front Right"
-      ]
+      "codes": ["OOT Ganon Castle SR Spirit Back Left"]
     },
     {
-      "coords": [477, 344],
+      "coords": [474, 344],
       "image": "silver_rupee",
-      "codes": [
-        "OOT Ganon Castle SR Spirit Back Left",
-        "OOT Ganon Castle SR Spirit Back Right",
-        "OOT Ganon Castle SR Spirit Center Bottom",
-        "OOT Ganon Castle SR Spirit Center Midair",
-        "OOT Ganon Castle SR Spirit Front Right"
-      ]
+      "codes": ["OOT Ganon Castle SR Spirit Front Right"]
     },
     {
-      "coords": [425, 307],
+      "coords": [421, 307],
       "image": "silver_rupee",
-      "codes": [
-        "OOT Ganon Castle SR Light Alcove Left",
-        "OOT Ganon Castle SR Light Alcove Right",
-        "OOT Ganon Castle SR Light Center Left",
-        "OOT Ganon Castle SR Light Center Right",
-        "OOT Ganon Castle SR Light Center Top"
-      ]
+      "codes": ["OOT Ganon Castle SR Light Center Top"]
     },
     {
-      "coords": [425, 307],
+      "coords": [425, 300],
       "image": "silver_rupee",
-      "codes": [
-        "OOT Ganon Castle SR Light Alcove Left",
-        "OOT Ganon Castle SR Light Alcove Right",
-        "OOT Ganon Castle SR Light Center Left",
-        "OOT Ganon Castle SR Light Center Right",
-        "OOT Ganon Castle SR Light Center Top"
-      ]
+      "codes": ["OOT Ganon Castle SR Light Center Right"]
     },
     {
-      "coords": [425, 307],
+      "coords": [425, 293],
       "image": "silver_rupee",
-      "codes": [
-        "OOT Ganon Castle SR Light Alcove Left",
-        "OOT Ganon Castle SR Light Alcove Right",
-        "OOT Ganon Castle SR Light Center Left",
-        "OOT Ganon Castle SR Light Center Right",
-        "OOT Ganon Castle SR Light Center Top"
-      ]
+      "codes": ["OOT Ganon Castle SR Light Alcove Right"]
     },
     {
-      "coords": [425, 307],
+      "coords": [425, 314],
       "image": "silver_rupee",
-      "codes": [
-        "OOT Ganon Castle SR Light Alcove Left",
-        "OOT Ganon Castle SR Light Alcove Right",
-        "OOT Ganon Castle SR Light Center Left",
-        "OOT Ganon Castle SR Light Center Right",
-        "OOT Ganon Castle SR Light Center Top"
-      ]
+      "codes": ["OOT Ganon Castle SR Light Center Left"]
     },
     {
-      "coords": [425, 307],
+      "coords": [425, 321],
       "image": "silver_rupee",
-      "codes": [
-        "OOT Ganon Castle SR Light Alcove Left",
-        "OOT Ganon Castle SR Light Alcove Right",
-        "OOT Ganon Castle SR Light Center Left",
-        "OOT Ganon Castle SR Light Center Right",
-        "OOT Ganon Castle SR Light Center Top"
-      ]
+      "codes": ["OOT Ganon Castle SR Light Alcove Left"]
     },
     {
-      "coords": [473, 251],
+      "coords": [448, 245],
       "image": "silver_rupee",
-      "codes": [
-        "OOT Ganon Castle SR Fire Back Right",
-        "OOT Ganon Castle SR Fire Black Pillar",
-        "OOT Ganon Castle SR Fire Far Right",
-        "OOT Ganon Castle SR Fire Front Right",
-        "OOT Ganon Castle SR Fire Left"
-      ]
+      "codes": ["OOT Ganon Castle SR Fire Black Pillar"]
     },
     {
-      "coords": [473, 251],
+      "coords": [474, 226],
       "image": "silver_rupee",
-      "codes": [
-        "OOT Ganon Castle SR Fire Back Right",
-        "OOT Ganon Castle SR Fire Black Pillar",
-        "OOT Ganon Castle SR Fire Far Right",
-        "OOT Ganon Castle SR Fire Front Right",
-        "OOT Ganon Castle SR Fire Left"
-      ]
+      "codes": ["OOT Ganon Castle SR Fire Back Right"]
     },
     {
-      "coords": [473, 251],
+      "coords": [462, 260],
       "image": "silver_rupee",
-      "codes": [
-        "OOT Ganon Castle SR Fire Back Right",
-        "OOT Ganon Castle SR Fire Black Pillar",
-        "OOT Ganon Castle SR Fire Far Right",
-        "OOT Ganon Castle SR Fire Front Right",
-        "OOT Ganon Castle SR Fire Left"
-      ]
+      "codes": ["OOT Ganon Castle SR Fire Left"]
     },
     {
-      "coords": [473, 251],
+      "coords": [486, 245],
       "image": "silver_rupee",
-      "codes": [
-        "OOT Ganon Castle SR Fire Back Right",
-        "OOT Ganon Castle SR Fire Black Pillar",
-        "OOT Ganon Castle SR Fire Far Right",
-        "OOT Ganon Castle SR Fire Front Right",
-        "OOT Ganon Castle SR Fire Left"
-      ]
+      "codes": ["OOT Ganon Castle SR Fire Far Right"]
     },
     {
-      "coords": [473, 251],
+      "coords": [484, 256],
       "image": "silver_rupee",
-      "codes": [
-        "OOT Ganon Castle SR Fire Back Right",
-        "OOT Ganon Castle SR Fire Black Pillar",
-        "OOT Ganon Castle SR Fire Far Right",
-        "OOT Ganon Castle SR Fire Front Right",
-        "OOT Ganon Castle SR Fire Left"
-      ]
+      "codes": ["OOT Ganon Castle SR Fire Front Right"]
     },
     {
       "coords": [565, 411],
@@ -371,7 +251,7 @@
       ]
     },
     {
-      "coords": [425, 299],
+      "coords": [432, 306],
       "image": "pot",
       "codes": ["OOT Ganon Castle Pot Light"]
     },
@@ -398,7 +278,7 @@
       "codes": ["OOT Ganon Castle Heart Fire"]
     },
     {
-      "coords": [484, 359],
+      "coords": [486, 354],
       "image": "heart",
       "codes": ["OOT Ganon Castle Heart Spirit"]
     },
@@ -417,7 +297,7 @@
       ]
     },
     {
-      "coords": [474, 356],
+      "coords": [480, 356],
       "image": "big_fairy_spot",
       "codes": ["OOT Ganon Castle Spirit Big Fairy"]
     },

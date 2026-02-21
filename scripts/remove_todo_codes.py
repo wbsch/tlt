@@ -1,6 +1,8 @@
 #!/usr/bin/env python3
 import argparse
 import json
+import subprocess
+import shutil
 from pathlib import Path
 from typing import Any
 
@@ -28,7 +30,27 @@ def clean_node(node: Any) -> int:
     return removed
 
 
-def process_file(path: Path, write: bool) -> tuple[int, bool]:
+def run_prettier_on_path(path: Path) -> bool:
+    # Try to run a locally installed prettier, fallback to npx/pnpm if available.
+    candidates = []
+    if shutil.which("prettier"):
+        candidates.append(["prettier", "--parser", "json", "--write", str(path)])
+    if shutil.which("npx"):
+        candidates.append(["npx", "prettier", "--parser", "json", "--write", str(path)])
+    if shutil.which("pnpm"):
+        candidates.append(["pnpm", "prettier", "--", "--parser", "json", "--write", str(path)])
+
+    for cmd in candidates:
+        try:
+            subprocess.run(cmd, check=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+            return True
+        except Exception:
+            continue
+
+    return False
+
+
+def process_file(path: Path, write: bool, prettier: bool) -> tuple[int, bool]:
     try:
         data = json.loads(path.read_text(encoding="utf-8"))
     except json.JSONDecodeError as exc:
@@ -39,6 +61,10 @@ def process_file(path: Path, write: bool) -> tuple[int, bool]:
 
     if changed and write:
         path.write_text(json.dumps(data, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+        if prettier:
+            ok = run_prettier_on_path(path)
+            if not ok:
+                print(f"Prettier konnte nicht ausgeführt werden für {path} (nicht installiert oder fehlgeschlagen).")
 
     return removed, changed
 
@@ -64,6 +90,13 @@ def main() -> int:
         action="store_true",
         help="Änderungen in Dateien schreiben (ohne diese Option nur Vorschau)",
     )
+    parser.add_argument(
+        "--no-prettier",
+        dest="prettier",
+        action="store_false",
+        help="Prettier vor dem Schreiben nicht ausführen",
+    )
+    parser.set_defaults(prettier=True)
     args = parser.parse_args()
 
     target = args.target
@@ -77,7 +110,7 @@ def main() -> int:
 
     for file_path in iter_json_files(target):
         scanned_files += 1
-        removed, changed = process_file(file_path, write=args.write)
+        removed, changed = process_file(file_path, write=args.write, prettier=args.prettier)
         if changed:
             changed_files += 1
             total_removed += removed

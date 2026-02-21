@@ -117,158 +117,54 @@
       ]
     },
     {
-      "coords": [613, 321],
+      "coords": [550, 294],
       "image": "silver_rupee",
-      "codes": [
-        "OOT Gerudo Training Grounds SR Water 1",
-        "OOT Gerudo Training Grounds SR Water 2",
-        "OOT Gerudo Training Grounds SR Water 3",
-        "OOT Gerudo Training Grounds SR Water 4",
-        "OOT Gerudo Training Grounds SR Water 5"
-      ]
+      "codes": ["OOT Gerudo Training Grounds SR Lava Back Left"]
     },
     {
-      "coords": [613, 321],
+      "coords": [565, 284],
       "image": "silver_rupee",
-      "codes": [
-        "OOT Gerudo Training Grounds SR Water 1",
-        "OOT Gerudo Training Grounds SR Water 2",
-        "OOT Gerudo Training Grounds SR Water 3",
-        "OOT Gerudo Training Grounds SR Water 4",
-        "OOT Gerudo Training Grounds SR Water 5"
-      ]
+      "codes": ["OOT Gerudo Training Grounds SR Lava Back Center"]
     },
     {
-      "coords": [613, 321],
+      "coords": [570, 298],
       "image": "silver_rupee",
-      "codes": [
-        "OOT Gerudo Training Grounds SR Water 1",
-        "OOT Gerudo Training Grounds SR Water 2",
-        "OOT Gerudo Training Grounds SR Water 3",
-        "OOT Gerudo Training Grounds SR Water 4",
-        "OOT Gerudo Training Grounds SR Water 5"
-      ]
+      "codes": ["OOT Gerudo Training Grounds SR Lava Back Right"]
     },
     {
-      "coords": [613, 321],
+      "coords": [572, 326],
       "image": "silver_rupee",
-      "codes": [
-        "OOT Gerudo Training Grounds SR Water 1",
-        "OOT Gerudo Training Grounds SR Water 2",
-        "OOT Gerudo Training Grounds SR Water 3",
-        "OOT Gerudo Training Grounds SR Water 4",
-        "OOT Gerudo Training Grounds SR Water 5"
-      ]
+      "codes": ["OOT Gerudo Training Grounds SR Lava Front Right"]
     },
     {
-      "coords": [565, 302],
+      "coords": [558, 332],
       "image": "silver_rupee",
-      "codes": [
-        "OOT Gerudo Training Grounds SR Lava Back Center",
-        "OOT Gerudo Training Grounds SR Lava Back Left",
-        "OOT Gerudo Training Grounds SR Lava Back Right",
-        "OOT Gerudo Training Grounds SR Lava Front Left",
-        "OOT Gerudo Training Grounds SR Lava Front Right"
-      ]
+      "codes": ["OOT Gerudo Training Grounds SR Lava Front Left"]
     },
     {
-      "coords": [565, 302],
+      "coords": [378, 285],
       "image": "silver_rupee",
-      "codes": [
-        "OOT Gerudo Training Grounds SR Lava Back Center",
-        "OOT Gerudo Training Grounds SR Lava Back Left",
-        "OOT Gerudo Training Grounds SR Lava Back Right",
-        "OOT Gerudo Training Grounds SR Lava Front Left",
-        "OOT Gerudo Training Grounds SR Lava Front Right"
-      ]
+      "codes": ["OOT Gerudo Training Grounds SR Slope Back"]
     },
     {
-      "coords": [565, 302],
+      "coords": [378, 345],
       "image": "silver_rupee",
-      "codes": [
-        "OOT Gerudo Training Grounds SR Lava Back Center",
-        "OOT Gerudo Training Grounds SR Lava Back Left",
-        "OOT Gerudo Training Grounds SR Lava Back Right",
-        "OOT Gerudo Training Grounds SR Lava Front Left",
-        "OOT Gerudo Training Grounds SR Lava Front Right"
-      ]
+      "codes": ["OOT Gerudo Training Grounds SR Slope Front Left"]
     },
     {
-      "coords": [565, 302],
+      "coords": [408, 345],
       "image": "silver_rupee",
-      "codes": [
-        "OOT Gerudo Training Grounds SR Lava Back Center",
-        "OOT Gerudo Training Grounds SR Lava Back Left",
-        "OOT Gerudo Training Grounds SR Lava Back Right",
-        "OOT Gerudo Training Grounds SR Lava Front Left",
-        "OOT Gerudo Training Grounds SR Lava Front Right"
-      ]
+      "codes": ["OOT Gerudo Training Grounds SR Slope Front Right"]
     },
     {
-      "coords": [565, 302],
+      "coords": [399, 320],
       "image": "silver_rupee",
-      "codes": [
-        "OOT Gerudo Training Grounds SR Lava Back Center",
-        "OOT Gerudo Training Grounds SR Lava Back Left",
-        "OOT Gerudo Training Grounds SR Lava Back Right",
-        "OOT Gerudo Training Grounds SR Lava Front Left",
-        "OOT Gerudo Training Grounds SR Lava Front Right"
-      ]
+      "codes": ["OOT Gerudo Training Grounds SR Slope Center"]
     },
     {
-      "coords": [399, 315],
+      "coords": [399, 345],
       "image": "silver_rupee",
-      "codes": [
-        "OOT Gerudo Training Grounds SR Slope Back",
-        "OOT Gerudo Training Grounds SR Slope Center",
-        "OOT Gerudo Training Grounds SR Slope Front Above",
-        "OOT Gerudo Training Grounds SR Slope Front Left",
-        "OOT Gerudo Training Grounds SR Slope Front Right"
-      ]
-    },
-    {
-      "coords": [399, 315],
-      "image": "silver_rupee",
-      "codes": [
-        "OOT Gerudo Training Grounds SR Slope Back",
-        "OOT Gerudo Training Grounds SR Slope Center",
-        "OOT Gerudo Training Grounds SR Slope Front Above",
-        "OOT Gerudo Training Grounds SR Slope Front Left",
-        "OOT Gerudo Training Grounds SR Slope Front Right"
-      ]
-    },
-    {
-      "coords": [399, 315],
-      "image": "silver_rupee",
-      "codes": [
-        "OOT Gerudo Training Grounds SR Slope Back",
-        "OOT Gerudo Training Grounds SR Slope Center",
-        "OOT Gerudo Training Grounds SR Slope Front Above",
-        "OOT Gerudo Training Grounds SR Slope Front Left",
-        "OOT Gerudo Training Grounds SR Slope Front Right"
-      ]
-    },
-    {
-      "coords": [399, 315],
-      "image": "silver_rupee",
-      "codes": [
-        "OOT Gerudo Training Grounds SR Slope Back",
-        "OOT Gerudo Training Grounds SR Slope Center",
-        "OOT Gerudo Training Grounds SR Slope Front Above",
-        "OOT Gerudo Training Grounds SR Slope Front Left",
-        "OOT Gerudo Training Grounds SR Slope Front Right"
-      ]
-    },
-    {
-      "coords": [399, 315],
-      "image": "silver_rupee",
-      "codes": [
-        "OOT Gerudo Training Grounds SR Slope Back",
-        "OOT Gerudo Training Grounds SR Slope Center",
-        "OOT Gerudo Training Grounds SR Slope Front Above",
-        "OOT Gerudo Training Grounds SR Slope Front Left",
-        "OOT Gerudo Training Grounds SR Slope Front Right"
-      ]
+      "codes": ["OOT Gerudo Training Grounds SR Slope Front Above"]
     },
     {
       "coords": [580, 401],

@@ -46,114 +46,54 @@
       "codes": ["OOT Ice Cavern GS Block Room"]
     },
     {
-      "coords": [514, 267],
+      "coords": [495, 272],
       "image": "silver_rupee",
-      "codes": [
-        "OOT Ice Cavern SR Scythe Back",
-        "OOT Ice Cavern SR Scythe Center Left",
-        "OOT Ice Cavern SR Scythe Center Right",
-        "OOT Ice Cavern SR Scythe Left",
-        "OOT Ice Cavern SR Scythe Midair"
-      ]
+      "codes": ["OOT Ice Cavern SR Scythe Left"]
     },
     {
-      "coords": [514, 267],
+      "coords": [520, 255],
       "image": "silver_rupee",
-      "codes": [
-        "OOT Ice Cavern SR Scythe Back",
-        "OOT Ice Cavern SR Scythe Center Left",
-        "OOT Ice Cavern SR Scythe Center Right",
-        "OOT Ice Cavern SR Scythe Left",
-        "OOT Ice Cavern SR Scythe Midair"
-      ]
+      "codes": ["OOT Ice Cavern SR Scythe Midair"]
     },
     {
-      "coords": [514, 267],
+      "coords": [514, 245],
       "image": "silver_rupee",
-      "codes": [
-        "OOT Ice Cavern SR Scythe Back",
-        "OOT Ice Cavern SR Scythe Center Left",
-        "OOT Ice Cavern SR Scythe Center Right",
-        "OOT Ice Cavern SR Scythe Left",
-        "OOT Ice Cavern SR Scythe Midair"
-      ]
+      "codes": ["OOT Ice Cavern SR Scythe Back"]
     },
     {
-      "coords": [514, 267],
+      "coords": [520, 267],
       "image": "silver_rupee",
-      "codes": [
-        "OOT Ice Cavern SR Scythe Back",
-        "OOT Ice Cavern SR Scythe Center Left",
-        "OOT Ice Cavern SR Scythe Center Right",
-        "OOT Ice Cavern SR Scythe Left",
-        "OOT Ice Cavern SR Scythe Midair"
-      ]
+      "codes": ["OOT Ice Cavern SR Scythe Center Right"]
     },
     {
-      "coords": [514, 267],
+      "coords": [508, 267],
       "image": "silver_rupee",
-      "codes": [
-        "OOT Ice Cavern SR Scythe Back",
-        "OOT Ice Cavern SR Scythe Center Left",
-        "OOT Ice Cavern SR Scythe Center Right",
-        "OOT Ice Cavern SR Scythe Left",
-        "OOT Ice Cavern SR Scythe Midair"
-      ]
+      "codes": ["OOT Ice Cavern SR Scythe Center Left"]
     },
     {
-      "coords": [437, 234],
+      "coords": [436, 196],
       "image": "silver_rupee",
-      "codes": [
-        "OOT Ice Cavern SR Blocks Alcove",
-        "OOT Ice Cavern SR Blocks Back Left",
-        "OOT Ice Cavern SR Blocks Back Right",
-        "OOT Ice Cavern SR Blocks Center",
-        "OOT Ice Cavern SR Blocks Front Left"
-      ]
+      "codes": ["OOT Ice Cavern SR Blocks Alcove"]
     },
     {
-      "coords": [437, 234],
+      "coords": [440, 256],
       "image": "silver_rupee",
-      "codes": [
-        "OOT Ice Cavern SR Blocks Alcove",
-        "OOT Ice Cavern SR Blocks Back Left",
-        "OOT Ice Cavern SR Blocks Back Right",
-        "OOT Ice Cavern SR Blocks Center",
-        "OOT Ice Cavern SR Blocks Front Left"
-      ]
+      "codes": ["OOT Ice Cavern SR Blocks Front Left"]
     },
     {
-      "coords": [437, 234],
+      "coords": [432, 238],
       "image": "silver_rupee",
-      "codes": [
-        "OOT Ice Cavern SR Blocks Alcove",
-        "OOT Ice Cavern SR Blocks Back Left",
-        "OOT Ice Cavern SR Blocks Back Right",
-        "OOT Ice Cavern SR Blocks Center",
-        "OOT Ice Cavern SR Blocks Front Left"
-      ]
+      "codes": ["OOT Ice Cavern SR Blocks Center"]
     },
     {
-      "coords": [437, 234],
+      "coords": [412, 256],
       "image": "silver_rupee",
-      "codes": [
-        "OOT Ice Cavern SR Blocks Alcove",
-        "OOT Ice Cavern SR Blocks Back Left",
-        "OOT Ice Cavern SR Blocks Back Right",
-        "OOT Ice Cavern SR Blocks Center",
-        "OOT Ice Cavern SR Blocks Front Left"
-      ]
+      "codes": ["OOT Ice Cavern SR Blocks Back Left"]
     },
     {
-      "coords": [437, 234],
+      "coords": [412, 230],
       "image": "silver_rupee",
-      "codes": [
-        "OOT Ice Cavern SR Blocks Alcove",
-        "OOT Ice Cavern SR Blocks Back Left",
-        "OOT Ice Cavern SR Blocks Back Right",
-        "OOT Ice Cavern SR Blocks Center",
-        "OOT Ice Cavern SR Blocks Front Left"
-      ]
+      "codes": ["OOT Ice Cavern SR Blocks Back Right"]
     },
     {
       "coords": [408, 303],

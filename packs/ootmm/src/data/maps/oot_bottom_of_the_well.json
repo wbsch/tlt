@@ -91,59 +91,29 @@
       "codes": ["OOT Bottom of the Well GS Inner West"]
     },
     {
-      "coords": [207, 271],
+      "coords": [192, 268],
       "image": "silver_rupee",
-      "codes": [
-        "OOT Bottom of the Well SR 1",
-        "OOT Bottom of the Well SR 2",
-        "OOT Bottom of the Well SR 3",
-        "OOT Bottom of the Well SR 4",
-        "OOT Bottom of the Well SR 5"
-      ]
+      "codes": ["OOT Bottom of the Well SR 1"]
     },
     {
-      "coords": [207, 271],
+      "coords": [206, 262],
       "image": "silver_rupee",
-      "codes": [
-        "OOT Bottom of the Well SR 1",
-        "OOT Bottom of the Well SR 2",
-        "OOT Bottom of the Well SR 3",
-        "OOT Bottom of the Well SR 4",
-        "OOT Bottom of the Well SR 5"
-      ]
+      "codes": ["OOT Bottom of the Well SR 2"]
     },
     {
-      "coords": [207, 271],
+      "coords": [207, 280],
       "image": "silver_rupee",
-      "codes": [
-        "OOT Bottom of the Well SR 1",
-        "OOT Bottom of the Well SR 2",
-        "OOT Bottom of the Well SR 3",
-        "OOT Bottom of the Well SR 4",
-        "OOT Bottom of the Well SR 5"
-      ]
+      "codes": ["OOT Bottom of the Well SR 3"]
     },
     {
-      "coords": [207, 271],
+      "coords": [181, 268],
       "image": "silver_rupee",
-      "codes": [
-        "OOT Bottom of the Well SR 1",
-        "OOT Bottom of the Well SR 2",
-        "OOT Bottom of the Well SR 3",
-        "OOT Bottom of the Well SR 4",
-        "OOT Bottom of the Well SR 5"
-      ]
+      "codes": ["OOT Bottom of the Well SR 4"]
     },
     {
-      "coords": [207, 271],
+      "coords": [757, 271],
       "image": "silver_rupee",
-      "codes": [
-        "OOT Bottom of the Well SR 1",
-        "OOT Bottom of the Well SR 2",
-        "OOT Bottom of the Well SR 3",
-        "OOT Bottom of the Well SR 4",
-        "OOT Bottom of the Well SR 5"
-      ]
+      "codes": ["OOT Bottom of the Well SR 5"]
     },
     {
       "coords": [220, 249],

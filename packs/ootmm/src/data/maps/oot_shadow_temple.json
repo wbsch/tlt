@@ -135,147 +135,29 @@
       ]
     },
     {
-      "coords": [389, 562],
+      "coords": [380, 492],
       "image": "silver_rupee",
-      "codes": [
-        "OOT Shadow Temple SR Pit 1",
-        "OOT Shadow Temple SR Pit 2",
-        "OOT Shadow Temple SR Pit 3",
-        "OOT Shadow Temple SR Pit 4",
-        "OOT Shadow Temple SR Pit 5"
-      ]
+      "codes": ["OOT Shadow Temple SR Spikes Midair"]
     },
     {
-      "coords": [389, 562],
+      "coords": [376, 484],
       "image": "silver_rupee",
-      "codes": [
-        "OOT Shadow Temple SR Pit 1",
-        "OOT Shadow Temple SR Pit 2",
-        "OOT Shadow Temple SR Pit 3",
-        "OOT Shadow Temple SR Pit 4",
-        "OOT Shadow Temple SR Pit 5"
-      ]
+      "codes": ["OOT Shadow Temple SR Spikes Back Left"]
     },
     {
-      "coords": [389, 562],
+      "coords": [378, 502],
       "image": "silver_rupee",
-      "codes": [
-        "OOT Shadow Temple SR Pit 1",
-        "OOT Shadow Temple SR Pit 2",
-        "OOT Shadow Temple SR Pit 3",
-        "OOT Shadow Temple SR Pit 4",
-        "OOT Shadow Temple SR Pit 5"
-      ]
+      "codes": ["OOT Shadow Temple SR Spikes Front Left"]
     },
     {
-      "coords": [389, 562],
+      "coords": [386, 498],
       "image": "silver_rupee",
-      "codes": [
-        "OOT Shadow Temple SR Pit 1",
-        "OOT Shadow Temple SR Pit 2",
-        "OOT Shadow Temple SR Pit 3",
-        "OOT Shadow Temple SR Pit 4",
-        "OOT Shadow Temple SR Pit 5"
-      ]
+      "codes": ["OOT Shadow Temple SR Spikes Center"]
     },
     {
-      "coords": [394, 496],
+      "coords": [398, 492],
       "image": "silver_rupee",
-      "codes": [
-        "OOT Shadow Temple SR Spikes Back Left",
-        "OOT Shadow Temple SR Spikes Center",
-        "OOT Shadow Temple SR Spikes Front Left",
-        "OOT Shadow Temple SR Spikes Midair",
-        "OOT Shadow Temple SR Spikes Right"
-      ]
-    },
-    {
-      "coords": [394, 496],
-      "image": "silver_rupee",
-      "codes": [
-        "OOT Shadow Temple SR Spikes Back Left",
-        "OOT Shadow Temple SR Spikes Center",
-        "OOT Shadow Temple SR Spikes Front Left",
-        "OOT Shadow Temple SR Spikes Midair",
-        "OOT Shadow Temple SR Spikes Right"
-      ]
-    },
-    {
-      "coords": [394, 496],
-      "image": "silver_rupee",
-      "codes": [
-        "OOT Shadow Temple SR Spikes Back Left",
-        "OOT Shadow Temple SR Spikes Center",
-        "OOT Shadow Temple SR Spikes Front Left",
-        "OOT Shadow Temple SR Spikes Midair",
-        "OOT Shadow Temple SR Spikes Right"
-      ]
-    },
-    {
-      "coords": [394, 496],
-      "image": "silver_rupee",
-      "codes": [
-        "OOT Shadow Temple SR Spikes Back Left",
-        "OOT Shadow Temple SR Spikes Center",
-        "OOT Shadow Temple SR Spikes Front Left",
-        "OOT Shadow Temple SR Spikes Midair",
-        "OOT Shadow Temple SR Spikes Right"
-      ]
-    },
-    {
-      "coords": [394, 496],
-      "image": "silver_rupee",
-      "codes": [
-        "OOT Shadow Temple SR Spikes Back Left",
-        "OOT Shadow Temple SR Spikes Center",
-        "OOT Shadow Temple SR Spikes Front Left",
-        "OOT Shadow Temple SR Spikes Midair",
-        "OOT Shadow Temple SR Spikes Right"
-      ]
-    },
-    {
-      "coords": [425, 150],
-      "image": "silver_rupee",
-      "codes": [
-        "OOT Shadow Temple SR Scythe 1",
-        "OOT Shadow Temple SR Scythe 2",
-        "OOT Shadow Temple SR Scythe 3",
-        "OOT Shadow Temple SR Scythe 4",
-        "OOT Shadow Temple SR Scythe 5"
-      ]
-    },
-    {
-      "coords": [425, 150],
-      "image": "silver_rupee",
-      "codes": [
-        "OOT Shadow Temple SR Scythe 1",
-        "OOT Shadow Temple SR Scythe 2",
-        "OOT Shadow Temple SR Scythe 3",
-        "OOT Shadow Temple SR Scythe 4",
-        "OOT Shadow Temple SR Scythe 5"
-      ]
-    },
-    {
-      "coords": [425, 150],
-      "image": "silver_rupee",
-      "codes": [
-        "OOT Shadow Temple SR Scythe 1",
-        "OOT Shadow Temple SR Scythe 2",
-        "OOT Shadow Temple SR Scythe 3",
-        "OOT Shadow Temple SR Scythe 4",
-        "OOT Shadow Temple SR Scythe 5"
-      ]
-    },
-    {
-      "coords": [425, 150],
-      "image": "silver_rupee",
-      "codes": [
-        "OOT Shadow Temple SR Scythe 1",
-        "OOT Shadow Temple SR Scythe 2",
-        "OOT Shadow Temple SR Scythe 3",
-        "OOT Shadow Temple SR Scythe 4",
-        "OOT Shadow Temple SR Scythe 5"
-      ]
+      "codes": ["OOT Shadow Temple SR Spikes Right"]
     },
     {
       "coords": [425, 150],
