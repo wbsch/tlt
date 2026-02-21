@@ -103,39 +103,39 @@ def load_duplicate_whitelist(file_path: Path) -> set[str]:
 def main() -> int:
     parser = argparse.ArgumentParser(
         description=(
-            "Durchsucht alle Map-JSON-Dateien und gibt doppelte Codes sowie fehlende "
-            "Codes gegenüber der Grundgesamtheit (Devtool + Mapschema) aus."
+            "Search all map JSON files and report duplicate codes as well as codes "
+            "missing from the reference set (Devtool + Mapschema)."
         )
     )
     parser.add_argument(
         "--maps-dir",
         type=Path,
         default=Path("packs/ootmm/src/data/maps"),
-        help="Verzeichnis mit den Map-Dateien (Default: packs/ootmm/src/data/maps)",
+        help="Directory containing the map files (Default: packs/ootmm/src/data/maps)",
     )
     parser.add_argument(
         "--world-file",
         type=Path,
         default=Path("OoTMM/packages/data/dist/data-world.json"),
-        help="Pfad zu data-world.json",
+        help="Path to data-world.json",
     )
     parser.add_argument(
         "--hints-file",
         type=Path,
         default=Path("OoTMM/packages/data/dist/data-hints-raw.json"),
-        help="Pfad zu data-hints-raw.json",
+        help="Path to data-hints-raw.json",
     )
     parser.add_argument(
         "--include-todo",
         action="store_true",
-        help="TODO-Codes in der Map-Auswertung berücksichtigen (standardmäßig ignoriert)",
+        help="Include TODO codes in the map analysis (ignored by default)",
     )
     parser.add_argument(
         "--duplicate-whitelist-file",
         type=Path,
         default=DEFAULT_DUPLICATE_WHITELIST_FILE,
         help=(
-            "Datei mit erlaubten Duplicate-Locations (eine pro Zeile, # als Kommentar). "
+            "File with allowed duplicate locations (one per line, use # for comments). "
             "Default: scripts/map_duplicate_whitelist.txt"
         ),
     )
@@ -143,7 +143,15 @@ def main() -> int:
         "--allow-duplicate",
         action="append",
         default=[],
-        help="Zusätzliche erlaubte Duplicate-Location (mehrfach nutzbar)",
+        help="Additional allowed duplicate locations (can be specified multiple times)",
+    )
+    parser.add_argument(
+        "--build-warning-mode",
+        action="store_true",
+        help=(
+            "For npm build: only emit a warning when duplicate or missing locations "
+            "are found. Exit code remains 0."
+        ),
     )
     args = parser.parse_args()
 
@@ -154,11 +162,11 @@ def main() -> int:
     duplicate_whitelist_file = (repo_root / args.duplicate_whitelist_file).resolve()
 
     if not maps_dir.is_dir():
-        raise SystemExit(f"Map-Verzeichnis nicht gefunden: {maps_dir}")
+        raise SystemExit(f"Map directory not found: {maps_dir}")
     if not world_file.is_file():
-        raise SystemExit(f"World-Datei nicht gefunden: {world_file}")
+        raise SystemExit(f"World file not found: {world_file}")
     if not hints_file.is_file():
-        raise SystemExit(f"Hints-Datei nicht gefunden: {hints_file}")
+        raise SystemExit(f"Hints file not found: {hints_file}")
 
     world = json.loads(world_file.read_text(encoding="utf-8"))
     hints = json.loads(hints_file.read_text(encoding="utf-8"))
@@ -187,26 +195,37 @@ def main() -> int:
     map_locations = set(counter.keys())
     missing_locations = sorted(reference_universe - map_locations)
 
-    print(f"Map-Dateien gescannt: {len(map_files)}")
-    print()
+    if args.build_warning_mode:
+        if duplicate_locations or missing_locations:
+            print(
+                "WARNING: Please check map locations by running "
+                "python3 scripts/check_map_locations.py."
+            )
+            print(
+                f"Details: {len(duplicate_locations)} duplicates, "
+                f"{len(missing_locations)} missing."
+            )
+        return 0
 
-    print("1) Locations, die doppelt in Maps vorkommen:")
+    print(f"Map files scanned: {len(map_files)}")
+    print()
+    print("1) Locations duplicated across maps:")
     if duplicate_locations:
         for location in duplicate_locations:
             print(location)
     else:
-        print("(keine)")
+        print("(none)")
 
     print()
     print(
-        "2) Locations aus der Grundgesamtheit (Devtool + Mapschema), "
-        "die in den Maps fehlen:"
+        "2) Locations from the reference set (Devtool + Mapschema) "
+        "that are missing from the maps:"
     )
     if missing_locations:
         for location in missing_locations:
             print(location)
     else:
-        print("(keine)")
+        print("(none)")
 
     return 0
 
