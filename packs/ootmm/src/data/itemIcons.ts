@@ -407,7 +407,7 @@ const RAW_ITEM_ICONS: Record<string, string> = {
   MM_CLOCK6: 'images/clock_6.png',
 
   // === SPECIAL GRID ITEMS ===
-  // These are custom items used in item_grids.json that aren't actual game items
+  // These are custom items used in itemGrids.json that aren't actual game items
 
   // Labels
   mm_woodfall_label: 'images/system/mm_label_woodfall.png',

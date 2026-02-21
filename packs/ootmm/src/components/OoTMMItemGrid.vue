@@ -8,7 +8,7 @@ import {
 } from '../utils/itemGridRef';
 
 // Import the grid layout JSON
-import itemGridsData from '../../../../item_grids.json';
+import itemGridsData from '../data/itemGrids.json';
 
 interface GridArray {
   type: 'array';

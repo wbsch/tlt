@@ -1103,7 +1103,9 @@ const printHelp = (): void => {
   );
   console.log('  --url=<url>          Same as above');
   console.log('  --headed             Run browser headed');
-  console.log('If file is omitted, defaults to tests_silke.jsonc');
+  console.log(
+    'If file is omitted, defaults to tests/pathfinder/tests_silke.jsonc',
+  );
 };
 
 const parseCli = (): CliOptions => {
@@ -1170,7 +1172,7 @@ const parseCli = (): CliOptions => {
   }
 
   return {
-    filePath: filePath ?? 'tests_silke.jsonc',
+    filePath: filePath ?? 'tests/pathfinder/tests_silke.jsonc',
     onlySet,
     verboseLevel,
     warnings,

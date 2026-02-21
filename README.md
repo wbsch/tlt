@@ -64,7 +64,7 @@ npm run build
 - `npm run lint`
 - `npm run type-check`
 - `npm run test:e2e`
-- `node --import tsx test_reachability.ts` (logic reachability sanity check)
+- `node --import tsx scripts/pathfinder-tests/reachability_full_inventory.ts` (logic reachability sanity check)
 
 ## Debug / Dev Flags
 

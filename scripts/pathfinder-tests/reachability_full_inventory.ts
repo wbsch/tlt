@@ -1,5 +1,5 @@
 import 'tsconfig-paths/register';
-import { OoTMMTracker } from './packs/ootmm/src/tracker';
+import { OoTMMTracker } from '../../packs/ootmm/src/tracker';
 async function test() {
   const tracker = new OoTMMTracker();
   await tracker.initialize();

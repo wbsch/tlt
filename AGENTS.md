@@ -8,10 +8,10 @@ The root "OoTMM" folder is the OoTMM randomizer. NEVER change code in there. Tre
 
 ### Common operations
 
-If you changed code that pertains to the core map tracker logic or its usage of the OoTMM randomizer's logic, test reachability of checks: `node --import tsx test_reachability.ts`
+If you changed code that pertains to the core map tracker logic or its usage of the OoTMM randomizer's logic, test reachability of checks: `node --import tsx scripts/pathfinder-tests/reachability_full_inventory.ts`
 (`npx tsx`/`npm exec tsx`/`./node_modules/.bin/tsx` can fail in sandboxed environments with `EPERM` on tsx IPC pipes.)
 
-Feel free to temporarily edit `test_reachability.ts` in order to test other things, or use it as a blueprint for a similar file.
+Feel free to temporarily edit `scripts/pathfinder-tests/reachability_full_inventory.ts` in order to test other things, or use it as a blueprint for a similar file.
 
 If you have changed relevant files, make sure the build still runs successfully before you're done: Run `npm run build`
 

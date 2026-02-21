@@ -707,7 +707,9 @@ const printHelp = (): void => {
     '  --only <list>        Only run specified test indices (e.g. 1,3-5)',
   );
   console.log('  --only=<list>        Same as above');
-  console.log('If file is omitted, defaults to tests_silke.jsonc');
+  console.log(
+    'If file is omitted, defaults to tests/pathfinder/tests_silke.jsonc',
+  );
 };
 
 const main = async () => {
@@ -754,7 +756,7 @@ const main = async () => {
     warnings.push(`Unexpected argument: ${arg}`);
   }
 
-  const resolvedPath = filePath ?? 'tests_silke.jsonc';
+  const resolvedPath = filePath ?? 'tests/pathfinder/tests_silke.jsonc';
   let onlySet: Set<number> | undefined;
   if (onlyRaw) {
     const parsed = parseOnlyList(onlyRaw);

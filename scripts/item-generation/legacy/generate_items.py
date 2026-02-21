@@ -1,5 +1,5 @@
 
-import json
+from pathlib import Path
 
 def get_category(item_id):
     if 'KEY' in item_id: return 'key'
@@ -30,7 +30,11 @@ manual_defs = []
 
 import re
 
-with open('packs/ootmm/src/data/items.ts', 'r') as f:
+ROOT = Path(__file__).resolve().parents[3]
+ITEMS_TS = ROOT / 'packs' / 'ootmm' / 'src' / 'data' / 'items.ts'
+ALL_ITEMS = ROOT / 'scripts' / 'item-generation' / 'data' / 'all_items.snapshot.txt'
+
+with open(ITEMS_TS, 'r') as f:
     content = f.read()
     # extracting objects is hard with regex, assuming lines
     # valid lines look like: { id: '...', ... },
@@ -47,7 +51,7 @@ print("export const ITEM_DATABASE: OoTMMItem[] = [")
 for line in manual_defs:
     print(line + ",")
 
-with open('all_items.txt', 'r') as f:
+with open(ALL_ITEMS, 'r') as f:
     items = [line.strip() for line in f if line.strip()]
 
 for item_id in items:
