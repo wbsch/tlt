@@ -137,6 +137,8 @@ const {
 
 const settingsRef = ref<SettingsPanelHandle | null>(null);
 const isStatsCollapsed = ref(true);
+const statisticsCountsTooltip =
+  'These counts exclude unshuffled tokens/fairies and gossip stones.';
 const mapDefs = OOTMM_MAP_DEFS;
 type SelectedGamesSetting = 'ootmm' | 'oot' | 'mm';
 const DEFAULT_MAP_ID = 'oot_kokiri_forest';
@@ -1133,7 +1135,9 @@ onBeforeUnmount(() => {
             <span class="stats-collapse-icon" aria-hidden="true">{{
               isStatsCollapsed ? '▸' : '▾'
             }}</span>
-            <span class="stats-collapse-title">Statistics</span>
+            <span class="stats-collapse-title" :title="statisticsCountsTooltip"
+              >Statistics</span
+            >
             <span v-if="isStatsCollapsed" class="stats-collapse-summary">
               {{ sidebarStats.reachable }} / {{ sidebarStats.total }}
             </span>
