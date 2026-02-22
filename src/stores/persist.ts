@@ -6,7 +6,7 @@ type PersistConfig = {
   hydrate: (raw: Record<string, unknown>) => Record<string, unknown>;
 };
 
-const VALID_TABS = new Set(['grid', 'inventory', 'settings', 'world']);
+const VALID_TABS = new Set(['grid', 'inventory', 'settings', 'world', 'tricks']);
 const VALID_REACHABILITY_FILTERS = new Set(['all', 'reachable', 'unreachable']);
 const VALID_COLLECTION_FILTERS = new Set(['all', 'collected', 'uncollected']);
 
@@ -30,6 +30,22 @@ function numberRecord(value: unknown): Record<string, number> {
     if (typeof count !== 'number' || !Number.isFinite(count) || count <= 0)
       continue;
     next[key] = Math.floor(count);
+  }
+  return next;
+}
+
+function nonNegativeNumberRecord(value: unknown): Record<string, number> {
+  if (!isPlainObject(value)) return {};
+  const next: Record<string, number> = {};
+  for (const [key, numericValue] of Object.entries(value)) {
+    if (
+      typeof numericValue !== 'number' ||
+      !Number.isFinite(numericValue) ||
+      numericValue < 0
+    ) {
+      continue;
+    }
+    next[key] = Math.floor(numericValue);
   }
   return next;
 }
@@ -103,6 +119,8 @@ const PERSIST_CONFIGS: Record<string, PersistConfig> = {
       'inventoryById',
       'collectedLocationIds',
       'preCompletedDungeons',
+      'songEvents',
+      'shopPrices',
       'trackerSettings',
     ],
     hydrate: (raw) => ({
@@ -114,6 +132,12 @@ const PERSIST_CONFIGS: Record<string, PersistConfig> = {
         : {}),
       ...(Array.isArray(raw.preCompletedDungeons)
         ? { preCompletedDungeons: stringArray(raw.preCompletedDungeons) }
+        : {}),
+      ...(isPlainObject(raw.songEvents)
+        ? { songEvents: nonNegativeNumberRecord(raw.songEvents) }
+        : {}),
+      ...(isPlainObject(raw.shopPrices)
+        ? { shopPrices: nonNegativeNumberRecord(raw.shopPrices) }
         : {}),
       ...(isPlainObject(raw.trackerSettings)
         ? { trackerSettings: raw.trackerSettings }

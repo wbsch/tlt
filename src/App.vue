@@ -2,12 +2,15 @@
 import { defineAsyncComponent, onBeforeUnmount, onMounted, ref } from 'vue';
 import { storeToRefs } from 'pinia';
 import { useAppStore } from './stores/app';
+import { useSyncStatusStore } from './stores/syncStatus';
 import { IMPRESSUM_HTML } from './content/impressum';
 import FairyLoader from './components/FairyLoader.vue';
 
 const appStore = useAppStore();
+const syncStatusStore = useSyncStatusStore();
 const { availablePacks, selectedPackId, currentPack, isLoading, error } =
   storeToRefs(appStore);
+const { hasOtherTabsOpen, connectedTabCount } = storeToRefs(syncStatusStore);
 const isResetConfirmOpen = ref(false);
 const isInfoModalOpen = ref(false);
 const isDebugMode = ref(false);
@@ -154,6 +157,14 @@ onBeforeUnmount(() => {
               {{ pack.name }}
             </option>
           </select>
+        </div>
+        <div
+          v-if="hasOtherTabsOpen"
+          class="sync-status-badge"
+          data-testid="multi-tab-sync-badge"
+          :title="`Live sync active across ${connectedTabCount} tabs`"
+        >
+          SYNC: {{ connectedTabCount }} TABS
         </div>
         <button
           v-if="isDebugMode"
@@ -358,6 +369,20 @@ onBeforeUnmount(() => {
 
 .debug-activate-all-button:hover {
   background: #555;
+}
+
+.sync-status-badge {
+  display: inline-flex;
+  align-items: center;
+  border: 1px solid #2b6cb0;
+  border-radius: 999px;
+  background: #0f2f4f;
+  color: #c8e6ff;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  padding: 0.2rem 0.6rem;
+  white-space: nowrap;
 }
 
 .info-icon-button {

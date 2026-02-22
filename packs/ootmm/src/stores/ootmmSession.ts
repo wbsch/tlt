@@ -1,12 +1,20 @@
 import { defineStore } from 'pinia';
 import { computed, markRaw, nextTick, ref } from 'vue';
 import type { TrackerPack } from '@/types/tracker';
+import { useSyncStatusStore } from '@/stores/syncStatus';
 import { ITEM_DATABASE } from '../data/items';
 import {
   ALL_SETTINGS_DEFINITIONS,
   TRACKER_DEFAULT_SETTINGS,
 } from '../data/settings';
 import { VANILLA_SONG_EVENTS } from '../data/song-events';
+import {
+  createOoTMMLocalSessionSync,
+  OOTMM_LOCAL_SESSION_ID,
+  type OoTMMSessionSyncConnection,
+  type OoTMMSyncOperation,
+  type OoTMMSyncOperationEnvelope,
+} from './ootmmSessionSync';
 
 const HISTORY_LIMIT = 200;
 const VANILLA_SILVER_RUPEE_PREFIX = 'OOT_RUPEE_SILVER_';
@@ -18,6 +26,16 @@ type SessionSnapshot = {
   songEvents: Record<string, number>;
   shopPrices: Record<string, number>;
   trackerSettings: Record<string, unknown>;
+};
+
+type MutationOptions = {
+  source?: 'local' | 'remote';
+  recordHistory?: boolean;
+};
+
+const REMOTE_MUTATION_OPTIONS: MutationOptions = {
+  source: 'remote',
+  recordHistory: false,
 };
 
 function mapToRecord(map: Map<string, number>): Record<string, number> {
@@ -148,7 +166,28 @@ function applyDefaultsForNewlyVisibleSettings(
   return normalized;
 }
 
+function createRandomSyncId(): string {
+  if (typeof crypto !== 'undefined' && typeof crypto.randomUUID === 'function') {
+    return crypto.randomUUID();
+  }
+  return `${Date.now().toString(36)}:${Math.random().toString(36).slice(2)}`;
+}
+
+function getLocalSyncActorId(): string {
+  if (typeof window === 'undefined') return createRandomSyncId();
+  try {
+    const existing = window.sessionStorage.getItem('tlt:sync:actor-id:v1');
+    if (existing) return existing;
+    const next = createRandomSyncId();
+    window.sessionStorage.setItem('tlt:sync:actor-id:v1', next);
+    return next;
+  } catch {
+    return createRandomSyncId();
+  }
+}
+
 export const useOoTMMSessionStore = defineStore('ootmm-session', () => {
+  const syncStatusStore = useSyncStatusStore();
   const tracker = ref<TrackerPack | null>(null);
 
   const inventoryById = ref<Record<string, number>>({});
@@ -170,6 +209,8 @@ export const useOoTMMSessionStore = defineStore('ootmm-session', () => {
   const undoHistory = ref<SessionSnapshot[]>([]);
   const redoHistory = ref<SessionSnapshot[]>([]);
   const isNavigatingHistory = ref(false);
+  let syncConnection: OoTMMSessionSyncConnection | null = null;
+  let remoteOperationQueue: Promise<void> = Promise.resolve();
 
   const inventoryMap = computed(() => recordToMap(inventoryById.value));
   const availableItemIdSet = computed(() => new Set(availableItemIds.value));
@@ -189,6 +230,38 @@ export const useOoTMMSessionStore = defineStore('ootmm-session', () => {
     void locationsVersion.value;
     return tracker.value?.getAllLocations() ?? [];
   });
+
+  function shouldRecordHistory(options?: MutationOptions): boolean {
+    if (typeof options?.recordHistory === 'boolean') {
+      return options.recordHistory;
+    }
+    return options?.source !== 'remote';
+  }
+
+  function shouldPublishSync(options?: MutationOptions): boolean {
+    if (!syncConnection) return false;
+    return options?.source !== 'remote';
+  }
+
+  function captureSnapshotForMutation(
+    options?: MutationOptions,
+  ): SessionSnapshot | null {
+    if (!shouldRecordHistory(options)) return null;
+    return captureSessionSnapshot();
+  }
+
+  function recordHistoryFromSnapshot(snapshot: SessionSnapshot | null): void {
+    if (!snapshot) return;
+    recordHistoryEntry(snapshot);
+  }
+
+  function publishSyncOperation(
+    operation: OoTMMSyncOperation,
+    options?: MutationOptions,
+  ): void {
+    if (!shouldPublishSync(options)) return;
+    syncConnection?.publish(operation);
+  }
 
   function captureSessionSnapshot(): SessionSnapshot {
     return {
@@ -233,6 +306,118 @@ export const useOoTMMSessionStore = defineStore('ootmm-session', () => {
   function clearHistory() {
     undoHistory.value = [];
     redoHistory.value = [];
+  }
+
+  async function applyRemoteOperation(
+    envelope: OoTMMSyncOperationEnvelope,
+  ): Promise<void> {
+    switch (envelope.op.type) {
+      case 'inventory.set_full': {
+        setInventoryFromMap(
+          new Map(Object.entries(envelope.op.inventoryById)),
+          REMOTE_MUTATION_OPTIONS,
+        );
+        return;
+      }
+      case 'inventory.set_count': {
+        setInventoryCount(
+          envelope.op.itemId,
+          envelope.op.count,
+          REMOTE_MUTATION_OPTIONS,
+        );
+        return;
+      }
+      case 'locations.set_collected': {
+        const next = new Set(collectedLocationIds.value);
+        if (envelope.op.collected) {
+          next.add(envelope.op.locationId);
+        } else {
+          next.delete(envelope.op.locationId);
+        }
+        setCollectedLocationIds(Array.from(next), REMOTE_MUTATION_OPTIONS);
+        return;
+      }
+      case 'locations.set_ids': {
+        setCollectedLocationIds(envelope.op.ids, REMOTE_MUTATION_OPTIONS);
+        return;
+      }
+      case 'world.set_precompleted': {
+        setPreCompletedDungeons(envelope.op.ids, REMOTE_MUTATION_OPTIONS);
+        return;
+      }
+      case 'world.set_song_events': {
+        setSongEvents(envelope.op.events, REMOTE_MUTATION_OPTIONS);
+        return;
+      }
+      case 'world.set_shop_prices': {
+        setShopPrices(envelope.op.prices, REMOTE_MUTATION_OPTIONS);
+        return;
+      }
+      case 'world.set_shop_price': {
+        const price = envelope.op.price;
+        if (price === null) {
+          setShopPriceForLocation(
+            envelope.op.locationId,
+            Number.NaN,
+            REMOTE_MUTATION_OPTIONS,
+          );
+        } else {
+          setShopPriceForLocation(
+            envelope.op.locationId,
+            price,
+            REMOTE_MUTATION_OPTIONS,
+          );
+        }
+        return;
+      }
+      case 'settings.apply': {
+        await applySettings(envelope.op.settings, REMOTE_MUTATION_OPTIONS);
+        return;
+      }
+      case 'settings.patch_special_conds': {
+        applySpecialCondsPatch(envelope.op.patch, REMOTE_MUTATION_OPTIONS);
+        return;
+      }
+      case 'session.reset_defaults': {
+        await resetSessionStateToDefaults(REMOTE_MUTATION_OPTIONS);
+      }
+    }
+  }
+
+  function enqueueRemoteOperation(envelope: OoTMMSyncOperationEnvelope): void {
+    remoteOperationQueue = remoteOperationQueue
+      .then(() => applyRemoteOperation(envelope))
+      .catch((error) => {
+        console.error('[OoTMM Sync] Failed to apply remote operation:', error);
+      });
+  }
+
+  function startLocalSessionSync(
+    sessionId = OOTMM_LOCAL_SESSION_ID,
+  ): void {
+    if (typeof window === 'undefined') return;
+    if (syncConnection) return;
+
+    syncConnection = createOoTMMLocalSessionSync({
+      sessionId,
+      actorId: getLocalSyncActorId(),
+      callbacks: {
+        onRemoteOperation: enqueueRemoteOperation,
+        onPresenceChange: (peerCount) => {
+          syncStatusStore.setOtherTabCount(peerCount);
+        },
+        onRemoteActivity: () => {
+          syncStatusStore.markSyncReceived();
+        },
+      },
+    });
+  }
+
+  function stopLocalSessionSync(): void {
+    if (!syncConnection) return;
+    syncConnection.disconnect();
+    syncConnection = null;
+    syncStatusStore.resetSyncStatus();
   }
 
   function pushUndoSnapshot(snapshot: SessionSnapshot) {
@@ -414,15 +599,29 @@ export const useOoTMMSessionStore = defineStore('ootmm-session', () => {
     recomputeReachability();
   }
 
-  function setInventoryFromMap(newInventory: Map<string, number>) {
-    const previousSnapshot = captureSessionSnapshot();
+  function setInventoryFromMap(
+    newInventory: Map<string, number>,
+    options?: MutationOptions,
+  ) {
+    const previousSnapshot = captureSnapshotForMutation(options);
     inventoryById.value = sanitizeInventoryRecord(mapToRecord(newInventory));
     recomputeReachability();
-    recordHistoryEntry(previousSnapshot);
+    recordHistoryFromSnapshot(previousSnapshot);
+    publishSyncOperation(
+      {
+        type: 'inventory.set_full',
+        inventoryById: { ...inventoryById.value },
+      },
+      options,
+    );
   }
 
-  function setInventoryCount(itemId: string, count: number) {
-    const previousSnapshot = captureSessionSnapshot();
+  function setInventoryCount(
+    itemId: string,
+    count: number,
+    options?: MutationOptions,
+  ) {
+    const previousSnapshot = captureSnapshotForMutation(options);
     const next = { ...inventoryById.value };
     const safeCount = Math.max(0, Math.floor(count));
     if (safeCount > 0) {
@@ -432,83 +631,150 @@ export const useOoTMMSessionStore = defineStore('ootmm-session', () => {
     }
     inventoryById.value = sanitizeInventoryRecord(next);
     recomputeReachability();
-    recordHistoryEntry(previousSnapshot);
+    recordHistoryFromSnapshot(previousSnapshot);
+    publishSyncOperation(
+      {
+        type: 'inventory.set_count',
+        itemId,
+        count: inventoryById.value[itemId] ?? 0,
+      },
+      options,
+    );
   }
 
-  function incrementItem(itemId: string, fallbackMax = 1) {
+  function incrementItem(
+    itemId: string,
+    fallbackMax = 1,
+    options?: MutationOptions,
+  ) {
     const current = inventoryById.value[itemId] ?? 0;
     const max = Math.max(1, itemMaxCountsById.value[itemId] ?? fallbackMax);
     if (current >= max) return;
-    setInventoryCount(itemId, current + 1);
+    setInventoryCount(itemId, current + 1, options);
   }
 
-  function decrementItem(itemId: string) {
+  function decrementItem(itemId: string, options?: MutationOptions) {
     const current = inventoryById.value[itemId] ?? 0;
     if (current <= 0) return;
-    setInventoryCount(itemId, current - 1);
+    setInventoryCount(itemId, current - 1, options);
   }
 
-  function toggleItem(itemId: string, fallbackMax = 1) {
+  function toggleItem(
+    itemId: string,
+    fallbackMax = 1,
+    options?: MutationOptions,
+  ) {
     const current = inventoryById.value[itemId] ?? 0;
     if (current > 0) {
-      setInventoryCount(itemId, 0);
+      setInventoryCount(itemId, 0, options);
       return;
     }
-    incrementItem(itemId, fallbackMax);
+    incrementItem(itemId, fallbackMax, options);
   }
 
-  function mergeInventoryCounts(countsById: Record<string, number>) {
+  function mergeInventoryCounts(
+    countsById: Record<string, number>,
+    options?: MutationOptions,
+  ) {
     const next = new Map(inventoryMap.value);
     for (const [itemId, count] of Object.entries(countsById)) {
       if (count <= 0) continue;
       const current = next.get(itemId) ?? 0;
       next.set(itemId, Math.max(current, Math.floor(count)));
     }
-    setInventoryFromMap(next);
+    setInventoryFromMap(next, options);
   }
 
-  function toggleCollectedLocation(locationId: string) {
-    const previousSnapshot = captureSessionSnapshot();
+  function toggleCollectedLocation(locationId: string, options?: MutationOptions) {
+    const previousSnapshot = captureSnapshotForMutation(options);
     const next = new Set(collectedLocationIds.value);
+    let collected = false;
     if (next.has(locationId)) {
       next.delete(locationId);
     } else {
       next.add(locationId);
+      collected = true;
     }
     collectedLocationIds.value = Array.from(next);
-    recordHistoryEntry(previousSnapshot);
+    recordHistoryFromSnapshot(previousSnapshot);
+    publishSyncOperation(
+      {
+        type: 'locations.set_collected',
+        locationId,
+        collected,
+      },
+      options,
+    );
   }
 
-  function setCollectedLocationIds(ids: string[]) {
-    const previousSnapshot = captureSessionSnapshot();
+  function setCollectedLocationIds(ids: string[], options?: MutationOptions) {
+    const previousSnapshot = captureSnapshotForMutation(options);
     collectedLocationIds.value = uniqueStrings(ids);
-    recordHistoryEntry(previousSnapshot);
+    recordHistoryFromSnapshot(previousSnapshot);
+    publishSyncOperation(
+      {
+        type: 'locations.set_ids',
+        ids: [...collectedLocationIds.value],
+      },
+      options,
+    );
   }
 
-  function setPreCompletedDungeons(ids: string[]) {
-    const previousSnapshot = captureSessionSnapshot();
+  function setPreCompletedDungeons(ids: string[], options?: MutationOptions) {
+    const previousSnapshot = captureSnapshotForMutation(options);
     preCompletedDungeons.value = uniqueStrings(ids);
     applyPreCompletedDungeons();
-    recordHistoryEntry(previousSnapshot);
+    recordHistoryFromSnapshot(previousSnapshot);
+    publishSyncOperation(
+      {
+        type: 'world.set_precompleted',
+        ids: [...preCompletedDungeons.value],
+      },
+      options,
+    );
   }
 
-  function setSongEvents(events: Record<string, number>) {
-    const previousSnapshot = captureSessionSnapshot();
+  function setSongEvents(
+    events: Record<string, number>,
+    options?: MutationOptions,
+  ) {
+    const previousSnapshot = captureSnapshotForMutation(options);
     songEvents.value = { ...events };
     applySongEvents();
-    recordHistoryEntry(previousSnapshot);
+    recordHistoryFromSnapshot(previousSnapshot);
+    publishSyncOperation(
+      {
+        type: 'world.set_song_events',
+        events: { ...songEvents.value },
+      },
+      options,
+    );
   }
 
-  function setShopPrices(prices: Record<string, number>) {
-    const previousSnapshot = captureSessionSnapshot();
+  function setShopPrices(
+    prices: Record<string, number>,
+    options?: MutationOptions,
+  ) {
+    const previousSnapshot = captureSnapshotForMutation(options);
     shopPrices.value = sanitizeNonNegativeNumberRecord({ ...prices });
     applyShopPrices();
-    recordHistoryEntry(previousSnapshot);
+    recordHistoryFromSnapshot(previousSnapshot);
+    publishSyncOperation(
+      {
+        type: 'world.set_shop_prices',
+        prices: { ...shopPrices.value },
+      },
+      options,
+    );
   }
 
-  function setShopPriceForLocation(locationId: string, price: number) {
+  function setShopPriceForLocation(
+    locationId: string,
+    price: number,
+    options?: MutationOptions,
+  ) {
     if (!locationId) return;
-    const previousSnapshot = captureSessionSnapshot();
+    const previousSnapshot = captureSnapshotForMutation(options);
     const next = { ...shopPrices.value };
     const safePrice = Math.max(0, Math.floor(Number(price)));
     if (!Number.isFinite(safePrice)) {
@@ -518,7 +784,15 @@ export const useOoTMMSessionStore = defineStore('ootmm-session', () => {
     }
     shopPrices.value = sanitizeNonNegativeNumberRecord(next);
     applyShopPrices();
-    recordHistoryEntry(previousSnapshot);
+    recordHistoryFromSnapshot(previousSnapshot);
+    publishSyncOperation(
+      {
+        type: 'world.set_shop_price',
+        locationId,
+        price: Number.isFinite(safePrice) ? safePrice : null,
+      },
+      options,
+    );
   }
 
   function applyPreCompletedDungeons() {
@@ -595,22 +869,35 @@ export const useOoTMMSessionStore = defineStore('ootmm-session', () => {
     recomputeReachability();
   }
 
-  function applySpecialCondsPatch(patch: Record<string, unknown>) {
+  function applySpecialCondsPatch(
+    patch: Record<string, unknown>,
+    options?: MutationOptions,
+  ) {
     if (isApplyingSettings.value) return;
     const currentTracker = tracker.value;
     if (!currentTracker || !currentTracker.setSpecialConds) return;
-    const previousSnapshot = captureSessionSnapshot();
+    const previousSnapshot = captureSnapshotForMutation(options);
     currentTracker.setSpecialConds(patch);
     trackerSettings.value = { ...currentTracker.getSettings() };
     recomputeReachability();
-    recordHistoryEntry(previousSnapshot);
+    recordHistoryFromSnapshot(previousSnapshot);
+    publishSyncOperation(
+      {
+        type: 'settings.patch_special_conds',
+        patch: { ...patch },
+      },
+      options,
+    );
   }
 
-  async function applySettings(newSettings: Record<string, unknown>) {
+  async function applySettings(
+    newSettings: Record<string, unknown>,
+    options?: MutationOptions,
+  ) {
     if (isApplyingSettings.value) return;
     const currentTracker = tracker.value;
     if (!currentTracker) return;
-    const previousSnapshot = captureSessionSnapshot();
+    const previousSnapshot = captureSnapshotForMutation(options);
     let didApply = false;
     const nextSettings = applyDefaultsForNewlyVisibleSettings(
       trackerSettings.value,
@@ -652,7 +939,14 @@ export const useOoTMMSessionStore = defineStore('ootmm-session', () => {
       isApplyingSettings.value = false;
     }
     if (didApply) {
-      recordHistoryEntry(previousSnapshot);
+      recordHistoryFromSnapshot(previousSnapshot);
+      publishSyncOperation(
+        {
+          type: 'settings.apply',
+          settings: cloneSettingsRecord(trackerSettings.value),
+        },
+        options,
+      );
     }
   }
 
@@ -679,10 +973,10 @@ export const useOoTMMSessionStore = defineStore('ootmm-session', () => {
     }
   }
 
-  async function resetSessionStateToDefaults() {
+  async function resetSessionStateToDefaults(options?: MutationOptions) {
     if (isApplyingSettings.value) return;
     const currentTracker = tracker.value;
-    const previousSnapshot = captureSessionSnapshot();
+    const previousSnapshot = captureSnapshotForMutation(options);
     let didReset = false;
 
     inventoryById.value = {};
@@ -701,7 +995,8 @@ export const useOoTMMSessionStore = defineStore('ootmm-session', () => {
       statsExtra.value = {};
       didReset = true;
       if (didReset) {
-        recordHistoryEntry(previousSnapshot);
+        recordHistoryFromSnapshot(previousSnapshot);
+        publishSyncOperation({ type: 'session.reset_defaults' }, options);
       }
       return;
     }
@@ -731,12 +1026,12 @@ export const useOoTMMSessionStore = defineStore('ootmm-session', () => {
       isApplyingSettings.value = false;
     }
     if (didReset) {
-      recordHistoryEntry(previousSnapshot);
+      recordHistoryFromSnapshot(previousSnapshot);
+      publishSyncOperation({ type: 'session.reset_defaults' }, options);
     }
   }
 
-  function fillInventoryForDebugActivateAll() {
-    const previousSnapshot = captureSessionSnapshot();
+  function fillInventoryForDebugActivateAll(options?: MutationOptions) {
     const nextInventory: Record<string, number> = {};
     if (availableItemIds.value.length > 0) {
       for (const itemId of availableItemIds.value) {
@@ -750,9 +1045,7 @@ export const useOoTMMSessionStore = defineStore('ootmm-session', () => {
         nextInventory[item.id] = Math.max(1, maxCount);
       }
     }
-    inventoryById.value = sanitizeInventoryRecord(nextInventory);
-    recomputeReachability();
-    recordHistoryEntry(previousSnapshot);
+    setInventoryFromMap(new Map(Object.entries(nextInventory)), options);
   }
 
   return {
@@ -780,6 +1073,8 @@ export const useOoTMMSessionStore = defineStore('ootmm-session', () => {
     reachableLocationIdSet,
     preCompletedEnabled,
     allLocations,
+    startLocalSessionSync,
+    stopLocalSessionSync,
     attachTracker,
     initializeFromTracker,
     setInventoryFromMap,

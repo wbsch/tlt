@@ -123,6 +123,7 @@ function toggleItem(itemId: string) {
         v-for="(item, index) in filteredItems"
         :key="`${item.id}-${index}`"
         class="item-card"
+        :data-testid="`inventory-item-card-${item.id}`"
         :class="{
           owned: getItemCount(item.id) > 0,
           [`category-${item.category}`]: true,

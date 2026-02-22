@@ -1074,6 +1074,7 @@ function handleGlobalUndoRedoKeydown(event: KeyboardEvent) {
 }
 
 onMounted(() => {
+  sessionStore.startLocalSessionSync();
   const windowWithDebug = window as Window & {
     __TLT_DEBUG_ACTIVATE_ALL__?: () => void;
   };
@@ -1089,6 +1090,7 @@ onBeforeUnmount(() => {
   if (windowWithDebug.__TLT_DEBUG_ACTIVATE_ALL__ === fillInventory) {
     delete windowWithDebug.__TLT_DEBUG_ACTIVATE_ALL__;
   }
+  sessionStore.stopLocalSessionSync();
   window.removeEventListener('keydown', handleGlobalUndoRedoKeydown);
   window.removeEventListener('pointerdown', handleMapWarningGlobalPointerDown);
 });
