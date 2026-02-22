@@ -253,10 +253,7 @@ const LABEL_KEY_MAP: Record<string, string[]> = {
     'OOT_RUPEE_SILVER_GANON_FOREST',
     'OOT_POUCH_SILVER_GANON_FOREST',
   ],
-  oot_gerudotraining_label: [
-    'OOT_SMALL_KEY_GTG',
-    'OOT_KEY_RING_GTG',
-  ],
+  oot_gerudotraining_label: ['OOT_SMALL_KEY_GTG', 'OOT_KEY_RING_GTG'],
   oot_gerudotraining_silver_label: [
     'OOT_RUPEE_SILVER_GTG_SLOPES',
     'OOT_POUCH_SILVER_GTG_SLOPES',
@@ -266,14 +263,8 @@ const LABEL_KEY_MAP: Record<string, string[]> = {
     'OOT_POUCH_SILVER_GTG_WATER',
   ],
   oot_gerudofortress_label: ['OOT_SMALL_KEY_GF', 'OOT_KEY_RING_GF'],
-  oot_well_label: [
-    'OOT_SMALL_KEY_BOTW',
-    'OOT_KEY_RING_BOTW',
-  ],
-  oot_well_silver_label: [
-    'OOT_RUPEE_SILVER_BOTW',
-    'OOT_POUCH_SILVER_BOTW',
-  ],
+  oot_well_label: ['OOT_SMALL_KEY_BOTW', 'OOT_KEY_RING_BOTW'],
+  oot_well_silver_label: ['OOT_RUPEE_SILVER_BOTW', 'OOT_POUCH_SILVER_BOTW'],
   oot_chestgame_label: ['OOT_SMALL_KEY_TCG', 'OOT_KEY_RING_TCG'],
   oot_dc_label: ['OOT_RUPEE_SILVER_DC', 'OOT_POUCH_SILVER_DC'],
   oot_ice_label: [
