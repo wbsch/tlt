@@ -51,6 +51,8 @@ type DevMarkerSelectRequest = {
   nonce: number;
 };
 
+type DevMqMarkerMode = 'non-mq' | 'mq';
+
 const resolveExport = <T,>(mod: unknown, key: string): T => {
   const modObj = mod as { default?: Record<string, T>; [k: string]: unknown };
   return (modObj[key] as T | undefined) ?? (modObj.default?.[key] as T);
@@ -164,6 +166,7 @@ const mapWarningPanelRef = ref<HTMLElement | null>(null);
 const mapMarkerSelectRequest = ref<DevMarkerSelectRequest | null>(null);
 const mapMarkerHoverIndex = ref<number | null>(null);
 const showDevUnmappedChecksOnly = ref(false);
+const devMqMarkerMode = ref<DevMqMarkerMode>('non-mq');
 let mapMarkerSelectNonce = 0;
 
 function resolveSelectedGamesSetting(value: unknown): SelectedGamesSetting {
@@ -1465,6 +1468,29 @@ onBeforeUnmount(() => {
             </div>
             <div
               v-if="isMapDevMode"
+              class="map-filter-group"
+              role="group"
+              aria-label="Dev MQ filters"
+            >
+              <button
+                type="button"
+                class="map-filter-button"
+                :class="{ 'is-active': devMqMarkerMode === 'non-mq' }"
+                @click="devMqMarkerMode = 'non-mq'"
+              >
+                Non-MQ
+              </button>
+              <button
+                type="button"
+                class="map-filter-button"
+                :class="{ 'is-active': devMqMarkerMode === 'mq' }"
+                @click="devMqMarkerMode = 'mq'"
+              >
+                MQ
+              </button>
+            </div>
+            <div
+              v-if="isMapDevMode"
               ref="mapWarningAnchorRef"
               class="map-toolbar-warning-wrap"
             >
@@ -1520,6 +1546,7 @@ onBeforeUnmount(() => {
             :visible-location-ids="visibleLocationIds"
             :dev-mode="isMapDevMode"
             :dev-show-unmapped-only="showDevUnmappedChecksOnly"
+            :dev-mq-marker-mode="devMqMarkerMode"
             :dev-marker-select-request="mapMarkerSelectRequest"
             :dev-marker-hover-index="mapMarkerHoverIndex"
             @toggle-collected="handleMapToggleCollected"

@@ -18,6 +18,7 @@ import {
 import OoTMMMapDevEditor from './OoTMMMapDevEditor.vue';
 import {
   formatLocationDisplayName,
+  stripWorldSuffix,
   useLocationCodeLookup,
 } from '../composables/useLocationCodeLookup';
 import type {
@@ -173,6 +174,7 @@ const props = withDefaults(
     allLocationsForCodeSearch?: LocationInfo[];
     devMode?: boolean;
     devShowUnmappedOnly?: boolean;
+    devMqMarkerMode?: 'non-mq' | 'mq';
     devMarkerSelectRequest?: { markerIndex: number; nonce: number } | null;
     devMarkerHoverIndex?: number | null;
   }>(),
@@ -182,6 +184,7 @@ const props = withDefaults(
     allLocationsForCodeSearch: () => [],
     devMode: false,
     devShowUnmappedOnly: false,
+    devMqMarkerMode: 'non-mq',
     devMarkerSelectRequest: null,
     devMarkerHoverIndex: null,
   },
@@ -281,6 +284,22 @@ function hasResolvedLocationCode(codeList: string[]): boolean {
   return codeList.some((code) => resolveCodeToCheckIds(code).length > 0);
 }
 
+function resolveAssignedCheckIdsForCode(code: string): string[] {
+  const resolved = resolveCodeToCheckIds(code);
+  return resolved.length > 0 ? resolved : looksLikeLocationId(code) ? [code] : [];
+}
+
+function isMqLocationId(checkId: string): boolean {
+  const normalized = stripWorldSuffix(checkId).trim().toLowerCase();
+  return normalized.startsWith('mq ') || normalized.startsWith('oot mq ');
+}
+
+function markerHasMqLocation(codeList: string[]): boolean {
+  return codeList.some((code) =>
+    resolveAssignedCheckIdsForCode(code).some((checkId) => isMqLocationId(checkId)),
+  );
+}
+
 const devUnmappedCheckMarkerIndices = computed(() => {
   const indices = new Set<number>();
   const mapDef = props.activeMap;
@@ -289,6 +308,21 @@ const devUnmappedCheckMarkerIndices = computed(() => {
   mapDef.markers.forEach((marker, markerIndex) => {
     if (marker.type === 'submenu') return;
     if (!hasResolvedLocationCode(markerCodeList(marker))) {
+      indices.add(markerIndex);
+    }
+  });
+
+  return indices;
+});
+
+const devMqCheckMarkerIndices = computed(() => {
+  const indices = new Set<number>();
+  const mapDef = props.activeMap;
+  if (!mapDef) return indices;
+
+  mapDef.markers.forEach((marker, markerIndex) => {
+    if (marker.type === 'submenu') return;
+    if (markerHasMqLocation(markerCodeList(marker))) {
       indices.add(markerIndex);
     }
   });
@@ -306,6 +340,27 @@ const devUnmappedSubmenuIndicesByMarker = computed(() => {
     const submenuIndices = new Set<number>();
     (marker.markers ?? []).forEach((submenuEntry, submenuIndex) => {
       if (!hasResolvedLocationCode(submenuEntryCodeList(submenuEntry))) {
+        submenuIndices.add(submenuIndex);
+      }
+    });
+    if (submenuIndices.size > 0) {
+      byMarker.set(markerIndex, submenuIndices);
+    }
+  });
+
+  return byMarker;
+});
+
+const devMqSubmenuIndicesByMarker = computed(() => {
+  const byMarker = new Map<number, Set<number>>();
+  const mapDef = props.activeMap;
+  if (!mapDef) return byMarker;
+
+  mapDef.markers.forEach((marker, markerIndex) => {
+    if (marker.type !== 'submenu') return;
+    const submenuIndices = new Set<number>();
+    (marker.markers ?? []).forEach((submenuEntry, submenuIndex) => {
+      if (markerHasMqLocation(submenuEntryCodeList(submenuEntry))) {
         submenuIndices.add(submenuIndex);
       }
     });
@@ -631,6 +686,7 @@ const markerViewModels = computed<MarkerRuntime[]>(() => {
     return [];
   }
   const isDevUnmappedFilterActive = props.devMode && props.devShowUnmappedOnly;
+  const showMqMarkersOnly = props.devMode && props.devMqMarkerMode === 'mq';
 
   return mapDef.markers.map((markerDef, markerIndex) => {
     const markerId = `${mapDef.id}:${markerIndex}`;
@@ -661,13 +717,16 @@ const markerViewModels = computed<MarkerRuntime[]>(() => {
       const unresolvedSubmenuIndices = isDevUnmappedFilterActive
         ? devUnmappedSubmenuIndicesByMarker.value.get(markerIndex)
         : null;
-      const devFilteredSubmenuMarkers = isDevUnmappedFilterActive
-        ? submenuMarkers.filter((_, submenuIndex) =>
-            unresolvedSubmenuIndices?.has(submenuIndex),
-          )
-        : submenuMarkers;
+      const mqSubmenuIndices = devMqSubmenuIndicesByMarker.value.get(markerIndex);
       const visibleSubmenuMarkers = props.devMode
-        ? devFilteredSubmenuMarkers
+        ? submenuMarkers.filter((marker, submenuIndex) => {
+            const matchesUnmappedFilter =
+              !isDevUnmappedFilterActive ||
+              Boolean(unresolvedSubmenuIndices?.has(submenuIndex));
+            const isMqMarker = Boolean(mqSubmenuIndices?.has(submenuIndex));
+            const matchesMqFilter = showMqMarkersOnly ? isMqMarker : !isMqMarker;
+            return matchesUnmappedFilter && matchesMqFilter;
+          })
         : submenuMarkers.filter((marker) => marker.isVisible);
       const visibleSubmenuCheckIds = new Set<string>();
       visibleSubmenuMarkers.forEach((marker) => {
@@ -697,11 +756,7 @@ const markerViewModels = computed<MarkerRuntime[]>(() => {
         allSubmenuCodeList: visibleSubmenuMarkers.flatMap(
           (marker) => marker.codeList,
         ),
-        isVisible: props.devMode
-          ? (isDevUnmappedFilterActive
-              ? visibleSubmenuMarkers.length > 0
-              : true)
-          : visibleSubmenuMarkers.length > 0,
+        isVisible: visibleSubmenuMarkers.length > 0,
       };
     }
 
@@ -713,8 +768,11 @@ const markerViewModels = computed<MarkerRuntime[]>(() => {
       Array.isArray(markerDef.codes),
     );
     const isDevVisible =
-      !isDevUnmappedFilterActive ||
-      devUnmappedCheckMarkerIndices.value.has(markerIndex);
+      (!isDevUnmappedFilterActive ||
+        devUnmappedCheckMarkerIndices.value.has(markerIndex)) &&
+      (showMqMarkersOnly
+        ? devMqCheckMarkerIndices.value.has(markerIndex)
+        : !devMqCheckMarkerIndices.value.has(markerIndex));
     return {
       ...state,
       type: 'check',
