@@ -281,6 +281,286 @@
       "coords": [457, 203],
       "image": "big_fairy_spot",
       "codes": ["OOT Spirit Temple Adult Sunlight Big Fairy"]
+    },
+    {
+      "coords": [644, 456],
+      "image": "chest",
+      "codes": "TODO KF 001 :: unnamed_stack > Spirit Temple > MQ Spirit > MQ Spirit Checks :: Pasted Layer :: 001-001-001-000.png"
+    },
+    {
+      "coords": [578, 445],
+      "image": "chest",
+      "codes": "TODO KF 002 :: unnamed_stack > Spirit Temple > MQ Spirit > MQ Spirit Checks :: Pasted Layer #1 :: 001-001-001-001.png"
+    },
+    {
+      "coords": [594, 420],
+      "image": "chest",
+      "codes": "TODO KF 003 :: unnamed_stack > Spirit Temple > MQ Spirit > MQ Spirit Checks :: Pasted Layer #2 :: 001-001-001-002.png"
+    },
+    {
+      "coords": [645, 421],
+      "image": "chest",
+      "codes": "TODO KF 004 :: unnamed_stack > Spirit Temple > MQ Spirit > MQ Spirit Checks :: Pasted Layer #3 :: 001-001-001-003.png"
+    },
+    {
+      "coords": [656, 404],
+      "image": "chest",
+      "codes": "TODO KF 005 :: unnamed_stack > Spirit Temple > MQ Spirit > MQ Spirit Checks :: Pasted Layer #4 :: 001-001-001-004.png"
+    },
+    {
+      "coords": [437, 367],
+      "image": "chest",
+      "codes": "TODO KF 006 :: unnamed_stack > Spirit Temple > MQ Spirit > MQ Spirit Checks :: Pasted Layer #5 :: 001-001-001-005.png"
+    },
+    {
+      "coords": [368, 402],
+      "image": "chest",
+      "codes": "TODO KF 007 :: unnamed_stack > Spirit Temple > MQ Spirit > MQ Spirit Checks :: Pasted Layer #6 :: 001-001-001-006.png"
+    },
+    {
+      "coords": [351, 470],
+      "image": "chest",
+      "codes": "TODO KF 008 :: unnamed_stack > Spirit Temple > MQ Spirit > MQ Spirit Checks :: Pasted Layer #7 :: 001-001-001-007.png"
+    },
+    {
+      "coords": [351, 486],
+      "image": "chest",
+      "codes": "TODO KF 009 :: unnamed_stack > Spirit Temple > MQ Spirit > MQ Spirit Checks :: Pasted Layer #8 :: 001-001-001-008.png"
+    },
+    {
+      "coords": [335, 470],
+      "image": "chest",
+      "codes": "TODO KF 010 :: unnamed_stack > Spirit Temple > MQ Spirit > MQ Spirit Checks :: Pasted Layer #9 :: 001-001-001-009.png"
+    },
+    {
+      "coords": [335, 486],
+      "image": "chest",
+      "codes": "TODO KF 011 :: unnamed_stack > Spirit Temple > MQ Spirit > MQ Spirit Checks :: Pasted Layer #10 :: 001-001-001-010.png"
+    },
+    {
+      "coords": [280, 470],
+      "image": "chest",
+      "codes": "TODO KF 012 :: unnamed_stack > Spirit Temple > MQ Spirit > MQ Spirit Checks :: Pasted Layer #11 :: 001-001-001-011.png"
+    },
+    {
+      "coords": [248, 436],
+      "image": "chest",
+      "codes": "TODO KF 013 :: unnamed_stack > Spirit Temple > MQ Spirit > MQ Spirit Checks :: Pasted Layer #12 :: 001-001-001-012.png"
+    },
+    {
+      "coords": [248, 415],
+      "image": "chest",
+      "codes": "TODO KF 014 :: unnamed_stack > Spirit Temple > MQ Spirit > MQ Spirit Checks :: Pasted Layer #13 :: 001-001-001-013.png"
+    },
+    {
+      "coords": [412, 300],
+      "image": "chest",
+      "codes": "TODO KF 015 :: unnamed_stack > Spirit Temple > MQ Spirit > MQ Spirit Checks :: Pasted Layer #14 :: 001-001-001-014.png"
+    },
+    {
+      "coords": [288, 300],
+      "image": "chest",
+      "codes": "TODO KF 016 :: unnamed_stack > Spirit Temple > MQ Spirit > MQ Spirit Checks :: Pasted Layer #15 :: 001-001-001-015.png"
+    },
+    {
+      "coords": [274, 193],
+      "image": "chest",
+      "codes": "TODO KF 017 :: unnamed_stack > Spirit Temple > MQ Spirit > MQ Spirit Checks :: Pasted Layer #16 :: 001-001-001-016.png"
+    },
+    {
+      "coords": [459, 214],
+      "image": "chest",
+      "codes": "TODO KF 018 :: unnamed_stack > Spirit Temple > MQ Spirit > MQ Spirit Checks :: Pasted Layer #17 :: 001-001-001-017.png"
+    },
+    {
+      "coords": [452, 170],
+      "image": "chest",
+      "codes": "TODO KF 019 :: unnamed_stack > Spirit Temple > MQ Spirit > MQ Spirit Checks :: Pasted Layer #18 :: 001-001-001-018.png"
+    },
+    {
+      "coords": [427, 209],
+      "image": "chest",
+      "codes": "TODO KF 020 :: unnamed_stack > Spirit Temple > MQ Spirit > MQ Spirit Checks :: Pasted Layer #19 :: 001-001-001-019.png"
+    },
+    {
+      "coords": [377, 127],
+      "image": "chest",
+      "codes": "TODO KF 021 :: unnamed_stack > Spirit Temple > MQ Spirit > MQ Spirit Checks :: Pasted Layer #20 :: 001-001-001-020.png"
+    },
+    {
+      "coords": [336, 105],
+      "image": "chest",
+      "codes": "TODO KF 022 :: unnamed_stack > Spirit Temple > MQ Spirit > MQ Spirit Checks :: Pasted Layer #21 :: 001-001-001-021.png"
+    },
+    {
+      "coords": [352, 105],
+      "image": "chest",
+      "codes": "TODO KF 023 :: unnamed_stack > Spirit Temple > MQ Spirit > MQ Spirit Checks :: Pasted Layer #22 :: 001-001-001-022.png"
+    },
+    {
+      "coords": [641, 184],
+      "image": "chest",
+      "codes": "TODO KF 024 :: unnamed_stack > Spirit Temple > MQ Spirit > MQ Spirit Checks :: Pasted Layer #23 :: 001-001-001-023.png"
+    },
+    {
+      "coords": [683, 119],
+      "image": "gold_skulltula",
+      "codes": "TODO KF 025 :: unnamed_stack > Spirit Temple > MQ Spirit > MQ Spirit Skulls :: Pasted Layer #24 :: 001-001-002-000.png"
+    },
+    {
+      "coords": [668, 134],
+      "image": "gold_skulltula",
+      "codes": "TODO KF 026 :: unnamed_stack > Spirit Temple > MQ Spirit > MQ Spirit Skulls :: Pasted Layer #25 :: 001-001-002-001.png"
+    },
+    {
+      "coords": [272, 231],
+      "image": "gold_skulltula",
+      "codes": "TODO KF 027 :: unnamed_stack > Spirit Temple > MQ Spirit > MQ Spirit Skulls :: Pasted Layer #26 :: 001-001-002-002.png"
+    },
+    {
+      "coords": [444, 384],
+      "image": "gold_skulltula",
+      "codes": "TODO KF 028 :: unnamed_stack > Spirit Temple > MQ Spirit > MQ Spirit Skulls :: Pasted Layer #27 :: 001-001-002-003.png"
+    },
+    {
+      "coords": [374, 428],
+      "image": "gold_skulltula",
+      "codes": "TODO KF 029 :: unnamed_stack > Spirit Temple > MQ Spirit > MQ Spirit Skulls :: Pasted Layer #28 :: 001-001-002-004.png"
+    },
+    {
+      "coords": [678, 407],
+      "image": "pot",
+      "codes": "TODO KF 030 :: unnamed_stack > Spirit Temple > MQ Spirit > MQ Spirit Pots :: Pasted Layer #29 :: 001-001-003-000.png"
+    },
+    {
+      "coords": [678, 423],
+      "image": "pot",
+      "codes": "TODO KF 031 :: unnamed_stack > Spirit Temple > MQ Spirit > MQ Spirit Pots :: Pasted Layer #30 :: 001-001-003-001.png"
+    },
+    {
+      "coords": [637, 434],
+      "image": "pot",
+      "codes": "TODO KF 032 :: unnamed_stack > Spirit Temple > MQ Spirit > MQ Spirit Pots :: Pasted Layer #31 :: 001-001-003-002.png"
+    },
+    {
+      "coords": [613, 414],
+      "image": "pot",
+      "codes": "TODO KF 033 :: unnamed_stack > Spirit Temple > MQ Spirit > MQ Spirit Pots :: Pasted Layer #32 :: 001-001-003-003.png"
+    },
+    {
+      "coords": [683, 162],
+      "image": "pot",
+      "codes": "TODO KF 034 :: unnamed_stack > Spirit Temple > MQ Spirit > MQ Spirit Pots :: Pasted Layer #33 :: 001-001-003-004.png"
+    },
+    {
+      "coords": [651, 163],
+      "image": "pot",
+      "codes": "TODO KF 035 :: unnamed_stack > Spirit Temple > MQ Spirit > MQ Spirit Pots :: Pasted Layer #34 :: 001-001-003-005.png"
+    },
+    {
+      "coords": [373, 223],
+      "image": "pot",
+      "codes": "TODO KF 036 :: unnamed_stack > Spirit Temple > MQ Spirit > MQ Spirit Pots :: Pasted Layer #35 :: 001-001-003-006.png"
+    },
+    {
+      "coords": [315, 122],
+      "image": "pot",
+      "codes": "TODO KF 037 :: unnamed_stack > Spirit Temple > MQ Spirit > MQ Spirit Pots :: Pasted Layer #36 :: 001-001-003-007.png"
+    },
+    {
+      "coords": [315, 136],
+      "image": "pot",
+      "codes": "TODO KF 038 :: unnamed_stack > Spirit Temple > MQ Spirit > MQ Spirit Pots :: Pasted Layer #37 :: 001-001-003-008.png"
+    },
+    {
+      "coords": [259, 191],
+      "image": "pot",
+      "codes": "TODO KF 039 :: unnamed_stack > Spirit Temple > MQ Spirit > MQ Spirit Pots :: Pasted Layer #38 :: 001-001-003-009.png"
+    },
+    {
+      "coords": [259, 231],
+      "image": "pot",
+      "codes": "TODO KF 040 :: unnamed_stack > Spirit Temple > MQ Spirit > MQ Spirit Pots :: Pasted Layer #39 :: 001-001-003-010.png"
+    },
+    {
+      "coords": [280, 369],
+      "image": "pot",
+      "codes": "TODO KF 041 :: unnamed_stack > Spirit Temple > MQ Spirit > MQ Spirit Pots :: Pasted Layer #40 :: 001-001-003-011.png"
+    },
+    {
+      "coords": [319, 404],
+      "image": "pot",
+      "codes": "TODO KF 042 :: unnamed_stack > Spirit Temple > MQ Spirit > MQ Spirit Pots :: Pasted Layer #41 :: 001-001-003-012.png"
+    },
+    {
+      "coords": [281, 412],
+      "image": "pot",
+      "codes": "TODO KF 043 :: unnamed_stack > Spirit Temple > MQ Spirit > MQ Spirit Pots :: Pasted Layer #42 :: 001-001-003-013.png"
+    },
+    {
+      "coords": [290, 481],
+      "image": "pot",
+      "codes": "TODO KF 044 :: unnamed_stack > Spirit Temple > MQ Spirit > MQ Spirit Pots :: Pasted Layer #43 :: 001-001-003-014.png"
+    },
+    {
+      "coords": [412, 428],
+      "image": "pot",
+      "codes": "TODO KF 045 :: unnamed_stack > Spirit Temple > MQ Spirit > MQ Spirit Pots :: Pasted Layer #44 :: 001-001-003-015.png"
+    },
+    {
+      "coords": [355, 519],
+      "image": "pot",
+      "codes": "TODO KF 046 :: unnamed_stack > Spirit Temple > MQ Spirit > MQ Spirit Pots :: Pasted Layer #45 :: 001-001-003-016.png"
+    },
+    {
+      "coords": [330, 519],
+      "image": "pot",
+      "codes": "TODO KF 047 :: unnamed_stack > Spirit Temple > MQ Spirit > MQ Spirit Pots :: Pasted Layer #46 :: 001-001-003-017.png"
+    },
+    {
+      "coords": [631, 425],
+      "image": "spirit_medallion",
+      "codes": "TODO KF 048 :: unnamed_stack > Spirit Temple > MQ Spirit > MQ Spirit Crates :: Pasted Layer #47 :: 001-001-004-000.png"
+    },
+    {
+      "coords": [670, 391],
+      "image": "spirit_medallion",
+      "codes": "TODO KF 049 :: unnamed_stack > Spirit Temple > MQ Spirit > MQ Spirit Crates :: Pasted Layer #48 :: 001-001-004-001.png"
+    },
+    {
+      "coords": [637, 148],
+      "image": "spirit_medallion",
+      "codes": "TODO KF 050 :: unnamed_stack > Spirit Temple > MQ Spirit > MQ Spirit Crates :: Pasted Layer #49 :: 001-001-004-002.png"
+    },
+    {
+      "coords": [420, 221],
+      "image": "spirit_medallion",
+      "codes": "TODO KF 051 :: unnamed_stack > Spirit Temple > MQ Spirit > MQ Spirit Crates :: Pasted Layer #50 :: 001-001-004-003.png"
+    },
+    {
+      "coords": [280, 455],
+      "image": "heart",
+      "codes": "TODO KF 052 :: unnamed_stack > Spirit Temple > MQ Spirit > MQ Spirit Freestanding Hearts :: Pasted Layer #51 :: 001-001-005-000.png"
+    },
+    {
+      "coords": [376, 482],
+      "image": "silver_boulder_grotto",
+      "codes": "TODO KF 053 :: unnamed_stack > Spirit Temple > MQ Spirit > MQ Spirit Silver :: Pasted Layer #52 :: 001-001-006-000.png"
+    },
+    {
+      "coords": [383, 222],
+      "image": "silver_boulder_grotto",
+      "codes": "TODO KF 054 :: unnamed_stack > Spirit Temple > MQ Spirit > MQ Spirit Silver :: Pasted Layer #53 :: 001-001-006-001.png"
+    },
+    {
+      "coords": [459, 199],
+      "image": "big_fairy_spot",
+      "codes": "TODO KF 055 :: unnamed_stack > Spirit Temple > MQ Spirit > MQ Spirit Big Fairy :: Pasted Layer #54 :: 001-001-007-000.png"
+    },
+    {
+      "coords": [455, 229],
+      "image": "wonder_item_random",
+      "codes": "TODO KF 056 :: unnamed_stack > Spirit Temple > MQ Spirit > MQ Spirit Wonder :: Pasted Layer #55 :: 001-001-008-000.png"
     }
   ]
 }
