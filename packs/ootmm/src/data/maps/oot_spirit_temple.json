@@ -16,12 +16,12 @@
     {
       "coords": [645, 415],
       "image": "chest",
-      "codes": ["OOT Spirit Temple Statue Base"]
+      "codes": "OOT Spirit Temple Statue Base"
     },
     {
       "coords": [629, 406],
       "image": "chest",
-      "codes": ["OOT Spirit Temple Statue Hands"]
+      "codes": "OOT Spirit Temple Statue Hands"
     },
     {
       "coords": [591, 414],
@@ -34,42 +34,42 @@
     {
       "coords": [247, 413],
       "image": "chest",
-      "codes": ["OOT Spirit Temple Child First Chest"]
+      "codes": "OOT Spirit Temple Child First Chest"
     },
     {
       "coords": [323, 408],
       "image": "chest",
-      "codes": ["OOT Spirit Temple Child Second Chest"]
+      "codes": "OOT Spirit Temple Child Second Chest"
     },
     {
       "coords": [366, 400],
       "image": "chest",
-      "codes": ["OOT Spirit Temple Adult Lullaby"]
+      "codes": "OOT Spirit Temple Adult Lullaby"
     },
     {
       "coords": [437, 374],
       "image": "chest",
-      "codes": ["OOT Spirit Temple Adult Silver Rupees"]
+      "codes": "OOT Spirit Temple Adult Silver Rupees"
     },
     {
       "coords": [683, 122],
       "image": "chest",
-      "codes": ["OOT Spirit Temple Adult Boss Key Chest"]
+      "codes": "OOT Spirit Temple Adult Boss Key Chest"
     },
     {
       "coords": [600, 165],
       "image": "chest",
-      "codes": ["OOT Spirit Temple Adult Topmost Sun on Wall"]
+      "codes": "OOT Spirit Temple Adult Topmost Sun on Wall"
     },
     {
       "coords": [410, 301],
       "image": "chest",
-      "codes": ["OOT Spirit Temple Mirror Shield"]
+      "codes": "OOT Spirit Temple Mirror Shield"
     },
     {
       "coords": [290, 301],
       "image": "chest",
-      "codes": ["OOT Spirit Temple Silver Gauntlets"]
+      "codes": "OOT Spirit Temple Silver Gauntlets"
     },
     {
       "coords": [455, 262],
@@ -82,52 +82,52 @@
     {
       "coords": [268, 230],
       "image": "chest",
-      "codes": ["OOT Spirit Temple Sun Block Room Torches"]
+      "codes": "OOT Spirit Temple Sun Block Room Torches"
     },
     {
       "coords": [452, 172],
       "image": "chest",
-      "codes": ["OOT Spirit Temple Adult Late Sun on Wall"]
+      "codes": "OOT Spirit Temple Adult Late Sun on Wall"
     },
     {
       "coords": [375, 137],
       "image": "chest",
-      "codes": ["OOT Spirit Temple Statue Upper Right"]
+      "codes": "OOT Spirit Temple Statue Upper Right"
     },
     {
       "coords": [336, 105],
       "image": "heart_container",
-      "codes": ["OOT Spirit Temple Boss HC"]
+      "codes": "OOT Spirit Temple Boss HC"
     },
     {
       "coords": [352, 105],
       "image": "spirit_medallion",
-      "codes": ["OOT Spirit Temple Boss"]
+      "codes": "OOT Spirit Temple Boss"
     },
     {
       "coords": [573, 419],
       "image": "gold_skulltula",
-      "codes": ["OOT Spirit Temple GS Child Climb"]
+      "codes": "OOT Spirit Temple GS Child Climb"
     },
     {
       "coords": [428, 421],
       "image": "gold_skulltula",
-      "codes": ["OOT Spirit Temple GS Boulders"]
+      "codes": "OOT Spirit Temple GS Boulders"
     },
     {
       "coords": [326, 426],
       "image": "gold_skulltula",
-      "codes": ["OOT Spirit Temple GS Child Fence"]
+      "codes": "OOT Spirit Temple GS Child Fence"
     },
     {
       "coords": [245, 251],
       "image": "gold_skulltula",
-      "codes": ["OOT Spirit Temple GS Iron Knuckle"]
+      "codes": "OOT Spirit Temple GS Iron Knuckle"
     },
     {
       "coords": [311, 132],
       "image": "gold_skulltula",
-      "codes": ["OOT Spirit Temple GS Statue"]
+      "codes": "OOT Spirit Temple GS Statue"
     },
     {
       "coords": [437, 429],
@@ -174,12 +174,12 @@
     {
       "coords": [672, 390],
       "image": "flying_pot",
-      "codes": ["OOT Spirit Temple Flying Pot Statue Room 2"]
+      "codes": "OOT Spirit Temple Flying Pot Statue Room 2"
     },
     {
       "coords": [619, 390],
       "image": "flying_pot",
-      "codes": ["OOT Spirit Temple Flying Pot Statue Room 1"]
+      "codes": "OOT Spirit Temple Flying Pot Statue Room 1"
     },
     {
       "coords": [613, 416],
@@ -205,7 +205,7 @@
     {
       "coords": [391, 190],
       "image": "pot",
-      "codes": ["OOT Spirit Temple Pot Adult Upper"]
+      "codes": "OOT Spirit Temple Pot Adult Upper"
     },
     {
       "coords": [237, 261],
@@ -242,7 +242,7 @@
     {
       "coords": [289, 410],
       "image": "pot",
-      "codes": ["OOT Spirit Temple Pot Child Climb"]
+      "codes": "OOT Spirit Temple Pot Child Climb"
     },
     {
       "coords": [279, 383],
@@ -275,292 +275,482 @@
     {
       "coords": [437, 360],
       "image": "big_fairy_spot",
-      "codes": ["OOT Spirit Temple Adult Silver Rupees Big Fairy"]
+      "codes": "OOT Spirit Temple Adult Silver Rupees Big Fairy"
     },
     {
       "coords": [457, 203],
       "image": "big_fairy_spot",
-      "codes": ["OOT Spirit Temple Adult Sunlight Big Fairy"]
+      "codes": "OOT Spirit Temple Adult Sunlight Big Fairy"
     },
     {
       "coords": [644, 456],
       "image": "chest",
-      "codes": "TODO KF 001 :: unnamed_stack > Spirit Temple > MQ Spirit > MQ Spirit Checks :: Pasted Layer :: 001-001-001-000.png"
+      "codes": [
+        "TODO KF 001 :: unnamed_stack > Spirit Temple > MQ Spirit > MQ Spirit Checks :: Pasted Layer :: 001-001-001-000.png",
+        "OOT MQ Spirit Temple Silver Block Room Target Chest"
+      ]
     },
     {
       "coords": [578, 445],
       "image": "chest",
-      "codes": "TODO KF 002 :: unnamed_stack > Spirit Temple > MQ Spirit > MQ Spirit Checks :: Pasted Layer #1 :: 001-001-001-001.png"
+      "codes": [
+        "TODO KF 002 :: unnamed_stack > Spirit Temple > MQ Spirit > MQ Spirit Checks :: Pasted Layer #1 :: 001-001-001-001.png",
+        "OOT MQ Spirit Temple Child Upper Ledge Chest"
+      ]
     },
     {
       "coords": [594, 420],
       "image": "chest",
-      "codes": "TODO KF 003 :: unnamed_stack > Spirit Temple > MQ Spirit > MQ Spirit Checks :: Pasted Layer #2 :: 001-001-001-002.png"
+      "codes": [
+        "TODO KF 003 :: unnamed_stack > Spirit Temple > MQ Spirit > MQ Spirit Checks :: Pasted Layer #2 :: 001-001-001-002.png",
+        "OOT MQ Spirit Temple Child Upper Ground Chest"
+      ]
     },
     {
       "coords": [645, 421],
       "image": "chest",
-      "codes": "TODO KF 004 :: unnamed_stack > Spirit Temple > MQ Spirit > MQ Spirit Checks :: Pasted Layer #3 :: 001-001-001-003.png"
+      "codes": [
+        "TODO KF 004 :: unnamed_stack > Spirit Temple > MQ Spirit > MQ Spirit Checks :: Pasted Layer #3 :: 001-001-001-003.png",
+        "OOT MQ Spirit Temple Compass Chest"
+      ]
     },
     {
       "coords": [656, 404],
       "image": "chest",
-      "codes": "TODO KF 005 :: unnamed_stack > Spirit Temple > MQ Spirit > MQ Spirit Checks :: Pasted Layer #4 :: 001-001-001-004.png"
+      "codes": [
+        "TODO KF 005 :: unnamed_stack > Spirit Temple > MQ Spirit > MQ Spirit Checks :: Pasted Layer #4 :: 001-001-001-004.png",
+        "OOT MQ Spirit Temple Chest in Box"
+      ]
     },
     {
       "coords": [437, 367],
       "image": "chest",
-      "codes": "TODO KF 006 :: unnamed_stack > Spirit Temple > MQ Spirit > MQ Spirit Checks :: Pasted Layer #5 :: 001-001-001-005.png"
+      "codes": [
+        "TODO KF 006 :: unnamed_stack > Spirit Temple > MQ Spirit > MQ Spirit Checks :: Pasted Layer #5 :: 001-001-001-005.png",
+        "OOT MQ Spirit Temple Symphony Room Chest"
+      ]
     },
     {
       "coords": [368, 402],
       "image": "chest",
-      "codes": "TODO KF 007 :: unnamed_stack > Spirit Temple > MQ Spirit > MQ Spirit Checks :: Pasted Layer #6 :: 001-001-001-006.png"
+      "codes": "OOT MQ Spirit Temple Purple Leever Chest"
     },
     {
       "coords": [351, 470],
       "image": "chest",
-      "codes": "TODO KF 008 :: unnamed_stack > Spirit Temple > MQ Spirit > MQ Spirit Checks :: Pasted Layer #7 :: 001-001-001-007.png"
+      "codes": [
+        "TODO KF 008 :: unnamed_stack > Spirit Temple > MQ Spirit > MQ Spirit Checks :: Pasted Layer #7 :: 001-001-001-007.png",
+        "OOT MQ Spirit Temple Lobby Back-Right Chest"
+      ]
     },
     {
       "coords": [351, 486],
       "image": "chest",
-      "codes": "TODO KF 009 :: unnamed_stack > Spirit Temple > MQ Spirit > MQ Spirit Checks :: Pasted Layer #8 :: 001-001-001-008.png"
+      "codes": [
+        "TODO KF 009 :: unnamed_stack > Spirit Temple > MQ Spirit > MQ Spirit Checks :: Pasted Layer #8 :: 001-001-001-008.png",
+        "OOT MQ Spirit Temple Lobby Front-Right Chest"
+      ]
     },
     {
       "coords": [335, 470],
       "image": "chest",
-      "codes": "TODO KF 010 :: unnamed_stack > Spirit Temple > MQ Spirit > MQ Spirit Checks :: Pasted Layer #9 :: 001-001-001-009.png"
+      "codes": [
+        "TODO KF 010 :: unnamed_stack > Spirit Temple > MQ Spirit > MQ Spirit Checks :: Pasted Layer #9 :: 001-001-001-009.png",
+        "OOT MQ Spirit Temple Lobby Back-Left Chest"
+      ]
     },
     {
       "coords": [335, 486],
       "image": "chest",
-      "codes": "TODO KF 011 :: unnamed_stack > Spirit Temple > MQ Spirit > MQ Spirit Checks :: Pasted Layer #10 :: 001-001-001-010.png"
+      "codes": [
+        "TODO KF 011 :: unnamed_stack > Spirit Temple > MQ Spirit > MQ Spirit Checks :: Pasted Layer #10 :: 001-001-001-010.png",
+        "OOT MQ Spirit Temple Entrance Initial Chest"
+      ]
     },
     {
       "coords": [280, 470],
       "image": "chest",
-      "codes": "TODO KF 012 :: unnamed_stack > Spirit Temple > MQ Spirit > MQ Spirit Checks :: Pasted Layer #11 :: 001-001-001-011.png"
+      "codes": [
+        "TODO KF 012 :: unnamed_stack > Spirit Temple > MQ Spirit > MQ Spirit Checks :: Pasted Layer #11 :: 001-001-001-011.png",
+        "OOT MQ Spirit Temple Paradox Chest"
+      ]
     },
     {
       "coords": [248, 436],
       "image": "chest",
-      "codes": "TODO KF 013 :: unnamed_stack > Spirit Temple > MQ Spirit > MQ Spirit Checks :: Pasted Layer #12 :: 001-001-001-012.png"
+      "codes": [
+        "TODO KF 013 :: unnamed_stack > Spirit Temple > MQ Spirit > MQ Spirit Checks :: Pasted Layer #12 :: 001-001-001-012.png",
+        "OOT MQ Spirit Temple Map Chest"
+      ]
     },
     {
       "coords": [248, 415],
       "image": "chest",
-      "codes": "TODO KF 014 :: unnamed_stack > Spirit Temple > MQ Spirit > MQ Spirit Checks :: Pasted Layer #13 :: 001-001-001-013.png"
+      "codes": [
+        "TODO KF 014 :: unnamed_stack > Spirit Temple > MQ Spirit > MQ Spirit Checks :: Pasted Layer #13 :: 001-001-001-013.png",
+        "OOT MQ Spirit Temple Map Room Back Chest"
+      ]
     },
     {
       "coords": [412, 300],
       "image": "chest",
-      "codes": "TODO KF 015 :: unnamed_stack > Spirit Temple > MQ Spirit > MQ Spirit Checks :: Pasted Layer #14 :: 001-001-001-014.png"
+      "codes": [
+        "TODO KF 015 :: unnamed_stack > Spirit Temple > MQ Spirit > MQ Spirit Checks :: Pasted Layer #14 :: 001-001-001-014.png",
+        "OOT Spirit Temple Mirror Shield"
+      ]
     },
     {
       "coords": [288, 300],
       "image": "chest",
-      "codes": "TODO KF 016 :: unnamed_stack > Spirit Temple > MQ Spirit > MQ Spirit Checks :: Pasted Layer #15 :: 001-001-001-015.png"
+      "codes": [
+        "TODO KF 016 :: unnamed_stack > Spirit Temple > MQ Spirit > MQ Spirit Checks :: Pasted Layer #15 :: 001-001-001-015.png",
+        "OOT Spirit Temple Silver Gauntlets"
+      ]
     },
     {
       "coords": [274, 193],
       "image": "chest",
-      "codes": "TODO KF 017 :: unnamed_stack > Spirit Temple > MQ Spirit > MQ Spirit Checks :: Pasted Layer #16 :: 001-001-001-016.png"
+      "codes": "OOT MQ Spirit Temple Sun Block Room Chest"
     },
     {
       "coords": [459, 214],
       "image": "chest",
-      "codes": "TODO KF 018 :: unnamed_stack > Spirit Temple > MQ Spirit > MQ Spirit Checks :: Pasted Layer #17 :: 001-001-001-017.png"
+      "codes": [
+        "TODO KF 018 :: unnamed_stack > Spirit Temple > MQ Spirit > MQ Spirit Checks :: Pasted Layer #17 :: 001-001-001-017.png",
+        "OOT MQ Spirit Temple Dinolfos Room Chest"
+      ]
     },
     {
       "coords": [452, 170],
       "image": "chest",
-      "codes": "TODO KF 019 :: unnamed_stack > Spirit Temple > MQ Spirit > MQ Spirit Checks :: Pasted Layer #18 :: 001-001-001-018.png"
+      "codes": [
+        "TODO KF 019 :: unnamed_stack > Spirit Temple > MQ Spirit > MQ Spirit Checks :: Pasted Layer #18 :: 001-001-001-018.png",
+        "OOT MQ Spirit Temple Boss Key Chest"
+      ]
     },
     {
       "coords": [427, 209],
       "image": "chest",
-      "codes": "TODO KF 020 :: unnamed_stack > Spirit Temple > MQ Spirit > MQ Spirit Checks :: Pasted Layer #19 :: 001-001-001-019.png"
+      "codes": [
+        "TODO KF 020 :: unnamed_stack > Spirit Temple > MQ Spirit > MQ Spirit Checks :: Pasted Layer #19 :: 001-001-001-019.png",
+        "OOT MQ Spirit Temple Beamos Room Chest"
+      ]
     },
     {
       "coords": [377, 127],
       "image": "chest",
-      "codes": "TODO KF 021 :: unnamed_stack > Spirit Temple > MQ Spirit > MQ Spirit Checks :: Pasted Layer #20 :: 001-001-001-020.png"
+      "codes": [
+        "TODO KF 021 :: unnamed_stack > Spirit Temple > MQ Spirit > MQ Spirit Checks :: Pasted Layer #20 :: 001-001-001-020.png",
+        "OOT MQ Spirit Temple Statue Room Ledge Chest"
+      ]
     },
     {
       "coords": [336, 105],
-      "image": "chest",
-      "codes": "TODO KF 022 :: unnamed_stack > Spirit Temple > MQ Spirit > MQ Spirit Checks :: Pasted Layer #21 :: 001-001-001-021.png"
+      "image": "heart_container",
+      "codes": [
+        "TODO KF 022 :: unnamed_stack > Spirit Temple > MQ Spirit > MQ Spirit Checks :: Pasted Layer #21 :: 001-001-001-021.png",
+        "OOT Spirit Temple Boss HC"
+      ]
     },
     {
       "coords": [352, 105],
-      "image": "chest",
-      "codes": "TODO KF 023 :: unnamed_stack > Spirit Temple > MQ Spirit > MQ Spirit Checks :: Pasted Layer #22 :: 001-001-001-022.png"
+      "image": "spirit_medallion",
+      "codes": [
+        "TODO KF 023 :: unnamed_stack > Spirit Temple > MQ Spirit > MQ Spirit Checks :: Pasted Layer #22 :: 001-001-001-022.png",
+        "OOT Spirit Temple Boss"
+      ]
     },
     {
       "coords": [641, 184],
       "image": "chest",
-      "codes": "TODO KF 024 :: unnamed_stack > Spirit Temple > MQ Spirit > MQ Spirit Checks :: Pasted Layer #23 :: 001-001-001-023.png"
+      "codes": [
+        "TODO KF 024 :: unnamed_stack > Spirit Temple > MQ Spirit > MQ Spirit Checks :: Pasted Layer #23 :: 001-001-001-023.png",
+        "OOT MQ Spirit Temple Topmost Chest"
+      ]
     },
     {
       "coords": [683, 119],
       "image": "gold_skulltula",
-      "codes": "TODO KF 025 :: unnamed_stack > Spirit Temple > MQ Spirit > MQ Spirit Skulls :: Pasted Layer #24 :: 001-001-002-000.png"
+      "codes": [
+        "TODO KF 025 :: unnamed_stack > Spirit Temple > MQ Spirit > MQ Spirit Skulls :: Pasted Layer #24 :: 001-001-002-000.png",
+        "OOT MQ Spirit Temple GS Top Floor Back Wall"
+      ]
     },
     {
       "coords": [668, 134],
       "image": "gold_skulltula",
-      "codes": "TODO KF 026 :: unnamed_stack > Spirit Temple > MQ Spirit > MQ Spirit Skulls :: Pasted Layer #25 :: 001-001-002-001.png"
+      "codes": [
+        "TODO KF 026 :: unnamed_stack > Spirit Temple > MQ Spirit > MQ Spirit Skulls :: Pasted Layer #25 :: 001-001-002-001.png",
+        "OOT MQ Spirit Temple GS Top Floor Left Wall"
+      ]
     },
     {
       "coords": [272, 231],
       "image": "gold_skulltula",
-      "codes": "TODO KF 027 :: unnamed_stack > Spirit Temple > MQ Spirit > MQ Spirit Skulls :: Pasted Layer #26 :: 001-001-002-002.png"
+      "codes": [
+        "TODO KF 027 :: unnamed_stack > Spirit Temple > MQ Spirit > MQ Spirit Skulls :: Pasted Layer #26 :: 001-001-002-002.png",
+        "OOT MQ Spirit Temple GS Sun Block Room"
+      ]
     },
     {
       "coords": [444, 384],
       "image": "gold_skulltula",
-      "codes": "TODO KF 028 :: unnamed_stack > Spirit Temple > MQ Spirit > MQ Spirit Skulls :: Pasted Layer #27 :: 001-001-002-003.png"
+      "codes": [
+        "TODO KF 028 :: unnamed_stack > Spirit Temple > MQ Spirit > MQ Spirit Skulls :: Pasted Layer #27 :: 001-001-002-003.png",
+        "OOT MQ Spirit Temple GS Symphony Room"
+      ]
     },
     {
       "coords": [374, 428],
       "image": "gold_skulltula",
-      "codes": "TODO KF 029 :: unnamed_stack > Spirit Temple > MQ Spirit > MQ Spirit Skulls :: Pasted Layer #28 :: 001-001-002-004.png"
+      "codes": [
+        "TODO KF 029 :: unnamed_stack > Spirit Temple > MQ Spirit > MQ Spirit Skulls :: Pasted Layer #28 :: 001-001-002-004.png",
+        "OOT MQ Spirit Temple GS Leever Room"
+      ]
     },
     {
       "coords": [678, 407],
       "image": "pot",
-      "codes": "TODO KF 030 :: unnamed_stack > Spirit Temple > MQ Spirit > MQ Spirit Pots :: Pasted Layer #29 :: 001-001-003-000.png"
+      "codes": [
+        "TODO KF 030 :: unnamed_stack > Spirit Temple > MQ Spirit > MQ Spirit Pots :: Pasted Layer #29 :: 001-001-003-000.png",
+        "OOT MQ Spirit Temple Pot Statue Room Lower 2",
+        "OOT MQ Spirit Temple Pot Statue Room Lower 3"
+      ]
     },
     {
       "coords": [678, 423],
-      "image": "pot",
-      "codes": "TODO KF 031 :: unnamed_stack > Spirit Temple > MQ Spirit > MQ Spirit Pots :: Pasted Layer #30 :: 001-001-003-001.png"
+      "image": "flying_pot",
+      "codes": [
+        "TODO KF 031 :: unnamed_stack > Spirit Temple > MQ Spirit > MQ Spirit Pots :: Pasted Layer #30 :: 001-001-003-001.png",
+        "OOT MQ Spirit Temple Flying Pot Statue Room Lower"
+      ]
     },
     {
       "coords": [637, 434],
-      "image": "pot",
-      "codes": "TODO KF 032 :: unnamed_stack > Spirit Temple > MQ Spirit > MQ Spirit Pots :: Pasted Layer #31 :: 001-001-003-002.png"
+      "image": "flying_pot",
+      "codes": [
+        "TODO KF 032 :: unnamed_stack > Spirit Temple > MQ Spirit > MQ Spirit Pots :: Pasted Layer #31 :: 001-001-003-002.png",
+        "OOT MQ Spirit Temple Flying Pot Statue Room Stairs"
+      ]
     },
     {
       "coords": [613, 414],
       "image": "pot",
-      "codes": "TODO KF 033 :: unnamed_stack > Spirit Temple > MQ Spirit > MQ Spirit Pots :: Pasted Layer #32 :: 001-001-003-003.png"
+      "codes": [
+        "TODO KF 033 :: unnamed_stack > Spirit Temple > MQ Spirit > MQ Spirit Pots :: Pasted Layer #32 :: 001-001-003-003.png",
+        "OOT MQ Spirit Temple Pot Statue Room Lower 1"
+      ]
     },
     {
       "coords": [683, 162],
       "image": "pot",
-      "codes": "TODO KF 034 :: unnamed_stack > Spirit Temple > MQ Spirit > MQ Spirit Pots :: Pasted Layer #33 :: 001-001-003-004.png"
+      "codes": [
+        "TODO KF 034 :: unnamed_stack > Spirit Temple > MQ Spirit > MQ Spirit Pots :: Pasted Layer #33 :: 001-001-003-004.png",
+        "OOT MQ Spirit Temple Pot Top Near Triforce Symbol 1",
+        "OOT MQ Spirit Temple Pot Top Near Triforce Symbol 2"
+      ]
     },
     {
       "coords": [651, 163],
       "image": "pot",
-      "codes": "TODO KF 035 :: unnamed_stack > Spirit Temple > MQ Spirit > MQ Spirit Pots :: Pasted Layer #34 :: 001-001-003-005.png"
+      "codes": [
+        "TODO KF 035 :: unnamed_stack > Spirit Temple > MQ Spirit > MQ Spirit Pots :: Pasted Layer #34 :: 001-001-003-005.png",
+        "OOT MQ Spirit Temple Pot Top Near Lowering Platform 1",
+        "OOT MQ Spirit Temple Pot Top Near Lowering Platform 2",
+        "OOT MQ Spirit Temple Pot Top Near Lowering Platform 3",
+        "OOT MQ Spirit Temple Pot Top Near Lowering Platform 4"
+      ]
     },
     {
       "coords": [373, 223],
       "image": "pot",
-      "codes": "TODO KF 036 :: unnamed_stack > Spirit Temple > MQ Spirit > MQ Spirit Pots :: Pasted Layer #35 :: 001-001-003-006.png"
+      "codes": [
+        "TODO KF 036 :: unnamed_stack > Spirit Temple > MQ Spirit > MQ Spirit Pots :: Pasted Layer #35 :: 001-001-003-006.png",
+        "OOT MQ Spirit Temple Pot Topmost Climb 1",
+        "OOT MQ Spirit Temple Pot Topmost Climb 2"
+      ]
     },
     {
       "coords": [315, 122],
       "image": "pot",
-      "codes": "TODO KF 037 :: unnamed_stack > Spirit Temple > MQ Spirit > MQ Spirit Pots :: Pasted Layer #36 :: 001-001-003-007.png"
+      "codes": [
+        "TODO KF 037 :: unnamed_stack > Spirit Temple > MQ Spirit > MQ Spirit Pots :: Pasted Layer #36 :: 001-001-003-007.png",
+        "OOT MQ Spirit Temple Pot Statue Room Upper 1",
+        "OOT MQ Spirit Temple Pot Statue Room Upper 2"
+      ]
     },
     {
       "coords": [315, 136],
-      "image": "pot",
-      "codes": "TODO KF 038 :: unnamed_stack > Spirit Temple > MQ Spirit > MQ Spirit Pots :: Pasted Layer #37 :: 001-001-003-008.png"
+      "image": "flying_pot",
+      "codes": [
+        "TODO KF 038 :: unnamed_stack > Spirit Temple > MQ Spirit > MQ Spirit Pots :: Pasted Layer #37 :: 001-001-003-008.png",
+        "OOT MQ Spirit Temple Flying Pot Statue Room Upper"
+      ]
     },
     {
       "coords": [259, 191],
       "image": "pot",
-      "codes": "TODO KF 039 :: unnamed_stack > Spirit Temple > MQ Spirit > MQ Spirit Pots :: Pasted Layer #38 :: 001-001-003-009.png"
+      "codes": [
+        "TODO KF 039 :: unnamed_stack > Spirit Temple > MQ Spirit > MQ Spirit Pots :: Pasted Layer #38 :: 001-001-003-009.png",
+        "OOT MQ Spirit Temple Pot Child Sun Room 1"
+      ]
     },
     {
       "coords": [259, 231],
       "image": "pot",
-      "codes": "TODO KF 040 :: unnamed_stack > Spirit Temple > MQ Spirit > MQ Spirit Pots :: Pasted Layer #39 :: 001-001-003-010.png"
+      "codes": [
+        "TODO KF 040 :: unnamed_stack > Spirit Temple > MQ Spirit > MQ Spirit Pots :: Pasted Layer #39 :: 001-001-003-010.png",
+        "OOT MQ Spirit Temple Pot Child Sun Room 2"
+      ]
     },
     {
       "coords": [280, 369],
       "image": "pot",
-      "codes": "TODO KF 041 :: unnamed_stack > Spirit Temple > MQ Spirit > MQ Spirit Pots :: Pasted Layer #40 :: 001-001-003-011.png"
+      "codes": [
+        "TODO KF 041 :: unnamed_stack > Spirit Temple > MQ Spirit > MQ Spirit Pots :: Pasted Layer #40 :: 001-001-003-011.png",
+        "OOT MQ Spirit Temple Pot Child Back 1",
+        "OOT MQ Spirit Temple Pot Child Back 2",
+        "OOT MQ Spirit Temple Pot Child Back 3",
+        "OOT MQ Spirit Temple Pot Child Back 4"
+      ]
     },
     {
       "coords": [319, 404],
       "image": "pot",
-      "codes": "TODO KF 042 :: unnamed_stack > Spirit Temple > MQ Spirit > MQ Spirit Pots :: Pasted Layer #41 :: 001-001-003-012.png"
+      "codes": [
+        "TODO KF 042 :: unnamed_stack > Spirit Temple > MQ Spirit > MQ Spirit Pots :: Pasted Layer #41 :: 001-001-003-012.png",
+        "OOT MQ Spirit Temple Pot Child Boulders 1",
+        "OOT MQ Spirit Temple Pot Child Boulders 2"
+      ]
     },
     {
       "coords": [281, 412],
       "image": "pot",
-      "codes": "TODO KF 043 :: unnamed_stack > Spirit Temple > MQ Spirit > MQ Spirit Pots :: Pasted Layer #42 :: 001-001-003-013.png"
+      "codes": [
+        "TODO KF 043 :: unnamed_stack > Spirit Temple > MQ Spirit > MQ Spirit Pots :: Pasted Layer #42 :: 001-001-003-013.png",
+        "OOT MQ Spirit Temple Pot Child Climb"
+      ]
     },
     {
       "coords": [290, 481],
       "image": "pot",
-      "codes": "TODO KF 044 :: unnamed_stack > Spirit Temple > MQ Spirit > MQ Spirit Pots :: Pasted Layer #43 :: 001-001-003-014.png"
+      "codes": [
+        "TODO KF 044 :: unnamed_stack > Spirit Temple > MQ Spirit > MQ Spirit Pots :: Pasted Layer #43 :: 001-001-003-014.png",
+        "OOT MQ Spirit Temple Pot Child Entrance"
+      ]
     },
     {
       "coords": [412, 428],
       "image": "pot",
-      "codes": "TODO KF 045 :: unnamed_stack > Spirit Temple > MQ Spirit > MQ Spirit Pots :: Pasted Layer #44 :: 001-001-003-015.png"
+      "codes": [
+        "TODO KF 045 :: unnamed_stack > Spirit Temple > MQ Spirit > MQ Spirit Pots :: Pasted Layer #44 :: 001-001-003-015.png",
+        "OOT MQ Spirit Temple Pot Adult Climb 1",
+        "OOT MQ Spirit Temple Pot Adult Climb 2"
+      ]
     },
     {
       "coords": [355, 519],
       "image": "pot",
-      "codes": "TODO KF 046 :: unnamed_stack > Spirit Temple > MQ Spirit > MQ Spirit Pots :: Pasted Layer #45 :: 001-001-003-016.png"
+      "codes": [
+        "TODO KF 046 :: unnamed_stack > Spirit Temple > MQ Spirit > MQ Spirit Pots :: Pasted Layer #45 :: 001-001-003-016.png",
+        "OOT MQ Spirit Temple Pot Entrance 3",
+        "OOT MQ Spirit Temple Pot Entrance 4"
+      ]
     },
     {
       "coords": [330, 519],
       "image": "pot",
-      "codes": "TODO KF 047 :: unnamed_stack > Spirit Temple > MQ Spirit > MQ Spirit Pots :: Pasted Layer #46 :: 001-001-003-017.png"
+      "codes": [
+        "TODO KF 047 :: unnamed_stack > Spirit Temple > MQ Spirit > MQ Spirit Pots :: Pasted Layer #46 :: 001-001-003-017.png",
+        "OOT MQ Spirit Temple Pot Entrance 1",
+        "OOT MQ Spirit Temple Pot Entrance 2"
+      ]
     },
     {
       "coords": [631, 425],
-      "image": "spirit_medallion",
-      "codes": "TODO KF 048 :: unnamed_stack > Spirit Temple > MQ Spirit > MQ Spirit Crates :: Pasted Layer #47 :: 001-001-004-000.png"
+      "image": "small_crate",
+      "codes": [
+        "TODO KF 048 :: unnamed_stack > Spirit Temple > MQ Spirit > MQ Spirit Crates :: Pasted Layer #47 :: 001-001-004-000.png",
+        "OOT MQ Spirit Temple Giant Statue Room Small Crate"
+      ]
     },
     {
       "coords": [670, 391],
-      "image": "spirit_medallion",
-      "codes": "TODO KF 049 :: unnamed_stack > Spirit Temple > MQ Spirit > MQ Spirit Crates :: Pasted Layer #48 :: 001-001-004-001.png"
+      "image": "crate",
+      "codes": [
+        "TODO KF 049 :: unnamed_stack > Spirit Temple > MQ Spirit > MQ Spirit Crates :: Pasted Layer #48 :: 001-001-004-001.png",
+        "OOT MQ Spirit Temple Giant Statue Room Large Crate 1",
+        "OOT MQ Spirit Temple Giant Statue Room Large Crate 2"
+      ]
     },
     {
       "coords": [637, 148],
-      "image": "spirit_medallion",
-      "codes": "TODO KF 050 :: unnamed_stack > Spirit Temple > MQ Spirit > MQ Spirit Crates :: Pasted Layer #49 :: 001-001-004-002.png"
+      "image": "crate",
+      "codes": [
+        "TODO KF 050 :: unnamed_stack > Spirit Temple > MQ Spirit > MQ Spirit Crates :: Pasted Layer #49 :: 001-001-004-002.png",
+        "OOT MQ Spirit Temple Top Near Lowering Platform Large Crate 1",
+        "OOT MQ Spirit Temple Top Near Lowering Platform Large Crate 2",
+        "OOT MQ Spirit Temple Top Near Lowering Platform Large Crate 3",
+        "OOT MQ Spirit Temple Top Near Lowering Platform Large Crate 4"
+      ]
     },
     {
       "coords": [420, 221],
-      "image": "spirit_medallion",
-      "codes": "TODO KF 051 :: unnamed_stack > Spirit Temple > MQ Spirit > MQ Spirit Crates :: Pasted Layer #50 :: 001-001-004-003.png"
+      "image": "small_crate",
+      "codes": [
+        "TODO KF 051 :: unnamed_stack > Spirit Temple > MQ Spirit > MQ Spirit Crates :: Pasted Layer #50 :: 001-001-004-003.png",
+        "OOT MQ Spirit Temple Beamos Room Small Crate"
+      ]
     },
     {
       "coords": [280, 455],
       "image": "heart",
-      "codes": "TODO KF 052 :: unnamed_stack > Spirit Temple > MQ Spirit > MQ Spirit Freestanding Hearts :: Pasted Layer #51 :: 001-001-005-000.png"
+      "codes": [
+        "TODO KF 052 :: unnamed_stack > Spirit Temple > MQ Spirit > MQ Spirit Freestanding Hearts :: Pasted Layer #51 :: 001-001-005-000.png",
+        "OOT MQ Spirit Temple Heart 1",
+        "OOT MQ Spirit Temple Heart 2"
+      ]
     },
     {
       "coords": [376, 482],
-      "image": "silver_boulder_grotto",
-      "codes": "TODO KF 053 :: unnamed_stack > Spirit Temple > MQ Spirit > MQ Spirit Silver :: Pasted Layer #52 :: 001-001-006-000.png"
+      "image": "silver_rupee",
+      "codes": [
+        "TODO KF 053 :: unnamed_stack > Spirit Temple > MQ Spirit > MQ Spirit Silver :: Pasted Layer #52 :: 001-001-006-000.png",
+        "OOT MQ Spirit Temple SR Lobby After Water Near Door",
+        "OOT MQ Spirit Temple SR Lobby After Water Near Stairs",
+        "OOT MQ Spirit Temple SR Lobby In Water",
+        "OOT MQ Spirit Temple SR Lobby Rock Left",
+        "OOT MQ Spirit Temple SR Lobby Rock Right"
+      ]
     },
     {
       "coords": [383, 222],
-      "image": "silver_boulder_grotto",
-      "codes": "TODO KF 054 :: unnamed_stack > Spirit Temple > MQ Spirit > MQ Spirit Silver :: Pasted Layer #53 :: 001-001-006-001.png"
+      "image": "silver_rupee",
+      "codes": [
+        "TODO KF 054 :: unnamed_stack > Spirit Temple > MQ Spirit > MQ Spirit Silver :: Pasted Layer #53 :: 001-001-006-001.png",
+        "OOT MQ Spirit Temple SR Adult Bottom-Center",
+        "OOT MQ Spirit Temple SR Adult Bottom",
+        "OOT MQ Spirit Temple SR Adult Center-Top",
+        "OOT MQ Spirit Temple SR Adult Skulltula",
+        "OOT MQ Spirit Temple SR Adult Top"
+      ]
     },
     {
       "coords": [459, 199],
       "image": "big_fairy_spot",
-      "codes": "TODO KF 055 :: unnamed_stack > Spirit Temple > MQ Spirit > MQ Spirit Big Fairy :: Pasted Layer #54 :: 001-001-007-000.png"
+      "codes": [
+        "TODO KF 055 :: unnamed_stack > Spirit Temple > MQ Spirit > MQ Spirit Big Fairy :: Pasted Layer #54 :: 001-001-007-000.png",
+        "OOT MQ Spirit Temple Dinolfos Room Big Fairy"
+      ]
     },
     {
       "coords": [455, 229],
-      "image": "wonder_item_random",
-      "codes": "TODO KF 056 :: unnamed_stack > Spirit Temple > MQ Spirit > MQ Spirit Wonder :: Pasted Layer #55 :: 001-001-008-000.png"
+      "image": "wonder_item_heart",
+      "codes": [
+        "TODO KF 056 :: unnamed_stack > Spirit Temple > MQ Spirit > MQ Spirit Wonder :: Pasted Layer #55 :: 001-001-008-000.png",
+        "OOT MQ Spirit Temple Wonder Item Chest Hammer",
+        "OOT MQ Spirit Temple Wonder Item Chest Slash"
+      ]
     }
   ]
 }

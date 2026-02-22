@@ -8,22 +8,22 @@
     {
       "coords": [533, 355],
       "image": "chest",
-      "codes": ["OOT Ganon Castle Forest Chest"]
+      "codes": "OOT Ganon Castle Forest Chest"
     },
     {
       "coords": [448, 360],
       "image": "chest",
-      "codes": ["OOT Ganon Castle Spirit Chest 2"]
+      "codes": "OOT Ganon Castle Spirit Chest 2"
     },
     {
       "coords": [461, 344],
       "image": "chest",
-      "codes": ["OOT Ganon Castle Spirit Chest 1"]
+      "codes": "OOT Ganon Castle Spirit Chest 1"
     },
     {
       "coords": [440, 294],
       "image": "chest",
-      "codes": ["OOT Ganon Castle Light Chest Lullaby"]
+      "codes": "OOT Ganon Castle Light Chest Lullaby"
     },
     {
       "coords": [455, 307],
@@ -41,27 +41,27 @@
     {
       "coords": [561, 322],
       "image": "chest",
-      "codes": ["OOT Ganon Castle Water Chest 2"]
+      "codes": "OOT Ganon Castle Water Chest 2"
     },
     {
       "coords": [561, 292],
       "image": "chest",
-      "codes": ["OOT Ganon Castle Water Chest 1"]
+      "codes": "OOT Ganon Castle Water Chest 1"
     },
     {
       "coords": [496, 293],
       "image": "chest",
-      "codes": ["OOT Ganon Castle Boss Key"]
+      "codes": "OOT Ganon Castle Boss Key"
     },
     {
       "coords": [523, 247],
       "image": "chest",
-      "codes": ["OOT Ganon Castle Shadow Chest 1"]
+      "codes": "OOT Ganon Castle Shadow Chest 1"
     },
     {
       "coords": [562, 227],
       "image": "chest",
-      "codes": ["OOT Ganon Castle Shadow Chest 2"]
+      "codes": "OOT Ganon Castle Shadow Chest 2"
     },
     {
       "coords": [504, 345],
@@ -76,102 +76,102 @@
     {
       "coords": [556, 394],
       "image": "silver_rupee",
-      "codes": ["OOT Ganon Castle SR Forest Back Middle"]
+      "codes": "OOT Ganon Castle SR Forest Back Middle"
     },
     {
       "coords": [549, 402],
       "image": "silver_rupee",
-      "codes": ["OOT Ganon Castle SR Forest Back Right"]
+      "codes": "OOT Ganon Castle SR Forest Back Right"
     },
     {
       "coords": [558, 378],
       "image": "silver_rupee",
-      "codes": ["OOT Ganon Castle SR Forest Center Left"]
+      "codes": "OOT Ganon Castle SR Forest Center Left"
     },
     {
       "coords": [542, 385],
       "image": "silver_rupee",
-      "codes": ["OOT Ganon Castle SR Forest Center Right"]
+      "codes": "OOT Ganon Castle SR Forest Center Right"
     },
     {
       "coords": [550, 370],
       "image": "silver_rupee",
-      "codes": ["OOT Ganon Castle SR Forest Front"]
+      "codes": "OOT Ganon Castle SR Forest Front"
     },
     {
       "coords": [477, 352],
       "image": "silver_rupee",
-      "codes": ["OOT Ganon Castle SR Spirit Center Midair"]
+      "codes": "OOT Ganon Castle SR Spirit Center Midair"
     },
     {
       "coords": [474, 358],
       "image": "silver_rupee",
-      "codes": ["OOT Ganon Castle SR Spirit Center Bottom"]
+      "codes": "OOT Ganon Castle SR Spirit Center Bottom"
     },
     {
       "coords": [466, 356],
       "image": "silver_rupee",
-      "codes": ["OOT Ganon Castle SR Spirit Back Right"]
+      "codes": "OOT Ganon Castle SR Spirit Back Right"
     },
     {
       "coords": [477, 364],
       "image": "silver_rupee",
-      "codes": ["OOT Ganon Castle SR Spirit Back Left"]
+      "codes": "OOT Ganon Castle SR Spirit Back Left"
     },
     {
       "coords": [474, 344],
       "image": "silver_rupee",
-      "codes": ["OOT Ganon Castle SR Spirit Front Right"]
+      "codes": "OOT Ganon Castle SR Spirit Front Right"
     },
     {
       "coords": [421, 307],
       "image": "silver_rupee",
-      "codes": ["OOT Ganon Castle SR Light Center Top"]
+      "codes": "OOT Ganon Castle SR Light Center Top"
     },
     {
       "coords": [425, 300],
       "image": "silver_rupee",
-      "codes": ["OOT Ganon Castle SR Light Center Right"]
+      "codes": "OOT Ganon Castle SR Light Center Right"
     },
     {
       "coords": [425, 293],
       "image": "silver_rupee",
-      "codes": ["OOT Ganon Castle SR Light Alcove Right"]
+      "codes": "OOT Ganon Castle SR Light Alcove Right"
     },
     {
       "coords": [425, 314],
       "image": "silver_rupee",
-      "codes": ["OOT Ganon Castle SR Light Center Left"]
+      "codes": "OOT Ganon Castle SR Light Center Left"
     },
     {
       "coords": [425, 321],
       "image": "silver_rupee",
-      "codes": ["OOT Ganon Castle SR Light Alcove Left"]
+      "codes": "OOT Ganon Castle SR Light Alcove Left"
     },
     {
       "coords": [448, 245],
       "image": "silver_rupee",
-      "codes": ["OOT Ganon Castle SR Fire Black Pillar"]
+      "codes": "OOT Ganon Castle SR Fire Black Pillar"
     },
     {
       "coords": [474, 226],
       "image": "silver_rupee",
-      "codes": ["OOT Ganon Castle SR Fire Back Right"]
+      "codes": "OOT Ganon Castle SR Fire Back Right"
     },
     {
       "coords": [462, 260],
       "image": "silver_rupee",
-      "codes": ["OOT Ganon Castle SR Fire Left"]
+      "codes": "OOT Ganon Castle SR Fire Left"
     },
     {
       "coords": [486, 245],
       "image": "silver_rupee",
-      "codes": ["OOT Ganon Castle SR Fire Far Right"]
+      "codes": "OOT Ganon Castle SR Fire Far Right"
     },
     {
       "coords": [484, 256],
       "image": "silver_rupee",
-      "codes": ["OOT Ganon Castle SR Fire Front Right"]
+      "codes": "OOT Ganon Castle SR Fire Front Right"
     },
     {
       "coords": [565, 411],
@@ -200,7 +200,7 @@
     {
       "coords": [593, 317],
       "image": "pot",
-      "codes": ["OOT Ganon Castle Pot Water"]
+      "codes": "OOT Ganon Castle Pot Water"
     },
     {
       "coords": [574, 185],
@@ -253,7 +253,7 @@
     {
       "coords": [432, 306],
       "image": "pot",
-      "codes": ["OOT Ganon Castle Pot Light"]
+      "codes": "OOT Ganon Castle Pot Light"
     },
     {
       "coords": [382, 307],
@@ -275,12 +275,12 @@
     {
       "coords": [451, 237],
       "image": "heart",
-      "codes": ["OOT Ganon Castle Heart Fire"]
+      "codes": "OOT Ganon Castle Heart Fire"
     },
     {
       "coords": [486, 354],
       "image": "heart",
-      "codes": ["OOT Ganon Castle Heart Spirit"]
+      "codes": "OOT Ganon Castle Heart Spirit"
     },
     {
       "coords": [512, 339],
@@ -299,7 +299,7 @@
     {
       "coords": [480, 356],
       "image": "big_fairy_spot",
-      "codes": ["OOT Ganon Castle Spirit Big Fairy"]
+      "codes": "OOT Ganon Castle Spirit Big Fairy"
     },
     {
       "coords": [561, 307],
@@ -329,156 +329,313 @@
     {
       "coords": [560, 381],
       "image": "chest",
-      "codes": "TODO KF 001 :: unnamed_stack > Inside Ganon's Castle > MQ Ganon > MQ Ganon Checks :: Pasted Layer :: 001-001-001-000.png"
+      "codes": [
+        "TODO KF 001 :: unnamed_stack > Inside Ganon's Castle > MQ Ganon > MQ Ganon Checks :: Pasted Layer :: 001-001-001-000.png",
+        "OOT MQ Ganon Castle Forest Trial Second Chest"
+      ]
     },
     {
       "coords": [538, 372],
       "image": "chest",
-      "codes": "TODO KF 002 :: unnamed_stack > Inside Ganon's Castle > MQ Ganon > MQ Ganon Checks :: Pasted Layer #1 :: 001-001-001-001.png"
+      "codes": [
+        "TODO KF 002 :: unnamed_stack > Inside Ganon's Castle > MQ Ganon > MQ Ganon Checks :: Pasted Layer #1 :: 001-001-001-001.png",
+        "OOT MQ Ganon Castle Forest Trial First Chest"
+      ]
     },
     {
       "coords": [539, 356],
-      "image": "chest",
-      "codes": "TODO KF 003 :: unnamed_stack > Inside Ganon's Castle > MQ Ganon > MQ Ganon Checks :: Pasted Layer #2 :: 001-001-001-002.png"
+      "image": "collectible",
+      "codes": [
+        "TODO KF 003 :: unnamed_stack > Inside Ganon's Castle > MQ Ganon > MQ Ganon Checks :: Pasted Layer #2 :: 001-001-001-002.png",
+        "OOT MQ Ganon Castle Forest Trial Key"
+      ]
     },
     {
       "coords": [468, 372],
       "image": "chest",
-      "codes": "TODO KF 004 :: unnamed_stack > Inside Ganon's Castle > MQ Ganon > MQ Ganon Checks :: Pasted Layer #3 :: 001-001-001-003.png"
+      "codes": [
+        "TODO KF 004 :: unnamed_stack > Inside Ganon's Castle > MQ Ganon > MQ Ganon Checks :: Pasted Layer #3 :: 001-001-001-003.png",
+        "OOT MQ Ganon Castle Spirit Trial Back Left Sun Chest",
+        "OOT MQ Ganon Castle Spirit Trial Back Right Sun Chest",
+        "OOT MQ Ganon Castle Spirit Trial Front Left Sun Chest",
+        "OOT MQ Ganon Castle Spirit Trial Gold Gauntlets Chest"
+      ]
     },
     {
       "coords": [445, 356],
       "image": "chest",
-      "codes": "TODO KF 005 :: unnamed_stack > Inside Ganon's Castle > MQ Ganon > MQ Ganon Checks :: Pasted Layer #4 :: 001-001-001-004.png"
+      "codes": [
+        "TODO KF 005 :: unnamed_stack > Inside Ganon's Castle > MQ Ganon > MQ Ganon Checks :: Pasted Layer #4 :: 001-001-001-004.png",
+        "OOT MQ Ganon Castle Spirit Trial Second Chest"
+      ]
     },
     {
       "coords": [461, 345],
       "image": "chest",
-      "codes": "TODO KF 006 :: unnamed_stack > Inside Ganon's Castle > MQ Ganon > MQ Ganon Checks :: Pasted Layer #5 :: 001-001-001-005.png"
+      "codes": [
+        "TODO KF 006 :: unnamed_stack > Inside Ganon's Castle > MQ Ganon > MQ Ganon Checks :: Pasted Layer #5 :: 001-001-001-005.png",
+        "OOT MQ Ganon Castle Spirit Trial First Chest"
+      ]
     },
     {
       "coords": [552, 297],
       "image": "chest",
-      "codes": "TODO KF 007 :: unnamed_stack > Inside Ganon's Castle > MQ Ganon > MQ Ganon Checks :: Pasted Layer #6 :: 001-001-001-006.png"
+      "codes": [
+        "TODO KF 007 :: unnamed_stack > Inside Ganon's Castle > MQ Ganon > MQ Ganon Checks :: Pasted Layer #6 :: 001-001-001-006.png",
+        "OOT MQ Ganon Castle Water Trial Chest"
+      ]
     },
     {
       "coords": [439, 300],
       "image": "chest",
-      "codes": "TODO KF 008 :: unnamed_stack > Inside Ganon's Castle > MQ Ganon > MQ Ganon Checks :: Pasted Layer #7 :: 001-001-001-007.png"
+      "codes": [
+        "TODO KF 008 :: unnamed_stack > Inside Ganon's Castle > MQ Ganon > MQ Ganon Checks :: Pasted Layer #7 :: 001-001-001-007.png",
+        "OOT MQ Ganon Castle Light Trial Chest"
+      ]
     },
     {
       "coords": [496, 293],
       "image": "chest",
-      "codes": "TODO KF 009 :: unnamed_stack > Inside Ganon's Castle > MQ Ganon > MQ Ganon Checks :: Pasted Layer #8 :: 001-001-001-008.png"
+      "codes": [
+        "TODO KF 009 :: unnamed_stack > Inside Ganon's Castle > MQ Ganon > MQ Ganon Checks :: Pasted Layer #8 :: 001-001-001-008.png",
+        "OOT Ganon Castle Boss Key"
+      ]
     },
     {
       "coords": [522, 248],
       "image": "chest",
-      "codes": "TODO KF 010 :: unnamed_stack > Inside Ganon's Castle > MQ Ganon > MQ Ganon Checks :: Pasted Layer #9 :: 001-001-001-009.png"
+      "codes": [
+        "TODO KF 010 :: unnamed_stack > Inside Ganon's Castle > MQ Ganon > MQ Ganon Checks :: Pasted Layer #9 :: 001-001-001-009.png",
+        "OOT MQ Ganon Castle Shadow Trial Bomb Flower Chest"
+      ]
     },
     {
       "coords": [560, 229],
       "image": "chest",
-      "codes": "TODO KF 011 :: unnamed_stack > Inside Ganon's Castle > MQ Ganon > MQ Ganon Checks :: Pasted Layer #10 :: 001-001-001-010.png"
+      "codes": [
+        "TODO KF 011 :: unnamed_stack > Inside Ganon's Castle > MQ Ganon > MQ Ganon Checks :: Pasted Layer #10 :: 001-001-001-010.png",
+        "OOT MQ Ganon Castle Shadow Trial Switch Chest"
+      ]
     },
     {
       "coords": [504, 345],
       "image": "business_scrub_oot",
-      "codes": "TODO KF 012 :: unnamed_stack > Inside Ganon's Castle > MQ Ganon > MQ Ganon Scrubs :: Pasted Layer #11 :: 001-001-002-000.png"
+      "codes": [
+        "TODO KF 012 :: unnamed_stack > Inside Ganon's Castle > MQ Ganon > MQ Ganon Scrubs :: Pasted Layer #11 :: 001-001-002-000.png",
+        "OOT MQ Ganon Castle Center Scrub",
+        "OOT MQ Ganon Castle Left-Center Scrub",
+        "OOT MQ Ganon Castle Leftmost Scrub",
+        "OOT MQ Ganon Castle Right-Center Scrub",
+        "OOT MQ Ganon Castle Rightmost Scrub"
+      ]
     },
     {
       "coords": [593, 307],
-      "image": "silver_boulder_grotto",
-      "codes": "TODO KF 013 :: unnamed_stack > Inside Ganon's Castle > MQ Ganon > MQ Ganon Silver :: Pasted Layer #12 :: 001-001-003-000.png"
+      "image": "silver_rupee",
+      "codes": [
+        "TODO KF 013 :: unnamed_stack > Inside Ganon's Castle > MQ Ganon > MQ Ganon Silver :: Pasted Layer #12 :: 001-001-003-000.png",
+        "OOT MQ Ganon Castle SR Water Above Ground",
+        "OOT MQ Ganon Castle SR Water Alcove",
+        "OOT MQ Ganon Castle SR Water Deep Hole",
+        "OOT MQ Ganon Castle SR Water Shallow Hole",
+        "OOT MQ Ganon Castle SR Water Under Alcove"
+      ]
     },
     {
       "coords": [560, 210],
-      "image": "silver_boulder_grotto",
-      "codes": "TODO KF 014 :: unnamed_stack > Inside Ganon's Castle > MQ Ganon > MQ Ganon Silver :: Pasted Layer #13 :: 001-001-003-001.png"
+      "image": "silver_rupee",
+      "codes": [
+        "TODO KF 014 :: unnamed_stack > Inside Ganon's Castle > MQ Ganon > MQ Ganon Silver :: Pasted Layer #13 :: 001-001-003-001.png",
+        "OOT MQ Ganon Castle SR Shadow Back-Center",
+        "OOT MQ Ganon Castle SR Shadow Back-Left",
+        "OOT MQ Ganon Castle SR Shadow Front-Center",
+        "OOT MQ Ganon Castle SR Shadow Front-Right",
+        "OOT MQ Ganon Castle SR Shadow Middle"
+      ]
     },
     {
       "coords": [472, 252],
-      "image": "silver_boulder_grotto",
-      "codes": "TODO KF 015 :: unnamed_stack > Inside Ganon's Castle > MQ Ganon > MQ Ganon Silver :: Pasted Layer #14 :: 001-001-003-002.png"
+      "image": "silver_rupee",
+      "codes": [
+        "TODO KF 015 :: unnamed_stack > Inside Ganon's Castle > MQ Ganon > MQ Ganon Silver :: Pasted Layer #14 :: 001-001-003-002.png",
+        "OOT MQ Ganon Castle SR Fire Back-Left",
+        "OOT MQ Ganon Castle SR Fire Center-Left",
+        "OOT MQ Ganon Castle SR Fire Front-Left",
+        "OOT MQ Ganon Castle SR Fire High Above Lava",
+        "OOT MQ Ganon Castle SR Fire Under Pillar"
+      ]
     },
     {
       "coords": [555, 312],
       "image": "heart",
-      "codes": "TODO KF 016 :: unnamed_stack > Inside Ganon's Castle > MQ Ganon > MQ Ganon Freestanding Hearts :: Pasted Layer #15 :: 001-001-004-000.png"
+      "codes": [
+        "TODO KF 016 :: unnamed_stack > Inside Ganon's Castle > MQ Ganon > MQ Ganon Freestanding Hearts :: Pasted Layer #15 :: 001-001-004-000.png",
+        "OOT MQ Ganon Castle Heart Water"
+      ]
     },
     {
       "coords": [425, 306],
       "image": "heart",
-      "codes": "TODO KF 017 :: unnamed_stack > Inside Ganon's Castle > MQ Ganon > MQ Ganon Freestanding Hearts :: Pasted Layer #16 :: 001-001-004-001.png"
+      "codes": [
+        "TODO KF 017 :: unnamed_stack > Inside Ganon's Castle > MQ Ganon > MQ Ganon Freestanding Hearts :: Pasted Layer #16 :: 001-001-004-001.png",
+        "OOT MQ Ganon Castle Heart Light 1",
+        "OOT MQ Ganon Castle Heart Light 2"
+      ]
     },
     {
       "coords": [504, 333],
-      "image": "collectible",
-      "codes": "TODO KF 018 :: unnamed_stack > Inside Ganon's Castle > MQ Ganon > MQ Ganon Fairies :: Pasted Layer #17 :: 001-001-005-000.png"
+      "image": "fairy",
+      "codes": [
+        "TODO KF 018 :: unnamed_stack > Inside Ganon's Castle > MQ Ganon > MQ Ganon Fairies :: Pasted Layer #17 :: 001-001-005-000.png",
+        "OOT MQ Ganon Castle Fairy Fountain Fairy 1",
+        "OOT MQ Ganon Castle Fairy Fountain Fairy 2",
+        "OOT MQ Ganon Castle Fairy Fountain Fairy 3",
+        "OOT MQ Ganon Castle Fairy Fountain Fairy 4",
+        "OOT MQ Ganon Castle Fairy Fountain Fairy 5",
+        "OOT MQ Ganon Castle Fairy Fountain Fairy 6",
+        "OOT MQ Ganon Castle Fairy Fountain Fairy 7",
+        "OOT MQ Ganon Castle Fairy Fountain Fairy 8"
+      ]
     },
     {
       "coords": [512, 293],
       "image": "pot",
-      "codes": "TODO KF 019 :: unnamed_stack > Inside Ganon's Castle > MQ Ganon > MQ Ganon Pots :: Pasted Layer #18 :: 001-001-006-000.png"
+      "codes": [
+        "TODO KF 019 :: unnamed_stack > Inside Ganon's Castle > MQ Ganon > MQ Ganon Pots :: Pasted Layer #18 :: 001-001-006-000.png",
+        "OOT Ganon Tower Pot 01",
+        "OOT Ganon Tower Pot 02",
+        "OOT Ganon Tower Pot 03",
+        "OOT Ganon Tower Pot 04",
+        "OOT Ganon Tower Pot 05",
+        "OOT Ganon Tower Pot 06",
+        "OOT Ganon Tower Pot 07",
+        "OOT Ganon Tower Pot 08",
+        "OOT Ganon Tower Pot 09",
+        "OOT Ganon Tower Pot 10",
+        "OOT Ganon Tower Pot 11",
+        "OOT Ganon Tower Pot 12",
+        "OOT Ganon Tower Pot 13",
+        "OOT Ganon Tower Pot 14",
+        "OOT Ganon Tower Pot 15",
+        "OOT Ganon Tower Pot 16",
+        "OOT Ganon Tower Pot 17",
+        "OOT Ganon Tower Pot 18"
+      ]
     },
     {
       "coords": [460, 383],
       "image": "pot",
-      "codes": "TODO KF 020 :: unnamed_stack > Inside Ganon's Castle > MQ Ganon > MQ Ganon Pots :: Pasted Layer #19 :: 001-001-006-001.png"
+      "codes": [
+        "TODO KF 020 :: unnamed_stack > Inside Ganon's Castle > MQ Ganon > MQ Ganon Pots :: Pasted Layer #19 :: 001-001-006-001.png",
+        "OOT Ganon Castle Pot Spirit End 1",
+        "OOT Ganon Castle Pot Spirit End 2"
+      ]
     },
     {
       "coords": [565, 411],
       "image": "pot",
-      "codes": "TODO KF 021 :: unnamed_stack > Inside Ganon's Castle > MQ Ganon > MQ Ganon Pots :: Pasted Layer #20 :: 001-001-006-002.png"
+      "codes": [
+        "TODO KF 021 :: unnamed_stack > Inside Ganon's Castle > MQ Ganon > MQ Ganon Pots :: Pasted Layer #20 :: 001-001-006-002.png",
+        "OOT Ganon Castle Pot Forest End 1",
+        "OOT Ganon Castle Pot Forest End 2"
+      ]
     },
     {
       "coords": [625, 307],
       "image": "pot",
-      "codes": "TODO KF 022 :: unnamed_stack > Inside Ganon's Castle > MQ Ganon > MQ Ganon Pots :: Pasted Layer #21 :: 001-001-006-003.png"
+      "codes": [
+        "TODO KF 022 :: unnamed_stack > Inside Ganon's Castle > MQ Ganon > MQ Ganon Pots :: Pasted Layer #21 :: 001-001-006-003.png",
+        "OOT Ganon Castle Pot Water End 1",
+        "OOT Ganon Castle Pot Water End 2"
+      ]
     },
     {
       "coords": [382, 307],
       "image": "pot",
-      "codes": "TODO KF 023 :: unnamed_stack > Inside Ganon's Castle > MQ Ganon > MQ Ganon Pots :: Pasted Layer #22 :: 001-001-006-004.png"
+      "codes": [
+        "TODO KF 023 :: unnamed_stack > Inside Ganon's Castle > MQ Ganon > MQ Ganon Pots :: Pasted Layer #22 :: 001-001-006-004.png",
+        "OOT Ganon Castle Pot Light End 1",
+        "OOT Ganon Castle Pot Light End 2"
+      ]
     },
     {
       "coords": [438, 203],
       "image": "pot",
-      "codes": "TODO KF 024 :: unnamed_stack > Inside Ganon's Castle > MQ Ganon > MQ Ganon Pots :: Pasted Layer #23 :: 001-001-006-005.png"
+      "codes": [
+        "TODO KF 024 :: unnamed_stack > Inside Ganon's Castle > MQ Ganon > MQ Ganon Pots :: Pasted Layer #23 :: 001-001-006-005.png",
+        "OOT Ganon Castle Pot Fire End 1",
+        "OOT Ganon Castle Pot Fire End 2"
+      ]
     },
     {
       "coords": [574, 185],
       "image": "pot",
-      "codes": "TODO KF 025 :: unnamed_stack > Inside Ganon's Castle > MQ Ganon > MQ Ganon Pots :: Pasted Layer #24 :: 001-001-006-006.png"
+      "codes": [
+        "TODO KF 025 :: unnamed_stack > Inside Ganon's Castle > MQ Ganon > MQ Ganon Pots :: Pasted Layer #24 :: 001-001-006-006.png",
+        "OOT Ganon Castle Pot Shadow End 1",
+        "OOT Ganon Castle Pot Shadow End 2"
+      ]
     },
     {
       "coords": [542, 388],
-      "image": "wonder_item_random",
-      "codes": "TODO KF 026 :: unnamed_stack > Inside Ganon's Castle > MQ Ganon > MQ Ganon Wonder :: Pasted Layer #25 :: 001-001-007-000.png"
+      "image": "wonder_item_deku_nuts",
+      "codes": [
+        "TODO KF 026 :: unnamed_stack > Inside Ganon's Castle > MQ Ganon > MQ Ganon Wonder :: Pasted Layer #25 :: 001-001-007-000.png",
+        "OOT MQ Ganon Castle Wonder Item"
+      ]
     },
     {
       "coords": [561, 318],
-      "image": "collectible",
-      "codes": "TODO KF 027 :: unnamed_stack > Inside Ganon's Castle > MQ Ganon > MQ Ganon Icicles :: Pasted Layer #26 :: 001-001-008-000.png"
+      "image": "icicle",
+      "codes": [
+        "TODO KF 027 :: unnamed_stack > Inside Ganon's Castle > MQ Ganon > MQ Ganon Icicles :: Pasted Layer #26 :: 001-001-008-000.png",
+        "OOT MQ Ganon Castle Icicle Water 1",
+        "OOT MQ Ganon Castle Icicle Water 2",
+        "OOT MQ Ganon Castle Icicle Water 3",
+        "OOT MQ Ganon Castle Icicle Water 4",
+        "OOT MQ Ganon Castle Icicle Water 5",
+        "OOT MQ Ganon Castle Icicle Water 6",
+        "OOT MQ Ganon Castle Icicle Water 7",
+        "OOT MQ Ganon Castle Icicle Water 8"
+      ]
     },
     {
       "coords": [565, 295],
       "image": "red_ice",
-      "codes": "TODO KF 028 :: unnamed_stack > Inside Ganon's Castle > MQ Ganon > MQ Ganon Red Ice :: Pasted Layer #27 :: 001-001-009-000.png"
+      "codes": [
+        "TODO KF 028 :: unnamed_stack > Inside Ganon's Castle > MQ Ganon > MQ Ganon Red Ice :: Pasted Layer #27 :: 001-001-009-000.png",
+        "OOT MQ Ganon Castle Red Ice Water 1",
+        "OOT MQ Ganon Castle Red Ice Water 2",
+        "OOT MQ Ganon Castle Red Ice Water 3",
+        "OOT MQ Ganon Castle Red Ice Water 4",
+        "OOT MQ Ganon Castle Red Ice Water 5",
+        "OOT MQ Ganon Castle Red Ice Water 6",
+        "OOT MQ Ganon Castle Red Ice Water 7"
+      ]
     },
     {
       "coords": [593, 286],
       "image": "red_ice",
-      "codes": "TODO KF 029 :: unnamed_stack > Inside Ganon's Castle > MQ Ganon > MQ Ganon Red Ice :: Pasted Layer #28 :: 001-001-009-001.png"
+      "codes": [
+        "TODO KF 029 :: unnamed_stack > Inside Ganon's Castle > MQ Ganon > MQ Ganon Red Ice :: Pasted Layer #28 :: 001-001-009-001.png",
+        "OOT MQ Ganon Castle Red Ice Block Silver Rupee Room 1"
+      ]
     },
     {
       "coords": [603, 305],
       "image": "red_ice",
-      "codes": "TODO KF 030 :: unnamed_stack > Inside Ganon's Castle > MQ Ganon > MQ Ganon Red Ice :: Pasted Layer #29 :: 001-001-009-002.png"
+      "codes": [
+        "TODO KF 030 :: unnamed_stack > Inside Ganon's Castle > MQ Ganon > MQ Ganon Red Ice :: Pasted Layer #29 :: 001-001-009-002.png",
+        "OOT MQ Ganon Castle Red Ice Block Silver Rupee Room 2",
+        "OOT MQ Ganon Castle Red Ice Block Silver Rupee Room 3",
+        "OOT MQ Ganon Castle Red Ice Block Silver Rupee Room 4",
+        "OOT MQ Ganon Castle Red Ice Block Silver Rupee Room 5",
+        "OOT MQ Ganon Castle Red Ice Block Silver Rupee Room 6"
+      ]
     },
     {
       "coords": [505, 316],
-      "image": "overworld_entrance",
+      "image": "dungeon_entrance",
       "codes": "TODO KF 031 :: unnamed_stack > Inside Ganon's Castle > MQ Ganon > MQ Ganon Entrances :: Pasted Layer #30 :: 001-001-010-000.png"
     }
   ]
