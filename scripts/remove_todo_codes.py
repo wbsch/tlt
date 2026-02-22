@@ -54,7 +54,7 @@ def process_file(path: Path, write: bool, prettier: bool) -> tuple[int, bool]:
     try:
         data = json.loads(path.read_text(encoding="utf-8"))
     except json.JSONDecodeError as exc:
-        raise ValueError(f"Ungültiges JSON in {path}: {exc}") from exc
+        raise ValueError(f"Invalid JSON in {path}: {exc}") from exc
 
     removed = clean_node(data)
     changed = removed > 0
@@ -64,7 +64,7 @@ def process_file(path: Path, write: bool, prettier: bool) -> tuple[int, bool]:
         if prettier:
             ok = run_prettier_on_path(path)
             if not ok:
-                print(f"Prettier konnte nicht ausgeführt werden für {path} (nicht installiert oder fehlgeschlagen).")
+                print(f"Could not run Prettier for {path} (not installed or execution failed).")
 
     return removed, changed
 
@@ -82,26 +82,26 @@ def iter_json_files(target: Path):
 
 def main() -> int:
     parser = argparse.ArgumentParser(
-        description="Entfernt TODO-Einträge aus codes/Codes, wenn dort mehr als ein Eintrag vorhanden ist."
+        description="Removes TODO entries from codes/Codes when there is more than one entry."
     )
-    parser.add_argument("target", type=Path, help="Pfad zu einer JSON-Datei oder zu einem Verzeichnis")
+    parser.add_argument("target", type=Path, help="Path to a JSON file or a directory")
     parser.add_argument(
         "--write",
         action="store_true",
-        help="Änderungen in Dateien schreiben (ohne diese Option nur Vorschau)",
+        help="Write changes to files (without this option, preview only)",
     )
     parser.add_argument(
         "--no-prettier",
         dest="prettier",
         action="store_false",
-        help="Prettier vor dem Schreiben nicht ausführen",
+        help="Do not run Prettier before writing",
     )
     parser.set_defaults(prettier=True)
     args = parser.parse_args()
 
     target = args.target
     if not target.exists():
-        print(f"Pfad existiert nicht: {target}")
+        print(f"Path does not exist: {target}")
         return 1
 
     total_removed = 0
@@ -114,14 +114,14 @@ def main() -> int:
         if changed:
             changed_files += 1
             total_removed += removed
-            mode = "geschrieben" if args.write else "gefunden"
-            print(f"{file_path}: {removed} TODO-Einträge {mode}")
+            mode = "written" if args.write else "found"
+            print(f"{file_path}: {removed} TODO entries {mode}")
 
     print(
-        f"Fertig. Gescannte Dateien: {scanned_files}, geänderte Dateien: {changed_files}, entfernte TODO-Einträge: {total_removed}"
+        f"Done. Scanned files: {scanned_files}, changed files: {changed_files}, removed TODO entries: {total_removed}"
     )
     if not args.write:
-        print("Hinweis: Ohne --write wurden keine Dateien geändert.")
+        print("Note: Without --write, no files were changed.")
 
     return 0
 

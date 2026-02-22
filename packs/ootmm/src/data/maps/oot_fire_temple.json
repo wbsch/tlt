@@ -188,160 +188,102 @@
     {
       "coords": [740, 467],
       "image": "chest",
-      "codes": [
-        "TODO KF 001 :: unnamed_stack > Fire Temple > MQ Fire > MQ Fire Checks :: Pasted Layer :: 001-001-001-000.png",
-        "OOT MQ Fire Temple Compass Chest"
-      ]
+      "codes": ["OOT MQ Fire Temple Compass Chest"]
     },
     {
       "coords": [407, 539],
       "image": "chest",
-      "codes": [
-        "TODO KF 002 :: unnamed_stack > Fire Temple > MQ Fire > MQ Fire Checks :: Pasted Layer #1 :: 001-001-001-001.png",
-        "OOT MQ Fire Temple 1f Lava Room Goron Chest"
-      ]
+      "codes": ["OOT MQ Fire Temple 1f Lava Room Goron Chest"]
     },
     {
       "coords": [311, 503],
       "image": "chest",
-      "codes": [
-        "TODO KF 003 :: unnamed_stack > Fire Temple > MQ Fire > MQ Fire Checks :: Pasted Layer #2 :: 001-001-001-002.png",
-        "OOT MQ Fire Temple Pre-Boss Chest"
-      ]
+      "codes": ["OOT MQ Fire Temple Pre-Boss Chest"]
     },
     {
       "coords": [395, 400],
       "image": "chest",
-      "codes": [
-        "TODO KF 004 :: unnamed_stack > Fire Temple > MQ Fire > MQ Fire Checks :: Pasted Layer #3 :: 001-001-001-003.png",
-        "OOT MQ Fire Temple Boss Key Chest"
-      ]
+      "codes": ["OOT MQ Fire Temple Boss Key Chest"]
     },
     {
       "coords": [344, 417],
       "image": "chest",
-      "codes": [
-        "TODO KF 005 :: unnamed_stack > Fire Temple > MQ Fire > MQ Fire Checks :: Pasted Layer #4 :: 001-001-001-004.png",
-        "OOT MQ Fire Temple Hammer Chest"
-      ]
+      "codes": ["OOT MQ Fire Temple Hammer Chest"]
     },
     {
       "coords": [344, 440],
       "image": "chest",
-      "codes": [
-        "TODO KF 006 :: unnamed_stack > Fire Temple > MQ Fire > MQ Fire Checks :: Pasted Layer #5 :: 001-001-001-005.png",
-        "OOT MQ Fire Temple Map Chest"
-      ]
+      "codes": ["OOT MQ Fire Temple Map Chest"]
     },
     {
       "coords": [344, 455],
       "image": "chest",
-      "codes": [
-        "TODO KF 007 :: unnamed_stack > Fire Temple > MQ Fire > MQ Fire Checks :: Pasted Layer #6 :: 001-001-001-006.png",
-        "OOT MQ Fire Temple Early Lower Left Chest"
-      ]
+      "codes": ["OOT MQ Fire Temple Early Lower Left Chest"]
     },
     {
       "coords": [285, 466],
       "image": "heart_container",
-      "codes": [
-        "TODO KF 008 :: unnamed_stack > Fire Temple > MQ Fire > MQ Fire Checks :: Pasted Layer #7 :: 001-001-001-007.png",
-        "OOT Fire Temple Boss Container"
-      ]
+      "codes": ["OOT Fire Temple Boss Container"]
     },
     {
       "coords": [269, 466],
       "image": "fire_medallion",
-      "codes": [
-        "TODO KF 009 :: unnamed_stack > Fire Temple > MQ Fire > MQ Fire Checks :: Pasted Layer #8 :: 001-001-001-008.png",
-        "OOT Fire Temple Boss"
-      ]
+      "codes": ["OOT Fire Temple Boss"]
     },
     {
       "coords": [727, 217],
       "image": "chest",
-      "codes": [
-        "TODO KF 010 :: unnamed_stack > Fire Temple > MQ Fire > MQ Fire Checks :: Pasted Layer #9 :: 001-001-001-009.png",
-        "OOT MQ Fire Temple Topmost Chest"
-      ]
+      "codes": ["OOT MQ Fire Temple Topmost Chest"]
     },
     {
       "coords": [268, 251],
       "image": "chest",
-      "codes": [
-        "TODO KF 011 :: unnamed_stack > Fire Temple > MQ Fire > MQ Fire Checks :: Pasted Layer #10 :: 001-001-001-010.png",
-        "OOT MQ Fire Temple Maze Upper Chest"
-      ]
+      "codes": ["OOT MQ Fire Temple Maze Upper Chest"]
     },
     {
       "coords": [278, 236],
       "image": "chest",
-      "codes": [
-        "TODO KF 012 :: unnamed_stack > Fire Temple > MQ Fire > MQ Fire Checks :: Pasted Layer #11 :: 001-001-001-011.png",
-        "OOT MQ Fire Temple Maze Lower Chest"
-      ]
+      "codes": ["OOT MQ Fire Temple Maze Lower Chest"]
     },
     {
       "coords": [248, 134],
       "image": "chest",
-      "codes": [
-        "TODO KF 013 :: unnamed_stack > Fire Temple > MQ Fire > MQ Fire Checks :: Pasted Layer #12 :: 001-001-001-012.png",
-        "OOT MQ Fire Temple Maze Side Room Chest"
-      ]
+      "codes": ["OOT MQ Fire Temple Maze Side Room Chest"]
     },
     {
       "coords": [102, 204],
       "image": "collectible",
-      "codes": [
-        "TODO KF 014 :: unnamed_stack > Fire Temple > MQ Fire > MQ Fire Checks :: Pasted Layer #13 :: 001-001-001-013.png",
-        "OOT MQ Fire Temple Flare Dancer Key"
-      ]
+      "codes": ["OOT MQ Fire Temple Flare Dancer Key"]
     },
     {
       "coords": [428, 408],
       "image": "gold_skulltula",
-      "codes": [
-        "TODO KF 015 :: unnamed_stack > Fire Temple > MQ Fire > MQ Fire Skulls :: Pasted Layer #14 :: 001-001-002-000.png",
-        "OOT MQ Fire Temple GS 1f Lava Room"
-      ]
+      "codes": ["OOT MQ Fire Temple GS 1f Lava Room"]
     },
     {
       "coords": [872, 186],
       "image": "gold_skulltula",
-      "codes": [
-        "TODO KF 016 :: unnamed_stack > Fire Temple > MQ Fire > MQ Fire Skulls :: Pasted Layer #15 :: 001-001-002-001.png",
-        "OOT MQ Fire Temple GS Burning Block"
-      ]
+      "codes": ["OOT MQ Fire Temple GS Burning Block"]
     },
     {
       "coords": [462, 195],
       "image": "gold_skulltula",
-      "codes": [
-        "TODO KF 017 :: unnamed_stack > Fire Temple > MQ Fire > MQ Fire Skulls :: Pasted Layer #16 :: 001-001-002-002.png",
-        "OOT MQ Fire Temple GS Topmost"
-      ]
+      "codes": ["OOT MQ Fire Temple GS Topmost"]
     },
     {
       "coords": [183, 153],
       "image": "gold_skulltula",
-      "codes": [
-        "TODO KF 018 :: unnamed_stack > Fire Temple > MQ Fire > MQ Fire Skulls :: Pasted Layer #17 :: 001-001-002-003.png",
-        "OOT MQ Fire Temple GS Fire Walls Side Room"
-      ]
+      "codes": ["OOT MQ Fire Temple GS Fire Walls Side Room"]
     },
     {
       "coords": [147, 200],
       "image": "gold_skulltula",
-      "codes": [
-        "TODO KF 019 :: unnamed_stack > Fire Temple > MQ Fire > MQ Fire Skulls :: Pasted Layer #18 :: 001-001-002-004.png",
-        "OOT MQ Fire Temple GS Fire Walls Middle"
-      ]
+      "codes": ["OOT MQ Fire Temple GS Fire Walls Middle"]
     },
     {
       "coords": [258, 195],
       "image": "pot",
       "codes": [
-        "TODO KF 020 :: unnamed_stack > Fire Temple > MQ Fire > MQ Fire Pots :: Pasted Layer #19 :: 001-001-003-000.png",
         "OOT MQ Fire Temple Pot Bridge Above Lava Room 1",
         "OOT MQ Fire Temple Pot Bridge Above Lava Room 2",
         "OOT MQ Fire Temple Pot Bridge Above Lava Room 3"
@@ -351,7 +293,6 @@
       "coords": [254, 226],
       "image": "pot",
       "codes": [
-        "TODO KF 021 :: unnamed_stack > Fire Temple > MQ Fire > MQ Fire Pots :: Pasted Layer #20 :: 001-001-003-001.png",
         "OOT MQ Fire Temple Pot Grids Above Lava 1",
         "OOT MQ Fire Temple Pot Grids Above Lava 2"
       ]
@@ -360,7 +301,6 @@
       "coords": [130, 229],
       "image": "pot",
       "codes": [
-        "TODO KF 022 :: unnamed_stack > Fire Temple > MQ Fire > MQ Fire Pots :: Pasted Layer #21 :: 001-001-003-002.png",
         "OOT MQ Fire Temple Pot Fire Maze Room Left 1",
         "OOT MQ Fire Temple Pot Fire Maze Room Left 2"
       ]
@@ -368,24 +308,17 @@
     {
       "coords": [146, 163],
       "image": "pot",
-      "codes": [
-        "TODO KF 023 :: unnamed_stack > Fire Temple > MQ Fire > MQ Fire Pots :: Pasted Layer #22 :: 001-001-003-003.png",
-        "OOT MQ Fire Temple Pot Fire Maze Room Right 1"
-      ]
+      "codes": ["OOT MQ Fire Temple Pot Fire Maze Room Right 1"]
     },
     {
       "coords": [133, 174],
       "image": "pot",
-      "codes": [
-        "TODO KF 024 :: unnamed_stack > Fire Temple > MQ Fire > MQ Fire Pots :: Pasted Layer #23 :: 001-001-003-004.png",
-        "OOT MQ Fire Temple Pot Fire Maze Room Right 2"
-      ]
+      "codes": ["OOT MQ Fire Temple Pot Fire Maze Room Right 2"]
     },
     {
       "coords": [111, 176],
       "image": "pot",
       "codes": [
-        "TODO KF 025 :: unnamed_stack > Fire Temple > MQ Fire > MQ Fire Pots :: Pasted Layer #24 :: 001-001-003-005.png",
         "OOT MQ Fire Temple Pot Fire Maze Room Back Right 1",
         "OOT MQ Fire Temple Pot Fire Maze Room Back Right 2"
       ]
@@ -393,48 +326,32 @@
     {
       "coords": [414, 505],
       "image": "pot",
-      "codes": [
-        "TODO KF 026 :: unnamed_stack > Fire Temple > MQ Fire > MQ Fire Pots :: Pasted Layer #25 :: 001-001-003-006.png",
-        "OOT MQ Fire Temple Pot Lava Room Right"
-      ]
+      "codes": ["OOT MQ Fire Temple Pot Lava Room Right"]
     },
     {
       "coords": [370, 500],
       "image": "pot",
-      "codes": [
-        "TODO KF 027 :: unnamed_stack > Fire Temple > MQ Fire > MQ Fire Pots :: Pasted Layer #26 :: 001-001-003-007.png",
-        "OOT MQ Fire Temple Pot Entrance 2"
-      ]
+      "codes": ["OOT MQ Fire Temple Pot Entrance 2"]
     },
     {
       "coords": [342, 500],
       "image": "pot",
-      "codes": [
-        "TODO KF 028 :: unnamed_stack > Fire Temple > MQ Fire > MQ Fire Pots :: Pasted Layer #27 :: 001-001-003-008.png",
-        "OOT MQ Fire Temple Pot Entrance 1"
-      ]
+      "codes": ["OOT MQ Fire Temple Pot Entrance 1"]
     },
     {
       "coords": [431, 434],
       "image": "pot",
-      "codes": [
-        "TODO KF 029 :: unnamed_stack > Fire Temple > MQ Fire > MQ Fire Pots :: Pasted Layer #28 :: 001-001-003-009.png",
-        "OOT MQ Fire Temple Pot Lava Room Alcove"
-      ]
+      "codes": ["OOT MQ Fire Temple Pot Lava Room Alcove"]
     },
     {
       "coords": [412, 423],
       "image": "pot",
-      "codes": [
-        "TODO KF 030 :: unnamed_stack > Fire Temple > MQ Fire > MQ Fire Pots :: Pasted Layer #29 :: 001-001-003-010.png",
-        "OOT MQ Fire Temple Pot Lava Room Left"
-      ]
+      "codes": ["OOT MQ Fire Temple Pot Lava Room Left"]
     },
     {
       "coords": [395, 410],
       "image": "pot",
       "codes": [
-        "TODO KF 031 :: unnamed_stack > Fire Temple > MQ Fire > MQ Fire Pots :: Pasted Layer #30 :: 001-001-003-011.png",
         "OOT MQ Fire Temple Pot Boss Key Room 1",
         "OOT MQ Fire Temple Pot Boss Key Room 2"
       ]
@@ -443,7 +360,6 @@
       "coords": [368, 425],
       "image": "pot",
       "codes": [
-        "TODO KF 032 :: unnamed_stack > Fire Temple > MQ Fire > MQ Fire Pots :: Pasted Layer #31 :: 001-001-003-012.png",
         "OOT MQ Fire Temple Pot Hammer Loop 1",
         "OOT MQ Fire Temple Pot Hammer Loop 2",
         "OOT MQ Fire Temple Pot Hammer Loop 3",
@@ -458,7 +374,6 @@
       "coords": [307, 450],
       "image": "pot",
       "codes": [
-        "TODO KF 033 :: unnamed_stack > Fire Temple > MQ Fire > MQ Fire Pots :: Pasted Layer #32 :: 001-001-003-013.png",
         "OOT MQ Fire Temple Pot Pre-Boss 1",
         "OOT MQ Fire Temple Pot Pre-Boss 2"
       ]
@@ -467,7 +382,6 @@
       "coords": [725, 462],
       "image": "crate",
       "codes": [
-        "TODO KF 034 :: unnamed_stack > Fire Temple > MQ Fire > MQ Fire Crates :: Pasted Layer #33 :: 001-001-004-000.png",
         "OOT MQ Fire Temple Cell Below Maze Large Crate 1",
         "OOT MQ Fire Temple Cell Below Maze Large Crate 2",
         "OOT MQ Fire Temple Cell Below Maze Large Crate 3",
@@ -480,7 +394,6 @@
       "coords": [311, 488],
       "image": "crate",
       "codes": [
-        "TODO KF 035 :: unnamed_stack > Fire Temple > MQ Fire > MQ Fire Crates :: Pasted Layer #34 :: 001-001-004-001.png",
         "OOT MQ Fire Temple Pre-Boss Room Near Cage Large Crate 1",
         "OOT MQ Fire Temple Pre-Boss Room Near Cage Large Crate 2"
       ]
@@ -489,7 +402,6 @@
       "coords": [317, 444],
       "image": "crate",
       "codes": [
-        "TODO KF 036 :: unnamed_stack > Fire Temple > MQ Fire > MQ Fire Crates :: Pasted Layer #35 :: 001-001-004-002.png",
         "OOT MQ Fire Temple Pre-Boss Room Tall Ledge Low Large Crate 1",
         "OOT MQ Fire Temple Pre-Boss Room Tall Ledge Low Large Crate 2",
         "OOT MQ Fire Temple Pre-Boss Room Tall Ledge Middle Large Crate",
@@ -500,7 +412,6 @@
       "coords": [286, 241],
       "image": "crate",
       "codes": [
-        "TODO KF 037 :: unnamed_stack > Fire Temple > MQ Fire > MQ Fire Crates :: Pasted Layer #36 :: 001-001-004-003.png",
         "OOT MQ Fire Temple Maze Room Lower Cage Large Crate 1",
         "OOT MQ Fire Temple Maze Room Lower Cage Large Crate 2",
         "OOT MQ Fire Temple Maze Room Lower Cage Large Crate 3"
@@ -510,7 +421,6 @@
       "coords": [276, 258],
       "image": "small_crate",
       "codes": [
-        "TODO KF 038 :: unnamed_stack > Fire Temple > MQ Fire > MQ Fire Crates :: Pasted Layer #37 :: 001-001-004-004.png",
         "OOT MQ Fire Temple Maze Room Upper Cage Small Crate 1",
         "OOT MQ Fire Temple Maze Room Upper Cage Small Crate 2"
       ]
@@ -519,7 +429,6 @@
       "coords": [260, 258],
       "image": "crate",
       "codes": [
-        "TODO KF 039 :: unnamed_stack > Fire Temple > MQ Fire > MQ Fire Crates :: Pasted Layer #38 :: 001-001-004-005.png",
         "OOT MQ Fire Temple Maze Room Upper Cage Large Crate 1",
         "OOT MQ Fire Temple Maze Room Upper Cage Large Crate 2",
         "OOT MQ Fire Temple Maze Room Upper Cage Large Crate 3"
@@ -528,24 +437,17 @@
     {
       "coords": [220, 217],
       "image": "crate",
-      "codes": [
-        "TODO KF 040 :: unnamed_stack > Fire Temple > MQ Fire > MQ Fire Crates :: Pasted Layer #39 :: 001-001-004-006.png",
-        "OOT MQ Fire Temple 3F Lava Room High Ledge Large Crate"
-      ]
+      "codes": ["OOT MQ Fire Temple 3F Lava Room High Ledge Large Crate"]
     },
     {
       "coords": [235, 207],
       "image": "crate",
-      "codes": [
-        "TODO KF 041 :: unnamed_stack > Fire Temple > MQ Fire > MQ Fire Crates :: Pasted Layer #40 :: 001-001-004-007.png",
-        "OOT MQ Fire Temple 3F Lava Room Near Cage Large Crate"
-      ]
+      "codes": ["OOT MQ Fire Temple 3F Lava Room Near Cage Large Crate"]
     },
     {
       "coords": [247, 211],
       "image": "small_crate",
       "codes": [
-        "TODO KF 042 :: unnamed_stack > Fire Temple > MQ Fire > MQ Fire Crates :: Pasted Layer #41 :: 001-001-004-008.png",
         "OOT MQ Fire Temple 3F Lava Room Near Cage Small Crate 1",
         "OOT MQ Fire Temple 3F Lava Room Near Cage Small Crate 2"
       ]
@@ -554,7 +456,6 @@
       "coords": [232, 221],
       "image": "small_crate",
       "codes": [
-        "TODO KF 043 :: unnamed_stack > Fire Temple > MQ Fire > MQ Fire Crates :: Pasted Layer #42 :: 001-001-004-009.png",
         "OOT MQ Fire Temple 3F Lava Room High Ledge Small Crate",
         "OOT MQ Fire Temple 3F Lava Room Lower Small Crate 2"
       ]
@@ -562,16 +463,12 @@
     {
       "coords": [230, 188],
       "image": "crate",
-      "codes": [
-        "TODO KF 044 :: unnamed_stack > Fire Temple > MQ Fire > MQ Fire Crates :: Pasted Layer #43 :: 001-001-004-010.png",
-        "OOT MQ Fire Temple 3F Lava Room Lower Large Crate 1"
-      ]
+      "codes": ["OOT MQ Fire Temple 3F Lava Room Lower Large Crate 1"]
     },
     {
       "coords": [240, 157],
       "image": "crate",
       "codes": [
-        "TODO KF 045 :: unnamed_stack > Fire Temple > MQ Fire > MQ Fire Crates :: Pasted Layer #44 :: 001-001-004-011.png",
         "OOT MQ Fire Temple 3F Lava Room Lower Large Crate 2",
         "OOT MQ Fire Temple 3F Lava Room Lower Large Crate 3"
       ]
@@ -579,80 +476,52 @@
     {
       "coords": [240, 170],
       "image": "small_crate",
-      "codes": [
-        "TODO KF 046 :: unnamed_stack > Fire Temple > MQ Fire > MQ Fire Crates :: Pasted Layer #45 :: 001-001-004-012.png",
-        "OOT MQ Fire Temple 3F Lava Room Lower Small Crate 1"
-      ]
+      "codes": ["OOT MQ Fire Temple 3F Lava Room Lower Small Crate 1"]
     },
     {
       "coords": [472, 454],
       "image": "heart",
-      "codes": [
-        "TODO KF 047 :: unnamed_stack > Fire Temple > MQ Fire > MQ Fire Freestanding Hearts :: Pasted Layer #46 :: 001-001-005-000.png",
-        "OOT MQ Fire Temple Heart 1"
-      ]
+      "codes": ["OOT MQ Fire Temple Heart 1"]
     },
     {
       "coords": [462, 469],
       "image": "heart",
-      "codes": [
-        "TODO KF 048 :: unnamed_stack > Fire Temple > MQ Fire > MQ Fire Freestanding Hearts :: Pasted Layer #47 :: 001-001-005-001.png",
-        "OOT MQ Fire Temple Heart 2"
-      ]
+      "codes": ["OOT MQ Fire Temple Heart 2"]
     },
     {
       "coords": [472, 477],
       "image": "heart",
-      "codes": [
-        "TODO KF 049 :: unnamed_stack > Fire Temple > MQ Fire > MQ Fire Freestanding Hearts :: Pasted Layer #48 :: 001-001-005-002.png",
-        "OOT MQ Fire Temple Heart 3"
-      ]
+      "codes": ["OOT MQ Fire Temple Heart 3"]
     },
     {
       "coords": [364, 449],
       "image": "big_fairy_spot",
-      "codes": [
-        "TODO KF 050 :: unnamed_stack > Fire Temple > MQ Fire > MQ Big Fairy :: Pasted Layer #49 :: 001-001-006-000.png",
-        "OOT MQ Fire Temple Hammer Loop Stalfos Big Fairy"
-      ]
+      "codes": ["OOT MQ Fire Temple Hammer Loop Stalfos Big Fairy"]
     },
     {
       "coords": [376, 405],
       "image": "big_fairy_spot",
-      "codes": [
-        "TODO KF 051 :: unnamed_stack > Fire Temple > MQ Fire > MQ Big Fairy :: Pasted Layer #50 :: 001-001-006-001.png",
-        "OOT MQ Fire Temple Hammer Loop Iron Knuckle Big Fairy"
-      ]
+      "codes": ["OOT MQ Fire Temple Hammer Loop Iron Knuckle Big Fairy"]
     },
     {
       "coords": [751, 496],
       "image": "wonder_item_heart",
-      "codes": [
-        "TODO KF 052 :: unnamed_stack > Fire Temple > MQ Fire > MQ Fire Wonder :: Pasted Layer #51 :: 001-001-007-000.png",
-        "OOT MQ Fire Temple Wonder Item Shortcut Room 1"
-      ]
+      "codes": ["OOT MQ Fire Temple Wonder Item Shortcut Room 1"]
     },
     {
       "coords": [735, 496],
       "image": "wonder_item_arrows",
-      "codes": [
-        "TODO KF 053 :: unnamed_stack > Fire Temple > MQ Fire > MQ Fire Wonder :: Pasted Layer #52 :: 001-001-007-001.png",
-        "OOT MQ Fire Temple Wonder Item Shortcut Room 3"
-      ]
+      "codes": ["OOT MQ Fire Temple Wonder Item Shortcut Room 3"]
     },
     {
       "coords": [743, 480],
       "image": "wonder_item_big_magic_jar",
-      "codes": [
-        "TODO KF 054 :: unnamed_stack > Fire Temple > MQ Fire > MQ Fire Wonder :: Pasted Layer #53 :: 001-001-007-002.png",
-        "OOT MQ Fire Temple Wonder Item Shortcut Room 2"
-      ]
+      "codes": ["OOT MQ Fire Temple Wonder Item Shortcut Room 2"]
     },
     {
       "coords": [402, 393],
       "image": "wonder_item_random",
       "codes": [
-        "TODO KF 055 :: unnamed_stack > Fire Temple > MQ Fire > MQ Fire Wonder :: Pasted Layer #54 :: 001-001-007-003.png",
         "OOT MQ Fire Temple Wonder Item Boss Key Room Bow",
         "OOT MQ Fire Temple Wonder Item Boss Key Room Hookshot"
       ]
@@ -660,74 +529,47 @@
     {
       "coords": [568, 184],
       "image": "wonder_item_big_magic_jar",
-      "codes": [
-        "TODO KF 056 :: unnamed_stack > Fire Temple > MQ Fire > MQ Fire Wonder :: Pasted Layer #55 :: 001-001-007-004.png",
-        "OOT MQ Fire Temple Wonder Item East Climb First 2"
-      ]
+      "codes": ["OOT MQ Fire Temple Wonder Item East Climb First 2"]
     },
     {
       "coords": [552, 184],
       "image": "wonder_item_random",
-      "codes": [
-        "TODO KF 057 :: unnamed_stack > Fire Temple > MQ Fire > MQ Fire Wonder :: Pasted Layer #56 :: 001-001-007-005.png",
-        "OOT MQ Fire Temple Wonder Item East Climb First 1"
-      ]
+      "codes": ["OOT MQ Fire Temple Wonder Item East Climb First 1"]
     },
     {
       "coords": [544, 166],
       "image": "wonder_item_random",
-      "codes": [
-        "TODO KF 058 :: unnamed_stack > Fire Temple > MQ Fire > MQ Fire Wonder :: Pasted Layer #57 :: 001-001-007-006.png",
-        "OOT MQ Fire Temple Wonder Item East Climb Second 1"
-      ]
+      "codes": ["OOT MQ Fire Temple Wonder Item East Climb Second 1"]
     },
     {
       "coords": [528, 166],
       "image": "wonder_item_big_magic_jar",
-      "codes": [
-        "TODO KF 059 :: unnamed_stack > Fire Temple > MQ Fire > MQ Fire Wonder :: Pasted Layer #58 :: 001-001-007-007.png",
-        "OOT MQ Fire Temple Wonder Item East Climb Second 2"
-      ]
+      "codes": ["OOT MQ Fire Temple Wonder Item East Climb Second 2"]
     },
     {
       "coords": [458, 175],
       "image": "wonder_item_random",
-      "codes": [
-        "TODO KF 060 :: unnamed_stack > Fire Temple > MQ Fire > MQ Fire Wonder :: Pasted Layer #59 :: 001-001-007-008.png",
-        "OOT MQ Fire Temple Wonder Item Staircase"
-      ]
+      "codes": ["OOT MQ Fire Temple Wonder Item Staircase"]
     },
     {
       "coords": [407, 221],
       "image": "wonder_item_random",
-      "codes": [
-        "TODO KF 061 :: unnamed_stack > Fire Temple > MQ Fire > MQ Fire Wonder :: Pasted Layer #60 :: 001-001-007-009.png",
-        "OOT MQ Fire Temple Wonder Item After Flare Dancer"
-      ]
+      "codes": ["OOT MQ Fire Temple Wonder Item After Flare Dancer"]
     },
     {
       "coords": [304, 200],
       "image": "wonder_item_red_rupee",
-      "codes": [
-        "TODO KF 062 :: unnamed_stack > Fire Temple > MQ Fire > MQ Fire Wonder :: Pasted Layer #61 :: 001-001-007-010.png",
-        "OOT MQ Fire Temple Wonder Item East Maze"
-      ]
+      "codes": ["OOT MQ Fire Temple Wonder Item East Maze"]
     },
     {
       "coords": [230, 200],
       "image": "wonder_item_random",
-      "codes": [
-        "TODO KF 063 :: unnamed_stack > Fire Temple > MQ Fire > MQ Fire Wonder :: Pasted Layer #62 :: 001-001-007-011.png",
-        "OOT MQ Fire Temple Wonder Item Torch Room"
-      ]
+      "codes": ["OOT MQ Fire Temple Wonder Item Torch Room"]
     },
     {
       "coords": [124, 180],
       "image": "wonder_item_random",
-      "codes": [
-        "TODO KF 064 :: unnamed_stack > Fire Temple > MQ Fire > MQ Fire Wonder :: Pasted Layer #63 :: 001-001-007-012.png",
-        "OOT MQ Fire Temple Wonder Item Fire Maze"
-      ]
+      "codes": ["OOT MQ Fire Temple Wonder Item Fire Maze"]
     }
   ]
 }

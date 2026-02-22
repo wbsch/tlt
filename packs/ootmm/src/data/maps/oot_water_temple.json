@@ -188,112 +188,72 @@
     {
       "coords": [426, 561],
       "image": "chest",
-      "codes": [
-        "TODO KF 001 :: unnamed_stack > Water Temple > MQ Water > MQ Water Checks :: Pasted Layer :: 001-001-001-000.png",
-        "OOT MQ Water Temple Central Pillar Chest"
-      ]
+      "codes": ["OOT MQ Water Temple Central Pillar Chest"]
     },
     {
       "coords": [459, 279],
       "image": "chest",
-      "codes": [
-        "TODO KF 002 :: unnamed_stack > Water Temple > MQ Water > MQ Water Checks :: Pasted Layer #1 :: 001-001-001-001.png",
-        "OOT MQ Water Temple Longshot Chest"
-      ]
+      "codes": ["OOT MQ Water Temple Longshot Chest"]
     },
     {
       "coords": [768, 546],
       "image": "chest",
-      "codes": [
-        "TODO KF 003 :: unnamed_stack > Water Temple > MQ Water > MQ Water Checks :: Pasted Layer #2 :: 001-001-001-002.png",
-        "OOT MQ Water Temple Compass Chest"
-      ]
+      "codes": ["OOT MQ Water Temple Compass Chest"]
     },
     {
       "coords": [651, 490],
       "image": "chest",
-      "codes": [
-        "TODO KF 004 :: unnamed_stack > Water Temple > MQ Water > MQ Water Checks :: Pasted Layer #3 :: 001-001-001-003.png",
-        "OOT MQ Water Temple Boss Key Chest"
-      ]
+      "codes": ["OOT MQ Water Temple Boss Key Chest"]
     },
     {
       "coords": [635, 399],
       "image": "collectible",
-      "codes": [
-        "TODO KF 005 :: unnamed_stack > Water Temple > MQ Water > MQ Water Checks :: Pasted Layer #4 :: 001-001-001-004.png",
-        "OOT MQ Water Temple Side Loop Key"
-      ]
+      "codes": ["OOT MQ Water Temple Side Loop Key"]
     },
     {
       "coords": [768, 279],
       "image": "chest",
-      "codes": [
-        "TODO KF 006 :: unnamed_stack > Water Temple > MQ Water > MQ Water Checks :: Pasted Layer #5 :: 001-001-001-005.png",
-        "OOT MQ Water Temple Map Chest"
-      ]
+      "codes": ["OOT MQ Water Temple Map Chest"]
     },
     {
       "coords": [684, 170],
       "image": "heart_container",
-      "codes": [
-        "TODO KF 007 :: unnamed_stack > Water Temple > MQ Water > MQ Water Checks :: Pasted Layer #6 :: 001-001-001-006.png",
-        "OOT Water Temple Boss HC"
-      ]
+      "codes": ["OOT Water Temple Boss HC"]
     },
     {
       "coords": [700, 170],
       "image": "water_medallion",
-      "codes": [
-        "TODO KF 008 :: unnamed_stack > Water Temple > MQ Water > MQ Water Checks :: Pasted Layer #7 :: 001-001-001-007.png",
-        "OOT Water Temple Boss"
-      ]
+      "codes": ["OOT Water Temple Boss"]
     },
     {
       "coords": [595, 578],
       "image": "gold_skulltula",
-      "codes": [
-        "TODO KF 009 :: unnamed_stack > Water Temple > MQ Water > MQ Water Skulls :: Pasted Layer #8 :: 001-001-002-000.png",
-        "OOT MQ Water Temple GS Three Torch"
-      ]
+      "codes": ["OOT MQ Water Temple GS Three Torch"]
     },
     {
       "coords": [690, 414],
       "image": "gold_skulltula",
-      "codes": [
-        "TODO KF 010 :: unnamed_stack > Water Temple > MQ Water > MQ Water Skulls :: Pasted Layer #9 :: 001-001-002-001.png",
-        "OOT MQ Water Temple GS Side Loop"
-      ]
+      "codes": ["OOT MQ Water Temple GS Side Loop"]
     },
     {
       "coords": [588, 401],
       "image": "gold_skulltula",
-      "codes": [
-        "TODO KF 011 :: unnamed_stack > Water Temple > MQ Water > MQ Water Skulls :: Pasted Layer #10 :: 001-001-002-002.png",
-        "OOT MQ Water Temple GS River"
-      ]
+      "codes": ["OOT MQ Water Temple GS River"]
     },
     {
       "coords": [651, 276],
       "image": "gold_skulltula",
-      "codes": [
-        "TODO KF 012 :: unnamed_stack > Water Temple > MQ Water > MQ Water Skulls :: Pasted Layer #11 :: 001-001-002-003.png",
-        "OOT MQ Water Temple GS High Water Changer"
-      ]
+      "codes": ["OOT MQ Water Temple GS High Water Changer"]
     },
     {
       "coords": [431, 290],
       "image": "gold_skulltula",
-      "codes": [
-        "TODO KF 013 :: unnamed_stack > Water Temple > MQ Water > MQ Water Skulls :: Pasted Layer #12 :: 001-001-002-004.png",
-        "OOT MQ Water Temple GS Lizalfos Hallway"
-      ]
+      "codes": ["OOT MQ Water Temple GS Lizalfos Hallway"]
     },
     {
       "coords": [610, 575],
       "image": "pot",
       "codes": [
-        "TODO KF 014 :: unnamed_stack > Water Temple > MQ Water > MQ Water Pots :: Pasted Layer #13 :: 001-001-003-000.png",
         "OOT MQ Water Temple Pot Skull Cage 1",
         "OOT MQ Water Temple Pot Skull Cage 2",
         "OOT MQ Water Temple Pot Skull Cage 3",
@@ -304,7 +264,6 @@
       "coords": [750, 546],
       "image": "pot",
       "codes": [
-        "TODO KF 015 :: unnamed_stack > Water Temple > MQ Water > MQ Water Pots :: Pasted Layer #14 :: 001-001-003-001.png",
         "OOT MQ Water Temple Pot Ruto 1",
         "OOT MQ Water Temple Pot Ruto 2"
       ]
@@ -312,16 +271,12 @@
     {
       "coords": [661, 479],
       "image": "pot",
-      "codes": [
-        "TODO KF 016 :: unnamed_stack > Water Temple > MQ Water > MQ Water Pots :: Pasted Layer #15 :: 001-001-003-002.png",
-        "OOT MQ Water Temple Pot Boss Key Room"
-      ]
+      "codes": ["OOT MQ Water Temple Pot Boss Key Room"]
     },
     {
       "coords": [651, 412],
       "image": "pot",
       "codes": [
-        "TODO KF 017 :: unnamed_stack > Water Temple > MQ Water > MQ Water Pots :: Pasted Layer #16 :: 001-001-003-003.png",
         "OOT MQ Water Temple Pot Stalfos Room 1",
         "OOT MQ Water Temple Pot Stalfos Room 2"
       ]
@@ -330,7 +285,6 @@
       "coords": [690, 382],
       "image": "pot",
       "codes": [
-        "TODO KF 018 :: unnamed_stack > Water Temple > MQ Water > MQ Water Pots :: Pasted Layer #17 :: 001-001-003-004.png",
         "OOT MQ Water Temple Pot Loop 1",
         "OOT MQ Water Temple Pot Loop 2"
       ]
@@ -339,7 +293,6 @@
       "coords": [574, 355],
       "image": "pot",
       "codes": [
-        "TODO KF 019 :: unnamed_stack > Water Temple > MQ Water > MQ Water Pots :: Pasted Layer #18 :: 001-001-003-005.png",
         "OOT MQ Water Temple Pot River 1",
         "OOT MQ Water Temple Pot River 2"
       ]
@@ -348,7 +301,6 @@
       "coords": [746, 242],
       "image": "pot",
       "codes": [
-        "TODO KF 020 :: unnamed_stack > Water Temple > MQ Water > MQ Water Pots :: Pasted Layer #19 :: 001-001-003-006.png",
         "OOT MQ Water Temple Pot Storage Room 1",
         "OOT MQ Water Temple Pot Storage Room 2",
         "OOT MQ Water Temple Pot Storage Room 3"
@@ -358,7 +310,6 @@
       "coords": [558, 237],
       "image": "pot",
       "codes": [
-        "TODO KF 021 :: unnamed_stack > Water Temple > MQ Water > MQ Water Pots :: Pasted Layer #20 :: 001-001-003-007.png",
         "OOT MQ Water Temple Pot Before Dark Link Ledge 1",
         "OOT MQ Water Temple Pot Before Dark Link Ledge 2",
         "OOT MQ Water Temple Pot Before Dark Link Ledge 3"
@@ -368,7 +319,6 @@
       "coords": [582, 206],
       "image": "pot",
       "codes": [
-        "TODO KF 022 :: unnamed_stack > Water Temple > MQ Water > MQ Water Pots :: Pasted Layer #21 :: 001-001-003-008.png",
         "OOT MQ Water Temple Pot Before Dark Link Near Door 1",
         "OOT MQ Water Temple Pot Before Dark Link Near Door 2"
       ]
@@ -377,7 +327,6 @@
       "coords": [574, 107],
       "image": "pot",
       "codes": [
-        "TODO KF 023 :: unnamed_stack > Water Temple > MQ Water > MQ Water Pots :: Pasted Layer #22 :: 001-001-003-009.png",
         "OOT MQ Water Temple Pot After Dark Link 1",
         "OOT MQ Water Temple Pot After Dark Link 2"
       ]
@@ -386,7 +335,6 @@
       "coords": [437, 295],
       "image": "pot",
       "codes": [
-        "TODO KF 024 :: unnamed_stack > Water Temple > MQ Water > MQ Water Pots :: Pasted Layer #23 :: 001-001-003-010.png",
         "OOT MQ Water Temple Pot Twisted Room Cage 1",
         "OOT MQ Water Temple Pot Twisted Room Cage 2"
       ]
@@ -395,7 +343,6 @@
       "coords": [420, 312],
       "image": "pot",
       "codes": [
-        "TODO KF 025 :: unnamed_stack > Water Temple > MQ Water > MQ Water Pots :: Pasted Layer #24 :: 001-001-003-011.png",
         "OOT MQ Water Temple Pot Twisted Room Right 1",
         "OOT MQ Water Temple Pot Twisted Room Right 2"
       ]
@@ -403,16 +350,12 @@
     {
       "coords": [399, 300],
       "image": "pot",
-      "codes": [
-        "TODO KF 026 :: unnamed_stack > Water Temple > MQ Water > MQ Water Pots :: Pasted Layer #25 :: 001-001-003-012.png",
-        "OOT MQ Water Temple Pot Twisted Room Entrance"
-      ]
+      "codes": ["OOT MQ Water Temple Pot Twisted Room Entrance"]
     },
     {
       "coords": [362, 271],
       "image": "pot",
       "codes": [
-        "TODO KF 027 :: unnamed_stack > Water Temple > MQ Water > MQ Water Pots :: Pasted Layer #26 :: 001-001-003-013.png",
         "OOT MQ Water Temple Pot Room Before High Water 1",
         "OOT MQ Water Temple Pot Room Before High Water 2",
         "OOT MQ Water Temple Pot Room Before High Water 3"
@@ -422,7 +365,6 @@
       "coords": [648, 571],
       "image": "crate",
       "codes": [
-        "TODO KF 028 :: unnamed_stack > Water Temple > MQ Water > MQ Water Crates :: Pasted Layer #27 :: 001-001-004-000.png",
         "OOT MQ Water Temple Three Torch Room Large Crate 1",
         "OOT MQ Water Temple Three Torch Room Large Crate 2",
         "OOT MQ Water Temple Three Torch Room Large Crate 3",
@@ -435,7 +377,6 @@
       "coords": [609, 559],
       "image": "crate",
       "codes": [
-        "TODO KF 029 :: unnamed_stack > Water Temple > MQ Water > MQ Water Crates :: Pasted Layer #28 :: 001-001-004-001.png",
         "OOT MQ Water Temple Three Torch Room Behind Gate Large Crate 1",
         "OOT MQ Water Temple Three Torch Room Behind Gate Large Crate 2",
         "OOT MQ Water Temple Three Torch Room Behind Gate Large Crate 3"
@@ -444,16 +385,12 @@
     {
       "coords": [640, 482],
       "image": "crate",
-      "codes": [
-        "TODO KF 030 :: unnamed_stack > Water Temple > MQ Water > MQ Water Crates :: Pasted Layer #29 :: 001-001-004-002.png",
-        "OOT MQ Water Temple Boss Key Room By Switch Large Crate"
-      ]
+      "codes": ["OOT MQ Water Temple Boss Key Room By Switch Large Crate"]
     },
     {
       "coords": [644, 459],
       "image": "crate",
       "codes": [
-        "TODO KF 031 :: unnamed_stack > Water Temple > MQ Water > MQ Water Crates :: Pasted Layer #30 :: 001-001-004-003.png",
         "OOT MQ Water Temple Dragon Room At Door Large Crate 1",
         "OOT MQ Water Temple Dragon Room At Door Large Crate 2"
       ]
@@ -462,7 +399,6 @@
       "coords": [613, 460],
       "image": "crate",
       "codes": [
-        "TODO KF 032 :: unnamed_stack > Water Temple > MQ Water > MQ Water Crates :: Pasted Layer #31 :: 001-001-004-004.png",
         "OOT MQ Water Temple Dragon Room At Torches Large Crate 1",
         "OOT MQ Water Temple Dragon Room At Torches Large Crate 2"
       ]
@@ -471,7 +407,6 @@
       "coords": [608, 444],
       "image": "small_crate",
       "codes": [
-        "TODO KF 033 :: unnamed_stack > Water Temple > MQ Water > MQ Water Crates :: Pasted Layer #32 :: 001-001-004-005.png",
         "OOT MQ Water Temple Dragon Room At Torches Small Crate 1",
         "OOT MQ Water Temple Dragon Room At Torches Small Crate 2",
         "OOT MQ Water Temple Dragon Room At Torches Small Crate 3"
@@ -481,7 +416,6 @@
       "coords": [698, 452],
       "image": "crate",
       "codes": [
-        "TODO KF 034 :: unnamed_stack > Water Temple > MQ Water > MQ Water Crates :: Pasted Layer #33 :: 001-001-004-006.png",
         "OOT MQ Water Temple Side Loop First Room At Door Large Crate 1",
         "OOT MQ Water Temple Side Loop First Room At Door Large Crate 2"
       ]
@@ -490,7 +424,6 @@
       "coords": [695, 433],
       "image": "crate",
       "codes": [
-        "TODO KF 035 :: unnamed_stack > Water Temple > MQ Water > MQ Water Crates :: Pasted Layer #34 :: 001-001-004-007.png",
         "OOT MQ Water Temple Side Loop First Room Water Large Crate 1",
         "OOT MQ Water Temple Side Loop First Room Water Large Crate 2",
         "OOT MQ Water Temple Side Loop First Room Water Large Crate 3",
@@ -503,7 +436,6 @@
       "coords": [702, 415],
       "image": "crate",
       "codes": [
-        "TODO KF 036 :: unnamed_stack > Water Temple > MQ Water > MQ Water Crates :: Pasted Layer #35 :: 001-001-004-008.png",
         "OOT MQ Water Temple Side Loop First Room In Gate Large Crate 1",
         "OOT MQ Water Temple Side Loop First Room In Gate Large Crate 2",
         "OOT MQ Water Temple Side Loop First Room In Gate Large Crate 3",
@@ -514,7 +446,6 @@
       "coords": [702, 391],
       "image": "crate",
       "codes": [
-        "TODO KF 037 :: unnamed_stack > Water Temple > MQ Water > MQ Water Crates :: Pasted Layer #36 :: 001-001-004-009.png",
         "OOT MQ Water Temple Dodongo Room Large Crate 1",
         "OOT MQ Water Temple Dodongo Room Large Crate 2",
         "OOT MQ Water Temple Dodongo Room Large Crate 3",
@@ -526,7 +457,6 @@
       "coords": [637, 412],
       "image": "crate",
       "codes": [
-        "TODO KF 038 :: unnamed_stack > Water Temple > MQ Water > MQ Water Crates :: Pasted Layer #37 :: 001-001-004-010.png",
         "OOT MQ Water Temple Side Loop Stalfos Room Large Crate 1",
         "OOT MQ Water Temple Side Loop Stalfos Room Large Crate 2",
         "OOT MQ Water Temple Side Loop Stalfos Room Large Crate 3",
@@ -538,7 +468,6 @@
       "coords": [660, 272],
       "image": "crate",
       "codes": [
-        "TODO KF 039 :: unnamed_stack > Water Temple > MQ Water > MQ Water Crates :: Pasted Layer #38 :: 001-001-004-011.png",
         "OOT MQ Water Temple Room Before High Water Upper Large Crate 1",
         "OOT MQ Water Temple Room Before High Water Upper Large Crate 2"
       ]
@@ -546,16 +475,12 @@
     {
       "coords": [659, 285],
       "image": "small_crate",
-      "codes": [
-        "TODO KF 040 :: unnamed_stack > Water Temple > MQ Water > MQ Water Crates :: Pasted Layer #39 :: 001-001-004-012.png",
-        "OOT MQ Water Temple Room Before High Water Upper Small Crate"
-      ]
+      "codes": ["OOT MQ Water Temple Room Before High Water Upper Small Crate"]
     },
     {
       "coords": [692, 257],
       "image": "crate",
       "codes": [
-        "TODO KF 041 :: unnamed_stack > Water Temple > MQ Water > MQ Water Crates :: Pasted Layer #40 :: 001-001-004-013.png",
         "OOT MQ Water Temple Central Tower Top Large Crate 1",
         "OOT MQ Water Temple Central Tower Top Large Crate 2"
       ]
@@ -564,7 +489,6 @@
       "coords": [761, 242],
       "image": "small_crate",
       "codes": [
-        "TODO KF 042 :: unnamed_stack > Water Temple > MQ Water > MQ Water Crates :: Pasted Layer #41 :: 001-001-004-014.png",
         "OOT MQ Water Temple Storage Room Small Crate 1",
         "OOT MQ Water Temple Storage Room Small Crate 2",
         "OOT MQ Water Temple Storage Room Small Crate 3",
@@ -575,7 +499,6 @@
       "coords": [761, 226],
       "image": "crate",
       "codes": [
-        "TODO KF 043 :: unnamed_stack > Water Temple > MQ Water > MQ Water Crates :: Pasted Layer #42 :: 001-001-004-015.png",
         "OOT MQ Water Temple Storage Room Large Crate 1",
         "OOT MQ Water Temple Storage Room Large Crate 2",
         "OOT MQ Water Temple Storage Room Large Crate 3",
@@ -589,7 +512,6 @@
       "coords": [415, 545],
       "image": "crate",
       "codes": [
-        "TODO KF 044 :: unnamed_stack > Water Temple > MQ Water > MQ Water Crates :: Pasted Layer #43 :: 001-001-004-016.png",
         "OOT MQ Water Temple Central Tower Under Gate Large Crate 1",
         "OOT MQ Water Temple Central Tower Under Gate Large Crate 2",
         "OOT MQ Water Temple Central Tower Under Gate Large Crate 3",
@@ -610,7 +532,6 @@
       "coords": [350, 488],
       "image": "crate",
       "codes": [
-        "TODO KF 045 :: unnamed_stack > Water Temple > MQ Water > MQ Water Crates :: Pasted Layer #44 :: 001-001-004-017.png",
         "OOT MQ Water Temple Boss Key Room In Center Large Crate 1",
         "OOT MQ Water Temple Boss Key Room In Center Large Crate 2",
         "OOT MQ Water Temple Boss Key Room In Center Large Crate 3",
@@ -621,7 +542,6 @@
       "coords": [317, 456],
       "image": "crate",
       "codes": [
-        "TODO KF 046 :: unnamed_stack > Water Temple > MQ Water > MQ Water Crates :: Pasted Layer #45 :: 001-001-004-018.png",
         "OOT MQ Water Temple Dragon Room Underwater Large Crate 1",
         "OOT MQ Water Temple Dragon Room Underwater Large Crate 2",
         "OOT MQ Water Temple Dragon Room Underwater Large Crate 3",
@@ -632,7 +552,6 @@
       "coords": [435, 314],
       "image": "crate",
       "codes": [
-        "TODO KF 047 :: unnamed_stack > Water Temple > MQ Water > MQ Water Crates :: Pasted Layer #46 :: 001-001-004-019.png",
         "OOT MQ Water Temple Lizalfos Hallway Large Crate 1",
         "OOT MQ Water Temple Lizalfos Hallway Large Crate 2",
         "OOT MQ Water Temple Lizalfos Hallway Large Crate 3",
@@ -644,7 +563,6 @@
       "coords": [406, 300],
       "image": "crate",
       "codes": [
-        "TODO KF 048 :: unnamed_stack > Water Temple > MQ Water > MQ Water Crates :: Pasted Layer #47 :: 001-001-004-020.png",
         "OOT MQ Water Temple Lizalfos Hallway Large Crate 6",
         "OOT MQ Water Temple Lizalfos Hallway Large Crate 7",
         "OOT MQ Water Temple Lizalfos Hallway Large Crate 8"
@@ -654,7 +572,6 @@
       "coords": [440, 288],
       "image": "crate",
       "codes": [
-        "TODO KF 049 :: unnamed_stack > Water Temple > MQ Water > MQ Water Crates :: Pasted Layer #48 :: 001-001-004-021.png",
         "OOT MQ Water Temple Lizalfos Hallway Behind Gate Large Crate 1",
         "OOT MQ Water Temple Lizalfos Hallway Behind Gate Large Crate 2"
       ]
@@ -663,7 +580,6 @@
       "coords": [355, 256],
       "image": "crate",
       "codes": [
-        "TODO KF 050 :: unnamed_stack > Water Temple > MQ Water > MQ Water Crates :: Pasted Layer #49 :: 001-001-004-022.png",
         "OOT MQ Water Temple Room Before High Water Lower Large Crate 1",
         "OOT MQ Water Temple Room Before High Water Lower Large Crate 2",
         "OOT MQ Water Temple Room Before High Water Lower Large Crate 3",
@@ -675,24 +591,17 @@
     {
       "coords": [350, 269],
       "image": "small_crate",
-      "codes": [
-        "TODO KF 051 :: unnamed_stack > Water Temple > MQ Water > MQ Water Crates :: Pasted Layer #50 :: 001-001-004-023.png",
-        "OOT MQ Water Temple Room Before High Water Lower Small Crate"
-      ]
+      "codes": ["OOT MQ Water Temple Room Before High Water Lower Small Crate"]
     },
     {
       "coords": [573, 247],
       "image": "big_fairy_spot",
-      "codes": [
-        "TODO KF 052 :: unnamed_stack > Water Temple > MQ Water > MQ Water Big Fairy :: Pasted Layer #51 :: 001-001-005-000.png",
-        "OOT MQ Water Temple Big Fairy Before Dark Link Ledge"
-      ]
+      "codes": ["OOT MQ Water Temple Big Fairy Before Dark Link Ledge"]
     },
     {
       "coords": [572, 213],
       "image": "big_fairy_spot",
       "codes": [
-        "TODO KF 053 :: unnamed_stack > Water Temple > MQ Water > MQ Water Big Fairy :: Pasted Layer #52 :: 001-001-005-001.png",
         "OOT MQ Water Temple Big Fairy Before Dark Link Near Door 1",
         "OOT MQ Water Temple Big Fairy Before Dark Link Near Door 2"
       ]
@@ -700,120 +609,77 @@
     {
       "coords": [436, 561],
       "image": "wonder_item_big_magic_jar",
-      "codes": [
-        "TODO KF 054 :: unnamed_stack > Water Temple > MQ Water > MQ Water Wonder :: Pasted Layer #53 :: 001-001-006-000.png",
-        "OOT MQ Water Temple Wonder Item Under Pillar Room"
-      ]
+      "codes": ["OOT MQ Water Temple Wonder Item Under Pillar Room"]
     },
     {
       "coords": [605, 570],
       "image": "wonder_item_random",
-      "codes": [
-        "TODO KF 055 :: unnamed_stack > Water Temple > MQ Water > MQ Water Wonder :: Pasted Layer #54 :: 001-001-006-001.png",
-        "OOT MQ Water Temple Wonder Item Triple Torches"
-      ]
+      "codes": ["OOT MQ Water Temple Wonder Item Triple Torches"]
     },
     {
       "coords": [778, 546],
       "image": "wonder_item_red_rupee",
-      "codes": [
-        "TODO KF 056 :: unnamed_stack > Water Temple > MQ Water > MQ Water Wonder :: Pasted Layer #55 :: 001-001-006-002.png",
-        "OOT MQ Water Temple Wonder Item Lizalfos Room"
-      ]
+      "codes": ["OOT MQ Water Temple Wonder Item Lizalfos Room"]
     },
     {
       "coords": [641, 467],
       "image": "wonder_item_random",
-      "codes": [
-        "TODO KF 057 :: unnamed_stack > Water Temple > MQ Water > MQ Water Wonder :: Pasted Layer #56 :: 001-001-006-003.png",
-        "OOT MQ Water Temple Wonder Item Dragon Room Eyes 1"
-      ]
+      "codes": ["OOT MQ Water Temple Wonder Item Dragon Room Eyes 1"]
     },
     {
       "coords": [625, 467],
       "image": "wonder_item_big_magic_jar",
-      "codes": [
-        "TODO KF 058 :: unnamed_stack > Water Temple > MQ Water > MQ Water Wonder :: Pasted Layer #57 :: 001-001-006-004.png",
-        "OOT MQ Water Temple Wonder Item Dragon Room Eyes 2"
-      ]
+      "codes": ["OOT MQ Water Temple Wonder Item Dragon Room Eyes 2"]
     },
     {
       "coords": [599, 455],
       "image": "wonder_item_big_magic_jar",
-      "codes": [
-        "TODO KF 059 :: unnamed_stack > Water Temple > MQ Water > MQ Water Wonder :: Pasted Layer #58 :: 001-001-006-005.png",
-        "OOT MQ Water Temple Wonder Item Dragon Room Portrait"
-      ]
+      "codes": ["OOT MQ Water Temple Wonder Item Dragon Room Portrait"]
     },
     {
       "coords": [668, 415],
       "image": "wonder_item_small_magic_jar",
-      "codes": [
-        "TODO KF 060 :: unnamed_stack > Water Temple > MQ Water > MQ Water Wonder :: Pasted Layer #59 :: 001-001-006-006.png",
-        "OOT MQ Water Temple Wonder Item Water Sprouts 2"
-      ]
+      "codes": ["OOT MQ Water Temple Wonder Item Water Sprouts 2"]
     },
     {
       "coords": [668, 399],
       "image": "wonder_item_arrows",
-      "codes": [
-        "TODO KF 061 :: unnamed_stack > Water Temple > MQ Water > MQ Water Wonder :: Pasted Layer #60 :: 001-001-006-007.png",
-        "OOT MQ Water Temple Wonder Item Water Sprouts 1"
-      ]
+      "codes": ["OOT MQ Water Temple Wonder Item Water Sprouts 1"]
     },
     {
       "coords": [644, 400],
       "image": "wonder_item_big_magic_jar",
-      "codes": [
-        "TODO KF 062 :: unnamed_stack > Water Temple > MQ Water > MQ Water Wonder :: Pasted Layer #61 :: 001-001-006-008.png",
-        "OOT MQ Water Temple Wonder Item Freestanding Room"
-      ]
+      "codes": ["OOT MQ Water Temple Wonder Item Freestanding Room"]
     },
     {
       "coords": [778, 279],
       "image": "wonder_item_random",
-      "codes": [
-        "TODO KF 063 :: unnamed_stack > Water Temple > MQ Water > MQ Water Wonder :: Pasted Layer #62 :: 001-001-006-009.png",
-        "OOT MQ Water Temple Wonder Item Stalfos Room"
-      ]
+      "codes": ["OOT MQ Water Temple Wonder Item Stalfos Room"]
     },
     {
       "coords": [703, 214],
       "image": "wonder_item_big_magic_jar",
-      "codes": [
-        "TODO KF 064 :: unnamed_stack > Water Temple > MQ Water > MQ Water Wonder :: Pasted Layer #63 :: 001-001-006-010.png",
-        "OOT MQ Water Temple Wonder Item Before Boss 2"
-      ]
+      "codes": ["OOT MQ Water Temple Wonder Item Before Boss 2"]
     },
     {
       "coords": [603, 231],
       "image": "wonder_item_heart",
-      "codes": [
-        "TODO KF 065 :: unnamed_stack > Water Temple > MQ Water > MQ Water Wonder :: Pasted Layer #64 :: 001-001-006-011.png",
-        "OOT MQ Water Temple Wonder Item Hookshot Staircase Right 2"
-      ]
+      "codes": ["OOT MQ Water Temple Wonder Item Hookshot Staircase Right 2"]
     },
     {
       "coords": [611, 247],
       "image": "wonder_item_red_rupee",
-      "codes": [
-        "TODO KF 066 :: unnamed_stack > Water Temple > MQ Water > MQ Water Wonder :: Pasted Layer #65 :: 001-001-006-012.png",
-        "OOT MQ Water Temple Wonder Item Hookshot Staircase Right 3"
-      ]
+      "codes": ["OOT MQ Water Temple Wonder Item Hookshot Staircase Right 3"]
     },
     {
       "coords": [595, 247],
       "image": "wonder_item_deku_nuts",
-      "codes": [
-        "TODO KF 067 :: unnamed_stack > Water Temple > MQ Water > MQ Water Wonder :: Pasted Layer #66 :: 001-001-006-013.png",
-        "OOT MQ Water Temple Wonder Item Hookshot Staircase Right 1"
-      ]
+      "codes": ["OOT MQ Water Temple Wonder Item Hookshot Staircase Right 1"]
     },
     {
       "coords": [595, 269],
       "image": "wonder_item_random",
       "codes": [
-        "TODO KF 068 :: unnamed_stack > Water Temple > MQ Water > MQ Water Wonder :: Pasted Layer #67 :: 001-001-006-014.png",
         "OOT MQ Water Temple Wonder Item Hookshot Staircase Left 1",
         "OOT MQ Water Temple Wonder Item Hookshot Staircase Left 2",
         "OOT MQ Water Temple Wonder Item Hookshot Staircase Left 3"
@@ -822,42 +688,27 @@
     {
       "coords": [575, 91],
       "image": "wonder_item_big_magic_jar",
-      "codes": [
-        "TODO KF 069 :: unnamed_stack > Water Temple > MQ Water > MQ Water Wonder :: Pasted Layer #68 :: 001-001-006-015.png",
-        "OOT MQ Water Temple Wonder Item After Dark Link"
-      ]
+      "codes": ["OOT MQ Water Temple Wonder Item After Dark Link"]
     },
     {
       "coords": [469, 279],
       "image": "wonder_item_small_magic_jar",
-      "codes": [
-        "TODO KF 070 :: unnamed_stack > Water Temple > MQ Water > MQ Water Wonder :: Pasted Layer #69 :: 001-001-006-016.png",
-        "OOT MQ Water Temple Wonder Item Longshot Room"
-      ]
+      "codes": ["OOT MQ Water Temple Wonder Item Longshot Room"]
     },
     {
       "coords": [428, 323],
       "image": "wonder_item_arrows",
-      "codes": [
-        "TODO KF 071 :: unnamed_stack > Water Temple > MQ Water > MQ Water Wonder :: Pasted Layer #70 :: 001-001-006-017.png",
-        "OOT MQ Water Temple Wonder Item Lizalfos Hallway"
-      ]
+      "codes": ["OOT MQ Water Temple Wonder Item Lizalfos Hallway"]
     },
     {
       "coords": [358, 284],
       "image": "wonder_item_random",
-      "codes": [
-        "TODO KF 072 :: unnamed_stack > Water Temple > MQ Water > MQ Water Wonder :: Pasted Layer #71 :: 001-001-006-018.png",
-        "OOT MQ Water Temple Wonder Item Above 2F West Room"
-      ]
+      "codes": ["OOT MQ Water Temple Wonder Item Above 2F West Room"]
     },
     {
       "coords": [681, 214],
       "image": "wonder_item_random",
-      "codes": [
-        "TODO KF 073 :: unnamed_stack > Water Temple > MQ Water > MQ Water Wonder :: Pasted Layer #72 :: 001-001-006-019.png",
-        "OOT MQ Water Temple Wonder Item Before Boss 1"
-      ]
+      "codes": ["OOT MQ Water Temple Wonder Item Before Boss 1"]
     }
   ]
 }
