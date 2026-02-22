@@ -6,178 +6,112 @@
   "height": 600,
   "markers": [
     {
-      "coords": [
-        739,
-        470
-      ],
+      "coords": [739, 470],
       "image": "chest",
       "codes": "OOT Fire Temple Below Maze Chest"
     },
     {
-      "coords": [
-        407,
-        540
-      ],
+      "coords": [407, 540],
       "image": "chest",
       "codes": "OOT Fire Temple Lava Room South Jail Chest"
     },
     {
-      "coords": [
-        315,
-        502
-      ],
+      "coords": [315, 502],
       "image": "chest",
       "codes": "OOT Fire Temple Jail 1 Chest"
     },
     {
-      "coords": [
-        285,
-        466
-      ],
+      "coords": [285, 466],
       "image": "heart_container",
       "codes": "OOT Fire Temple Boss Container"
     },
     {
-      "coords": [
-        269,
-        466
-      ],
+      "coords": [269, 466],
       "image": "fire_medallion",
       "codes": "OOT Fire Temple Boss"
     },
     {
-      "coords": [
-        344,
-        454
-      ],
+      "coords": [344, 454],
       "image": "chest",
       "codes": "OOT Fire Temple Boss Key Side Chest"
     },
     {
-      "coords": [
-        344,
-        438
-      ],
+      "coords": [344, 438],
       "image": "chest",
       "codes": "OOT Fire Temple Boss Key Chest"
     },
     {
-      "coords": [
-        427,
-        408
-      ],
+      "coords": [427, 408],
       "image": "chest",
       "codes": "OOT Fire Temple Lava Room North Jail Chest"
     },
     {
-      "coords": [
-        724,
-        219
-      ],
+      "coords": [724, 219],
       "image": "chest",
       "codes": "OOT Fire Temple Hammer"
     },
     {
-      "coords": [
-        871,
-        187
-      ],
+      "coords": [871, 187],
       "image": "chest",
       "codes": "OOT Fire Temple Scarecrow Chest"
     },
     {
-      "coords": [
-        282,
-        236
-      ],
+      "coords": [282, 236],
       "image": "chest",
       "codes": "OOT Fire Temple Maze Chest"
     },
     {
-      "coords": [
-        268,
-        250
-      ],
+      "coords": [268, 250],
       "image": "chest",
       "codes": "OOT Fire Temple Above Maze Chest"
     },
     {
-      "coords": [
-        240,
-        191
-      ],
+      "coords": [240, 191],
       "image": "chest",
       "codes": "OOT Fire Temple Map"
     },
     {
-      "coords": [
-        248,
-        135
-      ],
+      "coords": [248, 135],
       "image": "chest",
       "codes": "OOT Fire Temple Maze Jail Chest"
     },
     {
-      "coords": [
-        183,
-        152
-      ],
+      "coords": [183, 152],
       "image": "chest",
       "codes": "OOT Fire Temple Compass"
     },
     {
-      "coords": [
-        148,
-        200
-      ],
+      "coords": [148, 200],
       "image": "chest",
       "codes": "OOT Fire Temple Ring Jail"
     },
     {
-      "coords": [
-        393,
-        407
-      ],
+      "coords": [393, 407],
       "image": "gold_skulltula",
       "codes": "OOT Fire Temple GS Lava Side Room"
     },
     {
-      "coords": [
-        374,
-        407
-      ],
+      "coords": [374, 407],
       "image": "gold_skulltula",
       "codes": "OOT Fire Temple GS Hammer Statues"
     },
     {
-      "coords": [
-        281,
-        158
-      ],
+      "coords": [281, 158],
       "image": "gold_skulltula",
       "codes": "OOT Fire Temple GS Maze"
     },
     {
-      "coords": [
-        550,
-        168
-      ],
+      "coords": [550, 168],
       "image": "gold_skulltula",
       "codes": "OOT Fire Temple GS Scarecrow Wall"
     },
     {
-      "coords": [
-        863,
-        194
-      ],
+      "coords": [863, 194],
       "image": "gold_skulltula",
       "codes": "OOT Fire Temple GS Scarecrow Top"
     },
     {
-      "coords": [
-        439,
-        442
-      ],
+      "coords": [439, 442],
       "image": "pot",
       "codes": [
         "OOT Fire Temple Pot Lava Room 1",
@@ -186,10 +120,7 @@
       ]
     },
     {
-      "coords": [
-        313,
-        449
-      ],
+      "coords": [313, 449],
       "image": "pot",
       "codes": [
         "OOT Fire Temple Pot Pre-Boss Room 1",
@@ -199,10 +130,7 @@
       ]
     },
     {
-      "coords": [
-        127,
-        229
-      ],
+      "coords": [127, 229],
       "image": "pot",
       "codes": [
         "OOT Fire Temple Pot Ring 1",
@@ -212,10 +140,7 @@
       ]
     },
     {
-      "coords": [
-        113,
-        178
-      ],
+      "coords": [113, 178],
       "image": "pot",
       "codes": [
         "OOT Fire Temple Pot Before Miniboss 1",
@@ -225,21 +150,12 @@
       ]
     },
     {
-      "coords": [
-        434,
-        150
-      ],
+      "coords": [434, 150],
       "image": "small_crate",
-      "codes": [
-        "OOT Fire Temple Crate 1",
-        "OOT Fire Temple Crate 2"
-      ]
+      "codes": ["OOT Fire Temple Crate 1", "OOT Fire Temple Crate 2"]
     },
     {
-      "coords": [
-        468,
-        455
-      ],
+      "coords": [468, 455],
       "image": "heart",
       "codes": [
         "OOT Fire Temple Heart Elevator 1",
@@ -248,10 +164,7 @@
       ]
     },
     {
-      "coords": [
-        229,
-        199
-      ],
+      "coords": [229, 199],
       "image": "heart",
       "codes": [
         "OOT Fire Temple Heart Map Room 2",
@@ -259,10 +172,7 @@
       ]
     },
     {
-      "coords": [
-        261,
-        194
-      ],
+      "coords": [261, 194],
       "image": "heart",
       "codes": [
         "OOT Fire Temple Heart Ledge Above Main 1",
@@ -271,18 +181,12 @@
       ]
     },
     {
-      "coords": [
-        240,
-        163
-      ],
+      "coords": [240, 163],
       "image": "heart",
       "codes": "OOT Fire Temple Heart Map Room 1"
     },
     {
-      "coords": [
-        740,
-        467
-      ],
+      "coords": [740, 467],
       "image": "chest",
       "codes": [
         "TODO KF 001 :: unnamed_stack > Fire Temple > MQ Fire > MQ Fire Checks :: Pasted Layer :: 001-001-001-000.png",
@@ -290,10 +194,7 @@
       ]
     },
     {
-      "coords": [
-        407,
-        539
-      ],
+      "coords": [407, 539],
       "image": "chest",
       "codes": [
         "TODO KF 002 :: unnamed_stack > Fire Temple > MQ Fire > MQ Fire Checks :: Pasted Layer #1 :: 001-001-001-001.png",
@@ -301,10 +202,7 @@
       ]
     },
     {
-      "coords": [
-        311,
-        503
-      ],
+      "coords": [311, 503],
       "image": "chest",
       "codes": [
         "TODO KF 003 :: unnamed_stack > Fire Temple > MQ Fire > MQ Fire Checks :: Pasted Layer #2 :: 001-001-001-002.png",
@@ -312,10 +210,7 @@
       ]
     },
     {
-      "coords": [
-        395,
-        400
-      ],
+      "coords": [395, 400],
       "image": "chest",
       "codes": [
         "TODO KF 004 :: unnamed_stack > Fire Temple > MQ Fire > MQ Fire Checks :: Pasted Layer #3 :: 001-001-001-003.png",
@@ -323,10 +218,7 @@
       ]
     },
     {
-      "coords": [
-        344,
-        417
-      ],
+      "coords": [344, 417],
       "image": "chest",
       "codes": [
         "TODO KF 005 :: unnamed_stack > Fire Temple > MQ Fire > MQ Fire Checks :: Pasted Layer #4 :: 001-001-001-004.png",
@@ -334,10 +226,7 @@
       ]
     },
     {
-      "coords": [
-        344,
-        440
-      ],
+      "coords": [344, 440],
       "image": "chest",
       "codes": [
         "TODO KF 006 :: unnamed_stack > Fire Temple > MQ Fire > MQ Fire Checks :: Pasted Layer #5 :: 001-001-001-005.png",
@@ -345,10 +234,7 @@
       ]
     },
     {
-      "coords": [
-        344,
-        455
-      ],
+      "coords": [344, 455],
       "image": "chest",
       "codes": [
         "TODO KF 007 :: unnamed_stack > Fire Temple > MQ Fire > MQ Fire Checks :: Pasted Layer #6 :: 001-001-001-006.png",
@@ -356,10 +242,7 @@
       ]
     },
     {
-      "coords": [
-        285,
-        466
-      ],
+      "coords": [285, 466],
       "image": "heart_container",
       "codes": [
         "TODO KF 008 :: unnamed_stack > Fire Temple > MQ Fire > MQ Fire Checks :: Pasted Layer #7 :: 001-001-001-007.png",
@@ -367,10 +250,7 @@
       ]
     },
     {
-      "coords": [
-        269,
-        466
-      ],
+      "coords": [269, 466],
       "image": "fire_medallion",
       "codes": [
         "TODO KF 009 :: unnamed_stack > Fire Temple > MQ Fire > MQ Fire Checks :: Pasted Layer #8 :: 001-001-001-008.png",
@@ -378,10 +258,7 @@
       ]
     },
     {
-      "coords": [
-        727,
-        217
-      ],
+      "coords": [727, 217],
       "image": "chest",
       "codes": [
         "TODO KF 010 :: unnamed_stack > Fire Temple > MQ Fire > MQ Fire Checks :: Pasted Layer #9 :: 001-001-001-009.png",
@@ -389,10 +266,7 @@
       ]
     },
     {
-      "coords": [
-        268,
-        251
-      ],
+      "coords": [268, 251],
       "image": "chest",
       "codes": [
         "TODO KF 011 :: unnamed_stack > Fire Temple > MQ Fire > MQ Fire Checks :: Pasted Layer #10 :: 001-001-001-010.png",
@@ -400,10 +274,7 @@
       ]
     },
     {
-      "coords": [
-        278,
-        236
-      ],
+      "coords": [278, 236],
       "image": "chest",
       "codes": [
         "TODO KF 012 :: unnamed_stack > Fire Temple > MQ Fire > MQ Fire Checks :: Pasted Layer #11 :: 001-001-001-011.png",
@@ -411,10 +282,7 @@
       ]
     },
     {
-      "coords": [
-        248,
-        134
-      ],
+      "coords": [248, 134],
       "image": "chest",
       "codes": [
         "TODO KF 013 :: unnamed_stack > Fire Temple > MQ Fire > MQ Fire Checks :: Pasted Layer #12 :: 001-001-001-012.png",
@@ -422,10 +290,7 @@
       ]
     },
     {
-      "coords": [
-        102,
-        204
-      ],
+      "coords": [102, 204],
       "image": "collectible",
       "codes": [
         "TODO KF 014 :: unnamed_stack > Fire Temple > MQ Fire > MQ Fire Checks :: Pasted Layer #13 :: 001-001-001-013.png",
@@ -433,10 +298,7 @@
       ]
     },
     {
-      "coords": [
-        428,
-        408
-      ],
+      "coords": [428, 408],
       "image": "gold_skulltula",
       "codes": [
         "TODO KF 015 :: unnamed_stack > Fire Temple > MQ Fire > MQ Fire Skulls :: Pasted Layer #14 :: 001-001-002-000.png",
@@ -444,10 +306,7 @@
       ]
     },
     {
-      "coords": [
-        872,
-        186
-      ],
+      "coords": [872, 186],
       "image": "gold_skulltula",
       "codes": [
         "TODO KF 016 :: unnamed_stack > Fire Temple > MQ Fire > MQ Fire Skulls :: Pasted Layer #15 :: 001-001-002-001.png",
@@ -455,10 +314,7 @@
       ]
     },
     {
-      "coords": [
-        462,
-        195
-      ],
+      "coords": [462, 195],
       "image": "gold_skulltula",
       "codes": [
         "TODO KF 017 :: unnamed_stack > Fire Temple > MQ Fire > MQ Fire Skulls :: Pasted Layer #16 :: 001-001-002-002.png",
@@ -466,10 +322,7 @@
       ]
     },
     {
-      "coords": [
-        183,
-        153
-      ],
+      "coords": [183, 153],
       "image": "gold_skulltula",
       "codes": [
         "TODO KF 018 :: unnamed_stack > Fire Temple > MQ Fire > MQ Fire Skulls :: Pasted Layer #17 :: 001-001-002-003.png",
@@ -477,10 +330,7 @@
       ]
     },
     {
-      "coords": [
-        147,
-        200
-      ],
+      "coords": [147, 200],
       "image": "gold_skulltula",
       "codes": [
         "TODO KF 019 :: unnamed_stack > Fire Temple > MQ Fire > MQ Fire Skulls :: Pasted Layer #18 :: 001-001-002-004.png",
@@ -488,10 +338,7 @@
       ]
     },
     {
-      "coords": [
-        258,
-        195
-      ],
+      "coords": [258, 195],
       "image": "pot",
       "codes": [
         "TODO KF 020 :: unnamed_stack > Fire Temple > MQ Fire > MQ Fire Pots :: Pasted Layer #19 :: 001-001-003-000.png",
@@ -501,10 +348,7 @@
       ]
     },
     {
-      "coords": [
-        254,
-        226
-      ],
+      "coords": [254, 226],
       "image": "pot",
       "codes": [
         "TODO KF 021 :: unnamed_stack > Fire Temple > MQ Fire > MQ Fire Pots :: Pasted Layer #20 :: 001-001-003-001.png",
@@ -513,10 +357,7 @@
       ]
     },
     {
-      "coords": [
-        130,
-        229
-      ],
+      "coords": [130, 229],
       "image": "pot",
       "codes": [
         "TODO KF 022 :: unnamed_stack > Fire Temple > MQ Fire > MQ Fire Pots :: Pasted Layer #21 :: 001-001-003-002.png",
@@ -525,10 +366,7 @@
       ]
     },
     {
-      "coords": [
-        146,
-        163
-      ],
+      "coords": [146, 163],
       "image": "pot",
       "codes": [
         "TODO KF 023 :: unnamed_stack > Fire Temple > MQ Fire > MQ Fire Pots :: Pasted Layer #22 :: 001-001-003-003.png",
@@ -536,10 +374,7 @@
       ]
     },
     {
-      "coords": [
-        133,
-        174
-      ],
+      "coords": [133, 174],
       "image": "pot",
       "codes": [
         "TODO KF 024 :: unnamed_stack > Fire Temple > MQ Fire > MQ Fire Pots :: Pasted Layer #23 :: 001-001-003-004.png",
@@ -547,10 +382,7 @@
       ]
     },
     {
-      "coords": [
-        111,
-        176
-      ],
+      "coords": [111, 176],
       "image": "pot",
       "codes": [
         "TODO KF 025 :: unnamed_stack > Fire Temple > MQ Fire > MQ Fire Pots :: Pasted Layer #24 :: 001-001-003-005.png",
@@ -559,10 +391,7 @@
       ]
     },
     {
-      "coords": [
-        414,
-        505
-      ],
+      "coords": [414, 505],
       "image": "pot",
       "codes": [
         "TODO KF 026 :: unnamed_stack > Fire Temple > MQ Fire > MQ Fire Pots :: Pasted Layer #25 :: 001-001-003-006.png",
@@ -570,10 +399,7 @@
       ]
     },
     {
-      "coords": [
-        370,
-        500
-      ],
+      "coords": [370, 500],
       "image": "pot",
       "codes": [
         "TODO KF 027 :: unnamed_stack > Fire Temple > MQ Fire > MQ Fire Pots :: Pasted Layer #26 :: 001-001-003-007.png",
@@ -581,10 +407,7 @@
       ]
     },
     {
-      "coords": [
-        342,
-        500
-      ],
+      "coords": [342, 500],
       "image": "pot",
       "codes": [
         "TODO KF 028 :: unnamed_stack > Fire Temple > MQ Fire > MQ Fire Pots :: Pasted Layer #27 :: 001-001-003-008.png",
@@ -592,10 +415,7 @@
       ]
     },
     {
-      "coords": [
-        431,
-        434
-      ],
+      "coords": [431, 434],
       "image": "pot",
       "codes": [
         "TODO KF 029 :: unnamed_stack > Fire Temple > MQ Fire > MQ Fire Pots :: Pasted Layer #28 :: 001-001-003-009.png",
@@ -603,10 +423,7 @@
       ]
     },
     {
-      "coords": [
-        412,
-        423
-      ],
+      "coords": [412, 423],
       "image": "pot",
       "codes": [
         "TODO KF 030 :: unnamed_stack > Fire Temple > MQ Fire > MQ Fire Pots :: Pasted Layer #29 :: 001-001-003-010.png",
@@ -614,10 +431,7 @@
       ]
     },
     {
-      "coords": [
-        395,
-        410
-      ],
+      "coords": [395, 410],
       "image": "pot",
       "codes": [
         "TODO KF 031 :: unnamed_stack > Fire Temple > MQ Fire > MQ Fire Pots :: Pasted Layer #30 :: 001-001-003-011.png",
@@ -626,10 +440,7 @@
       ]
     },
     {
-      "coords": [
-        368,
-        425
-      ],
+      "coords": [368, 425],
       "image": "pot",
       "codes": [
         "TODO KF 032 :: unnamed_stack > Fire Temple > MQ Fire > MQ Fire Pots :: Pasted Layer #31 :: 001-001-003-012.png",
@@ -644,10 +455,7 @@
       ]
     },
     {
-      "coords": [
-        307,
-        450
-      ],
+      "coords": [307, 450],
       "image": "pot",
       "codes": [
         "TODO KF 033 :: unnamed_stack > Fire Temple > MQ Fire > MQ Fire Pots :: Pasted Layer #32 :: 001-001-003-013.png",
@@ -656,10 +464,7 @@
       ]
     },
     {
-      "coords": [
-        725,
-        462
-      ],
+      "coords": [725, 462],
       "image": "crate",
       "codes": [
         "TODO KF 034 :: unnamed_stack > Fire Temple > MQ Fire > MQ Fire Crates :: Pasted Layer #33 :: 001-001-004-000.png",
@@ -672,10 +477,7 @@
       ]
     },
     {
-      "coords": [
-        311,
-        488
-      ],
+      "coords": [311, 488],
       "image": "crate",
       "codes": [
         "TODO KF 035 :: unnamed_stack > Fire Temple > MQ Fire > MQ Fire Crates :: Pasted Layer #34 :: 001-001-004-001.png",
@@ -684,10 +486,7 @@
       ]
     },
     {
-      "coords": [
-        317,
-        444
-      ],
+      "coords": [317, 444],
       "image": "crate",
       "codes": [
         "TODO KF 036 :: unnamed_stack > Fire Temple > MQ Fire > MQ Fire Crates :: Pasted Layer #35 :: 001-001-004-002.png",
@@ -698,10 +497,7 @@
       ]
     },
     {
-      "coords": [
-        286,
-        241
-      ],
+      "coords": [286, 241],
       "image": "crate",
       "codes": [
         "TODO KF 037 :: unnamed_stack > Fire Temple > MQ Fire > MQ Fire Crates :: Pasted Layer #36 :: 001-001-004-003.png",
@@ -711,10 +507,7 @@
       ]
     },
     {
-      "coords": [
-        276,
-        258
-      ],
+      "coords": [276, 258],
       "image": "small_crate",
       "codes": [
         "TODO KF 038 :: unnamed_stack > Fire Temple > MQ Fire > MQ Fire Crates :: Pasted Layer #37 :: 001-001-004-004.png",
@@ -723,10 +516,7 @@
       ]
     },
     {
-      "coords": [
-        260,
-        258
-      ],
+      "coords": [260, 258],
       "image": "crate",
       "codes": [
         "TODO KF 039 :: unnamed_stack > Fire Temple > MQ Fire > MQ Fire Crates :: Pasted Layer #38 :: 001-001-004-005.png",
@@ -736,10 +526,7 @@
       ]
     },
     {
-      "coords": [
-        220,
-        217
-      ],
+      "coords": [220, 217],
       "image": "crate",
       "codes": [
         "TODO KF 040 :: unnamed_stack > Fire Temple > MQ Fire > MQ Fire Crates :: Pasted Layer #39 :: 001-001-004-006.png",
@@ -747,10 +534,7 @@
       ]
     },
     {
-      "coords": [
-        235,
-        207
-      ],
+      "coords": [235, 207],
       "image": "crate",
       "codes": [
         "TODO KF 041 :: unnamed_stack > Fire Temple > MQ Fire > MQ Fire Crates :: Pasted Layer #40 :: 001-001-004-007.png",
@@ -758,10 +542,7 @@
       ]
     },
     {
-      "coords": [
-        247,
-        211
-      ],
+      "coords": [247, 211],
       "image": "small_crate",
       "codes": [
         "TODO KF 042 :: unnamed_stack > Fire Temple > MQ Fire > MQ Fire Crates :: Pasted Layer #41 :: 001-001-004-008.png",
@@ -770,10 +551,7 @@
       ]
     },
     {
-      "coords": [
-        232,
-        221
-      ],
+      "coords": [232, 221],
       "image": "small_crate",
       "codes": [
         "TODO KF 043 :: unnamed_stack > Fire Temple > MQ Fire > MQ Fire Crates :: Pasted Layer #42 :: 001-001-004-009.png",
@@ -782,10 +560,7 @@
       ]
     },
     {
-      "coords": [
-        230,
-        188
-      ],
+      "coords": [230, 188],
       "image": "crate",
       "codes": [
         "TODO KF 044 :: unnamed_stack > Fire Temple > MQ Fire > MQ Fire Crates :: Pasted Layer #43 :: 001-001-004-010.png",
@@ -793,10 +568,7 @@
       ]
     },
     {
-      "coords": [
-        240,
-        157
-      ],
+      "coords": [240, 157],
       "image": "crate",
       "codes": [
         "TODO KF 045 :: unnamed_stack > Fire Temple > MQ Fire > MQ Fire Crates :: Pasted Layer #44 :: 001-001-004-011.png",
@@ -805,10 +577,7 @@
       ]
     },
     {
-      "coords": [
-        240,
-        170
-      ],
+      "coords": [240, 170],
       "image": "small_crate",
       "codes": [
         "TODO KF 046 :: unnamed_stack > Fire Temple > MQ Fire > MQ Fire Crates :: Pasted Layer #45 :: 001-001-004-012.png",
@@ -816,10 +585,7 @@
       ]
     },
     {
-      "coords": [
-        472,
-        454
-      ],
+      "coords": [472, 454],
       "image": "heart",
       "codes": [
         "TODO KF 047 :: unnamed_stack > Fire Temple > MQ Fire > MQ Fire Freestanding Hearts :: Pasted Layer #46 :: 001-001-005-000.png",
@@ -827,10 +593,7 @@
       ]
     },
     {
-      "coords": [
-        462,
-        469
-      ],
+      "coords": [462, 469],
       "image": "heart",
       "codes": [
         "TODO KF 048 :: unnamed_stack > Fire Temple > MQ Fire > MQ Fire Freestanding Hearts :: Pasted Layer #47 :: 001-001-005-001.png",
@@ -838,10 +601,7 @@
       ]
     },
     {
-      "coords": [
-        472,
-        477
-      ],
+      "coords": [472, 477],
       "image": "heart",
       "codes": [
         "TODO KF 049 :: unnamed_stack > Fire Temple > MQ Fire > MQ Fire Freestanding Hearts :: Pasted Layer #48 :: 001-001-005-002.png",
@@ -849,10 +609,7 @@
       ]
     },
     {
-      "coords": [
-        364,
-        449
-      ],
+      "coords": [364, 449],
       "image": "big_fairy_spot",
       "codes": [
         "TODO KF 050 :: unnamed_stack > Fire Temple > MQ Fire > MQ Big Fairy :: Pasted Layer #49 :: 001-001-006-000.png",
@@ -860,10 +617,7 @@
       ]
     },
     {
-      "coords": [
-        376,
-        405
-      ],
+      "coords": [376, 405],
       "image": "big_fairy_spot",
       "codes": [
         "TODO KF 051 :: unnamed_stack > Fire Temple > MQ Fire > MQ Big Fairy :: Pasted Layer #50 :: 001-001-006-001.png",
@@ -871,10 +625,7 @@
       ]
     },
     {
-      "coords": [
-        751,
-        496
-      ],
+      "coords": [751, 496],
       "image": "wonder_item_heart",
       "codes": [
         "TODO KF 052 :: unnamed_stack > Fire Temple > MQ Fire > MQ Fire Wonder :: Pasted Layer #51 :: 001-001-007-000.png",
@@ -882,10 +633,7 @@
       ]
     },
     {
-      "coords": [
-        735,
-        496
-      ],
+      "coords": [735, 496],
       "image": "wonder_item_arrows",
       "codes": [
         "TODO KF 053 :: unnamed_stack > Fire Temple > MQ Fire > MQ Fire Wonder :: Pasted Layer #52 :: 001-001-007-001.png",
@@ -893,10 +641,7 @@
       ]
     },
     {
-      "coords": [
-        743,
-        480
-      ],
+      "coords": [743, 480],
       "image": "wonder_item_big_magic_jar",
       "codes": [
         "TODO KF 054 :: unnamed_stack > Fire Temple > MQ Fire > MQ Fire Wonder :: Pasted Layer #53 :: 001-001-007-002.png",
@@ -904,10 +649,7 @@
       ]
     },
     {
-      "coords": [
-        402,
-        393
-      ],
+      "coords": [402, 393],
       "image": "wonder_item_random",
       "codes": [
         "TODO KF 055 :: unnamed_stack > Fire Temple > MQ Fire > MQ Fire Wonder :: Pasted Layer #54 :: 001-001-007-003.png",
@@ -916,10 +658,7 @@
       ]
     },
     {
-      "coords": [
-        568,
-        184
-      ],
+      "coords": [568, 184],
       "image": "wonder_item_big_magic_jar",
       "codes": [
         "TODO KF 056 :: unnamed_stack > Fire Temple > MQ Fire > MQ Fire Wonder :: Pasted Layer #55 :: 001-001-007-004.png",
@@ -927,10 +666,7 @@
       ]
     },
     {
-      "coords": [
-        552,
-        184
-      ],
+      "coords": [552, 184],
       "image": "wonder_item_random",
       "codes": [
         "TODO KF 057 :: unnamed_stack > Fire Temple > MQ Fire > MQ Fire Wonder :: Pasted Layer #56 :: 001-001-007-005.png",
@@ -938,10 +674,7 @@
       ]
     },
     {
-      "coords": [
-        544,
-        166
-      ],
+      "coords": [544, 166],
       "image": "wonder_item_random",
       "codes": [
         "TODO KF 058 :: unnamed_stack > Fire Temple > MQ Fire > MQ Fire Wonder :: Pasted Layer #57 :: 001-001-007-006.png",
@@ -949,10 +682,7 @@
       ]
     },
     {
-      "coords": [
-        528,
-        166
-      ],
+      "coords": [528, 166],
       "image": "wonder_item_big_magic_jar",
       "codes": [
         "TODO KF 059 :: unnamed_stack > Fire Temple > MQ Fire > MQ Fire Wonder :: Pasted Layer #58 :: 001-001-007-007.png",
@@ -960,10 +690,7 @@
       ]
     },
     {
-      "coords": [
-        458,
-        175
-      ],
+      "coords": [458, 175],
       "image": "wonder_item_random",
       "codes": [
         "TODO KF 060 :: unnamed_stack > Fire Temple > MQ Fire > MQ Fire Wonder :: Pasted Layer #59 :: 001-001-007-008.png",
@@ -971,10 +698,7 @@
       ]
     },
     {
-      "coords": [
-        407,
-        221
-      ],
+      "coords": [407, 221],
       "image": "wonder_item_random",
       "codes": [
         "TODO KF 061 :: unnamed_stack > Fire Temple > MQ Fire > MQ Fire Wonder :: Pasted Layer #60 :: 001-001-007-009.png",
@@ -982,10 +706,7 @@
       ]
     },
     {
-      "coords": [
-        304,
-        200
-      ],
+      "coords": [304, 200],
       "image": "wonder_item_red_rupee",
       "codes": [
         "TODO KF 062 :: unnamed_stack > Fire Temple > MQ Fire > MQ Fire Wonder :: Pasted Layer #61 :: 001-001-007-010.png",
@@ -993,10 +714,7 @@
       ]
     },
     {
-      "coords": [
-        230,
-        200
-      ],
+      "coords": [230, 200],
       "image": "wonder_item_random",
       "codes": [
         "TODO KF 063 :: unnamed_stack > Fire Temple > MQ Fire > MQ Fire Wonder :: Pasted Layer #62 :: 001-001-007-011.png",
@@ -1004,10 +722,7 @@
       ]
     },
     {
-      "coords": [
-        124,
-        180
-      ],
+      "coords": [124, 180],
       "image": "wonder_item_random",
       "codes": [
         "TODO KF 064 :: unnamed_stack > Fire Temple > MQ Fire > MQ Fire Wonder :: Pasted Layer #63 :: 001-001-007-012.png",

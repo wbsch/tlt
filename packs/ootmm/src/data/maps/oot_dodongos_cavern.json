@@ -6,130 +6,82 @@
   "height": 600,
   "markers": [
     {
-      "coords": [
-        248,
-        266
-      ],
+      "coords": [248, 266],
       "image": "goron_ruby",
       "codes": "OOT Dodongo Cavern Boss"
     },
     {
-      "coords": [
-        264,
-        266
-      ],
+      "coords": [264, 266],
       "image": "heart_container",
       "codes": "OOT Dodongo Cavern Boss Container"
     },
     {
-      "coords": [
-        280,
-        266
-      ],
+      "coords": [280, 266],
       "image": "chest",
       "codes": "OOT Dodongo Cavern Boss Chest"
     },
     {
-      "coords": [
-        243,
-        380
-      ],
+      "coords": [243, 380],
       "image": "chest",
       "codes": "OOT Dodongo Cavern Compass Chest"
     },
     {
-      "coords": [
-        273,
-        337
-      ],
+      "coords": [273, 337],
       "image": "chest",
       "codes": "OOT Dodongo Cavern Map Chest"
     },
     {
-      "coords": [
-        570,
-        312
-      ],
+      "coords": [570, 312],
       "image": "chest",
       "codes": "OOT Dodongo Cavern Bridge Chest"
     },
     {
-      "coords": [
-        671,
-        370
-      ],
+      "coords": [671, 370],
       "image": "chest",
       "codes": "OOT Dodongo Cavern Bomb Bag Side Chest"
     },
     {
-      "coords": [
-        657,
-        322
-      ],
+      "coords": [657, 322],
       "image": "chest",
       "codes": "OOT Dodongo Cavern Bomb Bag Chest"
     },
     {
-      "coords": [
-        359,
-        197
-      ],
+      "coords": [359, 197],
       "image": "gold_skulltula",
       "codes": "OOT Dodongo Cavern GS Near Boss"
     },
     {
-      "coords": [
-        397,
-        405
-      ],
+      "coords": [397, 405],
       "image": "gold_skulltula",
       "codes": "OOT Dodongo Cavern GS Side Room"
     },
     {
-      "coords": [
-        392,
-        350
-      ],
+      "coords": [392, 350],
       "image": "gold_skulltula",
       "codes": "OOT Dodongo Cavern GS Scarecrow"
     },
     {
-      "coords": [
-        543,
-        332
-      ],
+      "coords": [543, 332],
       "image": "gold_skulltula",
       "codes": "OOT Dodongo Cavern GS Stairs Top"
     },
     {
-      "coords": [
-        543,
-        301
-      ],
+      "coords": [543, 301],
       "image": "gold_skulltula",
       "codes": "OOT Dodongo Cavern GS Stairs Vines"
     },
     {
-      "coords": [
-        272,
-        365
-      ],
+      "coords": [272, 365],
       "image": "business_scrub_oot",
       "codes": "OOT Dodongo Cavern Lobby Scrub"
     },
     {
-      "coords": [
-        392,
-        257
-      ],
+      "coords": [392, 257],
       "image": "business_scrub_oot",
       "codes": "OOT Dodongo Cavern Green Side Room Scrub"
     },
     {
-      "coords": [
-        669,
-        296
-      ],
+      "coords": [669, 296],
       "image": "business_scrub_oot",
       "codes": [
         "OOT Dodongo Cavern Bomb Bag Side Room Left Scrub",
@@ -137,10 +89,7 @@
       ]
     },
     {
-      "coords": [
-        314,
-        223
-      ],
+      "coords": [314, 223],
       "image": "pot",
       "codes": [
         "OOT Dodongo Cavern Pot Skull 3",
@@ -148,10 +97,7 @@
       ]
     },
     {
-      "coords": [
-        347,
-        240
-      ],
+      "coords": [347, 240],
       "image": "pot",
       "codes": [
         "OOT Dodongo Cavern Pot Skull 1",
@@ -159,10 +105,7 @@
       ]
     },
     {
-      "coords": [
-        373,
-        327
-      ],
+      "coords": [373, 327],
       "image": "pot",
       "codes": [
         "OOT Dodongo Cavern Pot Green Room Pot 1",
@@ -172,10 +115,7 @@
       ]
     },
     {
-      "coords": [
-        408,
-        303
-      ],
+      "coords": [408, 303],
       "image": "pot",
       "codes": [
         "OOT Dodongo Cavern Pot Miniboss 3",
@@ -183,10 +123,7 @@
       ]
     },
     {
-      "coords": [
-        437,
-        279
-      ],
+      "coords": [437, 279],
       "image": "pot",
       "codes": [
         "OOT Dodongo Cavern Pot Miniboss 1",
@@ -194,10 +131,7 @@
       ]
     },
     {
-      "coords": [
-        437,
-        339
-      ],
+      "coords": [437, 339],
       "image": "pot",
       "codes": [
         "OOT Dodongo Cavern Pot Right Corridor Pot 5",
@@ -205,10 +139,7 @@
       ]
     },
     {
-      "coords": [
-        402,
-        359
-      ],
+      "coords": [402, 359],
       "image": "pot",
       "codes": [
         "OOT Dodongo Cavern Pot Right Corridor Pot 3",
@@ -216,10 +147,7 @@
       ]
     },
     {
-      "coords": [
-        368,
-        358
-      ],
+      "coords": [368, 358],
       "image": "pot",
       "codes": [
         "OOT Dodongo Cavern Pot Right Corridor Pot 1",
@@ -227,10 +155,7 @@
       ]
     },
     {
-      "coords": [
-        530,
-        306
-      ],
+      "coords": [530, 306],
       "image": "pot",
       "codes": [
         "OOT Dodongo Cavern Pot Stairs Pot 1",
@@ -238,10 +163,7 @@
       ]
     },
     {
-      "coords": [
-        553,
-        306
-      ],
+      "coords": [553, 306],
       "image": "pot",
       "codes": [
         "OOT Dodongo Cavern Pot Stairs Pot 3",
@@ -249,10 +171,7 @@
       ]
     },
     {
-      "coords": [
-        663,
-        347
-      ],
+      "coords": [663, 347],
       "image": "pot",
       "codes": [
         "OOT Dodongo Cavern Pot Bomb Bag Room 1",
@@ -260,10 +179,7 @@
       ]
     },
     {
-      "coords": [
-        698,
-        356
-      ],
+      "coords": [698, 356],
       "image": "pot",
       "codes": [
         "OOT Dodongo Cavern Pot Room Before Miniboss 1",
@@ -271,10 +187,7 @@
       ]
     },
     {
-      "coords": [
-        701,
-        326
-      ],
+      "coords": [701, 326],
       "image": "pot",
       "codes": [
         "OOT Dodongo Cavern Pot Room After Miniboss 1",
@@ -282,53 +195,33 @@
       ]
     },
     {
-      "coords": [
-        304,
-        274
-      ],
+      "coords": [304, 274],
       "image": "grass",
       "codes": "OOT Dodongo Cavern Grass Pre-Boss"
     },
     {
-      "coords": [
-        386,
-        389
-      ],
+      "coords": [386, 389],
       "image": "grass",
-      "overlays": [
-        "broken"
-      ],
+      "overlays": ["broken"],
       "codes": "OOT Dodongo Cavern Grass East Corridor Side Room"
     },
     {
-      "coords": [
-        583,
-        360
-      ],
+      "coords": [583, 360],
       "image": "grass",
       "codes": "OOT Dodongo Cavern Grass Lobby"
     },
     {
-      "coords": [
-        666,
-        324
-      ],
+      "coords": [666, 324],
       "image": "grass",
       "codes": "OOT Dodongo Cavern Grass Bomb Bag Room"
     },
     {
-      "coords": [
-        717,
-        357
-      ],
+      "coords": [717, 357],
       "image": "grass",
       "codes": "OOT Dodongo Cavern Grass Pre-Miniboss"
     },
     {
-      "coords": [
-        732,
-        297
-      ],
+      "coords": [732, 297],
       "image": "heart",
       "codes": [
         "OOT Dodongo Cavern Heart Miniboss Upper 1",
@@ -336,34 +229,22 @@
       ]
     },
     {
-      "coords": [
-        679,
-        367
-      ],
+      "coords": [679, 367],
       "image": "heart",
       "codes": "OOT Dodongo Cavern Heart Bomb Bag Room"
     },
     {
-      "coords": [
-        460,
-        301
-      ],
+      "coords": [460, 301],
       "image": "heart",
       "codes": "OOT Dodongo Cavern Heart Miniboss Lava"
     },
     {
-      "coords": [
-        341,
-        313
-      ],
+      "coords": [341, 313],
       "image": "gossip_stone",
       "codes": "OOT Dodongo Cavern Gossip"
     },
     {
-      "coords": [
-        248,
-        266
-      ],
+      "coords": [248, 266],
       "image": "goron_ruby",
       "codes": [
         "TODO KF 001 :: unnamed_stack > Dodongo's Cavern > MQ DC > MQ DC Checks :: Pasted Layer :: 001-001-001-000.png",
@@ -371,10 +252,7 @@
       ]
     },
     {
-      "coords": [
-        264,
-        266
-      ],
+      "coords": [264, 266],
       "image": "heart_container",
       "codes": [
         "TODO KF 002 :: unnamed_stack > Dodongo's Cavern > MQ DC > MQ DC Checks :: Pasted Layer #1 :: 001-001-001-001.png",
@@ -382,10 +260,7 @@
       ]
     },
     {
-      "coords": [
-        280,
-        266
-      ],
+      "coords": [280, 266],
       "image": "chest",
       "codes": [
         "TODO KF 003 :: unnamed_stack > Dodongo's Cavern > MQ DC > MQ DC Checks :: Pasted Layer #2 :: 001-001-001-002.png",
@@ -393,10 +268,7 @@
       ]
     },
     {
-      "coords": [
-        341,
-        337
-      ],
+      "coords": [341, 337],
       "image": "chest",
       "codes": [
         "TODO KF 004 :: unnamed_stack > Dodongo's Cavern > MQ DC > MQ DC Checks :: Pasted Layer #3 :: 001-001-001-003.png",
@@ -404,10 +276,7 @@
       ]
     },
     {
-      "coords": [
-        341,
-        313
-      ],
+      "coords": [341, 313],
       "image": "chest",
       "codes": [
         "TODO KF 005 :: unnamed_stack > Dodongo's Cavern > MQ DC > MQ DC Checks :: Pasted Layer #4 :: 001-001-001-004.png",
@@ -415,10 +284,7 @@
       ]
     },
     {
-      "coords": [
-        359,
-        197
-      ],
+      "coords": [359, 197],
       "image": "chest",
       "codes": [
         "TODO KF 006 :: unnamed_stack > Dodongo's Cavern > MQ DC > MQ DC Checks :: Pasted Layer #5 :: 001-001-001-005.png",
@@ -426,10 +292,7 @@
       ]
     },
     {
-      "coords": [
-        543,
-        374
-      ],
+      "coords": [543, 374],
       "image": "chest",
       "codes": [
         "TODO KF 007 :: unnamed_stack > Dodongo's Cavern > MQ DC > MQ DC Checks :: Pasted Layer #6 :: 001-001-001-006.png",
@@ -437,10 +300,7 @@
       ]
     },
     {
-      "coords": [
-        667,
-        348
-      ],
+      "coords": [667, 348],
       "image": "chest",
       "codes": [
         "TODO KF 008 :: unnamed_stack > Dodongo's Cavern > MQ DC > MQ DC Checks :: Pasted Layer #7 :: 001-001-001-007.png",
@@ -448,10 +308,7 @@
       ]
     },
     {
-      "coords": [
-        670,
-        294
-      ],
+      "coords": [670, 294],
       "image": "chest",
       "codes": [
         "TODO KF 009 :: unnamed_stack > Dodongo's Cavern > MQ DC > MQ DC Checks :: Pasted Layer #8 :: 001-001-001-008.png",
@@ -459,10 +316,7 @@
       ]
     },
     {
-      "coords": [
-        251,
-        377
-      ],
+      "coords": [251, 377],
       "image": "gold_skulltula",
       "codes": [
         "TODO KF 010 :: unnamed_stack > Dodongo's Cavern > MQ DC > MQ DC Skulls :: Pasted Layer #9 :: 001-001-002-000.png",
@@ -470,10 +324,7 @@
       ]
     },
     {
-      "coords": [
-        361,
-        232
-      ],
+      "coords": [361, 232],
       "image": "gold_skulltula",
       "codes": [
         "TODO KF 011 :: unnamed_stack > Dodongo's Cavern > MQ DC > MQ DC Skulls :: Pasted Layer #10 :: 001-001-002-001.png",
@@ -481,10 +332,7 @@
       ]
     },
     {
-      "coords": [
-        386,
-        251
-      ],
+      "coords": [386, 251],
       "image": "gold_skulltula",
       "codes": [
         "TODO KF 012 :: unnamed_stack > Dodongo's Cavern > MQ DC > MQ DC Skulls :: Pasted Layer #11 :: 001-001-002-002.png",
@@ -492,10 +340,7 @@
       ]
     },
     {
-      "coords": [
-        678,
-        304
-      ],
+      "coords": [678, 304],
       "image": "gold_skulltula",
       "codes": [
         "TODO KF 013 :: unnamed_stack > Dodongo's Cavern > MQ DC > MQ DC Skulls :: Pasted Layer #12 :: 001-001-002-003.png",
@@ -503,10 +348,7 @@
       ]
     },
     {
-      "coords": [
-        727,
-        295
-      ],
+      "coords": [727, 295],
       "image": "gold_skulltula",
       "codes": [
         "TODO KF 014 :: unnamed_stack > Dodongo's Cavern > MQ DC > MQ DC Skulls :: Pasted Layer #13 :: 001-001-002-004.png",
@@ -514,10 +356,7 @@
       ]
     },
     {
-      "coords": [
-        277,
-        369
-      ],
+      "coords": [277, 369],
       "image": "business_scrub_oot",
       "codes": [
         "TODO KF 015 :: unnamed_stack > Dodongo's Cavern > MQ DC > MQ DC Scrubs :: Pasted Layer #14 :: 001-001-003-000.png",
@@ -526,10 +365,7 @@
       ]
     },
     {
-      "coords": [
-        397,
-        401
-      ],
+      "coords": [397, 401],
       "image": "business_scrub_oot",
       "codes": [
         "TODO KF 016 :: unnamed_stack > Dodongo's Cavern > MQ DC > MQ DC Scrubs :: Pasted Layer #15 :: 001-001-003-001.png",
@@ -537,10 +373,7 @@
       ]
     },
     {
-      "coords": [
-        542,
-        303
-      ],
+      "coords": [542, 303],
       "image": "business_scrub_oot",
       "codes": [
         "TODO KF 017 :: unnamed_stack > Dodongo's Cavern > MQ DC > MQ DC Scrubs :: Pasted Layer #16 :: 001-001-003-002.png",
@@ -548,10 +381,7 @@
       ]
     },
     {
-      "coords": [
-        535,
-        329
-      ],
+      "coords": [535, 329],
       "image": "silver_rupee",
       "codes": [
         "TODO KF 018 :: unnamed_stack > Dodongo's Cavern > MQ DC > MQ DC Silver :: Pasted Layer #17 :: 001-001-004-000.png",
@@ -563,10 +393,7 @@
       ]
     },
     {
-      "coords": [
-        458,
-        315
-      ],
+      "coords": [458, 315],
       "image": "heart",
       "codes": [
         "TODO KF 019 :: unnamed_stack > Dodongo's Cavern > MQ DC > MQ DC Freestanding Hearts :: Pasted Layer #18 :: 001-001-005-000.png",
@@ -574,10 +401,7 @@
       ]
     },
     {
-      "coords": [
-        677,
-        339
-      ],
+      "coords": [677, 339],
       "image": "heart",
       "codes": [
         "TODO KF 020 :: unnamed_stack > Dodongo's Cavern > MQ DC > MQ DC Freestanding Hearts :: Pasted Layer #19 :: 001-001-005-001.png",
@@ -585,10 +409,7 @@
       ]
     },
     {
-      "coords": [
-        227,
-        304
-      ],
+      "coords": [227, 304],
       "image": "pot",
       "codes": [
         "TODO KF 021 :: unnamed_stack > Dodongo's Cavern > MQ DC > MQ DC Pots :: Pasted Layer #20 :: 001-001-006-000.png",
@@ -596,10 +417,7 @@
       ]
     },
     {
-      "coords": [
-        257,
-        304
-      ],
+      "coords": [257, 304],
       "image": "pot",
       "codes": [
         "TODO KF 022 :: unnamed_stack > Dodongo's Cavern > MQ DC > MQ DC Pots :: Pasted Layer #21 :: 001-001-006-001.png",
@@ -607,10 +425,7 @@
       ]
     },
     {
-      "coords": [
-        227,
-        332
-      ],
+      "coords": [227, 332],
       "image": "pot",
       "codes": [
         "TODO KF 023 :: unnamed_stack > Dodongo's Cavern > MQ DC > MQ DC Pots :: Pasted Layer #22 :: 001-001-006-002.png",
@@ -618,10 +433,7 @@
       ]
     },
     {
-      "coords": [
-        257,
-        333
-      ],
+      "coords": [257, 333],
       "image": "pot",
       "codes": [
         "TODO KF 024 :: unnamed_stack > Dodongo's Cavern > MQ DC > MQ DC Pots :: Pasted Layer #23 :: 001-001-006-003.png",
@@ -629,10 +441,7 @@
       ]
     },
     {
-      "coords": [
-        304,
-        275
-      ],
+      "coords": [304, 275],
       "image": "pot",
       "codes": [
         "TODO KF 025 :: unnamed_stack > Dodongo's Cavern > MQ DC > MQ DC Pots :: Pasted Layer #24 :: 001-001-006-004.png",
@@ -640,10 +449,7 @@
       ]
     },
     {
-      "coords": [
-        323,
-        258
-      ],
+      "coords": [323, 258],
       "image": "pot",
       "codes": [
         "TODO KF 026 :: unnamed_stack > Dodongo's Cavern > MQ DC > MQ DC Pots :: Pasted Layer #25 :: 001-001-006-005.png",
@@ -651,10 +457,7 @@
       ]
     },
     {
-      "coords": [
-        347,
-        234
-      ],
+      "coords": [347, 234],
       "image": "pot",
       "codes": [
         "TODO KF 027 :: unnamed_stack > Dodongo's Cavern > MQ DC > MQ DC Pots :: Pasted Layer #26 :: 001-001-006-006.png",
@@ -663,10 +466,7 @@
       ]
     },
     {
-      "coords": [
-        368,
-        248
-      ],
+      "coords": [368, 248],
       "image": "pot",
       "codes": [
         "TODO KF 028 :: unnamed_stack > Dodongo's Cavern > MQ DC > MQ DC Pots :: Pasted Layer #27 :: 001-001-006-007.png",
@@ -675,10 +475,7 @@
       ]
     },
     {
-      "coords": [
-        368,
-        204
-      ],
+      "coords": [368, 204],
       "image": "pot",
       "codes": [
         "TODO KF 029 :: unnamed_stack > Dodongo's Cavern > MQ DC > MQ DC Pots :: Pasted Layer #28 :: 001-001-006-008.png",
@@ -687,10 +484,7 @@
       ]
     },
     {
-      "coords": [
-        378,
-        314
-      ],
+      "coords": [378, 314],
       "image": "pot",
       "codes": [
         "TODO KF 030 :: unnamed_stack > Dodongo's Cavern > MQ DC > MQ DC Pots :: Pasted Layer #29 :: 001-001-006-009.png",
@@ -701,10 +495,7 @@
       ]
     },
     {
-      "coords": [
-        370,
-        374
-      ],
+      "coords": [370, 374],
       "image": "pot",
       "codes": [
         "TODO KF 031 :: unnamed_stack > Dodongo's Cavern > MQ DC > MQ DC Pots :: Pasted Layer #30 :: 001-001-006-010.png",
@@ -713,10 +504,7 @@
       ]
     },
     {
-      "coords": [
-        437,
-        360
-      ],
+      "coords": [437, 360],
       "image": "pot",
       "codes": [
         "TODO KF 032 :: unnamed_stack > Dodongo's Cavern > MQ DC > MQ DC Pots :: Pasted Layer #31 :: 001-001-006-011.png",
@@ -725,10 +513,7 @@
       ]
     },
     {
-      "coords": [
-        655,
-        323
-      ],
+      "coords": [655, 323],
       "image": "pot",
       "codes": [
         "TODO KF 033 :: unnamed_stack > Dodongo's Cavern > MQ DC > MQ DC Pots :: Pasted Layer #32 :: 001-001-006-012.png",
@@ -736,10 +521,7 @@
       ]
     },
     {
-      "coords": [
-        676,
-        347
-      ],
+      "coords": [676, 347],
       "image": "pot",
       "codes": [
         "TODO KF 034 :: unnamed_stack > Dodongo's Cavern > MQ DC > MQ DC Pots :: Pasted Layer #33 :: 001-001-006-013.png",
@@ -747,10 +529,7 @@
       ]
     },
     {
-      "coords": [
-        700,
-        359
-      ],
+      "coords": [700, 359],
       "image": "pot",
       "codes": [
         "TODO KF 035 :: unnamed_stack > Dodongo's Cavern > MQ DC > MQ DC Pots :: Pasted Layer #34 :: 001-001-006-014.png",
@@ -758,10 +537,7 @@
       ]
     },
     {
-      "coords": [
-        717,
-        374
-      ],
+      "coords": [717, 374],
       "image": "pot",
       "codes": [
         "TODO KF 036 :: unnamed_stack > Dodongo's Cavern > MQ DC > MQ DC Pots :: Pasted Layer #35 :: 001-001-006-015.png",
@@ -769,10 +545,7 @@
       ]
     },
     {
-      "coords": [
-        722,
-        342
-      ],
+      "coords": [722, 342],
       "image": "pot",
       "codes": [
         "TODO KF 037 :: unnamed_stack > Dodongo's Cavern > MQ DC > MQ DC Pots :: Pasted Layer #36 :: 001-001-006-016.png",
@@ -781,10 +554,7 @@
       ]
     },
     {
-      "coords": [
-        743,
-        336
-      ],
+      "coords": [743, 336],
       "image": "pot",
       "codes": [
         "TODO KF 038 :: unnamed_stack > Dodongo's Cavern > MQ DC > MQ DC Pots :: Pasted Layer #37 :: 001-001-006-017.png",
@@ -793,10 +563,7 @@
       ]
     },
     {
-      "coords": [
-        756,
-        348
-      ],
+      "coords": [756, 348],
       "image": "pot",
       "codes": [
         "TODO KF 039 :: unnamed_stack > Dodongo's Cavern > MQ DC > MQ DC Pots :: Pasted Layer #38 :: 001-001-006-018.png",
@@ -805,10 +572,7 @@
       ]
     },
     {
-      "coords": [
-        235,
-        304
-      ],
+      "coords": [235, 304],
       "image": "crate",
       "codes": [
         "TODO KF 040 :: unnamed_stack > Dodongo's Cavern > MQ DC > MQ DC Crates :: Pasted Layer #39 :: 001-001-007-000.png",
@@ -816,10 +580,7 @@
       ]
     },
     {
-      "coords": [
-        248,
-        304
-      ],
+      "coords": [248, 304],
       "image": "crate",
       "codes": [
         "TODO KF 041 :: unnamed_stack > Dodongo's Cavern > MQ DC > MQ DC Crates :: Pasted Layer #40 :: 001-001-007-001.png",
@@ -827,10 +588,7 @@
       ]
     },
     {
-      "coords": [
-        376,
-        333
-      ],
+      "coords": [376, 333],
       "image": "crate",
       "codes": [
         "TODO KF 042 :: unnamed_stack > Dodongo's Cavern > MQ DC > MQ DC Crates :: Pasted Layer #41 :: 001-001-007-002.png",
@@ -845,10 +603,7 @@
       ]
     },
     {
-      "coords": [
-        526,
-        334
-      ],
+      "coords": [526, 334],
       "image": "crate",
       "codes": [
         "TODO KF 043 :: unnamed_stack > Dodongo's Cavern > MQ DC > MQ DC Crates :: Pasted Layer #42 :: 001-001-007-003.png",
@@ -856,10 +611,7 @@
       ]
     },
     {
-      "coords": [
-        526,
-        303
-      ],
+      "coords": [526, 303],
       "image": "crate",
       "codes": [
         "TODO KF 044 :: unnamed_stack > Dodongo's Cavern > MQ DC > MQ DC Crates :: Pasted Layer #43 :: 001-001-007-004.png",
@@ -867,10 +619,7 @@
       ]
     },
     {
-      "coords": [
-        558,
-        303
-      ],
+      "coords": [558, 303],
       "image": "crate",
       "codes": [
         "TODO KF 045 :: unnamed_stack > Dodongo's Cavern > MQ DC > MQ DC Crates :: Pasted Layer #44 :: 001-001-007-005.png",
@@ -878,10 +627,7 @@
       ]
     },
     {
-      "coords": [
-        558,
-        334
-      ],
+      "coords": [558, 334],
       "image": "crate",
       "codes": [
         "TODO KF 046 :: unnamed_stack > Dodongo's Cavern > MQ DC > MQ DC Crates :: Pasted Layer #45 :: 001-001-007-006.png",
@@ -889,10 +635,7 @@
       ]
     },
     {
-      "coords": [
-        662,
-        303
-      ],
+      "coords": [662, 303],
       "image": "crate",
       "codes": [
         "TODO KF 047 :: unnamed_stack > Dodongo's Cavern > MQ DC > MQ DC Crates :: Pasted Layer #46 :: 001-001-007-007.png",
@@ -905,10 +648,7 @@
       ]
     },
     {
-      "coords": [
-        700,
-        343
-      ],
+      "coords": [700, 343],
       "image": "crate",
       "codes": [
         "TODO KF 048 :: unnamed_stack > Dodongo's Cavern > MQ DC > MQ DC Crates :: Pasted Layer #47 :: 001-001-007-008.png",
@@ -916,10 +656,7 @@
       ]
     },
     {
-      "coords": [
-        722,
-        333
-      ],
+      "coords": [722, 333],
       "image": "crate",
       "codes": [
         "TODO KF 049 :: unnamed_stack > Dodongo's Cavern > MQ DC > MQ DC Crates :: Pasted Layer #48 :: 001-001-007-009.png",
@@ -927,10 +664,7 @@
       ]
     },
     {
-      "coords": [
-        348,
-        194
-      ],
+      "coords": [348, 194],
       "image": "grass",
       "codes": [
         "TODO KF 050 :: unnamed_stack > Dodongo's Cavern > MQ DC > MQ DC Grass :: Pasted Layer #49 :: 001-001-008-000.png",
@@ -938,10 +672,7 @@
       ]
     },
     {
-      "coords": [
-        373,
-        224
-      ],
+      "coords": [373, 224],
       "image": "grass",
       "codes": [
         "TODO KF 051 :: unnamed_stack > Dodongo's Cavern > MQ DC > MQ DC Grass :: Pasted Layer #50 :: 001-001-008-001.png",
@@ -949,10 +680,7 @@
       ]
     },
     {
-      "coords": [
-        400,
-        250
-      ],
+      "coords": [400, 250],
       "image": "grass",
       "codes": [
         "TODO KF 052 :: unnamed_stack > Dodongo's Cavern > MQ DC > MQ DC Grass :: Pasted Layer #51 :: 001-001-008-002.png",
@@ -961,10 +689,7 @@
       ]
     },
     {
-      "coords": [
-        533,
-        359
-      ],
+      "coords": [533, 359],
       "image": "grass",
       "codes": [
         "TODO KF 053 :: unnamed_stack > Dodongo's Cavern > MQ DC > MQ DC Grass :: Pasted Layer #52 :: 001-001-008-003.png",
@@ -975,38 +700,25 @@
       ]
     },
     {
-      "coords": [
-        669,
-        326
-      ],
+      "coords": [669, 326],
       "image": "grass",
-      "overlays": [
-        "broken"
-      ],
+      "overlays": ["broken"],
       "codes": [
         "TODO KF 054 :: unnamed_stack > Dodongo's Cavern > MQ DC > MQ DC Grass :: Pasted Layer #53 :: 001-001-008-004.png",
         "OOT MQ Dodongo Cavern Grass Vanilla Bomb Bag Room"
       ]
     },
     {
-      "coords": [
-        719,
-        358
-      ],
+      "coords": [719, 358],
       "image": "grass",
-      "overlays": [
-        "broken"
-      ],
+      "overlays": ["broken"],
       "codes": [
         "TODO KF 055 :: unnamed_stack > Dodongo's Cavern > MQ DC > MQ DC Grass :: Pasted Layer #54 :: 001-001-008-005.png",
         "OOT MQ Dodongo Cavern Grass Room Before Miniboss"
       ]
     },
     {
-      "coords": [
-        278,
-        337
-      ],
+      "coords": [278, 337],
       "image": "gossip_stone",
       "codes": [
         "TODO KF 056 :: unnamed_stack > Dodongo's Cavern > MQ DC > MQ DC Gossip :: Pasted Layer #55 :: 001-001-009-000.png",
