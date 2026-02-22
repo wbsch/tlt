@@ -163,6 +163,7 @@ const mapWarningAnchorRef = ref<HTMLElement | null>(null);
 const mapWarningPanelRef = ref<HTMLElement | null>(null);
 const mapMarkerSelectRequest = ref<DevMarkerSelectRequest | null>(null);
 const mapMarkerHoverIndex = ref<number | null>(null);
+const showDevUnmappedChecksOnly = ref(false);
 let mapMarkerSelectNonce = 0;
 
 function resolveSelectedGamesSetting(value: unknown): SelectedGamesSetting {
@@ -1449,6 +1450,21 @@ onBeforeUnmount(() => {
             <span v-if="isMapDevMode" class="map-toolbar-dev">DEV MODE</span>
             <div
               v-if="isMapDevMode"
+              class="map-filter-group"
+              role="group"
+              aria-label="Dev map filters"
+            >
+              <button
+                type="button"
+                class="map-filter-button"
+                :class="{ 'is-active': showDevUnmappedChecksOnly }"
+                @click="showDevUnmappedChecksOnly = !showDevUnmappedChecksOnly"
+              >
+                Missing Locations
+              </button>
+            </div>
+            <div
+              v-if="isMapDevMode"
               ref="mapWarningAnchorRef"
               class="map-toolbar-warning-wrap"
             >
@@ -1503,6 +1519,7 @@ onBeforeUnmount(() => {
             :all-locations-for-code-search="allLocationsForCodeSearch"
             :visible-location-ids="visibleLocationIds"
             :dev-mode="isMapDevMode"
+            :dev-show-unmapped-only="showDevUnmappedChecksOnly"
             :dev-marker-select-request="mapMarkerSelectRequest"
             :dev-marker-hover-index="mapMarkerHoverIndex"
             @toggle-collected="handleMapToggleCollected"

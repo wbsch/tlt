@@ -172,6 +172,7 @@ const props = withDefaults(
     allLocations?: LocationInfo[];
     allLocationsForCodeSearch?: LocationInfo[];
     devMode?: boolean;
+    devShowUnmappedOnly?: boolean;
     devMarkerSelectRequest?: { markerIndex: number; nonce: number } | null;
     devMarkerHoverIndex?: number | null;
   }>(),
@@ -180,6 +181,7 @@ const props = withDefaults(
     allLocations: () => [],
     allLocationsForCodeSearch: () => [],
     devMode: false,
+    devShowUnmappedOnly: false,
     devMarkerSelectRequest: null,
     devMarkerHoverIndex: null,
   },
@@ -274,6 +276,46 @@ const { resolveCodeToCheckIds } = useLocationCodeLookup(
   computed(() => props.reachableIds),
   computed(() => props.collectedIds),
 );
+
+function hasResolvedLocationCode(codeList: string[]): boolean {
+  return codeList.some((code) => resolveCodeToCheckIds(code).length > 0);
+}
+
+const devUnmappedCheckMarkerIndices = computed(() => {
+  const indices = new Set<number>();
+  const mapDef = props.activeMap;
+  if (!mapDef) return indices;
+
+  mapDef.markers.forEach((marker, markerIndex) => {
+    if (marker.type === 'submenu') return;
+    if (!hasResolvedLocationCode(markerCodeList(marker))) {
+      indices.add(markerIndex);
+    }
+  });
+
+  return indices;
+});
+
+const devUnmappedSubmenuIndicesByMarker = computed(() => {
+  const byMarker = new Map<number, Set<number>>();
+  const mapDef = props.activeMap;
+  if (!mapDef) return byMarker;
+
+  mapDef.markers.forEach((marker, markerIndex) => {
+    if (marker.type !== 'submenu') return;
+    const submenuIndices = new Set<number>();
+    (marker.markers ?? []).forEach((submenuEntry, submenuIndex) => {
+      if (!hasResolvedLocationCode(submenuEntryCodeList(submenuEntry))) {
+        submenuIndices.add(submenuIndex);
+      }
+    });
+    if (submenuIndices.size > 0) {
+      byMarker.set(markerIndex, submenuIndices);
+    }
+  });
+
+  return byMarker;
+});
 
 function syncPointerState(): void {
   if (activePointers.size < 2) {
@@ -588,6 +630,7 @@ const markerViewModels = computed<MarkerRuntime[]>(() => {
   if (!mapDef) {
     return [];
   }
+  const isDevUnmappedFilterActive = props.devMode && props.devShowUnmappedOnly;
 
   return mapDef.markers.map((markerDef, markerIndex) => {
     const markerId = `${mapDef.id}:${markerIndex}`;
@@ -615,8 +658,16 @@ const markerViewModels = computed<MarkerRuntime[]>(() => {
           };
         },
       );
+      const unresolvedSubmenuIndices = isDevUnmappedFilterActive
+        ? devUnmappedSubmenuIndicesByMarker.value.get(markerIndex)
+        : null;
+      const devFilteredSubmenuMarkers = isDevUnmappedFilterActive
+        ? submenuMarkers.filter((_, submenuIndex) =>
+            unresolvedSubmenuIndices?.has(submenuIndex),
+          )
+        : submenuMarkers;
       const visibleSubmenuMarkers = props.devMode
-        ? submenuMarkers
+        ? devFilteredSubmenuMarkers
         : submenuMarkers.filter((marker) => marker.isVisible);
       const visibleSubmenuCheckIds = new Set<string>();
       visibleSubmenuMarkers.forEach((marker) => {
@@ -646,7 +697,11 @@ const markerViewModels = computed<MarkerRuntime[]>(() => {
         allSubmenuCodeList: visibleSubmenuMarkers.flatMap(
           (marker) => marker.codeList,
         ),
-        isVisible: props.devMode ? true : visibleSubmenuMarkers.length > 0,
+        isVisible: props.devMode
+          ? (isDevUnmappedFilterActive
+              ? visibleSubmenuMarkers.length > 0
+              : true)
+          : visibleSubmenuMarkers.length > 0,
       };
     }
 
@@ -657,6 +712,9 @@ const markerViewModels = computed<MarkerRuntime[]>(() => {
       overlays,
       Array.isArray(markerDef.codes),
     );
+    const isDevVisible =
+      !isDevUnmappedFilterActive ||
+      devUnmappedCheckMarkerIndices.value.has(markerIndex);
     return {
       ...state,
       type: 'check',
@@ -664,6 +722,7 @@ const markerViewModels = computed<MarkerRuntime[]>(() => {
       markerIndex,
       coords: markerDef.coords,
       image: markerDef.image,
+      isVisible: props.devMode ? isDevVisible : state.isVisible,
     };
   });
 });
