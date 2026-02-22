@@ -68,9 +68,9 @@ test.describe('multi-tab sync', () => {
     await expect(page.getByTestId('reset-tracker-confirm-modal')).toBeVisible();
     await page.getByTestId('reset-tracker-confirm-apply-button').click();
 
-    await expect.poll(() => isOwned(page, BOMB_TEST_ID), { timeout: 20_000 }).toBe(
-      false,
-    );
+    await expect
+      .poll(() => isOwned(page, BOMB_TEST_ID), { timeout: 20_000 })
+      .toBe(false);
     await expect
       .poll(() => isOwned(pageTwo, BOMB_TEST_ID), { timeout: 20_000 })
       .toBe(false);

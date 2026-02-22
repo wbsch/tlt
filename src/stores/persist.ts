@@ -6,7 +6,13 @@ type PersistConfig = {
   hydrate: (raw: Record<string, unknown>) => Record<string, unknown>;
 };
 
-const VALID_TABS = new Set(['grid', 'inventory', 'settings', 'world', 'tricks']);
+const VALID_TABS = new Set([
+  'grid',
+  'inventory',
+  'settings',
+  'world',
+  'tricks',
+]);
 const VALID_REACHABILITY_FILTERS = new Set(['all', 'reachable', 'unreachable']);
 const VALID_COLLECTION_FILTERS = new Set(['all', 'collected', 'uncollected']);
 

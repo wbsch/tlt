@@ -104,7 +104,10 @@ function isObject(value: unknown): value is Record<string, unknown> {
 }
 
 function randomId(): string {
-  if (typeof crypto !== 'undefined' && typeof crypto.randomUUID === 'function') {
+  if (
+    typeof crypto !== 'undefined' &&
+    typeof crypto.randomUUID === 'function'
+  ) {
     return crypto.randomUUID();
   }
   return `${Date.now().toString(36)}:${Math.random().toString(36).slice(2)}`;
@@ -248,7 +251,10 @@ export function createOoTMMLocalSessionSync(options: {
   function publishToStorage(envelope: OoTMMSyncOperationEnvelope): void {
     if (typeof window === 'undefined') return;
     try {
-      window.localStorage.setItem(OPS_STORAGE_EVENT_KEY, JSON.stringify(envelope));
+      window.localStorage.setItem(
+        OPS_STORAGE_EVENT_KEY,
+        JSON.stringify(envelope),
+      );
       window.localStorage.removeItem(OPS_STORAGE_EVENT_KEY);
     } catch {
       // Ignore private mode / quota failures.

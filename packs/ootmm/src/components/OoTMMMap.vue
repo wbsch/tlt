@@ -286,7 +286,11 @@ function hasResolvedLocationCode(codeList: string[]): boolean {
 
 function resolveAssignedCheckIdsForCode(code: string): string[] {
   const resolved = resolveCodeToCheckIds(code);
-  return resolved.length > 0 ? resolved : looksLikeLocationId(code) ? [code] : [];
+  return resolved.length > 0
+    ? resolved
+    : looksLikeLocationId(code)
+      ? [code]
+      : [];
 }
 
 function isMqLocationId(checkId: string): boolean {
@@ -296,7 +300,9 @@ function isMqLocationId(checkId: string): boolean {
 
 function markerHasMqLocation(codeList: string[]): boolean {
   return codeList.some((code) =>
-    resolveAssignedCheckIdsForCode(code).some((checkId) => isMqLocationId(checkId)),
+    resolveAssignedCheckIdsForCode(code).some((checkId) =>
+      isMqLocationId(checkId),
+    ),
   );
 }
 
@@ -717,14 +723,17 @@ const markerViewModels = computed<MarkerRuntime[]>(() => {
       const unresolvedSubmenuIndices = isDevUnmappedFilterActive
         ? devUnmappedSubmenuIndicesByMarker.value.get(markerIndex)
         : null;
-      const mqSubmenuIndices = devMqSubmenuIndicesByMarker.value.get(markerIndex);
+      const mqSubmenuIndices =
+        devMqSubmenuIndicesByMarker.value.get(markerIndex);
       const visibleSubmenuMarkers = props.devMode
         ? submenuMarkers.filter((marker, submenuIndex) => {
             const matchesUnmappedFilter =
               !isDevUnmappedFilterActive ||
               Boolean(unresolvedSubmenuIndices?.has(submenuIndex));
             const isMqMarker = Boolean(mqSubmenuIndices?.has(submenuIndex));
-            const matchesMqFilter = showMqMarkersOnly ? isMqMarker : !isMqMarker;
+            const matchesMqFilter = showMqMarkersOnly
+              ? isMqMarker
+              : !isMqMarker;
             return matchesUnmappedFilter && matchesMqFilter;
           })
         : submenuMarkers.filter((marker) => marker.isVisible);

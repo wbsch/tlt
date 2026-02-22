@@ -167,7 +167,10 @@ function applyDefaultsForNewlyVisibleSettings(
 }
 
 function createRandomSyncId(): string {
-  if (typeof crypto !== 'undefined' && typeof crypto.randomUUID === 'function') {
+  if (
+    typeof crypto !== 'undefined' &&
+    typeof crypto.randomUUID === 'function'
+  ) {
     return crypto.randomUUID();
   }
   return `${Date.now().toString(36)}:${Math.random().toString(36).slice(2)}`;
@@ -392,9 +395,7 @@ export const useOoTMMSessionStore = defineStore('ootmm-session', () => {
       });
   }
 
-  function startLocalSessionSync(
-    sessionId = OOTMM_LOCAL_SESSION_ID,
-  ): void {
+  function startLocalSessionSync(sessionId = OOTMM_LOCAL_SESSION_ID): void {
     if (typeof window === 'undefined') return;
     if (syncConnection) return;
 
@@ -685,7 +686,10 @@ export const useOoTMMSessionStore = defineStore('ootmm-session', () => {
     setInventoryFromMap(next, options);
   }
 
-  function toggleCollectedLocation(locationId: string, options?: MutationOptions) {
+  function toggleCollectedLocation(
+    locationId: string,
+    options?: MutationOptions,
+  ) {
     const previousSnapshot = captureSnapshotForMutation(options);
     const next = new Set(collectedLocationIds.value);
     let collected = false;
