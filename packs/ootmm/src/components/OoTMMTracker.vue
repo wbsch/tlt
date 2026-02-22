@@ -1556,6 +1556,7 @@ onBeforeUnmount(() => {
             :all-locations="allLocations"
             :all-locations-for-code-search="allLocationsForCodeSearch"
             :visible-location-ids="visibleLocationIds"
+            :settings="trackerSettings"
             :dev-mode="isMapDevMode"
             :dev-show-unmapped-only="showDevUnmappedChecksOnly"
             :dev-mq-marker-mode="devMqMarkerMode"

@@ -6,77 +6,122 @@
   "height": 600,
   "markers": [
     {
-      "coords": [600, 217],
+      "coords": [
+        600,
+        217
+      ],
       "image": "chest",
       "codes": "OOT Deku Tree Map Chest"
     },
     {
-      "coords": [494, 287],
+      "coords": [
+        494,
+        287
+      ],
       "image": "chest",
       "codes": "OOT Deku Tree Slingshot Chest"
     },
     {
-      "coords": [517, 293],
+      "coords": [
+        517,
+        293
+      ],
       "image": "chest",
       "codes": "OOT Deku Tree Slingshot Side Chest"
     },
     {
-      "coords": [765, 197],
+      "coords": [
+        765,
+        197
+      ],
       "image": "chest",
       "codes": "OOT Deku Tree Compass Chest"
     },
     {
-      "coords": [803, 214],
+      "coords": [
+        803,
+        214
+      ],
       "image": "chest",
       "codes": "OOT Deku Tree Compass Room Side Chest"
     },
     {
-      "coords": [729, 443],
+      "coords": [
+        729,
+        443
+      ],
       "image": "chest",
       "codes": "OOT Deku Tree Basement Chest"
     },
     {
-      "coords": [368, 367],
+      "coords": [
+        368,
+        367
+      ],
       "image": "heart_container",
       "codes": "OOT Deku Tree Boss Container"
     },
     {
-      "coords": [384, 367],
+      "coords": [
+        384,
+        367
+      ],
       "image": "kokiri_emerald",
       "codes": "OOT Deku Tree Boss"
     },
     {
-      "coords": [815, 220],
+      "coords": [
+        815,
+        220
+      ],
       "image": "gold_skulltula",
       "codes": "OOT Deku Tree GS Compass"
     },
     {
-      "coords": [548, 419],
+      "coords": [
+        548,
+        419
+      ],
       "image": "gold_skulltula",
       "codes": "OOT Deku Tree GS Basement Back Room"
     },
     {
-      "coords": [712, 431],
+      "coords": [
+        712,
+        431
+      ],
       "image": "gold_skulltula",
       "codes": "OOT Deku Tree GS Basement Gate"
     },
     {
-      "coords": [744, 464],
+      "coords": [
+        744,
+        464
+      ],
       "image": "gold_skulltula",
       "codes": "OOT Deku Tree GS Basement Vines"
     },
     {
-      "coords": [585, 189],
+      "coords": [
+        585,
+        189
+      ],
       "image": "heart",
       "codes": "OOT Deku Tree Heart Main Room Lower"
     },
     {
-      "coords": [885, 181],
+      "coords": [
+        885,
+        181
+      ],
       "image": "heart",
       "codes": "OOT Deku Tree Heart Main Room Upper"
     },
     {
-      "coords": [385, 448],
+      "coords": [
+        385,
+        448
+      ],
       "image": "heart",
       "codes": [
         "OOT Deku Tree Heart Pre-Boss 1",
@@ -85,7 +130,10 @@
       ]
     },
     {
-      "coords": [307, 183],
+      "coords": [
+        307,
+        183
+      ],
       "image": "grass",
       "codes": [
         "OOT Deku Tree Grass Lobby 1",
@@ -94,7 +142,10 @@
       ]
     },
     {
-      "coords": [502, 259],
+      "coords": [
+        502,
+        259
+      ],
       "image": "grass",
       "codes": [
         "OOT Deku Tree Grass Slingshot Room 1",
@@ -102,7 +153,10 @@
       ]
     },
     {
-      "coords": [527, 273],
+      "coords": [
+        527,
+        273
+      ],
       "image": "grass",
       "codes": [
         "OOT Deku Tree Grass Slingshot Room 3",
@@ -110,12 +164,21 @@
       ]
     },
     {
-      "coords": [586, 164],
+      "coords": [
+        586,
+        164
+      ],
       "image": "grass",
-      "codes": ["OOT Deku Tree Grass Lobby 4", "OOT Deku Tree Grass Lobby 5"]
+      "codes": [
+        "OOT Deku Tree Grass Lobby 4",
+        "OOT Deku Tree Grass Lobby 5"
+      ]
     },
     {
-      "coords": [772, 182],
+      "coords": [
+        772,
+        182
+      ],
       "image": "grass",
       "codes": [
         "OOT Deku Tree Grass Compass Room 1",
@@ -123,7 +186,10 @@
       ]
     },
     {
-      "coords": [352, 367],
+      "coords": [
+        352,
+        367
+      ],
       "image": "grass",
       "codes": [
         "OOT Deku Tree Boss Grass 1",
@@ -137,7 +203,10 @@
       ]
     },
     {
-      "coords": [409, 432],
+      "coords": [
+        409,
+        432
+      ],
       "image": "grass",
       "codes": [
         "OOT Deku Tree Grass Pre-Boss Room 1",
@@ -146,7 +215,10 @@
       ]
     },
     {
-      "coords": [598, 446],
+      "coords": [
+        598,
+        446
+      ],
       "image": "grass",
       "codes": [
         "OOT Deku Tree Grass Larva Room 1",
@@ -154,7 +226,10 @@
       ]
     },
     {
-      "coords": [591, 530],
+      "coords": [
+        591,
+        530
+      ],
       "image": "grass",
       "codes": [
         "OOT Deku Tree Grass Torch Room 1",
@@ -162,7 +237,10 @@
       ]
     },
     {
-      "coords": [643, 521],
+      "coords": [
+        643,
+        521
+      ],
       "image": "grass",
       "codes": [
         "OOT Deku Tree Grass Water Room 1",
@@ -170,7 +248,10 @@
       ]
     },
     {
-      "coords": [717, 520],
+      "coords": [
+        717,
+        520
+      ],
       "image": "grass",
       "codes": [
         "OOT Deku Tree Grass Eye Switch Room 3",
@@ -178,7 +259,10 @@
       ]
     },
     {
-      "coords": [742, 520],
+      "coords": [
+        742,
+        520
+      ],
       "image": "grass",
       "codes": [
         "OOT Deku Tree Grass Eye Switch Room 1",
@@ -186,7 +270,10 @@
       ]
     },
     {
-      "coords": [732, 472],
+      "coords": [
+        732,
+        472
+      ],
       "image": "grass",
       "codes": [
         "OOT Deku Tree Grass Basement Main 1",
@@ -194,244 +281,570 @@
       ]
     },
     {
-      "coords": [368, 367],
-      "image": "chest",
-      "codes": "TODO KF 001 :: unnamed_stack > Inside the Deku Tree > MQ Deku > MQ Deku Checks :: Pasted Layer :: 001-001-001-000.png"
+      "coords": [
+        368,
+        367
+      ],
+      "image": "heart_container",
+      "codes": [
+        "TODO KF 001 :: unnamed_stack > Inside the Deku Tree > MQ Deku > MQ Deku Checks :: Pasted Layer :: 001-001-001-000.png",
+        "OOT Deku Tree Boss Container"
+      ]
     },
     {
-      "coords": [384, 367],
-      "image": "chest",
-      "codes": "TODO KF 002 :: unnamed_stack > Inside the Deku Tree > MQ Deku > MQ Deku Checks :: Pasted Layer #1 :: 001-001-001-001.png"
+      "coords": [
+        384,
+        367
+      ],
+      "image": "kokiri_emerald",
+      "codes": [
+        "TODO KF 002 :: unnamed_stack > Inside the Deku Tree > MQ Deku > MQ Deku Checks :: Pasted Layer #1 :: 001-001-001-001.png",
+        "OOT Deku Tree Boss"
+      ]
     },
     {
-      "coords": [492, 290],
+      "coords": [
+        492,
+        290
+      ],
       "image": "chest",
-      "codes": "TODO KF 003 :: unnamed_stack > Inside the Deku Tree > MQ Deku > MQ Deku Checks :: Pasted Layer #2 :: 001-001-001-002.png"
+      "codes": [
+        "TODO KF 003 :: unnamed_stack > Inside the Deku Tree > MQ Deku > MQ Deku Checks :: Pasted Layer #2 :: 001-001-001-002.png",
+        "OOT MQ Deku Tree Compass Chest"
+      ]
     },
     {
-      "coords": [610, 220],
+      "coords": [
+        610,
+        220
+      ],
       "image": "chest",
-      "codes": "TODO KF 004 :: unnamed_stack > Inside the Deku Tree > MQ Deku > MQ Deku Checks :: Pasted Layer #3 :: 001-001-001-003.png"
+      "codes": [
+        "TODO KF 004 :: unnamed_stack > Inside the Deku Tree > MQ Deku > MQ Deku Checks :: Pasted Layer #3 :: 001-001-001-003.png",
+        "OOT MQ Deku Tree Map Chest"
+      ]
     },
     {
-      "coords": [644, 541],
+      "coords": [
+        644,
+        541
+      ],
       "image": "chest",
-      "codes": "TODO KF 005 :: unnamed_stack > Inside the Deku Tree > MQ Deku > MQ Deku Checks :: Pasted Layer #4 :: 001-001-001-004.png"
+      "codes": [
+        "TODO KF 005 :: unnamed_stack > Inside the Deku Tree > MQ Deku > MQ Deku Checks :: Pasted Layer #4 :: 001-001-001-004.png",
+        "OOT MQ Deku Tree After Water Platform Chest"
+      ]
     },
     {
-      "coords": [697, 550],
+      "coords": [
+        697,
+        550
+      ],
       "image": "chest",
-      "codes": "TODO KF 006 :: unnamed_stack > Inside the Deku Tree > MQ Deku > MQ Deku Checks :: Pasted Layer #5 :: 001-001-001-005.png"
+      "codes": [
+        "TODO KF 006 :: unnamed_stack > Inside the Deku Tree > MQ Deku > MQ Deku Checks :: Pasted Layer #5 :: 001-001-001-005.png",
+        "OOT MQ Deku Tree Before Water Platform Chest"
+      ]
     },
     {
-      "coords": [732, 440],
+      "coords": [
+        732,
+        440
+      ],
       "image": "chest",
-      "codes": "TODO KF 007 :: unnamed_stack > Inside the Deku Tree > MQ Deku > MQ Deku Checks :: Pasted Layer #6 :: 001-001-001-006.png"
+      "codes": [
+        "TODO KF 007 :: unnamed_stack > Inside the Deku Tree > MQ Deku > MQ Deku Checks :: Pasted Layer #6 :: 001-001-001-006.png",
+        "OOT MQ Deku Tree Basement Chest"
+      ]
     },
     {
-      "coords": [768, 196],
+      "coords": [
+        768,
+        196
+      ],
       "image": "chest",
-      "codes": "TODO KF 008 :: unnamed_stack > Inside the Deku Tree > MQ Deku > MQ Deku Checks :: Pasted Layer #7 :: 001-001-001-007.png"
+      "codes": [
+        "TODO KF 008 :: unnamed_stack > Inside the Deku Tree > MQ Deku > MQ Deku Checks :: Pasted Layer #7 :: 001-001-001-007.png",
+        "OOT MQ Deku Tree Slingshot Room Far Chest"
+      ]
     },
     {
-      "coords": [803, 223],
+      "coords": [
+        803,
+        223
+      ],
       "image": "chest",
-      "codes": "TODO KF 009 :: unnamed_stack > Inside the Deku Tree > MQ Deku > MQ Deku Checks :: Pasted Layer #8 :: 001-001-001-008.png"
+      "codes": [
+        "TODO KF 009 :: unnamed_stack > Inside the Deku Tree > MQ Deku > MQ Deku Checks :: Pasted Layer #8 :: 001-001-001-008.png",
+        "OOT MQ Deku Tree Slingshot Chest"
+      ]
     },
     {
-      "coords": [508, 297],
+      "coords": [
+        508,
+        297
+      ],
       "image": "gold_skulltula",
-      "codes": "TODO KF 010 :: unnamed_stack > Inside the Deku Tree > MQ Deku > MQ Deku Skulls :: Pasted Layer #9 :: 001-001-002-000.png"
+      "codes": [
+        "TODO KF 010 :: unnamed_stack > Inside the Deku Tree > MQ Deku > MQ Deku Skulls :: Pasted Layer #9 :: 001-001-002-000.png",
+        "OOT MQ Deku Tree GS Compass Room"
+      ]
     },
     {
-      "coords": [600, 229],
+      "coords": [
+        600,
+        229
+      ],
       "image": "gold_skulltula",
-      "codes": "TODO KF 011 :: unnamed_stack > Inside the Deku Tree > MQ Deku > MQ Deku Skulls :: Pasted Layer #10 :: 001-001-002-001.png"
+      "codes": [
+        "TODO KF 011 :: unnamed_stack > Inside the Deku Tree > MQ Deku > MQ Deku Skulls :: Pasted Layer #10 :: 001-001-002-001.png",
+        "OOT MQ Deku Tree GS Lobby Crate"
+      ]
     },
     {
-      "coords": [553, 425],
+      "coords": [
+        553,
+        425
+      ],
       "image": "gold_skulltula",
-      "codes": "TODO KF 012 :: unnamed_stack > Inside the Deku Tree > MQ Deku > MQ Deku Skulls :: Pasted Layer #11 :: 001-001-002-002.png"
+      "codes": [
+        "TODO KF 012 :: unnamed_stack > Inside the Deku Tree > MQ Deku > MQ Deku Skulls :: Pasted Layer #11 :: 001-001-002-002.png",
+        "OOT MQ Deku Tree GS Back Room"
+      ]
     },
     {
-      "coords": [591, 467],
+      "coords": [
+        591,
+        467
+      ],
       "image": "gold_skulltula",
-      "codes": "TODO KF 013 :: unnamed_stack > Inside the Deku Tree > MQ Deku > MQ Deku Skulls :: Pasted Layer #12 :: 001-001-002-003.png"
+      "codes": [
+        "TODO KF 013 :: unnamed_stack > Inside the Deku Tree > MQ Deku > MQ Deku Skulls :: Pasted Layer #12 :: 001-001-002-003.png",
+        "OOT MQ Deku Tree GS Song of Time Blocks"
+      ]
     },
     {
-      "coords": [696, 487],
+      "coords": [
+        696,
+        487
+      ],
       "image": "business_scrub_oot",
-      "codes": "TODO KF 014 :: unnamed_stack > Inside the Deku Tree > MQ Deku > MQ Deku Scrubs :: Pasted Layer #13 :: 001-001-003-000.png"
+      "codes": [
+        "TODO KF 014 :: unnamed_stack > Inside the Deku Tree > MQ Deku > MQ Deku Scrubs :: Pasted Layer #13 :: 001-001-003-000.png",
+        "OOT MQ Deku Tree Scrub"
+      ]
     },
     {
-      "coords": [597, 220],
-      "image": "tree",
-      "codes": "TODO KF 015 :: unnamed_stack > Inside the Deku Tree > MQ Deku > MQ Deku Crates :: Pasted Layer #14 :: 001-001-004-000.png"
+      "coords": [
+        597,
+        220
+      ],
+      "image": "crate",
+      "codes": [
+        "TODO KF 015 :: unnamed_stack > Inside the Deku Tree > MQ Deku > MQ Deku Crates :: Pasted Layer #14 :: 001-001-004-000.png",
+        "OOT MQ Deku Tree Main Room 2nd Floor Crate"
+      ]
     },
     {
-      "coords": [817, 203],
-      "image": "tree",
-      "codes": "TODO KF 016 :: unnamed_stack > Inside the Deku Tree > MQ Deku > MQ Deku Crates :: Pasted Layer #15 :: 001-001-004-001.png"
+      "coords": [
+        817,
+        203
+      ],
+      "image": "crate",
+      "codes": [
+        "TODO KF 016 :: unnamed_stack > Inside the Deku Tree > MQ Deku > MQ Deku Crates :: Pasted Layer #15 :: 001-001-004-001.png",
+        "OOT MQ Deku Tree Slingshot Room Large Crate 1",
+        "OOT MQ Deku Tree Slingshot Room Large Crate 2"
+      ]
     },
     {
-      "coords": [378, 451],
+      "coords": [
+        378,
+        451
+      ],
       "image": "heart",
-      "codes": "TODO KF 017 :: unnamed_stack > Inside the Deku Tree > MQ Deku > MQ Deku Freestanding Hearts :: Pasted Layer #16 :: 001-001-005-000.png"
+      "codes": [
+        "TODO KF 017 :: unnamed_stack > Inside the Deku Tree > MQ Deku > MQ Deku Freestanding Hearts :: Pasted Layer #16 :: 001-001-005-000.png",
+        "OOT MQ Deku Tree Heart Before Boss 1",
+        "OOT MQ Deku Tree Heart Before Boss 2",
+        "OOT MQ Deku Tree Heart Before Boss 3"
+      ]
     },
     {
-      "coords": [518, 299],
+      "coords": [
+        518,
+        299
+      ],
       "image": "heart",
-      "codes": "TODO KF 018 :: unnamed_stack > Inside the Deku Tree > MQ Deku > MQ Deku Freestanding Hearts :: Pasted Layer #17 :: 001-001-005-001.png"
+      "codes": [
+        "TODO KF 018 :: unnamed_stack > Inside the Deku Tree > MQ Deku > MQ Deku Freestanding Hearts :: Pasted Layer #17 :: 001-001-005-001.png",
+        "OOT MQ Deku Tree Heart Compass Room"
+      ]
     },
     {
-      "coords": [550, 252],
+      "coords": [
+        550,
+        252
+      ],
       "image": "heart",
-      "codes": "TODO KF 019 :: unnamed_stack > Inside the Deku Tree > MQ Deku > MQ Deku Freestanding Hearts :: Pasted Layer #18 :: 001-001-005-002.png"
+      "codes": [
+        "TODO KF 019 :: unnamed_stack > Inside the Deku Tree > MQ Deku > MQ Deku Freestanding Hearts :: Pasted Layer #18 :: 001-001-005-002.png",
+        "OOT MQ Deku Tree Heart Before Compass"
+      ]
     },
     {
-      "coords": [585, 188],
+      "coords": [
+        585,
+        188
+      ],
       "image": "heart",
-      "codes": "TODO KF 020 :: unnamed_stack > Inside the Deku Tree > MQ Deku > MQ Deku Freestanding Hearts :: Pasted Layer #19 :: 001-001-005-003.png"
+      "codes": [
+        "TODO KF 020 :: unnamed_stack > Inside the Deku Tree > MQ Deku > MQ Deku Freestanding Hearts :: Pasted Layer #19 :: 001-001-005-003.png",
+        "OOT MQ Deku Tree Heart Lobby"
+      ]
     },
     {
-      "coords": [277, 167],
+      "coords": [
+        277,
+        167
+      ],
       "image": "grass",
-      "codes": "TODO KF 021 :: unnamed_stack > Inside the Deku Tree > MQ Deku > MQ Deku Grass :: Pasted Layer #20 :: 001-001-006-000.png"
+      "codes": [
+        "TODO KF 021 :: unnamed_stack > Inside the Deku Tree > MQ Deku > MQ Deku Grass :: Pasted Layer #20 :: 001-001-006-000.png",
+        "OOT MQ Deku Tree Grass Entrance Lower 1",
+        "OOT MQ Deku Tree Grass Entrance Lower 2"
+      ]
     },
     {
-      "coords": [307, 175],
+      "coords": [
+        307,
+        175
+      ],
       "image": "grass",
-      "codes": "TODO KF 022 :: unnamed_stack > Inside the Deku Tree > MQ Deku > MQ Deku Grass :: Pasted Layer #21 :: 001-001-006-001.png"
+      "codes": [
+        "TODO KF 022 :: unnamed_stack > Inside the Deku Tree > MQ Deku > MQ Deku Grass :: Pasted Layer #21 :: 001-001-006-001.png",
+        "OOT MQ Deku Tree Grass Entrance Lower 3",
+        "OOT MQ Deku Tree Grass Entrance Lower 4",
+        "OOT MQ Deku Tree Grass Entrance Lower 5"
+      ]
     },
     {
-      "coords": [598, 168],
+      "coords": [
+        598,
+        168
+      ],
       "image": "grass",
-      "codes": "TODO KF 023 :: unnamed_stack > Inside the Deku Tree > MQ Deku > MQ Deku Grass :: Pasted Layer #22 :: 001-001-006-002.png"
+      "codes": [
+        "TODO KF 023 :: unnamed_stack > Inside the Deku Tree > MQ Deku > MQ Deku Grass :: Pasted Layer #22 :: 001-001-006-002.png",
+        "OOT MQ Deku Tree Grass Entrance Upper 1",
+        "OOT MQ Deku Tree Grass Entrance Upper 2"
+      ]
     },
     {
-      "coords": [504, 259],
+      "coords": [
+        504,
+        259
+      ],
       "image": "grass",
-      "codes": "TODO KF 024 :: unnamed_stack > Inside the Deku Tree > MQ Deku > MQ Deku Grass :: Pasted Layer #23 :: 001-001-006-003.png"
+      "codes": [
+        "TODO KF 024 :: unnamed_stack > Inside the Deku Tree > MQ Deku > MQ Deku Grass :: Pasted Layer #23 :: 001-001-006-003.png",
+        "OOT MQ Deku Tree Grass Compass Room 1",
+        "OOT MQ Deku Tree Grass Compass Room 2"
+      ]
     },
     {
-      "coords": [536, 246],
+      "coords": [
+        536,
+        246
+      ],
       "image": "grass",
-      "codes": "TODO KF 025 :: unnamed_stack > Inside the Deku Tree > MQ Deku > MQ Deku Grass :: Pasted Layer #24 :: 001-001-006-004.png"
+      "codes": [
+        "TODO KF 025 :: unnamed_stack > Inside the Deku Tree > MQ Deku > MQ Deku Grass :: Pasted Layer #24 :: 001-001-006-004.png",
+        "OOT MQ Deku Tree Grass Room Before Compass 1",
+        "OOT MQ Deku Tree Grass Room Before Compass 2",
+        "OOT MQ Deku Tree Grass Room Before Compass 3",
+        "OOT MQ Deku Tree Grass Room Before Compass 4",
+        "OOT MQ Deku Tree Grass Room Before Compass 5",
+        "OOT MQ Deku Tree Grass Room Before Compass 6",
+        "OOT MQ Deku Tree Grass Room Before Compass 7"
+      ]
     },
     {
-      "coords": [523, 278],
+      "coords": [
+        523,
+        278
+      ],
       "image": "grass",
-      "codes": "TODO KF 026 :: unnamed_stack > Inside the Deku Tree > MQ Deku > MQ Deku Grass :: Pasted Layer #25 :: 001-001-006-005.png"
+      "codes": [
+        "TODO KF 026 :: unnamed_stack > Inside the Deku Tree > MQ Deku > MQ Deku Grass :: Pasted Layer #25 :: 001-001-006-005.png",
+        "OOT MQ Deku Tree Grass Compass Room 3",
+        "OOT MQ Deku Tree Grass Compass Room 4"
+      ]
     },
     {
-      "coords": [768, 208],
+      "coords": [
+        768,
+        208
+      ],
       "image": "grass",
-      "codes": "TODO KF 027 :: unnamed_stack > Inside the Deku Tree > MQ Deku > MQ Deku Grass :: Pasted Layer #26 :: 001-001-006-006.png"
+      "codes": [
+        "TODO KF 027 :: unnamed_stack > Inside the Deku Tree > MQ Deku > MQ Deku Grass :: Pasted Layer #26 :: 001-001-006-006.png",
+        "OOT MQ Deku Tree Grass Slingshot Room Back 1",
+        "OOT MQ Deku Tree Grass Slingshot Room Back 2"
+      ]
     },
     {
-      "coords": [834, 205],
+      "coords": [
+        834,
+        205
+      ],
       "image": "grass",
-      "codes": "TODO KF 028 :: unnamed_stack > Inside the Deku Tree > MQ Deku > MQ Deku Grass :: Pasted Layer #27 :: 001-001-006-007.png"
+      "codes": [
+        "TODO KF 028 :: unnamed_stack > Inside the Deku Tree > MQ Deku > MQ Deku Grass :: Pasted Layer #27 :: 001-001-006-007.png",
+        "OOT MQ Deku Tree Grass Slingshot Room Front 1",
+        "OOT MQ Deku Tree Grass Slingshot Room Front 2"
+      ]
     },
     {
-      "coords": [352, 367],
+      "coords": [
+        352,
+        367
+      ],
       "image": "grass",
-      "codes": "TODO KF 029 :: unnamed_stack > Inside the Deku Tree > MQ Deku > MQ Deku Grass :: Pasted Layer #28 :: 001-001-006-008.png"
+      "codes": [
+        "TODO KF 029 :: unnamed_stack > Inside the Deku Tree > MQ Deku > MQ Deku Grass :: Pasted Layer #28 :: 001-001-006-008.png",
+        "OOT Deku Tree Boss Grass 1",
+        "OOT Deku Tree Boss Grass 2",
+        "OOT Deku Tree Boss Grass 3",
+        "OOT Deku Tree Boss Grass 4",
+        "OOT Deku Tree Boss Grass 5",
+        "OOT Deku Tree Boss Grass 6",
+        "OOT Deku Tree Boss Grass 7",
+        "OOT Deku Tree Boss Grass 8"
+      ]
     },
     {
-      "coords": [410, 432],
+      "coords": [
+        410,
+        432
+      ],
       "image": "grass",
-      "codes": "TODO KF 030 :: unnamed_stack > Inside the Deku Tree > MQ Deku > MQ Deku Grass :: Pasted Layer #29 :: 001-001-006-009.png"
+      "codes": [
+        "TODO KF 030 :: unnamed_stack > Inside the Deku Tree > MQ Deku > MQ Deku Grass :: Pasted Layer #29 :: 001-001-006-009.png",
+        "OOT MQ Deku Tree Grass Room Before Boss 1",
+        "OOT MQ Deku Tree Grass Room Before Boss 2",
+        "OOT MQ Deku Tree Grass Room Before Boss 3"
+      ]
     },
     {
-      "coords": [564, 429],
+      "coords": [
+        564,
+        429
+      ],
       "image": "grass",
-      "codes": "TODO KF 031 :: unnamed_stack > Inside the Deku Tree > MQ Deku > MQ Deku Grass :: Pasted Layer #30 :: 001-001-006-010.png"
+      "codes": [
+        "TODO KF 031 :: unnamed_stack > Inside the Deku Tree > MQ Deku > MQ Deku Grass :: Pasted Layer #30 :: 001-001-006-010.png",
+        "OOT MQ Deku Tree Grass Back Room 1",
+        "OOT MQ Deku Tree Grass Back Room 2",
+        "OOT MQ Deku Tree Grass Back Room 3"
+      ]
     },
     {
-      "coords": [605, 451],
+      "coords": [
+        605,
+        451
+      ],
       "image": "grass",
-      "codes": "TODO KF 032 :: unnamed_stack > Inside the Deku Tree > MQ Deku > MQ Deku Grass :: Pasted Layer #31 :: 001-001-006-011.png"
+      "codes": [
+        "TODO KF 032 :: unnamed_stack > Inside the Deku Tree > MQ Deku > MQ Deku Grass :: Pasted Layer #31 :: 001-001-006-011.png",
+        "OOT MQ Deku Tree Grass Gravestone Room 5"
+      ]
     },
     {
-      "coords": [569, 480],
+      "coords": [
+        569,
+        480
+      ],
       "image": "grass",
-      "codes": "TODO KF 033 :: unnamed_stack > Inside the Deku Tree > MQ Deku > MQ Deku Grass :: Pasted Layer #32 :: 001-001-006-012.png"
+      "codes": [
+        "TODO KF 033 :: unnamed_stack > Inside the Deku Tree > MQ Deku > MQ Deku Grass :: Pasted Layer #32 :: 001-001-006-012.png",
+        "OOT MQ Deku Tree Grass Gravestone Room 1",
+        "OOT MQ Deku Tree Grass Gravestone Room 2"
+      ]
     },
     {
-      "coords": [589, 497],
+      "coords": [
+        589,
+        497
+      ],
       "image": "grass",
-      "codes": "TODO KF 034 :: unnamed_stack > Inside the Deku Tree > MQ Deku > MQ Deku Grass :: Pasted Layer #33 :: 001-001-006-013.png"
+      "codes": [
+        "TODO KF 034 :: unnamed_stack > Inside the Deku Tree > MQ Deku > MQ Deku Grass :: Pasted Layer #33 :: 001-001-006-013.png",
+        "OOT MQ Deku Tree Grass Gravestone Room 3"
+      ]
     },
     {
-      "coords": [613, 487],
+      "coords": [
+        613,
+        487
+      ],
       "image": "grass",
-      "codes": "TODO KF 035 :: unnamed_stack > Inside the Deku Tree > MQ Deku > MQ Deku Grass :: Pasted Layer #34 :: 001-001-006-014.png"
+      "codes": [
+        "TODO KF 035 :: unnamed_stack > Inside the Deku Tree > MQ Deku > MQ Deku Grass :: Pasted Layer #34 :: 001-001-006-014.png",
+        "OOT MQ Deku Tree Grass Gravestone Room 4"
+      ]
     },
     {
-      "coords": [590, 525],
+      "coords": [
+        590,
+        525
+      ],
       "image": "grass",
-      "codes": "TODO KF 036 :: unnamed_stack > Inside the Deku Tree > MQ Deku > MQ Deku Grass :: Pasted Layer #35 :: 001-001-006-015.png"
+      "codes": [
+        "TODO KF 036 :: unnamed_stack > Inside the Deku Tree > MQ Deku > MQ Deku Grass :: Pasted Layer #35 :: 001-001-006-015.png",
+        "OOT MQ Deku Tree Grass Larvae Room 1",
+        "OOT MQ Deku Tree Grass Larvae Room 2"
+      ]
     },
     {
-      "coords": [643, 523],
+      "coords": [
+        643,
+        523
+      ],
       "image": "grass",
-      "codes": "TODO KF 037 :: unnamed_stack > Inside the Deku Tree > MQ Deku > MQ Deku Grass :: Pasted Layer #36 :: 001-001-006-016.png"
+      "codes": [
+        "TODO KF 037 :: unnamed_stack > Inside the Deku Tree > MQ Deku > MQ Deku Grass :: Pasted Layer #36 :: 001-001-006-016.png",
+        "OOT MQ Deku Tree Grass Spike Room Back 1",
+        "OOT MQ Deku Tree Grass Spike Room Back 2"
+      ]
     },
     {
-      "coords": [697, 524],
+      "coords": [
+        697,
+        524
+      ],
       "image": "grass",
-      "codes": "TODO KF 038 :: unnamed_stack > Inside the Deku Tree > MQ Deku > MQ Deku Grass :: Pasted Layer #37 :: 001-001-006-017.png"
+      "codes": [
+        "TODO KF 038 :: unnamed_stack > Inside the Deku Tree > MQ Deku > MQ Deku Grass :: Pasted Layer #37 :: 001-001-006-017.png",
+        "OOT MQ Deku Tree Grass Spike Room Front 1",
+        "OOT MQ Deku Tree Grass Spike Room Front 2",
+        "OOT MQ Deku Tree Grass Spike Room Front 3"
+      ]
     },
     {
-      "coords": [717, 519],
+      "coords": [
+        717,
+        519
+      ],
       "image": "grass",
-      "codes": "TODO KF 039 :: unnamed_stack > Inside the Deku Tree > MQ Deku > MQ Deku Grass :: Pasted Layer #38 :: 001-001-006-018.png"
+      "codes": [
+        "TODO KF 039 :: unnamed_stack > Inside the Deku Tree > MQ Deku > MQ Deku Grass :: Pasted Layer #38 :: 001-001-006-018.png",
+        "OOT MQ Deku Tree Grass Room Before Spike 1",
+        "OOT MQ Deku Tree Grass Room Before Spike 2"
+      ]
     },
     {
-      "coords": [742, 519],
+      "coords": [
+        742,
+        519
+      ],
       "image": "grass",
-      "codes": "TODO KF 040 :: unnamed_stack > Inside the Deku Tree > MQ Deku > MQ Deku Grass :: Pasted Layer #39 :: 001-001-006-019.png"
+      "codes": [
+        "TODO KF 040 :: unnamed_stack > Inside the Deku Tree > MQ Deku > MQ Deku Grass :: Pasted Layer #39 :: 001-001-006-019.png",
+        "OOT MQ Deku Tree Grass Room Before Spike 3",
+        "OOT MQ Deku Tree Grass Room Before Spike 4"
+      ]
     },
     {
-      "coords": [679, 478],
+      "coords": [
+        679,
+        478
+      ],
       "image": "grass",
-      "codes": "TODO KF 041 :: unnamed_stack > Inside the Deku Tree > MQ Deku > MQ Deku Grass :: Pasted Layer #40 :: 001-001-006-020.png"
+      "codes": [
+        "TODO KF 041 :: unnamed_stack > Inside the Deku Tree > MQ Deku > MQ Deku Grass :: Pasted Layer #40 :: 001-001-006-020.png",
+        "OOT MQ Deku Tree Grass Basement Upper 2",
+        "OOT MQ Deku Tree Grass Basement Upper 3"
+      ]
     },
     {
-      "coords": [732, 473],
+      "coords": [
+        732,
+        473
+      ],
       "image": "grass",
-      "codes": "TODO KF 042 :: unnamed_stack > Inside the Deku Tree > MQ Deku > MQ Deku Grass :: Pasted Layer #41 :: 001-001-006-021.png"
+      "codes": [
+        "TODO KF 042 :: unnamed_stack > Inside the Deku Tree > MQ Deku > MQ Deku Grass :: Pasted Layer #41 :: 001-001-006-021.png",
+        "OOT MQ Deku Tree Grass Basement Lower 3",
+        "OOT MQ Deku Tree Grass Basement Lower 4"
+      ]
     },
     {
-      "coords": [717, 440],
+      "coords": [
+        717,
+        440
+      ],
       "image": "grass",
-      "codes": "TODO KF 043 :: unnamed_stack > Inside the Deku Tree > MQ Deku > MQ Deku Grass :: Pasted Layer #42 :: 001-001-006-022.png"
+      "codes": [
+        "TODO KF 043 :: unnamed_stack > Inside the Deku Tree > MQ Deku > MQ Deku Grass :: Pasted Layer #42 :: 001-001-006-022.png",
+        "OOT MQ Deku Tree Grass Basement Lower 1",
+        "OOT MQ Deku Tree Grass Basement Lower 2"
+      ]
     },
     {
-      "coords": [679, 447],
+      "coords": [
+        679,
+        447
+      ],
       "image": "grass",
-      "codes": "TODO KF 044 :: unnamed_stack > Inside the Deku Tree > MQ Deku > MQ Deku Grass :: Pasted Layer #43 :: 001-001-006-023.png"
+      "codes": [
+        "TODO KF 044 :: unnamed_stack > Inside the Deku Tree > MQ Deku > MQ Deku Grass :: Pasted Layer #43 :: 001-001-006-023.png",
+        "OOT MQ Deku Tree Grass Basement Upper 1"
+      ]
     },
     {
-      "coords": [567, 459],
-      "image": "wonder_item_random",
-      "codes": "TODO KF 045 :: unnamed_stack > Inside the Deku Tree > MQ Deku > MQ Deku Wonder :: Pasted Layer #44 :: 001-001-007-000.png"
+      "coords": [
+        567,
+        459
+      ],
+      "image": "wonder_item_heart",
+      "codes": [
+        "TODO KF 045 :: unnamed_stack > Inside the Deku Tree > MQ Deku > MQ Deku Wonder :: Pasted Layer #44 :: 001-001-007-000.png",
+        "OOT MQ Deku Tree Wonder Item 4"
+      ]
     },
     {
-      "coords": [590, 443],
-      "image": "wonder_item_random",
-      "codes": "TODO KF 046 :: unnamed_stack > Inside the Deku Tree > MQ Deku > MQ Deku Wonder :: Pasted Layer #45 :: 001-001-007-001.png"
+      "coords": [
+        590,
+        443
+      ],
+      "image": "wonder_item_heart",
+      "codes": [
+        "TODO KF 046 :: unnamed_stack > Inside the Deku Tree > MQ Deku > MQ Deku Wonder :: Pasted Layer #45 :: 001-001-007-001.png",
+        "OOT MQ Deku Tree Wonder Item 3"
+      ]
     },
     {
-      "coords": [613, 452],
-      "image": "wonder_item_random",
-      "codes": "TODO KF 047 :: unnamed_stack > Inside the Deku Tree > MQ Deku > MQ Deku Wonder :: Pasted Layer #46 :: 001-001-007-002.png"
+      "coords": [
+        613,
+        452
+      ],
+      "image": "wonder_item_heart",
+      "codes": [
+        "TODO KF 047 :: unnamed_stack > Inside the Deku Tree > MQ Deku > MQ Deku Wonder :: Pasted Layer #46 :: 001-001-007-002.png",
+        "OOT MQ Deku Tree Wonder Item 2"
+      ]
     },
     {
-      "coords": [604, 484],
-      "image": "wonder_item_random",
-      "codes": "TODO KF 048 :: unnamed_stack > Inside the Deku Tree > MQ Deku > MQ Deku Wonder :: Pasted Layer #47 :: 001-001-007-003.png"
+      "coords": [
+        604,
+        484
+      ],
+      "image": "wonder_item_heart",
+      "codes": [
+        "TODO KF 048 :: unnamed_stack > Inside the Deku Tree > MQ Deku > MQ Deku Wonder :: Pasted Layer #47 :: 001-001-007-003.png",
+        "OOT MQ Deku Tree Wonder Item 1"
+      ]
     }
   ]
 }

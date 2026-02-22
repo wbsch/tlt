@@ -6,6 +6,7 @@ const MAP_ICON_BASE = withBasePath('images/map_icons');
 const OVERLAY_BASE = withBasePath('images/attributes');
 const OVERLAY_WIDE_BASE = withBasePath('images/attributes_wide');
 const NUMBER_BASE = withBasePath('images/numbers');
+const MASTER_QUEST_LABEL_IMAGE = withBasePath('images/label_master_quest.png');
 
 export function resolveMapImage(image: string): string {
   return `${MAP_IMAGE_BASE}/${image}.png`;
@@ -41,4 +42,8 @@ export function resolveDayComboOverlayImage(
 
 export function resolveDigitImage(digit: string): string {
   return `${NUMBER_BASE}/${digit}.png`;
+}
+
+export function resolveMasterQuestLabelImage(): string {
+  return MASTER_QUEST_LABEL_IMAGE;
 }

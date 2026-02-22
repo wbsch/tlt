@@ -11,6 +11,7 @@ import type { LocationInfo } from '@/types/tracker';
 import {
   resolveDayComboOverlayImage,
   resolveDigitImage,
+  resolveMasterQuestLabelImage,
   resolveMapImage,
   resolveMarkerImage,
   resolveOverlayImage,
@@ -40,6 +41,21 @@ const MAP_POPUP_WIDTH = 260;
 const MAP_POPUP_HEIGHT = 230;
 const SUBMENU_PANEL_WIDTH = 320;
 const SUBMENU_PANEL_HEIGHT = 220;
+const MASTER_QUEST_LABEL_COORDS = { x: 613, y: 70 } as const;
+const MQ_DUNGEON_CODE_BY_MAP_ID: Record<string, string> = {
+  oot_deku_tree: 'DT',
+  oot_dodongos_cavern: 'DC',
+  oot_jabu_jabu: 'JJ',
+  oot_forest_temple: 'Forest',
+  oot_fire_temple: 'Fire',
+  oot_water_temple: 'Water',
+  oot_shadow_temple: 'Shadow',
+  oot_spirit_temple: 'Spirit',
+  oot_bottom_of_the_well: 'BotW',
+  oot_ice_cavern: 'IC',
+  oot_gerudo_training_ground: 'GTG',
+  oot_ganons_castle: 'Ganon',
+};
 
 type OverlayRender = {
   key: string;
@@ -172,6 +188,7 @@ const props = withDefaults(
     visibleLocationIds?: Set<string> | null;
     allLocations?: LocationInfo[];
     allLocationsForCodeSearch?: LocationInfo[];
+    settings?: Record<string, unknown> | null;
     devMode?: boolean;
     devShowUnmappedOnly?: boolean;
     devMqMarkerMode?: 'non-mq' | 'mq';
@@ -182,6 +199,7 @@ const props = withDefaults(
     visibleLocationIds: null,
     allLocations: () => [],
     allLocationsForCodeSearch: () => [],
+    settings: null,
     devMode: false,
     devShowUnmappedOnly: false,
     devMqMarkerMode: 'non-mq',
@@ -304,6 +322,45 @@ function markerHasMqLocation(codeList: string[]): boolean {
       isMqLocationId(checkId),
     ),
   );
+}
+
+function toNormalizedStringSet(value: unknown): Set<string> {
+  if (!Array.isArray(value)) return new Set<string>();
+  return new Set(
+    value
+      .map((entry) => (typeof entry === 'string' ? entry.trim() : ''))
+      .filter((entry) => entry.length > 0),
+  );
+}
+
+function isMqSelectedForMap(mapId: string, mqSettingRaw: unknown): boolean {
+  const dungeonCode = MQ_DUNGEON_CODE_BY_MAP_ID[mapId];
+  if (!dungeonCode) return false;
+  if (mqSettingRaw === 'all') return true;
+  if (mqSettingRaw === 'none' || mqSettingRaw == null) return false;
+
+  if (typeof mqSettingRaw !== 'object' || Array.isArray(mqSettingRaw)) {
+    return false;
+  }
+
+  const mqSetting = mqSettingRaw as {
+    type?: unknown;
+    values?: unknown;
+    set?: unknown;
+    unset?: unknown;
+  };
+  const mode = typeof mqSetting.type === 'string' ? mqSetting.type : '';
+
+  if (mode === 'all') return true;
+  if (mode === 'none') return false;
+  if (mode === 'specific') {
+    return toNormalizedStringSet(mqSetting.values).has(dungeonCode);
+  }
+  if (mode === 'random-mixed') {
+    if (toNormalizedStringSet(mqSetting.set).has(dungeonCode)) return true;
+    if (toNormalizedStringSet(mqSetting.unset).has(dungeonCode)) return false;
+  }
+  return false;
 }
 
 const devUnmappedCheckMarkerIndices = computed(() => {
@@ -865,6 +922,17 @@ const sceneStyle = computed(() => {
     transform: `translate(${panX.value}px, ${panY.value}px) scale(${scale.value})`,
   };
 });
+
+const showMasterQuestLabel = computed(() => {
+  const mapDef = renderMapDef.value;
+  if (!mapDef) return false;
+  return isMqSelectedForMap(mapDef.id, props.settings?.mqDungeons);
+});
+
+const masterQuestLabelStyle = computed<Record<string, string>>(() => ({
+  left: `${MASTER_QUEST_LABEL_COORDS.x}px`,
+  top: `${MASTER_QUEST_LABEL_COORDS.y}px`,
+}));
 
 function markerStyle(marker: MarkerRuntime): Record<string, string> {
   return {
@@ -1810,6 +1878,14 @@ onBeforeUnmount(() => {
           :alt="renderMapDef.title"
           draggable="false"
         />
+        <img
+          v-if="showMasterQuestLabel"
+          class="ootmm-map__mq-label"
+          :src="resolveMasterQuestLabelImage()"
+          :style="masterQuestLabelStyle"
+          alt="Master Quest selected"
+          draggable="false"
+        />
 
         <button
           v-for="marker in visibleMarkers"
@@ -2347,6 +2423,14 @@ onBeforeUnmount(() => {
   user-select: none;
   pointer-events: none;
   image-rendering: pixelated;
+}
+
+.ootmm-map__mq-label {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  display: block;
+  pointer-events: none;
+  user-select: none;
 }
 
 .map-marker {

@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import argparse
+import csv
 import json
 from collections import Counter
 from pathlib import Path
@@ -10,6 +11,7 @@ from typing import Any, Iterable
 
 GAMES = ("oot", "mm")
 DEFAULT_DUPLICATE_WHITELIST_FILE = Path("scripts/map_duplicate_whitelist.txt")
+DEFAULT_OOT_POOL_FILE = Path("OoTMM/packages/data/src/pool/pool_oot.csv")
 
 
 def to_location_name(game: str, location_name: str) -> str:
@@ -61,6 +63,23 @@ def collect_hint_location_names(hints: dict[str, Any]) -> set[str]:
             location = record.get("location")
             if isinstance(location, str):
                 names.add(to_location_name(game, location))
+
+    return names
+
+
+def collect_oot_mq_location_names(pool_file: Path) -> set[str]:
+    names: set[str] = set()
+
+    with pool_file.open(encoding="utf-8", newline="") as handle:
+        reader = csv.reader(handle)
+        for row in reader:
+            if not row:
+                continue
+            raw_location = row[0].strip()
+            if not raw_location or raw_location.startswith("#"):
+                continue
+            if raw_location.startswith("MQ "):
+                names.add(to_location_name("oot", raw_location))
 
     return names
 
@@ -126,6 +145,12 @@ def main() -> int:
         help="Path to data-hints-raw.json",
     )
     parser.add_argument(
+        "--oot-pool-file",
+        type=Path,
+        default=DEFAULT_OOT_POOL_FILE,
+        help="Path to OoT pool_oot.csv (used to include MQ locations)",
+    )
+    parser.add_argument(
         "--include-todo",
         action="store_true",
         help="Include TODO codes in the map analysis (ignored by default)",
@@ -159,6 +184,7 @@ def main() -> int:
     maps_dir = (repo_root / args.maps_dir).resolve()
     world_file = (repo_root / args.world_file).resolve()
     hints_file = (repo_root / args.hints_file).resolve()
+    oot_pool_file = (repo_root / args.oot_pool_file).resolve()
     duplicate_whitelist_file = (repo_root / args.duplicate_whitelist_file).resolve()
 
     if not maps_dir.is_dir():
@@ -167,6 +193,8 @@ def main() -> int:
         raise SystemExit(f"World file not found: {world_file}")
     if not hints_file.is_file():
         raise SystemExit(f"Hints file not found: {hints_file}")
+    if not oot_pool_file.is_file():
+        raise SystemExit(f"OOT pool file not found: {oot_pool_file}")
 
     world = json.loads(world_file.read_text(encoding="utf-8"))
     hints = json.loads(hints_file.read_text(encoding="utf-8"))
@@ -176,7 +204,8 @@ def main() -> int:
 
     devtool_reference = collect_world_location_names(world)
     mapschema_reference = devtool_reference | collect_hint_location_names(hints)
-    reference_universe = devtool_reference | mapschema_reference
+    mq_oot_reference = collect_oot_mq_location_names(oot_pool_file)
+    reference_universe = devtool_reference | mapschema_reference | mq_oot_reference
 
     counter: Counter[str] = Counter()
     map_files = sorted(maps_dir.glob("*.json"))
@@ -218,7 +247,7 @@ def main() -> int:
 
     print()
     print(
-        "2) Locations from the reference set (Devtool + Mapschema) "
+        "2) Locations from the reference set (Devtool + Mapschema + OOT MQ Pool) "
         "that are missing from the maps:"
     )
     if missing_locations:

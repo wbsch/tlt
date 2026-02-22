@@ -6,57 +6,90 @@
   "height": 600,
   "markers": [
     {
-      "coords": [286, 232],
+      "coords": [
+        286,
+        232
+      ],
       "image": "chest",
-      "codes": ["OOT Jabu-Jabu Map Chest"]
+      "codes": "OOT Jabu-Jabu Map Chest"
     },
     {
-      "coords": [320, 190],
+      "coords": [
+        320,
+        190
+      ],
       "image": "chest",
-      "codes": ["OOT Jabu-Jabu Compass Chest"]
+      "codes": "OOT Jabu-Jabu Compass Chest"
     },
     {
-      "coords": [408, 232],
+      "coords": [
+        408,
+        232
+      ],
       "image": "chest",
-      "codes": ["OOT Jabu-Jabu Boomerang Chest"]
+      "codes": "OOT Jabu-Jabu Boomerang Chest"
     },
     {
-      "coords": [399, 304],
+      "coords": [
+        399,
+        304
+      ],
       "image": "heart_container",
-      "codes": ["OOT Jabu-Jabu Boss Container"]
+      "codes": "OOT Jabu-Jabu Boss Container"
     },
     {
-      "coords": [415, 304],
+      "coords": [
+        415,
+        304
+      ],
       "image": "zora_sapphire",
-      "codes": ["OOT Jabu-Jabu Boss"]
+      "codes": "OOT Jabu-Jabu Boss"
     },
     {
-      "coords": [404, 349],
+      "coords": [
+        404,
+        349
+      ],
       "image": "gold_skulltula",
-      "codes": ["OOT Jabu-Jabu GS Near Boss"]
+      "codes": "OOT Jabu-Jabu GS Near Boss"
     },
     {
-      "coords": [638, 264],
+      "coords": [
+        638,
+        264
+      ],
       "image": "gold_skulltula",
-      "codes": ["OOT Jabu-Jabu GS Bottom Upper"]
+      "codes": "OOT Jabu-Jabu GS Bottom Upper"
     },
     {
-      "coords": [662, 265],
+      "coords": [
+        662,
+        265
+      ],
       "image": "gold_skulltula",
-      "codes": ["OOT Jabu-Jabu GS Bottom Lower"]
+      "codes": "OOT Jabu-Jabu GS Bottom Lower"
     },
     {
-      "coords": [683, 308],
+      "coords": [
+        683,
+        308
+      ],
       "image": "gold_skulltula",
-      "codes": ["OOT Jabu-Jabu GS Water Switch"]
+      "codes": "OOT Jabu-Jabu GS Water Switch"
     },
     {
-      "coords": [613, 340],
+      "coords": [
+        613,
+        340
+      ],
       "image": "business_scrub_oot",
-      "codes": ["OOT Jabu-Jabu Scrub"]
+      "codes": "OOT Jabu-Jabu Scrub"
     },
     {
-      "coords": [299, 266],
+      "coords": [
+        299,
+        266
+      ],
       "image": "pot",
       "codes": [
         "OOT Jabu-Jabu Pot Big Octo Room 1",
@@ -65,7 +98,10 @@
       ]
     },
     {
-      "coords": [383, 304],
+      "coords": [
+        383,
+        304
+      ],
       "image": "pot",
       "codes": [
         "OOT Jabu-Jabu Boss Pot 1",
@@ -77,7 +113,10 @@
       ]
     },
     {
-      "coords": [606, 321],
+      "coords": [
+        606,
+        321
+      ],
       "image": "pot",
       "codes": [
         "OOT Jabu-Jabu Pot Muscle Block Room 1",
@@ -88,7 +127,10 @@
       ]
     },
     {
-      "coords": [675, 313],
+      "coords": [
+        675,
+        313
+      ],
       "image": "pot",
       "codes": [
         "OOT Jabu-Jabu Pot Alcove 1",
@@ -97,264 +139,604 @@
       ]
     },
     {
-      "coords": [340, 327],
+      "coords": [
+        340,
+        327
+      ],
       "image": "small_crate",
-      "codes": ["OOT Jabu-Jabu Small Crate 1", "OOT Jabu-Jabu Small Crate 2"]
+      "codes": [
+        "OOT Jabu-Jabu Small Crate 1",
+        "OOT Jabu-Jabu Small Crate 2"
+      ]
     },
     {
-      "coords": [377, 186],
+      "coords": [
+        377,
+        186
+      ],
       "image": "chest",
-      "codes": "TODO KF 001 :: unnamed_stack > Inside Jabu-Jabu's Belly > MQ Jabu > MQ Jabu Checks :: Pasted Layer :: 001-001-001-000.png"
+      "codes": [
+        "TODO KF 001 :: unnamed_stack > Inside Jabu-Jabu's Belly > MQ Jabu > MQ Jabu Checks :: Pasted Layer :: 001-001-001-000.png",
+        "OOT MQ Jabu-Jabu Back Chest"
+      ]
     },
     {
-      "coords": [399, 304],
+      "coords": [
+        399,
+        304
+      ],
+      "image": "heart_container",
+      "codes": [
+        "TODO KF 002 :: unnamed_stack > Inside Jabu-Jabu's Belly > MQ Jabu > MQ Jabu Checks :: Pasted Layer #1 :: 001-001-001-001.png",
+        "OOT Jabu-Jabu Boss Container"
+      ]
+    },
+    {
+      "coords": [
+        415,
+        304
+      ],
+      "image": "zora_sapphire",
+      "codes": [
+        "TODO KF 003 :: unnamed_stack > Inside Jabu-Jabu's Belly > MQ Jabu > MQ Jabu Checks :: Pasted Layer #2 :: 001-001-001-002.png",
+        "OOT Jabu-Jabu Boss"
+      ]
+    },
+    {
+      "coords": [
+        390,
+        327
+      ],
       "image": "chest",
-      "codes": "TODO KF 002 :: unnamed_stack > Inside Jabu-Jabu's Belly > MQ Jabu > MQ Jabu Checks :: Pasted Layer #1 :: 001-001-001-001.png"
+      "codes": [
+        "TODO KF 004 :: unnamed_stack > Inside Jabu-Jabu's Belly > MQ Jabu > MQ Jabu Checks :: Pasted Layer #3 :: 001-001-001-003.png",
+        "OOT MQ Jabu-Jabu Pre-Boss Chest"
+      ]
     },
     {
-      "coords": [415, 304],
+      "coords": [
+        363,
+        343
+      ],
       "image": "chest",
-      "codes": "TODO KF 003 :: unnamed_stack > Inside Jabu-Jabu's Belly > MQ Jabu > MQ Jabu Checks :: Pasted Layer #2 :: 001-001-001-002.png"
+      "codes": [
+        "TODO KF 005 :: unnamed_stack > Inside Jabu-Jabu's Belly > MQ Jabu > MQ Jabu Checks :: Pasted Layer #4 :: 001-001-001-004.png",
+        "OOT MQ Jabu-Jabu Second Room 1F Chest"
+      ]
     },
     {
-      "coords": [390, 327],
+      "coords": [
+        365,
+        388
+      ],
       "image": "chest",
-      "codes": "TODO KF 004 :: unnamed_stack > Inside Jabu-Jabu's Belly > MQ Jabu > MQ Jabu Checks :: Pasted Layer #3 :: 001-001-001-003.png"
+      "codes": [
+        "TODO KF 006 :: unnamed_stack > Inside Jabu-Jabu's Belly > MQ Jabu > MQ Jabu Checks :: Pasted Layer #5 :: 001-001-001-005.png",
+        "OOT MQ Jabu-Jabu Entry Chest"
+      ]
     },
     {
-      "coords": [363, 343],
+      "coords": [
+        349,
+        394
+      ],
       "image": "chest",
-      "codes": "TODO KF 005 :: unnamed_stack > Inside Jabu-Jabu's Belly > MQ Jabu > MQ Jabu Checks :: Pasted Layer #4 :: 001-001-001-004.png"
+      "codes": [
+        "TODO KF 007 :: unnamed_stack > Inside Jabu-Jabu's Belly > MQ Jabu > MQ Jabu Checks :: Pasted Layer #6 :: 001-001-001-006.png",
+        "OOT MQ Jabu-Jabu Map Chest"
+      ]
     },
     {
-      "coords": [365, 388],
+      "coords": [
+        610,
+        340
+      ],
       "image": "chest",
-      "codes": "TODO KF 006 :: unnamed_stack > Inside Jabu-Jabu's Belly > MQ Jabu > MQ Jabu Checks :: Pasted Layer #5 :: 001-001-001-005.png"
+      "codes": [
+        "TODO KF 008 :: unnamed_stack > Inside Jabu-Jabu's Belly > MQ Jabu > MQ Jabu Checks :: Pasted Layer #7 :: 001-001-001-007.png",
+        "OOT MQ Jabu-Jabu Compass Chest"
+      ]
     },
     {
-      "coords": [349, 394],
+      "coords": [
+        659,
+        332
+      ],
       "image": "chest",
-      "codes": "TODO KF 007 :: unnamed_stack > Inside Jabu-Jabu's Belly > MQ Jabu > MQ Jabu Checks :: Pasted Layer #6 :: 001-001-001-006.png"
+      "codes": [
+        "TODO KF 009 :: unnamed_stack > Inside Jabu-Jabu's Belly > MQ Jabu > MQ Jabu Checks :: Pasted Layer #8 :: 001-001-001-008.png",
+        "OOT MQ Jabu-Jabu Second Room B1 Chest"
+      ]
     },
     {
-      "coords": [610, 340],
+      "coords": [
+        680,
+        314
+      ],
       "image": "chest",
-      "codes": "TODO KF 008 :: unnamed_stack > Inside Jabu-Jabu's Belly > MQ Jabu > MQ Jabu Checks :: Pasted Layer #7 :: 001-001-001-007.png"
+      "codes": [
+        "TODO KF 010 :: unnamed_stack > Inside Jabu-Jabu's Belly > MQ Jabu > MQ Jabu Checks :: Pasted Layer #9 :: 001-001-001-009.png",
+        "OOT MQ Jabu-Jabu Boomerang Chest"
+      ]
     },
     {
-      "coords": [659, 332],
+      "coords": [
+        703,
+        305
+      ],
       "image": "chest",
-      "codes": "TODO KF 009 :: unnamed_stack > Inside Jabu-Jabu's Belly > MQ Jabu > MQ Jabu Checks :: Pasted Layer #8 :: 001-001-001-008.png"
+      "codes": [
+        "TODO KF 011 :: unnamed_stack > Inside Jabu-Jabu's Belly > MQ Jabu > MQ Jabu Checks :: Pasted Layer #10 :: 001-001-001-010.png",
+        "OOT MQ Jabu-Jabu SoT Room Lower Chest"
+      ]
     },
     {
-      "coords": [680, 314],
+      "coords": [
+        663,
+        268
+      ],
       "image": "chest",
-      "codes": "TODO KF 010 :: unnamed_stack > Inside Jabu-Jabu's Belly > MQ Jabu > MQ Jabu Checks :: Pasted Layer #9 :: 001-001-001-009.png"
+      "codes": [
+        "TODO KF 012 :: unnamed_stack > Inside Jabu-Jabu's Belly > MQ Jabu > MQ Jabu Checks :: Pasted Layer #11 :: 001-001-001-011.png",
+        "OOT MQ Jabu-Jabu Third Room East Chest"
+      ]
     },
     {
-      "coords": [703, 305],
+      "coords": [
+        643,
+        302
+      ],
       "image": "chest",
-      "codes": "TODO KF 011 :: unnamed_stack > Inside Jabu-Jabu's Belly > MQ Jabu > MQ Jabu Checks :: Pasted Layer #10 :: 001-001-001-010.png"
+      "codes": [
+        "TODO KF 013 :: unnamed_stack > Inside Jabu-Jabu's Belly > MQ Jabu > MQ Jabu Checks :: Pasted Layer #12 :: 001-001-001-012.png",
+        "OOT MQ Jabu-Jabu Third Room West Chest"
+      ]
     },
     {
-      "coords": [663, 268],
-      "image": "chest",
-      "codes": "TODO KF 012 :: unnamed_stack > Inside Jabu-Jabu's Belly > MQ Jabu > MQ Jabu Checks :: Pasted Layer #11 :: 001-001-001-011.png"
-    },
-    {
-      "coords": [643, 302],
-      "image": "chest",
-      "codes": "TODO KF 013 :: unnamed_stack > Inside Jabu-Jabu's Belly > MQ Jabu > MQ Jabu Checks :: Pasted Layer #12 :: 001-001-001-012.png"
-    },
-    {
-      "coords": [326, 194],
+      "coords": [
+        326,
+        194
+      ],
       "image": "gold_skulltula",
-      "codes": "TODO KF 014 :: unnamed_stack > Inside Jabu-Jabu's Belly > MQ Jabu > MQ Jabu Skulls :: Pasted Layer #13 :: 001-001-002-000.png"
+      "codes": [
+        "TODO KF 014 :: unnamed_stack > Inside Jabu-Jabu's Belly > MQ Jabu > MQ Jabu Skulls :: Pasted Layer #13 :: 001-001-002-000.png",
+        "OOT MQ Jabu-Jabu GS Back"
+      ]
     },
     {
-      "coords": [396, 339],
+      "coords": [
+        396,
+        339
+      ],
       "image": "gold_skulltula",
-      "codes": "TODO KF 015 :: unnamed_stack > Inside Jabu-Jabu's Belly > MQ Jabu > MQ Jabu Skulls :: Pasted Layer #14 :: 001-001-002-001.png"
+      "codes": [
+        "TODO KF 015 :: unnamed_stack > Inside Jabu-Jabu's Belly > MQ Jabu > MQ Jabu Skulls :: Pasted Layer #14 :: 001-001-002-001.png",
+        "OOT MQ Jabu-Jabu GS Pre-Boss"
+      ]
     },
     {
-      "coords": [607, 319],
+      "coords": [
+        607,
+        319
+      ],
       "image": "gold_skulltula",
-      "codes": "TODO KF 016 :: unnamed_stack > Inside Jabu-Jabu's Belly > MQ Jabu > MQ Jabu Skulls :: Pasted Layer #15 :: 001-001-002-002.png"
+      "codes": [
+        "TODO KF 016 :: unnamed_stack > Inside Jabu-Jabu's Belly > MQ Jabu > MQ Jabu Skulls :: Pasted Layer #15 :: 001-001-002-002.png",
+        "OOT MQ Jabu-Jabu GS Basement Side Room"
+      ]
     },
     {
-      "coords": [687, 307],
+      "coords": [
+        687,
+        307
+      ],
       "image": "gold_skulltula",
-      "codes": "TODO KF 017 :: unnamed_stack > Inside Jabu-Jabu's Belly > MQ Jabu > MQ Jabu Skulls :: Pasted Layer #16 :: 001-001-002-003.png"
+      "codes": [
+        "TODO KF 017 :: unnamed_stack > Inside Jabu-Jabu's Belly > MQ Jabu > MQ Jabu Skulls :: Pasted Layer #16 :: 001-001-002-003.png",
+        "OOT MQ Jabu-Jabu GS SoT Block"
+      ]
     },
     {
-      "coords": [300, 346],
+      "coords": [
+        300,
+        346
+      ],
       "image": "cow",
-      "codes": "TODO KF 018 :: unnamed_stack > Inside Jabu-Jabu's Belly > MQ Jabu > MQ Jabu Cows :: Pasted Layer #17 :: 001-001-003-000.png"
+      "codes": [
+        "TODO KF 018 :: unnamed_stack > Inside Jabu-Jabu's Belly > MQ Jabu > MQ Jabu Cows :: Pasted Layer #17 :: 001-001-003-000.png",
+        "OOT MQ Jabu-Jabu Cow"
+      ]
     },
     {
-      "coords": [676, 321],
+      "coords": [
+        676,
+        321
+      ],
       "image": "pot",
-      "codes": "TODO KF 019 :: unnamed_stack > Inside Jabu-Jabu's Belly > MQ Jabu > MQ Jabu Pots :: Pasted Layer #18 :: 001-001-004-000.png"
+      "codes": [
+        "TODO KF 019 :: unnamed_stack > Inside Jabu-Jabu's Belly > MQ Jabu > MQ Jabu Pots :: Pasted Layer #18 :: 001-001-004-000.png",
+        "OOT MQ Jabu-Jabu Pot Boomerang Room 1",
+        "OOT MQ Jabu-Jabu Pot Boomerang Room 2"
+      ]
     },
     {
-      "coords": [619, 334],
+      "coords": [
+        619,
+        334
+      ],
       "image": "pot",
-      "codes": "TODO KF 020 :: unnamed_stack > Inside Jabu-Jabu's Belly > MQ Jabu > MQ Jabu Pots :: Pasted Layer #19 :: 001-001-004-001.png"
+      "codes": [
+        "TODO KF 020 :: unnamed_stack > Inside Jabu-Jabu's Belly > MQ Jabu > MQ Jabu Pots :: Pasted Layer #19 :: 001-001-004-001.png",
+        "OOT MQ Jabu-Jabu Pot Underwater Alcove 1",
+        "OOT MQ Jabu-Jabu Pot Underwater Alcove 2"
+      ]
     },
     {
-      "coords": [358, 397],
+      "coords": [
+        358,
+        397
+      ],
       "image": "pot",
-      "codes": "TODO KF 021 :: unnamed_stack > Inside Jabu-Jabu's Belly > MQ Jabu > MQ Jabu Pots :: Pasted Layer #20 :: 001-001-004-002.png"
+      "codes": [
+        "TODO KF 021 :: unnamed_stack > Inside Jabu-Jabu's Belly > MQ Jabu > MQ Jabu Pots :: Pasted Layer #20 :: 001-001-004-002.png",
+        "OOT MQ Jabu-Jabu Pot Entrance 1",
+        "OOT MQ Jabu-Jabu Pot Entrance 2"
+      ]
     },
     {
-      "coords": [409, 325],
+      "coords": [
+        409,
+        325
+      ],
       "image": "pot",
-      "codes": "TODO KF 022 :: unnamed_stack > Inside Jabu-Jabu's Belly > MQ Jabu > MQ Jabu Pots :: Pasted Layer #21 :: 001-001-004-003.png"
+      "codes": [
+        "TODO KF 022 :: unnamed_stack > Inside Jabu-Jabu's Belly > MQ Jabu > MQ Jabu Pots :: Pasted Layer #21 :: 001-001-004-003.png",
+        "OOT MQ Jabu-Jabu Pot Before Boss"
+      ]
     },
     {
-      "coords": [383, 304],
+      "coords": [
+        383,
+        304
+      ],
       "image": "pot",
-      "codes": "TODO KF 023 :: unnamed_stack > Inside Jabu-Jabu's Belly > MQ Jabu > MQ Jabu Pots :: Pasted Layer #22 :: 001-001-004-004.png"
+      "codes": [
+        "TODO KF 023 :: unnamed_stack > Inside Jabu-Jabu's Belly > MQ Jabu > MQ Jabu Pots :: Pasted Layer #22 :: 001-001-004-004.png",
+        "OOT Jabu-Jabu Boss Pot 1",
+        "OOT Jabu-Jabu Boss Pot 2",
+        "OOT Jabu-Jabu Boss Pot 3",
+        "OOT Jabu-Jabu Boss Pot 4",
+        "OOT Jabu-Jabu Boss Pot 5",
+        "OOT Jabu-Jabu Boss Pot 6"
+      ]
     },
     {
-      "coords": [383, 178],
+      "coords": [
+        383,
+        178
+      ],
       "image": "pot",
-      "codes": "TODO KF 024 :: unnamed_stack > Inside Jabu-Jabu's Belly > MQ Jabu > MQ Jabu Pots :: Pasted Layer #23 :: 001-001-004-005.png"
+      "codes": [
+        "TODO KF 024 :: unnamed_stack > Inside Jabu-Jabu's Belly > MQ Jabu > MQ Jabu Pots :: Pasted Layer #23 :: 001-001-004-005.png",
+        "OOT MQ Jabu-Jabu Pot Like-Like Room 1",
+        "OOT MQ Jabu-Jabu Pot Like-Like Room 2"
+      ]
     },
     {
-      "coords": [632, 339],
+      "coords": [
+        632,
+        339
+      ],
       "image": "green_rupee",
-      "codes": "TODO KF 025 :: unnamed_stack > Inside Jabu-Jabu's Belly > MQ Jabu > MQ Jabu Freestanding Rupees :: Pasted Layer #24 :: 001-001-005-000.png"
+      "codes": [
+        "TODO KF 025 :: unnamed_stack > Inside Jabu-Jabu's Belly > MQ Jabu > MQ Jabu Freestanding Rupees :: Pasted Layer #24 :: 001-001-005-000.png",
+        "OOT MQ Jabu-Jabu Rupee Bottom",
+        "OOT MQ Jabu-Jabu Rupee Middle",
+        "OOT MQ Jabu-Jabu Rupee Top"
+      ]
     },
     {
-      "coords": [338, 337],
+      "coords": [
+        338,
+        337
+      ],
       "image": "heart",
-      "codes": "TODO KF 026 :: unnamed_stack > Inside Jabu-Jabu's Belly > MQ Jabu > MQ Jabu Freestanding Hearts :: Pasted Layer #25 :: 001-001-006-000.png"
+      "codes": [
+        "TODO KF 026 :: unnamed_stack > Inside Jabu-Jabu's Belly > MQ Jabu > MQ Jabu Freestanding Hearts :: Pasted Layer #25 :: 001-001-006-000.png",
+        "OOT MQ Jabu-Jabu Heart 1",
+        "OOT MQ Jabu-Jabu Heart 2"
+      ]
     },
     {
-      "coords": [299, 327],
-      "image": "collectible",
-      "codes": "TODO KF 027 :: unnamed_stack > Inside Jabu-Jabu's Belly > MQ Jabu > MQ Jabu Crates :: Pasted Layer #26 :: 001-001-007-000.png"
+      "coords": [
+        299,
+        327
+      ],
+      "image": "small_crate",
+      "codes": [
+        "TODO KF 027 :: unnamed_stack > Inside Jabu-Jabu's Belly > MQ Jabu > MQ Jabu Crates :: Pasted Layer #26 :: 001-001-007-000.png",
+        "OOT MQ Jabu-Jabu Room After Above Big Octo Small Crate 1",
+        "OOT MQ Jabu-Jabu Room After Above Big Octo Small Crate 2"
+      ]
     },
     {
-      "coords": [323, 232],
-      "image": "collectible",
-      "codes": "TODO KF 028 :: unnamed_stack > Inside Jabu-Jabu's Belly > MQ Jabu > MQ Jabu Crates :: Pasted Layer #27 :: 001-001-007-001.png"
+      "coords": [
+        323,
+        232
+      ],
+      "image": "small_crate",
+      "codes": [
+        "TODO KF 028 :: unnamed_stack > Inside Jabu-Jabu's Belly > MQ Jabu > MQ Jabu Crates :: Pasted Layer #27 :: 001-001-007-001.png",
+        "OOT MQ Jabu-Jabu Back Forked Paths Main Room Small Crate 1",
+        "OOT MQ Jabu-Jabu Back Forked Paths Main Room Small Crate 2"
+      ]
     },
     {
-      "coords": [334, 394],
+      "coords": [
+        334,
+        394
+      ],
       "image": "grass",
-      "codes": "TODO KF 029 :: unnamed_stack > Inside Jabu-Jabu's Belly > MQ Jabu > MQ Jabu Grass :: Pasted Layer #28 :: 001-001-008-000.png"
+      "codes": [
+        "TODO KF 029 :: unnamed_stack > Inside Jabu-Jabu's Belly > MQ Jabu > MQ Jabu Grass :: Pasted Layer #28 :: 001-001-008-000.png",
+        "OOT MQ Jabu-Jabu Grass Entrance 1",
+        "OOT MQ Jabu-Jabu Grass Entrance 2"
+      ]
     },
     {
-      "coords": [390, 348],
+      "coords": [
+        390,
+        348
+      ],
       "image": "grass",
-      "codes": "TODO KF 030 :: unnamed_stack > Inside Jabu-Jabu's Belly > MQ Jabu > MQ Jabu Grass :: Pasted Layer #29 :: 001-001-008-001.png"
+      "codes": [
+        "TODO KF 030 :: unnamed_stack > Inside Jabu-Jabu's Belly > MQ Jabu > MQ Jabu Grass :: Pasted Layer #29 :: 001-001-008-001.png",
+        "OOT MQ Jabu-Jabu Grass Before Boss 1",
+        "OOT MQ Jabu-Jabu Grass Before Boss 2"
+      ]
     },
     {
-      "coords": [313, 348],
+      "coords": [
+        313,
+        348
+      ],
       "image": "grass",
-      "codes": "TODO KF 031 :: unnamed_stack > Inside Jabu-Jabu's Belly > MQ Jabu > MQ Jabu Grass :: Pasted Layer #30 :: 001-001-008-002.png"
+      "codes": [
+        "TODO KF 031 :: unnamed_stack > Inside Jabu-Jabu's Belly > MQ Jabu > MQ Jabu Grass :: Pasted Layer #30 :: 001-001-008-002.png",
+        "OOT MQ Jabu-Jabu Grass Room After Big Octo"
+      ]
     },
     {
-      "coords": [337, 283],
+      "coords": [
+        337,
+        283
+      ],
       "image": "grass",
-      "codes": "TODO KF 032 :: unnamed_stack > Inside Jabu-Jabu's Belly > MQ Jabu > MQ Jabu Grass :: Pasted Layer #31 :: 001-001-008-003.png"
+      "codes": [
+        "TODO KF 032 :: unnamed_stack > Inside Jabu-Jabu's Belly > MQ Jabu > MQ Jabu Grass :: Pasted Layer #31 :: 001-001-008-003.png",
+        "OOT MQ Jabu-Jabu Grass Main Room Top 1"
+      ]
     },
     {
-      "coords": [359, 269],
+      "coords": [
+        359,
+        269
+      ],
       "image": "grass",
-      "codes": "TODO KF 033 :: unnamed_stack > Inside Jabu-Jabu's Belly > MQ Jabu > MQ Jabu Grass :: Pasted Layer #32 :: 001-001-008-004.png"
+      "codes": [
+        "TODO KF 033 :: unnamed_stack > Inside Jabu-Jabu's Belly > MQ Jabu > MQ Jabu Grass :: Pasted Layer #32 :: 001-001-008-004.png",
+        "OOT MQ Jabu-Jabu Grass Main Room Top 2"
+      ]
     },
     {
-      "coords": [307, 270],
+      "coords": [
+        307,
+        270
+      ],
       "image": "grass",
-      "codes": "TODO KF 034 :: unnamed_stack > Inside Jabu-Jabu's Belly > MQ Jabu > MQ Jabu Grass :: Pasted Layer #33 :: 001-001-008-005.png"
+      "codes": [
+        "TODO KF 034 :: unnamed_stack > Inside Jabu-Jabu's Belly > MQ Jabu > MQ Jabu Grass :: Pasted Layer #33 :: 001-001-008-005.png",
+        "OOT MQ Jabu-Jabu Grass Big Octo Top 1",
+        "OOT MQ Jabu-Jabu Grass Big Octo Top 2"
+      ]
     },
     {
-      "coords": [378, 197],
+      "coords": [
+        378,
+        197
+      ],
       "image": "grass",
-      "codes": "TODO KF 035 :: unnamed_stack > Inside Jabu-Jabu's Belly > MQ Jabu > MQ Jabu Grass :: Pasted Layer #34 :: 001-001-008-006.png"
+      "codes": [
+        "TODO KF 035 :: unnamed_stack > Inside Jabu-Jabu's Belly > MQ Jabu > MQ Jabu Grass :: Pasted Layer #34 :: 001-001-008-006.png",
+        "OOT MQ Jabu-Jabu Grass Torch Room"
+      ]
     },
     {
-      "coords": [695, 298],
+      "coords": [
+        695,
+        298
+      ],
       "image": "grass",
-      "codes": "TODO KF 036 :: unnamed_stack > Inside Jabu-Jabu's Belly > MQ Jabu > MQ Jabu Grass :: Pasted Layer #35 :: 001-001-008-007.png"
+      "codes": [
+        "TODO KF 036 :: unnamed_stack > Inside Jabu-Jabu's Belly > MQ Jabu > MQ Jabu Grass :: Pasted Layer #35 :: 001-001-008-007.png",
+        "OOT MQ Jabu-Jabu Grass Boomerang Room"
+      ]
     },
     {
-      "coords": [654, 274],
+      "coords": [
+        654,
+        274
+      ],
       "image": "grass",
-      "codes": "TODO KF 037 :: unnamed_stack > Inside Jabu-Jabu's Belly > MQ Jabu > MQ Jabu Grass :: Pasted Layer #36 :: 001-001-008-008.png"
+      "codes": [
+        "TODO KF 037 :: unnamed_stack > Inside Jabu-Jabu's Belly > MQ Jabu > MQ Jabu Grass :: Pasted Layer #36 :: 001-001-008-008.png",
+        "OOT MQ Jabu-Jabu Grass Main Room Bottom 2",
+        "OOT MQ Jabu-Jabu Grass Main Room Bottom 3"
+      ]
     },
     {
-      "coords": [650, 295],
+      "coords": [
+        650,
+        295
+      ],
       "image": "grass",
-      "codes": "TODO KF 038 :: unnamed_stack > Inside Jabu-Jabu's Belly > MQ Jabu > MQ Jabu Grass :: Pasted Layer #37 :: 001-001-008-009.png"
+      "codes": [
+        "TODO KF 038 :: unnamed_stack > Inside Jabu-Jabu's Belly > MQ Jabu > MQ Jabu Grass :: Pasted Layer #37 :: 001-001-008-009.png",
+        "OOT MQ Jabu-Jabu Grass Main Room Bottom 1"
+      ]
     },
     {
-      "coords": [363, 194],
-      "image": "wonder_item_random",
-      "codes": "TODO KF 039 :: unnamed_stack > Inside Jabu-Jabu's Belly > MQ Jabu > MQ Jabu Wonder :: Pasted Layer #38 :: 001-001-009-000.png"
+      "coords": [
+        363,
+        194
+      ],
+      "image": "wonder_item_deku_seeds",
+      "codes": [
+        "TODO KF 039 :: unnamed_stack > Inside Jabu-Jabu's Belly > MQ Jabu > MQ Jabu Wonder :: Pasted Layer #38 :: 001-001-009-000.png",
+        "OOT MQ Jabu-Jabu Wonder Item Falling Like-Likes Cow Left 1",
+        "OOT MQ Jabu-Jabu Wonder Item Falling Like-Likes Cow Left 2",
+        "OOT MQ Jabu-Jabu Wonder Item Falling Like-Likes Cow Left 3"
+      ]
     },
     {
-      "coords": [391, 194],
-      "image": "wonder_item_random",
-      "codes": "TODO KF 040 :: unnamed_stack > Inside Jabu-Jabu's Belly > MQ Jabu > MQ Jabu Wonder :: Pasted Layer #39 :: 001-001-009-001.png"
+      "coords": [
+        391,
+        194
+      ],
+      "image": "wonder_item_small_magic_jar",
+      "codes": [
+        "TODO KF 040 :: unnamed_stack > Inside Jabu-Jabu's Belly > MQ Jabu > MQ Jabu Wonder :: Pasted Layer #39 :: 001-001-009-001.png",
+        "OOT MQ Jabu-Jabu Wonder Item Falling Like-Likes Cow Right 1",
+        "OOT MQ Jabu-Jabu Wonder Item Falling Like-Likes Cow Right 2",
+        "OOT MQ Jabu-Jabu Wonder Item Falling Like-Likes Cow Right 3"
+      ]
     },
     {
-      "coords": [377, 208],
+      "coords": [
+        377,
+        208
+      ],
       "image": "wonder_item_random",
-      "codes": "TODO KF 041 :: unnamed_stack > Inside Jabu-Jabu's Belly > MQ Jabu > MQ Jabu Wonder :: Pasted Layer #40 :: 001-001-009-002.png"
+      "codes": [
+        "TODO KF 041 :: unnamed_stack > Inside Jabu-Jabu's Belly > MQ Jabu > MQ Jabu Wonder :: Pasted Layer #40 :: 001-001-009-002.png",
+        "OOT MQ Jabu-Jabu Wonder Item Falling Like-Likes Explosion 1",
+        "OOT MQ Jabu-Jabu Wonder Item Falling Like-Likes Explosion 2",
+        "OOT MQ Jabu-Jabu Wonder Item Falling Like-Likes Explosion 3"
+      ]
     },
     {
-      "coords": [282, 279],
-      "image": "wonder_item_random",
-      "codes": "TODO KF 042 :: unnamed_stack > Inside Jabu-Jabu's Belly > MQ Jabu > MQ Jabu Wonder :: Pasted Layer #41 :: 001-001-009-003.png"
+      "coords": [
+        282,
+        279
+      ],
+      "image": "wonder_item_heart",
+      "codes": [
+        "TODO KF 042 :: unnamed_stack > Inside Jabu-Jabu's Belly > MQ Jabu > MQ Jabu Wonder :: Pasted Layer #41 :: 001-001-009-003.png",
+        "OOT MQ Jabu-Jabu Wonder Item After Big Octo"
+      ]
     },
     {
-      "coords": [364, 323],
-      "image": "wonder_item_random",
-      "codes": "TODO KF 043 :: unnamed_stack > Inside Jabu-Jabu's Belly > MQ Jabu > MQ Jabu Wonder :: Pasted Layer #42 :: 001-001-009-004.png"
+      "coords": [
+        364,
+        323
+      ],
+      "image": "wonder_item_heart",
+      "codes": [
+        "TODO KF 043 :: unnamed_stack > Inside Jabu-Jabu's Belly > MQ Jabu > MQ Jabu Wonder :: Pasted Layer #42 :: 001-001-009-004.png",
+        "OOT MQ Jabu-Jabu Wonder Item Elevator Cow"
+      ]
     },
     {
-      "coords": [301, 357],
-      "image": "wonder_item_random",
-      "codes": "TODO KF 044 :: unnamed_stack > Inside Jabu-Jabu's Belly > MQ Jabu > MQ Jabu Wonder :: Pasted Layer #43 :: 001-001-009-005.png"
+      "coords": [
+        301,
+        357
+      ],
+      "image": "wonder_item_deku_seeds",
+      "codes": [
+        "TODO KF 044 :: unnamed_stack > Inside Jabu-Jabu's Belly > MQ Jabu > MQ Jabu Wonder :: Pasted Layer #43 :: 001-001-009-005.png",
+        "OOT MQ Jabu-Jabu Wonder Item Platforms Cow"
+      ]
     },
     {
-      "coords": [336, 375],
-      "image": "wonder_item_random",
-      "codes": "TODO KF 045 :: unnamed_stack > Inside Jabu-Jabu's Belly > MQ Jabu > MQ Jabu Wonder :: Pasted Layer #44 :: 001-001-009-006.png"
+      "coords": [
+        336,
+        375
+      ],
+      "image": "wonder_item_heart",
+      "codes": [
+        "TODO KF 045 :: unnamed_stack > Inside Jabu-Jabu's Belly > MQ Jabu > MQ Jabu Wonder :: Pasted Layer #44 :: 001-001-009-006.png",
+        "OOT MQ Jabu-Jabu Wonder Item Entrance Left Cow"
+      ]
     },
     {
-      "coords": [361, 375],
-      "image": "wonder_item_random",
-      "codes": "TODO KF 046 :: unnamed_stack > Inside Jabu-Jabu's Belly > MQ Jabu > MQ Jabu Wonder :: Pasted Layer #45 :: 001-001-009-007.png"
+      "coords": [
+        361,
+        375
+      ],
+      "image": "wonder_item_heart",
+      "codes": [
+        "TODO KF 046 :: unnamed_stack > Inside Jabu-Jabu's Belly > MQ Jabu > MQ Jabu Wonder :: Pasted Layer #45 :: 001-001-009-007.png",
+        "OOT MQ Jabu-Jabu Wonder Item Entrance Right Cow"
+      ]
     },
     {
-      "coords": [409, 357],
-      "image": "wonder_item_random",
-      "codes": "TODO KF 047 :: unnamed_stack > Inside Jabu-Jabu's Belly > MQ Jabu > MQ Jabu Wonder :: Pasted Layer #46 :: 001-001-009-008.png"
+      "coords": [
+        409,
+        357
+      ],
+      "image": "wonder_item_heart",
+      "codes": [
+        "TODO KF 047 :: unnamed_stack > Inside Jabu-Jabu's Belly > MQ Jabu > MQ Jabu Wonder :: Pasted Layer #46 :: 001-001-009-008.png",
+        "OOT MQ Jabu-Jabu Wonder Item Before Boss Right Cow 1"
+      ]
     },
     {
-      "coords": [425, 357],
+      "coords": [
+        425,
+        357
+      ],
       "image": "wonder_item_random",
-      "codes": "TODO KF 048 :: unnamed_stack > Inside Jabu-Jabu's Belly > MQ Jabu > MQ Jabu Wonder :: Pasted Layer #47 :: 001-001-009-009.png"
+      "codes": [
+        "TODO KF 048 :: unnamed_stack > Inside Jabu-Jabu's Belly > MQ Jabu > MQ Jabu Wonder :: Pasted Layer #47 :: 001-001-009-009.png",
+        "OOT MQ Jabu-Jabu Wonder Item Before Boss Right Cow 2"
+      ]
     },
     {
-      "coords": [415, 336],
-      "image": "wonder_item_random",
-      "codes": "TODO KF 049 :: unnamed_stack > Inside Jabu-Jabu's Belly > MQ Jabu > MQ Jabu Wonder :: Pasted Layer #48 :: 001-001-009-010.png"
+      "coords": [
+        415,
+        336
+      ],
+      "image": "wonder_item_deku_seeds",
+      "codes": [
+        "TODO KF 049 :: unnamed_stack > Inside Jabu-Jabu's Belly > MQ Jabu > MQ Jabu Wonder :: Pasted Layer #48 :: 001-001-009-010.png",
+        "OOT MQ Jabu-Jabu Wonder Item Before Boss Left Cow"
+      ]
     },
     {
-      "coords": [633, 287],
-      "image": "wonder_item_random",
-      "codes": "TODO KF 050 :: unnamed_stack > Inside Jabu-Jabu's Belly > MQ Jabu > MQ Jabu Wonder :: Pasted Layer #49 :: 001-001-009-011.png"
+      "coords": [
+        633,
+        287
+      ],
+      "image": "wonder_item_deku_seeds",
+      "codes": [
+        "TODO KF 050 :: unnamed_stack > Inside Jabu-Jabu's Belly > MQ Jabu > MQ Jabu Wonder :: Pasted Layer #49 :: 001-001-009-011.png",
+        "OOT MQ Jabu-Jabu Wonder Item Basement Left Cow 1",
+        "OOT MQ Jabu-Jabu Wonder Item Basement Left Cow 2",
+        "OOT MQ Jabu-Jabu Wonder Item Basement Left Cow 3"
+      ]
     },
     {
-      "coords": [645, 263],
-      "image": "wonder_item_random",
-      "codes": "TODO KF 051 :: unnamed_stack > Inside Jabu-Jabu's Belly > MQ Jabu > MQ Jabu Wonder :: Pasted Layer #50 :: 001-001-009-012.png"
+      "coords": [
+        645,
+        263
+      ],
+      "image": "wonder_item_deku_seeds",
+      "codes": [
+        "TODO KF 051 :: unnamed_stack > Inside Jabu-Jabu's Belly > MQ Jabu > MQ Jabu Wonder :: Pasted Layer #50 :: 001-001-009-012.png",
+        "OOT MQ Jabu-Jabu Wonder Item Basement Right Cow 1",
+        "OOT MQ Jabu-Jabu Wonder Item Basement Right Cow 2",
+        "OOT MQ Jabu-Jabu Wonder Item Basement Right Cow 3"
+      ]
     }
   ]
 }
