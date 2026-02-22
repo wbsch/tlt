@@ -21,7 +21,9 @@ export function toLocationName(game: GameId, locationName: string): string {
 }
 
 export function layoutToGame(layout: string): GameId | null {
-  if (layout === 'oot') return 'oot';
+  if (layout === 'oot' || layout === 'mq' || layout.startsWith('mq_')) {
+    return 'oot';
+  }
   if (layout === 'mm' || layout.startsWith('mm_')) return 'mm';
   return null;
 }
