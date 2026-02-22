@@ -49,27 +49,21 @@ async function loadOverlayNames(): Promise<string[]> {
   return extractStringUnionValues(source, 'MapMarkerOverlay');
 }
 
-async function loadWorldLocationCodes(): Promise<string[]> {
+async function loadReferenceLocationCodes(): Promise<string[]> {
   const worldRaw = await readFile(WORLD_DATA_FILE, 'utf8');
   const world = JSON.parse(worldRaw) as WorldLikeData;
-  return buildLocationCodeSet(world);
-}
-
-async function loadHintLocationCodes(): Promise<string[]> {
   const hintsRaw = await readFile(HINTS_RAW_FILE, 'utf8');
   const hints = JSON.parse(hintsRaw) as HintsLikeData;
-  return buildLocationCodeSet({}, hints);
+  return buildLocationCodeSet(world, hints);
 }
 
 async function generateMapSchema(): Promise<void> {
   const markerImages = toSortedUnique(MAP_ICON_INDEX);
-  const [mapImages, overlays, worldCodes, hintCodes] = await Promise.all([
+  const [mapImages, overlays, codes] = await Promise.all([
     loadMapImageNames(),
     loadOverlayNames(),
-    loadWorldLocationCodes(),
-    loadHintLocationCodes(),
+    loadReferenceLocationCodes(),
   ]);
-  const codes = toSortedUnique([...worldCodes, ...hintCodes]);
 
   const schema = {
     $schema: 'https://json-schema.org/draft/2020-12/schema',

@@ -1,7 +1,10 @@
 import * as OoTMMDataMod from '@ootmm/data';
 import {
+  buildLocationCodeSet,
   collectWorldLocationNames,
   toLocationName,
+  type HintsLikeData,
+  type WorldLikeData,
 } from './locationCodeSource';
 
 export type LocationCatalogEntry = {
@@ -26,12 +29,11 @@ const resolveExport = <T>(mod: unknown, key: string): T => {
 };
 
 const POOL = resolveExport<Record<GameId, PoolRecord[]>>(OoTMMDataMod, 'POOL');
-const WORLD = resolveExport<
-  Record<
-    string,
-    Record<string, Record<string, { locations?: Record<string, unknown> }>>
-  >
->(OoTMMDataMod, 'WORLD');
+const WORLD = resolveExport<WorldLikeData>(OoTMMDataMod, 'WORLD');
+const RAW_HINTS_DATA = resolveExport<HintsLikeData>(
+  OoTMMDataMod,
+  'RAW_HINTS_DATA',
+);
 
 const GAMES: GameId[] = ['oot', 'mm'];
 
@@ -50,8 +52,13 @@ function buildWorldLocationSet(): Set<string> {
   return collectWorldLocationNames(WORLD);
 }
 
+function buildReferenceLocationSet(): Set<string> {
+  return new Set(buildLocationCodeSet(WORLD, RAW_HINTS_DATA));
+}
+
 function buildCatalog(): LocationCatalogEntry[] {
-  const validLocationNames = buildWorldLocationSet();
+  const worldLocationNames = buildWorldLocationSet();
+  const referenceLocationNames = buildReferenceLocationSet();
   const byId = new Map<string, LocationCatalogEntry>();
 
   for (const game of GAMES) {
@@ -61,7 +68,7 @@ function buildCatalog(): LocationCatalogEntry[] {
       if (!locationName) continue;
 
       const fullLocationName = toLocationName(game, locationName);
-      if (!validLocationNames.has(fullLocationName)) continue;
+      if (!worldLocationNames.has(fullLocationName)) continue;
 
       const id = `${fullLocationName}@0`;
       if (byId.has(id)) continue;
@@ -85,7 +92,7 @@ function buildCatalog(): LocationCatalogEntry[] {
     }
   }
 
-  for (const fullLocationName of validLocationNames) {
+  for (const fullLocationName of referenceLocationNames) {
     const id = `${fullLocationName}@0`;
     if (byId.has(id)) continue;
 

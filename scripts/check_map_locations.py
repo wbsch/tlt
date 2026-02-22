@@ -2,7 +2,6 @@
 from __future__ import annotations
 
 import argparse
-import csv
 import json
 from collections import Counter
 from pathlib import Path
@@ -11,7 +10,6 @@ from typing import Any, Iterable
 
 GAMES = ("oot", "mm")
 DEFAULT_DUPLICATE_WHITELIST_FILE = Path("scripts/map_duplicate_whitelist.txt")
-DEFAULT_OOT_POOL_FILE = Path("OoTMM/packages/data/src/pool/pool_oot.csv")
 
 
 def to_location_name(game: str, location_name: str) -> str:
@@ -19,7 +17,7 @@ def to_location_name(game: str, location_name: str) -> str:
 
 
 def layout_to_game(layout: str) -> str | None:
-    if layout == "oot":
+    if layout == "oot" or layout == "mq" or layout.startswith("mq_"):
         return "oot"
     if layout == "mm" or layout.startswith("mm_"):
         return "mm"
@@ -67,21 +65,12 @@ def collect_hint_location_names(hints: dict[str, Any]) -> set[str]:
     return names
 
 
-def collect_oot_mq_location_names(pool_file: Path) -> set[str]:
-    names: set[str] = set()
-
-    with pool_file.open(encoding="utf-8", newline="") as handle:
-        reader = csv.reader(handle)
-        for row in reader:
-            if not row:
-                continue
-            raw_location = row[0].strip()
-            if not raw_location or raw_location.startswith("#"):
-                continue
-            if raw_location.startswith("MQ "):
-                names.add(to_location_name("oot", raw_location))
-
-    return names
+def build_reference_location_names(
+    world: dict[str, Any], hints: dict[str, Any]
+) -> set[str]:
+    # Keep this aligned with map-schema/devtool code sourcing:
+    # the reference universe is the union of world + hints locations.
+    return collect_world_location_names(world) | collect_hint_location_names(hints)
 
 
 def extract_codes(node: Any) -> Iterable[str]:
@@ -123,7 +112,7 @@ def main() -> int:
     parser = argparse.ArgumentParser(
         description=(
             "Search all map JSON files and report duplicate codes as well as codes "
-            "missing from the reference set (Devtool + Mapschema)."
+            "missing from the reference set (world + hints)."
         )
     )
     parser.add_argument(
@@ -143,12 +132,6 @@ def main() -> int:
         type=Path,
         default=Path("OoTMM/packages/data/dist/data-hints-raw.json"),
         help="Path to data-hints-raw.json",
-    )
-    parser.add_argument(
-        "--oot-pool-file",
-        type=Path,
-        default=DEFAULT_OOT_POOL_FILE,
-        help="Path to OoT pool_oot.csv (used to include MQ locations)",
     )
     parser.add_argument(
         "--include-todo",
@@ -184,7 +167,6 @@ def main() -> int:
     maps_dir = (repo_root / args.maps_dir).resolve()
     world_file = (repo_root / args.world_file).resolve()
     hints_file = (repo_root / args.hints_file).resolve()
-    oot_pool_file = (repo_root / args.oot_pool_file).resolve()
     duplicate_whitelist_file = (repo_root / args.duplicate_whitelist_file).resolve()
 
     if not maps_dir.is_dir():
@@ -193,8 +175,6 @@ def main() -> int:
         raise SystemExit(f"World file not found: {world_file}")
     if not hints_file.is_file():
         raise SystemExit(f"Hints file not found: {hints_file}")
-    if not oot_pool_file.is_file():
-        raise SystemExit(f"OOT pool file not found: {oot_pool_file}")
 
     world = json.loads(world_file.read_text(encoding="utf-8"))
     hints = json.loads(hints_file.read_text(encoding="utf-8"))
@@ -202,10 +182,7 @@ def main() -> int:
     duplicate_whitelist = load_duplicate_whitelist(duplicate_whitelist_file)
     duplicate_whitelist.update(args.allow_duplicate)
 
-    devtool_reference = collect_world_location_names(world)
-    mapschema_reference = devtool_reference | collect_hint_location_names(hints)
-    mq_oot_reference = collect_oot_mq_location_names(oot_pool_file)
-    reference_universe = devtool_reference | mapschema_reference | mq_oot_reference
+    reference_universe = build_reference_location_names(world, hints)
 
     counter: Counter[str] = Counter()
     map_files = sorted(maps_dir.glob("*.json"))
@@ -247,7 +224,7 @@ def main() -> int:
 
     print()
     print(
-        "2) Locations from the reference set (Devtool + Mapschema + OOT MQ Pool) "
+        "2) Locations from the reference set (world + hints) "
         "that are missing from the maps:"
     )
     if missing_locations:
