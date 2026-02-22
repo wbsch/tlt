@@ -1396,6 +1396,7 @@ onBeforeUnmount(() => {
           v-if="activeTab === 'tricks'"
           ref="settingsRef"
           :settings="trackerSettings"
+          :is-applying-settings="isApplyingSettings"
           @update:settings="handleSettingsChange"
         />
       </div>

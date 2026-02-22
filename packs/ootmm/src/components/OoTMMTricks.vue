@@ -1,11 +1,13 @@
 <script setup lang="ts">
-import { ref, computed } from 'vue';
+import { ref, computed, watch } from 'vue';
 import { TRICKS } from '@ootmm/core/settings/tricks';
+import { TRACKER_DEFAULT_SETTINGS } from '../data/settings';
 import { matchesSearchTerms } from '../utils/search';
 import { selectSearchInputText } from '../utils/input';
 
 const props = defineProps<{
   settings: Record<string, unknown>;
+  isApplyingSettings?: boolean;
 }>();
 
 const emit = defineEmits<{
@@ -22,12 +24,74 @@ type Trick = {
 };
 
 const ALL_TRICKS = TRICKS as Record<string, Trick>;
+const DEFAULT_TRICKS = Array.isArray(TRACKER_DEFAULT_SETTINGS.tricks)
+  ? Array.from(
+      new Set(
+        (TRACKER_DEFAULT_SETTINGS.tricks as unknown[]).filter(
+          (entry): entry is string => typeof entry === 'string',
+        ),
+      ),
+    )
+  : [];
 
+const localSettings = ref<Record<string, unknown>>({ ...props.settings });
 const searchQuery = ref('');
 const selectedGame = ref<'all' | 'oot' | 'mm'>('all');
 
+function areSettingsEqual(a: unknown, b: unknown): boolean {
+  if (a === b) return true;
+  if (typeof a !== typeof b) return false;
+  if (Array.isArray(a) && Array.isArray(b)) {
+    if (a.length !== b.length) return false;
+    for (let i = 0; i < a.length; i += 1) {
+      if (!areSettingsEqual(a[i], b[i])) return false;
+    }
+    return true;
+  }
+  if (
+    a &&
+    b &&
+    typeof a === 'object' &&
+    typeof b === 'object' &&
+    !Array.isArray(a) &&
+    !Array.isArray(b)
+  ) {
+    const aObj = a as Record<string, unknown>;
+    const bObj = b as Record<string, unknown>;
+    const aKeys = Object.keys(aObj);
+    const bKeys = Object.keys(bObj);
+    if (aKeys.length !== bKeys.length) return false;
+    for (const key of aKeys) {
+      if (!Object.prototype.hasOwnProperty.call(bObj, key)) return false;
+      if (!areSettingsEqual(aObj[key], bObj[key])) return false;
+    }
+    return true;
+  }
+  return false;
+}
+
+function hasUnsavedChanges() {
+  return !areSettingsEqual(localSettings.value, props.settings);
+}
+
+function getLocalSettingsSnapshot() {
+  return { ...localSettings.value };
+}
+
+function discardChanges() {
+  localSettings.value = { ...props.settings };
+}
+
+watch(
+  () => props.settings,
+  (newSettings) => {
+    localSettings.value = { ...newSettings };
+  },
+  { deep: true },
+);
+
 const enabledTricks = computed(() => {
-  const tricks = props.settings.tricks;
+  const tricks = localSettings.value.tricks;
   if (Array.isArray(tricks)) {
     return new Set(tricks as string[]);
   }
@@ -69,9 +133,19 @@ const enabledTricksCount = computed(() => {
   return enabledTricks.value.size;
 });
 
+const isAtDefaultTricks = computed(() => {
+  const currentTricks = Array.isArray(localSettings.value.tricks)
+    ? (localSettings.value.tricks as string[])
+    : [];
+  if (currentTricks.length !== DEFAULT_TRICKS.length) return false;
+  const currentSet = new Set(currentTricks);
+  if (currentSet.size !== DEFAULT_TRICKS.length) return false;
+  return DEFAULT_TRICKS.every((trick) => currentSet.has(trick));
+});
+
 function toggleTrick(trickKey: string) {
-  const currentTricks = Array.isArray(props.settings.tricks)
-    ? [...(props.settings.tricks as string[])]
+  const currentTricks = Array.isArray(localSettings.value.tricks)
+    ? [...(localSettings.value.tricks as string[])]
     : [];
 
   const index = currentTricks.indexOf(trickKey);
@@ -81,15 +155,43 @@ function toggleTrick(trickKey: string) {
     currentTricks.push(trickKey);
   }
 
-  emit('update:settings', {
-    ...props.settings,
-    tricks: currentTricks,
-  });
+  localSettings.value = {
+    ...localSettings.value,
+    tricks: Array.from(new Set(currentTricks)),
+  };
+}
+
+function applyTricks() {
+  emit('update:settings', localSettings.value);
+}
+
+function resetTricksToDefaults() {
+  const currentTricks = Array.isArray(props.settings.tricks)
+    ? Array.from(
+        new Set(
+          (props.settings.tricks as unknown[]).filter(
+            (entry): entry is string => typeof entry === 'string',
+          ),
+        ),
+      )
+    : [];
+  const currentSet = new Set(currentTricks);
+  const currentMatchesDefaultSet =
+    currentSet.size === DEFAULT_TRICKS.length &&
+    DEFAULT_TRICKS.every((trick) => currentSet.has(trick));
+  const targetTricks = currentMatchesDefaultSet
+    ? currentTricks
+    : DEFAULT_TRICKS;
+  localSettings.value = {
+    ...localSettings.value,
+    tricks: [...targetTricks],
+  };
 }
 
 defineExpose({
-  hasUnsavedChanges: () => false,
-  getLocalSettingsSnapshot: () => props.settings,
+  hasUnsavedChanges,
+  getLocalSettingsSnapshot,
+  discardChanges,
 });
 </script>
 
@@ -142,6 +244,7 @@ defineExpose({
           <input
             type="checkbox"
             :checked="enabledTricks.has(key)"
+            :disabled="isApplyingSettings"
             @change="toggleTrick(key)"
           />
           <div class="trick-content">
@@ -184,6 +287,25 @@ defineExpose({
       <div v-if="filteredTricks.length === 0" class="no-results">
         No tricks found matching your filters.
       </div>
+    </div>
+
+    <div class="tricks-actions">
+      <button
+        class="btn-secondary"
+        data-testid="reset-tricks-button"
+        :disabled="isApplyingSettings || isAtDefaultTricks"
+        @click="resetTricksToDefaults"
+      >
+        Reset to Defaults
+      </button>
+      <button
+        class="btn-primary"
+        data-testid="apply-tricks-button"
+        :disabled="isApplyingSettings"
+        @click="applyTricks"
+      >
+        Apply Tricks
+      </button>
     </div>
   </div>
 </template>
@@ -425,5 +547,53 @@ defineExpose({
   text-align: center;
   color: #6b7280;
   font-size: 0.875rem;
+}
+
+.tricks-actions {
+  border-top: 1px solid #374151;
+  padding: 1rem;
+  display: flex;
+  gap: 0.5rem;
+  justify-content: flex-end;
+}
+
+.btn-primary {
+  padding: 0.5rem 1rem;
+  background: #2563eb;
+  border: none;
+  border-radius: 0.375rem;
+  color: #fff;
+  font-size: 0.875rem;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.btn-primary:hover:not(:disabled) {
+  background: #1d4ed8;
+}
+
+.btn-primary:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.btn-secondary {
+  padding: 0.5rem 1rem;
+  background: #6b7280;
+  border: none;
+  border-radius: 0.375rem;
+  color: #fff;
+  font-size: 0.875rem;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.btn-secondary:hover:not(:disabled) {
+  background: #4b5563;
+}
+
+.btn-secondary:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
 }
 </style>

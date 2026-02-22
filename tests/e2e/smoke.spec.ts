@@ -61,6 +61,94 @@ test.describe('OoTMM smoke', () => {
     expect(reachable.total).toBeGreaterThan(0);
   });
 
+  test('tricks explicit apply uses apply button flow', async ({ page }) => {
+    await page.getByTestId('tab-tricks').click();
+
+    const firstTrick = page
+      .locator('.trick-label input[type="checkbox"]')
+      .first();
+    await expect(firstTrick).toBeVisible();
+    const initial = await firstTrick.isChecked();
+    await firstTrick.click();
+
+    const overlay = page.getByTestId('applying-settings-overlay');
+    await page.waitForTimeout(250);
+    await expect(overlay).toHaveCount(0);
+
+    await page.getByTestId('apply-tricks-button').click();
+    await expect(overlay).toBeVisible({ timeout: 10_000 });
+    await expect(overlay).toBeHidden({ timeout: 10_000 });
+
+    await page.getByTestId('tab-tricks').click();
+    if (initial) {
+      await expect(firstTrick).not.toBeChecked();
+    } else {
+      await expect(firstTrick).toBeChecked();
+    }
+  });
+
+  test('tricks reset to defaults clears pending changes', async ({ page }) => {
+    await page.getByTestId('tab-tricks').click();
+
+    const firstTrick = page
+      .locator('.trick-label input[type="checkbox"]')
+      .first();
+    await expect(firstTrick).toBeVisible();
+    const initial = await firstTrick.isChecked();
+    await firstTrick.click();
+
+    const overlay = page.getByTestId('applying-settings-overlay');
+    await page.waitForTimeout(250);
+    await expect(overlay).toHaveCount(0);
+
+    await page.getByTestId('reset-tricks-button').click();
+    if (initial) {
+      await expect(firstTrick).toBeChecked();
+    } else {
+      await expect(firstTrick).not.toBeChecked();
+    }
+
+    await page.getByTestId('tab-items').click();
+    await page.waitForTimeout(250);
+    await expect(overlay).toHaveCount(0);
+  });
+
+  test('tricks auto-apply when leaving tab with unsaved changes', async ({
+    page,
+  }) => {
+    await page.getByTestId('tab-tricks').click();
+
+    const firstTrick = page
+      .locator('.trick-label input[type="checkbox"]')
+      .first();
+    await expect(firstTrick).toBeVisible();
+    const initial = await firstTrick.isChecked();
+    await firstTrick.click();
+
+    const overlay = page.getByTestId('applying-settings-overlay');
+    await page.getByTestId('tab-items').click();
+    await expect(overlay).toBeVisible({ timeout: 10_000 });
+    await expect(overlay).toBeHidden({ timeout: 10_000 });
+
+    await page.getByTestId('tab-tricks').click();
+    if (initial) {
+      await expect(firstTrick).not.toBeChecked();
+    } else {
+      await expect(firstTrick).toBeChecked();
+    }
+  });
+
+  test('tricks tab switch without edits does not apply settings', async ({
+    page,
+  }) => {
+    await page.getByTestId('tab-tricks').click();
+
+    const overlay = page.getByTestId('applying-settings-overlay');
+    await page.getByTestId('tab-items').click();
+    await page.waitForTimeout(250);
+    await expect(overlay).toHaveCount(0);
+  });
+
   test('reset tracker state path recovers cleanly', async ({ page }) => {
     await page.getByTestId('debug-activate-all-button').click();
     const beforeReset = await waitForAllReachable(page);

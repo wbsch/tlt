@@ -910,6 +910,10 @@ export const useOoTMMSessionStore = defineStore('ootmm-session', () => {
 
     isApplyingSettings.value = true;
     const overlayStartTime = performance.now();
+    const minTotalOverlayDurationMs = 100;
+    // Keep the overlay around briefly after the work finishes so UI and tests
+    // can reliably observe the "applying" state even when initialization blocks.
+    const postApplyOverlayDurationMs = options?.source === 'remote' ? 0 : 150;
     try {
       await nextTick();
       await new Promise((resolve) =>
@@ -932,12 +936,15 @@ export const useOoTMMSessionStore = defineStore('ootmm-session', () => {
     } catch (error) {
       console.error('Failed to apply settings:', error);
     } finally {
-      // Ensure overlay is visible for a minimum duration for UX and testability
       const elapsed = performance.now() - overlayStartTime;
-      const minDuration = 100;
-      if (elapsed < minDuration) {
+      if (elapsed < minTotalOverlayDurationMs) {
         await new Promise((resolve) =>
-          setTimeout(resolve, minDuration - elapsed),
+          setTimeout(resolve, minTotalOverlayDurationMs - elapsed),
+        );
+      }
+      if (postApplyOverlayDurationMs > 0) {
+        await new Promise((resolve) =>
+          setTimeout(resolve, postApplyOverlayDurationMs),
         );
       }
       isApplyingSettings.value = false;
