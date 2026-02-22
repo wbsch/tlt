@@ -30,10 +30,14 @@ function getPackComponent(packId: string) {
 
 function performResetTrackerState() {
   const resetFn = (
-    window as Window & { __TLT_RESET_TRACKER_STATE__?: () => void }
+    window as Window & { __TLT_RESET_TRACKER_STATE__?: () => void | Promise<void> }
   ).__TLT_RESET_TRACKER_STATE__;
   if (typeof resetFn === 'function') {
-    resetFn();
+    void Promise.resolve(resetFn()).catch((error) => {
+      console.error('Failed to reset tracker state via tracker handler:', error);
+      window.localStorage.clear();
+      window.location.reload();
+    });
     return;
   }
   window.localStorage.clear();

@@ -737,6 +737,10 @@ function fillInventory() {
   sessionStore.fillInventoryForDebugActivateAll();
 }
 
+function resetTrackerState() {
+  void sessionStore.resetSessionStateToDefaults();
+}
+
 function handleMapToggleCollected(checkId: string) {
   sessionStore.toggleCollectedLocation(checkId);
 }
@@ -1075,20 +1079,26 @@ function handleGlobalUndoRedoKeydown(event: KeyboardEvent) {
 
 onMounted(() => {
   sessionStore.startLocalSessionSync();
-  const windowWithDebug = window as Window & {
+  const windowWithHandlers = window as Window & {
     __TLT_DEBUG_ACTIVATE_ALL__?: () => void;
+    __TLT_RESET_TRACKER_STATE__?: () => void;
   };
-  windowWithDebug.__TLT_DEBUG_ACTIVATE_ALL__ = fillInventory;
+  windowWithHandlers.__TLT_DEBUG_ACTIVATE_ALL__ = fillInventory;
+  windowWithHandlers.__TLT_RESET_TRACKER_STATE__ = resetTrackerState;
   window.addEventListener('keydown', handleGlobalUndoRedoKeydown);
   window.addEventListener('pointerdown', handleMapWarningGlobalPointerDown);
 });
 
 onBeforeUnmount(() => {
-  const windowWithDebug = window as Window & {
+  const windowWithHandlers = window as Window & {
     __TLT_DEBUG_ACTIVATE_ALL__?: () => void;
+    __TLT_RESET_TRACKER_STATE__?: () => void;
   };
-  if (windowWithDebug.__TLT_DEBUG_ACTIVATE_ALL__ === fillInventory) {
-    delete windowWithDebug.__TLT_DEBUG_ACTIVATE_ALL__;
+  if (windowWithHandlers.__TLT_DEBUG_ACTIVATE_ALL__ === fillInventory) {
+    delete windowWithHandlers.__TLT_DEBUG_ACTIVATE_ALL__;
+  }
+  if (windowWithHandlers.__TLT_RESET_TRACKER_STATE__ === resetTrackerState) {
+    delete windowWithHandlers.__TLT_RESET_TRACKER_STATE__;
   }
   sessionStore.stopLocalSessionSync();
   window.removeEventListener('keydown', handleGlobalUndoRedoKeydown);

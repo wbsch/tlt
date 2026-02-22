@@ -52,4 +52,29 @@ test.describe('multi-tab sync', () => {
 
     await pageTwo.close();
   });
+
+  test('reset in one tab propagates to the other tab', async ({ page }) => {
+    const pageTwo = await page.context().newPage();
+    await pageTwo.goto('/?debug=1');
+    await waitForBoot(pageTwo);
+
+    await page.getByTestId('tab-inventory').click();
+    await pageTwo.getByTestId('tab-inventory').click();
+
+    await page.getByTestId(BOMB_TEST_ID).click();
+    await expect.poll(() => isOwned(pageTwo, BOMB_TEST_ID)).toBe(true);
+
+    await page.getByTestId('reset-tracker-state-button').click();
+    await expect(page.getByTestId('reset-tracker-confirm-modal')).toBeVisible();
+    await page.getByTestId('reset-tracker-confirm-apply-button').click();
+
+    await expect.poll(() => isOwned(page, BOMB_TEST_ID), { timeout: 20_000 }).toBe(
+      false,
+    );
+    await expect
+      .poll(() => isOwned(pageTwo, BOMB_TEST_ID), { timeout: 20_000 })
+      .toBe(false);
+
+    await pageTwo.close();
+  });
 });
