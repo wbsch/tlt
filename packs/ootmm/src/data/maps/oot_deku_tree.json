@@ -123,20 +123,6 @@
       ]
     },
     {
-      "coords": [352, 367],
-      "image": "grass",
-      "codes": [
-        "OOT Deku Tree Boss Grass 1",
-        "OOT Deku Tree Boss Grass 2",
-        "OOT Deku Tree Boss Grass 3",
-        "OOT Deku Tree Boss Grass 4",
-        "OOT Deku Tree Boss Grass 5",
-        "OOT Deku Tree Boss Grass 6",
-        "OOT Deku Tree Boss Grass 7",
-        "OOT Deku Tree Boss Grass 8"
-      ]
-    },
-    {
       "coords": [409, 432],
       "image": "grass",
       "codes": [
@@ -194,79 +180,69 @@
       ]
     },
     {
-      "coords": [368, 367],
-      "image": "heart_container",
-      "codes": ["OOT Deku Tree Boss Container"]
-    },
-    {
-      "coords": [384, 367],
-      "image": "kokiri_emerald",
-      "codes": ["OOT Deku Tree Boss"]
-    },
-    {
       "coords": [492, 290],
       "image": "chest",
-      "codes": ["OOT MQ Deku Tree Compass Chest"]
+      "codes": "OOT MQ Deku Tree Compass Chest"
     },
     {
       "coords": [610, 220],
       "image": "chest",
-      "codes": ["OOT MQ Deku Tree Map Chest"]
+      "codes": "OOT MQ Deku Tree Map Chest"
     },
     {
       "coords": [644, 541],
       "image": "chest",
-      "codes": ["OOT MQ Deku Tree After Water Platform Chest"]
+      "codes": "OOT MQ Deku Tree After Water Platform Chest"
     },
     {
       "coords": [697, 550],
       "image": "chest",
-      "codes": ["OOT MQ Deku Tree Before Water Platform Chest"]
+      "codes": "OOT MQ Deku Tree Before Water Platform Chest"
     },
     {
       "coords": [732, 440],
       "image": "chest",
-      "codes": ["OOT MQ Deku Tree Basement Chest"]
+      "codes": "OOT MQ Deku Tree Basement Chest"
     },
     {
       "coords": [768, 196],
       "image": "chest",
-      "codes": ["OOT MQ Deku Tree Slingshot Room Far Chest"]
+      "codes": "OOT MQ Deku Tree Slingshot Room Far Chest"
     },
     {
       "coords": [803, 223],
       "image": "chest",
-      "codes": ["OOT MQ Deku Tree Slingshot Chest"]
+      "codes": "OOT MQ Deku Tree Slingshot Chest"
     },
     {
       "coords": [508, 297],
       "image": "gold_skulltula",
-      "codes": ["OOT MQ Deku Tree GS Compass Room"]
+      "codes": "OOT MQ Deku Tree GS Compass Room"
     },
     {
       "coords": [600, 229],
       "image": "gold_skulltula",
-      "codes": ["OOT MQ Deku Tree GS Lobby Crate"]
+      "codes": "OOT MQ Deku Tree GS Lobby Crate"
     },
     {
       "coords": [553, 425],
       "image": "gold_skulltula",
-      "codes": ["OOT MQ Deku Tree GS Back Room"]
+      "codes": "OOT MQ Deku Tree GS Back Room"
     },
     {
       "coords": [591, 467],
       "image": "gold_skulltula",
-      "codes": ["OOT MQ Deku Tree GS Song of Time Blocks"]
+      "codes": "OOT MQ Deku Tree GS Song of Time Blocks"
     },
     {
       "coords": [696, 487],
       "image": "business_scrub_oot",
-      "codes": ["OOT MQ Deku Tree Scrub"]
+      "codes": "OOT MQ Deku Tree Scrub"
     },
     {
       "coords": [597, 220],
       "image": "crate",
-      "codes": ["OOT MQ Deku Tree Main Room 2nd Floor Crate"]
+      "codes": "OOT MQ Deku Tree Main Room 2nd Floor Crate"
     },
     {
       "coords": [817, 203],
@@ -288,17 +264,17 @@
     {
       "coords": [518, 299],
       "image": "heart",
-      "codes": ["OOT MQ Deku Tree Heart Compass Room"]
+      "codes": "OOT MQ Deku Tree Heart Compass Room"
     },
     {
       "coords": [550, 252],
       "image": "heart",
-      "codes": ["OOT MQ Deku Tree Heart Before Compass"]
+      "codes": "OOT MQ Deku Tree Heart Before Compass"
     },
     {
       "coords": [585, 188],
       "image": "heart",
-      "codes": ["OOT MQ Deku Tree Heart Lobby"]
+      "codes": "OOT MQ Deku Tree Heart Lobby"
     },
     {
       "coords": [277, 167],
@@ -405,7 +381,7 @@
     {
       "coords": [605, 451],
       "image": "grass",
-      "codes": ["OOT MQ Deku Tree Grass Gravestone Room 5"]
+      "codes": "OOT MQ Deku Tree Grass Gravestone Room 5"
     },
     {
       "coords": [569, 480],
@@ -418,12 +394,12 @@
     {
       "coords": [589, 497],
       "image": "grass",
-      "codes": ["OOT MQ Deku Tree Grass Gravestone Room 3"]
+      "codes": "OOT MQ Deku Tree Grass Gravestone Room 3"
     },
     {
       "coords": [613, 487],
       "image": "grass",
-      "codes": ["OOT MQ Deku Tree Grass Gravestone Room 4"]
+      "codes": "OOT MQ Deku Tree Grass Gravestone Room 4"
     },
     {
       "coords": [590, 525],
@@ -493,32 +469,32 @@
     {
       "coords": [679, 447],
       "image": "grass",
-      "codes": ["OOT MQ Deku Tree Grass Basement Upper 1"]
+      "codes": "OOT MQ Deku Tree Grass Basement Upper 1"
     },
     {
       "coords": [567, 459],
       "image": "wonder_item_heart",
-      "codes": ["OOT MQ Deku Tree Wonder Item 4"]
+      "codes": "OOT MQ Deku Tree Wonder Item 4"
     },
     {
       "coords": [590, 443],
       "image": "wonder_item_heart",
-      "codes": ["OOT MQ Deku Tree Wonder Item 3"]
+      "codes": "OOT MQ Deku Tree Wonder Item 3"
     },
     {
       "coords": [613, 452],
       "image": "wonder_item_heart",
-      "codes": ["OOT MQ Deku Tree Wonder Item 2"]
+      "codes": "OOT MQ Deku Tree Wonder Item 2"
     },
     {
       "coords": [604, 484],
       "image": "wonder_item_heart",
-      "codes": ["OOT MQ Deku Tree Wonder Item 1"]
+      "codes": "OOT MQ Deku Tree Wonder Item 1"
     },
     {
-      "coords": [504, 297],
+      "coords": [798, 216],
       "image": "heart",
-      "codes": ["New map marker"]
+      "codes": "OOT MQ Deku Tree Heart Slingshot Room"
     }
   ]
 }

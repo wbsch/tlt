@@ -41,16 +41,6 @@
       "codes": "OOT Water Temple Compass"
     },
     {
-      "coords": [684, 170],
-      "image": "heart_container",
-      "codes": "OOT Water Temple Boss HC"
-    },
-    {
-      "coords": [700, 170],
-      "image": "water_medallion",
-      "codes": "OOT Water Temple Boss"
-    },
-    {
       "coords": [575, 106],
       "image": "chest",
       "codes": "OOT Water Temple Longshot"

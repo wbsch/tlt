@@ -95,16 +95,6 @@
       "codes": "OOT Spirit Temple Statue Upper Right"
     },
     {
-      "coords": [336, 105],
-      "image": "heart_container",
-      "codes": "OOT Spirit Temple Boss HC"
-    },
-    {
-      "coords": [352, 105],
-      "image": "spirit_medallion",
-      "codes": "OOT Spirit Temple Boss"
-    },
-    {
       "coords": [573, 419],
       "image": "gold_skulltula",
       "codes": "OOT Spirit Temple GS Child Climb"
@@ -285,32 +275,32 @@
     {
       "coords": [644, 456],
       "image": "chest",
-      "codes": ["OOT MQ Spirit Temple Silver Block Room Target Chest"]
+      "codes": "OOT MQ Spirit Temple Silver Block Room Target Chest"
     },
     {
       "coords": [578, 445],
       "image": "chest",
-      "codes": ["OOT MQ Spirit Temple Child Upper Ledge Chest"]
+      "codes": "OOT MQ Spirit Temple Child Upper Ledge Chest"
     },
     {
       "coords": [594, 420],
       "image": "chest",
-      "codes": ["OOT MQ Spirit Temple Child Upper Ground Chest"]
+      "codes": "OOT MQ Spirit Temple Child Upper Ground Chest"
     },
     {
       "coords": [645, 421],
       "image": "chest",
-      "codes": ["OOT MQ Spirit Temple Compass Chest"]
+      "codes": "OOT MQ Spirit Temple Compass Chest"
     },
     {
       "coords": [656, 404],
       "image": "chest",
-      "codes": ["OOT MQ Spirit Temple Chest in Box"]
+      "codes": "OOT MQ Spirit Temple Chest in Box"
     },
     {
       "coords": [437, 367],
       "image": "chest",
-      "codes": ["OOT MQ Spirit Temple Symphony Room Chest"]
+      "codes": "OOT MQ Spirit Temple Symphony Room Chest"
     },
     {
       "coords": [368, 402],
@@ -320,47 +310,37 @@
     {
       "coords": [351, 470],
       "image": "chest",
-      "codes": ["OOT MQ Spirit Temple Lobby Back-Right Chest"]
+      "codes": "OOT MQ Spirit Temple Lobby Back-Right Chest"
     },
     {
       "coords": [351, 486],
       "image": "chest",
-      "codes": ["OOT MQ Spirit Temple Lobby Front-Right Chest"]
+      "codes": "OOT MQ Spirit Temple Lobby Front-Right Chest"
     },
     {
       "coords": [335, 470],
       "image": "chest",
-      "codes": ["OOT MQ Spirit Temple Lobby Back-Left Chest"]
+      "codes": "OOT MQ Spirit Temple Lobby Back-Left Chest"
     },
     {
       "coords": [335, 486],
       "image": "chest",
-      "codes": ["OOT MQ Spirit Temple Entrance Initial Chest"]
+      "codes": "OOT MQ Spirit Temple Entrance Initial Chest"
     },
     {
       "coords": [280, 470],
       "image": "chest",
-      "codes": ["OOT MQ Spirit Temple Paradox Chest"]
+      "codes": "OOT MQ Spirit Temple Paradox Chest"
     },
     {
       "coords": [248, 436],
       "image": "chest",
-      "codes": ["OOT MQ Spirit Temple Map Chest"]
+      "codes": "OOT MQ Spirit Temple Map Chest"
     },
     {
       "coords": [248, 415],
       "image": "chest",
-      "codes": ["OOT MQ Spirit Temple Map Room Back Chest"]
-    },
-    {
-      "coords": [412, 300],
-      "image": "chest",
-      "codes": ["OOT Spirit Temple Mirror Shield"]
-    },
-    {
-      "coords": [288, 300],
-      "image": "chest",
-      "codes": ["OOT Spirit Temple Silver Gauntlets"]
+      "codes": "OOT MQ Spirit Temple Map Room Back Chest"
     },
     {
       "coords": [274, 193],
@@ -370,62 +350,62 @@
     {
       "coords": [459, 214],
       "image": "chest",
-      "codes": ["OOT MQ Spirit Temple Dinolfos Room Chest"]
+      "codes": "OOT MQ Spirit Temple Dinolfos Room Chest"
     },
     {
       "coords": [452, 170],
       "image": "chest",
-      "codes": ["OOT MQ Spirit Temple Boss Key Chest"]
+      "codes": "OOT MQ Spirit Temple Boss Key Chest"
     },
     {
       "coords": [427, 209],
       "image": "chest",
-      "codes": ["OOT MQ Spirit Temple Beamos Room Chest"]
+      "codes": "OOT MQ Spirit Temple Beamos Room Chest"
     },
     {
       "coords": [377, 127],
       "image": "chest",
-      "codes": ["OOT MQ Spirit Temple Statue Room Ledge Chest"]
+      "codes": "OOT MQ Spirit Temple Statue Room Ledge Chest"
     },
     {
       "coords": [336, 105],
       "image": "heart_container",
-      "codes": ["OOT Spirit Temple Boss HC"]
+      "codes": "OOT Spirit Temple Boss HC"
     },
     {
       "coords": [352, 105],
       "image": "spirit_medallion",
-      "codes": ["OOT Spirit Temple Boss"]
+      "codes": "OOT Spirit Temple Boss"
     },
     {
       "coords": [641, 184],
       "image": "chest",
-      "codes": ["OOT MQ Spirit Temple Topmost Chest"]
+      "codes": "OOT MQ Spirit Temple Topmost Chest"
     },
     {
       "coords": [683, 119],
       "image": "gold_skulltula",
-      "codes": ["OOT MQ Spirit Temple GS Top Floor Back Wall"]
+      "codes": "OOT MQ Spirit Temple GS Top Floor Back Wall"
     },
     {
       "coords": [668, 134],
       "image": "gold_skulltula",
-      "codes": ["OOT MQ Spirit Temple GS Top Floor Left Wall"]
+      "codes": "OOT MQ Spirit Temple GS Top Floor Left Wall"
     },
     {
       "coords": [272, 231],
       "image": "gold_skulltula",
-      "codes": ["OOT MQ Spirit Temple GS Sun Block Room"]
+      "codes": "OOT MQ Spirit Temple GS Sun Block Room"
     },
     {
       "coords": [444, 384],
       "image": "gold_skulltula",
-      "codes": ["OOT MQ Spirit Temple GS Symphony Room"]
+      "codes": "OOT MQ Spirit Temple GS Symphony Room"
     },
     {
       "coords": [374, 428],
       "image": "gold_skulltula",
-      "codes": ["OOT MQ Spirit Temple GS Leever Room"]
+      "codes": "OOT MQ Spirit Temple GS Leever Room"
     },
     {
       "coords": [678, 407],
@@ -438,17 +418,17 @@
     {
       "coords": [678, 423],
       "image": "flying_pot",
-      "codes": ["OOT MQ Spirit Temple Flying Pot Statue Room Lower"]
+      "codes": "OOT MQ Spirit Temple Flying Pot Statue Room Lower"
     },
     {
       "coords": [637, 434],
       "image": "flying_pot",
-      "codes": ["OOT MQ Spirit Temple Flying Pot Statue Room Stairs"]
+      "codes": "OOT MQ Spirit Temple Flying Pot Statue Room Stairs"
     },
     {
       "coords": [613, 414],
       "image": "pot",
-      "codes": ["OOT MQ Spirit Temple Pot Statue Room Lower 1"]
+      "codes": "OOT MQ Spirit Temple Pot Statue Room Lower 1"
     },
     {
       "coords": [683, 162],
@@ -487,17 +467,17 @@
     {
       "coords": [315, 136],
       "image": "flying_pot",
-      "codes": ["OOT MQ Spirit Temple Flying Pot Statue Room Upper"]
+      "codes": "OOT MQ Spirit Temple Flying Pot Statue Room Upper"
     },
     {
       "coords": [259, 191],
       "image": "pot",
-      "codes": ["OOT MQ Spirit Temple Pot Child Sun Room 1"]
+      "codes": "OOT MQ Spirit Temple Pot Child Sun Room 1"
     },
     {
       "coords": [259, 231],
       "image": "pot",
-      "codes": ["OOT MQ Spirit Temple Pot Child Sun Room 2"]
+      "codes": "OOT MQ Spirit Temple Pot Child Sun Room 2"
     },
     {
       "coords": [280, 369],
@@ -520,12 +500,12 @@
     {
       "coords": [281, 412],
       "image": "pot",
-      "codes": ["OOT MQ Spirit Temple Pot Child Climb"]
+      "codes": "OOT MQ Spirit Temple Pot Child Climb"
     },
     {
       "coords": [290, 481],
       "image": "pot",
-      "codes": ["OOT MQ Spirit Temple Pot Child Entrance"]
+      "codes": "OOT MQ Spirit Temple Pot Child Entrance"
     },
     {
       "coords": [412, 428],
@@ -554,7 +534,7 @@
     {
       "coords": [631, 425],
       "image": "small_crate",
-      "codes": ["OOT MQ Spirit Temple Giant Statue Room Small Crate"]
+      "codes": "OOT MQ Spirit Temple Giant Statue Room Small Crate"
     },
     {
       "coords": [670, 391],
@@ -577,7 +557,7 @@
     {
       "coords": [420, 221],
       "image": "small_crate",
-      "codes": ["OOT MQ Spirit Temple Beamos Room Small Crate"]
+      "codes": "OOT MQ Spirit Temple Beamos Room Small Crate"
     },
     {
       "coords": [280, 455],
@@ -585,103 +565,29 @@
       "codes": ["OOT MQ Spirit Temple Heart 1", "OOT MQ Spirit Temple Heart 2"]
     },
     {
-      "coords": [376, 482],
+      "coords": [402, 482],
       "image": "silver_rupee",
-      "codes": [
-        "OOT MQ Spirit Temple SR Lobby After Water Near Door",
-        "OOT MQ Spirit Temple SR Lobby After Water Near Stairs",
-        "OOT MQ Spirit Temple SR Lobby In Water",
-        "OOT MQ Spirit Temple SR Lobby Rock Left",
-        "OOT MQ Spirit Temple SR Lobby Rock Right"
-      ]
+      "codes": "OOT MQ Spirit Temple SR Lobby After Water Near Stairs"
+    },
+    {
+      "coords": [400, 456],
+      "image": "silver_rupee",
+      "codes": "OOT MQ Spirit Temple SR Lobby After Water Near Door"
     },
     {
       "coords": [376, 482],
       "image": "silver_rupee",
-      "codes": [
-        "OOT MQ Spirit Temple SR Lobby After Water Near Door",
-        "OOT MQ Spirit Temple SR Lobby After Water Near Stairs",
-        "OOT MQ Spirit Temple SR Lobby In Water",
-        "OOT MQ Spirit Temple SR Lobby Rock Left",
-        "OOT MQ Spirit Temple SR Lobby Rock Right"
-      ]
+      "codes": "OOT MQ Spirit Temple SR Lobby In Water"
     },
     {
-      "coords": [376, 482],
+      "coords": [334, 500],
       "image": "silver_rupee",
-      "codes": [
-        "OOT MQ Spirit Temple SR Lobby After Water Near Door",
-        "OOT MQ Spirit Temple SR Lobby After Water Near Stairs",
-        "OOT MQ Spirit Temple SR Lobby In Water",
-        "OOT MQ Spirit Temple SR Lobby Rock Left",
-        "OOT MQ Spirit Temple SR Lobby Rock Right"
-      ]
+      "codes": "OOT MQ Spirit Temple SR Lobby Rock Left"
     },
     {
-      "coords": [376, 482],
+      "coords": [352, 500],
       "image": "silver_rupee",
-      "codes": [
-        "OOT MQ Spirit Temple SR Lobby After Water Near Door",
-        "OOT MQ Spirit Temple SR Lobby After Water Near Stairs",
-        "OOT MQ Spirit Temple SR Lobby In Water",
-        "OOT MQ Spirit Temple SR Lobby Rock Left",
-        "OOT MQ Spirit Temple SR Lobby Rock Right"
-      ]
-    },
-    {
-      "coords": [376, 482],
-      "image": "silver_rupee",
-      "codes": [
-        "OOT MQ Spirit Temple SR Lobby After Water Near Door",
-        "OOT MQ Spirit Temple SR Lobby After Water Near Stairs",
-        "OOT MQ Spirit Temple SR Lobby In Water",
-        "OOT MQ Spirit Temple SR Lobby Rock Left",
-        "OOT MQ Spirit Temple SR Lobby Rock Right"
-      ]
-    },
-    {
-      "coords": [383, 222],
-      "image": "silver_rupee",
-      "codes": [
-        "OOT MQ Spirit Temple SR Adult Bottom-Center",
-        "OOT MQ Spirit Temple SR Adult Bottom",
-        "OOT MQ Spirit Temple SR Adult Center-Top",
-        "OOT MQ Spirit Temple SR Adult Skulltula",
-        "OOT MQ Spirit Temple SR Adult Top"
-      ]
-    },
-    {
-      "coords": [383, 222],
-      "image": "silver_rupee",
-      "codes": [
-        "OOT MQ Spirit Temple SR Adult Bottom-Center",
-        "OOT MQ Spirit Temple SR Adult Bottom",
-        "OOT MQ Spirit Temple SR Adult Center-Top",
-        "OOT MQ Spirit Temple SR Adult Skulltula",
-        "OOT MQ Spirit Temple SR Adult Top"
-      ]
-    },
-    {
-      "coords": [383, 222],
-      "image": "silver_rupee",
-      "codes": [
-        "OOT MQ Spirit Temple SR Adult Bottom-Center",
-        "OOT MQ Spirit Temple SR Adult Bottom",
-        "OOT MQ Spirit Temple SR Adult Center-Top",
-        "OOT MQ Spirit Temple SR Adult Skulltula",
-        "OOT MQ Spirit Temple SR Adult Top"
-      ]
-    },
-    {
-      "coords": [383, 222],
-      "image": "silver_rupee",
-      "codes": [
-        "OOT MQ Spirit Temple SR Adult Bottom-Center",
-        "OOT MQ Spirit Temple SR Adult Bottom",
-        "OOT MQ Spirit Temple SR Adult Center-Top",
-        "OOT MQ Spirit Temple SR Adult Skulltula",
-        "OOT MQ Spirit Temple SR Adult Top"
-      ]
+      "codes": "OOT MQ Spirit Temple SR Lobby Rock Right"
     },
     {
       "coords": [383, 222],
@@ -697,7 +603,7 @@
     {
       "coords": [459, 199],
       "image": "big_fairy_spot",
-      "codes": ["OOT MQ Spirit Temple Dinolfos Room Big Fairy"]
+      "codes": "OOT MQ Spirit Temple Dinolfos Room Big Fairy"
     },
     {
       "coords": [455, 229],

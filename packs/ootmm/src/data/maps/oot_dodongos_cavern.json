@@ -6,21 +6,6 @@
   "height": 600,
   "markers": [
     {
-      "coords": [248, 266],
-      "image": "goron_ruby",
-      "codes": "OOT Dodongo Cavern Boss"
-    },
-    {
-      "coords": [264, 266],
-      "image": "heart_container",
-      "codes": "OOT Dodongo Cavern Boss Container"
-    },
-    {
-      "coords": [280, 266],
-      "image": "chest",
-      "codes": "OOT Dodongo Cavern Boss Chest"
-    },
-    {
       "coords": [243, 380],
       "image": "chest",
       "codes": "OOT Dodongo Cavern Compass Chest"
@@ -246,72 +231,72 @@
     {
       "coords": [248, 266],
       "image": "goron_ruby",
-      "codes": ["OOT Dodongo Cavern Boss"]
+      "codes": "OOT Dodongo Cavern Boss"
     },
     {
       "coords": [264, 266],
       "image": "heart_container",
-      "codes": ["OOT Dodongo Cavern Boss Container"]
+      "codes": "OOT Dodongo Cavern Boss Container"
     },
     {
       "coords": [280, 266],
       "image": "chest",
-      "codes": ["OOT Dodongo Cavern Boss Chest"]
+      "codes": "OOT Dodongo Cavern Boss Chest"
     },
     {
       "coords": [341, 337],
       "image": "chest",
-      "codes": ["OOT MQ Dodongo Cavern Bomb Bag Chest"]
+      "codes": "OOT MQ Dodongo Cavern Bomb Bag Chest"
     },
     {
       "coords": [341, 313],
       "image": "chest",
-      "codes": ["OOT MQ Dodongo Cavern Map Chest"]
+      "codes": "OOT MQ Dodongo Cavern Map Chest"
     },
     {
       "coords": [359, 197],
       "image": "chest",
-      "codes": ["OOT MQ Dodongo Cavern Chest Under Grave"]
+      "codes": "OOT MQ Dodongo Cavern Chest Under Grave"
     },
     {
       "coords": [543, 374],
       "image": "chest",
-      "codes": ["OOT MQ Dodongo Cavern Compass Chest"]
+      "codes": "OOT MQ Dodongo Cavern Compass Chest"
     },
     {
       "coords": [667, 348],
       "image": "chest",
-      "codes": ["OOT MQ Dodongo Cavern Upper Ledge Chest"]
+      "codes": "OOT MQ Dodongo Cavern Upper Ledge Chest"
     },
     {
       "coords": [670, 294],
       "image": "chest",
-      "codes": ["OOT MQ Dodongo Cavern Larvae Room Chest"]
+      "codes": "OOT MQ Dodongo Cavern Larvae Room Chest"
     },
     {
       "coords": [251, 377],
       "image": "gold_skulltula",
-      "codes": ["OOT MQ Dodongo Cavern GS Time Blocks"]
+      "codes": "OOT MQ Dodongo Cavern GS Time Blocks"
     },
     {
       "coords": [361, 232],
       "image": "gold_skulltula",
-      "codes": ["OOT MQ Dodongo Cavern GS Near Boss"]
+      "codes": "OOT MQ Dodongo Cavern GS Near Boss"
     },
     {
       "coords": [386, 251],
       "image": "gold_skulltula",
-      "codes": ["OOT MQ Dodongo Cavern GS Poe Room Side"]
+      "codes": "OOT MQ Dodongo Cavern GS Poe Room Side"
     },
     {
       "coords": [678, 304],
       "image": "gold_skulltula",
-      "codes": ["OOT MQ Dodongo Cavern GS Larve Room"]
+      "codes": "OOT MQ Dodongo Cavern GS Larve Room"
     },
     {
       "coords": [727, 295],
       "image": "gold_skulltula",
-      "codes": ["OOT MQ Dodongo Cavern GS Upper Lizalfos"]
+      "codes": "OOT MQ Dodongo Cavern GS Upper Lizalfos"
     },
     {
       "coords": [277, 369],
@@ -324,107 +309,77 @@
     {
       "coords": [397, 401],
       "image": "business_scrub_oot",
-      "codes": ["OOT MQ Dodongo Cavern Tunnel Side Scrub"]
+      "codes": "OOT MQ Dodongo Cavern Tunnel Side Scrub"
     },
     {
       "coords": [542, 303],
       "image": "business_scrub_oot",
-      "codes": ["OOT MQ Dodongo Cavern Staircase Scrub"]
+      "codes": "OOT MQ Dodongo Cavern Staircase Scrub"
     },
     {
-      "coords": [535, 329],
+      "coords": [545, 330],
       "image": "silver_rupee",
-      "codes": [
-        "OOT MQ Dodongo Cavern SR Beamos",
-        "OOT MQ Dodongo Cavern SR Crate",
-        "OOT MQ Dodongo Cavern SR Upper Corner High",
-        "OOT MQ Dodongo Cavern SR Upper Corner Low",
-        "OOT MQ Dodongo Cavern SR Vines"
-      ]
+      "codes": "OOT MQ Dodongo Cavern SR Vines"
     },
     {
-      "coords": [535, 329],
+      "coords": [555, 329],
       "image": "silver_rupee",
-      "codes": [
-        "OOT MQ Dodongo Cavern SR Beamos",
-        "OOT MQ Dodongo Cavern SR Crate",
-        "OOT MQ Dodongo Cavern SR Upper Corner High",
-        "OOT MQ Dodongo Cavern SR Upper Corner Low",
-        "OOT MQ Dodongo Cavern SR Vines"
-      ]
+      "codes": "OOT MQ Dodongo Cavern SR Upper Corner High"
     },
     {
-      "coords": [535, 329],
+      "coords": [530, 308],
       "image": "silver_rupee",
-      "codes": [
-        "OOT MQ Dodongo Cavern SR Beamos",
-        "OOT MQ Dodongo Cavern SR Crate",
-        "OOT MQ Dodongo Cavern SR Upper Corner High",
-        "OOT MQ Dodongo Cavern SR Upper Corner Low",
-        "OOT MQ Dodongo Cavern SR Vines"
-      ]
+      "codes": "OOT MQ Dodongo Cavern SR Upper Corner Low"
     },
     {
-      "coords": [535, 329],
+      "coords": [238, 310],
       "image": "silver_rupee",
-      "codes": [
-        "OOT MQ Dodongo Cavern SR Beamos",
-        "OOT MQ Dodongo Cavern SR Crate",
-        "OOT MQ Dodongo Cavern SR Upper Corner High",
-        "OOT MQ Dodongo Cavern SR Upper Corner Low",
-        "OOT MQ Dodongo Cavern SR Vines"
-      ]
+      "codes": "OOT MQ Dodongo Cavern SR Crate"
     },
     {
-      "coords": [535, 329],
+      "coords": [234, 325],
       "image": "silver_rupee",
-      "codes": [
-        "OOT MQ Dodongo Cavern SR Beamos",
-        "OOT MQ Dodongo Cavern SR Crate",
-        "OOT MQ Dodongo Cavern SR Upper Corner High",
-        "OOT MQ Dodongo Cavern SR Upper Corner Low",
-        "OOT MQ Dodongo Cavern SR Vines"
-      ]
+      "codes": "OOT MQ Dodongo Cavern SR Beamos"
     },
     {
       "coords": [458, 315],
       "image": "heart",
-      "codes": ["OOT MQ Dodongo Cavern Heart Lizalfos Room"]
+      "codes": "OOT MQ Dodongo Cavern Heart Lizalfos Room"
     },
     {
       "coords": [677, 339],
       "image": "heart",
-      "codes": ["OOT MQ Dodongo Cavern Heart Vanilla Bomb Bag Room"]
+      "codes": "OOT MQ Dodongo Cavern Heart Vanilla Bomb Bag Room"
     },
     {
       "coords": [227, 304],
       "image": "pot",
-      "codes": ["OOT MQ Dodongo Cavern Pot Stairs 4"]
+      "codes": "OOT MQ Dodongo Cavern Pot Stairs 4"
     },
     {
       "coords": [257, 304],
       "image": "pot",
-      "codes": ["OOT MQ Dodongo Cavern Pot Stairs 1"]
+      "codes": "OOT MQ Dodongo Cavern Pot Stairs 1"
     },
     {
       "coords": [227, 332],
       "image": "pot",
-      "codes": ["OOT MQ Dodongo Cavern Pot Stairs 3"]
+      "codes": "OOT MQ Dodongo Cavern Pot Stairs 3"
     },
     {
       "coords": [257, 333],
       "image": "pot",
-      "codes": ["OOT MQ Dodongo Cavern Pot Stairs 2"]
+      "codes": "OOT MQ Dodongo Cavern Pot Stairs 2"
     },
     {
       "coords": [304, 275],
       "image": "pot",
-      "codes": ["OOT MQ Dodongo Cavern Pot Before Boss 1"]
+      "codes": "OOT MQ Dodongo Cavern Pot Before Boss 1"
     },
     {
       "coords": [323, 258],
       "image": "pot",
-      "codes": ["OOT MQ Dodongo Cavern Pot Before Boss 2"]
+      "codes": "OOT MQ Dodongo Cavern Pot Before Boss 2"
     },
     {
       "coords": [347, 234],
@@ -479,22 +434,22 @@
     {
       "coords": [655, 323],
       "image": "pot",
-      "codes": ["OOT MQ Dodongo Cavern Pot Vanilla Bomb Bag Room 2"]
+      "codes": "OOT MQ Dodongo Cavern Pot Vanilla Bomb Bag Room 2"
     },
     {
       "coords": [676, 347],
       "image": "pot",
-      "codes": ["OOT MQ Dodongo Cavern Pot Vanilla Bomb Bag Room 1"]
+      "codes": "OOT MQ Dodongo Cavern Pot Vanilla Bomb Bag Room 1"
     },
     {
       "coords": [700, 359],
       "image": "pot",
-      "codes": ["OOT MQ Dodongo Cavern Pot Before Miniboss 1"]
+      "codes": "OOT MQ Dodongo Cavern Pot Before Miniboss 1"
     },
     {
       "coords": [717, 374],
       "image": "pot",
-      "codes": ["OOT MQ Dodongo Cavern Pot Before Miniboss 2"]
+      "codes": "OOT MQ Dodongo Cavern Pot Before Miniboss 2"
     },
     {
       "coords": [722, 342],
@@ -523,12 +478,12 @@
     {
       "coords": [235, 304],
       "image": "crate",
-      "codes": ["OOT MQ Dodongo Cavern Staircase Room Lower Large Crate 1"]
+      "codes": "OOT MQ Dodongo Cavern Staircase Room Lower Large Crate 1"
     },
     {
       "coords": [248, 304],
       "image": "crate",
-      "codes": ["OOT MQ Dodongo Cavern Staircase Room Lower Large Crate 2"]
+      "codes": "OOT MQ Dodongo Cavern Staircase Room Lower Large Crate 2"
     },
     {
       "coords": [376, 333],
@@ -547,22 +502,22 @@
     {
       "coords": [526, 334],
       "image": "crate",
-      "codes": ["OOT MQ Dodongo Cavern Staircase Room Upper Large Crate 2"]
+      "codes": "OOT MQ Dodongo Cavern Staircase Room Upper Large Crate 2"
     },
     {
       "coords": [526, 303],
       "image": "crate",
-      "codes": ["OOT MQ Dodongo Cavern Staircase Room Upper Large Crate 1"]
+      "codes": "OOT MQ Dodongo Cavern Staircase Room Upper Large Crate 1"
     },
     {
       "coords": [558, 303],
       "image": "crate",
-      "codes": ["OOT MQ Dodongo Cavern Staircase Room Upper Large Crate 4"]
+      "codes": "OOT MQ Dodongo Cavern Staircase Room Upper Large Crate 4"
     },
     {
       "coords": [558, 334],
       "image": "crate",
-      "codes": ["OOT MQ Dodongo Cavern Staircase Room Upper Large Crate 3"]
+      "codes": "OOT MQ Dodongo Cavern Staircase Room Upper Large Crate 3"
     },
     {
       "coords": [662, 303],
@@ -579,22 +534,22 @@
     {
       "coords": [700, 343],
       "image": "crate",
-      "codes": ["OOT MQ Dodongo Cavern Room After Upper Lizalfos Large Crate 2"]
+      "codes": "OOT MQ Dodongo Cavern Room After Upper Lizalfos Large Crate 2"
     },
     {
       "coords": [722, 333],
       "image": "crate",
-      "codes": ["OOT MQ Dodongo Cavern Room After Upper Lizalfos Large Crate 1"]
+      "codes": "OOT MQ Dodongo Cavern Room After Upper Lizalfos Large Crate 1"
     },
     {
       "coords": [348, 194],
       "image": "grass",
-      "codes": ["OOT MQ Dodongo Cavern Grass Boss Loop Side Room"]
+      "codes": "OOT MQ Dodongo Cavern Grass Boss Loop Side Room"
     },
     {
       "coords": [373, 224],
       "image": "grass",
-      "codes": ["OOT MQ Dodongo Cavern Grass Boss Loop"]
+      "codes": "OOT MQ Dodongo Cavern Grass Boss Loop"
     },
     {
       "coords": [400, 250],
@@ -618,18 +573,18 @@
       "coords": [669, 326],
       "image": "grass",
       "overlays": ["broken"],
-      "codes": ["OOT MQ Dodongo Cavern Grass Vanilla Bomb Bag Room"]
+      "codes": "OOT MQ Dodongo Cavern Grass Vanilla Bomb Bag Room"
     },
     {
       "coords": [719, 358],
       "image": "grass",
       "overlays": ["broken"],
-      "codes": ["OOT MQ Dodongo Cavern Grass Room Before Miniboss"]
+      "codes": "OOT MQ Dodongo Cavern Grass Room Before Miniboss"
     },
     {
       "coords": [278, 337],
       "image": "gossip_stone",
-      "codes": ["OOT Dodongo Cavern Gossip"]
+      "codes": "OOT Dodongo Cavern Gossip"
     }
   ]
 }

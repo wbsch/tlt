@@ -49,16 +49,6 @@
       "codes": "OOT Shadow Temple Invisible Floormaster"
     },
     {
-      "coords": [291, 494],
-      "image": "shadow_medallion",
-      "codes": "OOT Shadow Temple Boss"
-    },
-    {
-      "coords": [307, 494],
-      "image": "heart_container",
-      "codes": "OOT Shadow Temple Boss HC"
-    },
-    {
       "coords": [353, 492],
       "image": "collectible",
       "codes": "OOT Shadow Temple Skull"
@@ -314,137 +304,142 @@
     {
       "coords": [445, 156],
       "image": "chest",
-      "codes": ["OOT MQ Shadow Temple Map Chest"]
+      "codes": "OOT MQ Shadow Temple Map Chest"
     },
     {
       "coords": [425, 212],
       "image": "chest",
-      "codes": ["OOT MQ Shadow Temple First Gibdos Chest"]
+      "codes": "OOT MQ Shadow Temple First Gibdos Chest"
     },
     {
       "coords": [584, 171],
       "image": "chest",
-      "codes": ["OOT MQ Shadow Temple Hover Boots Chest"]
+      "codes": "OOT MQ Shadow Temple Hover Boots Chest"
     },
     {
       "coords": [626, 150],
       "image": "chest",
-      "codes": ["OOT MQ Shadow Temple Compass Chest"]
+      "codes": "OOT MQ Shadow Temple Compass Chest"
     },
     {
       "coords": [640, 492],
       "image": "chest",
-      "codes": ["OOT MQ Shadow Temple Stalfos Room Chest"]
+      "codes": "OOT MQ Shadow Temple Stalfos Room Chest"
     },
     {
       "coords": [788, 519],
       "image": "chest",
-      "codes": ["OOT MQ Shadow Temple Second Silver Rupee Visible Chest"]
+      "codes": "OOT MQ Shadow Temple Second Silver Rupee Visible Chest"
     },
     {
       "coords": [788, 533],
       "image": "chest",
-      "codes": ["OOT MQ Shadow Temple Second Silver Rupee Invisible Chest"]
+      "codes": "OOT MQ Shadow Temple Second Silver Rupee Invisible Chest"
     },
     {
       "coords": [304, 578],
       "image": "chest",
-      "codes": ["OOT MQ Shadow Temple Spike Curtain Upper Cage Chest"]
+      "codes": "OOT MQ Shadow Temple Spike Curtain Upper Cage Chest"
     },
     {
       "coords": [320, 562],
       "image": "chest",
-      "codes": ["OOT MQ Shadow Temple Spike Curtain Ground Chest"]
+      "codes": "OOT MQ Shadow Temple Spike Curtain Ground Chest"
     },
     {
       "coords": [336, 562],
       "image": "chest",
-      "codes": ["OOT MQ Shadow Temple Spike Curtain Upper Switch Chest"]
+      "codes": "OOT MQ Shadow Temple Spike Curtain Upper Switch Chest"
     },
     {
       "coords": [383, 572],
       "image": "chest",
-      "codes": ["OOT MQ Shadow Temple Huge Pit Silver Rupee Chest"]
+      "codes": "OOT MQ Shadow Temple Huge Pit Silver Rupee Chest"
     },
     {
       "coords": [386, 492],
       "image": "chest",
-      "codes": ["OOT MQ Shadow Temple Invisible Spike Floor Chest"]
+      "codes": "OOT MQ Shadow Temple Invisible Spike Floor Chest"
     },
     {
       "coords": [486, 450],
       "image": "chest",
-      "codes": ["OOT MQ Shadow Temple Wind Hint Chest"]
+      "codes": "OOT MQ Shadow Temple Wind Hint Chest"
     },
     {
       "coords": [439, 411],
       "image": "chest",
-      "codes": ["OOT MQ Shadow Temple Boat Passage Chest"]
+      "codes": "OOT MQ Shadow Temple Boat Passage Chest"
     },
     {
       "coords": [461, 410],
       "image": "chest",
-      "codes": ["OOT MQ Shadow Temple After Wind Gibdos Chest"]
+      "codes": "OOT MQ Shadow Temple After Wind Gibdos Chest"
     },
     {
       "coords": [465, 424],
       "image": "chest",
-      "codes": ["OOT MQ Shadow Temple After Wind Bomb Chest"]
+      "codes": "OOT MQ Shadow Temple After Wind Bomb Chest"
     },
     {
       "coords": [251, 373],
       "image": "chest",
-      "codes": ["OOT MQ Shadow Temple Crushing Wall Left Chest"]
+      "codes": "OOT MQ Shadow Temple Crushing Wall Left Chest"
     },
     {
       "coords": [275, 373],
       "image": "chest",
-      "codes": ["OOT MQ Shadow Temple Boss Key Chest"]
+      "codes": "OOT MQ Shadow Temple Boss Key Chest"
     },
     {
       "coords": [224, 411],
       "image": "collectible",
-      "codes": ["OOT MQ Shadow Temple Triple Pot Key"]
+      "codes": "OOT MQ Shadow Temple Triple Pot Key"
+    },
+    {
+      "coords": [235, 411],
+      "image": "wonder_item_arrows",
+      "codes": "OOT MQ Shadow Temple Wonder Item"
     },
     {
       "coords": [263, 454],
       "image": "chest",
-      "codes": ["OOT MQ Shadow Temple Hidden Dead Hand Chest"]
+      "codes": "OOT MQ Shadow Temple Hidden Dead Hand Chest"
     },
     {
       "coords": [307, 494],
       "image": "heart_container",
-      "codes": ["OOT Shadow Temple Boss HC"]
+      "codes": "OOT Shadow Temple Boss HC"
     },
     {
       "coords": [291, 494],
       "image": "shadow_medallion",
-      "codes": ["OOT Shadow Temple Boss"]
+      "codes": "OOT Shadow Temple Boss"
     },
     {
       "coords": [494, 444],
       "image": "gold_skulltula",
-      "codes": ["OOT MQ Shadow Temple GS Wind Hint"]
+      "codes": "OOT MQ Shadow Temple GS Wind Hint"
     },
     {
       "coords": [455, 405],
       "image": "gold_skulltula",
-      "codes": ["OOT MQ Shadow Temple GS After Wind Bomb"]
+      "codes": "OOT MQ Shadow Temple GS After Wind Bomb"
     },
     {
       "coords": [313, 422],
       "image": "gold_skulltula",
-      "codes": ["OOT MQ Shadow Temple GS After Boat"]
+      "codes": "OOT MQ Shadow Temple GS After Boat"
     },
     {
       "coords": [290, 471],
       "image": "gold_skulltula",
-      "codes": ["OOT MQ Shadow Temple GS Pre-Boss"]
+      "codes": "OOT MQ Shadow Temple GS Pre-Boss"
     },
     {
       "coords": [321, 578],
       "image": "gold_skulltula",
-      "codes": ["OOT MQ Shadow Temple GS Spike Curtain"]
+      "codes": "OOT MQ Shadow Temple GS Spike Curtain"
     },
     {
       "coords": [769, 525],
@@ -458,283 +453,75 @@
         "OOT MQ Shadow Temple SR Invisible Blades Ground 6",
         "OOT MQ Shadow Temple SR Invisible Blades Ground 7",
         "OOT MQ Shadow Temple SR Invisible Blades Ground 8",
-        "OOT MQ Shadow Temple SR Invisible Blades Ground 9",
-        "OOT MQ Shadow Temple SR Invisible Blades Time Block"
+        "OOT MQ Shadow Temple SR Invisible Blades Ground 9"
       ]
     },
     {
-      "coords": [769, 525],
+      "coords": [776, 540],
       "image": "silver_rupee",
-      "codes": [
-        "OOT MQ Shadow Temple SR Invisible Blades Ground 1",
-        "OOT MQ Shadow Temple SR Invisible Blades Ground 2",
-        "OOT MQ Shadow Temple SR Invisible Blades Ground 3",
-        "OOT MQ Shadow Temple SR Invisible Blades Ground 4",
-        "OOT MQ Shadow Temple SR Invisible Blades Ground 5",
-        "OOT MQ Shadow Temple SR Invisible Blades Ground 6",
-        "OOT MQ Shadow Temple SR Invisible Blades Ground 7",
-        "OOT MQ Shadow Temple SR Invisible Blades Ground 8",
-        "OOT MQ Shadow Temple SR Invisible Blades Ground 9",
-        "OOT MQ Shadow Temple SR Invisible Blades Time Block"
-      ]
+      "codes": "OOT MQ Shadow Temple SR Invisible Blades Time Block"
     },
     {
-      "coords": [389, 562],
+      "coords": [389, 566],
       "image": "silver_rupee",
-      "codes": [
-        "OOT MQ Shadow Temple SR Pit Back",
-        "OOT MQ Shadow Temple SR Pit Front",
-        "OOT MQ Shadow Temple SR Pit Midair High",
-        "OOT MQ Shadow Temple SR Pit Midair Low",
-        "OOT MQ Shadow Temple SR Pit Right"
-      ]
+      "codes": "OOT MQ Shadow Temple SR Pit Midair Low"
     },
     {
-      "coords": [389, 562],
+      "coords": [389, 555],
       "image": "silver_rupee",
-      "codes": [
-        "OOT MQ Shadow Temple SR Pit Back",
-        "OOT MQ Shadow Temple SR Pit Front",
-        "OOT MQ Shadow Temple SR Pit Midair High",
-        "OOT MQ Shadow Temple SR Pit Midair Low",
-        "OOT MQ Shadow Temple SR Pit Right"
-      ]
+      "codes": "OOT MQ Shadow Temple SR Pit Midair High"
     },
     {
-      "coords": [389, 562],
+      "coords": [399, 562],
       "image": "silver_rupee",
-      "codes": [
-        "OOT MQ Shadow Temple SR Pit Back",
-        "OOT MQ Shadow Temple SR Pit Front",
-        "OOT MQ Shadow Temple SR Pit Midair High",
-        "OOT MQ Shadow Temple SR Pit Midair Low",
-        "OOT MQ Shadow Temple SR Pit Right"
-      ]
+      "codes": "OOT MQ Shadow Temple SR Pit Front"
     },
     {
-      "coords": [389, 562],
+      "coords": [379, 562],
       "image": "silver_rupee",
-      "codes": [
-        "OOT MQ Shadow Temple SR Pit Back",
-        "OOT MQ Shadow Temple SR Pit Front",
-        "OOT MQ Shadow Temple SR Pit Midair High",
-        "OOT MQ Shadow Temple SR Pit Midair Low",
-        "OOT MQ Shadow Temple SR Pit Right"
-      ]
+      "codes": "OOT MQ Shadow Temple SR Pit Back"
     },
     {
-      "coords": [389, 562],
+      "coords": [389, 546],
+      "image": "silver_rupee",
+      "codes": "OOT MQ Shadow Temple SR Pit Right"
+    },
+    {
+      "coords": [386, 479],
       "image": "silver_rupee",
       "codes": [
-        "OOT MQ Shadow Temple SR Pit Back",
-        "OOT MQ Shadow Temple SR Pit Front",
-        "OOT MQ Shadow Temple SR Pit Midair High",
-        "OOT MQ Shadow Temple SR Pit Midair Low",
-        "OOT MQ Shadow Temple SR Pit Right"
+        "OOT MQ Shadow Temple SR Spikes Ceiling",
+        "OOT MQ Shadow Temple SR Spikes Center Midair",
+        "OOT MQ Shadow Temple SR Spikes South Midair"
       ]
     },
     {
       "coords": [397, 488],
       "image": "silver_rupee",
+      "codes": "OOT MQ Shadow Temple SR Spikes Northeast Wall"
+    },
+    {
+      "coords": [376, 484],
+      "image": "silver_rupee",
       "codes": [
-        "OOT MQ Shadow Temple SR Spikes Ceiling",
-        "OOT MQ Shadow Temple SR Spikes Center Ground",
-        "OOT MQ Shadow Temple SR Spikes Center Midair",
-        "OOT MQ Shadow Temple SR Spikes East Ground",
-        "OOT MQ Shadow Temple SR Spikes East Wall",
-        "OOT MQ Shadow Temple SR Spikes Northeast Wall",
         "OOT MQ Shadow Temple SR Spikes Northwest Corner",
-        "OOT MQ Shadow Temple SR Spikes South Midair",
-        "OOT MQ Shadow Temple SR Spikes Southwest Wall",
         "OOT MQ Shadow Temple SR Spikes West Midair"
       ]
     },
     {
-      "coords": [397, 488],
+      "coords": [376, 498],
       "image": "silver_rupee",
       "codes": [
-        "OOT MQ Shadow Temple SR Spikes Ceiling",
-        "OOT MQ Shadow Temple SR Spikes Center Ground",
-        "OOT MQ Shadow Temple SR Spikes Center Midair",
-        "OOT MQ Shadow Temple SR Spikes East Ground",
         "OOT MQ Shadow Temple SR Spikes East Wall",
-        "OOT MQ Shadow Temple SR Spikes Northeast Wall",
-        "OOT MQ Shadow Temple SR Spikes Northwest Corner",
-        "OOT MQ Shadow Temple SR Spikes South Midair",
-        "OOT MQ Shadow Temple SR Spikes Southwest Wall",
-        "OOT MQ Shadow Temple SR Spikes West Midair"
+        "OOT MQ Shadow Temple SR Spikes Southwest Wall"
       ]
     },
     {
-      "coords": [397, 488],
+      "coords": [386, 502],
       "image": "silver_rupee",
       "codes": [
-        "OOT MQ Shadow Temple SR Spikes Ceiling",
         "OOT MQ Shadow Temple SR Spikes Center Ground",
-        "OOT MQ Shadow Temple SR Spikes Center Midair",
-        "OOT MQ Shadow Temple SR Spikes East Ground",
-        "OOT MQ Shadow Temple SR Spikes East Wall",
-        "OOT MQ Shadow Temple SR Spikes Northeast Wall",
-        "OOT MQ Shadow Temple SR Spikes Northwest Corner",
-        "OOT MQ Shadow Temple SR Spikes South Midair",
-        "OOT MQ Shadow Temple SR Spikes Southwest Wall",
-        "OOT MQ Shadow Temple SR Spikes West Midair"
-      ]
-    },
-    {
-      "coords": [397, 488],
-      "image": "silver_rupee",
-      "codes": [
-        "OOT MQ Shadow Temple SR Spikes Ceiling",
-        "OOT MQ Shadow Temple SR Spikes Center Ground",
-        "OOT MQ Shadow Temple SR Spikes Center Midair",
-        "OOT MQ Shadow Temple SR Spikes East Ground",
-        "OOT MQ Shadow Temple SR Spikes East Wall",
-        "OOT MQ Shadow Temple SR Spikes Northeast Wall",
-        "OOT MQ Shadow Temple SR Spikes Northwest Corner",
-        "OOT MQ Shadow Temple SR Spikes South Midair",
-        "OOT MQ Shadow Temple SR Spikes Southwest Wall",
-        "OOT MQ Shadow Temple SR Spikes West Midair"
-      ]
-    },
-    {
-      "coords": [397, 488],
-      "image": "silver_rupee",
-      "codes": [
-        "OOT MQ Shadow Temple SR Spikes Ceiling",
-        "OOT MQ Shadow Temple SR Spikes Center Ground",
-        "OOT MQ Shadow Temple SR Spikes Center Midair",
-        "OOT MQ Shadow Temple SR Spikes East Ground",
-        "OOT MQ Shadow Temple SR Spikes East Wall",
-        "OOT MQ Shadow Temple SR Spikes Northeast Wall",
-        "OOT MQ Shadow Temple SR Spikes Northwest Corner",
-        "OOT MQ Shadow Temple SR Spikes South Midair",
-        "OOT MQ Shadow Temple SR Spikes Southwest Wall",
-        "OOT MQ Shadow Temple SR Spikes West Midair"
-      ]
-    },
-    {
-      "coords": [397, 488],
-      "image": "silver_rupee",
-      "codes": [
-        "OOT MQ Shadow Temple SR Spikes Ceiling",
-        "OOT MQ Shadow Temple SR Spikes Center Ground",
-        "OOT MQ Shadow Temple SR Spikes Center Midair",
-        "OOT MQ Shadow Temple SR Spikes East Ground",
-        "OOT MQ Shadow Temple SR Spikes East Wall",
-        "OOT MQ Shadow Temple SR Spikes Northeast Wall",
-        "OOT MQ Shadow Temple SR Spikes Northwest Corner",
-        "OOT MQ Shadow Temple SR Spikes South Midair",
-        "OOT MQ Shadow Temple SR Spikes Southwest Wall",
-        "OOT MQ Shadow Temple SR Spikes West Midair"
-      ]
-    },
-    {
-      "coords": [397, 488],
-      "image": "silver_rupee",
-      "codes": [
-        "OOT MQ Shadow Temple SR Spikes Ceiling",
-        "OOT MQ Shadow Temple SR Spikes Center Ground",
-        "OOT MQ Shadow Temple SR Spikes Center Midair",
-        "OOT MQ Shadow Temple SR Spikes East Ground",
-        "OOT MQ Shadow Temple SR Spikes East Wall",
-        "OOT MQ Shadow Temple SR Spikes Northeast Wall",
-        "OOT MQ Shadow Temple SR Spikes Northwest Corner",
-        "OOT MQ Shadow Temple SR Spikes South Midair",
-        "OOT MQ Shadow Temple SR Spikes Southwest Wall",
-        "OOT MQ Shadow Temple SR Spikes West Midair"
-      ]
-    },
-    {
-      "coords": [397, 488],
-      "image": "silver_rupee",
-      "codes": [
-        "OOT MQ Shadow Temple SR Spikes Ceiling",
-        "OOT MQ Shadow Temple SR Spikes Center Ground",
-        "OOT MQ Shadow Temple SR Spikes Center Midair",
-        "OOT MQ Shadow Temple SR Spikes East Ground",
-        "OOT MQ Shadow Temple SR Spikes East Wall",
-        "OOT MQ Shadow Temple SR Spikes Northeast Wall",
-        "OOT MQ Shadow Temple SR Spikes Northwest Corner",
-        "OOT MQ Shadow Temple SR Spikes South Midair",
-        "OOT MQ Shadow Temple SR Spikes Southwest Wall",
-        "OOT MQ Shadow Temple SR Spikes West Midair"
-      ]
-    },
-    {
-      "coords": [397, 488],
-      "image": "silver_rupee",
-      "codes": [
-        "OOT MQ Shadow Temple SR Spikes Ceiling",
-        "OOT MQ Shadow Temple SR Spikes Center Ground",
-        "OOT MQ Shadow Temple SR Spikes Center Midair",
-        "OOT MQ Shadow Temple SR Spikes East Ground",
-        "OOT MQ Shadow Temple SR Spikes East Wall",
-        "OOT MQ Shadow Temple SR Spikes Northeast Wall",
-        "OOT MQ Shadow Temple SR Spikes Northwest Corner",
-        "OOT MQ Shadow Temple SR Spikes South Midair",
-        "OOT MQ Shadow Temple SR Spikes Southwest Wall",
-        "OOT MQ Shadow Temple SR Spikes West Midair"
-      ]
-    },
-    {
-      "coords": [397, 488],
-      "image": "silver_rupee",
-      "codes": [
-        "OOT MQ Shadow Temple SR Spikes Ceiling",
-        "OOT MQ Shadow Temple SR Spikes Center Ground",
-        "OOT MQ Shadow Temple SR Spikes Center Midair",
-        "OOT MQ Shadow Temple SR Spikes East Ground",
-        "OOT MQ Shadow Temple SR Spikes East Wall",
-        "OOT MQ Shadow Temple SR Spikes Northeast Wall",
-        "OOT MQ Shadow Temple SR Spikes Northwest Corner",
-        "OOT MQ Shadow Temple SR Spikes South Midair",
-        "OOT MQ Shadow Temple SR Spikes Southwest Wall",
-        "OOT MQ Shadow Temple SR Spikes West Midair"
-      ]
-    },
-    {
-      "coords": [426, 152],
-      "image": "silver_rupee",
-      "codes": [
-        "OOT MQ Shadow Temple SR Scythe 1",
-        "OOT MQ Shadow Temple SR Scythe 2",
-        "OOT MQ Shadow Temple SR Scythe 3",
-        "OOT MQ Shadow Temple SR Scythe 4",
-        "OOT MQ Shadow Temple SR Scythe 5"
-      ]
-    },
-    {
-      "coords": [426, 152],
-      "image": "silver_rupee",
-      "codes": [
-        "OOT MQ Shadow Temple SR Scythe 1",
-        "OOT MQ Shadow Temple SR Scythe 2",
-        "OOT MQ Shadow Temple SR Scythe 3",
-        "OOT MQ Shadow Temple SR Scythe 4",
-        "OOT MQ Shadow Temple SR Scythe 5"
-      ]
-    },
-    {
-      "coords": [426, 152],
-      "image": "silver_rupee",
-      "codes": [
-        "OOT MQ Shadow Temple SR Scythe 1",
-        "OOT MQ Shadow Temple SR Scythe 2",
-        "OOT MQ Shadow Temple SR Scythe 3",
-        "OOT MQ Shadow Temple SR Scythe 4",
-        "OOT MQ Shadow Temple SR Scythe 5"
-      ]
-    },
-    {
-      "coords": [426, 152],
-      "image": "silver_rupee",
-      "codes": [
-        "OOT MQ Shadow Temple SR Scythe 1",
-        "OOT MQ Shadow Temple SR Scythe 2",
-        "OOT MQ Shadow Temple SR Scythe 3",
-        "OOT MQ Shadow Temple SR Scythe 4",
-        "OOT MQ Shadow Temple SR Scythe 5"
+        "OOT MQ Shadow Temple SR Spikes East Ground"
       ]
     },
     {
@@ -775,7 +562,7 @@
     {
       "coords": [299, 428],
       "image": "heart",
-      "codes": ["OOT MQ Shadow Temple Heart Pre-Boss Lower"]
+      "codes": "OOT MQ Shadow Temple Heart Pre-Boss Lower"
     },
     {
       "coords": [634, 150],
@@ -844,7 +631,7 @@
     {
       "coords": [263, 372],
       "image": "pot",
-      "codes": ["OOT MQ Shadow Temple Pot Boss Key Room"]
+      "codes": "OOT MQ Shadow Temple Pot Boss Key Room"
     },
     {
       "coords": [300, 410],
@@ -883,17 +670,17 @@
     {
       "coords": [425, 180],
       "image": "big_fairy_spot",
-      "codes": ["OOT MQ Shadow Temple Beamos Big Fairy"]
+      "codes": "OOT MQ Shadow Temple Beamos Big Fairy"
     },
     {
       "coords": [478, 439],
       "image": "big_fairy_spot",
-      "codes": ["OOT MQ Shadow Temple Big Fairy After Wind"]
+      "codes": "OOT MQ Shadow Temple Big Fairy After Wind"
     },
     {
       "coords": [715, 562],
       "image": "big_fairy_spot",
-      "codes": ["OOT MQ Shadow Temple Guillotines Room Big Fairy"]
+      "codes": "OOT MQ Shadow Temple Guillotines Room Big Fairy"
     },
     {
       "coords": [235, 411],

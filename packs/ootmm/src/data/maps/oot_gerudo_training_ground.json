@@ -197,87 +197,87 @@
     {
       "coords": [399, 179],
       "image": "chest",
-      "codes": ["OOT MQ Gerudo Training Grounds Silver Block Room Chest"]
+      "codes": "OOT MQ Gerudo Training Grounds Silver Block Room Chest"
     },
     {
       "coords": [413, 239],
       "image": "chest",
-      "codes": ["OOT MQ Gerudo Training Grounds Stalfos Room Chest"]
+      "codes": "OOT MQ Gerudo Training Grounds Stalfos Room Chest"
     },
     {
       "coords": [480, 219],
       "image": "chest",
-      "codes": ["OOT MQ Gerudo Training Grounds Spinning Statue Chest"]
+      "codes": "OOT MQ Gerudo Training Grounds Spinning Statue Chest"
     },
     {
       "coords": [565, 233],
       "image": "chest",
-      "codes": ["OOT MQ Gerudo Training Grounds Torch Slug Room Clear Chest"]
+      "codes": "OOT MQ Gerudo Training Grounds Torch Slug Room Clear Chest"
     },
     {
       "coords": [565, 251],
       "image": "chest",
-      "codes": ["OOT MQ Gerudo Training Grounds Torch Slug Room Switch Chest"]
+      "codes": "OOT MQ Gerudo Training Grounds Torch Slug Room Switch Chest"
     },
     {
       "coords": [603, 310],
       "image": "chest",
-      "codes": ["OOT MQ Gerudo Training Grounds Water Room Chest"]
+      "codes": "OOT MQ Gerudo Training Grounds Water Room Chest"
     },
     {
       "coords": [567, 390],
       "image": "chest",
-      "codes": ["OOT MQ Gerudo Training Grounds Right Side Dinolfos Chest"]
+      "codes": "OOT MQ Gerudo Training Grounds Right Side Dinolfos Chest"
     },
     {
       "coords": [496, 377],
       "image": "chest",
-      "codes": ["OOT MQ Gerudo Training Grounds Entryway Right Chest"]
+      "codes": "OOT MQ Gerudo Training Grounds Entryway Right Chest"
     },
     {
       "coords": [468, 377],
       "image": "chest",
-      "codes": ["OOT MQ Gerudo Training Grounds Entryway Left Chest"]
+      "codes": "OOT MQ Gerudo Training Grounds Entryway Left Chest"
     },
     {
       "coords": [387, 374],
       "image": "chest",
-      "codes": ["OOT MQ Gerudo Training Grounds Left Side Iron Knuckle Chest"]
+      "codes": "OOT MQ Gerudo Training Grounds Left Side Iron Knuckle Chest"
     },
     {
       "coords": [468, 332],
       "image": "chest",
-      "codes": ["OOT MQ Gerudo Training Grounds Maze First Chest"]
+      "codes": "OOT MQ Gerudo Training Grounds Maze First Chest"
     },
     {
       "coords": [452, 318],
       "image": "chest",
-      "codes": ["OOT MQ Gerudo Training Grounds Maze Second Chest"]
+      "codes": "OOT MQ Gerudo Training Grounds Maze Second Chest"
     },
     {
       "coords": [459, 290],
       "image": "chest",
-      "codes": ["OOT MQ Gerudo Training Grounds Maze Third Chest"]
+      "codes": "OOT MQ Gerudo Training Grounds Maze Third Chest"
     },
     {
       "coords": [500, 315],
       "image": "chest",
-      "codes": ["OOT MQ Gerudo Training Grounds Maze Right Side Middle Chest"]
+      "codes": "OOT MQ Gerudo Training Grounds Maze Right Side Middle Chest"
     },
     {
       "coords": [508, 301],
       "image": "chest",
-      "codes": ["OOT MQ Gerudo Training Grounds Maze Right Side Right Chest"]
+      "codes": "OOT MQ Gerudo Training Grounds Maze Right Side Right Chest"
     },
     {
       "coords": [475, 290],
       "image": "chest",
-      "codes": ["OOT MQ Gerudo Training Grounds Maze Fourth Chest"]
+      "codes": "OOT MQ Gerudo Training Grounds Maze Fourth Chest"
     },
     {
       "coords": [491, 290],
       "image": "chest",
-      "codes": ["OOT MQ Gerudo Training Grounds Ice Arrows Chest"]
+      "codes": "OOT MQ Gerudo Training Grounds Ice Arrows Chest"
     },
     {
       "coords": [613, 321],
@@ -289,131 +289,59 @@
       ]
     },
     {
-      "coords": [565, 302],
+      "coords": [550, 296],
       "image": "silver_rupee",
-      "codes": [
-        "OOT MQ Gerudo Training Grounds SR Lava Back-Left",
-        "OOT MQ Gerudo Training Grounds SR Lava Back-Right",
-        "OOT MQ Gerudo Training Grounds SR Lava Center",
-        "OOT MQ Gerudo Training Grounds SR Lava Front-Left",
-        "OOT MQ Gerudo Training Grounds SR Lava Front-Right",
-        "OOT MQ Gerudo Training Grounds SR Lava Front"
-      ]
+      "codes": "OOT MQ Gerudo Training Grounds SR Lava Back-Left"
     },
     {
-      "coords": [565, 302],
+      "coords": [578, 292],
       "image": "silver_rupee",
-      "codes": [
-        "OOT MQ Gerudo Training Grounds SR Lava Back-Left",
-        "OOT MQ Gerudo Training Grounds SR Lava Back-Right",
-        "OOT MQ Gerudo Training Grounds SR Lava Center",
-        "OOT MQ Gerudo Training Grounds SR Lava Front-Left",
-        "OOT MQ Gerudo Training Grounds SR Lava Front-Right",
-        "OOT MQ Gerudo Training Grounds SR Lava Front"
-      ]
+      "codes": "OOT MQ Gerudo Training Grounds SR Lava Back-Right"
     },
     {
-      "coords": [565, 302],
+      "coords": [565, 308],
       "image": "silver_rupee",
-      "codes": [
-        "OOT MQ Gerudo Training Grounds SR Lava Back-Left",
-        "OOT MQ Gerudo Training Grounds SR Lava Back-Right",
-        "OOT MQ Gerudo Training Grounds SR Lava Center",
-        "OOT MQ Gerudo Training Grounds SR Lava Front-Left",
-        "OOT MQ Gerudo Training Grounds SR Lava Front-Right",
-        "OOT MQ Gerudo Training Grounds SR Lava Front"
-      ]
+      "codes": "OOT MQ Gerudo Training Grounds SR Lava Center"
     },
     {
-      "coords": [565, 302],
+      "coords": [576, 326],
       "image": "silver_rupee",
-      "codes": [
-        "OOT MQ Gerudo Training Grounds SR Lava Back-Left",
-        "OOT MQ Gerudo Training Grounds SR Lava Back-Right",
-        "OOT MQ Gerudo Training Grounds SR Lava Center",
-        "OOT MQ Gerudo Training Grounds SR Lava Front-Left",
-        "OOT MQ Gerudo Training Grounds SR Lava Front-Right",
-        "OOT MQ Gerudo Training Grounds SR Lava Front"
-      ]
+      "codes": "OOT MQ Gerudo Training Grounds SR Lava Front-Right"
     },
     {
-      "coords": [565, 302],
+      "coords": [565, 332],
       "image": "silver_rupee",
-      "codes": [
-        "OOT MQ Gerudo Training Grounds SR Lava Back-Left",
-        "OOT MQ Gerudo Training Grounds SR Lava Back-Right",
-        "OOT MQ Gerudo Training Grounds SR Lava Center",
-        "OOT MQ Gerudo Training Grounds SR Lava Front-Left",
-        "OOT MQ Gerudo Training Grounds SR Lava Front-Right",
-        "OOT MQ Gerudo Training Grounds SR Lava Front"
-      ]
+      "codes": "OOT MQ Gerudo Training Grounds SR Lava Front"
     },
     {
-      "coords": [565, 302],
+      "coords": [550, 326],
       "image": "silver_rupee",
-      "codes": [
-        "OOT MQ Gerudo Training Grounds SR Lava Back-Left",
-        "OOT MQ Gerudo Training Grounds SR Lava Back-Right",
-        "OOT MQ Gerudo Training Grounds SR Lava Center",
-        "OOT MQ Gerudo Training Grounds SR Lava Front-Left",
-        "OOT MQ Gerudo Training Grounds SR Lava Front-Right",
-        "OOT MQ Gerudo Training Grounds SR Lava Front"
-      ]
+      "codes": "OOT MQ Gerudo Training Grounds SR Lava Front-Left"
     },
     {
-      "coords": [399, 315],
+      "coords": [402, 322],
       "image": "silver_rupee",
-      "codes": [
-        "OOT MQ Gerudo Training Grounds SR Slopes Front-Left",
-        "OOT MQ Gerudo Training Grounds SR Slopes Front-Right",
-        "OOT MQ Gerudo Training Grounds SR Slopes Front",
-        "OOT MQ Gerudo Training Grounds SR Slopes Middle",
-        "OOT MQ Gerudo Training Grounds SR Slopes Top Right"
-      ]
+      "codes": "OOT MQ Gerudo Training Grounds SR Slopes Middle"
     },
     {
-      "coords": [399, 315],
+      "coords": [418, 280],
       "image": "silver_rupee",
-      "codes": [
-        "OOT MQ Gerudo Training Grounds SR Slopes Front-Left",
-        "OOT MQ Gerudo Training Grounds SR Slopes Front-Right",
-        "OOT MQ Gerudo Training Grounds SR Slopes Front",
-        "OOT MQ Gerudo Training Grounds SR Slopes Middle",
-        "OOT MQ Gerudo Training Grounds SR Slopes Top Right"
-      ]
+      "codes": "OOT MQ Gerudo Training Grounds SR Slopes Top Right"
     },
     {
-      "coords": [399, 315],
+      "coords": [378, 346],
       "image": "silver_rupee",
-      "codes": [
-        "OOT MQ Gerudo Training Grounds SR Slopes Front-Left",
-        "OOT MQ Gerudo Training Grounds SR Slopes Front-Right",
-        "OOT MQ Gerudo Training Grounds SR Slopes Front",
-        "OOT MQ Gerudo Training Grounds SR Slopes Middle",
-        "OOT MQ Gerudo Training Grounds SR Slopes Top Right"
-      ]
+      "codes": "OOT MQ Gerudo Training Grounds SR Slopes Front-Left"
     },
     {
-      "coords": [399, 315],
+      "coords": [418, 350],
       "image": "silver_rupee",
-      "codes": [
-        "OOT MQ Gerudo Training Grounds SR Slopes Front-Left",
-        "OOT MQ Gerudo Training Grounds SR Slopes Front-Right",
-        "OOT MQ Gerudo Training Grounds SR Slopes Front",
-        "OOT MQ Gerudo Training Grounds SR Slopes Middle",
-        "OOT MQ Gerudo Training Grounds SR Slopes Top Right"
-      ]
+      "codes": "OOT MQ Gerudo Training Grounds SR Slopes Front-Right"
     },
     {
-      "coords": [399, 315],
+      "coords": [408, 346],
       "image": "silver_rupee",
-      "codes": [
-        "OOT MQ Gerudo Training Grounds SR Slopes Front-Left",
-        "OOT MQ Gerudo Training Grounds SR Slopes Front-Right",
-        "OOT MQ Gerudo Training Grounds SR Slopes Front",
-        "OOT MQ Gerudo Training Grounds SR Slopes Middle",
-        "OOT MQ Gerudo Training Grounds SR Slopes Top Right"
-      ]
+      "codes": "OOT MQ Gerudo Training Grounds SR Slopes Front"
     },
     {
       "coords": [504, 393],
@@ -434,17 +362,17 @@
     {
       "coords": [483, 315],
       "image": "crate",
-      "codes": ["OOT MQ Gerudo Training Grounds Maze Center Room Large Crate"]
+      "codes": "OOT MQ Gerudo Training Grounds Maze Center Room Large Crate"
     },
     {
       "coords": [568, 362],
       "image": "wonder_item_random",
-      "codes": ["OOT MQ Gerudo Training Grounds Wonder Item Dodongo Room Wall"]
+      "codes": "OOT MQ Gerudo Training Grounds Wonder Item Dodongo Room Wall"
     },
     {
       "coords": [480, 249],
       "image": "wonder_item_big_magic_jar",
-      "codes": ["OOT MQ Gerudo Training Grounds Wonder Item Eye Statue"]
+      "codes": "OOT MQ Gerudo Training Grounds Wonder Item Eye Statue"
     },
     {
       "coords": [417, 286],

@@ -21,16 +21,6 @@
       "codes": "OOT Jabu-Jabu Boomerang Chest"
     },
     {
-      "coords": [399, 304],
-      "image": "heart_container",
-      "codes": "OOT Jabu-Jabu Boss Container"
-    },
-    {
-      "coords": [415, 304],
-      "image": "zora_sapphire",
-      "codes": "OOT Jabu-Jabu Boss"
-    },
-    {
       "coords": [404, 349],
       "image": "gold_skulltula",
       "codes": "OOT Jabu-Jabu GS Near Boss"
@@ -62,18 +52,6 @@
         "OOT Jabu-Jabu Pot Big Octo Room 1",
         "OOT Jabu-Jabu Pot Big Octo Room 2",
         "OOT Jabu-Jabu Pot Big Octo Room 3"
-      ]
-    },
-    {
-      "coords": [383, 304],
-      "image": "pot",
-      "codes": [
-        "OOT Jabu-Jabu Boss Pot 1",
-        "OOT Jabu-Jabu Boss Pot 2",
-        "OOT Jabu-Jabu Boss Pot 3",
-        "OOT Jabu-Jabu Boss Pot 4",
-        "OOT Jabu-Jabu Boss Pot 5",
-        "OOT Jabu-Jabu Boss Pot 6"
       ]
     },
     {

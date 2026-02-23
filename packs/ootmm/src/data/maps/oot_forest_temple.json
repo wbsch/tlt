@@ -16,16 +16,6 @@
       "codes": "OOT Forest Temple Antichamber"
     },
     {
-      "coords": [645, 385],
-      "image": "heart_container",
-      "codes": "OOT Forest Temple Boss Container"
-    },
-    {
-      "coords": [661, 385],
-      "image": "forest_medallion",
-      "codes": "OOT Forest Temple Boss"
-    },
-    {
       "coords": [642, 297],
       "image": "chest",
       "codes": "OOT Forest Temple Tree Small Key"

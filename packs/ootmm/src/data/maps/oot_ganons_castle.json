@@ -227,30 +227,6 @@
       ]
     },
     {
-      "coords": [512, 293],
-      "image": "pot",
-      "codes": [
-        "OOT Ganon Tower Pot 01",
-        "OOT Ganon Tower Pot 02",
-        "OOT Ganon Tower Pot 03",
-        "OOT Ganon Tower Pot 04",
-        "OOT Ganon Tower Pot 05",
-        "OOT Ganon Tower Pot 06",
-        "OOT Ganon Tower Pot 07",
-        "OOT Ganon Tower Pot 08",
-        "OOT Ganon Tower Pot 09",
-        "OOT Ganon Tower Pot 10",
-        "OOT Ganon Tower Pot 11",
-        "OOT Ganon Tower Pot 12",
-        "OOT Ganon Tower Pot 13",
-        "OOT Ganon Tower Pot 14",
-        "OOT Ganon Tower Pot 15",
-        "OOT Ganon Tower Pot 16",
-        "OOT Ganon Tower Pot 17",
-        "OOT Ganon Tower Pot 18"
-      ]
-    },
-    {
       "coords": [432, 306],
       "image": "pot",
       "codes": "OOT Ganon Castle Pot Light"
@@ -329,17 +305,17 @@
     {
       "coords": [560, 381],
       "image": "chest",
-      "codes": ["OOT MQ Ganon Castle Forest Trial Second Chest"]
+      "codes": "OOT MQ Ganon Castle Forest Trial Second Chest"
     },
     {
       "coords": [538, 372],
       "image": "chest",
-      "codes": ["OOT MQ Ganon Castle Forest Trial First Chest"]
+      "codes": "OOT MQ Ganon Castle Forest Trial First Chest"
     },
     {
       "coords": [539, 356],
       "image": "collectible",
-      "codes": ["OOT MQ Ganon Castle Forest Trial Key"]
+      "codes": "OOT MQ Ganon Castle Forest Trial Key"
     },
     {
       "coords": [468, 372],
@@ -354,37 +330,32 @@
     {
       "coords": [445, 356],
       "image": "chest",
-      "codes": ["OOT MQ Ganon Castle Spirit Trial Second Chest"]
+      "codes": "OOT MQ Ganon Castle Spirit Trial Second Chest"
     },
     {
       "coords": [461, 345],
       "image": "chest",
-      "codes": ["OOT MQ Ganon Castle Spirit Trial First Chest"]
+      "codes": "OOT MQ Ganon Castle Spirit Trial First Chest"
     },
     {
       "coords": [552, 297],
       "image": "chest",
-      "codes": ["OOT MQ Ganon Castle Water Trial Chest"]
+      "codes": "OOT MQ Ganon Castle Water Trial Chest"
     },
     {
       "coords": [439, 300],
       "image": "chest",
-      "codes": ["OOT MQ Ganon Castle Light Trial Chest"]
-    },
-    {
-      "coords": [496, 293],
-      "image": "chest",
-      "codes": ["OOT Ganon Castle Boss Key"]
+      "codes": "OOT MQ Ganon Castle Light Trial Chest"
     },
     {
       "coords": [522, 248],
       "image": "chest",
-      "codes": ["OOT MQ Ganon Castle Shadow Trial Bomb Flower Chest"]
+      "codes": "OOT MQ Ganon Castle Shadow Trial Bomb Flower Chest"
     },
     {
       "coords": [560, 229],
       "image": "chest",
-      "codes": ["OOT MQ Ganon Castle Shadow Trial Switch Chest"]
+      "codes": "OOT MQ Ganon Castle Shadow Trial Switch Chest"
     },
     {
       "coords": [504, 345],
@@ -398,174 +369,84 @@
       ]
     },
     {
-      "coords": [593, 307],
+      "coords": [596, 284],
       "image": "silver_rupee",
-      "codes": [
-        "OOT MQ Ganon Castle SR Water Above Ground",
-        "OOT MQ Ganon Castle SR Water Alcove",
-        "OOT MQ Ganon Castle SR Water Deep Hole",
-        "OOT MQ Ganon Castle SR Water Shallow Hole",
-        "OOT MQ Ganon Castle SR Water Under Alcove"
-      ]
+      "codes": "OOT MQ Ganon Castle SR Water Alcove"
+    },
+    {
+      "coords": [593, 296],
+      "image": "silver_rupee",
+      "codes": "OOT MQ Ganon Castle SR Water Under Alcove"
+    },
+    {
+      "coords": [600, 316],
+      "image": "silver_rupee",
+      "codes": "OOT MQ Ganon Castle SR Water Deep Hole"
+    },
+    {
+      "coords": [600, 302],
+      "image": "silver_rupee",
+      "codes": "OOT MQ Ganon Castle SR Water Above Ground"
     },
     {
       "coords": [593, 307],
       "image": "silver_rupee",
-      "codes": [
-        "OOT MQ Ganon Castle SR Water Above Ground",
-        "OOT MQ Ganon Castle SR Water Alcove",
-        "OOT MQ Ganon Castle SR Water Deep Hole",
-        "OOT MQ Ganon Castle SR Water Shallow Hole",
-        "OOT MQ Ganon Castle SR Water Under Alcove"
-      ]
+      "codes": "OOT MQ Ganon Castle SR Water Shallow Hole"
     },
     {
-      "coords": [593, 307],
+      "coords": [546, 210],
       "image": "silver_rupee",
-      "codes": [
-        "OOT MQ Ganon Castle SR Water Above Ground",
-        "OOT MQ Ganon Castle SR Water Alcove",
-        "OOT MQ Ganon Castle SR Water Deep Hole",
-        "OOT MQ Ganon Castle SR Water Shallow Hole",
-        "OOT MQ Ganon Castle SR Water Under Alcove"
-      ]
+      "codes": "OOT MQ Ganon Castle SR Shadow Back-Left"
     },
     {
-      "coords": [593, 307],
+      "coords": [562, 204],
       "image": "silver_rupee",
-      "codes": [
-        "OOT MQ Ganon Castle SR Water Above Ground",
-        "OOT MQ Ganon Castle SR Water Alcove",
-        "OOT MQ Ganon Castle SR Water Deep Hole",
-        "OOT MQ Ganon Castle SR Water Shallow Hole",
-        "OOT MQ Ganon Castle SR Water Under Alcove"
-      ]
+      "codes": "OOT MQ Ganon Castle SR Shadow Back-Center"
     },
     {
-      "coords": [593, 307],
+      "coords": [550, 230],
       "image": "silver_rupee",
-      "codes": [
-        "OOT MQ Ganon Castle SR Water Above Ground",
-        "OOT MQ Ganon Castle SR Water Alcove",
-        "OOT MQ Ganon Castle SR Water Deep Hole",
-        "OOT MQ Ganon Castle SR Water Shallow Hole",
-        "OOT MQ Ganon Castle SR Water Under Alcove"
-      ]
+      "codes": "OOT MQ Ganon Castle SR Shadow Middle"
     },
     {
-      "coords": [560, 210],
+      "coords": [540, 240],
       "image": "silver_rupee",
-      "codes": [
-        "OOT MQ Ganon Castle SR Shadow Back-Center",
-        "OOT MQ Ganon Castle SR Shadow Back-Left",
-        "OOT MQ Ganon Castle SR Shadow Front-Center",
-        "OOT MQ Ganon Castle SR Shadow Front-Right",
-        "OOT MQ Ganon Castle SR Shadow Middle"
-      ]
+      "codes": "OOT MQ Ganon Castle SR Shadow Front-Center"
     },
     {
-      "coords": [560, 210],
+      "coords": [548, 252],
       "image": "silver_rupee",
-      "codes": [
-        "OOT MQ Ganon Castle SR Shadow Back-Center",
-        "OOT MQ Ganon Castle SR Shadow Back-Left",
-        "OOT MQ Ganon Castle SR Shadow Front-Center",
-        "OOT MQ Ganon Castle SR Shadow Front-Right",
-        "OOT MQ Ganon Castle SR Shadow Middle"
-      ]
+      "codes": "OOT MQ Ganon Castle SR Shadow Front-Right"
     },
     {
-      "coords": [560, 210],
+      "coords": [474, 226],
       "image": "silver_rupee",
-      "codes": [
-        "OOT MQ Ganon Castle SR Shadow Back-Center",
-        "OOT MQ Ganon Castle SR Shadow Back-Left",
-        "OOT MQ Ganon Castle SR Shadow Front-Center",
-        "OOT MQ Ganon Castle SR Shadow Front-Right",
-        "OOT MQ Ganon Castle SR Shadow Middle"
-      ]
+      "codes": "OOT MQ Ganon Castle SR Fire Under Pillar"
     },
     {
-      "coords": [560, 210],
+      "coords": [442, 230],
       "image": "silver_rupee",
-      "codes": [
-        "OOT MQ Ganon Castle SR Shadow Back-Center",
-        "OOT MQ Ganon Castle SR Shadow Back-Left",
-        "OOT MQ Ganon Castle SR Shadow Front-Center",
-        "OOT MQ Ganon Castle SR Shadow Front-Right",
-        "OOT MQ Ganon Castle SR Shadow Middle"
-      ]
+      "codes": "OOT MQ Ganon Castle SR Fire Back-Left"
     },
     {
-      "coords": [560, 210],
+      "coords": [450, 244],
       "image": "silver_rupee",
-      "codes": [
-        "OOT MQ Ganon Castle SR Shadow Back-Center",
-        "OOT MQ Ganon Castle SR Shadow Back-Left",
-        "OOT MQ Ganon Castle SR Shadow Front-Center",
-        "OOT MQ Ganon Castle SR Shadow Front-Right",
-        "OOT MQ Ganon Castle SR Shadow Middle"
-      ]
+      "codes": "OOT MQ Ganon Castle SR Fire Center-Left"
     },
     {
-      "coords": [472, 252],
+      "coords": [458, 260],
       "image": "silver_rupee",
-      "codes": [
-        "OOT MQ Ganon Castle SR Fire Back-Left",
-        "OOT MQ Ganon Castle SR Fire Center-Left",
-        "OOT MQ Ganon Castle SR Fire Front-Left",
-        "OOT MQ Ganon Castle SR Fire High Above Lava",
-        "OOT MQ Ganon Castle SR Fire Under Pillar"
-      ]
+      "codes": "OOT MQ Ganon Castle SR Fire Front-Left"
     },
     {
-      "coords": [472, 252],
+      "coords": [486, 242],
       "image": "silver_rupee",
-      "codes": [
-        "OOT MQ Ganon Castle SR Fire Back-Left",
-        "OOT MQ Ganon Castle SR Fire Center-Left",
-        "OOT MQ Ganon Castle SR Fire Front-Left",
-        "OOT MQ Ganon Castle SR Fire High Above Lava",
-        "OOT MQ Ganon Castle SR Fire Under Pillar"
-      ]
-    },
-    {
-      "coords": [472, 252],
-      "image": "silver_rupee",
-      "codes": [
-        "OOT MQ Ganon Castle SR Fire Back-Left",
-        "OOT MQ Ganon Castle SR Fire Center-Left",
-        "OOT MQ Ganon Castle SR Fire Front-Left",
-        "OOT MQ Ganon Castle SR Fire High Above Lava",
-        "OOT MQ Ganon Castle SR Fire Under Pillar"
-      ]
-    },
-    {
-      "coords": [472, 252],
-      "image": "silver_rupee",
-      "codes": [
-        "OOT MQ Ganon Castle SR Fire Back-Left",
-        "OOT MQ Ganon Castle SR Fire Center-Left",
-        "OOT MQ Ganon Castle SR Fire Front-Left",
-        "OOT MQ Ganon Castle SR Fire High Above Lava",
-        "OOT MQ Ganon Castle SR Fire Under Pillar"
-      ]
-    },
-    {
-      "coords": [472, 252],
-      "image": "silver_rupee",
-      "codes": [
-        "OOT MQ Ganon Castle SR Fire Back-Left",
-        "OOT MQ Ganon Castle SR Fire Center-Left",
-        "OOT MQ Ganon Castle SR Fire Front-Left",
-        "OOT MQ Ganon Castle SR Fire High Above Lava",
-        "OOT MQ Ganon Castle SR Fire Under Pillar"
-      ]
+      "codes": "OOT MQ Ganon Castle SR Fire High Above Lava"
     },
     {
       "coords": [555, 312],
       "image": "heart",
-      "codes": ["OOT MQ Ganon Castle Heart Water"]
+      "codes": "OOT MQ Ganon Castle Heart Water"
     },
     {
       "coords": [425, 306],
@@ -617,54 +498,45 @@
       "coords": [460, 383],
       "image": "pot",
       "codes": [
-        "OOT Ganon Castle Pot Spirit End 1",
-        "OOT Ganon Castle Pot Spirit End 2"
+        "OOT MQ Ganon Pot Spirit End 1",
+        "OOT MQ Ganon Pot Spirit End 2"
       ]
     },
     {
       "coords": [565, 411],
       "image": "pot",
       "codes": [
-        "OOT Ganon Castle Pot Forest End 1",
-        "OOT Ganon Castle Pot Forest End 2"
+        "OOT MQ Ganon Pot Forest End 1",
+        "OOT MQ Ganon Pot Forest End 2"
       ]
     },
     {
       "coords": [625, 307],
       "image": "pot",
-      "codes": [
-        "OOT Ganon Castle Pot Water End 1",
-        "OOT Ganon Castle Pot Water End 2"
-      ]
+      "codes": ["OOT MQ Ganon Pot Water End 1", "OOT MQ Ganon Pot Water End 2"]
     },
     {
       "coords": [382, 307],
       "image": "pot",
-      "codes": [
-        "OOT Ganon Castle Pot Light End 1",
-        "OOT Ganon Castle Pot Light End 2"
-      ]
+      "codes": ["OOT MQ Ganon Pot Light End 1", "OOT MQ Ganon Pot Light End 2"]
     },
     {
       "coords": [438, 203],
       "image": "pot",
-      "codes": [
-        "OOT Ganon Castle Pot Fire End 1",
-        "OOT Ganon Castle Pot Fire End 2"
-      ]
+      "codes": ["OOT MQ Ganon Pot Fire End 1", "OOT MQ Ganon Pot Fire End 2"]
     },
     {
       "coords": [574, 185],
       "image": "pot",
       "codes": [
-        "OOT Ganon Castle Pot Shadow End 1",
-        "OOT Ganon Castle Pot Shadow End 2"
+        "OOT MQ Ganon Pot Shadow End 1",
+        "OOT MQ Ganon Pot Shadow End 2"
       ]
     },
     {
       "coords": [542, 388],
       "image": "wonder_item_deku_nuts",
-      "codes": ["OOT MQ Ganon Castle Wonder Item"]
+      "codes": "OOT MQ Ganon Castle Wonder Item"
     },
     {
       "coords": [561, 318],
@@ -696,7 +568,7 @@
     {
       "coords": [593, 286],
       "image": "red_ice",
-      "codes": ["OOT MQ Ganon Castle Red Ice Block Silver Rupee Room 1"]
+      "codes": "OOT MQ Ganon Castle Red Ice Block Silver Rupee Room 1"
     },
     {
       "coords": [603, 305],
