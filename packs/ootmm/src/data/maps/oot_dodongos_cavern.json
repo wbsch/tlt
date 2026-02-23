@@ -228,7 +228,7 @@
       "image": "gossip_stone",
       "codes": "OOT Dodongo Cavern Gossip",
       "visibleWhen": {
-        "contains": { "mqDungeons": "DC" }
+        "notContains": { "mqDungeons": "DC" }
       }
     },
     {
@@ -589,7 +589,7 @@
       "image": "gossip_stone",
       "codes": "OOT Dodongo Cavern Gossip",
       "visibleWhen": {
-        "notContains": { "mqDungeons": "DC" }
+        "contains": { "mqDungeons": "DC" }
       }
     }
   ]
