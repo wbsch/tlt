@@ -49,9 +49,12 @@ test.describe('OoTMM smoke', () => {
     await settingInput.setChecked(!initial);
 
     const overlay = page.getByTestId('applying-settings-overlay');
+    const undoButton = page.getByRole('button', { name: /Undo/i });
     await page.getByTestId('apply-settings-button').click();
-    await expect(overlay).toBeVisible({ timeout: 10_000 });
-    await expect(overlay).toBeHidden({ timeout: 10_000 });
+    // Overlay visibility can be very brief; treat "apply finished" as the
+    // stable condition and only assert overlay is not blocking afterwards.
+    await expect(undoButton).toBeEnabled({ timeout: 15_000 });
+    await expect(overlay).toBeHidden({ timeout: 15_000 });
 
     await page.getByTestId('tab-items').click();
     const reachable = await waitForReachableFraction(page, 15_000);
