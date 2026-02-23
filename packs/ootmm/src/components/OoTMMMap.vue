@@ -22,6 +22,7 @@ import {
   stripWorldSuffix,
   useLocationCodeLookup,
 } from '../composables/useLocationCodeLookup';
+import { matchesMapSettingsVisibility } from '../utils/mapSettingsVisibility';
 import type {
   MapDef,
   MapMarkerDef,
@@ -643,6 +644,7 @@ function buildMarkerRenderState(
   codeList: string[],
   overlays: MapMarkerOverlay[],
   countUsesDigits: boolean,
+  visibleWhen: MapMarkerDef['visibleWhen'] | MapSubmenuEntryDef['visibleWhen'],
 ): MarkerRenderState {
   const popupEntries: MapPopupEntry[] = [];
   const resolvedCheckIds = new Set<string>();
@@ -707,6 +709,10 @@ function buildMarkerRenderState(
           .split('')
           .map((digit) => resolveDigitImage(digit))
       : [];
+  const settingsVisible = matchesMapSettingsVisibility(
+    visibleWhen,
+    props.settings,
+  );
 
   return {
     overlays,
@@ -721,7 +727,7 @@ function buildMarkerRenderState(
     bottomLeftOverlays: buildBottomLeftOverlays(overlays),
     topRightOverlays: buildTopRightOverlays(overlays),
     countDigitImages,
-    isVisible: props.devMode ? true : allCheckIds.length > 0,
+    isVisible: props.devMode ? true : settingsVisible && allCheckIds.length > 0,
   };
 }
 
@@ -768,6 +774,7 @@ const markerViewModels = computed<MarkerRuntime[]>(() => {
             codeList,
             submenuOverlays,
             Array.isArray(submenuMarkerDef.codes),
+            submenuMarkerDef.visibleWhen,
           );
           return {
             ...state,
@@ -783,7 +790,7 @@ const markerViewModels = computed<MarkerRuntime[]>(() => {
       const mqSubmenuIndices =
         devMqSubmenuIndicesByMarker.value.get(markerIndex);
       const visibleSubmenuMarkers = props.devMode
-        ? submenuMarkers.filter((marker, submenuIndex) => {
+        ? submenuMarkers.filter((_marker, submenuIndex) => {
             const matchesUnmappedFilter =
               !isDevUnmappedFilterActive ||
               Boolean(unresolvedSubmenuIndices?.has(submenuIndex));
@@ -806,6 +813,10 @@ const markerViewModels = computed<MarkerRuntime[]>(() => {
               .split('')
               .map((digit) => resolveDigitImage(digit))
           : [];
+      const settingsVisible = matchesMapSettingsVisibility(
+        markerDef.visibleWhen,
+        props.settings,
+      );
 
       return {
         type: 'submenu',
@@ -822,7 +833,7 @@ const markerViewModels = computed<MarkerRuntime[]>(() => {
         allSubmenuCodeList: visibleSubmenuMarkers.flatMap(
           (marker) => marker.codeList,
         ),
-        isVisible: visibleSubmenuMarkers.length > 0,
+        isVisible: settingsVisible && visibleSubmenuMarkers.length > 0,
       };
     }
 
@@ -832,6 +843,7 @@ const markerViewModels = computed<MarkerRuntime[]>(() => {
       codeList,
       overlays,
       Array.isArray(markerDef.codes),
+      markerDef.visibleWhen,
     );
     const isDevVisible =
       (!isDevUnmappedFilterActive ||

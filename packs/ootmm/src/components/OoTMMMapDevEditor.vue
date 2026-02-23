@@ -11,6 +11,7 @@ import type {
   MapDef,
   MapMarkerDef,
   MapMarkerOverlay,
+  MapMarkerSettingsVisibility,
   MapSubmenuEntryDef,
 } from '../data/maps/types';
 import {
@@ -83,11 +84,34 @@ let panelDragOffsetY = 0;
 const mapIconNames = [...MAP_ICON_INDEX].sort((a, b) => a.localeCompare(b));
 const mapIconNameSet = new Set<string>(mapIconNames);
 
+function cloneVisibleWhen(
+  value: MapMarkerSettingsVisibility | undefined,
+): MapMarkerSettingsVisibility | undefined {
+  if (!value) return undefined;
+  return {
+    settings: value.settings
+      ? Object.fromEntries(
+          Object.entries(value.settings).map(([key, expected]) => [
+            key,
+            Array.isArray(expected) ? [...expected] : expected,
+          ]),
+        )
+      : undefined,
+    and: value.and?.map(
+      (entry) => cloneVisibleWhen(entry) as MapMarkerSettingsVisibility,
+    ),
+    or: value.or?.map(
+      (entry) => cloneVisibleWhen(entry) as MapMarkerSettingsVisibility,
+    ),
+  };
+}
+
 function cloneSubmenuEntry(entry: MapSubmenuEntryDef): MapSubmenuEntryDef {
   return {
     image: entry.image,
     overlays: entry.overlays ? [...entry.overlays] : undefined,
     codes: Array.isArray(entry.codes) ? [...entry.codes] : entry.codes,
+    visibleWhen: cloneVisibleWhen(entry.visibleWhen),
   };
 }
 
@@ -99,6 +123,7 @@ function cloneMarker(marker: MapMarkerDef): MapMarkerDef {
     overlays: marker.overlays ? [...marker.overlays] : undefined,
     codes: Array.isArray(marker.codes) ? [...marker.codes] : marker.codes,
     markers: marker.markers?.map((entry) => cloneSubmenuEntry(entry)),
+    visibleWhen: cloneVisibleWhen(marker.visibleWhen),
   };
 }
 
@@ -708,6 +733,9 @@ function buildDraftExportMap(): MapDef | null {
       if (marker.overlays && marker.overlays.length > 0) {
         exportMarker.overlays = [...marker.overlays];
       }
+      if (marker.visibleWhen) {
+        exportMarker.visibleWhen = cloneVisibleWhen(marker.visibleWhen);
+      }
       if (marker.type === 'submenu') {
         exportMarker.markers = (marker.markers ?? []).map((submenuMarker) => {
           const codes = (
@@ -723,6 +751,11 @@ function buildDraftExportMap(): MapDef | null {
           };
           if (submenuMarker.overlays && submenuMarker.overlays.length > 0) {
             exportSubmenuMarker.overlays = [...submenuMarker.overlays];
+          }
+          if (submenuMarker.visibleWhen) {
+            exportSubmenuMarker.visibleWhen = cloneVisibleWhen(
+              submenuMarker.visibleWhen,
+            );
           }
           return exportSubmenuMarker;
         });

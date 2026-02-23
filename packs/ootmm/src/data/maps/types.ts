@@ -12,10 +12,25 @@ export type MapMarkerOverlay =
   | 'cursed_state'
   | 'broken';
 
+export type MapMarkerSettingExpectedValue =
+  | string
+  | number
+  | boolean
+  | Array<string | number | boolean>;
+
+export type MapMarkerSettingsVisibility = {
+  settings?: Record<string, MapMarkerSettingExpectedValue>;
+  contains?: Record<string, MapMarkerSettingExpectedValue>;
+  notContains?: Record<string, MapMarkerSettingExpectedValue>;
+  and?: MapMarkerSettingsVisibility[];
+  or?: MapMarkerSettingsVisibility[];
+};
+
 export type MapSubmenuEntryDef = {
   image: string;
   overlays?: MapMarkerOverlay[];
   codes: string | string[];
+  visibleWhen?: MapMarkerSettingsVisibility;
 };
 
 export type MapMarkerDef = {
@@ -25,6 +40,7 @@ export type MapMarkerDef = {
   type?: 'check' | 'submenu';
   codes?: string | string[];
   markers?: MapSubmenuEntryDef[];
+  visibleWhen?: MapMarkerSettingsVisibility;
 };
 
 export type MapDef = {

@@ -197,6 +197,101 @@
       },
       "uniqueItems": true
     },
+    "settingExpectedValuePrimitive": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "number"
+        },
+        {
+          "type": "boolean"
+        }
+      ]
+    },
+    "settingExpectedValue": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/settingExpectedValuePrimitive"
+        },
+        {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/settingExpectedValuePrimitive"
+          },
+          "minItems": 1,
+          "uniqueItems": true
+        }
+      ]
+    },
+    "settingsVisibility": {
+      "type": "object",
+      "additionalProperties": false,
+      "anyOf": [
+        {
+          "required": ["settings"]
+        },
+        {
+          "required": ["contains"]
+        },
+        {
+          "required": ["notContains"]
+        },
+        {
+          "required": ["and"]
+        },
+        {
+          "required": ["or"]
+        }
+      ],
+      "properties": {
+        "settings": {
+          "type": "object",
+          "propertyNames": {
+            "type": "string",
+            "minLength": 1
+          },
+          "additionalProperties": {
+            "$ref": "#/$defs/settingExpectedValue"
+          }
+        },
+        "contains": {
+          "type": "object",
+          "propertyNames": {
+            "type": "string",
+            "minLength": 1
+          },
+          "additionalProperties": {
+            "$ref": "#/$defs/settingExpectedValue"
+          }
+        },
+        "notContains": {
+          "type": "object",
+          "propertyNames": {
+            "type": "string",
+            "minLength": 1
+          },
+          "additionalProperties": {
+            "$ref": "#/$defs/settingExpectedValue"
+          }
+        },
+        "and": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/settingsVisibility"
+          },
+          "minItems": 1
+        },
+        "or": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/settingsVisibility"
+          },
+          "minItems": 1
+        }
+      }
+    },
     "codeValue": {
       "anyOf": [
         {
@@ -6215,6 +6310,9 @@
         },
         "codes": {
           "$ref": "#/$defs/codes"
+        },
+        "visibleWhen": {
+          "$ref": "#/$defs/settingsVisibility"
         }
       }
     },
@@ -6237,6 +6335,9 @@
         },
         "codes": {
           "$ref": "#/$defs/codes"
+        },
+        "visibleWhen": {
+          "$ref": "#/$defs/settingsVisibility"
         }
       }
     },
@@ -6263,6 +6364,9 @@
             "$ref": "#/$defs/submenuEntry"
           },
           "minItems": 1
+        },
+        "visibleWhen": {
+          "$ref": "#/$defs/settingsVisibility"
         }
       }
     }

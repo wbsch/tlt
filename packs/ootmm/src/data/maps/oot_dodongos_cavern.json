@@ -226,7 +226,10 @@
     {
       "coords": [341, 313],
       "image": "gossip_stone",
-      "codes": "OOT Dodongo Cavern Gossip"
+      "codes": "OOT Dodongo Cavern Gossip",
+      "visibleWhen": {
+        "contains": { "mqDungeons": "DC" }
+      }
     },
     {
       "coords": [248, 266],
@@ -584,7 +587,10 @@
     {
       "coords": [278, 337],
       "image": "gossip_stone",
-      "codes": "OOT Dodongo Cavern Gossip"
+      "codes": "OOT Dodongo Cavern Gossip",
+      "visibleWhen": {
+        "notContains": { "mqDungeons": "DC" }
+      }
     }
   ]
 }

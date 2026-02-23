@@ -109,6 +109,73 @@ async function generateMapSchema(): Promise<void> {
         items: { $ref: '#/$defs/overlay' },
         uniqueItems: true,
       },
+      settingExpectedValuePrimitive: {
+        anyOf: [{ type: 'string' }, { type: 'number' }, { type: 'boolean' }],
+      },
+      settingExpectedValue: {
+        anyOf: [
+          { $ref: '#/$defs/settingExpectedValuePrimitive' },
+          {
+            type: 'array',
+            items: { $ref: '#/$defs/settingExpectedValuePrimitive' },
+            minItems: 1,
+            uniqueItems: true,
+          },
+        ],
+      },
+      settingsVisibility: {
+        type: 'object',
+        additionalProperties: false,
+        anyOf: [
+          { required: ['settings'] },
+          { required: ['contains'] },
+          { required: ['notContains'] },
+          { required: ['and'] },
+          { required: ['or'] },
+        ],
+        properties: {
+          settings: {
+            type: 'object',
+            propertyNames: {
+              type: 'string',
+              minLength: 1,
+            },
+            additionalProperties: {
+              $ref: '#/$defs/settingExpectedValue',
+            },
+          },
+          contains: {
+            type: 'object',
+            propertyNames: {
+              type: 'string',
+              minLength: 1,
+            },
+            additionalProperties: {
+              $ref: '#/$defs/settingExpectedValue',
+            },
+          },
+          notContains: {
+            type: 'object',
+            propertyNames: {
+              type: 'string',
+              minLength: 1,
+            },
+            additionalProperties: {
+              $ref: '#/$defs/settingExpectedValue',
+            },
+          },
+          and: {
+            type: 'array',
+            items: { $ref: '#/$defs/settingsVisibility' },
+            minItems: 1,
+          },
+          or: {
+            type: 'array',
+            items: { $ref: '#/$defs/settingsVisibility' },
+            minItems: 1,
+          },
+        },
+      },
       codeValue: {
         anyOf: [
           {
@@ -146,6 +213,7 @@ async function generateMapSchema(): Promise<void> {
           image: { $ref: '#/$defs/markerImage' },
           overlays: { $ref: '#/$defs/overlays' },
           codes: { $ref: '#/$defs/codes' },
+          visibleWhen: { $ref: '#/$defs/settingsVisibility' },
         },
       },
       checkMarker: {
@@ -158,6 +226,7 @@ async function generateMapSchema(): Promise<void> {
           overlays: { $ref: '#/$defs/overlays' },
           type: { const: 'check' },
           codes: { $ref: '#/$defs/codes' },
+          visibleWhen: { $ref: '#/$defs/settingsVisibility' },
         },
       },
       submenuMarker: {
@@ -174,6 +243,7 @@ async function generateMapSchema(): Promise<void> {
             items: { $ref: '#/$defs/submenuEntry' },
             minItems: 1,
           },
+          visibleWhen: { $ref: '#/$defs/settingsVisibility' },
         },
       },
     },
