@@ -337,7 +337,8 @@ function toggleDungeon(id: string) {
 
 .song-select-wrap {
   position: relative;
-  min-width: 220px;
+  width: 160px;
+  min-width: 160px;
 }
 
 .song-select-trigger {
@@ -353,6 +354,7 @@ function toggleDungeon(id: string) {
   font-size: 0.875rem;
   cursor: pointer;
   text-align: left;
+  white-space: nowrap;
 }
 
 .song-select-trigger:hover {
@@ -367,7 +369,6 @@ function toggleDungeon(id: string) {
 
 .song-select-options {
   position: absolute;
-  right: 0;
   left: 0;
   z-index: 5;
   margin: 0.3rem 0 0;
@@ -376,6 +377,8 @@ function toggleDungeon(id: string) {
   border-radius: 8px;
   background: #0f172a;
   list-style: none;
+  width: 100%;
+  min-width: 100%;
   max-height: 260px;
   overflow-y: auto;
 }
@@ -419,10 +422,12 @@ function toggleDungeon(id: string) {
 }
 
 .song-select-text {
-  flex: 1;
+  flex: 0 1 auto;
+  white-space: nowrap;
 }
 
 .song-select-caret {
+  margin-left: 0.15rem;
   color: #9ca3af;
 }
 
