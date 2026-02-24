@@ -63,6 +63,7 @@ npm run build
 - `npm run format`
 - `npm run lint`
 - `npm run type-check`
+- `npm run audit:images` (writes `reports/image-usage-report.json` with needed/missing/unused image assets)
 - `npm run test:e2e`
 - `node --import tsx scripts/pathfinder-tests/reachability_full_inventory.ts` (logic reachability sanity check)
 
