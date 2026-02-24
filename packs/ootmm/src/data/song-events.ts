@@ -2,6 +2,7 @@
  * Song Events Constants
  * Based on OoTMM/packages/core/include/combo/data/song_events.h
  */
+import { withBasePath } from '../utils/assetPath';
 
 // Song Event IDs (matching OoTMM core definitions)
 export const SONG_EVENT_TEMPLE_OF_TIME = 0x00;
@@ -96,16 +97,41 @@ export const SONG_EVENTS: SongEventData[] = [
 export type SongChoice = {
   value: number;
   label: string;
+  image: string;
 };
 
 /**
  * Available songs for selection
  */
 export const SONG_CHOICES: SongChoice[] = [
-  { value: SONG_ZELDA, label: "Zelda's Lullaby" },
-  { value: SONG_EPONA, label: "Epona's Song" },
-  { value: SONG_SARIA, label: "Saria's Song" },
-  { value: SONG_STORMS, label: 'Song of Storms' },
-  { value: SONG_SUN, label: "Sun's Song" },
-  { value: SONG_TIME, label: 'Song of Time' },
+  {
+    value: SONG_ZELDA,
+    label: "Zelda's Lullaby",
+    image: withBasePath('images/song_events/zeldas_lullaby.png'),
+  },
+  {
+    value: SONG_EPONA,
+    label: "Epona's Song",
+    image: withBasePath('images/song_events/eponas_song_oot.png'),
+  },
+  {
+    value: SONG_SARIA,
+    label: "Saria's Song",
+    image: withBasePath('images/song_events/sarias_song.png'),
+  },
+  {
+    value: SONG_STORMS,
+    label: 'Song of Storms',
+    image: withBasePath('images/song_events/song_of_storms_oot.png'),
+  },
+  {
+    value: SONG_SUN,
+    label: "Sun's Song",
+    image: withBasePath('images/song_events/suns_song.png'),
+  },
+  {
+    value: SONG_TIME,
+    label: 'Song of Time',
+    image: withBasePath('images/song_events/song_of_time_oot.png'),
+  },
 ];

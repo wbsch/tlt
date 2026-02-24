@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { computed } from 'vue';
-import { SONG_EVENTS, SONG_CHOICES } from '../data/song-events';
+import { computed, ref } from 'vue';
+import { SONG_EVENTS, SONG_CHOICES, type SongChoice } from '../data/song-events';
 
 type DungeonRow = {
   id: string;
@@ -31,14 +31,56 @@ const songEventsEnabled = computed(() =>
 const showEmptyState = computed(
   () => !showPreCompleted.value && !songEventsEnabled.value,
 );
+const activeSongDropdownEventId = ref<number | null>(null);
 
 function getSongEventSelection(eventId: number): number | undefined {
   return props.songEvents?.[eventId];
 }
 
+function getSelectedSongChoice(eventId: number): SongChoice {
+  const selectedValue = getSongEventSelection(eventId);
+  return (
+    SONG_CHOICES.find((song) => song.value === selectedValue) ?? SONG_CHOICES[0]
+  );
+}
+
+function isSongDropdownOpen(eventId: number): boolean {
+  return activeSongDropdownEventId.value === eventId;
+}
+
+function getSongDropdownId(eventId: number): string {
+  return `song-options-${eventId}`;
+}
+
+function getSongDropdownTriggerId(eventId: number): string {
+  return `song-trigger-${eventId}`;
+}
+
+function getSongOptionId(eventId: number, songId: number): string {
+  return `song-option-${eventId}-${songId}`;
+}
+
+function toggleSongDropdown(eventId: number) {
+  activeSongDropdownEventId.value =
+    activeSongDropdownEventId.value === eventId ? null : eventId;
+}
+
+function closeSongDropdown() {
+  activeSongDropdownEventId.value = null;
+}
+
+function handleSongDropdownFocusOut(event: FocusEvent) {
+  const currentTarget = event.currentTarget as HTMLElement | null;
+  const nextTarget = event.relatedTarget as Node | null;
+  if (!currentTarget) return;
+  if (nextTarget && currentTarget.contains(nextTarget)) return;
+  closeSongDropdown();
+}
+
 function updateSongEvent(eventId: number, songId: number) {
   const next = { ...props.songEvents, [eventId]: songId };
   emit('update:song-events', next);
+  closeSongDropdown();
 }
 
 function toggleDungeon(id: string) {
@@ -116,24 +158,61 @@ function toggleDungeon(id: string) {
             <div class="row-info">
               <span class="row-label">{{ event.label }}</span>
             </div>
-            <select
-              :value="getSongEventSelection(event.id) ?? 0"
-              class="song-select"
-              @change="
-                updateSongEvent(
-                  event.id,
-                  Number(($event.target as HTMLSelectElement).value),
-                )
-              "
+            <div
+              class="song-select-wrap"
+              @focusout="handleSongDropdownFocusOut"
             >
-              <option
-                v-for="song in SONG_CHOICES"
-                :key="song.value"
-                :value="song.value"
+              <button
+                :id="getSongDropdownTriggerId(event.id)"
+                type="button"
+                class="song-select-trigger"
+                aria-haspopup="listbox"
+                :aria-controls="getSongDropdownId(event.id)"
+                :aria-expanded="isSongDropdownOpen(event.id)"
+                @click="toggleSongDropdown(event.id)"
               >
-                {{ song.label }}
-              </option>
-            </select>
+                <img
+                  :src="getSelectedSongChoice(event.id).image"
+                  alt=""
+                  class="song-select-icon"
+                />
+                <span class="song-select-text">{{
+                  getSelectedSongChoice(event.id).label
+                }}</span>
+                <span class="song-select-caret" aria-hidden="true">▾</span>
+              </button>
+
+              <ul
+                v-if="isSongDropdownOpen(event.id)"
+                :id="getSongDropdownId(event.id)"
+                class="song-select-options"
+                role="listbox"
+                :aria-labelledby="getSongDropdownTriggerId(event.id)"
+              >
+                <li
+                  v-for="song in SONG_CHOICES"
+                  :id="getSongOptionId(event.id, song.value)"
+                  :key="song.value"
+                  class="song-select-option-item"
+                  role="presentation"
+                >
+                  <button
+                    type="button"
+                    class="song-select-option"
+                    role="option"
+                    :aria-selected="getSelectedSongChoice(event.id).value === song.value"
+                    :class="{
+                      'is-selected':
+                        getSelectedSongChoice(event.id).value === song.value,
+                    }"
+                    @click="updateSongEvent(event.id, song.value)"
+                  >
+                    <img :src="song.image" alt="" class="song-select-icon" />
+                    <span class="song-select-text">{{ song.label }}</span>
+                  </button>
+                </li>
+              </ul>
+            </div>
           </div>
         </div>
       </section>
@@ -256,7 +335,16 @@ function toggleDungeon(id: string) {
   background: #1a2332;
 }
 
-.song-select {
+.song-select-wrap {
+  position: relative;
+  min-width: 220px;
+}
+
+.song-select-trigger {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
   padding: 0.35rem 0.6rem;
   border-radius: 6px;
   border: 1px solid #404040;
@@ -264,16 +352,88 @@ function toggleDungeon(id: string) {
   color: #f9fafb;
   font-size: 0.875rem;
   cursor: pointer;
-  min-width: 160px;
+  text-align: left;
 }
 
-.song-select:hover {
+.song-select-trigger:hover {
   border-color: #60a5fa;
 }
 
-.song-select:focus {
+.song-select-trigger:focus {
   outline: none;
   border-color: #3b82f6;
   box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+.song-select-options {
+  position: absolute;
+  right: 0;
+  left: 0;
+  z-index: 5;
+  margin: 0.3rem 0 0;
+  padding: 0.3rem;
+  border: 1px solid #404040;
+  border-radius: 8px;
+  background: #0f172a;
+  list-style: none;
+  max-height: 260px;
+  overflow-y: auto;
+}
+
+.song-select-option-item {
+  margin: 0;
+}
+
+.song-select-option {
+  width: 100%;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  color: #f9fafb;
+  padding: 0.35rem 0.45rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  text-align: left;
+  cursor: pointer;
+}
+
+.song-select-option:hover {
+  background: rgba(96, 165, 250, 0.12);
+}
+
+.song-select-option:focus {
+  outline: none;
+  background: rgba(59, 130, 246, 0.2);
+}
+
+.song-select-option.is-selected {
+  background: rgba(59, 130, 246, 0.22);
+}
+
+.song-select-icon {
+  width: 20px;
+  height: 20px;
+  object-fit: contain;
+  flex-shrink: 0;
+}
+
+.song-select-text {
+  flex: 1;
+}
+
+.song-select-caret {
+  color: #9ca3af;
+}
+
+@media (max-width: 640px) {
+  .song-select-wrap {
+    min-width: 100%;
+  }
+
+  .song-event-row {
+    align-items: flex-start;
+    flex-direction: column;
+  }
 }
 </style>
