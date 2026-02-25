@@ -42,6 +42,23 @@ function addCodeLookup(
   map.set(key, new Set([value]));
 }
 
+function hasExplicitWorldSuffix(code: string): boolean {
+  return /@\d+$/.test(code.trim());
+}
+
+function preferLocalWorld(ids: string[], code: string): string[] {
+  if (ids.length <= 1 || hasExplicitWorldSuffix(code)) {
+    return ids;
+  }
+
+  const localWorldIds = ids.filter((id) => /@0$/.test(id));
+  if (localWorldIds.length > 0) {
+    return localWorldIds;
+  }
+
+  return ids;
+}
+
 export function useLocationCodeLookup(
   allLocations: LocationSource,
   reachableIds: IdSetSource,
@@ -99,7 +116,7 @@ export function useLocationCodeLookup(
     for (const key of keys) {
       const values = codeLookup.value.get(key);
       if (values && values.size > 0) {
-        return Array.from(values);
+        return preferLocalWorld(Array.from(values), code);
       }
     }
     return [];

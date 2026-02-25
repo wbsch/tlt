@@ -45,6 +45,8 @@ export function parseSpoilerLog(text: string): SpoilerLogData {
   let section: Section = null;
   let currentSpecialCond: string | null = null;
   let currentWorldFlag: string | null = null;
+  let currentStartingItemsPlayer: number | null = null;
+  let hasStartingItemsPlayerHeaders = false;
 
   for (const rawLine of lines) {
     if (!rawLine) continue;
@@ -73,6 +75,8 @@ export function parseSpoilerLog(text: string): SpoilerLogData {
       section = 'startingItems';
       currentSpecialCond = null;
       currentWorldFlag = null;
+      currentStartingItemsPlayer = null;
+      hasStartingItemsPlayerHeaders = false;
       continue;
     }
     if (trimmed === 'Junk Locations') {
@@ -140,7 +144,15 @@ export function parseSpoilerLog(text: string): SpoilerLogData {
         break;
       }
       case 'startingItems': {
-        if (/^Player\s+\d+/i.test(trimmed)) break;
+        const playerMatch = trimmed.match(/^Player\s+(\d+)/i);
+        if (playerMatch) {
+          hasStartingItemsPlayerHeaders = true;
+          currentStartingItemsPlayer = Number.parseInt(playerMatch[1], 10);
+          break;
+        }
+        if (hasStartingItemsPlayerHeaders && currentStartingItemsPlayer !== 1) {
+          break;
+        }
         const normalized = normalizeLine(trimmed);
         const splitIndex = normalized.lastIndexOf(':');
         if (splitIndex <= 0) break;

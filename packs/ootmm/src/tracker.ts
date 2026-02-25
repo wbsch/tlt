@@ -251,6 +251,7 @@ export class OoTMMTracker implements TrackerPack {
       ...DEFAULT_OOTMM_SETTINGS,
       ...userSettings,
     };
+    this.ensureDeterministicClockStart(ootmmSettings);
     this.debugLog('[OoTMM Tracker] Merged settings:', ootmmSettings);
 
     // Convert to OoTMM settings format
@@ -318,8 +319,12 @@ export class OoTMMTracker implements TrackerPack {
     this.normalizeWorldItems(this.worlds);
     this.applyAlwaysIncludedFishingPondConditions(this.worlds);
 
-    // Create pathfinder with empty starting items
-    this.pathfinder = new Pathfinder(this.worlds, this.settings, new Map());
+    // Mirror configured starting items into pathfinder state.
+    this.pathfinder = new Pathfinder(
+      this.worlds,
+      this.settings,
+      this.buildPathfinderStartingItems(),
+    );
 
     // Cache all location IDs
     this.allLocationIds = this.worlds.flatMap((world, worldId) =>
@@ -1246,6 +1251,70 @@ export class OoTMMTracker implements TrackerPack {
     }
 
     return counts;
+  }
+
+  private buildPathfinderStartingItems(): Map<PlayerItem, number> {
+    const startingItems = new Map<PlayerItem, number>();
+    if (!Items || !makePlayerItem) return startingItems;
+
+    const settings = this.settings as {
+      players?: unknown;
+      startingItems?: Record<string, unknown>;
+    };
+    if (!settings.startingItems || typeof settings.startingItems !== 'object') {
+      return startingItems;
+    }
+
+    const playersValue = Number(settings.players);
+    const playerCount = Number.isFinite(playersValue) && playersValue > 0
+      ? Math.floor(playersValue)
+      : Math.max(1, this.worlds.length || 1);
+
+    for (const [itemId, rawCount] of Object.entries(settings.startingItems)) {
+      const count = Number(rawCount);
+      if (!Number.isFinite(count) || count <= 0) continue;
+
+      let item = (Items as Record<string, unknown>)[itemId];
+      if (!item) {
+        try {
+          item = itemByID(itemId);
+        } catch {
+          item = undefined;
+        }
+      }
+      if (!item) continue;
+
+      for (let playerId = 0; playerId < playerCount; playerId += 1) {
+        const pi = makePlayerItem(item, playerId);
+        startingItems.set(pi, (startingItems.get(pi) || 0) + count);
+      }
+    }
+
+    return startingItems;
+  }
+
+  private ensureDeterministicClockStart(settings: Record<string, unknown>): void {
+    if (settings.clocks !== true || settings.progressiveClocks !== 'separate') {
+      return;
+    }
+
+    const startingItemsValue = settings.startingItems;
+    const startingItems =
+      startingItemsValue && typeof startingItemsValue === 'object'
+        ? ({ ...(startingItemsValue as Record<string, unknown>) } as Record<
+            string,
+            unknown
+          >)
+        : {};
+
+    const hasClock = Object.entries(startingItems).some(
+      ([itemId, rawCount]) => CLOCK_ITEM_IDS.has(itemId) && Number(rawCount) > 0,
+    );
+
+    if (!hasClock) {
+      startingItems.MM_CLOCK1 = 1;
+      settings.startingItems = startingItems;
+    }
   }
 
   private adjustStartingClockCounts(
