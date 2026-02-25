@@ -154,6 +154,7 @@ const BOTTLE_ALWAYS_INCLUDED_ITEM_IDS_OOT_MM = new Set([
 const BOTTLE_ALWAYS_INCLUDED_ITEM_IDS_SHARED = new Set(['SHARED_BOTTLE_EMPTY']);
 
 const CLOCK_ITEM_IDS = new Set([
+  'MM_CLOCK',
   'MM_CLOCK1',
   'MM_CLOCK2',
   'MM_CLOCK3',
@@ -1253,12 +1254,24 @@ export class OoTMMTracker implements TrackerPack {
     return counts;
   }
 
+  /**
+   * Build the starting-items map for the Pathfinder.
+   *
+   * Starting items from `this.settings.startingItems` are passed through
+   * as-is, including any fractional clock sentinel (e.g. `MM_CLOCK1: 0.01`)
+   * added by `ensureDeterministicClockStart`.  The fractional count is
+   * small enough that `ExprHas(CLOCKn, 1)` evaluates to false, so it
+   * does not grant free clock access.  When the user activates a full
+   * clock via the item grid, it adds 1 via `assumedItems`, making the
+   * total ≥ 1 and satisfying the `has(CLOCKn, 1)` check.
+   */
   private buildPathfinderStartingItems(): Map<PlayerItem, number> {
     const startingItems = new Map<PlayerItem, number>();
     if (!Items || !makePlayerItem) return startingItems;
 
     const settings = this.settings as {
       players?: unknown;
+      clocks?: unknown;
       startingItems?: Record<string, unknown>;
     };
     if (!settings.startingItems || typeof settings.startingItems !== 'object') {
@@ -1266,9 +1279,10 @@ export class OoTMMTracker implements TrackerPack {
     }
 
     const playersValue = Number(settings.players);
-    const playerCount = Number.isFinite(playersValue) && playersValue > 0
-      ? Math.floor(playersValue)
-      : Math.max(1, this.worlds.length || 1);
+    const playerCount =
+      Number.isFinite(playersValue) && playersValue > 0
+        ? Math.floor(playersValue)
+        : Math.max(1, this.worlds.length || 1);
 
     for (const [itemId, rawCount] of Object.entries(settings.startingItems)) {
       const count = Number(rawCount);
@@ -1293,27 +1307,58 @@ export class OoTMMTracker implements TrackerPack {
     return startingItems;
   }
 
-  private ensureDeterministicClockStart(settings: Record<string, unknown>): void {
-    if (settings.clocks !== true || settings.progressiveClocks !== 'separate') {
-      return;
+  /**
+   * Prevent OoTMM's `LogicPassConfig` from assigning a random starting
+   * clock when `clocks: true, progressiveClocks: 'separate'`.
+   *
+   * LogicPassConfig checks whether any clock is already present in
+   * `settings.startingItems` (via `this.startingItems.has(pi)`).  If no
+   * clock is found it picks one at random and adds it with count 1.
+   * That count-1 clock then causes `optimizeWorldStartingAndPool` to
+   * bake `has(CLOCKn)` → `EXPR_TRUE` into the world, making one time
+   * slot unconditionally reachable regardless of the player's inventory.
+   *
+   * The trick: we add a *fractional* clock (count 0.01) to starting
+   * items.  OoTMM's `countMapAdd` stores it because `0.01 > 0`, so
+   * `this.startingItems.has(pi)` returns true — preventing the random
+   * assignment.  But `optimizeWorldStartingAndPool` checks
+   * `(count >= 1)`, so `0.01 < 1` means the `has(CLOCKn, 1)` expression
+   * is NOT simplified away.  All clock gates remain intact.
+   *
+   * At runtime the Pathfinder has the 0.01 count in its starting items,
+   * which correctly fails the `has(CLOCKn, 1)` check until the user
+   * activates a full clock via the item grid (adding 1 via assumedItems).
+   */
+  private ensureDeterministicClockStart(
+    settings: Record<string, unknown>,
+  ): void {
+    if (settings.clocks !== true) return;
+    if (settings.progressiveClocks !== 'separate') return;
+
+    // Only inject the sentinel when no real clock is already present.
+    const existing = settings.startingItems;
+    if (existing && typeof existing === 'object') {
+      const clockIds = [
+        'MM_CLOCK1',
+        'MM_CLOCK2',
+        'MM_CLOCK3',
+        'MM_CLOCK4',
+        'MM_CLOCK5',
+        'MM_CLOCK6',
+      ];
+      for (const id of clockIds) {
+        const v = (existing as Record<string, unknown>)[id];
+        if (typeof v === 'number' && v >= 1) return; // real clock present
+      }
     }
 
-    const startingItemsValue = settings.startingItems;
-    const startingItems =
-      startingItemsValue && typeof startingItemsValue === 'object'
-        ? ({ ...(startingItemsValue as Record<string, unknown>) } as Record<
-            string,
-            unknown
-          >)
-        : {};
-
-    const hasClock = Object.entries(startingItems).some(
-      ([itemId, rawCount]) => CLOCK_ITEM_IDS.has(itemId) && Number(rawCount) > 0,
-    );
-
-    if (!hasClock) {
-      startingItems.MM_CLOCK1 = 1;
-      settings.startingItems = startingItems;
+    // Inject a fractional sentinel.
+    const EPSILON = 0.01;
+    if (!settings.startingItems || typeof settings.startingItems !== 'object') {
+      settings.startingItems = { MM_CLOCK1: EPSILON };
+    } else {
+      (settings.startingItems as Record<string, unknown>)['MM_CLOCK1'] =
+        EPSILON;
     }
   }
 

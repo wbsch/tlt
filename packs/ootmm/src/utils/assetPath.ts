@@ -1,4 +1,4 @@
-const rawBaseUrl = import.meta.env.BASE_URL || '/';
+const rawBaseUrl = (import.meta as any).env?.BASE_URL || '/';
 const normalizedBaseUrl =
   rawBaseUrl === '/'
     ? './'
