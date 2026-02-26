@@ -1198,7 +1198,10 @@ onBeforeUnmount(() => {
       aria-labelledby="spoiler-player-dialog-title"
     >
       <div class="spoiler-player-dialog">
-        <h2 id="spoiler-player-dialog-title" class="spoiler-player-dialog-title">
+        <h2
+          id="spoiler-player-dialog-title"
+          class="spoiler-player-dialog-title"
+        >
           Multiworld detected
         </h2>
         <p class="spoiler-player-dialog-text">
@@ -1221,7 +1224,11 @@ onBeforeUnmount(() => {
           </option>
         </select>
         <div class="spoiler-player-dialog-actions">
-          <button type="button" class="history-button" @click="cancelSpoilerStartingItemsPlayer">
+          <button
+            type="button"
+            class="history-button"
+            @click="cancelSpoilerStartingItemsPlayer"
+          >
             Cancel
           </button>
           <button

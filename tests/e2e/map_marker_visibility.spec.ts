@@ -183,9 +183,7 @@ test.describe('OoTMM map marker visibility', () => {
           const snapshot = await readDodongoGossipVisibility(page);
           return `${snapshot.activeMapId}|${snapshot.mqStoneVisible}|${snapshot.nonMqStoneVisible}`;
         })
-        .toBe(
-          `${DODONGO_MAP_ID}|${scenario.includeDc}|${!scenario.includeDc}`,
-        );
+        .toBe(`${DODONGO_MAP_ID}|${scenario.includeDc}|${!scenario.includeDc}`);
     }
   });
 });

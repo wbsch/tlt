@@ -1,6 +1,10 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue';
-import { SONG_EVENTS, SONG_CHOICES, type SongChoice } from '../data/song-events';
+import {
+  SONG_EVENTS,
+  SONG_CHOICES,
+  type SongChoice,
+} from '../data/song-events';
 
 type DungeonRow = {
   id: string;
@@ -200,7 +204,9 @@ function toggleDungeon(id: string) {
                     type="button"
                     class="song-select-option"
                     role="option"
-                    :aria-selected="getSelectedSongChoice(event.id).value === song.value"
+                    :aria-selected="
+                      getSelectedSongChoice(event.id).value === song.value
+                    "
                     :class="{
                       'is-selected':
                         getSelectedSongChoice(event.id).value === song.value,
