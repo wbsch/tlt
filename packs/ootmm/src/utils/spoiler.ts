@@ -3,10 +3,15 @@ export type SpoilerLogData = {
   worldFlags: Record<string, string | { type: 'specific'; values: string[] }>;
   specialConds: Record<string, Record<string, string | number | boolean>>;
   startingItems: Record<string, number>;
+  startingItemsPlayers: number[];
   junkLocations: string[];
   preCompletedDungeons: string[];
   tricks?: string[];
   settingsString?: string;
+};
+
+type ParseSpoilerLogOptions = {
+  startingItemsPlayer?: number;
 };
 
 type Section =
@@ -31,12 +36,16 @@ const parseValue = (raw: string): string | number | boolean => {
   return raw;
 };
 
-export function parseSpoilerLog(text: string): SpoilerLogData {
+export function parseSpoilerLog(
+  text: string,
+  options: ParseSpoilerLogOptions = {},
+): SpoilerLogData {
   const result: SpoilerLogData = {
     settings: {},
     worldFlags: {},
     specialConds: {},
     startingItems: {},
+    startingItemsPlayers: [],
     junkLocations: [],
     preCompletedDungeons: [],
   };
@@ -47,6 +56,7 @@ export function parseSpoilerLog(text: string): SpoilerLogData {
   let currentWorldFlag: string | null = null;
   let currentStartingItemsPlayer: number | null = null;
   let hasStartingItemsPlayerHeaders = false;
+  const startingItemsByPlayer: Record<number, Record<string, number>> = {};
 
   for (const rawLine of lines) {
     if (!rawLine) continue;
@@ -148,9 +158,11 @@ export function parseSpoilerLog(text: string): SpoilerLogData {
         if (playerMatch) {
           hasStartingItemsPlayerHeaders = true;
           currentStartingItemsPlayer = Number.parseInt(playerMatch[1], 10);
-          break;
-        }
-        if (hasStartingItemsPlayerHeaders && currentStartingItemsPlayer !== 1) {
+          if (!Number.isNaN(currentStartingItemsPlayer)) {
+            if (!startingItemsByPlayer[currentStartingItemsPlayer]) {
+              startingItemsByPlayer[currentStartingItemsPlayer] = {};
+            }
+          }
           break;
         }
         const normalized = normalizeLine(trimmed);
@@ -160,7 +172,16 @@ export function parseSpoilerLog(text: string): SpoilerLogData {
         const countRaw = normalized.slice(splitIndex + 1).trim();
         const count = Number.parseInt(countRaw, 10);
         if (!name || Number.isNaN(count)) break;
-        result.startingItems[name] = count;
+        const player = hasStartingItemsPlayerHeaders
+          ? currentStartingItemsPlayer
+          : 1;
+        if (player === null) {
+          break;
+        }
+        if (!startingItemsByPlayer[player]) {
+          startingItemsByPlayer[player] = {};
+        }
+        startingItemsByPlayer[player][name] = count;
         break;
       }
       case 'junkLocations': {
@@ -227,6 +248,17 @@ export function parseSpoilerLog(text: string): SpoilerLogData {
       default:
         break;
     }
+  }
+
+  const startingItemsPlayers = Object.keys(startingItemsByPlayer)
+    .map((player) => Number.parseInt(player, 10))
+    .filter((player) => !Number.isNaN(player))
+    .sort((left, right) => left - right);
+  result.startingItemsPlayers = startingItemsPlayers;
+
+  const selectedPlayer = options.startingItemsPlayer ?? 1;
+  if (startingItemsByPlayer[selectedPlayer]) {
+    result.startingItems = startingItemsByPlayer[selectedPlayer];
   }
 
   return result;

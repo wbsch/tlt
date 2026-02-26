@@ -141,6 +141,11 @@ const settingsRef = ref<SettingsPanelHandle | null>(null);
 const isStatsCollapsed = ref(true);
 const statisticsCountsTooltip =
   'These counts exclude unshuffled tokens/fairies and gossip stones.';
+const isSpoilerPlayerDialogOpen = ref(false);
+const spoilerPlayerOptions = ref<number[]>([]);
+const spoilerSelectedPlayer = ref<number | null>(null);
+let spoilerPlayerDialogResolver: ((player: number | null) => void) | null =
+  null;
 const mapDefs = OOTMM_MAP_DEFS;
 type SelectedGamesSetting = 'ootmm' | 'oot' | 'mm';
 const DEFAULT_MAP_ID = 'oot_kokiri_forest';
@@ -922,9 +927,38 @@ function applyJunkLocations(junkLocations: string[]) {
   sessionStore.setCollectedLocationIds(Array.from(next));
 }
 
-async function applySpoilerLog(text: string) {
+function requestSpoilerStartingItemsPlayer(players: number[]) {
+  spoilerPlayerOptions.value = [...players];
+  spoilerSelectedPlayer.value = players[0] ?? null;
+  isSpoilerPlayerDialogOpen.value = true;
+
+  return new Promise<number | null>((resolve) => {
+    spoilerPlayerDialogResolver = resolve;
+  });
+}
+
+function resolveSpoilerStartingItemsPlayer(player: number | null) {
+  if (!spoilerPlayerDialogResolver) return;
+  const resolver = spoilerPlayerDialogResolver;
+  spoilerPlayerDialogResolver = null;
+  isSpoilerPlayerDialogOpen.value = false;
+  spoilerPlayerOptions.value = [];
+  spoilerSelectedPlayer.value = null;
+  resolver(player);
+}
+
+function confirmSpoilerStartingItemsPlayer() {
+  if (spoilerSelectedPlayer.value === null) return;
+  resolveSpoilerStartingItemsPlayer(spoilerSelectedPlayer.value);
+}
+
+function cancelSpoilerStartingItemsPlayer() {
+  resolveSpoilerStartingItemsPlayer(null);
+}
+
+async function applySpoilerLog(text: string, startingItemsPlayer?: number) {
   if (isApplyingSettings.value) return;
-  const parsed = parseSpoilerLog(text);
+  const parsed = parseSpoilerLog(text, { startingItemsPlayer });
   const settingsPatch: Record<string, unknown> = {};
 
   for (const [key, value] of Object.entries(parsed.settings)) {
@@ -991,7 +1025,20 @@ async function applySpoilerLog(text: string) {
 async function handleSpoilerFile(file: File) {
   if (!file) return;
   const text = await file.text();
-  await applySpoilerLog(text);
+  const parsed = parseSpoilerLog(text);
+  let selectedPlayer: number | undefined;
+
+  if (parsed.startingItemsPlayers.length > 1) {
+    const selected = await requestSpoilerStartingItemsPlayer(
+      parsed.startingItemsPlayers,
+    );
+    if (selected === null) {
+      return;
+    }
+    selectedPlayer = selected;
+  }
+
+  await applySpoilerLog(text, selectedPlayer);
 }
 
 function hasFilePayload(event: DragEvent) {
@@ -1101,6 +1148,11 @@ onBeforeUnmount(() => {
     delete windowWithHandlers.__TLT_RESET_TRACKER_STATE__;
   }
   sessionStore.stopLocalSessionSync();
+  if (spoilerPlayerDialogResolver) {
+    const resolver = spoilerPlayerDialogResolver;
+    spoilerPlayerDialogResolver = null;
+    resolver(null);
+  }
   window.removeEventListener('keydown', handleGlobalUndoRedoKeydown);
   window.removeEventListener('pointerdown', handleMapWarningGlobalPointerDown);
 });
@@ -1137,6 +1189,51 @@ onBeforeUnmount(() => {
       aria-live="polite"
     >
       <div class="spoiler-drop-content">Drop spoiler log to load</div>
+    </div>
+    <div
+      v-if="isSpoilerPlayerDialogOpen"
+      class="spoiler-player-dialog-overlay"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="spoiler-player-dialog-title"
+    >
+      <div class="spoiler-player-dialog">
+        <h2 id="spoiler-player-dialog-title" class="spoiler-player-dialog-title">
+          Multiworld detected
+        </h2>
+        <p class="spoiler-player-dialog-text">
+          Choose which player's Starting Items should be applied.
+        </p>
+        <label class="spoiler-player-dialog-label" for="spoiler-player-select"
+          >Player</label
+        >
+        <select
+          id="spoiler-player-select"
+          v-model.number="spoilerSelectedPlayer"
+          class="spoiler-player-dialog-select"
+        >
+          <option
+            v-for="player in spoilerPlayerOptions"
+            :key="player"
+            :value="player"
+          >
+            Player {{ player }}
+          </option>
+        </select>
+        <div class="spoiler-player-dialog-actions">
+          <button type="button" class="history-button" @click="cancelSpoilerStartingItemsPlayer">
+            Cancel
+          </button>
+          <button
+            type="button"
+            class="history-button"
+            :disabled="spoilerSelectedPlayer === null"
+            @click="confirmSpoilerStartingItemsPlayer"
+          >
+            Apply
+          </button>
+        </div>
+      </div>
     </div>
     <div class="tracker-sidebar">
       <div class="stats-panel" :class="{ 'is-collapsed': isStatsCollapsed }">
@@ -1655,6 +1752,57 @@ onBeforeUnmount(() => {
   color: #e5e7eb;
   text-transform: uppercase;
   letter-spacing: 0.06em;
+}
+
+.spoiler-player-dialog-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 30;
+}
+
+.spoiler-player-dialog {
+  width: min(420px, calc(100vw - 2rem));
+  background: rgba(31, 41, 55, 0.98);
+  border: 1px solid #4b5563;
+  border-radius: 0.75rem;
+  padding: 1rem;
+  color: #e5e7eb;
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+}
+
+.spoiler-player-dialog-title {
+  margin: 0;
+  font-size: 1rem;
+}
+
+.spoiler-player-dialog-text {
+  margin: 0;
+  color: #cbd5e1;
+  font-size: 0.85rem;
+}
+
+.spoiler-player-dialog-label {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: #9ca3af;
+}
+
+.spoiler-player-dialog-select {
+  width: 100%;
+}
+
+.spoiler-player-dialog-actions {
+  margin-top: 0.25rem;
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.45rem;
 }
 
 .tracker-sidebar {
