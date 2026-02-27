@@ -290,7 +290,6 @@ function isItemVisible(itemId: string): boolean {
     return isItemVisible(alias.item);
   }
 
-  if (itemId === 'OOT_SWORD_MASTER') return true;
   if (!props.availableItemIds || props.availableItemIds.size === 0) return true;
   const labelKeys = LABEL_KEY_MAP[itemId];
   if (labelKeys) {

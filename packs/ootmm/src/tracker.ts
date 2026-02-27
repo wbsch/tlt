@@ -1411,10 +1411,21 @@ export class OoTMMTracker implements TrackerPack {
     }
 
     if (BOTTLE_ALWAYS_INCLUDED_ITEM_IDS_OOT_MM.has(itemId)) {
-      return !this.isSharedBottlesEnabled();
+      if (this.isSharedBottlesEnabled()) return false;
+      if (itemId.startsWith('OOT_')) return this.isGameEnabled('oot');
+      if (itemId.startsWith('MM_')) return this.isGameEnabled('mm');
+      return true;
     }
 
     return true;
+  }
+
+  private isGameEnabled(game: 'oot' | 'mm'): boolean {
+    const value = (this.settings as { games?: unknown })?.games;
+    const games = typeof value === 'string' ? value.trim().toLowerCase() : '';
+    if (games === 'ootmm') return true;
+    if (game === 'oot') return games === 'oot';
+    return games === 'mm';
   }
 
   private isSharedBottlesEnabled(): boolean {
