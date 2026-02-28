@@ -243,7 +243,13 @@ export function encodeSnapshotToHashPayload(
 ): string {
   const normalized = normalizeSnapshot(snapshot);
   const diffed = diffSnapshotSettings(normalized);
-  const jsonBytes = textEncoder.encode(JSON.stringify(diffed));
+  const jsonBytes = textEncoder.encode(
+    JSON.stringify(diffed, (_, v) =>
+      v && typeof v === 'object' && !Array.isArray(v)
+        ? Object.fromEntries(Object.entries(v).sort(([a], [b]) => a.localeCompare(b)))
+        : v,
+    ),
+  );
   const compressed = deflateRaw(jsonBytes);
   return `${SHARE_PAYLOAD_PREFIX}${byteArrayToBase64Url(compressed)}`;
 }
