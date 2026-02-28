@@ -348,6 +348,13 @@
         {
           "image": "npc",
           "codes": ["OOT Great Fairy Magic Upgrade 2"]
+        },
+        {
+          "image": "red_boulder",
+          "codes": [
+            "OOT Death Mountain Crater Red Boulder Great Fairy 1",
+            "OOT Death Mountain Crater Red Boulder Great Fairy 2"
+          ]
         }
       ]
     },
@@ -560,13 +567,6 @@
       "image": "boulder_grotto",
       "type": "submenu",
       "markers": [
-        {
-          "image": "red_boulder",
-          "codes": [
-            "OOT Death Mountain Crater Red Boulder Great Fairy 1",
-            "OOT Death Mountain Crater Red Boulder Great Fairy 2"
-          ]
-        },
         {
           "image": "npc",
           "codes": "OOT Great Fairy Magic Upgrade"

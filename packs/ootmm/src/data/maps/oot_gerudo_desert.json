@@ -568,6 +568,13 @@
             "OOT Gerudo Fortress Wonder Item Jail 4 1",
             "OOT Gerudo Fortress Wonder Item Jail 4 2"
           ]
+        },
+        {
+          "image": "pot",
+          "codes": [
+            "OOT Gerudo Fortress Pot Jail 3 1",
+            "OOT Gerudo Fortress Pot Jail 3 2"
+          ]
         }
       ]
     },
@@ -788,13 +795,6 @@
           "codes": ["OOT Gerudo Member Card"]
         },
         {
-          "image": "pot",
-          "codes": [
-            "OOT Gerudo Fortress Pot Jail 3 1",
-            "OOT Gerudo Fortress Pot Jail 3 2"
-          ]
-        },
-        {
           "image": "crate",
           "codes": "OOT Thieves Hideout Crate Jail 3"
         },
@@ -825,6 +825,13 @@
           "codes": [
             "OOT Gerudo Fortress Wonder Item Jail 4 1",
             "OOT Gerudo Fortress Wonder Item Jail 4 2"
+          ]
+        },
+        {
+          "image": "pot",
+          "codes": [
+            "OOT Gerudo Fortress Pot Jail 3 1",
+            "OOT Gerudo Fortress Pot Jail 3 2"
           ]
         }
       ]
