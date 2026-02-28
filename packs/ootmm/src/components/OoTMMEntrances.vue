@@ -49,7 +49,7 @@ function getEnabledDungeonTypes(
   const enabled = new Set<string>();
   enabled.add('dungeon');
   for (const [type, settingKey] of Object.entries(TYPE_TO_SETTING)) {
-    if (Boolean(settings?.[settingKey])) {
+    if (settings?.[settingKey]) {
       enabled.add(type);
     }
   }
@@ -134,11 +134,13 @@ const erDungeonsMode = computed(() =>
   String(trackerSettings.value?.erDungeons ?? 'none'),
 );
 
-function destinationOptionsForGame(game: 'oot' | 'mm') {
-  if (erDungeonsMode.value !== 'ownGame') {
-    return destinationOptions.value;
-  }
-  return destinationOptions.value.filter((dest) => dest.game === game);
+function destinationOptionsForGame(game: 'oot' | 'mm', currentSrcKey: string) {
+  const opts =
+    erDungeonsMode.value === 'ownGame'
+      ? destinationOptions.value.filter((dest) => dest.game === game)
+      : destinationOptions.value;
+  // Hide destinations already assigned to other entrances
+  return opts.filter((dest) => !isDestinationUsed(dest.value, currentSrcKey));
 }
 
 /**
@@ -223,13 +225,12 @@ function isDestinationUsed(dstKey: string, currentSrcKey: string): boolean {
           >
             <option value="">— Not mapped —</option>
             <option
-              v-for="dest in destinationOptionsForGame(entrance.game)"
+              v-for="dest in destinationOptionsForGame(
+                entrance.game,
+                entrance.key,
+              )"
               :key="dest.value"
               :value="dest.value"
-              :disabled="isDestinationUsed(dest.value, entrance.key)"
-              :class="{
-                'dest-used': isDestinationUsed(dest.value, entrance.key),
-              }"
             >
               {{ dest.label
               }}{{
@@ -267,13 +268,12 @@ function isDestinationUsed(dstKey: string, currentSrcKey: string): boolean {
           >
             <option value="">— Not mapped —</option>
             <option
-              v-for="dest in destinationOptionsForGame(entrance.game)"
+              v-for="dest in destinationOptionsForGame(
+                entrance.game,
+                entrance.key,
+              )"
               :key="dest.value"
               :value="dest.value"
-              :disabled="isDestinationUsed(dest.value, entrance.key)"
-              :class="{
-                'dest-used': isDestinationUsed(dest.value, entrance.key),
-              }"
             >
               {{ dest.label
               }}{{
@@ -392,9 +392,5 @@ function isDestinationUsed(dstKey: string, currentSrcKey: string): boolean {
 
 .entrance-select:hover {
   border-color: #6b7280;
-}
-
-.dest-used {
-  color: #6b7280;
 }
 </style>
