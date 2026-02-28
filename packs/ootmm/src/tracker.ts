@@ -2059,6 +2059,40 @@ export class OoTMMTracker implements TrackerPack {
    * can physically reach AND enter. This evaluates the saved exit expression
    * from each entrance's `from` area against the current pathfinder state.
    */
+  /**
+   * Build an ID-based wrapper around an item count Map so that
+   * expression evaluation can find items regardless of object-reference
+   * identity.  The underlying `ws.items` map is keyed by the Item
+   * instances that the Pathfinder saw (from `assumedItems`), while the
+   * expression objects hold references to the Item instances created by
+   * `worldState()`.  Because these are different object references for
+   * the same logical item, `Map.get` fails.  This wrapper falls back
+   * to an ID-based lookup when direct reference lookup misses.
+   */
+  private buildIdAwareItemMap(
+    source: Map<unknown, number>,
+  ): Map<unknown, number> {
+    // Build a fast id→count index for fallback lookups.
+    const byId = new Map<string, number>();
+    for (const [item, count] of source) {
+      const id = (item as { id?: string })?.id;
+      if (id) byId.set(id, (byId.get(id) || 0) + count);
+    }
+
+    // Return a thin wrapper whose `get` tries reference equality first,
+    // then falls back to the id-based index.
+    const wrapper = new Map(source);
+    const originalGet = wrapper.get.bind(wrapper);
+    wrapper.get = (key: unknown): number | undefined => {
+      const direct = originalGet(key);
+      if (direct !== undefined) return direct;
+      const id = (key as { id?: string })?.id;
+      if (id) return byId.get(id);
+      return undefined;
+    };
+    return wrapper;
+  }
+
   private computeReachableEntrances(
     state: ReturnType<InstanceType<typeof Pathfinder>['run']>,
   ): string[] {
@@ -2076,6 +2110,16 @@ export class OoTMMTracker implements TrackerPack {
       }>;
     };
 
+    // Pre-build ID-aware item maps per world so expression evaluation
+    // works even when the item object references differ between the
+    // expression tree (from worldState) and the pathfinder state (from
+    // assumedItems / Items module).
+    const worldMaps = typedState.ws.map((ws) => ({
+      items: this.buildIdAwareItemMap(ws.items),
+      renewables: this.buildIdAwareItemMap(ws.renewables),
+      licenses: this.buildIdAwareItemMap(ws.licenses),
+    }));
+
     for (const [entranceKey, saved] of this.savedEntranceExitExprs) {
       let canEnter = false;
 
@@ -2083,6 +2127,7 @@ export class OoTMMTracker implements TrackerPack {
         if (canEnter) break;
         const ws = typedState.ws[worldId];
         const world = this.worlds[worldId];
+        const maps = worldMaps[worldId];
 
         // Check both ages (0 = child, 1 = adult)
         for (const age of [0, 1] as const) {
@@ -2095,9 +2140,9 @@ export class OoTMMTracker implements TrackerPack {
             settings: this.settings,
             world,
             areaData,
-            items: ws.items,
-            renewables: ws.renewables,
-            licenses: ws.licenses,
+            items: maps.items,
+            renewables: maps.renewables,
+            licenses: maps.licenses,
             age,
             events: ws.events,
           };
