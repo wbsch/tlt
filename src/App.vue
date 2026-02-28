@@ -273,7 +273,7 @@ onBeforeUnmount(() => {
             aria-label="Export options"
             @click="toggleShareMenu"
           >
-            ▾
+            ⋮
           </button>
           <div
             v-if="isShareMenuOpen"

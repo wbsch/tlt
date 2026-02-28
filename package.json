@@ -27,7 +27,8 @@
     "test:e2e": "playwright test",
     "test:e2e:headed": "playwright test --headed",
     "test:e2e:ui": "playwright test --ui",
-    "test:e2e:install": "playwright install chromium"
+    "test:e2e:install": "playwright install chromium",
+    "check-all": "npm run format && npm run lint:fix && npm run type-check && npm run build:check && npm run test:pathfinder && npm run test:e2e"
   },
   "dependencies": {
     "lodash": "^4.17.21",

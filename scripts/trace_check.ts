@@ -226,7 +226,6 @@ function parseSpoilerLog(filePath: string): ParsedSpoiler {
 
   let section = '';
   let subSection = '';
-  let subSubSection = '';
 
   for (const rawLine of lines) {
     const line = rawLine.trimEnd();
@@ -441,11 +440,11 @@ function buildTrackerSettings(
 
 type AreaGraph = Map<string, Set<string>>; // area → set of exit area names
 
-function buildAreaGraph(worlds: any[]): AreaGraph {
+function buildAreaGraph(worlds: Record<string, unknown>[]): AreaGraph {
   const graph: AreaGraph = new Map();
   for (const world of worlds) {
     for (const [areaName, area] of Object.entries(
-      world.areas as Record<string, any>,
+      world.areas as Record<string, Record<string, unknown>>,
     )) {
       if (!graph.has(areaName)) {
         graph.set(areaName, new Set());
@@ -463,10 +462,15 @@ function buildAreaGraph(worlds: any[]): AreaGraph {
  * Resolve a user-provided check name to the exact name(s) used in the world graph.
  * Tries exact match, then "MM <name>" and "OOT <name>" prefixes, then substring match.
  */
-function resolveCheckName(worlds: any[], checkName: string): string[] {
+function resolveCheckName(
+  worlds: Record<string, unknown>[],
+  checkName: string,
+): string[] {
   const allCheckNames = new Set<string>();
   for (const world of worlds) {
-    for (const area of Object.values(world.areas as Record<string, any>)) {
+    for (const area of Object.values(
+      world.areas as Record<string, Record<string, unknown>>,
+    )) {
       if (area.locations) {
         for (const locName of Object.keys(area.locations)) {
           allCheckNames.add(locName);
@@ -492,13 +496,19 @@ function resolveCheckName(worlds: any[], checkName: string): string[] {
   return matches;
 }
 
-function findCheckAreas(worlds: any[], checkName: string): string[] {
+function findCheckAreas(
+  worlds: Record<string, unknown>[],
+  checkName: string,
+): string[] {
   const areas: string[] = [];
   for (const world of worlds) {
     for (const [areaName, area] of Object.entries(
-      world.areas as Record<string, any>,
+      world.areas as Record<string, Record<string, unknown>>,
     )) {
-      if (area.locations && checkName in area.locations) {
+      if (
+        area.locations &&
+        checkName in (area.locations as Record<string, unknown>)
+      ) {
         areas.push(areaName);
       }
     }
@@ -700,7 +710,7 @@ async function main() {
 
     // Try to find similar check names to help the user
     const allLocations = tracker.getAllLocations();
-    const suggestions = allLocations.filter((loc: any) => {
+    const suggestions = allLocations.filter((loc: Record<string, unknown>) => {
       const locName = (loc.id || loc.name || String(loc)).toLowerCase();
       const checkLower = checkName.toLowerCase();
       return (
@@ -725,7 +735,8 @@ async function main() {
 
   // Now trace the path
   // Access internal worlds for area graph and reachable areas
-  const worlds = (tracker as any).worlds;
+  const worlds = (tracker as unknown as { worlds?: Record<string, unknown>[] })
+    .worlds;
   if (!worlds) {
     console.log('  (Could not access world graph for path tracing)');
     process.exit(0);
@@ -757,8 +768,16 @@ async function main() {
 
   // Get reachable areas from the pathfinder state
   // We need to run the pathfinder again to get the state with areas
-  const playerItems = (tracker as any).buildPlayerItemsFromInventory(inventory);
-  const pathfinder = (tracker as any).pathfinder;
+  const playerItems = (
+    tracker as unknown as {
+      buildPlayerItemsFromInventory: (inv: unknown) => unknown;
+    }
+  ).buildPlayerItemsFromInventory(inventory);
+  const pathfinder = (
+    tracker as unknown as {
+      pathfinder: { run: (a: unknown, b: unknown) => unknown };
+    }
+  ).pathfinder;
   const state = pathfinder.run(null, {
     assumedItems: playerItems,
     recursive: true,

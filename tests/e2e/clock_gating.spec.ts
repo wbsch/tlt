@@ -14,10 +14,13 @@ async function enableClocksAsItems(page: Page): Promise<void> {
   await page.evaluate(async () => {
     const trackerRoot = document.querySelector('.ootmm-tracker');
     const component = trackerRoot
-      ? (trackerRoot as HTMLElement & { __vueParentComponent?: any })
-          .__vueParentComponent
+      ? (
+          trackerRoot as HTMLElement & {
+            __vueParentComponent?: Record<string, unknown>;
+          }
+        ).__vueParentComponent
       : null;
-    const setup = component?.setupState;
+    const setup = component?.setupState as Record<string, unknown> | undefined;
     const applySettings = setup?.handleSettingsChange;
     const trackerSettings = setup?.trackerSettings;
     if (typeof applySettings !== 'function' || !trackerSettings) {
@@ -25,7 +28,7 @@ async function enableClocksAsItems(page: Page): Promise<void> {
     }
 
     await applySettings({
-      ...trackerSettings,
+      ...(trackerSettings as Record<string, unknown>),
       clocks: true,
       progressiveClocks: 'separate',
     });
@@ -45,8 +48,11 @@ async function getReachableLocationIds(page: Page): Promise<string[]> {
   return page.evaluate(() => {
     const trackerRoot = document.querySelector('.ootmm-tracker');
     const component = trackerRoot
-      ? (trackerRoot as HTMLElement & { __vueParentComponent?: any })
-          .__vueParentComponent
+      ? (
+          trackerRoot as HTMLElement & {
+            __vueParentComponent?: Record<string, unknown>;
+          }
+        ).__vueParentComponent
       : null;
     const setup = component?.setupState;
     const reachable = setup?.reachableLocationIds;
