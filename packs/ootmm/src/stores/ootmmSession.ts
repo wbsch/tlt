@@ -1,4 +1,5 @@
 import { defineStore } from 'pinia';
+import { isSafeKey } from '@/utils/safeJson';
 import { computed, markRaw, nextTick, ref } from 'vue';
 import type { TrackerPack } from '@/types/tracker';
 import { useSyncStatusStore } from '@/stores/syncStatus';
@@ -52,6 +53,7 @@ function sanitizeInventoryRecord(
 ): Record<string, number> {
   const next: Record<string, number> = {};
   for (const [itemId, count] of Object.entries(record)) {
+    if (!isSafeKey(itemId)) continue;
     if (!Number.isFinite(count) || count <= 0) continue;
     next[itemId] = Math.floor(count);
   }
@@ -63,6 +65,7 @@ function sanitizeNonNegativeNumberRecord(
 ): Record<string, number> {
   const next: Record<string, number> = {};
   for (const [key, value] of Object.entries(record)) {
+    if (!isSafeKey(key)) continue;
     const numeric = Number(value);
     if (!Number.isFinite(numeric) || numeric < 0) continue;
     next[key] = Math.floor(numeric);
@@ -123,6 +126,7 @@ function deepCloneValue(value: unknown): unknown {
     for (const [key, entry] of Object.entries(
       value as Record<string, unknown>,
     )) {
+      if (!isSafeKey(key)) continue;
       cloned[key] = deepCloneValue(entry);
     }
     return cloned;

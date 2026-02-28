@@ -1,4 +1,6 @@
 import type { PiniaPluginContext } from 'pinia';
+import { isSafeKey, safeJsonParse } from '@/utils/safeJson';
+import { TRACKER_DEFAULT_SETTINGS } from '@packs/ootmm/data/settings';
 
 export type PersistConfig = {
   key: string;
@@ -22,11 +24,71 @@ function isPlainObject(value: unknown): value is Record<string, unknown> {
   return Boolean(value) && typeof value === 'object' && !Array.isArray(value);
 }
 
+/** Maximum length for persisted UI string values (search queries, etc.). */
+const MAX_UI_STRING_LENGTH = 500;
+
+/** Known setting keys from the tracker defaults — used as an allowlist. */
+const KNOWN_SETTINGS_KEYS = new Set(Object.keys(TRACKER_DEFAULT_SETTINGS));
+
+/**
+ * Recursively strip dangerous keys from a JSON-safe value.
+ * Returns only primitives, plain-object trees, and arrays.
+ */
+function deepSanitizeJsonValue(value: unknown): unknown {
+  if (value === null || value === undefined) return value;
+  if (
+    typeof value === 'string' ||
+    typeof value === 'number' ||
+    typeof value === 'boolean'
+  ) {
+    return value;
+  }
+  if (Array.isArray(value)) {
+    return value.map((entry) => deepSanitizeJsonValue(entry));
+  }
+  if (isPlainObject(value)) {
+    const out: Record<string, unknown> = {};
+    for (const [key, entry] of Object.entries(value)) {
+      if (!isSafeKey(key)) continue;
+      out[key] = deepSanitizeJsonValue(entry);
+    }
+    return out;
+  }
+  // Drop functions, symbols, class instances, etc. that shouldn't be here.
+  return undefined;
+}
+
+/**
+ * Sanitize `trackerSettings`: only allow keys present in
+ * TRACKER_DEFAULT_SETTINGS, and recursively strip dangerous keys / non-JSON
+ * values from every value.
+ */
+function sanitizeSettingsObject(
+  raw: Record<string, unknown>,
+): Record<string, unknown> {
+  const safe: Record<string, unknown> = {};
+  for (const [key, value] of Object.entries(raw)) {
+    if (!isSafeKey(key)) continue;
+    if (!KNOWN_SETTINGS_KEYS.has(key)) continue;
+    safe[key] = deepSanitizeJsonValue(value);
+  }
+  return safe;
+}
+
+/** Clamp a string to MAX_UI_STRING_LENGTH. */
+function safeUiString(value: unknown): string | undefined {
+  if (typeof value !== 'string') return undefined;
+  return value.slice(0, MAX_UI_STRING_LENGTH);
+}
+
 function stringArray(value: unknown): string[] {
   if (!Array.isArray(value)) return [];
   return Array.from(
     new Set(
-      value.filter((entry): entry is string => typeof entry === 'string'),
+      value.filter(
+        (entry): entry is string =>
+          typeof entry === 'string' && isSafeKey(entry),
+      ),
     ),
   );
 }
@@ -35,6 +97,7 @@ function numberRecord(value: unknown): Record<string, number> {
   if (!isPlainObject(value)) return {};
   const next: Record<string, number> = {};
   for (const [key, count] of Object.entries(value)) {
+    if (!isSafeKey(key)) continue;
     if (typeof count !== 'number' || !Number.isFinite(count) || count <= 0)
       continue;
     next[key] = Math.floor(count);
@@ -46,6 +109,7 @@ function nonNegativeNumberRecord(value: unknown): Record<string, number> {
   if (!isPlainObject(value)) return {};
   const next: Record<string, number> = {};
   for (const [key, numericValue] of Object.entries(value)) {
+    if (!isSafeKey(key)) continue;
     if (
       typeof numericValue !== 'number' ||
       !Number.isFinite(numericValue) ||
@@ -106,16 +170,24 @@ export const PERSIST_CONFIGS: Record<PersistStoreId, PersistConfig> = {
         ? { isEntrancesSidebarOpen: raw.isEntrancesSidebarOpen }
         : {}),
       ...(typeof raw.inventorySearchQuery === 'string'
-        ? { inventorySearchQuery: raw.inventorySearchQuery }
+        ? { inventorySearchQuery: safeUiString(raw.inventorySearchQuery) }
         : {}),
       ...(typeof raw.inventorySelectedCategory === 'string'
-        ? { inventorySelectedCategory: raw.inventorySelectedCategory }
+        ? {
+            inventorySelectedCategory: safeUiString(
+              raw.inventorySelectedCategory,
+            ),
+          }
         : {}),
       ...(typeof raw.locationsSearchQuery === 'string'
-        ? { locationsSearchQuery: raw.locationsSearchQuery }
+        ? { locationsSearchQuery: safeUiString(raw.locationsSearchQuery) }
         : {}),
       ...(typeof raw.locationsSelectedCategory === 'string'
-        ? { locationsSelectedCategory: raw.locationsSelectedCategory }
+        ? {
+            locationsSelectedCategory: safeUiString(
+              raw.locationsSelectedCategory,
+            ),
+          }
         : {}),
       ...(typeof raw.locationsReachabilityFilter === 'string' &&
       VALID_REACHABILITY_FILTERS.has(raw.locationsReachabilityFilter)
@@ -132,10 +204,10 @@ export const PERSIST_CONFIGS: Record<PersistStoreId, PersistConfig> = {
         ? { locationsShowGossipStones: raw.locationsShowGossipStones }
         : {}),
       ...(typeof raw.activeMapId === 'string'
-        ? { activeMapId: raw.activeMapId }
+        ? { activeMapId: safeUiString(raw.activeMapId) }
         : {}),
       ...(typeof raw.settingsSearchQuery === 'string'
-        ? { settingsSearchQuery: raw.settingsSearchQuery }
+        ? { settingsSearchQuery: safeUiString(raw.settingsSearchQuery) }
         : {}),
     }),
   },
@@ -170,7 +242,7 @@ export const PERSIST_CONFIGS: Record<PersistStoreId, PersistConfig> = {
         ? { entranceOverrides: stringRecord(raw.entranceOverrides) }
         : {}),
       ...(isPlainObject(raw.trackerSettings)
-        ? { trackerSettings: raw.trackerSettings }
+        ? { trackerSettings: sanitizeSettingsObject(raw.trackerSettings) }
         : {}),
     }),
   },
@@ -213,7 +285,7 @@ export function piniaLocalStoragePlugin({ store }: PiniaPluginContext) {
   try {
     const raw = window.localStorage.getItem(config.key);
     if (raw) {
-      const parsed = JSON.parse(raw) as unknown;
+      const parsed = safeJsonParse(raw);
       if (isPlainObject(parsed)) {
         // config.hydrate validates and returns a safe partial state update.
         // TypeScript can't verify this matches the exact store type statically,

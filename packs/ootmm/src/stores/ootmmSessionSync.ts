@@ -1,3 +1,5 @@
+import { safeJsonParse } from '@/utils/safeJson';
+
 export const OOTMM_LOCAL_SESSION_ID = 'ootmm:local-default';
 
 const OPS_CHANNEL_NAME = 'tlt:ootmm-session-ops:v1';
@@ -154,7 +156,7 @@ function isPresenceMessage(value: unknown): value is PresenceMessage {
 function readFromStorageEvent(storageValue: string | null): unknown {
   if (!storageValue) return null;
   try {
-    return JSON.parse(storageValue) as unknown;
+    return safeJsonParse(storageValue);
   } catch {
     return null;
   }

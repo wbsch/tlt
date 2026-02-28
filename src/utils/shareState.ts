@@ -5,11 +5,18 @@ import {
   sanitizePersistedStateForStore,
   type PersistStoreId,
 } from '@/stores/persist';
+import { safeJsonParse } from '@/utils/safeJson';
 import { TRACKER_DEFAULT_SETTINGS } from '@packs/ootmm/data/settings';
 
 const SHARE_HASH_PARAM = 's';
 const SHARE_PAYLOAD_PREFIX = 'v1.';
 const SHARE_SCHEMA_VERSION = 1;
+/**
+ * Maximum allowed size for decompressed share payloads (512 KiB).
+ * A normal full-state export is typically 5-15 KiB; this limit prevents
+ * decompression bombs.
+ */
+const MAX_INFLATED_SIZE = 512 * 1024;
 const textEncoder = new TextEncoder();
 const textDecoder = new TextDecoder();
 const IMPORT_CONFIRM_MESSAGE =
@@ -78,12 +85,8 @@ function mergeSettingsWithDefaults(
       ? diff[key]
       : structuredClone(value);
   }
-  // Include any keys in diff that aren't in defaults (forward-compat)
-  for (const [key, value] of Object.entries(diff)) {
-    if (!Object.prototype.hasOwnProperty.call(merged, key)) {
-      merged[key] = value;
-    }
-  }
+  // Only known default keys are accepted — unknown keys from the payload are
+  // intentionally discarded to prevent injection of unexpected properties.
   return merged;
 }
 
@@ -174,7 +177,7 @@ export function collectPersistedStateFromLocalStorage(): PersistedSnapshot {
     if (!raw) continue;
 
     try {
-      const parsed = JSON.parse(raw) as unknown;
+      const parsed = safeJsonParse(raw);
       const sanitized = sanitizePersistedStateForStore(storeId, parsed);
       if (Object.keys(sanitized).length > 0) {
         stores[storeId] = sanitized;
@@ -263,8 +266,13 @@ export function decodeHashPayloadToSnapshot(
     inflated instanceof Uint8Array
       ? inflated
       : textEncoder.encode(String(inflated));
+  if (inflatedBytes.byteLength > MAX_INFLATED_SIZE) {
+    throw new Error(
+      `Share payload too large after decompression: ${inflatedBytes.byteLength} bytes (max ${MAX_INFLATED_SIZE})`,
+    );
+  }
   const decodedJson = textDecoder.decode(inflatedBytes);
-  const parsed = JSON.parse(decodedJson) as unknown;
+  const parsed = safeJsonParse(decodedJson);
   if (!isPlainObject(parsed)) {
     throw new Error('Share payload is not an object');
   }
@@ -313,7 +321,7 @@ export function hasMeaningfulLocalState(): boolean {
   if (!raw) return false;
 
   try {
-    const parsed = JSON.parse(raw) as unknown;
+    const parsed = safeJsonParse(raw);
     const session = sanitizePersistedStateForStore(sessionStoreId, parsed);
     return (
       hasObjectEntries(session.inventoryById) ||
