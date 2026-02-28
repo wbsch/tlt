@@ -68,6 +68,10 @@ test.describe('multi-tab sync', () => {
     await expect(page.getByTestId('reset-tracker-confirm-modal')).toBeVisible();
     await page.getByTestId('reset-tracker-confirm-apply-button').click();
 
+    // Reset switches the active tab back to 'grid', so re-open "All Items"
+    // on page 1 before checking the owned class.
+    await page.getByTestId('tab-inventory').click();
+
     await expect
       .poll(() => isOwned(page, BOMB_TEST_ID), { timeout: 20_000 })
       .toBe(false);

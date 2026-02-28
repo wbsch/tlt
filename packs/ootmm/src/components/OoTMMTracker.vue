@@ -751,6 +751,7 @@ function fillInventory() {
 }
 
 function resetTrackerState() {
+  uiStore.resetUiState();
   void sessionStore.resetSessionStateToDefaults();
 }
 
