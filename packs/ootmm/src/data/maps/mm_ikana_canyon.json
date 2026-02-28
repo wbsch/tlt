@@ -451,7 +451,7 @@
     {
       "coords": [80, 527],
       "image": "grotto",
-      "overlays": ["day3"],
+      "overlays": ["day2"],
       "type": "submenu",
       "markers": [
         {

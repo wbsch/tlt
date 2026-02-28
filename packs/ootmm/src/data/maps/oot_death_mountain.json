@@ -114,7 +114,7 @@
     {
       "coords": [414, 368],
       "image": "gold_skulltula",
-      "overlays": ["adult", "night"],
+      "overlays": ["adult"],
       "codes": ["OOT Goron City GS Platform"]
     },
     {
@@ -219,6 +219,7 @@
     {
       "coords": [919, 247],
       "image": "green_rupee",
+      "overlays": ["adult"],
       "codes": [
         "OOT Death Mountain Crater Rupee Adult 1",
         "OOT Death Mountain Crater Rupee Adult 2",
@@ -231,6 +232,7 @@
     {
       "coords": [935, 247],
       "image": "red_rupee",
+      "overlays": ["adult"],
       "codes": ["OOT Death Mountain Crater Rupee Adult 7"]
     },
     {
