@@ -80,6 +80,7 @@ export const PERSIST_CONFIGS: Record<PersistStoreId, PersistConfig> = {
       'locationsReachabilityFilter',
       'locationsCollectionFilter',
       'locationsShowUnshuffled',
+      'locationsShowGossipStones',
       'activeMapId',
       'settingsSearchQuery',
     ],
@@ -112,6 +113,9 @@ export const PERSIST_CONFIGS: Record<PersistStoreId, PersistConfig> = {
         : {}),
       ...(typeof raw.locationsShowUnshuffled === 'boolean'
         ? { locationsShowUnshuffled: raw.locationsShowUnshuffled }
+        : {}),
+      ...(typeof raw.locationsShowGossipStones === 'boolean'
+        ? { locationsShowGossipStones: raw.locationsShowGossipStones }
         : {}),
       ...(typeof raw.activeMapId === 'string'
         ? { activeMapId: raw.activeMapId }

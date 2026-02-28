@@ -974,6 +974,13 @@ export const useOoTMMSessionStore = defineStore('ootmm-session', () => {
     canComplete.value = result.canComplete;
     statsExtra.value = result.extra ?? {};
 
+    // Skip vanilla silver rupee auto-tracking while settings are being applied.
+    // During tracker re-initialization (e.g. on reload), watches fire before
+    // the tracker has been re-initialized with persisted settings, so the
+    // tracker still uses defaults (silverRupeeShuffle: 'vanilla') and would
+    // incorrectly clear manually-set silver rupee counts from inventory.
+    if (isApplyingSettings.value) return;
+
     const autoCounts = (
       result.extra as
         | { vanillaSilverRupeeCounts?: Record<string, number> }
