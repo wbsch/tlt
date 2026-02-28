@@ -16,6 +16,7 @@ const VALID_TABS: TrackerTab[] = [
 export const useOoTMMUiStore = defineStore('ootmm-ui', () => {
   const activeTab = ref<TrackerTab>('grid');
   const isLocationsSidebarOpen = ref(true);
+  const isEntrancesSidebarOpen = ref(false);
 
   const inventorySearchQuery = ref('');
   const inventorySelectedCategory = ref('all');
@@ -56,6 +57,7 @@ export const useOoTMMUiStore = defineStore('ootmm-ui', () => {
   function resetUiState() {
     activeTab.value = 'grid';
     isLocationsSidebarOpen.value = true;
+    isEntrancesSidebarOpen.value = false;
 
     inventorySearchQuery.value = '';
     inventorySelectedCategory.value = 'all';
@@ -77,6 +79,7 @@ export const useOoTMMUiStore = defineStore('ootmm-ui', () => {
   return {
     activeTab,
     isLocationsSidebarOpen,
+    isEntrancesSidebarOpen,
     inventorySearchQuery,
     inventorySelectedCategory,
     locationsSearchQuery,

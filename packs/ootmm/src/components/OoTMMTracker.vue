@@ -4,6 +4,7 @@ import { storeToRefs } from 'pinia';
 import type { TrackerPack } from '@/types/tracker';
 import OoTMMInventory from './OoTMMInventory.vue';
 import OoTMMLocations from './OoTMMLocations.vue';
+import OoTMMEntrances from './OoTMMEntrances.vue';
 import OoTMMSettings from './OoTMMSettings.vue';
 import OoTMMItemGrid from './OoTMMItemGrid.vue';
 import OoTMMWorld from './OoTMMWorld.vue';
@@ -126,6 +127,7 @@ const {
 const {
   activeTab,
   isLocationsSidebarOpen,
+  isEntrancesSidebarOpen,
   isSpoilerDragActive,
   spoilerDragDepth,
   locationsSearchQuery,
@@ -200,6 +202,12 @@ function isMapVisibleForSelectedGames(
 const selectedGamesSetting = computed<SelectedGamesSetting>(() =>
   resolveSelectedGamesSetting(trackerSettings.value?.games),
 );
+
+const isErDungeonsActive = computed(() => {
+  const erDungeons = trackerSettings.value?.erDungeons;
+  return erDungeons !== undefined && erDungeons !== 'none';
+});
+
 const selectableMapDefs = computed(() =>
   mapDefs.filter((mapDef) =>
     isMapVisibleForSelectedGames(mapDef, selectedGamesSetting.value),
@@ -1677,6 +1685,34 @@ onBeforeUnmount(() => {
       </div>
 
       <aside
+        v-if="isErDungeonsActive"
+        class="entrances-sidebar"
+        :class="{ collapsed: !isEntrancesSidebarOpen }"
+      >
+        <button
+          class="entrances-toggle"
+          type="button"
+          :aria-expanded="isEntrancesSidebarOpen"
+          aria-controls="map-entrances-panel"
+          @click="isEntrancesSidebarOpen = !isEntrancesSidebarOpen"
+        >
+          <span class="toggle-text">Entrances</span>
+          <span class="toggle-icon">{{
+            isEntrancesSidebarOpen ? '>>' : '<<'
+          }}</span>
+        </button>
+        <div class="entrances-clip">
+          <div
+            id="map-entrances-panel"
+            class="entrances-content"
+            :aria-hidden="!isEntrancesSidebarOpen"
+          >
+            <OoTMMEntrances class="map-entrances" />
+          </div>
+        </div>
+      </aside>
+
+      <aside
         class="locations-sidebar"
         :class="{ collapsed: !isLocationsSidebarOpen }"
       >
@@ -2222,6 +2258,83 @@ onBeforeUnmount(() => {
   min-height: 0;
 }
 
+.entrances-sidebar {
+  position: relative;
+  width: 300px;
+  flex: 0 0 300px;
+  background: #2a2a2a;
+  border-left: 2px solid #404040;
+  display: flex;
+  flex-direction: column;
+  transition:
+    width 0.2s ease,
+    flex-basis 0.2s ease;
+  overflow: visible;
+}
+
+.entrances-sidebar.collapsed {
+  width: 0;
+  flex: 0 0 0;
+  border-left: none;
+}
+
+.entrances-clip {
+  position: relative;
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.entrances-toggle {
+  position: absolute;
+  top: 50px;
+  left: 0;
+  transform: translateX(calc(-100% + 4px));
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.4rem 0.6rem;
+  background: #2a2a2a;
+  border: 1px solid #404040;
+  border-radius: 0.5rem 0 0 0.5rem;
+  color: #e5e7eb;
+  font-size: 0.75rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition:
+    background 0.2s ease,
+    border-color 0.2s ease;
+}
+
+.entrances-toggle:hover {
+  background: #333;
+  border-color: #4b5563;
+}
+
+.entrances-toggle:focus-visible {
+  outline: 2px solid #60a5fa;
+  outline-offset: 2px;
+}
+
+.entrances-content {
+  position: absolute;
+  inset: 0;
+  width: 300px;
+  display: flex;
+  flex-direction: column;
+}
+
+.entrances-sidebar.collapsed .entrances-content {
+  visibility: hidden;
+  pointer-events: none;
+}
+
+.map-entrances {
+  flex: 1;
+  min-height: 0;
+}
+
 .locations-sidebar {
   position: relative;
   width: 400px;
@@ -2363,6 +2476,31 @@ onBeforeUnmount(() => {
   }
 
   .locations-content {
+    position: relative;
+    width: 100%;
+  }
+
+  .entrances-sidebar {
+    width: 100%;
+    flex: 0 0 auto;
+    border-left: none;
+    border-top: 2px solid #404040;
+  }
+
+  .entrances-sidebar.collapsed {
+    width: 100%;
+    flex: 0 0 0;
+    border-top: none;
+  }
+
+  .entrances-toggle {
+    left: 12px;
+    top: -16px;
+    border-radius: 0.5rem;
+    transform: none;
+  }
+
+  .entrances-content {
     position: relative;
     width: 100%;
   }

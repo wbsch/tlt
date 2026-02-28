@@ -26,6 +26,7 @@ type SessionSnapshot = {
   songEvents: Record<string, number>;
   shopPrices: Record<string, number>;
   trackerSettings: Record<string, unknown>;
+  entranceOverrides: Record<string, string>;
 };
 
 type MutationOptions = {
@@ -193,12 +194,31 @@ export const useOoTMMSessionStore = defineStore('ootmm-session', () => {
   const syncStatusStore = useSyncStatusStore();
   const tracker = ref<TrackerPack | null>(null);
 
+  function injectEntranceOverridesIntoSettings(
+    settings: Record<string, unknown>,
+    overrides: Record<string, string>,
+  ): Record<string, unknown> {
+    const erDungeons = settings?.erDungeons;
+    const isErActive = erDungeons && erDungeons !== 'none';
+    if (!isErActive) return settings;
+    const hasOverrides = Object.keys(overrides).length > 0;
+    if (!hasOverrides) return settings;
+    return {
+      ...settings,
+      plando: {
+        ...((settings.plando as Record<string, unknown>) ?? {}),
+        entrances: { ...overrides },
+      },
+    };
+  }
+
   const inventoryById = ref<Record<string, number>>({});
   const collectedLocationIds = ref<string[]>([]);
   const preCompletedDungeons = ref<string[]>([]);
   const autoCollectedPreCompletedLocationIds = ref<string[]>([]);
   const songEvents = ref<Record<string, number>>({});
   const shopPrices = ref<Record<string, number>>({});
+  const entranceOverrides = ref<Record<string, string>>({});
 
   const trackerSettings = ref<Record<string, unknown>>({});
   const availableItemIds = ref<string[]>([]);
@@ -274,6 +294,7 @@ export const useOoTMMSessionStore = defineStore('ootmm-session', () => {
       songEvents: { ...songEvents.value },
       shopPrices: { ...shopPrices.value },
       trackerSettings: cloneSettingsRecord(trackerSettings.value),
+      entranceOverrides: { ...entranceOverrides.value },
     };
   }
 
@@ -463,6 +484,9 @@ export const useOoTMMSessionStore = defineStore('ootmm-session', () => {
       ...snapshot.shopPrices,
     });
     const targetSettings = cloneSettingsRecord(snapshot.trackerSettings);
+    const targetEntranceOverrides = snapshot.entranceOverrides
+      ? { ...snapshot.entranceOverrides }
+      : {};
 
     isNavigatingHistory.value = true;
     try {
@@ -474,16 +498,16 @@ export const useOoTMMSessionStore = defineStore('ootmm-session', () => {
         songEvents.value = targetSongEvents;
         shopPrices.value = targetShopPrices;
         trackerSettings.value = targetSettings;
+        entranceOverrides.value = targetEntranceOverrides;
         reachableLocationIds.value = [];
         canComplete.value = false;
         statsExtra.value = {};
         return true;
       }
 
-      const requiresSettingsReinitialize = !areSettingsEqual(
-        trackerSettings.value,
-        targetSettings,
-      );
+      const requiresSettingsReinitialize =
+        !areSettingsEqual(trackerSettings.value, targetSettings) ||
+        !areSettingsEqual(entranceOverrides.value, targetEntranceOverrides);
       if (requiresSettingsReinitialize) {
         isApplyingSettings.value = true;
         try {
@@ -492,7 +516,11 @@ export const useOoTMMSessionStore = defineStore('ootmm-session', () => {
             requestAnimationFrame(() => requestAnimationFrame(resolve)),
           );
           currentTracker.reset();
-          await currentTracker.initialize(targetSettings);
+          const settingsWithEntrances = injectEntranceOverridesIntoSettings(
+            targetSettings,
+            targetEntranceOverrides,
+          );
+          await currentTracker.initialize(settingsWithEntrances);
           trackerSettings.value = { ...currentTracker.getSettings() };
           availableItemIds.value = setToArray(
             currentTracker.getAvailableItemIds?.() ?? new Set<string>(),
@@ -512,6 +540,7 @@ export const useOoTMMSessionStore = defineStore('ootmm-session', () => {
       autoCollectedPreCompletedLocationIds.value = [];
       songEvents.value = targetSongEvents;
       shopPrices.value = targetShopPrices;
+      entranceOverrides.value = targetEntranceOverrides;
       applyPreCompletedDungeons();
       applySongEvents();
       applyShopPrices();
@@ -558,10 +587,9 @@ export const useOoTMMSessionStore = defineStore('ootmm-session', () => {
       ? persistedSettings
       : cloneSettingsRecord(TRACKER_DEFAULT_SETTINGS);
     const currentSettings = nextTracker.getSettings();
-    const shouldReinitializeWithTargetSettings = !areSettingsEqual(
-      targetSettings,
-      currentSettings,
-    );
+    const shouldReinitializeWithTargetSettings =
+      !areSettingsEqual(targetSettings, currentSettings) ||
+      Object.keys(entranceOverrides.value).length > 0;
     if (shouldReinitializeWithTargetSettings) {
       isApplyingSettings.value = true;
       try {
@@ -569,7 +597,11 @@ export const useOoTMMSessionStore = defineStore('ootmm-session', () => {
         await new Promise((resolve) =>
           requestAnimationFrame(() => requestAnimationFrame(resolve)),
         );
-        await nextTracker.initialize(targetSettings);
+        const settingsWithEntrances = injectEntranceOverridesIntoSettings(
+          targetSettings,
+          entranceOverrides.value,
+        );
+        await nextTracker.initialize(settingsWithEntrances);
       } catch (error) {
         console.error('Failed to initialize tracker settings:', error);
       } finally {
@@ -799,6 +831,98 @@ export const useOoTMMSessionStore = defineStore('ootmm-session', () => {
     );
   }
 
+  function setEntranceOverride(
+    src: string,
+    dst: string | null,
+    options?: MutationOptions,
+  ) {
+    if (!src) return;
+    const previousSnapshot = captureSnapshotForMutation(options);
+    const next = { ...entranceOverrides.value };
+    if (dst === null || dst === '') {
+      delete next[src];
+    } else {
+      next[src] = dst;
+    }
+    entranceOverrides.value = next;
+    recordHistoryFromSnapshot(previousSnapshot);
+    publishSyncOperation(
+      {
+        type: 'world.set_entrance_override',
+        src,
+        dst,
+      },
+      options,
+    );
+    if (options?.source !== 'remote') {
+      scheduleReinitializeForEntrances();
+    }
+  }
+
+  function setEntranceOverrides(
+    overrides: Record<string, string>,
+    options?: MutationOptions,
+  ) {
+    const previousSnapshot = captureSnapshotForMutation(options);
+    entranceOverrides.value = { ...overrides };
+    recordHistoryFromSnapshot(previousSnapshot);
+    publishSyncOperation(
+      {
+        type: 'world.set_entrance_overrides',
+        overrides: { ...overrides },
+      },
+      options,
+    );
+    if (options?.source !== 'remote') {
+      scheduleReinitializeForEntrances();
+    }
+  }
+
+  let reinitEntrancesTimer: ReturnType<typeof setTimeout> | null = null;
+
+  function scheduleReinitializeForEntrances() {
+    if (reinitEntrancesTimer !== null) clearTimeout(reinitEntrancesTimer);
+    reinitEntrancesTimer = setTimeout(() => {
+      reinitEntrancesTimer = null;
+      reinitializeForEntrances();
+    }, 350);
+  }
+
+  async function reinitializeForEntrances() {
+    if (isApplyingSettings.value) return;
+    const currentTracker = tracker.value;
+    if (!currentTracker) return;
+
+    isApplyingSettings.value = true;
+    try {
+      await nextTick();
+      await new Promise((resolve) =>
+        requestAnimationFrame(() => requestAnimationFrame(resolve)),
+      );
+      currentTracker.reset();
+      const settingsWithEntrances = injectEntranceOverridesIntoSettings(
+        trackerSettings.value,
+        entranceOverrides.value,
+      );
+      await currentTracker.initialize(settingsWithEntrances);
+      trackerSettings.value = { ...currentTracker.getSettings() };
+      availableItemIds.value = setToArray(
+        currentTracker.getAvailableItemIds?.() ?? new Set<string>(),
+      );
+      itemMaxCountsById.value = mapNumberToRecord(
+        currentTracker.getItemMaxCounts?.() ?? new Map<string, number>(),
+      );
+      applyPreCompletedDungeons();
+      applySongEvents();
+      applyShopPrices();
+      recomputeReachability();
+    } catch (error) {
+      console.error('Failed to reinitialize for entrance overrides:', error);
+    } finally {
+      isApplyingSettings.value = false;
+    }
+  }
+
   function applyPreCompletedDungeons() {
     const currentTracker = tracker.value;
     if (!currentTracker || !currentTracker.setPreCompletedDungeons) return;
@@ -920,7 +1044,11 @@ export const useOoTMMSessionStore = defineStore('ootmm-session', () => {
         requestAnimationFrame(() => requestAnimationFrame(resolve)),
       );
       currentTracker.reset();
-      await currentTracker.initialize(nextSettings);
+      const settingsWithEntrances = injectEntranceOverridesIntoSettings(
+        nextSettings,
+        entranceOverrides.value,
+      );
+      await currentTracker.initialize(settingsWithEntrances);
       trackerSettings.value = { ...currentTracker.getSettings() };
       availableItemIds.value = setToArray(
         currentTracker.getAvailableItemIds?.() ?? new Set<string>(),
@@ -1003,6 +1131,7 @@ export const useOoTMMSessionStore = defineStore('ootmm-session', () => {
     autoCollectedPreCompletedLocationIds.value = [];
     songEvents.value = {};
     shopPrices.value = {};
+    entranceOverrides.value = {};
 
     if (!currentTracker) {
       trackerSettings.value = {};
@@ -1073,6 +1202,7 @@ export const useOoTMMSessionStore = defineStore('ootmm-session', () => {
     preCompletedDungeons,
     songEvents,
     shopPrices,
+    entranceOverrides,
     trackerSettings,
     availableItemIds,
     itemMaxCountsById,
@@ -1107,6 +1237,8 @@ export const useOoTMMSessionStore = defineStore('ootmm-session', () => {
     setSongEvents,
     setShopPrices,
     setShopPriceForLocation,
+    setEntranceOverride,
+    setEntranceOverrides,
     applyPreCompletedDungeons,
     applySongEvents,
     applyShopPrices,

@@ -17,6 +17,7 @@ import * as MonitorMod from '@ootmm/core/monitor';
 import * as SettingsMod from '@ootmm/core/settings/index';
 import * as EntranceMod from '@ootmm/core/logic/entrance';
 import * as IsShuffledMod from '@ootmm/core/logic/is-shuffled';
+import * as DataMod from '@ootmm/data';
 
 import { ITEM_DATABASE } from './data/items';
 import { LOCATION_CODE_CATALOG } from './data/locationCatalog';
@@ -74,6 +75,49 @@ const isShuffled = resolveExport<typeof IsShuffledMod.isShuffled>(
   IsShuffledMod,
   'isShuffled',
 );
+const ENTRANCES_DATA =
+  resolveExport<
+    Record<
+      string,
+      { game: string; type: string; from: string; to: string; reverse?: string }
+    >
+  >(DataMod, 'ENTRANCES') ?? {};
+
+/** Map from entrance type to the ER sub-setting that enables it. */
+const ENTRANCE_TYPE_TO_SETTING: Record<string, string> = {
+  dungeon: 'erMajorDungeons',
+  'dungeon-minor': 'erMinorDungeons',
+  'dungeon-ganon': 'erGanonCastle',
+  'dungeon-ganon-tower': 'erGanonTower',
+  'dungeon-sh': 'erSpiderHouses',
+  'dungeon-pf': 'erPirateFortress',
+  'dungeon-btw': 'erBeneathWell',
+  'dungeon-acoi': 'erIkanaCastle',
+  'dungeon-ss': 'erSecretShrine',
+  'dungeon-ctr': 'erMoon',
+};
+
+/** Set of all dungeon-related entrance types. */
+const DUNGEON_ENTRANCE_TYPES = new Set(Object.keys(ENTRANCE_TYPE_TO_SETTING));
+
+function getEnabledDungeonEntranceTypes(
+  settingsObj: Record<string, unknown>,
+): Set<string> {
+  const enabled = new Set<string>();
+  for (const [type, settingKey] of Object.entries(ENTRANCE_TYPE_TO_SETTING)) {
+    if (Boolean(settingsObj?.[settingKey])) {
+      enabled.add(type);
+    }
+  }
+
+  // If ER dungeons is active but no sub-category is explicitly enabled,
+  // default to major dungeons so core dungeon entrances are included.
+  if (enabled.size === 0) {
+    enabled.add('dungeon');
+  }
+
+  return enabled;
+}
 
 import type { World } from '@ootmm/core/logic/world';
 import type { PlayerItems, PlayerItem } from '@ootmm/core/items/index';
@@ -291,25 +335,50 @@ export class OoTMMTracker implements TrackerPack {
 
     // Run entrance pass to connect games
     this.debugLog('[OoTMM Tracker] Running entrance pass...');
-    const hasPlandoEntrances = Boolean(
-      ootmmSettings.plando &&
-      typeof ootmmSettings.plando === 'object' &&
-      Object.keys(
-        ((ootmmSettings.plando as Record<string, unknown>).entrances as
-          | Record<string, unknown>
-          | undefined) ?? {},
-      ).length > 0,
-    );
-    const entranceInput = hasPlandoEntrances
+    const plandoEntrances: Record<string, string> =
+      ootmmSettings.plando && typeof ootmmSettings.plando === 'object'
+        ? (((ootmmSettings.plando as Record<string, unknown>).entrances as
+            | Record<string, string>
+            | undefined) ?? {})
+        : {};
+
+    // When ER is enabled, add self-mappings for unassigned dungeon entrances
+    // to prevent random shuffling. The tracker should only apply explicit user overrides.
+    const erDungeons = (this.settings as Record<string, unknown>)?.erDungeons;
+    const isErActive = erDungeons && erDungeons !== 'none';
+    const finalPlandoEntrances = { ...plandoEntrances };
+    if (isErActive) {
+      const settingsObj = this.settings as Record<string, unknown>;
+      const enabledTypes = getEnabledDungeonEntranceTypes(settingsObj);
+      for (const [key, data] of Object.entries(ENTRANCES_DATA)) {
+        if (!DUNGEON_ENTRANCE_TYPES.has(data.type)) continue;
+        if (!enabledTypes.has(data.type)) continue;
+        // Only add self-mapping if not already user-overridden
+        if (!finalPlandoEntrances[key]) {
+          finalPlandoEntrances[key] = key;
+        }
+      }
+    }
+
+    const hasPlandoEntrances = Object.keys(finalPlandoEntrances).length > 0;
+    const entranceSettings = hasPlandoEntrances
       ? {
-          ...(worldData as Record<string, unknown>),
-          startingItems: new Map(),
-          settings: {
-            ...(this.settings as Record<string, unknown>),
-            logic: 'none',
+          ...(this.settings as Record<string, unknown>),
+          logic: 'none',
+          plando: {
+            ...(((this.settings as Record<string, unknown>).plando as Record<
+              string,
+              unknown
+            >) ?? {}),
+            entrances: finalPlandoEntrances,
           },
         }
-      : { ...(worldData as Record<string, unknown>), startingItems: new Map() };
+      : this.settings;
+    const entranceInput = {
+      ...(worldData as Record<string, unknown>),
+      startingItems: new Map(),
+      settings: entranceSettings,
+    };
     const entrancePass = new LogicPassEntrances(
       entranceInput as Record<string, unknown>,
     );

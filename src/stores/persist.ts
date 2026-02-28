@@ -58,6 +58,16 @@ function nonNegativeNumberRecord(value: unknown): Record<string, number> {
   return next;
 }
 
+function stringRecord(value: unknown): Record<string, string> {
+  if (!isPlainObject(value)) return {};
+  const next: Record<string, string> = {};
+  for (const [key, entry] of Object.entries(value)) {
+    if (typeof entry !== 'string') continue;
+    next[key] = entry;
+  }
+  return next;
+}
+
 export const PERSIST_CONFIGS: Record<PersistStoreId, PersistConfig> = {
   app: {
     key: 'tlt:app:v1',
@@ -73,6 +83,7 @@ export const PERSIST_CONFIGS: Record<PersistStoreId, PersistConfig> = {
     paths: [
       'activeTab',
       'isLocationsSidebarOpen',
+      'isEntrancesSidebarOpen',
       'inventorySearchQuery',
       'inventorySelectedCategory',
       'locationsSearchQuery',
@@ -90,6 +101,9 @@ export const PERSIST_CONFIGS: Record<PersistStoreId, PersistConfig> = {
         : {}),
       ...(typeof raw.isLocationsSidebarOpen === 'boolean'
         ? { isLocationsSidebarOpen: raw.isLocationsSidebarOpen }
+        : {}),
+      ...(typeof raw.isEntrancesSidebarOpen === 'boolean'
+        ? { isEntrancesSidebarOpen: raw.isEntrancesSidebarOpen }
         : {}),
       ...(typeof raw.inventorySearchQuery === 'string'
         ? { inventorySearchQuery: raw.inventorySearchQuery }
@@ -133,6 +147,7 @@ export const PERSIST_CONFIGS: Record<PersistStoreId, PersistConfig> = {
       'preCompletedDungeons',
       'songEvents',
       'shopPrices',
+      'entranceOverrides',
       'trackerSettings',
     ],
     hydrate: (raw) => ({
@@ -150,6 +165,9 @@ export const PERSIST_CONFIGS: Record<PersistStoreId, PersistConfig> = {
         : {}),
       ...(isPlainObject(raw.shopPrices)
         ? { shopPrices: nonNegativeNumberRecord(raw.shopPrices) }
+        : {}),
+      ...(isPlainObject(raw.entranceOverrides)
+        ? { entranceOverrides: stringRecord(raw.entranceOverrides) }
         : {}),
       ...(isPlainObject(raw.trackerSettings)
         ? { trackerSettings: raw.trackerSettings }

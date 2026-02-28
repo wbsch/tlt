@@ -58,6 +58,7 @@ declare module '@ootmm/core/logic/entrance' {
     constructor(worldData: unknown);
     run(): { worlds: World[] };
   }
+  export const DUNGEON_ENTRANCES: readonly string[];
 }
 
 declare module '@ootmm/core/items/index' {
@@ -157,4 +158,22 @@ declare module '@ootmm/core/logic/world' {
 declare module '@ootmm/data' {
   export const POOL: unknown;
   export const WORLD: unknown;
+  export const ENTRANCES: Record<
+    string,
+    {
+      game: 'oot' | 'mm';
+      id: number;
+      type: string;
+      from: string;
+      to: string;
+      flags: string[];
+      reverse?: string;
+      fromMap: string;
+      toMap: string;
+      fromSubmap: string;
+      toSubmap: string;
+      debug?: string[];
+      [key: string]: unknown;
+    }
+  >;
 }
