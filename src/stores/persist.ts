@@ -1,10 +1,12 @@
 import type { PiniaPluginContext } from 'pinia';
 
-type PersistConfig = {
+export type PersistConfig = {
   key: string;
   paths: string[];
   hydrate: (raw: Record<string, unknown>) => Record<string, unknown>;
 };
+
+export type PersistStoreId = 'app' | 'ootmm-ui' | 'ootmm-session';
 
 const VALID_TABS = new Set([
   'grid',
@@ -56,7 +58,7 @@ function nonNegativeNumberRecord(value: unknown): Record<string, number> {
   return next;
 }
 
-const PERSIST_CONFIGS: Record<string, PersistConfig> = {
+export const PERSIST_CONFIGS: Record<PersistStoreId, PersistConfig> = {
   app: {
     key: 'tlt:app:v1',
     paths: ['selectedPackId'],
@@ -152,6 +154,10 @@ const PERSIST_CONFIGS: Record<string, PersistConfig> = {
   },
 };
 
+export const PERSIST_STORE_IDS = Object.keys(
+  PERSIST_CONFIGS,
+) as PersistStoreId[];
+
 function pickPersistedState(
   state: Record<string, unknown>,
   paths: string[],
@@ -165,10 +171,22 @@ function pickPersistedState(
   return picked;
 }
 
+export function isPersistStoreId(value: string): value is PersistStoreId {
+  return Object.prototype.hasOwnProperty.call(PERSIST_CONFIGS, value);
+}
+
+export function sanitizePersistedStateForStore(
+  storeId: PersistStoreId,
+  raw: unknown,
+): Record<string, unknown> {
+  if (!isPlainObject(raw)) return {};
+  return PERSIST_CONFIGS[storeId].hydrate(raw);
+}
+
 export function piniaLocalStoragePlugin({ store }: PiniaPluginContext) {
   if (typeof window === 'undefined') return;
+  if (!isPersistStoreId(store.$id)) return;
   const config = PERSIST_CONFIGS[store.$id];
-  if (!config) return;
 
   try {
     const raw = window.localStorage.getItem(config.key);

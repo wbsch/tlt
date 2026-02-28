@@ -4,7 +4,7 @@
     "paths": {
       "@/*": ["./src/*"],
       "@packs/ootmm": ["./src/shims/ootmm-pack.d.ts"],
-      "@packs/ootmm/*": ["./src/shims/ootmm-pack.d.ts"],
+      "@packs/ootmm/*": ["./packs/ootmm/src/*"],
       "@ootmm/data": ["./OoTMM/packages/data/src/index.ts"],
       "@ootmm/data/*": ["./OoTMM/packages/data/src/*"],
       "@ootmm/core": ["./OoTMM/packages/core/lib/combo/index.ts"],

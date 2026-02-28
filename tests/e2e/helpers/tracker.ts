@@ -123,6 +123,11 @@ export async function waitForAllReachable(
 }
 
 export async function waitForBoot(page: Page): Promise<void> {
+  // Wait for the Vue app to actually mount.  The static shell in index.html
+  // also contains an <h1>The Last Tracker</h1>, which would satisfy a
+  // heading-role check before the Vue app renders.  Waiting for the
+  // body.tlt-app-mounted class avoids that false-positive.
+  await page.waitForSelector('body.tlt-app-mounted', { timeout: 30_000 });
   await expect(
     page.getByRole('heading', { name: 'The Last Tracker' }),
   ).toBeVisible();

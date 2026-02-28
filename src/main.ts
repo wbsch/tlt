@@ -2,7 +2,23 @@ import { createApp } from 'vue';
 import { createPinia } from 'pinia';
 import App from './App.vue';
 import { piniaLocalStoragePlugin } from './stores/persist';
+import { importShareStateFromCurrentUrl } from './utils/shareState';
 import './style.css';
+
+if (typeof window !== 'undefined') {
+  importShareStateFromCurrentUrl();
+
+  // Handle same-page navigation (hash-only changes) for share URL imports.
+  // When a user navigates to a share URL while the app is already loaded,
+  // the browser only fires a hashchange event instead of reloading.
+  window.addEventListener('hashchange', () => {
+    const result = importShareStateFromCurrentUrl();
+    if (result === 'imported') {
+      // Reload so pinia stores re-hydrate from the updated localStorage.
+      window.location.reload();
+    }
+  });
+}
 
 const app = createApp(App);
 const pinia = createPinia();

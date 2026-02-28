@@ -4,7 +4,7 @@
     "paths": {
       "@/*": ["./src/*"],
       "@packs/ootmm": ["./src/shims/ootmm-pack.d.ts"],
-      "@packs/ootmm/*": ["./src/shims/ootmm-pack.d.ts"]
+      "@packs/ootmm/*": ["./packs/ootmm/src/*"]
     }
   },
   "include": ["src/**/*.ts", "src/**/*.vue", "packs/**/*.ts", "packs/**/*.vue"],

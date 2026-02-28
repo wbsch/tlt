@@ -48,12 +48,25 @@ function buildRandomScenario(includeDc: boolean): Scenario {
   return { includeDc, values };
 }
 
+type VueInternalComponent = {
+  setupState?: Record<string, unknown>;
+  props?: Record<string, unknown>;
+};
+
+type VueHostElement = HTMLElement & {
+  __vueParentComponent?: VueInternalComponent;
+};
+
+type MapMarker = {
+  image?: string;
+  coords?: [number, number];
+};
+
 async function setActiveMap(page: Page, mapId: string): Promise<void> {
   await page.evaluate((nextMapId) => {
     const trackerRoot = document.querySelector('.ootmm-tracker');
     const component = trackerRoot
-      ? (trackerRoot as HTMLElement & { __vueParentComponent?: any })
-          .__vueParentComponent
+      ? (trackerRoot as VueHostElement).__vueParentComponent
       : null;
     const setup = component?.setupState;
     if (!setup || typeof setup.activeMapId !== 'string') {
@@ -67,8 +80,7 @@ async function normalizeMapVisibilityFilters(page: Page): Promise<void> {
   await page.evaluate(() => {
     const trackerRoot = document.querySelector('.ootmm-tracker');
     const component = trackerRoot
-      ? (trackerRoot as HTMLElement & { __vueParentComponent?: any })
-          .__vueParentComponent
+      ? (trackerRoot as VueHostElement).__vueParentComponent
       : null;
     const setup = component?.setupState;
     if (!setup) {
@@ -91,8 +103,7 @@ async function applyMqDungeonSpecificSetting(
   await page.evaluate(async (nextValues) => {
     const trackerRoot = document.querySelector('.ootmm-tracker');
     const component = trackerRoot
-      ? (trackerRoot as HTMLElement & { __vueParentComponent?: any })
-          .__vueParentComponent
+      ? (trackerRoot as VueHostElement).__vueParentComponent
       : null;
     const setup = component?.setupState;
     const applySettings = setup?.handleSettingsChange;
@@ -124,8 +135,7 @@ async function readDodongoGossipVisibility(
     ({ mqCoords, nonMqCoords }) => {
       const mapRoot = document.querySelector('.ootmm-map');
       const component = mapRoot
-        ? (mapRoot as HTMLElement & { __vueParentComponent?: any })
-            .__vueParentComponent
+        ? (mapRoot as VueHostElement).__vueParentComponent
         : null;
       const rawVisibleMarkers = component?.setupState?.visibleMarkers;
       const visibleMarkers = Array.isArray(rawVisibleMarkers)
@@ -139,7 +149,7 @@ async function readDodongoGossipVisibility(
 
       const hasGossipAt = (coords: [number, number]) =>
         visibleMarkers.some(
-          (marker: any) =>
+          (marker: MapMarker) =>
             marker?.image === 'gossip_stone' &&
             Array.isArray(marker?.coords) &&
             marker.coords[0] === coords[0] &&

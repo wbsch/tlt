@@ -5,6 +5,12 @@ import { useAppStore } from './stores/app';
 import { useSyncStatusStore } from './stores/syncStatus';
 import { IMPRESSUM_HTML } from './content/impressum';
 import FairyLoader from './components/FairyLoader.vue';
+import {
+  buildShareUrl,
+  collectPersistedStateFromLocalStorage,
+  encodeSnapshotToHashPayload,
+  stripCollectedLocations,
+} from './utils/shareState';
 
 const appStore = useAppStore();
 const syncStatusStore = useSyncStatusStore();
@@ -14,6 +20,9 @@ const { hasOtherTabsOpen, connectedTabCount } = storeToRefs(syncStatusStore);
 const isResetConfirmOpen = ref(false);
 const isInfoModalOpen = ref(false);
 const isDebugMode = ref(false);
+const shareStatusMessage = ref('');
+const isShareMenuOpen = ref(false);
+let shareStatusTimeoutId: number | null = null;
 
 const packComponents: Record<
   string,
@@ -75,6 +84,11 @@ function handleWindowKeydown(event: KeyboardEvent) {
     return;
   }
 
+  if (isShareMenuOpen.value) {
+    isShareMenuOpen.value = false;
+    return;
+  }
+
   if (isInfoModalOpen.value) {
     event.preventDefault();
     closeInfoModal();
@@ -98,6 +112,60 @@ function debugActivateAll() {
   }
 }
 
+function clearShareStatusTimeout() {
+  if (shareStatusTimeoutId === null) {
+    return;
+  }
+  window.clearTimeout(shareStatusTimeoutId);
+  shareStatusTimeoutId = null;
+}
+
+function setShareStatus(message: string) {
+  clearShareStatusTimeout();
+  shareStatusMessage.value = message;
+  shareStatusTimeoutId = window.setTimeout(() => {
+    shareStatusMessage.value = '';
+    shareStatusTimeoutId = null;
+  }, 4000);
+}
+
+async function copyShareUrl(includeCollected = false) {
+  isShareMenuOpen.value = false;
+  try {
+    let snapshot = collectPersistedStateFromLocalStorage();
+    if (!includeCollected) {
+      snapshot = stripCollectedLocations(snapshot);
+    }
+    const payload = encodeSnapshotToHashPayload(snapshot);
+    const shareUrl = buildShareUrl(new URL(window.location.href), payload);
+
+    if (navigator.clipboard?.writeText) {
+      await navigator.clipboard.writeText(shareUrl);
+      setShareStatus(
+        includeCollected ? 'Full share URL copied' : 'Share URL copied',
+      );
+      return;
+    }
+
+    window.prompt('Copy this share URL:', shareUrl);
+    setShareStatus('Share URL ready');
+  } catch (error) {
+    console.error('Failed to generate share URL:', error);
+    setShareStatus('Failed to create share URL');
+  }
+}
+
+function toggleShareMenu() {
+  isShareMenuOpen.value = !isShareMenuOpen.value;
+}
+
+function handleDocumentClick(event: MouseEvent) {
+  if (!isShareMenuOpen.value) return;
+  const target = event.target as HTMLElement;
+  if (target.closest('.share-button-group')) return;
+  isShareMenuOpen.value = false;
+}
+
 function initializeDebugMode() {
   const params = new URLSearchParams(window.location.search);
   isDebugMode.value = params.get('debug') === '1';
@@ -107,10 +175,13 @@ onMounted(() => {
   initializeDebugMode();
   appStore.initialize();
   window.addEventListener('keydown', handleWindowKeydown);
+  document.addEventListener('click', handleDocumentClick);
 });
 
 onBeforeUnmount(() => {
+  clearShareStatusTimeout();
   window.removeEventListener('keydown', handleWindowKeydown);
+  document.removeEventListener('click', handleDocumentClick);
 });
 </script>
 
@@ -184,6 +255,46 @@ onBeforeUnmount(() => {
         >
           Debug: Activate All
         </button>
+        <div class="share-button-group">
+          <button
+            type="button"
+            class="share-button"
+            data-testid="share-url-button"
+            @click="copyShareUrl(false)"
+          >
+            SHARE URL
+          </button>
+          <button
+            type="button"
+            class="share-dropdown-toggle"
+            data-testid="share-dropdown-toggle"
+            aria-label="Share options"
+            @click="toggleShareMenu"
+          >
+            ▾
+          </button>
+          <div
+            v-if="isShareMenuOpen"
+            class="share-dropdown-menu"
+            data-testid="share-dropdown-menu"
+          >
+            <button
+              type="button"
+              class="share-dropdown-item"
+              @click="copyShareUrl(true)"
+            >
+              Include collected locations
+            </button>
+          </div>
+        </div>
+        <span
+          v-if="shareStatusMessage"
+          class="share-status"
+          role="status"
+          aria-live="polite"
+        >
+          {{ shareStatusMessage }}
+        </span>
         <button
           type="button"
           class="reset-button"
@@ -378,6 +489,75 @@ onBeforeUnmount(() => {
 
 .debug-activate-all-button:hover {
   background: #555;
+}
+
+.share-button-group {
+  position: relative;
+  display: inline-flex;
+}
+
+.share-button {
+  background: #155e75;
+  border: 1px solid #67e8f9;
+  border-right: none;
+  border-radius: 0.25rem 0 0 0.25rem;
+  font-size: 0.75rem;
+  font-weight: 700;
+}
+
+.share-button:hover {
+  background: #0e7490;
+}
+
+.share-dropdown-toggle {
+  background: #155e75;
+  border: 1px solid #67e8f9;
+  border-radius: 0 0.25rem 0.25rem 0;
+  font-size: 0.75rem;
+  font-weight: 700;
+  padding: 0.25rem 0.35rem;
+  cursor: pointer;
+  color: inherit;
+  line-height: 1;
+}
+
+.share-dropdown-toggle:hover {
+  background: #0e7490;
+}
+
+.share-dropdown-menu {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  margin-top: 0.25rem;
+  background: #1f1f1f;
+  border: 1px solid #67e8f9;
+  border-radius: 0.25rem;
+  box-shadow: 0 4px 12px rgb(0 0 0 / 40%);
+  z-index: 100;
+  min-width: max-content;
+}
+
+.share-dropdown-item {
+  display: block;
+  width: 100%;
+  background: none;
+  border: none;
+  color: #e5e7eb;
+  font-size: 0.75rem;
+  padding: 0.5rem 0.75rem;
+  cursor: pointer;
+  text-align: left;
+  white-space: nowrap;
+}
+
+.share-dropdown-item:hover {
+  background: #155e75;
+}
+
+.share-status {
+  font-size: 0.75rem;
+  color: #67e8f9;
 }
 
 .sync-status-badge {

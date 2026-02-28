@@ -321,13 +321,17 @@ async function collectExistingImages(): Promise<Set<string>> {
 }
 
 async function main(): Promise<void> {
-  const [{ references: sourceRefs, scannedFiles: sourceScanned }, mapData, resolver, existing] =
-    await Promise.all([
-      collectSourceReferences(),
-      collectMapReferences(),
-      collectResolverPotentialReferences(),
-      collectExistingImages(),
-    ]);
+  const [
+    { references: sourceRefs, scannedFiles: sourceScanned },
+    mapData,
+    resolver,
+    existing,
+  ] = await Promise.all([
+    collectSourceReferences(),
+    collectMapReferences(),
+    collectResolverPotentialReferences(),
+    collectExistingImages(),
+  ]);
 
   const needed = new Set<string>([
     ...sourceRefs,
