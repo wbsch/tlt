@@ -129,7 +129,7 @@ function setShareStatus(message: string) {
   }, 4000);
 }
 
-async function copyShareUrl(includeCollected = false) {
+async function exportState(includeCollected = false) {
   isShareMenuOpen.value = false;
   try {
     let snapshot = collectPersistedStateFromLocalStorage();
@@ -142,16 +142,18 @@ async function copyShareUrl(includeCollected = false) {
     if (navigator.clipboard?.writeText) {
       await navigator.clipboard.writeText(shareUrl);
       setShareStatus(
-        includeCollected ? 'Full share URL copied' : 'Share URL copied',
+        includeCollected
+          ? 'Full state exported to clipboard'
+          : 'State exported to clipboard',
       );
       return;
     }
 
-    window.prompt('Copy this share URL:', shareUrl);
-    setShareStatus('Share URL ready');
+    window.prompt('Copy this state export URL:', shareUrl);
+    setShareStatus('State export ready');
   } catch (error) {
-    console.error('Failed to generate share URL:', error);
-    setShareStatus('Failed to create share URL');
+    console.error('Failed to export state:', error);
+    setShareStatus('Failed to export state');
   }
 }
 
@@ -162,7 +164,7 @@ function toggleShareMenu() {
 function handleDocumentClick(event: MouseEvent) {
   if (!isShareMenuOpen.value) return;
   const target = event.target as HTMLElement;
-  if (target.closest('.share-button-group')) return;
+  if (target.closest('.export-button-group')) return;
   isShareMenuOpen.value = false;
 }
 
@@ -255,33 +257,33 @@ onBeforeUnmount(() => {
         >
           Debug: Activate All
         </button>
-        <div class="share-button-group">
+        <div class="export-button-group">
           <button
             type="button"
-            class="share-button"
-            data-testid="share-url-button"
-            @click="copyShareUrl(false)"
+            class="export-button"
+            data-testid="export-state-button"
+            @click="exportState(false)"
           >
-            SHARE URL
+            EXPORT STATE
           </button>
           <button
             type="button"
-            class="share-dropdown-toggle"
-            data-testid="share-dropdown-toggle"
-            aria-label="Share options"
+            class="export-dropdown-toggle"
+            data-testid="export-dropdown-toggle"
+            aria-label="Export options"
             @click="toggleShareMenu"
           >
             ▾
           </button>
           <div
             v-if="isShareMenuOpen"
-            class="share-dropdown-menu"
-            data-testid="share-dropdown-menu"
+            class="export-dropdown-menu"
+            data-testid="export-dropdown-menu"
           >
             <button
               type="button"
-              class="share-dropdown-item"
-              @click="copyShareUrl(true)"
+              class="export-dropdown-item"
+              @click="exportState(true)"
             >
               Include collected locations
             </button>
@@ -289,7 +291,7 @@ onBeforeUnmount(() => {
         </div>
         <span
           v-if="shareStatusMessage"
-          class="share-status"
+          class="export-status"
           role="status"
           aria-live="polite"
         >
@@ -491,12 +493,12 @@ onBeforeUnmount(() => {
   background: #555;
 }
 
-.share-button-group {
+.export-button-group {
   position: relative;
   display: inline-flex;
 }
 
-.share-button {
+.export-button {
   background: #155e75;
   border: 1px solid #67e8f9;
   border-right: none;
@@ -505,11 +507,11 @@ onBeforeUnmount(() => {
   font-weight: 700;
 }
 
-.share-button:hover {
+.export-button:hover {
   background: #0e7490;
 }
 
-.share-dropdown-toggle {
+.export-dropdown-toggle {
   background: #155e75;
   border: 1px solid #67e8f9;
   border-radius: 0 0.25rem 0.25rem 0;
@@ -521,11 +523,11 @@ onBeforeUnmount(() => {
   line-height: 1;
 }
 
-.share-dropdown-toggle:hover {
+.export-dropdown-toggle:hover {
   background: #0e7490;
 }
 
-.share-dropdown-menu {
+.export-dropdown-menu {
   position: absolute;
   top: 100%;
   right: 0;
@@ -538,7 +540,7 @@ onBeforeUnmount(() => {
   min-width: max-content;
 }
 
-.share-dropdown-item {
+.export-dropdown-item {
   display: block;
   width: 100%;
   background: none;
@@ -551,11 +553,11 @@ onBeforeUnmount(() => {
   white-space: nowrap;
 }
 
-.share-dropdown-item:hover {
+.export-dropdown-item:hover {
   background: #155e75;
 }
 
-.share-status {
+.export-status {
   font-size: 0.75rem;
   color: #67e8f9;
 }

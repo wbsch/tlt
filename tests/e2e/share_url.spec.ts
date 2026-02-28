@@ -50,7 +50,7 @@ test.describe('share URL import/export', () => {
     await page.getByTestId('debug-activate-all-button').click();
     await waitForAllReachable(page);
 
-    await page.getByTestId('share-url-button').click();
+    await page.getByTestId('export-state-button').click();
     const shareUrl = await readCopiedShareUrl(page);
     expect(shareUrl).toContain('#s=v1.');
 
@@ -71,7 +71,7 @@ test.describe('share URL import/export', () => {
     await installClipboardStub(page);
     await resetLocalStorageAndReload(page);
 
-    await page.getByTestId('share-url-button').click();
+    await page.getByTestId('export-state-button').click();
     const baselineShareUrl = await readCopiedShareUrl(page);
     expect(baselineShareUrl).toContain('#s=v1.');
 
