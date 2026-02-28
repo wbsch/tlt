@@ -104,16 +104,11 @@ function getEnabledDungeonEntranceTypes(
   settingsObj: Record<string, unknown>,
 ): Set<string> {
   const enabled = new Set<string>();
+  enabled.add('dungeon');
   for (const [type, settingKey] of Object.entries(ENTRANCE_TYPE_TO_SETTING)) {
     if (Boolean(settingsObj?.[settingKey])) {
       enabled.add(type);
     }
-  }
-
-  // If ER dungeons is active but no sub-category is explicitly enabled,
-  // default to major dungeons so core dungeon entrances are included.
-  if (enabled.size === 0) {
-    enabled.add('dungeon');
   }
 
   return enabled;
