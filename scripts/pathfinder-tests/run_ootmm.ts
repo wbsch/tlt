@@ -55,7 +55,7 @@ const TRICKS = resolveExport<typeof SettingsMod.TRICKS>(SettingsMod, 'TRICKS');
 const DEFAULT_TRICKS =
   resolveExport<typeof TricksMod.DEFAULT_TRICKS>(TricksMod, 'DEFAULT_TRICKS') ??
   [];
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
+
 const _unusedDefaultTricks = DEFAULT_TRICKS;
 const ENTRANCES =
   resolveExport<Record<string, unknown>>(DataMod, 'ENTRANCES') ?? {};
@@ -654,7 +654,6 @@ const runCase = async (test: TestCase, mode: RunMode) => {
 const adapter: PathfinderTestAdapter = {
   name: 'ootmm',
   run: (test, mode, meta) => {
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const _unusedMeta = meta;
     return runCase(test, mode);
   },

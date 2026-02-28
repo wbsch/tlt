@@ -18,6 +18,8 @@ type SyncOperationBase = {
     | 'world.set_song_events'
     | 'world.set_shop_prices'
     | 'world.set_shop_price'
+    | 'world.set_entrance_override'
+    | 'world.set_entrance_overrides'
     | 'settings.apply'
     | 'settings.patch_special_conds'
     | 'session.reset_defaults';
@@ -58,6 +60,15 @@ export type OoTMMSyncOperation =
       type: 'world.set_shop_price';
       locationId: string;
       price: number | null;
+    })
+  | (SyncOperationBase & {
+      type: 'world.set_entrance_override';
+      src: string;
+      dst: string | null;
+    })
+  | (SyncOperationBase & {
+      type: 'world.set_entrance_overrides';
+      overrides: Record<string, string>;
     })
   | (SyncOperationBase & {
       type: 'settings.apply';
