@@ -48,9 +48,9 @@ test.describe('Dungeon Entrance Randomizer', () => {
     }
 
     // Find the entrance row for "Deku Tree" – the label text contains "Deku Tree"
-    const dekuTreeRow = page
-      .locator('.entrance-row')
-      .filter({ has: page.locator('.entrance-label', { hasText: 'Deku Tree' }) });
+    const dekuTreeRow = page.locator('.entrance-row').filter({
+      has: page.locator('.entrance-label', { hasText: 'Deku Tree' }),
+    });
     await expect(dekuTreeRow).toBeVisible();
 
     // Select "Forest Temple" as the destination
@@ -58,10 +58,9 @@ test.describe('Dungeon Entrance Randomizer', () => {
     await expect(dekuTreeSelect).toBeVisible();
 
     // Find the option whose text contains "Forest Temple"
-    const forestTempleOption = dekuTreeSelect.locator(
-      'option',
-      { hasText: 'Forest Temple' },
-    );
+    const forestTempleOption = dekuTreeSelect.locator('option', {
+      hasText: 'Forest Temple',
+    });
     const forestTempleValue = await forestTempleOption.getAttribute('value');
     expect(forestTempleValue).toBeTruthy();
     await dekuTreeSelect.selectOption(forestTempleValue!);
