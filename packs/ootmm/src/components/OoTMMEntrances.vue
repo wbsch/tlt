@@ -221,7 +221,7 @@ function isDestinationUsed(dstKey: string, currentSrcKey: string): boolean {
               )
             "
           >
-            <option value="">— Default —</option>
+            <option value="">— Not mapped —</option>
             <option
               v-for="dest in destinationOptionsForGame(entrance.game)"
               :key="dest.value"
@@ -265,7 +265,7 @@ function isDestinationUsed(dstKey: string, currentSrcKey: string): boolean {
               )
             "
           >
-            <option value="">— Default —</option>
+            <option value="">— Not mapped —</option>
             <option
               v-for="dest in destinationOptionsForGame(entrance.game)"
               :key="dest.value"

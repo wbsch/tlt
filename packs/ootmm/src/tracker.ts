@@ -83,37 +83,6 @@ const ENTRANCES_DATA =
     >
   >(DataMod, 'ENTRANCES') ?? {};
 
-/** Map from entrance type to the ER sub-setting that enables it. */
-const ENTRANCE_TYPE_TO_SETTING: Record<string, string> = {
-  dungeon: 'erMajorDungeons',
-  'dungeon-minor': 'erMinorDungeons',
-  'dungeon-ganon': 'erGanonCastle',
-  'dungeon-ganon-tower': 'erGanonTower',
-  'dungeon-sh': 'erSpiderHouses',
-  'dungeon-pf': 'erPirateFortress',
-  'dungeon-btw': 'erBeneathWell',
-  'dungeon-acoi': 'erIkanaCastle',
-  'dungeon-ss': 'erSecretShrine',
-  'dungeon-ctr': 'erMoon',
-};
-
-/** Set of all dungeon-related entrance types. */
-const DUNGEON_ENTRANCE_TYPES = new Set(Object.keys(ENTRANCE_TYPE_TO_SETTING));
-
-function getEnabledDungeonEntranceTypes(
-  settingsObj: Record<string, unknown>,
-): Set<string> {
-  const enabled = new Set<string>();
-  enabled.add('dungeon');
-  for (const [type, settingKey] of Object.entries(ENTRANCE_TYPE_TO_SETTING)) {
-    if (Boolean(settingsObj?.[settingKey])) {
-      enabled.add(type);
-    }
-  }
-
-  return enabled;
-}
-
 import type { World } from '@ootmm/core/logic/world';
 import type { PlayerItems, PlayerItem } from '@ootmm/core/items/index';
 
@@ -337,26 +306,31 @@ export class OoTMMTracker implements TrackerPack {
             | undefined) ?? {})
         : {};
 
-    // When ER is enabled, add self-mappings for unassigned dungeon entrances
-    // to prevent random shuffling. The tracker should only apply explicit user overrides.
+    // When ER is active, use logic: 'none' to prevent random shuffling.
+    // Self-map all enabled dungeon entrances to prevent random assignment,
+    // then after the entrance pass, disconnect unassigned ones so their
+    // checks are unreachable until the user explicitly maps them.
     const erDungeons = (this.settings as Record<string, unknown>)?.erDungeons;
     const isErActive = erDungeons && erDungeons !== 'none';
     const finalPlandoEntrances = { ...plandoEntrances };
+    const unmappedEntrances: string[] = [];
+
     if (isErActive) {
-      const settingsObj = this.settings as Record<string, unknown>;
-      const enabledTypes = getEnabledDungeonEntranceTypes(settingsObj);
+      // Self-map dungeon-type entrances to prevent random shuffling.
+      // Only entrances with valid from/to areas and dungeon-related types.
+      // Track which ones are NOT user-assigned so we can disconnect them later.
       for (const [key, data] of Object.entries(ENTRANCES_DATA)) {
-        if (!DUNGEON_ENTRANCE_TYPES.has(data.type)) continue;
-        if (!enabledTypes.has(data.type)) continue;
-        // Only add self-mapping if not already user-overridden
+        if (!data.type.startsWith('dungeon') || data.type === 'dungeon-exit') continue;
+        if (data.from === 'NONE' || data.to === 'NONE') continue;
         if (!finalPlandoEntrances[key]) {
           finalPlandoEntrances[key] = key;
+          unmappedEntrances.push(key);
         }
       }
     }
 
     const hasPlandoEntrances = Object.keys(finalPlandoEntrances).length > 0;
-    const entranceSettings = hasPlandoEntrances
+    const entranceSettings = (isErActive || hasPlandoEntrances)
       ? {
           ...(this.settings as Record<string, unknown>),
           logic: 'none',
@@ -380,6 +354,27 @@ export class OoTMMTracker implements TrackerPack {
 
     const entranceResult = entrancePass.run();
     this.worlds = entranceResult.worlds;
+
+    // Disconnect unmapped dungeon entrances so their checks are unreachable.
+    // We self-mapped them above to prevent random shuffling, but now we remove
+    // the exit connections so the pathfinder can't reach them.
+    if (unmappedEntrances.length > 0) {
+      for (const world of this.worlds) {
+        const areas = (world as Record<string, unknown>).areas as Record<
+          string,
+          { exits?: Record<string, unknown> }
+        >;
+        for (const key of unmappedEntrances) {
+          const data = ENTRANCES_DATA[key];
+          if (!data) continue;
+          const fromArea = areas[data.from];
+          if (fromArea?.exits && data.to in fromArea.exits) {
+            delete fromArea.exits[data.to];
+          }
+        }
+      }
+    }
+
     this.normalizeWorldItems(this.worlds);
     this.applyAlwaysIncludedFishingPondConditions(this.worlds);
 
