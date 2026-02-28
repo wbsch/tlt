@@ -2,6 +2,7 @@
 import { computed } from 'vue';
 import { storeToRefs } from 'pinia';
 import { useOoTMMSessionStore } from '../stores/ootmmSession';
+import { useOoTMMUiStore } from '../stores/ootmmUi';
 import * as DataMod from '@ootmm/data';
 
 const resolveExport = <T,>(mod: unknown, key: string): T => {
@@ -22,7 +23,10 @@ const ENTRANCES_RAW =
   resolveExport<Record<string, EntranceData>>(DataMod, 'ENTRANCES') ?? {};
 
 const sessionStore = useOoTMMSessionStore();
-const { trackerSettings, entranceOverrides } = storeToRefs(sessionStore);
+const { trackerSettings, entranceOverrides, reachableEntranceIdSet } =
+  storeToRefs(sessionStore);
+const uiStore = useOoTMMUiStore();
+const { locationsReachabilityFilter } = storeToRefs(uiStore);
 
 /**
  * Map from entrance type to the sub-setting that enables it.
@@ -120,6 +124,23 @@ const activeEntrances = computed<EntranceEntry[]>(() => {
 });
 
 /**
+ * Entrances filtered by the reachability toggle.
+ * When "reachable" is selected, only show entrances whose entry point
+ * can be reached AND entered. When "unreachable", show only those
+ * that cannot. When "all", show everything.
+ */
+const filteredEntrances = computed<EntranceEntry[]>(() => {
+  const filter = locationsReachabilityFilter.value;
+  if (filter === 'all') return activeEntrances.value;
+
+  const reachableSet = reachableEntranceIdSet.value;
+  return activeEntrances.value.filter((entrance) => {
+    const isReachable = reachableSet.has(entrance.key);
+    return filter === 'reachable' ? isReachable : !isReachable;
+  });
+});
+
+/**
  * Available destination options (the same pool as sources).
  */
 const destinationOptions = computed(() => {
@@ -144,13 +165,13 @@ function destinationOptionsForGame(game: 'oot' | 'mm', currentSrcKey: string) {
 }
 
 /**
- * Group entrances by game for display.
+ * Group entrances by game for display (uses filtered list).
  */
 const ootEntrances = computed(() =>
-  activeEntrances.value.filter((e) => e.game === 'oot'),
+  filteredEntrances.value.filter((e) => e.game === 'oot'),
 );
 const mmEntrances = computed(() =>
-  activeEntrances.value.filter((e) => e.game === 'mm'),
+  filteredEntrances.value.filter((e) => e.game === 'mm'),
 );
 
 function getSelectedDestination(srcKey: string): string {
@@ -199,6 +220,10 @@ function isDestinationUsed(dstKey: string, currentSrcKey: string): boolean {
         Enable Dungeon ER in Settings and select dungeon sub-types to configure
         entrance assignments.
       </p>
+    </div>
+
+    <div v-else-if="filteredEntrances.length === 0" class="no-entrances">
+      <p>No entrances match the current reachability filter.</p>
     </div>
 
     <div v-else class="entrances-list">

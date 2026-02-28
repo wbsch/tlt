@@ -231,6 +231,7 @@ export const useOoTMMSessionStore = defineStore('ootmm-session', () => {
   const itemMaxCountsById = ref<Record<string, number>>({});
 
   const reachableLocationIds = ref<string[]>([]);
+  const reachableEntranceIds = ref<string[]>([]);
   const canComplete = ref(false);
   const statsExtra = ref<Record<string, unknown>>({});
   const locationsVersion = ref(0);
@@ -248,6 +249,9 @@ export const useOoTMMSessionStore = defineStore('ootmm-session', () => {
   );
   const reachableLocationIdSet = computed(
     () => new Set(reachableLocationIds.value),
+  );
+  const reachableEntranceIdSet = computed(
+    () => new Set(reachableEntranceIds.value),
   );
   const preCompletedEnabled = computed(() =>
     Boolean(trackerSettings.value?.preCompletedDungeons),
@@ -506,6 +510,7 @@ export const useOoTMMSessionStore = defineStore('ootmm-session', () => {
         trackerSettings.value = targetSettings;
         entranceOverrides.value = targetEntranceOverrides;
         reachableLocationIds.value = [];
+        reachableEntranceIds.value = [];
         canComplete.value = false;
         statsExtra.value = {};
         return true;
@@ -1099,6 +1104,7 @@ export const useOoTMMSessionStore = defineStore('ootmm-session', () => {
     const currentTracker = tracker.value;
     if (!currentTracker) {
       reachableLocationIds.value = [];
+      reachableEntranceIds.value = [];
       canComplete.value = false;
       statsExtra.value = {};
       return;
@@ -1107,6 +1113,12 @@ export const useOoTMMSessionStore = defineStore('ootmm-session', () => {
     reachableLocationIds.value = result.reachableLocationIds;
     canComplete.value = result.canComplete;
     statsExtra.value = result.extra ?? {};
+
+    // Extract reachable entrance IDs from the extra data.
+    const entranceIds = (
+      result.extra as { reachableEntranceIds?: string[] } | undefined
+    )?.reachableEntranceIds;
+    reachableEntranceIds.value = entranceIds ?? [];
 
     // Skip vanilla silver rupee auto-tracking while settings are being applied.
     // During tracker re-initialization (e.g. on reload), watches fire before
@@ -1144,6 +1156,7 @@ export const useOoTMMSessionStore = defineStore('ootmm-session', () => {
       availableItemIds.value = [];
       itemMaxCountsById.value = {};
       reachableLocationIds.value = [];
+      reachableEntranceIds.value = [];
       canComplete.value = false;
       statsExtra.value = {};
       didReset = true;
@@ -1225,6 +1238,7 @@ export const useOoTMMSessionStore = defineStore('ootmm-session', () => {
     availableItemIdSet,
     itemMaxCountsMap,
     reachableLocationIdSet,
+    reachableEntranceIdSet,
     preCompletedEnabled,
     allLocations,
     startLocalSessionSync,

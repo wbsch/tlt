@@ -244,6 +244,9 @@ export class OoTMMTracker implements TrackerPack {
   private shopPriceSlotsByLocationId: Map<string, ShopPriceSlot> = new Map();
   private baseShopPricesByLocationId: Map<string, number[]> = new Map();
   private devLocationCatalog: LocationInfo[] = [];
+  /** Saved exit expressions for all ER entrances, keyed by entrance key. */
+  private savedEntranceExitExprs: Map<string, { from: string; expr: unknown }> =
+    new Map();
   private readonly debugModeEnabled = isTrackerDebugModeEnabled();
 
   private debugLog(...args: unknown[]): void {
@@ -356,6 +359,33 @@ export class OoTMMTracker implements TrackerPack {
 
     const entranceResult = entrancePass.run();
     this.worlds = entranceResult.worlds;
+
+    // Save exit expressions for ALL ER entrances before disconnecting,
+    // so we can later evaluate entrance reachability post-pathfinder.
+    this.savedEntranceExitExprs = new Map();
+    if (isErActive) {
+      for (const world of this.worlds) {
+        const areas = (world as Record<string, unknown>).areas as Record<
+          string,
+          { exits?: Record<string, unknown> }
+        >;
+        for (const [key, data] of Object.entries(ENTRANCES_DATA)) {
+          if (!data.type.startsWith('dungeon') || data.type === 'dungeon-exit')
+            continue;
+          if (data.from === 'NONE' || data.to === 'NONE') continue;
+          const fromArea = areas[data.from];
+          const exitExpr = fromArea?.exits?.[data.to];
+          if (exitExpr) {
+            this.savedEntranceExitExprs.set(key, {
+              from: data.from,
+              expr: exitExpr,
+            });
+          }
+        }
+        // Only need to save from the first world (single-player tracker)
+        break;
+      }
+    }
 
     // Disconnect unmapped dungeon entrances so their checks are unreachable.
     // We self-mapped them above to prevent random shuffling, but now we remove
@@ -507,6 +537,11 @@ export class OoTMMTracker implements TrackerPack {
 
     if (isVanillaSilverRupees) {
       extra.vanillaSilverRupeeCounts = this.countMapToRecord(silverRupeeCounts);
+    }
+
+    // Compute which ER entrances are reachable (can be entered).
+    if (this.savedEntranceExitExprs.size > 0) {
+      extra.reachableEntranceIds = this.computeReachableEntrances(state);
     }
 
     return {
@@ -2002,5 +2037,75 @@ export class OoTMMTracker implements TrackerPack {
       }
     }
     return counts;
+  }
+
+  /**
+   * After the pathfinder has run, determine which ER entrances the player
+   * can physically reach AND enter. This evaluates the saved exit expression
+   * from each entrance's `from` area against the current pathfinder state.
+   */
+  private computeReachableEntrances(
+    state: ReturnType<InstanceType<typeof Pathfinder>['run']>,
+  ): string[] {
+    const reachable: string[] = [];
+    const typedState = state as unknown as {
+      ws: Array<{
+        ages: [
+          { areas: Map<string, unknown> },
+          { areas: Map<string, unknown> },
+        ];
+        items: Map<unknown, number>;
+        renewables: Map<unknown, number>;
+        licenses: Map<unknown, number>;
+        events: Set<string>;
+      }>;
+    };
+
+    for (const [entranceKey, saved] of this.savedEntranceExitExprs) {
+      let canEnter = false;
+
+      for (let worldId = 0; worldId < typedState.ws.length; worldId++) {
+        if (canEnter) break;
+        const ws = typedState.ws[worldId];
+        const world = this.worlds[worldId];
+
+        // Check both ages (0 = child, 1 = adult)
+        for (const age of [0, 1] as const) {
+          const ageState = ws.ages[age];
+          const areaData = ageState.areas.get(saved.from);
+          if (!areaData) continue;
+
+          // The from area is reachable at this age. Now evaluate the exit expression.
+          const evalState = {
+            settings: this.settings,
+            world,
+            areaData,
+            items: ws.items,
+            renewables: ws.renewables,
+            licenses: ws.licenses,
+            age,
+            events: ws.events,
+          };
+          try {
+            const expr = saved.expr as {
+              eval: (s: unknown) => { result: boolean };
+            };
+            const result = expr.eval(evalState);
+            if (result.result) {
+              canEnter = true;
+              break;
+            }
+          } catch {
+            // Expression eval failed, treat as not reachable
+          }
+        }
+      }
+
+      if (canEnter) {
+        reachable.push(entranceKey);
+      }
+    }
+
+    return reachable;
   }
 }
