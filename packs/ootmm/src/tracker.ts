@@ -320,7 +320,8 @@ export class OoTMMTracker implements TrackerPack {
       // Only entrances with valid from/to areas and dungeon-related types.
       // Track which ones are NOT user-assigned so we can disconnect them later.
       for (const [key, data] of Object.entries(ENTRANCES_DATA)) {
-        if (!data.type.startsWith('dungeon') || data.type === 'dungeon-exit') continue;
+        if (!data.type.startsWith('dungeon') || data.type === 'dungeon-exit')
+          continue;
         if (data.from === 'NONE' || data.to === 'NONE') continue;
         if (!finalPlandoEntrances[key]) {
           finalPlandoEntrances[key] = key;
@@ -330,19 +331,20 @@ export class OoTMMTracker implements TrackerPack {
     }
 
     const hasPlandoEntrances = Object.keys(finalPlandoEntrances).length > 0;
-    const entranceSettings = (isErActive || hasPlandoEntrances)
-      ? {
-          ...(this.settings as Record<string, unknown>),
-          logic: 'none',
-          plando: {
-            ...(((this.settings as Record<string, unknown>).plando as Record<
-              string,
-              unknown
-            >) ?? {}),
-            entrances: finalPlandoEntrances,
-          },
-        }
-      : this.settings;
+    const entranceSettings =
+      isErActive || hasPlandoEntrances
+        ? {
+            ...(this.settings as Record<string, unknown>),
+            logic: 'none',
+            plando: {
+              ...(((this.settings as Record<string, unknown>).plando as Record<
+                string,
+                unknown
+              >) ?? {}),
+              entrances: finalPlandoEntrances,
+            },
+          }
+        : this.settings;
     const entranceInput = {
       ...(worldData as Record<string, unknown>),
       startingItems: new Map(),
