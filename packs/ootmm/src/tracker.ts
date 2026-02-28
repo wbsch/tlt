@@ -362,6 +362,9 @@ export class OoTMMTracker implements TrackerPack {
 
     // Save exit expressions for ALL ER entrances before disconnecting,
     // so we can later evaluate entrance reachability post-pathfinder.
+    // For mapped entrances the entrance pass rewires the exit to the
+    // mapped destination's `to` area, so we must look up the expression
+    // under that area name, not the original `data.to`.
     this.savedEntranceExitExprs = new Map();
     if (isErActive) {
       for (const world of this.worlds) {
@@ -373,8 +376,20 @@ export class OoTMMTracker implements TrackerPack {
           if (!data.type.startsWith('dungeon') || data.type === 'dungeon-exit')
             continue;
           if (data.from === 'NONE' || data.to === 'NONE') continue;
+
+          // Determine the actual exit target: for mapped entrances, use
+          // the mapped destination's `to` area; for unmapped, use own `to`.
+          const mappedDstKey = finalPlandoEntrances[key];
+          const mappedDstData = mappedDstKey
+            ? ENTRANCES_DATA[mappedDstKey]
+            : undefined;
+          const actualTo =
+            mappedDstData && mappedDstData.to !== 'NONE'
+              ? mappedDstData.to
+              : data.to;
+
           const fromArea = areas[data.from];
-          const exitExpr = fromArea?.exits?.[data.to];
+          const exitExpr = fromArea?.exits?.[actualTo];
           if (exitExpr) {
             this.savedEntranceExitExprs.set(key, {
               from: data.from,
