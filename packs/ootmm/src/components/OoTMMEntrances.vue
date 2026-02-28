@@ -135,6 +135,17 @@ const destinationOptions = computed(() => {
   }));
 });
 
+const erDungeonsMode = computed(() =>
+  String(trackerSettings.value?.erDungeons ?? 'none'),
+);
+
+function destinationOptionsForGame(game: 'oot' | 'mm') {
+  if (erDungeonsMode.value !== 'ownGame') {
+    return destinationOptions.value;
+  }
+  return destinationOptions.value.filter((dest) => dest.game === game);
+}
+
 /**
  * Group entrances by game for display.
  */
@@ -217,7 +228,7 @@ function isDestinationUsed(dstKey: string, currentSrcKey: string): boolean {
           >
             <option value="">— Default —</option>
             <option
-              v-for="dest in destinationOptions"
+              v-for="dest in destinationOptionsForGame(entrance.game)"
               :key="dest.value"
               :value="dest.value"
               :disabled="isDestinationUsed(dest.value, entrance.key)"
@@ -261,7 +272,7 @@ function isDestinationUsed(dstKey: string, currentSrcKey: string): boolean {
           >
             <option value="">— Default —</option>
             <option
-              v-for="dest in destinationOptions"
+              v-for="dest in destinationOptionsForGame(entrance.game)"
               :key="dest.value"
               :value="dest.value"
               :disabled="isDestinationUsed(dest.value, entrance.key)"
