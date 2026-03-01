@@ -152,11 +152,16 @@ const mapDefs = OOTMM_MAP_DEFS;
 type SelectedGamesSetting = 'ootmm' | 'oot' | 'mm';
 const DEFAULT_MAP_ID = 'oot_kokiri_forest';
 
+function getPreferredActiveMapId(availableMapDefs: readonly MapDef[]): string {
+  if (availableMapDefs.length === 0) return '';
+  return availableMapDefs.some((mapDef) => mapDef.id === DEFAULT_MAP_ID)
+    ? DEFAULT_MAP_ID
+    : availableMapDefs[0].id;
+}
+
 // ensure there's a sensible active map id in the UI store
 if (!activeMapId.value) {
-  activeMapId.value = mapDefs.some((mapDef) => mapDef.id === DEFAULT_MAP_ID)
-    ? DEFAULT_MAP_ID
-    : (mapDefs[0]?.id ?? '');
+  activeMapId.value = getPreferredActiveMapId(mapDefs);
 }
 const mapSelectorQuery = ref('');
 const mapSelectorInputRef = ref<HTMLInputElement | null>(null);
@@ -410,7 +415,7 @@ watch(
     if (availableMapDefs.some((mapDef) => mapDef.id === activeMapId.value)) {
       return;
     }
-    activeMapId.value = availableMapDefs[0].id;
+    activeMapId.value = getPreferredActiveMapId(availableMapDefs);
   },
   { immediate: true },
 );
@@ -752,6 +757,7 @@ function fillInventory() {
 
 function resetTrackerState() {
   uiStore.resetUiState();
+  activeMapId.value = getPreferredActiveMapId(selectableMapDefs.value);
   void sessionStore.resetSessionStateToDefaults();
 }
 
