@@ -1640,7 +1640,9 @@ function handleWheel(event: WheelEvent): void {
     event.target instanceof Node &&
     submenuPanelEl.contains(event.target)
   ) {
-    return;
+    if (activePanelMarker.value?.type !== 'entrance-menu') {
+      return;
+    }
   }
   const submenuPopupEl = submenuPopupRef.value;
   if (
@@ -1902,17 +1904,27 @@ watch(
     }
 
     await nextTick();
-    if (submenuPanel.value.frozenWidth === null) {
-      submenuPanel.value.frozenWidth =
-        submenuPanelRef.value?.offsetWidth ?? null;
+    const panelMarker = markerById.value.get(markerId);
+    const shouldFreezePanelSize = panelMarker?.type === 'submenu';
+
+    if (shouldFreezePanelSize) {
+      if (submenuPanel.value.frozenWidth === null) {
+        submenuPanel.value.frozenWidth =
+          submenuPanelRef.value?.offsetWidth ?? null;
+      }
+      if (submenuPanel.value.frozenHeight === null) {
+        submenuPanel.value.frozenHeight =
+          submenuPanelRef.value?.offsetHeight ?? null;
+      }
+      if (submenuPanel.value.frozenScale === null) {
+        submenuPanel.value.frozenScale = scale.value;
+      }
+    } else {
+      submenuPanel.value.frozenWidth = null;
+      submenuPanel.value.frozenHeight = null;
+      submenuPanel.value.frozenScale = null;
     }
-    if (submenuPanel.value.frozenHeight === null) {
-      submenuPanel.value.frozenHeight =
-        submenuPanelRef.value?.offsetHeight ?? null;
-    }
-    if (submenuPanel.value.frozenScale === null) {
-      submenuPanel.value.frozenScale = scale.value;
-    }
+
     updateSubmenuPanelPosition();
     submenuPanel.value.layoutReady = true;
   },
