@@ -128,17 +128,17 @@
     {
       "coords": [738, 520],
       "image": "shop",
-      "codes": ["MM Tingle Map Woodfall"]
+      "codes": ["MM Tingle Map Woodfall", "MM Tingle Map Snowhead"]
     },
     {
       "coords": [113, 548],
       "image": "shop",
-      "codes": ["MM Tingle Map Ranch"]
+      "codes": ["MM Tingle Map Ranch", "MM Tingle Map Great Bay"]
     },
     {
       "coords": [254, 56],
       "image": "shop",
-      "codes": ["MM Tingle Map Clock Town"]
+      "codes": ["MM Tingle Map Clock Town", "MM Tingle Map Woodfall"]
     },
     {
       "coords": [172, 556],

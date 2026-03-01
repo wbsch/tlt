@@ -13,6 +13,7 @@
     {
       "coords": [180, 358],
       "image": "collectible",
+      "overlays": ["child"],
       "codes": ["OOT Lake Hylia Underwater Bottle"]
     },
     {
