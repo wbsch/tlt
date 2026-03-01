@@ -470,7 +470,10 @@
       "coords": [440, 318],
       "image": "dungeon_entrance",
       "overlays": ["adult"],
-      "codes": "TODO KF 065 :: unnamed_stack > Desert > Desert Layers > Desert Entrances :: Pasted Layer #64 :: 001-001-014-003.png"
+      "type": "entrance-menu",
+      "entranceMenu": {
+        "entranceIds": ["OOT_GERUDO_TRAINING_GROUNDS"]
+      }
     },
     {
       "coords": [456, 318],
@@ -967,7 +970,10 @@
     {
       "coords": [24, 482],
       "image": "dungeon_entrance",
-      "codes": "TODO KF 083 :: unnamed_stack > Desert > Desert Layers > Desert Entrances :: Pasted Layer #82 :: 001-001-014-021.png"
+      "type": "entrance-menu",
+      "entranceMenu": {
+        "entranceIds": ["OOT_TEMPLE_SPIRIT"]
+      }
     }
   ]
 }

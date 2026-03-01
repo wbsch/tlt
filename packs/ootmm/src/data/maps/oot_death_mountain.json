@@ -477,7 +477,10 @@
     {
       "coords": [819, 10],
       "image": "dungeon_entrance",
-      "codes": "TODO KF 066 :: unnamed_stack > Death Mountain > Death Mountain Layers > Death Mountain Entrances :: Pasted Layer #65 :: 001-001-013-000.png"
+      "type": "entrance-menu",
+      "entranceMenu": {
+        "entranceIds": ["OOT_TEMPLE_FIRE"]
+      }
     },
     {
       "coords": [818, 190],
@@ -665,7 +668,10 @@
     {
       "coords": [52, 284],
       "image": "dungeon_entrance",
-      "codes": "TODO KF 075 :: unnamed_stack > Death Mountain > Death Mountain Layers > Death Mountain Entrances :: Pasted Layer #74 :: 001-001-013-009.png"
+      "type": "entrance-menu",
+      "entranceMenu": {
+        "entranceIds": ["OOT_DODONGO_CAVERN"]
+      }
     }
   ]
 }

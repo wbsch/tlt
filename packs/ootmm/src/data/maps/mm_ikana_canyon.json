@@ -303,22 +303,34 @@
     {
       "coords": [812, 466],
       "image": "dungeon_entrance",
-      "codes": "TODO KF 040 :: unnamed_stack > Canyon > Canyon Layers > Canyon Entrances :: Pasted Layer #39 :: 001-001-011-000.png"
+      "type": "entrance-menu",
+      "entranceMenu": {
+        "entranceIds": ["MM_IKANA_CASTLE"]
+      }
     },
     {
       "coords": [946, 368],
       "image": "dungeon_entrance",
-      "codes": "TODO KF 041 :: unnamed_stack > Canyon > Canyon Layers > Canyon Entrances :: Pasted Layer #40 :: 001-001-011-001.png"
+      "type": "entrance-menu",
+      "entranceMenu": {
+        "entranceIds": ["MM_BENEATH_THE_WELL_BACK"]
+      }
     },
     {
       "coords": [872, 264],
       "image": "dungeon_entrance",
-      "codes": "TODO KF 042 :: unnamed_stack > Canyon > Canyon Layers > Canyon Entrances :: Pasted Layer #41 :: 001-001-011-002.png"
+      "type": "entrance-menu",
+      "entranceMenu": {
+        "entranceIds": ["MM_TEMPLE_STONE_TOWER_INVERTED"]
+      }
     },
     {
       "coords": [633, 44],
       "image": "dungeon_entrance",
-      "codes": "TODO KF 043 :: unnamed_stack > Canyon > Canyon Layers > Canyon Entrances :: Pasted Layer #42 :: 001-001-011-003.png"
+      "type": "entrance-menu",
+      "entranceMenu": {
+        "entranceIds": ["MM_TEMPLE_STONE_TOWER"]
+      }
     },
     {
       "coords": [514, 545],
@@ -381,7 +393,10 @@
     {
       "coords": [280, 360],
       "image": "dungeon_entrance",
-      "codes": "TODO KF 048 :: unnamed_stack > Canyon > Canyon Layers > Canyon Entrances :: Pasted Layer #47 :: 001-001-011-008.png"
+      "type": "entrance-menu",
+      "entranceMenu": {
+        "entranceIds": ["MM_BENEATH_THE_WELL"]
+      }
     },
     {
       "coords": [234, 406],
@@ -416,7 +431,10 @@
     {
       "coords": [184, 422],
       "image": "dungeon_entrance",
-      "codes": "TODO KF 050 :: unnamed_stack > Canyon > Canyon Layers > Canyon Entrances :: Pasted Layer #49 :: 001-001-011-010.png"
+      "type": "entrance-menu",
+      "entranceMenu": {
+        "entranceIds": ["MM_SECRET_SHRINE"]
+      }
     },
     {
       "coords": [64, 413],

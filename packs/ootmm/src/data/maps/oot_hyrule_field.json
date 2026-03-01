@@ -691,7 +691,10 @@
     {
       "coords": [72, 124],
       "image": "dungeon_entrance",
-      "codes": "TODO KF 076 :: unnamed_stack > Hyrule > Hyrule Layers > Hyrule Entrances :: Pasted Layer #75 :: 001-001-015-000.png"
+      "type": "entrance-menu",
+      "entranceMenu": {
+        "entranceIds": ["OOT_GANON_CASTLE"]
+      }
     },
     {
       "coords": [189, 128],

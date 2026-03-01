@@ -298,11 +298,6 @@
       ]
     },
     {
-      "coords": [505, 316],
-      "image": "dungeon_entrance",
-      "codes": "TODO KF 032 :: unnamed_stack > Inside Ganon's Castle > Vanilla Ganon > Ganon Entrances :: Pasted Layer #31 :: 001-001-009-000.png"
-    },
-    {
       "coords": [560, 381],
       "image": "chest",
       "codes": "OOT MQ Ganon Castle Forest Trial Second Chest"
@@ -584,7 +579,10 @@
     {
       "coords": [505, 316],
       "image": "dungeon_entrance",
-      "codes": "TODO KF 031 :: unnamed_stack > Inside Ganon's Castle > MQ Ganon > MQ Ganon Entrances :: Pasted Layer #30 :: 001-001-010-000.png"
+      "type": "entrance-menu",
+      "entranceMenu": {
+        "entranceIds": ["OOT_GANON_TOWER"]
+      }
     }
   ]
 }

@@ -695,7 +695,10 @@
     {
       "coords": [182, 470],
       "image": "dungeon_entrance",
-      "codes": "TODO KF 082 :: unnamed_stack > River > River Layers > River Entrances :: Pasted Layer #81 :: 001-001-015-002.png"
+      "type": "entrance-menu",
+      "entranceMenu": {
+        "entranceIds": ["OOT_TEMPLE_WATER"]
+      }
     },
     {
       "coords": [169, 500],
@@ -894,7 +897,10 @@
     {
       "coords": [852, 345],
       "image": "dungeon_entrance",
-      "codes": "TODO KF 090 :: unnamed_stack > River > River Layers > River Entrances :: Pasted Layer #89 :: 001-001-015-010.png"
+      "type": "entrance-menu",
+      "entranceMenu": {
+        "entranceIds": ["OOT_JABU_JABU"]
+      }
     },
     {
       "coords": [932, 475],
@@ -910,7 +916,10 @@
     {
       "coords": [904, 251],
       "image": "dungeon_entrance",
-      "codes": "TODO KF 092 :: unnamed_stack > River > River Layers > River Entrances :: Pasted Layer #91 :: 001-001-015-012.png"
+      "type": "entrance-menu",
+      "entranceMenu": {
+        "entranceIds": ["OOT_ICE_CAVERN"]
+      }
     }
   ]
 }

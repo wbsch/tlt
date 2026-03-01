@@ -1241,7 +1241,10 @@
     {
       "coords": [66, 117],
       "image": "dungeon_entrance",
-      "codes": "TODO KF 156 :: unnamed_stack > Mountain > Mountain Layers > Mountain Entrances :: Pasted Layer #155 :: 001-001-017-010.png"
+      "type": "entrance-menu",
+      "entranceMenu": {
+        "entranceIds": ["MM_TEMPLE_SNOWHEAD"]
+      }
     }
   ]
 }

@@ -534,7 +534,10 @@
     {
       "coords": [678, 76],
       "image": "dungeon_entrance",
-      "codes": "TODO KF 093 :: unnamed_stack > Ocean > Ocean Layers > Ocean Entrances :: Pasted Layer #91 :: 001-001-011-000.png"
+      "type": "entrance-menu",
+      "entranceMenu": {
+        "entranceIds": ["MM_PIRATE_FORTRESS"]
+      }
     },
     {
       "coords": [740, 166],
@@ -657,7 +660,10 @@
     {
       "coords": [730, 280],
       "image": "dungeon_entrance",
-      "codes": "TODO KF 096 :: unnamed_stack > Ocean > Ocean Layers > Ocean Entrances :: Pasted Layer #94 :: 001-001-011-003.png"
+      "type": "entrance-menu",
+      "entranceMenu": {
+        "entranceIds": ["MM_SPIDER_HOUSE_OCEAN"]
+      }
     },
     {
       "coords": [718, 297],
@@ -738,7 +744,10 @@
     {
       "coords": [371, 452],
       "image": "dungeon_entrance",
-      "codes": "TODO KF 101 :: unnamed_stack > Ocean > Ocean Layers > Ocean Entrances :: Pasted Layer #99 :: 001-001-011-008.png"
+      "type": "entrance-menu",
+      "entranceMenu": {
+        "entranceIds": ["MM_TEMPLE_GREAT_BAY"]
+      }
     },
     {
       "coords": [262, 485],

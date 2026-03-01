@@ -521,7 +521,10 @@
     {
       "coords": [290, 140],
       "image": "dungeon_entrance",
-      "codes": "TODO KF 071 :: unnamed_stack > Swamp > Swamp Layers > Swamp Entrances :: Pasted Layer #70 :: 001-001-012-001.png"
+      "type": "entrance-menu",
+      "entranceMenu": {
+        "entranceIds": ["MM_SPIDER_HOUSE_SWAMP"]
+      }
     },
     {
       "coords": [461, 119],
@@ -569,7 +572,10 @@
     {
       "coords": [842, 456],
       "image": "dungeon_entrance",
-      "codes": "TODO KF 075 :: unnamed_stack > Swamp > Swamp Layers > Swamp Entrances :: Pasted Layer #74 :: 001-001-012-005.png"
+      "type": "entrance-menu",
+      "entranceMenu": {
+        "entranceIds": ["MM_TEMPLE_WOODFALL"]
+      }
     },
     {
       "coords": [932, 584],

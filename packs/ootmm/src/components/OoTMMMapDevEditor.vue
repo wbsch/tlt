@@ -123,6 +123,9 @@ function cloneMarker(marker: MapMarkerDef): MapMarkerDef {
     overlays: marker.overlays ? [...marker.overlays] : undefined,
     codes: Array.isArray(marker.codes) ? [...marker.codes] : marker.codes,
     markers: marker.markers?.map((entry) => cloneSubmenuEntry(entry)),
+    entranceMenu: marker.entranceMenu
+      ? { entranceIds: [...marker.entranceMenu.entranceIds] }
+      : undefined,
     visibleWhen: cloneVisibleWhen(marker.visibleWhen),
   };
 }
@@ -153,7 +156,7 @@ function normalizeLocationCode(value: string): string {
 }
 
 function assignMarkerCodes(marker: MapMarkerDef, nextCodes: string[]): void {
-  if (marker.type === 'submenu') {
+  if (marker.type === 'submenu' || marker.type === 'entrance-menu') {
     return;
   }
   const cleaned = nextCodes
@@ -363,9 +366,22 @@ const selectedMarkerUnresolvedCodes = computed(() => {
   );
 });
 
-const selectedMarkerIsSubmenu = computed(
-  () => selectedDraftMarker.value?.type === 'submenu',
+const selectedMarkerHasUnsupportedCodeEditing = computed(
+  () =>
+    selectedDraftMarker.value?.type === 'submenu' ||
+    selectedDraftMarker.value?.type === 'entrance-menu',
 );
+
+const selectedMarkerUnsupportedCodeEditingMessage = computed(() => {
+  const markerType = selectedDraftMarker.value?.type;
+  if (markerType === 'submenu') {
+    return 'Submenu markers use nested marker lists. Editing nested submenu markers is not supported in dev mode yet.';
+  }
+  if (markerType === 'entrance-menu') {
+    return 'Entrance-menu markers use shuffled entrance lists. Editing entrance-menu entries is not supported in dev mode yet.';
+  }
+  return '';
+});
 
 const selectedMarkerImageUnknown = computed(() => {
   const marker = selectedDraftMarker.value;
@@ -645,6 +661,16 @@ const draftErrors = computed<DraftIssue[]>(() => {
       });
       return;
     }
+    if (marker.type === 'entrance-menu') {
+      const entranceIds = marker.entranceMenu?.entranceIds ?? [];
+      if (entranceIds.length === 0) {
+        issues.push({
+          markerIndex,
+          message: 'Entrance-menu marker must include at least one entrance id',
+        });
+      }
+      return;
+    }
 
     const codes = markerCodeList(marker);
     if (codes.length === 0) {
@@ -694,6 +720,9 @@ const draftWarnings = computed<DraftIssue[]>(() => {
           message: `Unresolved submenu codes: ${submenuUnresolved.join(', ')}`,
         });
       }
+      return;
+    }
+    if (marker.type === 'entrance-menu') {
       return;
     }
 
@@ -759,6 +788,12 @@ function buildDraftExportMap(): MapDef | null {
           }
           return exportSubmenuMarker;
         });
+      } else if (marker.type === 'entrance-menu') {
+        if (marker.entranceMenu) {
+          exportMarker.entranceMenu = {
+            entranceIds: [...marker.entranceMenu.entranceIds],
+          };
+        }
       } else {
         const codes = markerCodeList(marker);
         exportMarker.codes = codes.length > 1 ? [...codes] : (codes[0] ?? '');
@@ -810,7 +845,12 @@ function setSelectedCoord(axis: 0 | 1, value: number): void {
 
 function addCodeToSelectedMarker(code: string): void {
   const marker = selectedDraftMarker.value;
-  if (!marker || marker.type === 'submenu') return;
+  if (
+    !marker ||
+    marker.type === 'submenu' ||
+    marker.type === 'entrance-menu'
+  )
+    return;
   const trimmed = code.trim();
   if (!trimmed) return;
   const normalized = normalizeCode(trimmed);
@@ -825,7 +865,12 @@ function addCodeToSelectedMarker(code: string): void {
 
 function removeCodeFromSelectedMarker(code: string): void {
   const marker = selectedDraftMarker.value;
-  if (!marker || marker.type === 'submenu') return;
+  if (
+    !marker ||
+    marker.type === 'submenu' ||
+    marker.type === 'entrance-menu'
+  )
+    return;
   const normalized = normalizeCode(code);
   const nextCodes = markerCodeList(marker).filter(
     (entry) => normalizeCode(entry) !== normalized,
@@ -1142,7 +1187,10 @@ onBeforeUnmount(() => {
         </div>
       </section>
 
-      <section v-if="!selectedMarkerIsSubmenu" class="map-dev-editor__section">
+      <section
+        v-if="!selectedMarkerHasUnsupportedCodeEditing"
+        class="map-dev-editor__section"
+      >
         <h4>Codes</h4>
         <label>
           Search locations
@@ -1239,8 +1287,7 @@ onBeforeUnmount(() => {
       <section v-else class="map-dev-editor__section">
         <h4>Codes</h4>
         <p class="map-dev-editor__location-empty">
-          Submenu markers use nested marker lists. Editing nested submenu
-          markers is not supported in dev mode yet.
+          {{ selectedMarkerUnsupportedCodeEditingMessage }}
         </p>
       </section>
     </template>

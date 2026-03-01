@@ -734,7 +734,10 @@
     {
       "coords": [341, 42],
       "image": "dungeon_entrance",
-      "codes": "TODO KF 087 :: unnamed_stack > Forest > Forest Layers > Forest Entrances :: Pasted Layer #86 :: 001-001-014-012.png"
+      "type": "entrance-menu",
+      "entranceMenu": {
+        "entranceIds": ["OOT_TEMPLE_FOREST"]
+      }
     },
     {
       "coords": [144, 235],

@@ -6382,7 +6382,34 @@
           "type": "array",
           "items": {
             "type": "string",
-            "minLength": 1
+            "enum": [
+              "MM_BENEATH_THE_WELL",
+              "MM_BENEATH_THE_WELL_BACK",
+              "MM_CLOCK_TOWER_ROOF",
+              "MM_IKANA_CASTLE",
+              "MM_PIRATE_FORTRESS",
+              "MM_SECRET_SHRINE",
+              "MM_SPIDER_HOUSE_OCEAN",
+              "MM_SPIDER_HOUSE_SWAMP",
+              "MM_TEMPLE_GREAT_BAY",
+              "MM_TEMPLE_SNOWHEAD",
+              "MM_TEMPLE_STONE_TOWER",
+              "MM_TEMPLE_STONE_TOWER_INVERTED",
+              "MM_TEMPLE_WOODFALL",
+              "OOT_BOTTOM_OF_THE_WELL",
+              "OOT_DEKU_TREE",
+              "OOT_DODONGO_CAVERN",
+              "OOT_GANON_CASTLE",
+              "OOT_GANON_TOWER",
+              "OOT_GERUDO_TRAINING_GROUNDS",
+              "OOT_ICE_CAVERN",
+              "OOT_JABU_JABU",
+              "OOT_TEMPLE_FIRE",
+              "OOT_TEMPLE_FOREST",
+              "OOT_TEMPLE_SHADOW",
+              "OOT_TEMPLE_SPIRIT",
+              "OOT_TEMPLE_WATER"
+            ]
           },
           "minItems": 1,
           "uniqueItems": true

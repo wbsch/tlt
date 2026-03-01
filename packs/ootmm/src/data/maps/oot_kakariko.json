@@ -544,7 +544,10 @@
       "coords": [319, 328],
       "image": "dungeon_entrance",
       "overlays": ["child"],
-      "codes": "TODO KF 072 :: unnamed_stack > Kakariko > Kakariko Layers > Kakariko Entrances :: Pasted Layer #52 :: 001-001-013-006.png"
+      "type": "entrance-menu",
+      "entranceMenu": {
+        "entranceIds": ["OOT_BOTTOM_OF_THE_WELL"]
+      }
     },
     {
       "coords": [230, 219],
@@ -811,7 +814,10 @@
     {
       "coords": [984, 509],
       "image": "dungeon_entrance",
-      "codes": "TODO KF 085 :: unnamed_stack > Kakariko > Kakariko Layers > Kakariko Entrances :: Pasted Layer #65 :: 001-001-013-019.png"
+      "type": "entrance-menu",
+      "entranceMenu": {
+        "entranceIds": ["OOT_TEMPLE_SHADOW"]
+      }
     }
   ]
 }
