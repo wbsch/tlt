@@ -2,6 +2,7 @@ import { defineStore } from 'pinia';
 import { ref } from 'vue';
 
 export type TrackerTab = 'inventory' | 'settings' | 'grid' | 'world' | 'tricks';
+export type RightSidebarTab = 'locations' | 'entrances';
 export type ReachabilityFilter = 'all' | 'reachable' | 'unreachable';
 export type CollectionFilter = 'all' | 'collected' | 'uncollected';
 
@@ -15,8 +16,8 @@ const VALID_TABS: TrackerTab[] = [
 
 export const useOoTMMUiStore = defineStore('ootmm-ui', () => {
   const activeTab = ref<TrackerTab>('grid');
-  const isLocationsSidebarOpen = ref(true);
-  const isEntrancesSidebarOpen = ref(false);
+  const isRightSidebarOpen = ref(true);
+  const activeRightSidebarTab = ref<RightSidebarTab>('locations');
 
   const inventorySearchQuery = ref('');
   const inventorySelectedCategory = ref('all');
@@ -42,8 +43,23 @@ export const useOoTMMUiStore = defineStore('ootmm-ui', () => {
     activeTab.value = tab;
   }
 
-  function toggleLocationsSidebarOpen() {
-    isLocationsSidebarOpen.value = !isLocationsSidebarOpen.value;
+  function toggleRightSidebarOpen() {
+    isRightSidebarOpen.value = !isRightSidebarOpen.value;
+  }
+
+  function setActiveRightSidebarTab(tab: RightSidebarTab) {
+    if (tab !== 'locations' && tab !== 'entrances') {
+      activeRightSidebarTab.value = 'locations';
+      return;
+    }
+    activeRightSidebarTab.value = tab;
+  }
+
+  function openRightSidebar(tab?: RightSidebarTab) {
+    isRightSidebarOpen.value = true;
+    if (tab) {
+      setActiveRightSidebarTab(tab);
+    }
   }
 
   function setSpoilerDragActive(active: boolean) {
@@ -56,8 +72,8 @@ export const useOoTMMUiStore = defineStore('ootmm-ui', () => {
 
   function resetUiState() {
     activeTab.value = 'grid';
-    isLocationsSidebarOpen.value = true;
-    isEntrancesSidebarOpen.value = false;
+    isRightSidebarOpen.value = true;
+    activeRightSidebarTab.value = 'locations';
 
     inventorySearchQuery.value = '';
     inventorySelectedCategory.value = 'all';
@@ -78,8 +94,8 @@ export const useOoTMMUiStore = defineStore('ootmm-ui', () => {
 
   return {
     activeTab,
-    isLocationsSidebarOpen,
-    isEntrancesSidebarOpen,
+    isRightSidebarOpen,
+    activeRightSidebarTab,
     inventorySearchQuery,
     inventorySelectedCategory,
     locationsSearchQuery,
@@ -92,7 +108,9 @@ export const useOoTMMUiStore = defineStore('ootmm-ui', () => {
     isSpoilerDragActive,
     spoilerDragDepth,
     setActiveTab,
-    toggleLocationsSidebarOpen,
+    toggleRightSidebarOpen,
+    setActiveRightSidebarTab,
+    openRightSidebar,
     setSpoilerDragActive,
     setSpoilerDragDepth,
     resetUiState,

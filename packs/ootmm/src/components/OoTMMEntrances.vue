@@ -1,8 +1,9 @@
 <script setup lang="ts">
+import { computed } from 'vue';
 import { useDungeonEntrances } from '../composables/useDungeonEntrances';
 
 const {
-  activeEntrances,
+  sections,
   filteredEntrances,
   ootEntrances,
   mmEntrances,
@@ -13,6 +14,10 @@ const {
   hasAnyOverrides,
 } = useDungeonEntrances();
 
+const dungeonSection = computed(
+  () => sections.value.find((section) => section.kind === 'dungeon') ?? null,
+);
+
 function handleDestinationChange(srcKey: string, dstKey: string) {
   setSelectedDestination(srcKey, dstKey);
 }
@@ -20,8 +25,10 @@ function handleDestinationChange(srcKey: string, dstKey: string) {
 
 <template>
   <div class="entrances-panel">
-    <div class="entrances-header">
-      <h3 class="entrances-title">Dungeon Entrances</h3>
+    <div v-if="sections.length > 0" class="entrances-header">
+      <h3 class="entrances-title">
+        {{ dungeonSection?.title ?? 'Dungeon Entrances' }}
+      </h3>
       <button
         v-if="hasAnyOverrides"
         type="button"
@@ -32,7 +39,7 @@ function handleDestinationChange(srcKey: string, dstKey: string) {
       </button>
     </div>
 
-    <div v-if="activeEntrances.length === 0" class="no-entrances">
+    <div v-if="sections.length === 0" class="no-entrances">
       <p>
         Enable Dungeon ER in Settings and select dungeon sub-types to configure
         entrance assignments.

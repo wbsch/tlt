@@ -57,6 +57,14 @@ export type DungeonEntranceEntry = {
   type: string;
 };
 
+export type EntrancePanelSection = {
+  id: 'dungeon';
+  title: string;
+  hasContent: boolean;
+  sortOrder: number;
+  kind: 'dungeon';
+};
+
 function entranceLabel(key: string, data: EntranceData): string {
   if (data.to && data.to !== 'NONE') {
     return data.to.replace(/^(OOT|MM) /, '');
@@ -128,6 +136,20 @@ export function useDungeonEntrances() {
   const erDungeonsMode = computed(() =>
     String(trackerSettings.value?.erDungeons ?? 'none'),
   );
+  const sections = computed<EntrancePanelSection[]>(() => {
+    if (activeEntrances.value.length === 0) return [];
+
+    return [
+      {
+        id: 'dungeon',
+        title: 'Dungeon Entrances',
+        hasContent: true,
+        sortOrder: 0,
+        kind: 'dungeon',
+      },
+    ];
+  });
+  const hasAvailableSections = computed(() => sections.value.length > 0);
 
   function isDestinationUsed(dstKey: string, currentSrcKey: string): boolean {
     for (const [src, dst] of Object.entries(entranceOverrides.value)) {
@@ -172,6 +194,8 @@ export function useDungeonEntrances() {
   );
 
   return {
+    sections,
+    hasAvailableSections,
     activeEntrances,
     filteredEntrances,
     ootEntrances,

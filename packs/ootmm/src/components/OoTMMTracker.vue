@@ -13,6 +13,7 @@ import OoTMMTricks from './OoTMMTricks.vue';
 import FairyLoader from '@/components/FairyLoader.vue';
 import { SETTINGS_DEFINITIONS } from '../data/settings';
 import { parseSpoilerLog } from '../utils/spoiler';
+import { useDungeonEntrances } from '../composables/useDungeonEntrances';
 import { useLocationCodeLookup } from '../composables/useLocationCodeLookup';
 import {
   matchesLocationBaseVisibility,
@@ -25,7 +26,11 @@ import {
   normalizeSearchText,
 } from '../utils/search';
 import { useOoTMMSessionStore } from '../stores/ootmmSession';
-import { useOoTMMUiStore, type TrackerTab } from '../stores/ootmmUi';
+import {
+  useOoTMMUiStore,
+  type RightSidebarTab,
+  type TrackerTab,
+} from '../stores/ootmmUi';
 import { OOTMM_MAP_DEFS } from '../data/maps';
 import type { MapDef } from '../data/maps/types';
 import * as ItemsMod from '@ootmm/core/items/index';
@@ -106,6 +111,8 @@ for (const [key, trick] of Object.entries(ALL_TRICKS)) {
 
 const sessionStore = useOoTMMSessionStore();
 const uiStore = useOoTMMUiStore();
+const { hasAvailableSections: hasAvailableEntranceSections } =
+  useDungeonEntrances();
 
 const {
   inventoryMap: inventory,
@@ -126,8 +133,8 @@ const {
 
 const {
   activeTab,
-  isLocationsSidebarOpen,
-  isEntrancesSidebarOpen,
+  isRightSidebarOpen,
+  activeRightSidebarTab,
   isSpoilerDragActive,
   spoilerDragDepth,
   locationsSearchQuery,
@@ -150,6 +157,10 @@ let spoilerPlayerDialogResolver: ((player: number | null) => void) | null =
   null;
 const mapDefs = OOTMM_MAP_DEFS;
 type SelectedGamesSetting = 'ootmm' | 'oot' | 'mm';
+const RIGHT_SIDEBAR_TABS: Array<{ id: RightSidebarTab; label: string }> = [
+  { id: 'locations', label: 'Locations' },
+  { id: 'entrances', label: 'Entrances' },
+];
 const DEFAULT_MAP_ID = 'oot_kokiri_forest';
 
 function getPreferredActiveMapId(availableMapDefs: readonly MapDef[]): string {
@@ -208,11 +219,6 @@ const selectedGamesSetting = computed<SelectedGamesSetting>(() =>
   resolveSelectedGamesSetting(trackerSettings.value?.games),
 );
 
-const isErDungeonsActive = computed(() => {
-  const erDungeons = trackerSettings.value?.erDungeons;
-  return erDungeons !== undefined && erDungeons !== 'none';
-});
-
 const selectableMapDefs = computed(() =>
   mapDefs.filter((mapDef) =>
     isMapVisibleForSelectedGames(mapDef, selectedGamesSetting.value),
@@ -226,6 +232,20 @@ const activeMap = computed<MapDef | null>(() => {
     selectableMapDefs.value[0]
   );
 });
+const availableRightSidebarTabs = computed(() =>
+  RIGHT_SIDEBAR_TABS.filter(
+    (tab) => tab.id === 'locations' || hasAvailableEntranceSections.value,
+  ),
+);
+const shouldShowRightSidebarTabs = computed(
+  () => availableRightSidebarTabs.value.length > 1,
+);
+const activeVisibleRightSidebarTab = computed<RightSidebarTab>(() =>
+  activeRightSidebarTab.value === 'entrances' &&
+  !hasAvailableEntranceSections.value
+    ? 'locations'
+    : activeRightSidebarTab.value,
+);
 const collectedLocationIdSet = computed(
   () => new Set(collectedLocationIds.value),
 );
@@ -750,6 +770,34 @@ watch(filteredMapSelectorMaps, (maps) => {
     mapSelectorHighlightedIndex.value = 0;
   }
 });
+
+watch(
+  () => hasAvailableEntranceSections.value,
+  (hasEntrances, hadEntrances) => {
+    if (hasEntrances && !hadEntrances) {
+      uiStore.openRightSidebar('entrances');
+      return;
+    }
+
+    if (
+      !hasEntrances &&
+      hadEntrances &&
+      activeRightSidebarTab.value === 'entrances'
+    ) {
+      uiStore.setActiveRightSidebarTab('locations');
+    }
+  },
+);
+
+watch(
+  [() => hasAvailableEntranceSections.value, activeRightSidebarTab],
+  ([hasEntrances, currentTab]) => {
+    if (!hasEntrances && currentTab === 'entrances') {
+      uiStore.setActiveRightSidebarTab('locations');
+    }
+  },
+  { immediate: true },
+);
 
 function fillInventory() {
   sessionStore.fillInventoryForDebugActivateAll();
@@ -1691,61 +1739,52 @@ onBeforeUnmount(() => {
         </div>
       </div>
 
-      <aside
-        v-if="isErDungeonsActive"
-        class="entrances-sidebar"
-        :class="{ collapsed: !isEntrancesSidebarOpen }"
-      >
+      <aside class="right-sidebar" :class="{ collapsed: !isRightSidebarOpen }">
         <button
-          class="entrances-toggle"
+          class="right-sidebar-toggle"
           type="button"
-          :aria-expanded="isEntrancesSidebarOpen"
-          aria-controls="map-entrances-panel"
-          @click="isEntrancesSidebarOpen = !isEntrancesSidebarOpen"
+          data-testid="right-sidebar-toggle"
+          :aria-expanded="isRightSidebarOpen"
+          aria-controls="right-sidebar-panel"
+          aria-label="Toggle right sidebar"
+          @click="uiStore.toggleRightSidebarOpen()"
         >
-          <span class="toggle-text">Entrances</span>
           <span class="toggle-icon">{{
-            isEntrancesSidebarOpen ? '>>' : '<<'
+            isRightSidebarOpen ? '>>' : '<<'
           }}</span>
         </button>
-        <div class="entrances-clip">
+        <div class="right-sidebar-clip">
           <div
-            id="map-entrances-panel"
-            class="entrances-content"
-            :aria-hidden="!isEntrancesSidebarOpen"
+            id="right-sidebar-panel"
+            class="right-sidebar-content"
+            :aria-hidden="!isRightSidebarOpen"
           >
-            <OoTMMEntrances class="map-entrances" />
-          </div>
-        </div>
-      </aside>
+            <div v-if="shouldShowRightSidebarTabs" class="right-sidebar-tabs">
+              <button
+                v-for="tab in availableRightSidebarTabs"
+                :key="tab.id"
+                type="button"
+                :data-testid="`right-sidebar-tab-${tab.id}`"
+                :class="{ active: activeVisibleRightSidebarTab === tab.id }"
+                @click="uiStore.setActiveRightSidebarTab(tab.id)"
+              >
+                {{ tab.label }}
+              </button>
+            </div>
 
-      <aside
-        class="locations-sidebar"
-        :class="{ collapsed: !isLocationsSidebarOpen }"
-      >
-        <button
-          class="locations-toggle"
-          type="button"
-          :aria-expanded="isLocationsSidebarOpen"
-          aria-controls="map-locations-panel"
-          @click="isLocationsSidebarOpen = !isLocationsSidebarOpen"
-        >
-          <span class="toggle-text">Locations</span>
-          <span class="toggle-icon">{{
-            isLocationsSidebarOpen ? '>>' : '<<'
-          }}</span>
-        </button>
-        <div class="locations-clip">
-          <div
-            id="map-locations-panel"
-            class="locations-content"
-            :aria-hidden="!isLocationsSidebarOpen"
-          >
-            <OoTMMLocations
-              class="map-locations"
-              :locations="allLocations"
-              :reachable-ids="reachableLocationIds"
-            />
+            <div class="right-sidebar-body">
+              <OoTMMLocations
+                v-if="activeVisibleRightSidebarTab === 'locations'"
+                class="map-locations"
+                :locations="allLocations"
+                :reachable-ids="reachableLocationIds"
+              />
+
+              <OoTMMEntrances
+                v-else-if="activeVisibleRightSidebarTab === 'entrances'"
+                class="map-entrances"
+              />
+            </div>
           </div>
         </div>
       </aside>
@@ -2265,84 +2304,7 @@ onBeforeUnmount(() => {
   min-height: 0;
 }
 
-.entrances-sidebar {
-  position: relative;
-  width: 300px;
-  flex: 0 0 300px;
-  background: #2a2a2a;
-  border-left: 2px solid #404040;
-  display: flex;
-  flex-direction: column;
-  transition:
-    width 0.2s ease,
-    flex-basis 0.2s ease;
-  overflow: visible;
-}
-
-.entrances-sidebar.collapsed {
-  width: 0;
-  flex: 0 0 0;
-  border-left: none;
-}
-
-.entrances-clip {
-  position: relative;
-  flex: 1;
-  min-height: 0;
-  overflow: hidden;
-}
-
-.entrances-toggle {
-  position: absolute;
-  top: 50px;
-  left: 0;
-  transform: translateX(calc(-100% + 4px));
-  display: inline-flex;
-  align-items: center;
-  gap: 0.5rem;
-  padding: 0.4rem 0.6rem;
-  background: #2a2a2a;
-  border: 1px solid #404040;
-  border-radius: 0.5rem 0 0 0.5rem;
-  color: #e5e7eb;
-  font-size: 0.75rem;
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
-  cursor: pointer;
-  transition:
-    background 0.2s ease,
-    border-color 0.2s ease;
-}
-
-.entrances-toggle:hover {
-  background: #333;
-  border-color: #4b5563;
-}
-
-.entrances-toggle:focus-visible {
-  outline: 2px solid #60a5fa;
-  outline-offset: 2px;
-}
-
-.entrances-content {
-  position: absolute;
-  inset: 0;
-  width: 300px;
-  display: flex;
-  flex-direction: column;
-}
-
-.entrances-sidebar.collapsed .entrances-content {
-  visibility: hidden;
-  pointer-events: none;
-}
-
-.map-entrances {
-  flex: 1;
-  min-height: 0;
-}
-
-.locations-sidebar {
+.right-sidebar {
   position: relative;
   width: 400px;
   flex: 0 0 400px;
@@ -2356,28 +2318,29 @@ onBeforeUnmount(() => {
   overflow: visible;
 }
 
-.locations-sidebar.collapsed {
+.right-sidebar.collapsed {
   width: 0;
   flex: 0 0 0;
   border-left: none;
 }
 
-.locations-clip {
+.right-sidebar-clip {
   position: relative;
   flex: 1;
   min-height: 0;
   overflow: hidden;
 }
 
-.locations-toggle {
+.right-sidebar-toggle {
   position: absolute;
   top: 12px;
   left: 0;
   transform: translateX(calc(-100% + 4px));
   display: inline-flex;
   align-items: center;
-  gap: 0.5rem;
-  padding: 0.4rem 0.6rem;
+  justify-content: center;
+  min-width: 3rem;
+  padding: 0.4rem 0.55rem;
   background: #2a2a2a;
   border: 1px solid #404040;
   border-radius: 0.5rem 0 0 0.5rem;
@@ -2391,12 +2354,12 @@ onBeforeUnmount(() => {
     border-color 0.2s ease;
 }
 
-.locations-toggle:hover {
+.right-sidebar-toggle:hover {
   background: #333;
   border-color: #4b5563;
 }
 
-.locations-toggle:focus-visible {
+.right-sidebar-toggle:focus-visible {
   outline: 2px solid #60a5fa;
   outline-offset: 2px;
 }
@@ -2405,7 +2368,7 @@ onBeforeUnmount(() => {
   font-weight: 700;
 }
 
-.locations-content {
+.right-sidebar-content {
   position: absolute;
   inset: 0;
   width: 400px;
@@ -2413,14 +2376,47 @@ onBeforeUnmount(() => {
   flex-direction: column;
 }
 
-.locations-sidebar.collapsed .locations-content {
+.right-sidebar.collapsed .right-sidebar-content {
   visibility: hidden;
   pointer-events: none;
 }
 
+.right-sidebar-tabs {
+  display: flex;
+  border-bottom: 1px solid #404040;
+}
+
+.right-sidebar-tabs button {
+  flex: 1;
+  padding: 0.75rem;
+  background: transparent;
+  border-radius: 0;
+  font-size: 0.875rem;
+  transition: background 0.2s;
+}
+
+.right-sidebar-tabs button:hover {
+  background: #333;
+}
+
+.right-sidebar-tabs button.active {
+  background: #1a1a1a;
+  border-bottom: 2px solid #3b82f6;
+}
+
+.right-sidebar-body {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.map-entrances,
 .map-locations {
   flex: 1;
   min-height: 0;
+  display: flex;
+  flex-direction: column;
 }
 
 @media (max-width: 900px) {
@@ -2462,54 +2458,37 @@ onBeforeUnmount(() => {
     min-height: max(360px, 50vh);
   }
 
-  .locations-sidebar {
+  .right-sidebar {
     width: 100%;
     flex: 0 0 auto;
     border-left: none;
     border-top: 2px solid #404040;
   }
 
-  .locations-sidebar.collapsed {
+  .right-sidebar.collapsed {
     width: 100%;
     flex: 0 0 0;
     border-top: none;
   }
 
-  .locations-toggle {
+  .right-sidebar-toggle {
     left: 12px;
     top: -16px;
     border-radius: 0.5rem;
     transform: none;
   }
 
-  .locations-content {
+  .right-sidebar-content {
     position: relative;
     width: 100%;
   }
 
-  .entrances-sidebar {
-    width: 100%;
-    flex: 0 0 auto;
-    border-left: none;
-    border-top: 2px solid #404040;
+  .right-sidebar-tabs {
+    flex-wrap: wrap;
   }
 
-  .entrances-sidebar.collapsed {
-    width: 100%;
-    flex: 0 0 0;
-    border-top: none;
-  }
-
-  .entrances-toggle {
-    left: 12px;
-    top: -16px;
-    border-radius: 0.5rem;
-    transform: none;
-  }
-
-  .entrances-content {
-    position: relative;
-    width: 100%;
+  .right-sidebar-tabs button {
+    flex: 1 1 50%;
   }
 }
 
@@ -2519,6 +2498,10 @@ onBeforeUnmount(() => {
   }
 
   .tabs button {
+    flex: 1 1 100%;
+  }
+
+  .right-sidebar-tabs button {
     flex: 1 1 100%;
   }
 

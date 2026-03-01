@@ -17,6 +17,7 @@ const VALID_TABS = new Set([
   'world',
   'tricks',
 ]);
+const VALID_RIGHT_SIDEBAR_TABS = new Set(['locations', 'entrances']);
 const VALID_REACHABILITY_FILTERS = new Set(['all', 'reachable', 'unreachable']);
 const VALID_COLLECTION_FILTERS = new Set(['all', 'collected', 'uncollected']);
 
@@ -146,8 +147,8 @@ export const PERSIST_CONFIGS: Record<PersistStoreId, PersistConfig> = {
     key: 'tlt:ootmm-ui:v1',
     paths: [
       'activeTab',
-      'isLocationsSidebarOpen',
-      'isEntrancesSidebarOpen',
+      'isRightSidebarOpen',
+      'activeRightSidebarTab',
       'inventorySearchQuery',
       'inventorySelectedCategory',
       'locationsSearchQuery',
@@ -159,57 +160,82 @@ export const PERSIST_CONFIGS: Record<PersistStoreId, PersistConfig> = {
       'activeMapId',
       'settingsSearchQuery',
     ],
-    hydrate: (raw) => ({
-      ...(typeof raw.activeTab === 'string' && VALID_TABS.has(raw.activeTab)
-        ? { activeTab: raw.activeTab }
-        : {}),
-      ...(typeof raw.isLocationsSidebarOpen === 'boolean'
-        ? { isLocationsSidebarOpen: raw.isLocationsSidebarOpen }
-        : {}),
-      ...(typeof raw.isEntrancesSidebarOpen === 'boolean'
-        ? { isEntrancesSidebarOpen: raw.isEntrancesSidebarOpen }
-        : {}),
-      ...(typeof raw.inventorySearchQuery === 'string'
-        ? { inventorySearchQuery: safeUiString(raw.inventorySearchQuery) }
-        : {}),
-      ...(typeof raw.inventorySelectedCategory === 'string'
-        ? {
-            inventorySelectedCategory: safeUiString(
-              raw.inventorySelectedCategory,
-            ),
-          }
-        : {}),
-      ...(typeof raw.locationsSearchQuery === 'string'
-        ? { locationsSearchQuery: safeUiString(raw.locationsSearchQuery) }
-        : {}),
-      ...(typeof raw.locationsSelectedCategory === 'string'
-        ? {
-            locationsSelectedCategory: safeUiString(
-              raw.locationsSelectedCategory,
-            ),
-          }
-        : {}),
-      ...(typeof raw.locationsReachabilityFilter === 'string' &&
-      VALID_REACHABILITY_FILTERS.has(raw.locationsReachabilityFilter)
-        ? { locationsReachabilityFilter: raw.locationsReachabilityFilter }
-        : {}),
-      ...(typeof raw.locationsCollectionFilter === 'string' &&
-      VALID_COLLECTION_FILTERS.has(raw.locationsCollectionFilter)
-        ? { locationsCollectionFilter: raw.locationsCollectionFilter }
-        : {}),
-      ...(typeof raw.locationsShowUnshuffled === 'boolean'
-        ? { locationsShowUnshuffled: raw.locationsShowUnshuffled }
-        : {}),
-      ...(typeof raw.locationsShowGossipStones === 'boolean'
-        ? { locationsShowGossipStones: raw.locationsShowGossipStones }
-        : {}),
-      ...(typeof raw.activeMapId === 'string'
-        ? { activeMapId: safeUiString(raw.activeMapId) }
-        : {}),
-      ...(typeof raw.settingsSearchQuery === 'string'
-        ? { settingsSearchQuery: safeUiString(raw.settingsSearchQuery) }
-        : {}),
-    }),
+    hydrate: (raw) => {
+      const next: Record<string, unknown> = {
+        ...(typeof raw.activeTab === 'string' && VALID_TABS.has(raw.activeTab)
+          ? { activeTab: raw.activeTab }
+          : {}),
+        ...(typeof raw.inventorySearchQuery === 'string'
+          ? { inventorySearchQuery: safeUiString(raw.inventorySearchQuery) }
+          : {}),
+        ...(typeof raw.inventorySelectedCategory === 'string'
+          ? {
+              inventorySelectedCategory: safeUiString(
+                raw.inventorySelectedCategory,
+              ),
+            }
+          : {}),
+        ...(typeof raw.locationsSearchQuery === 'string'
+          ? { locationsSearchQuery: safeUiString(raw.locationsSearchQuery) }
+          : {}),
+        ...(typeof raw.locationsSelectedCategory === 'string'
+          ? {
+              locationsSelectedCategory: safeUiString(
+                raw.locationsSelectedCategory,
+              ),
+            }
+          : {}),
+        ...(typeof raw.locationsReachabilityFilter === 'string' &&
+        VALID_REACHABILITY_FILTERS.has(raw.locationsReachabilityFilter)
+          ? { locationsReachabilityFilter: raw.locationsReachabilityFilter }
+          : {}),
+        ...(typeof raw.locationsCollectionFilter === 'string' &&
+        VALID_COLLECTION_FILTERS.has(raw.locationsCollectionFilter)
+          ? { locationsCollectionFilter: raw.locationsCollectionFilter }
+          : {}),
+        ...(typeof raw.locationsShowUnshuffled === 'boolean'
+          ? { locationsShowUnshuffled: raw.locationsShowUnshuffled }
+          : {}),
+        ...(typeof raw.locationsShowGossipStones === 'boolean'
+          ? { locationsShowGossipStones: raw.locationsShowGossipStones }
+          : {}),
+        ...(typeof raw.activeMapId === 'string'
+          ? { activeMapId: safeUiString(raw.activeMapId) }
+          : {}),
+        ...(typeof raw.settingsSearchQuery === 'string'
+          ? { settingsSearchQuery: safeUiString(raw.settingsSearchQuery) }
+          : {}),
+      };
+
+      if (typeof raw.isRightSidebarOpen === 'boolean') {
+        next.isRightSidebarOpen = raw.isRightSidebarOpen;
+      } else if (
+        raw.isEntrancesSidebarOpen === false &&
+        raw.isLocationsSidebarOpen === false
+      ) {
+        next.isRightSidebarOpen = false;
+      } else if (
+        typeof raw.isEntrancesSidebarOpen === 'boolean' ||
+        typeof raw.isLocationsSidebarOpen === 'boolean'
+      ) {
+        next.isRightSidebarOpen =
+          raw.isEntrancesSidebarOpen === true ||
+          raw.isLocationsSidebarOpen === true;
+      }
+
+      if (
+        typeof raw.activeRightSidebarTab === 'string' &&
+        VALID_RIGHT_SIDEBAR_TABS.has(raw.activeRightSidebarTab)
+      ) {
+        next.activeRightSidebarTab = raw.activeRightSidebarTab;
+      } else if (raw.isEntrancesSidebarOpen === true) {
+        next.activeRightSidebarTab = 'entrances';
+      } else if (raw.isLocationsSidebarOpen === true) {
+        next.activeRightSidebarTab = 'locations';
+      }
+
+      return next;
+    },
   },
   'ootmm-session': {
     key: 'tlt:ootmm-session:v1',

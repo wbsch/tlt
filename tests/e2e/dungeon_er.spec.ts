@@ -36,16 +36,13 @@ test.describe('Dungeon Entrance Randomizer', () => {
     expect(baseline.total).toBeGreaterThan(0);
     expect(baseline.reachable).toBeLessThan(baseline.total);
 
-    // --- Step 3: Open entrances panel, map Deku Tree → Forest Temple ---
-    // The entrances sidebar should be visible now that ER is active.
-    // Click the toggle button to open it if collapsed.
-    const entrancesToggle = page.locator('.entrances-toggle');
-    await expect(entrancesToggle).toBeVisible({ timeout: 5_000 });
+    // --- Step 3: Use the right sidebar Entrances tab, map Deku Tree → Forest Temple ---
+    const rightSidebarToggle = page.getByTestId('right-sidebar-toggle');
+    await expect(rightSidebarToggle).toHaveAttribute('aria-expanded', 'true');
 
-    const isExpanded = await entrancesToggle.getAttribute('aria-expanded');
-    if (isExpanded !== 'true') {
-      await entrancesToggle.click();
-    }
+    const entrancesTab = page.getByTestId('right-sidebar-tab-entrances');
+    await expect(entrancesTab).toBeVisible({ timeout: 5_000 });
+    await expect(entrancesTab).toHaveClass(/active/);
 
     // Find the entrance row for "Deku Tree" – the label text contains "Deku Tree"
     const dekuTreeRow = page.locator('.entrance-row').filter({
