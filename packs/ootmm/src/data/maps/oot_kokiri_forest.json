@@ -536,7 +536,10 @@
     {
       "coords": [863, 337],
       "image": "dungeon_entrance",
-      "codes": "TODO KF 075 :: unnamed_stack > Forest > Forest Layers > Forest Entrances :: Pasted Layer #74 :: 001-001-014-000.png",
+      "type": "entrance-menu",
+      "entranceMenu": {
+        "entranceIds": ["OOT_DEKU_TREE"]
+      },
       "overlays": ["child"]
     },
     {

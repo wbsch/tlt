@@ -22,9 +22,14 @@ import {
   stripWorldSuffix,
   useLocationCodeLookup,
 } from '../composables/useLocationCodeLookup';
+import {
+  useDungeonEntrances,
+  type DungeonEntranceEntry,
+} from '../composables/useDungeonEntrances';
 import { matchesMapSettingsVisibility } from '../utils/mapSettingsVisibility';
 import type {
   MapDef,
+  MapDungeonEntranceMenuDef,
   MapMarkerDef,
   MapMarkerOverlay,
   MapPopupEntry,
@@ -132,7 +137,31 @@ type SubmenuMarkerRuntime = {
   isVisible: boolean;
 };
 
-type MarkerRuntime = CheckMarkerRuntime | SubmenuMarkerRuntime;
+type EntranceMenuEntryRuntime = {
+  key: string;
+  label: string;
+  game: 'oot' | 'mm';
+};
+
+type EntranceMenuMarkerRuntime = {
+  type: 'entrance-menu';
+  id: string;
+  markerIndex: number;
+  coords: [number, number];
+  image: string;
+  overlays: MapMarkerOverlay[];
+  topLeftOverlays: OverlayRender[];
+  bottomLeftOverlays: OverlayRender[];
+  topRightOverlays: OverlayRender[];
+  countDigitImages: string[];
+  entranceEntries: EntranceMenuEntryRuntime[];
+  isVisible: boolean;
+};
+
+type MarkerRuntime =
+  | CheckMarkerRuntime
+  | SubmenuMarkerRuntime
+  | EntranceMenuMarkerRuntime;
 
 type PopupMarkerRuntime = {
   id: string;
@@ -298,6 +327,14 @@ const { resolveCodeToCheckIds } = useLocationCodeLookup(
   computed(() => props.reachableIds),
   computed(() => props.collectedIds),
 );
+
+const {
+  activeEntrances: activeDungeonEntrances,
+  filteredEntrances: filteredDungeonEntrances,
+  destinationOptionsForGame,
+  getSelectedDestination,
+  setSelectedDestination,
+} = useDungeonEntrances();
 
 function hasResolvedLocationCode(codeList: string[]): boolean {
   return codeList.some((code) => resolveCodeToCheckIds(code).length > 0);
@@ -749,6 +786,40 @@ function markerPopupPayload(marker: PopupMarkerRuntime): MapPopupPayload {
   };
 }
 
+function entranceDestinationLabel(entry: {
+  label: string;
+  game: 'oot' | 'mm';
+}): string {
+  return `${entry.label}${entry.game === 'mm' ? ' (MM)' : ' (OoT)'}`;
+}
+
+function resolveEntranceMenuIds(
+  markerDef: MapMarkerDef,
+  menuDef: MapDungeonEntranceMenuDef,
+): string[] {
+  const configured = Array.isArray(menuDef.entranceIds)
+    ? menuDef.entranceIds
+    : [];
+  if (configured.length > 0) {
+    return configured
+      .map((id) => (typeof id === 'string' ? id.trim() : ''))
+      .filter((id) => id.length > 0);
+  }
+
+  const fallbackCodes = markerCodeList(markerDef);
+  return fallbackCodes;
+}
+
+function toEntranceMenuEntry(
+  entry: DungeonEntranceEntry,
+): EntranceMenuEntryRuntime {
+  return {
+    key: entry.key,
+    label: entry.label,
+    game: entry.game,
+  };
+}
+
 const markerViewModels = computed<MarkerRuntime[]>(() => {
   const mapDef = renderMapDef.value;
   if (!mapDef) {
@@ -760,7 +831,59 @@ const markerViewModels = computed<MarkerRuntime[]>(() => {
   return mapDef.markers.map((markerDef, markerIndex) => {
     const markerId = `${mapDef.id}:${markerIndex}`;
     const overlays = markerDef.overlays ?? [];
-    const markerType = markerDef.type === 'submenu' ? 'submenu' : 'check';
+    const markerType =
+      markerDef.type === 'submenu'
+        ? 'submenu'
+        : markerDef.type === 'entrance-menu'
+          ? 'entrance-menu'
+          : 'check';
+
+    if (markerType === 'entrance-menu') {
+      const menuDef = markerDef.entranceMenu;
+      const entranceIds = menuDef
+        ? resolveEntranceMenuIds(markerDef, menuDef)
+        : markerCodeList(markerDef);
+      const activeById = new Map(
+        activeDungeonEntrances.value.map((entry) => [entry.key, entry]),
+      );
+      const filteredById = new Map(
+        filteredDungeonEntrances.value.map((entry) => [entry.key, entry]),
+      );
+      const activeEntries = entranceIds
+        .map((id) => activeById.get(id))
+        .filter((entry): entry is DungeonEntranceEntry => Boolean(entry));
+      const visibleEntries = entranceIds
+        .map((id) => filteredById.get(id))
+        .filter((entry): entry is DungeonEntranceEntry => Boolean(entry))
+        .map(toEntranceMenuEntry);
+      const settingsVisible = matchesMapSettingsVisibility(
+        markerDef.visibleWhen,
+        props.settings,
+      );
+
+      return {
+        type: 'entrance-menu',
+        id: markerId,
+        markerIndex,
+        coords: markerDef.coords,
+        image: markerDef.image,
+        overlays,
+        topLeftOverlays: buildTopLeftOverlays(overlays),
+        bottomLeftOverlays: buildBottomLeftOverlays(overlays),
+        topRightOverlays: buildTopRightOverlays(overlays),
+        countDigitImages:
+          visibleEntries.length > 1
+            ? String(visibleEntries.length)
+                .split('')
+                .map((digit) => resolveDigitImage(digit))
+            : [],
+        entranceEntries: visibleEntries,
+        isVisible:
+          settingsVisible &&
+          activeEntries.length > 0 &&
+          visibleEntries.length > 0,
+      };
+    }
 
     if (markerType === 'submenu') {
       const submenuMarkersRaw = markerDef.markers ?? [];
@@ -876,9 +999,19 @@ const popupMarker = computed<CheckMarkerRuntime | null>(() => {
   return marker && marker.type === 'check' ? marker : null;
 });
 
-const activeSubmenuMarker = computed<SubmenuMarkerRuntime | null>(() => {
+const activePanelMarker = computed<
+  SubmenuMarkerRuntime | EntranceMenuMarkerRuntime | null
+>(() => {
   if (!submenuPanel.value.markerId) return null;
   const marker = markerById.value.get(submenuPanel.value.markerId);
+  return marker &&
+    (marker.type === 'submenu' || marker.type === 'entrance-menu')
+    ? marker
+    : null;
+});
+
+const activeSubmenuMarker = computed<SubmenuMarkerRuntime | null>(() => {
+  const marker = activePanelMarker.value;
   return marker && marker.type === 'submenu' ? marker : null;
 });
 
@@ -1008,7 +1141,7 @@ function calculateMapPopupPosition(): { left: number; top: number } | null {
 }
 
 function calculateSubmenuPanelPosition(): { left: number; top: number } | null {
-  const marker = activeSubmenuMarker.value;
+  const marker = activePanelMarker.value;
   if (!marker) return null;
 
   const frozenScale = submenuPanel.value.frozenScale;
@@ -1327,7 +1460,7 @@ function handleMarkerClick(marker: MarkerRuntime): void {
     closeSubmenuPanel();
     return;
   }
-  if (marker.type === 'submenu') {
+  if (marker.type === 'submenu' || marker.type === 'entrance-menu') {
     openSubmenuPanel(marker.id, { pinned: true });
     return;
   }
@@ -1348,7 +1481,7 @@ function handleMarkerClick(marker: MarkerRuntime): void {
 
 function handleMarkerHoverStart(marker: MarkerRuntime): void {
   if (props.devMode) return;
-  if (marker.type === 'submenu') {
+  if (marker.type === 'submenu' || marker.type === 'entrance-menu') {
     if (submenuPanel.value.pinned) return;
     submenuPanel.value.hoverMarkerId = marker.id;
     openSubmenuPanel(marker.id);
@@ -1361,7 +1494,7 @@ function handleMarkerHoverStart(marker: MarkerRuntime): void {
 
 function handleMarkerHoverEnd(markerId: string): void {
   const marker = markerById.value.get(markerId);
-  if (marker?.type === 'submenu') {
+  if (marker?.type === 'submenu' || marker?.type === 'entrance-menu') {
     if (submenuPanel.value.pinned) return;
     if (submenuPanel.value.hoverMarkerId === markerId) {
       submenuPanel.value.hoverMarkerId = null;
@@ -1477,6 +1610,18 @@ function handlePopupMarkAllChecks(popup: MapPopupPayload): void {
   const ids = Array.from(new Set(popupUncheckedCheckIds(popup)));
   if (ids.length === 0) return;
   emit('mark-all-reachable', ids);
+}
+
+function getEntranceDestinationOptions(entry: EntranceMenuEntryRuntime) {
+  return destinationOptionsForGame(entry.game, entry.key);
+}
+
+function getEntranceDestinationValue(srcKey: string): string {
+  return getSelectedDestination(srcKey);
+}
+
+function handleEntranceDestinationChange(srcKey: string, dstKey: string): void {
+  setSelectedDestination(srcKey, dstKey);
 }
 
 function handleWheel(event: WheelEvent): void {
@@ -1702,7 +1847,10 @@ watch(markerViewModels, () => {
   const activeSubmenuId = submenuPanel.value.markerId;
   if (activeSubmenuId) {
     const marker = markerById.value.get(activeSubmenuId);
-    if (!marker || marker.type !== 'submenu') {
+    if (
+      !marker ||
+      (marker.type !== 'submenu' && marker.type !== 'entrance-menu')
+    ) {
       closeSubmenuPanel();
     }
   }
@@ -1914,7 +2062,9 @@ onBeforeUnmount(() => {
           :aria-label="
             marker.type === 'submenu'
               ? `Submenu marker: ${marker.submenuMarkers.length} markers`
-              : `Map marker: ${marker.codeList.join(', ')}`
+              : marker.type === 'entrance-menu'
+                ? `Entrance menu marker: ${marker.entranceEntries.length} entries`
+                : `Map marker: ${marker.codeList.join(', ')}`
           "
           @pointerdown.stop
           @click.stop="handleMarkerClick(marker)"
@@ -1990,12 +2140,16 @@ onBeforeUnmount(() => {
       </div>
 
       <div
-        v-if="activeSubmenuMarker"
+        v-if="activePanelMarker"
         ref="submenuPanelRef"
         class="map-submenu-panel"
         role="dialog"
         aria-modal="false"
-        :aria-label="`Submenu: ${activeSubmenuMarker.submenuMarkers.length} markers`"
+        :aria-label="
+          activePanelMarker.type === 'submenu'
+            ? `Submenu: ${activePanelMarker.submenuMarkers.length} markers`
+            : `Dungeon entrances: ${activePanelMarker.entranceEntries.length} entries`
+        "
         :style="submenuPanelStyle()"
         @pointerdown.stop
         @mouseenter="handleSubmenuPanelHoverStart"
@@ -2003,9 +2157,12 @@ onBeforeUnmount(() => {
         @focusin="handleSubmenuPanelFocusIn"
         @focusout="handleSubmenuPanelFocusOut"
       >
-        <div class="map-submenu-panel__grid">
+        <div
+          v-if="activePanelMarker.type === 'submenu'"
+          class="map-submenu-panel__grid"
+        >
           <button
-            v-for="submenuMarker in activeSubmenuMarker.submenuMarkers"
+            v-for="submenuMarker in activePanelMarker.submenuMarkers"
             :key="submenuMarker.id"
             type="button"
             class="map-submenu-marker"
@@ -2077,6 +2234,37 @@ onBeforeUnmount(() => {
               />
             </span>
           </button>
+        </div>
+
+        <div v-else class="map-entrance-menu">
+          <div
+            v-for="entry in activePanelMarker.entranceEntries"
+            :key="entry.key"
+            class="map-entrance-menu__row"
+          >
+            <label class="map-entrance-menu__label" :title="entry.key">
+              {{ entry.label }}
+            </label>
+            <select
+              class="map-entrance-menu__select"
+              :value="getEntranceDestinationValue(entry.key)"
+              @change="
+                handleEntranceDestinationChange(
+                  entry.key,
+                  ($event.target as HTMLSelectElement).value,
+                )
+              "
+            >
+              <option value="">— Not mapped —</option>
+              <option
+                v-for="dest in getEntranceDestinationOptions(entry)"
+                :key="dest.value"
+                :value="dest.value"
+              >
+                {{ entranceDestinationLabel(dest) }}
+              </option>
+            </select>
+          </div>
         </div>
       </div>
 
@@ -2656,6 +2844,49 @@ onBeforeUnmount(() => {
 .map-submenu-marker:focus-visible {
   outline: 2px solid #fbbf24;
   outline-offset: 1px;
+}
+
+.map-entrance-menu {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  padding: 0.5rem;
+  min-width: 300px;
+}
+
+.map-entrance-menu__row {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+}
+
+.map-entrance-menu__label {
+  font-size: 0.75rem;
+  color: #d1d5db;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.map-entrance-menu__select {
+  width: 100%;
+  padding: 0.3rem 0.4rem;
+  font-size: 0.75rem;
+  background: #1f2937;
+  color: #e5e7eb;
+  border: 1px solid #4b5563;
+  border-radius: 0.25rem;
+  cursor: pointer;
+  appearance: auto;
+}
+
+.map-entrance-menu__select:focus {
+  outline: 2px solid #60a5fa;
+  outline-offset: -1px;
+}
+
+.map-entrance-menu__select:hover {
+  border-color: #6b7280;
 }
 
 .map-submenu-popup {

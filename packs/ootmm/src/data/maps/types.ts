@@ -33,13 +33,18 @@ export type MapSubmenuEntryDef = {
   visibleWhen?: MapMarkerSettingsVisibility;
 };
 
+export type MapDungeonEntranceMenuDef = {
+  entranceIds: string[];
+};
+
 export type MapMarkerDef = {
   coords: [number, number];
   image: string;
   overlays?: MapMarkerOverlay[];
-  type?: 'check' | 'submenu';
+  type?: 'check' | 'submenu' | 'entrance-menu';
   codes?: string | string[];
   markers?: MapSubmenuEntryDef[];
+  entranceMenu?: MapDungeonEntranceMenuDef;
   visibleWhen?: MapMarkerSettingsVisibility;
 };
 
@@ -59,7 +64,7 @@ export type MapMarkerViewModel = {
   coords: [number, number];
   image: string;
   overlays: MapMarkerOverlay[];
-  type: 'check' | 'submenu';
+  type: 'check' | 'submenu' | 'entrance-menu';
   codes?: string | string[];
   reachableCount: number;
   checkedCount: number;
