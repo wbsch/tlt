@@ -18,7 +18,6 @@ const props = defineProps<{
 
 const emit = defineEmits<{
   'update:settings': [Record<string, unknown>];
-  'update:special-conds': [Record<string, unknown>];
   'load-spoiler-log': [File];
 }>();
 
@@ -266,9 +265,45 @@ function getSpecialCondName(condKey: string) {
 }
 
 function getSpecialCondState(condKey: string) {
-  return (
-    (props.specialConds?.[condKey] as Record<string, unknown>) ?? { count: 0 }
-  );
+  const localSpecialConds = localSettings.value.specialConds;
+  if (
+    localSpecialConds &&
+    typeof localSpecialConds === 'object' &&
+    !Array.isArray(localSpecialConds)
+  ) {
+    const localCond = (localSpecialConds as Record<string, unknown>)[condKey];
+    if (localCond && typeof localCond === 'object' && !Array.isArray(localCond))
+      return localCond as Record<string, unknown>;
+  }
+  return (props.specialConds?.[condKey] as Record<string, unknown>) ?? {
+    count: 0,
+  };
+}
+
+function patchSpecialCond(condKey: string, patch: Record<string, unknown>) {
+  const localSpecialCondsRaw = localSettings.value.specialConds;
+  const localSpecialConds =
+    localSpecialCondsRaw &&
+    typeof localSpecialCondsRaw === 'object' &&
+    !Array.isArray(localSpecialCondsRaw)
+      ? (localSpecialCondsRaw as Record<string, unknown>)
+      : {};
+  const currentRaw = localSpecialConds[condKey];
+  const current =
+    currentRaw && typeof currentRaw === 'object' && !Array.isArray(currentRaw)
+      ? (currentRaw as Record<string, unknown>)
+      : {};
+
+  localSettings.value = {
+    ...localSettings.value,
+    specialConds: {
+      ...localSpecialConds,
+      [condKey]: {
+        ...current,
+        ...patch,
+      },
+    },
+  };
 }
 
 function isSpecialCondExpanded(condKey: string) {
@@ -352,13 +387,13 @@ function toggleSpecialCondField(condKey: string, fieldKey: string) {
   if (nextCount !== cond.count) {
     patch.count = nextCount;
   }
-  emit('update:special-conds', { [condKey]: patch });
+  patchSpecialCond(condKey, patch);
 }
 
 function updateSpecialCondCount(condKey: string, value: number) {
   const max = getSpecialCondMax(condKey);
   const nextValue = Math.min(Math.max(0, Math.floor(value || 0)), max);
-  emit('update:special-conds', { [condKey]: { count: nextValue } });
+  patchSpecialCond(condKey, { count: nextValue });
 }
 
 const visibleSettings = computed(() =>

@@ -888,10 +888,6 @@ async function handleSettingsChange(newSettings: Record<string, unknown>) {
   await sessionStore.applySettings(newSettings);
 }
 
-function applySpecialCondsPatch(patch: Record<string, unknown>) {
-  sessionStore.applySpecialCondsPatch(patch);
-}
-
 function coerceSettingValue(raw: unknown, def?: CoreSetting) {
   if (!def) return raw;
 
@@ -1451,7 +1447,6 @@ onBeforeUnmount(() => {
           :special-conds="trackerSpecialConds"
           :is-applying-settings="isApplyingSettings"
           @update:settings="handleSettingsChange"
-          @update:special-conds="applySpecialCondsPatch"
           @load-spoiler-log="handleSpoilerFile"
         />
 
