@@ -965,6 +965,13 @@ export const useOoTMMSessionStore = defineStore('ootmm-session', () => {
   function applySongEvents() {
     const currentTracker = tracker.value;
     if (!currentTracker || !currentTracker.setSongEvents) return;
+    if (isApplyingSettings.value) {
+      // During tracker re-initialization, immediate UI watchers can fire before
+      // the tracker is fully initialized with persisted settings/state.
+      // Skipping here avoids out-of-order song-event application that can
+      // clobber persisted UI state on reload.
+      return;
+    }
     const songEventsShuffleOot = Boolean(
       trackerSettings.value?.songEventsShuffleOot,
     );
@@ -986,6 +993,11 @@ export const useOoTMMSessionStore = defineStore('ootmm-session', () => {
   function applyShopPrices() {
     const currentTracker = tracker.value;
     if (!currentTracker || !currentTracker.setShopPrices) return;
+    if (isApplyingSettings.value) {
+      // Same race as above: avoid applying/merging prices while settings are
+      // still being re-applied during initialization.
+      return;
+    }
 
     const isRandomizedMode = (mode: string) =>
       mode === 'random' || mode === 'weighted';
