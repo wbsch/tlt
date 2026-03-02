@@ -2062,7 +2062,8 @@ watch(
 
     await nextTick();
     const panelMarker = markerById.value.get(markerId);
-    const shouldFreezePanelSize = panelMarker?.type === 'submenu';
+    const shouldFreezePanelSize =
+      panelMarker?.type === 'submenu' && panelMarker.entranceEntries.length === 0;
 
     if (shouldFreezePanelSize) {
       if (submenuPanel.value.frozenWidth === null) {
