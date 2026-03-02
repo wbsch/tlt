@@ -49,6 +49,37 @@ async function readDekuTreeEntranceState(page: Page): Promise<{
   );
 }
 
+async function readEntranceOverrides(
+  page: Page,
+): Promise<Record<string, string>> {
+  return page.evaluate(() => {
+    const rootEl = document.querySelector('.ootmm-tracker');
+    const vm = (
+      rootEl as {
+        __vueParentComponent?: { appContext?: { provides?: unknown } };
+      } | null
+    )?.__vueParentComponent;
+    const provides =
+      (vm?.appContext?.provides as Record<PropertyKey, unknown> | undefined) ??
+      {};
+    const piniaKey = Object.getOwnPropertySymbols(provides).find((symbol) =>
+      String(symbol).includes('pinia'),
+    );
+    const pinia = piniaKey
+      ? (provides[piniaKey] as {
+          _s?: Map<
+            string,
+            {
+              entranceOverrides?: Record<string, string>;
+            }
+          >;
+        })
+      : null;
+    const store = pinia?._s?.get('ootmm-session');
+    return { ...(store?.entranceOverrides ?? {}) };
+  });
+}
+
 function dekuTreeSelect(page: Page) {
   return page
     .locator('.entrance-row')
@@ -114,5 +145,58 @@ test.describe('Entrance mapping refresh persistence', () => {
         mappedTo: CLOCK_TOWER_ROOF_ENTRANCE_ID,
         reachable: true,
       });
+  });
+
+  test('mapped entrances reset when ER settings are disabled', async ({
+    page,
+  }) => {
+    await page.getByTestId('tab-settings').click();
+
+    const search = page.getByTestId('settings-search-input');
+    await expect(search).toBeVisible();
+
+    await search.fill('erDungeons');
+    const erDungeonsSelect = page.getByTestId('setting-input-erDungeons');
+    await expect(erDungeonsSelect).toBeVisible();
+    await erDungeonsSelect.selectOption('full');
+
+    await search.fill('erMoon');
+    const erMoonCheckbox = page.getByTestId('setting-input-erMoon');
+    await expect(erMoonCheckbox).toBeVisible();
+    await erMoonCheckbox.check();
+
+    const overlay = page.getByTestId('applying-settings-overlay');
+    await page.getByTestId('apply-settings-button').click();
+    await expect(overlay).toBeHidden({ timeout: 15_000 });
+
+    await page.getByTestId('right-sidebar-tab-entrances').click();
+    const select = dekuTreeSelect(page);
+    await expect(select).toBeVisible();
+    await select.selectOption(CLOCK_TOWER_ROOF_ENTRANCE_ID);
+
+    await expect
+      .poll(() => readEntranceOverrides(page), { timeout: 15_000 })
+      .toMatchObject({
+        [DEKU_TREE_ENTRANCE_ID]: CLOCK_TOWER_ROOF_ENTRANCE_ID,
+      });
+
+    await page.getByTestId('tab-settings').click();
+    await search.fill('erMoon');
+    await erMoonCheckbox.uncheck();
+    await page.getByTestId('apply-settings-button').click();
+    await expect(overlay).toBeHidden({ timeout: 15_000 });
+
+    await expect
+      .poll(() => readEntranceOverrides(page), { timeout: 15_000 })
+      .not.toHaveProperty(DEKU_TREE_ENTRANCE_ID);
+
+    await search.fill('erDungeons');
+    await erDungeonsSelect.selectOption('none');
+    await page.getByTestId('apply-settings-button').click();
+    await expect(overlay).toBeHidden({ timeout: 15_000 });
+
+    await expect
+      .poll(() => readEntranceOverrides(page), { timeout: 15_000 })
+      .toEqual({});
   });
 });

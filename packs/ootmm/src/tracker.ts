@@ -79,7 +79,14 @@ const ENTRANCES_DATA =
   resolveExport<
     Record<
       string,
-      { game: string; type: string; from: string; to: string; reverse?: string }
+      {
+        game: string;
+        type: string;
+        from: string;
+        to: string;
+        reverse?: string;
+        flags?: string[];
+      }
     >
   >(DataMod, 'ENTRANCES') ?? {};
 
@@ -322,13 +329,17 @@ export class OoTMMTracker implements TrackerPack {
       // Self-map dungeon-type entrances to prevent random shuffling.
       // Only entrances with valid from/to areas and dungeon-related types.
       // Track which ones are NOT user-assigned so we can disconnect them later.
+      // Keep special entrances with `no-global` connected while unmapped.
       for (const [key, data] of Object.entries(ENTRANCES_DATA)) {
         if (!data.type.startsWith('dungeon') || data.type === 'dungeon-exit')
           continue;
         if (data.from === 'NONE' || data.to === 'NONE') continue;
         if (!finalPlandoEntrances[key]) {
           finalPlandoEntrances[key] = key;
-          unmappedEntrances.push(key);
+          const isNoGlobalEntrance = Boolean(data.flags?.includes('no-global'));
+          if (!isNoGlobalEntrance) {
+            unmappedEntrances.push(key);
+          }
         }
       }
     }

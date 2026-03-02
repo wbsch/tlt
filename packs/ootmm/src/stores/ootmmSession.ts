@@ -16,6 +16,7 @@ import {
   type OoTMMSyncOperation,
   type OoTMMSyncOperationEnvelope,
 } from './ootmmSessionSync';
+import { filterEntranceOverridesForSettings } from '../utils/entranceRandomization';
 
 const HISTORY_LIMIT = 200;
 const VANILLA_SILVER_RUPEE_PREFIX = 'OOT_RUPEE_SILVER_';
@@ -1092,6 +1093,10 @@ export const useOoTMMSessionStore = defineStore('ootmm-session', () => {
       trackerSettings.value,
       { ...newSettings },
     );
+    const nextEntranceOverrides = filterEntranceOverridesForSettings(
+      entranceOverrides.value,
+      nextSettings,
+    );
 
     isApplyingSettings.value = true;
     const overlayStartTime = performance.now();
@@ -1107,10 +1112,11 @@ export const useOoTMMSessionStore = defineStore('ootmm-session', () => {
       currentTracker.reset();
       const settingsWithEntrances = injectEntranceOverridesIntoSettings(
         nextSettings,
-        entranceOverrides.value,
+        nextEntranceOverrides,
       );
       await currentTracker.initialize(settingsWithEntrances);
       trackerSettings.value = { ...currentTracker.getSettings() };
+      entranceOverrides.value = nextEntranceOverrides;
       availableItemIds.value = setToArray(
         currentTracker.getAvailableItemIds?.() ?? new Set<string>(),
       );

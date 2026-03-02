@@ -894,31 +894,32 @@ function toEntranceMenuEntry(
   };
 }
 
-function resolveMappedDestinationEntranceId(sourceEntranceId: string): string {
+function resolveMappedDestinationEntranceId(
+  sourceEntranceId: string,
+  activeEntranceById: Map<string, DungeonEntranceEntry>,
+): string | null {
+  if (!activeEntranceById.has(sourceEntranceId)) {
+    return sourceEntranceId;
+  }
+
   const selectedDestination = getSelectedDestination(sourceEntranceId).trim();
-  return selectedDestination.length > 0
-    ? selectedDestination
-    : sourceEntranceId;
+  return selectedDestination.length > 0 ? selectedDestination : null;
 }
 
 function resolveBoundSubmenuEntryDefs(
-  sourceEntranceIds: string[],
-): MapSubmenuEntryDef[] {
-  return sourceEntranceIds.flatMap((sourceEntranceId) =>
-    submenuEntriesForEntranceId(
-      resolveMappedDestinationEntranceId(sourceEntranceId),
-    ),
-  );
-}
-
-function isMappedActiveEntrance(
-  sourceEntranceId: string,
+  markerEntranceIds: string[],
   activeEntranceById: Map<string, DungeonEntranceEntry>,
-): boolean {
-  if (!activeEntranceById.has(sourceEntranceId)) {
-    return true;
-  }
-  return getSelectedDestination(sourceEntranceId).trim().length > 0;
+): MapSubmenuEntryDef[] {
+  return markerEntranceIds.flatMap((sourceEntranceId) => {
+    const mappedDestination = resolveMappedDestinationEntranceId(
+      sourceEntranceId,
+      activeEntranceById,
+    );
+    if (!mappedDestination) {
+      return [];
+    }
+    return submenuEntriesForEntranceId(mappedDestination);
+  });
 }
 
 function buildSubmenuRuntimeEntries(
@@ -983,7 +984,7 @@ const markerViewModels = computed<MarkerRuntime[]>(() => {
         .map(toEntranceMenuEntry);
       const submenuMarkersRaw =
         !props.devMode && entranceIds.length > 0
-          ? resolveBoundSubmenuEntryDefs(entranceIds)
+          ? resolveBoundSubmenuEntryDefs(entranceIds, activeById)
           : [];
       const submenuMarkers = buildSubmenuRuntimeEntries(
         markerId,
@@ -1030,10 +1031,6 @@ const markerViewModels = computed<MarkerRuntime[]>(() => {
       const filteredEntranceById = new Map(
         filteredDungeonEntrances.value.map((entry) => [entry.key, entry]),
       );
-      const mappedOrInactiveSubmenuSourceEntranceIds =
-        submenuSourceEntranceIds.filter((entranceId) =>
-          isMappedActiveEntrance(entranceId, activeEntranceById),
-        );
       const activeSubmenuEntrances = submenuSourceEntranceIds
         .map((entranceId) => activeEntranceById.get(entranceId))
         .filter((entry): entry is DungeonEntranceEntry => Boolean(entry));
@@ -1044,14 +1041,17 @@ const markerViewModels = computed<MarkerRuntime[]>(() => {
       const boundSubmenuMarkersRaw =
         !props.devMode &&
         hasEntranceBinding &&
-        mappedOrInactiveSubmenuSourceEntranceIds.length > 0
+        submenuSourceEntranceIds.length > 0
           ? resolveBoundSubmenuEntryDefs(
-              mappedOrInactiveSubmenuSourceEntranceIds,
+              submenuSourceEntranceIds,
+              activeEntranceById,
             )
           : [];
       const submenuMarkersRaw = props.devMode
         ? staticSubmenuMarkersRaw
-        : [...staticSubmenuMarkersRaw, ...boundSubmenuMarkersRaw];
+        : hasEntranceBinding
+          ? boundSubmenuMarkersRaw
+          : staticSubmenuMarkersRaw;
       const submenuMarkers = buildSubmenuRuntimeEntries(
         markerId,
         submenuMarkersRaw,

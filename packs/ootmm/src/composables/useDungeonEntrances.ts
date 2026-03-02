@@ -3,6 +3,7 @@ import { storeToRefs } from 'pinia';
 import * as DataMod from '@ootmm/data';
 import { useOoTMMSessionStore } from '../stores/ootmmSession';
 import { useOoTMMUiStore } from '../stores/ootmmUi';
+import { getEnabledDungeonTypes } from '../utils/entranceRandomization';
 
 const resolveExport = <T>(mod: unknown, key: string): T => {
   const modObj = mod as { default?: Record<string, T>; [k: string]: unknown };
@@ -21,34 +22,18 @@ type EntranceData = {
 const ENTRANCES_RAW =
   resolveExport<Record<string, EntranceData>>(DataMod, 'ENTRANCES') ?? {};
 
-const TYPE_TO_SETTING: Record<string, string> = {
-  dungeon: 'erMajorDungeons',
-  'dungeon-minor': 'erMinorDungeons',
-  'dungeon-ganon': 'erGanonCastle',
-  'dungeon-ganon-tower': 'erGanonTower',
-  'dungeon-sh': 'erSpiderHouses',
-  'dungeon-pf': 'erPirateFortress',
-  'dungeon-btw': 'erBeneathWell',
-  'dungeon-acoi': 'erIkanaCastle',
-  'dungeon-ss': 'erSecretShrine',
-  'dungeon-ctr': 'erMoon',
-};
-
-const DUNGEON_TYPES = new Set(Object.keys(TYPE_TO_SETTING));
-
-function getEnabledDungeonTypes(
-  settings: Record<string, unknown>,
-): Set<string> {
-  const enabled = new Set<string>();
-  enabled.add('dungeon');
-  for (const [type, settingKey] of Object.entries(TYPE_TO_SETTING)) {
-    if (settings?.[settingKey]) {
-      enabled.add(type);
-    }
-  }
-
-  return enabled;
-}
+const DUNGEON_TYPES = new Set([
+  'dungeon',
+  'dungeon-minor',
+  'dungeon-ganon',
+  'dungeon-ganon-tower',
+  'dungeon-sh',
+  'dungeon-pf',
+  'dungeon-btw',
+  'dungeon-acoi',
+  'dungeon-ss',
+  'dungeon-ctr',
+]);
 
 export type DungeonEntranceEntry = {
   key: string;
