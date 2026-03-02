@@ -275,9 +275,11 @@ function getSpecialCondState(condKey: string) {
     if (localCond && typeof localCond === 'object' && !Array.isArray(localCond))
       return localCond as Record<string, unknown>;
   }
-  return (props.specialConds?.[condKey] as Record<string, unknown>) ?? {
-    count: 0,
-  };
+  return (
+    (props.specialConds?.[condKey] as Record<string, unknown>) ?? {
+      count: 0,
+    }
+  );
 }
 
 function patchSpecialCond(condKey: string, patch: Record<string, unknown>) {

@@ -1278,6 +1278,9 @@
       "image": "dungeon_entrance",
       "overlays": ["day3", "night"],
       "type": "submenu",
+      "entranceMenu": {
+        "entranceIds": ["MM_CLOCK_TOWER_ROOF"]
+      },
       "markers": [
         {
           "image": "npc",

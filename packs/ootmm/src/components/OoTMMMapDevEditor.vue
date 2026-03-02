@@ -639,10 +639,13 @@ const draftErrors = computed<DraftIssue[]>(() => {
     }
     if (marker.type === 'submenu') {
       const submenuMarkers = marker.markers ?? [];
-      if (submenuMarkers.length === 0) {
+      const hasEntranceBinding =
+        (marker.entranceMenu?.entranceIds?.length ?? 0) > 0;
+      if (submenuMarkers.length === 0 && !hasEntranceBinding) {
         issues.push({
           markerIndex,
-          message: 'Submenu marker must include at least one submenu marker',
+          message:
+            'Submenu marker must include submenu markers or at least one entrance id',
         });
       }
       submenuMarkers.forEach((submenuMarker, submenuIndex) => {
@@ -766,28 +769,38 @@ function buildDraftExportMap(): MapDef | null {
         exportMarker.visibleWhen = cloneVisibleWhen(marker.visibleWhen);
       }
       if (marker.type === 'submenu') {
-        exportMarker.markers = (marker.markers ?? []).map((submenuMarker) => {
-          const codes = (
-            Array.isArray(submenuMarker.codes)
-              ? submenuMarker.codes
-              : [submenuMarker.codes]
-          )
-            .map((code) => code.trim())
-            .filter((code) => code.length > 0);
-          const exportSubmenuMarker: MapSubmenuEntryDef = {
-            image: submenuMarker.image.trim(),
-            codes: codes.length > 1 ? [...codes] : (codes[0] ?? ''),
+        const exportedSubmenuMarkers = (marker.markers ?? []).map(
+          (submenuMarker) => {
+            const codes = (
+              Array.isArray(submenuMarker.codes)
+                ? submenuMarker.codes
+                : [submenuMarker.codes]
+            )
+              .map((code) => code.trim())
+              .filter((code) => code.length > 0);
+            const exportSubmenuMarker: MapSubmenuEntryDef = {
+              image: submenuMarker.image.trim(),
+              codes: codes.length > 1 ? [...codes] : (codes[0] ?? ''),
+            };
+            if (submenuMarker.overlays && submenuMarker.overlays.length > 0) {
+              exportSubmenuMarker.overlays = [...submenuMarker.overlays];
+            }
+            if (submenuMarker.visibleWhen) {
+              exportSubmenuMarker.visibleWhen = cloneVisibleWhen(
+                submenuMarker.visibleWhen,
+              );
+            }
+            return exportSubmenuMarker;
+          },
+        );
+        if (exportedSubmenuMarkers.length > 0) {
+          exportMarker.markers = exportedSubmenuMarkers;
+        }
+        if (marker.entranceMenu) {
+          exportMarker.entranceMenu = {
+            entranceIds: [...marker.entranceMenu.entranceIds],
           };
-          if (submenuMarker.overlays && submenuMarker.overlays.length > 0) {
-            exportSubmenuMarker.overlays = [...submenuMarker.overlays];
-          }
-          if (submenuMarker.visibleWhen) {
-            exportSubmenuMarker.visibleWhen = cloneVisibleWhen(
-              submenuMarker.visibleWhen,
-            );
-          }
-          return exportSubmenuMarker;
-        });
+        }
       } else if (marker.type === 'entrance-menu') {
         if (marker.entranceMenu) {
           exportMarker.entranceMenu = {
@@ -845,11 +858,7 @@ function setSelectedCoord(axis: 0 | 1, value: number): void {
 
 function addCodeToSelectedMarker(code: string): void {
   const marker = selectedDraftMarker.value;
-  if (
-    !marker ||
-    marker.type === 'submenu' ||
-    marker.type === 'entrance-menu'
-  )
+  if (!marker || marker.type === 'submenu' || marker.type === 'entrance-menu')
     return;
   const trimmed = code.trim();
   if (!trimmed) return;
@@ -865,11 +874,7 @@ function addCodeToSelectedMarker(code: string): void {
 
 function removeCodeFromSelectedMarker(code: string): void {
   const marker = selectedDraftMarker.value;
-  if (
-    !marker ||
-    marker.type === 'submenu' ||
-    marker.type === 'entrance-menu'
-  )
+  if (!marker || marker.type === 'submenu' || marker.type === 'entrance-menu')
     return;
   const normalized = normalizeCode(code);
   const nextCodes = markerCodeList(marker).filter(

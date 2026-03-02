@@ -536,7 +536,7 @@
     {
       "coords": [863, 337],
       "image": "dungeon_entrance",
-      "type": "entrance-menu",
+      "type": "submenu",
       "entranceMenu": {
         "entranceIds": ["OOT_DEKU_TREE"]
       },

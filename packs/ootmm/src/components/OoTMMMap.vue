@@ -26,12 +26,14 @@ import {
   useDungeonEntrances,
   type DungeonEntranceEntry,
 } from '../composables/useDungeonEntrances';
+import { OOTMM_MAP_DEFS } from '../data/maps';
 import { matchesMapSettingsVisibility } from '../utils/mapSettingsVisibility';
 import type {
   MapDef,
   MapDungeonEntranceMenuDef,
   MapMarkerDef,
   MapMarkerOverlay,
+  MapMarkerSettingsVisibility,
   MapPopupEntry,
   MapPopupPayload,
   MapSubmenuEntryDef,
@@ -132,6 +134,7 @@ type SubmenuMarkerRuntime = {
   bottomLeftOverlays: OverlayRender[];
   topRightOverlays: OverlayRender[];
   countDigitImages: string[];
+  entranceEntries: EntranceMenuEntryRuntime[];
   submenuMarkers: SubmenuEntryRuntime[];
   allSubmenuCodeList: string[];
   isVisible: boolean;
@@ -155,6 +158,7 @@ type EntranceMenuMarkerRuntime = {
   topRightOverlays: OverlayRender[];
   countDigitImages: string[];
   entranceEntries: EntranceMenuEntryRuntime[];
+  submenuMarkers: SubmenuEntryRuntime[];
   isVisible: boolean;
 };
 
@@ -162,6 +166,10 @@ type MarkerRuntime =
   | CheckMarkerRuntime
   | SubmenuMarkerRuntime
   | EntranceMenuMarkerRuntime;
+
+type SubmenuEntryHostRuntime = {
+  submenuMarkers: SubmenuEntryRuntime[];
+};
 
 type PopupMarkerRuntime = {
   id: string;
@@ -316,6 +324,82 @@ function markerCodeList(marker: MapMarkerDef): string[] {
 function submenuEntryCodeList(marker: MapSubmenuEntryDef): string[] {
   const rawList = Array.isArray(marker.codes) ? marker.codes : [marker.codes];
   return rawList.map((code) => code.trim()).filter((code) => code.length > 0);
+}
+
+function normalizeEntranceIdList(
+  value: string[] | undefined,
+  markerDef: MapMarkerDef,
+): string[] {
+  const configured = Array.isArray(value) ? value : [];
+  if (configured.length > 0) {
+    return configured
+      .map((id) => (typeof id === 'string' ? id.trim() : ''))
+      .filter((id) => id.length > 0);
+  }
+
+  return markerCodeList(markerDef);
+}
+
+function mergeVisibleWhen(
+  parent: MapMarkerSettingsVisibility | undefined,
+  child: MapMarkerSettingsVisibility | undefined,
+): MapMarkerSettingsVisibility | undefined {
+  if (!parent) return child;
+  if (!child) return parent;
+  return { and: [parent, child] };
+}
+
+function cloneSubmenuEntry(entry: MapSubmenuEntryDef): MapSubmenuEntryDef {
+  return {
+    image: entry.image,
+    overlays: entry.overlays ? [...entry.overlays] : undefined,
+    codes: Array.isArray(entry.codes) ? [...entry.codes] : entry.codes,
+    visibleWhen: entry.visibleWhen,
+  };
+}
+
+const ENTRANCE_SUBMENU_ENTRIES_BY_ID = (() => {
+  const byId = new Map<string, MapSubmenuEntryDef[]>();
+
+  for (const mapDef of OOTMM_MAP_DEFS) {
+    for (const markerDef of mapDef.markers) {
+      if (markerDef.type !== 'submenu') continue;
+      if (!markerDef.entranceMenu) continue;
+      if (!Array.isArray(markerDef.markers) || markerDef.markers.length === 0) {
+        continue;
+      }
+
+      const entranceIds = normalizeEntranceIdList(
+        markerDef.entranceMenu.entranceIds,
+        markerDef,
+      );
+      if (entranceIds.length === 0) continue;
+
+      const normalizedEntries = markerDef.markers.map((entry) => ({
+        ...cloneSubmenuEntry(entry),
+        visibleWhen: mergeVisibleWhen(markerDef.visibleWhen, entry.visibleWhen),
+      }));
+
+      for (const entranceId of entranceIds) {
+        const existing = byId.get(entranceId);
+        if (existing) {
+          existing.push(...normalizedEntries.map(cloneSubmenuEntry));
+        } else {
+          byId.set(entranceId, normalizedEntries.map(cloneSubmenuEntry));
+        }
+      }
+    }
+  }
+
+  return byId;
+})();
+
+function submenuEntriesForEntranceId(entranceId: string): MapSubmenuEntryDef[] {
+  const explicit = ENTRANCE_SUBMENU_ENTRIES_BY_ID.get(entranceId);
+  if (explicit && explicit.length > 0) {
+    return explicit.map(cloneSubmenuEntry);
+  }
+  return [];
 }
 
 const { resolveCodeToCheckIds } = useLocationCodeLookup(
@@ -797,17 +881,7 @@ function resolveEntranceMenuIds(
   markerDef: MapMarkerDef,
   menuDef: MapDungeonEntranceMenuDef,
 ): string[] {
-  const configured = Array.isArray(menuDef.entranceIds)
-    ? menuDef.entranceIds
-    : [];
-  if (configured.length > 0) {
-    return configured
-      .map((id) => (typeof id === 'string' ? id.trim() : ''))
-      .filter((id) => id.length > 0);
-  }
-
-  const fallbackCodes = markerCodeList(markerDef);
-  return fallbackCodes;
+  return normalizeEntranceIdList(menuDef.entranceIds, markerDef);
 }
 
 function toEntranceMenuEntry(
@@ -818,6 +892,57 @@ function toEntranceMenuEntry(
     label: entry.label,
     game: entry.game,
   };
+}
+
+function resolveMappedDestinationEntranceId(sourceEntranceId: string): string {
+  const selectedDestination = getSelectedDestination(sourceEntranceId).trim();
+  return selectedDestination.length > 0
+    ? selectedDestination
+    : sourceEntranceId;
+}
+
+function resolveBoundSubmenuEntryDefs(
+  sourceEntranceIds: string[],
+): MapSubmenuEntryDef[] {
+  return sourceEntranceIds.flatMap((sourceEntranceId) =>
+    submenuEntriesForEntranceId(
+      resolveMappedDestinationEntranceId(sourceEntranceId),
+    ),
+  );
+}
+
+function isMappedActiveEntrance(
+  sourceEntranceId: string,
+  activeEntranceById: Map<string, DungeonEntranceEntry>,
+): boolean {
+  if (!activeEntranceById.has(sourceEntranceId)) {
+    return true;
+  }
+  return getSelectedDestination(sourceEntranceId).trim().length > 0;
+}
+
+function buildSubmenuRuntimeEntries(
+  parentMarkerId: string,
+  submenuEntryDefs: MapSubmenuEntryDef[],
+): SubmenuEntryRuntime[] {
+  return submenuEntryDefs.map((submenuMarkerDef, submenuIndex) => {
+    const submenuMarkerId = `${parentMarkerId}:submenu:${submenuIndex}`;
+    const codeList = submenuEntryCodeList(submenuMarkerDef);
+    const submenuOverlays = submenuMarkerDef.overlays ?? [];
+    const state = buildMarkerRenderState(
+      submenuMarkerId,
+      codeList,
+      submenuOverlays,
+      Array.isArray(submenuMarkerDef.codes),
+      submenuMarkerDef.visibleWhen,
+    );
+    return {
+      ...state,
+      id: submenuMarkerId,
+      parentMarkerId,
+      image: submenuMarkerDef.image,
+    };
+  });
 }
 
 const markerViewModels = computed<MarkerRuntime[]>(() => {
@@ -856,6 +981,14 @@ const markerViewModels = computed<MarkerRuntime[]>(() => {
         .map((id) => filteredById.get(id))
         .filter((entry): entry is DungeonEntranceEntry => Boolean(entry))
         .map(toEntranceMenuEntry);
+      const submenuMarkersRaw =
+        !props.devMode && entranceIds.length > 0
+          ? resolveBoundSubmenuEntryDefs(entranceIds)
+          : [];
+      const submenuMarkers = buildSubmenuRuntimeEntries(
+        markerId,
+        submenuMarkersRaw,
+      ).filter((marker) => marker.isVisible);
       const settingsVisible = matchesMapSettingsVisibility(
         markerDef.visibleWhen,
         props.settings,
@@ -878,6 +1011,7 @@ const markerViewModels = computed<MarkerRuntime[]>(() => {
                 .map((digit) => resolveDigitImage(digit))
             : [],
         entranceEntries: visibleEntries,
+        submenuMarkers,
         isVisible:
           settingsVisible &&
           activeEntries.length > 0 &&
@@ -886,26 +1020,38 @@ const markerViewModels = computed<MarkerRuntime[]>(() => {
     }
 
     if (markerType === 'submenu') {
-      const submenuMarkersRaw = markerDef.markers ?? [];
-      const submenuMarkers = submenuMarkersRaw.map(
-        (submenuMarkerDef, submenuIndex) => {
-          const submenuMarkerId = `${markerId}:submenu:${submenuIndex}`;
-          const codeList = submenuEntryCodeList(submenuMarkerDef);
-          const submenuOverlays = submenuMarkerDef.overlays ?? [];
-          const state = buildMarkerRenderState(
-            submenuMarkerId,
-            codeList,
-            submenuOverlays,
-            Array.isArray(submenuMarkerDef.codes),
-            submenuMarkerDef.visibleWhen,
-          );
-          return {
-            ...state,
-            id: submenuMarkerId,
-            parentMarkerId: markerId,
-            image: submenuMarkerDef.image,
-          };
-        },
+      const submenuSourceEntranceIds = markerDef.entranceMenu
+        ? resolveEntranceMenuIds(markerDef, markerDef.entranceMenu)
+        : [];
+      const hasEntranceBinding = submenuSourceEntranceIds.length > 0;
+      const activeEntranceById = new Map(
+        activeDungeonEntrances.value.map((entry) => [entry.key, entry]),
+      );
+      const filteredEntranceById = new Map(
+        filteredDungeonEntrances.value.map((entry) => [entry.key, entry]),
+      );
+      const mappedOrInactiveSubmenuSourceEntranceIds =
+        submenuSourceEntranceIds.filter((entranceId) =>
+          isMappedActiveEntrance(entranceId, activeEntranceById),
+        );
+      const activeSubmenuEntrances = submenuSourceEntranceIds
+        .map((entranceId) => activeEntranceById.get(entranceId))
+        .filter((entry): entry is DungeonEntranceEntry => Boolean(entry));
+      const visibleSubmenuEntrances = submenuSourceEntranceIds
+        .map((entranceId) => filteredEntranceById.get(entranceId))
+        .filter((entry): entry is DungeonEntranceEntry => Boolean(entry));
+      const submenuMarkersRaw = !props.devMode
+        ? hasEntranceBinding
+          ? mappedOrInactiveSubmenuSourceEntranceIds.length > 0
+            ? resolveBoundSubmenuEntryDefs(
+                mappedOrInactiveSubmenuSourceEntranceIds,
+              )
+            : []
+          : (markerDef.markers ?? [])
+        : (markerDef.markers ?? []);
+      const submenuMarkers = buildSubmenuRuntimeEntries(
+        markerId,
+        submenuMarkersRaw,
       );
       const unresolvedSubmenuIndices = isDevUnmappedFilterActive
         ? devUnmappedSubmenuIndicesByMarker.value.get(markerIndex)
@@ -940,6 +1086,14 @@ const markerViewModels = computed<MarkerRuntime[]>(() => {
         markerDef.visibleWhen,
         props.settings,
       );
+      const hasVisibleBoundEntrance =
+        submenuSourceEntranceIds.length === 0
+          ? true
+          : activeSubmenuEntrances.length === 0
+            ? true
+            : visibleSubmenuEntrances.length > 0;
+      const hasVisiblePanelContent =
+        visibleSubmenuMarkers.length > 0 || visibleSubmenuEntrances.length > 0;
 
       return {
         type: 'submenu',
@@ -952,11 +1106,13 @@ const markerViewModels = computed<MarkerRuntime[]>(() => {
         bottomLeftOverlays: buildBottomLeftOverlays(overlays),
         topRightOverlays: buildTopRightOverlays(overlays),
         countDigitImages,
+        entranceEntries: visibleSubmenuEntrances.map(toEntranceMenuEntry),
         submenuMarkers: visibleSubmenuMarkers,
         allSubmenuCodeList: visibleSubmenuMarkers.flatMap(
           (marker) => marker.codeList,
         ),
-        isVisible: settingsVisible && visibleSubmenuMarkers.length > 0,
+        isVisible:
+          settingsVisible && hasVisibleBoundEntrance && hasVisiblePanelContent,
       };
     }
 
@@ -1010,14 +1166,15 @@ const activePanelMarker = computed<
     : null;
 });
 
-const activeSubmenuMarker = computed<SubmenuMarkerRuntime | null>(() => {
+const activeSubmenuEntryHost = computed<SubmenuEntryHostRuntime | null>(() => {
   const marker = activePanelMarker.value;
-  return marker && marker.type === 'submenu' ? marker : null;
+  if (!marker) return null;
+  return marker.submenuMarkers.length > 0 ? marker : null;
 });
 
 const activeSubmenuPopupMarker = computed<SubmenuEntryRuntime | null>(() => {
   if (!submenuPopup.value.markerId) return null;
-  const submenu = activeSubmenuMarker.value;
+  const submenu = activeSubmenuEntryHost.value;
   if (!submenu) return null;
   return (
     submenu.submenuMarkers.find(
@@ -1640,7 +1797,7 @@ function handleWheel(event: WheelEvent): void {
     event.target instanceof Node &&
     submenuPanelEl.contains(event.target)
   ) {
-    if (activePanelMarker.value?.type !== 'entrance-menu') {
+    if ((activePanelMarker.value?.entranceEntries.length ?? 0) === 0) {
       return;
     }
   }
@@ -1828,7 +1985,7 @@ watch(markerViewModels, () => {
   }
 
   if (submenuPopup.value.hoverMarkerId) {
-    const submenuMarker = activeSubmenuMarker.value?.submenuMarkers.find(
+    const submenuMarker = activeSubmenuEntryHost.value?.submenuMarkers.find(
       (marker) => marker.id === submenuPopup.value.hoverMarkerId,
     );
     if (!submenuMarker || !submenuMarker.isVisible) {
@@ -1859,7 +2016,7 @@ watch(markerViewModels, () => {
 
   const activeSubmenuPopupId = submenuPopup.value.markerId;
   if (activeSubmenuPopupId) {
-    const submenuMarker = activeSubmenuMarker.value?.submenuMarkers.find(
+    const submenuMarker = activeSubmenuEntryHost.value?.submenuMarkers.find(
       (marker) => marker.id === activeSubmenuPopupId,
     );
     if (!submenuMarker || !submenuMarker.isVisible) {
@@ -1979,7 +2136,7 @@ watch(activeSubmenuPopup, async (popup) => {
   target?.focus();
 });
 
-watch(activeSubmenuMarker, async (submenuMarker) => {
+watch(activeSubmenuEntryHost, async (submenuMarker) => {
   if (!submenuMarker || !submenuPopup.value.markerId) return;
   await nextTick();
   updateSubmenuPopupPosition();
@@ -2157,11 +2314,7 @@ onBeforeUnmount(() => {
         class="map-submenu-panel"
         role="dialog"
         aria-modal="false"
-        :aria-label="
-          activePanelMarker.type === 'submenu'
-            ? `Submenu: ${activePanelMarker.submenuMarkers.length} markers`
-            : `Dungeon entrances: ${activePanelMarker.entranceEntries.length} entries`
-        "
+        :aria-label="`Submenu panel: ${activePanelMarker.entranceEntries.length} entrances, ${activePanelMarker.submenuMarkers.length} checks`"
         :style="submenuPanelStyle()"
         @pointerdown.stop
         @mouseenter="handleSubmenuPanelHoverStart"
@@ -2170,7 +2323,41 @@ onBeforeUnmount(() => {
         @focusout="handleSubmenuPanelFocusOut"
       >
         <div
-          v-if="activePanelMarker.type === 'submenu'"
+          v-if="activePanelMarker.entranceEntries.length > 0"
+          class="map-entrance-menu"
+        >
+          <div
+            v-for="entry in activePanelMarker.entranceEntries"
+            :key="entry.key"
+            class="map-entrance-menu__row"
+          >
+            <label class="map-entrance-menu__label" :title="entry.key">
+              {{ entry.label }}
+            </label>
+            <select
+              class="map-entrance-menu__select"
+              :value="getEntranceDestinationValue(entry.key)"
+              @change="
+                handleEntranceDestinationChange(
+                  entry.key,
+                  ($event.target as HTMLSelectElement).value,
+                )
+              "
+            >
+              <option value="">— Not mapped —</option>
+              <option
+                v-for="dest in getEntranceDestinationOptions(entry)"
+                :key="dest.value"
+                :value="dest.value"
+              >
+                {{ entranceDestinationLabel(dest) }}
+              </option>
+            </select>
+          </div>
+        </div>
+
+        <div
+          v-if="activePanelMarker.submenuMarkers.length > 0"
           class="map-submenu-panel__grid"
         >
           <button
@@ -2246,37 +2433,6 @@ onBeforeUnmount(() => {
               />
             </span>
           </button>
-        </div>
-
-        <div v-else class="map-entrance-menu">
-          <div
-            v-for="entry in activePanelMarker.entranceEntries"
-            :key="entry.key"
-            class="map-entrance-menu__row"
-          >
-            <label class="map-entrance-menu__label" :title="entry.key">
-              {{ entry.label }}
-            </label>
-            <select
-              class="map-entrance-menu__select"
-              :value="getEntranceDestinationValue(entry.key)"
-              @change="
-                handleEntranceDestinationChange(
-                  entry.key,
-                  ($event.target as HTMLSelectElement).value,
-                )
-              "
-            >
-              <option value="">— Not mapped —</option>
-              <option
-                v-for="dest in getEntranceDestinationOptions(entry)"
-                :key="dest.value"
-                :value="dest.value"
-              >
-                {{ entranceDestinationLabel(dest) }}
-              </option>
-            </select>
-          </div>
         </div>
       </div>
 

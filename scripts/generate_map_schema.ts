@@ -264,7 +264,8 @@ async function generateMapSchema(): Promise<void> {
       submenuMarker: {
         type: 'object',
         additionalProperties: false,
-        required: ['coords', 'image', 'type', 'markers'],
+        required: ['coords', 'image', 'type'],
+        anyOf: [{ required: ['markers'] }, { required: ['entranceMenu'] }],
         properties: {
           coords: { $ref: '#/$defs/coords' },
           image: { $ref: '#/$defs/markerImage' },
@@ -275,6 +276,7 @@ async function generateMapSchema(): Promise<void> {
             items: { $ref: '#/$defs/submenuEntry' },
             minItems: 1,
           },
+          entranceMenu: { $ref: '#/$defs/entranceMenuConfig' },
           visibleWhen: { $ref: '#/$defs/settingsVisibility' },
         },
       },
