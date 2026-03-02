@@ -962,10 +962,10 @@ export const useOoTMMSessionStore = defineStore('ootmm-session', () => {
     recomputeReachability();
   }
 
-  function applySongEvents() {
+  function applySongEvents(forceDuringSettingsApply = false) {
     const currentTracker = tracker.value;
     if (!currentTracker || !currentTracker.setSongEvents) return;
-    if (isApplyingSettings.value) {
+    if (isApplyingSettings.value && !forceDuringSettingsApply) {
       // During tracker re-initialization, immediate UI watchers can fire before
       // the tracker is fully initialized with persisted settings/state.
       // Skipping here avoids out-of-order song-event application that can
@@ -990,10 +990,10 @@ export const useOoTMMSessionStore = defineStore('ootmm-session', () => {
     recomputeReachability();
   }
 
-  function applyShopPrices() {
+  function applyShopPrices(forceDuringSettingsApply = false) {
     const currentTracker = tracker.value;
     if (!currentTracker || !currentTracker.setShopPrices) return;
-    if (isApplyingSettings.value) {
+    if (isApplyingSettings.value && !forceDuringSettingsApply) {
       // Same race as above: avoid applying/merging prices while settings are
       // still being re-applied during initialization.
       return;
@@ -1084,8 +1084,10 @@ export const useOoTMMSessionStore = defineStore('ootmm-session', () => {
         currentTracker.getItemMaxCounts?.() ?? new Map<string, number>(),
       );
       applyPreCompletedDungeons();
-      applySongEvents();
-      applyShopPrices();
+      // Explicitly apply these once the tracker is initialized with the new
+      // settings, even though isApplyingSettings is still true.
+      applySongEvents(true);
+      applyShopPrices(true);
       recomputeReachability();
       didApply = true;
     } catch (error) {
