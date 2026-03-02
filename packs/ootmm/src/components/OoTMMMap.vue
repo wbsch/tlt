@@ -2063,7 +2063,8 @@ watch(
     await nextTick();
     const panelMarker = markerById.value.get(markerId);
     const shouldFreezePanelSize =
-      panelMarker?.type === 'submenu' && panelMarker.entranceEntries.length === 0;
+      panelMarker?.type === 'submenu' &&
+      panelMarker.entranceEntries.length === 0;
 
     if (shouldFreezePanelSize) {
       if (submenuPanel.value.frozenWidth === null) {
@@ -2324,40 +2325,6 @@ onBeforeUnmount(() => {
         @focusout="handleSubmenuPanelFocusOut"
       >
         <div
-          v-if="activePanelMarker.entranceEntries.length > 0"
-          class="map-entrance-menu"
-        >
-          <div
-            v-for="entry in activePanelMarker.entranceEntries"
-            :key="entry.key"
-            class="map-entrance-menu__row"
-          >
-            <label class="map-entrance-menu__label" :title="entry.key">
-              {{ entry.label }}
-            </label>
-            <select
-              class="map-entrance-menu__select"
-              :value="getEntranceDestinationValue(entry.key)"
-              @change="
-                handleEntranceDestinationChange(
-                  entry.key,
-                  ($event.target as HTMLSelectElement).value,
-                )
-              "
-            >
-              <option value="">— Not mapped —</option>
-              <option
-                v-for="dest in getEntranceDestinationOptions(entry)"
-                :key="dest.value"
-                :value="dest.value"
-              >
-                {{ entranceDestinationLabel(dest) }}
-              </option>
-            </select>
-          </div>
-        </div>
-
-        <div
           v-if="activePanelMarker.submenuMarkers.length > 0"
           class="map-submenu-panel__grid"
         >
@@ -2434,6 +2401,49 @@ onBeforeUnmount(() => {
               />
             </span>
           </button>
+        </div>
+
+        <div
+          v-if="
+            activePanelMarker.submenuMarkers.length > 0 &&
+            activePanelMarker.entranceEntries.length > 0
+          "
+          class="map-submenu-panel__divider"
+          aria-hidden="true"
+        ></div>
+
+        <div
+          v-if="activePanelMarker.entranceEntries.length > 0"
+          class="map-entrance-menu"
+        >
+          <div
+            v-for="entry in activePanelMarker.entranceEntries"
+            :key="entry.key"
+            class="map-entrance-menu__row"
+          >
+            <label class="map-entrance-menu__label" :title="entry.key">
+              {{ entry.label }}
+            </label>
+            <select
+              class="map-entrance-menu__select"
+              :value="getEntranceDestinationValue(entry.key)"
+              @change="
+                handleEntranceDestinationChange(
+                  entry.key,
+                  ($event.target as HTMLSelectElement).value,
+                )
+              "
+            >
+              <option value="">— Not mapped —</option>
+              <option
+                v-for="dest in getEntranceDestinationOptions(entry)"
+                :key="dest.value"
+                :value="dest.value"
+              >
+                {{ entranceDestinationLabel(dest) }}
+              </option>
+            </select>
+          </div>
         </div>
       </div>
 
@@ -2953,6 +2963,12 @@ onBeforeUnmount(() => {
   align-items: flex-start;
   gap: max(0px, calc(var(--submenu-corner-offset) * -2));
   overflow: hidden;
+}
+
+.map-submenu-panel__divider {
+  height: 1px;
+  margin: 0 0.5rem;
+  background: #1e293b;
 }
 
 .map-submenu-marker {
