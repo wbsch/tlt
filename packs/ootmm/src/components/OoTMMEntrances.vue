@@ -1,10 +1,14 @@
 <script setup lang="ts">
 import { computed } from 'vue';
+import { storeToRefs } from 'pinia';
+import { useOoTMMUiStore } from '../stores/ootmmUi';
 import { useDungeonEntrances } from '../composables/useDungeonEntrances';
 
 const {
   sections,
   filteredEntrances,
+  reachabilityStats,
+  mappingStats,
   ootEntrances,
   mmEntrances,
   destinationOptionsForGame,
@@ -13,6 +17,10 @@ const {
   clearAllOverrides,
   hasAnyOverrides,
 } = useDungeonEntrances();
+
+const uiStore = useOoTMMUiStore();
+const { entrancesReachabilityFilter, entrancesMappingFilter } =
+  storeToRefs(uiStore);
 
 const dungeonSection = computed(
   () => sections.value.find((section) => section.kind === 'dungeon') ?? null,
@@ -39,6 +47,64 @@ function handleDestinationChange(srcKey: string, dstKey: string) {
       </button>
     </div>
 
+    <div v-if="sections.length > 0" class="entrances-filters">
+      <div class="filters-label">Entrances</div>
+      <div
+        class="segment-group"
+        role="group"
+        aria-label="Entrance reachability filter"
+      >
+        <button
+          class="segment"
+          :class="{ active: entrancesReachabilityFilter === 'all' }"
+          @click="entrancesReachabilityFilter = 'all'"
+        >
+          All ({{ reachabilityStats.total }})
+        </button>
+        <button
+          class="segment"
+          :class="{ active: entrancesReachabilityFilter === 'reachable' }"
+          @click="entrancesReachabilityFilter = 'reachable'"
+        >
+          Reachable ({{ reachabilityStats.reachable }})
+        </button>
+        <button
+          class="segment"
+          :class="{ active: entrancesReachabilityFilter === 'unreachable' }"
+          @click="entrancesReachabilityFilter = 'unreachable'"
+        >
+          Unreachable ({{ reachabilityStats.unreachable }})
+        </button>
+      </div>
+      <div
+        class="segment-group"
+        role="group"
+        aria-label="Entrance mapping filter"
+      >
+        <button
+          class="segment"
+          :class="{ active: entrancesMappingFilter === 'all' }"
+          @click="entrancesMappingFilter = 'all'"
+        >
+          All ({{ mappingStats.total }})
+        </button>
+        <button
+          class="segment"
+          :class="{ active: entrancesMappingFilter === 'unmapped' }"
+          @click="entrancesMappingFilter = 'unmapped'"
+        >
+          Unmapped ({{ mappingStats.unmapped }})
+        </button>
+        <button
+          class="segment"
+          :class="{ active: entrancesMappingFilter === 'mapped' }"
+          @click="entrancesMappingFilter = 'mapped'"
+        >
+          Mapped ({{ mappingStats.mapped }})
+        </button>
+      </div>
+    </div>
+
     <div v-if="sections.length === 0" class="no-entrances">
       <p>
         Enable Dungeon ER in Settings and select dungeon sub-types to configure
@@ -47,7 +113,7 @@ function handleDestinationChange(srcKey: string, dstKey: string) {
     </div>
 
     <div v-else-if="filteredEntrances.length === 0" class="no-entrances">
-      <p>No entrances match the current reachability filter.</p>
+      <p>No entrances match the current filters.</p>
     </div>
 
     <div v-else class="entrances-list">
@@ -189,6 +255,53 @@ function handleDestinationChange(srcKey: string, dstKey: string) {
   color: #9ca3af;
   font-size: 0.8rem;
   padding: 1rem;
+}
+
+.entrances-filters {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  margin-bottom: 0.75rem;
+}
+
+.filters-label {
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: #9ca3af;
+}
+
+.segment-group {
+  display: flex;
+  border: 1px solid #374151;
+  border-radius: 0.35rem;
+  overflow: hidden;
+}
+
+.segment {
+  flex: 1 1 0;
+  border: 0;
+  background: #1f2937;
+  color: #d1d5db;
+  font-size: 0.68rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  padding: 0.3rem 0.35rem;
+  cursor: pointer;
+}
+
+.segment + .segment {
+  border-left: 1px solid #374151;
+}
+
+.segment:hover {
+  background: #111827;
+}
+
+.segment.active {
+  background: #1d4ed8;
+  color: #eff6ff;
 }
 
 .entrances-list {

@@ -1015,7 +1015,7 @@ const markerViewModels = computed<MarkerRuntime[]>(() => {
         isVisible:
           settingsVisible &&
           activeEntries.length > 0 &&
-          visibleEntries.length > 0,
+          (visibleEntries.length > 0 || submenuMarkers.length > 0),
       };
     }
 
@@ -1040,15 +1040,18 @@ const markerViewModels = computed<MarkerRuntime[]>(() => {
       const visibleSubmenuEntrances = submenuSourceEntranceIds
         .map((entranceId) => filteredEntranceById.get(entranceId))
         .filter((entry): entry is DungeonEntranceEntry => Boolean(entry));
-      const submenuMarkersRaw = !props.devMode
-        ? hasEntranceBinding
-          ? mappedOrInactiveSubmenuSourceEntranceIds.length > 0
-            ? resolveBoundSubmenuEntryDefs(
-                mappedOrInactiveSubmenuSourceEntranceIds,
-              )
-            : []
-          : (markerDef.markers ?? [])
-        : (markerDef.markers ?? []);
+      const staticSubmenuMarkersRaw = markerDef.markers ?? [];
+      const boundSubmenuMarkersRaw =
+        !props.devMode &&
+        hasEntranceBinding &&
+        mappedOrInactiveSubmenuSourceEntranceIds.length > 0
+          ? resolveBoundSubmenuEntryDefs(
+              mappedOrInactiveSubmenuSourceEntranceIds,
+            )
+          : [];
+      const submenuMarkersRaw = props.devMode
+        ? staticSubmenuMarkersRaw
+        : [...staticSubmenuMarkersRaw, ...boundSubmenuMarkersRaw];
       const submenuMarkers = buildSubmenuRuntimeEntries(
         markerId,
         submenuMarkersRaw,
@@ -1086,14 +1089,13 @@ const markerViewModels = computed<MarkerRuntime[]>(() => {
         markerDef.visibleWhen,
         props.settings,
       );
-      const hasVisibleBoundEntrance =
+      const hasVisibleChecks = visibleSubmenuMarkers.length > 0;
+      const hasVisibleEntrances =
         submenuSourceEntranceIds.length === 0
-          ? true
+          ? false
           : activeSubmenuEntrances.length === 0
-            ? true
+            ? false
             : visibleSubmenuEntrances.length > 0;
-      const hasVisiblePanelContent =
-        visibleSubmenuMarkers.length > 0 || visibleSubmenuEntrances.length > 0;
 
       return {
         type: 'submenu',
@@ -1111,8 +1113,7 @@ const markerViewModels = computed<MarkerRuntime[]>(() => {
         allSubmenuCodeList: visibleSubmenuMarkers.flatMap(
           (marker) => marker.codeList,
         ),
-        isVisible:
-          settingsVisible && hasVisibleBoundEntrance && hasVisiblePanelContent,
+        isVisible: settingsVisible && (hasVisibleChecks || hasVisibleEntrances),
       };
     }
 

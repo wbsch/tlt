@@ -5,6 +5,7 @@ export type TrackerTab = 'inventory' | 'settings' | 'grid' | 'world' | 'tricks';
 export type RightSidebarTab = 'locations' | 'entrances';
 export type ReachabilityFilter = 'all' | 'reachable' | 'unreachable';
 export type CollectionFilter = 'all' | 'collected' | 'uncollected';
+export type EntranceMappingFilter = 'all' | 'mapped' | 'unmapped';
 
 const VALID_TABS: TrackerTab[] = [
   'grid',
@@ -28,6 +29,8 @@ export const useOoTMMUiStore = defineStore('ootmm-ui', () => {
   const locationsCollectionFilter = ref<CollectionFilter>('uncollected');
   const locationsShowUnshuffled = ref(true);
   const locationsShowGossipStones = ref(true);
+  const entrancesReachabilityFilter = ref<ReachabilityFilter>('reachable');
+  const entrancesMappingFilter = ref<EntranceMappingFilter>('all');
 
   const settingsSearchQuery = ref('');
 
@@ -84,6 +87,8 @@ export const useOoTMMUiStore = defineStore('ootmm-ui', () => {
     locationsCollectionFilter.value = 'uncollected';
     locationsShowUnshuffled.value = true;
     locationsShowGossipStones.value = true;
+    entrancesReachabilityFilter.value = 'reachable';
+    entrancesMappingFilter.value = 'all';
 
     settingsSearchQuery.value = '';
 
@@ -104,6 +109,8 @@ export const useOoTMMUiStore = defineStore('ootmm-ui', () => {
     locationsCollectionFilter,
     locationsShowUnshuffled,
     locationsShowGossipStones,
+    entrancesReachabilityFilter,
+    entrancesMappingFilter,
     settingsSearchQuery,
     isSpoilerDragActive,
     spoilerDragDepth,

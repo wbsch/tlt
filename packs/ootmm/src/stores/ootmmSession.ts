@@ -607,18 +607,51 @@ export const useOoTMMSessionStore = defineStore('ootmm-session', () => {
       Object.keys(entranceOverrides.value).length > 0;
     if (shouldReinitializeWithTargetSettings) {
       isApplyingSettings.value = true;
+      const settingsWithEntrances = injectEntranceOverridesIntoSettings(
+        targetSettings,
+        entranceOverrides.value,
+      );
       try {
         await nextTick();
         await new Promise((resolve) =>
           requestAnimationFrame(() => requestAnimationFrame(resolve)),
         );
-        const settingsWithEntrances = injectEntranceOverridesIntoSettings(
-          targetSettings,
-          entranceOverrides.value,
-        );
         await nextTracker.initialize(settingsWithEntrances);
       } catch (error) {
         console.error('Failed to initialize tracker settings:', error);
+        let recoveredWithEntrances = false;
+
+        for (let attempt = 0; attempt < 4; attempt += 1) {
+          try {
+            nextTracker.reset();
+            await nextTracker.initialize(settingsWithEntrances);
+            recoveredWithEntrances = true;
+            break;
+          } catch (retryError) {
+            console.warn(
+              `Retry ${attempt + 1} failed to initialize tracker settings with persisted entrance overrides:`,
+              retryError,
+            );
+          }
+        }
+
+        if (!recoveredWithEntrances) {
+          console.error(
+            'Failed to recover tracker settings with persisted entrance overrides.',
+          );
+          try {
+            nextTracker.reset();
+            await nextTracker.initialize(targetSettings);
+            if (Object.keys(entranceOverrides.value).length > 0) {
+              scheduleReinitializeForEntrances();
+            }
+          } catch (fallbackError) {
+            console.error(
+              'Failed to recover tracker settings after initialization error:',
+              fallbackError,
+            );
+          }
+        }
       } finally {
         isApplyingSettings.value = false;
       }
@@ -633,6 +666,7 @@ export const useOoTMMSessionStore = defineStore('ootmm-session', () => {
     applyPreCompletedDungeons();
     applySongEvents();
     applyShopPrices();
+    recomputeReachability();
   }
 
   function initializeFromTracker() {

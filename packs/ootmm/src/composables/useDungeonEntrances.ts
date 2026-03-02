@@ -65,6 +65,18 @@ export type EntrancePanelSection = {
   kind: 'dungeon';
 };
 
+type ReachabilityStats = {
+  total: number;
+  reachable: number;
+  unreachable: number;
+};
+
+type MappingStats = {
+  total: number;
+  mapped: number;
+  unmapped: number;
+};
+
 function entranceLabel(key: string, data: EntranceData): string {
   if (data.to && data.to !== 'NONE') {
     return data.to.replace(/^(OOT|MM) /, '');
@@ -78,7 +90,12 @@ export function useDungeonEntrances() {
   const { trackerSettings, entranceOverrides, reachableEntranceIdSet } =
     storeToRefs(sessionStore);
   const uiStore = useOoTMMUiStore();
-  const { locationsReachabilityFilter } = storeToRefs(uiStore);
+  const { entrancesReachabilityFilter, entrancesMappingFilter } =
+    storeToRefs(uiStore);
+
+  function isEntranceMapped(entranceKey: string): boolean {
+    return (entranceOverrides.value[entranceKey] ?? '').trim().length > 0;
+  }
 
   const allDungeonEntrances = computed<DungeonEntranceEntry[]>(() => {
     const entries: DungeonEntranceEntry[] = [];
@@ -114,15 +131,41 @@ export function useDungeonEntrances() {
     });
   });
 
-  const filteredEntrances = computed<DungeonEntranceEntry[]>(() => {
-    const filter = locationsReachabilityFilter.value;
+  const mappingScopedEntrances = computed<DungeonEntranceEntry[]>(() => {
+    const filter = entrancesMappingFilter.value;
     if (filter === 'all') return activeEntrances.value;
 
-    const reachableSet = reachableEntranceIdSet.value;
     return activeEntrances.value.filter((entrance) => {
+      const mapped = isEntranceMapped(entrance.key);
+      return filter === 'mapped' ? mapped : !mapped;
+    });
+  });
+
+  const filteredEntrances = computed<DungeonEntranceEntry[]>(() => {
+    const filter = entrancesReachabilityFilter.value;
+    if (filter === 'all') return mappingScopedEntrances.value;
+
+    const reachableSet = reachableEntranceIdSet.value;
+    return mappingScopedEntrances.value.filter((entrance) => {
       const isReachable = reachableSet.has(entrance.key);
       return filter === 'reachable' ? isReachable : !isReachable;
     });
+  });
+
+  const reachabilityStats = computed<ReachabilityStats>(() => {
+    const total = mappingScopedEntrances.value.length;
+    const reachable = mappingScopedEntrances.value.filter((entrance) =>
+      reachableEntranceIdSet.value.has(entrance.key),
+    ).length;
+    return { total, reachable, unreachable: total - reachable };
+  });
+
+  const mappingStats = computed<MappingStats>(() => {
+    const total = activeEntrances.value.length;
+    const mapped = activeEntrances.value.filter((entrance) =>
+      isEntranceMapped(entrance.key),
+    ).length;
+    return { total, mapped, unmapped: total - mapped };
   });
 
   const destinationOptions = computed(() => {
@@ -198,6 +241,8 @@ export function useDungeonEntrances() {
     hasAvailableSections,
     activeEntrances,
     filteredEntrances,
+    reachabilityStats,
+    mappingStats,
     ootEntrances,
     mmEntrances,
     destinationOptionsForGame,

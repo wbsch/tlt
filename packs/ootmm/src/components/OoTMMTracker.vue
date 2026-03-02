@@ -143,6 +143,8 @@ const {
   locationsCollectionFilter,
   locationsShowUnshuffled,
   locationsShowGossipStones,
+  entrancesReachabilityFilter,
+  entrancesMappingFilter,
   activeMapId,
 } = storeToRefs(uiStore);
 
@@ -1537,76 +1539,161 @@ onBeforeUnmount(() => {
             </span>
 
             <div class="map-toolbar-filters">
-              <div
-                class="map-filter-group"
-                role="group"
-                aria-label="Reachability filter"
-              >
-                <button
-                  type="button"
-                  class="map-filter-button"
-                  :class="{
-                    'is-active': locationsReachabilityFilter === 'all',
-                  }"
-                  @click="locationsReachabilityFilter = 'all'"
+              <div class="map-toolbar-filter-section">
+                <span class="map-toolbar-filter-label">Locations</span>
+                <div
+                  class="map-filter-group"
+                  role="group"
+                  aria-label="Location reachability filter"
                 >
-                  All
-                </button>
-                <button
-                  type="button"
-                  class="map-filter-button"
-                  :class="{
-                    'is-active': locationsReachabilityFilter === 'reachable',
-                  }"
-                  @click="locationsReachabilityFilter = 'reachable'"
+                  <button
+                    type="button"
+                    class="map-filter-button"
+                    :class="{
+                      'is-active': locationsReachabilityFilter === 'all',
+                    }"
+                    @click="locationsReachabilityFilter = 'all'"
+                  >
+                    All
+                  </button>
+                  <button
+                    type="button"
+                    class="map-filter-button"
+                    :class="{
+                      'is-active': locationsReachabilityFilter === 'reachable',
+                    }"
+                    @click="locationsReachabilityFilter = 'reachable'"
+                  >
+                    Reachable
+                  </button>
+                  <button
+                    type="button"
+                    class="map-filter-button"
+                    :class="{
+                      'is-active':
+                        locationsReachabilityFilter === 'unreachable',
+                    }"
+                    @click="locationsReachabilityFilter = 'unreachable'"
+                  >
+                    Unreachable
+                  </button>
+                </div>
+
+                <div
+                  class="map-filter-group"
+                  role="group"
+                  aria-label="Location collection filter"
                 >
-                  Reachable
-                </button>
-                <button
-                  type="button"
-                  class="map-filter-button"
-                  :class="{
-                    'is-active': locationsReachabilityFilter === 'unreachable',
-                  }"
-                  @click="locationsReachabilityFilter = 'unreachable'"
-                >
-                  Unreachable
-                </button>
+                  <button
+                    type="button"
+                    class="map-filter-button"
+                    :class="{
+                      'is-active': locationsCollectionFilter === 'all',
+                    }"
+                    @click="locationsCollectionFilter = 'all'"
+                  >
+                    All
+                  </button>
+                  <button
+                    type="button"
+                    class="map-filter-button"
+                    :class="{
+                      'is-active': locationsCollectionFilter === 'collected',
+                    }"
+                    @click="locationsCollectionFilter = 'collected'"
+                  >
+                    Collected
+                  </button>
+                  <button
+                    type="button"
+                    class="map-filter-button"
+                    :class="{
+                      'is-active': locationsCollectionFilter === 'uncollected',
+                    }"
+                    @click="locationsCollectionFilter = 'uncollected'"
+                  >
+                    Uncollected
+                  </button>
+                </div>
               </div>
 
               <div
-                class="map-filter-group"
-                role="group"
-                aria-label="Collection filter"
+                v-if="hasAvailableEntranceSections"
+                class="map-toolbar-filter-section"
               >
-                <button
-                  type="button"
-                  class="map-filter-button"
-                  :class="{ 'is-active': locationsCollectionFilter === 'all' }"
-                  @click="locationsCollectionFilter = 'all'"
+                <span class="map-toolbar-filter-label">Entrances</span>
+                <div
+                  class="map-filter-group"
+                  role="group"
+                  aria-label="Entrance reachability filter"
                 >
-                  All
-                </button>
-                <button
-                  type="button"
-                  class="map-filter-button"
-                  :class="{
-                    'is-active': locationsCollectionFilter === 'collected',
-                  }"
-                  @click="locationsCollectionFilter = 'collected'"
+                  <button
+                    type="button"
+                    class="map-filter-button"
+                    :class="{
+                      'is-active': entrancesReachabilityFilter === 'all',
+                    }"
+                    @click="entrancesReachabilityFilter = 'all'"
+                  >
+                    All
+                  </button>
+                  <button
+                    type="button"
+                    class="map-filter-button"
+                    :class="{
+                      'is-active': entrancesReachabilityFilter === 'reachable',
+                    }"
+                    @click="entrancesReachabilityFilter = 'reachable'"
+                  >
+                    Reachable
+                  </button>
+                  <button
+                    type="button"
+                    class="map-filter-button"
+                    :class="{
+                      'is-active':
+                        entrancesReachabilityFilter === 'unreachable',
+                    }"
+                    @click="entrancesReachabilityFilter = 'unreachable'"
+                  >
+                    Unreachable
+                  </button>
+                </div>
+
+                <div
+                  class="map-filter-group"
+                  role="group"
+                  aria-label="Entrance mapping filter"
                 >
-                  Collected
-                </button>
-                <button
-                  type="button"
-                  class="map-filter-button"
-                  :class="{
-                    'is-active': locationsCollectionFilter === 'uncollected',
-                  }"
-                  @click="locationsCollectionFilter = 'uncollected'"
-                >
-                  Uncollected
-                </button>
+                  <button
+                    type="button"
+                    class="map-filter-button"
+                    :class="{ 'is-active': entrancesMappingFilter === 'all' }"
+                    @click="entrancesMappingFilter = 'all'"
+                  >
+                    All
+                  </button>
+                  <button
+                    type="button"
+                    class="map-filter-button"
+                    :class="{
+                      'is-active': entrancesMappingFilter === 'unmapped',
+                    }"
+                    @click="entrancesMappingFilter = 'unmapped'"
+                  >
+                    Unmapped
+                  </button>
+                  <button
+                    type="button"
+                    class="map-filter-button"
+                    :class="{
+                      'is-active': entrancesMappingFilter === 'mapped',
+                    }"
+                    @click="entrancesMappingFilter = 'mapped'"
+                  >
+                    Mapped
+                  </button>
+                </div>
               </div>
             </div>
 
@@ -2163,6 +2250,22 @@ onBeforeUnmount(() => {
   align-items: center;
   gap: 0.5rem;
   flex-wrap: wrap;
+}
+
+.map-toolbar-filter-section {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  flex-wrap: wrap;
+}
+
+.map-toolbar-filter-label {
+  font-size: 0.68rem;
+  font-weight: 700;
+  color: #9ca3af;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  white-space: nowrap;
 }
 
 .map-filter-group {
