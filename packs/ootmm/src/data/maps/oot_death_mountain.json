@@ -477,7 +477,7 @@
     {
       "coords": [819, 10],
       "image": "dungeon_entrance",
-      "type": "entrance-menu",
+      "type": "submenu",
       "entranceMenu": {
         "entranceIds": ["OOT_TEMPLE_FIRE"]
       }
@@ -668,7 +668,7 @@
     {
       "coords": [52, 284],
       "image": "dungeon_entrance",
-      "type": "entrance-menu",
+      "type": "submenu",
       "entranceMenu": {
         "entranceIds": ["OOT_DODONGO_CAVERN"]
       }

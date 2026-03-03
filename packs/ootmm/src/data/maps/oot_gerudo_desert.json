@@ -470,7 +470,7 @@
       "coords": [440, 318],
       "image": "dungeon_entrance",
       "overlays": ["adult"],
-      "type": "entrance-menu",
+      "type": "submenu",
       "entranceMenu": {
         "entranceIds": ["OOT_GERUDO_TRAINING_GROUNDS"]
       }
@@ -970,7 +970,7 @@
     {
       "coords": [24, 482],
       "image": "dungeon_entrance",
-      "type": "entrance-menu",
+      "type": "submenu",
       "entranceMenu": {
         "entranceIds": ["OOT_TEMPLE_SPIRIT"]
       }

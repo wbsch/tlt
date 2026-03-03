@@ -579,7 +579,7 @@
     {
       "coords": [505, 316],
       "image": "dungeon_entrance",
-      "type": "entrance-menu",
+      "type": "submenu",
       "entranceMenu": {
         "entranceIds": ["OOT_GANON_TOWER"]
       }

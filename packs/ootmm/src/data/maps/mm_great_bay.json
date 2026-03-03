@@ -534,7 +534,7 @@
     {
       "coords": [678, 76],
       "image": "dungeon_entrance",
-      "type": "entrance-menu",
+      "type": "submenu",
       "entranceMenu": {
         "entranceIds": ["MM_PIRATE_FORTRESS"]
       }
@@ -660,7 +660,7 @@
     {
       "coords": [730, 280],
       "image": "dungeon_entrance",
-      "type": "entrance-menu",
+      "type": "submenu",
       "entranceMenu": {
         "entranceIds": ["MM_SPIDER_HOUSE_OCEAN"]
       }
@@ -744,7 +744,7 @@
     {
       "coords": [371, 452],
       "image": "dungeon_entrance",
-      "type": "entrance-menu",
+      "type": "submenu",
       "entranceMenu": {
         "entranceIds": ["MM_TEMPLE_GREAT_BAY"]
       }

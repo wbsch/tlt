@@ -695,7 +695,7 @@
     {
       "coords": [182, 470],
       "image": "dungeon_entrance",
-      "type": "entrance-menu",
+      "type": "submenu",
       "entranceMenu": {
         "entranceIds": ["OOT_TEMPLE_WATER"]
       }
@@ -897,7 +897,7 @@
     {
       "coords": [852, 345],
       "image": "dungeon_entrance",
-      "type": "entrance-menu",
+      "type": "submenu",
       "entranceMenu": {
         "entranceIds": ["OOT_JABU_JABU"]
       }
@@ -916,7 +916,7 @@
     {
       "coords": [904, 251],
       "image": "dungeon_entrance",
-      "type": "entrance-menu",
+      "type": "submenu",
       "entranceMenu": {
         "entranceIds": ["OOT_ICE_CAVERN"]
       }

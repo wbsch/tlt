@@ -1241,7 +1241,7 @@
     {
       "coords": [66, 117],
       "image": "dungeon_entrance",
-      "type": "entrance-menu",
+      "type": "submenu",
       "entranceMenu": {
         "entranceIds": ["MM_TEMPLE_SNOWHEAD"]
       }

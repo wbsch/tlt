@@ -544,7 +544,7 @@
       "coords": [319, 328],
       "image": "dungeon_entrance",
       "overlays": ["child"],
-      "type": "entrance-menu",
+      "type": "submenu",
       "entranceMenu": {
         "entranceIds": ["OOT_BOTTOM_OF_THE_WELL"]
       }
@@ -814,7 +814,7 @@
     {
       "coords": [984, 509],
       "image": "dungeon_entrance",
-      "type": "entrance-menu",
+      "type": "submenu",
       "entranceMenu": {
         "entranceIds": ["OOT_TEMPLE_SHADOW"]
       }

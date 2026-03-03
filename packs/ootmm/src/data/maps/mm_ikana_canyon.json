@@ -303,7 +303,7 @@
     {
       "coords": [812, 466],
       "image": "dungeon_entrance",
-      "type": "entrance-menu",
+      "type": "submenu",
       "entranceMenu": {
         "entranceIds": ["MM_IKANA_CASTLE"]
       }
@@ -311,7 +311,7 @@
     {
       "coords": [946, 368],
       "image": "dungeon_entrance",
-      "type": "entrance-menu",
+      "type": "submenu",
       "entranceMenu": {
         "entranceIds": ["MM_BENEATH_THE_WELL_BACK"]
       }
@@ -319,7 +319,7 @@
     {
       "coords": [872, 264],
       "image": "dungeon_entrance",
-      "type": "entrance-menu",
+      "type": "submenu",
       "entranceMenu": {
         "entranceIds": ["MM_TEMPLE_STONE_TOWER_INVERTED"]
       }
@@ -327,7 +327,7 @@
     {
       "coords": [633, 44],
       "image": "dungeon_entrance",
-      "type": "entrance-menu",
+      "type": "submenu",
       "entranceMenu": {
         "entranceIds": ["MM_TEMPLE_STONE_TOWER"]
       }
@@ -393,7 +393,7 @@
     {
       "coords": [280, 360],
       "image": "dungeon_entrance",
-      "type": "entrance-menu",
+      "type": "submenu",
       "entranceMenu": {
         "entranceIds": ["MM_BENEATH_THE_WELL"]
       }
@@ -431,7 +431,7 @@
     {
       "coords": [184, 422],
       "image": "dungeon_entrance",
-      "type": "entrance-menu",
+      "type": "submenu",
       "entranceMenu": {
         "entranceIds": ["MM_SECRET_SHRINE"]
       }

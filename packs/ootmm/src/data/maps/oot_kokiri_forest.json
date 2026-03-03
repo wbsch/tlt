@@ -734,7 +734,7 @@
     {
       "coords": [341, 42],
       "image": "dungeon_entrance",
-      "type": "entrance-menu",
+      "type": "submenu",
       "entranceMenu": {
         "entranceIds": ["OOT_TEMPLE_FOREST"]
       }

@@ -521,7 +521,7 @@
     {
       "coords": [290, 140],
       "image": "dungeon_entrance",
-      "type": "entrance-menu",
+      "type": "submenu",
       "entranceMenu": {
         "entranceIds": ["MM_SPIDER_HOUSE_SWAMP"]
       }
@@ -572,7 +572,7 @@
     {
       "coords": [842, 456],
       "image": "dungeon_entrance",
-      "type": "entrance-menu",
+      "type": "submenu",
       "entranceMenu": {
         "entranceIds": ["MM_TEMPLE_WOODFALL"]
       }
