@@ -122,7 +122,6 @@ async function generateMapSchema(): Promise<void> {
           anyOf: [
             { $ref: '#/$defs/checkMarker' },
             { $ref: '#/$defs/submenuMarker' },
-            { $ref: '#/$defs/entranceMenuMarker' },
           ],
         },
       },
@@ -294,19 +293,6 @@ async function generateMapSchema(): Promise<void> {
             minItems: 1,
             uniqueItems: true,
           },
-        },
-      },
-      entranceMenuMarker: {
-        type: 'object',
-        additionalProperties: false,
-        required: ['coords', 'image', 'type', 'entranceMenu'],
-        properties: {
-          coords: { $ref: '#/$defs/coords' },
-          image: { $ref: '#/$defs/markerImage' },
-          overlays: { $ref: '#/$defs/overlays' },
-          type: { const: 'entrance-menu' },
-          entranceMenu: { $ref: '#/$defs/entranceMenuConfig' },
-          visibleWhen: { $ref: '#/$defs/settingsVisibility' },
         },
       },
     },

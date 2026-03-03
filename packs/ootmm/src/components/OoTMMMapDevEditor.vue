@@ -156,7 +156,7 @@ function normalizeLocationCode(value: string): string {
 }
 
 function assignMarkerCodes(marker: MapMarkerDef, nextCodes: string[]): void {
-  if (marker.type === 'submenu' || marker.type === 'entrance-menu') {
+  if (marker.type === 'submenu') {
     return;
   }
   const cleaned = nextCodes
@@ -367,18 +367,12 @@ const selectedMarkerUnresolvedCodes = computed(() => {
 });
 
 const selectedMarkerHasUnsupportedCodeEditing = computed(
-  () =>
-    selectedDraftMarker.value?.type === 'submenu' ||
-    selectedDraftMarker.value?.type === 'entrance-menu',
+  () => selectedDraftMarker.value?.type === 'submenu',
 );
 
 const selectedMarkerUnsupportedCodeEditingMessage = computed(() => {
-  const markerType = selectedDraftMarker.value?.type;
-  if (markerType === 'submenu') {
+  if (selectedDraftMarker.value?.type === 'submenu') {
     return 'Submenu markers use nested marker lists. Editing nested submenu markers is not supported in dev mode yet.';
-  }
-  if (markerType === 'entrance-menu') {
-    return 'Entrance-menu markers use shuffled entrance lists. Editing entrance-menu entries is not supported in dev mode yet.';
   }
   return '';
 });
@@ -664,17 +658,6 @@ const draftErrors = computed<DraftIssue[]>(() => {
       });
       return;
     }
-    if (marker.type === 'entrance-menu') {
-      const entranceIds = marker.entranceMenu?.entranceIds ?? [];
-      if (entranceIds.length === 0) {
-        issues.push({
-          markerIndex,
-          message: 'Entrance-menu marker must include at least one entrance id',
-        });
-      }
-      return;
-    }
-
     const codes = markerCodeList(marker);
     if (codes.length === 0) {
       issues.push({
@@ -725,10 +708,6 @@ const draftWarnings = computed<DraftIssue[]>(() => {
       }
       return;
     }
-    if (marker.type === 'entrance-menu') {
-      return;
-    }
-
     const unresolved = markerCodeList(marker).filter(
       (code) => resolveCodeToCheckIds(code).length === 0,
     );
@@ -801,12 +780,6 @@ function buildDraftExportMap(): MapDef | null {
             entranceIds: [...marker.entranceMenu.entranceIds],
           };
         }
-      } else if (marker.type === 'entrance-menu') {
-        if (marker.entranceMenu) {
-          exportMarker.entranceMenu = {
-            entranceIds: [...marker.entranceMenu.entranceIds],
-          };
-        }
       } else {
         const codes = markerCodeList(marker);
         exportMarker.codes = codes.length > 1 ? [...codes] : (codes[0] ?? '');
@@ -858,8 +831,7 @@ function setSelectedCoord(axis: 0 | 1, value: number): void {
 
 function addCodeToSelectedMarker(code: string): void {
   const marker = selectedDraftMarker.value;
-  if (!marker || marker.type === 'submenu' || marker.type === 'entrance-menu')
-    return;
+  if (!marker || marker.type === 'submenu') return;
   const trimmed = code.trim();
   if (!trimmed) return;
   const normalized = normalizeCode(trimmed);
@@ -874,8 +846,7 @@ function addCodeToSelectedMarker(code: string): void {
 
 function removeCodeFromSelectedMarker(code: string): void {
   const marker = selectedDraftMarker.value;
-  if (!marker || marker.type === 'submenu' || marker.type === 'entrance-menu')
-    return;
+  if (!marker || marker.type === 'submenu') return;
   const normalized = normalizeCode(code);
   const nextCodes = markerCodeList(marker).filter(
     (entry) => normalizeCode(entry) !== normalized,

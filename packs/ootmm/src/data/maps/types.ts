@@ -41,7 +41,7 @@ export type MapMarkerDef = {
   coords: [number, number];
   image: string;
   overlays?: MapMarkerOverlay[];
-  type?: 'check' | 'submenu' | 'entrance-menu';
+  type?: 'check' | 'submenu';
   codes?: string | string[];
   markers?: MapSubmenuEntryDef[];
   entranceMenu?: MapDungeonEntranceMenuDef;
@@ -64,7 +64,7 @@ export type MapMarkerViewModel = {
   coords: [number, number];
   image: string;
   overlays: MapMarkerOverlay[];
-  type: 'check' | 'submenu' | 'entrance-menu';
+  type: 'check' | 'submenu';
   codes?: string | string[];
   reachableCount: number;
   checkedCount: number;
