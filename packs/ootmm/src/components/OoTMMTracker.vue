@@ -11,7 +11,11 @@ import OoTMMWorld from './OoTMMWorld.vue';
 import OoTMMMap from './OoTMMMap.vue';
 import OoTMMTricks from './OoTMMTricks.vue';
 import FairyLoader from '@/components/FairyLoader.vue';
-import { SETTINGS_DEFINITIONS } from '../data/settings';
+import {
+  SETTINGS_DEFINITIONS,
+  TRACKER_DEFAULT_SETTINGS,
+} from '../data/settings';
+import spoilerSettingsDefaultCheckExclude from '../data/spoilerSettingsDefaultCheckExclude.json';
 import { parseSpoilerLog } from '../utils/spoiler';
 import { useDungeonEntrances } from '../composables/useDungeonEntrances';
 import { useLocationCodeLookup } from '../composables/useLocationCodeLookup';
@@ -59,6 +63,17 @@ type DevMarkerSelectRequest = {
 
 type DevMqMarkerMode = 'non-mq' | 'mq';
 
+type SpoilerSettingWarning = {
+  key: string;
+  value: string;
+  defaultValue: string;
+};
+
+type SpoilerUnknownSetting = {
+  key: string;
+  value: string;
+};
+
 const resolveExport = <T,>(mod: unknown, key: string): T => {
   const modObj = mod as { default?: Record<string, T>; [k: string]: unknown };
   return (modObj[key] as T | undefined) ?? (modObj.default?.[key] as T);
@@ -91,6 +106,13 @@ const supportedSettingKeys = new Set(
 const itemNameToId = new Map<string, string>();
 const ALL_TRICKS = TRICKS as Record<string, { name?: string }>;
 const trickNameToKey = new Map<string, string>();
+const trackerDefaultSettingsByKey = TRACKER_DEFAULT_SETTINGS as Record<
+  string,
+  unknown
+>;
+const SPOILER_DEFAULT_CHECK_EXCLUDED_SETTINGS = new Set<string>(
+  spoilerSettingsDefaultCheckExclude,
+);
 
 const normalizeName = (value: string) =>
   value.toLowerCase().replace(/\s+/g, ' ').trim();
@@ -192,6 +214,9 @@ const mapMarkerSelectRequest = ref<DevMarkerSelectRequest | null>(null);
 const mapMarkerHoverIndex = ref<number | null>(null);
 const showDevUnmappedChecksOnly = ref(false);
 const devMqMarkerMode = ref<DevMqMarkerMode>('non-mq');
+const isSpoilerSettingsWarningDialogOpen = ref(false);
+const spoilerSettingsWarnings = ref<SpoilerSettingWarning[]>([]);
+const spoilerUnknownSettings = ref<SpoilerUnknownSetting[]>([]);
 let mapMarkerSelectNonce = 0;
 
 function resolveSelectedGamesSetting(value: unknown): SelectedGamesSetting {
@@ -950,6 +975,90 @@ function coerceWorldFlagValue(raw: unknown, def?: CoreSetting) {
   return raw;
 }
 
+function normalizeComparableSettingValue(value: unknown): unknown {
+  if (Array.isArray(value)) {
+    return value.map((entry) => normalizeComparableSettingValue(entry));
+  }
+  if (value && typeof value === 'object') {
+    const normalized: Record<string, unknown> = {};
+    const entries = Object.entries(value as Record<string, unknown>).sort(
+      ([left], [right]) => left.localeCompare(right),
+    );
+    for (const [key, entry] of entries) {
+      normalized[key] = normalizeComparableSettingValue(entry);
+    }
+    return normalized;
+  }
+  return value;
+}
+
+function areSettingValuesEqual(left: unknown, right: unknown): boolean {
+  return (
+    JSON.stringify(normalizeComparableSettingValue(left)) ===
+    JSON.stringify(normalizeComparableSettingValue(right))
+  );
+}
+
+function formatSpoilerSettingValue(value: unknown): string {
+  if (typeof value === 'string') return value;
+  if (value === undefined) return 'undefined';
+  try {
+    return JSON.stringify(value);
+  } catch {
+    return String(value);
+  }
+}
+
+function collectSpoilerSettingsWarnings(
+  settings: Record<string, string | number | boolean>,
+): SpoilerSettingWarning[] {
+  const warnings: SpoilerSettingWarning[] = [];
+
+  for (const [key, rawValue] of Object.entries(settings)) {
+    if (!settingsByKey.has(key)) continue;
+    if (supportedSettingKeys.has(key)) continue;
+    if (SPOILER_DEFAULT_CHECK_EXCLUDED_SETTINGS.has(key)) continue;
+    if (!Object.prototype.hasOwnProperty.call(trackerDefaultSettingsByKey, key))
+      continue;
+
+    const defaultValue = trackerDefaultSettingsByKey[key];
+    const coercedValue = coerceSettingValue(rawValue, settingsByKey.get(key));
+    if (areSettingValuesEqual(coercedValue, defaultValue)) continue;
+
+    warnings.push({
+      key,
+      value: formatSpoilerSettingValue(coercedValue),
+      defaultValue: formatSpoilerSettingValue(defaultValue),
+    });
+  }
+
+  warnings.sort((left, right) => left.key.localeCompare(right.key));
+  return warnings;
+}
+
+function collectSpoilerUnknownSettings(
+  settings: Record<string, string | number | boolean>,
+): SpoilerUnknownSetting[] {
+  const unknown: SpoilerUnknownSetting[] = [];
+
+  for (const [key, rawValue] of Object.entries(settings)) {
+    if (settingsByKey.has(key)) continue;
+    unknown.push({
+      key,
+      value: formatSpoilerSettingValue(rawValue),
+    });
+  }
+
+  unknown.sort((left, right) => left.key.localeCompare(right.key));
+  return unknown;
+}
+
+function closeSpoilerSettingsWarningDialog() {
+  isSpoilerSettingsWarningDialogOpen.value = false;
+  spoilerSettingsWarnings.value = [];
+  spoilerUnknownSettings.value = [];
+}
+
 function applyStartingItems(startingItems: Record<string, number>) {
   const nextById: Record<string, number> = {};
   for (const [name, count] of Object.entries(startingItems)) {
@@ -1087,6 +1196,9 @@ async function handleSpoilerFile(file: File) {
   if (!file) return;
   const text = await file.text();
   const parsed = parseSpoilerLog(text);
+  closeSpoilerSettingsWarningDialog();
+  const warnings = collectSpoilerSettingsWarnings(parsed.settings);
+  const unknownSettings = collectSpoilerUnknownSettings(parsed.settings);
   let selectedPlayer: number | undefined;
 
   if (parsed.startingItemsPlayers.length > 1) {
@@ -1100,6 +1212,12 @@ async function handleSpoilerFile(file: File) {
   }
 
   await applySpoilerLog(text, selectedPlayer);
+
+  if (warnings.length > 0 || unknownSettings.length > 0) {
+    spoilerSettingsWarnings.value = warnings;
+    spoilerUnknownSettings.value = unknownSettings;
+    isSpoilerSettingsWarningDialogOpen.value = true;
+  }
 }
 
 function hasFilePayload(event: DragEvent) {
@@ -1299,6 +1417,75 @@ onBeforeUnmount(() => {
             @click="confirmSpoilerStartingItemsPlayer"
           >
             Apply
+          </button>
+        </div>
+      </div>
+    </div>
+    <div
+      v-if="isSpoilerSettingsWarningDialogOpen"
+      class="spoiler-player-dialog-overlay"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="spoiler-settings-warning-title"
+    >
+      <div class="spoiler-player-dialog spoiler-settings-warning-dialog">
+        <h2
+          id="spoiler-settings-warning-title"
+          class="spoiler-player-dialog-title"
+        >
+          Spoiler log warning
+        </h2>
+        <p
+          v-if="spoilerUnknownSettings.length > 0"
+          class="spoiler-player-dialog-text"
+        >
+          These settings are not known in the randomizer version used by this
+          tracker and were fully ignored:
+        </p>
+        <ul
+          v-if="spoilerUnknownSettings.length > 0"
+          class="spoiler-settings-warning-list"
+        >
+          <li
+            v-for="setting in spoilerUnknownSettings"
+            :key="setting.key"
+            class="spoiler-settings-warning-item"
+          >
+            <span class="spoiler-settings-warning-key">{{ setting.key }}</span>
+            <span class="spoiler-settings-warning-values"
+              >Spoiler: {{ setting.value }}</span
+            >
+          </li>
+        </ul>
+        <p
+          v-if="spoilerSettingsWarnings.length > 0"
+          class="spoiler-player-dialog-text"
+        >
+          These settings are not supported and were reset to defaults:
+        </p>
+        <ul
+          v-if="spoilerSettingsWarnings.length > 0"
+          class="spoiler-settings-warning-list"
+        >
+          <li
+            v-for="warning in spoilerSettingsWarnings"
+            :key="warning.key"
+            class="spoiler-settings-warning-item"
+          >
+            <span class="spoiler-settings-warning-key">{{ warning.key }}</span>
+            <span class="spoiler-settings-warning-values"
+              >Spoiler: {{ warning.value }} · Default:
+              {{ warning.defaultValue }}</span
+            >
+          </li>
+        </ul>
+        <div class="spoiler-player-dialog-actions">
+          <button
+            type="button"
+            class="history-button"
+            @click="closeSpoilerSettingsWarningDialog"
+          >
+            OK
           </button>
         </div>
       </div>
@@ -1976,6 +2163,44 @@ onBeforeUnmount(() => {
   display: flex;
   justify-content: flex-end;
   gap: 0.45rem;
+}
+
+.spoiler-settings-warning-dialog {
+  max-height: min(70vh, 620px);
+}
+
+.spoiler-settings-warning-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  max-height: min(42vh, 360px);
+  overflow-y: auto;
+}
+
+.spoiler-settings-warning-item {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  padding: 0.45rem 0.5rem;
+  border: 1px solid #4b5563;
+  border-radius: 0.35rem;
+  background: #111827;
+}
+
+.spoiler-settings-warning-key {
+  font-size: 0.76rem;
+  font-weight: 700;
+  color: #e5e7eb;
+}
+
+.spoiler-settings-warning-values {
+  font-size: 0.74rem;
+  color: #cbd5e1;
+  line-height: 1.3;
+  word-break: break-word;
 }
 
 .tracker-sidebar {
