@@ -1468,6 +1468,7 @@ onBeforeUnmount(() => {
           <div
             v-if="selectableMapDefs.length > 1 || isMapDevMode"
             class="map-toolbar"
+            :class="{ 'has-entrance-filters': hasAvailableEntranceSections }"
           >
             <template v-if="selectableMapDefs.length > 1">
               <div class="map-selector-combobox">
@@ -2158,6 +2159,10 @@ onBeforeUnmount(() => {
   gap: 0.5rem;
   min-width: min(420px, 100%);
   flex-wrap: nowrap;
+}
+
+.map-toolbar.has-entrance-filters .map-selector-combobox {
+  min-width: min(380px, 100%);
 }
 
 .map-toolbar-label {
