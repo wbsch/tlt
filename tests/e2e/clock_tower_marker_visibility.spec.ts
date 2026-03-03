@@ -1,154 +1,132 @@
-import { expect, test } from '@playwright/test';
+import { expect, test, type Page } from '@playwright/test';
 import { resetLocalStorageAndReload } from './helpers/tracker';
 
-const TERMINA_FIELD_MAP_ID = 'mm_termina_field';
 const CLOCK_TOWER_ROOF_ENTRANCE_ID = 'MM_CLOCK_TOWER_ROOF';
 const NON_SELF_DESTINATION_ENTRANCE_ID = 'OOT_DEKU_TREE';
+const CLOCK_TOWER_ROOF_CHECK_NEEDLE = 'MM Clock Tower Roof Skull Kid Ocarina';
 
-type VueInternalComponent = {
-  setupState?: Record<string, unknown>;
-};
-
-type VueHostElement = HTMLElement & {
-  __vueParentComponent?: VueInternalComponent;
-};
-
-async function setActiveMap(
-  page: import('@playwright/test').Page,
-  mapId: string,
-) {
-  await page.evaluate((nextMapId) => {
-    const trackerRoot = document.querySelector('.ootmm-tracker');
-    const component = trackerRoot
-      ? (trackerRoot as VueHostElement).__vueParentComponent
-      : null;
-    const setup = component?.setupState;
-    if (!setup || typeof setup.activeMapId !== 'string') {
-      throw new Error('Could not resolve activeMapId ref');
-    }
-    setup.activeMapId = nextMapId;
-  }, mapId);
+function clockTowerRoofSelect(page: Page) {
+  return page
+    .locator('.entrance-row')
+    .filter({
+      has: page.locator('.entrance-label', { hasText: 'Clock Tower Roof' }),
+    })
+    .locator('.entrance-select');
 }
 
-async function normalizeMapVisibilityFilters(
-  page: import('@playwright/test').Page,
-) {
-  await page.evaluate(() => {
-    const trackerRoot = document.querySelector('.ootmm-tracker');
-    const component = trackerRoot
-      ? (trackerRoot as VueHostElement).__vueParentComponent
-      : null;
-    const setup = component?.setupState;
-    if (!setup) {
-      throw new Error('Could not resolve tracker setup state');
-    }
+async function openEntrancesTab(page: Page): Promise<void> {
+  const sidebarToggle = page.getByTestId('right-sidebar-toggle');
+  await expect(sidebarToggle).toBeVisible();
+  if ((await sidebarToggle.getAttribute('aria-expanded')) === 'false') {
+    await sidebarToggle.click();
+  }
+  await page.getByTestId('right-sidebar-tab-entrances').click();
+}
 
-    setup.locationsSearchQuery = '';
-    setup.locationsSelectedCategory = 'all';
-    setup.locationsReachabilityFilter = 'all';
-    setup.locationsCollectionFilter = 'all';
-    setup.locationsShowGossipStones = true;
-    setup.locationsShowUnshuffled = true;
-  });
+async function resetEntranceFiltersToAll(page: Page): Promise<void> {
+  const reachabilityGroup = page.locator(
+    '.entrances-panel [aria-label="Entrance reachability filter"]',
+  );
+  await expect(reachabilityGroup).toBeVisible();
+  await reachabilityGroup.locator('button').first().click();
+
+  const mappingGroup = page.locator(
+    '.entrances-panel [aria-label="Entrance mapping filter"]',
+  );
+  await expect(mappingGroup).toBeVisible();
+  await mappingGroup.locator('button').first().click();
 }
 
 async function applyErSettings(
-  page: import('@playwright/test').Page,
-  settings: Record<string, unknown>,
-) {
-  await page.evaluate(async (nextSettings) => {
-    const trackerRoot = document.querySelector('.ootmm-tracker');
-    const component = trackerRoot
-      ? (trackerRoot as VueHostElement).__vueParentComponent
-      : null;
-    const setup = component?.setupState;
-    const applySettings = setup?.handleSettingsChange;
-    if (typeof applySettings !== 'function') {
-      throw new Error('Could not resolve settings apply handler');
-    }
-    await applySettings(nextSettings);
-  }, settings);
+  page: Page,
+  values: { erDungeons: 'full' | 'none'; erMoon: boolean },
+): Promise<void> {
+  await page.getByTestId('tab-settings').click();
+  const search = page.getByTestId('settings-search-input');
+  await expect(search).toBeVisible();
 
+  await search.fill('erDungeons');
+  const erDungeonsSelect = page.getByTestId('setting-input-erDungeons');
+  await expect(erDungeonsSelect).toBeVisible();
+  await erDungeonsSelect.selectOption(values.erDungeons);
+
+  await search.fill('erMoon');
+  const erMoonCheckbox = page.getByTestId('setting-input-erMoon');
+  if (values.erMoon) {
+    await expect(erMoonCheckbox).toBeVisible();
+    await erMoonCheckbox.check();
+  } else if ((await erMoonCheckbox.count()) > 0) {
+    await erMoonCheckbox.uncheck();
+  }
+
+  await page.getByTestId('apply-settings-button').click();
   await expect(page.getByTestId('applying-settings-overlay')).toBeHidden({
     timeout: 15_000,
   });
 }
 
-async function setEntranceOverride(
-  page: import('@playwright/test').Page,
-  src: string,
-  dst: string | null,
-) {
-  await page.evaluate(
-    async ({ nextSrc, nextDst }) => {
-      const app = document.querySelector('#app') as HTMLElement & {
-        __vue_app__?: { config: { globalProperties: { $pinia: unknown } } };
-      };
-      const pinia = app?.__vue_app__?.config?.globalProperties?.$pinia as
-        | {
-            _s: Map<
-              string,
-              {
-                setEntranceOverride: (
-                  srcId: string,
-                  dstId: string | null,
-                ) => void;
-              }
-            >;
-          }
-        | undefined;
-      const store = pinia?._s.get('ootmm-session');
-      if (!store) throw new Error('Store not found');
-      store.setEntranceOverride(nextSrc, nextDst);
-
-      const waitForApply = async () => {
-        const start = performance.now();
-        while (performance.now() - start < 15_000) {
-          if (!store.isApplyingSettings) {
-            await new Promise((resolve) => setTimeout(resolve, 250));
-            if (!store.isApplyingSettings) return;
-          }
-          await new Promise((resolve) => setTimeout(resolve, 100));
-        }
-      };
-      await waitForApply();
-    },
-    { nextSrc: src, nextDst: dst },
-  );
+async function setClockTowerRoofOverride(
+  page: Page,
+  destination: string | null,
+): Promise<void> {
+  await openEntrancesTab(page);
+  await resetEntranceFiltersToAll(page);
+  const select = clockTowerRoofSelect(page);
+  await expect(select).toBeVisible();
+  await select.selectOption(destination ?? '');
 }
 
-async function isClockTowerRoofMarkerVisible(
-  page: import('@playwright/test').Page,
-): Promise<boolean> {
-  return page.evaluate(() => {
-    const mapRoot = document.querySelector('.ootmm-map');
-    const component = mapRoot
-      ? (mapRoot as VueHostElement).__vueParentComponent
-      : null;
-    const setup = component?.setupState;
-    const rawMarkerViewModels = setup?.markerViewModels;
-    const markerViewModels = Array.isArray(rawMarkerViewModels)
-      ? rawMarkerViewModels
-      : Array.isArray(rawMarkerViewModels?.value)
-        ? rawMarkerViewModels.value
-        : [];
-    const visibleMarkers = markerViewModels.filter(
-      (marker: { isVisible?: boolean }) => Boolean(marker?.isVisible),
-    );
+async function selectMapFromToolbar(
+  page: Page,
+  mapNeedle: string,
+): Promise<void> {
+  await page.getByTestId('tab-world').click();
+  const mapSelector = page.locator('#map-selector');
+  await expect(mapSelector).toBeVisible();
+  await mapSelector.click();
+  await mapSelector.fill(mapNeedle);
+  const option = page
+    .locator('#map-selector-listbox .map-selector-option')
+    .filter({ hasText: mapNeedle })
+    .first();
+  await expect(option).toBeVisible();
+  await option.click();
+}
 
-    return visibleMarkers.some((marker: { submenuMarkers?: unknown[] }) => {
-      if (!Array.isArray(marker?.submenuMarkers)) return false;
-      return marker.submenuMarkers.some((submenuMarker) => {
-        const codeList = (submenuMarker as { codeList?: unknown }).codeList;
-        if (!Array.isArray(codeList)) return false;
-        return codeList.some(
-          (code) =>
-            typeof code === 'string' &&
-            code.includes('MM Clock Tower Roof Skull Kid Ocarina'),
-        );
-      });
-    });
+async function normalizeMapVisibilityFilters(page: Page): Promise<void> {
+  await page.getByTestId('tab-world').click();
+
+  const reachabilityGroup = page.getByRole('group', {
+    name: 'Location reachability filter',
   });
+  await expect(reachabilityGroup).toBeVisible();
+  await reachabilityGroup.getByRole('button', { name: 'All' }).click();
+
+  const collectionGroup = page.getByRole('group', {
+    name: 'Location collection filter',
+  });
+  await expect(collectionGroup).toBeVisible();
+  await collectionGroup.getByRole('button', { name: 'All' }).click();
+
+  const visibilityToggles = page.getByRole('group', {
+    name: 'Location visibility toggles',
+  });
+  await expect(visibilityToggles).toBeVisible();
+  await visibilityToggles
+    .getByRole('checkbox', { name: 'Unshuffled Tokens/Fairies' })
+    .check();
+  await visibilityToggles
+    .getByRole('checkbox', { name: 'Gossip Stones' })
+    .check();
+}
+
+async function isClockTowerRoofMarkerVisible(page: Page): Promise<boolean> {
+  await selectMapFromToolbar(page, 'Termina Field');
+  const safeNeedle = CLOCK_TOWER_ROOF_CHECK_NEEDLE.replace(/"/g, '\\"');
+  const marker = page
+    .locator(`.ootmm-map .map-marker[data-code-list*="${safeNeedle}"]`)
+    .first();
+  return (await marker.count()) > 0 && (await marker.isVisible());
 }
 
 test.describe('Clock Tower marker visibility', () => {
@@ -159,60 +137,27 @@ test.describe('Clock Tower marker visibility', () => {
   test('Clock Tower Roof checks on Termina Field are visible only when unshuffled or self-mapped', async ({
     page,
   }) => {
-    await setActiveMap(page, TERMINA_FIELD_MAP_ID);
+    await selectMapFromToolbar(page, 'Termina Field');
     await normalizeMapVisibilityFilters(page);
 
-    const baseSettings = await page.evaluate(() => {
-      const app = document.querySelector('#app') as HTMLElement & {
-        __vue_app__?: { config: { globalProperties: { $pinia: unknown } } };
-      };
-      const pinia = app?.__vue_app__?.config?.globalProperties?.$pinia as
-        | { _s: Map<string, { trackerSettings?: Record<string, unknown> }> }
-        | undefined;
-      const store = pinia?._s.get('ootmm-session');
-      return { ...(store?.trackerSettings ?? {}) };
-    });
+    await applyErSettings(page, { erDungeons: 'full', erMoon: true });
 
-    await applyErSettings(page, {
-      ...baseSettings,
-      games: 'ootmm',
-      erDungeons: 'full',
-      erMoon: true,
-    });
-
-    await setEntranceOverride(page, CLOCK_TOWER_ROOF_ENTRANCE_ID, null);
-    await setActiveMap(page, TERMINA_FIELD_MAP_ID);
+    await setClockTowerRoofOverride(page, null);
     await expect
       .poll(() => isClockTowerRoofMarkerVisible(page), { timeout: 15_000 })
       .toBe(false);
 
-    await setEntranceOverride(
-      page,
-      CLOCK_TOWER_ROOF_ENTRANCE_ID,
-      NON_SELF_DESTINATION_ENTRANCE_ID,
-    );
-    await setActiveMap(page, TERMINA_FIELD_MAP_ID);
+    await setClockTowerRoofOverride(page, NON_SELF_DESTINATION_ENTRANCE_ID);
     await expect
       .poll(() => isClockTowerRoofMarkerVisible(page), { timeout: 15_000 })
       .toBe(false);
 
-    await setEntranceOverride(
-      page,
-      CLOCK_TOWER_ROOF_ENTRANCE_ID,
-      CLOCK_TOWER_ROOF_ENTRANCE_ID,
-    );
-    await setActiveMap(page, TERMINA_FIELD_MAP_ID);
+    await setClockTowerRoofOverride(page, CLOCK_TOWER_ROOF_ENTRANCE_ID);
     await expect
       .poll(() => isClockTowerRoofMarkerVisible(page), { timeout: 15_000 })
       .toBe(true);
 
-    await applyErSettings(page, {
-      ...baseSettings,
-      games: 'ootmm',
-      erDungeons: 'none',
-      erMoon: false,
-    });
-    await setActiveMap(page, TERMINA_FIELD_MAP_ID);
+    await applyErSettings(page, { erDungeons: 'none', erMoon: false });
     await expect
       .poll(() => isClockTowerRoofMarkerVisible(page), { timeout: 15_000 })
       .toBe(true);
