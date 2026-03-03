@@ -224,6 +224,7 @@ export function useDungeonEntrances() {
   return {
     sections,
     hasAvailableSections,
+    allEntrances: allDungeonEntrances,
     activeEntrances,
     filteredEntrances,
     reachabilityStats,
