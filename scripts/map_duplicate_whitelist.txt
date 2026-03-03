@@ -127,6 +127,8 @@ OOT Thieves Hideout Crate Break Room 4
 OOT Thieves Hideout Crate Jail 1
 OOT Thieves Hideout Crate Jail 2 1
 OOT Thieves Hideout Crate Jail 2 2
+OOT Gerudo Fortress Pot Jail 3 1
+OOT Gerudo Fortress Pot Jail 3 2
 OOT Thieves Hideout Crate Kitchen
 OOT Thieves Hideout Crate Kitchen Corridor 1
 OOT Thieves Hideout Crate Kitchen Corridor 2
@@ -137,3 +139,10 @@ MM Beans Grotto Soil Item 2
 MM Beans Grotto Soil Item 3
 MM Clock Town Post Box
 OOT Gerudo Member Card
+MM Tingle Map Clock Town
+MM Tingle Map Great Bay
+MM Tingle Map Ikana
+MM Tingle Map Ranch
+MM Tingle Map Snowhead
+MM Tingle Map Woodfall
+OOT Dodongo Cavern Gossip
