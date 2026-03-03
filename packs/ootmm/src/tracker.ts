@@ -254,6 +254,18 @@ export class OoTMMTracker implements TrackerPack {
   /** Saved exit expressions for all ER entrances, keyed by entrance key. */
   private savedEntranceExitExprs: Map<string, { from: string; expr: unknown }> =
     new Map();
+  /** Cached worldData from worldState() to skip expensive rebuilds when only entrance mappings change. */
+  private cachedWorldData: WorldData | null = null;
+  /** Settings key (excluding plando.entrances) used to validate the worldData cache. */
+  private cachedWorldDataSettingsKey: string | null = null;
+  /**
+   * Number of times initialize() has been called.  The first two calls are
+   * the createTracker + attachTracker sequence on every page load; using the
+   * cache during that phase causes a stale-pathfinder bug on fresh pages.
+   * The cache is only active from the third call onward (entrance dropdown
+   * changes via reinitializeForEntrances).
+   */
+  private initCallCount = 0;
   private readonly debugModeEnabled = isTrackerDebugModeEnabled();
 
   private debugLog(...args: unknown[]): void {
@@ -263,6 +275,7 @@ export class OoTMMTracker implements TrackerPack {
 
   async initialize(userSettings: Partial<OoTMMSettings> = {}): Promise<void> {
     this.debugLog('[OoTMM Tracker] Initializing...');
+    this.initCallCount++;
 
     // Merge with defaults
     const ootmmSettings = {
@@ -279,33 +292,74 @@ export class OoTMMTracker implements TrackerPack {
       this.settings,
     );
 
-    // Create monitor for progress tracking
-    const monitor = new Monitor(
-      {
-        onLog: (msg: string) => this.debugLog(`[OoTMM] ${msg}`),
-        onProgress: (current: number, total: number) => {
-          this.debugLog(`[OoTMM] Building world: ${current}/${total}`);
+    // Build a cache key from the normalized settings (output of makeSettings),
+    // excluding plando.entrances which only affect the entrance pass, not the
+    // world graph from worldState().  Using makeSettings output ensures both
+    // the initial load (reading from localStorage) and the Pinia-hydrated
+    // settings produce identical keys for equivalent inputs.
+    const settingsForKey = this.settings as Record<string, unknown>;
+    const { plando: plandoForKey, ...settingsRestForKey } = settingsForKey;
+    const plandoObjForKey =
+      plandoForKey && typeof plandoForKey === 'object'
+        ? (plandoForKey as Record<string, unknown>)
+        : {};
+    const { entrances: _entrancesForKey, ...plandoRestForKey } =
+      plandoObjForKey;
+    const settingsKey = JSON.stringify({
+      ...settingsRestForKey,
+      ...(Object.keys(plandoRestForKey).length > 0
+        ? { plando: plandoRestForKey }
+        : {}),
+    });
+
+    // Only allow cache reuse from the third call onward.  The first two calls
+    // are the createTracker + attachTracker sequence that runs on every page
+    // load; using the cache during that phase causes stale-pathfinder issues
+    // on fresh pages (empty localStorage).  Subsequent calls come from
+    // reinitializeForEntrances (entrance dropdown changes) where caching is
+    // safe and provides the main performance benefit.
+    const canReuseCache =
+      this.initCallCount > 2 &&
+      this.cachedWorldData !== null &&
+      this.cachedWorldDataSettingsKey === settingsKey;
+
+    let worldData: WorldData;
+    if (canReuseCache) {
+      this.debugLog(
+        '[OoTMM Tracker] Reusing cached world graph (only entrance mappings changed)',
+      );
+      worldData = this.cachedWorldData!;
+      this.baseWorlds = worldData.worlds ?? [];
+    } else {
+      // Create monitor for progress tracking
+      const monitor = new Monitor(
+        {
+          onLog: (msg: string) => this.debugLog(`[OoTMM] ${msg}`),
+          onProgress: (current: number, total: number) => {
+            this.debugLog(`[OoTMM] Building world: ${current}/${total}`);
+          },
         },
-      },
-      false,
-    );
+        false,
+      );
 
-    const opts = {
-      settings: this.settings,
-      seed: 'TRACKER_SEED',
-      settingsLog: null,
-      mode: 'seed' as const,
-      cosmetics: {},
-      random: {},
-    };
+      const opts = {
+        settings: this.settings,
+        seed: 'TRACKER_SEED',
+        settingsLog: null,
+        mode: 'seed' as const,
+        cosmetics: {},
+        random: {},
+      };
 
-    this.debugLog('[OoTMM Tracker] Building world graph...');
-    const worldData: WorldData = await worldState(
-      monitor,
-      opts as Record<string, unknown>,
-    );
-    this.baseWorlds = worldData.worlds ?? [];
-    this.normalizeWorldItems(this.baseWorlds);
+      this.debugLog('[OoTMM Tracker] Building world graph...');
+      worldData = await worldState(monitor, opts as Record<string, unknown>);
+      this.baseWorlds = worldData.worlds ?? [];
+      this.normalizeWorldItems(this.baseWorlds);
+
+      // Cache the worldData and settings key for future reuse.
+      this.cachedWorldData = worldData;
+      this.cachedWorldDataSettingsKey = settingsKey;
+    }
 
     // Run entrance pass to connect games
     this.debugLog('[OoTMM Tracker] Running entrance pass...');
@@ -350,6 +404,22 @@ export class OoTMMTracker implements TrackerPack {
         ? {
             ...(this.settings as Record<string, unknown>),
             logic: 'none',
+            // Disable all ER pool-creating settings so that makePools() returns
+            // empty pools.  We handle every dungeon entrance ourselves via plando
+            // (self-mapping + user overrides).  Without this, user mappings that
+            // cross entrance types (e.g. dungeon → dungeon-ctr) can leave
+            // unmatched entries in the pool, causing "Unable to place pools".
+            erDungeons: 'none',
+            erBoss: 'none',
+            erGrottos: 'none',
+            erIndoors: 'none',
+            erRegions: 'none',
+            erOverworld: 'none',
+            erWarps: 'none',
+            erOneWays: 'none',
+            erSpawns: 'none',
+            erWallmasters: 'none',
+            erMixed: 'none',
             plando: {
               ...(((this.settings as Record<string, unknown>).plando as Record<
                 string,
@@ -364,6 +434,7 @@ export class OoTMMTracker implements TrackerPack {
       startingItems: new Map(),
       settings: entranceSettings,
     };
+
     const entrancePass = new LogicPassEntrances(
       entranceInput as Record<string, unknown>,
     );
