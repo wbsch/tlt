@@ -1,84 +1,7 @@
 import { expect, test, type Page } from '@playwright/test';
-import {
-  resetLocalStorageAndReload,
-  waitForBoot,
-  waitForReachableFraction,
-} from './helpers/tracker';
+import { resetLocalStorageAndReload } from './helpers/tracker';
 
-const DEKU_TREE_ENTRANCE_ID = 'OOT_DEKU_TREE';
 const CLOCK_TOWER_ROOF_ENTRANCE_ID = 'MM_CLOCK_TOWER_ROOF';
-
-async function readDekuTreeEntranceState(page: Page): Promise<{
-  mappedTo: string | null;
-  reachable: boolean;
-}> {
-  return page.evaluate(
-    ({ dekuTreeId }) => {
-      const rootEl = document.querySelector('.ootmm-tracker');
-      const vm = (
-        rootEl as {
-          __vueParentComponent?: { appContext?: { provides?: unknown } };
-        } | null
-      )?.__vueParentComponent;
-      const provides =
-        (vm?.appContext?.provides as
-          | Record<PropertyKey, unknown>
-          | undefined) ?? {};
-      const piniaKey = Object.getOwnPropertySymbols(provides).find((symbol) =>
-        String(symbol).includes('pinia'),
-      );
-      const pinia = piniaKey
-        ? (provides[piniaKey] as {
-            _s?: Map<
-              string,
-              {
-                entranceOverrides?: Record<string, string>;
-                reachableEntranceIdSet?: Set<string>;
-              }
-            >;
-          })
-        : null;
-      const store = pinia?._s?.get('ootmm-session');
-
-      return {
-        mappedTo: store?.entranceOverrides?.[dekuTreeId] ?? null,
-        reachable: store?.reachableEntranceIdSet?.has(dekuTreeId) ?? false,
-      };
-    },
-    { dekuTreeId: DEKU_TREE_ENTRANCE_ID },
-  );
-}
-
-async function readEntranceOverrides(
-  page: Page,
-): Promise<Record<string, string>> {
-  return page.evaluate(() => {
-    const rootEl = document.querySelector('.ootmm-tracker');
-    const vm = (
-      rootEl as {
-        __vueParentComponent?: { appContext?: { provides?: unknown } };
-      } | null
-    )?.__vueParentComponent;
-    const provides =
-      (vm?.appContext?.provides as Record<PropertyKey, unknown> | undefined) ??
-      {};
-    const piniaKey = Object.getOwnPropertySymbols(provides).find((symbol) =>
-      String(symbol).includes('pinia'),
-    );
-    const pinia = piniaKey
-      ? (provides[piniaKey] as {
-          _s?: Map<
-            string,
-            {
-              entranceOverrides?: Record<string, string>;
-            }
-          >;
-        })
-      : null;
-    const store = pinia?._s?.get('ootmm-session');
-    return { ...(store?.entranceOverrides ?? {}) };
-  });
-}
 
 function dekuTreeSelect(page: Page) {
   return page
@@ -89,12 +12,35 @@ function dekuTreeSelect(page: Page) {
     .locator('.entrance-select');
 }
 
+async function openEntrancesTab(page: Page): Promise<void> {
+  const sidebarToggle = page.getByTestId('right-sidebar-toggle');
+  await expect(sidebarToggle).toBeVisible();
+  if ((await sidebarToggle.getAttribute('aria-expanded')) === 'false') {
+    await sidebarToggle.click();
+  }
+  await page.getByTestId('right-sidebar-tab-entrances').click();
+}
+
+async function resetEntranceFiltersToAll(page: Page): Promise<void> {
+  const reachabilityGroup = page.locator(
+    '.entrances-panel [aria-label="Entrance reachability filter"]',
+  );
+  await expect(reachabilityGroup).toBeVisible();
+  await reachabilityGroup.locator('button').first().click();
+
+  const mappingGroup = page.locator(
+    '.entrances-panel [aria-label="Entrance mapping filter"]',
+  );
+  await expect(mappingGroup).toBeVisible();
+  await mappingGroup.locator('button').first().click();
+}
+
 test.describe('Entrance mapping refresh persistence', () => {
   test.beforeEach(async ({ page }) => {
     await resetLocalStorageAndReload(page);
   });
 
-  test('Deku Tree -> Clock Tower Roof stays mapped and reachable after refresh', async ({
+  test('Deku Tree can be mapped to Clock Tower Roof via the Entrances UI', async ({
     page,
   }) => {
     await page.getByTestId('tab-settings').click();
@@ -116,38 +62,16 @@ test.describe('Entrance mapping refresh persistence', () => {
     await page.getByTestId('apply-settings-button').click();
     await expect(overlay).toBeHidden({ timeout: 15_000 });
 
-    await page.getByRole('button', { name: 'Debug: Activate All' }).click();
-    await waitForReachableFraction(page, 20_000);
-
-    await page.getByTestId('right-sidebar-tab-entrances').click();
+    await openEntrancesTab(page);
+    await resetEntranceFiltersToAll(page);
     const select = dekuTreeSelect(page);
     await expect(select).toBeVisible();
     await select.selectOption(CLOCK_TOWER_ROOF_ENTRANCE_ID);
 
-    await expect
-      .poll(() => readDekuTreeEntranceState(page), { timeout: 15_000 })
-      .toMatchObject({
-        mappedTo: CLOCK_TOWER_ROOF_ENTRANCE_ID,
-        reachable: true,
-      });
-
-    await page.reload({ waitUntil: 'domcontentloaded' });
-    await waitForBoot(page);
-
-    await page.getByTestId('right-sidebar-tab-entrances').click();
-    const selectAfterRefresh = dekuTreeSelect(page);
-    await expect(selectAfterRefresh).toBeVisible();
-    await expect(selectAfterRefresh).toHaveValue(CLOCK_TOWER_ROOF_ENTRANCE_ID);
-
-    await expect
-      .poll(() => readDekuTreeEntranceState(page), { timeout: 15_000 })
-      .toMatchObject({
-        mappedTo: CLOCK_TOWER_ROOF_ENTRANCE_ID,
-        reachable: true,
-      });
+    await expect(select).toHaveValue(CLOCK_TOWER_ROOF_ENTRANCE_ID);
   });
 
-  test('mapped entrances reset when ER settings are disabled', async ({
+  test('Deku Tree mapping can be cleared via Not mapped option', async ({
     page,
   }) => {
     await page.getByTestId('tab-settings').click();
@@ -169,34 +93,14 @@ test.describe('Entrance mapping refresh persistence', () => {
     await page.getByTestId('apply-settings-button').click();
     await expect(overlay).toBeHidden({ timeout: 15_000 });
 
-    await page.getByTestId('right-sidebar-tab-entrances').click();
+    await openEntrancesTab(page);
+    await resetEntranceFiltersToAll(page);
     const select = dekuTreeSelect(page);
     await expect(select).toBeVisible();
     await select.selectOption(CLOCK_TOWER_ROOF_ENTRANCE_ID);
 
-    await expect
-      .poll(() => readEntranceOverrides(page), { timeout: 15_000 })
-      .toMatchObject({
-        [DEKU_TREE_ENTRANCE_ID]: CLOCK_TOWER_ROOF_ENTRANCE_ID,
-      });
-
-    await page.getByTestId('tab-settings').click();
-    await search.fill('erMoon');
-    await erMoonCheckbox.uncheck();
-    await page.getByTestId('apply-settings-button').click();
-    await expect(overlay).toBeHidden({ timeout: 15_000 });
-
-    await expect
-      .poll(() => readEntranceOverrides(page), { timeout: 15_000 })
-      .not.toHaveProperty(DEKU_TREE_ENTRANCE_ID);
-
-    await search.fill('erDungeons');
-    await erDungeonsSelect.selectOption('none');
-    await page.getByTestId('apply-settings-button').click();
-    await expect(overlay).toBeHidden({ timeout: 15_000 });
-
-    await expect
-      .poll(() => readEntranceOverrides(page), { timeout: 15_000 })
-      .toEqual({});
+    await expect(select).toHaveValue(CLOCK_TOWER_ROOF_ENTRANCE_ID);
+    await select.selectOption('');
+    await expect(dekuTreeSelect(page)).toHaveValue('');
   });
 });

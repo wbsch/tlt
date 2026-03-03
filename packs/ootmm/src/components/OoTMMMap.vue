@@ -326,6 +326,25 @@ function submenuEntryCodeList(marker: MapSubmenuEntryDef): string[] {
   return rawList.map((code) => code.trim()).filter((code) => code.length > 0);
 }
 
+function markerRuntimeCodeList(marker: MarkerRuntime): string {
+  const direct = (marker as { codeList?: string[] }).codeList;
+  if (Array.isArray(direct) && direct.length > 0) {
+    return direct.join('|');
+  }
+
+  const submenu = (marker as { allSubmenuCodeList?: string[] })
+    .allSubmenuCodeList;
+  if (Array.isArray(submenu) && submenu.length > 0) {
+    return submenu.join('|');
+  }
+
+  return '';
+}
+
+function submenuRuntimeCodeList(marker: SubmenuEntryRuntime): string {
+  return Array.isArray(marker.codeList) ? marker.codeList.join('|') : '';
+}
+
 function normalizeEntranceIdList(
   value: string[] | undefined,
   markerDef: MapMarkerDef,
@@ -2224,6 +2243,7 @@ onBeforeUnmount(() => {
           :key="marker.id"
           type="button"
           class="map-marker"
+          :data-code-list="markerRuntimeCodeList(marker)"
           :class="{
             'is-selected':
               isDevMode && devSelectedMarkerIndex === marker.markerIndex,
@@ -2335,6 +2355,7 @@ onBeforeUnmount(() => {
             type="button"
             class="map-submenu-marker"
             :data-submenu-marker-id="submenuMarker.id"
+            :data-code-list="submenuRuntimeCodeList(submenuMarker)"
             :aria-label="`Submenu marker: ${submenuMarker.codeList.join(', ')}`"
             @click="handleSubmenuMarkerClick(submenuMarker)"
             @mouseenter="handleSubmenuMarkerHoverStart(submenuMarker)"

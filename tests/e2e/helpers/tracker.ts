@@ -129,7 +129,7 @@ export async function waitForBoot(page: Page): Promise<void> {
   // body.tlt-app-mounted class avoids that false-positive.
   await page.waitForSelector('body.tlt-app-mounted', { timeout: 30_000 });
   await expect(
-    page.getByRole('heading', { name: 'The Last Tracker' }),
+    page.locator('#app').getByRole('heading', { name: 'The Last Tracker' }),
   ).toBeVisible();
   await expect(page.getByTestId('pack-select')).toBeVisible();
   await expect(page.getByTestId('pack-select')).toHaveValue('ootmm');

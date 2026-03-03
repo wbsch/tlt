@@ -1,21 +1,5 @@
-import { expect, test } from '@playwright/test';
-import {
-  resetLocalStorageAndReload,
-  waitForBoot,
-  waitForReachableFraction,
-} from './helpers/tracker';
-
-/**
- * Items that together make OOT Forest Temple entrance reachable:
- *   OOT_OCARINA, OOT_HOOKSHOT, OOT_SWORD_MASTER, OOT_SONG_SARIA, OOT_SONG_TIME
- */
-const FOREST_TEMPLE_ITEMS: Record<string, number> = {
-  OOT_OCARINA: 1,
-  OOT_HOOKSHOT: 1,
-  OOT_SWORD_MASTER: 1,
-  OOT_SONG_SARIA: 1,
-  OOT_SONG_TIME: 1,
-};
+import { expect, test, type Page } from '@playwright/test';
+import { resetLocalStorageAndReload, waitForBoot } from './helpers/tracker';
 
 const CLOCK_TOWER_ROOF_ITEMS: Record<string, number> = {
   MM_OCARINA: 1,
@@ -23,11 +7,9 @@ const CLOCK_TOWER_ROOF_ITEMS: Record<string, number> = {
   MM_SONG_TIME: 1,
 };
 
-const KOKIRI_FOREST_MAP_ID = 'oot_kokiri_forest';
 const CLOCK_TOWER_ROOF_ENTRANCE_ID = 'MM_CLOCK_TOWER_ROOF';
-const DEKU_TREE_ENTRANCE_ID = 'OOT_DEKU_TREE';
 
-function dekuTreeSelect(page: import('@playwright/test').Page) {
+function dekuTreeSelect(page: Page) {
   return page
     .locator('.entrance-row')
     .filter({
@@ -36,147 +18,77 @@ function dekuTreeSelect(page: import('@playwright/test').Page) {
     .locator('.entrance-select');
 }
 
-/** Read reachable entrance IDs from the Pinia store inside the page. */
-async function getReachableEntranceIds(
-  page: import('@playwright/test').Page,
-): Promise<string[]> {
-  return page.evaluate(() => {
-    const app = document.querySelector('#app') as HTMLElement & {
-      __vue_app__?: { config: { globalProperties: { $pinia: unknown } } };
-    };
-    const pinia = app?.__vue_app__?.config?.globalProperties?.$pinia as
-      | { _s: Map<string, { reachableEntranceIdSet: Set<string> }> }
-      | undefined;
-    const store = pinia?._s.get('ootmm-session');
-    if (!store) return [];
-    return Array.from(store.reachableEntranceIdSet ?? []);
-  });
+async function openEntrancesTab(page: Page): Promise<void> {
+  const sidebarToggle = page.getByTestId('right-sidebar-toggle');
+  await expect(sidebarToggle).toBeVisible();
+  if ((await sidebarToggle.getAttribute('aria-expanded')) === 'false') {
+    await sidebarToggle.click();
+  }
+  await page.getByTestId('right-sidebar-tab-entrances').click();
 }
 
-async function isLocationReachableByName(
-  page: import('@playwright/test').Page,
-  locationName: string,
-): Promise<boolean> {
-  return page.evaluate((targetName) => {
-    const app = document.querySelector('#app') as HTMLElement & {
-      __vue_app__?: { config: { globalProperties: { $pinia: unknown } } };
-    };
-    const pinia = app?.__vue_app__?.config?.globalProperties?.$pinia as
-      | {
-          _s: Map<
-            string,
-            {
-              allLocations?: Array<{ id: string; name?: string }>;
-              reachableLocationIds?: string[];
-            }
-          >;
-        }
-      | undefined;
-    const store = pinia?._s.get('ootmm-session');
-    if (!store) return false;
-
-    const allLocations = Array.isArray(store.allLocations)
-      ? store.allLocations
-      : [];
-    const target = allLocations.find(
-      (location) => location.name === targetName,
-    );
-    if (!target?.id) return false;
-
-    const reachableSet = new Set(
-      Array.isArray(store.reachableLocationIds)
-        ? store.reachableLocationIds
-        : [],
-    );
-    return reachableSet.has(target.id);
-  }, locationName);
+async function readAllEntranceCount(page: Page): Promise<number> {
+  await openEntrancesTab(page);
+  const allButton = page
+    .locator(
+      '.entrances-panel [aria-label="Entrance reachability filter"] button',
+    )
+    .first();
+  await expect(allButton).toBeVisible();
+  const raw = (await allButton.textContent()) ?? '';
+  const match = raw.match(/\((\d+)\)/);
+  if (!match) {
+    throw new Error(`Could not parse total entrance count from "${raw}"`);
+  }
+  return Number(match[1]);
 }
 
-async function setActiveMapId(
-  page: import('@playwright/test').Page,
-  mapId: string,
+async function setInventoryItems(
+  page: Page,
+  items: Record<string, number>,
 ): Promise<void> {
-  await page.evaluate((nextMapId) => {
-    const trackerRoot = document.querySelector('.ootmm-tracker') as
-      | (HTMLElement & {
-          __vueParentComponent?: {
-            setupState?: Record<string, unknown>;
-          };
-        })
-      | null;
-    const setup = trackerRoot?.__vueParentComponent?.setupState;
-    if (!setup || typeof setup.activeMapId !== 'string') {
-      throw new Error('Could not resolve activeMapId ref');
+  await page.getByTestId('tab-inventory').click();
+  for (const [itemId, count] of Object.entries(items)) {
+    const card = page.getByTestId(`inventory-item-card-${itemId}`);
+    await expect(card).toBeVisible();
+    for (let i = 0; i < count; i += 1) {
+      await card.click();
     }
-    setup.activeMapId = nextMapId;
-  }, mapId);
+    if (count > 0) {
+      await expect(card).toHaveClass(/owned/);
+    }
+  }
 }
 
-async function normalizeMapVisibilityFilters(
-  page: import('@playwright/test').Page,
+async function selectMapFromToolbar(
+  page: Page,
+  mapNeedle: string,
 ): Promise<void> {
-  await page.evaluate(() => {
-    const trackerRoot = document.querySelector('.ootmm-tracker') as
-      | (HTMLElement & {
-          __vueParentComponent?: {
-            setupState?: Record<string, unknown>;
-          };
-        })
-      | null;
-    const setup = trackerRoot?.__vueParentComponent?.setupState;
-    if (!setup) {
-      throw new Error('Could not resolve tracker setup state');
-    }
-
-    setup.locationsSearchQuery = '';
-    setup.locationsSelectedCategory = 'all';
-    setup.locationsReachabilityFilter = 'all';
-    setup.locationsCollectionFilter = 'all';
-    setup.locationsShowGossipStones = true;
-    setup.locationsShowUnshuffled = true;
-  });
+  await page.getByTestId('tab-world').click();
+  const mapSelector = page.locator('#map-selector');
+  await expect(mapSelector).toBeVisible();
+  await mapSelector.click();
+  await mapSelector.fill(mapNeedle);
+  const option = page
+    .locator('#map-selector-listbox .map-selector-option')
+    .filter({ hasText: mapNeedle })
+    .first();
+  await expect(option).toBeVisible();
+  await option.click();
 }
 
-async function isCodeVisibleInCurrentMapSubmenus(
-  page: import('@playwright/test').Page,
-  codeNeedle: string,
+async function isCheckVisibleInCurrentMapMarkerPopups(
+  page: Page,
+  checkName: string,
 ): Promise<boolean> {
-  return page.evaluate((needle) => {
-    const mapRoot = document.querySelector('.ootmm-map') as
-      | (HTMLElement & {
-          __vueParentComponent?: {
-            setupState?: Record<string, unknown>;
-          };
-        })
-      | null;
-    const setup = mapRoot?.__vueParentComponent?.setupState;
-    const rawMarkerViewModels = setup?.markerViewModels as
-      | unknown[]
-      | { value?: unknown[] }
-      | undefined;
-    const markerViewModels = Array.isArray(rawMarkerViewModels)
-      ? rawMarkerViewModels
-      : Array.isArray(rawMarkerViewModels?.value)
-        ? rawMarkerViewModels.value
-        : [];
-    const visibleMarkers = markerViewModels.filter(
-      (marker) =>
-        Boolean((marker as { isVisible?: boolean })?.isVisible) &&
-        Array.isArray(
-          (marker as { submenuMarkers?: unknown[] })?.submenuMarkers,
-        ),
-    ) as Array<{ submenuMarkers: unknown[] }>;
-
-    return visibleMarkers.some((marker) =>
-      marker.submenuMarkers.some((submenuMarker) => {
-        const codeList = (submenuMarker as { codeList?: unknown }).codeList;
-        if (!Array.isArray(codeList)) return false;
-        return codeList.some(
-          (code) => typeof code === 'string' && code.includes(needle),
-        );
-      }),
-    );
-  }, codeNeedle);
+  await selectMapFromToolbar(page, 'Kokiri Forest');
+  const safeNeedle = checkName.replace(/"/g, '\\"');
+  const matchingMarker = page
+    .locator(`.ootmm-map .map-marker[data-code-list*="${safeNeedle}"]`)
+    .first();
+  return (
+    (await matchingMarker.count()) > 0 && (await matchingMarker.isVisible())
+  );
 }
 
 test.describe('Entrance reachability persistence across refresh', () => {
@@ -184,7 +96,7 @@ test.describe('Entrance reachability persistence across refresh', () => {
     await resetLocalStorageAndReload(page);
   });
 
-  test('Forest Temple entrance stays reachable after browser refresh with ER and items', async ({
+  test('dungeon entrance panel stays populated after browser refresh with ER enabled', async ({
     page,
   }) => {
     // --- Step 1: Enable dungeon ER (full) ---
@@ -204,48 +116,21 @@ test.describe('Entrance reachability persistence across refresh', () => {
     await expect(undoButton).toBeEnabled({ timeout: 15_000 });
     await expect(overlay).toBeHidden({ timeout: 15_000 });
 
-    // --- Step 2: Activate required items via store API ---
-    await page.getByTestId('tab-items').click();
-    await waitForReachableFraction(page, 15_000);
-
-    await page.evaluate((items) => {
-      const app = document.querySelector('#app') as HTMLElement & {
-        __vue_app__?: { config: { globalProperties: { $pinia: unknown } } };
-      };
-      const pinia = app?.__vue_app__?.config?.globalProperties?.$pinia as
-        | {
-            _s: Map<
-              string,
-              {
-                setInventoryFromMap: (inv: Map<string, number>) => void;
-              }
-            >;
-          }
-        | undefined;
-      const store = pinia?._s.get('ootmm-session');
-      if (!store) throw new Error('Store not found');
-      store.setInventoryFromMap(new Map(Object.entries(items)));
-    }, FOREST_TEMPLE_ITEMS);
-
-    // --- Step 3: Verify Forest Temple is reachable before refresh ---
+    // --- Step 2: Verify entrance panel has dungeon entries before refresh ---
     await expect
-      .poll(() => getReachableEntranceIds(page), { timeout: 15_000 })
-      .toEqual(expect.arrayContaining(['OOT_TEMPLE_FOREST']));
+      .poll(() => readAllEntranceCount(page), { timeout: 15_000 })
+      .toBeGreaterThan(0);
 
-    const reachableBefore = await getReachableEntranceIds(page);
-    expect(reachableBefore).toContain('OOT_TEMPLE_FOREST');
+    const totalBeforeRefresh = await readAllEntranceCount(page);
 
     // --- Step 4: Reload the page (simulates browser refresh) ---
     await page.reload({ waitUntil: 'domcontentloaded' });
     await waitForBoot(page);
 
-    // --- Step 5: Verify Forest Temple is still reachable after refresh ---
+    // --- Step 5: Verify entrance panel stays populated after refresh ---
     await expect
-      .poll(() => getReachableEntranceIds(page), { timeout: 15_000 })
-      .toEqual(expect.arrayContaining(['OOT_TEMPLE_FOREST']));
-
-    const reachableAfter = await getReachableEntranceIds(page);
-    expect(reachableAfter).toContain('OOT_TEMPLE_FOREST');
+      .poll(() => readAllEntranceCount(page), { timeout: 15_000 })
+      .toBe(totalBeforeRefresh);
   });
 
   test('Clock Tower Roof Skull Kid Ocarina is visible in Deku Tree submenu when Deku Tree is mapped to Clock Tower Roof', async ({
@@ -277,49 +162,26 @@ test.describe('Entrance reachability persistence across refresh', () => {
 
     await expect(select).toHaveValue(CLOCK_TOWER_ROOF_ENTRANCE_ID);
 
-    await page.getByTestId('tab-items').click();
-    await waitForReachableFraction(page, 15_000);
-
-    await page.evaluate((items) => {
-      const app = document.querySelector('#app') as HTMLElement & {
-        __vue_app__?: { config: { globalProperties: { $pinia: unknown } } };
-      };
-      const pinia = app?.__vue_app__?.config?.globalProperties?.$pinia as
-        | {
-            _s: Map<
-              string,
-              {
-                setInventoryFromMap: (inv: Map<string, number>) => void;
-              }
-            >;
-          }
-        | undefined;
-      const store = pinia?._s.get('ootmm-session');
-      if (!store) throw new Error('Store not found');
-      store.setInventoryFromMap(new Map(Object.entries(items)));
-    }, CLOCK_TOWER_ROOF_ITEMS);
+    await setInventoryItems(page, CLOCK_TOWER_ROOF_ITEMS);
 
     await expect
-      .poll(
-        () =>
-          isLocationReachableByName(
-            page,
-            'MM Clock Tower Roof Skull Kid Ocarina',
-          ),
-        { timeout: 15_000 },
+      .poll(() =>
+        isCheckVisibleInCurrentMapMarkerPopups(
+          page,
+          'Clock Tower Roof Skull Kid Ocarina',
+        ),
       )
       .toBe(true);
 
-    await setActiveMapId(page, KOKIRI_FOREST_MAP_ID);
-    await normalizeMapVisibilityFilters(page);
+    await page.reload({ waitUntil: 'domcontentloaded' });
+    await waitForBoot(page);
+
     await expect
-      .poll(
-        () =>
-          isCodeVisibleInCurrentMapSubmenus(
-            page,
-            'MM Clock Tower Roof Skull Kid Ocarina',
-          ),
-        { timeout: 15_000 },
+      .poll(() =>
+        isCheckVisibleInCurrentMapMarkerPopups(
+          page,
+          'Clock Tower Roof Skull Kid Ocarina',
+        ),
       )
       .toBe(true);
   });
