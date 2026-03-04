@@ -39,7 +39,7 @@ export const DEFAULT_OOTMM_SETTINGS: OoTMMSettings = {
   smallKeyRingMm: 'none',
   silverRupeeShuffle: 'vanilla',
   silverRupeePouches: 'none',
-  townFairyShuffle: 'vanilla',
+  townFairyShuffle: 'anywhere',
   strayFairyChestShuffle: 'ownDungeon',
   strayFairyOtherShuffle: 'vanilla',
   ganonBossKey: 'removed',
