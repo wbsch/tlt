@@ -172,6 +172,11 @@ const {
 
 const settingsRef = ref<SettingsPanelHandle | null>(null);
 const isStatsCollapsed = ref(true);
+const MOBILE_TRACKER_LAYOUT_QUERY = '(max-width: 900px)';
+const isMobileTrackerLayout = ref(
+  typeof window !== 'undefined' &&
+    window.matchMedia(MOBILE_TRACKER_LAYOUT_QUERY).matches,
+);
 const statisticsCountsTooltip =
   'These counts exclude unshuffled tokens/fairies and gossip stones.';
 const isSpoilerPlayerDialogOpen = ref(false);
@@ -218,6 +223,11 @@ const isSpoilerSettingsWarningDialogOpen = ref(false);
 const spoilerSettingsWarnings = ref<SpoilerSettingWarning[]>([]);
 const spoilerUnknownSettings = ref<SpoilerUnknownSetting[]>([]);
 let mapMarkerSelectNonce = 0;
+let mobileTrackerLayoutQuery: MediaQueryList | null = null;
+
+const isRightSidebarVisible = computed(
+  () => isMobileTrackerLayout.value || isRightSidebarOpen.value,
+);
 
 function resolveSelectedGamesSetting(value: unknown): SelectedGamesSetting {
   if (value === 'oot' || value === 'mm' || value === 'ootmm') {
@@ -1303,6 +1313,10 @@ function handleGlobalUndoRedoKeydown(event: KeyboardEvent) {
   void redo();
 }
 
+function handleMobileTrackerLayoutChange(event: MediaQueryListEvent) {
+  isMobileTrackerLayout.value = event.matches;
+}
+
 onMounted(() => {
   sessionStore.startLocalSessionSync();
   const windowWithHandlers = window as Window & {
@@ -1311,6 +1325,12 @@ onMounted(() => {
   };
   windowWithHandlers.__TLT_DEBUG_ACTIVATE_ALL__ = fillInventory;
   windowWithHandlers.__TLT_RESET_TRACKER_STATE__ = resetTrackerState;
+  mobileTrackerLayoutQuery = window.matchMedia(MOBILE_TRACKER_LAYOUT_QUERY);
+  isMobileTrackerLayout.value = mobileTrackerLayoutQuery.matches;
+  mobileTrackerLayoutQuery.addEventListener(
+    'change',
+    handleMobileTrackerLayoutChange,
+  );
   window.addEventListener('keydown', handleGlobalUndoRedoKeydown);
   window.addEventListener('pointerdown', handleMapWarningGlobalPointerDown);
 });
@@ -1327,6 +1347,11 @@ onBeforeUnmount(() => {
     delete windowWithHandlers.__TLT_RESET_TRACKER_STATE__;
   }
   sessionStore.stopLocalSessionSync();
+  mobileTrackerLayoutQuery?.removeEventListener(
+    'change',
+    handleMobileTrackerLayoutChange,
+  );
+  mobileTrackerLayoutQuery = null;
   if (spoilerPlayerDialogResolver) {
     const resolver = spoilerPlayerDialogResolver;
     spoilerPlayerDialogResolver = null;
@@ -2009,12 +2034,16 @@ onBeforeUnmount(() => {
         </div>
       </div>
 
-      <aside class="right-sidebar" :class="{ collapsed: !isRightSidebarOpen }">
+      <aside
+        class="right-sidebar"
+        :class="{ collapsed: !isRightSidebarVisible }"
+      >
         <button
+          v-if="!isMobileTrackerLayout"
           class="right-sidebar-toggle"
           type="button"
           data-testid="right-sidebar-toggle"
-          :aria-expanded="isRightSidebarOpen"
+          :aria-expanded="isRightSidebarVisible"
           aria-controls="right-sidebar-panel"
           aria-label="Toggle right sidebar"
           @click="uiStore.toggleRightSidebarOpen()"
@@ -2027,7 +2056,7 @@ onBeforeUnmount(() => {
           <div
             id="right-sidebar-panel"
             class="right-sidebar-content"
-            :aria-hidden="!isRightSidebarOpen"
+            :aria-hidden="!isRightSidebarVisible"
           >
             <div v-if="shouldShowRightSidebarTabs" class="right-sidebar-tabs">
               <button
