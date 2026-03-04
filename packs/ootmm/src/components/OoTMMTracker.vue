@@ -157,6 +157,8 @@ const {
   activeTab,
   isRightSidebarOpen,
   activeRightSidebarTab,
+  leftSidebarWidth,
+  rightSidebarWidth,
   isSpoilerDragActive,
   spoilerDragDepth,
   locationsSearchQuery,
@@ -228,6 +230,80 @@ let mobileTrackerLayoutQuery: MediaQueryList | null = null;
 const isRightSidebarVisible = computed(
   () => isMobileTrackerLayout.value || isRightSidebarOpen.value,
 );
+const MIN_LEFT_SIDEBAR_WIDTH = 280;
+const MIN_RIGHT_SIDEBAR_WIDTH = 280;
+const MAX_SIDEBAR_WIDTH = 960;
+const MIN_MAP_PANEL_WIDTH = 360;
+
+type SidebarResizeSide = 'left' | 'right';
+type ActiveSidebarResize = {
+  side: SidebarResizeSide;
+  pointerId: number;
+  startClientX: number;
+  startWidth: number;
+};
+
+const activeSidebarResize = ref<ActiveSidebarResize | null>(null);
+
+function getSidebarMinWidth(side: SidebarResizeSide): number {
+  return side === 'left' ? MIN_LEFT_SIDEBAR_WIDTH : MIN_RIGHT_SIDEBAR_WIDTH;
+}
+
+function getSidebarMaxWidth(side: SidebarResizeSide): number {
+  if (typeof window === 'undefined') {
+    return MAX_SIDEBAR_WIDTH;
+  }
+
+  const viewportWidth = Math.max(window.innerWidth, 0);
+  const oppositeWidth =
+    side === 'left'
+      ? isMobileTrackerLayout.value || !isRightSidebarVisible.value
+        ? 0
+        : rightSidebarWidth.value
+      : isMobileTrackerLayout.value
+        ? 0
+        : leftSidebarWidth.value;
+  const available =
+    viewportWidth - oppositeWidth - MIN_MAP_PANEL_WIDTH;
+
+  return Math.min(MAX_SIDEBAR_WIDTH, Math.max(getSidebarMinWidth(side), available));
+}
+
+function clampSidebarWidth(width: number, side: SidebarResizeSide): number {
+  const min = getSidebarMinWidth(side);
+  const max = getSidebarMaxWidth(side);
+  const normalized = Math.floor(width);
+  return Math.min(Math.max(normalized, min), max);
+}
+
+const leftSidebarWidthPx = computed(() =>
+  clampSidebarWidth(leftSidebarWidth.value, 'left'),
+);
+const rightSidebarWidthPx = computed(() =>
+  clampSidebarWidth(rightSidebarWidth.value, 'right'),
+);
+const leftSidebarStyle = computed<Record<string, string> | undefined>(() => {
+  if (isMobileTrackerLayout.value) return undefined;
+  const width = `${leftSidebarWidthPx.value}px`;
+  return {
+    width,
+    flex: `0 0 ${width}`,
+  };
+});
+const rightSidebarStyle = computed<Record<string, string> | undefined>(() => {
+  if (isMobileTrackerLayout.value) return undefined;
+  if (!isRightSidebarVisible.value) {
+    return {
+      width: '0px',
+      flex: '0 0 0px',
+    };
+  }
+  const width = `${rightSidebarWidthPx.value}px`;
+  return {
+    width,
+    flex: `0 0 ${width}`,
+  };
+});
 
 function resolveSelectedGamesSetting(value: unknown): SelectedGamesSetting {
   if (value === 'oot' || value === 'mm' || value === 'ootmm') {
@@ -907,6 +983,60 @@ function handleMapWarningGlobalPointerDown(event: PointerEvent) {
   closeMapWarningsPanel();
 }
 
+function syncSidebarResizeStyles(active: boolean) {
+  if (typeof document === 'undefined') return;
+  document.body.style.cursor = active ? 'col-resize' : '';
+  document.body.style.userSelect = active ? 'none' : '';
+}
+
+function stopSidebarResize() {
+  if (!activeSidebarResize.value) return;
+  activeSidebarResize.value = null;
+  syncSidebarResizeStyles(false);
+}
+
+function startSidebarResize(side: SidebarResizeSide, event: PointerEvent) {
+  if (isMobileTrackerLayout.value) return;
+  if (side === 'right' && !isRightSidebarVisible.value) return;
+
+  event.preventDefault();
+  const startWidth =
+    side === 'left' ? leftSidebarWidthPx.value : rightSidebarWidthPx.value;
+
+  activeSidebarResize.value = {
+    side,
+    pointerId: event.pointerId,
+    startClientX: event.clientX,
+    startWidth,
+  };
+  syncSidebarResizeStyles(true);
+}
+
+function handleSidebarResizePointerMove(event: PointerEvent) {
+  const active = activeSidebarResize.value;
+  if (!active || active.pointerId !== event.pointerId) return;
+
+  event.preventDefault();
+  const deltaX = event.clientX - active.startClientX;
+  const nextWidth =
+    active.side === 'left'
+      ? active.startWidth + deltaX
+      : active.startWidth - deltaX;
+  const clamped = clampSidebarWidth(nextWidth, active.side);
+
+  if (active.side === 'left') {
+    uiStore.setLeftSidebarWidth(clamped);
+  } else {
+    uiStore.setRightSidebarWidth(clamped);
+  }
+}
+
+function handleSidebarResizePointerUp(event: PointerEvent) {
+  const active = activeSidebarResize.value;
+  if (!active || active.pointerId !== event.pointerId) return;
+  stopSidebarResize();
+}
+
 async function undo() {
   if (isApplyingSettings.value || !canUndo.value) return;
   await sessionStore.undo();
@@ -1315,6 +1445,9 @@ function handleGlobalUndoRedoKeydown(event: KeyboardEvent) {
 
 function handleMobileTrackerLayoutChange(event: MediaQueryListEvent) {
   isMobileTrackerLayout.value = event.matches;
+  if (event.matches) {
+    stopSidebarResize();
+  }
 }
 
 onMounted(() => {
@@ -1333,6 +1466,12 @@ onMounted(() => {
   );
   window.addEventListener('keydown', handleGlobalUndoRedoKeydown);
   window.addEventListener('pointerdown', handleMapWarningGlobalPointerDown);
+  window.addEventListener('pointermove', handleSidebarResizePointerMove, {
+    passive: false,
+  });
+  window.addEventListener('pointerup', handleSidebarResizePointerUp);
+  window.addEventListener('pointercancel', handleSidebarResizePointerUp);
+  window.addEventListener('blur', stopSidebarResize);
 });
 
 onBeforeUnmount(() => {
@@ -1357,8 +1496,13 @@ onBeforeUnmount(() => {
     spoilerPlayerDialogResolver = null;
     resolver(null);
   }
+  stopSidebarResize();
   window.removeEventListener('keydown', handleGlobalUndoRedoKeydown);
   window.removeEventListener('pointerdown', handleMapWarningGlobalPointerDown);
+  window.removeEventListener('pointermove', handleSidebarResizePointerMove);
+  window.removeEventListener('pointerup', handleSidebarResizePointerUp);
+  window.removeEventListener('pointercancel', handleSidebarResizePointerUp);
+  window.removeEventListener('blur', stopSidebarResize);
 });
 </script>
 
@@ -1515,7 +1659,7 @@ onBeforeUnmount(() => {
         </div>
       </div>
     </div>
-    <div class="tracker-sidebar">
+    <div class="tracker-sidebar" :style="leftSidebarStyle">
       <div class="stats-panel" :class="{ 'is-collapsed': isStatsCollapsed }">
         <div class="stats-header">
           <button
@@ -1672,6 +1816,15 @@ onBeforeUnmount(() => {
           @update:settings="handleSettingsChange"
         />
       </div>
+      <div
+        v-if="!isMobileTrackerLayout"
+        class="sidebar-resizer sidebar-resizer-left"
+        :class="{ 'is-active': activeSidebarResize?.side === 'left' }"
+        role="separator"
+        aria-label="Resize left sidebar"
+        aria-orientation="vertical"
+        @pointerdown="startSidebarResize('left', $event)"
+      />
     </div>
 
     <div class="tracker-main">
@@ -2037,6 +2190,7 @@ onBeforeUnmount(() => {
       <aside
         class="right-sidebar"
         :class="{ collapsed: !isRightSidebarVisible }"
+        :style="rightSidebarStyle"
       >
         <button
           v-if="!isMobileTrackerLayout"
@@ -2086,6 +2240,15 @@ onBeforeUnmount(() => {
             </div>
           </div>
         </div>
+        <div
+          v-if="!isMobileTrackerLayout && isRightSidebarVisible"
+          class="sidebar-resizer sidebar-resizer-right"
+          :class="{ 'is-active': activeSidebarResize?.side === 'right' }"
+          role="separator"
+          aria-label="Resize right sidebar"
+          aria-orientation="vertical"
+          @pointerdown="startSidebarResize('right', $event)"
+        />
       </aside>
     </div>
   </div>
@@ -2233,7 +2396,9 @@ onBeforeUnmount(() => {
 }
 
 .tracker-sidebar {
+  position: relative;
   width: 400px;
+  flex: 0 0 400px;
   background: #2a2a2a;
   border-right: 2px solid #404040;
   display: flex;
@@ -2353,11 +2518,14 @@ onBeforeUnmount(() => {
 }
 
 .tabs button {
-  flex: 1;
-  padding: 0.75rem;
+  flex: 1 1 auto;
+  min-width: 0;
+  padding: 0.68rem 0.4rem;
   background: transparent;
   border-radius: 0;
-  font-size: 0.875rem;
+  font-size: 0.78rem;
+  line-height: 1.1;
+  white-space: normal;
   transition: background 0.2s;
 }
 
@@ -2709,6 +2877,7 @@ onBeforeUnmount(() => {
   transition:
     background 0.2s ease,
     border-color 0.2s ease;
+  z-index: 9;
 }
 
 .right-sidebar-toggle:hover {
@@ -2728,7 +2897,7 @@ onBeforeUnmount(() => {
 .right-sidebar-content {
   position: absolute;
   inset: 0;
-  width: 400px;
+  width: 100%;
   display: flex;
   flex-direction: column;
 }
@@ -2774,6 +2943,41 @@ onBeforeUnmount(() => {
   min-height: 0;
   display: flex;
   flex-direction: column;
+}
+
+.sidebar-resizer {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 10px;
+  cursor: col-resize;
+  touch-action: none;
+  z-index: 7;
+}
+
+.sidebar-resizer::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 50%;
+  width: 2px;
+  transform: translateX(-50%);
+  background: rgba(96, 165, 250, 0.2);
+  transition: background 0.12s ease;
+}
+
+.sidebar-resizer:hover::before,
+.sidebar-resizer.is-active::before {
+  background: rgba(96, 165, 250, 0.9);
+}
+
+.sidebar-resizer-left {
+  right: -6px;
+}
+
+.sidebar-resizer-right {
+  left: -6px;
 }
 
 @media (max-width: 900px) {
@@ -2846,6 +3050,10 @@ onBeforeUnmount(() => {
 
   .right-sidebar-tabs button {
     flex: 1 1 50%;
+  }
+
+  .sidebar-resizer {
+    display: none;
   }
 }
 

@@ -6,6 +6,8 @@ export type RightSidebarTab = 'locations' | 'entrances';
 export type ReachabilityFilter = 'all' | 'reachable' | 'unreachable';
 export type CollectionFilter = 'all' | 'collected' | 'uncollected';
 export type EntranceMappingFilter = 'all' | 'mapped' | 'unmapped';
+export const DEFAULT_LEFT_SIDEBAR_WIDTH = 400;
+export const DEFAULT_RIGHT_SIDEBAR_WIDTH = 400;
 
 const VALID_TABS: TrackerTab[] = [
   'grid',
@@ -19,6 +21,8 @@ export const useOoTMMUiStore = defineStore('ootmm-ui', () => {
   const activeTab = ref<TrackerTab>('grid');
   const isRightSidebarOpen = ref(true);
   const activeRightSidebarTab = ref<RightSidebarTab>('locations');
+  const leftSidebarWidth = ref(DEFAULT_LEFT_SIDEBAR_WIDTH);
+  const rightSidebarWidth = ref(DEFAULT_RIGHT_SIDEBAR_WIDTH);
 
   const inventorySearchQuery = ref('');
   const inventorySelectedCategory = ref('all');
@@ -73,10 +77,22 @@ export const useOoTMMUiStore = defineStore('ootmm-ui', () => {
     spoilerDragDepth.value = Math.max(0, Math.floor(depth));
   }
 
+  function setLeftSidebarWidth(width: number) {
+    if (!Number.isFinite(width)) return;
+    leftSidebarWidth.value = Math.floor(width);
+  }
+
+  function setRightSidebarWidth(width: number) {
+    if (!Number.isFinite(width)) return;
+    rightSidebarWidth.value = Math.floor(width);
+  }
+
   function resetUiState() {
     activeTab.value = 'grid';
     isRightSidebarOpen.value = true;
     activeRightSidebarTab.value = 'locations';
+    leftSidebarWidth.value = DEFAULT_LEFT_SIDEBAR_WIDTH;
+    rightSidebarWidth.value = DEFAULT_RIGHT_SIDEBAR_WIDTH;
 
     inventorySearchQuery.value = '';
     inventorySelectedCategory.value = 'all';
@@ -114,12 +130,16 @@ export const useOoTMMUiStore = defineStore('ootmm-ui', () => {
     settingsSearchQuery,
     isSpoilerDragActive,
     spoilerDragDepth,
+    leftSidebarWidth,
+    rightSidebarWidth,
     setActiveTab,
     toggleRightSidebarOpen,
     setActiveRightSidebarTab,
     openRightSidebar,
     setSpoilerDragActive,
     setSpoilerDragDepth,
+    setLeftSidebarWidth,
+    setRightSidebarWidth,
     resetUiState,
     activeMapId,
   };

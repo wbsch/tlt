@@ -433,11 +433,12 @@ function updateShopPrice(loc: LocationInfo, rawValue: string) {
 
 .segment-group {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(92px, 1fr));
   gap: 0.25rem;
 }
 
 .segment {
+  min-width: 0;
   padding: 0.5rem 0.75rem;
   background: #1a1a1a;
   border: 1px solid #404040;
@@ -594,15 +595,4 @@ function updateShopPrice(loc: LocationInfo, rawValue: string) {
   text-align: center;
 }
 
-@media (max-width: 700px) {
-  .segment-group {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-}
-
-@media (max-width: 480px) {
-  .segment-group {
-    grid-template-columns: 1fr;
-  }
-}
 </style>

@@ -1,6 +1,10 @@
 import type { PiniaPluginContext } from 'pinia';
 import { isSafeKey, safeJsonParse } from '@/utils/safeJson';
 import { TRACKER_DEFAULT_SETTINGS } from '@packs/ootmm/data/settings';
+import {
+  DEFAULT_LEFT_SIDEBAR_WIDTH,
+  DEFAULT_RIGHT_SIDEBAR_WIDTH,
+} from '@packs/ootmm/stores/ootmmUi';
 
 export type PersistConfig = {
   key: string;
@@ -82,6 +86,21 @@ function safeUiString(value: unknown): string | undefined {
   return value.slice(0, MAX_UI_STRING_LENGTH);
 }
 
+const MIN_SIDEBAR_WIDTH = 240;
+const MAX_SIDEBAR_WIDTH = 960;
+
+function safeSidebarWidth(
+  value: unknown,
+  fallback: number,
+): number {
+  if (typeof value !== 'number' || !Number.isFinite(value)) return fallback;
+  const normalized = Math.floor(value);
+  if (normalized < MIN_SIDEBAR_WIDTH || normalized > MAX_SIDEBAR_WIDTH) {
+    return fallback;
+  }
+  return normalized;
+}
+
 function stringArray(value: unknown): string[] {
   if (!Array.isArray(value)) return [];
   return Array.from(
@@ -157,6 +176,8 @@ export const PERSIST_CONFIGS: Record<PersistStoreId, PersistConfig> = {
       'locationsCollectionFilter',
       'locationsShowUnshuffled',
       'locationsShowGossipStones',
+      'leftSidebarWidth',
+      'rightSidebarWidth',
       'activeMapId',
       'settingsSearchQuery',
     ],
@@ -198,6 +219,22 @@ export const PERSIST_CONFIGS: Record<PersistStoreId, PersistConfig> = {
           : {}),
         ...(typeof raw.locationsShowGossipStones === 'boolean'
           ? { locationsShowGossipStones: raw.locationsShowGossipStones }
+          : {}),
+        ...(typeof raw.leftSidebarWidth === 'number'
+          ? {
+              leftSidebarWidth: safeSidebarWidth(
+                raw.leftSidebarWidth,
+                DEFAULT_LEFT_SIDEBAR_WIDTH,
+              ),
+            }
+          : {}),
+        ...(typeof raw.rightSidebarWidth === 'number'
+          ? {
+              rightSidebarWidth: safeSidebarWidth(
+                raw.rightSidebarWidth,
+                DEFAULT_RIGHT_SIDEBAR_WIDTH,
+              ),
+            }
           : {}),
         ...(typeof raw.activeMapId === 'string'
           ? { activeMapId: safeUiString(raw.activeMapId) }
