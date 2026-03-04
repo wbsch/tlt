@@ -19,7 +19,12 @@ import type { PlayerItem, PlayerItems } from '@ootmm/core/items/index';
 import type { World } from '@ootmm/core/logic/world';
 
 const nowMs = (): number => Number(process.hrtime.bigint()) / 1_000_000;
+let timingLoggingEnabled = false;
+
 const logTiming = (label: string, startMs: number) => {
+  if (!timingLoggingEnabled) {
+    return;
+  }
   const elapsed = (nowMs() - startMs).toFixed(2);
   console.log(`[pathfinder-timing] ${label}: ${elapsed}ms`);
 };
@@ -701,6 +706,7 @@ const printHelp = (): void => {
   );
   console.log('Options:');
   console.log('  -h, --help           Show this help and exit');
+  console.log('  -d, --debug          Enable pathfinder timing logs');
   console.log('  -v, -vv, -vvv        Increase verbosity');
   console.log(
     '  --only <list>        Only run specified test indices (e.g. 1,3-5)',
@@ -716,6 +722,7 @@ const main = async () => {
   let filePath: string | undefined;
   let onlyRaw: string | undefined;
   let verboseLevel = 0;
+  let debugTiming = false;
   const warnings: string[] = [];
 
   for (let i = 0; i < args.length; i++) {
@@ -726,6 +733,10 @@ const main = async () => {
     }
     if (/^-v+$/.test(arg)) {
       verboseLevel = Math.max(verboseLevel, arg.length - 1);
+      continue;
+    }
+    if (arg === '-d' || arg === '--debug') {
+      debugTiming = true;
       continue;
     }
     if (arg === '--only') {
@@ -756,6 +767,7 @@ const main = async () => {
   }
 
   const resolvedPath = filePath ?? 'tests/pathfinder/tests_silke.jsonc';
+  timingLoggingEnabled = debugTiming || verboseLevel >= 1;
   let onlySet: Set<number> | undefined;
   if (onlyRaw) {
     const parsed = parseOnlyList(onlyRaw);
