@@ -594,5 +594,4 @@ function updateShopPrice(loc: LocationInfo, rawValue: string) {
   color: #6b7280;
   text-align: center;
 }
-
 </style>

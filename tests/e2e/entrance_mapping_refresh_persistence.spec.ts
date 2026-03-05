@@ -1,5 +1,5 @@
 import { expect, test, type Page } from '@playwright/test';
-import { resetLocalStorageAndReload } from './helpers/tracker';
+import { resetLocalStorageAndReload, TEST_TIMEOUTS } from './helpers/tracker';
 
 const CLOCK_TOWER_ROOF_ENTRANCE_ID = 'MM_CLOCK_TOWER_ROOF';
 
@@ -60,7 +60,9 @@ test.describe('Entrance mapping refresh persistence', () => {
 
     const overlay = page.getByTestId('applying-settings-overlay');
     await page.getByTestId('apply-settings-button').click();
-    await expect(overlay).toBeHidden({ timeout: 15_000 });
+    await expect(overlay).toBeHidden({
+      timeout: TEST_TIMEOUTS.SETTINGS_APPLY,
+    });
 
     await openEntrancesTab(page);
     await resetEntranceFiltersToAll(page);
@@ -91,7 +93,9 @@ test.describe('Entrance mapping refresh persistence', () => {
 
     const overlay = page.getByTestId('applying-settings-overlay');
     await page.getByTestId('apply-settings-button').click();
-    await expect(overlay).toBeHidden({ timeout: 15_000 });
+    await expect(overlay).toBeHidden({
+      timeout: TEST_TIMEOUTS.SETTINGS_APPLY,
+    });
 
     await openEntrancesTab(page);
     await resetEntranceFiltersToAll(page);

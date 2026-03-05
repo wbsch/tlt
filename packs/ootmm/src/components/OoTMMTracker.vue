@@ -263,10 +263,12 @@ function getSidebarMaxWidth(side: SidebarResizeSide): number {
       : isMobileTrackerLayout.value
         ? 0
         : leftSidebarWidth.value;
-  const available =
-    viewportWidth - oppositeWidth - MIN_MAP_PANEL_WIDTH;
+  const available = viewportWidth - oppositeWidth - MIN_MAP_PANEL_WIDTH;
 
-  return Math.min(MAX_SIDEBAR_WIDTH, Math.max(getSidebarMinWidth(side), available));
+  return Math.min(
+    MAX_SIDEBAR_WIDTH,
+    Math.max(getSidebarMinWidth(side), available),
+  );
 }
 
 function clampSidebarWidth(width: number, side: SidebarResizeSide): number {

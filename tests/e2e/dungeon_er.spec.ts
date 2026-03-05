@@ -2,6 +2,7 @@ import { expect, test } from '@playwright/test';
 import {
   readReachableFraction,
   resetLocalStorageAndReload,
+  TEST_TIMEOUTS,
   waitForReachableFraction,
 } from './helpers/tracker';
 
@@ -27,12 +28,19 @@ test.describe('Dungeon Entrance Randomizer', () => {
     const overlay = page.getByTestId('applying-settings-overlay');
     const undoButton = page.getByRole('button', { name: /Undo/i });
     await page.getByTestId('apply-settings-button').click();
-    await expect(undoButton).toBeEnabled({ timeout: 15_000 });
-    await expect(overlay).toBeHidden({ timeout: 15_000 });
+    await expect(undoButton).toBeEnabled({
+      timeout: TEST_TIMEOUTS.SETTINGS_APPLY,
+    });
+    await expect(overlay).toBeHidden({
+      timeout: TEST_TIMEOUTS.SETTINGS_APPLY,
+    });
 
     // --- Step 2: Record baseline reachable count (ER on, no overrides) ---
     await page.getByTestId('tab-items').click();
-    const baseline = await waitForReachableFraction(page, 15_000);
+    const baseline = await waitForReachableFraction(
+      page,
+      TEST_TIMEOUTS.BOOT_REACHABLE,
+    );
     expect(baseline.total).toBeGreaterThan(0);
     expect(baseline.reachable).toBeLessThan(baseline.total);
 
@@ -41,7 +49,9 @@ test.describe('Dungeon Entrance Randomizer', () => {
     await expect(rightSidebarToggle).toHaveAttribute('aria-expanded', 'true');
 
     const entrancesTab = page.getByTestId('right-sidebar-tab-entrances');
-    await expect(entrancesTab).toBeVisible({ timeout: 5_000 });
+    await expect(entrancesTab).toBeVisible({
+      timeout: TEST_TIMEOUTS.ELEMENT_VISIBLE,
+    });
     await expect(entrancesTab).toHaveClass(/active/);
 
     // Find the entrance row for "Deku Tree" – the label text contains "Deku Tree"
@@ -71,7 +81,7 @@ test.describe('Dungeon Entrance Randomizer', () => {
           const frac = await readReachableFraction(page);
           return frac.reachable;
         },
-        { timeout: 15_000 },
+        { timeout: TEST_TIMEOUTS.SETTINGS_APPLY },
       )
       .toBeGreaterThan(baseline.reachable);
 
@@ -89,7 +99,7 @@ test.describe('Dungeon Entrance Randomizer', () => {
           const frac = await readReachableFraction(page);
           return frac.reachable;
         },
-        { timeout: 15_000 },
+        { timeout: TEST_TIMEOUTS.SETTINGS_APPLY },
       )
       .toBeLessThan(afterMapping.reachable);
 

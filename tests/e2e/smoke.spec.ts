@@ -2,6 +2,7 @@ import { expect, test } from '@playwright/test';
 import {
   readTrackerStats,
   resetLocalStorageAndReload,
+  TEST_TIMEOUTS,
   waitForAllReachable,
   waitForBoot,
   waitForReachableFraction,
@@ -53,11 +54,18 @@ test.describe('OoTMM smoke', () => {
     await page.getByTestId('apply-settings-button').click();
     // Overlay visibility can be very brief; treat "apply finished" as the
     // stable condition and only assert overlay is not blocking afterwards.
-    await expect(undoButton).toBeEnabled({ timeout: 15_000 });
-    await expect(overlay).toBeHidden({ timeout: 15_000 });
+    await expect(undoButton).toBeEnabled({
+      timeout: TEST_TIMEOUTS.SETTINGS_APPLY,
+    });
+    await expect(overlay).toBeHidden({
+      timeout: TEST_TIMEOUTS.SETTINGS_APPLY,
+    });
 
     await page.getByTestId('tab-items').click();
-    const reachable = await waitForReachableFraction(page, 15_000);
+    const reachable = await waitForReachableFraction(
+      page,
+      TEST_TIMEOUTS.BOOT_REACHABLE,
+    );
     expect(reachable.total).toBeGreaterThan(0);
   });
 
@@ -78,7 +86,9 @@ test.describe('OoTMM smoke', () => {
     await page.getByTestId('apply-tricks-button').click();
     // Overlay visibility can be very brief when the main thread is blocked
     // by tracker initialization; just verify the apply completes.
-    await expect(overlay).toBeHidden({ timeout: 15_000 });
+    await expect(overlay).toBeHidden({
+      timeout: TEST_TIMEOUTS.SETTINGS_APPLY,
+    });
 
     await page.getByTestId('tab-tricks').click();
     if (initial) {
@@ -130,7 +140,9 @@ test.describe('OoTMM smoke', () => {
     await page.getByTestId('tab-items').click();
     // Overlay visibility can be very brief when the main thread is blocked
     // by tracker initialization; just verify the apply completes.
-    await expect(overlay).toBeHidden({ timeout: 15_000 });
+    await expect(overlay).toBeHidden({
+      timeout: TEST_TIMEOUTS.SETTINGS_APPLY,
+    });
 
     await page.getByTestId('tab-tricks').click();
     if (initial) {
@@ -161,7 +173,10 @@ test.describe('OoTMM smoke', () => {
     await page.getByTestId('reset-tracker-confirm-apply-button').click();
     await waitForBoot(page);
 
-    const afterReset = await waitForReachableFraction(page, 15_000);
+    const afterReset = await waitForReachableFraction(
+      page,
+      TEST_TIMEOUTS.BOOT_REACHABLE,
+    );
     expect(afterReset.total).toBeGreaterThan(0);
   });
 

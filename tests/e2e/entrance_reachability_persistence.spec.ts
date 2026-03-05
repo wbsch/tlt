@@ -1,5 +1,9 @@
 import { expect, test, type Page } from '@playwright/test';
-import { resetLocalStorageAndReload, waitForBoot } from './helpers/tracker';
+import {
+  resetLocalStorageAndReload,
+  TEST_TIMEOUTS,
+  waitForBoot,
+} from './helpers/tracker';
 
 const CLOCK_TOWER_ROOF_ITEMS: Record<string, number> = {
   MM_OCARINA: 1,
@@ -113,12 +117,18 @@ test.describe('Entrance reachability persistence across refresh', () => {
     const overlay = page.getByTestId('applying-settings-overlay');
     const undoButton = page.getByRole('button', { name: /Undo/i });
     await page.getByTestId('apply-settings-button').click();
-    await expect(undoButton).toBeEnabled({ timeout: 15_000 });
-    await expect(overlay).toBeHidden({ timeout: 15_000 });
+    await expect(undoButton).toBeEnabled({
+      timeout: TEST_TIMEOUTS.SETTINGS_APPLY,
+    });
+    await expect(overlay).toBeHidden({
+      timeout: TEST_TIMEOUTS.SETTINGS_APPLY,
+    });
 
     // --- Step 2: Verify entrance panel has dungeon entries before refresh ---
     await expect
-      .poll(() => readAllEntranceCount(page), { timeout: 15_000 })
+      .poll(() => readAllEntranceCount(page), {
+        timeout: TEST_TIMEOUTS.SETTINGS_APPLY,
+      })
       .toBeGreaterThan(0);
 
     const totalBeforeRefresh = await readAllEntranceCount(page);
@@ -129,7 +139,9 @@ test.describe('Entrance reachability persistence across refresh', () => {
 
     // --- Step 5: Verify entrance panel stays populated after refresh ---
     await expect
-      .poll(() => readAllEntranceCount(page), { timeout: 15_000 })
+      .poll(() => readAllEntranceCount(page), {
+        timeout: TEST_TIMEOUTS.SETTINGS_APPLY,
+      })
       .toBe(totalBeforeRefresh);
   });
 
@@ -153,7 +165,9 @@ test.describe('Entrance reachability persistence across refresh', () => {
 
     const overlay = page.getByTestId('applying-settings-overlay');
     await page.getByTestId('apply-settings-button').click();
-    await expect(overlay).toBeHidden({ timeout: 15_000 });
+    await expect(overlay).toBeHidden({
+      timeout: TEST_TIMEOUTS.SETTINGS_APPLY,
+    });
 
     await page.getByTestId('right-sidebar-tab-entrances').click();
     const select = dekuTreeSelect(page);

@@ -1,5 +1,19 @@
 import { expect, type Locator, type Page } from '@playwright/test';
 
+export const TEST_TIMEOUTS = {
+  DEFAULT_EXPECT: 10_000,
+  BOOT_SELECTOR: 30_000,
+  BOOT_REACHABLE: 15_000,
+  SETTINGS_APPLY: 15_000,
+  SYNC_POLL: 20_000,
+  LONG_OPERATION: 120_000,
+  ELEMENT_VISIBLE: 5_000,
+  ELEMENT_ATTACHED: 2_000,
+  PATHFINDER_VISIBLE: 15_000,
+  PATHFINDER_HIDDEN: 60_000,
+  PATHFINDER_LONG_OPERATION: 120_000,
+};
+
 const FRACTION_PATTERN = /(\d+)\s*\/\s*(\d+)/;
 const NUMBER_PATTERN = /^\d+$/;
 
@@ -86,7 +100,7 @@ export async function readTrackerStats(page: Page): Promise<TrackerStats> {
 
 export async function waitForReachableFraction(
   page: Page,
-  timeout = 10_000,
+  timeout = TEST_TIMEOUTS.DEFAULT_EXPECT,
 ): Promise<ReachableFraction> {
   await ensureStatsExpanded(page);
 
@@ -105,7 +119,7 @@ export async function waitForReachableFraction(
 
 export async function waitForAllReachable(
   page: Page,
-  timeout = 20_000,
+  timeout = TEST_TIMEOUTS.SYNC_POLL,
 ): Promise<ReachableFraction> {
   await ensureStatsExpanded(page);
 
@@ -127,13 +141,15 @@ export async function waitForBoot(page: Page): Promise<void> {
   // also contains an <h1>The Last Tracker</h1>, which would satisfy a
   // heading-role check before the Vue app renders.  Waiting for the
   // body.tlt-app-mounted class avoids that false-positive.
-  await page.waitForSelector('body.tlt-app-mounted', { timeout: 30_000 });
+  await page.waitForSelector('body.tlt-app-mounted', {
+    timeout: TEST_TIMEOUTS.BOOT_SELECTOR,
+  });
   await expect(
     page.locator('#app').getByRole('heading', { name: 'The Last Tracker' }),
   ).toBeVisible();
   await expect(page.getByTestId('pack-select')).toBeVisible();
   await expect(page.getByTestId('pack-select')).toHaveValue('ootmm');
-  await waitForReachableFraction(page, 15_000);
+  await waitForReachableFraction(page, TEST_TIMEOUTS.BOOT_REACHABLE);
 }
 
 export async function resetLocalStorageAndReload(page: Page): Promise<void> {

@@ -1,6 +1,7 @@
 import { expect, test, type Page } from '@playwright/test';
 import {
   resetLocalStorageAndReload,
+  TEST_TIMEOUTS,
   waitForReachableFraction,
   waitForAllReachable,
 } from './helpers/tracker';
@@ -35,7 +36,7 @@ async function enableClocksAsItems(page: Page): Promise<void> {
   });
 
   await expect(page.getByTestId('applying-settings-overlay')).toBeHidden({
-    timeout: 15_000,
+    timeout: TEST_TIMEOUTS.SETTINGS_APPLY,
   });
 }
 
@@ -70,7 +71,7 @@ async function getReachableLocationIds(page: Page): Promise<string[]> {
  */
 async function clickItem(page: Page, itemId: string): Promise<void> {
   const img = page.locator(`img[alt="${itemId}"]`);
-  await expect(img).toBeVisible({ timeout: 5_000 });
+  await expect(img).toBeVisible({ timeout: TEST_TIMEOUTS.ELEMENT_VISIBLE });
   // Click the parent .grid-item div which carries the @click handler
   await img.locator('..').click();
 }
@@ -86,7 +87,7 @@ test.describe('OoTMM clock gating', () => {
   test.beforeEach(async ({ page }) => {
     await resetLocalStorageAndReload(page);
     await enableClocksAsItems(page);
-    await waitForReachableFraction(page, 15_000);
+    await waitForReachableFraction(page, TEST_TIMEOUTS.BOOT_REACHABLE);
   });
 
   test('time-gated checks are unreachable with only ocarina + song of time', async ({
@@ -98,7 +99,7 @@ test.describe('OoTMM clock gating', () => {
     await clickItem(page, 'MM_SONG_TIME');
 
     // Wait for pathfinder to settle
-    await waitForReachableFraction(page, 10_000);
+    await waitForReachableFraction(page, TEST_TIMEOUTS.DEFAULT_EXPECT);
 
     const reachable = await getReachableLocationIds(page);
     for (const { pattern, label } of TARGET_LOCATIONS) {
@@ -127,7 +128,7 @@ test.describe('OoTMM clock gating', () => {
           },
           {
             message: `"${label}" must be reachable with full inventory`,
-            timeout: 15_000,
+            timeout: TEST_TIMEOUTS.SETTINGS_APPLY,
           },
         )
         .toBeGreaterThan(0);

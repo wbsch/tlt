@@ -1,5 +1,5 @@
 import { expect, test, type Page } from '@playwright/test';
-import { resetLocalStorageAndReload } from './helpers/tracker';
+import { resetLocalStorageAndReload, TEST_TIMEOUTS } from './helpers/tracker';
 
 const CLOCK_TOWER_ROOF_ENTRANCE_ID = 'MM_CLOCK_TOWER_ROOF';
 const NON_SELF_DESTINATION_ENTRANCE_ID = 'OOT_DEKU_TREE';
@@ -61,7 +61,7 @@ async function applyErSettings(
 
   await page.getByTestId('apply-settings-button').click();
   await expect(page.getByTestId('applying-settings-overlay')).toBeHidden({
-    timeout: 15_000,
+    timeout: TEST_TIMEOUTS.SETTINGS_APPLY,
   });
 }
 
@@ -144,22 +144,30 @@ test.describe('Clock Tower marker visibility', () => {
 
     await setClockTowerRoofOverride(page, null);
     await expect
-      .poll(() => isClockTowerRoofMarkerVisible(page), { timeout: 15_000 })
+      .poll(() => isClockTowerRoofMarkerVisible(page), {
+        timeout: TEST_TIMEOUTS.SETTINGS_APPLY,
+      })
       .toBe(false);
 
     await setClockTowerRoofOverride(page, NON_SELF_DESTINATION_ENTRANCE_ID);
     await expect
-      .poll(() => isClockTowerRoofMarkerVisible(page), { timeout: 15_000 })
+      .poll(() => isClockTowerRoofMarkerVisible(page), {
+        timeout: TEST_TIMEOUTS.SETTINGS_APPLY,
+      })
       .toBe(false);
 
     await setClockTowerRoofOverride(page, CLOCK_TOWER_ROOF_ENTRANCE_ID);
     await expect
-      .poll(() => isClockTowerRoofMarkerVisible(page), { timeout: 15_000 })
+      .poll(() => isClockTowerRoofMarkerVisible(page), {
+        timeout: TEST_TIMEOUTS.SETTINGS_APPLY,
+      })
       .toBe(true);
 
     await applyErSettings(page, { erDungeons: 'none', erMoon: false });
     await expect
-      .poll(() => isClockTowerRoofMarkerVisible(page), { timeout: 15_000 })
+      .poll(() => isClockTowerRoofMarkerVisible(page), {
+        timeout: TEST_TIMEOUTS.SETTINGS_APPLY,
+      })
       .toBe(true);
   });
 });

@@ -1,5 +1,5 @@
 import { expect, test, type Page } from '@playwright/test';
-import { resetLocalStorageAndReload } from './helpers/tracker';
+import { resetLocalStorageAndReload, TEST_TIMEOUTS } from './helpers/tracker';
 
 const DODONGO_MAP_ID = 'oot_dodongos_cavern';
 const MQ_GOSSIP_COORDS: [number, number] = [278, 337];
@@ -124,7 +124,7 @@ async function applyMqDungeonSpecificSetting(
   }, values);
 
   await expect(page.getByTestId('applying-settings-overlay')).toBeHidden({
-    timeout: 15_000,
+    timeout: TEST_TIMEOUTS.SETTINGS_APPLY,
   });
 }
 

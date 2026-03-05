@@ -1,5 +1,9 @@
 import { expect, test, type Locator, type Page } from '@playwright/test';
-import { resetLocalStorageAndReload, waitForBoot } from './helpers/tracker';
+import {
+  resetLocalStorageAndReload,
+  TEST_TIMEOUTS,
+  waitForBoot,
+} from './helpers/tracker';
 
 const TARGET_LOCATION_NAME = 'Kakariko Bazaar Item 1';
 
@@ -8,8 +12,12 @@ async function applySettingsAndWait(page: Page): Promise<void> {
   const undoButton = page.getByRole('button', { name: /Undo/i });
 
   await page.getByTestId('apply-settings-button').click();
-  await expect(undoButton).toBeEnabled({ timeout: 15_000 });
-  await expect(overlay).toBeHidden({ timeout: 15_000 });
+  await expect(undoButton).toBeEnabled({
+    timeout: TEST_TIMEOUTS.SETTINGS_APPLY,
+  });
+  await expect(overlay).toBeHidden({
+    timeout: TEST_TIMEOUTS.SETTINGS_APPLY,
+  });
 }
 
 async function getTargetLocationRow(page: Page): Promise<Locator> {

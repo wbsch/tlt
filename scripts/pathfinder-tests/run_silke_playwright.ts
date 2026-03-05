@@ -15,6 +15,7 @@ import {
 import * as SettingsMod from '@ootmm/core/settings/index';
 import * as DataMod from '../../OoTMM/packages/data/src/index';
 import { DEFAULT_OOTMM_SETTINGS } from '../../packs/ootmm/src/types/settings';
+import { PATHFINDER_TEST_TIMEOUTS } from './timeouts';
 
 type CliOptions = {
   filePath: string;
@@ -668,26 +669,32 @@ class WebRunner {
   }
 
   private async waitForBoot(page: Page): Promise<void> {
-    await page
-      .getByRole('heading', { name: 'The Last Tracker' })
-      .waitFor({ state: 'visible', timeout: 15_000 });
-    await page
-      .getByTestId('pack-select')
-      .waitFor({ state: 'visible', timeout: 15_000 });
+    await page.getByRole('heading', { name: 'The Last Tracker' }).waitFor({
+      state: 'visible',
+      timeout: PATHFINDER_TEST_TIMEOUTS.ELEMENT_VISIBLE,
+    });
+    await page.getByTestId('pack-select').waitFor({
+      state: 'visible',
+      timeout: PATHFINDER_TEST_TIMEOUTS.ELEMENT_VISIBLE,
+    });
     await page.getByTestId('pack-select').selectOption('ootmm');
     await this.waitForReachableReady(page);
   }
 
   private async ensureStatsExpanded(page: Page): Promise<void> {
     const toggle = page.locator('.stats-collapse-toggle');
-    await toggle.waitFor({ state: 'visible', timeout: 15_000 });
+    await toggle.waitFor({
+      state: 'visible',
+      timeout: PATHFINDER_TEST_TIMEOUTS.ELEMENT_VISIBLE,
+    });
     const expanded = await toggle.getAttribute('aria-expanded');
     if (expanded !== 'true') {
       await toggle.click();
     }
-    await page
-      .getByTestId('stats-reachable-value')
-      .waitFor({ state: 'visible', timeout: 15_000 });
+    await page.getByTestId('stats-reachable-value').waitFor({
+      state: 'visible',
+      timeout: PATHFINDER_TEST_TIMEOUTS.ELEMENT_VISIBLE,
+    });
   }
 
   private async waitForReachableReady(page: Page): Promise<void> {
@@ -702,7 +709,7 @@ class WebRunner {
         if (!match) return false;
         return Number(match[2]) > 0;
       },
-      { timeout: 15_000 },
+      { timeout: PATHFINDER_TEST_TIMEOUTS.ELEMENT_VISIBLE },
     );
   }
 
@@ -714,7 +721,10 @@ class WebRunner {
   ): Promise<void> {
     await page.getByTestId('tab-settings').click();
     const searchInput = page.getByTestId('settings-search-input');
-    await searchInput.waitFor({ state: 'visible', timeout: 15_000 });
+    await searchInput.waitFor({
+      state: 'visible',
+      timeout: PATHFINDER_TEST_TIMEOUTS.ELEMENT_VISIBLE,
+    });
     // Clear search to ensure all settings are visible
     await searchInput.fill('');
 
@@ -745,7 +755,10 @@ class WebRunner {
       const control = input.first();
       // Wait for element to be attached to DOM
       await control
-        .waitFor({ state: 'attached', timeout: 2000 })
+        .waitFor({
+          state: 'attached',
+          timeout: PATHFINDER_TEST_TIMEOUTS.ELEMENT_ATTACHED,
+        })
         .catch(() => {});
 
       const kind = await control.evaluate((el) => {
@@ -868,15 +881,24 @@ class WebRunner {
 
   private async clickApplySettings(page: Page): Promise<void> {
     const applyButton = page.getByTestId('apply-settings-button');
-    await applyButton.waitFor({ state: 'visible', timeout: 30_000 });
+    await applyButton.waitFor({
+      state: 'visible',
+      timeout: PATHFINDER_TEST_TIMEOUTS.SETTINGS_APPLY,
+    });
     await applyButton.click();
     const overlay = page.getByTestId('applying-settings-overlay');
     try {
-      await overlay.waitFor({ state: 'visible', timeout: 10_000 });
+      await overlay.waitFor({
+        state: 'visible',
+        timeout: PATHFINDER_TEST_TIMEOUTS.OVERLAY_VISIBLE,
+      });
     } catch {
       // Overlay may be very brief if no effective change; still wait for hidden below.
     }
-    await overlay.waitFor({ state: 'hidden', timeout: 60_000 });
+    await overlay.waitFor({
+      state: 'hidden',
+      timeout: PATHFINDER_TEST_TIMEOUTS.OVERLAY_HIDDEN,
+    });
     await this.waitForReachableReady(page);
   }
 
@@ -992,7 +1014,10 @@ class WebRunner {
           continue;
         }
         for (let i = 0; i < Math.min(count, total); i++) {
-          await icons.nth(i).click({ force: true, timeout: 60000 });
+          await icons.nth(i).click({
+            force: true,
+            timeout: PATHFINDER_TEST_TIMEOUTS.CLICK_ICON,
+          });
         }
         continue;
       }
@@ -1004,7 +1029,10 @@ class WebRunner {
       }
 
       for (let i = 0; i < count; i++) {
-        await icon.click({ force: true, timeout: 60000 });
+        await icon.click({
+          force: true,
+          timeout: PATHFINDER_TEST_TIMEOUTS.CLICK_ICON,
+        });
       }
     }
 

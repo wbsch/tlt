@@ -1,5 +1,9 @@
 import { expect, test, type Page } from '@playwright/test';
-import { resetLocalStorageAndReload, waitForBoot } from './helpers/tracker';
+import {
+  resetLocalStorageAndReload,
+  TEST_TIMEOUTS,
+  waitForBoot,
+} from './helpers/tracker';
 
 const BOMB_TEST_ID = 'inventory-item-card-OOT_BOMB_BAG';
 const SWORD_TEST_ID = 'inventory-item-card-OOT_SWORD_KOKIRI';
@@ -22,10 +26,10 @@ test.describe('multi-tab sync', () => {
     await waitForBoot(pageTwo);
 
     await expect(page.getByTestId('multi-tab-sync-badge')).toBeVisible({
-      timeout: 10_000,
+      timeout: TEST_TIMEOUTS.DEFAULT_EXPECT,
     });
     await expect(pageTwo.getByTestId('multi-tab-sync-badge')).toBeVisible({
-      timeout: 10_000,
+      timeout: TEST_TIMEOUTS.DEFAULT_EXPECT,
     });
 
     await page.getByTestId('tab-inventory').click();
@@ -73,10 +77,14 @@ test.describe('multi-tab sync', () => {
     await page.getByTestId('tab-inventory').click();
 
     await expect
-      .poll(() => isOwned(page, BOMB_TEST_ID), { timeout: 20_000 })
+      .poll(() => isOwned(page, BOMB_TEST_ID), {
+        timeout: TEST_TIMEOUTS.SYNC_POLL,
+      })
       .toBe(false);
     await expect
-      .poll(() => isOwned(pageTwo, BOMB_TEST_ID), { timeout: 20_000 })
+      .poll(() => isOwned(pageTwo, BOMB_TEST_ID), {
+        timeout: TEST_TIMEOUTS.SYNC_POLL,
+      })
       .toBe(false);
 
     await pageTwo.close();

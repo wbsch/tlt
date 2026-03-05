@@ -1,6 +1,7 @@
 import { expect, test, type Page } from '@playwright/test';
 import {
   resetLocalStorageAndReload,
+  TEST_TIMEOUTS,
   waitForAllReachable,
   waitForBoot,
 } from './helpers/tracker';
@@ -43,7 +44,7 @@ test.describe('share URL import/export', () => {
   }) => {
     // This test performs two full boot cycles (initial + after share-URL
     // import) and hydrates the entire tracker state, so give it extra time.
-    test.setTimeout(120_000);
+    test.setTimeout(TEST_TIMEOUTS.LONG_OPERATION);
     await installClipboardStub(page);
     await resetLocalStorageAndReload(page);
 

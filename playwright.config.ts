@@ -1,5 +1,6 @@
 import { defineConfig } from '@playwright/test';
 import os from 'os';
+import { TEST_TIMEOUTS } from './tests/e2e/helpers/tracker';
 
 // Hacky, broken way of running num(physical_cores)-1 workers
 // If you have no hyperthreading I feel bad for you son
@@ -11,7 +12,7 @@ export default defineConfig({
   timeout: 60_000,
   workers: workers,
   expect: {
-    timeout: 10_000,
+    timeout: TEST_TIMEOUTS.DEFAULT_EXPECT,
   },
   use: {
     baseURL: 'http://localhost:5173',
