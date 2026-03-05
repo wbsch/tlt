@@ -1,6 +1,7 @@
 import type { PiniaPluginContext } from 'pinia';
 import { isSafeKey, safeJsonParse } from '@/utils/safeJson';
 import { TRACKER_DEFAULT_SETTINGS } from '@packs/ootmm/data/settings';
+import { DEFAULT_OOTMM_SETTINGS } from '@packs/ootmm/types/settings';
 import {
   DEFAULT_LEFT_SIDEBAR_WIDTH,
   DEFAULT_RIGHT_SIDEBAR_WIDTH,
@@ -33,7 +34,10 @@ function isPlainObject(value: unknown): value is Record<string, unknown> {
 const MAX_UI_STRING_LENGTH = 500;
 
 /** Known setting keys from the tracker defaults — used as an allowlist. */
-const KNOWN_SETTINGS_KEYS = new Set(Object.keys(TRACKER_DEFAULT_SETTINGS));
+const KNOWN_SETTINGS_KEYS = new Set([
+  ...Object.keys(TRACKER_DEFAULT_SETTINGS),
+  ...Object.keys(DEFAULT_OOTMM_SETTINGS),
+]);
 
 /**
  * Recursively strip dangerous keys from a JSON-safe value.
@@ -89,10 +93,7 @@ function safeUiString(value: unknown): string | undefined {
 const MIN_SIDEBAR_WIDTH = 240;
 const MAX_SIDEBAR_WIDTH = 960;
 
-function safeSidebarWidth(
-  value: unknown,
-  fallback: number,
-): number {
+function safeSidebarWidth(value: unknown, fallback: number): number {
   if (typeof value !== 'number' || !Number.isFinite(value)) return fallback;
   const normalized = Math.floor(value);
   if (normalized < MIN_SIDEBAR_WIDTH || normalized > MAX_SIDEBAR_WIDTH) {
