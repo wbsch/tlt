@@ -2,6 +2,7 @@
 import { computed } from 'vue';
 import { storeToRefs } from 'pinia';
 import { ITEM_DATABASE } from '../data/items';
+import type { OoTMMItem } from '../types';
 import { useOoTMMUiStore } from '../stores/ootmmUi';
 import { matchesSearchTerms } from '../utils/search';
 import { selectSearchInputText } from '../utils/input';
@@ -37,6 +38,114 @@ const categories = [
   { value: 'misc', label: 'Misc' },
 ];
 
+type InventorySectionKey =
+  | 'equipment'
+  | 'song'
+  | 'mask'
+  | 'quest'
+  | 'key'
+  | 'dungeon'
+  | 'token'
+  | 'soul-boss'
+  | 'soul-enemy'
+  | 'soul-npc'
+  | 'soul-animal'
+  | 'soul-misc'
+  | 'consumable'
+  | 'trap'
+  | 'misc';
+
+type InventorySection = {
+  key: InventorySectionKey;
+  label: string;
+  order: number;
+};
+
+type SectionedItem = {
+  item: OoTMMItem;
+  section: InventorySection;
+};
+
+const SECTION_DEFINITIONS: Record<InventorySectionKey, InventorySection> = {
+  equipment: { key: 'equipment', label: 'Equipment', order: 1 },
+  song: { key: 'song', label: 'Songs', order: 2 },
+  mask: { key: 'mask', label: 'Masks', order: 3 },
+  quest: { key: 'quest', label: 'Quest', order: 4 },
+  key: { key: 'key', label: 'Keys', order: 5 },
+  dungeon: { key: 'dungeon', label: 'Dungeon', order: 6 },
+  token: { key: 'token', label: 'Tokens', order: 7 },
+  'soul-boss': { key: 'soul-boss', label: 'Boss Souls', order: 8 },
+  'soul-enemy': { key: 'soul-enemy', label: 'Enemy Souls', order: 9 },
+  'soul-npc': { key: 'soul-npc', label: 'NPC Souls', order: 10 },
+  'soul-animal': { key: 'soul-animal', label: 'Animal Souls', order: 11 },
+  'soul-misc': { key: 'soul-misc', label: 'Misc Souls', order: 12 },
+  consumable: { key: 'consumable', label: 'Consumables', order: 13 },
+  trap: { key: 'trap', label: 'Traps', order: 14 },
+  misc: { key: 'misc', label: 'Misc', order: 15 },
+};
+
+const GAME_ORDER: Record<OoTMMItem['game'], number> = {
+  shared: 0,
+  oot: 1,
+  mm: 2,
+};
+
+const CATEGORY_SECTION_MAP: Record<
+  Exclude<OoTMMItem['category'], 'soul'>,
+  InventorySectionKey
+> = {
+  equipment: 'equipment',
+  consumable: 'consumable',
+  key: 'key',
+  song: 'song',
+  mask: 'mask',
+  trade: 'quest',
+  bottle: 'misc',
+  event: 'misc',
+  misc: 'misc',
+  quest: 'quest',
+  trap: 'trap',
+  dungeon: 'dungeon',
+  token: 'token',
+};
+
+function compareItems(left: OoTMMItem, right: OoTMMItem): number {
+  const byName = left.name.localeCompare(right.name, undefined, {
+    sensitivity: 'base',
+  });
+  if (byName !== 0) return byName;
+
+  const byGame = GAME_ORDER[left.game] - GAME_ORDER[right.game];
+  if (byGame !== 0) return byGame;
+
+  return left.id.localeCompare(right.id);
+}
+
+function getSoulSection(itemId: string): InventorySection {
+  const soulGroup = itemId.match(/^(?:OOT|MM|SHARED)_SOUL_([^_]+)_/)?.[1];
+  switch (soulGroup) {
+    case 'BOSS':
+      return SECTION_DEFINITIONS['soul-boss'];
+    case 'ENEMY':
+      return SECTION_DEFINITIONS['soul-enemy'];
+    case 'NPC':
+      return SECTION_DEFINITIONS['soul-npc'];
+    case 'ANIMAL':
+      return SECTION_DEFINITIONS['soul-animal'];
+    case 'MISC':
+      return SECTION_DEFINITIONS['soul-misc'];
+    default:
+      return SECTION_DEFINITIONS['soul-misc'];
+  }
+}
+
+function getSectionForItem(item: OoTMMItem): InventorySection {
+  if (item.category === 'soul') {
+    return getSoulSection(item.id);
+  }
+  return SECTION_DEFINITIONS[CATEGORY_SECTION_MAP[item.category]];
+}
+
 const filteredItems = computed(() => {
   return ITEM_DATABASE.filter((item) => {
     const matchesSearch = matchesSearchTerms([item.name], searchQuery.value);
@@ -49,6 +158,26 @@ const filteredItems = computed(() => {
       props.availableItemIds.has(item.id);
     return matchesSearch && matchesCategory && matchesAvailability;
   });
+});
+
+const groupedItems = computed(() => {
+  const sections = new Map<InventorySectionKey, SectionedItem[]>();
+  for (const item of filteredItems.value) {
+    const section = getSectionForItem(item);
+    const existing = sections.get(section.key);
+    if (existing) {
+      existing.push({ item, section });
+    } else {
+      sections.set(section.key, [{ item, section }]);
+    }
+  }
+
+  return Array.from(sections.values())
+    .map((itemsInSection) => ({
+      section: itemsInSection[0].section,
+      items: itemsInSection.map(({ item }) => item).sort(compareItems),
+    }))
+    .sort((left, right) => left.section.order - right.section.order);
 });
 
 function getItemCount(itemId: string): number {
@@ -120,47 +249,56 @@ function toggleItem(itemId: string) {
 
     <div class="inventory-grid">
       <div
-        v-for="(item, index) in filteredItems"
-        :key="`${item.id}-${index}`"
-        class="item-card"
-        :data-testid="`inventory-item-card-${item.id}`"
-        :class="{
-          owned: getItemCount(item.id) > 0,
-          [`category-${item.category}`]: true,
-        }"
-        @click="toggleItem(item.id)"
+        v-for="group in groupedItems"
+        :key="group.section.key"
+        class="inventory-section"
       >
-        <div class="item-icon">
-          {{ item.icon || '📦' }}
-        </div>
-        <div class="item-info">
-          <div class="item-name">{{ item.name }}</div>
-          <div class="item-game">{{ item.game.toUpperCase() }}</div>
+        <div class="inventory-section-header">
+          {{ group.section.label }}
         </div>
         <div
-          v-if="getItemMaxCount(item.id, item.maxCount) > 1"
-          class="item-count"
+          v-for="item in group.items"
+          :key="item.id"
+          class="item-card"
+          :data-testid="`inventory-item-card-${item.id}`"
+          :class="{
+            owned: getItemCount(item.id) > 0,
+            [`category-${item.category}`]: true,
+          }"
+          @click="toggleItem(item.id)"
         >
-          <button
-            :disabled="getItemCount(item.id) === 0"
-            class="count-btn"
-            @click.stop="decrementItem(item.id)"
+          <div class="item-icon">
+            {{ item.icon || '📦' }}
+          </div>
+          <div class="item-info">
+            <div class="item-name">{{ item.name }}</div>
+            <div class="item-game">{{ item.game.toUpperCase() }}</div>
+          </div>
+          <div
+            v-if="getItemMaxCount(item.id, item.maxCount) > 1"
+            class="item-count"
           >
-            −
-          </button>
-          <span class="count-value">{{ getItemCount(item.id) }}</span>
-          <button
-            :disabled="
-              getItemCount(item.id) >= getItemMaxCount(item.id, item.maxCount)
-            "
-            class="count-btn"
-            @click.stop="incrementItem(item.id)"
-          >
-            +
-          </button>
-        </div>
-        <div v-else class="item-checkbox">
-          {{ getItemCount(item.id) > 0 ? '✓' : '' }}
+            <button
+              :disabled="getItemCount(item.id) === 0"
+              class="count-btn"
+              @click.stop="decrementItem(item.id)"
+            >
+              −
+            </button>
+            <span class="count-value">{{ getItemCount(item.id) }}</span>
+            <button
+              :disabled="
+                getItemCount(item.id) >= getItemMaxCount(item.id, item.maxCount)
+              "
+              class="count-btn"
+              @click.stop="incrementItem(item.id)"
+            >
+              +
+            </button>
+          </div>
+          <div v-else class="item-checkbox">
+            {{ getItemCount(item.id) > 0 ? '✓' : '' }}
+          </div>
         </div>
       </div>
     </div>
@@ -196,7 +334,23 @@ function toggleItem(itemId: string) {
   overflow-y: auto;
   display: flex;
   flex-direction: column;
+  gap: 1rem;
+}
+
+.inventory-section {
+  display: flex;
+  flex-direction: column;
   gap: 0.5rem;
+}
+
+.inventory-section-header {
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #9ca3af;
+  padding-bottom: 0.25rem;
+  border-bottom: 1px solid #404040;
 }
 
 .item-card {
