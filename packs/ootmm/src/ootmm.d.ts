@@ -95,7 +95,7 @@ declare module '@ootmm/core/settings/index' {
   export const SPECIAL_CONDS_FIELDS: Record<string, unknown>;
 }
 
-declare module '@ootmm/core/settings/data.js' {
+declare module '@ootmm/core/settings/data' {
   export const SETTINGS: unknown[];
   export const SUBCATEGORIES: unknown[];
 }

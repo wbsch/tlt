@@ -7,8 +7,22 @@
       "@packs/ootmm/*": ["./packs/ootmm/src/*"],
       "@ootmm/data": ["./OoTMM/packages/data/src/index.ts"],
       "@ootmm/data/*": ["./OoTMM/packages/data/src/*"],
-      "@ootmm/core": ["./OoTMM/packages/core/lib/combo/index.ts"],
-      "@ootmm/core/*": ["./OoTMM/packages/core/lib/combo/*"]
+      "@ootmm/core/settings": ["./OoTMM/packages/core/src/settings/index.ts"],
+      "@ootmm/core/settings/*": ["./OoTMM/packages/core/src/settings/*"],
+      "@ootmm/core/items": [
+        "./OoTMM/packages/generator/lib/combo/items/index.ts"
+      ],
+      "@ootmm/core/items/*": ["./OoTMM/packages/generator/lib/combo/items/*"],
+      "@ootmm/core/logic": [
+        "./OoTMM/packages/generator/lib/combo/logic/index.ts"
+      ],
+      "@ootmm/core/logic/*": ["./OoTMM/packages/generator/lib/combo/logic/*"],
+      "@ootmm/core/monitor": [
+        "./OoTMM/packages/generator/lib/combo/monitor.ts"
+      ],
+      "@ootmm/core/names": ["./OoTMM/packages/generator/lib/combo/names.ts"],
+      "@ootmm/core": ["./OoTMM/packages/core/src/index.ts"],
+      "@ootmm/core/*": ["./OoTMM/packages/core/src/*"]
     },
     "target": "ES2020",
     "useDefineForClassFields": true,

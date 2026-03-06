@@ -39,7 +39,7 @@ import { OOTMM_MAP_DEFS } from '../data/maps';
 import type { MapDef } from '../data/maps/types';
 import * as ItemsMod from '@ootmm/core/items/index';
 import * as NamesMod from '@ootmm/core/names';
-import * as SettingsDataMod from '@ootmm/core/settings/data.js';
+import * as SettingsDataMod from '@ootmm/core/settings/data';
 import { TRICKS } from '@ootmm/core/settings/tricks';
 
 const props = defineProps<{

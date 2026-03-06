@@ -1,5 +1,5 @@
 import type { SettingDefinition } from '@/types/tracker';
-import * as SettingsMod from '@ootmm/core/settings/data.js';
+import * as SettingsMod from '@ootmm/core/settings/data';
 import settingsWhitelist from './settingsWhitelist.json';
 import { DEFAULT_OOTMM_SETTINGS } from '../types/settings';
 
