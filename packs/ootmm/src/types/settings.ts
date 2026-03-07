@@ -344,4 +344,8 @@ export const DEFAULT_OOTMM_SETTINGS: OoTMMSettings = {
   keepBottlesReset: false,
   autoInvert: 'never',
   tricks: ['OOT_NIGHT_GS'],
+  platinumTokenMm: false,
+  platinumTokenOot: false,
+  sharedPlatinumToken: false,
+  shuffleLotteryMm: false,
 };

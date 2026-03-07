@@ -22,6 +22,7 @@
     "format:check": "prettier . --check",
     "type-check": "vue-tsc --noEmit --project tsconfig.app.json",
     "audit:images": "node --import tsx scripts/audit_image_usage.ts",
+    "compare:settings": "node --import tsx scripts/compare_settings.ts",
     "test:pathfinder": "tsx scripts/pathfinder-tests/run_ootmm.ts tests/pathfinder/tests_silke.jsonc",
     "test:pathfinder:web": "tsx scripts/pathfinder-tests/run_silke_playwright.ts tests/pathfinder/tests_silke.jsonc",
     "test:e2e": "playwright test",
