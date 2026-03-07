@@ -2,6 +2,7 @@ import { deflateRaw, inflateRaw } from 'pako';
 import {
   PERSIST_CONFIGS,
   PERSIST_STORE_IDS,
+  TRACKER_EXTRA_SETTINGS_KEYS,
   sanitizePersistedStateForStore,
   type PersistStoreId,
 } from '@/stores/persist';
@@ -85,8 +86,15 @@ function mergeSettingsWithDefaults(
       ? diff[key]
       : structuredClone(value);
   }
-  // Only known default keys are accepted — unknown keys from the payload are
-  // intentionally discarded to prevent injection of unexpected properties.
+
+  for (const [key, value] of Object.entries(diff)) {
+    if (Object.prototype.hasOwnProperty.call(merged, key)) continue;
+    if (!TRACKER_EXTRA_SETTINGS_KEYS.has(key)) continue;
+    merged[key] = structuredClone(value);
+  }
+
+  // Only known default keys and validated dynamic tracker keys are accepted —
+  // unexpected keys from the payload are intentionally discarded.
   return merged;
 }
 

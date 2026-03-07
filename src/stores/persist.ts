@@ -35,9 +35,19 @@ function isPlainObject(value: unknown): value is Record<string, unknown> {
 const MAX_UI_STRING_LENGTH = 500;
 
 /** Known setting keys from the tracker defaults — used as an allowlist. */
+export const TRACKER_EXTRA_SETTINGS_KEYS = new Set([
+  'startingItems',
+  'junkLocations',
+  'specialConds',
+  'plando',
+  'hints',
+]);
+
+/** Known tracker setting keys from defaults plus validated dynamic fields. */
 const KNOWN_SETTINGS_KEYS = new Set([
   ...Object.keys(TRACKER_DEFAULT_SETTINGS),
   ...Object.keys(DEFAULT_OOTMM_SETTINGS),
+  ...TRACKER_EXTRA_SETTINGS_KEYS,
 ]);
 
 /**
@@ -69,9 +79,10 @@ function deepSanitizeJsonValue(value: unknown): unknown {
 }
 
 /**
- * Sanitize `trackerSettings`: only allow keys present in
- * TRACKER_DEFAULT_SETTINGS, and recursively strip dangerous keys / non-JSON
- * values from every value.
+ * Sanitize `trackerSettings`: only allow known tracker keys, including the
+ * validated dynamic keys that OoTMM adds outside the static defaults
+ * (`specialConds`, `plando`, spoiler-derived fields, etc.), and recursively
+ * strip dangerous keys / non-JSON values from every value.
  */
 function sanitizeSettingsObject(
   raw: Record<string, unknown>,
