@@ -1176,7 +1176,17 @@
       "coords": [116, 232],
       "image": "interior_entrance",
       "overlays": ["day"],
-      "codes": "TODO KF 128 :: unnamed_stack > Termina > Termina Layers > Termina Entrances :: Pasted Layer #127 :: 001-001-017-007.png"
+      "type": "submenu",
+      "markers": [
+        {
+          "image": "npc",
+          "codes": [
+            "MM Lottery Prize Night 1",
+            "MM Lottery Prize Night 2",
+            "MM Lottery Prize Night 3"
+          ]
+        }
+      ]
     },
     {
       "coords": [54, 154],

@@ -23,30 +23,45 @@ function readSourceFile(relativePath: string) {
   );
 }
 
-function getVariableInitializer(sourceFile: ts.SourceFile, variableName: string) {
+function getVariableInitializer(
+  sourceFile: ts.SourceFile,
+  variableName: string,
+) {
   for (const statement of sourceFile.statements) {
     if (!ts.isVariableStatement(statement)) {
       continue;
     }
 
     for (const declaration of statement.declarationList.declarations) {
-      if (!ts.isIdentifier(declaration.name) || declaration.name.text !== variableName) {
+      if (
+        !ts.isIdentifier(declaration.name) ||
+        declaration.name.text !== variableName
+      ) {
         continue;
       }
 
       if (!declaration.initializer) {
-        throw new Error(`Variable "${variableName}" in ${sourceFile.fileName} has no initializer.`);
+        throw new Error(
+          `Variable "${variableName}" in ${sourceFile.fileName} has no initializer.`,
+        );
       }
 
       return declaration.initializer;
     }
   }
 
-  throw new Error(`Could not find variable "${variableName}" in ${sourceFile.fileName}.`);
+  throw new Error(
+    `Could not find variable "${variableName}" in ${sourceFile.fileName}.`,
+  );
 }
 
 function unwrapExpression(expression: ts.Expression): ts.Expression {
-  if (ts.isAsExpression(expression) || ts.isTypeAssertionExpression(expression) || ts.isParenthesizedExpression(expression) || ts.isSatisfiesExpression(expression)) {
+  if (
+    ts.isAsExpression(expression) ||
+    ts.isTypeAssertionExpression(expression) ||
+    ts.isParenthesizedExpression(expression) ||
+    ts.isSatisfiesExpression(expression)
+  ) {
     return unwrapExpression(expression.expression);
   }
 
@@ -54,7 +69,11 @@ function unwrapExpression(expression: ts.Expression): ts.Expression {
 }
 
 function getPropertyName(name: ts.PropertyName) {
-  if (ts.isIdentifier(name) || ts.isStringLiteral(name) || ts.isNumericLiteral(name)) {
+  if (
+    ts.isIdentifier(name) ||
+    ts.isStringLiteral(name) ||
+    ts.isNumericLiteral(name)
+  ) {
     return name.text;
   }
 
@@ -63,16 +82,23 @@ function getPropertyName(name: ts.PropertyName) {
 
 function getObjectKeys(relativePath: string, variableName: string) {
   const sourceFile = readSourceFile(relativePath);
-  const initializer = unwrapExpression(getVariableInitializer(sourceFile, variableName));
+  const initializer = unwrapExpression(
+    getVariableInitializer(sourceFile, variableName),
+  );
 
   if (!ts.isObjectLiteralExpression(initializer)) {
-    throw new Error(`Variable "${variableName}" in ${relativePath} is not an object literal.`);
+    throw new Error(
+      `Variable "${variableName}" in ${relativePath} is not an object literal.`,
+    );
   }
 
   const keys: string[] = [];
 
   for (const property of initializer.properties) {
-    if (!ts.isPropertyAssignment(property) && !ts.isShorthandPropertyAssignment(property)) {
+    if (
+      !ts.isPropertyAssignment(property) &&
+      !ts.isShorthandPropertyAssignment(property)
+    ) {
       continue;
     }
 
@@ -87,10 +113,14 @@ function getObjectKeys(relativePath: string, variableName: string) {
 
 function getSettingKeys(relativePath: string, variableName: string) {
   const sourceFile = readSourceFile(relativePath);
-  const initializer = unwrapExpression(getVariableInitializer(sourceFile, variableName));
+  const initializer = unwrapExpression(
+    getVariableInitializer(sourceFile, variableName),
+  );
 
   if (!ts.isArrayLiteralExpression(initializer)) {
-    throw new Error(`Variable "${variableName}" in ${relativePath} is not an array literal.`);
+    throw new Error(
+      `Variable "${variableName}" in ${relativePath} is not an array literal.`,
+    );
   }
 
   const keys: string[] = [];
@@ -110,7 +140,10 @@ function getSettingKeys(relativePath: string, variableName: string) {
         continue;
       }
 
-      if (ts.isStringLiteral(property.initializer) || ts.isNoSubstitutionTemplateLiteral(property.initializer)) {
+      if (
+        ts.isStringLiteral(property.initializer) ||
+        ts.isNoSubstitutionTemplateLiteral(property.initializer)
+      ) {
         keys.push(property.initializer.text);
       }
 
@@ -159,8 +192,14 @@ console.log(`Core source:    ${CORE_SETTINGS_PATH}`);
 console.log(`Tracker settings: ${trackerKeys.size}`);
 console.log(`Core settings:    ${coreKeys.size}`);
 
-printSection(`Settings missing in ${TRACKER_SETTINGS_PATH} but present in ${CORE_SETTINGS_PATH}:`, missingInTracker);
-printSection(`Additional settings in ${TRACKER_SETTINGS_PATH} that are not present in ${CORE_SETTINGS_PATH}:`, extraInTracker);
+printSection(
+  `Settings missing in ${TRACKER_SETTINGS_PATH} but present in ${CORE_SETTINGS_PATH}:`,
+  missingInTracker,
+);
+printSection(
+  `Additional settings in ${TRACKER_SETTINGS_PATH} that are not present in ${CORE_SETTINGS_PATH}:`,
+  extraInTracker,
+);
 
 if (missingInTracker.length === 0 && extraInTracker.length === 0) {
   console.log('\nResult: The settings lists match.');
