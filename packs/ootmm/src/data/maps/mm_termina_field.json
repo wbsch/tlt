@@ -1180,11 +1180,18 @@
       "markers": [
         {
           "image": "npc",
-          "codes": [
-            "MM Lottery Prize Night 1",
-            "MM Lottery Prize Night 2",
-            "MM Lottery Prize Night 3"
-          ]
+          "overlays": ["day1"],
+          "codes": ["MM Lottery Prize Night 1"]
+        },
+        {
+          "image": "npc",
+          "overlays": ["day2"],
+          "codes": ["MM Lottery Prize Night 2"]
+        },
+        {
+          "image": "npc",
+          "overlays": ["day3"],
+          "codes": ["MM Lottery Prize Night 3"]
         }
       ]
     },
