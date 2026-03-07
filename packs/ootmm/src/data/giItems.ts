@@ -1,5 +1,5 @@
 // Auto-generated from OoTMM/packages/data/src/defs/gi.yml
-// and OoTMM/packages/core/lib/combo/names.ts
+// and OoTMM/packages/generator/lib/combo/names.ts
 export const GI_ITEM_LIST = [
   { id: 'OOT_BOMBS_5', name: '5 Bombs' },
   { id: 'OOT_NUTS_5', name: '5 Deku Nuts' },
@@ -492,6 +492,7 @@ export const GI_ITEM_LIST = [
   { id: 'OOT_TRAP_ANTI_MAGIC', name: 'Anti-Magic Trap' },
   { id: 'OOT_TRAP_KNOCKBACK', name: 'Knockback Trap' },
   { id: 'OOT_TRAP_RUPOOR', name: 'Rupoor' },
+  { id: 'OOT_PLATINUM_TOKEN', name: 'Platinum Token' },
   { id: 'MM_RUPEE_GREEN', name: 'Green Rupee' },
   { id: 'MM_RUPEE_BLUE', name: 'Blue Rupee' },
   { id: 'MM_RUPEE_RED_10', name: 'Red Rupee' },
@@ -654,6 +655,7 @@ export const GI_ITEM_LIST = [
   { id: 'MM_REMAINS_TWINMOLD', name: "Twinmold's Remains" },
   { id: 'MM_GS_TOKEN_SWAMP', name: 'Swamp Skulltula Token' },
   { id: 'MM_GS_TOKEN_OCEAN', name: 'Ocean Skulltula Token' },
+  { id: 'MM_PLATINUM_TOKEN', name: 'Platinum Token' },
   { id: 'MM_SMALL_KEY_WF', name: 'Small Key (Woodfall)' },
   { id: 'MM_SMALL_KEY_SH', name: 'Small Key (Snowhead)' },
   { id: 'MM_SMALL_KEY_GB', name: 'Small Key (Great Bay)' },
@@ -1101,4 +1103,5 @@ export const GI_ITEM_LIST = [
   { id: 'SHARED_SOUL_ANIMAL_COW', name: 'Soul of Cows' },
   { id: 'SHARED_SOUL_ANIMAL_DOG', name: 'Soul of Dogs' },
   { id: 'SHARED_SOUL_ANIMAL_BUTTERFLY', name: 'Soul of Butterflies' },
+  { id: 'SHARED_PLATINUM_TOKEN', name: 'Platinum Token' },
 ] as const;
