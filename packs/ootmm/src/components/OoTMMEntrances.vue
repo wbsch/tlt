@@ -26,6 +26,41 @@ const trackedSection = computed(
   () => sections.value.find((section) => section.kind === 'tracked') ?? null,
 );
 
+const groupedEntrances = computed(() => {
+  const hasOotEntrances = ootEntrances.value.length > 0;
+  const sections = [
+    {
+      id: 'oot',
+      title: 'Ocarina of Time',
+      entries: ootEntrances.value,
+    },
+    {
+      id: 'mm',
+      title: "Majora's Mask",
+      entries: mmEntrances.value,
+    },
+  ];
+
+  return sections
+    .map((section) => ({
+      ...section,
+      emphasizeSeparation: section.id === 'mm' && hasOotEntrances,
+      pools: [
+        {
+          id: 'dungeon',
+          title: 'Dungeons',
+          entries: section.entries.filter((entry) => entry.pool === 'dungeon'),
+        },
+        {
+          id: 'grotto',
+          title: 'Grottos',
+          entries: section.entries.filter((entry) => entry.pool === 'grotto'),
+        },
+      ].filter((pool) => pool.entries.length > 0),
+    }))
+    .filter((section) => section.pools.length > 0);
+});
+
 function handleDestinationChange(srcKey: string, dstKey: string) {
   setSelectedDestination(srcKey, dstKey);
 }
@@ -117,85 +152,72 @@ function handleDestinationChange(srcKey: string, dstKey: string) {
     </div>
 
     <div v-else class="entrances-list">
-      <!-- OoT Entrances -->
-      <template v-if="ootEntrances.length > 0">
-        <div class="game-section-header">Ocarina of Time</div>
+      <section
+        v-for="section in groupedEntrances"
+        :key="section.id"
+        class="game-section"
+        :class="[
+          `game-section-${section.id}`,
+          { 'game-section-emphasis': section.emphasizeSeparation },
+        ]"
+      >
         <div
-          v-for="entrance in ootEntrances"
-          :key="entrance.key"
-          class="entrance-row"
+          class="game-section-header"
+          :class="[
+            `game-section-header-${section.id}`,
+            { 'game-section-header-emphasis': section.emphasizeSeparation },
+          ]"
         >
-          <label class="entrance-label" :title="entrance.key">
-            {{ entrance.label }}
-          </label>
-          <select
-            class="entrance-select"
-            :value="getSelectedDestination(entrance.key)"
-            @change="
-              handleDestinationChange(
-                entrance.key,
-                ($event.target as HTMLSelectElement).value,
-              )
-            "
-          >
-            <option value="">— Not mapped —</option>
-            <option
-              v-for="dest in destinationOptionsForEntrance(entrance)"
-              :key="dest.value"
-              :value="dest.value"
-            >
-              {{ dest.label
-              }}{{
-                dest.game === 'mm'
-                  ? ' (MM)'
-                  : dest.game === 'oot'
-                    ? ' (OoT)'
-                    : ''
-              }}
-            </option>
-          </select>
+          <span class="game-section-title">{{ section.title }}</span>
         </div>
-      </template>
 
-      <!-- MM Entrances -->
-      <template v-if="mmEntrances.length > 0">
-        <div class="game-section-header">Majora's Mask</div>
         <div
-          v-for="entrance in mmEntrances"
-          :key="entrance.key"
-          class="entrance-row"
+          v-for="pool in section.pools"
+          :key="`${section.id}-${pool.id}`"
+          class="pool-section"
         >
-          <label class="entrance-label" :title="entrance.key">
-            {{ entrance.label }}
-          </label>
-          <select
-            class="entrance-select"
-            :value="getSelectedDestination(entrance.key)"
-            @change="
-              handleDestinationChange(
-                entrance.key,
-                ($event.target as HTMLSelectElement).value,
-              )
-            "
+          <div class="pool-section-header">
+            <span>{{ pool.title }}</span>
+            <span class="pool-section-count">{{ pool.entries.length }}</span>
+          </div>
+
+          <div
+            v-for="entrance in pool.entries"
+            :key="entrance.key"
+            class="entrance-row"
           >
-            <option value="">— Not mapped —</option>
-            <option
-              v-for="dest in destinationOptionsForEntrance(entrance)"
-              :key="dest.value"
-              :value="dest.value"
+            <label class="entrance-label" :title="entrance.key">
+              {{ entrance.label }}
+            </label>
+            <select
+              class="entrance-select"
+              :value="getSelectedDestination(entrance.key)"
+              @change="
+                handleDestinationChange(
+                  entrance.key,
+                  ($event.target as HTMLSelectElement).value,
+                )
+              "
             >
-              {{ dest.label
-              }}{{
-                dest.game === 'mm'
-                  ? ' (MM)'
-                  : dest.game === 'oot'
-                    ? ' (OoT)'
-                    : ''
-              }}
-            </option>
-          </select>
+              <option value="">— Not mapped —</option>
+              <option
+                v-for="dest in destinationOptionsForEntrance(entrance)"
+                :key="dest.value"
+                :value="dest.value"
+              >
+                {{ dest.label
+                }}{{
+                  dest.game === 'mm'
+                    ? ' (MM)'
+                    : dest.game === 'oot'
+                      ? ' (OoT)'
+                      : ''
+                }}
+              </option>
+            </select>
+          </div>
         </div>
-      </template>
+      </section>
     </div>
   </div>
 </template>
@@ -301,17 +323,73 @@ function handleDestinationChange(srcKey: string, dstKey: string) {
 .entrances-list {
   display: flex;
   flex-direction: column;
-  gap: 0.35rem;
+  gap: 0.8rem;
+}
+
+.game-section {
+  display: flex;
+  flex-direction: column;
+  gap: 0.55rem;
+}
+
+.game-section-emphasis {
+  margin-top: 0.2rem;
+  padding-top: 0.8rem;
+  border-top: 2px solid #f59e0b;
 }
 
 .game-section-header {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
   font-size: 0.75rem;
   font-weight: 700;
   text-transform: uppercase;
-  letter-spacing: 0.05em;
+  letter-spacing: 0.08em;
+  padding: 0 0 0.2rem;
+  border: 0;
+  border-bottom: 1px solid #374151;
+  border-radius: 0;
+}
+
+.game-section-header-oot {
+  color: #cbd5e1;
+}
+
+.game-section-header-mm {
+  color: #fde68a;
+}
+
+.game-section-header-emphasis {
+  border-bottom-color: rgb(245 158 11 / 0.5);
+}
+
+.game-section-title {
+  min-width: 0;
+}
+
+.pool-section {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+}
+
+.pool-section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  padding: 0 0.1rem 0.15rem;
+  border-bottom: 1px solid #253041;
   color: #9ca3af;
-  padding: 0.5rem 0 0.25rem;
-  border-bottom: 1px solid #333;
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.pool-section-count {
+  color: #6b7280;
 }
 
 .entrance-row {
