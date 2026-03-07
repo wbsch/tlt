@@ -25,6 +25,7 @@ const VALID_TABS = new Set([
 const VALID_RIGHT_SIDEBAR_TABS = new Set(['locations', 'entrances']);
 const VALID_REACHABILITY_FILTERS = new Set(['all', 'reachable', 'unreachable']);
 const VALID_COLLECTION_FILTERS = new Set(['all', 'collected', 'uncollected']);
+const VALID_ENTRANCE_MAPPING_FILTERS = new Set(['all', 'mapped', 'unmapped']);
 
 function isPlainObject(value: unknown): value is Record<string, unknown> {
   return Boolean(value) && typeof value === 'object' && !Array.isArray(value);
@@ -177,6 +178,8 @@ export const PERSIST_CONFIGS: Record<PersistStoreId, PersistConfig> = {
       'locationsCollectionFilter',
       'locationsShowUnshuffled',
       'locationsShowGossipStones',
+      'entrancesReachabilityFilter',
+      'entrancesMappingFilter',
       'leftSidebarWidth',
       'rightSidebarWidth',
       'activeMapId',
@@ -220,6 +223,14 @@ export const PERSIST_CONFIGS: Record<PersistStoreId, PersistConfig> = {
           : {}),
         ...(typeof raw.locationsShowGossipStones === 'boolean'
           ? { locationsShowGossipStones: raw.locationsShowGossipStones }
+          : {}),
+        ...(typeof raw.entrancesReachabilityFilter === 'string' &&
+        VALID_REACHABILITY_FILTERS.has(raw.entrancesReachabilityFilter)
+          ? { entrancesReachabilityFilter: raw.entrancesReachabilityFilter }
+          : {}),
+        ...(typeof raw.entrancesMappingFilter === 'string' &&
+        VALID_ENTRANCE_MAPPING_FILTERS.has(raw.entrancesMappingFilter)
+          ? { entrancesMappingFilter: raw.entrancesMappingFilter }
           : {}),
         ...(typeof raw.leftSidebarWidth === 'number'
           ? {
