@@ -419,6 +419,9 @@
       "coords": [896, 508],
       "image": "silver_boulder_grotto",
       "type": "submenu",
+      "entranceMenu": {
+        "entranceIds": ["OOT_GROTTO_OCTOROK"]
+      },
       "markers": [
         {
           "image": "green_rupee",
@@ -452,6 +455,9 @@
       "coords": [833, 417],
       "image": "song_grotto",
       "type": "submenu",
+      "entranceMenu": {
+        "entranceIds": ["OOT_GROTTO_SCRUBS2_VALLEY"]
+      },
       "markers": [
         {
           "image": "business_scrub_oot",
@@ -662,6 +668,9 @@
       "coords": [454, 278],
       "image": "song_grotto",
       "type": "submenu",
+      "entranceMenu": {
+        "entranceIds": ["OOT_GROTTO_FAIRY_FORTRESS"]
+      },
       "markers": [
         {
           "image": "fairy",
@@ -948,6 +957,9 @@
       "coords": [78, 450],
       "image": "silver_boulder_grotto",
       "type": "submenu",
+      "entranceMenu": {
+        "entranceIds": ["OOT_GROTTO_SCRUBS2_COLOSSUS"]
+      },
       "markers": [
         {
           "image": "business_scrub_oot",

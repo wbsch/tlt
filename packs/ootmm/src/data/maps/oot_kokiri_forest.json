@@ -642,6 +642,9 @@
       "coords": [548, 330],
       "image": "song_grotto",
       "type": "submenu",
+      "entranceMenu": {
+        "entranceIds": ["OOT_GROTTO_GENERIC_KOKIRI_FOREST"]
+      },
       "markers": [
         {
           "image": "chest",
@@ -681,6 +684,9 @@
       "coords": [332, 328],
       "image": "bomb_grotto",
       "type": "submenu",
+      "entranceMenu": {
+        "entranceIds": ["OOT_GROTTO_WOLFOS"]
+      },
       "markers": [
         {
           "image": "chest",
@@ -692,6 +698,9 @@
       "coords": [343, 238],
       "image": "grotto",
       "type": "submenu",
+      "entranceMenu": {
+        "entranceIds": ["OOT_GROTTO_FAIRY_SFM"]
+      },
       "markers": [
         {
           "image": "fairy",
@@ -712,6 +721,9 @@
       "coords": [357, 96],
       "image": "grotto",
       "type": "submenu",
+      "entranceMenu": {
+        "entranceIds": ["OOT_GROTTO_SCRUBS2_SFM"]
+      },
       "markers": [
         {
           "image": "business_scrub_oot",
@@ -743,6 +755,9 @@
       "coords": [144, 235],
       "image": "boulder_grotto",
       "type": "submenu",
+      "entranceMenu": {
+        "entranceIds": ["OOT_GROTTO_SCRUB_UPGRADE"]
+      },
       "markers": [
         {
           "image": "business_scrub_oot",
@@ -765,6 +780,9 @@
       "coords": [124, 271],
       "image": "grotto",
       "type": "submenu",
+      "entranceMenu": {
+        "entranceIds": ["OOT_GROTTO_DEKU_THEATER"]
+      },
       "markers": [
         {
           "image": "npc",
@@ -782,6 +800,9 @@
       "coords": [156, 296],
       "image": "boulder_grotto",
       "type": "submenu",
+      "entranceMenu": {
+        "entranceIds": ["OOT_GROTTO_GENERIC_LOST_WOODS"]
+      },
       "markers": [
         {
           "image": "gossip_stone",

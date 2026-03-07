@@ -3,7 +3,12 @@ import { storeToRefs } from 'pinia';
 import * as DataMod from '@ootmm/data';
 import { useOoTMMSessionStore } from '../stores/ootmmSession';
 import { useOoTMMUiStore } from '../stores/ootmmUi';
-import { getEnabledDungeonTypes } from '../utils/entranceRandomization';
+import {
+  getActiveEntranceKeys,
+  getTrackedEntrancePool,
+  isTrackedEntranceSourceType,
+  type TrackedEntrancePool,
+} from '../utils/entranceRandomization';
 
 const resolveExport = <T>(mod: unknown, key: string): T => {
   const modObj = mod as { default?: Record<string, T>; [k: string]: unknown };
@@ -22,32 +27,20 @@ type EntranceData = {
 const ENTRANCES_RAW =
   resolveExport<Record<string, EntranceData>>(DataMod, 'ENTRANCES') ?? {};
 
-const DUNGEON_TYPES = new Set([
-  'dungeon',
-  'dungeon-minor',
-  'dungeon-ganon',
-  'dungeon-ganon-tower',
-  'dungeon-sh',
-  'dungeon-pf',
-  'dungeon-btw',
-  'dungeon-acoi',
-  'dungeon-ss',
-  'dungeon-ctr',
-]);
-
 export type DungeonEntranceEntry = {
   key: string;
   label: string;
   game: 'oot' | 'mm';
   type: string;
+  pool: TrackedEntrancePool;
 };
 
 export type EntrancePanelSection = {
-  id: 'dungeon';
+  id: 'tracked';
   title: string;
   hasContent: boolean;
   sortOrder: number;
-  kind: 'dungeon';
+  kind: 'tracked';
 };
 
 type ReachabilityStats = {
@@ -85,12 +78,15 @@ export function useDungeonEntrances() {
   const allDungeonEntrances = computed<DungeonEntranceEntry[]>(() => {
     const entries: DungeonEntranceEntry[] = [];
     for (const [key, data] of Object.entries(ENTRANCES_RAW)) {
-      if (!DUNGEON_TYPES.has(data.type)) continue;
+      if (!isTrackedEntranceSourceType(data.type)) continue;
+      const pool = getTrackedEntrancePool(data.type);
+      if (!pool) continue;
       entries.push({
         key,
         label: entranceLabel(key, data),
         game: data.game as 'oot' | 'mm',
         type: data.type,
+        pool,
       });
     }
     entries.sort((a, b) => {
@@ -101,18 +97,11 @@ export function useDungeonEntrances() {
   });
 
   const activeEntrances = computed<DungeonEntranceEntry[]>(() => {
-    const settings = trackerSettings.value;
-    const erDungeons = settings?.erDungeons;
-    if (erDungeons === 'none' || !erDungeons) return [];
-
-    const selectedGames = String(settings?.games ?? 'ootmm');
-    const enabledTypes = getEnabledDungeonTypes(settings);
+    const activeKeys = getActiveEntranceKeys(trackerSettings.value);
+    if (activeKeys.size === 0) return [];
 
     return allDungeonEntrances.value.filter((entrance) => {
-      if (selectedGames === 'oot' && entrance.game === 'mm') return false;
-      if (selectedGames === 'mm' && entrance.game === 'oot') return false;
-
-      return enabledTypes.has(entrance.type);
+      return activeKeys.has(entrance.key);
     });
   });
 
@@ -158,22 +147,26 @@ export function useDungeonEntrances() {
       value: entry.key,
       label: entry.label,
       game: entry.game,
+      pool: entry.pool,
     }));
   });
 
   const erDungeonsMode = computed(() =>
     String(trackerSettings.value?.erDungeons ?? 'none'),
   );
+  const erGrottosMode = computed(() =>
+    String(trackerSettings.value?.erGrottos ?? 'none'),
+  );
   const sections = computed<EntrancePanelSection[]>(() => {
     if (activeEntrances.value.length === 0) return [];
 
     return [
       {
-        id: 'dungeon',
-        title: 'Dungeon Entrances',
+        id: 'tracked',
+        title: 'Entrances',
         hasContent: true,
         sortOrder: 0,
-        kind: 'dungeon',
+        kind: 'tracked',
       },
     ];
   });
@@ -186,16 +179,20 @@ export function useDungeonEntrances() {
     return false;
   }
 
-  function destinationOptionsForGame(
-    game: 'oot' | 'mm',
-    currentSrcKey: string,
+  function destinationOptionsForEntrance(
+    entry: Pick<DungeonEntranceEntry, 'key' | 'game' | 'pool'>,
   ) {
-    const opts =
-      erDungeonsMode.value === 'ownGame'
-        ? destinationOptions.value.filter((dest) => dest.game === game)
-        : destinationOptions.value;
+    const ownGameMode =
+      entry.pool === 'dungeon'
+        ? erDungeonsMode.value === 'ownGame'
+        : erGrottosMode.value === 'ownGame';
+    const opts = destinationOptions.value.filter((dest) => {
+      if (dest.pool !== entry.pool) return false;
+      if (!ownGameMode) return true;
+      return dest.game === entry.game;
+    });
 
-    return opts.filter((dest) => !isDestinationUsed(dest.value, currentSrcKey));
+    return opts.filter((dest) => !isDestinationUsed(dest.value, entry.key));
   }
 
   const ootEntrances = computed(() =>
@@ -231,7 +228,7 @@ export function useDungeonEntrances() {
     mappingStats,
     ootEntrances,
     mmEntrances,
-    destinationOptionsForGame,
+    destinationOptionsForEntrance,
     getSelectedDestination,
     setSelectedDestination,
     clearAllOverrides,

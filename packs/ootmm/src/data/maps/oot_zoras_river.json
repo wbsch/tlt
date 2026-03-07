@@ -677,6 +677,9 @@
       "coords": [79, 443],
       "image": "grotto",
       "type": "submenu",
+      "entranceMenu": {
+        "entranceIds": ["OOT_GROTTO_SCRUBS3_LAKE"]
+      },
       "markers": [
         {
           "image": "business_scrub_oot",
@@ -781,6 +784,9 @@
       "coords": [373, 162],
       "image": "song_grotto",
       "type": "submenu",
+      "entranceMenu": {
+        "entranceIds": ["OOT_GROTTO_SCRUBS2_RIVER"]
+      },
       "markers": [
         {
           "image": "business_scrub_oot",
@@ -799,6 +805,9 @@
       "coords": [543, 196],
       "image": "grotto",
       "type": "submenu",
+      "entranceMenu": {
+        "entranceIds": ["OOT_GROTTO_GENERIC_RIVER"]
+      },
       "markers": [
         {
           "image": "chest",
@@ -838,6 +847,9 @@
       "coords": [578, 139],
       "image": "boulder_grotto",
       "type": "submenu",
+      "entranceMenu": {
+        "entranceIds": ["OOT_GROTTO_FAIRY_RIVER"]
+      },
       "markers": [
         {
           "image": "fairy",
@@ -858,6 +870,9 @@
       "coords": [532, 504],
       "image": "song_grotto",
       "type": "submenu",
+      "entranceMenu": {
+        "entranceIds": ["OOT_GROTTO_FAIRY_DOMAIN"]
+      },
       "markers": [
         {
           "image": "fairy",

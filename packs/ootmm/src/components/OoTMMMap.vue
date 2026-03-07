@@ -27,6 +27,11 @@ import {
   type DungeonEntranceEntry,
 } from '../composables/useDungeonEntrances';
 import { OOTMM_MAP_DEFS } from '../data/maps';
+import {
+  getTrackedEntranceKeysForBinding,
+  isTrackedEntranceAvailable,
+  normalizeTrackedEntranceKey,
+} from '../utils/entranceRandomization';
 import { matchesMapSettingsVisibility } from '../utils/mapSettingsVisibility';
 import type {
   MapDef,
@@ -144,6 +149,7 @@ type EntranceMenuEntryRuntime = {
   key: string;
   label: string;
   game: 'oot' | 'mm';
+  pool: DungeonEntranceEntry['pool'];
 };
 
 type MarkerRuntime = CheckMarkerRuntime | SubmenuMarkerRuntime;
@@ -332,9 +338,15 @@ function normalizeEntranceIdList(
 ): string[] {
   const configured = Array.isArray(value) ? value : [];
   if (configured.length > 0) {
-    return configured
-      .map((id) => (typeof id === 'string' ? id.trim() : ''))
-      .filter((id) => id.length > 0);
+    return [
+      ...new Set(
+        configured.flatMap((id) => {
+          const trimmed = typeof id === 'string' ? id.trim() : '';
+          if (trimmed.length === 0) return [];
+          return [normalizeTrackedEntranceKey(trimmed)];
+        }),
+      ),
+    ];
   }
 
   return markerCodeList(markerDef);
@@ -381,11 +393,13 @@ const ENTRANCE_SUBMENU_ENTRIES_BY_ID = (() => {
       }));
 
       for (const entranceId of entranceIds) {
-        const existing = byId.get(entranceId);
-        if (existing) {
-          existing.push(...normalizedEntries.map(cloneSubmenuEntry));
-        } else {
-          byId.set(entranceId, normalizedEntries.map(cloneSubmenuEntry));
+        for (const bindingId of getTrackedEntranceKeysForBinding(entranceId)) {
+          const existing = byId.get(bindingId);
+          if (existing) {
+            existing.push(...normalizedEntries.map(cloneSubmenuEntry));
+          } else {
+            byId.set(bindingId, normalizedEntries.map(cloneSubmenuEntry));
+          }
         }
       }
     }
@@ -416,7 +430,7 @@ const {
   allEntrances: allDungeonEntrances,
   activeEntrances: activeDungeonEntrances,
   filteredEntrances: filteredDungeonEntrances,
-  destinationOptionsForGame,
+  destinationOptionsForEntrance,
   getSelectedDestination,
   setSelectedDestination,
 } = useDungeonEntrances();
@@ -892,6 +906,7 @@ function toEntranceMenuEntry(
     key: entry.key,
     label: entry.label,
     game: entry.game,
+    pool: entry.pool,
   };
 }
 
@@ -899,6 +914,10 @@ function resolveMappedDestinationEntranceId(
   sourceEntranceId: string,
   activeEntranceById: Map<string, DungeonEntranceEntry>,
 ): string | null {
+  if (!isTrackedEntranceAvailable(sourceEntranceId, props.settings ?? {})) {
+    return null;
+  }
+
   if (!activeEntranceById.has(sourceEntranceId)) {
     return sourceEntranceId;
   }
@@ -1716,7 +1735,7 @@ function handlePopupMarkAllChecks(popup: MapPopupPayload): void {
 }
 
 function getEntranceDestinationOptions(entry: EntranceMenuEntryRuntime) {
-  return destinationOptionsForGame(entry.game, entry.key);
+  return destinationOptionsForEntrance(entry);
 }
 
 function getEntranceDestinationValue(srcKey: string): string {

@@ -26,7 +26,7 @@ const OUTPUT_FILE = path.resolve(
   'packs/ootmm/src/data/schemas/ootmm-map.schema.json',
 );
 
-const DUNGEON_ENTRANCE_TYPES = new Set([
+const TRACKER_ENTRANCE_TYPES = new Set([
   'dungeon',
   'dungeon-minor',
   'dungeon-ganon',
@@ -37,6 +37,10 @@ const DUNGEON_ENTRANCE_TYPES = new Set([
   'dungeon-acoi',
   'dungeon-ss',
   'dungeon-ctr',
+  'grotto',
+  'grave',
+  'grotto-exit',
+  'grave-exit',
 ]);
 
 function extractStringUnionValues(source: string, typeName: string): string[] {
@@ -73,7 +77,7 @@ async function loadReferenceLocationCodes(): Promise<string[]> {
   return buildLocationCodeSet(world, hints);
 }
 
-async function loadDungeonEntranceIds(): Promise<string[]> {
+async function loadTrackerEntranceIds(): Promise<string[]> {
   const entrancesRaw = await readFile(ENTRANCES_DATA_FILE, 'utf8');
   const entrances = JSON.parse(entrancesRaw) as Record<
     string,
@@ -82,18 +86,18 @@ async function loadDungeonEntranceIds(): Promise<string[]> {
 
   return toSortedUnique(
     Object.entries(entrances)
-      .filter(([, entry]) => DUNGEON_ENTRANCE_TYPES.has(entry.type ?? ''))
+      .filter(([, entry]) => TRACKER_ENTRANCE_TYPES.has(entry.type ?? ''))
       .map(([id]) => id),
   );
 }
 
 async function generateMapSchema(): Promise<void> {
   const markerImages = toSortedUnique(MAP_ICON_INDEX);
-  const [mapImages, overlays, codes, dungeonEntranceIds] = await Promise.all([
+  const [mapImages, overlays, codes, trackerEntranceIds] = await Promise.all([
     loadMapImageNames(),
     loadOverlayNames(),
     loadReferenceLocationCodes(),
-    loadDungeonEntranceIds(),
+    loadTrackerEntranceIds(),
   ]);
 
   const schema = {
@@ -288,7 +292,7 @@ async function generateMapSchema(): Promise<void> {
             type: 'array',
             items: {
               type: 'string',
-              enum: dungeonEntranceIds,
+              enum: trackerEntranceIds,
             },
             minItems: 1,
             uniqueItems: true,
@@ -307,7 +311,7 @@ async function generateMapSchema(): Promise<void> {
   await mkdir(path.dirname(OUTPUT_FILE), { recursive: true });
   await writeFile(OUTPUT_FILE, formattedOutput, 'utf8');
   console.log(
-    `Generated schema -> ${path.relative(process.cwd(), OUTPUT_FILE)} (${markerImages.length} marker images, ${overlays.length} overlays, ${codes.length} codes, ${dungeonEntranceIds.length} dungeon entrances)`,
+    `Generated schema -> ${path.relative(process.cwd(), OUTPUT_FILE)} (${markerImages.length} marker images, ${overlays.length} overlays, ${codes.length} codes, ${trackerEntranceIds.length} tracked entrances)`,
   );
 }
 

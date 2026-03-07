@@ -1019,6 +1019,9 @@
       "coords": [905, 495],
       "image": "grotto",
       "type": "submenu",
+      "entranceMenu": {
+        "entranceIds": ["MM_GROTTO_HOT_WATER"]
+      },
       "markers": [
         {
           "image": "chest",
@@ -1030,6 +1033,9 @@
       "coords": [787, 461],
       "image": "bomb_grotto",
       "type": "submenu",
+      "entranceMenu": {
+        "entranceIds": ["MM_GROTTO_GENERIC_TWIN_ISLANDS"]
+      },
       "markers": [
         {
           "image": "chest",
@@ -1103,6 +1109,9 @@
       "image": "grotto",
       "overlays": ["clear_state"],
       "type": "submenu",
+      "entranceMenu": {
+        "entranceIds": ["MM_GROTTO_GENERIC_MOUNTAIN_VILLAGE"]
+      },
       "markers": [
         {
           "image": "chest",
@@ -1201,6 +1210,9 @@
       "coords": [198, 369],
       "image": "bomb_grotto",
       "type": "submenu",
+      "entranceMenu": {
+        "entranceIds": ["MM_GROTTO_GENERIC_PATH_SNOWHEAD"]
+      },
       "markers": [
         {
           "image": "chest",

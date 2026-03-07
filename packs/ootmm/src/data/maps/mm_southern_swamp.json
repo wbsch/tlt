@@ -492,6 +492,9 @@
       "coords": [250, 126],
       "image": "grotto",
       "type": "submenu",
+      "entranceMenu": {
+        "entranceIds": ["MM_GROTTO_GENERIC_SWAMP"]
+      },
       "markers": [
         {
           "image": "chest",
@@ -592,6 +595,9 @@
       "coords": [949, 218],
       "image": "grotto",
       "type": "submenu",
+      "entranceMenu": {
+        "entranceIds": ["MM_GROTTO_GENERIC_WOODS"]
+      },
       "markers": [
         {
           "image": "chest",
@@ -623,6 +629,9 @@
       "image": "grotto",
       "overlays": ["na_only"],
       "type": "submenu",
+      "entranceMenu": {
+        "entranceIds": ["MM_GROTTO_BEAN"]
+      },
       "markers": [
         {
           "image": "chest",
@@ -669,6 +678,9 @@
       "image": "grotto",
       "overlays": ["jp_only"],
       "type": "submenu",
+      "entranceMenu": {
+        "entranceIds": ["MM_GROTTO_BEAN"]
+      },
       "markers": [
         {
           "image": "chest",
@@ -714,6 +726,9 @@
       "coords": [536, 391],
       "image": "grotto",
       "overlays": ["jp_only"],
+      "entranceMenu": {
+        "entranceIds": ["MM_GROTTO_JP_LINE_END"]
+      },
       "type": "submenu",
       "markers": [
         {
@@ -742,19 +757,28 @@
       "coords": [540, 446],
       "image": "grotto",
       "overlays": ["jp_only"],
-      "codes": "TODO KF 080 :: unnamed_stack > Swamp > Swamp Layers > Swamp Entrances :: Pasted Layer #79 :: 001-001-012-010.png"
+      "type": "submenu",
+      "entranceMenu": {
+        "entranceIds": ["MM_GROTTO_JP_CLIMB_RIGHT"]
+      }
     },
     {
       "coords": [482, 444],
       "image": "grotto",
       "overlays": ["jp_only"],
-      "codes": "TODO KF 081 :: unnamed_stack > Swamp > Swamp Layers > Swamp Entrances :: Pasted Layer #80 :: 001-001-012-011.png"
+      "type": "submenu",
+      "entranceMenu": {
+        "entranceIds": ["MM_GROTTO_JP_CLIMB_LEFT"]
+      }
     },
     {
       "coords": [435, 398],
       "image": "grotto",
       "overlays": ["jp_only"],
       "type": "submenu",
+      "entranceMenu": {
+        "entranceIds": ["MM_GROTTO_JP_LINE_START"]
+      },
       "markers": [
         {
           "image": "grass",

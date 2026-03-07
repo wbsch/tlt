@@ -533,6 +533,9 @@
       "coords": [229, 311],
       "image": "bomb_grotto",
       "type": "submenu",
+      "entranceMenu": {
+        "entranceIds": ["OOT_GROTTO_REDEAD"]
+      },
       "markers": [
         {
           "image": "chest",
@@ -619,6 +622,9 @@
       "coords": [314, 251],
       "image": "grotto",
       "type": "submenu",
+      "entranceMenu": {
+        "entranceIds": ["OOT_GROTTO_GENERIC_KAKARIKO"]
+      },
       "markers": [
         {
           "image": "chest",
@@ -697,6 +703,9 @@
       "coords": [681, 516],
       "image": "grotto",
       "type": "submenu",
+      "entranceMenu": {
+        "entranceIds": ["OOT_GRAVE_SHIELD"]
+      },
       "markers": [
         {
           "image": "chest",
@@ -721,6 +730,9 @@
       "coords": [728, 538],
       "image": "grotto",
       "type": "submenu",
+      "entranceMenu": {
+        "entranceIds": ["OOT_GRAVE_REDEAD"]
+      },
       "markers": [
         {
           "image": "chest",
@@ -732,6 +744,9 @@
       "coords": [668, 456],
       "image": "grotto",
       "type": "submenu",
+      "entranceMenu": {
+        "entranceIds": ["OOT_GRAVE_DAMPE"]
+      },
       "markers": [
         {
           "image": "pot",
@@ -791,6 +806,9 @@
       "coords": [788, 511],
       "image": "grotto",
       "type": "submenu",
+      "entranceMenu": {
+        "entranceIds": ["OOT_GRAVE_ROYAL"]
+      },
       "markers": [
         {
           "image": "chest",

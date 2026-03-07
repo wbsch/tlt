@@ -21,6 +21,7 @@ import * as DataMod from '@ootmm/data';
 
 import { ITEM_DATABASE } from './data/items';
 import { LOCATION_CODE_CATALOG } from './data/locationCatalog';
+import { getActiveEntranceKeys } from './utils/entranceRandomization';
 
 const resolveExport = <T>(mod: unknown, key: string): T =>
   (mod as Record<string, T>)?.[key] ??
@@ -374,19 +375,19 @@ export class OoTMMTracker implements TrackerPack {
     // Self-map all enabled dungeon entrances to prevent random assignment,
     // then after the entrance pass, disconnect unassigned ones so their
     // checks are unreachable until the user explicitly maps them.
-    const erDungeons = (this.settings as Record<string, unknown>)?.erDungeons;
-    const isErActive = erDungeons && erDungeons !== 'none';
+    const activeEntranceKeys = getActiveEntranceKeys(
+      this.settings as Record<string, unknown>,
+    );
+    const isErActive = activeEntranceKeys.size > 0;
     const finalPlandoEntrances = { ...plandoEntrances };
     const unmappedEntrances: string[] = [];
 
     if (isErActive) {
-      // Self-map dungeon-type entrances to prevent random shuffling.
-      // Only entrances with valid from/to areas and dungeon-related types.
+      // Self-map every active tracked entrance to prevent random shuffling.
       // Track which ones are NOT user-assigned so we can disconnect them later.
       // Keep special entrances with `no-global` connected while unmapped.
       for (const [key, data] of Object.entries(ENTRANCES_DATA)) {
-        if (!data.type.startsWith('dungeon') || data.type === 'dungeon-exit')
-          continue;
+        if (!activeEntranceKeys.has(key)) continue;
         if (data.from === 'NONE' || data.to === 'NONE') continue;
         if (!finalPlandoEntrances[key]) {
           finalPlandoEntrances[key] = key;
@@ -455,8 +456,7 @@ export class OoTMMTracker implements TrackerPack {
           { exits?: Record<string, unknown> }
         >;
         for (const [key, data] of Object.entries(ENTRANCES_DATA)) {
-          if (!data.type.startsWith('dungeon') || data.type === 'dungeon-exit')
-            continue;
+          if (!activeEntranceKeys.has(key)) continue;
           if (data.from === 'NONE' || data.to === 'NONE') continue;
 
           // Determine the actual exit target: for mapped entrances, use
@@ -484,7 +484,7 @@ export class OoTMMTracker implements TrackerPack {
       }
     }
 
-    // Disconnect unmapped dungeon entrances so their checks are unreachable.
+    // Disconnect unmapped tracked entrances so their checks are unreachable.
     // We self-mapped them above to prevent random shuffling, but now we remove
     // the exit connections so the pathfinder can't reach them.
     if (unmappedEntrances.length > 0) {

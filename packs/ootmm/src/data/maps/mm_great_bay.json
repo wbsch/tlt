@@ -543,6 +543,9 @@
       "coords": [740, 166],
       "image": "grotto",
       "type": "submenu",
+      "entranceMenu": {
+        "entranceIds": ["MM_GROTTO_COW_COAST"]
+      },
       "markers": [
         {
           "image": "cow",
@@ -674,6 +677,9 @@
       "coords": [722, 312],
       "image": "grotto",
       "type": "submenu",
+      "entranceMenu": {
+        "entranceIds": ["MM_GROTTO_GENERIC_GREAT_BAY_COAST"]
+      },
       "markers": [
         {
           "image": "chest",
@@ -704,6 +710,9 @@
       "coords": [491, 485],
       "image": "boulder_grotto",
       "type": "submenu",
+      "entranceMenu": {
+        "entranceIds": ["MM_GROTTO_GENERIC_ZORA_CAPE"]
+      },
       "markers": [
         {
           "image": "chest",

@@ -16,7 +16,10 @@ import {
   type OoTMMSyncOperation,
   type OoTMMSyncOperationEnvelope,
 } from './ootmmSessionSync';
-import { filterEntranceOverridesForSettings } from '../utils/entranceRandomization';
+import {
+  filterEntranceOverridesForSettings,
+  getActiveEntranceKeys,
+} from '../utils/entranceRandomization';
 
 const HISTORY_LIMIT = 200;
 const VANILLA_SILVER_RUPEE_PREFIX = 'OOT_RUPEE_SILVER_';
@@ -203,8 +206,7 @@ export const useOoTMMSessionStore = defineStore('ootmm-session', () => {
     settings: Record<string, unknown>,
     overrides: Record<string, string>,
   ): Record<string, unknown> {
-    const erDungeons = settings?.erDungeons;
-    const isErActive = erDungeons && erDungeons !== 'none';
+    const isErActive = getActiveEntranceKeys(settings).size > 0;
     if (!isErActive) return settings;
 
     // Always strip stale plando.entrances from trackerSettings (the tracker

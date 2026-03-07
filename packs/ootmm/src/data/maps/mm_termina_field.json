@@ -800,6 +800,9 @@
       "coords": [432, 561],
       "image": "red_boulder",
       "type": "submenu",
+      "entranceMenu": {
+        "entranceIds": ["MM_GROTTO_GENERIC_PATH_IKANA"]
+      },
       "markers": [
         {
           "image": "red_boulder",
@@ -1052,6 +1055,9 @@
       "coords": [706, 460],
       "image": "grotto",
       "type": "submenu",
+      "entranceMenu": {
+        "entranceIds": ["MM_GROTTO_GENERIC_PATH_SWAMP"]
+      },
       "markers": [
         {
           "image": "chest",
@@ -1248,6 +1254,9 @@
       "coords": [169, 123],
       "image": "grotto",
       "type": "submenu",
+      "entranceMenu": {
+        "entranceIds": ["MM_GROTTO_DEKU_PLAYGROUND"]
+      },
       "markers": [
         {
           "image": "npc",
@@ -1525,6 +1534,9 @@
       "coords": [764, 156],
       "image": "boulder_grotto",
       "type": "submenu",
+      "entranceMenu": {
+        "entranceIds": ["MM_GROTTO_BIO_BABA"]
+      },
       "markers": [
         {
           "image": "heart_piece",
@@ -1551,6 +1563,9 @@
       "coords": [815, 123],
       "image": "boulder_grotto",
       "type": "submenu",
+      "entranceMenu": {
+        "entranceIds": ["MM_GROTTO_GOSSIPS_OCEAN"]
+      },
       "markers": [
         {
           "image": "gossip_stone",
@@ -1592,6 +1607,9 @@
       "coords": [828, 92],
       "image": "grotto",
       "type": "submenu",
+      "entranceMenu": {
+        "entranceIds": ["MM_GROTTO_DODONGO"]
+      },
       "markers": [
         {
           "image": "chest",
@@ -1603,6 +1621,9 @@
       "coords": [878, 105],
       "image": "grotto",
       "type": "submenu",
+      "entranceMenu": {
+        "entranceIds": ["MM_GROTTO_GOSSIPS_MOUNTAIN"]
+      },
       "markers": [
         {
           "image": "gossip_stone",
@@ -1623,6 +1644,9 @@
       "coords": [924, 163],
       "image": "grotto",
       "type": "submenu",
+      "entranceMenu": {
+        "entranceIds": ["MM_GROTTO_GENERIC_FIELD_PILLAR"]
+      },
       "markers": [
         {
           "image": "chest",
@@ -1653,6 +1677,9 @@
       "coords": [969, 181],
       "image": "grotto",
       "type": "submenu",
+      "entranceMenu": {
+        "entranceIds": ["MM_GROTTO_GOSSIPS_CANYON"]
+      },
       "markers": [
         {
           "image": "gossip_stone",
@@ -1683,6 +1710,9 @@
       "coords": [939, 204],
       "image": "grotto",
       "type": "submenu",
+      "entranceMenu": {
+        "entranceIds": ["MM_GROTTO_SCRUB"]
+      },
       "markers": [
         {
           "image": "business_scrub_mm",
@@ -1717,6 +1747,9 @@
       "coords": [905, 252],
       "image": "grotto",
       "type": "submenu",
+      "entranceMenu": {
+        "entranceIds": ["MM_GROTTO_GENERIC_GRASS"]
+      },
       "markers": [
         {
           "image": "chest",
@@ -1747,6 +1780,9 @@
       "coords": [864, 250],
       "image": "bomb_grotto",
       "type": "submenu",
+      "entranceMenu": {
+        "entranceIds": ["MM_GROTTO_COW_FIELD"]
+      },
       "markers": [
         {
           "image": "cow",
@@ -1847,6 +1883,9 @@
       "coords": [835, 248],
       "image": "grotto",
       "type": "submenu",
+      "entranceMenu": {
+        "entranceIds": ["MM_GROTTO_PEAHAT"]
+      },
       "markers": [
         {
           "image": "chest",
@@ -1875,6 +1914,9 @@
       "coords": [832, 275],
       "image": "grotto",
       "type": "submenu",
+      "entranceMenu": {
+        "entranceIds": ["MM_GROTTO_GOSSIPS_SWAMP"]
+      },
       "markers": [
         {
           "image": "gossip_stone",

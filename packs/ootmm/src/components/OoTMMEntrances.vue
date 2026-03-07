@@ -11,7 +11,7 @@ const {
   mappingStats,
   ootEntrances,
   mmEntrances,
-  destinationOptionsForGame,
+  destinationOptionsForEntrance,
   getSelectedDestination,
   setSelectedDestination,
   clearAllOverrides,
@@ -22,8 +22,8 @@ const uiStore = useOoTMMUiStore();
 const { entrancesReachabilityFilter, entrancesMappingFilter } =
   storeToRefs(uiStore);
 
-const dungeonSection = computed(
-  () => sections.value.find((section) => section.kind === 'dungeon') ?? null,
+const trackedSection = computed(
+  () => sections.value.find((section) => section.kind === 'tracked') ?? null,
 );
 
 function handleDestinationChange(srcKey: string, dstKey: string) {
@@ -35,7 +35,7 @@ function handleDestinationChange(srcKey: string, dstKey: string) {
   <div class="entrances-panel">
     <div v-if="sections.length > 0" class="entrances-header">
       <h3 class="entrances-title">
-        {{ dungeonSection?.title ?? 'Dungeon Entrances' }}
+        {{ trackedSection?.title ?? 'Entrances' }}
       </h3>
       <button
         v-if="hasAnyOverrides"
@@ -107,8 +107,8 @@ function handleDestinationChange(srcKey: string, dstKey: string) {
 
     <div v-if="sections.length === 0" class="no-entrances">
       <p>
-        Enable Dungeon ER in Settings and select dungeon sub-types to configure
-        entrance assignments.
+        Enable Dungeon ER or Grotto Shuffle in Settings to configure entrance
+        assignments.
       </p>
     </div>
 
@@ -140,10 +140,7 @@ function handleDestinationChange(srcKey: string, dstKey: string) {
           >
             <option value="">— Not mapped —</option>
             <option
-              v-for="dest in destinationOptionsForGame(
-                entrance.game,
-                entrance.key,
-              )"
+              v-for="dest in destinationOptionsForEntrance(entrance)"
               :key="dest.value"
               :value="dest.value"
             >
@@ -183,10 +180,7 @@ function handleDestinationChange(srcKey: string, dstKey: string) {
           >
             <option value="">— Not mapped —</option>
             <option
-              v-for="dest in destinationOptionsForGame(
-                entrance.game,
-                entrance.key,
-              )"
+              v-for="dest in destinationOptionsForEntrance(entrance)"
               :key="dest.value"
               :value="dest.value"
             >

@@ -357,6 +357,9 @@
       "coords": [647, 210],
       "image": "bomb_grotto",
       "type": "submenu",
+      "entranceMenu": {
+        "entranceIds": ["OOT_GROTTO_FIELD_COW"]
+      },
       "markers": [
         {
           "image": "gossip_stone",
@@ -731,6 +734,9 @@
       "image": "grotto",
       "type": "submenu",
       "overlays": ["child"],
+      "entranceMenu": {
+        "entranceIds": ["OOT_GROTTO_SCRUBS3_RANCH"]
+      },
       "markers": [
         {
           "image": "business_scrub_oot",
@@ -1067,6 +1073,9 @@
       "coords": [725, 378],
       "image": "bomb_grotto",
       "type": "submenu",
+      "entranceMenu": {
+        "entranceIds": ["OOT_GROTTO_SCRUB_HEART_PIECE"]
+      },
       "markers": [
         {
           "image": "business_scrub_oot",
@@ -1086,6 +1095,9 @@
       "coords": [754, 382],
       "image": "grotto",
       "type": "submenu",
+      "entranceMenu": {
+        "entranceIds": ["OOT_GROTTO_GENERIC_HF_OPEN"]
+      },
       "markers": [
         {
           "image": "chest",
@@ -1125,6 +1137,9 @@
       "coords": [841, 338],
       "image": "boulder_grotto",
       "type": "submenu",
+      "entranceMenu": {
+        "entranceIds": ["OOT_GROTTO_GENERIC_HF_SOUTHEAST"]
+      },
       "markers": [
         {
           "image": "chest",
@@ -1164,6 +1179,9 @@
       "coords": [704, 130],
       "image": "bomb_grotto",
       "type": "submenu",
+      "entranceMenu": {
+        "entranceIds": ["OOT_GROTTO_TEKTITE"]
+      },
       "markers": [
         {
           "image": "heart_piece",
@@ -1175,6 +1193,9 @@
       "coords": [724, 58],
       "image": "boulder_grotto",
       "type": "submenu",
+      "entranceMenu": {
+        "entranceIds": ["OOT_GROTTO_FAIRY_HF"]
+      },
       "markers": [
         {
           "image": "fairy",
@@ -1195,6 +1216,9 @@
       "coords": [794, 80],
       "image": "boulder_grotto",
       "type": "submenu",
+      "entranceMenu": {
+        "entranceIds": ["OOT_GROTTO_GENERIC_HF_MARKET"]
+      },
       "markers": [
         {
           "image": "chest",
@@ -1234,6 +1258,9 @@
       "coords": [886, 56],
       "image": "bomb_grotto",
       "type": "submenu",
+      "entranceMenu": {
+        "entranceIds": ["OOT_GROTTO_FIELD_TREE"]
+      },
       "markers": [
         {
           "image": "gold_skulltula",
@@ -1261,6 +1288,9 @@
       "coords": [442, 104],
       "image": "song_grotto",
       "type": "submenu",
+      "entranceMenu": {
+        "entranceIds": ["OOT_GROTTO_CASTLE"]
+      },
       "markers": [
         {
           "image": "gold_skulltula",

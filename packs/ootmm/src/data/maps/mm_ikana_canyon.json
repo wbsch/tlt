@@ -402,6 +402,9 @@
       "coords": [234, 406],
       "image": "grotto",
       "type": "submenu",
+      "entranceMenu": {
+        "entranceIds": ["MM_GROTTO_GENERIC_VALLEY"]
+      },
       "markers": [
         {
           "image": "chest",
@@ -440,6 +443,9 @@
       "coords": [64, 413],
       "image": "bomb_grotto",
       "type": "submenu",
+      "entranceMenu": {
+        "entranceIds": ["MM_GROTTO_GENERIC_GRAVEYARD"]
+      },
       "markers": [
         {
           "image": "chest",
@@ -471,6 +477,9 @@
       "image": "grotto",
       "overlays": ["day2"],
       "type": "submenu",
+      "entranceMenu": {
+        "entranceIds": ["MM_GRAVE_NIGHT2"]
+      },
       "markers": [
         {
           "image": "green_rupee",
@@ -518,6 +527,9 @@
       "image": "grotto",
       "overlays": ["day3"],
       "type": "submenu",
+      "entranceMenu": {
+        "entranceIds": ["MM_GRAVE_NIGHT3"]
+      },
       "markers": [
         {
           "image": "chest",
@@ -545,6 +557,9 @@
       "image": "grotto",
       "overlays": ["day1"],
       "type": "submenu",
+      "entranceMenu": {
+        "entranceIds": ["MM_GRAVE_NIGHT1"]
+      },
       "markers": [
         {
           "image": "pot",

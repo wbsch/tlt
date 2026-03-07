@@ -321,6 +321,9 @@
       "coords": [646, 160],
       "image": "red_boulder",
       "type": "submenu",
+      "entranceMenu": {
+        "entranceIds": ["OOT_GROTTO_SCRUBS3_DMC"]
+      },
       "markers": [
         {
           "image": "red_boulder",
@@ -491,6 +494,9 @@
       "coords": [813, 371],
       "image": "grotto",
       "type": "submenu",
+      "entranceMenu": {
+        "entranceIds": ["OOT_GROTTO_GENERIC_DMC"]
+      },
       "markers": [
         {
           "image": "chest",
@@ -530,6 +536,9 @@
       "coords": [536, 244],
       "image": "grotto",
       "type": "submenu",
+      "entranceMenu": {
+        "entranceIds": ["OOT_GROTTO_SCRUBS3_GORON_CITY"]
+      },
       "markers": [
         {
           "image": "business_scrub_oot",
@@ -580,6 +589,9 @@
       "coords": [138, 310],
       "image": "song_grotto",
       "type": "submenu",
+      "entranceMenu": {
+        "entranceIds": ["OOT_GROTTO_GENERIC_DMT"]
+      },
       "markers": [
         {
           "image": "chest",
@@ -619,6 +631,9 @@
       "coords": [108, 308],
       "image": "grotto",
       "type": "submenu",
+      "entranceMenu": {
+        "entranceIds": ["OOT_GROTTO_TRAIL_COW"]
+      },
       "markers": [
         {
           "image": "green_rupee",
