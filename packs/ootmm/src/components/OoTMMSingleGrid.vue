@@ -63,6 +63,7 @@ const props = defineProps<{
   grid: GridArray;
   gridItemRefs?: Record<string, GridItemRefAlias>;
   gridItemMultiActivations?: Record<string, GridItemMultiActivation>;
+  labelItemIds?: string[];
   itemMaxCounts?: Map<string, number>;
   availableItemIds?: Set<string>;
   settings?: Record<string, unknown> | null;
@@ -321,7 +322,18 @@ function isItemOwnedForGrid(itemId: string): boolean {
     : false;
 }
 
+function isLabelItem(itemId: string): boolean {
+  if (!props.labelItemIds || props.labelItemIds.length === 0) return false;
+
+  const baseItemId = getBaseItemId(itemId);
+  return (
+    props.labelItemIds.includes(itemId) ||
+    props.labelItemIds.includes(baseItemId)
+  );
+}
+
 function isItemHighlightedForGrid(itemId: string): boolean {
+  if (isLabelItem(itemId)) return true;
   if (isItemOwnedForGrid(itemId)) return true;
   return startsGridItemUndimmed(getBaseItemId(itemId), {
     maxCount: getItemMaxCount(itemId),
@@ -332,6 +344,8 @@ function isItemHighlightedForGrid(itemId: string): boolean {
 }
 
 function toggleItem(itemId: string) {
+  if (isLabelItem(itemId)) return;
+
   const newInventory = new Map(props.inventory);
   const current = getGridItemCount(itemId);
   const max = getItemMaxCount(itemId);
@@ -425,6 +439,8 @@ function toggleItem(itemId: string) {
 
 function decrementItem(itemId: string, event: MouseEvent) {
   event.preventDefault();
+  if (isLabelItem(itemId)) return;
+
   const newInventory = new Map(props.inventory);
   const current = getGridItemCount(itemId);
   const max = getItemMaxCount(itemId);
@@ -544,6 +560,7 @@ function shouldShowItemCount(itemId: string): boolean {
 }
 
 function isItemIconDisabled(itemId: string): boolean {
+  if (isLabelItem(itemId)) return false;
   if (hasItem(itemId)) return false;
   return !startsGridItemUndimmed(getBaseItemId(itemId), {
     maxCount: getItemMaxCount(itemId),
@@ -551,6 +568,13 @@ function isItemIconDisabled(itemId: string): boolean {
     inventory: props.inventory,
     settings: props.settings,
   });
+}
+
+function getGridItemClasses(itemId: string) {
+  return {
+    owned: isItemHighlightedForGrid(itemId),
+    'label-item': isLabelItem(itemId),
+  };
 }
 
 function handleImageError(event: Event) {
@@ -644,7 +668,7 @@ function elementType(element: unknown): string | undefined {
             v-for="(itemId, colIdx) in row"
             :key="colIdx"
             class="grid-item"
-            :class="{ owned: isItemHighlightedForGrid(itemId) }"
+            :class="getGridItemClasses(itemId)"
             :style="
               getGridItemStyle(
                 parseMargin((child as ItemGrid).item_margin),
@@ -700,7 +724,7 @@ function elementType(element: unknown): string | undefined {
                 v-for="(itemId, colIdx) in row"
                 :key="colIdx"
                 class="grid-item"
-                :class="{ owned: isItemHighlightedForGrid(itemId) }"
+                :class="getGridItemClasses(itemId)"
                 :style="
                   getGridItemStyle(
                     parseMargin((grandchild as ItemGrid).item_margin),
@@ -752,9 +776,7 @@ function elementType(element: unknown): string | undefined {
               <div
                 v-if="elementType(ggchild) === 'item'"
                 class="grid-item"
-                :class="{
-                  owned: isItemHighlightedForGrid((ggchild as GridItem).item),
-                }"
+                :class="getGridItemClasses((ggchild as GridItem).item)"
                 :style="
                   getItemStyle(
                     ggchild as GridItem,
@@ -812,11 +834,7 @@ function elementType(element: unknown): string | undefined {
                   v-for="(canvasChild, cIdx) in (ggchild as GridCanvas).content"
                   :key="cIdx"
                   class="grid-item canvas-item"
-                  :class="{
-                    owned: isItemHighlightedForGrid(
-                      (canvasChild as GridItem).item,
-                    ),
-                  }"
+                  :class="getGridItemClasses((canvasChild as GridItem).item)"
                   :style="
                     getItemStyle(
                       canvasChild as GridItem,
@@ -881,11 +899,7 @@ function elementType(element: unknown): string | undefined {
                   <div
                     v-if="elementType(gggchild) === 'item'"
                     class="grid-item"
-                    :class="{
-                      owned: isItemHighlightedForGrid(
-                        (gggchild as GridItem).item,
-                      ),
-                    }"
+                    :class="getGridItemClasses((gggchild as GridItem).item)"
                     :style="
                       getItemStyle(
                         gggchild as GridItem,
@@ -944,9 +958,7 @@ function elementType(element: unknown): string | undefined {
           <div
             v-else-if="elementType(grandchild) === 'item'"
             class="grid-item"
-            :class="{
-              owned: isItemHighlightedForGrid((grandchild as GridItem).item),
-            }"
+            :class="getGridItemClasses((grandchild as GridItem).item)"
             :style="
               getItemStyle(
                 grandchild as GridItem,
@@ -998,9 +1010,7 @@ function elementType(element: unknown): string | undefined {
               v-for="(canvasChild, cIdx) in (grandchild as GridCanvas).content"
               :key="cIdx"
               class="grid-item canvas-item"
-              :class="{
-                owned: isItemHighlightedForGrid((canvasChild as GridItem).item),
-              }"
+              :class="getGridItemClasses((canvasChild as GridItem).item)"
               :style="
                 getItemStyle(
                   canvasChild as GridItem,
@@ -1046,7 +1056,7 @@ function elementType(element: unknown): string | undefined {
       <div
         v-else-if="elementType(child) === 'item'"
         class="grid-item"
-        :class="{ owned: isItemHighlightedForGrid((child as GridItem).item) }"
+        :class="getGridItemClasses((child as GridItem).item)"
         :style="getItemStyle(child as GridItem, grid.scale || 1)"
         :title="getGridItemTitle((child as GridItem).item)"
         @click="toggleItem((child as GridItem).item)"
@@ -1084,9 +1094,7 @@ function elementType(element: unknown): string | undefined {
           v-for="(canvasChild, cIdx) in (child as GridCanvas).content"
           :key="cIdx"
           class="grid-item canvas-item"
-          :class="{
-            owned: isItemHighlightedForGrid((canvasChild as GridItem).item),
-          }"
+          :class="getGridItemClasses((canvasChild as GridItem).item)"
           :style="getItemStyle(canvasChild as GridItem, grid.scale || 1)"
           :title="getGridItemTitle((canvasChild as GridItem).item)"
           @click="toggleItem((canvasChild as GridItem).item)"
@@ -1173,6 +1181,14 @@ function elementType(element: unknown): string | undefined {
   border-color: rgba(16, 185, 129, 0.3);
 }
 
+.grid-item.label-item {
+  cursor: default;
+}
+
+.grid-item.label-item:hover {
+  z-index: auto;
+}
+
 .grid-item.canvas-item {
   background: transparent;
   border: none;
@@ -1180,6 +1196,10 @@ function elementType(element: unknown): string | undefined {
 
 .grid-item.canvas-item:hover {
   background: rgba(59, 130, 246, 0.2);
+}
+
+.grid-item.canvas-item.label-item:hover {
+  background: transparent;
 }
 
 .item-icon {
@@ -1212,6 +1232,13 @@ function elementType(element: unknown): string | undefined {
 .grid-item:focus .item-icon {
   will-change: transform;
   transform: translateZ(0) scale(1.12);
+}
+
+.grid-item.label-item:hover .item-icon,
+.grid-item.label-item:focus-visible .item-icon,
+.grid-item.label-item:focus .item-icon {
+  will-change: auto;
+  transform: translateZ(0);
 }
 
 .item-icon.disabled {

@@ -279,6 +279,8 @@ const LABEL_KEY_MAP: Record<string, string[]> = {
   mm_stonetower_label: ['MM_SMALL_KEY_ST', 'MM_KEY_RING_ST', 'MM_BOSS_KEY_ST'],
 };
 
+const labelItemIds = Object.keys(LABEL_KEY_MAP);
+
 function isItemVisible(itemId: string): boolean {
   if (isGridMultiActivateKey(itemId)) {
     const config = gridItemMultiActivations.value[itemId];
@@ -425,6 +427,7 @@ function handleInventoryUpdate(newInventory: Map<string, number>) {
           :grid="filteredSharedGrid"
           :grid-item-refs="gridItemRefAliases"
           :grid-item-multi-activations="gridItemMultiActivations"
+          :label-item-ids="labelItemIds"
           :item-max-counts="itemMaxCounts"
           :available-item-ids="availableItemIds"
           :settings="settings"
@@ -440,6 +443,7 @@ function handleInventoryUpdate(newInventory: Map<string, number>) {
           :grid="filteredOotGrid"
           :grid-item-refs="gridItemRefAliases"
           :grid-item-multi-activations="gridItemMultiActivations"
+          :label-item-ids="labelItemIds"
           :item-max-counts="itemMaxCounts"
           :available-item-ids="availableItemIds"
           :settings="settings"
@@ -455,6 +459,7 @@ function handleInventoryUpdate(newInventory: Map<string, number>) {
           :grid="filteredMmGrid"
           :grid-item-refs="gridItemRefAliases"
           :grid-item-multi-activations="gridItemMultiActivations"
+          :label-item-ids="labelItemIds"
           :item-max-counts="itemMaxCounts"
           :available-item-ids="availableItemIds"
           :settings="settings"
