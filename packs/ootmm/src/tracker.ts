@@ -2220,9 +2220,15 @@ export class OoTMMTracker implements TrackerPack {
           };
           try {
             const expr = saved.expr as {
-              eval: (s: unknown) => { result: boolean };
+              eval: (
+                s: unknown,
+                deps: { items: unknown[]; events: string[] },
+              ) => { result: boolean };
             };
-            const result = expr.eval(evalState);
+            const result = expr.eval(evalState, {
+              items: [],
+              events: [],
+            });
             if (result.result) {
               canEnter = true;
               break;
