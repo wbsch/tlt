@@ -6,8 +6,17 @@ export type SpoilerLogData = {
   startingItemsPlayers: number[];
   junkLocations: string[];
   preCompletedDungeons: string[];
+  locationPlacements: SpoilerLocationPlacement[];
   tricks?: string[];
   settingsString?: string;
+};
+
+export type SpoilerLocationPlacement = {
+  location: string;
+  item: string;
+  region?: string;
+  world?: number;
+  itemPlayer?: number;
 };
 
 type ParseSpoilerLogOptions = {
@@ -21,6 +30,7 @@ type Section =
   | 'junkLocations'
   | 'worldFlags'
   | 'preCompleted'
+  | 'locations'
   | 'tricks'
   | null;
 
@@ -48,6 +58,7 @@ export function parseSpoilerLog(
     startingItemsPlayers: [],
     junkLocations: [],
     preCompletedDungeons: [],
+    locationPlacements: [],
   };
 
   const lines = text.split(/\r?\n/);
@@ -55,6 +66,8 @@ export function parseSpoilerLog(
   let currentSpecialCond: string | null = null;
   let currentWorldFlag: string | null = null;
   let currentStartingItemsPlayer: number | null = null;
+  let currentLocationRegion: string | null = null;
+  let currentLocationWorld: number | null = null;
   let hasStartingItemsPlayerHeaders = false;
   const startingItemsByPlayer: Record<number, Record<string, number>> = {};
 
@@ -86,6 +99,8 @@ export function parseSpoilerLog(
       currentSpecialCond = null;
       currentWorldFlag = null;
       currentStartingItemsPlayer = null;
+      currentLocationRegion = null;
+      currentLocationWorld = null;
       hasStartingItemsPlayerHeaders = false;
       continue;
     }
@@ -93,12 +108,16 @@ export function parseSpoilerLog(
       section = 'junkLocations';
       currentSpecialCond = null;
       currentWorldFlag = null;
+      currentLocationRegion = null;
+      currentLocationWorld = null;
       continue;
     }
     if (trimmed === 'Tricks' || trimmed === 'Glitches') {
       section = 'tricks';
       currentSpecialCond = null;
       currentWorldFlag = null;
+      currentLocationRegion = null;
+      currentLocationWorld = null;
       if (!result.tricks) {
         result.tricks = [];
       }
@@ -108,12 +127,27 @@ export function parseSpoilerLog(
       section = 'worldFlags';
       currentSpecialCond = null;
       currentWorldFlag = null;
+      currentLocationRegion = null;
+      currentLocationWorld = null;
       continue;
     }
     if (trimmed === 'Pre-Completed Dungeons') {
       section = 'preCompleted';
       currentSpecialCond = null;
       currentWorldFlag = null;
+      currentLocationRegion = null;
+      currentLocationWorld = null;
+      continue;
+    }
+    if (
+      trimmed === 'Locations' ||
+      /^Location List(?:\s+\(\d+\))?$/i.test(trimmed)
+    ) {
+      section = 'locations';
+      currentSpecialCond = null;
+      currentWorldFlag = null;
+      currentLocationRegion = null;
+      currentLocationWorld = null;
       continue;
     }
 
@@ -121,6 +155,8 @@ export function parseSpoilerLog(
       section = null;
       currentSpecialCond = null;
       currentWorldFlag = null;
+      currentLocationRegion = null;
+      currentLocationWorld = null;
       continue;
     }
 
@@ -243,6 +279,58 @@ export function parseSpoilerLog(
           }
           result.tricks.push(normalized);
         }
+        break;
+      }
+      case 'locations': {
+        const normalized = normalizeLine(trimmed);
+        if (!normalized) break;
+
+        const worldMatch = normalized.match(/^World\s+(\d+)(?:\s+\(\d+\))?$/i);
+        if (worldMatch) {
+          currentLocationWorld = Number.parseInt(worldMatch[1], 10);
+          currentLocationRegion = null;
+          break;
+        }
+
+        const regionMatch = normalized.match(/^(.*)\s+\((\d+)\):$/);
+        if (regionMatch) {
+          currentLocationRegion = regionMatch[1]
+            .replace(/^World\s+\d+\s+/i, '')
+            .trim();
+          break;
+        }
+
+        const splitIndex = normalized.indexOf(':');
+        if (splitIndex <= 0) break;
+
+        const location = normalized.slice(0, splitIndex).trim();
+        const rawItem = normalized.slice(splitIndex + 1).trim();
+        if (!location || !rawItem) break;
+
+        const uncloakedItem = rawItem.replace(/\s+\(cloaked as .+\)$/i, '');
+        const itemPlayerMatch = uncloakedItem.match(/^Player\s+(\d+)\s+(.+)$/i);
+        const itemPlayer = itemPlayerMatch
+          ? Number.parseInt(itemPlayerMatch[1], 10)
+          : undefined;
+        const item = itemPlayerMatch
+          ? itemPlayerMatch[2].trim()
+          : uncloakedItem.trim();
+
+        if (!item) break;
+
+        result.locationPlacements.push({
+          location,
+          item,
+          region: currentLocationRegion || undefined,
+          world:
+            currentLocationWorld !== null && !Number.isNaN(currentLocationWorld)
+              ? currentLocationWorld
+              : undefined,
+          itemPlayer:
+            typeof itemPlayer === 'number' && !Number.isNaN(itemPlayer)
+              ? itemPlayer
+              : undefined,
+        });
         break;
       }
       default:

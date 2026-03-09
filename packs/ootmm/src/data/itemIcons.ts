@@ -1453,6 +1453,24 @@ export function getGridWheelOverlayStageCount(itemId: string): number {
 }
 
 /**
+ * Resolve a configured mouse-wheel overlay value to its 1-based stage index.
+ * Returns 0 when the overlay is not configured for the item.
+ */
+export function getGridWheelOverlayStageForValue(
+  itemId: string,
+  overlayValue: string,
+): number {
+  const resolved = getResolvedGridWheelOverlayConfig(itemId);
+  if (!resolved || !overlayValue) return 0;
+
+  const normalizedOverlay = resolveGridWheelOverlayValue(overlayValue);
+  const stageIndex = resolved.overlays.findIndex(
+    (overlay) => overlay === normalizedOverlay,
+  );
+  return stageIndex >= 0 ? stageIndex + 1 : 0;
+}
+
+/**
  * Get the currently selected mouse-wheel overlay stage for a grid item.
  * Stage 0 means "no overlay selected".
  */

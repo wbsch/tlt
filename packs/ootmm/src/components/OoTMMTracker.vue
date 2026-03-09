@@ -16,7 +16,15 @@ import {
   TRACKER_DEFAULT_SETTINGS,
 } from '../data/settings';
 import spoilerSettingsDefaultCheckExclude from '../data/spoilerSettingsDefaultCheckExclude.json';
-import { parseSpoilerLog } from '../utils/spoiler';
+import {
+  getGridWheelOverlayStageForValue,
+  getGridWheelOverlayStateItemId,
+} from '../data/itemIcons';
+import {
+  parseSpoilerLog,
+  type SpoilerLocationPlacement,
+  type SpoilerLogData,
+} from '../utils/spoiler';
 import { useDungeonEntrances } from '../composables/useDungeonEntrances';
 import { useLocationCodeLookup } from '../composables/useLocationCodeLookup';
 import {
@@ -116,6 +124,44 @@ const SPOILER_DEFAULT_CHECK_EXCLUDED_SETTINGS = new Set<string>(
 
 const normalizeName = (value: string) =>
   value.toLowerCase().replace(/\s+/g, ' ').trim();
+
+const DUNGEON_REWARD_ITEM_IDS = new Set([
+  'OOT_STONE_EMERALD',
+  'OOT_STONE_RUBY',
+  'OOT_STONE_SAPPHIRE',
+  'OOT_MEDALLION_FOREST',
+  'OOT_MEDALLION_FIRE',
+  'OOT_MEDALLION_WATER',
+  'OOT_MEDALLION_SPIRIT',
+  'OOT_MEDALLION_SHADOW',
+  'OOT_MEDALLION_LIGHT',
+  'MM_REMAINS_ODOLWA',
+  'MM_REMAINS_GOHT',
+  'MM_REMAINS_GYORG',
+  'MM_REMAINS_TWINMOLD',
+]);
+
+const FREE_REWARD_LABEL_ITEM_ID = 'free_label';
+
+const SPOILER_REWARD_REGION_LABEL_BY_NAME = new Map<string, string>([
+  [normalizeName('Deku Tree'), 'oot_dekutree_label'],
+  [normalizeName("Dodongo's Cavern"), 'oot_dc_label'],
+  [normalizeName("Jabu-Jabu's Belly"), 'oot_jabu_label'],
+  [normalizeName('Forest Temple'), 'oot_foresttemple_label'],
+  [normalizeName('Fire Temple'), 'oot_firetemple_label'],
+  [normalizeName('Water Temple'), 'oot_watertemple_label'],
+  [normalizeName('Spirit Temple'), 'oot_spirittemple_label'],
+  [normalizeName('Shadow Temple'), 'oot_shadowtemple_label'],
+  [normalizeName('Woodfall Temple'), 'mm_woodfall_label'],
+  [normalizeName('Snowhead Temple'), 'mm_snowhead_label'],
+  [normalizeName('Great Bay Temple'), 'mm_greatbay_label'],
+  [normalizeName('Stone Tower Temple'), 'mm_stonetower_label'],
+]);
+
+const TEMPLE_OF_TIME_MEDALLION_LOCATION_NAMES = new Set([
+  normalizeName('OOT Temple of Time Medallion'),
+  normalizeName('Temple of Time Medallion'),
+]);
 
 if (Items) {
   for (const item of Object.values(Items as Record<string, unknown>)) {
@@ -1215,6 +1261,116 @@ function applyStartingItems(startingItems: Record<string, number>) {
   sessionStore.mergeInventoryCounts(nextById);
 }
 
+function getSpoilerSelectedPlayer(selectedPlayer?: number): number {
+  return selectedPlayer ?? 1;
+}
+
+function shouldImportSpoilerDungeonRewards(
+  effectiveSettings: Record<string, unknown>,
+): boolean {
+  return String(effectiveSettings.dungeonRewardShuffle ?? '') === 'dungeonBlueWarps';
+}
+
+function normalizeSpoilerRegionName(region?: string): string {
+  if (!region) return '';
+  return normalizeName(region.replace(/^world\s+\d+\s+/i, ''));
+}
+
+function getSpoilerRewardOverlayItemId(
+  placement: SpoilerLocationPlacement,
+  effectiveSettings: Record<string, unknown>,
+): string | null {
+  if (!shouldImportSpoilerDungeonRewards(effectiveSettings)) {
+    return null;
+  }
+
+  if (
+    TEMPLE_OF_TIME_MEDALLION_LOCATION_NAMES.has(normalizeName(placement.location))
+  ) {
+    return FREE_REWARD_LABEL_ITEM_ID;
+  }
+
+  return (
+    SPOILER_REWARD_REGION_LABEL_BY_NAME.get(
+      normalizeSpoilerRegionName(placement.region),
+    ) || null
+  );
+}
+
+function buildSpoilerRewardOverlayStateCounts(
+  parsed: SpoilerLogData,
+  effectiveSettings: Record<string, unknown>,
+  selectedPlayer?: number,
+): Record<string, number> {
+  const nextCounts: Record<string, number> = {};
+  if (!shouldImportSpoilerDungeonRewards(effectiveSettings)) {
+    return nextCounts;
+  }
+
+  const targetPlayer = getSpoilerSelectedPlayer(selectedPlayer);
+
+  const assignOverlay = (itemId: string, overlayItemId: string) => {
+    const stateItemId = getGridWheelOverlayStateItemId(itemId);
+    const stage = getGridWheelOverlayStageForValue(itemId, overlayItemId);
+    if (!stateItemId || stage <= 0) return;
+    nextCounts[stateItemId] = stage;
+  };
+
+  for (const [itemName, count] of Object.entries(parsed.startingItems)) {
+    if (!count || count <= 0) continue;
+    const itemId = itemNameToId.get(normalizeName(itemName));
+    if (!itemId || !DUNGEON_REWARD_ITEM_IDS.has(itemId)) continue;
+    assignOverlay(itemId, FREE_REWARD_LABEL_ITEM_ID);
+  }
+
+  for (const placement of parsed.locationPlacements) {
+    if (
+      typeof placement.itemPlayer === 'number' &&
+      placement.itemPlayer !== targetPlayer
+    ) {
+      continue;
+    }
+
+    const itemId = itemNameToId.get(normalizeName(placement.item));
+    if (!itemId || !DUNGEON_REWARD_ITEM_IDS.has(itemId)) continue;
+
+    const overlayItemId = getSpoilerRewardOverlayItemId(
+      placement,
+      effectiveSettings,
+    );
+    if (!overlayItemId) continue;
+
+    assignOverlay(itemId, overlayItemId);
+  }
+
+  return nextCounts;
+}
+
+function applySpoilerRewardAssignments(
+  parsed: SpoilerLogData,
+  effectiveSettings: Record<string, unknown>,
+  selectedPlayer?: number,
+) {
+  const nextInventory = new Map(inventory.value);
+
+  for (const rewardItemId of DUNGEON_REWARD_ITEM_IDS) {
+    const stateItemId = getGridWheelOverlayStateItemId(rewardItemId);
+    if (!stateItemId) continue;
+    nextInventory.delete(stateItemId);
+  }
+
+  const nextCounts = buildSpoilerRewardOverlayStateCounts(
+    parsed,
+    effectiveSettings,
+    selectedPlayer,
+  );
+  for (const [stateItemId, count] of Object.entries(nextCounts)) {
+    nextInventory.set(stateItemId, count);
+  }
+
+  sessionStore.setInventoryFromMap(nextInventory);
+}
+
 function applyJunkLocations(junkLocations: string[]) {
   if (junkLocations.length === 0) return;
   const locations = allLocations.value;
@@ -1328,6 +1484,8 @@ async function applySpoilerLog(text: string, startingItemsPlayer?: number) {
   if (Object.keys(parsed.startingItems).length > 0) {
     applyStartingItems(parsed.startingItems);
   }
+
+  applySpoilerRewardAssignments(parsed, nextSettings, startingItemsPlayer);
 
   if (parsed.junkLocations.length > 0) {
     applyJunkLocations(parsed.junkLocations);
