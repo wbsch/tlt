@@ -433,6 +433,9 @@ const RAW_ITEM_ICONS: Record<string, string> = {
   oot_well_silver_label: 'images/label_botw.png',
   oot_chestgame_label: 'images/lens.png',
   oot_dc_label: 'images/label_dodongo.png',
+  oot_dekutree_label: 'images/label_deku.png',
+  oot_jabu_label: 'images/label_jabu.png',
+  free_label: 'images/label_free.png',
 
   // === SHARED ITEMS ===
   SHARED_ARROW_FIRE: 'images/arrow_fire.png',
@@ -528,12 +531,19 @@ interface GridIconDefaultConfig {
   linkedItemIds?: string[];
 }
 
+interface GridWheelOverlayConfig {
+  overlays: string[];
+  stateItemId?: string;
+}
+
 type GridIconVariantConfig =
   | string[]
   | {
       default: string[] | GridIconDefaultConfig;
       variants?: GridIconVariantRule[];
     };
+
+type GridWheelOverlayDefinition = string[] | GridWheelOverlayConfig;
 
 const RAW_GRID_ICON_VARIANTS: Record<string, GridIconVariantConfig> = {
   // `when.settings` can include multiple settings at once.
@@ -1052,6 +1062,75 @@ const RAW_GRID_ICON_VARIANTS: Record<string, GridIconVariantConfig> = {
   },
 };
 
+const REWARD_DUNGEON_LABEL_OVERLAYS = [
+  'free_label',
+  'oot_dekutree_label',
+  'oot_dc_label',
+  'oot_jabu_label',
+  'oot_foresttemple_label',
+  'oot_firetemple_label',
+  'oot_watertemple_label',
+  'oot_spirittemple_label',
+  'oot_shadowtemple_label',
+  'mm_woodfall_label',
+  'mm_snowhead_label',
+  'mm_greatbay_label',
+  'mm_stonetower_label',
+];
+
+const RAW_GRID_WHEEL_OVERLAYS: Record<string, GridWheelOverlayDefinition> = {
+  'OOT_STONE_EMERALD|OOT_STONE_RUBY|OOT_STONE_SAPPHIRE|OOT_MEDALLION_FOREST|OOT_MEDALLION_FIRE|OOT_MEDALLION_WATER|OOT_MEDALLION_SPIRIT|OOT_MEDALLION_SHADOW|OOT_MEDALLION_LIGHT|MM_REMAINS_ODOLWA|MM_REMAINS_GOHT|MM_REMAINS_GYORG|MM_REMAINS_TWINMOLD':
+    REWARD_DUNGEON_LABEL_OVERLAYS,
+};
+
+interface ResolvedGridWheelOverlayConfig {
+  overlays: string[];
+  stateItemId: string;
+}
+
+const GRID_WHEEL_OVERLAY_STATE_PREFIX = '__grid_wheel_overlay_state__:';
+
+function makeGridWheelOverlayStateItemId(itemId: string): string {
+  return `${GRID_WHEEL_OVERLAY_STATE_PREFIX}${itemId}`;
+}
+
+function normalizeGridWheelOverlayConfig(
+  config: GridWheelOverlayDefinition,
+): GridWheelOverlayConfig {
+  if (Array.isArray(config)) {
+    return { overlays: config };
+  }
+
+  return {
+    overlays: config.overlays,
+    stateItemId: config.stateItemId,
+  };
+}
+
+function resolveGridWheelOverlayValue(value: string): string {
+  return ITEM_ICONS[value] || withBasePath(value);
+}
+
+const GRID_WHEEL_OVERLAYS: Record<string, ResolvedGridWheelOverlayConfig> =
+  Object.fromEntries(
+    Object.entries(expandGroupedItemIdKeys(RAW_GRID_WHEEL_OVERLAYS)).map(
+      ([key, rawConfig]) => {
+        const normalizedConfig = normalizeGridWheelOverlayConfig(rawConfig);
+        return [
+          key,
+          {
+            overlays: normalizedConfig.overlays.map((value) =>
+              resolveGridWheelOverlayValue(value),
+            ),
+            stateItemId:
+              normalizedConfig.stateItemId ||
+              makeGridWheelOverlayStateItemId(key),
+          },
+        ];
+      },
+    ),
+  );
+
 interface ResolvedGridIconConfig {
   icons: string[];
   overlays?: Array<string | null>;
@@ -1257,6 +1336,24 @@ function getResolvedGridIconVariants(
     : null;
 }
 
+function getResolvedGridWheelOverlayConfig(
+  itemId: string,
+): ResolvedGridWheelOverlayConfig | null {
+  return GRID_WHEEL_OVERLAYS[itemId] || null;
+}
+
+function normalizeGridWheelOverlayStage(
+  stage: number,
+  overlayCount: number,
+): number {
+  if (!Number.isFinite(stage) || overlayCount <= 0) return 0;
+
+  const normalizedStage = Math.max(0, Math.floor(stage));
+  if (normalizedStage === 0) return 0;
+
+  return ((normalizedStage - 1) % overlayCount) + 1;
+}
+
 function isPreItemPoolToggleActive(
   resolved: ResolvedGridIconConfig,
   context: GridIconVariantContext,
@@ -1339,6 +1436,53 @@ export function getGridItemOverlay(
   const effectiveCount = getEffectiveGridCount(count, resolved, context);
   const variantIndex = getResolvedGridVariantIndex(effectiveCount, resolved);
   return resolved.overlays[variantIndex] || null;
+}
+
+/**
+ * Get the inventory-backed state item ID used for mouse-wheel grid overlays.
+ */
+export function getGridWheelOverlayStateItemId(itemId: string): string | null {
+  return getResolvedGridWheelOverlayConfig(itemId)?.stateItemId || null;
+}
+
+/**
+ * Get the number of selectable mouse-wheel overlays configured for a grid item.
+ */
+export function getGridWheelOverlayStageCount(itemId: string): number {
+  return getResolvedGridWheelOverlayConfig(itemId)?.overlays.length || 0;
+}
+
+/**
+ * Get the currently selected mouse-wheel overlay stage for a grid item.
+ * Stage 0 means "no overlay selected".
+ */
+export function getGridWheelOverlayStage(
+  itemId: string,
+  context: GridIconVariantContext = {},
+): number {
+  const resolved = getResolvedGridWheelOverlayConfig(itemId);
+  if (!resolved || !context.inventory) return 0;
+
+  return normalizeGridWheelOverlayStage(
+    context.inventory.get(resolved.stateItemId) || 0,
+    resolved.overlays.length,
+  );
+}
+
+/**
+ * Get the currently selected mouse-wheel overlay path for a grid item.
+ */
+export function getGridWheelOverlay(
+  itemId: string,
+  context: GridIconVariantContext = {},
+): string | null {
+  const resolved = getResolvedGridWheelOverlayConfig(itemId);
+  if (!resolved || resolved.overlays.length === 0) return null;
+
+  const stage = getGridWheelOverlayStage(itemId, context);
+  if (stage <= 0) return null;
+
+  return resolved.overlays[stage - 1] || null;
 }
 
 /**

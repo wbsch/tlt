@@ -196,6 +196,7 @@ const BOTTLE_CONTENT_BASE_ITEM_IDS: Record<string, string> = {
 };
 
 const VANILLA_SILVER_RUPEE_PREFIX = 'OOT_RUPEE_SILVER_';
+const GRID_WHEEL_OVERLAY_STATE_PREFIX = '__grid_wheel_overlay_state__:';
 const OWL_STATUE_PREFIX = 'MM_OWL_';
 
 const PRICE_COUNT_OOT_SHOPS = 64;
@@ -1816,7 +1817,10 @@ export class OoTMMTracker implements TrackerPack {
     }
 
     for (const [itemId, count] of expandedInventory) {
-      if (itemId.startsWith(GRID_REF_STATE_PREFIX)) {
+      if (
+        itemId.startsWith(GRID_REF_STATE_PREFIX) ||
+        itemId.startsWith(GRID_WHEEL_OVERLAY_STATE_PREFIX)
+      ) {
         continue;
       }
 

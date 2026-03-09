@@ -4,6 +4,10 @@ import {
   getGridItemLinkedItemIds,
   getGridItemOverlay,
   getGridItemPreItemPoolToggleItemId,
+  getGridWheelOverlay,
+  getGridWheelOverlayStage,
+  getGridWheelOverlayStageCount,
+  getGridWheelOverlayStateItemId,
   hasGridIconVariants,
   startsGridItemUndimmed,
   DEFAULT_ICON,
@@ -547,6 +551,48 @@ function getOverlaySrc(itemId: string): string | null {
   });
 }
 
+function getWheelOverlaySrc(itemId: string): string | null {
+  const baseItemId = getBaseItemId(itemId);
+  return getGridWheelOverlay(baseItemId, {
+    maxCount: getItemMaxCount(itemId),
+    availableItemIds: props.availableItemIds,
+    inventory: props.inventory,
+    settings: props.settings,
+  });
+}
+
+function handleItemWheel(itemId: string, event: WheelEvent) {
+  const baseItemId = getBaseItemId(itemId);
+  const stageCount = getGridWheelOverlayStageCount(baseItemId);
+  const stateItemId = getGridWheelOverlayStateItemId(baseItemId);
+
+  if (!stateItemId || stageCount <= 0 || event.deltaY === 0) {
+    return;
+  }
+
+  event.preventDefault();
+
+  const currentStage = getGridWheelOverlayStage(baseItemId, {
+    maxCount: getItemMaxCount(itemId),
+    availableItemIds: props.availableItemIds,
+    inventory: props.inventory,
+    settings: props.settings,
+  });
+  const cycleLength = stageCount + 1;
+  const direction = event.deltaY > 0 ? 1 : -1;
+  const nextStage =
+    (((currentStage + direction) % cycleLength) + cycleLength) % cycleLength;
+
+  const newInventory = new Map(props.inventory);
+  if (nextStage > 0) {
+    newInventory.set(stateItemId, nextStage);
+  } else {
+    newInventory.delete(stateItemId);
+  }
+
+  emitInventoryUpdate(newInventory);
+}
+
 function shouldShowItemCount(itemId: string): boolean {
   return (
     getGridItemCount(itemId) > 1 &&
@@ -679,6 +725,7 @@ function elementType(element: unknown): string | undefined {
             :title="getGridItemTitle(itemId)"
             @click="toggleItem(itemId)"
             @contextmenu="decrementItem(itemId, $event)"
+            @wheel="handleItemWheel(itemId, $event)"
           >
             <img
               :src="getIconSrc(itemId)"
@@ -692,6 +739,14 @@ function elementType(element: unknown): string | undefined {
               :src="getOverlaySrc(itemId) as string"
               :alt="`${itemId} overlay`"
               class="item-overlay"
+              :class="{ disabled: isItemIconDisabled(itemId) }"
+              @error="handleOverlayError"
+            />
+            <img
+              v-if="getWheelOverlaySrc(itemId)"
+              :src="getWheelOverlaySrc(itemId) as string"
+              :alt="`${itemId} wheel overlay`"
+              class="item-overlay item-wheel-overlay"
               :class="{ disabled: isItemIconDisabled(itemId) }"
               @error="handleOverlayError"
             />
@@ -738,6 +793,7 @@ function elementType(element: unknown): string | undefined {
                 :title="getGridItemTitle(itemId)"
                 @click="toggleItem(itemId)"
                 @contextmenu="decrementItem(itemId, $event)"
+                @wheel="handleItemWheel(itemId, $event)"
               >
                 <img
                   :src="getIconSrc(itemId)"
@@ -751,6 +807,14 @@ function elementType(element: unknown): string | undefined {
                   :src="getOverlaySrc(itemId) as string"
                   :alt="`${itemId} overlay`"
                   class="item-overlay"
+                  :class="{ disabled: isItemIconDisabled(itemId) }"
+                  @error="handleOverlayError"
+                />
+                <img
+                  v-if="getWheelOverlaySrc(itemId)"
+                  :src="getWheelOverlaySrc(itemId) as string"
+                  :alt="`${itemId} wheel overlay`"
+                  class="item-overlay item-wheel-overlay"
                   :class="{ disabled: isItemIconDisabled(itemId) }"
                   @error="handleOverlayError"
                 />
@@ -789,6 +853,7 @@ function elementType(element: unknown): string | undefined {
                 :title="getGridItemTitle((ggchild as GridItem).item)"
                 @click="toggleItem((ggchild as GridItem).item)"
                 @contextmenu="decrementItem((ggchild as GridItem).item, $event)"
+                @wheel="handleItemWheel((ggchild as GridItem).item, $event)"
               >
                 <img
                   :src="getIconSrc((ggchild as GridItem).item)"
@@ -804,6 +869,16 @@ function elementType(element: unknown): string | undefined {
                   :src="getOverlaySrc((ggchild as GridItem).item) as string"
                   :alt="`${(ggchild as GridItem).item} overlay`"
                   class="item-overlay"
+                  :class="{
+                    disabled: isItemIconDisabled((ggchild as GridItem).item),
+                  }"
+                  @error="handleOverlayError"
+                />
+                <img
+                  v-if="getWheelOverlaySrc((ggchild as GridItem).item)"
+                  :src="getWheelOverlaySrc((ggchild as GridItem).item) as string"
+                  :alt="`${(ggchild as GridItem).item} wheel overlay`"
+                  class="item-overlay item-wheel-overlay"
                   :class="{
                     disabled: isItemIconDisabled((ggchild as GridItem).item),
                   }"
@@ -849,6 +924,7 @@ function elementType(element: unknown): string | undefined {
                   @contextmenu="
                     decrementItem((canvasChild as GridItem).item, $event)
                   "
+                  @wheel="handleItemWheel((canvasChild as GridItem).item, $event)"
                 >
                   <img
                     :src="getIconSrc((canvasChild as GridItem).item)"
@@ -868,6 +944,20 @@ function elementType(element: unknown): string | undefined {
                     "
                     :alt="`${(canvasChild as GridItem).item} overlay`"
                     class="item-overlay"
+                    :class="{
+                      disabled: isItemIconDisabled(
+                        (canvasChild as GridItem).item,
+                      ),
+                    }"
+                    @error="handleOverlayError"
+                  />
+                  <img
+                    v-if="getWheelOverlaySrc((canvasChild as GridItem).item)"
+                    :src="
+                      getWheelOverlaySrc((canvasChild as GridItem).item) as string
+                    "
+                    :alt="`${(canvasChild as GridItem).item} wheel overlay`"
+                    class="item-overlay item-wheel-overlay"
                     :class="{
                       disabled: isItemIconDisabled(
                         (canvasChild as GridItem).item,
@@ -917,6 +1007,7 @@ function elementType(element: unknown): string | undefined {
                     @contextmenu="
                       decrementItem((gggchild as GridItem).item, $event)
                     "
+                    @wheel="handleItemWheel((gggchild as GridItem).item, $event)"
                   >
                     <img
                       :src="getIconSrc((gggchild as GridItem).item)"
@@ -936,6 +1027,20 @@ function elementType(element: unknown): string | undefined {
                       "
                       :alt="`${(gggchild as GridItem).item} overlay`"
                       class="item-overlay"
+                      :class="{
+                        disabled: isItemIconDisabled(
+                          (gggchild as GridItem).item,
+                        ),
+                      }"
+                      @error="handleOverlayError"
+                    />
+                    <img
+                      v-if="getWheelOverlaySrc((gggchild as GridItem).item)"
+                      :src="
+                        getWheelOverlaySrc((gggchild as GridItem).item) as string
+                      "
+                      :alt="`${(gggchild as GridItem).item} wheel overlay`"
+                      class="item-overlay item-wheel-overlay"
                       :class="{
                         disabled: isItemIconDisabled(
                           (gggchild as GridItem).item,
@@ -968,6 +1073,7 @@ function elementType(element: unknown): string | undefined {
             :title="getGridItemTitle((grandchild as GridItem).item)"
             @click="toggleItem((grandchild as GridItem).item)"
             @contextmenu="decrementItem((grandchild as GridItem).item, $event)"
+            @wheel="handleItemWheel((grandchild as GridItem).item, $event)"
           >
             <img
               :src="getIconSrc((grandchild as GridItem).item)"
@@ -983,6 +1089,16 @@ function elementType(element: unknown): string | undefined {
               :src="getOverlaySrc((grandchild as GridItem).item) as string"
               :alt="`${(grandchild as GridItem).item} overlay`"
               class="item-overlay"
+              :class="{
+                disabled: isItemIconDisabled((grandchild as GridItem).item),
+              }"
+              @error="handleOverlayError"
+            />
+            <img
+              v-if="getWheelOverlaySrc((grandchild as GridItem).item)"
+              :src="getWheelOverlaySrc((grandchild as GridItem).item) as string"
+              :alt="`${(grandchild as GridItem).item} wheel overlay`"
+              class="item-overlay item-wheel-overlay"
               :class="{
                 disabled: isItemIconDisabled((grandchild as GridItem).item),
               }"
@@ -1022,6 +1138,7 @@ function elementType(element: unknown): string | undefined {
               @contextmenu="
                 decrementItem((canvasChild as GridItem).item, $event)
               "
+              @wheel="handleItemWheel((canvasChild as GridItem).item, $event)"
             >
               <img
                 :src="getIconSrc((canvasChild as GridItem).item)"
@@ -1037,6 +1154,16 @@ function elementType(element: unknown): string | undefined {
                 :src="getOverlaySrc((canvasChild as GridItem).item) as string"
                 :alt="`${(canvasChild as GridItem).item} overlay`"
                 class="item-overlay"
+                :class="{
+                  disabled: isItemIconDisabled((canvasChild as GridItem).item),
+                }"
+                @error="handleOverlayError"
+              />
+              <img
+                v-if="getWheelOverlaySrc((canvasChild as GridItem).item)"
+                :src="getWheelOverlaySrc((canvasChild as GridItem).item) as string"
+                :alt="`${(canvasChild as GridItem).item} wheel overlay`"
+                class="item-overlay item-wheel-overlay"
                 :class="{
                   disabled: isItemIconDisabled((canvasChild as GridItem).item),
                 }"
@@ -1061,6 +1188,7 @@ function elementType(element: unknown): string | undefined {
         :title="getGridItemTitle((child as GridItem).item)"
         @click="toggleItem((child as GridItem).item)"
         @contextmenu="decrementItem((child as GridItem).item, $event)"
+        @wheel="handleItemWheel((child as GridItem).item, $event)"
       >
         <img
           :src="getIconSrc((child as GridItem).item)"
@@ -1074,6 +1202,14 @@ function elementType(element: unknown): string | undefined {
           :src="getOverlaySrc((child as GridItem).item) as string"
           :alt="`${(child as GridItem).item} overlay`"
           class="item-overlay"
+          :class="{ disabled: isItemIconDisabled((child as GridItem).item) }"
+          @error="handleOverlayError"
+        />
+        <img
+          v-if="getWheelOverlaySrc((child as GridItem).item)"
+          :src="getWheelOverlaySrc((child as GridItem).item) as string"
+          :alt="`${(child as GridItem).item} wheel overlay`"
+          class="item-overlay item-wheel-overlay"
           :class="{ disabled: isItemIconDisabled((child as GridItem).item) }"
           @error="handleOverlayError"
         />
@@ -1099,6 +1235,7 @@ function elementType(element: unknown): string | undefined {
           :title="getGridItemTitle((canvasChild as GridItem).item)"
           @click="toggleItem((canvasChild as GridItem).item)"
           @contextmenu="decrementItem((canvasChild as GridItem).item, $event)"
+          @wheel="handleItemWheel((canvasChild as GridItem).item, $event)"
         >
           <img
             :src="getIconSrc((canvasChild as GridItem).item)"
@@ -1114,6 +1251,16 @@ function elementType(element: unknown): string | undefined {
             :src="getOverlaySrc((canvasChild as GridItem).item) as string"
             :alt="`${(canvasChild as GridItem).item} overlay`"
             class="item-overlay"
+            :class="{
+              disabled: isItemIconDisabled((canvasChild as GridItem).item),
+            }"
+            @error="handleOverlayError"
+          />
+          <img
+            v-if="getWheelOverlaySrc((canvasChild as GridItem).item)"
+            :src="getWheelOverlaySrc((canvasChild as GridItem).item) as string"
+            :alt="`${(canvasChild as GridItem).item} wheel overlay`"
+            class="item-overlay item-wheel-overlay"
             :class="{
               disabled: isItemIconDisabled((canvasChild as GridItem).item),
             }"
@@ -1227,6 +1374,10 @@ function elementType(element: unknown): string | undefined {
   z-index: 1;
 }
 
+.item-wheel-overlay {
+  z-index: 2;
+}
+
 .grid-item:hover .item-icon,
 .grid-item:focus-visible .item-icon,
 .grid-item:focus .item-icon {
@@ -1265,6 +1416,7 @@ function elementType(element: unknown): string | undefined {
   border-radius: 2px;
   min-width: 14px;
   text-align: center;
+  z-index: 3;
 }
 
 .grid-canvas {

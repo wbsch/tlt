@@ -338,19 +338,25 @@
         "type": "itemgrid",
         "h_alignment": "left",
         "item_margin": "1,1",
-        "scale": 0.8,
+        "scale": 1,
         "rows": [
+          ["OOT_STONE_EMERALD", "OOT_STONE_RUBY", "OOT_STONE_SAPPHIRE"],
           [
-            "OOT_STONE_EMERALD",
-            "OOT_STONE_RUBY",
-            "OOT_STONE_SAPPHIRE",
             "OOT_MEDALLION_FOREST",
             "OOT_MEDALLION_FIRE",
             "OOT_MEDALLION_WATER",
             "OOT_MEDALLION_SHADOW",
             "OOT_MEDALLION_SPIRIT",
             "OOT_MEDALLION_LIGHT"
-          ],
+          ]
+        ]
+      },
+      {
+        "type": "itemgrid",
+        "h_alignment": "left",
+        "item_margin": "1,1",
+        "scale": 0.8,
+        "rows": [
           [
             "oot_foresttemple_label",
             "OOT_SMALL_KEY_FOREST",
@@ -649,70 +655,70 @@
             "type": "array",
             "orientation": "horizontal",
             "margin": "0,0",
-            "scale": 0.9,
+            "scale": 1,
             "content": [
               {
                 "type": "item",
                 "item": "MM_REMAINS_ODOLWA",
                 "margin": "1,1",
-                "width": 28,
-                "height": 28
+                "width": 30,
+                "height": 30
               },
               {
                 "type": "item",
                 "item": "MM_STRAY_FAIRY_WF",
-                "margin": "3,4",
-                "width": 32,
-                "height": 32
+                "margin": "1,1",
+                "width": 30,
+                "height": 30
               },
               {
                 "type": "item",
                 "item": "MM_REMAINS_GOHT",
                 "margin": "1,1",
-                "width": 28,
-                "height": 28
+                "width": 30,
+                "height": 30
               },
               {
                 "type": "item",
                 "item": "MM_STRAY_FAIRY_SH",
-                "margin": "3,4",
-                "width": 32,
-                "height": 32
+                "margin": "1,1",
+                "width": 30,
+                "height": 30
               },
               {
                 "type": "item",
                 "item": "MM_REMAINS_GYORG",
                 "margin": "1,1",
-                "width": 28,
-                "height": 28
+                "width": 30,
+                "height": 30
               },
               {
                 "type": "item",
                 "item": "MM_STRAY_FAIRY_GB",
-                "margin": "3,4",
-                "width": 32,
-                "height": 32
+                "margin": "1,1",
+                "width": 30,
+                "height": 30
               },
               {
                 "type": "item",
                 "item": "MM_REMAINS_TWINMOLD",
                 "margin": "1,1",
-                "width": 28,
-                "height": 28
+                "width": 30,
+                "height": 30
               },
               {
                 "type": "item",
                 "item": "MM_STRAY_FAIRY_ST",
-                "margin": "3,4",
-                "width": 32,
-                "height": 32
+                "margin": "1,1",
+                "width": 30,
+                "height": 30
               }
             ]
           },
           {
             "type": "array",
             "orientation": "horizontal",
-            "scale": 0.8,
+            "scale": 1.1,
             "margin": "0,0",
             "content": [
               {
