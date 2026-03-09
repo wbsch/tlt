@@ -440,17 +440,15 @@ export class OoTMMTracker implements TrackerPack {
       entranceInput as Record<string, unknown>,
     );
 
-    const entranceResult = entrancePass.run();
-    this.worlds = entranceResult.worlds;
-
-    // Save exit expressions for ALL ER entrances before disconnecting,
-    // so we can later evaluate entrance reachability post-pathfinder.
-    // For mapped entrances the entrance pass rewires the exit to the
-    // mapped destination's `to` area, so we must look up the expression
-    // under that area name, not the original `data.to`.
+    // Save the original source-side exit expressions for all tracked ER
+    // entrances before the entrance pass rewires exits to their mapped
+    // destinations.  Reachability in the UI should answer "can I stand at
+    // this entrance and enter it from the source side?"; using the mapped
+    // destination exit can accidentally pick up destination-specific global
+    // access expressions for grottos.
     this.savedEntranceExitExprs = new Map();
     if (isErActive) {
-      for (const world of this.worlds) {
+      for (const world of this.baseWorlds) {
         const areas = (world as Record<string, unknown>).areas as Record<
           string,
           { exits?: Record<string, unknown> }
@@ -459,19 +457,8 @@ export class OoTMMTracker implements TrackerPack {
           if (!activeEntranceKeys.has(key)) continue;
           if (data.from === 'NONE' || data.to === 'NONE') continue;
 
-          // Determine the actual exit target: for mapped entrances, use
-          // the mapped destination's `to` area; for unmapped, use own `to`.
-          const mappedDstKey = finalPlandoEntrances[key];
-          const mappedDstData = mappedDstKey
-            ? ENTRANCES_DATA[mappedDstKey]
-            : undefined;
-          const actualTo =
-            mappedDstData && mappedDstData.to !== 'NONE'
-              ? mappedDstData.to
-              : data.to;
-
           const fromArea = areas[data.from];
-          const exitExpr = fromArea?.exits?.[actualTo];
+          const exitExpr = fromArea?.exits?.[data.to];
           if (exitExpr) {
             this.savedEntranceExitExprs.set(key, {
               from: data.from,
@@ -483,6 +470,9 @@ export class OoTMMTracker implements TrackerPack {
         break;
       }
     }
+
+    const entranceResult = entrancePass.run();
+    this.worlds = entranceResult.worlds;
 
     // Disconnect unmapped tracked entrances so their checks are unreachable.
     // We self-mapped them above to prevent random shuffling, but now we remove
