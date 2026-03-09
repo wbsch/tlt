@@ -876,7 +876,9 @@ function elementType(element: unknown): string | undefined {
                 />
                 <img
                   v-if="getWheelOverlaySrc((ggchild as GridItem).item)"
-                  :src="getWheelOverlaySrc((ggchild as GridItem).item) as string"
+                  :src="
+                    getWheelOverlaySrc((ggchild as GridItem).item) as string
+                  "
                   :alt="`${(ggchild as GridItem).item} wheel overlay`"
                   class="item-overlay item-wheel-overlay"
                   :class="{
@@ -924,7 +926,9 @@ function elementType(element: unknown): string | undefined {
                   @contextmenu="
                     decrementItem((canvasChild as GridItem).item, $event)
                   "
-                  @wheel="handleItemWheel((canvasChild as GridItem).item, $event)"
+                  @wheel="
+                    handleItemWheel((canvasChild as GridItem).item, $event)
+                  "
                 >
                   <img
                     :src="getIconSrc((canvasChild as GridItem).item)"
@@ -954,7 +958,9 @@ function elementType(element: unknown): string | undefined {
                   <img
                     v-if="getWheelOverlaySrc((canvasChild as GridItem).item)"
                     :src="
-                      getWheelOverlaySrc((canvasChild as GridItem).item) as string
+                      getWheelOverlaySrc(
+                        (canvasChild as GridItem).item,
+                      ) as string
                     "
                     :alt="`${(canvasChild as GridItem).item} wheel overlay`"
                     class="item-overlay item-wheel-overlay"
@@ -1007,7 +1013,9 @@ function elementType(element: unknown): string | undefined {
                     @contextmenu="
                       decrementItem((gggchild as GridItem).item, $event)
                     "
-                    @wheel="handleItemWheel((gggchild as GridItem).item, $event)"
+                    @wheel="
+                      handleItemWheel((gggchild as GridItem).item, $event)
+                    "
                   >
                     <img
                       :src="getIconSrc((gggchild as GridItem).item)"
@@ -1037,7 +1045,9 @@ function elementType(element: unknown): string | undefined {
                     <img
                       v-if="getWheelOverlaySrc((gggchild as GridItem).item)"
                       :src="
-                        getWheelOverlaySrc((gggchild as GridItem).item) as string
+                        getWheelOverlaySrc(
+                          (gggchild as GridItem).item,
+                        ) as string
                       "
                       :alt="`${(gggchild as GridItem).item} wheel overlay`"
                       class="item-overlay item-wheel-overlay"
@@ -1161,7 +1171,9 @@ function elementType(element: unknown): string | undefined {
               />
               <img
                 v-if="getWheelOverlaySrc((canvasChild as GridItem).item)"
-                :src="getWheelOverlaySrc((canvasChild as GridItem).item) as string"
+                :src="
+                  getWheelOverlaySrc((canvasChild as GridItem).item) as string
+                "
                 :alt="`${(canvasChild as GridItem).item} wheel overlay`"
                 class="item-overlay item-wheel-overlay"
                 :class="{
