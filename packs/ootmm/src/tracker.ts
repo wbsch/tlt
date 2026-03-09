@@ -480,6 +480,26 @@ export class OoTMMTracker implements TrackerPack {
     // We self-mapped them above to prevent random shuffling, but now we remove
     // the exit connections so the pathfinder can't reach them.
     if (unmappedEntrances.length > 0) {
+      const retainedMappedExitPairs = new Set<string>();
+      const unmappedEntranceSet = new Set(unmappedEntrances);
+
+      for (const [sourceKey, destinationKey] of Object.entries(
+        finalPlandoEntrances,
+      )) {
+        if (unmappedEntranceSet.has(sourceKey)) continue;
+
+        const sourceData = ENTRANCES_DATA[sourceKey];
+        const destinationData = ENTRANCES_DATA[destinationKey];
+        if (!sourceData || !destinationData) continue;
+        if (sourceData.from === 'NONE' || destinationData.to === 'NONE') {
+          continue;
+        }
+
+        retainedMappedExitPairs.add(
+          `${sourceData.from}=>${destinationData.to}`,
+        );
+      }
+
       for (const world of this.worlds) {
         const areas = (world as Record<string, unknown>).areas as Record<
           string,
@@ -488,6 +508,10 @@ export class OoTMMTracker implements TrackerPack {
         for (const key of unmappedEntrances) {
           const data = ENTRANCES_DATA[key];
           if (!data) continue;
+          const exitPairKey = `${data.from}=>${data.to}`;
+          if (retainedMappedExitPairs.has(exitPairKey)) {
+            continue;
+          }
           const fromArea = areas[data.from];
           if (fromArea?.exits && data.to in fromArea.exits) {
             delete fromArea.exits[data.to];
