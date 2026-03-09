@@ -250,6 +250,7 @@ export class OoTMMTracker implements TrackerPack {
   private availableItemIds: Set<string> = new Set();
   private itemMaxCounts: Map<string, number> = new Map();
   private silverRupeeLocationIdsByItemId: Map<string, string[]> = new Map();
+  private owlStatueLocationIdsByItemId: Map<string, string[]> = new Map();
   private shopPriceSlotsByLocationId: Map<string, ShopPriceSlot> = new Map();
   private baseShopPricesByLocationId: Map<string, number[]> = new Map();
   private devLocationCatalog: LocationInfo[] = [];
@@ -526,6 +527,9 @@ export class OoTMMTracker implements TrackerPack {
     this.silverRupeeLocationIdsByItemId = this.buildSilverRupeeLocationIndex(
       this.worlds,
     );
+    this.owlStatueLocationIdsByItemId = this.buildOwlStatueLocationIndex(
+      this.worlds,
+    );
     const shopPriceIndex = this.buildShopPriceIndex(this.worlds);
     this.shopPriceSlotsByLocationId = shopPriceIndex.slotsByLocationId;
     this.baseShopPricesByLocationId = shopPriceIndex.basePricesByLocationId;
@@ -550,15 +554,19 @@ export class OoTMMTracker implements TrackerPack {
       this.debugLog('[OoTMM Tracker] Inventory stringify error:', e);
     }
     const isVanillaSilverRupees = this.isVanillaSilverRupeeShuffle();
-    const baseInventory = isVanillaSilverRupees
-      ? this.stripVanillaSilverRupees(inventory)
-      : inventory;
+    const isVanillaOwls = this.isVanillaOwlShuffle();
+    const baseInventory = this.stripAutoTrackedInventoryItems(
+      inventory,
+      isVanillaSilverRupees,
+      isVanillaOwls,
+    );
 
     let assumedInventory = baseInventory;
     let state;
     let reachableLocationIds: string[] = [];
     let newLocationIds: string[] = [];
     let silverRupeeCounts = new Map<string, number>();
+    let owlStatueCounts = new Map<string, number>();
     let iterations = 0;
 
     while (true) {
@@ -568,27 +576,39 @@ export class OoTMMTracker implements TrackerPack {
       newLocationIds = result.newLocationIds;
 
       if (
-        !isVanillaSilverRupees ||
-        this.silverRupeeLocationIdsByItemId.size === 0
+        (!isVanillaSilverRupees ||
+          this.silverRupeeLocationIdsByItemId.size === 0) &&
+        (!isVanillaOwls || this.owlStatueLocationIdsByItemId.size === 0)
       ) {
         break;
       }
 
-      const nextCounts =
-        this.computeVanillaSilverRupeeCounts(reachableLocationIds);
-      if (this.areCountMapsEqual(nextCounts, silverRupeeCounts)) {
-        silverRupeeCounts = nextCounts;
+      const nextSilverRupeeCounts = isVanillaSilverRupees
+        ? this.computeVanillaSilverRupeeCounts(reachableLocationIds)
+        : new Map<string, number>();
+      const nextOwlStatueCounts = isVanillaOwls
+        ? this.computeVanillaOwlStatueCounts(reachableLocationIds)
+        : new Map<string, number>();
+
+      if (
+        this.areCountMapsEqual(nextSilverRupeeCounts, silverRupeeCounts) &&
+        this.areCountMapsEqual(nextOwlStatueCounts, owlStatueCounts)
+      ) {
+        silverRupeeCounts = nextSilverRupeeCounts;
+        owlStatueCounts = nextOwlStatueCounts;
         break;
       }
-      silverRupeeCounts = nextCounts;
+
+      silverRupeeCounts = nextSilverRupeeCounts;
+      owlStatueCounts = nextOwlStatueCounts;
       assumedInventory = this.mergeInventoryWithCounts(
         baseInventory,
-        silverRupeeCounts,
+        this.mergeCountMaps(silverRupeeCounts, owlStatueCounts),
       );
       iterations += 1;
       if (iterations >= 10) {
         console.warn(
-          '[OoTMM Tracker] Vanilla silver rupee auto-tracking did not stabilize after 10 iterations',
+          '[OoTMM Tracker] Auto-tracked vanilla item reachability did not stabilize after 10 iterations',
         );
         break;
       }
@@ -625,6 +645,10 @@ export class OoTMMTracker implements TrackerPack {
 
     if (isVanillaSilverRupees) {
       extra.vanillaSilverRupeeCounts = this.countMapToRecord(silverRupeeCounts);
+    }
+
+    if (isVanillaOwls) {
+      extra.vanillaOwlStatueCounts = this.countMapToRecord(owlStatueCounts);
     }
 
     // Compute which ER entrances are reachable (can be entered).
@@ -1688,17 +1712,33 @@ export class OoTMMTracker implements TrackerPack {
     return itemId.startsWith(VANILLA_SILVER_RUPEE_PREFIX);
   }
 
+  private isVanillaOwlShuffle(): boolean {
+    return (
+      String((this.settings as { owlShuffle?: unknown })?.owlShuffle ?? '') ===
+      'none'
+    );
+  }
+
   private isOwlStatueItemId(itemId: string): boolean {
     return itemId.startsWith(OWL_STATUE_PREFIX);
   }
 
-  private stripVanillaSilverRupees(
+  private stripAutoTrackedInventoryItems(
     inventory: Map<string, number>,
+    stripVanillaSilverRupees: boolean,
+    stripVanillaOwls: boolean,
   ): Map<string, number> {
     if (!inventory || inventory.size === 0) return new Map();
+    if (!stripVanillaSilverRupees && !stripVanillaOwls) return inventory;
+
     const next = new Map<string, number>();
     for (const [itemId, count] of inventory) {
-      if (this.isVanillaSilverRupeeItemId(itemId)) continue;
+      if (stripVanillaSilverRupees && this.isVanillaSilverRupeeItemId(itemId)) {
+        continue;
+      }
+      if (stripVanillaOwls && this.isOwlStatueItemId(itemId)) {
+        continue;
+      }
       next.set(itemId, count);
     }
     return next;
@@ -1712,6 +1752,18 @@ export class OoTMMTracker implements TrackerPack {
     for (const [itemId, count] of counts) {
       if (count > 0) {
         next.set(itemId, count);
+      }
+    }
+    return next;
+  }
+
+  private mergeCountMaps(...maps: Map<string, number>[]): Map<string, number> {
+    const next = new Map<string, number>();
+    for (const map of maps) {
+      for (const [itemId, count] of map) {
+        if (count > 0) {
+          next.set(itemId, count);
+        }
       }
     }
     return next;
@@ -1852,13 +1904,28 @@ export class OoTMMTracker implements TrackerPack {
   private buildSilverRupeeLocationIndex(
     worlds: World[],
   ): Map<string, string[]> {
+    return this.buildAutoTrackedItemLocationIndex(worlds, (itemId) =>
+      this.isVanillaSilverRupeeItemId(itemId),
+    );
+  }
+
+  private buildOwlStatueLocationIndex(worlds: World[]): Map<string, string[]> {
+    return this.buildAutoTrackedItemLocationIndex(worlds, (itemId) =>
+      this.isOwlStatueItemId(itemId),
+    );
+  }
+
+  private buildAutoTrackedItemLocationIndex(
+    worlds: World[],
+    predicate: (itemId: string) => boolean,
+  ): Map<string, string[]> {
     const map = new Map<string, string[]>();
     if (!worlds || worlds.length === 0) return map;
 
     for (const [worldId, world] of worlds.entries()) {
       for (const [locId, check] of Object.entries(world.checks ?? {})) {
         const itemId = (check as { item?: { id?: string } })?.item?.id;
-        if (!itemId || !this.isVanillaSilverRupeeItemId(itemId)) continue;
+        if (!itemId || !predicate(itemId)) continue;
         const fullId = makeLocation(locId, worldId);
         const list = map.get(itemId) ?? [];
         list.push(fullId);
@@ -2115,13 +2182,40 @@ export class OoTMMTracker implements TrackerPack {
   private computeVanillaSilverRupeeCounts(
     reachableLocationIds: string[],
   ): Map<string, number> {
+    return this.computeAutoTrackedItemCounts(
+      reachableLocationIds,
+      this.silverRupeeLocationIdsByItemId,
+    );
+  }
+
+  private computeVanillaOwlStatueCounts(
+    reachableLocationIds: string[],
+  ): Map<string, number> {
+    return this.computeAutoTrackedItemCounts(
+      reachableLocationIds,
+      this.owlStatueLocationIdsByItemId,
+      1,
+    );
+  }
+
+  private computeAutoTrackedItemCounts(
+    reachableLocationIds: string[],
+    locationIdsByItemId: Map<string, string[]>,
+    maxCountPerItem?: number,
+  ): Map<string, number> {
     const counts = new Map<string, number>();
-    if (this.silverRupeeLocationIdsByItemId.size === 0) return counts;
+    if (locationIdsByItemId.size === 0) return counts;
     const reachable = new Set(reachableLocationIds);
-    for (const [itemId, locationIds] of this.silverRupeeLocationIdsByItemId) {
+    for (const [itemId, locationIds] of locationIdsByItemId) {
       let count = 0;
       for (const locId of locationIds) {
-        if (reachable.has(locId)) count += 1;
+        if (reachable.has(locId)) {
+          count += 1;
+          if (maxCountPerItem && count >= maxCountPerItem) {
+            count = maxCountPerItem;
+            break;
+          }
+        }
       }
       if (count > 0) {
         counts.set(itemId, count);
