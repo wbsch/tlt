@@ -17,6 +17,9 @@ import {
 } from '../data/settings';
 import spoilerSettingsDefaultCheckExclude from '../data/spoilerSettingsDefaultCheckExclude.json';
 import {
+  DUNGEON_REWARD_ITEM_IDS,
+  DUNGEON_REWARD_REGION_LABELS,
+  FREE_REWARD_LABEL_ITEM_ID,
   getGridWheelOverlayStageForValue,
   getGridWheelOverlayStateItemId,
 } from '../data/itemIcons';
@@ -125,38 +128,15 @@ const SPOILER_DEFAULT_CHECK_EXCLUDED_SETTINGS = new Set<string>(
 const normalizeName = (value: string) =>
   value.toLowerCase().replace(/\s+/g, ' ').trim();
 
-const DUNGEON_REWARD_ITEM_IDS = new Set([
-  'OOT_STONE_EMERALD',
-  'OOT_STONE_RUBY',
-  'OOT_STONE_SAPPHIRE',
-  'OOT_MEDALLION_FOREST',
-  'OOT_MEDALLION_FIRE',
-  'OOT_MEDALLION_WATER',
-  'OOT_MEDALLION_SPIRIT',
-  'OOT_MEDALLION_SHADOW',
-  'OOT_MEDALLION_LIGHT',
-  'MM_REMAINS_ODOLWA',
-  'MM_REMAINS_GOHT',
-  'MM_REMAINS_GYORG',
-  'MM_REMAINS_TWINMOLD',
-]);
-
-const FREE_REWARD_LABEL_ITEM_ID = 'free_label';
-
-const SPOILER_REWARD_REGION_LABEL_BY_NAME = new Map<string, string>([
-  [normalizeName('Deku Tree'), 'oot_dekutree_label'],
-  [normalizeName("Dodongo's Cavern"), 'oot_dc_label'],
-  [normalizeName("Jabu-Jabu's Belly"), 'oot_jabu_label'],
-  [normalizeName('Forest Temple'), 'oot_foresttemple_label'],
-  [normalizeName('Fire Temple'), 'oot_firetemple_label'],
-  [normalizeName('Water Temple'), 'oot_watertemple_label'],
-  [normalizeName('Spirit Temple'), 'oot_spirittemple_label'],
-  [normalizeName('Shadow Temple'), 'oot_shadowtemple_label'],
-  [normalizeName('Woodfall Temple'), 'mm_woodfall_label'],
-  [normalizeName('Snowhead Temple'), 'mm_snowhead_label'],
-  [normalizeName('Great Bay Temple'), 'mm_greatbay_label'],
-  [normalizeName('Stone Tower Temple'), 'mm_stonetower_label'],
-]);
+const DUNGEON_REWARD_ITEM_ID_SET = new Set<string>(DUNGEON_REWARD_ITEM_IDS);
+const SPOILER_REWARD_REGION_LABEL_BY_NAME = new Map<string, string>(
+  DUNGEON_REWARD_REGION_LABELS.map(
+    ({ regionName, labelItemId }): [string, string] => [
+      normalizeName(regionName),
+      labelItemId,
+    ],
+  ),
+);
 
 const TEMPLE_OF_TIME_MEDALLION_LOCATION_NAMES = new Set([
   normalizeName('OOT Temple of Time Medallion'),
@@ -1268,7 +1248,9 @@ function getSpoilerSelectedPlayer(selectedPlayer?: number): number {
 function shouldImportSpoilerDungeonRewards(
   effectiveSettings: Record<string, unknown>,
 ): boolean {
-  return String(effectiveSettings.dungeonRewardShuffle ?? '') === 'dungeonBlueWarps';
+  return (
+    String(effectiveSettings.dungeonRewardShuffle ?? '') === 'dungeonBlueWarps'
+  );
 }
 
 function normalizeSpoilerRegionName(region?: string): string {
@@ -1285,7 +1267,9 @@ function getSpoilerRewardOverlayItemId(
   }
 
   if (
-    TEMPLE_OF_TIME_MEDALLION_LOCATION_NAMES.has(normalizeName(placement.location))
+    TEMPLE_OF_TIME_MEDALLION_LOCATION_NAMES.has(
+      normalizeName(placement.location),
+    )
   ) {
     return FREE_REWARD_LABEL_ITEM_ID;
   }
@@ -1319,7 +1303,7 @@ function buildSpoilerRewardOverlayStateCounts(
   for (const [itemName, count] of Object.entries(parsed.startingItems)) {
     if (!count || count <= 0) continue;
     const itemId = itemNameToId.get(normalizeName(itemName));
-    if (!itemId || !DUNGEON_REWARD_ITEM_IDS.has(itemId)) continue;
+    if (!itemId || !DUNGEON_REWARD_ITEM_ID_SET.has(itemId)) continue;
     assignOverlay(itemId, FREE_REWARD_LABEL_ITEM_ID);
   }
 
@@ -1332,7 +1316,7 @@ function buildSpoilerRewardOverlayStateCounts(
     }
 
     const itemId = itemNameToId.get(normalizeName(placement.item));
-    if (!itemId || !DUNGEON_REWARD_ITEM_IDS.has(itemId)) continue;
+    if (!itemId || !DUNGEON_REWARD_ITEM_ID_SET.has(itemId)) continue;
 
     const overlayItemId = getSpoilerRewardOverlayItemId(
       placement,
@@ -1353,7 +1337,7 @@ function applySpoilerRewardAssignments(
 ) {
   const nextInventory = new Map(inventory.value);
 
-  for (const rewardItemId of DUNGEON_REWARD_ITEM_IDS) {
+  for (const rewardItemId of DUNGEON_REWARD_ITEM_ID_SET) {
     const stateItemId = getGridWheelOverlayStateItemId(rewardItemId);
     if (!stateItemId) continue;
     nextInventory.delete(stateItemId);

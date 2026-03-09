@@ -1062,25 +1062,46 @@ const RAW_GRID_ICON_VARIANTS: Record<string, GridIconVariantConfig> = {
   },
 };
 
+export const FREE_REWARD_LABEL_ITEM_ID = 'free_label';
+
+export const DUNGEON_REWARD_ITEM_IDS = [
+  'OOT_STONE_EMERALD',
+  'OOT_STONE_RUBY',
+  'OOT_STONE_SAPPHIRE',
+  'OOT_MEDALLION_FOREST',
+  'OOT_MEDALLION_FIRE',
+  'OOT_MEDALLION_WATER',
+  'OOT_MEDALLION_SPIRIT',
+  'OOT_MEDALLION_SHADOW',
+  'OOT_MEDALLION_LIGHT',
+  'MM_REMAINS_ODOLWA',
+  'MM_REMAINS_GOHT',
+  'MM_REMAINS_GYORG',
+  'MM_REMAINS_TWINMOLD',
+] as const;
+
+export const DUNGEON_REWARD_REGION_LABELS = [
+  { regionName: 'Deku Tree', labelItemId: 'oot_dekutree_label' },
+  { regionName: "Dodongo's Cavern", labelItemId: 'oot_dc_label' },
+  { regionName: "Jabu-Jabu's Belly", labelItemId: 'oot_jabu_label' },
+  { regionName: 'Forest Temple', labelItemId: 'oot_foresttemple_label' },
+  { regionName: 'Fire Temple', labelItemId: 'oot_firetemple_label' },
+  { regionName: 'Water Temple', labelItemId: 'oot_watertemple_label' },
+  { regionName: 'Spirit Temple', labelItemId: 'oot_spirittemple_label' },
+  { regionName: 'Shadow Temple', labelItemId: 'oot_shadowtemple_label' },
+  { regionName: 'Woodfall Temple', labelItemId: 'mm_woodfall_label' },
+  { regionName: 'Snowhead Temple', labelItemId: 'mm_snowhead_label' },
+  { regionName: 'Great Bay Temple', labelItemId: 'mm_greatbay_label' },
+  { regionName: 'Stone Tower Temple', labelItemId: 'mm_stonetower_label' },
+] as const;
+
 const REWARD_DUNGEON_LABEL_OVERLAYS = [
-  'free_label',
-  'oot_dekutree_label',
-  'oot_dc_label',
-  'oot_jabu_label',
-  'oot_foresttemple_label',
-  'oot_firetemple_label',
-  'oot_watertemple_label',
-  'oot_spirittemple_label',
-  'oot_shadowtemple_label',
-  'mm_woodfall_label',
-  'mm_snowhead_label',
-  'mm_greatbay_label',
-  'mm_stonetower_label',
+  FREE_REWARD_LABEL_ITEM_ID,
+  ...DUNGEON_REWARD_REGION_LABELS.map(({ labelItemId }) => labelItemId),
 ];
 
 const RAW_GRID_WHEEL_OVERLAYS: Record<string, GridWheelOverlayDefinition> = {
-  'OOT_STONE_EMERALD|OOT_STONE_RUBY|OOT_STONE_SAPPHIRE|OOT_MEDALLION_FOREST|OOT_MEDALLION_FIRE|OOT_MEDALLION_WATER|OOT_MEDALLION_SPIRIT|OOT_MEDALLION_SHADOW|OOT_MEDALLION_LIGHT|MM_REMAINS_ODOLWA|MM_REMAINS_GOHT|MM_REMAINS_GYORG|MM_REMAINS_TWINMOLD':
-    REWARD_DUNGEON_LABEL_OVERLAYS,
+  [DUNGEON_REWARD_ITEM_IDS.join('|')]: REWARD_DUNGEON_LABEL_OVERLAYS,
 };
 
 interface ResolvedGridWheelOverlayConfig {
