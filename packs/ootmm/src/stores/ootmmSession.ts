@@ -23,6 +23,13 @@ import {
 
 const HISTORY_LIMIT = 200;
 const VANILLA_SILVER_RUPEE_PREFIX = 'OOT_RUPEE_SILVER_';
+const SHOP_PRICE_MODE_KEYS = [
+  'priceOotShops',
+  'priceOotScrubs',
+  'priceOotMerchants',
+  'priceMmShops',
+  'priceMmTingle',
+] as const;
 
 type SessionSnapshot = {
   inventoryById: Record<string, number>;
@@ -142,6 +149,25 @@ function cloneSettingsRecord(
   value: Record<string, unknown>,
 ): Record<string, unknown> {
   return deepCloneValue(value) as Record<string, unknown>;
+}
+
+function isRandomizedShopPriceMode(mode: unknown): boolean {
+  const normalized = String(mode ?? '');
+  return normalized === 'random' || normalized === 'weighted';
+}
+
+function shouldResetInitializedShopPrices(
+  previousSettings: Record<string, unknown>,
+  nextSettings: Record<string, unknown>,
+): boolean {
+  return SHOP_PRICE_MODE_KEYS.some((key) => {
+    const previousMode = previousSettings[key];
+    const nextMode = nextSettings[key];
+    return (
+      isRandomizedShopPriceMode(nextMode) &&
+      String(previousMode ?? '') !== String(nextMode ?? '')
+    );
+  });
 }
 
 function applyDefaultsForNewlyVisibleSettings(
@@ -1027,7 +1053,10 @@ export const useOoTMMSessionStore = defineStore('ootmm-session', () => {
     recomputeReachability();
   }
 
-  function applyShopPrices(forceDuringSettingsApply = false) {
+  function applyShopPrices(
+    forceDuringSettingsApply = false,
+    resetInitializedPrices = false,
+  ) {
     const currentTracker = tracker.value;
     if (!currentTracker || !currentTracker.setShopPrices) return;
     if (isApplyingSettings.value && !forceDuringSettingsApply) {
@@ -1036,24 +1065,28 @@ export const useOoTMMSessionStore = defineStore('ootmm-session', () => {
       return;
     }
 
-    const isRandomizedMode = (mode: string) =>
-      mode === 'random' || mode === 'weighted';
-    const hasEditableShops = [
-      trackerSettings.value?.priceOotShops,
-      trackerSettings.value?.priceOotScrubs,
-      trackerSettings.value?.priceOotMerchants,
-      trackerSettings.value?.priceMmShops,
-      trackerSettings.value?.priceMmTingle,
-    ].some((mode) => isRandomizedMode(String(mode ?? '')));
+    const hasEditableShops = SHOP_PRICE_MODE_KEYS.some((key) =>
+      isRandomizedShopPriceMode(trackerSettings.value?.[key]),
+    );
 
     if (hasEditableShops && currentTracker.getShopPrices) {
       const trackerPrices = sanitizeNonNegativeNumberRecord(
         currentTracker.getShopPrices(),
       );
-      shopPrices.value = sanitizeNonNegativeNumberRecord({
-        ...trackerPrices,
-        ...shopPrices.value,
-      });
+      const initializedPrices = Object.fromEntries(
+        Object.keys(trackerPrices).map((locationId) => [locationId, 0]),
+      );
+      shopPrices.value = sanitizeNonNegativeNumberRecord(
+        resetInitializedPrices
+          ? {
+              ...shopPrices.value,
+              ...initializedPrices,
+            }
+          : {
+              ...initializedPrices,
+              ...shopPrices.value,
+            },
+      );
     }
 
     const prices = hasEditableShops ? shopPrices.value : {};
@@ -1095,6 +1128,10 @@ export const useOoTMMSessionStore = defineStore('ootmm-session', () => {
       trackerSettings.value,
       { ...newSettings },
     );
+    const resetInitializedShopPrices = shouldResetInitializedShopPrices(
+      trackerSettings.value,
+      nextSettings,
+    );
     const nextEntranceOverrides = filterEntranceOverridesForSettings(
       entranceOverrides.value,
       nextSettings,
@@ -1129,7 +1166,7 @@ export const useOoTMMSessionStore = defineStore('ootmm-session', () => {
       // Explicitly apply these once the tracker is initialized with the new
       // settings, even though isApplyingSettings is still true.
       applySongEvents(true);
-      applyShopPrices(true);
+      applyShopPrices(true, resetInitializedShopPrices);
       recomputeReachability();
       didApply = true;
     } catch (error) {

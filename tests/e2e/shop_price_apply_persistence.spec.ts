@@ -60,6 +60,38 @@ test.describe('Shop price apply + persistence', () => {
     await resetLocalStorageAndReload(page);
   });
 
+  test('initializes randomized shop prices with 0 when switching price shuffle modes', async ({
+    page,
+  }) => {
+    await page.getByTestId('tab-settings').click();
+
+    await page.getByTestId('setting-input-shopShuffleOot').selectOption('full');
+    await page
+      .getByTestId('setting-input-priceOotShops')
+      .selectOption('random');
+    await applySettingsAndWait(page);
+
+    const row = await getTargetLocationRow(page);
+    const priceInput = row.locator('.shop-price-input');
+    await expect(priceInput).toBeVisible();
+    await expect(priceInput).toHaveValue('0');
+
+    await priceInput.fill('100');
+    await expect(priceInput).toHaveValue('100');
+
+    await page.getByTestId('tab-settings').click();
+    await page
+      .getByTestId('setting-input-priceOotShops')
+      .selectOption('weighted');
+    await applySettingsAndWait(page);
+
+    const rowAfterModeChange = await getTargetLocationRow(page);
+    const priceInputAfterModeChange =
+      rowAfterModeChange.locator('.shop-price-input');
+    await expect(priceInputAfterModeChange).toBeVisible();
+    await expect(priceInputAfterModeChange).toHaveValue('0');
+  });
+
   test('shows Kakariko Bazaar Item 1 price input after apply and keeps edited value after refresh', async ({
     page,
   }) => {
