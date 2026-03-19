@@ -49,6 +49,7 @@ const RAW_ITEM_ICONS: Record<string, string> = {
   OOT_SWORD_KOKIRI: 'images/sword1.png',
   OOT_SWORD_MASTER: 'images/sword2.png',
   OOT_SWORD_BIGGORON: 'images/sword3.png',
+  OOT_SWORD_KNIFE: 'images/sword_giants_knife.png',
   OOT_SPIN_UPGRADE: 'images/great_spin_attack.png',
 
   // Shields
