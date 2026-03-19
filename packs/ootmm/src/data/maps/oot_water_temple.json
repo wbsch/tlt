@@ -56,7 +56,7 @@
       "codes": "OOT Water Temple Bombable Chest"
     },
     {
-      "coords": [302, 567],
+      "coords": [607, 567],
       "image": "gold_skulltula",
       "codes": "OOT Water Temple GS Cage"
     },
@@ -81,7 +81,7 @@
       "codes": "OOT Water Temple GS Large Pit"
     },
     {
-      "coords": [310, 570],
+      "coords": [613, 570],
       "image": "pot",
       "codes": [
         "OOT Water Temple Pot Skull Cage 1",
