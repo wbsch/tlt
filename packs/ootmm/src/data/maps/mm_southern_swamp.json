@@ -224,6 +224,9 @@
       "coords": [537, 412],
       "image": "blue_rupee",
       "overlays": ["jp_only"],
+      "visibleWhen": {
+        "contains": { "jpLayouts": "DekuPalace" }
+      },
       "codes": [
         "MM Deku Palace Rupee Layout-Dependant 1",
         "MM Deku Palace Rupee Layout-Dependant 2"
@@ -259,6 +262,9 @@
       "coords": [466, 442],
       "image": "blue_rupee",
       "overlays": ["na_only"],
+      "visibleWhen": {
+        "notContains": { "jpLayouts": "DekuPalace" }
+      },
       "codes": [
         "MM Deku Palace Rupee Layout-Dependant 1",
         "MM Deku Palace Rupee Layout-Dependant 2"
@@ -632,10 +638,16 @@
       "entranceMenu": {
         "entranceIds": ["MM_GROTTO_BEAN"]
       },
+      "visibleWhen": {
+        "notContains": { "jpLayouts": "DekuPalace" }
+      },
       "markers": [
         {
           "image": "chest",
-          "codes": "MM Deku Palace Grotto Chest"
+          "codes": "MM Deku Palace Grotto Chest",
+          "visibleWhen": {
+            "notContains": { "jpLayouts": "DekuPalace" }
+          }
         },
         {
           "image": "grass",
@@ -652,7 +664,10 @@
             "MM Deku Palace Grotto Grass 10",
             "MM Deku Palace Grotto Grass 11",
             "MM Deku Palace Grotto Grass 12"
-          ]
+          ],
+          "visibleWhen": {
+            "notContains": { "jpLayouts": "DekuPalace" }
+          }
         },
         {
           "image": "butterfly",
@@ -661,7 +676,10 @@
             "MM Deku Palace Grotto Butterfly 2",
             "MM Deku Palace Grotto Butterfly 3",
             "MM Deku Palace Grotto Butterfly 4"
-          ]
+          ],
+          "visibleWhen": {
+            "notContains": { "jpLayouts": "DekuPalace" }
+          }
         },
         {
           "image": "soft_soil",
@@ -669,7 +687,10 @@
             "MM Beans Grotto Soil Item 1",
             "MM Beans Grotto Soil Item 2",
             "MM Beans Grotto Soil Item 3"
-          ]
+          ],
+          "visibleWhen": {
+            "notContains": { "jpLayouts": "DekuPalace" }
+          }
         }
       ]
     },
@@ -681,10 +702,16 @@
       "entranceMenu": {
         "entranceIds": ["MM_GROTTO_BEAN"]
       },
+      "visibleWhen": {
+        "contains": { "jpLayouts": "DekuPalace" }
+      },
       "markers": [
         {
           "image": "chest",
-          "codes": "MM Deku Palace Grotto Chest"
+          "codes": "MM Deku Palace Grotto Chest",
+          "visibleWhen": {
+            "contains": { "jpLayouts": "DekuPalace" }
+          }
         },
         {
           "image": "grass",
@@ -701,7 +728,10 @@
             "MM Deku Palace Grotto Grass 10",
             "MM Deku Palace Grotto Grass 11",
             "MM Deku Palace Grotto Grass 12"
-          ]
+          ],
+          "visibleWhen": {
+            "contains": { "jpLayouts": "DekuPalace" }
+          }
         },
         {
           "image": "butterfly",
@@ -710,7 +740,10 @@
             "MM Deku Palace Grotto Butterfly 2",
             "MM Deku Palace Grotto Butterfly 3",
             "MM Deku Palace Grotto Butterfly 4"
-          ]
+          ],
+          "visibleWhen": {
+            "contains": { "jpLayouts": "DekuPalace" }
+          }
         },
         {
           "image": "soft_soil",
@@ -718,7 +751,10 @@
             "MM Beans Grotto Soil Item 1",
             "MM Beans Grotto Soil Item 2",
             "MM Beans Grotto Soil Item 3"
-          ]
+          ],
+          "visibleWhen": {
+            "contains": { "jpLayouts": "DekuPalace" }
+          }
         }
       ]
     },
@@ -728,6 +764,9 @@
       "overlays": ["jp_only"],
       "entranceMenu": {
         "entranceIds": ["MM_GROTTO_JP_LINE_END"]
+      },
+      "visibleWhen": {
+        "contains": { "jpLayouts": "DekuPalace" }
       },
       "type": "submenu",
       "markers": [
@@ -760,6 +799,9 @@
       "type": "submenu",
       "entranceMenu": {
         "entranceIds": ["MM_GROTTO_JP_CLIMB_RIGHT"]
+      },
+      "visibleWhen": {
+        "contains": { "jpLayouts": "DekuPalace" }
       }
     },
     {
@@ -769,6 +811,9 @@
       "type": "submenu",
       "entranceMenu": {
         "entranceIds": ["MM_GROTTO_JP_CLIMB_LEFT"]
+      },
+      "visibleWhen": {
+        "contains": { "jpLayouts": "DekuPalace" }
       }
     },
     {
@@ -778,6 +823,9 @@
       "type": "submenu",
       "entranceMenu": {
         "entranceIds": ["MM_GROTTO_JP_LINE_START"]
+      },
+      "visibleWhen": {
+        "contains": { "jpLayouts": "DekuPalace" }
       },
       "markers": [
         {
