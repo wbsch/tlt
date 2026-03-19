@@ -507,7 +507,7 @@
               "item": "MM_BOTTLE_EMPTY",
               "title": "Bottle 2"
             },
-            "MM_STONE_OF_AGONY"
+            "MM_BOMBER_NOTEBOOK"
           ],
           [
             "MM_POWDER_KEG",
@@ -547,7 +547,8 @@
             "MM_SONG_NOTE_SUN",
             "MM_WALLET",
             "MM_MAGIC_UPGRADE",
-            "MM_MOON_TEAR"
+            "MM_MOON_TEAR",
+            "MM_STONE_OF_AGONY"
           ],
           [
             "MM_SONG_AWAKENING",

@@ -325,6 +325,7 @@ const RAW_ITEM_ICONS: Record<string, string> = {
   MM_SKELETON_KEY: 'images/key_skeleton.png',
   MM_STONE_OF_AGONY: 'images/agony.png',
   MM_TRANSCENDENT_FAIRY: 'images/items/mm_clocktown_stray_fairy.png',
+  MM_BOMBER_NOTEBOOK: 'images/bombers_notebook.png',
 
   // Buttons
   MM_BUTTON_A: 'images/button_a.png',

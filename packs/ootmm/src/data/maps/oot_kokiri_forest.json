@@ -49,8 +49,7 @@
     {
       "coords": [72, 399],
       "image": "npc",
-      "codes": "OOT Lost Woods Gift from Saria",
-      "overlays": ["child"]
+      "codes": "OOT Lost Woods Gift from Saria"
     },
     {
       "coords": [325, 65],
