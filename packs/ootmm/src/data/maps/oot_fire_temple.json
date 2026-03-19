@@ -21,14 +21,15 @@
       "codes": "OOT Fire Temple Jail 1 Chest"
     },
     {
-      "coords": [344, 454],
-      "image": "chest",
-      "codes": "OOT Fire Temple Boss Key Side Chest"
-    },
-    {
-      "coords": [344, 438],
+      "coords": [344, 447],
       "image": "chest",
       "codes": "OOT Fire Temple Boss Key Chest"
+    },
+    {
+      "coords": [344, 417],
+      "image": "chest",
+
+      "codes": "OOT Fire Temple Boss Key Side Chest"
     },
     {
       "coords": [427, 408],
