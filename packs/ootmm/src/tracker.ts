@@ -396,6 +396,7 @@ export class OoTMMTracker implements TrackerPack {
     const isErActive = activeEntranceKeys.size > 0;
     const finalPlandoEntrances = { ...plandoEntrances };
     const unmappedEntrances: string[] = [];
+    const selfMappedNoGlobalEntrances: string[] = [];
 
     if (isErActive) {
       // Self-map every active tracked entrance to prevent random shuffling.
@@ -409,7 +410,23 @@ export class OoTMMTracker implements TrackerPack {
           const isNoGlobalEntrance = Boolean(data.flags?.includes('no-global'));
           if (!isNoGlobalEntrance) {
             unmappedEntrances.push(key);
+          } else {
+            selfMappedNoGlobalEntrances.push(key);
           }
+        }
+      }
+
+      // `no-global` entrances stay connected by default, but if another
+      // entrance is explicitly mapped to that destination, the original source
+      // must be disconnected to avoid duplicate access paths.
+      const occupiedDestinationKeys = new Set(
+        Object.entries(finalPlandoEntrances)
+          .filter(([sourceKey, destinationKey]) => sourceKey !== destinationKey)
+          .map(([, destinationKey]) => destinationKey),
+      );
+      for (const key of selfMappedNoGlobalEntrances) {
+        if (occupiedDestinationKeys.has(key)) {
+          unmappedEntrances.push(key);
         }
       }
     }
