@@ -746,6 +746,13 @@
                     "margin": "1,2",
                     "width": 16,
                     "height": 16
+                  },
+                  {
+                    "type": "item",
+                    "item": "MM_KEY_RING_WF",
+                    "margin": "1,2",
+                    "width": 16,
+                    "height": 16
                   }
                 ]
               },
@@ -771,6 +778,13 @@
                   {
                     "type": "item",
                     "item": "MM_SMALL_KEY_SH",
+                    "margin": "1,2",
+                    "width": 16,
+                    "height": 16
+                  },
+                  {
+                    "type": "item",
+                    "item": "MM_KEY_RING_SH",
                     "margin": "1,2",
                     "width": 16,
                     "height": 16
@@ -802,6 +816,13 @@
                     "margin": "1,2",
                     "width": 16,
                     "height": 16
+                  },
+                  {
+                    "type": "item",
+                    "item": "MM_KEY_RING_GB",
+                    "margin": "1,2",
+                    "width": 16,
+                    "height": 16
                   }
                 ]
               },
@@ -827,6 +848,13 @@
                   {
                     "type": "item",
                     "item": "MM_SMALL_KEY_ST",
+                    "margin": "1,2",
+                    "width": 16,
+                    "height": 16
+                  },
+                  {
+                    "type": "item",
+                    "item": "MM_KEY_RING_ST",
                     "margin": "1,2",
                     "width": 16,
                     "height": 16
