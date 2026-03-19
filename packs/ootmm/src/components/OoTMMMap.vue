@@ -205,6 +205,11 @@ type DevDraftIssue = {
   message: string;
 };
 
+type DevCheckSelectPayload = {
+  checkId: string;
+  label: string;
+};
+
 const props = withDefaults(
   defineProps<{
     activeMap: MapDef | null;
@@ -215,6 +220,7 @@ const props = withDefaults(
     allLocationsForCodeSearch?: LocationInfo[];
     settings?: Record<string, unknown> | null;
     devMode?: boolean;
+    devCheckPickMode?: boolean;
     devShowUnmappedOnly?: boolean;
     devMqMarkerMode?: 'non-mq' | 'mq';
     devMarkerSelectRequest?: { markerIndex: number; nonce: number } | null;
@@ -226,6 +232,7 @@ const props = withDefaults(
     allLocationsForCodeSearch: () => [],
     settings: null,
     devMode: false,
+    devCheckPickMode: false,
     devShowUnmappedOnly: false,
     devMqMarkerMode: 'non-mq',
     devMarkerSelectRequest: null,
@@ -239,6 +246,7 @@ const emit = defineEmits<{
   (e: 'open-popup', markerId: string): void;
   (e: 'close-popup'): void;
   (e: 'dev-warnings-change', warnings: DevDraftIssue[]): void;
+  (e: 'dev-check-select', payload: DevCheckSelectPayload): void;
 }>();
 
 const viewportRef = ref<HTMLDivElement | null>(null);
@@ -1125,6 +1133,10 @@ const popupMarker = computed<CheckMarkerRuntime | null>(() => {
   return marker && marker.type === 'check' ? marker : null;
 });
 
+const allowPopupInteraction = computed(
+  () => !props.devMode || props.devCheckPickMode,
+);
+
 const activePanelMarker = computed<SubmenuMarkerRuntime | null>(() => {
   if (!submenuPanel.value.markerId) return null;
   const marker = markerById.value.get(submenuPanel.value.markerId);
@@ -1150,13 +1162,13 @@ const activeSubmenuPopupMarker = computed<SubmenuEntryRuntime | null>(() => {
 
 const activePopup = computed<MapPopupPayload | null>(() => {
   const marker = popupMarker.value;
-  if (!marker || props.devMode) return null;
+  if (!marker || !allowPopupInteraction.value) return null;
   return markerPopupPayload(marker);
 });
 
 const activeSubmenuPopup = computed<MapPopupPayload | null>(() => {
   const marker = activeSubmenuPopupMarker.value;
-  if (!marker || props.devMode) return null;
+  if (!marker || !allowPopupInteraction.value) return null;
   return markerPopupPayload(marker);
 });
 
@@ -1576,6 +1588,28 @@ function closeSubmenuPopup(): void {
 }
 
 function handleMarkerClick(marker: MarkerRuntime): void {
+  if (props.devCheckPickMode) {
+    if (marker.type === 'submenu') {
+      openSubmenuPanel(marker.id, { pinned: true });
+      return;
+    }
+    const selectableEntries = marker.popupEntries.filter(
+      (entry): entry is MapPopupEntry & { checkId: string } =>
+        typeof entry.checkId === 'string',
+    );
+    if (selectableEntries.length === 1) {
+      emit('dev-check-select', {
+        checkId: selectableEntries[0].checkId,
+        label: formatLocationDisplayName(selectableEntries[0].code),
+      });
+      closePopup();
+      closeSubmenuPanel();
+      return;
+    }
+    mapPopup.value.hoverMarkerId = marker.id;
+    openPopup(marker.id, { pinned: true });
+    return;
+  }
   if (props.devMode) {
     devSelectedMarkerIndex.value = marker.markerIndex;
     closePopup();
@@ -1645,6 +1679,24 @@ function handlePopupHoverEnd(): void {
 }
 
 function handleSubmenuMarkerClick(marker: SubmenuEntryRuntime): void {
+  if (props.devCheckPickMode) {
+    const selectableEntries = marker.popupEntries.filter(
+      (entry): entry is MapPopupEntry & { checkId: string } =>
+        typeof entry.checkId === 'string',
+    );
+    if (selectableEntries.length === 1) {
+      emit('dev-check-select', {
+        checkId: selectableEntries[0].checkId,
+        label: formatLocationDisplayName(selectableEntries[0].code),
+      });
+      closeSubmenuPopup();
+      closeSubmenuPanel();
+      return;
+    }
+    submenuPopup.value.hoverMarkerId = marker.id;
+    openSubmenuPopup(marker.id, { pinned: true });
+    return;
+  }
   if (marker.reachableUncheckedCheckIds.length > 0) {
     const ids = Array.from(new Set(marker.reachableUncheckedCheckIds));
     emit('mark-all-reachable', ids);
@@ -1719,6 +1771,16 @@ function handleSubmenuPanelFocusOut(event: FocusEvent): void {
 
 function handlePopupEntryClick(entry: MapPopupEntry): void {
   if (!entry.checkId) return;
+  if (props.devCheckPickMode) {
+    emit('dev-check-select', {
+      checkId: entry.checkId,
+      label: formatLocationDisplayName(entry.code),
+    });
+    closePopup();
+    closeSubmenuPopup();
+    closeSubmenuPanel();
+    return;
+  }
   emit('toggle-collected', entry.checkId);
 }
 
@@ -1879,7 +1941,7 @@ function handleWindowBlur(): void {
 
 function handleEscapeKey(event: KeyboardEvent): void {
   if (event.key !== 'Escape') return;
-  if (props.devMode) {
+  if (props.devMode && !props.devCheckPickMode) {
     devSelectedMarkerIndex.value = null;
     return;
   }
@@ -1958,7 +2020,7 @@ watch(markerViewModels, () => {
     }
   }
 
-  if (props.devMode) return;
+  if (props.devMode && !props.devCheckPickMode) return;
 
   const activeMarkerId = mapPopup.value.markerId;
   if (activeMarkerId) {
@@ -2474,11 +2536,12 @@ onBeforeUnmount(() => {
           </div>
           <div class="map-popup__titles">
             <h3>{{ activeSubmenuPopup.title }}</h3>
-            <p>
+            <p v-if="!devCheckPickMode">
               {{ activeSubmenuPopupMarker.checkedCount }} checked /
               {{ activeSubmenuPopupMarker.reachableUncheckedCount }} reachable
               unchecked
             </p>
+            <p v-else>Select the check to trace.</p>
           </div>
           <button
             type="button"
@@ -2543,7 +2606,7 @@ onBeforeUnmount(() => {
           </button>
         </div>
 
-        <footer class="map-popup__footer">
+        <footer v-if="!devCheckPickMode" class="map-popup__footer">
           <button
             type="button"
             class="map-popup__mark-all"
@@ -2554,6 +2617,7 @@ onBeforeUnmount(() => {
           </button>
           <p class="map-popup__hint">Includes currently unreachable checks.</p>
         </footer>
+        <p v-else class="map-popup__hint">Select the check to trace.</p>
       </div>
 
       <div
@@ -2621,10 +2685,11 @@ onBeforeUnmount(() => {
           </div>
           <div class="map-popup__titles">
             <h3>{{ activePopup.title }}</h3>
-            <p>
+            <p v-if="!devCheckPickMode">
               {{ popupMarker.checkedCount }} checked /
               {{ popupMarker.reachableUncheckedCount }} reachable unchecked
             </p>
+            <p v-else>Select the check to trace.</p>
           </div>
           <button
             type="button"
@@ -2689,7 +2754,7 @@ onBeforeUnmount(() => {
           </button>
         </div>
 
-        <footer class="map-popup__footer">
+        <footer v-if="!devCheckPickMode" class="map-popup__footer">
           <button
             type="button"
             class="map-popup__mark-all"
@@ -2700,6 +2765,7 @@ onBeforeUnmount(() => {
           </button>
           <p class="map-popup__hint">Includes currently unreachable checks.</p>
         </footer>
+        <p v-else class="map-popup__hint">Select the check to trace.</p>
       </div>
 
       <OoTMMMapDevEditor

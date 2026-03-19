@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed, onBeforeUnmount, onMounted, ref, watch } from 'vue';
 import { storeToRefs } from 'pinia';
-import type { TrackerPack } from '@/types/tracker';
+import type { TrackerLocationTraceResult, TrackerPack } from '@/types/tracker';
 import OoTMMInventory from './OoTMMInventory.vue';
 import OoTMMLocations from './OoTMMLocations.vue';
 import OoTMMEntrances from './OoTMMEntrances.vue';
@@ -83,6 +83,11 @@ type SpoilerSettingWarning = {
 type SpoilerUnknownSetting = {
   key: string;
   value: string;
+};
+
+type DevTraceSelection = {
+  checkId: string;
+  label: string;
 };
 
 const resolveExport = <T,>(mod: unknown, key: string): T => {
@@ -247,6 +252,8 @@ const mapMarkerSelectRequest = ref<DevMarkerSelectRequest | null>(null);
 const mapMarkerHoverIndex = ref<number | null>(null);
 const showDevUnmappedChecksOnly = ref(false);
 const devMqMarkerMode = ref<DevMqMarkerMode>('non-mq');
+const isDevTraceSelectMode = ref(false);
+const devTraceResult = ref<TrackerLocationTraceResult | null>(null);
 const isSpoilerSettingsWarningDialogOpen = ref(false);
 const spoilerSettingsWarnings = ref<SpoilerSettingWarning[]>([]);
 const spoilerUnknownSettings = ref<SpoilerUnknownSetting[]>([]);
@@ -966,6 +973,35 @@ function handleMapMarkAllReachable(checkIds: string[]) {
 function handleMapPopupOpen() {}
 
 function handleMapPopupClose() {}
+
+function toggleDevTraceSelectMode() {
+  isDevTraceSelectMode.value = !isDevTraceSelectMode.value;
+}
+
+function clearDevTraceResult() {
+  devTraceResult.value = null;
+}
+
+function handleMapDevCheckSelect(selection: DevTraceSelection) {
+  isDevTraceSelectMode.value = false;
+  if (typeof props.tracker.traceLocationPath !== 'function') {
+    devTraceResult.value = {
+      checkId: selection.checkId,
+      checkName: selection.label,
+      reachable: false,
+      totalReachableLocations: 0,
+      checkAreaNames: [],
+      areaPath: null,
+      message: 'Trace output is not supported by the active tracker pack.',
+    };
+    return;
+  }
+
+  devTraceResult.value = props.tracker.traceLocationPath(
+    selection.checkId,
+    inventory.value,
+  );
+}
 
 function toggleMapWarningsPanel() {
   if (mapWarnings.value.length === 0) return;
@@ -2307,6 +2343,96 @@ onBeforeUnmount(() => {
                 </ul>
               </div>
             </div>
+            <div
+              v-if="isMapDevMode"
+              class="map-filter-group map-filter-group--trace"
+              role="group"
+              aria-label="Dev trace controls"
+            >
+              <button
+                type="button"
+                class="map-filter-button"
+                :class="{ 'is-active': isDevTraceSelectMode }"
+                data-testid="dev-trace-select-button"
+                @click="toggleDevTraceSelectMode"
+              >
+                {{ isDevTraceSelectMode ? 'Cancel Trace' : 'Trace Check' }}
+              </button>
+              <button
+                v-if="devTraceResult"
+                type="button"
+                class="map-filter-button"
+                data-testid="dev-trace-clear-button"
+                @click="clearDevTraceResult"
+              >
+                Clear Trace
+              </button>
+            </div>
+          </div>
+          <div
+            v-if="isMapDevMode && (isDevTraceSelectMode || devTraceResult)"
+            class="map-trace-panel"
+            data-testid="dev-trace-panel"
+          >
+            <p
+              v-if="isDevTraceSelectMode"
+              class="map-trace-panel__status"
+              data-testid="dev-trace-status"
+            >
+              Click a map check to trace its route with the current tracker
+              state.
+            </p>
+            <div
+              v-if="devTraceResult"
+              class="map-trace-panel__result"
+              data-testid="dev-trace-result"
+            >
+              <h3>{{ devTraceResult.checkName }}</h3>
+              <p
+                class="map-trace-panel__summary"
+                :class="{
+                  'is-unreachable': !devTraceResult.reachable,
+                }"
+                data-testid="dev-trace-summary"
+              >
+                {{
+                  devTraceResult.reachable
+                    ? 'Reachable with the current tracker state.'
+                    : 'Unreachable with the current tracker state.'
+                }}
+              </p>
+              <p
+                v-if="devTraceResult.checkAreaNames.length > 0"
+                class="map-trace-panel__areas"
+              >
+                Target area:
+                {{ devTraceResult.checkAreaNames.join(', ') }}
+              </p>
+              <ol
+                v-if="
+                  devTraceResult.areaPath && devTraceResult.areaPath.length > 0
+                "
+                class="map-trace-panel__path"
+                data-testid="dev-trace-path"
+              >
+                <li
+                  v-for="(areaName, index) in devTraceResult.areaPath"
+                  :key="`${devTraceResult.checkId}:path:${index}`"
+                >
+                  {{ areaName }}
+                </li>
+              </ol>
+              <p
+                v-else-if="devTraceResult.message"
+                class="map-trace-panel__message"
+              >
+                {{ devTraceResult.message }}
+              </p>
+              <p class="map-trace-panel__meta">
+                Reachable checks right now:
+                {{ devTraceResult.totalReachableLocations }}
+              </p>
+            </div>
           </div>
           <OoTMMMap
             class="map-view"
@@ -2318,6 +2444,7 @@ onBeforeUnmount(() => {
             :visible-location-ids="visibleLocationIds"
             :settings="trackerSettings"
             :dev-mode="isMapDevMode"
+            :dev-check-pick-mode="isDevTraceSelectMode"
             :dev-show-unmapped-only="showDevUnmappedChecksOnly"
             :dev-mq-marker-mode="devMqMarkerMode"
             :dev-marker-select-request="mapMarkerSelectRequest"
@@ -2327,6 +2454,7 @@ onBeforeUnmount(() => {
             @open-popup="handleMapPopupOpen"
             @close-popup="handleMapPopupClose"
             @dev-warnings-change="handleMapWarningsChange"
+            @dev-check-select="handleMapDevCheckSelect"
           />
         </div>
       </div>
@@ -2966,6 +3094,71 @@ onBeforeUnmount(() => {
 
 .map-toolbar-warning-item:hover {
   background: #3f3b36;
+}
+
+.map-filter-group--trace {
+  margin-left: auto;
+}
+
+.map-trace-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 0.55rem;
+  padding: 0.7rem 0.8rem;
+  border-bottom: 1px solid #374151;
+  background: #0b1220;
+}
+
+.map-trace-panel__status,
+.map-trace-panel__summary,
+.map-trace-panel__areas,
+.map-trace-panel__message,
+.map-trace-panel__meta {
+  margin: 0;
+  font-size: 0.78rem;
+  line-height: 1.4;
+}
+
+.map-trace-panel__status,
+.map-trace-panel__meta {
+  color: #93c5fd;
+}
+
+.map-trace-panel__result {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.map-trace-panel__result h3 {
+  margin: 0;
+  font-size: 0.9rem;
+  color: #f8fafc;
+}
+
+.map-trace-panel__summary {
+  color: #bbf7d0;
+  font-weight: 600;
+}
+
+.map-trace-panel__summary.is-unreachable {
+  color: #fca5a5;
+}
+
+.map-trace-panel__areas {
+  color: #cbd5e1;
+}
+
+.map-trace-panel__path {
+  margin: 0;
+  padding-left: 1.25rem;
+  color: #e5e7eb;
+  font-size: 0.78rem;
+  line-height: 1.45;
+}
+
+.map-trace-panel__message {
+  color: #fcd34d;
 }
 
 .map-view {

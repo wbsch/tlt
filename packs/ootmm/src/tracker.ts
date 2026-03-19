@@ -2,6 +2,7 @@ import type {
   TrackerPack,
   TrackerCheckResult,
   LocationInfo,
+  TrackerLocationTraceResult,
 } from '@/types/tracker';
 import type { OoTMMSettings } from './types/settings';
 import { DEFAULT_OOTMM_SETTINGS } from './types/settings';
@@ -101,6 +102,18 @@ type WorldData = {
   startingItems?: unknown;
   [key: string]: unknown;
 };
+
+type PathfinderState = ReturnType<InstanceType<typeof Pathfinder>['run']>;
+
+type StableReachabilityState = {
+  state: PathfinderState;
+  reachableLocationIds: string[];
+  newLocationIds: string[];
+  silverRupeeCounts: Map<string, number>;
+  owlStatueCounts: Map<string, number>;
+};
+
+type AreaGraph = Map<string, Set<string>>;
 
 /**
  * WORKAROUND: The OoTMM core library seems to have been transpiled with an assumption
@@ -577,6 +590,184 @@ export class OoTMMTracker implements TrackerPack {
       );
       this.debugLog('[OoTMM Tracker] Inventory stringify error:', e);
     }
+    const {
+      state,
+      reachableLocationIds,
+      newLocationIds,
+      silverRupeeCounts,
+      owlStatueCounts,
+    } = this.computeStableReachabilityState(inventory);
+
+    this.debugLog('[OoTMM Tracker] State after pathfinder:', {
+      locations: state.locations.size,
+      goal: state.goal,
+      started: state.started,
+    });
+
+    this.debugLog(
+      '[OoTMM Tracker] Pathfinder result: reachable =',
+      reachableLocationIds.length,
+      'new =',
+      newLocationIds.length,
+    );
+
+    const isVanillaSilverRupees = this.isVanillaSilverRupeeShuffle();
+    const isVanillaOwls = this.isVanillaOwlShuffle();
+
+    const extra: Record<string, unknown> = {
+      canReachBosses: state.ganonMajora,
+      gossipStones: Array.isArray(state.gossips)
+        ? state.gossips.reduce(
+            (count: number, worldGossips: Set<string>) =>
+              count + worldGossips.size,
+            0,
+          )
+        : 0,
+    };
+
+    if (isVanillaSilverRupees) {
+      extra.vanillaSilverRupeeCounts = this.countMapToRecord(silverRupeeCounts);
+    }
+
+    if (isVanillaOwls) {
+      extra.vanillaOwlStatueCounts = this.countMapToRecord(owlStatueCounts);
+    }
+
+    // Compute which ER entrances are reachable (can be entered).
+    if (this.savedEntranceExitExprs.size > 0) {
+      extra.reachableEntranceIds = this.computeReachableEntrances(state);
+    }
+
+    return {
+      reachableLocationIds,
+      newLocationIds,
+      canComplete: state.goal,
+      extra,
+    };
+  }
+
+  traceLocationPath(
+    checkId: string,
+    inventory: Map<string, number>,
+  ): TrackerLocationTraceResult {
+    const locationInfo = this.buildLocations(true).find(
+      (location) => location.id === checkId,
+    );
+    const parsedLocationId = this.parseLocationId(checkId);
+    if (!parsedLocationId) {
+      return {
+        checkId,
+        checkName: locationInfo?.name ?? checkId,
+        reachable: false,
+        totalReachableLocations: 0,
+        checkAreaNames: [],
+        areaPath: null,
+        message: 'The selected check could not be resolved.',
+      };
+    }
+
+    const { locationName, worldId } = parsedLocationId;
+    const world = this.worlds[worldId];
+    if (!world) {
+      return {
+        checkId,
+        checkName: locationInfo?.name ?? locationName,
+        reachable: false,
+        totalReachableLocations: 0,
+        checkAreaNames: [],
+        areaPath: null,
+        message: 'The selected check does not belong to an active world.',
+      };
+    }
+
+    const { state, reachableLocationIds } =
+      this.computeStableReachabilityState(inventory);
+    const checkAreaNames = this.findCheckAreas(world, locationName);
+    const reachable = reachableLocationIds.includes(checkId);
+
+    if (!reachable) {
+      return {
+        checkId,
+        checkName: locationInfo?.name ?? locationName,
+        reachable: false,
+        totalReachableLocations: reachableLocationIds.length,
+        checkAreaNames,
+        areaPath: null,
+        message: 'This check is unreachable with the current tracker state.',
+      };
+    }
+
+    if (checkAreaNames.length === 0) {
+      return {
+        checkId,
+        checkName: locationInfo?.name ?? locationName,
+        reachable: true,
+        totalReachableLocations: reachableLocationIds.length,
+        checkAreaNames: [],
+        areaPath: null,
+        message:
+          'The check is reachable, but its containing area could not be resolved.',
+      };
+    }
+
+    const reachableAreas = this.collectReachableAreas(state, worldId);
+    const reachableTargetAreas = checkAreaNames.filter((areaName) =>
+      reachableAreas.has(areaName),
+    );
+    if (reachableTargetAreas.length === 0) {
+      return {
+        checkId,
+        checkName: locationInfo?.name ?? locationName,
+        reachable: true,
+        totalReachableLocations: reachableLocationIds.length,
+        checkAreaNames,
+        areaPath: null,
+        message:
+          'The check is reachable, but no matching reachable area copy was found.',
+      };
+    }
+
+    const graph = this.buildAreaGraph(world);
+    const startAreas = this.resolveTraceStartAreas(graph, reachableAreas);
+    const areaPath =
+      startAreas.length > 0
+        ? this.bfsPath(graph, reachableAreas, startAreas, reachableTargetAreas)
+        : null;
+
+    return {
+      checkId,
+      checkName: locationInfo?.name ?? locationName,
+      reachable: true,
+      totalReachableLocations: reachableLocationIds.length,
+      checkAreaNames,
+      areaPath,
+      message:
+        areaPath !== null
+          ? null
+          : 'The check is reachable, but the area path could not be reconstructed.',
+    };
+  }
+
+  getAllLocations(): LocationInfo[] {
+    return this.buildLocations(false);
+  }
+
+  getAllLocationsForCodeSearch(): LocationInfo[] {
+    const byId = new Map<string, LocationInfo>();
+    this.buildLocations(true).forEach((location) =>
+      byId.set(location.id, location),
+    );
+    this.devLocationCatalog.forEach((location) => {
+      if (!byId.has(location.id)) {
+        byId.set(location.id, location);
+      }
+    });
+    return Array.from(byId.values()).sort((a, b) => a.id.localeCompare(b.id));
+  }
+
+  private computeStableReachabilityState(
+    inventory: Map<string, number>,
+  ): StableReachabilityState {
     const isVanillaSilverRupees = this.isVanillaSilverRupeeShuffle();
     const isVanillaOwls = this.isVanillaOwlShuffle();
     const baseInventory = this.stripAutoTrackedInventoryItems(
@@ -586,7 +777,7 @@ export class OoTMMTracker implements TrackerPack {
     );
 
     let assumedInventory = baseInventory;
-    let state;
+    let state: PathfinderState | null = null;
     let reachableLocationIds: string[] = [];
     let newLocationIds: string[] = [];
     let silverRupeeCounts = new Map<string, number>();
@@ -643,66 +834,13 @@ export class OoTMMTracker implements TrackerPack {
       throw new Error('Pathfinder returned undefined');
     }
 
-    this.debugLog('[OoTMM Tracker] State after pathfinder:', {
-      locations: state.locations.size,
-      goal: state.goal,
-      started: state.started,
-    });
-
-    this.debugLog(
-      '[OoTMM Tracker] Pathfinder result: reachable =',
-      reachableLocationIds.length,
-      'new =',
-      newLocationIds.length,
-    );
-
-    const extra: Record<string, unknown> = {
-      canReachBosses: state.ganonMajora,
-      gossipStones: Array.isArray(state.gossips)
-        ? state.gossips.reduce(
-            (count: number, worldGossips: Set<string>) =>
-              count + worldGossips.size,
-            0,
-          )
-        : 0,
-    };
-
-    if (isVanillaSilverRupees) {
-      extra.vanillaSilverRupeeCounts = this.countMapToRecord(silverRupeeCounts);
-    }
-
-    if (isVanillaOwls) {
-      extra.vanillaOwlStatueCounts = this.countMapToRecord(owlStatueCounts);
-    }
-
-    // Compute which ER entrances are reachable (can be entered).
-    if (this.savedEntranceExitExprs.size > 0) {
-      extra.reachableEntranceIds = this.computeReachableEntrances(state);
-    }
-
     return {
+      state,
       reachableLocationIds,
       newLocationIds,
-      canComplete: state.goal,
-      extra,
+      silverRupeeCounts,
+      owlStatueCounts,
     };
-  }
-
-  getAllLocations(): LocationInfo[] {
-    return this.buildLocations(false);
-  }
-
-  getAllLocationsForCodeSearch(): LocationInfo[] {
-    const byId = new Map<string, LocationInfo>();
-    this.buildLocations(true).forEach((location) =>
-      byId.set(location.id, location),
-    );
-    this.devLocationCatalog.forEach((location) => {
-      if (!byId.has(location.id)) {
-        byId.set(location.id, location);
-      }
-    });
-    return Array.from(byId.values()).sort((a, b) => a.id.localeCompare(b.id));
   }
 
   private buildLocations(includeHidden: boolean): LocationInfo[] {
@@ -1870,6 +2008,137 @@ export class OoTMMTracker implements TrackerPack {
     );
 
     return { state, reachableLocationIds, newLocationIds };
+  }
+
+  private parseLocationId(
+    checkId: string,
+  ): { locationName: string; worldId: number } | null {
+    const suffixIndex = checkId.lastIndexOf('@');
+    if (suffixIndex <= 0 || suffixIndex >= checkId.length - 1) {
+      return null;
+    }
+
+    const locationName = checkId.slice(0, suffixIndex);
+    const worldId = Number.parseInt(checkId.slice(suffixIndex + 1), 10);
+    if (!locationName || !Number.isInteger(worldId) || worldId < 0) {
+      return null;
+    }
+
+    return { locationName, worldId };
+  }
+
+  private buildAreaGraph(world: World): AreaGraph {
+    const graph: AreaGraph = new Map();
+    const areas = (world as { areas?: Record<string, { exits?: object }> })
+      .areas;
+    if (!areas) return graph;
+
+    for (const [areaName, area] of Object.entries(areas)) {
+      if (!graph.has(areaName)) {
+        graph.set(areaName, new Set());
+      }
+      const exits = graph.get(areaName)!;
+      for (const exitName of Object.keys(area.exits ?? {})) {
+        exits.add(exitName);
+      }
+    }
+
+    return graph;
+  }
+
+  private findCheckAreas(world: World, checkName: string): string[] {
+    const areas = (world as { areas?: Record<string, { locations?: object }> })
+      .areas;
+    if (!areas) return [];
+
+    return Object.entries(areas)
+      .filter(([, area]) =>
+        Object.prototype.hasOwnProperty.call(area.locations ?? {}, checkName),
+      )
+      .map(([areaName]) => areaName);
+  }
+
+  private collectReachableAreas(
+    state: PathfinderState,
+    worldId: number,
+  ): Set<string> {
+    const reachableAreas = new Set<string>();
+    const worldState = (
+      state as {
+        ws?: Array<{
+          ages?: Array<{ areas?: Map<string, unknown> }>;
+        }>;
+      }
+    ).ws?.[worldId];
+
+    if (!worldState?.ages) return reachableAreas;
+
+    for (const ageState of worldState.ages) {
+      for (const areaName of ageState?.areas?.keys() ?? []) {
+        reachableAreas.add(areaName);
+      }
+    }
+
+    return reachableAreas;
+  }
+
+  private resolveTraceStartAreas(
+    graph: AreaGraph,
+    reachableAreas: Set<string>,
+  ): string[] {
+    const preferred = ['OOT SPAWN', 'MM SPAWN'].filter(
+      (areaName) => graph.has(areaName) && reachableAreas.has(areaName),
+    );
+    if (preferred.length > 0) return preferred;
+
+    return Array.from(reachableAreas)
+      .filter((areaName) => graph.has(areaName) && areaName.endsWith('SPAWN'))
+      .sort((left, right) => left.localeCompare(right));
+  }
+
+  private bfsPath(
+    graph: AreaGraph,
+    reachableAreas: Set<string>,
+    startAreas: string[],
+    targetAreas: string[],
+  ): string[] | null {
+    if (startAreas.length === 0 || targetAreas.length === 0) {
+      return null;
+    }
+
+    const targetSet = new Set(targetAreas);
+    const visited = new Set<string>();
+    const parent = new Map<string, string | null>();
+    const queue: string[] = [];
+
+    for (const startArea of startAreas) {
+      if (!reachableAreas.has(startArea)) continue;
+      queue.push(startArea);
+      visited.add(startArea);
+      parent.set(startArea, null);
+    }
+
+    while (queue.length > 0) {
+      const currentArea = queue.shift()!;
+      if (targetSet.has(currentArea)) {
+        const path: string[] = [];
+        let node: string | null = currentArea;
+        while (node !== null) {
+          path.unshift(node);
+          node = parent.get(node) ?? null;
+        }
+        return path;
+      }
+
+      for (const exitName of graph.get(currentArea) ?? []) {
+        if (!reachableAreas.has(exitName) || visited.has(exitName)) continue;
+        visited.add(exitName);
+        parent.set(exitName, currentArea);
+        queue.push(exitName);
+      }
+    }
+
+    return null;
   }
 
   private buildPlayerItemsFromInventory(

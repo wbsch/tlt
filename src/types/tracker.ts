@@ -35,6 +35,12 @@ export interface TrackerPack {
   /** Get current settings */
   getSettings(): Record<string, unknown>;
 
+  /** Optional: Trace the area path to a specific check with the current tracker state */
+  traceLocationPath?(
+    checkId: string,
+    inventory: Map<string, number>,
+  ): TrackerLocationTraceResult;
+
   /** Optional: Mark pre-completed dungeons to adjust logic/UI */
   setPreCompletedDungeons?(dungeons: string[]): void;
 
@@ -72,6 +78,29 @@ export interface TrackerCheckResult {
 
   /** Additional pack-specific data */
   extra?: Record<string, unknown>;
+}
+
+export interface TrackerLocationTraceResult {
+  /** Target location ID */
+  checkId: string;
+
+  /** Target location display name */
+  checkName: string;
+
+  /** Whether the check is currently reachable */
+  reachable: boolean;
+
+  /** Total currently reachable locations for context */
+  totalReachableLocations: number;
+
+  /** Area(s) containing the target check */
+  checkAreaNames: string[];
+
+  /** Reconstructed area path to the target, if available */
+  areaPath: string[] | null;
+
+  /** Additional context when the trace cannot be reconstructed */
+  message: string | null;
 }
 
 /**
