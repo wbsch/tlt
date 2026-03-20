@@ -1,8 +1,5 @@
 import { expect, test, type Page } from '@playwright/test';
-import {
-  resetLocalStorageAndReload,
-  TEST_TIMEOUTS,
-} from './helpers/tracker';
+import { resetLocalStorageAndReload, TEST_TIMEOUTS } from './helpers/tracker';
 
 const BUG_REPRO_INVENTORY: Record<string, number> = {
   MM_ARROW_ICE: 1,
@@ -106,9 +103,9 @@ test.describe('Ice Cavern to ISTT disconnect', () => {
     const locationsPanel = page.locator('.locations-panel');
     await expect(locationsPanel).toBeVisible();
 
-    await locationsPanel.getByPlaceholder('Search locations...').fill(
-      'Zora Fountain Gossip',
-    );
+    await locationsPanel
+      .getByPlaceholder('Search locations...')
+      .fill('Zora Fountain Gossip');
     await locationsPanel
       .locator('[aria-label="Reachability filter"]')
       .getByRole('button', { name: /^Reachable\b/ })
@@ -116,8 +113,7 @@ test.describe('Ice Cavern to ISTT disconnect', () => {
 
     await expect
       .poll(
-        async () =>
-          await locationsPanel.locator('.location-item').count(),
+        async () => await locationsPanel.locator('.location-item').count(),
         { timeout: TEST_TIMEOUTS.SETTINGS_APPLY },
       )
       .toBe(0);

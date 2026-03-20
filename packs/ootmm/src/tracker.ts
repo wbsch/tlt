@@ -115,6 +115,26 @@ type StableReachabilityState = {
 
 type AreaGraph = Map<string, Set<string>>;
 
+type TraceAreaData = {
+  ootTime: number;
+  mmTime: number;
+  mmTime2: number;
+  flagsOn: number;
+  flagsOff: number;
+};
+
+type TraceAgeState = {
+  areas?: Map<string, TraceAreaData>;
+};
+
+type TraceWorldState = {
+  ages?: TraceAgeState[];
+  items?: Map<unknown, number>;
+  renewables?: Map<unknown, number>;
+  licenses?: Map<unknown, number>;
+  events?: Set<string>;
+};
+
 /**
  * WORKAROUND: The OoTMM core library seems to have been transpiled with an assumption
  * that Map.entries() returns an array (or using a C-style for loop on the result),
@@ -744,7 +764,7 @@ export class OoTMMTracker implements TrackerPack {
       };
     }
 
-    const graph = this.buildAreaGraph(world);
+    const graph = this.buildAreaGraph(world, state, worldId);
     const startAreas = this.resolveTraceStartAreas(graph, reachableAreas);
     const areaPath =
       startAreas.length > 0
@@ -2044,7 +2064,11 @@ export class OoTMMTracker implements TrackerPack {
     return { locationName, worldId };
   }
 
-  private buildAreaGraph(world: World): AreaGraph {
+  private buildAreaGraph(
+    world: World,
+    state: PathfinderState,
+    worldId: number,
+  ): AreaGraph {
     const graph: AreaGraph = new Map();
     const areas = (world as { areas?: Record<string, { exits?: object }> })
       .areas;
@@ -2055,12 +2079,97 @@ export class OoTMMTracker implements TrackerPack {
         graph.set(areaName, new Set());
       }
       const exits = graph.get(areaName)!;
-      for (const exitName of Object.keys(area.exits ?? {})) {
+      for (const [exitName, exitExpr] of Object.entries(area.exits ?? {})) {
+        if (
+          !this.isTraceExitTraversable(
+            state,
+            world,
+            worldId,
+            areaName,
+            exitExpr,
+          )
+        ) {
+          continue;
+        }
         exits.add(exitName);
       }
     }
 
     return graph;
+  }
+
+  private isTraceExitTraversable(
+    state: PathfinderState,
+    world: World,
+    worldId: number,
+    areaName: string,
+    exitExpr: unknown,
+  ): boolean {
+    if (!exitExpr || typeof exitExpr !== 'object') {
+      return Boolean(exitExpr);
+    }
+
+    const evalExpr = (exitExpr as { eval?: unknown }).eval;
+    if (typeof evalExpr !== 'function') {
+      return true;
+    }
+
+    const worldState = (state as { ws?: TraceWorldState[] }).ws?.[worldId];
+    if (!worldState?.ages || worldState.ages.length === 0) {
+      return true;
+    }
+
+    for (const [age, ageState] of worldState.ages.entries()) {
+      const areaData = ageState?.areas?.get(areaName);
+      if (!areaData) continue;
+
+      try {
+        const result = (
+          evalExpr as (
+            state: {
+              items: Map<unknown, number>;
+              renewables: Map<unknown, number>;
+              licenses: Map<unknown, number>;
+              age: number;
+              events: Set<string>;
+              areaData: TraceAreaData;
+              world: World;
+              settings: Record<string, unknown>;
+            },
+            deps: { items: unknown[]; events: string[] },
+          ) => {
+            result?: boolean;
+          }
+        )(
+          {
+            items: worldState.items ?? new Map(),
+            renewables: worldState.renewables ?? new Map(),
+            licenses: worldState.licenses ?? new Map(),
+            age,
+            events: worldState.events ?? new Set(),
+            areaData,
+            world,
+            settings: this.settings,
+          },
+          {
+            items: [],
+            events: [],
+          },
+        );
+        if (result?.result) {
+          return true;
+        }
+      } catch (error) {
+        this.debugLog(
+          '[OoTMM Tracker] Failed to evaluate trace exit expression:',
+          areaName,
+          '->',
+          error,
+        );
+      }
+    }
+
+    return false;
   }
 
   private findCheckAreas(world: World, checkName: string): string[] {
@@ -2103,13 +2212,49 @@ export class OoTMMTracker implements TrackerPack {
     graph: AreaGraph,
     reachableAreas: Set<string>,
   ): string[] {
-    const preferred = ['OOT SPAWN', 'MM SPAWN'].filter(
-      (areaName) => graph.has(areaName) && reachableAreas.has(areaName),
+    const preferredOrder = [
+      'OOT SPAWN CHILD',
+      'OOT SPAWN ADULT',
+      'MM SPAWN',
+      'OOT SPAWN',
+    ];
+    const preferredRank = new Map(
+      preferredOrder.map((areaName, index) => [areaName, index]),
     );
-    if (preferred.length > 0) return preferred;
+
+    const incomingCounts = new Map<string, number>();
+    for (const areaName of reachableAreas) {
+      if (graph.has(areaName)) {
+        incomingCounts.set(areaName, 0);
+      }
+    }
+    for (const [fromArea, exits] of graph.entries()) {
+      if (!reachableAreas.has(fromArea)) continue;
+      for (const toArea of exits) {
+        if (!reachableAreas.has(toArea) || !incomingCounts.has(toArea)) {
+          continue;
+        }
+        incomingCounts.set(toArea, (incomingCounts.get(toArea) ?? 0) + 1);
+      }
+    }
+
+    const roots = Array.from(incomingCounts.entries())
+      .filter(([, count]) => count === 0)
+      .map(([areaName]) => areaName)
+      .sort((left, right) => {
+        const leftRank = preferredRank.get(left) ?? Number.MAX_SAFE_INTEGER;
+        const rightRank = preferredRank.get(right) ?? Number.MAX_SAFE_INTEGER;
+        if (leftRank !== rightRank) return leftRank - rightRank;
+        return left.localeCompare(right);
+      });
+    if (roots.length > 0) return roots;
 
     return Array.from(reachableAreas)
-      .filter((areaName) => graph.has(areaName) && areaName.endsWith('SPAWN'))
+      .filter(
+        (areaName) =>
+          graph.has(areaName) &&
+          (areaName === 'MM SPAWN' || areaName.startsWith('OOT SPAWN')),
+      )
       .sort((left, right) => left.localeCompare(right));
   }
 
