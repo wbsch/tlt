@@ -1,10 +1,13 @@
 import { expect, test, type Page } from '@playwright/test';
+import { deflateRaw } from 'pako';
 import {
   resetLocalStorageAndReload,
   TEST_TIMEOUTS,
   waitForAllReachable,
   waitForBoot,
 } from './helpers/tracker';
+
+const textEncoder = new TextEncoder();
 
 async function installClipboardStub(page: Page): Promise<void> {
   await page.addInitScript(() => {
@@ -26,6 +29,18 @@ async function installClipboardStub(page: Page): Promise<void> {
   });
 }
 
+function encodeSharePayload(snapshot: unknown): string {
+  const jsonBytes = textEncoder.encode(JSON.stringify(snapshot));
+  const compressed = deflateRaw(jsonBytes);
+  return `v1.${Buffer.from(compressed).toString('base64url')}`;
+}
+
+function buildShareUrl(baseUrl: string, snapshot: unknown): string {
+  const next = new URL(baseUrl);
+  next.hash = `s=${encodeSharePayload(snapshot)}`;
+  return next.toString();
+}
+
 async function readCopiedShareUrl(page: Page): Promise<string> {
   return page.evaluate(() => {
     return (
@@ -36,6 +51,16 @@ async function readCopiedShareUrl(page: Page): Promise<string> {
       ).__TLT_LAST_CLIPBOARD_WRITE__ ?? ''
     );
   });
+}
+
+async function readPersistedJson(
+  page: Page,
+  storageKey: string,
+): Promise<Record<string, unknown> | null> {
+  return page.evaluate((key) => {
+    const raw = window.localStorage.getItem(key);
+    return raw ? (JSON.parse(raw) as Record<string, unknown>) : null;
+  }, storageKey);
 }
 
 test.describe('share URL import/export', () => {
@@ -64,6 +89,219 @@ test.describe('share URL import/export', () => {
 
     const hash = await page.evaluate(() => window.location.hash);
     expect(hash).toBe('');
+  });
+
+  test('drops invalid shared state fields and shows a partial-import warning', async ({
+    page,
+  }) => {
+    await installClipboardStub(page);
+    await resetLocalStorageAndReload(page);
+
+    const partialShareUrl = buildShareUrl(page.url(), {
+      v: 1,
+      ignoredTopLevel: true,
+      stores: {
+        app: {
+          selectedPackId: 'evil-pack',
+        },
+        'ootmm-session': {
+          trackerSettings: {
+            games: { bad: true },
+            players: 'oops',
+            specialConds: {
+              BRIDGE: { count: 2 },
+            },
+          },
+          entranceOverrides: {
+            NOT_A_REAL_ENTRANCE: 'ALSO_NOT_REAL',
+          },
+        },
+        'not-a-real-store': {
+          injected: true,
+        },
+      },
+    });
+
+    await page.evaluate(() => window.localStorage.clear());
+    await page.goto(partialShareUrl, { waitUntil: 'domcontentloaded' });
+    await page.waitForSelector('body.tlt-app-mounted', {
+      timeout: TEST_TIMEOUTS.BOOT_SELECTOR,
+    });
+    await expect
+      .poll(
+        async () =>
+          page.evaluate(
+            () => document.querySelector('.export-status')?.textContent ?? null,
+          ),
+        { timeout: TEST_TIMEOUTS.DEFAULT_EXPECT },
+      )
+      .toContain('some invalid data was ignored');
+    await waitForBoot(page);
+    await expect(page.getByTestId('pack-select')).toHaveValue('ootmm');
+
+    const appState = await readPersistedJson(page, 'tlt:app:v1');
+    expect(appState?.selectedPackId).toBe('ootmm');
+
+    const sessionState = await readPersistedJson(page, 'tlt:ootmm-session:v1');
+    const trackerSettings = sessionState?.trackerSettings as
+      | Record<string, unknown>
+      | undefined;
+    expect(typeof trackerSettings?.games).toBe('string');
+    expect(typeof trackerSettings?.players).toBe('number');
+    expect(
+      Object.keys(
+        (sessionState?.entranceOverrides as Record<string, unknown>) ?? {},
+      ),
+    ).toHaveLength(0);
+
+    const hash = await page.evaluate(() => window.location.hash);
+    expect(hash).toBe('');
+  });
+
+  test('treats tracker-canonicalized shared settings as a partial import', async ({
+    page,
+  }) => {
+    await installClipboardStub(page);
+    await resetLocalStorageAndReload(page);
+
+    const partialShareUrl = buildShareUrl(page.url(), {
+      v: 1,
+      stores: {
+        app: {
+          selectedPackId: 'ootmm',
+        },
+        'ootmm-session': {
+          trackerSettings: {
+            games: 'ootmm',
+            specialConds: {
+              BRIDGE: {
+                count: 999,
+                stones: 'bad',
+              },
+            },
+          },
+        },
+      },
+    });
+
+    await page.evaluate(() => window.localStorage.clear());
+    await page.goto(partialShareUrl, { waitUntil: 'domcontentloaded' });
+    await page.waitForSelector('body.tlt-app-mounted', {
+      timeout: TEST_TIMEOUTS.BOOT_SELECTOR,
+    });
+    await expect
+      .poll(
+        async () =>
+          page.evaluate(
+            () => document.querySelector('.export-status')?.textContent ?? null,
+          ),
+        { timeout: TEST_TIMEOUTS.DEFAULT_EXPECT },
+      )
+      .toContain('some invalid data was ignored');
+    await waitForBoot(page);
+
+    const sessionState = await readPersistedJson(page, 'tlt:ootmm-session:v1');
+    const bridgeCond = (
+      (sessionState?.trackerSettings as Record<string, unknown> | undefined)
+        ?.specialConds as Record<string, Record<string, unknown>> | undefined
+    )?.BRIDGE;
+    expect(bridgeCond?.count).toBe(0);
+    expect(bridgeCond?.stones).toBe(false);
+
+    const hash = await page.evaluate(() => window.location.hash);
+    expect(hash).toBe('');
+  });
+
+  test('hashchange imports partial shared state and shows the warning after reload', async ({
+    page,
+  }) => {
+    await installClipboardStub(page);
+    await resetLocalStorageAndReload(page);
+    await waitForBoot(page);
+
+    const payload = encodeSharePayload({
+      v: 1,
+      stores: {
+        app: {
+          selectedPackId: 'ootmm',
+        },
+        'ootmm-session': {
+          trackerSettings: {
+            games: 'ootmm',
+            specialConds: {
+              BRIDGE: {
+                count: 999,
+                stones: 'bad',
+              },
+            },
+          },
+        },
+      },
+    });
+
+    await page.evaluate((nextHash) => {
+      window.location.hash = nextHash;
+    }, `s=${payload}`);
+
+    await page.waitForSelector('body.tlt-app-mounted', {
+      timeout: TEST_TIMEOUTS.BOOT_SELECTOR,
+    });
+    await expect
+      .poll(
+        async () =>
+          page.evaluate(
+            () => document.querySelector('.export-status')?.textContent ?? null,
+          ),
+        { timeout: TEST_TIMEOUTS.DEFAULT_EXPECT },
+      )
+      .toContain('some invalid data was ignored');
+    await waitForBoot(page);
+
+    const hash = await page.evaluate(() => window.location.hash);
+    expect(hash).toBe('');
+  });
+
+  test('rejects oversized share payloads without importing anything', async ({
+    page,
+  }) => {
+    await installClipboardStub(page);
+    await resetLocalStorageAndReload(page);
+
+    const oversizedShareUrl = buildShareUrl(page.url(), {
+      v: 1,
+      stores: {
+        'ootmm-session': {
+          trackerSettings: {
+            specialConds: {
+              HUGE: {
+                note: 'x'.repeat(600_000),
+              },
+            },
+          },
+        },
+      },
+    });
+
+    await page.evaluate(() => window.localStorage.clear());
+    await page.goto(oversizedShareUrl, { waitUntil: 'domcontentloaded' });
+    await waitForBoot(page);
+
+    await expect(page.locator('.export-status')).toHaveCount(0);
+    const hash = await page.evaluate(() => window.location.hash);
+    expect(hash).toBe('');
+
+    const sessionState = await readPersistedJson(page, 'tlt:ootmm-session:v1');
+    const trackerSettings = sessionState?.trackerSettings as
+      | Record<string, unknown>
+      | undefined;
+    expect(
+      Boolean(
+        trackerSettings &&
+        typeof trackerSettings.specialConds === 'object' &&
+        trackerSettings.specialConds !== null &&
+        'HUGE' in trackerSettings.specialConds,
+      ),
+    ).toBe(false);
   });
 
   test('canceling import preserves existing local progress', async ({

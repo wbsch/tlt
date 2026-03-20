@@ -8,7 +8,9 @@ import FairyLoader from './components/FairyLoader.vue';
 import {
   buildShareUrl,
   collectPersistedStateFromLocalStorage,
+  consumeShareStatusMessage,
   encodeSnapshotToHashPayload,
+  SHARE_STATUS_EVENT_NAME,
   stripCollectedLocations,
 } from './utils/shareState';
 
@@ -129,6 +131,12 @@ function setShareStatus(message: string) {
   }, 4000);
 }
 
+function handleShareStatusEvent(event: Event) {
+  const message = (event as CustomEvent<{ message?: unknown }>).detail?.message;
+  if (typeof message !== 'string' || message.length === 0) return;
+  setShareStatus(message);
+}
+
 async function exportState(includeCollected = false) {
   isShareMenuOpen.value = false;
   try {
@@ -175,14 +183,20 @@ function initializeDebugMode() {
 
 onMounted(() => {
   initializeDebugMode();
-  appStore.initialize();
+  const pendingShareStatusMessage = consumeShareStatusMessage();
+  if (pendingShareStatusMessage) {
+    setShareStatus(pendingShareStatusMessage);
+  }
   window.addEventListener('keydown', handleWindowKeydown);
+  window.addEventListener(SHARE_STATUS_EVENT_NAME, handleShareStatusEvent);
   document.addEventListener('click', handleDocumentClick);
+  appStore.initialize();
 });
 
 onBeforeUnmount(() => {
   clearShareStatusTimeout();
   window.removeEventListener('keydown', handleWindowKeydown);
+  window.removeEventListener(SHARE_STATUS_EVENT_NAME, handleShareStatusEvent);
   document.removeEventListener('click', handleDocumentClick);
 });
 </script>

@@ -1,5 +1,11 @@
 import { defineStore } from 'pinia';
 import { isSafeKey } from '@/utils/safeJson';
+import {
+  clearPendingShareImportCheck,
+  hasPendingShareImportCheck,
+  publishShareStatusMessage,
+  SHARE_PARTIAL_IMPORT_MESSAGE,
+} from '@/utils/shareState';
 import { computed, markRaw, nextTick, ref } from 'vue';
 import type { TrackerPack } from '@/types/tracker';
 import { useSyncStatusStore } from '@/stores/syncStatus';
@@ -149,6 +155,24 @@ function cloneSettingsRecord(
   value: Record<string, unknown>,
 ): Record<string, unknown> {
   return deepCloneValue(value) as Record<string, unknown>;
+}
+
+function stripPlandoEntrances(
+  settings: Record<string, unknown>,
+): Record<string, unknown> {
+  const normalized = cloneSettingsRecord(settings);
+  const plando = normalized.plando;
+  if (!plando || typeof plando !== 'object' || Array.isArray(plando)) {
+    return normalized;
+  }
+
+  const { entrances: _stale, ...rest } = plando as Record<string, unknown>;
+  if (Object.keys(rest).length > 0) {
+    normalized.plando = rest;
+  } else {
+    delete normalized.plando;
+  }
+  return normalized;
 }
 
 function isRandomizedShopPriceMode(mode: unknown): boolean {
@@ -625,6 +649,7 @@ export const useOoTMMSessionStore = defineStore('ootmm-session', () => {
   async function attachTracker(nextTracker: TrackerPack) {
     clearHistory();
     tracker.value = markRaw(nextTracker) as TrackerPack;
+    const shouldCheckImportedShareSettings = hasPendingShareImportCheck();
     const persistedSettings = cloneSettingsRecord(trackerSettings.value);
     const hasPersistedSettings = Object.keys(persistedSettings).length > 0;
     const targetSettings = hasPersistedSettings
@@ -686,6 +711,14 @@ export const useOoTMMSessionStore = defineStore('ootmm-session', () => {
       }
     }
     trackerSettings.value = { ...nextTracker.getSettings() };
+    if (shouldCheckImportedShareSettings) {
+      const importedSettings = stripPlandoEntrances(targetSettings);
+      const canonicalSettings = stripPlandoEntrances(trackerSettings.value);
+      if (!areSettingsEqual(importedSettings, canonicalSettings)) {
+        publishShareStatusMessage(SHARE_PARTIAL_IMPORT_MESSAGE);
+      }
+      clearPendingShareImportCheck();
+    }
     availableItemIds.value = setToArray(
       nextTracker.getAvailableItemIds?.() ?? new Set<string>(),
     );

@@ -15,6 +15,7 @@ export type PersistConfig = {
 
 export type PersistStoreId = 'app' | 'ootmm-ui' | 'ootmm-session';
 
+const VALID_PACK_IDS = new Set(['ootmm']);
 const VALID_TABS = new Set([
   'grid',
   'inventory',
@@ -159,7 +160,8 @@ function stringRecord(value: unknown): Record<string, string> {
   if (!isPlainObject(value)) return {};
   const next: Record<string, string> = {};
   for (const [key, entry] of Object.entries(value)) {
-    if (typeof entry !== 'string') continue;
+    if (!isSafeKey(key)) continue;
+    if (typeof entry !== 'string' || !isSafeKey(entry)) continue;
     next[key] = entry;
   }
   return next;
@@ -170,7 +172,8 @@ export const PERSIST_CONFIGS: Record<PersistStoreId, PersistConfig> = {
     key: 'tlt:app:v1',
     paths: ['selectedPackId'],
     hydrate: (raw) => ({
-      ...(typeof raw.selectedPackId === 'string'
+      ...(typeof raw.selectedPackId === 'string' &&
+      VALID_PACK_IDS.has(raw.selectedPackId)
         ? { selectedPackId: raw.selectedPackId }
         : {}),
     }),

@@ -13,7 +13,7 @@ if (typeof window !== 'undefined') {
   // the browser only fires a hashchange event instead of reloading.
   window.addEventListener('hashchange', () => {
     const result = importShareStateFromCurrentUrl();
-    if (result === 'imported') {
+    if (result === 'imported' || result === 'partial') {
       // Reload so pinia stores re-hydrate from the updated localStorage.
       window.location.reload();
     }

@@ -1,4 +1,4 @@
-import { deflateRaw, inflateRaw } from 'pako';
+import { deflateRaw, Inflate } from 'pako';
 import {
   PERSIST_CONFIGS,
   PERSIST_STORE_IDS,
@@ -6,18 +6,35 @@ import {
   sanitizePersistedStateForStore,
   type PersistStoreId,
 } from '@/stores/persist';
+import type { SettingDefinition } from '@/types/tracker';
 import { safeJsonParse } from '@/utils/safeJson';
-import { TRACKER_DEFAULT_SETTINGS } from '@packs/ootmm/data/settings';
+import {
+  ALL_SETTINGS_DEFINITIONS,
+  TRACKER_DEFAULT_SETTINGS,
+} from '@packs/ootmm/data/settings';
+import { filterEntranceOverridesForSettings } from '@packs/ootmm/utils/entranceRandomization';
 
 const SHARE_HASH_PARAM = 's';
 const SHARE_PAYLOAD_PREFIX = 'v1.';
 const SHARE_SCHEMA_VERSION = 1;
+const SHARE_STATUS_SESSION_KEY = 'tlt:share-import-status:v1';
+const SHARE_IMPORT_PENDING_SESSION_KEY = 'tlt:share-import-pending:v1';
+export const SHARE_STATUS_EVENT_NAME = 'tlt:share-status';
+export const SHARE_PARTIAL_IMPORT_MESSAGE =
+  'Imported shared state; some invalid data was ignored.';
+const SHARE_TOP_LEVEL_KEYS = new Set(['v', 'stores']);
+const SHARE_STORE_IDS = new Set<string>(PERSIST_STORE_IDS);
 /**
  * Maximum allowed size for decompressed share payloads (512 KiB).
  * A normal full-state export is typically 5-15 KiB; this limit prevents
  * decompression bombs.
  */
 const MAX_INFLATED_SIZE = 512 * 1024;
+/**
+ * Cheap pre-check before base64 decode/inflate. Legitimate payloads are far
+ * smaller than this; oversize hashes are rejected before decompression work.
+ */
+const MAX_ENCODED_PAYLOAD_LENGTH = 128 * 1024;
 const textEncoder = new TextEncoder();
 const textDecoder = new TextDecoder();
 const IMPORT_CONFIRM_MESSAGE =
@@ -27,6 +44,16 @@ type PersistedStoresSnapshot = Partial<
   Record<PersistStoreId, Record<string, unknown>>
 >;
 
+type SharePayloadDecodeResult = {
+  snapshot: PersistedSnapshot;
+  partial: boolean;
+};
+
+type MultiSelectValue = {
+  type: 'all' | 'none' | 'specific';
+  values?: unknown[];
+};
+
 export type PersistedSnapshot = {
   v: number;
   stores: PersistedStoresSnapshot;
@@ -35,6 +62,7 @@ export type PersistedSnapshot = {
 export type ShareStateImportResult =
   | 'none'
   | 'imported'
+  | 'partial'
   | 'skipped'
   | 'invalid';
 
@@ -122,6 +150,52 @@ function base64UrlToByteArray(value: string): Uint8Array {
   return bytes;
 }
 
+function concatByteChunks(
+  chunks: Uint8Array[],
+  totalLength: number,
+): Uint8Array {
+  const combined = new Uint8Array(totalLength);
+  let offset = 0;
+  for (const chunk of chunks) {
+    combined.set(chunk, offset);
+    offset += chunk.byteLength;
+  }
+  return combined;
+}
+
+function inflateRawWithLimit(compressed: Uint8Array): Uint8Array {
+  const inflator = new Inflate({ raw: true, chunkSize: 32 * 1024 });
+  const chunks: Uint8Array[] = [];
+  let totalLength = 0;
+
+  inflator.onData = (chunk: Uint8Array | string) => {
+    const bytes =
+      chunk instanceof Uint8Array ? chunk : textEncoder.encode(String(chunk));
+    totalLength += bytes.byteLength;
+    if (totalLength > MAX_INFLATED_SIZE) {
+      throw new Error(
+        `Share payload too large after decompression: ${totalLength} bytes (max ${MAX_INFLATED_SIZE})`,
+      );
+    }
+    chunks.push(bytes);
+  };
+
+  try {
+    inflator.push(compressed, true);
+  } catch (error) {
+    if (error instanceof Error) {
+      throw error;
+    }
+    throw new Error('Failed to inflate share payload');
+  }
+
+  if (inflator.err) {
+    throw new Error(inflator.msg || 'Failed to inflate share payload');
+  }
+
+  return concatByteChunks(chunks, totalLength);
+}
+
 function hasObjectEntries(value: unknown): boolean {
   return isPlainObject(value) && Object.keys(value).length > 0;
 }
@@ -150,6 +224,265 @@ function normalizeSnapshot(snapshot: PersistedSnapshot): PersistedSnapshot {
 function toHashParams(hash: string): URLSearchParams {
   const raw = hash.startsWith('#') ? hash.slice(1) : hash;
   return new URLSearchParams(raw);
+}
+
+function findMatchingOptionValue(
+  options: NonNullable<SettingDefinition['options']>,
+  raw: unknown,
+): unknown | undefined {
+  return options.find((option) => deepEqual(option.value, raw))?.value;
+}
+
+function resolveSettingBound(
+  bound: SettingDefinition['min'] | SettingDefinition['max'],
+  settings: Record<string, unknown>,
+): number | undefined {
+  if (typeof bound === 'number' && Number.isFinite(bound)) {
+    return bound;
+  }
+  if (typeof bound === 'function') {
+    const resolved = bound(settings);
+    return typeof resolved === 'number' && Number.isFinite(resolved)
+      ? resolved
+      : undefined;
+  }
+  return undefined;
+}
+
+function getDefaultSettingValue(def: SettingDefinition): unknown {
+  return structuredClone(def.default);
+}
+
+function normalizeImportedMultiSelectValue(
+  def: SettingDefinition,
+  raw: unknown,
+): MultiSelectValue {
+  const defaultValue = getDefaultSettingValue(def) as MultiSelectValue;
+  const options = def.options ?? [];
+
+  if (raw === 'all' || raw === 'none') {
+    return { type: raw };
+  }
+
+  if (!isPlainObject(raw)) {
+    return defaultValue;
+  }
+
+  const mode = raw.type;
+  if (mode === 'all' || mode === 'none') {
+    return { type: mode };
+  }
+  if (mode !== 'specific' || !Array.isArray(raw.values)) {
+    return defaultValue;
+  }
+
+  const values: unknown[] = [];
+  for (const entry of raw.values) {
+    const matched = findMatchingOptionValue(options, entry);
+    if (matched === undefined) continue;
+    if (values.some((existing) => deepEqual(existing, matched))) continue;
+    values.push(structuredClone(matched));
+  }
+
+  return { type: 'specific', values };
+}
+
+function normalizeImportedSettingValue(
+  def: SettingDefinition,
+  raw: unknown,
+  normalizedSettings: Record<string, unknown>,
+): unknown {
+  switch (def.type) {
+    case 'boolean':
+      return typeof raw === 'boolean' ? raw : getDefaultSettingValue(def);
+
+    case 'number': {
+      if (typeof raw !== 'number' || !Number.isFinite(raw)) {
+        return getDefaultSettingValue(def);
+      }
+      const min = resolveSettingBound(def.min, normalizedSettings);
+      const max = resolveSettingBound(def.max, normalizedSettings);
+      let next = raw;
+      if (typeof min === 'number') {
+        next = Math.max(next, min);
+      }
+      if (typeof max === 'number') {
+        next = Math.min(next, max);
+      }
+      return next;
+    }
+
+    case 'select': {
+      const options = def.options ?? [];
+      const matched = findMatchingOptionValue(options, raw);
+      if (matched !== undefined) {
+        return structuredClone(matched);
+      }
+
+      const defaultMatched = findMatchingOptionValue(options, def.default);
+      if (defaultMatched !== undefined) {
+        return structuredClone(defaultMatched);
+      }
+
+      return options.length > 0
+        ? structuredClone(options[0].value)
+        : getDefaultSettingValue(def);
+    }
+
+    case 'multi-select':
+      return normalizeImportedMultiSelectValue(def, raw);
+
+    default:
+      return getDefaultSettingValue(def);
+  }
+}
+
+function normalizeImportedTrackerSettings(
+  raw: Record<string, unknown>,
+): Record<string, unknown> {
+  const normalized: Record<string, unknown> = {};
+
+  for (const def of ALL_SETTINGS_DEFINITIONS) {
+    const nextValue = Object.prototype.hasOwnProperty.call(raw, def.key)
+      ? raw[def.key]
+      : TRACKER_DEFAULT_SETTINGS[def.key];
+    normalized[def.key] = normalizeImportedSettingValue(
+      def,
+      nextValue,
+      normalized,
+    );
+  }
+
+  for (const extraKey of TRACKER_EXTRA_SETTINGS_KEYS) {
+    if (!Object.prototype.hasOwnProperty.call(raw, extraKey)) continue;
+    normalized[extraKey] = structuredClone(raw[extraKey]);
+  }
+
+  return normalized;
+}
+
+function normalizeImportedSnapshot(
+  snapshot: PersistedSnapshot,
+): SharePayloadDecodeResult {
+  let partial = false;
+  const stores: PersistedStoresSnapshot = { ...snapshot.stores };
+  const session = stores['ootmm-session'];
+
+  if (session) {
+    const normalizedSession: Record<string, unknown> = { ...session };
+    const rawSettings = isPlainObject(session.trackerSettings)
+      ? (session.trackerSettings as Record<string, unknown>)
+      : null;
+
+    if (rawSettings) {
+      const normalizedSettings = normalizeImportedTrackerSettings(rawSettings);
+      if (!deepEqual(rawSettings, normalizedSettings)) {
+        partial = true;
+      }
+      normalizedSession.trackerSettings = normalizedSettings;
+
+      if (isPlainObject(session.entranceOverrides)) {
+        const filtered = filterEntranceOverridesForSettings(
+          session.entranceOverrides as Record<string, string>,
+          normalizedSettings,
+        );
+        if (!deepEqual(session.entranceOverrides, filtered)) {
+          partial = true;
+        }
+        if (Object.keys(filtered).length > 0) {
+          normalizedSession.entranceOverrides = filtered;
+        } else {
+          delete normalizedSession.entranceOverrides;
+        }
+      }
+    } else if (isPlainObject(session.entranceOverrides)) {
+      partial = true;
+      delete normalizedSession.entranceOverrides;
+    }
+
+    stores['ootmm-session'] = normalizedSession;
+  }
+
+  return {
+    snapshot: {
+      ...snapshot,
+      stores,
+    },
+    partial,
+  };
+}
+
+function persistShareStatusMessage(message: string): void {
+  if (typeof window === 'undefined') return;
+  try {
+    window.sessionStorage.setItem(SHARE_STATUS_SESSION_KEY, message);
+  } catch {
+    // Ignore sessionStorage failures; import itself should still succeed.
+  }
+}
+
+function clearShareStatusMessage(): void {
+  if (typeof window === 'undefined') return;
+  try {
+    window.sessionStorage.removeItem(SHARE_STATUS_SESSION_KEY);
+  } catch {
+    // Ignore sessionStorage failures; import itself should still succeed.
+  }
+}
+
+function dispatchShareStatusMessage(message: string): void {
+  if (typeof window === 'undefined') return;
+  window.dispatchEvent(
+    new CustomEvent(SHARE_STATUS_EVENT_NAME, {
+      detail: { message },
+    }),
+  );
+}
+
+function markPendingShareImportCheck(): void {
+  if (typeof window === 'undefined') return;
+  try {
+    window.sessionStorage.setItem(SHARE_IMPORT_PENDING_SESSION_KEY, '1');
+  } catch {
+    // Ignore sessionStorage failures; post-init validation is best effort.
+  }
+}
+
+export function hasPendingShareImportCheck(): boolean {
+  if (typeof window === 'undefined') return false;
+  try {
+    return (
+      window.sessionStorage.getItem(SHARE_IMPORT_PENDING_SESSION_KEY) === '1'
+    );
+  } catch {
+    return false;
+  }
+}
+
+export function clearPendingShareImportCheck(): void {
+  if (typeof window === 'undefined') return;
+  try {
+    window.sessionStorage.removeItem(SHARE_IMPORT_PENDING_SESSION_KEY);
+  } catch {
+    // Ignore sessionStorage failures; import itself should still succeed.
+  }
+}
+
+export function publishShareStatusMessage(message: string): void {
+  persistShareStatusMessage(message);
+  dispatchShareStatusMessage(message);
+}
+
+export function consumeShareStatusMessage(): string | null {
+  if (typeof window === 'undefined') return null;
+  try {
+    const message = window.sessionStorage.getItem(SHARE_STATUS_SESSION_KEY);
+    if (!message) return null;
+    window.sessionStorage.removeItem(SHARE_STATUS_SESSION_KEY);
+    return message;
+  } catch {
+    return null;
+  }
 }
 
 export function parseSharePayloadFromLocationHash(hash: string): string | null {
@@ -266,7 +599,7 @@ export function encodeSnapshotToHashPayload(
 
 export function decodeHashPayloadToSnapshot(
   payload: string,
-): PersistedSnapshot {
+): SharePayloadDecodeResult {
   if (!payload.startsWith(SHARE_PAYLOAD_PREFIX)) {
     throw new Error('Unsupported share payload prefix');
   }
@@ -275,18 +608,13 @@ export function decodeHashPayloadToSnapshot(
   if (!encoded) {
     throw new Error('Missing encoded share payload body');
   }
-
-  const compressed = base64UrlToByteArray(encoded);
-  const inflated = inflateRaw(compressed);
-  const inflatedBytes =
-    inflated instanceof Uint8Array
-      ? inflated
-      : textEncoder.encode(String(inflated));
-  if (inflatedBytes.byteLength > MAX_INFLATED_SIZE) {
+  if (encoded.length > MAX_ENCODED_PAYLOAD_LENGTH) {
     throw new Error(
-      `Share payload too large after decompression: ${inflatedBytes.byteLength} bytes (max ${MAX_INFLATED_SIZE})`,
+      `Encoded share payload too large: ${encoded.length} chars (max ${MAX_ENCODED_PAYLOAD_LENGTH})`,
     );
   }
+
+  const inflatedBytes = inflateRawWithLimit(base64UrlToByteArray(encoded));
   const decodedJson = textDecoder.decode(inflatedBytes);
   const parsed = safeJsonParse(decodedJson);
   if (!isPlainObject(parsed)) {
@@ -299,19 +627,36 @@ export function decodeHashPayloadToSnapshot(
     throw new Error('Share payload stores are invalid');
   }
 
+  let partial =
+    Object.keys(parsed).some((key) => !SHARE_TOP_LEVEL_KEYS.has(key)) ||
+    Object.keys(parsed.stores).some((key) => !SHARE_STORE_IDS.has(key));
+
   const snapshot: PersistedSnapshot = {
     v: SHARE_SCHEMA_VERSION,
     stores: {},
   };
   for (const storeId of PERSIST_STORE_IDS) {
     const storeRaw = parsed.stores[storeId];
+    if (storeRaw !== undefined && !isPlainObject(storeRaw)) {
+      partial = true;
+      continue;
+    }
+
     const sanitized = sanitizePersistedStateForStore(storeId, storeRaw);
+    if (!deepEqual(storeRaw ?? {}, sanitized)) {
+      partial = true;
+    }
     if (Object.keys(sanitized).length > 0) {
       snapshot.stores[storeId] = sanitized;
     }
   }
 
-  return expandSnapshotSettings(snapshot);
+  const expanded = expandSnapshotSettings(snapshot);
+  const normalized = normalizeImportedSnapshot(expanded);
+  return {
+    snapshot: normalized.snapshot,
+    partial: partial || normalized.partial,
+  };
 }
 
 export function applySnapshotToLocalStorage(snapshot: PersistedSnapshot): void {
@@ -367,11 +712,13 @@ export function importShareStateFromCurrentUrl(
   const payload = parseSharePayloadFromLocationHash(window.location.hash);
   if (!payload) return 'none';
 
-  let snapshot: PersistedSnapshot;
+  let decoded: SharePayloadDecodeResult;
   try {
-    snapshot = decodeHashPayloadToSnapshot(payload);
+    decoded = decodeHashPayloadToSnapshot(payload);
   } catch (error) {
     console.warn('[Share] Ignoring invalid share payload:', error);
+    clearPendingShareImportCheck();
+    clearShareStatusMessage();
     clearSharePayloadFromCurrentUrl();
     return 'invalid';
   }
@@ -380,11 +727,19 @@ export function importShareStateFromCurrentUrl(
     ? true
     : confirmOverwrite(IMPORT_CONFIRM_MESSAGE);
   if (!shouldOverwrite) {
+    clearPendingShareImportCheck();
+    clearShareStatusMessage();
     clearSharePayloadFromCurrentUrl();
     return 'skipped';
   }
 
-  applySnapshotToLocalStorage(snapshot);
+  applySnapshotToLocalStorage(decoded.snapshot);
+  markPendingShareImportCheck();
+  if (decoded.partial) {
+    publishShareStatusMessage(SHARE_PARTIAL_IMPORT_MESSAGE);
+  } else {
+    clearShareStatusMessage();
+  }
   clearSharePayloadFromCurrentUrl();
-  return 'imported';
+  return decoded.partial ? 'partial' : 'imported';
 }
