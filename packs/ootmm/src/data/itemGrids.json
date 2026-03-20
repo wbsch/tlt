@@ -657,18 +657,11 @@
             "type": "array",
             "orientation": "horizontal",
             "margin": "0,0",
-            "scale": 1,
+            "scale": 1.1,
             "content": [
               {
                 "type": "item",
                 "item": "MM_REMAINS_ODOLWA",
-                "margin": "1,1",
-                "width": 30,
-                "height": 30
-              },
-              {
-                "type": "item",
-                "item": "MM_STRAY_FAIRY_WF",
                 "margin": "1,1",
                 "width": 30,
                 "height": 30
@@ -682,21 +675,7 @@
               },
               {
                 "type": "item",
-                "item": "MM_STRAY_FAIRY_SH",
-                "margin": "1,1",
-                "width": 30,
-                "height": 30
-              },
-              {
-                "type": "item",
                 "item": "MM_REMAINS_GYORG",
-                "margin": "1,1",
-                "width": 30,
-                "height": 30
-              },
-              {
-                "type": "item",
-                "item": "MM_STRAY_FAIRY_GB",
                 "margin": "1,1",
                 "width": 30,
                 "height": 30
@@ -707,20 +686,13 @@
                 "margin": "1,1",
                 "width": 30,
                 "height": 30
-              },
-              {
-                "type": "item",
-                "item": "MM_STRAY_FAIRY_ST",
-                "margin": "1,1",
-                "width": 30,
-                "height": 30
               }
             ]
           },
           {
             "type": "array",
             "orientation": "horizontal",
-            "scale": 1.1,
+            "scale": 1.4,
             "margin": "0,0",
             "content": [
               {
@@ -728,13 +700,6 @@
                 "orientation": "horizontal",
                 "margin": "5,0",
                 "content": [
-                  {
-                    "type": "item",
-                    "item": "MM_BOSS_KEY_WF",
-                    "margin": "0,2",
-                    "width": 16,
-                    "height": 16
-                  },
                   {
                     "type": "item",
                     "item": "mm_woodfall_label",
@@ -749,10 +714,25 @@
                     "width": 16,
                     "height": 16
                   },
+
                   {
                     "type": "item",
                     "item": "MM_KEY_RING_WF",
                     "margin": "1,2",
+                    "width": 16,
+                    "height": 16
+                  },
+                  {
+                    "type": "item",
+                    "item": "MM_BOSS_KEY_WF",
+                    "margin": "0,2",
+                    "width": 16,
+                    "height": 16
+                  },
+                  {
+                    "type": "item",
+                    "item": "MM_STRAY_FAIRY_WF",
+                    "margin": "1,1",
                     "width": 16,
                     "height": 16
                   }
@@ -763,13 +743,6 @@
                 "orientation": "horizontal",
                 "margin": "5,0",
                 "content": [
-                  {
-                    "type": "item",
-                    "item": "MM_BOSS_KEY_SH",
-                    "margin": "0,2",
-                    "width": 16,
-                    "height": 16
-                  },
                   {
                     "type": "item",
                     "item": "mm_snowhead_label",
@@ -790,6 +763,20 @@
                     "margin": "1,2",
                     "width": 16,
                     "height": 16
+                  },
+                  {
+                    "type": "item",
+                    "item": "MM_BOSS_KEY_SH",
+                    "margin": "0,2",
+                    "width": 16,
+                    "height": 16
+                  },
+                  {
+                    "type": "item",
+                    "item": "MM_STRAY_FAIRY_SH",
+                    "margin": "1,1",
+                    "width": 16,
+                    "height": 16
                   }
                 ]
               },
@@ -798,13 +785,6 @@
                 "orientation": "horizontal",
                 "margin": "5,0",
                 "content": [
-                  {
-                    "type": "item",
-                    "item": "MM_BOSS_KEY_GB",
-                    "margin": "0,2",
-                    "width": 16,
-                    "height": 16
-                  },
                   {
                     "type": "item",
                     "item": "mm_greatbay_label",
@@ -825,6 +805,20 @@
                     "margin": "1,2",
                     "width": 16,
                     "height": 16
+                  },
+                  {
+                    "type": "item",
+                    "item": "MM_BOSS_KEY_GB",
+                    "margin": "0,2",
+                    "width": 16,
+                    "height": 16
+                  },
+                  {
+                    "type": "item",
+                    "item": "MM_STRAY_FAIRY_GB",
+                    "margin": "1,1",
+                    "width": 16,
+                    "height": 16
                   }
                 ]
               },
@@ -833,13 +827,6 @@
                 "orientation": "horizontal",
                 "margin": "5,0",
                 "content": [
-                  {
-                    "type": "item",
-                    "item": "MM_BOSS_KEY_ST",
-                    "margin": "0,2",
-                    "width": 16,
-                    "height": 16
-                  },
                   {
                     "type": "item",
                     "item": "mm_stonetower_label",
@@ -858,6 +845,20 @@
                     "type": "item",
                     "item": "MM_KEY_RING_ST",
                     "margin": "1,2",
+                    "width": 16,
+                    "height": 16
+                  },
+                  {
+                    "type": "item",
+                    "item": "MM_BOSS_KEY_ST",
+                    "margin": "0,2",
+                    "width": 16,
+                    "height": 16
+                  },
+                  {
+                    "type": "item",
+                    "item": "MM_STRAY_FAIRY_ST",
+                    "margin": "1,1",
                     "width": 16,
                     "height": 16
                   }
