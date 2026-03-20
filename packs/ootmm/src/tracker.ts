@@ -2383,7 +2383,8 @@ export class OoTMMTracker implements TrackerPack {
     for (const areaKey of areaPathKeys) {
       const node = this.parseTraceAreaKey(areaKey);
       if (!node) return null;
-      if (collapsedAreaPath.at(-1) !== node.areaName) {
+      const lastAreaName = collapsedAreaPath[collapsedAreaPath.length - 1];
+      if (lastAreaName !== node.areaName) {
         collapsedAreaPath.push(node.areaName);
       }
     }
