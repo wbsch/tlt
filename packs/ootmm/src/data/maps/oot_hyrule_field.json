@@ -436,12 +436,13 @@
       "codes": "OOT Hyrule Castle Tree 8"
     },
     {
-      "coords": [385, 133],
+      "coords": [441, 136],
       "image": "tree",
       "codes": "OOT Hyrule Castle Tree Guarded"
     },
     {
-      "coords": [441, 136],
+      "coords": [385, 133],
+
       "image": "tree",
       "codes": [
         "OOT Hyrule Castle Tree 1",
