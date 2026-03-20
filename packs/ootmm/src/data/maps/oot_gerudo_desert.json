@@ -492,7 +492,10 @@
         },
         {
           "image": "npc",
-          "codes": ["OOT Gerudo Member Card"]
+          "codes": ["OOT Gerudo Member Card"],
+          "visibleWhen": {
+              "settings": { "gerudoFortress": "vanilla" }
+          }
         },
         {
           "image": "crate",
@@ -569,7 +572,10 @@
         },
         {
           "image": "npc",
-          "codes": ["OOT Gerudo Member Card"]
+          "codes": ["OOT Gerudo Member Card"],
+          "visibleWhen": {
+              "settings": { "gerudoFortress": "vanilla" }
+          }
         },
         {
           "image": "wonder_item_random",
@@ -598,7 +604,10 @@
         },
         {
           "image": "npc",
-          "codes": ["OOT Gerudo Member Card"]
+          "codes": ["OOT Gerudo Member Card"],
+          "visibleWhen": {
+              "settings": { "gerudoFortress": "vanilla" }
+          }
         },
         {
           "image": "crate",
@@ -770,7 +779,13 @@
         },
         {
           "image": "npc",
-          "codes": ["OOT Gerudo Member Card"]
+          "codes": ["OOT Gerudo Member Card"],
+                    "visibleWhen": {
+            "or": [
+              { "settings": { "gerudoFortress": "vanilla" } },
+              { "settings": { "gerudoFortress": "single" } }
+            ]
+          }
         },
         {
           "image": "crate",
@@ -804,7 +819,10 @@
         },
         {
           "image": "npc",
-          "codes": ["OOT Gerudo Member Card"]
+          "codes": ["OOT Gerudo Member Card"],
+          "visibleWhen": {
+              "settings": { "gerudoFortress": "vanilla" }
+          }
         },
         {
           "image": "crate",
@@ -830,7 +848,10 @@
         },
         {
           "image": "npc",
-          "codes": ["OOT Gerudo Member Card"]
+          "codes": ["OOT Gerudo Member Card"],
+          "visibleWhen": {
+              "settings": { "gerudoFortress": "vanilla" }
+          }
         },
         {
           "image": "wonder_item_random",
@@ -856,10 +877,17 @@
         {
           "image": "collectible",
           "codes": ["OOT Gerudo Fortress Jail 1"]
+          
         },
         {
           "image": "npc",
-          "codes": ["OOT Gerudo Member Card"]
+          "codes": ["OOT Gerudo Member Card"],
+                    "visibleWhen": {
+            "or": [
+              { "settings": { "gerudoFortress": "vanilla" } },
+              { "settings": { "gerudoFortress": "single" } }
+            ]
+          }
         },
         {
           "image": "crate",
