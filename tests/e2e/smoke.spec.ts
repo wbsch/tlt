@@ -1,4 +1,5 @@
 import { expect, test } from '@playwright/test';
+import { execSync } from 'child_process';
 import {
   readTrackerStats,
   resetLocalStorageAndReload,
@@ -7,6 +8,34 @@ import {
   waitForBoot,
   waitForReachableFraction,
 } from './helpers/tracker';
+
+function readGitValue(command: string): string {
+  return execSync(command, {
+    encoding: 'utf8',
+    stdio: ['ignore', 'pipe', 'ignore'],
+  }).trim();
+}
+
+function readExpectedInfoFooterMetadata(): {
+  buildCommitDate: string;
+  buildCommitHash: string;
+  ootmmVersionTag: string;
+} {
+  const buildCommitDate = readGitValue('git log -1 --format=%cs');
+  const buildCommitHash = readGitValue('git rev-parse --short HEAD');
+  const ootmmVersionTag = readGitValue(
+    'git -C OoTMM tag --merged HEAD --sort=-version:refname',
+  )
+    .split('\n')
+    .map((tag) => tag.trim())
+    .find((tag) => tag.length > 0);
+
+  if (!ootmmVersionTag) {
+    throw new Error('Expected at least one reachable OoTMM tag');
+  }
+
+  return { buildCommitDate, buildCommitHash, ootmmVersionTag };
+}
 
 test.describe('OoTMM smoke', () => {
   test.beforeEach(async ({ page }) => {
@@ -26,6 +55,22 @@ test.describe('OoTMM smoke', () => {
     expect(stats.total).toBeGreaterThan(0);
     expect(stats.checked).toBeGreaterThanOrEqual(0);
     expect(stats.remaining).toBeGreaterThanOrEqual(0);
+  });
+
+  test('info modal shows build metadata footer', async ({ page }) => {
+    const expected = readExpectedInfoFooterMetadata();
+
+    await page.getByTestId('info-impressum-button').click();
+    await expect(page.getByTestId('info-impressum-modal')).toBeVisible();
+    await expect(page.getByTestId('info-build-commit-date')).toHaveText(
+      expected.buildCommitDate,
+    );
+    await expect(page.getByTestId('info-build-commit-hash')).toHaveText(
+      expected.buildCommitHash,
+    );
+    await expect(page.getByTestId('info-ootmm-version-tag')).toHaveText(
+      expected.ootmmVersionTag,
+    );
   });
 
   test('debug activate-all reaches all checks', async ({ page }) => {

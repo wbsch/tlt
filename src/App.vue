@@ -25,6 +25,9 @@ const isDebugMode = ref(false);
 const shareStatusMessage = ref('');
 const isShareMenuOpen = ref(false);
 let shareStatusTimeoutId: number | null = null;
+const buildCommitDate = __TLT_BUILD_COMMIT_DATE__;
+const buildCommitHash = __TLT_BUILD_COMMIT_HASH__;
+const ootmmVersionTag = __TLT_OOTMM_VERSION_TAG__;
 
 const packComponents: Record<
   string,
@@ -361,6 +364,39 @@ onBeforeUnmount(() => {
         </div>
         <!-- eslint-disable-next-line vue/no-v-html -->
         <div class="info-modal-content" v-html="IMPRESSUM_HTML" />
+        <div class="info-modal-footer">
+          <div class="info-modal-footer-row">
+            <span class="info-modal-footer-label"
+              >Current build commit date</span
+            >
+            <span
+              class="info-modal-footer-value"
+              data-testid="info-build-commit-date"
+            >
+              {{ buildCommitDate }}
+            </span>
+          </div>
+          <div class="info-modal-footer-row">
+            <span class="info-modal-footer-label"
+              >Current build commit hash</span
+            >
+            <span
+              class="info-modal-footer-value"
+              data-testid="info-build-commit-hash"
+            >
+              {{ buildCommitHash }}
+            </span>
+          </div>
+          <div class="info-modal-footer-row">
+            <span class="info-modal-footer-label">OoTMM version tag</span>
+            <span
+              class="info-modal-footer-value"
+              data-testid="info-ootmm-version-tag"
+            >
+              {{ ootmmVersionTag }}
+            </span>
+          </div>
+        </div>
         <div class="info-modal-actions">
           <button
             type="button"
@@ -735,6 +771,52 @@ onBeforeUnmount(() => {
   margin-top: 1rem;
   display: flex;
   justify-content: flex-end;
+}
+
+.info-modal-footer {
+  margin-top: 1rem;
+  border-top: 1px solid #3f3f46;
+  padding-top: 0.75rem;
+  display: grid;
+  gap: 0.55rem;
+}
+
+.info-modal-footer-row {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 1rem;
+  font-size: 0.85rem;
+}
+
+.info-modal-footer-label {
+  color: #9ca3af;
+}
+
+.info-modal-footer-value {
+  color: #f3f4f6;
+  font-family:
+    ui-monospace,
+    SFMono-Regular,
+    Menlo,
+    Monaco,
+    Consolas,
+    Liberation Mono,
+    Courier New,
+    monospace;
+  text-align: right;
+}
+
+@media (max-width: 520px) {
+  .info-modal-footer-row {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.2rem;
+  }
+
+  .info-modal-footer-value {
+    text-align: left;
+  }
 }
 
 .info-modal-close {
