@@ -494,7 +494,7 @@
           "image": "npc",
           "codes": ["OOT Gerudo Member Card"],
           "visibleWhen": {
-              "settings": { "gerudoFortress": "vanilla" }
+            "settings": { "gerudoFortress": "vanilla" }
           }
         },
         {
@@ -574,7 +574,7 @@
           "image": "npc",
           "codes": ["OOT Gerudo Member Card"],
           "visibleWhen": {
-              "settings": { "gerudoFortress": "vanilla" }
+            "settings": { "gerudoFortress": "vanilla" }
           }
         },
         {
@@ -606,7 +606,7 @@
           "image": "npc",
           "codes": ["OOT Gerudo Member Card"],
           "visibleWhen": {
-              "settings": { "gerudoFortress": "vanilla" }
+            "settings": { "gerudoFortress": "vanilla" }
           }
         },
         {
@@ -780,7 +780,7 @@
         {
           "image": "npc",
           "codes": ["OOT Gerudo Member Card"],
-                    "visibleWhen": {
+          "visibleWhen": {
             "or": [
               { "settings": { "gerudoFortress": "vanilla" } },
               { "settings": { "gerudoFortress": "single" } }
@@ -821,7 +821,7 @@
           "image": "npc",
           "codes": ["OOT Gerudo Member Card"],
           "visibleWhen": {
-              "settings": { "gerudoFortress": "vanilla" }
+            "settings": { "gerudoFortress": "vanilla" }
           }
         },
         {
@@ -850,7 +850,7 @@
           "image": "npc",
           "codes": ["OOT Gerudo Member Card"],
           "visibleWhen": {
-              "settings": { "gerudoFortress": "vanilla" }
+            "settings": { "gerudoFortress": "vanilla" }
           }
         },
         {
@@ -877,12 +877,11 @@
         {
           "image": "collectible",
           "codes": ["OOT Gerudo Fortress Jail 1"]
-          
         },
         {
           "image": "npc",
           "codes": ["OOT Gerudo Member Card"],
-                    "visibleWhen": {
+          "visibleWhen": {
             "or": [
               { "settings": { "gerudoFortress": "vanilla" } },
               { "settings": { "gerudoFortress": "single" } }
