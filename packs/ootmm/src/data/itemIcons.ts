@@ -101,6 +101,8 @@ const RAW_ITEM_ICONS: Record<string, string> = {
   OOT_SKELETON_KEY: 'images/key_skeleton.png',
   OOT_RUPEE_MAGICAL: 'images/rupee_magical.png',
   OOT_GS_TOKEN: 'images/skulltula_token.png',
+  OOT_PLATINUM_TOKEN: 'images/skulltula_platinum.png',
+
   OOT_STONE_OF_AGONY: 'images/agony.png',
   OOT_GERUDO_CARD: 'images/gerudocard.png',
 
@@ -322,9 +324,10 @@ const RAW_ITEM_ICONS: Record<string, string> = {
   MM_PENDANT_OF_MEMORIES: 'images/items/mm_pendant.png',
   MM_GS_TOKEN_SWAMP: 'images/items/mm_skulltulla_woodfall.png',
   MM_GS_TOKEN_OCEAN: 'images/items/mm_skulltulla_greatbay.png',
+  MM_PLATINUM_TOKEN: 'images/skulltula_platinum.png',
   MM_SKELETON_KEY: 'images/key_skeleton.png',
   MM_STONE_OF_AGONY: 'images/agony.png',
-  MM_TRANSCENDENT_FAIRY: 'images/items/mm_clocktown_stray_fairy.png',
+  MM_TRANSCENDENT_FAIRY: 'images/stray_fairy_transcendent.png',
   MM_BOMBER_NOTEBOOK: 'images/bombers_notebook.png',
 
   // Buttons

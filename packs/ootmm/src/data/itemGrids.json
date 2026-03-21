@@ -273,6 +273,7 @@
             "OOT_SKELETON_KEY",
             "OOT_RUPEE_MAGICAL",
             "OOT_GS_TOKEN",
+            "OOT_PLATINUM_TOKEN",
             "OOT_STONE_OF_AGONY",
             "OOT_GERUDO_CARD",
             "OOT_COIN_RED",
@@ -604,7 +605,8 @@
             "MM_MASK_GIANT",
             "MM_MASK_FIERCE_DEITY",
             "MM_GS_TOKEN_SWAMP",
-            "MM_GS_TOKEN_OCEAN"
+            "MM_GS_TOKEN_OCEAN",
+            "MM_PLATINUM_TOKEN"
           ],
           [
             "MM_SKELETON_KEY",
