@@ -558,6 +558,9 @@
       "coords": [387, 384],
       "image": "interior_entrance",
       "type": "submenu",
+      "entranceMenu": {
+        "entranceIds": ["OOT_GORON_SHOP"]
+      },
       "markers": [
         {
           "image": "shop",

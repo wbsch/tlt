@@ -715,6 +715,9 @@
       "coords": [44, 564],
       "image": "interior_entrance",
       "type": "submenu",
+      "entranceMenu": {
+        "entranceIds": ["OOT_SILO"]
+      },
       "markers": [
         {
           "image": "heart_piece",
@@ -757,6 +760,9 @@
       "coords": [122, 398],
       "image": "interior_entrance",
       "type": "submenu",
+      "entranceMenu": {
+        "entranceIds": ["OOT_STABLES"]
+      },
       "markers": [
         {
           "image": "cow",
@@ -771,6 +777,9 @@
       "coords": [144, 390],
       "image": "interior_entrance",
       "type": "submenu",
+      "entranceMenu": {
+        "entranceIds": ["OOT_HOUSE_LON_LON"]
+      },
       "markers": [
         {
           "image": "npc",
@@ -813,6 +822,9 @@
       "image": "interior_entrance",
       "type": "submenu",
       "overlays": ["child"],
+      "entranceMenu": {
+        "entranceIds": ["OOT_BOMBCHU_BOWLING"]
+      },
       "markers": [
         {
           "image": "npc",
@@ -827,8 +839,11 @@
     {
       "coords": [393, 380],
       "image": "interior_entrance",
-      "type": "submenu",
       "overlays": ["child", "day"],
+      "type": "submenu",
+      "entranceMenu": {
+        "entranceIds": ["OOT_CHILD_ARCHERY"]
+      },
       "markers": [
         {
           "image": "npc",
@@ -859,6 +874,9 @@
       "image": "interior_entrance",
       "type": "submenu",
       "overlays": ["child", "night"],
+      "entranceMenu": {
+        "entranceIds": ["OOT_BOMBCHU_SHOP"]
+      },
       "markers": [
         {
           "image": "shop",
@@ -880,6 +898,9 @@
       "image": "interior_entrance",
       "type": "submenu",
       "overlays": ["child", "night"],
+      "entranceMenu": {
+        "entranceIds": ["OOT_TREASURE_GAME"]
+      },
       "markers": [
         {
           "image": "shop",
@@ -907,6 +928,9 @@
       "coords": [445, 564],
       "image": "interior_entrance",
       "type": "submenu",
+      "entranceMenu": {
+        "entranceIds": ["OOT_HOUSE_POTS"]
+      },
       "markers": [
         {
           "image": "npc",
@@ -1001,6 +1025,9 @@
       "image": "interior_entrance",
       "type": "submenu",
       "overlays": ["child"],
+      "entranceMenu": {
+        "entranceIds": ["OOT_MARKET_BAZAAR"]
+      },
       "markers": [
         {
           "image": "shop",
@@ -1022,6 +1049,9 @@
       "image": "interior_entrance",
       "type": "submenu",
       "overlays": ["child"],
+      "entranceMenu": {
+        "entranceIds": ["OOT_MARKET_POTION"]
+      },
       "markers": [
         {
           "image": "shop",
@@ -1048,6 +1078,9 @@
       "coords": [573, 336],
       "image": "interior_entrance",
       "type": "submenu",
+      "entranceMenu": {
+        "entranceIds": ["OOT_TEMPLE_OF_TIME"]
+      },
       "markers": [
         {
           "image": "collectible",

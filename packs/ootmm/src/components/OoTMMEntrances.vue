@@ -26,6 +26,12 @@ const trackedSection = computed(
   () => sections.value.find((section) => section.kind === 'tracked') ?? null,
 );
 
+const POOL_SECTIONS = [
+  { id: 'dungeon', title: 'Dungeons' },
+  { id: 'grotto', title: 'Grottos' },
+  { id: 'interior', title: 'Interiors' },
+] as const;
+
 const groupedEntrances = computed(() => {
   const hasOotEntrances = ootEntrances.value.length > 0;
   const sections = [
@@ -45,18 +51,10 @@ const groupedEntrances = computed(() => {
     .map((section) => ({
       ...section,
       emphasizeSeparation: section.id === 'mm' && hasOotEntrances,
-      pools: [
-        {
-          id: 'dungeon',
-          title: 'Dungeons',
-          entries: section.entries.filter((entry) => entry.pool === 'dungeon'),
-        },
-        {
-          id: 'grotto',
-          title: 'Grottos',
-          entries: section.entries.filter((entry) => entry.pool === 'grotto'),
-        },
-      ].filter((pool) => pool.entries.length > 0),
+      pools: POOL_SECTIONS.map((pool) => ({
+        ...pool,
+        entries: section.entries.filter((entry) => entry.pool === pool.id),
+      })).filter((pool) => pool.entries.length > 0),
     }))
     .filter((section) => section.pools.length > 0);
 });
@@ -142,8 +140,8 @@ function handleDestinationChange(srcKey: string, dstKey: string) {
 
     <div v-if="sections.length === 0" class="no-entrances">
       <p>
-        Enable Dungeon ER or Grotto Shuffle in Settings to configure entrance
-        assignments.
+        Enable Dungeon ER, Grotto Shuffle, or Interiors Shuffle in Settings to
+        configure entrance assignments.
       </p>
     </div>
 

@@ -361,6 +361,9 @@
       "coords": [424, 302],
       "image": "interior_entrance",
       "type": "submenu",
+      "entranceMenu": {
+        "entranceIds": ["MM_FAIRY_FOUNTAIN_IKANA"]
+      },
       "markers": [
         {
           "image": "npc",
@@ -372,6 +375,9 @@
       "coords": [363, 318],
       "image": "interior_entrance",
       "type": "submenu",
+      "entranceMenu": {
+        "entranceIds": ["MM_MUSIC_BOX_HOUSE"]
+      },
       "markers": [
         {
           "image": "npc",
@@ -383,6 +389,9 @@
       "coords": [325, 257],
       "image": "interior_entrance",
       "type": "submenu",
+      "entranceMenu": {
+        "entranceIds": ["MM_GHOST_HUT"]
+      },
       "markers": [
         {
           "image": "npc",

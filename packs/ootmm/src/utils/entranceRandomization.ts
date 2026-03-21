@@ -31,11 +31,17 @@ const TYPE_TO_SETTING: Record<string, string> = {
 
 const DUNGEON_TYPES = new Set(Object.keys(TYPE_TO_SETTING));
 const GROTTO_TYPES = new Set(['grotto', 'grave']);
-const TRACKED_SOURCE_TYPES = new Set([...DUNGEON_TYPES, ...GROTTO_TYPES]);
+const INTERIOR_TYPES = new Set(['indoors', 'indoors-extra', 'indoors-pf']);
+const INTERIOR_GAME_LINK_SOURCE_KEYS = new Set([
+  'OOT_SHOP_MASKS',
+  'MM_CLOCK_TOWER_FROM_CLOCK_TOWN',
+]);
+const INTERIOR_EXIT_TYPES = new Set(['indoors-exit', 'indoors-link']);
 const TRACKED_EXIT_TYPES = new Set([
   'dungeon-exit',
   'grotto-exit',
   'grave-exit',
+  ...INTERIOR_EXIT_TYPES,
 ]);
 const DEKU_PALACE_JP_LAYOUT = 'DekuPalace';
 const JP_LAYOUT_GROTTO_KEYS = new Set([
@@ -45,7 +51,40 @@ const JP_LAYOUT_GROTTO_KEYS = new Set([
   'MM_GROTTO_JP_LINE_END',
 ]);
 
-export type TrackedEntrancePool = 'dungeon' | 'grotto';
+export type TrackedEntrancePool = 'dungeon' | 'grotto' | 'interior';
+
+function isTrackedInteriorSource(
+  key: string | undefined,
+  type: string,
+): boolean {
+  if (INTERIOR_TYPES.has(type)) return true;
+  return Boolean(key && INTERIOR_GAME_LINK_SOURCE_KEYS.has(key));
+}
+
+function getEnabledInteriorSources(settings: Record<string, unknown>): {
+  types: Set<string>;
+  sourceKeys: Set<string>;
+} {
+  const types = new Set<string>();
+  const sourceKeys = new Set<string>();
+
+  if (settings?.erIndoorsMajor) {
+    types.add('indoors');
+  }
+  if (settings?.erIndoorsExtra) {
+    types.add('indoors-extra');
+    if (settings?.erPiratesWorld) {
+      types.add('indoors-pf');
+    }
+  }
+  if (settings?.erIndoorsGameLinks) {
+    for (const key of INTERIOR_GAME_LINK_SOURCE_KEYS) {
+      sourceKeys.add(key);
+    }
+  }
+
+  return { types, sourceKeys };
+}
 
 export function getEnabledDungeonTypes(
   settings: Record<string, unknown>,
@@ -62,14 +101,19 @@ export function getEnabledDungeonTypes(
 
 export function getTrackedEntrancePool(
   type: string,
+  key?: string,
 ): TrackedEntrancePool | null {
   if (DUNGEON_TYPES.has(type)) return 'dungeon';
   if (GROTTO_TYPES.has(type)) return 'grotto';
+  if (isTrackedInteriorSource(key, type)) return 'interior';
   return null;
 }
 
-export function isTrackedEntranceSourceType(type: string): boolean {
-  return TRACKED_SOURCE_TYPES.has(type);
+export function isTrackedEntranceSourceType(
+  type: string,
+  key?: string,
+): boolean {
+  return getTrackedEntrancePool(type, key) !== null;
 }
 
 export function isTrackedEntranceExitType(type: string): boolean {
@@ -84,7 +128,7 @@ export function normalizeTrackedEntranceKey(key: string): string {
   if (!reverse) return key;
 
   const reverseData = ENTRANCES_RAW[reverse];
-  if (!reverseData || !isTrackedEntranceSourceType(reverseData.type)) {
+  if (!reverseData || !isTrackedEntranceSourceType(reverseData.type, reverse)) {
     return key;
   }
 
@@ -145,7 +189,9 @@ export function getActiveEntranceKeys(
   const keys = new Set<string>();
   const erDungeons = settings?.erDungeons;
   const erGrottos = settings?.erGrottos;
+  const erIndoors = settings?.erIndoors;
   const enabledDungeonTypes = getEnabledDungeonTypes(settings);
+  const enabledInteriorSources = getEnabledInteriorSources(settings);
 
   for (const [key, data] of Object.entries(ENTRANCES_RAW)) {
     if (selectedGames === 'oot' && data.game === 'mm') continue;
@@ -160,6 +206,18 @@ export function getActiveEntranceKeys(
 
     if (erGrottos && erGrottos !== 'none' && GROTTO_TYPES.has(data.type)) {
       keys.add(key);
+      continue;
+    }
+
+    if (erIndoors && erIndoors !== 'none') {
+      if (enabledInteriorSources.sourceKeys.has(key)) {
+        keys.add(key);
+        continue;
+      }
+
+      if (enabledInteriorSources.types.has(data.type)) {
+        keys.add(key);
+      }
     }
   }
 

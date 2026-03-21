@@ -649,6 +649,9 @@
       "coords": [590, 278],
       "image": "interior_entrance",
       "type": "submenu",
+      "entranceMenu": {
+        "entranceIds": ["MM_LABORATORY"]
+      },
       "markers": [
         {
           "image": "song",
@@ -762,6 +765,9 @@
       "coords": [262, 485],
       "image": "interior_entrance",
       "type": "submenu",
+      "entranceMenu": {
+        "entranceIds": ["MM_ZORA_SHOP"]
+      },
       "markers": [
         {
           "image": "shop",
@@ -787,6 +793,9 @@
       "coords": [161, 355],
       "image": "interior_entrance",
       "type": "submenu",
+      "entranceMenu": {
+        "entranceIds": ["MM_ROOM_EVANS"]
+      },
       "markers": [
         {
           "image": "heart_piece",

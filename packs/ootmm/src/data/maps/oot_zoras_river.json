@@ -648,6 +648,9 @@
       "coords": [104, 334],
       "image": "interior_entrance",
       "type": "submenu",
+      "entranceMenu": {
+        "entranceIds": ["OOT_LABORATORY"]
+      },
       "markers": [
         {
           "image": "npc",
@@ -712,6 +715,9 @@
       "coords": [284, 336],
       "image": "interior_entrance",
       "type": "submenu",
+      "entranceMenu": {
+        "entranceIds": ["OOT_FISHING_POND"]
+      },
       "markers": [
         {
           "image": "fish",
@@ -893,6 +899,9 @@
       "coords": [632, 560],
       "image": "interior_entrance",
       "type": "submenu",
+      "entranceMenu": {
+        "entranceIds": ["OOT_SHOP_ZORA"]
+      },
       "markers": [
         {
           "image": "shop",

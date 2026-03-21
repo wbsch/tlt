@@ -31,11 +31,11 @@ async function applyDungeonErSettings(page: Page): Promise<void> {
   const search = page.getByTestId('settings-search-input');
   await expect(search).toBeVisible();
 
-  await search.fill('erDungeons');
+  await search.fill('Dungeon Entrance Shuffle');
   await expect(page.getByTestId('setting-input-erDungeons')).toBeVisible();
   await page.getByTestId('setting-input-erDungeons').selectOption('full');
 
-  await search.fill('erMajorDungeons');
+  await search.fill('Shuffle Major Dungeons');
   await expect(page.getByTestId('setting-input-erMajorDungeons')).toBeVisible();
   await page.getByTestId('setting-input-erMajorDungeons').check();
 

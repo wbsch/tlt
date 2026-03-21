@@ -78,8 +78,8 @@ export function useDungeonEntrances() {
   const allDungeonEntrances = computed<DungeonEntranceEntry[]>(() => {
     const entries: DungeonEntranceEntry[] = [];
     for (const [key, data] of Object.entries(ENTRANCES_RAW)) {
-      if (!isTrackedEntranceSourceType(data.type)) continue;
-      const pool = getTrackedEntrancePool(data.type);
+      if (!isTrackedEntranceSourceType(data.type, key)) continue;
+      const pool = getTrackedEntrancePool(data.type, key);
       if (!pool) continue;
       entries.push({
         key,
@@ -157,6 +157,9 @@ export function useDungeonEntrances() {
   const erGrottosMode = computed(() =>
     String(trackerSettings.value?.erGrottos ?? 'none'),
   );
+  const erIndoorsMode = computed(() =>
+    String(trackerSettings.value?.erIndoors ?? 'none'),
+  );
   const sections = computed<EntrancePanelSection[]>(() => {
     if (activeEntrances.value.length === 0) return [];
 
@@ -185,7 +188,9 @@ export function useDungeonEntrances() {
     const ownGameMode =
       entry.pool === 'dungeon'
         ? erDungeonsMode.value === 'ownGame'
-        : erGrottosMode.value === 'ownGame';
+        : entry.pool === 'grotto'
+          ? erGrottosMode.value === 'ownGame'
+          : erIndoorsMode.value === 'ownGame';
     const opts = destinationOptions.value.filter((dest) => {
       if (dest.pool !== entry.pool) return false;
       if (!ownGameMode) return true;

@@ -1066,6 +1066,9 @@
       "coords": [380, 512],
       "image": "interior_entrance",
       "type": "submenu",
+      "entranceMenu": {
+        "entranceIds": ["MM_BLACKSMITH"]
+      },
       "markers": [
         {
           "image": "npc",
@@ -1097,6 +1100,9 @@
       "coords": [393, 381],
       "image": "interior_entrance",
       "type": "submenu",
+      "entranceMenu": {
+        "entranceIds": ["MM_GORON_GRAVEYARD"]
+      },
       "markers": [
         {
           "image": "npc",
@@ -1147,6 +1153,9 @@
       "coords": [778, 276],
       "image": "interior_entrance",
       "type": "submenu",
+      "entranceMenu": {
+        "entranceIds": ["MM_LONE_PEAK_SHRINE"]
+      },
       "markers": [
         {
           "image": "chest",
@@ -1195,6 +1204,9 @@
       "coords": [850, 195],
       "image": "interior_entrance",
       "type": "submenu",
+      "entranceMenu": {
+        "entranceIds": ["MM_GORON_SHOP"]
+      },
       "markers": [
         {
           "image": "shop",
@@ -1243,6 +1255,9 @@
       "coords": [105, 118],
       "image": "interior_entrance",
       "type": "submenu",
+      "entranceMenu": {
+        "entranceIds": ["MM_FAIRY_FOUNTAIN_SNOWHEAD"]
+      },
       "markers": [
         {
           "image": "npc",

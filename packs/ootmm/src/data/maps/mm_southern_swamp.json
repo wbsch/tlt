@@ -539,6 +539,9 @@
       "coords": [461, 119],
       "image": "interior_entrance",
       "type": "submenu",
+      "entranceMenu": {
+        "entranceIds": ["MM_TOURIST_INFORMATION"]
+      },
       "markers": [
         {
           "image": "npc",
@@ -558,6 +561,9 @@
       "coords": [702, 118],
       "image": "interior_entrance",
       "type": "submenu",
+      "entranceMenu": {
+        "entranceIds": ["MM_POTION_SHOP"]
+      },
       "markers": [
         {
           "image": "npc",
@@ -590,6 +596,9 @@
       "coords": [932, 584],
       "image": "interior_entrance",
       "type": "submenu",
+      "entranceMenu": {
+        "entranceIds": ["MM_FAIRY_FOUNTAIN_WOODFALL"]
+      },
       "markers": [
         {
           "image": "npc",

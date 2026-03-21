@@ -19,11 +19,18 @@ test.describe('Dungeon Entrance Randomizer', () => {
 
     const search = page.getByTestId('settings-search-input');
     await expect(search).toBeVisible();
-    await search.fill('erDungeons');
+    await search.fill('Dungeon Entrance Shuffle');
 
     const erDungeonsSelect = page.getByTestId('setting-input-erDungeons');
     await expect(erDungeonsSelect).toBeVisible();
     await erDungeonsSelect.selectOption('full');
+
+    await search.fill('Shuffle Major Dungeons');
+    const erMajorDungeonsCheckbox = page.getByTestId(
+      'setting-input-erMajorDungeons',
+    );
+    await expect(erMajorDungeonsCheckbox).toBeVisible();
+    await erMajorDungeonsCheckbox.check();
 
     const overlay = page.getByTestId('applying-settings-overlay');
     const undoButton = page.getByRole('button', { name: /Undo/i });

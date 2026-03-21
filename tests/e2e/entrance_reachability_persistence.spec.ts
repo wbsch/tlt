@@ -108,11 +108,18 @@ test.describe('Entrance reachability persistence across refresh', () => {
 
     const search = page.getByTestId('settings-search-input');
     await expect(search).toBeVisible();
-    await search.fill('erDungeons');
+    await search.fill('Dungeon Entrance Shuffle');
 
     const erSelect = page.getByTestId('setting-input-erDungeons');
     await expect(erSelect).toBeVisible();
     await erSelect.selectOption('full');
+
+    await search.fill('Shuffle Major Dungeons');
+    const erMajorDungeonsCheckbox = page.getByTestId(
+      'setting-input-erMajorDungeons',
+    );
+    await expect(erMajorDungeonsCheckbox).toBeVisible();
+    await erMajorDungeonsCheckbox.check();
 
     const overlay = page.getByTestId('applying-settings-overlay');
     const undoButton = page.getByRole('button', { name: /Undo/i });
@@ -153,12 +160,19 @@ test.describe('Entrance reachability persistence across refresh', () => {
     const search = page.getByTestId('settings-search-input');
     await expect(search).toBeVisible();
 
-    await search.fill('erDungeons');
+    await search.fill('Dungeon Entrance Shuffle');
     const erDungeonsSelect = page.getByTestId('setting-input-erDungeons');
     await expect(erDungeonsSelect).toBeVisible();
     await erDungeonsSelect.selectOption('full');
 
-    await search.fill('erMoon');
+    await search.fill('Shuffle Major Dungeons');
+    const erMajorDungeonsCheckbox = page.getByTestId(
+      'setting-input-erMajorDungeons',
+    );
+    await expect(erMajorDungeonsCheckbox).toBeVisible();
+    await erMajorDungeonsCheckbox.check();
+
+    await search.fill('Clock Tower Roof');
     const erMoonCheckbox = page.getByTestId('setting-input-erMoon');
     await expect(erMoonCheckbox).toBeVisible();
     await erMoonCheckbox.check();

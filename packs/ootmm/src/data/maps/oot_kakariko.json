@@ -488,6 +488,9 @@
       "coords": [229, 365],
       "image": "interior_entrance",
       "type": "submenu",
+      "entranceMenu": {
+        "entranceIds": ["OOT_HOUSE_SKULLTULA"]
+      },
       "markers": [
         {
           "image": "npc",
@@ -516,6 +519,9 @@
       "image": "interior_entrance",
       "overlays": ["adult", "day"],
       "type": "submenu",
+      "entranceMenu": {
+        "entranceIds": ["OOT_ADULT_ARCHERY"]
+      },
       "markers": [
         {
           "image": "npc",
@@ -557,6 +563,9 @@
       "image": "interior_entrance",
       "overlays": ["adult", "day"],
       "type": "submenu",
+      "entranceMenu": {
+        "entranceIds": ["OOT_KAKARIKO_BAZAAR"]
+      },
       "markers": [
         {
           "image": "shop",
@@ -682,6 +691,9 @@
       "coords": [366, 323],
       "image": "interior_entrance",
       "type": "submenu",
+      "entranceMenu": {
+        "entranceIds": ["OOT_WINDMILL"]
+      },
       "markers": [
         {
           "image": "song",

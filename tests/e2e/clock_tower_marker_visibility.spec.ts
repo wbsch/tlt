@@ -45,18 +45,27 @@ async function applyErSettings(
   const search = page.getByTestId('settings-search-input');
   await expect(search).toBeVisible();
 
-  await search.fill('erDungeons');
+  await search.fill('Dungeon Entrance Shuffle');
   const erDungeonsSelect = page.getByTestId('setting-input-erDungeons');
   await expect(erDungeonsSelect).toBeVisible();
   await erDungeonsSelect.selectOption(values.erDungeons);
 
-  await search.fill('erMoon');
-  const erMoonCheckbox = page.getByTestId('setting-input-erMoon');
-  if (values.erMoon) {
+  if (values.erDungeons === 'full') {
+    await search.fill('Shuffle Major Dungeons');
+    const erMajorDungeonsCheckbox = page.getByTestId(
+      'setting-input-erMajorDungeons',
+    );
+    await expect(erMajorDungeonsCheckbox).toBeVisible();
+    await erMajorDungeonsCheckbox.check();
+
+    await search.fill('Clock Tower Roof');
+    const erMoonCheckbox = page.getByTestId('setting-input-erMoon');
     await expect(erMoonCheckbox).toBeVisible();
-    await erMoonCheckbox.check();
-  } else if ((await erMoonCheckbox.count()) > 0) {
-    await erMoonCheckbox.uncheck();
+    if (values.erMoon) {
+      await erMoonCheckbox.check();
+    } else {
+      await erMoonCheckbox.uncheck();
+    }
   }
 
   await page.getByTestId('apply-settings-button').click();

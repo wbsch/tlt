@@ -545,6 +545,9 @@
       "coords": [573, 497],
       "image": "interior_entrance",
       "type": "submenu",
+      "entranceMenu": {
+        "entranceIds": ["OOT_HOUSE_LINK"]
+      },
       "markers": [
         {
           "image": "pot",
@@ -560,6 +563,9 @@
       "coords": [615, 464],
       "image": "interior_entrance",
       "type": "submenu",
+      "entranceMenu": {
+        "entranceIds": ["OOT_HOUSE_SARIA"]
+      },
       "markers": [
         {
           "image": "heart",
@@ -576,6 +582,9 @@
       "coords": [656, 454],
       "image": "interior_entrance",
       "type": "submenu",
+      "entranceMenu": {
+        "entranceIds": ["OOT_HOUSE_TWINS"]
+      },
       "markers": [
         {
           "image": "pot",
@@ -587,6 +596,9 @@
       "coords": [645, 383],
       "image": "interior_entrance",
       "type": "submenu",
+      "entranceMenu": {
+        "entranceIds": ["OOT_KOKIRI_SHOP"]
+      },
       "markers": [
         {
           "image": "shop",
@@ -611,6 +623,9 @@
       "coords": [500, 443],
       "image": "interior_entrance",
       "type": "submenu",
+      "entranceMenu": {
+        "entranceIds": ["OOT_HOUSE_KNOW_IT_ALL"]
+      },
       "markers": [
         {
           "image": "pot",
@@ -625,6 +640,9 @@
       "coords": [543, 376],
       "image": "interior_entrance",
       "type": "submenu",
+      "entranceMenu": {
+        "entranceIds": ["OOT_HOUSE_MIDO"]
+      },
       "markers": [
         {
           "image": "chest",

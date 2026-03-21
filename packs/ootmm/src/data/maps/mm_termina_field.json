@@ -1088,6 +1088,9 @@
       "coords": [900, 532],
       "image": "interior_entrance",
       "type": "submenu",
+      "entranceMenu": {
+        "entranceIds": ["MM_SWAMP_ARCHERY"]
+      },
       "markers": [
         {
           "image": "npc",
@@ -1100,6 +1103,9 @@
       "image": "interior_entrance",
       "overlays": ["day2", "day3", "day"],
       "type": "submenu",
+      "entranceMenu": {
+        "entranceIds": ["MM_KAFEI_HIDEOUT"]
+      },
       "markers": [
         {
           "image": "npc",
@@ -1121,6 +1127,9 @@
       "image": "interior_entrance",
       "overlays": ["night"],
       "type": "submenu",
+      "entranceMenu": {
+        "entranceIds": ["MM_CURIOSITY_SHOP"]
+      },
       "markers": [
         {
           "image": "shop",
@@ -1133,6 +1142,9 @@
       "coords": [78, 298],
       "image": "interior_entrance",
       "type": "submenu",
+      "entranceMenu": {
+        "entranceIds": ["MM_TRADING_POST"]
+      },
       "markers": [
         {
           "image": "shop",
@@ -1166,6 +1178,9 @@
       "coords": [60, 274],
       "image": "interior_entrance",
       "type": "submenu",
+      "entranceMenu": {
+        "entranceIds": ["MM_BOMB_SHOP"]
+      },
       "markers": [
         {
           "image": "shop",
@@ -1183,6 +1198,9 @@
       "image": "interior_entrance",
       "overlays": ["day"],
       "type": "submenu",
+      "entranceMenu": {
+        "entranceIds": ["MM_LOTTERY"]
+      },
       "markers": [
         {
           "image": "npc",
@@ -1205,6 +1223,9 @@
       "coords": [54, 154],
       "image": "interior_entrance",
       "type": "submenu",
+      "entranceMenu": {
+        "entranceIds": ["MM_SWORDSMAN_SCHOOL"]
+      },
       "markers": [
         {
           "image": "npc",
@@ -1227,6 +1248,9 @@
       "coords": [103, 154],
       "image": "interior_entrance",
       "type": "submenu",
+      "entranceMenu": {
+        "entranceIds": ["MM_POST_OFFICE"]
+      },
       "markers": [
         {
           "image": "npc",
@@ -1239,6 +1263,9 @@
       "coords": [138, 93],
       "image": "interior_entrance",
       "type": "submenu",
+      "entranceMenu": {
+        "entranceIds": ["MM_FAIRY_FOUNTAIN_TOWN"]
+      },
       "markers": [
         {
           "image": "npc",
@@ -1331,6 +1358,9 @@
       "image": "interior_entrance",
       "overlays": ["day"],
       "type": "submenu",
+      "entranceMenu": {
+        "entranceIds": ["MM_TOWN_ARCHERY"]
+      },
       "markers": [
         {
           "image": "npc",
@@ -1343,6 +1373,9 @@
       "image": "interior_entrance",
       "overlays": ["day"],
       "type": "submenu",
+      "entranceMenu": {
+        "entranceIds": ["MM_HONEY_AND_DARLING_GAME"]
+      },
       "markers": [
         {
           "image": "npc",
@@ -1360,6 +1393,9 @@
       "image": "interior_entrance",
       "overlays": ["day"],
       "type": "submenu",
+      "entranceMenu": {
+        "entranceIds": ["MM_CHEST_GAME"]
+      },
       "markers": [
         {
           "image": "npc",
@@ -1372,6 +1408,9 @@
       "image": "interior_entrance",
       "overlays": ["day"],
       "type": "submenu",
+      "entranceMenu": {
+        "entranceIds": ["MM_STOCK_POT_INN"]
+      },
       "markers": [
         {
           "image": "chest",
@@ -1425,6 +1464,9 @@
       "image": "interior_entrance",
       "overlays": ["night"],
       "type": "submenu",
+      "entranceMenu": {
+        "entranceIds": ["MM_MILK_BAR"]
+      },
       "markers": [
         {
           "image": "npc",
@@ -1446,6 +1488,9 @@
       "coords": [330, 182],
       "image": "interior_entrance",
       "type": "submenu",
+      "entranceMenu": {
+        "entranceIds": ["MM_STOCK_POT_INN_ROOF"]
+      },
       "markers": [
         {
           "image": "chest",
@@ -1499,6 +1544,9 @@
       "image": "interior_entrance",
       "overlays": ["day"],
       "type": "submenu",
+      "entranceMenu": {
+        "entranceIds": ["MM_MAYORS_OFFICE"]
+      },
       "markers": [
         {
           "image": "npc",
@@ -1514,6 +1562,9 @@
       "coords": [460, 117],
       "image": "interior_entrance",
       "type": "submenu",
+      "entranceMenu": {
+        "entranceIds": ["MM_ASTRAL_OBSERVATORY_FROM_CLOCK_TOWN_EAST"]
+      },
       "markers": [
         {
           "image": "chest",
@@ -1732,6 +1783,9 @@
       "coords": [962, 201],
       "image": "interior_entrance",
       "type": "submenu",
+      "entranceMenu": {
+        "entranceIds": ["MM_ASTRAL_OBSERVATORY_FROM_FIELD"]
+      },
       "markers": [
         {
           "image": "pot",
