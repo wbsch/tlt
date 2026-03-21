@@ -492,7 +492,8 @@ defineExpose({
   <div class="settings-panel">
     <div class="settings-header">
       <p class="settings-note">
-        ⚠️ Changing settings will reset the tracker and recalculate logic
+        ⚠️ Changing settings mid-run might break things. Be careful if you have
+        already started tracking.
       </p>
 
       <div class="spoiler-actions">
