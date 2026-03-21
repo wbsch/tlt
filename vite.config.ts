@@ -109,10 +109,4 @@ export default defineConfig({
   optimizeDeps: {
     include: ootmmCjsDeps,
   },
-  build: {
-    // Ensure Rollup converts the CJS OoTMM libs when building
-    commonjsOptions: {
-      include: [/node_modules/, /OoTMM\/packages\/generator\/lib\/combo/],
-    },
-  },
 });
