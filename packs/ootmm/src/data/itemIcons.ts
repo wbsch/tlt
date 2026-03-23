@@ -804,7 +804,7 @@ const RAW_GRID_ICON_VARIANTS: Record<string, GridIconVariantConfig> = {
       },
     ],
   },
-  'OOT_STICK_UPGRADE|SHARED_STICK_UPGRADE': {
+  OOT_STICK_UPGRADE: {
     default: {
       icons: ['images/stick.png', 'images/stick.png', 'images/stick.png'],
       overlays: [
@@ -828,7 +828,19 @@ const RAW_GRID_ICON_VARIANTS: Record<string, GridIconVariantConfig> = {
       autoSelectItemId: 'MM_STICK',
     },
   },
-  'OOT_NUT_UPGRADE|SHARED_NUT_UPGRADE': {
+  SHARED_STICK_UPGRADE: {
+    default: {
+      icons: ['images/stick.png', 'images/stick.png', 'images/stick.png'],
+      overlays: [
+        'images/overlay_10.png',
+        'images/overlay_20.png',
+        'images/overlay_30_green.png',
+      ],
+      startUndimmed: false,
+      autoSelectItemId: 'SHARED_STICK',
+    },
+  },
+  OOT_NUT_UPGRADE: {
     default: {
       icons: ['images/nut.png', 'images/nut.png', 'images/nut.png'],
       overlays: [
@@ -838,6 +850,18 @@ const RAW_GRID_ICON_VARIANTS: Record<string, GridIconVariantConfig> = {
       ],
       startUndimmed: false,
       autoSelectItemId: 'OOT_NUTS_5',
+    },
+  },
+  SHARED_NUT_UPGRADE: {
+    default: {
+      icons: ['images/nut.png', 'images/nut.png', 'images/nut.png'],
+      overlays: [
+        'images/overlay_20.png',
+        'images/overlay_30.png',
+        'images/overlay_40_green.png',
+      ],
+      startUndimmed: false,
+      autoSelectItemId: 'SHARED_NUTS_5',
     },
   },
   MM_NUT_UPGRADE: {
@@ -852,7 +876,7 @@ const RAW_GRID_ICON_VARIANTS: Record<string, GridIconVariantConfig> = {
       autoSelectItemId: 'MM_NUTS_5',
     },
   },
-  'OOT_BOMB_BAG|MM_BOMB_BAG|SHARED_BOMB_BAG': {
+  OOT_BOMB_BAG: {
     default: {
       icons: ['images/bomb.png', 'images/bomb.png', 'images/bomb.png'],
       overlays: [
@@ -861,9 +885,34 @@ const RAW_GRID_ICON_VARIANTS: Record<string, GridIconVariantConfig> = {
         'images/overlay_40_green.png',
       ],
       startUndimmed: false,
+      autoSelectItemId: 'OOT_BOMBS_10',
     },
   },
-  'OOT_BOW|SHARED_BOW': {
+  MM_BOMB_BAG: {
+    default: {
+      icons: ['images/bomb.png', 'images/bomb.png', 'images/bomb.png'],
+      overlays: [
+        'images/overlay_20.png',
+        'images/overlay_30.png',
+        'images/overlay_40_green.png',
+      ],
+      startUndimmed: false,
+      autoSelectItemId: 'MM_BOMBS_10',
+    },
+  },
+  SHARED_BOMB_BAG: {
+    default: {
+      icons: ['images/bomb.png', 'images/bomb.png', 'images/bomb.png'],
+      overlays: [
+        'images/overlay_20.png',
+        'images/overlay_30.png',
+        'images/overlay_40_green.png',
+      ],
+      startUndimmed: false,
+      autoSelectItemId: 'SHARED_BOMBS_10',
+    },
+  },
+  OOT_BOW: {
     default: {
       icons: ['images/bow.png', 'images/bow.png', 'images/bow.png'],
       overlays: [
@@ -872,6 +921,19 @@ const RAW_GRID_ICON_VARIANTS: Record<string, GridIconVariantConfig> = {
         'images/overlay_50_green.png',
       ],
       startUndimmed: false,
+      autoSelectItemId: 'OOT_ARROWS_10',
+    },
+  },
+  SHARED_BOW: {
+    default: {
+      icons: ['images/bow.png', 'images/bow.png', 'images/bow.png'],
+      overlays: [
+        'images/overlay_30.png',
+        'images/overlay_40.png',
+        'images/overlay_50_green.png',
+      ],
+      startUndimmed: false,
+      autoSelectItemId: 'SHARED_ARROWS_10',
     },
   },
   MM_BOW: {
@@ -887,6 +949,7 @@ const RAW_GRID_ICON_VARIANTS: Record<string, GridIconVariantConfig> = {
         'images/overlay_50_green.png',
       ],
       startUndimmed: false,
+      autoSelectItemId: 'MM_ARROWS_10',
     },
   },
   OOT_BOTTLE_EMPTY: {
@@ -969,6 +1032,7 @@ const RAW_GRID_ICON_VARIANTS: Record<string, GridIconVariantConfig> = {
         'images/overlay_50_green.png',
       ],
       startUndimmed: false,
+      autoSelectItemId: 'OOT_SEEDS_30',
     },
   },
   'OOT_HOOKSHOT|SHARED_HOOKSHOT': {
@@ -1017,16 +1081,25 @@ const RAW_GRID_ICON_VARIANTS: Record<string, GridIconVariantConfig> = {
       },
     ],
   },
-  'OOT_MAGIC_UPGRADE|SHARED_MAGIC_UPGRADE': {
+  OOT_MAGIC_UPGRADE: {
     default: {
       icons: ['images/magic1.png', 'images/magic2.png'],
       startUndimmed: false,
+      autoSelectItemId: 'OOT_MAGIC_JAR_SMALL',
+    },
+  },
+  SHARED_MAGIC_UPGRADE: {
+    default: {
+      icons: ['images/magic1.png', 'images/magic2.png'],
+      startUndimmed: false,
+      autoSelectItemId: 'SHARED_MAGIC_JAR_SMALL',
     },
   },
   MM_MAGIC_UPGRADE: {
     default: {
       icons: ['images/items/mm_magic1.png', 'images/items/mm_magic2.png'],
       startUndimmed: false,
+      autoSelectItemId: 'MM_MAGIC_JAR_SMALL',
     },
   },
   'OOT_SWORD|SHARED_SWORD': {
