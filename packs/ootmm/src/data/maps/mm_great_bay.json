@@ -674,7 +674,27 @@
     {
       "coords": [718, 297],
       "image": "interior_entrance",
-      "codes": "TODO KF 097 :: unnamed_stack > Ocean > Ocean Layers > Ocean Entrances :: Pasted Layer #95 :: 001-001-011-004.png"
+      "type": "submenu",
+      "entranceMenu": {
+        "entranceIds": ["MM_FISHER_HUT"]
+      }
+    },
+    {
+      "coords": [610, 542],
+      "image": "interior_entrance",
+      "type": "submenu",
+      "entranceMenu": {
+        "entranceIds": ["MM_BEAVERS"]
+      },
+      "markers": [
+        {
+          "image": "npc",
+          "codes": [
+            "MM Waterfall Rapids Beaver Race 1",
+            "MM Waterfall Rapids Beaver Race 2"
+          ]
+        }
+      ]
     },
     {
       "coords": [722, 312],
@@ -746,6 +766,9 @@
       "coords": [473, 523],
       "image": "boulder_grotto",
       "type": "submenu",
+      "entranceMenu": {
+        "entranceIds": ["MM_FAIRY_FOUNTAIN_GREAT_BAY"]
+      },
       "markers": [
         {
           "image": "npc",
@@ -782,12 +805,18 @@
     {
       "coords": [248, 413],
       "image": "interior_entrance",
-      "codes": "TODO KF 103 :: unnamed_stack > Ocean > Ocean Layers > Ocean Entrances :: Pasted Layer #101 :: 001-001-011-010.png"
+      "type": "submenu",
+      "entranceMenu": {
+        "entranceIds": ["MM_ROOM_TIJO"]
+      }
     },
     {
       "coords": [234, 377],
       "image": "interior_entrance",
-      "codes": "TODO KF 104 :: unnamed_stack > Ocean > Ocean Layers > Ocean Entrances :: Pasted Layer #102 :: 001-001-011-011.png"
+      "type": "submenu",
+      "entranceMenu": {
+        "entranceIds": ["MM_ROOM_JAPAS"]
+      }
     },
     {
       "coords": [161, 355],
@@ -807,6 +836,9 @@
       "coords": [131, 375],
       "image": "interior_entrance",
       "type": "submenu",
+      "entranceMenu": {
+        "entranceIds": ["MM_ROOM_LULU"]
+      },
       "markers": [
         {
           "image": "business_scrub_mm",

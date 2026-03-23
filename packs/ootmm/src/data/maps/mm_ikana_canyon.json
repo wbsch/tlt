@@ -400,6 +400,14 @@
       ]
     },
     {
+      "coords": [364, 223],
+      "image": "interior_entrance",
+      "type": "submenu",
+      "entranceMenu": {
+        "entranceIds": ["MM_IKANA_CAVERN"]
+      }
+    },
+    {
       "coords": [280, 360],
       "image": "dungeon_entrance",
       "type": "submenu",

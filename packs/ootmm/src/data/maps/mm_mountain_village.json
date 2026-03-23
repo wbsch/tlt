@@ -1111,6 +1111,71 @@
       ]
     },
     {
+      "coords": [830, 419],
+      "image": "boulder_grotto",
+      "type": "submenu",
+      "entranceMenu": {
+        "entranceIds": ["MM_GORON_RACETRACK"]
+      },
+      "markers": [
+        {
+          "image": "npc",
+          "overlays": ["clear_state"],
+          "codes": "MM Goron Race Reward"
+        },
+        {
+          "image": "tree",
+          "codes": [
+            "MM Goron Race Forked Tree 1",
+            "MM Goron Race Forked Tree 2",
+            "MM Goron Race Forked Tree 3",
+            "MM Goron Race Forked Tree 4",
+            "MM Goron Race Forked Tree 5",
+            "MM Goron Race Forked Tree 6",
+            "MM Goron Race Forked Tree 7",
+            "MM Goron Race Forked Tree 8",
+            "MM Goron Race Forked Tree 9",
+            "MM Goron Race Forked Tree 10"
+          ]
+        },
+        {
+          "image": "pot",
+          "codes": [
+            "MM Goron Race Pot 01",
+            "MM Goron Race Pot 02",
+            "MM Goron Race Pot 03",
+            "MM Goron Race Pot 04",
+            "MM Goron Race Pot 05",
+            "MM Goron Race Pot 06",
+            "MM Goron Race Pot 07",
+            "MM Goron Race Pot 08",
+            "MM Goron Race Pot 09",
+            "MM Goron Race Pot 10",
+            "MM Goron Race Pot 11",
+            "MM Goron Race Pot 12",
+            "MM Goron Race Pot 13",
+            "MM Goron Race Pot 14",
+            "MM Goron Race Pot 15",
+            "MM Goron Race Pot 16",
+            "MM Goron Race Pot 17",
+            "MM Goron Race Pot 18",
+            "MM Goron Race Pot 19",
+            "MM Goron Race Pot 20",
+            "MM Goron Race Pot 21",
+            "MM Goron Race Pot 22",
+            "MM Goron Race Pot 23",
+            "MM Goron Race Pot 24",
+            "MM Goron Race Pot 25",
+            "MM Goron Race Pot 26",
+            "MM Goron Race Pot 27",
+            "MM Goron Race Pot 28",
+            "MM Goron Race Pot 29",
+            "MM Goron Race Pot 30"
+          ]
+        }
+      ]
+    },
+    {
       "coords": [474, 430],
       "image": "grotto",
       "overlays": ["clear_state"],
@@ -1147,7 +1212,54 @@
     {
       "coords": [571, 355],
       "image": "interior_entrance",
-      "codes": "TODO KF 151 :: unnamed_stack > Mountain > Mountain Layers > Mountain Entrances :: Pasted Layer #150 :: 001-001-017-005.png"
+      "type": "submenu",
+      "entranceMenu": {
+        "entranceIds": ["MM_GORON_SHRINE"]
+      },
+      "markers": [
+        {
+          "image": "song",
+          "overlays": ["cursed_state"],
+          "codes": "MM Goron Baby"
+        },
+        {
+          "image": "rock",
+          "codes": [
+            "MM Goron Shrine Rock 01",
+            "MM Goron Shrine Rock 02",
+            "MM Goron Shrine Rock 03",
+            "MM Goron Shrine Rock 04",
+            "MM Goron Shrine Rock 05",
+            "MM Goron Shrine Rock 06",
+            "MM Goron Shrine Rock 07",
+            "MM Goron Shrine Rock 08",
+            "MM Goron Shrine Rock 09",
+            "MM Goron Shrine Rock 10",
+            "MM Goron Shrine Rock 11",
+            "MM Goron Shrine Rock 12",
+            "MM Goron Shrine Rock 13",
+            "MM Goron Shrine Rock 14",
+            "MM Goron Shrine Rock 15",
+            "MM Goron Shrine Rock 16"
+          ]
+        },
+        {
+          "image": "pot",
+          "codes": [
+            "MM Goron Shrine Pot 01",
+            "MM Goron Shrine Pot 02",
+            "MM Goron Shrine Pot 03",
+            "MM Goron Shrine Pot 04",
+            "MM Goron Shrine Pot 05",
+            "MM Goron Shrine Pot 06",
+            "MM Goron Shrine Pot 07",
+            "MM Goron Shrine Pot 08",
+            "MM Goron Shrine Pot 09",
+            "MM Goron Shrine Pot 10",
+            "MM Goron Shrine Pot 11"
+          ]
+        }
+      ]
     },
     {
       "coords": [778, 276],

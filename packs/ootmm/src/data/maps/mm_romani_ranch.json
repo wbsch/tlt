@@ -442,6 +442,9 @@
       "coords": [482, 210],
       "image": "interior_entrance",
       "type": "submenu",
+      "entranceMenu": {
+        "entranceIds": ["MM_STABLES"]
+      },
       "markers": [
         {
           "image": "cow",
@@ -464,7 +467,117 @@
     {
       "coords": [433, 219],
       "image": "interior_entrance",
-      "codes": "TODO KF 057 :: unnamed_stack > Ranch > Ranch Layers > Ranch Entrances :: Pasted Layer #56 :: 001-001-012-001.png"
+      "type": "submenu",
+      "entranceMenu": {
+        "entranceIds": ["MM_RANCH_HOUSE"]
+      }
+    },
+    {
+      "coords": [312, 309],
+      "image": "interior_entrance",
+      "type": "submenu",
+      "entranceMenu": {
+        "entranceIds": ["MM_CUCCO_SHACK"]
+      },
+      "markers": [
+        {
+          "image": "npc",
+          "codes": ["MM Cucco Shack Bunny Mask"]
+        },
+        {
+          "image": "pot",
+          "codes": [
+            "MM Cucco Shack Potted Plant 1 Pot",
+            "MM Cucco Shack Potted Plant 2 Pot"
+          ]
+        },
+        {
+          "image": "grass",
+          "codes": [
+            "MM Cucco Shack Potted Plant 1 Grass",
+            "MM Cucco Shack Potted Plant 2 Grass"
+          ]
+        },
+        {
+          "image": "crate",
+          "codes": [
+            "MM Cucco Shack Crate 1",
+            "MM Cucco Shack Crate 2",
+            "MM Cucco Shack Crate 3"
+          ]
+        },
+        {
+          "image": "bush",
+          "codes": [
+            "MM Cucco Shack Bush 1",
+            "MM Cucco Shack Bush 2",
+            "MM Cucco Shack Bush 3",
+            "MM Cucco Shack Bush 4",
+            "MM Cucco Shack Bush 5",
+            "MM Cucco Shack Bush 6",
+            "MM Cucco Shack Bush 7"
+          ]
+        },
+        {
+          "image": "tree",
+          "codes": ["MM Cucco Shack Tree"]
+        },
+        {
+          "image": "gossip_stone",
+          "codes": ["MM Cucco Shack Gossip"]
+        },
+        {
+          "image": "wonder_item_green_rupee",
+          "codes": [
+            "MM Cucco Shack Wonder Item 1",
+            "MM Cucco Shack Wonder Item 2",
+            "MM Cucco Shack Wonder Item 3",
+            "MM Cucco Shack Wonder Item 4",
+            "MM Cucco Shack Wonder Item 5",
+            "MM Cucco Shack Wonder Item 6"
+          ]
+        }
+      ]
+    },
+    {
+      "coords": [336, 341],
+      "image": "interior_entrance",
+      "type": "submenu",
+      "entranceMenu": {
+        "entranceIds": ["MM_DOGGY_RACETRACK"]
+      },
+      "markers": [
+        {
+          "image": "npc",
+          "overlays": ["day"],
+          "codes": ["MM Doggy Racetrack HP"]
+        },
+        {
+          "image": "chest",
+          "overlays": ["day"],
+          "codes": ["MM Doggy Racetrack Chest"]
+        },
+        {
+          "image": "pot",
+          "overlays": ["day"],
+          "codes": [
+            "MM Doggy Racetrack Pot 1",
+            "MM Doggy Racetrack Pot 2",
+            "MM Doggy Racetrack Pot 3",
+            "MM Doggy Racetrack Pot 4"
+          ]
+        },
+        {
+          "image": "soft_soil",
+          "overlays": ["day"],
+          "codes": ["MM Doggy Racetrack Soil"]
+        },
+        {
+          "image": "gossip_stone",
+          "overlays": ["day"],
+          "codes": ["MM Doggy Racetrack Gossip"]
+        }
+      ]
     }
   ]
 }

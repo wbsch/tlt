@@ -282,6 +282,14 @@
         "MM Pirate Fortress Interior Wonder Item Skull Forehead 2",
         "MM Pirate Fortress Interior Wonder Item Skull Forehead 3"
       ]
+    },
+    {
+      "coords": [332, 370],
+      "image": "interior_entrance",
+      "type": "submenu",
+      "entranceMenu": {
+        "entranceIds": ["MM_SEWERS_FROM_EXTERIOR_DOOR"]
+      }
     }
   ]
 }

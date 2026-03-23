@@ -347,6 +347,9 @@
       "coords": [680, 290],
       "image": "red_boulder",
       "type": "submenu",
+      "entranceMenu": {
+        "entranceIds": ["OOT_FAIRY_MAGIC2"]
+      },
       "markers": [
         {
           "image": "npc",
@@ -559,7 +562,7 @@
       "image": "interior_entrance",
       "type": "submenu",
       "entranceMenu": {
-        "entranceIds": ["OOT_GORON_SHOP"]
+        "entranceIds": ["OOT_SHOP_GORON"]
       },
       "markers": [
         {
@@ -581,6 +584,9 @@
       "coords": [132, 56],
       "image": "boulder_grotto",
       "type": "submenu",
+      "entranceMenu": {
+        "entranceIds": ["OOT_FAIRY_MAGIC"]
+      },
       "markers": [
         {
           "image": "npc",

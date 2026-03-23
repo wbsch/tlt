@@ -450,6 +450,9 @@
       "coords": [229, 417],
       "image": "interior_entrance",
       "type": "submenu",
+      "entranceMenu": {
+        "entranceIds": ["OOT_HOUSE_IMPA"]
+      },
       "markers": [
         {
           "image": "wonder_item_red_rupee",
@@ -469,6 +472,9 @@
       "coords": [271, 431],
       "image": "interior_entrance",
       "type": "submenu",
+      "entranceMenu": {
+        "entranceIds": ["OOT_HOUSE_IMPA_BACK"]
+      },
       "markers": [
         {
           "image": "wonder_item_red_rupee",
@@ -533,7 +539,10 @@
     {
       "coords": [252, 287],
       "image": "interior_entrance",
-      "codes": "TODO KF 070 :: unnamed_stack > Kakariko > Kakariko Layers > Kakariko Entrances :: Pasted Layer #50 :: 001-001-013-004.png"
+      "type": "submenu",
+      "entranceMenu": {
+        "entranceIds": ["OOT_HOUSE_CARPENTER"]
+      }
     },
     {
       "coords": [229, 311],
@@ -588,6 +597,9 @@
       "image": "interior_entrance",
       "overlays": ["adult", "day"],
       "type": "submenu",
+      "entranceMenu": {
+        "entranceIds": ["OOT_SHOP_POTION_KAKARIKO"]
+      },
       "markers": [
         {
           "image": "shop",
@@ -610,6 +622,10 @@
       "image": "interior_entrance",
       "overlays": ["adult", "day"],
       "type": "submenu",
+      "entranceMenu": {
+        "entranceIds": ["OOT_SHOP_POTION_KAKARIKO_BACK"]
+      },
+
       "markers": [
         {
           "image": "shop",
@@ -674,6 +690,9 @@
       "image": "interior_entrance",
       "overlays": ["day"],
       "type": "submenu",
+      "entranceMenu": {
+        "entranceIds": ["OOT_SHOP_GRANNY"]
+      },
       "markers": [
         {
           "image": "npc",
@@ -709,7 +728,10 @@
     {
       "coords": [632, 562],
       "image": "interior_entrance",
-      "codes": "TODO KF 079 :: unnamed_stack > Kakariko > Kakariko Layers > Kakariko Entrances :: Pasted Layer #59 :: 001-001-013-013.png"
+      "type": "submenu",
+      "entranceMenu": {
+        "entranceIds": ["OOT_HOUSE_DAMPE"]
+      }
     },
     {
       "coords": [681, 516],

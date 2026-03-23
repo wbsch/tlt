@@ -704,6 +704,9 @@
       "coords": [189, 128],
       "image": "black_pillar_entrance",
       "type": "submenu",
+      "entranceMenu": {
+        "entranceIds": ["OOT_FAIRY_DEFENSE"]
+      },
       "markers": [
         {
           "image": "npc",
@@ -806,6 +809,9 @@
       "image": "interior_entrance",
       "type": "submenu",
       "overlays": ["child", "night"],
+      "entranceMenu": {
+        "entranceIds": ["OOT_ALLEY_HOUSE"]
+      },
       "markers": [
         {
           "image": "pot",
@@ -1072,7 +1078,10 @@
       "coords": [473, 380],
       "image": "interior_entrance",
       "overlays": ["child"],
-      "codes": "TODO KF 091 :: unnamed_stack > Hyrule > Hyrule Layers > Hyrule Entrances :: Pasted Layer #90 :: 001-001-015-015.png"
+      "type": "submenu",
+      "entranceMenu": {
+        "entranceIds": ["OOT_SHOP_MASKS"]
+      }
     },
     {
       "coords": [573, 336],
@@ -1311,6 +1320,9 @@
       "coords": [522, 172],
       "image": "crawl_space",
       "type": "submenu",
+      "entranceMenu": {
+        "entranceIds": ["OOT_FAIRY_DIN"]
+      },
       "markers": [
         {
           "image": "npc",

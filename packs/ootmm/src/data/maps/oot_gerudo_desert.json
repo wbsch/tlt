@@ -449,7 +449,10 @@
     {
       "coords": [841, 433],
       "image": "interior_entrance",
-      "codes": "TODO KF 063 :: unnamed_stack > Desert > Desert Layers > Desert Entrances :: Pasted Layer #62 :: 001-001-014-001.png"
+      "type": "submenu",
+      "entranceMenu": {
+        "entranceIds": ["OOT_VALLEY_TENT"]
+      }
     },
     {
       "coords": [833, 417],
@@ -973,6 +976,9 @@
       "coords": [158, 420],
       "image": "boulder_grotto",
       "type": "submenu",
+      "entranceMenu": {
+        "entranceIds": ["OOT_FAIRY_NAYRU"]
+      },
       "markers": [
         {
           "image": "npc",

@@ -607,6 +607,91 @@
       ]
     },
     {
+      "coords": [513, 446],
+      "image": "interior_entrance",
+      "type": "submenu",
+      "entranceMenu": {
+        "entranceIds": ["MM_DEKU_PALACE_THRONE"]
+      }
+    },
+    {
+      "coords": [489, 424],
+      "image": "interior_entrance",
+      "type": "submenu",
+      "entranceMenu": {
+        "entranceIds": ["MM_DEKU_PALACE_THRONE_CAGE"]
+      },
+      "markers": [
+        {
+          "image": "song",
+          "codes": "MM Deku Palace Sonata of Awakening"
+        }
+      ]
+    },
+    {
+      "coords": [382, 390],
+      "image": "interior_entrance",
+      "type": "submenu",
+      "entranceMenu": {
+        "entranceIds": ["MM_DEKU_SHRINE"]
+      },
+      "markers": [
+        {
+          "image": "npc",
+          "codes": "MM Deku Shrine Mask of Scents"
+        },
+        {
+          "image": "pot",
+          "codes": ["MM Deku Shrine Pot 1", "MM Deku Shrine Pot 2"]
+        },
+        {
+          "image": "green_rupee",
+          "codes": [
+            "MM Deku Shrine Rupee Main 01",
+            "MM Deku Shrine Rupee Main 02",
+            "MM Deku Shrine Rupee Main 03",
+            "MM Deku Shrine Rupee Main 04",
+            "MM Deku Shrine Rupee Main 05",
+            "MM Deku Shrine Rupee Main 06",
+            "MM Deku Shrine Rupee Main 07",
+            "MM Deku Shrine Rupee Main 08",
+            "MM Deku Shrine Rupee Main 09",
+            "MM Deku Shrine Rupee Main 10",
+            "MM Deku Shrine Rupee Main 11",
+            "MM Deku Shrine Rupee Main 12",
+            "MM Deku Shrine Rupee Main 13",
+            "MM Deku Shrine Rupee Main 14",
+            "MM Deku Shrine Rupee Main 15",
+            "MM Deku Shrine Rupee Main 16",
+            "MM Deku Shrine Rupee Main 17",
+            "MM Deku Shrine Rupee Main 18"
+          ]
+        },
+        {
+          "image": "red_rupee",
+          "codes": [
+            "MM Deku Shrine Rupee Main 19",
+            "MM Deku Shrine Rupee Main 20"
+          ]
+        },
+        {
+          "image": "green_rupee",
+          "codes": [
+            "MM Deku Shrine Rupee End 01",
+            "MM Deku Shrine Rupee End 02",
+            "MM Deku Shrine Rupee End 03",
+            "MM Deku Shrine Rupee End 04",
+            "MM Deku Shrine Rupee End 05",
+            "MM Deku Shrine Rupee End 06",
+            "MM Deku Shrine Rupee End 07",
+            "MM Deku Shrine Rupee End 08",
+            "MM Deku Shrine Rupee End 09",
+            "MM Deku Shrine Rupee End 10"
+          ]
+        }
+      ]
+    },
+    {
       "coords": [949, 218],
       "image": "grotto",
       "type": "submenu",

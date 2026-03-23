@@ -930,6 +930,9 @@
       "coords": [932, 475],
       "image": "boulder_grotto",
       "type": "submenu",
+      "entranceMenu": {
+        "entranceIds": ["OOT_FAIRY_FARORE"]
+      },
       "markers": [
         {
           "image": "npc",
