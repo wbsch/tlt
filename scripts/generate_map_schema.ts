@@ -39,8 +39,16 @@ const TRACKER_ENTRANCE_TYPES = new Set([
   'dungeon-ctr',
   'grotto',
   'grave',
+  'indoors',
+  'indoors-extra',
+  'indoors-pf',
   'grotto-exit',
   'grave-exit',
+]);
+
+const NORMALIZED_INTERIOR_REVERSE_TYPES = new Set([
+  'indoors-exit',
+  'indoors-link',
 ]);
 
 function extractStringUnionValues(source: string, typeName: string): string[] {
@@ -81,13 +89,32 @@ async function loadTrackerEntranceIds(): Promise<string[]> {
   const entrancesRaw = await readFile(ENTRANCES_DATA_FILE, 'utf8');
   const entrances = JSON.parse(entrancesRaw) as Record<
     string,
-    { type?: string }
+    { type?: string; reverse?: string }
   >;
 
   return toSortedUnique(
-    Object.entries(entrances)
-      .filter(([, entry]) => TRACKER_ENTRANCE_TYPES.has(entry.type ?? ''))
-      .map(([id]) => id),
+    Object.entries(entrances).flatMap(([id, entry]) => {
+      const type = entry.type ?? '';
+      if (TRACKER_ENTRANCE_TYPES.has(type)) {
+        return [id];
+      }
+
+      if (!NORMALIZED_INTERIOR_REVERSE_TYPES.has(type)) {
+        return [];
+      }
+
+      const reverseId = entry.reverse?.trim();
+      if (!reverseId) {
+        return [];
+      }
+
+      const reverseType = entrances[reverseId]?.type ?? '';
+      if (TRACKER_ENTRANCE_TYPES.has(reverseType) || reverseType === 'none') {
+        return [reverseId];
+      }
+
+      return [];
+    }),
   );
 }
 
