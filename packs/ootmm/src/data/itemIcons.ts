@@ -528,7 +528,7 @@ interface GridIconVariantRule {
   icons: string[];
   overlays?: Array<string | null>;
   startUndimmed?: boolean;
-  autoSelectItemId?: string;
+  autoSelectItemId?: string | string[];
   linkedItemIds?: string[];
 }
 
@@ -536,7 +536,7 @@ interface GridIconDefaultConfig {
   icons: string[];
   overlays?: Array<string | null>;
   startUndimmed?: boolean;
-  autoSelectItemId?: string;
+  autoSelectItemId?: string | string[];
   linkedItemIds?: string[];
 }
 
@@ -1165,8 +1165,20 @@ interface ResolvedGridIconConfig {
   icons: string[];
   overlays?: Array<string | null>;
   startUndimmed: boolean;
-  autoSelectItemId?: string;
+  autoSelectItemIds?: string[];
   linkedItemIds?: string[];
+}
+
+function normalizeGridAutoSelectItemIds(
+  itemIds: string | string[] | undefined,
+): string[] | undefined {
+  if (!itemIds) return undefined;
+
+  const normalized = (Array.isArray(itemIds) ? itemIds : [itemIds]).filter(
+    (itemId) => typeof itemId === 'string' && itemId.length > 0,
+  );
+
+  return normalized.length > 0 ? normalized : undefined;
 }
 
 function normalizeGridIconDefaultConfig(
@@ -1348,7 +1360,9 @@ function getResolvedGridIconVariants(
         icons: matched.icons,
         overlays: matched.overlays,
         startUndimmed: !!matched.startUndimmed,
-        autoSelectItemId: matched.autoSelectItemId,
+        autoSelectItemIds: normalizeGridAutoSelectItemIds(
+          matched.autoSelectItemId,
+        ),
         linkedItemIds: matched.linkedItemIds,
       };
     }
@@ -1360,7 +1374,9 @@ function getResolvedGridIconVariants(
         icons: normalizedDefault.icons,
         overlays: normalizedDefault.overlays,
         startUndimmed: normalizedDefault.startUndimmed || false,
-        autoSelectItemId: normalizedDefault.autoSelectItemId,
+        autoSelectItemIds: normalizeGridAutoSelectItemIds(
+          normalizedDefault.autoSelectItemId,
+        ),
         linkedItemIds: normalizedDefault.linkedItemIds,
       }
     : null;
@@ -1520,14 +1536,24 @@ export function startsGridItemUndimmed(
 }
 
 /**
- * Get an inventory item ID that should be auto-selected alongside the grid item.
+ * Get inventory item IDs that should be auto-selected alongside the grid item.
+ */
+export function getGridItemAutoSelectItemIds(
+  itemId: string,
+  context: GridIconVariantContext = {},
+): string[] | null {
+  const resolved = getResolvedGridIconVariants(itemId, context);
+  return resolved?.autoSelectItemIds || null;
+}
+
+/**
+ * Backwards-compatible singular accessor for grid auto-select item IDs.
  */
 export function getGridItemAutoSelectItemId(
   itemId: string,
   context: GridIconVariantContext = {},
 ): string | null {
-  const resolved = getResolvedGridIconVariants(itemId, context);
-  return resolved?.autoSelectItemId || null;
+  return getGridItemAutoSelectItemIds(itemId, context)?.[0] || null;
 }
 
 /**

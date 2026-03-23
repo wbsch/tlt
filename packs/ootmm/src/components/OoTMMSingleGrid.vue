@@ -3,7 +3,7 @@ import {
   getGridItemIcon,
   getGridItemLinkedItemIds,
   getGridItemOverlay,
-  getGridItemAutoSelectItemId,
+  getGridItemAutoSelectItemIds,
   getGridWheelOverlay,
   getGridWheelOverlayStage,
   getGridWheelOverlayStageCount,
@@ -306,16 +306,19 @@ function setAdditionalToggleItems(
   }
 }
 
-function setAutoSelectedItem(
-  itemId: string | null,
+function setAutoSelectedItems(
+  itemIds: string[] | null,
   active: boolean,
   inventory: Map<string, number>,
 ) {
-  if (!itemId) return;
-  if (active) {
-    inventory.set(itemId, 1);
-  } else {
-    inventory.delete(itemId);
+  if (!itemIds || itemIds.length === 0) return;
+
+  for (const itemId of itemIds) {
+    if (active) {
+      inventory.set(itemId, 1);
+    } else {
+      inventory.delete(itemId);
+    }
   }
 }
 
@@ -379,24 +382,21 @@ function toggleItem(itemId: string) {
     return;
   }
 
-  const autoSelectItemId = getGridItemAutoSelectItemId(
-    baseItemId,
-    {
-      maxCount: max,
-      availableItemIds: props.availableItemIds,
-      inventory: props.inventory,
-      settings: props.settings,
-    },
-  );
+  const autoSelectItemIds = getGridItemAutoSelectItemIds(baseItemId, {
+    maxCount: max,
+    availableItemIds: props.availableItemIds,
+    inventory: props.inventory,
+    settings: props.settings,
+  });
 
   if (max <= 1) {
     if (current > 0) {
       newInventory.delete(baseItemId);
-      setAutoSelectedItem(autoSelectItemId, false, newInventory);
+      setAutoSelectedItems(autoSelectItemIds, false, newInventory);
       setAdditionalToggleItems(itemId, false, newInventory);
     } else {
       newInventory.set(baseItemId, 1);
-      setAutoSelectedItem(autoSelectItemId, true, newInventory);
+      setAutoSelectedItems(autoSelectItemIds, true, newInventory);
       setAdditionalToggleItems(itemId, true, newInventory);
     }
     emitInventoryUpdate(newInventory);
@@ -405,12 +405,12 @@ function toggleItem(itemId: string) {
 
   if (current < max) {
     newInventory.set(baseItemId, current + 1);
-    setAutoSelectedItem(autoSelectItemId, true, newInventory);
+    setAutoSelectedItems(autoSelectItemIds, true, newInventory);
     setAdditionalToggleItems(itemId, true, newInventory);
   } else {
     // at or above max: wrap around to 0 (remove the item)
     newInventory.delete(baseItemId);
-    setAutoSelectedItem(autoSelectItemId, false, newInventory);
+    setAutoSelectedItems(autoSelectItemIds, false, newInventory);
     setAdditionalToggleItems(itemId, false, newInventory);
   }
 
@@ -453,28 +453,25 @@ function decrementItem(itemId: string, event: MouseEvent) {
     return;
   }
 
-  const autoSelectItemId = getGridItemAutoSelectItemId(
-    baseItemId,
-    {
-      maxCount: max,
-      availableItemIds: props.availableItemIds,
-      inventory: props.inventory,
-      settings: props.settings,
-    },
-  );
+  const autoSelectItemIds = getGridItemAutoSelectItemIds(baseItemId, {
+    maxCount: max,
+    availableItemIds: props.availableItemIds,
+    inventory: props.inventory,
+    settings: props.settings,
+  });
 
   if (current > 1) {
     newInventory.set(baseItemId, current - 1);
-    setAutoSelectedItem(autoSelectItemId, true, newInventory);
+    setAutoSelectedItems(autoSelectItemIds, true, newInventory);
     setAdditionalToggleItems(itemId, true, newInventory);
   } else if (current === 1) {
     newInventory.delete(baseItemId);
-    setAutoSelectedItem(autoSelectItemId, false, newInventory);
+    setAutoSelectedItems(autoSelectItemIds, false, newInventory);
     setAdditionalToggleItems(itemId, false, newInventory);
   } else {
     // current is 0: wrap to max
     newInventory.set(baseItemId, max);
-    setAutoSelectedItem(autoSelectItemId, true, newInventory);
+    setAutoSelectedItems(autoSelectItemIds, true, newInventory);
     setAdditionalToggleItems(itemId, true, newInventory);
   }
   emitInventoryUpdate(newInventory);
