@@ -528,7 +528,7 @@ interface GridIconVariantRule {
   icons: string[];
   overlays?: Array<string | null>;
   startUndimmed?: boolean;
-  preItemPoolToggleItemId?: string;
+  autoSelectItemId?: string;
   linkedItemIds?: string[];
 }
 
@@ -536,7 +536,7 @@ interface GridIconDefaultConfig {
   icons: string[];
   overlays?: Array<string | null>;
   startUndimmed?: boolean;
-  preItemPoolToggleItemId?: string;
+  autoSelectItemId?: string;
   linkedItemIds?: string[];
 }
 
@@ -813,7 +813,7 @@ const RAW_GRID_ICON_VARIANTS: Record<string, GridIconVariantConfig> = {
         'images/overlay_30_green.png',
       ],
       startUndimmed: false,
-      preItemPoolToggleItemId: 'OOT_STICK',
+      autoSelectItemId: 'OOT_STICK',
     },
   },
   MM_STICK_UPGRADE: {
@@ -825,7 +825,7 @@ const RAW_GRID_ICON_VARIANTS: Record<string, GridIconVariantConfig> = {
         'images/overlay_30_green.png',
       ],
       startUndimmed: false,
-      preItemPoolToggleItemId: 'MM_STICK',
+      autoSelectItemId: 'MM_STICK',
     },
   },
   'OOT_NUT_UPGRADE|SHARED_NUT_UPGRADE': {
@@ -837,7 +837,7 @@ const RAW_GRID_ICON_VARIANTS: Record<string, GridIconVariantConfig> = {
         'images/overlay_40_green.png',
       ],
       startUndimmed: false,
-      preItemPoolToggleItemId: 'OOT_NUTS_5',
+      autoSelectItemId: 'OOT_NUTS_5',
     },
   },
   MM_NUT_UPGRADE: {
@@ -849,7 +849,7 @@ const RAW_GRID_ICON_VARIANTS: Record<string, GridIconVariantConfig> = {
         'images/overlay_40_green.png',
       ],
       startUndimmed: false,
-      preItemPoolToggleItemId: 'MM_NUTS_5',
+      autoSelectItemId: 'MM_NUTS_5',
     },
   },
   'OOT_BOMB_BAG|MM_BOMB_BAG|SHARED_BOMB_BAG': {
@@ -1165,7 +1165,7 @@ interface ResolvedGridIconConfig {
   icons: string[];
   overlays?: Array<string | null>;
   startUndimmed: boolean;
-  preItemPoolToggleItemId?: string;
+  autoSelectItemId?: string;
   linkedItemIds?: string[];
 }
 
@@ -1179,7 +1179,7 @@ function normalizeGridIconDefaultConfig(
     icons: config.icons,
     overlays: config.overlays,
     startUndimmed: !!config.startUndimmed,
-    preItemPoolToggleItemId: config.preItemPoolToggleItemId,
+    autoSelectItemId: config.autoSelectItemId,
     linkedItemIds: config.linkedItemIds,
   };
 }
@@ -1200,7 +1200,7 @@ function withBasePathForVariantConfig(
         value ? withBasePath(value) : null,
       ),
       startUndimmed: normalizedDefault.startUndimmed,
-      preItemPoolToggleItemId: normalizedDefault.preItemPoolToggleItemId,
+      autoSelectItemId: normalizedDefault.autoSelectItemId,
       linkedItemIds: normalizedDefault.linkedItemIds,
     },
     variants: config.variants?.map((variant) => ({
@@ -1210,7 +1210,7 @@ function withBasePathForVariantConfig(
         value ? withBasePath(value) : null,
       ),
       startUndimmed: variant.startUndimmed,
-      preItemPoolToggleItemId: variant.preItemPoolToggleItemId,
+      autoSelectItemId: variant.autoSelectItemId,
       linkedItemIds: variant.linkedItemIds,
     })),
   };
@@ -1348,7 +1348,7 @@ function getResolvedGridIconVariants(
         icons: matched.icons,
         overlays: matched.overlays,
         startUndimmed: !!matched.startUndimmed,
-        preItemPoolToggleItemId: matched.preItemPoolToggleItemId,
+        autoSelectItemId: matched.autoSelectItemId,
         linkedItemIds: matched.linkedItemIds,
       };
     }
@@ -1360,7 +1360,7 @@ function getResolvedGridIconVariants(
         icons: normalizedDefault.icons,
         overlays: normalizedDefault.overlays,
         startUndimmed: normalizedDefault.startUndimmed || false,
-        preItemPoolToggleItemId: normalizedDefault.preItemPoolToggleItemId,
+        autoSelectItemId: normalizedDefault.autoSelectItemId,
         linkedItemIds: normalizedDefault.linkedItemIds,
       }
     : null;
@@ -1382,30 +1382,6 @@ function normalizeGridWheelOverlayStage(
   if (normalizedStage === 0) return 0;
 
   return ((normalizedStage - 1) % overlayCount) + 1;
-}
-
-function isPreItemPoolToggleActive(
-  resolved: ResolvedGridIconConfig,
-  context: GridIconVariantContext,
-): boolean {
-  if (!resolved.preItemPoolToggleItemId || !context.inventory) return false;
-  return (context.inventory.get(resolved.preItemPoolToggleItemId) || 0) > 0;
-}
-
-function getEffectiveGridCount(
-  count: number,
-  resolved: ResolvedGridIconConfig,
-  context: GridIconVariantContext,
-): number {
-  const normalized = Math.max(count, 0);
-  if (isPreItemPoolToggleActive(resolved, context)) {
-    // Extra pre-itempool stage shifts the progression by one:
-    // count 0 (pre-toggle) => stage 1
-    // count 1 => stage 2
-    // count 2 => stage 3
-    return normalized + 1;
-  }
-  return normalized;
 }
 
 function getResolvedGridVariantIndex(
@@ -1444,8 +1420,7 @@ export function getGridItemIcon(
     return getItemIcon(itemId);
   }
 
-  const effectiveCount = getEffectiveGridCount(count, resolved, context);
-  const variantIndex = getResolvedGridVariantIndex(effectiveCount, resolved);
+  const variantIndex = getResolvedGridVariantIndex(count, resolved);
   return resolved.icons[variantIndex] || getItemIcon(itemId);
 }
 
@@ -1463,8 +1438,7 @@ export function getGridItemOverlay(
     return null;
   }
 
-  const effectiveCount = getEffectiveGridCount(count, resolved, context);
-  const variantIndex = getResolvedGridVariantIndex(effectiveCount, resolved);
+  const variantIndex = getResolvedGridVariantIndex(count, resolved);
   return resolved.overlays[variantIndex] || null;
 }
 
@@ -1542,18 +1516,18 @@ export function startsGridItemUndimmed(
 ): boolean {
   const resolved = getResolvedGridIconVariants(itemId, context);
   if (!resolved) return false;
-  return resolved.startUndimmed || isPreItemPoolToggleActive(resolved, context);
+  return resolved.startUndimmed;
 }
 
 /**
- * Get the linked inventory item ID for an optional pre-itempool toggle state.
+ * Get an inventory item ID that should be auto-selected alongside the grid item.
  */
-export function getGridItemPreItemPoolToggleItemId(
+export function getGridItemAutoSelectItemId(
   itemId: string,
   context: GridIconVariantContext = {},
 ): string | null {
   const resolved = getResolvedGridIconVariants(itemId, context);
-  return resolved?.preItemPoolToggleItemId || null;
+  return resolved?.autoSelectItemId || null;
 }
 
 /**

@@ -3,7 +3,7 @@ import {
   getGridItemIcon,
   getGridItemLinkedItemIds,
   getGridItemOverlay,
-  getGridItemPreItemPoolToggleItemId,
+  getGridItemAutoSelectItemId,
   getGridWheelOverlay,
   getGridWheelOverlayStage,
   getGridWheelOverlayStageCount,
@@ -306,24 +306,21 @@ function setAdditionalToggleItems(
   }
 }
 
+function setAutoSelectedItem(
+  itemId: string | null,
+  active: boolean,
+  inventory: Map<string, number>,
+) {
+  if (!itemId) return;
+  if (active) {
+    inventory.set(itemId, 1);
+  } else {
+    inventory.delete(itemId);
+  }
+}
+
 function isItemOwnedForGrid(itemId: string): boolean {
-  if (hasItem(itemId)) return true;
-
-  const baseItemId = getBaseItemId(itemId);
-
-  const preItemPoolToggleItemId = getGridItemPreItemPoolToggleItemId(
-    baseItemId,
-    {
-      maxCount: getItemMaxCount(itemId),
-      availableItemIds: props.availableItemIds,
-      inventory: props.inventory,
-      settings: props.settings,
-    },
-  );
-
-  return preItemPoolToggleItemId
-    ? (props.inventory.get(preItemPoolToggleItemId) || 0) > 0
-    : false;
+  return hasItem(itemId);
 }
 
 function isLabelItem(itemId: string): boolean {
@@ -382,7 +379,7 @@ function toggleItem(itemId: string) {
     return;
   }
 
-  const preItemPoolToggleItemId = getGridItemPreItemPoolToggleItemId(
+  const autoSelectItemId = getGridItemAutoSelectItemId(
     baseItemId,
     {
       maxCount: max,
@@ -391,38 +388,15 @@ function toggleItem(itemId: string) {
       settings: props.settings,
     },
   );
-  const preItemPoolToggleActive = preItemPoolToggleItemId
-    ? (newInventory.get(preItemPoolToggleItemId) || 0) > 0
-    : false;
-
-  if (preItemPoolToggleItemId) {
-    if (current <= 0 && !preItemPoolToggleActive) {
-      newInventory.set(preItemPoolToggleItemId, 1);
-      setAdditionalToggleItems(itemId, false, newInventory);
-      emitInventoryUpdate(newInventory);
-      return;
-    }
-
-    if (current < max) {
-      newInventory.set(baseItemId, current + 1);
-      newInventory.set(preItemPoolToggleItemId, 1);
-      setAdditionalToggleItems(itemId, true, newInventory);
-    } else {
-      newInventory.delete(baseItemId);
-      newInventory.delete(preItemPoolToggleItemId);
-      setAdditionalToggleItems(itemId, false, newInventory);
-    }
-
-    emitInventoryUpdate(newInventory);
-    return;
-  }
 
   if (max <= 1) {
     if (current > 0) {
       newInventory.delete(baseItemId);
+      setAutoSelectedItem(autoSelectItemId, false, newInventory);
       setAdditionalToggleItems(itemId, false, newInventory);
     } else {
       newInventory.set(baseItemId, 1);
+      setAutoSelectedItem(autoSelectItemId, true, newInventory);
       setAdditionalToggleItems(itemId, true, newInventory);
     }
     emitInventoryUpdate(newInventory);
@@ -431,10 +405,12 @@ function toggleItem(itemId: string) {
 
   if (current < max) {
     newInventory.set(baseItemId, current + 1);
+    setAutoSelectedItem(autoSelectItemId, true, newInventory);
     setAdditionalToggleItems(itemId, true, newInventory);
   } else {
     // at or above max: wrap around to 0 (remove the item)
     newInventory.delete(baseItemId);
+    setAutoSelectedItem(autoSelectItemId, false, newInventory);
     setAdditionalToggleItems(itemId, false, newInventory);
   }
 
@@ -477,7 +453,7 @@ function decrementItem(itemId: string, event: MouseEvent) {
     return;
   }
 
-  const preItemPoolToggleItemId = getGridItemPreItemPoolToggleItemId(
+  const autoSelectItemId = getGridItemAutoSelectItemId(
     baseItemId,
     {
       maxCount: max,
@@ -486,40 +462,19 @@ function decrementItem(itemId: string, event: MouseEvent) {
       settings: props.settings,
     },
   );
-  const preItemPoolToggleActive = preItemPoolToggleItemId
-    ? (newInventory.get(preItemPoolToggleItemId) || 0) > 0
-    : false;
-
-  if (preItemPoolToggleItemId) {
-    if (current > 1) {
-      newInventory.set(baseItemId, current - 1);
-      newInventory.set(preItemPoolToggleItemId, 1);
-      setAdditionalToggleItems(itemId, true, newInventory);
-    } else if (current === 1) {
-      newInventory.delete(baseItemId);
-      newInventory.set(preItemPoolToggleItemId, 1);
-      setAdditionalToggleItems(itemId, false, newInventory);
-    } else if (preItemPoolToggleActive) {
-      newInventory.delete(preItemPoolToggleItemId);
-      setAdditionalToggleItems(itemId, false, newInventory);
-    } else {
-      newInventory.set(baseItemId, max);
-      newInventory.set(preItemPoolToggleItemId, 1);
-      setAdditionalToggleItems(itemId, true, newInventory);
-    }
-    emitInventoryUpdate(newInventory);
-    return;
-  }
 
   if (current > 1) {
     newInventory.set(baseItemId, current - 1);
+    setAutoSelectedItem(autoSelectItemId, true, newInventory);
     setAdditionalToggleItems(itemId, true, newInventory);
   } else if (current === 1) {
     newInventory.delete(baseItemId);
+    setAutoSelectedItem(autoSelectItemId, false, newInventory);
     setAdditionalToggleItems(itemId, false, newInventory);
   } else {
     // current is 0: wrap to max
     newInventory.set(baseItemId, max);
+    setAutoSelectedItem(autoSelectItemId, true, newInventory);
     setAdditionalToggleItems(itemId, true, newInventory);
   }
   emitInventoryUpdate(newInventory);
