@@ -151,6 +151,26 @@
                     "OOT_HAMMER",
                     "OOT_ARROW_LIGHT",
                     "OOT_SPELL_LOVE"
+                  ],
+                  [
+                    "OOT_BOTTLE_RUTO_LETTER",
+                    {
+                      "ref": "Bottle1",
+                      "item": "OOT_BOTTLE_EMPTY",
+                      "title": "Bottle 1"
+                    },
+                    {
+                      "ref": "Bottle2",
+                      "item": "OOT_BOTTLE_EMPTY",
+                      "title": "Bottle 2"
+                    },
+                    {
+                      "ref": "Bottle3",
+                      "item": "OOT_BOTTLE_EMPTY",
+                      "title": "Bottle 3"
+                    },
+                    "OOT_GS_TOKEN",
+                    "OOT_GERUDO_CARD"
                   ]
                 ]
               }
@@ -174,7 +194,24 @@
                     "OOT_SWORD_KNIFE",
                     "OOT_SWORD_BIGGORON"
                   ],
-                  ["OOT_SHIELD_DEKU", "OOT_SHIELD_HYLIAN", "OOT_SHIELD_MIRROR"]
+                  [
+                    "OOT_SHIELD_DEKU",
+                    "OOT_SHIELD_HYLIAN",
+                    "OOT_SHIELD_MIRROR",
+                    "OOT_STONE_OF_AGONY"
+                  ],
+                  [
+                    "OOT_TUNIC_GORON",
+                    "OOT_TUNIC_ZORA",
+                    "OOT_SCALE",
+                    "OOT_MAGIC_UPGRADE"
+                  ],
+                  [
+                    "OOT_BOOTS_IRON",
+                    "OOT_BOOTS_HOVER",
+                    "OOT_STRENGTH",
+                    "OOT_WALLET"
+                  ]
                 ]
               }
             ]
@@ -255,8 +292,6 @@
             "OOT_SONG_NOTE_TIME",
             "OOT_SONG_STORMS",
             "OOT_SONG_NOTE_STORMS",
-            "OOT_BOOTS_IRON",
-            "OOT_BOOTS_HOVER",
             {
               "item": "OOT_FISHING_POND_ADULT_LOACH_29LBS",
               "activateAlso": [
@@ -285,39 +320,12 @@
             "OOT_SONG_NOTE_TP_SHADOW",
             "OOT_SONG_TP_LIGHT",
             "OOT_SONG_NOTE_TP_LIGHT",
-            "OOT_TUNIC_GORON",
-            "OOT_TUNIC_ZORA",
             "OOT_SPIN_UPGRADE"
-          ],
-          [
-            "OOT_BOTTLE_RUTO_LETTER",
-            {
-              "ref": "Bottle1",
-              "item": "OOT_BOTTLE_EMPTY",
-              "title": "Bottle 1"
-            },
-            {
-              "ref": "Bottle2",
-              "item": "OOT_BOTTLE_EMPTY",
-              "title": "Bottle 2"
-            },
-            {
-              "ref": "Bottle3",
-              "item": "OOT_BOTTLE_EMPTY",
-              "title": "Bottle 3"
-            },
-            "OOT_SCALE",
-            "OOT_MAGIC_UPGRADE",
-            "OOT_STRENGTH",
-            "OOT_WALLET"
           ],
           [
             "OOT_SKELETON_KEY",
             "OOT_RUPEE_MAGICAL",
-            "OOT_GS_TOKEN",
             "OOT_PLATINUM_TOKEN",
-            "OOT_STONE_OF_AGONY",
-            "OOT_GERUDO_CARD",
             "OOT_COIN_RED",
             "OOT_COIN_GREEN",
             "OOT_COIN_BLUE",
