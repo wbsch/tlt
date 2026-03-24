@@ -19,10 +19,7 @@ if (!context) {
 <template>
   <div
     class="grid-item"
-    :class="[
-      context.getGridItemClasses(itemId),
-      { 'canvas-item': canvasItem },
-    ]"
+    :class="[context.getGridItemClasses(itemId), { 'canvas-item': canvasItem }]"
     :style="style"
     :title="context.getGridItemTitle(itemId)"
     @click="context.toggleItem(itemId)"

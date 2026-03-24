@@ -48,7 +48,12 @@ export interface GridSection {
   content: GridNode[];
 }
 
-export type GridNode = GridItem | GridCanvas | ItemGrid | GridArray | GridSection;
+export type GridNode =
+  | GridItem
+  | GridCanvas
+  | ItemGrid
+  | GridArray
+  | GridSection;
 
 export interface GridItemRefAlias {
   item: string;

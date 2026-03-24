@@ -641,4 +641,3 @@ provide(itemGridRenderContextKey, {
 <template>
   <OoTMMGridNode :node="grid" :parent-scale="1" />
 </template>
-

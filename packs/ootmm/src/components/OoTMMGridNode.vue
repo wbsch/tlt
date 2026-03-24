@@ -27,7 +27,7 @@ if (!context) {
 }
 
 const nodeScale = computed(() => {
-  return (((props.node as { scale?: number }).scale || 1) * props.parentScale);
+  return ((props.node as { scale?: number }).scale || 1) * props.parentScale;
 });
 
 function sectionOrientation(section: GridSection): 'vertical' | 'horizontal' {
