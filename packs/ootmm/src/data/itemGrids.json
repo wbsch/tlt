@@ -219,6 +219,93 @@
         ]
       },
       {
+        "type": "section",
+        "title": "Songs",
+        "padding": "5,10",
+        "margin": "0,8",
+        "content": [
+          {
+            "type": "itemgrid",
+            "h_alignment": "left",
+            "item_margin": "1,1",
+            "scale": 0.875,
+            "rows": [
+              [
+                "OOT_SONG_ZELDA",
+                "OOT_SONG_NOTE_ZELDA",
+                "OOT_SONG_EPONA",
+                "OOT_SONG_NOTE_EPONA",
+                "OOT_SONG_SARIA",
+                "OOT_SONG_NOTE_SARIA",
+                "OOT_SONG_SUN",
+                "OOT_SONG_NOTE_SUN",
+                "OOT_SONG_TIME",
+                "OOT_SONG_NOTE_TIME",
+                "OOT_SONG_STORMS",
+                "OOT_SONG_NOTE_STORMS"
+              ],
+              [
+                "OOT_SONG_TP_FOREST",
+                "OOT_SONG_NOTE_TP_FOREST",
+                "OOT_SONG_TP_FIRE",
+                "OOT_SONG_NOTE_TP_FIRE",
+                "OOT_SONG_TP_WATER",
+                "OOT_SONG_NOTE_TP_WATER",
+                "OOT_SONG_TP_SPIRIT",
+                "OOT_SONG_NOTE_TP_SPIRIT",
+                "OOT_SONG_TP_SHADOW",
+                "OOT_SONG_NOTE_TP_SHADOW",
+                "OOT_SONG_TP_LIGHT",
+                "OOT_SONG_NOTE_TP_LIGHT"
+              ],
+              ["OOT_SONG_EMPTINESS", "OOT_SONG_NOTE_EMPTINESS"]
+            ]
+          }
+        ]
+      },
+      {
+        "type": "section",
+        "title": "Side Quests",
+        "padding": "5,10",
+        "margin": "0,8",
+        "content": [
+          {
+            "type": "itemgrid",
+            "h_alignment": "left",
+            "item_margin": "1,1",
+            "scale": 0.875,
+            "rows": [
+              [
+                "OOT_WEIRD_EGG",
+                "OOT_CHICKEN",
+                "OOT_ZELDA_LETTER",
+                "OOT_MASK_KEATON",
+                "OOT_MASK_SKULL",
+                "OOT_MASK_SPOOKY",
+                "OOT_MASK_BUNNY",
+                "OOT_MASK_TRUTH",
+                "OOT_MASK_GORON",
+                "OOT_MASK_ZORA",
+                "OOT_MASK_GERUDO"
+              ],
+              [
+                "OOT_POCKET_EGG",
+                "OOT_POCKET_CUCCO",
+                "OOT_COJIRO",
+                "OOT_ODD_MUSHROOM",
+                "OOT_ODD_POTION",
+                "OOT_POACHER_SAW",
+                "OOT_BROKEN_GORON_SWORD",
+                "OOT_PRESCRIPTION",
+                "OOT_EYEBALL_FROG",
+                "OOT_EYE_DROPS",
+                "OOT_CLAIM_CHECK"
+              ]
+            ]
+          }
+        ]
+      },
+      {
         "type": "itemgrid",
         "h_alignment": "left",
         "item_margin": "1,1",
@@ -280,18 +367,6 @@
             }
           ],
           [
-            "OOT_SONG_ZELDA",
-            "OOT_SONG_NOTE_ZELDA",
-            "OOT_SONG_EPONA",
-            "OOT_SONG_NOTE_EPONA",
-            "OOT_SONG_SARIA",
-            "OOT_SONG_NOTE_SARIA",
-            "OOT_SONG_SUN",
-            "OOT_SONG_NOTE_SUN",
-            "OOT_SONG_TIME",
-            "OOT_SONG_NOTE_TIME",
-            "OOT_SONG_STORMS",
-            "OOT_SONG_NOTE_STORMS",
             {
               "item": "OOT_FISHING_POND_ADULT_LOACH_29LBS",
               "activateAlso": [
@@ -307,21 +382,7 @@
               "title": "Adult Loach (over 29 pounds)"
             }
           ],
-          [
-            "OOT_SONG_TP_FOREST",
-            "OOT_SONG_NOTE_TP_FOREST",
-            "OOT_SONG_TP_FIRE",
-            "OOT_SONG_NOTE_TP_FIRE",
-            "OOT_SONG_TP_WATER",
-            "OOT_SONG_NOTE_TP_WATER",
-            "OOT_SONG_TP_SPIRIT",
-            "OOT_SONG_NOTE_TP_SPIRIT",
-            "OOT_SONG_TP_SHADOW",
-            "OOT_SONG_NOTE_TP_SHADOW",
-            "OOT_SONG_TP_LIGHT",
-            "OOT_SONG_NOTE_TP_LIGHT",
-            "OOT_SPIN_UPGRADE"
-          ],
+          ["OOT_SPIN_UPGRADE"],
           [
             "OOT_SKELETON_KEY",
             "OOT_RUPEE_MAGICAL",
@@ -332,8 +393,6 @@
             "OOT_COIN_YELLOW"
           ],
           [
-            "OOT_SONG_EMPTINESS",
-            "OOT_SONG_NOTE_EMPTINESS",
             "OOT_BUTTON_A",
             "OOT_BUTTON_C_DOWN",
             "OOT_BUTTON_C_LEFT",
@@ -341,48 +400,6 @@
             "OOT_BUTTON_C_UP",
             "OOT_MASK_BLAST",
             "OOT_MASK_STONE"
-          ]
-        ]
-      },
-      {
-        "type": "itemgrid",
-        "h_alignment": "left",
-        "item_margin": "1,1",
-        "scale": 0.7,
-        "rows": [
-          [
-            "OOT_WEIRD_EGG",
-            "OOT_CHICKEN",
-            "OOT_ZELDA_LETTER",
-            "OOT_MASK_KEATON",
-            "OOT_MASK_SKULL",
-            "OOT_MASK_SPOOKY",
-            "OOT_MASK_BUNNY",
-            "OOT_MASK_TRUTH",
-            "OOT_MASK_GORON",
-            "OOT_MASK_ZORA",
-            "OOT_MASK_GERUDO"
-          ]
-        ]
-      },
-      {
-        "type": "itemgrid",
-        "h_alignment": "left",
-        "item_margin": "1,1",
-        "scale": 0.7,
-        "rows": [
-          [
-            "OOT_POCKET_EGG",
-            "OOT_POCKET_CUCCO",
-            "OOT_COJIRO",
-            "OOT_ODD_MUSHROOM",
-            "OOT_ODD_POTION",
-            "OOT_POACHER_SAW",
-            "OOT_BROKEN_GORON_SWORD",
-            "OOT_PRESCRIPTION",
-            "OOT_EYEBALL_FROG",
-            "OOT_EYE_DROPS",
-            "OOT_CLAIM_CHECK"
           ]
         ]
       },
