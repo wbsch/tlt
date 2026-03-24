@@ -138,6 +138,9 @@ function safeSidebarWidth(value: unknown, fallback: number): number {
   if (normalized < MIN_SIDEBAR_WIDTH || normalized > MAX_SIDEBAR_WIDTH) {
     return fallback;
   }
+  if (normalized === 400 && fallback !== 400) {
+    return fallback;
+  }
   return normalized;
 }
 

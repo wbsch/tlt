@@ -476,13 +476,15 @@ function handleInventoryUpdate(newInventory: Map<string, number>) {
   flex-direction: column;
   gap: 16px;
   justify-content: flex-start;
-  align-items: flex-start;
+  align-items: stretch;
 }
 
 .single-grid {
   display: flex;
   flex-direction: column;
   gap: 8px;
+  width: 100%;
+  min-width: 0;
 }
 
 .grid-header {
@@ -493,6 +495,7 @@ function handleInventoryUpdate(newInventory: Map<string, number>) {
   background: rgba(255, 255, 255, 0.05);
   border-radius: 4px;
   text-align: center;
+  align-self: flex-start;
 }
 
 @media (max-width: 700px) {

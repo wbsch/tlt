@@ -2893,8 +2893,8 @@ onBeforeUnmount(() => {
 
 .tracker-sidebar {
   position: relative;
-  width: 400px;
-  flex: 0 0 400px;
+  width: 410px;
+  flex: 0 0 410px;
   background: #2a2a2a;
   border-right: 2px solid #404040;
   display: flex;

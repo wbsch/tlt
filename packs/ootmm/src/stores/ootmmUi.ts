@@ -6,7 +6,7 @@ export type RightSidebarTab = 'locations' | 'entrances';
 export type ReachabilityFilter = 'all' | 'reachable' | 'unreachable';
 export type CollectionFilter = 'all' | 'collected' | 'uncollected';
 export type EntranceMappingFilter = 'all' | 'mapped' | 'unmapped';
-export const DEFAULT_LEFT_SIDEBAR_WIDTH = 400;
+export const DEFAULT_LEFT_SIDEBAR_WIDTH = 420;
 export const DEFAULT_RIGHT_SIDEBAR_WIDTH = 400;
 
 const VALID_TABS: TrackerTab[] = [

@@ -114,7 +114,6 @@
       {
         "type": "array",
         "orientation": "horizontal",
-        "wrap": false,
         "content": [
           {
             "type": "section",
