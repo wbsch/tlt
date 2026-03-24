@@ -6,28 +6,15 @@ import {
   isItemGridMultiActivateRef,
   resolveItemGridRef,
 } from '../utils/itemGridRef';
+import {
+  type GridArray,
+  type GridItemMultiActivation,
+  type GridItemRefAlias,
+  type GridSection,
+} from './itemGridSchema';
 
 // Import the grid layout JSON
 import itemGridsData from '../data/itemGrids.json';
-
-interface GridArray {
-  type: 'array';
-  orientation: 'vertical' | 'horizontal';
-  margin?: string;
-  scale?: number;
-  content: unknown[];
-}
-
-interface GridItemRefAlias {
-  item: string;
-  title?: string;
-}
-
-interface GridItemMultiActivation {
-  item: string;
-  title?: string;
-  activateAlso: string[];
-}
 
 const props = defineProps<{
   inventory: Map<string, number>;
@@ -376,6 +363,13 @@ function filterGridElement(element: unknown): unknown | null {
   }
   if ((element as { type?: string }).type === 'array') {
     const content = ((element as { content?: unknown[] }).content || [])
+      .map((child: unknown) => filterGridElement(child))
+      .filter(Boolean);
+    if (content.length === 0) return null;
+    return { ...element, content };
+  }
+  if ((element as { type?: string }).type === 'section') {
+    const content = ((element as GridSection).content || [])
       .map((child: unknown) => filterGridElement(child))
       .filter(Boolean);
     if (content.length === 0) return null;

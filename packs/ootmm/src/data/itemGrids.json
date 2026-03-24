@@ -112,21 +112,83 @@
     "scale": 1.2,
     "content": [
       {
+        "type": "array",
+        "orientation": "horizontal",
+        "wrap": false,
+        "content": [
+          {
+            "type": "section",
+            "title": "Items",
+            "padding": "5,10",
+            "content": [
+              {
+                "type": "itemgrid",
+                "h_alignment": "left",
+                "item_margin": "1,1",
+                "scale": 0.875,
+                "rows": [
+                  [
+                    "OOT_STICK_UPGRADE",
+                    "OOT_NUT_UPGRADE",
+                    "OOT_BOMB_BAG",
+                    "OOT_BOW",
+                    "OOT_ARROW_FIRE",
+                    "OOT_SPELL_FIRE"
+                  ],
+                  [
+                    "OOT_SLINGSHOT",
+                    "OOT_OCARINA",
+                    {
+                      "or": ["OOT_BOMBCHU_BAG", "OOT_BOMBCHU_10"]
+                    },
+                    "OOT_HOOKSHOT",
+                    "OOT_ARROW_ICE",
+                    "OOT_SPELL_WIND"
+                  ],
+                  [
+                    "OOT_BOOMERANG",
+                    "OOT_LENS",
+                    "OOT_MAGIC_BEAN",
+                    "OOT_HAMMER",
+                    "OOT_ARROW_LIGHT",
+                    "OOT_SPELL_LOVE"
+                  ]
+                ]
+              }
+            ]
+          },
+          {
+            "type": "section",
+            "title": "Equipement",
+            "padding": "5,10",
+            "content": [
+              {
+                "type": "itemgrid",
+                "h_alignment": "left",
+                "item_margin": "1,1",
+                "scale": 0.875,
+                "rows": [
+                  [
+                    "OOT_SWORD_KOKIRI",
+                    "OOT_SWORD",
+                    "OOT_SWORD_MASTER",
+                    "OOT_SWORD_KNIFE",
+                    "OOT_SWORD_BIGGORON"
+                  ],
+                  ["OOT_SHIELD_DEKU", "OOT_SHIELD_HYLIAN", "OOT_SHIELD_MIRROR"]
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
         "type": "itemgrid",
         "h_alignment": "left",
         "item_margin": "1,1",
         "scale": 0.875,
         "rows": [
           [
-            "OOT_STICK_UPGRADE",
-            "OOT_NUT_UPGRADE",
-            "OOT_BOMB_BAG",
-            "OOT_BOW",
-            "OOT_ARROW_FIRE",
-            "OOT_SPELL_FIRE",
-            "OOT_SWORD_KOKIRI",
-            "OOT_SWORD",
-            "OOT_SHIELD_DEKU",
             {
               "item": "OOT_FISHING_POND_CHILD_FISH_7LBS",
               "activateAlso": [
@@ -142,16 +204,6 @@
             }
           ],
           [
-            "OOT_SLINGSHOT",
-            "OOT_OCARINA",
-            {
-              "or": ["OOT_BOMBCHU_BAG", "OOT_BOMBCHU_10"]
-            },
-            "OOT_HOOKSHOT",
-            "OOT_ARROW_ICE",
-            "OOT_SPELL_WIND",
-            "OOT_SWORD_MASTER",
-            "OOT_SHIELD_HYLIAN",
             {
               "item": "OOT_FISHING_POND_ADULT_FISH_8LBS",
               "activateAlso": [
@@ -178,15 +230,6 @@
             }
           ],
           [
-            "OOT_BOOMERANG",
-            "OOT_LENS",
-            "OOT_MAGIC_BEAN",
-            "OOT_HAMMER",
-            "OOT_ARROW_LIGHT",
-            "OOT_SPELL_LOVE",
-            "OOT_SWORD_KNIFE",
-            "OOT_SWORD_BIGGORON",
-            "OOT_SHIELD_MIRROR",
             {
               "item": "OOT_FISHING_POND_CHILD_LOACH_14LBS",
               "activateAlso": [
