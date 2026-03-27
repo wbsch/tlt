@@ -220,11 +220,11 @@
       },
       {
         "type": "array",
-        "orientation": "horizontal",
+        "orientation": "vertical",
         "content": [
           {
             "type": "array",
-            "orientation": "vertical",
+            "orientation": "horizontal",
             "content": [
               {
                 "type": "section",
@@ -272,6 +272,47 @@
               },
               {
                 "type": "section",
+                "title": "Item Extensions",
+                "padding": "5,10",
+                "margin": "0,8",
+                "content": [
+                  {
+                    "type": "itemgrid",
+                    "h_alignment": "left",
+                    "item_margin": "1,1",
+                    "scale": 0.875,
+                    "rows": [
+                      [
+                        "OOT_MASK_BLAST",
+                        "OOT_MASK_STONE",
+                        "OOT_SONG_EMPTINESS",
+                        "OOT_SONG_NOTE_EMPTINESS",
+                        "OOT_BUTTON_A"
+                      ],
+                      [
+                        "OOT_BUTTON_C_DOWN",
+                        "OOT_BUTTON_C_LEFT",
+                        "OOT_BUTTON_C_RIGHT",
+                        "OOT_BUTTON_C_UP"
+                      ],
+                      [
+                        "OOT_SPIN_UPGRADE",
+                        "OOT_SKELETON_KEY",
+                        "OOT_PLATINUM_TOKEN",
+                        "OOT_RUPEE_MAGICAL"
+                      ]
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "array",
+            "orientation": "horizontal",
+            "content": [
+              {
+                "type": "section",
                 "title": "Collectibles",
                 "padding": "5,10",
                 "margin": "0,8",
@@ -291,40 +332,86 @@
                     ]
                   }
                 ]
-              }
-            ]
-          },
-          {
-            "type": "section",
-            "title": "Item Extensions",
-            "padding": "5,10",
-            "margin": "0,8",
-            "content": [
+              },
               {
-                "type": "itemgrid",
-                "h_alignment": "left",
-                "item_margin": "1,1",
-                "scale": 0.875,
-                "rows": [
-                  [
-                    "OOT_MASK_BLAST",
-                    "OOT_MASK_STONE",
-                    "OOT_SONG_EMPTINESS",
-                    "OOT_SONG_NOTE_EMPTINESS",
-                    "OOT_BUTTON_A"
-                  ],
-                  [
-                    "OOT_BUTTON_C_DOWN",
-                    "OOT_BUTTON_C_LEFT",
-                    "OOT_BUTTON_C_RIGHT",
-                    "OOT_BUTTON_C_UP"
-                  ],
-                  [
-                    "OOT_SPIN_UPGRADE",
-                    "OOT_SKELETON_KEY",
-                    "OOT_PLATINUM_TOKEN",
-                    "OOT_RUPEE_MAGICAL"
-                  ]
+                "type": "section",
+                "title": "Fish",
+                "padding": "5,10",
+                "margin": "0,8",
+                "content": [
+                  {
+                    "type": "itemgrid",
+                    "h_alignment": "left",
+                    "item_margin": "1,1",
+                    "scale": 0.875,
+                    "rows": [
+                      [
+                        {
+                          "item": "OOT_FISHING_POND_CHILD_FISH_7LBS",
+                          "activateAlso": [
+                            "OOT_FISHING_POND_CHILD_FISH_8LBS",
+                            "OOT_FISHING_POND_CHILD_FISH_9LBS",
+                            "OOT_FISHING_POND_CHILD_FISH_10LBS",
+                            "OOT_FISHING_POND_CHILD_FISH_11LBS",
+                            "OOT_FISHING_POND_CHILD_FISH_12LBS",
+                            "OOT_FISHING_POND_CHILD_FISH_13LBS",
+                            "OOT_FISHING_POND_CHILD_FISH_14LBS"
+                          ],
+                          "title": "Child Fish (over 7 pounds)"
+                        },
+                        {
+                          "item": "OOT_FISHING_POND_ADULT_FISH_8LBS",
+                          "activateAlso": [
+                            "OOT_FISHING_POND_ADULT_FISH_8LBS",
+                            "OOT_FISHING_POND_ADULT_FISH_9LBS",
+                            "OOT_FISHING_POND_ADULT_FISH_10LBS",
+                            "OOT_FISHING_POND_ADULT_FISH_11LBS",
+                            "OOT_FISHING_POND_ADULT_FISH_12LBS",
+                            "OOT_FISHING_POND_ADULT_FISH_13LBS",
+                            "OOT_FISHING_POND_ADULT_FISH_14LBS",
+                            "OOT_FISHING_POND_ADULT_FISH_15LBS",
+                            "OOT_FISHING_POND_ADULT_FISH_16LBS",
+                            "OOT_FISHING_POND_ADULT_FISH_17LBS",
+                            "OOT_FISHING_POND_ADULT_FISH_18LBS",
+                            "OOT_FISHING_POND_ADULT_FISH_19LBS",
+                            "OOT_FISHING_POND_ADULT_FISH_20LBS",
+                            "OOT_FISHING_POND_ADULT_FISH_21LBS",
+                            "OOT_FISHING_POND_ADULT_FISH_22LBS",
+                            "OOT_FISHING_POND_ADULT_FISH_23LBS",
+                            "OOT_FISHING_POND_ADULT_FISH_24LBS",
+                            "OOT_FISHING_POND_ADULT_FISH_25LBS"
+                          ],
+                          "title": "Adult Fish (over 8 pounds)"
+                        },
+                        {
+                          "item": "OOT_FISHING_POND_CHILD_LOACH_14LBS",
+                          "activateAlso": [
+                            "OOT_FISHING_POND_CHILD_LOACH_14LBS",
+                            "OOT_FISHING_POND_CHILD_LOACH_15LBS",
+                            "OOT_FISHING_POND_CHILD_LOACH_16LBS",
+                            "OOT_FISHING_POND_CHILD_LOACH_17LBS",
+                            "OOT_FISHING_POND_CHILD_LOACH_18LBS",
+                            "OOT_FISHING_POND_CHILD_LOACH_19LBS"
+                          ],
+                          "title": "Child Loach (over 14 pounds)"
+                        },
+                        {
+                          "item": "OOT_FISHING_POND_ADULT_LOACH_29LBS",
+                          "activateAlso": [
+                            "OOT_FISHING_POND_ADULT_LOACH_29LBS",
+                            "OOT_FISHING_POND_ADULT_LOACH_30LBS",
+                            "OOT_FISHING_POND_ADULT_LOACH_31LBS",
+                            "OOT_FISHING_POND_ADULT_LOACH_32LBS",
+                            "OOT_FISHING_POND_ADULT_LOACH_33LBS",
+                            "OOT_FISHING_POND_ADULT_LOACH_34LBS",
+                            "OOT_FISHING_POND_ADULT_LOACH_35LBS",
+                            "OOT_FISHING_POND_ADULT_LOACH_36LBS"
+                          ],
+                          "title": "Adult Loach (over 29 pounds)"
+                        }
+                      ]
+                    ]
+                  }
                 ]
               }
             ]
@@ -444,85 +531,6 @@
               ]
             ]
           }
-        ]
-      },
-      {
-        "type": "itemgrid",
-        "h_alignment": "left",
-        "item_margin": "1,1",
-        "scale": 0.875,
-        "rows": [
-          [
-            {
-              "item": "OOT_FISHING_POND_CHILD_FISH_7LBS",
-              "activateAlso": [
-                "OOT_FISHING_POND_CHILD_FISH_8LBS",
-                "OOT_FISHING_POND_CHILD_FISH_9LBS",
-                "OOT_FISHING_POND_CHILD_FISH_10LBS",
-                "OOT_FISHING_POND_CHILD_FISH_11LBS",
-                "OOT_FISHING_POND_CHILD_FISH_12LBS",
-                "OOT_FISHING_POND_CHILD_FISH_13LBS",
-                "OOT_FISHING_POND_CHILD_FISH_14LBS"
-              ],
-              "title": "Child Fish (over 7 pounds)"
-            }
-          ],
-          [
-            {
-              "item": "OOT_FISHING_POND_ADULT_FISH_8LBS",
-              "activateAlso": [
-                "OOT_FISHING_POND_ADULT_FISH_8LBS",
-                "OOT_FISHING_POND_ADULT_FISH_9LBS",
-                "OOT_FISHING_POND_ADULT_FISH_10LBS",
-                "OOT_FISHING_POND_ADULT_FISH_11LBS",
-                "OOT_FISHING_POND_ADULT_FISH_12LBS",
-                "OOT_FISHING_POND_ADULT_FISH_13LBS",
-                "OOT_FISHING_POND_ADULT_FISH_14LBS",
-                "OOT_FISHING_POND_ADULT_FISH_15LBS",
-                "OOT_FISHING_POND_ADULT_FISH_16LBS",
-                "OOT_FISHING_POND_ADULT_FISH_17LBS",
-                "OOT_FISHING_POND_ADULT_FISH_18LBS",
-                "OOT_FISHING_POND_ADULT_FISH_19LBS",
-                "OOT_FISHING_POND_ADULT_FISH_20LBS",
-                "OOT_FISHING_POND_ADULT_FISH_21LBS",
-                "OOT_FISHING_POND_ADULT_FISH_22LBS",
-                "OOT_FISHING_POND_ADULT_FISH_23LBS",
-                "OOT_FISHING_POND_ADULT_FISH_24LBS",
-                "OOT_FISHING_POND_ADULT_FISH_25LBS"
-              ],
-              "title": "Adult Fish (over 8 pounds)"
-            }
-          ],
-          [
-            {
-              "item": "OOT_FISHING_POND_CHILD_LOACH_14LBS",
-              "activateAlso": [
-                "OOT_FISHING_POND_CHILD_LOACH_14LBS",
-                "OOT_FISHING_POND_CHILD_LOACH_15LBS",
-                "OOT_FISHING_POND_CHILD_LOACH_16LBS",
-                "OOT_FISHING_POND_CHILD_LOACH_17LBS",
-                "OOT_FISHING_POND_CHILD_LOACH_18LBS",
-                "OOT_FISHING_POND_CHILD_LOACH_19LBS"
-              ],
-              "title": "Child Loach (over 14 pounds)"
-            }
-          ],
-          [
-            {
-              "item": "OOT_FISHING_POND_ADULT_LOACH_29LBS",
-              "activateAlso": [
-                "OOT_FISHING_POND_ADULT_LOACH_29LBS",
-                "OOT_FISHING_POND_ADULT_LOACH_30LBS",
-                "OOT_FISHING_POND_ADULT_LOACH_31LBS",
-                "OOT_FISHING_POND_ADULT_LOACH_32LBS",
-                "OOT_FISHING_POND_ADULT_LOACH_33LBS",
-                "OOT_FISHING_POND_ADULT_LOACH_34LBS",
-                "OOT_FISHING_POND_ADULT_LOACH_35LBS",
-                "OOT_FISHING_POND_ADULT_LOACH_36LBS"
-              ],
-              "title": "Adult Loach (over 29 pounds)"
-            }
-          ]
         ]
       },
       {
