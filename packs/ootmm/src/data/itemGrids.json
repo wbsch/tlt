@@ -426,19 +426,21 @@
                 "OOT_SMALL_KEY_SPIRIT",
                 "OOT_KEY_RING_SPIRIT",
                 "OOT_SMALL_KEY_GANON",
-                "OOT_KEY_RING_GANON"
+                "OOT_KEY_RING_GANON",
+                {
+                  "or": ["OOT_SMALL_KEY_TCG", "OOT_KEY_RING_TCG"]
+                }
               ],
               [
+                { "empty": true },
+                { "empty": true },
+                { "empty": true },
                 "OOT_BOSS_KEY_FOREST",
                 "OOT_BOSS_KEY_FIRE",
                 "OOT_BOSS_KEY_WATER",
                 "OOT_BOSS_KEY_SHADOW",
                 "OOT_BOSS_KEY_SPIRIT",
-                "OOT_BOSS_KEY_GANON",
-
-                {
-                  "or": ["OOT_SMALL_KEY_TCG", "OOT_KEY_RING_TCG"]
-                }
+                "OOT_BOSS_KEY_GANON"
               ]
             ]
           }

@@ -1,4 +1,9 @@
 import type { CSSProperties, InjectionKey } from 'vue';
+import type { ItemGridRef } from '../utils/itemGridRef';
+
+export const EMPTY_GRID_ITEM_ID = '__grid_empty__';
+
+export type ItemGridSlot = ItemGridRef;
 
 export interface GridItem {
   type: 'item';
@@ -26,7 +31,7 @@ export interface ItemGrid {
   item_margin?: string;
   item_size?: number;
   scale?: number;
-  rows: string[][];
+  rows: ItemGridSlot[][];
 }
 
 export interface GridArray {
@@ -78,6 +83,7 @@ export interface ItemGridRenderContext {
   ) => CSSProperties;
   getGridItemClasses: (itemId: string) => Record<string, boolean>;
   getGridItemTitle: (itemId: string) => string;
+  isEmptyGridItem: (itemId: string) => boolean;
   toggleItem: (itemId: string) => void;
   decrementItem: (itemId: string, event: MouseEvent) => void;
   handleItemWheel: (itemId: string, event: WheelEvent) => void;

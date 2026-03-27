@@ -16,6 +16,7 @@ import {
 import { getItemName } from '../data/items';
 import OoTMMGridNode from './OoTMMGridNode.vue';
 import {
+  EMPTY_GRID_ITEM_ID,
   itemGridRenderContextKey,
   type GridArray,
   type GridCanvas,
@@ -69,13 +70,19 @@ function getGridMultiActivation(
   return props.gridItemMultiActivations?.[itemId] || null;
 }
 
+function isEmptyGridItem(itemId: string): boolean {
+  return itemId === EMPTY_GRID_ITEM_ID;
+}
+
 function getBaseItemId(itemId: string): string {
+  if (isEmptyGridItem(itemId)) return itemId;
   const multiActivation = getGridMultiActivation(itemId);
   if (multiActivation) return multiActivation.item;
   return getGridRefAlias(itemId)?.item || itemId;
 }
 
 function getGridItemTitle(itemId: string): string {
+  if (isEmptyGridItem(itemId)) return '';
   const multiActivation = getGridMultiActivation(itemId);
   if (multiActivation?.title) return multiActivation.title;
 
@@ -173,6 +180,7 @@ function getLogicalLinkedItemIds(itemId: string): string[] | null {
 }
 
 function getGridItemCount(itemId: string): number {
+  if (isEmptyGridItem(itemId)) return 0;
   const linkedItemIds = getLinkedItemIds(itemId);
   if (!linkedItemIds || linkedItemIds.length === 0) {
     let maxCount = getItemCount(getBaseItemId(itemId));
@@ -195,6 +203,7 @@ function getGridItemCount(itemId: string): number {
 }
 
 function getItemMaxCount(itemId: string): number {
+  if (isEmptyGridItem(itemId)) return 0;
   const linkedItemIds = getLinkedItemIds(itemId);
   if (linkedItemIds && linkedItemIds.length > 0) {
     return linkedItemIds.length;
@@ -290,6 +299,7 @@ function isItemOwnedForGrid(itemId: string): boolean {
 }
 
 function isLabelItem(itemId: string): boolean {
+  if (isEmptyGridItem(itemId)) return false;
   if (!props.labelItemIds || props.labelItemIds.length === 0) return false;
 
   const baseItemId = getBaseItemId(itemId);
@@ -300,6 +310,7 @@ function isLabelItem(itemId: string): boolean {
 }
 
 function isItemHighlightedForGrid(itemId: string): boolean {
+  if (isEmptyGridItem(itemId)) return false;
   if (isLabelItem(itemId)) return true;
   if (isItemOwnedForGrid(itemId)) return true;
   return startsGridItemUndimmed(getBaseItemId(itemId), {
@@ -311,6 +322,7 @@ function isItemHighlightedForGrid(itemId: string): boolean {
 }
 
 function toggleItem(itemId: string) {
+  if (isEmptyGridItem(itemId)) return;
   if (isLabelItem(itemId)) return;
 
   const newInventory = new Map(props.inventory);
@@ -382,6 +394,7 @@ function toggleItem(itemId: string) {
 
 function decrementItem(itemId: string, event: MouseEvent) {
   event.preventDefault();
+  if (isEmptyGridItem(itemId)) return;
   if (isLabelItem(itemId)) return;
 
   const newInventory = new Map(props.inventory);
@@ -451,6 +464,7 @@ function parseMargin(
 }
 
 function getIconSrc(itemId: string): string {
+  if (isEmptyGridItem(itemId)) return '';
   const baseItemId = getBaseItemId(itemId);
   return getGridItemIcon(baseItemId, getGridItemCount(itemId), {
     maxCount: getItemMaxCount(itemId),
@@ -461,6 +475,7 @@ function getIconSrc(itemId: string): string {
 }
 
 function getOverlaySrc(itemId: string): string | null {
+  if (isEmptyGridItem(itemId)) return null;
   const baseItemId = getBaseItemId(itemId);
   return getGridItemOverlay(baseItemId, getGridItemCount(itemId), {
     maxCount: getItemMaxCount(itemId),
@@ -471,6 +486,7 @@ function getOverlaySrc(itemId: string): string | null {
 }
 
 function getWheelOverlaySrc(itemId: string): string | null {
+  if (isEmptyGridItem(itemId)) return null;
   const baseItemId = getBaseItemId(itemId);
   return getGridWheelOverlay(baseItemId, {
     maxCount: getItemMaxCount(itemId),
@@ -481,6 +497,7 @@ function getWheelOverlaySrc(itemId: string): string | null {
 }
 
 function handleItemWheel(itemId: string, event: WheelEvent) {
+  if (isEmptyGridItem(itemId)) return;
   const baseItemId = getBaseItemId(itemId);
   const stageCount = getGridWheelOverlayStageCount(baseItemId);
   const stateItemId = getGridWheelOverlayStateItemId(baseItemId);
@@ -513,6 +530,7 @@ function handleItemWheel(itemId: string, event: WheelEvent) {
 }
 
 function shouldShowItemCount(itemId: string): boolean {
+  if (isEmptyGridItem(itemId)) return false;
   return (
     getGridItemCount(itemId) > 1 &&
     !hasGridIconVariants(getBaseItemId(itemId), {
@@ -525,6 +543,7 @@ function shouldShowItemCount(itemId: string): boolean {
 }
 
 function isItemIconDisabled(itemId: string): boolean {
+  if (isEmptyGridItem(itemId)) return false;
   if (isLabelItem(itemId)) return false;
   if (hasItem(itemId)) return false;
   return !startsGridItemUndimmed(getBaseItemId(itemId), {
@@ -537,6 +556,7 @@ function isItemIconDisabled(itemId: string): boolean {
 
 function getGridItemClasses(itemId: string) {
   return {
+    'empty-slot': isEmptyGridItem(itemId),
     owned: isItemHighlightedForGrid(itemId),
     'label-item': isLabelItem(itemId),
   };
@@ -624,6 +644,7 @@ provide(itemGridRenderContextKey, {
   getGridItemStyle,
   getGridItemClasses,
   getGridItemTitle,
+  isEmptyGridItem,
   toggleItem,
   decrementItem,
   handleItemWheel,

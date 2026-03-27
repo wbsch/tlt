@@ -14,11 +14,16 @@ export interface ItemGridMultiActivateRef {
   title?: string;
 }
 
+export interface ItemGridEmptyRef {
+  empty: true;
+}
+
 export type ItemGridRef =
   | string
   | ItemGridOrRef
   | ItemGridAliasRef
-  | ItemGridMultiActivateRef;
+  | ItemGridMultiActivateRef
+  | ItemGridEmptyRef;
 
 export function isItemGridOrRef(value: unknown): value is ItemGridOrRef {
   if (!value || typeof value !== 'object') return false;
@@ -61,6 +66,11 @@ export function isItemGridMultiActivateRef(
   if (title !== undefined && typeof title !== 'string') return false;
 
   return true;
+}
+
+export function isItemGridEmptyRef(value: unknown): value is ItemGridEmptyRef {
+  if (!value || typeof value !== 'object') return false;
+  return (value as { empty?: unknown }).empty === true;
 }
 
 export function resolveItemGridRef(

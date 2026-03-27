@@ -3,10 +3,12 @@ import { computed } from 'vue';
 import OoTMMSingleGrid from './OoTMMSingleGrid.vue';
 import {
   isItemGridAliasRef,
+  isItemGridEmptyRef,
   isItemGridMultiActivateRef,
   resolveItemGridRef,
 } from '../utils/itemGridRef';
 import {
+  EMPTY_GRID_ITEM_ID,
   type GridArray,
   type GridItemMultiActivation,
   type GridItemRefAlias,
@@ -314,6 +316,10 @@ function isItemVisible(itemId: string): boolean {
 }
 
 function resolveVisibleItemRef(itemRef: unknown): string | null {
+  if (isItemGridEmptyRef(itemRef)) {
+    return EMPTY_GRID_ITEM_ID;
+  }
+
   if (isItemGridMultiActivateRef(itemRef)) {
     if (!isItemVisible(itemRef.item)) return null;
     return makeGridMultiActivateKey(itemRef.item, itemRef.activateAlso);

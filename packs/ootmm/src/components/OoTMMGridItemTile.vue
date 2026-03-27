@@ -21,12 +21,13 @@ if (!context) {
     class="grid-item"
     :class="[context.getGridItemClasses(itemId), { 'canvas-item': canvasItem }]"
     :style="style"
-    :title="context.getGridItemTitle(itemId)"
+    :title="context.isEmptyGridItem(itemId) ? undefined : context.getGridItemTitle(itemId)"
     @click="context.toggleItem(itemId)"
     @contextmenu="context.decrementItem(itemId, $event)"
     @wheel="context.handleItemWheel(itemId, $event)"
   >
     <img
+      v-if="!context.isEmptyGridItem(itemId)"
       :src="context.getIconSrc(itemId)"
       :alt="itemId"
       class="item-icon"
@@ -80,6 +81,18 @@ if (!context) {
 .grid-item.owned {
   background: rgba(16, 185, 129, 0.15);
   border-color: rgba(16, 185, 129, 0.3);
+}
+
+.grid-item.empty-slot {
+  cursor: default;
+  background: transparent;
+  border-color: transparent;
+}
+
+.grid-item.empty-slot:hover {
+  background: transparent;
+  border-color: transparent;
+  z-index: auto;
 }
 
 .grid-item.label-item {
