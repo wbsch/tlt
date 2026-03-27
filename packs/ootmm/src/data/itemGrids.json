@@ -219,46 +219,114 @@
         ]
       },
       {
-        "type": "section",
-        "title": "Songs",
-        "padding": "5,10",
-        "margin": "0,8",
+        "type": "array",
+        "orientation": "horizontal",
         "content": [
           {
-            "type": "itemgrid",
-            "h_alignment": "left",
-            "item_margin": "1,1",
-            "scale": 0.875,
-            "rows": [
-              [
-                "OOT_SONG_ZELDA",
-                "OOT_SONG_NOTE_ZELDA",
-                "OOT_SONG_EPONA",
-                "OOT_SONG_NOTE_EPONA",
-                "OOT_SONG_SARIA",
-                "OOT_SONG_NOTE_SARIA",
-                "OOT_SONG_SUN",
-                "OOT_SONG_NOTE_SUN",
-                "OOT_SONG_TIME",
-                "OOT_SONG_NOTE_TIME",
-                "OOT_SONG_STORMS",
-                "OOT_SONG_NOTE_STORMS"
-              ],
-              [
-                "OOT_SONG_TP_FOREST",
-                "OOT_SONG_NOTE_TP_FOREST",
-                "OOT_SONG_TP_FIRE",
-                "OOT_SONG_NOTE_TP_FIRE",
-                "OOT_SONG_TP_WATER",
-                "OOT_SONG_NOTE_TP_WATER",
-                "OOT_SONG_TP_SPIRIT",
-                "OOT_SONG_NOTE_TP_SPIRIT",
-                "OOT_SONG_TP_SHADOW",
-                "OOT_SONG_NOTE_TP_SHADOW",
-                "OOT_SONG_TP_LIGHT",
-                "OOT_SONG_NOTE_TP_LIGHT"
-              ],
-              ["OOT_SONG_EMPTINESS", "OOT_SONG_NOTE_EMPTINESS"]
+            "type": "array",
+            "orientation": "vertical",
+            "content": [
+              {
+                "type": "section",
+                "title": "Songs",
+                "padding": "5,10",
+                "margin": "0,8",
+                "content": [
+                  {
+                    "type": "itemgrid",
+                    "h_alignment": "left",
+                    "item_margin": "1,1",
+                    "scale": 0.875,
+                    "rows": [
+                      [
+                        "OOT_SONG_ZELDA",
+                        "OOT_SONG_NOTE_ZELDA",
+                        "OOT_SONG_EPONA",
+                        "OOT_SONG_NOTE_EPONA",
+                        "OOT_SONG_SARIA",
+                        "OOT_SONG_NOTE_SARIA",
+                        "OOT_SONG_SUN",
+                        "OOT_SONG_NOTE_SUN",
+                        "OOT_SONG_TIME",
+                        "OOT_SONG_NOTE_TIME",
+                        "OOT_SONG_STORMS",
+                        "OOT_SONG_NOTE_STORMS"
+                      ],
+                      [
+                        "OOT_SONG_TP_FOREST",
+                        "OOT_SONG_NOTE_TP_FOREST",
+                        "OOT_SONG_TP_FIRE",
+                        "OOT_SONG_NOTE_TP_FIRE",
+                        "OOT_SONG_TP_WATER",
+                        "OOT_SONG_NOTE_TP_WATER",
+                        "OOT_SONG_TP_SPIRIT",
+                        "OOT_SONG_NOTE_TP_SPIRIT",
+                        "OOT_SONG_TP_SHADOW",
+                        "OOT_SONG_NOTE_TP_SHADOW",
+                        "OOT_SONG_TP_LIGHT",
+                        "OOT_SONG_NOTE_TP_LIGHT"
+                      ]
+                    ]
+                  }
+                ]
+              },
+              {
+                "type": "section",
+                "title": "Collectibles",
+                "padding": "5,10",
+                "margin": "0,8",
+                "content": [
+                  {
+                    "type": "itemgrid",
+                    "h_alignment": "left",
+                    "item_margin": "1,1",
+                    "scale": 0.875,
+                    "rows": [
+                      [
+                        "OOT_COIN_RED",
+                        "OOT_COIN_GREEN",
+                        "OOT_COIN_BLUE",
+                        "OOT_COIN_YELLOW"
+                      ]
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "section",
+            "title": "Item Extensions",
+            "padding": "5,10",
+            "margin": "0,8",
+            "content": [
+              {
+                "type": "itemgrid",
+                "h_alignment": "left",
+                "item_margin": "1,1",
+                "scale": 0.875,
+                "rows": [
+                  [
+                    "OOT_MASK_BLAST",
+                    "OOT_MASK_STONE",
+                    "OOT_SONG_EMPTINESS",
+                    "OOT_SONG_NOTE_EMPTINESS",
+                    "OOT_BUTTON_A"
+                  ],
+                  [
+                    "OOT_BUTTON_C_DOWN",
+                    "OOT_BUTTON_C_LEFT",
+                    "OOT_BUTTON_C_RIGHT",
+                    "OOT_BUTTON_C_UP"
+                  ],
+                  [
+                    "OOT_SPIN_UPGRADE",
+                    "OOT_SKELETON_KEY",
+                    "OOT_PLATINUM_TOKEN",
+                    "OOT_RUPEE_MAGICAL"
+                  ]
+                ]
+              }
             ]
           }
         ]
@@ -300,6 +368,77 @@
                 "OOT_EYEBALL_FROG",
                 "OOT_EYE_DROPS",
                 "OOT_CLAIM_CHECK"
+              ]
+            ]
+          }
+        ]
+      },
+      {
+        "type": "section",
+        "title": "Dungeons",
+        "padding": "5,10",
+        "margin": "0,8",
+        "content": [
+          {
+            "type": "itemgrid",
+            "h_alignment": "left",
+            "item_margin": "1,1",
+            "scale": 0.875,
+            "rows": [
+              [
+                "OOT_STONE_EMERALD",
+                "OOT_STONE_RUBY",
+                "OOT_STONE_SAPPHIRE",
+                "OOT_MEDALLION_FOREST",
+                "OOT_MEDALLION_FIRE",
+                "OOT_MEDALLION_WATER",
+                "OOT_MEDALLION_SHADOW",
+                "OOT_MEDALLION_SPIRIT",
+                "OOT_MEDALLION_LIGHT"
+              ],
+              [
+                "oot_well_label",
+                "oot_gerudofortress_label",
+                "oot_gerudotraining_label",
+                "oot_foresttemple_label",
+                "oot_firetemple_label",
+                "oot_watertemple_label",
+                "oot_shadowtemple_label",
+                "oot_spirittemple_label",
+                "oot_ganoncastle_label",
+                "oot_chestgame_label"
+              ],
+              [
+                "OOT_SMALL_KEY_BOTW",
+                "OOT_KEY_RING_BOTW",
+                "OOT_SMALL_KEY_GF",
+                "OOT_KEY_RING_GF",
+                "OOT_SMALL_KEY_GTG",
+                "OOT_KEY_RING_GTG",
+                "OOT_SMALL_KEY_FOREST",
+                "OOT_KEY_RING_FOREST",
+                "OOT_SMALL_KEY_FIRE",
+                "OOT_KEY_RING_FIRE",
+                "OOT_SMALL_KEY_WATER",
+                "OOT_KEY_RING_WATER",
+                "OOT_SMALL_KEY_SHADOW",
+                "OOT_KEY_RING_SHADOW",
+                "OOT_SMALL_KEY_SPIRIT",
+                "OOT_KEY_RING_SPIRIT",
+                "OOT_SMALL_KEY_GANON",
+                "OOT_KEY_RING_GANON"
+              ],
+              [
+                "OOT_BOSS_KEY_FOREST",
+                "OOT_BOSS_KEY_FIRE",
+                "OOT_BOSS_KEY_WATER",
+                "OOT_BOSS_KEY_SHADOW",
+                "OOT_BOSS_KEY_SPIRIT",
+                "OOT_BOSS_KEY_GANON",
+
+                {
+                  "or": ["OOT_SMALL_KEY_TCG", "OOT_KEY_RING_TCG"]
+                }
               ]
             ]
           }
@@ -381,42 +520,6 @@
               ],
               "title": "Adult Loach (over 29 pounds)"
             }
-          ],
-          ["OOT_SPIN_UPGRADE"],
-          [
-            "OOT_SKELETON_KEY",
-            "OOT_RUPEE_MAGICAL",
-            "OOT_PLATINUM_TOKEN",
-            "OOT_COIN_RED",
-            "OOT_COIN_GREEN",
-            "OOT_COIN_BLUE",
-            "OOT_COIN_YELLOW"
-          ],
-          [
-            "OOT_BUTTON_A",
-            "OOT_BUTTON_C_DOWN",
-            "OOT_BUTTON_C_LEFT",
-            "OOT_BUTTON_C_RIGHT",
-            "OOT_BUTTON_C_UP",
-            "OOT_MASK_BLAST",
-            "OOT_MASK_STONE"
-          ]
-        ]
-      },
-      {
-        "type": "itemgrid",
-        "h_alignment": "left",
-        "item_margin": "1,1",
-        "scale": 1,
-        "rows": [
-          ["OOT_STONE_EMERALD", "OOT_STONE_RUBY", "OOT_STONE_SAPPHIRE"],
-          [
-            "OOT_MEDALLION_FOREST",
-            "OOT_MEDALLION_FIRE",
-            "OOT_MEDALLION_WATER",
-            "OOT_MEDALLION_SHADOW",
-            "OOT_MEDALLION_SPIRIT",
-            "OOT_MEDALLION_LIGHT"
           ]
         ]
       },
@@ -426,49 +529,6 @@
         "item_margin": "1,1",
         "scale": 0.8,
         "rows": [
-          [
-            "oot_foresttemple_label",
-            "OOT_SMALL_KEY_FOREST",
-            "OOT_KEY_RING_FOREST",
-            "OOT_BOSS_KEY_FOREST",
-            "oot_firetemple_label",
-            "OOT_SMALL_KEY_FIRE",
-            "OOT_KEY_RING_FIRE",
-            "OOT_BOSS_KEY_FIRE",
-            "oot_watertemple_label",
-            "OOT_SMALL_KEY_WATER",
-            "OOT_KEY_RING_WATER",
-            "OOT_BOSS_KEY_WATER"
-          ],
-          [
-            "oot_spirittemple_label",
-            "OOT_SMALL_KEY_SPIRIT",
-            "OOT_KEY_RING_SPIRIT",
-            "OOT_BOSS_KEY_SPIRIT",
-            "oot_shadowtemple_label",
-            "OOT_SMALL_KEY_SHADOW",
-            "OOT_KEY_RING_SHADOW",
-            "OOT_BOSS_KEY_SHADOW",
-            "oot_ganoncastle_label",
-            "OOT_SMALL_KEY_GANON",
-            "OOT_KEY_RING_GANON",
-            "OOT_BOSS_KEY_GANON"
-          ],
-          [
-            "oot_gerudotraining_label",
-            "OOT_SMALL_KEY_GTG",
-            "OOT_KEY_RING_GTG",
-            "oot_gerudofortress_label",
-            "OOT_SMALL_KEY_GF",
-            "OOT_KEY_RING_GF",
-            "oot_well_label",
-            "OOT_SMALL_KEY_BOTW",
-            "OOT_KEY_RING_BOTW",
-            "oot_chestgame_label",
-            {
-              "or": ["OOT_SMALL_KEY_TCG", "OOT_KEY_RING_TCG"]
-            }
-          ],
           [
             "oot_spirittemple_silver_label",
             "OOT_RUPEE_SILVER_SPIRIT_CHILD",

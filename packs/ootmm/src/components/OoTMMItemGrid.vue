@@ -177,7 +177,7 @@ const hasMmItems = computed(() => {
   return false;
 });
 
-const LABEL_KEY_MAP: Record<string, string[]> = {
+const LABEL_VISIBLE_ITEM_MAP: Record<string, string[]> = {
   oot_foresttemple_label: [
     'OOT_SMALL_KEY_FOREST',
     'OOT_KEY_RING_FOREST',
@@ -260,13 +260,33 @@ const LABEL_KEY_MAP: Record<string, string[]> = {
     'OOT_RUPEE_SILVER_IC_BLOCK',
     'OOT_POUCH_SILVER_IC_BLOCK',
   ],
-  mm_woodfall_label: ['MM_SMALL_KEY_WF', 'MM_KEY_RING_WF', 'MM_BOSS_KEY_WF'],
-  mm_snowhead_label: ['MM_SMALL_KEY_SH', 'MM_KEY_RING_SH', 'MM_BOSS_KEY_SH'],
-  mm_greatbay_label: ['MM_SMALL_KEY_GB', 'MM_KEY_RING_GB', 'MM_BOSS_KEY_GB'],
-  mm_stonetower_label: ['MM_SMALL_KEY_ST', 'MM_KEY_RING_ST', 'MM_BOSS_KEY_ST'],
+  mm_woodfall_label: [
+    'MM_SMALL_KEY_WF',
+    'MM_KEY_RING_WF',
+    'MM_BOSS_KEY_WF',
+    'MM_STRAY_FAIRY_WF',
+  ],
+  mm_snowhead_label: [
+    'MM_SMALL_KEY_SH',
+    'MM_KEY_RING_SH',
+    'MM_BOSS_KEY_SH',
+    'MM_STRAY_FAIRY_SH',
+  ],
+  mm_greatbay_label: [
+    'MM_SMALL_KEY_GB',
+    'MM_KEY_RING_GB',
+    'MM_BOSS_KEY_GB',
+    'MM_STRAY_FAIRY_GB',
+  ],
+  mm_stonetower_label: [
+    'MM_SMALL_KEY_ST',
+    'MM_KEY_RING_ST',
+    'MM_BOSS_KEY_ST',
+    'MM_STRAY_FAIRY_ST',
+  ],
 };
 
-const labelItemIds = Object.keys(LABEL_KEY_MAP);
+const labelItemIds = Object.keys(LABEL_VISIBLE_ITEM_MAP);
 
 function isItemVisible(itemId: string): boolean {
   if (isGridMultiActivateKey(itemId)) {
@@ -280,10 +300,10 @@ function isItemVisible(itemId: string): boolean {
   }
 
   if (!props.availableItemIds || props.availableItemIds.size === 0) return true;
-  const labelKeys = LABEL_KEY_MAP[itemId];
-  if (labelKeys) {
-    for (const keyId of labelKeys) {
-      if (props.availableItemIds.has(keyId)) return true;
+  const visibleItems = LABEL_VISIBLE_ITEM_MAP[itemId];
+  if (visibleItems) {
+    for (const visibleItemId of visibleItems) {
+      if (props.availableItemIds.has(visibleItemId)) return true;
     }
     return false;
   }
@@ -291,10 +311,6 @@ function isItemVisible(itemId: string): boolean {
   if (itemId.startsWith('mm_')) return hasMmItems.value;
   if (itemId.startsWith('oot_')) return hasOotItems.value;
   return false;
-}
-
-function isLabelItem(itemId: string): boolean {
-  return Boolean(LABEL_KEY_MAP[itemId]);
 }
 
 function resolveVisibleItemRef(itemRef: unknown): string | null {
@@ -327,17 +343,9 @@ function resolveVisibleItemRef(itemRef: unknown): string | null {
 }
 
 function filterGridRow(row: unknown[]): string[] {
-  const visible = row
+  return row
     .map((itemRef: unknown) => resolveVisibleItemRef(itemRef))
     .filter((itemId: string | null): itemId is string => Boolean(itemId));
-  // Don't show rows that only contain labels
-  if (
-    visible.length > 0 &&
-    visible.every((itemId: string) => isLabelItem(itemId))
-  ) {
-    return [];
-  }
-  return visible;
 }
 
 function filterGridElement(element: unknown): unknown | null {
