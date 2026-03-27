@@ -495,7 +495,8 @@ function handleInventoryUpdate(newInventory: Map<string, number>) {
   background: rgba(255, 255, 255, 0.05);
   border-radius: 4px;
   text-align: center;
-  align-self: flex-start;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 @media (max-width: 700px) {
