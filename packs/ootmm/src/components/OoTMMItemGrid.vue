@@ -417,7 +417,10 @@ function filterGridElement(element: unknown): unknown | null {
   if ((element as { type?: string }).type === 'itemgrid') {
     const rows = ((element as { rows?: unknown[][] }).rows || [])
       .map((row: unknown[]) => filterGridRow(row))
-      .filter((row: string[]) => row.length > 0);
+      .filter(
+        (row: string[]) =>
+          row.length > 0 && row.some((itemId) => itemId !== EMPTY_GRID_ITEM_ID),
+      );
     if (rows.length === 0) return null;
     return { ...element, rows };
   }
