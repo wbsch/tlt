@@ -5,6 +5,7 @@ import {
   getGridItemLinkedItemIds,
   getGridItemOverlay,
   getGridItemAutoSelectItemIds,
+  getGridTextLabel,
   getGridWheelOverlay,
   getGridWheelOverlayStage,
   getGridWheelOverlayStageCount,
@@ -475,6 +476,11 @@ function getIconSrc(itemId: string): string {
   });
 }
 
+function getItemTextLabel(itemId: string): string | null {
+  if (isEmptyGridItem(itemId)) return null;
+  return getGridTextLabel(getBaseItemId(itemId));
+}
+
 function getOverlaySrc(itemId: string): string | null {
   if (isEmptyGridItem(itemId)) return null;
   const baseItemId = getBaseItemId(itemId);
@@ -495,6 +501,11 @@ function getWheelOverlaySrc(itemId: string): string | null {
     inventory: props.inventory,
     settings: props.settings,
   });
+}
+
+function getWheelOverlayText(itemId: string): string | null {
+  const overlaySrc = getWheelOverlaySrc(itemId);
+  return overlaySrc ? getGridTextLabel(overlaySrc) : null;
 }
 
 function handleItemWheel(itemId: string, event: WheelEvent) {
@@ -650,8 +661,10 @@ provide(itemGridRenderContextKey, {
   decrementItem,
   handleItemWheel,
   getIconSrc,
+  getItemTextLabel,
   getOverlaySrc,
   getWheelOverlaySrc,
+  getWheelOverlayText,
   isItemIconDisabled,
   shouldShowItemCount,
   getGridItemCount,

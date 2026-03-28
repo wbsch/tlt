@@ -107,8 +107,10 @@ export interface ItemGridRenderContext {
   decrementItem: (itemId: string, event: MouseEvent) => void;
   handleItemWheel: (itemId: string, event: WheelEvent) => void;
   getIconSrc: (itemId: string) => string;
+  getItemTextLabel: (itemId: string) => string | null;
   getOverlaySrc: (itemId: string) => string | null;
   getWheelOverlaySrc: (itemId: string) => string | null;
+  getWheelOverlayText: (itemId: string) => string | null;
   isItemIconDisabled: (itemId: string) => boolean;
   shouldShowItemCount: (itemId: string) => boolean;
   getGridItemCount: (itemId: string) => number;

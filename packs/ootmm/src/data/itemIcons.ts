@@ -504,6 +504,44 @@ export const ITEM_ICONS: Record<string, string> = Object.fromEntries(
   ),
 );
 
+const GRID_TEXT_LABELS: Record<string, string> = {
+  free_label: 'Free',
+  mm_woodfall_label: 'Wood',
+  mm_snowhead_label: 'Snow',
+  mm_greatbay_label: 'Bay',
+  mm_stonetower_label: 'Stone',
+  oot_dekutree_label: 'Deku',
+  oot_dc_label: 'DC',
+  oot_jabu_label: 'Jabu',
+  oot_foresttemple_label: 'Frst',
+  oot_firetemple_label: 'Fire',
+  oot_watertemple_label: 'Water',
+  oot_spirittemple_label: 'Sprt',
+  oot_spirittemple_silver_label: 'Sprt',
+  oot_shadowtemple_label: 'Shdw',
+  oot_shadowtemple_silver_label: 'Shdw',
+  oot_ganoncastle_label: 'GC',
+  oot_ganoncastle_silver_label: 'GC',
+  oot_gerudotraining_label: 'GTG',
+  oot_gerudotraining_silver_label: 'GTG',
+  oot_gerudofortress_label: 'TH',
+  oot_ice_label: 'Ice',
+  oot_well_label: 'BotW',
+  oot_well_silver_label: 'BotW',
+};
+
+const GRID_TEXT_LABELS_BY_VALUE = new Map<string, string>(
+  Object.entries(GRID_TEXT_LABELS).flatMap(([itemId, label]) => {
+    const icon = ITEM_ICONS[itemId];
+    return icon
+      ? [
+          [itemId, label],
+          [icon, label],
+        ]
+      : [[itemId, label]];
+  }),
+);
+
 // Count-based icon variants used only by the Item Grid rendering.
 // Index 0 => count 1, index 1 => count 2, ...
 interface GridIconVariantContext {
@@ -1492,6 +1530,11 @@ export const DEFAULT_ICON = withBasePath('images/unknown.png');
  */
 export function getItemIcon(itemId: string): string {
   return ITEM_ICONS[itemId] || DEFAULT_ICON;
+}
+
+export function getGridTextLabel(value: string): string | null {
+  if (!value) return null;
+  return GRID_TEXT_LABELS_BY_VALUE.get(value) || null;
 }
 
 /**

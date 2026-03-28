@@ -30,8 +30,14 @@ if (!context) {
     @contextmenu="context.decrementItem(itemId, $event)"
     @wheel="context.handleItemWheel(itemId, $event)"
   >
+    <span
+      v-if="context.getItemTextLabel(itemId)"
+      class="item-text-label"
+    >
+      {{ context.getItemTextLabel(itemId) }}
+    </span>
     <img
-      v-if="!context.isEmptyGridItem(itemId)"
+      v-else-if="!context.isEmptyGridItem(itemId)"
       :src="context.getIconSrc(itemId)"
       :alt="itemId"
       class="item-icon"
@@ -46,8 +52,14 @@ if (!context) {
       :class="{ disabled: context.isItemIconDisabled(itemId) }"
       @error="context.handleOverlayError"
     />
+    <span
+      v-if="context.getWheelOverlayText(itemId)"
+      class="item-overlay item-wheel-overlay item-text-label item-wheel-text-label"
+    >
+      {{ context.getWheelOverlayText(itemId) }}
+    </span>
     <img
-      v-if="context.getWheelOverlaySrc(itemId)"
+      v-else-if="context.getWheelOverlaySrc(itemId)"
       :src="context.getWheelOverlaySrc(itemId) as string"
       :alt="`${itemId} wheel overlay`"
       class="item-overlay item-wheel-overlay"
@@ -147,6 +159,34 @@ if (!context) {
 
 .item-wheel-overlay {
   z-index: 2;
+}
+
+.item-text-label {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  padding: 2px;
+  color: #f7edd3;
+  font-size: 9px;
+  font-weight: 800;
+  line-height: 0.95;
+  letter-spacing: 0.02em;
+  text-align: center;
+  text-shadow:
+    -1px -1px 0 rgba(0, 0, 0, 0.95),
+    1px -1px 0 rgba(0, 0, 0, 0.95),
+    -1px 1px 0 rgba(0, 0, 0, 0.95),
+    1px 1px 0 rgba(0, 0, 0, 0.95);
+  box-sizing: border-box;
+  user-select: none;
+  pointer-events: none;
+}
+
+.item-wheel-text-label {
+  position: absolute;
+  inset: 0;
 }
 
 .grid-item:hover .item-icon,
