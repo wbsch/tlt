@@ -55,9 +55,9 @@ describe('itemIcons grid text labels', () => {
       ['__grid_wheel_overlay_state__:OOT_MEDALLION_FOREST', 6],
     ]);
 
-    expect(getGridWheelOverlayValue('OOT_MEDALLION_FOREST', { inventory })).toBe(
-      'oot_firetemple_label',
-    );
+    expect(
+      getGridWheelOverlayValue('OOT_MEDALLION_FOREST', { inventory }),
+    ).toBe('oot_firetemple_label');
     expect(getGridTextLabel('oot_firetemple_label')).toBe('Fire');
     expect(getGridTextLabel('free_label')).toBe('Free');
   });
