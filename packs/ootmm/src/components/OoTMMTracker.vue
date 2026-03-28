@@ -47,7 +47,12 @@ import {
   type TrackerTab,
 } from '../stores/ootmmUi';
 import { OOTMM_MAP_DEFS } from '../data/maps';
-import type { MapDef } from '../data/maps/types';
+import type { MapDef, MapSubmenuEntryDef } from '../data/maps/types';
+import {
+  getActiveEntranceKeys,
+  normalizeTrackedEntranceKey,
+  getTrackedEntranceKeysForBinding,
+} from '../utils/entranceRandomization';
 import * as ItemsMod from '@ootmm/core/items/index';
 import * as NamesMod from '@ootmm/core/names';
 import * as SettingsDataMod from '@ootmm/core/settings/data';
@@ -182,6 +187,7 @@ const {
   canUndo,
   canRedo,
   allLocations,
+  entranceOverrides,
 } = storeToRefs(sessionStore);
 
 const {
@@ -490,8 +496,72 @@ function addResolvedMapSelectorCode(checkIds: Set<string>, code: string): void {
   }
 }
 
+// Static lookup: entrance ID → check codes from map marker definitions.
+// For each entrance with markers on a map, stores the codes of checks
+// behind that entrance.
+const ENTRANCE_CHECK_CODES_BY_ID: ReadonlyMap<string, MapSubmenuEntryDef[]> =
+  (() => {
+    const byId = new Map<string, MapSubmenuEntryDef[]>();
+    for (const mapDef of OOTMM_MAP_DEFS) {
+      for (const markerDef of mapDef.markers) {
+        if (markerDef.type !== 'submenu' || !markerDef.entranceMenu) continue;
+        if (!Array.isArray(markerDef.markers) || markerDef.markers.length === 0)
+          continue;
+        const entranceIds = (markerDef.entranceMenu.entranceIds ?? [])
+          .map((id) => normalizeTrackedEntranceKey(id.trim()))
+          .filter((id) => id.length > 0);
+        if (entranceIds.length === 0) continue;
+        const entries: MapSubmenuEntryDef[] = markerDef.markers.map((e) => ({
+          image: e.image,
+          overlays: e.overlays,
+          codes: e.codes,
+          visibleWhen: e.visibleWhen,
+        }));
+        for (const entranceId of entranceIds) {
+          for (const bindingId of getTrackedEntranceKeysForBinding(
+            entranceId,
+          )) {
+            const existing = byId.get(bindingId);
+            if (existing) {
+              existing.push(...entries);
+            } else {
+              byId.set(bindingId, [...entries]);
+            }
+          }
+        }
+      }
+    }
+    return byId;
+  })();
+
+function addEntranceBoundCodes(
+  checkIds: Set<string>,
+  markerEntranceIds: string[],
+  activeKeys: Set<string>,
+  overrides: Record<string, string>,
+): void {
+  for (const srcId of markerEntranceIds) {
+    const normalizedSrc = normalizeTrackedEntranceKey(srcId.trim());
+    if (!activeKeys.has(normalizedSrc)) continue;
+    const dstId = overrides[normalizedSrc];
+    if (!dstId) continue; // Unmapped entrance – checks unreachable
+    const dstEntries = ENTRANCE_CHECK_CODES_BY_ID.get(dstId);
+    if (!dstEntries) continue;
+    for (const entry of dstEntries) {
+      for (const code of normalizeMapCodeList(entry.codes)) {
+        addResolvedMapSelectorCode(checkIds, code);
+      }
+    }
+  }
+}
+
 const mapSelectorCheckIdsByMap = computed(() => {
   const byMap = new Map<string, Set<string>>();
+  const activeKeys = getActiveEntranceKeys(
+    (trackerSettings.value ?? {}) as Record<string, unknown>,
+  );
+  const overrides = entranceOverrides.value;
+  const isErActive = activeKeys.size > 0;
 
   for (const mapDef of selectableMapDefs.value) {
     const checkIds = new Set<string>();
@@ -501,9 +571,23 @@ const mapSelectorCheckIdsByMap = computed(() => {
         Array.isArray(marker.markers) &&
         marker.markers.length > 0
       ) {
-        for (const submenuEntry of marker.markers) {
-          for (const code of normalizeMapCodeList(submenuEntry.codes)) {
-            addResolvedMapSelectorCode(checkIds, code);
+        const markerEntranceIds = marker.entranceMenu?.entranceIds ?? [];
+        const hasEntranceBinding = markerEntranceIds.length > 0;
+
+        if (hasEntranceBinding && isErActive) {
+          // Resolve codes from the mapped destination entrance
+          addEntranceBoundCodes(
+            checkIds,
+            markerEntranceIds,
+            activeKeys,
+            overrides,
+          );
+        } else {
+          // No ER or no entrance binding – use static codes
+          for (const submenuEntry of marker.markers) {
+            for (const code of normalizeMapCodeList(submenuEntry.codes)) {
+              addResolvedMapSelectorCode(checkIds, code);
+            }
           }
         }
         continue;
