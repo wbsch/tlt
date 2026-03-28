@@ -1,5 +1,10 @@
 import { expect, test, type Page } from '@playwright/test';
 import { resetLocalStorageAndReload, TEST_TIMEOUTS } from './helpers/tracker';
+import {
+  entranceCombobox,
+  selectEntranceById,
+  expectEntranceSelectedId,
+} from './helpers/entrance';
 
 const BUG_REPRO_INVENTORY: Record<string, number> = {
   MM_ARROW_ICE: 1,
@@ -16,13 +21,8 @@ const BUG_REPRO_INVENTORY: Record<string, number> = {
   MM_SONG_TIME: 1,
 };
 
-function entranceSelect(page: Page, label: string) {
-  return page
-    .locator('.entrance-row')
-    .filter({
-      has: page.locator('.entrance-label', { hasText: label }),
-    })
-    .locator('.entrance-select');
+function entranceInput(page: Page, label: string) {
+  return entranceCombobox(page, label);
 }
 
 async function applyDungeonErSettings(page: Page): Promise<void> {
@@ -93,10 +93,13 @@ test.describe('Ice Cavern to ISTT disconnect', () => {
     await reachabilityGroup.getByRole('button', { name: /^All\b/ }).click();
     await mappingGroup.getByRole('button', { name: /^All\b/ }).click();
 
-    const iceCavernSelect = entranceSelect(page, 'Ice Cavern');
-    await expect(iceCavernSelect).toBeVisible();
-    await iceCavernSelect.selectOption('MM_TEMPLE_STONE_TOWER_INVERTED');
-    await expect(iceCavernSelect).toHaveValue('MM_TEMPLE_STONE_TOWER_INVERTED');
+    const iceCavernInput = entranceInput(page, 'Ice Cavern');
+    await expect(iceCavernInput).toBeVisible();
+    await selectEntranceById(iceCavernInput, 'MM_TEMPLE_STONE_TOWER_INVERTED');
+    await expectEntranceSelectedId(
+      iceCavernInput,
+      'MM_TEMPLE_STONE_TOWER_INVERTED',
+    );
 
     await setInventoryItems(page, BUG_REPRO_INVENTORY);
     await page.getByTestId('right-sidebar-tab-locations').click();

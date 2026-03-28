@@ -1,17 +1,17 @@
 import { expect, test, type Page } from '@playwright/test';
 import { resetLocalStorageAndReload, TEST_TIMEOUTS } from './helpers/tracker';
+import {
+  entranceCombobox,
+  selectEntranceById,
+  clearEntranceMapping,
+} from './helpers/entrance';
 
 const CLOCK_TOWER_ROOF_ENTRANCE_ID = 'MM_CLOCK_TOWER_ROOF';
 const NON_SELF_DESTINATION_ENTRANCE_ID = 'OOT_DEKU_TREE';
 const CLOCK_TOWER_ROOF_CHECK_NEEDLE = 'MM Clock Tower Roof Skull Kid Ocarina';
 
-function clockTowerRoofSelect(page: Page) {
-  return page
-    .locator('.entrance-row')
-    .filter({
-      has: page.locator('.entrance-label', { hasText: 'Clock Tower Roof' }),
-    })
-    .locator('.entrance-select');
+function clockTowerRoofInput(page: Page) {
+  return entranceCombobox(page, 'Clock Tower Roof');
 }
 
 async function openEntrancesTab(page: Page): Promise<void> {
@@ -80,9 +80,17 @@ async function setClockTowerRoofOverride(
 ): Promise<void> {
   await openEntrancesTab(page);
   await resetEntranceFiltersToAll(page);
-  const select = clockTowerRoofSelect(page);
-  await expect(select).toBeVisible();
-  await select.selectOption(destination ?? '');
+  const input = clockTowerRoofInput(page);
+  await expect(input).toBeVisible();
+  if (destination) {
+    await selectEntranceById(input, destination);
+  } else {
+    // If already mapped, clear it; if unmapped, nothing to do
+    const selected = await input.getAttribute('data-selected');
+    if (selected) {
+      await clearEntranceMapping(input);
+    }
+  }
 }
 
 async function selectMapFromToolbar(

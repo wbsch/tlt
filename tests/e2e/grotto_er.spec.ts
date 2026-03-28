@@ -1,5 +1,6 @@
 import { expect, test } from '@playwright/test';
 import { resetLocalStorageAndReload, TEST_TIMEOUTS } from './helpers/tracker';
+import { entranceCombobox, selectEntranceByLabel } from './helpers/entrance';
 
 async function openEntrancesTab(page: import('@playwright/test').Page) {
   const rightSidebarToggle = page.getByTestId('right-sidebar-toggle');
@@ -80,16 +81,8 @@ test.describe('Grotto Entrance Randomizer', () => {
     });
     await expect(dekuTheaterRow).toBeVisible();
 
-    const dekuTheaterSelect = dekuTheaterRow.locator('.entrance-select');
-    await expect(dekuTheaterSelect).toBeVisible();
-
-    const roadToIkanaOption = dekuTheaterSelect.locator('option', {
-      hasText: 'Road to Ikana Grotto',
-    });
-    const roadToIkanaValue = await roadToIkanaOption.getAttribute('value');
-    expect(roadToIkanaValue).toBeTruthy();
-    await dekuTheaterSelect.selectOption(roadToIkanaValue!);
-    await expect(dekuTheaterSelect).toHaveValue(roadToIkanaValue!);
+    const dekuTheaterInput = entranceCombobox(page, 'Deku Theater');
+    await selectEntranceByLabel(dekuTheaterInput, 'Road to Ikana Grotto');
 
     const reachabilityGroup = page.locator(
       '.entrances-panel [aria-label="Entrance reachability filter"]',
@@ -164,14 +157,8 @@ test.describe('Grotto Entrance Randomizer', () => {
     });
     await expect(swampGossipRow).toBeVisible();
 
-    const swampGossipSelect = swampGossipRow.locator('.entrance-select');
-    const oceanOption = swampGossipSelect.locator('option', {
-      hasText: 'Ocean Gossip Grotto',
-    });
-    const oceanValue = await oceanOption.getAttribute('value');
-    expect(oceanValue).toBeTruthy();
-    await swampGossipSelect.selectOption(oceanValue!);
-    await expect(swampGossipSelect).toHaveValue(oceanValue!);
+    const swampGossipInput = entranceCombobox(page, 'Swamp Gossip Grotto');
+    await selectEntranceByLabel(swampGossipInput, 'Ocean Gossip Grotto');
 
     await setInventoryItems(page, ['MM_OCARINA', 'MM_SONG_TIME']);
     await selectMapFromToolbar(page, 'MM Termina Field');

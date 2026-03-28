@@ -4,6 +4,11 @@ import {
   TEST_TIMEOUTS,
   waitForBoot,
 } from './helpers/tracker';
+import {
+  entranceCombobox,
+  selectEntranceById,
+  expectEntranceSelectedId,
+} from './helpers/entrance';
 
 const CLOCK_TOWER_ROOF_ITEMS: Record<string, number> = {
   MM_OCARINA: 1,
@@ -13,13 +18,8 @@ const CLOCK_TOWER_ROOF_ITEMS: Record<string, number> = {
 
 const CLOCK_TOWER_ROOF_ENTRANCE_ID = 'MM_CLOCK_TOWER_ROOF';
 
-function dekuTreeSelect(page: Page) {
-  return page
-    .locator('.entrance-row')
-    .filter({
-      has: page.locator('.entrance-label', { hasText: 'Deku Tree' }),
-    })
-    .locator('.entrance-select');
+function dekuTreeInput(page: Page) {
+  return entranceCombobox(page, 'Deku Tree');
 }
 
 async function openEntrancesTab(page: Page): Promise<void> {
@@ -184,11 +184,11 @@ test.describe('Entrance reachability persistence across refresh', () => {
     });
 
     await page.getByTestId('right-sidebar-tab-entrances').click();
-    const select = dekuTreeSelect(page);
-    await expect(select).toBeVisible();
-    await select.selectOption(CLOCK_TOWER_ROOF_ENTRANCE_ID);
+    const input = dekuTreeInput(page);
+    await expect(input).toBeVisible();
+    await selectEntranceById(input, CLOCK_TOWER_ROOF_ENTRANCE_ID);
 
-    await expect(select).toHaveValue(CLOCK_TOWER_ROOF_ENTRANCE_ID);
+    await expectEntranceSelectedId(input, CLOCK_TOWER_ROOF_ENTRANCE_ID);
 
     await setInventoryItems(page, CLOCK_TOWER_ROOF_ITEMS);
 

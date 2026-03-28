@@ -555,9 +555,25 @@ export class OoTMMTracker implements TrackerPack {
           continue;
         }
 
+        // Forward edge: source area -> destination area
         retainedMappedExitPairs.add(
           `${sourceData.from}=>${destinationData.to}`,
         );
+
+        // Reverse edge: the entrance pass also wires the exit from
+        // the destination interior back to the source exterior.
+        if (destinationData.reverse && sourceData.reverse) {
+          const destRev = ENTRANCES_DATA[destinationData.reverse];
+          const srcRev = ENTRANCES_DATA[sourceData.reverse];
+          if (
+            destRev &&
+            srcRev &&
+            destRev.from !== 'NONE' &&
+            srcRev.to !== 'NONE'
+          ) {
+            retainedMappedExitPairs.add(`${destRev.from}=>${srcRev.to}`);
+          }
+        }
       }
 
       for (const world of this.worlds) {
@@ -568,13 +584,31 @@ export class OoTMMTracker implements TrackerPack {
         for (const key of unmappedEntrances) {
           const data = ENTRANCES_DATA[key];
           if (!data) continue;
+
+          // Disconnect the source-side edge (e.g. Kokiri Forest -> Link's House)
           const exitPairKey = `${data.from}=>${data.to}`;
-          if (retainedMappedExitPairs.has(exitPairKey)) {
-            continue;
+          if (!retainedMappedExitPairs.has(exitPairKey)) {
+            const fromArea = areas[data.from];
+            if (fromArea?.exits && data.to in fromArea.exits) {
+              delete fromArea.exits[data.to];
+            }
           }
-          const fromArea = areas[data.from];
-          if (fromArea?.exits && data.to in fromArea.exits) {
-            delete fromArea.exits[data.to];
+
+          // Also disconnect the reverse/exit-side edge
+          // (e.g. Link's House -> Kokiri Forest).
+          // Exit-type entrances are not in activeEntranceKeys so they
+          // would otherwise survive, leaving a stale connection.
+          if (data.reverse) {
+            const reverseData = ENTRANCES_DATA[data.reverse];
+            if (reverseData) {
+              const revExitPairKey = `${reverseData.from}=>${reverseData.to}`;
+              if (!retainedMappedExitPairs.has(revExitPairKey)) {
+                const revFromArea = areas[reverseData.from];
+                if (revFromArea?.exits && reverseData.to in revFromArea.exits) {
+                  delete revFromArea.exits[reverseData.to];
+                }
+              }
+            }
           }
         }
       }

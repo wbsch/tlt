@@ -1,5 +1,6 @@
 import { expect, test, type Locator, type Page } from '@playwright/test';
 import { resetLocalStorageAndReload, TEST_TIMEOUTS } from './helpers/tracker';
+import { entranceCombobox, selectEntranceByLabel } from './helpers/entrance';
 
 const REQUIRED_ITEMS: Record<string, number> = {
   OOT_OCARINA: 1,
@@ -67,13 +68,8 @@ async function mapMountainGossipGrottoToDampeGrave(page: Page): Promise<void> {
   });
   await expect(row).toBeVisible();
 
-  const select = row.locator('.entrance-select');
-  const option = select.locator('option', { hasText: 'Dampe Grave' });
-  const value = await option.getAttribute('value');
-  expect(value).toBeTruthy();
-
-  await select.selectOption(value!);
-  await expect(select).toHaveValue(value!);
+  const input = entranceCombobox(page, 'Mountain Gossip Grotto');
+  await selectEntranceByLabel(input, 'Dampe Grave');
 }
 
 async function setInventoryItems(

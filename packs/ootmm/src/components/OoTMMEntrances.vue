@@ -391,6 +391,7 @@ function setDropdownInputRef(srcKey: string, el: unknown) {
                     !!getSelectedDestination(entrance.key) &&
                     openDropdownKey !== entrance.key,
                 }"
+                :data-selected="getSelectedDestination(entrance.key) || ''"
                 type="text"
                 :placeholder="
                   getSelectedDestination(entrance.key) ? '' : '— Not mapped —'
@@ -436,6 +437,7 @@ function setDropdownInputRef(srcKey: string, el: unknown) {
                   :class="{
                     'is-highlighted': index === dropdownHighlightedIndex,
                   }"
+                  :data-value="dest.value"
                   role="option"
                   :aria-selected="index === dropdownHighlightedIndex"
                   @mousedown.prevent

@@ -4,26 +4,23 @@ import {
   TEST_TIMEOUTS,
   waitForBoot,
 } from './helpers/tracker';
+import {
+  entranceCombobox,
+  selectEntranceById,
+  clearEntranceMapping,
+  expectEntranceSelectedId,
+  expectEntranceUnmapped,
+} from './helpers/entrance';
 
 const CLOCK_TOWER_ROOF_ENTRANCE_ID = 'MM_CLOCK_TOWER_ROOF';
 const WINDMILL_ENTRANCE_ID = 'OOT_WINDMILL';
 
-function dekuTreeSelect(page: Page) {
-  return page
-    .locator('.entrance-row')
-    .filter({
-      has: page.locator('.entrance-label', { hasText: 'Deku Tree' }),
-    })
-    .locator('.entrance-select');
+function dekuTreeInput(page: Page) {
+  return entranceCombobox(page, 'Deku Tree');
 }
 
-function entranceSelect(page: Page, label: string) {
-  return page
-    .locator('.entrance-row')
-    .filter({
-      has: page.locator('.entrance-label', { hasText: label }),
-    })
-    .locator('.entrance-select');
+function entranceInput(page: Page, label: string) {
+  return entranceCombobox(page, label);
 }
 
 function mapSubmenuEntranceSelect(page: Page, label: string) {
@@ -227,11 +224,11 @@ test.describe('Entrance mapping refresh persistence', () => {
 
     await openEntrancesTab(page);
     await resetEntranceFiltersToAll(page);
-    const select = dekuTreeSelect(page);
-    await expect(select).toBeVisible();
-    await select.selectOption(CLOCK_TOWER_ROOF_ENTRANCE_ID);
+    const input = dekuTreeInput(page);
+    await expect(input).toBeVisible();
+    await selectEntranceById(input, CLOCK_TOWER_ROOF_ENTRANCE_ID);
 
-    await expect(select).toHaveValue(CLOCK_TOWER_ROOF_ENTRANCE_ID);
+    await expectEntranceSelectedId(input, CLOCK_TOWER_ROOF_ENTRANCE_ID);
   });
 
   test('Deku Tree mapping can be cleared via Not mapped option', async ({
@@ -241,13 +238,13 @@ test.describe('Entrance mapping refresh persistence', () => {
 
     await openEntrancesTab(page);
     await resetEntranceFiltersToAll(page);
-    const select = dekuTreeSelect(page);
-    await expect(select).toBeVisible();
-    await select.selectOption(CLOCK_TOWER_ROOF_ENTRANCE_ID);
+    const input = dekuTreeInput(page);
+    await expect(input).toBeVisible();
+    await selectEntranceById(input, CLOCK_TOWER_ROOF_ENTRANCE_ID);
 
-    await expect(select).toHaveValue(CLOCK_TOWER_ROOF_ENTRANCE_ID);
-    await select.selectOption('');
-    await expect(dekuTreeSelect(page)).toHaveValue('');
+    await expectEntranceSelectedId(input, CLOCK_TOWER_ROOF_ENTRANCE_ID);
+    await clearEntranceMapping(input);
+    await expectEntranceUnmapped(dekuTreeInput(page));
   });
 
   test("Link's House can be mapped to Windmill via the Entrances UI", async ({
@@ -257,11 +254,11 @@ test.describe('Entrance mapping refresh persistence', () => {
 
     await openEntrancesTab(page);
     await resetEntranceFiltersToAll(page);
-    const select = entranceSelect(page, "Link's House");
-    await expect(select).toBeVisible();
-    await select.selectOption(WINDMILL_ENTRANCE_ID);
+    const input = entranceInput(page, "Link's House");
+    await expect(input).toBeVisible();
+    await selectEntranceById(input, WINDMILL_ENTRANCE_ID);
 
-    await expect(select).toHaveValue(WINDMILL_ENTRANCE_ID);
+    await expectEntranceSelectedId(input, WINDMILL_ENTRANCE_ID);
   });
 
   test('Clock Tower and Mask Shop appear when interior game links are enabled', async ({
@@ -272,8 +269,8 @@ test.describe('Entrance mapping refresh persistence', () => {
     await openEntrancesTab(page);
     await resetEntranceFiltersToAll(page);
 
-    await expect(entranceSelect(page, 'Clock Tower')).toBeVisible();
-    await expect(entranceSelect(page, 'Market Mask Shop')).toBeVisible();
+    await expect(entranceInput(page, 'Clock Tower')).toBeVisible();
+    await expect(entranceInput(page, 'Market Mask Shop')).toBeVisible();
   });
 
   test("Link's House can be mapped from the Kokiri Forest map submenu", async ({

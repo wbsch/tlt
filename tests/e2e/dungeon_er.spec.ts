@@ -5,6 +5,11 @@ import {
   TEST_TIMEOUTS,
   waitForReachableFraction,
 } from './helpers/tracker';
+import {
+  entranceCombobox,
+  selectEntranceByLabel,
+  clearEntranceMapping,
+} from './helpers/entrance';
 
 test.describe('Dungeon Entrance Randomizer', () => {
   test.beforeEach(async ({ page }) => {
@@ -61,26 +66,14 @@ test.describe('Dungeon Entrance Randomizer', () => {
     });
     await expect(entrancesTab).toHaveClass(/active/);
 
-    // Find the entrance row for "Deku Tree" – the label text contains "Deku Tree"
-    const dekuTreeRow = page.locator('.entrance-row').filter({
-      has: page.locator('.entrance-label', { hasText: 'Deku Tree' }),
-    });
-    await expect(dekuTreeRow).toBeVisible();
+    // Find the entrance row for "Deku Tree"
+    const dekuTreeInput = entranceCombobox(page, 'Deku Tree');
+    await expect(dekuTreeInput).toBeVisible();
 
     // Select "Forest Temple" as the destination
-    const dekuTreeSelect = dekuTreeRow.locator('.entrance-select');
-    await expect(dekuTreeSelect).toBeVisible();
-
-    // Find the option whose text contains "Forest Temple"
-    const forestTempleOption = dekuTreeSelect.locator('option', {
-      hasText: 'Forest Temple',
-    });
-    const forestTempleValue = await forestTempleOption.getAttribute('value');
-    expect(forestTempleValue).toBeTruthy();
-    await dekuTreeSelect.selectOption(forestTempleValue!);
+    await selectEntranceByLabel(dekuTreeInput, 'Forest Temple');
 
     // --- Step 4: Wait for reinit, verify more checks reachable ---
-    // The debounced reinitialize takes ~350ms + processing time
     await page.waitForTimeout(500);
     await expect
       .poll(
@@ -95,8 +88,8 @@ test.describe('Dungeon Entrance Randomizer', () => {
     const afterMapping = await readReachableFraction(page);
     expect(afterMapping.reachable).toBeGreaterThan(baseline.reachable);
 
-    // --- Step 5: Unmap Deku Tree (set back to "Not mapped") ---
-    await dekuTreeSelect.selectOption('');
+    // --- Step 5: Unmap Deku Tree (clear the mapping) ---
+    await clearEntranceMapping(dekuTreeInput);
 
     // --- Step 6: Wait for reinit, verify fewer checks reachable ---
     await page.waitForTimeout(500);
