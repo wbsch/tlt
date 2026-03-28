@@ -9,6 +9,7 @@ import {
   isTrackedEntranceSourceType,
   type TrackedEntrancePool,
 } from '../utils/entranceRandomization';
+import { matchesSearchTerms } from '../utils/search';
 
 const resolveExport = <T>(mod: unknown, key: string): T => {
   const modObj = mod as { default?: Record<string, T>; [k: string]: unknown };
@@ -68,8 +69,11 @@ export function useDungeonEntrances() {
   const { trackerSettings, entranceOverrides, reachableEntranceIdSet } =
     storeToRefs(sessionStore);
   const uiStore = useOoTMMUiStore();
-  const { entrancesReachabilityFilter, entrancesMappingFilter } =
-    storeToRefs(uiStore);
+  const {
+    entrancesReachabilityFilter,
+    entrancesMappingFilter,
+    entrancesSearchQuery,
+  } = storeToRefs(uiStore);
 
   function isEntranceMapped(entranceKey: string): boolean {
     return (entranceOverrides.value[entranceKey] ?? '').trim().length > 0;
@@ -117,13 +121,24 @@ export function useDungeonEntrances() {
 
   const filteredEntrances = computed<DungeonEntranceEntry[]>(() => {
     const filter = entrancesReachabilityFilter.value;
-    if (filter === 'all') return mappingScopedEntrances.value;
+    let result = mappingScopedEntrances.value;
 
-    const reachableSet = reachableEntranceIdSet.value;
-    return mappingScopedEntrances.value.filter((entrance) => {
-      const isReachable = reachableSet.has(entrance.key);
-      return filter === 'reachable' ? isReachable : !isReachable;
-    });
+    if (filter !== 'all') {
+      const reachableSet = reachableEntranceIdSet.value;
+      result = result.filter((entrance) => {
+        const isReachable = reachableSet.has(entrance.key);
+        return filter === 'reachable' ? isReachable : !isReachable;
+      });
+    }
+
+    const query = entrancesSearchQuery.value;
+    if (query.trim()) {
+      result = result.filter((entrance) =>
+        matchesSearchTerms([entrance.label], query),
+      );
+    }
+
+    return result;
   });
 
   const reachabilityStats = computed<ReachabilityStats>(() => {

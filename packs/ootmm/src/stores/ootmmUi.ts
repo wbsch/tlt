@@ -35,6 +35,7 @@ export const useOoTMMUiStore = defineStore('ootmm-ui', () => {
   const locationsShowGossipStones = ref(true);
   const entrancesReachabilityFilter = ref<ReachabilityFilter>('reachable');
   const entrancesMappingFilter = ref<EntranceMappingFilter>('all');
+  const entrancesSearchQuery = ref('');
 
   const settingsSearchQuery = ref('');
 
@@ -105,6 +106,7 @@ export const useOoTMMUiStore = defineStore('ootmm-ui', () => {
     locationsShowGossipStones.value = true;
     entrancesReachabilityFilter.value = 'reachable';
     entrancesMappingFilter.value = 'all';
+    entrancesSearchQuery.value = '';
 
     settingsSearchQuery.value = '';
 
@@ -127,6 +129,7 @@ export const useOoTMMUiStore = defineStore('ootmm-ui', () => {
     locationsShowGossipStones,
     entrancesReachabilityFilter,
     entrancesMappingFilter,
+    entrancesSearchQuery,
     settingsSearchQuery,
     isSpoilerDragActive,
     spoilerDragDepth,
