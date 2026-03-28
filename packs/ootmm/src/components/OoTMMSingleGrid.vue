@@ -7,6 +7,7 @@ import {
   getGridItemAutoSelectItemIds,
   getGridTextLabel,
   getGridWheelOverlay,
+  getGridWheelOverlayValue,
   getGridWheelOverlayStage,
   getGridWheelOverlayStageCount,
   getGridWheelOverlayStateItemId,
@@ -504,8 +505,15 @@ function getWheelOverlaySrc(itemId: string): string | null {
 }
 
 function getWheelOverlayText(itemId: string): string | null {
-  const overlaySrc = getWheelOverlaySrc(itemId);
-  return overlaySrc ? getGridTextLabel(overlaySrc) : null;
+  if (isEmptyGridItem(itemId)) return null;
+  const baseItemId = getBaseItemId(itemId);
+  const overlayValue = getGridWheelOverlayValue(baseItemId, {
+    maxCount: getItemMaxCount(itemId),
+    availableItemIds: props.availableItemIds,
+    inventory: props.inventory,
+    settings: props.settings,
+  });
+  return overlayValue ? getGridTextLabel(overlayValue) : null;
 }
 
 function handleItemWheel(itemId: string, event: WheelEvent) {

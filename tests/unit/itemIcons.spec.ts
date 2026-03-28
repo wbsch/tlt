@@ -5,7 +5,7 @@ import {
   getGridItemAutoSelectItemId,
   getGridItemAutoSelectItemIds,
   getGridTextLabel,
-  getItemIcon,
+  getGridWheelOverlayValue,
 } from '@/../packs/ootmm/src/data/itemIcons';
 
 const TEST_ITEM_ID = '__TEST_MULTI_AUTOSELECT__';
@@ -47,11 +47,18 @@ describe('itemIcons grid text labels', () => {
     expect(getGridTextLabel('oot_gerudofortress_label')).toBe('TH');
     expect(getGridTextLabel('oot_well_label')).toBe('BotW');
     expect(getGridTextLabel('mm_stonetower_label')).toBe('Stone');
+    expect(getGridTextLabel('oot_chestgame_label')).toBe('Chest');
   });
 
-  it('resolves readable text for resolved label icon paths', () => {
-    expect(getGridTextLabel(getItemIcon('oot_firetemple_label'))).toBe('Fire');
-    expect(getGridTextLabel(getItemIcon('mm_woodfall_label'))).toBe('Wood');
-    expect(getGridTextLabel(getItemIcon('free_label'))).toBe('Free');
+  it('resolves readable text for reward wheel overlay values without PNG paths', () => {
+    const inventory = new Map<string, number>([
+      ['__grid_wheel_overlay_state__:OOT_MEDALLION_FOREST', 6],
+    ]);
+
+    expect(getGridWheelOverlayValue('OOT_MEDALLION_FOREST', { inventory })).toBe(
+      'oot_firetemple_label',
+    );
+    expect(getGridTextLabel('oot_firetemple_label')).toBe('Fire');
+    expect(getGridTextLabel('free_label')).toBe('Free');
   });
 });

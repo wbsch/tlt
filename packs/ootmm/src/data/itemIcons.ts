@@ -418,34 +418,6 @@ const RAW_ITEM_ICONS: Record<string, string> = {
   // === SPECIAL GRID ITEMS ===
   // These are custom items used in itemGrids.json that aren't actual game items
 
-  // Labels
-  mm_woodfall_label: 'images/system/mm_label_woodfall.png',
-  mm_snowhead_label: 'images/system/mm_label_snowhead.png',
-  mm_greatbay_label: 'images/system/mm_label_greatbay.png',
-  mm_stonetower_label: 'images/system/mm_label_stonetower.png',
-
-  // MQ settings
-  oot_foresttemple_label: 'images/label_forest.png',
-  oot_firetemple_label: 'images/label_fire.png',
-  oot_watertemple_label: 'images/label_water.png',
-  oot_spirittemple_label: 'images/label_spirit.png',
-  oot_spirittemple_silver_label: 'images/label_spirit.png',
-  oot_shadowtemple_label: 'images/label_shadow.png',
-  oot_shadowtemple_silver_label: 'images/label_shadow.png',
-  oot_ganoncastle_label: 'images/label_gc.png',
-  oot_ganoncastle_silver_label: 'images/label_gc.png',
-  oot_gerudotraining_label: 'images/label_gtg.png',
-  oot_gerudotraining_silver_label: 'images/label_gtg.png',
-  oot_gerudofortress_label: 'images/label_th.png',
-  oot_ice_label: 'images/label_ice.png',
-  oot_well_label: 'images/label_botw.png',
-  oot_well_silver_label: 'images/label_botw.png',
-  oot_chestgame_label: 'images/lens.png',
-  oot_dc_label: 'images/label_dodongo.png',
-  oot_dekutree_label: 'images/label_deku.png',
-  oot_jabu_label: 'images/label_jabu.png',
-  free_label: 'images/label_free.png',
-
   // === SHARED ITEMS ===
   SHARED_ARROW_FIRE: 'images/arrow_fire.png',
   SHARED_ARROW_ICE: 'images/arrow_ice.png',
@@ -528,18 +500,11 @@ const GRID_TEXT_LABELS: Record<string, string> = {
   oot_ice_label: 'Ice',
   oot_well_label: 'BotW',
   oot_well_silver_label: 'BotW',
+  oot_chestgame_label: 'Chest',
 };
 
 const GRID_TEXT_LABELS_BY_VALUE = new Map<string, string>(
-  Object.entries(GRID_TEXT_LABELS).flatMap(([itemId, label]) => {
-    const icon = ITEM_ICONS[itemId];
-    return icon
-      ? [
-          [itemId, label],
-          [icon, label],
-        ]
-      : [[itemId, label]];
-  }),
+  Object.entries(GRID_TEXT_LABELS),
 );
 
 // Count-based icon variants used only by the Item Grid rendering.
@@ -1225,6 +1190,7 @@ const RAW_GRID_WHEEL_OVERLAYS: Record<string, GridWheelOverlayDefinition> = {
 };
 
 interface ResolvedGridWheelOverlayConfig {
+  values: string[];
   overlays: string[];
   stateItemId: string;
 }
@@ -1260,6 +1226,7 @@ const GRID_WHEEL_OVERLAYS: Record<string, ResolvedGridWheelOverlayConfig> =
         return [
           key,
           {
+            values: normalizedConfig.overlays,
             overlays: normalizedConfig.overlays.map((value) =>
               resolveGridWheelOverlayValue(value),
             ),
@@ -1600,8 +1567,9 @@ export function getGridWheelOverlayStageForValue(
   if (!resolved || !overlayValue) return 0;
 
   const normalizedOverlay = resolveGridWheelOverlayValue(overlayValue);
-  const stageIndex = resolved.overlays.findIndex(
-    (overlay) => overlay === normalizedOverlay,
+  const stageIndex = resolved.values.findIndex(
+    (value, index) =>
+      value === overlayValue || resolved.overlays[index] === normalizedOverlay,
   );
   return stageIndex >= 0 ? stageIndex + 1 : 0;
 }
@@ -1637,6 +1605,19 @@ export function getGridWheelOverlay(
   if (stage <= 0) return null;
 
   return resolved.overlays[stage - 1] || null;
+}
+
+export function getGridWheelOverlayValue(
+  itemId: string,
+  context: GridIconVariantContext = {},
+): string | null {
+  const resolved = getResolvedGridWheelOverlayConfig(itemId);
+  if (!resolved || resolved.values.length === 0) return null;
+
+  const stage = getGridWheelOverlayStage(itemId, context);
+  if (stage <= 0) return null;
+
+  return resolved.values[stage - 1] || null;
 }
 
 /**
