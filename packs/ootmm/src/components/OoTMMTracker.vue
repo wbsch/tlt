@@ -169,7 +169,7 @@ for (const [key, trick] of Object.entries(ALL_TRICKS)) {
 
 const sessionStore = useOoTMMSessionStore();
 const uiStore = useOoTMMUiStore();
-const { hasAvailableSections: hasAvailableEntranceSections } =
+const { hasAvailableSections: hasAvailableEntranceSections, activeEntrances } =
   useDungeonEntrances();
 
 const {
@@ -188,6 +188,7 @@ const {
   canRedo,
   allLocations,
   entranceOverrides,
+  reachableEntranceIdSet,
 } = storeToRefs(sessionStore);
 
 const {
@@ -621,12 +622,84 @@ const mapSelectorVisibleCountByMap = computed(() => {
   return byMap;
 });
 
+// Build map: mapId → Set of active entrance keys present on that map's markers
+const mapSelectorEntranceIdsByMap = computed(() => {
+  const byMap = new Map<string, Set<string>>();
+  const activeKeys = getActiveEntranceKeys(
+    (trackerSettings.value ?? {}) as Record<string, unknown>,
+  );
+  if (activeKeys.size === 0) return byMap;
+
+  for (const mapDef of selectableMapDefs.value) {
+    const entranceIds = new Set<string>();
+    for (const marker of mapDef.markers) {
+      if (
+        marker.type === 'submenu' &&
+        marker.entranceMenu &&
+        Array.isArray(marker.entranceMenu.entranceIds)
+      ) {
+        for (const srcId of marker.entranceMenu.entranceIds) {
+          const normalized = normalizeTrackedEntranceKey(srcId.trim());
+          if (normalized && activeKeys.has(normalized)) {
+            entranceIds.add(normalized);
+          }
+        }
+      }
+    }
+    byMap.set(mapDef.id, entranceIds);
+  }
+  return byMap;
+});
+
+// Count visible entrances per map, filtered by reachability + mapping settings
+const mapSelectorVisibleEntranceCountByMap = computed(() => {
+  const byMap = new Map<string, number>();
+  const entrancesByMap = mapSelectorEntranceIdsByMap.value;
+  if (entrancesByMap.size === 0) return byMap;
+
+  const reachFilter = entrancesReachabilityFilter.value;
+  const mapFilter = entrancesMappingFilter.value;
+  const reachableSet = reachableEntranceIdSet.value;
+  const overrides = entranceOverrides.value;
+
+  for (const mapDef of selectableMapDefs.value) {
+    const entranceIds = entrancesByMap.get(mapDef.id);
+    if (!entranceIds || entranceIds.size === 0) {
+      byMap.set(mapDef.id, 0);
+      continue;
+    }
+    let count = 0;
+    for (const eid of entranceIds) {
+      const isMapped = (overrides[eid] ?? '').trim().length > 0;
+      if (mapFilter === 'mapped' && !isMapped) continue;
+      if (mapFilter === 'unmapped' && isMapped) continue;
+      const isReachable = reachableSet.has(eid);
+      if (reachFilter === 'reachable' && !isReachable) continue;
+      if (reachFilter === 'unreachable' && isReachable) continue;
+      count += 1;
+    }
+    byMap.set(mapDef.id, count);
+  }
+  return byMap;
+});
+
+const hasAnyActiveEntrances = computed(() => activeEntrances.value.length > 0);
+
 function getMapSelectorVisibleCount(mapDef: MapDef): number {
   return mapSelectorVisibleCountByMap.value.get(mapDef.id) ?? 0;
 }
 
+function getMapSelectorVisibleEntranceCount(mapDef: MapDef): number {
+  return mapSelectorVisibleEntranceCountByMap.value.get(mapDef.id) ?? 0;
+}
+
 function getMapSelectorLabel(mapDef: MapDef): string {
-  return `${mapDef.title} (${getMapSelectorVisibleCount(mapDef)})`;
+  const checkCount = getMapSelectorVisibleCount(mapDef);
+  if (!hasAnyActiveEntrances.value) {
+    return `${mapDef.title} (${checkCount})`;
+  }
+  const entranceCount = getMapSelectorVisibleEntranceCount(mapDef);
+  return `${mapDef.title} (${checkCount} / ${entranceCount})`;
 }
 
 function syncMapSelectorQueryToActiveMap(): void {
@@ -747,19 +820,30 @@ function getMapSelectorMatches(rawQuery: string): MapDef[] {
   return [...exactMatches, ...prefixMatches, ...fuzzyMatches];
 }
 
+function isMapAboveSeparator(mapDef: MapDef): boolean {
+  if (getMapSelectorVisibleCount(mapDef) > 0) return true;
+  if (
+    hasAnyActiveEntrances.value &&
+    getMapSelectorVisibleEntranceCount(mapDef) > 0
+  )
+    return true;
+  return false;
+}
+
 function compareMapSelectorMapsByVisibleCount(a: MapDef, b: MapDef): number {
   const aCount = getMapSelectorVisibleCount(a);
   const bCount = getMapSelectorVisibleCount(b);
-  const aIsZero = aCount === 0;
-  const bIsZero = bCount === 0;
+  const aAbove = isMapAboveSeparator(a);
+  const bAbove = isMapAboveSeparator(b);
 
-  if (aIsZero && bIsZero) {
+  if (aAbove && !bAbove) return -1;
+  if (!aAbove && bAbove) return 1;
+
+  if (!aAbove && !bAbove) {
     return a.title.localeCompare(b.title);
   }
 
-  if (aIsZero) return 1;
-  if (bIsZero) return -1;
-
+  // Both above separator – sort by check count (entrances don't affect sort)
   if (aCount !== bCount) {
     return bCount - aCount;
   }
@@ -775,9 +859,9 @@ const filteredMapSelectorMaps = computed(() => {
 
   return [...maps].sort(compareMapSelectorMapsByVisibleCount);
 });
-const mapSelectorFirstZeroCountIndex = computed(() =>
+const mapSelectorFirstBelowSeparatorIndex = computed(() =>
   filteredMapSelectorMaps.value.findIndex(
-    (mapDef) => getMapSelectorVisibleCount(mapDef) === 0,
+    (mapDef) => !isMapAboveSeparator(mapDef),
   ),
 );
 
@@ -786,8 +870,8 @@ function isMapSelectorFirstZeroCountOption(
   mapDef: MapDef,
 ): boolean {
   return (
-    getMapSelectorVisibleCount(mapDef) === 0 &&
-    index === mapSelectorFirstZeroCountIndex.value
+    !isMapAboveSeparator(mapDef) &&
+    index === mapSelectorFirstBelowSeparatorIndex.value
   );
 }
 
@@ -985,7 +1069,13 @@ const activeMapVisibleCount = computed(() => {
   return mapSelectorVisibleCountByMap.value.get(mapDef.id) ?? 0;
 });
 
-watch(activeMapVisibleCount, () => {
+const activeMapVisibleEntranceCount = computed(() => {
+  const mapDef = activeMap.value;
+  if (!mapDef) return 0;
+  return mapSelectorVisibleEntranceCountByMap.value.get(mapDef.id) ?? 0;
+});
+
+watch([activeMapVisibleCount, activeMapVisibleEntranceCount], () => {
   if (hasMapSelectorUserInput.value) return;
   syncMapSelectorQueryToActiveMap();
 });
@@ -2150,9 +2240,15 @@ onBeforeUnmount(() => {
                       <span class="map-selector-option-title">{{
                         mapDef.title
                       }}</span>
-                      <span class="map-selector-option-count"
-                        >({{ getMapSelectorVisibleCount(mapDef) }})</span
-                      >
+                      <span class="map-selector-option-count">
+                        <template v-if="hasAnyActiveEntrances">
+                          ({{ getMapSelectorVisibleCount(mapDef) }} /
+                          {{ getMapSelectorVisibleEntranceCount(mapDef) }})
+                        </template>
+                        <template v-else>
+                          ({{ getMapSelectorVisibleCount(mapDef) }})
+                        </template>
+                      </span>
                     </li>
                     <li
                       v-if="filteredMapSelectorMaps.length === 0"
