@@ -109,7 +109,7 @@
   "item_grid_tall_oot": {
     "type": "array",
     "orientation": "vertical",
-    "scale": 1.2,
+    "scale": 1,
     "content": [
       {
         "type": "array",
@@ -124,7 +124,7 @@
                 "type": "itemgrid",
                 "h_alignment": "left",
                 "item_margin": "1,1",
-                "scale": 0.875,
+                "scale": 1.05,
                 "rows": [
                   [
                     "OOT_STICK_UPGRADE",
@@ -185,7 +185,7 @@
                 "type": "itemgrid",
                 "h_alignment": "left",
                 "item_margin": "1,1",
-                "scale": 0.875,
+                "scale": 1.05,
                 "rows": [
                   [
                     "OOT_SWORD_KOKIRI",
@@ -236,7 +236,7 @@
                     "type": "itemgrid",
                     "h_alignment": "left",
                     "item_margin": "1,1",
-                    "scale": 0.875,
+                    "scale": 1.05,
                     "rows": [
                       [
                         "OOT_SONG_ZELDA",
@@ -280,7 +280,7 @@
                     "type": "itemgrid",
                     "h_alignment": "left",
                     "item_margin": "1,1",
-                    "scale": 0.875,
+                    "scale": 1.05,
                     "rows": [
                       [
                         "OOT_MASK_BLAST",
@@ -321,7 +321,7 @@
                     "type": "itemgrid",
                     "h_alignment": "left",
                     "item_margin": "1,1",
-                    "scale": 0.875,
+                    "scale": 1.05,
                     "rows": [
                       [
                         "OOT_COIN_RED",
@@ -343,7 +343,7 @@
                     "type": "itemgrid",
                     "h_alignment": "left",
                     "item_margin": "1,1",
-                    "scale": 0.875,
+                    "scale": 1.05,
                     "rows": [
                       [
                         {
@@ -428,7 +428,7 @@
             "type": "itemgrid",
             "h_alignment": "left",
             "item_margin": "1,1",
-            "scale": 0.875,
+            "scale": 1.05,
             "rows": [
               [
                 "OOT_WEIRD_EGG",
@@ -470,7 +470,7 @@
             "type": "itemgrid",
             "h_alignment": "left",
             "item_margin": "1,1",
-            "scale": 0.875,
+            "scale": 1.05,
             "rows": [
               [
                 "OOT_STONE_EMERALD",
@@ -549,7 +549,7 @@
         "type": "itemgrid",
         "h_alignment": "left",
         "item_margin": "1,1",
-        "scale": 0.8,
+        "scale": 1.05,
         "rows": [
           [
             "oot_spirittemple_silver_label",
@@ -615,148 +615,294 @@
   "item_grid_tall_mm": {
     "type": "array",
     "orientation": "vertical",
-    "scale": 1.2,
     "content": [
+      {
+        "type": "array",
+        "orientation": "horizontal",
+        "content": [
+          {
+            "type": "section",
+            "title": "Items",
+            "padding": "5,10",
+            "margin": "0,8",
+            "content": [
+              {
+                "type": "itemgrid",
+                "h_alignment": "left",
+                "item_margin": "1,1",
+                "scale": 1.05,
+                "rows": [
+                  [
+                    "MM_OCARINA",
+                    "MM_BOW",
+                    "MM_ARROW_FIRE",
+                    "MM_ARROW_ICE",
+                    "MM_ARROW_LIGHT",
+                    "MM_STRAY_FAIRY_TOWN"
+                  ],
+                  [
+                    "MM_BOMB_BAG",
+                    {
+                      "or": ["MM_BOMBCHU_BAG", "MM_BOMBCHU"]
+                    },
+                    {
+                      "or": ["MM_STICK_UPGRADE", "MM_STICK"]
+                    },
+                    {
+                      "or": ["MM_NUT_UPGRADE", "MM_NUTS_10"]
+                    },
+                    "MM_MAGIC_BEAN",
+                    "MM_GS_TOKEN_SWAMP"
+                  ],
+                  [
+                    "MM_POWDER_KEG",
+                    "MM_PICTOGRAPH_BOX",
+                    "MM_LENS",
+                    "MM_HOOKSHOT",
+                    "MM_GREAT_FAIRY_SWORD",
+                    "MM_GS_TOKEN_OCEAN"
+                  ],
+                  [
+                    "MM_BOTTLED_GOLD_DUST",
+                    {
+                      "ref": "MM_Bottle1",
+                      "item": "MM_BOTTLE_EMPTY",
+                      "title": "Bottle 1"
+                    },
+                    {
+                      "ref": "MM_Bottle2",
+                      "item": "MM_BOTTLE_EMPTY",
+                      "title": "Bottle 2"
+                    },
+                    {
+                      "ref": "MM_Bottle3",
+                      "item": "MM_BOTTLE_EMPTY",
+                      "title": "Bottle 3"
+                    },
+                    {
+                      "ref": "MM_Bottle4",
+                      "item": "MM_BOTTLE_EMPTY",
+                      "title": "Bottle 4"
+                    },
+                    {
+                      "ref": "MM_Bottle5",
+                      "item": "MM_BOTTLE_EMPTY",
+                      "title": "Bottle 5"
+                    }
+                  ]
+                ]
+              }
+            ]
+          },
+          {
+            "type": "section",
+            "title": "Equipement",
+            "padding": "5,10",
+            "margin": "0,8",
+            "content": [
+              {
+                "type": "itemgrid",
+                "h_alignment": "left",
+                "item_margin": "1,1",
+                "scale": 1.05,
+                "rows": [
+                  ["MM_SWORD", "MM_SPIN_UPGRADE", "MM_MAGIC_UPGRADE"],
+                  ["MM_SHIELD_HERO", "MM_SHIELD_MIRROR", "MM_WALLET"]
+                ]
+              }
+            ]
+          }
+        ]
+      },
+
+      {
+        "type": "array",
+        "orientation": "horizontal",
+        "content": [
+          {
+            "type": "section",
+            "title": "Songs",
+            "padding": "5,10",
+            "margin": "0,8",
+            "content": [
+              {
+                "type": "itemgrid",
+                "h_alignment": "left",
+                "item_margin": "1,1",
+                "scale": 1.05,
+                "rows": [
+                  [
+                    "MM_SONG_TIME",
+                    "MM_SONG_NOTE_TIME",
+                    "MM_SONG_HEALING",
+                    "MM_SONG_NOTE_HEALING",
+                    "MM_SONG_EPONA",
+                    "MM_SONG_NOTE_EPONA",
+                    "MM_SONG_SOARING",
+                    "MM_SONG_NOTE_SOARING",
+                    "MM_SONG_STORMS",
+                    "MM_SONG_NOTE_STORMS",
+                    "MM_SONG_SUN",
+                    "MM_SONG_NOTE_SUN"
+                  ],
+                  [
+                    "MM_SONG_AWAKENING",
+                    "MM_SONG_NOTE_AWAKENING",
+                    "MM_SONG_GORON_HALF",
+                    "MM_SONG_GORON",
+                    "MM_SONG_NOTE_GORON",
+                    "MM_SONG_ZORA",
+                    "MM_SONG_NOTE_ZORA",
+                    "MM_SONG_EMPTINESS",
+                    "MM_SONG_NOTE_EMPTINESS",
+                    "MM_SONG_ORDER",
+                    "MM_SONG_NOTE_ORDER"
+                  ]
+                ]
+              }
+            ]
+          },
+          {
+            "type": "section",
+            "title": "Side Quests",
+            "padding": "5,10",
+            "margin": "0,8",
+            "content": [
+              {
+                "type": "itemgrid",
+                "h_alignment": "left",
+                "item_margin": "1,1",
+                "scale": 1.05,
+                "rows": [
+                  [
+                    "MM_MOON_TEAR",
+                    "MM_DEED_LAND",
+                    "MM_DEED_SWAMP",
+                    "MM_DEED_MOUNTAIN",
+                    "MM_DEED_OCEAN"
+                  ],
+                  [
+                    "MM_BOMBER_NOTEBOOK",
+                    "MM_ROOM_KEY",
+                    "MM_PENDANT_OF_MEMORIES",
+                    "MM_LETTER_TO_KAFEI",
+                    "MM_LETTER_TO_MAMA"
+                  ]
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "type": "array",
+        "orientation": "horizontal",
+        "content": [
+          {
+            "type": "section",
+            "title": "Masks",
+            "padding": "5,10",
+            "margin": "0,8",
+            "content": [
+              {
+                "type": "itemgrid",
+                "h_alignment": "left",
+                "item_margin": "1,1",
+                "scale": 1.05,
+                "rows": [
+                  [
+                    "MM_MASK_POSTMAN",
+                    "MM_MASK_ALL_NIGHT",
+                    "MM_MASK_BLAST",
+                    "MM_MASK_STONE",
+                    "MM_MASK_GREAT_FAIRY",
+                    "MM_MASK_DEKU"
+                  ],
+                  [
+                    "MM_MASK_KEATON",
+                    "MM_MASK_BREMEN",
+                    "MM_MASK_BUNNY",
+                    "MM_MASK_DON_GERO",
+                    "MM_MASK_SCENTS",
+                    "MM_MASK_GORON"
+                  ],
+                  [
+                    "MM_MASK_ROMANI",
+                    "MM_MASK_TROUPE_LEADER",
+                    "MM_MASK_KAFEI",
+                    "MM_MASK_COUPLE",
+                    "MM_MASK_TRUTH",
+                    "MM_MASK_ZORA"
+                  ],
+                  [
+                    "MM_MASK_KAMARO",
+                    "MM_MASK_GIBDO",
+                    "MM_MASK_GARO",
+                    "MM_MASK_CAPTAIN",
+                    "MM_MASK_GIANT",
+                    "MM_MASK_FIERCE_DEITY"
+                  ]
+                ]
+              }
+            ]
+          },
+          {
+            "type": "section",
+            "title": "Dungeons",
+            "padding": "5,10",
+            "margin": "0,8",
+            "content": [
+              {
+                "type": "itemgrid",
+                "h_alignment": "left",
+                "item_margin": "1,1",
+                "scale": 1.05,
+                "rows": [
+                  [
+                    "MM_REMAINS_ODOLWA",
+                    "MM_REMAINS_GOHT",
+                    "MM_REMAINS_GYORG",
+                    "MM_REMAINS_TWINMOLD"
+                  ],
+                  [
+                    "mm_woodfall_label",
+                    "mm_snowhead_label",
+                    "mm_greatbay_label",
+                    "mm_stonetower_label"
+                  ],
+                  [
+                    "MM_SMALL_KEY_WF",
+                    "MM_SMALL_KEY_SH",
+                    "MM_SMALL_KEY_GB",
+                    "MM_SMALL_KEY_ST"
+                  ],
+                  [
+                    "MM_BOSS_KEY_WF",
+                    "MM_BOSS_KEY_SH",
+                    "MM_BOSS_KEY_GB",
+                    "MM_BOSS_KEY_ST"
+                  ],
+                  [
+                    "MM_STRAY_FAIRY_WF",
+                    "MM_STRAY_FAIRY_SH",
+                    "MM_STRAY_FAIRY_GB",
+                    "MM_STRAY_FAIRY_ST"
+                  ]
+                ]
+              }
+            ]
+          }
+        ]
+      },
       {
         "type": "itemgrid",
         "h_alignment": "left",
         "item_margin": "1,1",
-        "scale": 0.875,
+        "scale": 1.05,
         "rows": [
-          [
-            "MM_OCARINA",
-            "MM_BOW",
-            "MM_ARROW_FIRE",
-            "MM_ARROW_ICE",
-            "MM_ARROW_LIGHT",
-            "MM_SWORD",
-            "MM_SHIELD_HERO",
-            "MM_SHIELD_MIRROR",
-            "MM_SPIN_UPGRADE"
-          ],
-          [
-            "MM_BOMB_BAG",
-            {
-              "or": ["MM_BOMBCHU_BAG", "MM_BOMBCHU"]
-            },
-            {
-              "or": ["MM_STICK_UPGRADE", "MM_STICK"]
-            },
-            {
-              "or": ["MM_NUT_UPGRADE", "MM_NUTS_10"]
-            },
-            "MM_MAGIC_BEAN",
-            "MM_BOTTLED_GOLD_DUST",
-            {
-              "ref": "MM_Bottle1",
-              "item": "MM_BOTTLE_EMPTY",
-              "title": "Bottle 1"
-            },
-            {
-              "ref": "MM_Bottle2",
-              "item": "MM_BOTTLE_EMPTY",
-              "title": "Bottle 2"
-            },
-            "MM_BOMBER_NOTEBOOK"
-          ],
-          [
-            "MM_POWDER_KEG",
-            "MM_PICTOGRAPH_BOX",
-            "MM_LENS",
-            "MM_HOOKSHOT",
-            "MM_GREAT_FAIRY_SWORD",
-            {
-              "ref": "MM_Bottle3",
-              "item": "MM_BOTTLE_EMPTY",
-              "title": "Bottle 3"
-            },
-            {
-              "ref": "MM_Bottle4",
-              "item": "MM_BOTTLE_EMPTY",
-              "title": "Bottle 4"
-            },
-            {
-              "ref": "MM_Bottle5",
-              "item": "MM_BOTTLE_EMPTY",
-              "title": "Bottle 5"
-            },
-            "MM_SHIELD_DEKU"
-          ],
-          [
-            "MM_SONG_TIME",
-            "MM_SONG_NOTE_TIME",
-            "MM_SONG_HEALING",
-            "MM_SONG_NOTE_HEALING",
-            "MM_SONG_EPONA",
-            "MM_SONG_NOTE_EPONA",
-            "MM_SONG_SOARING",
-            "MM_SONG_NOTE_SOARING",
-            "MM_SONG_STORMS",
-            "MM_SONG_NOTE_STORMS",
-            "MM_SONG_SUN",
-            "MM_SONG_NOTE_SUN",
-            "MM_WALLET",
-            "MM_MAGIC_UPGRADE",
-            "MM_MOON_TEAR",
-            "MM_STONE_OF_AGONY"
-          ],
-          [
-            "MM_SONG_AWAKENING",
-            "MM_SONG_NOTE_AWAKENING",
-            "MM_SONG_GORON_HALF",
-            "MM_SONG_GORON",
-            "MM_SONG_NOTE_GORON",
-            "MM_SONG_ZORA",
-            "MM_SONG_NOTE_ZORA",
-            "MM_SONG_EMPTINESS",
-            "MM_SONG_NOTE_EMPTINESS",
-            "MM_SONG_ORDER",
-            "MM_SONG_NOTE_ORDER",
-            "MM_STRAY_FAIRY_TOWN",
-            "MM_ROOM_KEY",
-            "MM_DEED_LAND"
-          ],
-          [
-            "MM_MASK_POSTMAN",
-            "MM_MASK_ALL_NIGHT",
-            "MM_MASK_BLAST",
-            "MM_MASK_STONE",
-            "MM_MASK_GREAT_FAIRY",
-            "MM_MASK_DEKU",
-            "MM_PENDANT_OF_MEMORIES",
-            "MM_DEED_SWAMP"
-          ],
-          [
-            "MM_MASK_KEATON",
-            "MM_MASK_BREMEN",
-            "MM_MASK_BUNNY",
-            "MM_MASK_DON_GERO",
-            "MM_MASK_SCENTS",
-            "MM_MASK_GORON",
-            "MM_LETTER_TO_KAFEI",
-            "MM_DEED_MOUNTAIN"
-          ],
-          [
-            "MM_MASK_ROMANI",
-            "MM_MASK_TROUPE_LEADER",
-            "MM_MASK_KAFEI",
-            "MM_MASK_COUPLE",
-            "MM_MASK_TRUTH",
-            "MM_MASK_ZORA",
-            "MM_LETTER_TO_MAMA",
-            "MM_DEED_OCEAN"
-          ],
-          [
-            "MM_MASK_KAMARO",
-            "MM_MASK_GIBDO",
-            "MM_MASK_GARO",
-            "MM_MASK_CAPTAIN",
-            "MM_MASK_GIANT",
-            "MM_MASK_FIERCE_DEITY",
-            "MM_GS_TOKEN_SWAMP",
-            "MM_GS_TOKEN_OCEAN",
-            "MM_PLATINUM_TOKEN"
-          ],
+          ["MM_PLATINUM_TOKEN"],
+          ["MM_STONE_OF_AGONY"],
+          ["MM_SHIELD_DEKU"],
           [
             "MM_SKELETON_KEY",
             "MM_TRANSCENDENT_FAIRY",
@@ -798,225 +944,6 @@
             "MM_CLOCK4",
             "MM_CLOCK6"
           ]
-        ]
-      },
-      {
-        "type": "array",
-        "orientation": "vertical",
-        "content": [
-          {
-            "type": "array",
-            "orientation": "horizontal",
-            "margin": "0,0",
-            "scale": 1.1,
-            "content": [
-              {
-                "type": "item",
-                "item": "MM_REMAINS_ODOLWA",
-                "margin": "1,1",
-                "width": 30,
-                "height": 30
-              },
-              {
-                "type": "item",
-                "item": "MM_REMAINS_GOHT",
-                "margin": "1,1",
-                "width": 30,
-                "height": 30
-              },
-              {
-                "type": "item",
-                "item": "MM_REMAINS_GYORG",
-                "margin": "1,1",
-                "width": 30,
-                "height": 30
-              },
-              {
-                "type": "item",
-                "item": "MM_REMAINS_TWINMOLD",
-                "margin": "1,1",
-                "width": 30,
-                "height": 30
-              }
-            ]
-          },
-          {
-            "type": "array",
-            "orientation": "horizontal",
-            "scale": 1.4,
-            "margin": "0,0",
-            "content": [
-              {
-                "type": "array",
-                "orientation": "horizontal",
-                "margin": "5,0",
-                "content": [
-                  {
-                    "type": "item",
-                    "item": "mm_woodfall_label",
-                    "margin": "0,2",
-                    "width": 32,
-                    "height": 12
-                  },
-                  {
-                    "type": "item",
-                    "item": "MM_SMALL_KEY_WF",
-                    "margin": "1,2",
-                    "width": 16,
-                    "height": 16
-                  },
-
-                  {
-                    "type": "item",
-                    "item": "MM_KEY_RING_WF",
-                    "margin": "1,2",
-                    "width": 16,
-                    "height": 16
-                  },
-                  {
-                    "type": "item",
-                    "item": "MM_BOSS_KEY_WF",
-                    "margin": "0,2",
-                    "width": 16,
-                    "height": 16
-                  },
-                  {
-                    "type": "item",
-                    "item": "MM_STRAY_FAIRY_WF",
-                    "margin": "1,1",
-                    "width": 16,
-                    "height": 16
-                  }
-                ]
-              },
-              {
-                "type": "array",
-                "orientation": "horizontal",
-                "margin": "5,0",
-                "content": [
-                  {
-                    "type": "item",
-                    "item": "mm_snowhead_label",
-                    "margin": "0,2",
-                    "width": 32,
-                    "height": 12
-                  },
-                  {
-                    "type": "item",
-                    "item": "MM_SMALL_KEY_SH",
-                    "margin": "1,2",
-                    "width": 16,
-                    "height": 16
-                  },
-                  {
-                    "type": "item",
-                    "item": "MM_KEY_RING_SH",
-                    "margin": "1,2",
-                    "width": 16,
-                    "height": 16
-                  },
-                  {
-                    "type": "item",
-                    "item": "MM_BOSS_KEY_SH",
-                    "margin": "0,2",
-                    "width": 16,
-                    "height": 16
-                  },
-                  {
-                    "type": "item",
-                    "item": "MM_STRAY_FAIRY_SH",
-                    "margin": "1,1",
-                    "width": 16,
-                    "height": 16
-                  }
-                ]
-              },
-              {
-                "type": "array",
-                "orientation": "horizontal",
-                "margin": "5,0",
-                "content": [
-                  {
-                    "type": "item",
-                    "item": "mm_greatbay_label",
-                    "margin": "0,2",
-                    "width": 32,
-                    "height": 12
-                  },
-                  {
-                    "type": "item",
-                    "item": "MM_SMALL_KEY_GB",
-                    "margin": "1,2",
-                    "width": 16,
-                    "height": 16
-                  },
-                  {
-                    "type": "item",
-                    "item": "MM_KEY_RING_GB",
-                    "margin": "1,2",
-                    "width": 16,
-                    "height": 16
-                  },
-                  {
-                    "type": "item",
-                    "item": "MM_BOSS_KEY_GB",
-                    "margin": "0,2",
-                    "width": 16,
-                    "height": 16
-                  },
-                  {
-                    "type": "item",
-                    "item": "MM_STRAY_FAIRY_GB",
-                    "margin": "1,1",
-                    "width": 16,
-                    "height": 16
-                  }
-                ]
-              },
-              {
-                "type": "array",
-                "orientation": "horizontal",
-                "margin": "5,0",
-                "content": [
-                  {
-                    "type": "item",
-                    "item": "mm_stonetower_label",
-                    "margin": "0,2",
-                    "width": 32,
-                    "height": 12
-                  },
-                  {
-                    "type": "item",
-                    "item": "MM_SMALL_KEY_ST",
-                    "margin": "1,2",
-                    "width": 16,
-                    "height": 16
-                  },
-                  {
-                    "type": "item",
-                    "item": "MM_KEY_RING_ST",
-                    "margin": "1,2",
-                    "width": 16,
-                    "height": 16
-                  },
-                  {
-                    "type": "item",
-                    "item": "MM_BOSS_KEY_ST",
-                    "margin": "0,2",
-                    "width": 16,
-                    "height": 16
-                  },
-                  {
-                    "type": "item",
-                    "item": "MM_STRAY_FAIRY_ST",
-                    "margin": "1,1",
-                    "width": 16,
-                    "height": 16
-                  }
-                ]
-              }
-            ]
-          }
         ]
       }
     ]
