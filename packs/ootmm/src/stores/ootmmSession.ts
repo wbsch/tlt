@@ -256,16 +256,14 @@ export const useOoTMMSessionStore = defineStore('ootmm-session', () => {
     settings: Record<string, unknown>,
     overrides: Record<string, string>,
   ): Record<string, unknown> {
-    const isErActive = getActiveEntranceKeys(settings).size > 0;
-    if (!isErActive) return settings;
-
     // Always strip stale plando.entrances from trackerSettings (the tracker
     // contaminates them with self-mappings during initialization). Then only
     // re-add overrides the user has explicitly set.
     const existingPlando = (settings.plando as Record<string, unknown>) ?? {};
     const { entrances: _stale, ...cleanPlando } = existingPlando;
 
-    const hasOverrides = Object.keys(overrides).length > 0;
+    const isErActive = getActiveEntranceKeys(settings).size > 0;
+    const hasOverrides = isErActive && Object.keys(overrides).length > 0;
     return {
       ...settings,
       plando: {
