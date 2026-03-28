@@ -3,7 +3,7 @@ import { inject } from 'vue';
 import type { StyleValue } from 'vue';
 import { itemGridRenderContextKey } from './itemGridSchema';
 
-const props = defineProps<{
+defineProps<{
   itemId: string;
   style?: StyleValue;
   canvasItem?: boolean;
@@ -21,7 +21,11 @@ if (!context) {
     class="grid-item"
     :class="[context.getGridItemClasses(itemId), { 'canvas-item': canvasItem }]"
     :style="style"
-    :title="context.isEmptyGridItem(itemId) ? undefined : context.getGridItemTitle(itemId)"
+    :title="
+      context.isEmptyGridItem(itemId)
+        ? undefined
+        : context.getGridItemTitle(itemId)
+    "
     @click="context.toggleItem(itemId)"
     @contextmenu="context.decrementItem(itemId, $event)"
     @wheel="context.handleItemWheel(itemId, $event)"

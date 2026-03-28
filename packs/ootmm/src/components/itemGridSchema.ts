@@ -60,6 +60,25 @@ export type GridNode =
   | GridArray
   | GridSection;
 
+export interface ResolvedItemGrid extends Omit<ItemGrid, 'rows'> {
+  rows: string[][];
+}
+
+export interface ResolvedGridArray extends Omit<GridArray, 'content'> {
+  content: ResolvedGridNode[];
+}
+
+export interface ResolvedGridSection extends Omit<GridSection, 'content'> {
+  content: ResolvedGridNode[];
+}
+
+export type ResolvedGridNode =
+  | GridItem
+  | GridCanvas
+  | ResolvedItemGrid
+  | ResolvedGridArray
+  | ResolvedGridSection;
+
 export interface GridItemRefAlias {
   item: string;
   title?: string;

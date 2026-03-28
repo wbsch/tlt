@@ -3,12 +3,12 @@ import { computed, inject } from 'vue';
 import OoTMMGridItemTile from './OoTMMGridItemTile.vue';
 import {
   itemGridRenderContextKey,
-  type GridArray,
   type GridCanvas,
   type GridItem,
-  type GridNode,
-  type GridSection,
-  type ItemGrid,
+  type ResolvedGridArray,
+  type ResolvedGridNode,
+  type ResolvedGridSection,
+  type ResolvedItemGrid,
 } from './itemGridSchema';
 
 defineOptions({
@@ -16,7 +16,7 @@ defineOptions({
 });
 
 const props = defineProps<{
-  node: GridNode;
+  node: ResolvedGridNode;
   parentScale: number;
 }>();
 
@@ -30,7 +30,9 @@ const nodeScale = computed(() => {
   return ((props.node as { scale?: number }).scale || 1) * props.parentScale;
 });
 
-function sectionOrientation(section: GridSection): 'vertical' | 'horizontal' {
+function sectionOrientation(
+  section: ResolvedGridSection,
+): 'vertical' | 'horizontal' {
   return section.orientation || 'vertical';
 }
 </script>
@@ -40,13 +42,13 @@ function sectionOrientation(section: GridSection): 'vertical' | 'horizontal' {
     v-if="node.type === 'array'"
     class="grid-array"
     :class="[
-      (node as GridArray).orientation,
-      { 'grid-array--no-wrap': (node as GridArray).wrap === false },
+      (node as ResolvedGridArray).orientation,
+      { 'grid-array--no-wrap': (node as ResolvedGridArray).wrap === false },
     ]"
-    :style="context.getArrayStyle(node as GridArray)"
+    :style="context.getArrayStyle(node as ResolvedGridArray)"
   >
     <OoTMMGridNode
-      v-for="(child, idx) in (node as GridArray).content"
+      v-for="(child, idx) in (node as ResolvedGridArray).content"
       :key="idx"
       :node="child"
       :parent-scale="nodeScale"
@@ -56,17 +58,17 @@ function sectionOrientation(section: GridSection): 'vertical' | 'horizontal' {
   <div
     v-else-if="node.type === 'section'"
     class="grid-section"
-    :style="context.getSectionStyle(node as GridSection)"
+    :style="context.getSectionStyle(node as ResolvedGridSection)"
   >
-    <div v-if="(node as GridSection).title" class="grid-section__title">
-      {{ (node as GridSection).title }}
+    <div v-if="(node as ResolvedGridSection).title" class="grid-section__title">
+      {{ (node as ResolvedGridSection).title }}
     </div>
     <div
       class="grid-section__content"
-      :class="sectionOrientation(node as GridSection)"
+      :class="sectionOrientation(node as ResolvedGridSection)"
     >
       <OoTMMGridNode
-        v-for="(child, idx) in (node as GridSection).content"
+        v-for="(child, idx) in (node as ResolvedGridSection).content"
         :key="idx"
         :node="child"
         :parent-scale="nodeScale"
@@ -76,7 +78,7 @@ function sectionOrientation(section: GridSection): 'vertical' | 'horizontal' {
 
   <div v-else-if="node.type === 'itemgrid'" class="item-grid">
     <div
-      v-for="(row, rowIdx) in (node as ItemGrid).rows"
+      v-for="(row, rowIdx) in (node as ResolvedItemGrid).rows"
       :key="rowIdx"
       class="item-row"
     >
@@ -86,8 +88,8 @@ function sectionOrientation(section: GridSection): 'vertical' | 'horizontal' {
         :item-id="itemId"
         :style="
           context.getGridItemStyle(
-            context.parseMargin((node as ItemGrid).item_margin),
-            ((node as ItemGrid).item_size || 32) * nodeScale,
+            context.parseMargin((node as ResolvedItemGrid).item_margin),
+            ((node as ResolvedItemGrid).item_size || 32) * nodeScale,
           )
         "
       />

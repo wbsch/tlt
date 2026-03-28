@@ -484,8 +484,8 @@
                 "OOT_MEDALLION_LIGHT"
               ],
               [
-                "oot_well_label",
                 "oot_gerudofortress_label",
+                "oot_well_label",
                 "oot_gerudotraining_label",
                 "oot_foresttemple_label",
                 "oot_firetemple_label",
@@ -496,10 +496,10 @@
                 "oot_chestgame_label"
               ],
               [
-                "OOT_SMALL_KEY_BOTW",
-                "OOT_KEY_RING_BOTW",
                 "OOT_SMALL_KEY_GF",
                 "OOT_KEY_RING_GF",
+                "OOT_SMALL_KEY_BOTW",
+                "OOT_KEY_RING_BOTW",
                 "OOT_SMALL_KEY_GTG",
                 "OOT_KEY_RING_GTG",
                 "OOT_SMALL_KEY_FOREST",
@@ -522,12 +522,24 @@
                 { "empty": true },
                 { "empty": true },
                 { "empty": true },
-                "OOT_BOSS_KEY_FOREST",
-                "OOT_BOSS_KEY_FIRE",
-                "OOT_BOSS_KEY_WATER",
-                "OOT_BOSS_KEY_SHADOW",
-                "OOT_BOSS_KEY_SPIRIT",
-                "OOT_BOSS_KEY_GANON"
+                {
+                  "or": ["OOT_BOSS_KEY_FOREST", { "empty": true }]
+                },
+                {
+                  "or": ["OOT_BOSS_KEY_FIRE", { "empty": true }]
+                },
+                {
+                  "or": ["OOT_BOSS_KEY_WATER", { "empty": true }]
+                },
+                {
+                  "or": ["OOT_BOSS_KEY_SHADOW", { "empty": true }]
+                },
+                {
+                  "or": ["OOT_BOSS_KEY_SPIRIT", { "empty": true }]
+                },
+                {
+                  "or": ["OOT_BOSS_KEY_GANON", { "empty": true }]
+                }
               ]
             ]
           }

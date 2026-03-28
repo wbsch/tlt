@@ -5,6 +5,7 @@ import {
   isItemGridAliasRef,
   isItemGridEmptyRef,
   isItemGridMultiActivateRef,
+  isItemGridOrRef,
   resolveItemGridRef,
 } from '../utils/itemGridRef';
 import {
@@ -13,6 +14,7 @@ import {
   type GridItemMultiActivation,
   type GridItemRefAlias,
   type GridSection,
+  type ResolvedGridArray,
 } from './itemGridSchema';
 
 // Import the grid layout JSON
@@ -290,6 +292,10 @@ const LABEL_VISIBLE_ITEM_MAP: Record<string, string[]> = {
 
 const labelItemIds = Object.keys(LABEL_VISIBLE_ITEM_MAP);
 
+function isLabelItemId(itemId: string): boolean {
+  return labelItemIds.includes(itemId);
+}
+
 function isItemVisible(itemId: string): boolean {
   if (isGridMultiActivateKey(itemId)) {
     const config = gridItemMultiActivations.value[itemId];
@@ -343,14 +349,54 @@ function resolveVisibleItemRef(itemRef: unknown): string | null {
     }
   }
 
-  return resolveItemGridRef(itemRef, (candidate: string) =>
-    isItemVisible(candidate),
+  return resolveItemGridRef(
+    itemRef,
+    (candidate: string) => (isItemVisible(candidate) ? candidate : null),
+    () => EMPTY_GRID_ITEM_ID,
   );
+}
+
+function shouldKeepHiddenGridSlot(itemRef: unknown): boolean {
+  if (isItemGridEmptyRef(itemRef)) {
+    return true;
+  }
+
+  if (isItemGridAliasRef(itemRef) || isItemGridMultiActivateRef(itemRef)) {
+    return isLabelItemId(itemRef.item);
+  }
+
+  if (typeof itemRef === 'string') {
+    if (isGridRefAliasKey(itemRef)) {
+      const ref = getGridRefFromAliasKey(itemRef);
+      const alias = gridItemRefAliases.value[ref];
+      return alias ? isLabelItemId(alias.item) : false;
+    }
+
+    const alias = gridItemRefAliases.value[itemRef];
+    if (alias) {
+      return isLabelItemId(alias.item);
+    }
+
+    return isLabelItemId(itemRef);
+  }
+
+  if (isItemGridOrRef(itemRef)) {
+    return itemRef.or.some((candidate) => shouldKeepHiddenGridSlot(candidate));
+  }
+
+  return false;
 }
 
 function filterGridRow(row: unknown[]): string[] {
   return row
-    .map((itemRef: unknown) => resolveVisibleItemRef(itemRef))
+    .map((itemRef: unknown) => {
+      const itemId = resolveVisibleItemRef(itemRef);
+      if (itemId) {
+        return itemId;
+      }
+
+      return shouldKeepHiddenGridSlot(itemRef) ? EMPTY_GRID_ITEM_ID : null;
+    })
     .filter((itemId: string | null): itemId is string => Boolean(itemId));
 }
 
@@ -394,19 +440,19 @@ function filterGridElement(element: unknown): unknown | null {
 
 const filteredOotGrid = computed(() => {
   return ootGrid.value
-    ? (filterGridElement(ootGrid.value) as GridArray | null)
+    ? (filterGridElement(ootGrid.value) as ResolvedGridArray | null)
     : null;
 });
 
 const filteredSharedGrid = computed(() => {
   return sharedGrid.value
-    ? (filterGridElement(sharedGrid.value) as GridArray | null)
+    ? (filterGridElement(sharedGrid.value) as ResolvedGridArray | null)
     : null;
 });
 
 const filteredMmGrid = computed(() => {
   return mmGrid.value
-    ? (filterGridElement(mmGrid.value) as GridArray | null)
+    ? (filterGridElement(mmGrid.value) as ResolvedGridArray | null)
     : null;
 });
 

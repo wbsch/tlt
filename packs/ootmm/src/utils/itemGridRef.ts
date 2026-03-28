@@ -1,5 +1,11 @@
+export interface ItemGridEmptyRef {
+  empty: true;
+}
+
+export type ItemGridOrCandidate = string | ItemGridEmptyRef | ItemGridOrRef;
+
 export interface ItemGridOrRef {
-  or: string[];
+  or: ItemGridOrCandidate[];
 }
 
 export interface ItemGridAliasRef {
@@ -14,10 +20,6 @@ export interface ItemGridMultiActivateRef {
   title?: string;
 }
 
-export interface ItemGridEmptyRef {
-  empty: true;
-}
-
 export type ItemGridRef =
   | string
   | ItemGridOrRef
@@ -25,13 +27,18 @@ export type ItemGridRef =
   | ItemGridMultiActivateRef
   | ItemGridEmptyRef;
 
+function isItemGridOrCandidate(value: unknown): value is ItemGridOrCandidate {
+  return (
+    typeof value === 'string' ||
+    isItemGridEmptyRef(value) ||
+    isItemGridOrRef(value)
+  );
+}
+
 export function isItemGridOrRef(value: unknown): value is ItemGridOrRef {
   if (!value || typeof value !== 'object') return false;
   const orValues = (value as { or?: unknown }).or;
-  return (
-    Array.isArray(orValues) &&
-    orValues.every((candidate) => typeof candidate === 'string')
-  );
+  return Array.isArray(orValues) && orValues.every(isItemGridOrCandidate);
 }
 
 export function isItemGridAliasRef(value: unknown): value is ItemGridAliasRef {
@@ -75,12 +82,19 @@ export function isItemGridEmptyRef(value: unknown): value is ItemGridEmptyRef {
 
 export function resolveItemGridRef(
   value: unknown,
-  exists: (itemId: string) => boolean,
+  resolveStringRef: (itemId: string) => string | null,
+  resolveEmptyRef: () => string | null = () => null,
 ): string | null {
-  if (typeof value === 'string') return exists(value) ? value : null;
+  if (typeof value === 'string') return resolveStringRef(value);
+  if (isItemGridEmptyRef(value)) return resolveEmptyRef();
   if (!isItemGridOrRef(value)) return null;
   for (const candidate of value.or) {
-    if (exists(candidate)) return candidate;
+    const resolved = resolveItemGridRef(
+      candidate,
+      resolveStringRef,
+      resolveEmptyRef,
+    );
+    if (resolved) return resolved;
   }
   return null;
 }

@@ -24,11 +24,12 @@ import {
   type GridItemMultiActivation,
   type GridItemRefAlias,
   type GridSection,
+  type ResolvedGridArray,
 } from './itemGridSchema';
 
 const props = defineProps<{
   inventory: Map<string, number>;
-  grid: GridArray;
+  grid: ResolvedGridArray;
   gridItemRefs?: Record<string, GridItemRefAlias>;
   gridItemMultiActivations?: Record<string, GridItemMultiActivation>;
   labelItemIds?: string[];
