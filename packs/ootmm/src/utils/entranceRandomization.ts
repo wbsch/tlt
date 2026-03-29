@@ -241,9 +241,16 @@ export function getExitKeyForEntrance(sourceKey: string): string | null {
 export function getExitLabel(exitKey: string): string {
   const data = ENTRANCES_RAW[exitKey];
   if (!data) return exitKey.replace(/_/g, ' ');
-  if (data.from && data.from !== 'NONE') {
-    return data.from.replace(/^(OOT|MM) /, '');
+  const fromName =
+    data.from && data.from !== 'NONE'
+      ? data.from.replace(/^(OOT|MM) /, '')
+      : null;
+  const toName =
+    data.to && data.to !== 'NONE' ? data.to.replace(/^(OOT|MM) /, '') : null;
+  if (fromName && toName) {
+    return `${fromName} to ${toName}`;
   }
+  if (fromName) return fromName;
   return exitKey.replace(/_/g, ' ');
 }
 
@@ -260,7 +267,7 @@ export function getExitEndpointLabel(exitKey: string): string {
       : '';
   const overworld =
     data.to && data.to !== 'NONE' ? data.to.replace(/^(OOT|MM) /, '') : '';
-  if (overworld && dungeonName) return `${overworld} (${dungeonName})`;
+  if (overworld && dungeonName) return `${overworld} from ${dungeonName}`;
   return overworld || dungeonName || exitKey.replace(/_/g, ' ');
 }
 

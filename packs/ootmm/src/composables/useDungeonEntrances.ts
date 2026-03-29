@@ -70,9 +70,16 @@ type MappingStats = {
 };
 
 function entranceLabel(key: string, data: EntranceData): string {
-  if (data.to && data.to !== 'NONE') {
-    return data.to.replace(/^(OOT|MM) /, '');
+  const toName =
+    data.to && data.to !== 'NONE' ? data.to.replace(/^(OOT|MM) /, '') : null;
+  const fromName =
+    data.from && data.from !== 'NONE'
+      ? data.from.replace(/^(OOT|MM) /, '')
+      : null;
+  if (toName && fromName) {
+    return `${toName} from ${fromName}`;
   }
+  if (toName) return toName;
   if (data.debug && data.debug[1]) return data.debug[1];
   return key.replace(/_/g, ' ');
 }
