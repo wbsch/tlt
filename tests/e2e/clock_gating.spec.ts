@@ -7,33 +7,21 @@ import {
 } from './helpers/tracker';
 
 /**
- * Apply the "Clocks as Items" setting (progressiveClocks: 'separate',
- * clocks: true) via the tracker's internal settings handler, then wait
- * for the settings overlay to disappear.
+ * Enable the "Clocks" setting via the Settings UI tab, then apply.
+ * progressiveClocks defaults to 'separate', so only the checkbox is needed.
  */
 async function enableClocksAsItems(page: Page): Promise<void> {
-  await page.evaluate(async () => {
-    const trackerRoot = document.querySelector('.ootmm-tracker');
-    const component = trackerRoot
-      ? (
-          trackerRoot as HTMLElement & {
-            __vueParentComponent?: Record<string, unknown>;
-          }
-        ).__vueParentComponent
-      : null;
-    const setup = component?.setupState as Record<string, unknown> | undefined;
-    const applySettings = setup?.handleSettingsChange;
-    const trackerSettings = setup?.trackerSettings;
-    if (typeof applySettings !== 'function' || !trackerSettings) {
-      throw new Error('Could not resolve settings apply handler');
-    }
+  await page.getByTestId('tab-settings').click();
 
-    await applySettings({
-      ...(trackerSettings as Record<string, unknown>),
-      clocks: true,
-      progressiveClocks: 'separate',
-    });
+  const clocksCheckbox = page.getByTestId('setting-input-clocks');
+  await expect(clocksCheckbox).toBeVisible({
+    timeout: TEST_TIMEOUTS.ELEMENT_VISIBLE,
   });
+  if (!(await clocksCheckbox.isChecked())) {
+    await clocksCheckbox.check();
+  }
+
+  await page.getByTestId('apply-settings-button').click();
 
   await expect(page.getByTestId('applying-settings-overlay')).toBeHidden({
     timeout: TEST_TIMEOUTS.SETTINGS_APPLY,
@@ -41,28 +29,33 @@ async function enableClocksAsItems(page: Page): Promise<void> {
 }
 
 /**
- * Read the set of reachable location IDs directly from the tracker's
- * internal state. Returns a plain string array suitable for pattern
- * matching.
+ * Search for a term in the always-visible Locations sidebar and return
+ * the count of total matching and reachable location items.
  */
-async function getReachableLocationIds(page: Page): Promise<string[]> {
-  return page.evaluate(() => {
-    const trackerRoot = document.querySelector('.ootmm-tracker');
-    const component = trackerRoot
-      ? (
-          trackerRoot as HTMLElement & {
-            __vueParentComponent?: Record<string, unknown>;
-          }
-        ).__vueParentComponent
-      : null;
-    const setup = component?.setupState;
-    const reachable = setup?.reachableLocationIds;
-    // The ref holds a Set<string>; unwrap .value if needed
-    const raw = reachable?.value ?? reachable;
-    if (raw instanceof Set) return [...raw];
-    if (Array.isArray(raw)) return raw as string[];
-    return [];
+async function queryLocations(
+  page: Page,
+  searchTerm: string,
+): Promise<{ total: number; reachable: number }> {
+  const locationsPanel = page.locator('.locations-panel');
+  await expect(locationsPanel).toBeVisible({
+    timeout: TEST_TIMEOUTS.ELEMENT_VISIBLE,
   });
+
+  // Reset reachability filter so all locations are shown
+  await locationsPanel
+    .locator('[aria-label="Reachability filter"]')
+    .getByRole('button', { name: /^All\b/ })
+    .click();
+
+  await locationsPanel.getByPlaceholder('Search locations...').fill(searchTerm);
+
+  const allItems = locationsPanel.locator('.location-item');
+  const reachableItems = locationsPanel.locator('.location-item.reachable');
+
+  return {
+    total: await allItems.count(),
+    reachable: await reachableItems.count(),
+  };
 }
 
 /**
@@ -77,8 +70,8 @@ async function clickItem(page: Page, itemId: string): Promise<void> {
 }
 
 const TARGET_LOCATIONS = [
-  { pattern: /Woods of Mystery Grotto/i, label: 'Woods of Mystery Grotto' },
-  { pattern: /Stock Pot Inn Room Key/i, label: 'Stock Pot Inn Room Key' },
+  { search: 'Woods of Mystery Grotto', label: 'Woods of Mystery Grotto' },
+  { search: 'Stock Pot Inn Room Key', label: 'Stock Pot Inn Room Key' },
 ];
 
 test.describe('OoTMM clock gating', () => {
@@ -101,13 +94,16 @@ test.describe('OoTMM clock gating', () => {
     // Wait for pathfinder to settle
     await waitForReachableFraction(page, TEST_TIMEOUTS.DEFAULT_EXPECT);
 
-    const reachable = await getReachableLocationIds(page);
-    for (const { pattern, label } of TARGET_LOCATIONS) {
-      const matches = reachable.filter((id) => pattern.test(id));
+    for (const { search, label } of TARGET_LOCATIONS) {
+      const { total, reachable } = await queryLocations(page, search);
       expect(
-        matches,
+        total,
+        `"${label}" should exist in the locations list`,
+      ).toBeGreaterThan(0);
+      expect(
+        reachable,
         `"${label}" must NOT be reachable without clock items`,
-      ).toHaveLength(0);
+      ).toBe(0);
     }
   });
 
@@ -117,14 +113,13 @@ test.describe('OoTMM clock gating', () => {
     await page.getByTestId('debug-activate-all-button').click();
     await waitForAllReachable(page);
 
-    // Poll until both target locations appear in the reachable set
-    // (pathfinder may take a moment to propagate all time-gated checks)
-    for (const { pattern, label } of TARGET_LOCATIONS) {
+    // Poll until both target locations appear as reachable in the UI
+    for (const { search, label } of TARGET_LOCATIONS) {
       await expect
         .poll(
           async () => {
-            const reachable = await getReachableLocationIds(page);
-            return reachable.filter((id) => pattern.test(id)).length;
+            const { reachable } = await queryLocations(page, search);
+            return reachable;
           },
           {
             message: `"${label}" must be reachable with full inventory`,
