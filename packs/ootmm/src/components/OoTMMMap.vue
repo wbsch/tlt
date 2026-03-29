@@ -150,6 +150,7 @@ type SubmenuMarkerRuntime = {
 type EntranceMenuEntryRuntime = {
   key: string;
   label: string;
+  displayLabel: string;
   game: 'oot' | 'mm';
   pool: DungeonEntranceEntry['pool'];
 };
@@ -928,6 +929,7 @@ function toEntranceMenuEntry(
   return {
     key: entry.key,
     label: entry.label,
+    displayLabel: entry.displayLabel,
     game: entry.game,
     pool: entry.pool,
   };
@@ -2523,7 +2525,7 @@ onBeforeUnmount(() => {
             class="map-entrance-list__row"
           >
             <label class="map-entrance-list__label" :title="entry.key">
-              {{ entry.label }}
+              {{ entry.displayLabel }}
             </label>
             <select
               class="map-entrance-list__select"

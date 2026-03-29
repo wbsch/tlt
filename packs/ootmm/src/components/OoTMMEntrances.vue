@@ -566,7 +566,7 @@ function setExitDropdownInputRef(exitKey: string, el: unknown) {
             class="entrance-row"
           >
             <label class="entrance-label" :title="entrance.key">
-              {{ entrance.label }}
+              {{ entrance.displayLabel }}
             </label>
             <div class="entrance-select-wrap">
               <input

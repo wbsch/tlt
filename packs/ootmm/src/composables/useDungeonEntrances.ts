@@ -36,6 +36,7 @@ const ENTRANCES_RAW =
 export type DungeonEntranceEntry = {
   key: string;
   label: string;
+  displayLabel: string;
   game: 'oot' | 'mm';
   type: string;
   pool: TrackedEntrancePool;
@@ -84,6 +85,19 @@ function entranceLabel(key: string, data: EntranceData): string {
   return key.replace(/_/g, ' ');
 }
 
+function entranceDisplayLabel(key: string, data: EntranceData): string {
+  const toName =
+    data.to && data.to !== 'NONE' ? data.to.replace(/^(OOT|MM) /, '') : null;
+  const fromName =
+    data.from && data.from !== 'NONE'
+      ? data.from.replace(/^(OOT|MM) /, '')
+      : null;
+  if (fromName && toName) {
+    return `${fromName} to ${toName}`;
+  }
+  return entranceLabel(key, data);
+}
+
 export function useDungeonEntrances() {
   const sessionStore = useOoTMMSessionStore();
   const { trackerSettings, entranceOverrides, reachableEntranceIdSet } =
@@ -108,6 +122,7 @@ export function useDungeonEntrances() {
       entries.push({
         key,
         label: entranceLabel(key, data),
+        displayLabel: entranceDisplayLabel(key, data),
         game: data.game as 'oot' | 'mm',
         type: data.type,
         pool,
@@ -155,7 +170,7 @@ export function useDungeonEntrances() {
     const query = entrancesSearchQuery.value;
     if (query.trim()) {
       result = result.filter((entrance) =>
-        matchesSearchTerms([entrance.label], query),
+        matchesSearchTerms([entrance.displayLabel, entrance.label], query),
       );
     }
 
