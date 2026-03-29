@@ -22,7 +22,10 @@ import * as DataMod from '@ootmm/data';
 
 import { ITEM_DATABASE } from './data/items';
 import { LOCATION_CODE_CATALOG } from './data/locationCatalog';
-import { getActiveEntranceKeys, isTrackedEntranceExitType } from './utils/entranceRandomization';
+import {
+  getActiveEntranceKeys,
+  isTrackedEntranceExitType,
+} from './utils/entranceRandomization';
 
 const resolveExport = <T>(mod: unknown, key: string): T =>
   (mod as Record<string, T>)?.[key] ??

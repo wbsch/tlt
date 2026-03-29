@@ -10,6 +10,7 @@ import {
   computeExitOverrides,
   getExitKeyForEntrance,
   getExitLabel,
+  getExitEndpointLabel,
   deriveEntranceFromExitMapping,
   type TrackedEntrancePool,
 } from '../utils/entranceRandomization';
@@ -209,6 +210,15 @@ export function useDungeonEntrances() {
     return false;
   }
 
+  function sortOptionsByGameThenLabel<
+    T extends { game: string; label: string },
+  >(opts: T[]): T[] {
+    return [...opts].sort((a, b) => {
+      if (a.game !== b.game) return a.game === 'oot' ? -1 : 1;
+      return a.label.localeCompare(b.label);
+    });
+  }
+
   function destinationOptionsForEntrance(
     entry: Pick<DungeonEntranceEntry, 'key' | 'game' | 'pool'>,
   ) {
@@ -224,7 +234,9 @@ export function useDungeonEntrances() {
       return dest.game === entry.game;
     });
 
-    return opts.filter((dest) => !isDestinationUsed(dest.value, entry.key));
+    return sortOptionsByGameThenLabel(
+      opts.filter((dest) => !isDestinationUsed(dest.value, entry.key)),
+    );
   }
 
   const ootEntrances = computed(() =>
@@ -310,7 +322,7 @@ export function useDungeonEntrances() {
   const exitDestinationOptions = computed(() => {
     return activeExitEntries.value.map((entry) => ({
       value: entry.key,
-      label: entry.label,
+      label: getExitEndpointLabel(entry.key),
       game: entry.game,
       pool: entry.pool,
     }));
@@ -331,8 +343,8 @@ export function useDungeonEntrances() {
       return dest.game === exit.game;
     });
 
-    return opts.filter(
-      (dest) => !isExitDestinationUsed(dest.value, exit.key),
+    return sortOptionsByGameThenLabel(
+      opts.filter((dest) => !isExitDestinationUsed(dest.value, exit.key)),
     );
   }
 
@@ -350,6 +362,22 @@ export function useDungeonEntrances() {
       });
     }
     return entries;
+  });
+
+  /** Entrances filtered by mapping + reachability only (no search query). Used by the map. */
+  const mapFilteredEntrances = computed<DungeonEntranceEntry[]>(() => {
+    const filter = entrancesReachabilityFilter.value;
+    let result = mappingScopedEntrances.value;
+
+    if (filter !== 'all') {
+      const reachableSet = reachableEntranceIdSet.value;
+      result = result.filter((entrance) => {
+        const isReachable = reachableSet.has(entrance.key);
+        return filter === 'reachable' ? isReachable : !isReachable;
+      });
+    }
+
+    return result;
   });
 
   const filteredExitEntries = computed<ExitEntry[]>(() => {
@@ -374,9 +402,31 @@ export function useDungeonEntrances() {
     }
 
     if (query.trim()) {
-      result = result.filter((exit) =>
-        matchesSearchTerms([exit.label], query),
-      );
+      result = result.filter((exit) => matchesSearchTerms([exit.label], query));
+    }
+
+    return result;
+  });
+
+  /** Exits filtered by mapping + reachability only (no search query). Used by the map. */
+  const mapFilteredExitEntries = computed<ExitEntry[]>(() => {
+    const mappingFilter = entrancesMappingFilter.value;
+    const reachFilter = entrancesReachabilityFilter.value;
+    let result = activeExitEntries.value;
+
+    if (mappingFilter !== 'all') {
+      result = result.filter((exit) => {
+        const mapped = isExitMapped(exit.key);
+        return mappingFilter === 'mapped' ? mapped : !mapped;
+      });
+    }
+
+    if (reachFilter !== 'all') {
+      const reachableSet = reachableEntranceIdSet.value;
+      result = result.filter((exit) => {
+        const isReachable = reachableSet.has(exit.key);
+        return reachFilter === 'reachable' ? isReachable : !isReachable;
+      });
     }
 
     return result;
@@ -399,6 +449,8 @@ export function useDungeonEntrances() {
     hasAnyOverrides,
     activeExitEntries,
     filteredExitEntries,
+    mapFilteredEntrances,
+    mapFilteredExitEntries,
     exitOverridesMap,
     isExitMapped,
     getExitDestination,

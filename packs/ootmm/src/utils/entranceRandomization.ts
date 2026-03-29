@@ -236,7 +236,7 @@ export function getExitKeyForEntrance(sourceKey: string): string | null {
 }
 
 /**
- * Get the label for an exit key.
+ * Get the label for an exit key (the dungeon you're exiting from).
  */
 export function getExitLabel(exitKey: string): string {
   const data = ENTRANCES_RAW[exitKey];
@@ -245,6 +245,23 @@ export function getExitLabel(exitKey: string): string {
     return data.from.replace(/^(OOT|MM) /, '');
   }
   return exitKey.replace(/_/g, ' ');
+}
+
+/**
+ * Get a label for an exit key when used as a destination option.
+ * Shows overworld location + dungeon name, e.g. "Desert Colossus Spirit Exit (Spirit Temple)".
+ */
+export function getExitEndpointLabel(exitKey: string): string {
+  const data = ENTRANCES_RAW[exitKey];
+  if (!data) return exitKey.replace(/_/g, ' ');
+  const dungeonName =
+    data.from && data.from !== 'NONE'
+      ? data.from.replace(/^(OOT|MM) /, '')
+      : '';
+  const overworld =
+    data.to && data.to !== 'NONE' ? data.to.replace(/^(OOT|MM) /, '') : '';
+  if (overworld && dungeonName) return `${overworld} (${dungeonName})`;
+  return overworld || dungeonName || exitKey.replace(/_/g, ' ');
 }
 
 /**

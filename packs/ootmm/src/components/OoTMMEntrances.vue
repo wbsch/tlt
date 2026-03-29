@@ -3,7 +3,10 @@ import { computed, ref, nextTick } from 'vue';
 import { storeToRefs } from 'pinia';
 import { useOoTMMUiStore } from '../stores/ootmmUi';
 import { useDungeonEntrances } from '../composables/useDungeonEntrances';
-import type { DungeonEntranceEntry, ExitEntry } from '../composables/useDungeonEntrances';
+import type {
+  DungeonEntranceEntry,
+  ExitEntry,
+} from '../composables/useDungeonEntrances';
 import { selectSearchInputText } from '../utils/input';
 import { matchesSearchTerms } from '../utils/search';
 
@@ -654,7 +657,10 @@ function setExitDropdownInputRef(exitKey: string, el: unknown) {
               :key="exit.key"
               class="entrance-row exit-row"
             >
-              <label class="entrance-label exit-label" :title="exit.key">
+              <label
+                class="entrance-label exit-label"
+                :title="exit.sourceEntranceKey"
+              >
                 {{ exit.label }}
               </label>
               <div class="entrance-select-wrap">
@@ -669,9 +675,7 @@ function setExitDropdownInputRef(exitKey: string, el: unknown) {
                   :data-selected="getExitSelectedDestination(exit.key) || ''"
                   type="text"
                   :placeholder="
-                    getExitSelectedDestination(exit.key)
-                      ? ''
-                      : '— Not mapped —'
+                    getExitSelectedDestination(exit.key) ? '' : '— Not mapped —'
                   "
                   autocomplete="off"
                   role="combobox"
@@ -681,7 +685,8 @@ function setExitDropdownInputRef(exitKey: string, el: unknown) {
                   @focus="handleExitDropdownFocus(exit.key)"
                   @click="handleExitDropdownClick(exit.key)"
                   @input="
-                    exitDropdownQuery = ($event.target as HTMLInputElement).value;
+                    exitDropdownQuery = ($event.target as HTMLInputElement)
+                      .value;
                     handleExitDropdownInput(exit.key);
                   "
                   @blur="handleExitDropdownBlur()"
@@ -712,16 +717,13 @@ function setExitDropdownInputRef(exitKey: string, el: unknown) {
                     :key="dest.value"
                     class="entrance-dest-option"
                     :class="{
-                      'is-highlighted':
-                        index === exitDropdownHighlightedIndex,
+                      'is-highlighted': index === exitDropdownHighlightedIndex,
                     }"
                     :data-value="dest.value"
                     role="option"
                     :aria-selected="index === exitDropdownHighlightedIndex"
                     @mousedown.prevent
-                    @click="
-                      handleExitDropdownOptionClick(exit.key, dest.value)
-                    "
+                    @click="handleExitDropdownOptionClick(exit.key, dest.value)"
                   >
                     <span class="entrance-dest-option-label">{{
                       dest.label

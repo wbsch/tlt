@@ -447,12 +447,12 @@ const { resolveCodeToCheckIds } = useLocationCodeLookup(
 const {
   allEntrances: allDungeonEntrances,
   activeEntrances: activeDungeonEntrances,
-  filteredEntrances: filteredDungeonEntrances,
+  mapFilteredEntrances: filteredDungeonEntrances,
   destinationOptionsForEntrance,
   getSelectedDestination,
   setSelectedDestination,
   activeExitEntries,
-  filteredExitEntries,
+  mapFilteredExitEntries: filteredExitEntries,
   getExitSelectedDestination,
   setExitDestination,
   destinationOptionsForExit,
@@ -1091,7 +1091,10 @@ const markerViewModels = computed<MarkerRuntime[]>(() => {
       const hasVisibleChecks = visibleSubmenuMarkers.length > 0;
       // Build exit entries for this marker's entrance IDs
       const activeExitById = new Map(
-        activeExitEntries.value.map((entry) => [entry.sourceEntranceKey, entry]),
+        activeExitEntries.value.map((entry) => [
+          entry.sourceEntranceKey,
+          entry,
+        ]),
       );
       const filteredExitById = new Map(
         filteredExitEntries.value.map((entry) => [
@@ -1121,7 +1124,8 @@ const markerViewModels = computed<MarkerRuntime[]>(() => {
           : activeSubmenuEntrances.length === 0
             ? false
             : visibleSubmenuEntrances.length > 0;
-      const isDevVisible = hasVisibleChecks || hasVisibleEntrances || hasVisibleExits;
+      const isDevVisible =
+        hasVisibleChecks || hasVisibleEntrances || hasVisibleExits;
 
       return {
         type: 'submenu',
@@ -1142,7 +1146,8 @@ const markerViewModels = computed<MarkerRuntime[]>(() => {
         ),
         isVisible: props.devMode
           ? isDevVisible
-          : settingsVisible && (hasVisibleChecks || hasVisibleEntrances || hasVisibleExits),
+          : settingsVisible &&
+            (hasVisibleChecks || hasVisibleEntrances || hasVisibleExits),
       };
     }
 
@@ -1888,8 +1893,10 @@ function handleWheel(event: WheelEvent): void {
     event.target instanceof Node &&
     submenuPanelEl.contains(event.target)
   ) {
-    if ((activePanelMarker.value?.entranceEntries.length ?? 0) === 0 &&
-        (activePanelMarker.value?.exitEntries.length ?? 0) === 0) {
+    if (
+      (activePanelMarker.value?.entranceEntries.length ?? 0) === 0 &&
+      (activePanelMarker.value?.exitEntries.length ?? 0) === 0
+    ) {
       return;
     }
   }
@@ -2556,7 +2563,10 @@ onBeforeUnmount(() => {
             :key="exit.key"
             class="map-entrance-list__row"
           >
-            <label class="map-entrance-list__label" :title="exit.key">
+            <label
+              class="map-entrance-list__label"
+              :title="exit.sourceEntranceKey"
+            >
               {{ exit.label }}
             </label>
             <select
