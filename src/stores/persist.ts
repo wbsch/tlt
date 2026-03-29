@@ -11,6 +11,7 @@ export type PersistConfig = {
   key: string;
   paths: string[];
   hydrate: (raw: Record<string, unknown>) => Record<string, unknown>;
+  serialize?: (state: Record<string, unknown>) => Record<string, unknown>;
 };
 
 export type PersistStoreId = 'app' | 'ootmm-ui' | 'ootmm-session';
@@ -30,6 +31,31 @@ const VALID_ENTRANCE_MAPPING_FILTERS = new Set(['all', 'mapped', 'unmapped']);
 
 function isPlainObject(value: unknown): value is Record<string, unknown> {
   return Boolean(value) && typeof value === 'object' && !Array.isArray(value);
+}
+
+/**
+ * Strip `plando.entrances` from a settings object.
+ *
+ * `entranceOverrides` is the source of truth for user entrance mappings;
+ * `plando.entrances` inside `trackerSettings` is a transient copy that the
+ * tracker contaminates with self-mappings during initialization. Persisting
+ * both is redundant, so we strip the derived copy.
+ */
+function stripPlandoEntrancesFromSettings(
+  settings: Record<string, unknown>,
+): Record<string, unknown> {
+  const plando = settings.plando;
+  if (!plando || typeof plando !== 'object' || Array.isArray(plando)) {
+    return settings;
+  }
+  const { entrances: _, ...rest } = plando as Record<string, unknown>;
+  const result = { ...settings };
+  if (Object.keys(rest).length > 0) {
+    result.plando = rest;
+  } else {
+    delete result.plando;
+  }
+  return result;
 }
 
 /** Maximum length for persisted UI string values (search queries, etc.). */
@@ -331,9 +357,22 @@ export const PERSIST_CONFIGS: Record<PersistStoreId, PersistConfig> = {
         ? { entranceOverrides: stringRecord(raw.entranceOverrides) }
         : {}),
       ...(isPlainObject(raw.trackerSettings)
-        ? { trackerSettings: sanitizeSettingsObject(raw.trackerSettings) }
+        ? {
+            trackerSettings: stripPlandoEntrancesFromSettings(
+              sanitizeSettingsObject(raw.trackerSettings),
+            ),
+          }
         : {}),
     }),
+    serialize: (picked) => {
+      if (!isPlainObject(picked.trackerSettings)) return picked;
+      return {
+        ...picked,
+        trackerSettings: stripPlandoEntrancesFromSettings(
+          picked.trackerSettings as Record<string, unknown>,
+        ),
+      };
+    },
   },
 };
 
@@ -390,10 +429,13 @@ export function piniaLocalStoragePlugin({ store }: PiniaPluginContext) {
   store.$subscribe(
     (_mutation, state) => {
       try {
-        const next = pickPersistedState(
+        let next = pickPersistedState(
           state as Record<string, unknown>,
           config.paths,
         );
+        if (config.serialize) {
+          next = config.serialize(next);
+        }
         window.localStorage.setItem(config.key, JSON.stringify(next));
       } catch (error) {
         console.warn(`[Persist] Failed to persist "${store.$id}":`, error);
