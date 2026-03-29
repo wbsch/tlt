@@ -1070,10 +1070,6 @@ function setExitDropdownInputRef(exitKey: string, el: unknown) {
   margin-bottom: 0.15rem;
 }
 
-.exit-row {
-  opacity: 0.85;
-}
-
 .exit-label {
   color: #9ca3af;
 }
