@@ -521,7 +521,10 @@ function setExitDropdownInputRef(exitKey: string, el: unknown) {
       </p>
     </div>
 
-    <div v-else-if="filteredEntrances.length === 0" class="no-entrances">
+    <div
+      v-else-if="filteredEntrances.length === 0 && filteredExitEntries.length === 0"
+      class="no-entrances"
+    >
       <p>No entrances match the current filters.</p>
     </div>
 

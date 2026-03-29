@@ -542,6 +542,38 @@ export class OoTMMTracker implements TrackerPack {
     const entranceResult = entrancePass.run();
     this.worlds = entranceResult.worlds;
 
+    // Save exit expressions for tracked exit-type keys from the remapped
+    // world graph.  These are used to compute exit reachability in the UI.
+    // IMPORTANT: This must happen BEFORE disconnecting unmapped entrances,
+    // otherwise the exit edges (e.g. Link's House -> Kokiri Forest) are
+    // already deleted and the expressions can't be captured.
+    this.savedExitExitExprs = new Map();
+    if (isErActive) {
+      for (const world of this.worlds) {
+        const areas = (world as Record<string, unknown>).areas as Record<
+          string,
+          { exits?: Record<string, unknown> }
+        >;
+        for (const [key, data] of Object.entries(ENTRANCES_DATA)) {
+          if (!isTrackedEntranceExitType(data.type)) continue;
+          if (data.from === 'NONE' || data.to === 'NONE') continue;
+          // Only save exits whose source entrance is active
+          const sourceKey = data.reverse?.trim();
+          if (!sourceKey || !activeEntranceKeys.has(sourceKey)) continue;
+
+          const fromArea = areas[data.from];
+          const exitExpr = fromArea?.exits?.[data.to];
+          if (exitExpr) {
+            this.savedExitExitExprs.set(key, {
+              from: data.from,
+              expr: exitExpr,
+            });
+          }
+        }
+        break;
+      }
+    }
+
     // Disconnect unmapped tracked entrances so their checks are unreachable.
     // We self-mapped them above to prevent random shuffling, but now we remove
     // the exit connections so the pathfinder can't reach them.
@@ -617,35 +649,6 @@ export class OoTMMTracker implements TrackerPack {
             }
           }
         }
-      }
-    }
-
-    // Save exit expressions for tracked exit-type keys from the remapped
-    // world graph.  These are used to compute exit reachability in the UI.
-    this.savedExitExitExprs = new Map();
-    if (isErActive) {
-      for (const world of this.worlds) {
-        const areas = (world as Record<string, unknown>).areas as Record<
-          string,
-          { exits?: Record<string, unknown> }
-        >;
-        for (const [key, data] of Object.entries(ENTRANCES_DATA)) {
-          if (!isTrackedEntranceExitType(data.type)) continue;
-          if (data.from === 'NONE' || data.to === 'NONE') continue;
-          // Only save exits whose source entrance is active
-          const sourceKey = data.reverse?.trim();
-          if (!sourceKey || !activeEntranceKeys.has(sourceKey)) continue;
-
-          const fromArea = areas[data.from];
-          const exitExpr = fromArea?.exits?.[data.to];
-          if (exitExpr) {
-            this.savedExitExitExprs.set(key, {
-              from: data.from,
-              expr: exitExpr,
-            });
-          }
-        }
-        break;
       }
     }
 

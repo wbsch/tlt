@@ -52,6 +52,8 @@ import {
   getActiveEntranceKeys,
   normalizeTrackedEntranceKey,
   getTrackedEntranceKeysForBinding,
+  getExitKeyForEntrance,
+  computeExitOverrides,
 } from '../utils/entranceRandomization';
 import * as ItemsMod from '@ootmm/core/items/index';
 import * as NamesMod from '@ootmm/core/names';
@@ -661,6 +663,7 @@ const mapSelectorVisibleEntranceCountByMap = computed(() => {
   const mapFilter = entrancesMappingFilter.value;
   const reachableSet = reachableEntranceIdSet.value;
   const overrides = entranceOverrides.value;
+  const exitOverrides = computeExitOverrides(overrides);
 
   for (const mapDef of selectableMapDefs.value) {
     const entranceIds = entrancesByMap.get(mapDef.id);
@@ -670,13 +673,37 @@ const mapSelectorVisibleEntranceCountByMap = computed(() => {
     }
     let count = 0;
     for (const eid of entranceIds) {
+      // Count entrance
       const isMapped = (overrides[eid] ?? '').trim().length > 0;
-      if (mapFilter === 'mapped' && !isMapped) continue;
-      if (mapFilter === 'unmapped' && isMapped) continue;
+      const entrancePassesMapping =
+        mapFilter === 'all' ||
+        (mapFilter === 'mapped' && isMapped) ||
+        (mapFilter === 'unmapped' && !isMapped);
       const isReachable = reachableSet.has(eid);
-      if (reachFilter === 'reachable' && !isReachable) continue;
-      if (reachFilter === 'unreachable' && isReachable) continue;
-      count += 1;
+      const entrancePassesReachability =
+        reachFilter === 'all' ||
+        (reachFilter === 'reachable' && isReachable) ||
+        (reachFilter === 'unreachable' && !isReachable);
+      if (entrancePassesMapping && entrancePassesReachability) {
+        count += 1;
+      }
+      // Count exit
+      const exitKey = getExitKeyForEntrance(eid);
+      if (exitKey) {
+        const isExitMapped = (exitOverrides[exitKey] ?? '').trim().length > 0;
+        const exitPassesMapping =
+          mapFilter === 'all' ||
+          (mapFilter === 'mapped' && isExitMapped) ||
+          (mapFilter === 'unmapped' && !isExitMapped);
+        const isExitReachable = reachableSet.has(exitKey);
+        const exitPassesReachability =
+          reachFilter === 'all' ||
+          (reachFilter === 'reachable' && isExitReachable) ||
+          (reachFilter === 'unreachable' && !isExitReachable);
+        if (exitPassesMapping && exitPassesReachability) {
+          count += 1;
+        }
+      }
     }
     byMap.set(mapDef.id, count);
   }

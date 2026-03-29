@@ -1078,12 +1078,6 @@ const markerViewModels = computed<MarkerRuntime[]>(() => {
           visibleSubmenuCheckIds.add(checkId),
         );
       });
-      const countDigitImages =
-        visibleSubmenuCheckIds.size > 1
-          ? String(visibleSubmenuCheckIds.size)
-              .split('')
-              .map((digit) => resolveDigitImage(digit))
-          : [];
       const settingsVisible = matchesMapSettingsVisibility(
         markerDef.visibleWhen,
         props.settings,
@@ -1124,6 +1118,16 @@ const markerViewModels = computed<MarkerRuntime[]>(() => {
           : activeSubmenuEntrances.length === 0
             ? false
             : visibleSubmenuEntrances.length > 0;
+      const totalVisibleCount =
+        visibleSubmenuCheckIds.size +
+        visibleSubmenuEntrances.length +
+        visibleSubmenuExits.length;
+      const countDigitImages =
+        totalVisibleCount > 1
+          ? String(totalVisibleCount)
+              .split('')
+              .map((digit) => resolveDigitImage(digit))
+          : [];
       const isDevVisible =
         hasVisibleChecks || hasVisibleEntrances || hasVisibleExits;
 

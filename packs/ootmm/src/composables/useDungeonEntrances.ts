@@ -122,25 +122,26 @@ export function useDungeonEntrances() {
     });
   });
 
-  const mappingScopedEntrances = computed<DungeonEntranceEntry[]>(() => {
-    const filter = entrancesMappingFilter.value;
+  // Reachability filter is applied first; mapping is a subset of it.
+  const reachabilityScopedEntrances = computed<DungeonEntranceEntry[]>(() => {
+    const filter = entrancesReachabilityFilter.value;
     if (filter === 'all') return activeEntrances.value;
 
+    const reachableSet = reachableEntranceIdSet.value;
     return activeEntrances.value.filter((entrance) => {
-      const mapped = isEntranceMapped(entrance.key);
-      return filter === 'mapped' ? mapped : !mapped;
+      const isReachable = reachableSet.has(entrance.key);
+      return filter === 'reachable' ? isReachable : !isReachable;
     });
   });
 
   const filteredEntrances = computed<DungeonEntranceEntry[]>(() => {
-    const filter = entrancesReachabilityFilter.value;
-    let result = mappingScopedEntrances.value;
+    const mappingFilter = entrancesMappingFilter.value;
+    let result = reachabilityScopedEntrances.value;
 
-    if (filter !== 'all') {
-      const reachableSet = reachableEntranceIdSet.value;
+    if (mappingFilter !== 'all') {
       result = result.filter((entrance) => {
-        const isReachable = reachableSet.has(entrance.key);
-        return filter === 'reachable' ? isReachable : !isReachable;
+        const mapped = isEntranceMapped(entrance.key);
+        return mappingFilter === 'mapped' ? mapped : !mapped;
       });
     }
 
@@ -155,18 +156,27 @@ export function useDungeonEntrances() {
   });
 
   const reachabilityStats = computed<ReachabilityStats>(() => {
-    const total = mappingScopedEntrances.value.length;
-    const reachable = mappingScopedEntrances.value.filter((entrance) =>
-      reachableEntranceIdSet.value.has(entrance.key),
+    const reachableSet = reachableEntranceIdSet.value;
+    const entranceReachable = activeEntrances.value.filter((entrance) =>
+      reachableSet.has(entrance.key),
     ).length;
+    const exitReachable = activeExitEntries.value.filter((exit) =>
+      reachableSet.has(exit.key),
+    ).length;
+    const total = activeEntrances.value.length + activeExitEntries.value.length;
+    const reachable = entranceReachable + exitReachable;
     return { total, reachable, unreachable: total - reachable };
   });
 
   const mappingStats = computed<MappingStats>(() => {
-    const total = activeEntrances.value.length;
-    const mapped = activeEntrances.value.filter((entrance) =>
-      isEntranceMapped(entrance.key),
+    const entrances = reachabilityScopedEntrances.value;
+    const exits = reachabilityScopedExits.value;
+    const entranceMapped = entrances.filter((e) =>
+      isEntranceMapped(e.key),
     ).length;
+    const exitMapped = exits.filter((e) => isExitMapped(e.key)).length;
+    const total = entrances.length + exits.length;
+    const mapped = entranceMapped + exitMapped;
     return { total, mapped, unmapped: total - mapped };
   });
 
@@ -364,40 +374,41 @@ export function useDungeonEntrances() {
     return entries;
   });
 
-  /** Entrances filtered by mapping + reachability only (no search query). Used by the map. */
+  /** Entrances filtered by reachability + mapping only (no search query). Used by the map. */
   const mapFilteredEntrances = computed<DungeonEntranceEntry[]>(() => {
-    const filter = entrancesReachabilityFilter.value;
-    let result = mappingScopedEntrances.value;
+    const mappingFilter = entrancesMappingFilter.value;
+    let result = reachabilityScopedEntrances.value;
 
-    if (filter !== 'all') {
-      const reachableSet = reachableEntranceIdSet.value;
+    if (mappingFilter !== 'all') {
       result = result.filter((entrance) => {
-        const isReachable = reachableSet.has(entrance.key);
-        return filter === 'reachable' ? isReachable : !isReachable;
+        const mapped = isEntranceMapped(entrance.key);
+        return mappingFilter === 'mapped' ? mapped : !mapped;
       });
     }
 
     return result;
   });
 
+  const reachabilityScopedExits = computed<ExitEntry[]>(() => {
+    const filter = entrancesReachabilityFilter.value;
+    if (filter === 'all') return activeExitEntries.value;
+
+    const reachableSet = reachableEntranceIdSet.value;
+    return activeExitEntries.value.filter((exit) => {
+      const isReachable = reachableSet.has(exit.key);
+      return filter === 'reachable' ? isReachable : !isReachable;
+    });
+  });
+
   const filteredExitEntries = computed<ExitEntry[]>(() => {
     const mappingFilter = entrancesMappingFilter.value;
-    const reachFilter = entrancesReachabilityFilter.value;
     const query = entrancesSearchQuery.value;
-    let result = activeExitEntries.value;
+    let result = reachabilityScopedExits.value;
 
     if (mappingFilter !== 'all') {
       result = result.filter((exit) => {
         const mapped = isExitMapped(exit.key);
         return mappingFilter === 'mapped' ? mapped : !mapped;
-      });
-    }
-
-    if (reachFilter !== 'all') {
-      const reachableSet = reachableEntranceIdSet.value;
-      result = result.filter((exit) => {
-        const isReachable = reachableSet.has(exit.key);
-        return reachFilter === 'reachable' ? isReachable : !isReachable;
       });
     }
 
@@ -408,24 +419,15 @@ export function useDungeonEntrances() {
     return result;
   });
 
-  /** Exits filtered by mapping + reachability only (no search query). Used by the map. */
+  /** Exits filtered by reachability + mapping only (no search query). Used by the map. */
   const mapFilteredExitEntries = computed<ExitEntry[]>(() => {
     const mappingFilter = entrancesMappingFilter.value;
-    const reachFilter = entrancesReachabilityFilter.value;
-    let result = activeExitEntries.value;
+    let result = reachabilityScopedExits.value;
 
     if (mappingFilter !== 'all') {
       result = result.filter((exit) => {
         const mapped = isExitMapped(exit.key);
         return mappingFilter === 'mapped' ? mapped : !mapped;
-      });
-    }
-
-    if (reachFilter !== 'all') {
-      const reachableSet = reachableEntranceIdSet.value;
-      result = result.filter((exit) => {
-        const isReachable = reachableSet.has(exit.key);
-        return reachFilter === 'reachable' ? isReachable : !isReachable;
       });
     }
 
