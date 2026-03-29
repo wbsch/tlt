@@ -25,6 +25,7 @@ import { LOCATION_CODE_CATALOG } from './data/locationCatalog';
 import {
   getActiveEntranceKeys,
   isTrackedEntranceExitType,
+  INTERIOR_GAME_LINK_SOURCE_KEYS,
 } from './utils/entranceRandomization';
 
 const resolveExport = <T>(mod: unknown, key: string): T =>
@@ -207,6 +208,26 @@ const FISHING_POND_ALWAYS_INCLUDED_ITEM_IDS = new Set([
   'OOT_FISHING_POND_CHILD_LOACH_14LBS',
   'OOT_FISHING_POND_ADULT_LOACH_29LBS',
 ]);
+
+/**
+ * Vanilla cross-game entrance mappings for game-link source keys (OoTMM combined mode).
+ * When erIndoorsGameLinks is active but the user hasn't assigned these entrances,
+ * the tracker must use the vanilla cross-game mappings instead of self-mapping,
+ * otherwise the OOT↔MM connection is broken.
+ * See OoTMM LogicPassEntrances.connectGamesDefault().
+ */
+const GAME_LINK_VANILLA_MAPPING: Record<string, Record<string, string>> = {
+  ootmm: {
+    OOT_SHOP_MASKS: 'MM_CLOCK_TOWN_FROM_CLOCK_TOWER',
+    MM_CLOCK_TOWER_FROM_CLOCK_TOWN: 'OOT_MARKET_FROM_MASK_SHOP',
+  },
+  oot: {
+    OOT_SHOP_MASKS: 'OOT_MARKET_FROM_MASK_SHOP',
+  },
+  mm: {
+    MM_CLOCK_TOWER_FROM_CLOCK_TOWN: 'MM_CLOCK_TOWN_FROM_CLOCK_TOWER',
+  },
+};
 
 const BOTTLE_ALWAYS_INCLUDED_ITEM_IDS_OOT_MM = new Set([
   'OOT_BOTTLE_EMPTY',
@@ -442,6 +463,19 @@ export class OoTMMTracker implements TrackerPack {
         if (!activeEntranceKeys.has(key)) continue;
         if (data.from === 'NONE' || data.to === 'NONE') continue;
         if (!finalPlandoEntrances[key]) {
+          // Game-link source entrances (OOT_SHOP_MASKS, MM_CLOCK_TOWER_FROM_CLOCK_TOWN)
+          // must use their vanilla cross-game mapping when unmapped to preserve
+          // the OOT↔MM connection.  Without this, self-mapping keeps each
+          // game isolated and the entrance pass won't bridge them.
+          if (INTERIOR_GAME_LINK_SOURCE_KEYS.has(key)) {
+            const gamesMode = String(ootmmSettings.games ?? 'ootmm');
+            const vanillaTarget = GAME_LINK_VANILLA_MAPPING[gamesMode]?.[key];
+            if (vanillaTarget) {
+              finalPlandoEntrances[key] = vanillaTarget;
+              selfMappedNoGlobalEntrances.push(key);
+              continue;
+            }
+          }
           finalPlandoEntrances[key] = key;
           const isNoGlobalEntrance = Boolean(data.flags?.includes('no-global'));
           if (!isNoGlobalEntrance) {

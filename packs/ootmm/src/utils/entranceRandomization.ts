@@ -32,7 +32,7 @@ const TYPE_TO_SETTING: Record<string, string> = {
 const DUNGEON_TYPES = new Set(Object.keys(TYPE_TO_SETTING));
 const GROTTO_TYPES = new Set(['grotto', 'grave']);
 const INTERIOR_TYPES = new Set(['indoors', 'indoors-extra', 'indoors-pf']);
-const INTERIOR_GAME_LINK_SOURCE_KEYS = new Set([
+export const INTERIOR_GAME_LINK_SOURCE_KEYS = new Set([
   'OOT_SHOP_MASKS',
   'MM_CLOCK_TOWER_FROM_CLOCK_TOWN',
 ]);
