@@ -6,7 +6,7 @@ import { expect, type Locator, type Page } from '@playwright/test';
  */
 export function entranceCombobox(page: Page, labelText: string): Locator {
   return page
-    .locator('.entrance-row')
+    .locator('.entrance-row:not(.exit-row)')
     .filter({
       has: page.locator('.entrance-label', { hasText: labelText }),
     })

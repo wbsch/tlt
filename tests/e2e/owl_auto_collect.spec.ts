@@ -61,7 +61,7 @@ async function mapMountainGossipGrottoToDampeGrave(page: Page): Promise<void> {
     .getByRole('button', { name: /^All \(/ })
     .click();
 
-  const row = page.locator('.entrance-row').filter({
+  const row = page.locator('.entrance-row:not(.exit-row)').filter({
     has: page.locator('.entrance-label', {
       hasText: 'Mountain Gossip Grotto',
     }),

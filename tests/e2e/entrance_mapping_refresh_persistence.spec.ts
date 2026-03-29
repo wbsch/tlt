@@ -25,7 +25,7 @@ function entranceInput(page: Page, label: string) {
 
 function mapSubmenuEntranceSelect(page: Page, label: string) {
   return page
-    .locator('.map-submenu-panel .map-entrance-list__row')
+    .locator('.map-submenu-panel .map-entrance-list:not(.map-exit-list) .map-entrance-list__row')
     .filter({ hasText: label })
     .locator('.map-entrance-list__select');
 }

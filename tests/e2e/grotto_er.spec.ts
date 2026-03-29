@@ -76,7 +76,7 @@ test.describe('Grotto Entrance Randomizer', () => {
 
     await openEntrancesTab(page);
 
-    const dekuTheaterRow = page.locator('.entrance-row').filter({
+    const dekuTheaterRow = page.locator('.entrance-row:not(.exit-row)').filter({
       has: page.locator('.entrance-label', { hasText: 'Deku Theater' }),
     });
     await expect(dekuTheaterRow).toBeVisible();
@@ -117,7 +117,7 @@ test.describe('Grotto Entrance Randomizer', () => {
       .getByRole('button', { name: /^Reachable\b/ })
       .click();
 
-    const shieldGraveRow = page.locator('.entrance-row').filter({
+    const shieldGraveRow = page.locator('.entrance-row:not(.exit-row)').filter({
       has: page.locator('.entrance-label', {
         hasText: 'Graveyard Shield Grave',
       }),
@@ -150,7 +150,7 @@ test.describe('Grotto Entrance Randomizer', () => {
     await expect(reachabilityGroup).toBeVisible();
     await reachabilityGroup.getByRole('button', { name: /^All\b/ }).click();
 
-    const swampGossipRow = page.locator('.entrance-row').filter({
+    const swampGossipRow = page.locator('.entrance-row:not(.exit-row)').filter({
       has: page.locator('.entrance-label', {
         hasText: 'Swamp Gossip Grotto',
       }),
