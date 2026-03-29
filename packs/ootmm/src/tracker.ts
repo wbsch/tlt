@@ -210,13 +210,13 @@ const FISHING_POND_ALWAYS_INCLUDED_ITEM_IDS = new Set([
 ]);
 
 /**
- * Vanilla cross-game entrance mappings for game-link source keys (OoTMM combined mode).
- * When erIndoorsGameLinks is active but the user hasn't assigned these entrances,
- * the tracker must use the vanilla cross-game mappings instead of self-mapping,
- * otherwise the OOT↔MM connection is broken.
- * See OoTMM LogicPassEntrances.connectGamesDefault().
+ * Vanilla cross-game entrance mappings for game-link EXIT keys.
+ * These match the format used by OoTMM's connectGamesDefault()
+ * (which maps the overworld-door transitions, not the interior-exit transitions).
+ * When erIndoorsGameLinks is active but the user hasn't assigned the game-link
+ * entrances, the tracker adds these to the plando to preserve the OOT↔MM connection.
  */
-const GAME_LINK_VANILLA_MAPPING: Record<string, Record<string, string>> = {
+const GAME_LINK_VANILLA_EXIT_MAPPING: Record<string, Record<string, string>> = {
   ootmm: {
     OOT_SHOP_MASKS: 'MM_CLOCK_TOWN_FROM_CLOCK_TOWER',
     MM_CLOCK_TOWER_FROM_CLOCK_TOWN: 'OOT_MARKET_FROM_MASK_SHOP',
@@ -463,18 +463,15 @@ export class OoTMMTracker implements TrackerPack {
         if (!activeEntranceKeys.has(key)) continue;
         if (data.from === 'NONE' || data.to === 'NONE') continue;
         if (!finalPlandoEntrances[key]) {
-          // Game-link source entrances (OOT_SHOP_MASKS, MM_CLOCK_TOWER_FROM_CLOCK_TOWN)
-          // must use their vanilla cross-game mapping when unmapped to preserve
-          // the OOT↔MM connection.  Without this, self-mapping keeps each
-          // game isolated and the entrance pass won't bridge them.
+          // Game-link source entrances (OOT_MARKET_FROM_MASK_SHOP, MM_CLOCK_TOWN_FROM_CLOCK_TOWER)
+          // are NOT self-mapped.  Their internal exits stay vanilla, and
+          // the cross-game connection is handled below via exit-key mapping
+          // (matching OoTMM's connectGamesDefault() format).
+          // However, they must still be disconnected when unmapped so the
+          // pathfinder cannot traverse their vanilla forward edge.
           if (INTERIOR_GAME_LINK_SOURCE_KEYS.has(key)) {
-            const gamesMode = String(ootmmSettings.games ?? 'ootmm');
-            const vanillaTarget = GAME_LINK_VANILLA_MAPPING[gamesMode]?.[key];
-            if (vanillaTarget) {
-              finalPlandoEntrances[key] = vanillaTarget;
-              selfMappedNoGlobalEntrances.push(key);
-              continue;
-            }
+            unmappedEntrances.push(key);
+            continue;
           }
           finalPlandoEntrances[key] = key;
           const isNoGlobalEntrance = Boolean(data.flags?.includes('no-global'));
@@ -486,12 +483,39 @@ export class OoTMMTracker implements TrackerPack {
         }
       }
 
+      // Add vanilla game-link exit mappings to preserve the OOT↔MM connection.
+      // These use the EXIT keys (type 'none') as plando sources, matching what
+      // OoTMM's connectGamesDefault() does: it overrides the overworld-door
+      // transitions (e.g. OOT_SHOP_MASKS, MM_CLOCK_TOWER_FROM_CLOCK_TOWN)
+      // rather than the interior-exit transitions.
+      // Skip mappings whose destination is an unmapped game-link source key:
+      // the cross-game edge must not exist until the user explicitly maps it.
+      if (ootmmSettings.erIndoorsGameLinks) {
+        const unmappedSet = new Set(unmappedEntrances);
+        const gamesMode = String(ootmmSettings.games ?? 'ootmm');
+        const vanillaExitMapping =
+          GAME_LINK_VANILLA_EXIT_MAPPING[gamesMode] ?? {};
+        for (const [exitSrc, exitDst] of Object.entries(vanillaExitMapping)) {
+          if (!finalPlandoEntrances[exitSrc] && !unmappedSet.has(exitDst)) {
+            finalPlandoEntrances[exitSrc] = exitDst;
+            selfMappedNoGlobalEntrances.push(exitSrc);
+          }
+        }
+      }
+
       // `no-global` entrances stay connected by default, but if another
       // entrance is explicitly mapped to that destination, the original source
       // must be disconnected to avoid duplicate access paths.
+      // Exclude destinations that come from other selfMapped/vanilla entries
+      // (e.g. game-link vanilla cross-mappings referencing each other).
+      const selfMappedNoGlobalSet = new Set(selfMappedNoGlobalEntrances);
       const occupiedDestinationKeys = new Set(
         Object.entries(finalPlandoEntrances)
-          .filter(([sourceKey, destinationKey]) => sourceKey !== destinationKey)
+          .filter(
+            ([sourceKey, destinationKey]) =>
+              sourceKey !== destinationKey &&
+              !selfMappedNoGlobalSet.has(sourceKey),
+          )
           .map(([, destinationKey]) => destinationKey),
       );
       for (const key of selfMappedNoGlobalEntrances) {
@@ -589,7 +613,7 @@ export class OoTMMTracker implements TrackerPack {
           { exits?: Record<string, unknown> }
         >;
         for (const [key, data] of Object.entries(ENTRANCES_DATA)) {
-          if (!isTrackedEntranceExitType(data.type)) continue;
+          if (!isTrackedEntranceExitType(data.type, key)) continue;
           if (data.from === 'NONE' || data.to === 'NONE') continue;
           // Only save exits whose source entrance is active
           const sourceKey = data.reverse?.trim();
@@ -653,6 +677,7 @@ export class OoTMMTracker implements TrackerPack {
           string,
           { exits?: Record<string, unknown> }
         >;
+
         for (const key of unmappedEntrances) {
           const data = ENTRANCES_DATA[key];
           if (!data) continue;

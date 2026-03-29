@@ -1301,7 +1301,7 @@
       "image": "interior_entrance",
       "type": "submenu",
       "entranceMenu": {
-        "entranceIds": ["MM_CLOCK_TOWER_FROM_CLOCK_TOWN"]
+        "entranceIds": ["MM_CLOCK_TOWN_FROM_CLOCK_TOWER"]
       }
     },
     {

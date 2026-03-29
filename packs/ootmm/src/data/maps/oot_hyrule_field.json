@@ -1080,7 +1080,7 @@
       "overlays": ["child"],
       "type": "submenu",
       "entranceMenu": {
-        "entranceIds": ["OOT_SHOP_MASKS"]
+        "entranceIds": ["OOT_MARKET_FROM_MASK_SHOP"]
       }
     },
     {

@@ -33,10 +33,14 @@ const DUNGEON_TYPES = new Set(Object.keys(TYPE_TO_SETTING));
 const GROTTO_TYPES = new Set(['grotto', 'grave']);
 const INTERIOR_TYPES = new Set(['indoors', 'indoors-extra', 'indoors-pf']);
 export const INTERIOR_GAME_LINK_SOURCE_KEYS = new Set([
+  'OOT_MARKET_FROM_MASK_SHOP',
+  'MM_CLOCK_TOWN_FROM_CLOCK_TOWER',
+]);
+const INTERIOR_GAME_LINK_EXIT_KEYS = new Set([
   'OOT_SHOP_MASKS',
   'MM_CLOCK_TOWER_FROM_CLOCK_TOWN',
 ]);
-const INTERIOR_EXIT_TYPES = new Set(['indoors-exit', 'indoors-link']);
+const INTERIOR_EXIT_TYPES = new Set(['indoors-exit']);
 const TRACKED_EXIT_TYPES = new Set([
   'dungeon-exit',
   'grotto-exit',
@@ -116,13 +120,14 @@ export function isTrackedEntranceSourceType(
   return getTrackedEntrancePool(type, key) !== null;
 }
 
-export function isTrackedEntranceExitType(type: string): boolean {
-  return TRACKED_EXIT_TYPES.has(type);
+export function isTrackedEntranceExitType(type: string, key?: string): boolean {
+  if (TRACKED_EXIT_TYPES.has(type)) return true;
+  return Boolean(key && INTERIOR_GAME_LINK_EXIT_KEYS.has(key));
 }
 
 export function normalizeTrackedEntranceKey(key: string): string {
   const data = ENTRANCES_RAW[key];
-  if (!data || !isTrackedEntranceExitType(data.type)) return key;
+  if (!data || !isTrackedEntranceExitType(data.type, key)) return key;
 
   const reverse = data.reverse?.trim();
   if (!reverse) return key;
@@ -139,7 +144,7 @@ export function getTrackedEntranceKeysForBinding(key: string): string[] {
   const normalized = normalizeTrackedEntranceKey(key);
   const keys = new Set<string>([normalized]);
   const data = ENTRANCES_RAW[key];
-  if (data && isTrackedEntranceExitType(data.type)) {
+  if (data && isTrackedEntranceExitType(data.type, key)) {
     keys.add(key);
   }
   return [...keys];
@@ -334,7 +339,10 @@ export function filterEntranceOverridesForSettings(
     const normalizedDst = normalizeTrackedEntranceKey(dst);
     if (!activeKeys.has(normalizedSrc)) continue;
     if (!activeKeys.has(normalizedDst)) continue;
-    filtered[normalizedSrc] = normalizedDst;
+    // Preserve the raw dst: game-link source keys (indoors-link type) must
+    // not be normalized to their none-type reverse because the plando needs
+    // the indoors-link key to connect to the correct overworld area.
+    filtered[normalizedSrc] = dst;
   }
   return filtered;
 }
