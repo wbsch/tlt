@@ -22,7 +22,7 @@ import * as DataMod from '@ootmm/data';
 
 import { ITEM_DATABASE } from './data/items';
 import { LOCATION_CODE_CATALOG } from './data/locationCatalog';
-import { getActiveEntranceKeys } from './utils/entranceRandomization';
+import { getActiveEntranceKeys, isTrackedEntranceExitType } from './utils/entranceRandomization';
 
 const resolveExport = <T>(mod: unknown, key: string): T =>
   (mod as Record<string, T>)?.[key] ??
@@ -299,6 +299,9 @@ export class OoTMMTracker implements TrackerPack {
   private devLocationCatalog: LocationInfo[] = [];
   /** Saved exit expressions for all ER entrances, keyed by entrance key. */
   private savedEntranceExitExprs: Map<string, { from: string; expr: unknown }> =
+    new Map();
+  /** Saved exit expressions for ER exit-type keys, from the remapped world. */
+  private savedExitExitExprs: Map<string, { from: string; expr: unknown }> =
     new Map();
   /** Cached worldData from worldState() to skip expensive rebuilds when only entrance mappings change. */
   private cachedWorldData: WorldData | null = null;
@@ -611,6 +614,35 @@ export class OoTMMTracker implements TrackerPack {
             }
           }
         }
+      }
+    }
+
+    // Save exit expressions for tracked exit-type keys from the remapped
+    // world graph.  These are used to compute exit reachability in the UI.
+    this.savedExitExitExprs = new Map();
+    if (isErActive) {
+      for (const world of this.worlds) {
+        const areas = (world as Record<string, unknown>).areas as Record<
+          string,
+          { exits?: Record<string, unknown> }
+        >;
+        for (const [key, data] of Object.entries(ENTRANCES_DATA)) {
+          if (!isTrackedEntranceExitType(data.type)) continue;
+          if (data.from === 'NONE' || data.to === 'NONE') continue;
+          // Only save exits whose source entrance is active
+          const sourceKey = data.reverse?.trim();
+          if (!sourceKey || !activeEntranceKeys.has(sourceKey)) continue;
+
+          const fromArea = areas[data.from];
+          const exitExpr = fromArea?.exits?.[data.to];
+          if (exitExpr) {
+            this.savedExitExitExprs.set(key, {
+              from: data.from,
+              expr: exitExpr,
+            });
+          }
+        }
+        break;
       }
     }
 
@@ -2917,6 +2949,57 @@ export class OoTMMTracker implements TrackerPack {
 
       if (canEnter) {
         reachable.push(entranceKey);
+      }
+    }
+
+    // Also evaluate exit-type keys for reachability
+    for (const [exitKey, saved] of this.savedExitExitExprs) {
+      let canExit = false;
+
+      for (let worldId = 0; worldId < typedState.ws.length; worldId++) {
+        if (canExit) break;
+        const ws = typedState.ws[worldId];
+        const world = this.worlds[worldId];
+        const maps = worldMaps[worldId];
+
+        for (const age of [0, 1] as const) {
+          const ageState = ws.ages[age];
+          const areaData = ageState.areas.get(saved.from);
+          if (!areaData) continue;
+
+          const evalState = {
+            settings: this.settings,
+            world,
+            areaData,
+            items: maps.items,
+            renewables: maps.renewables,
+            licenses: maps.licenses,
+            age,
+            events: ws.events,
+          };
+          try {
+            const expr = saved.expr as {
+              eval: (
+                s: unknown,
+                deps: { items: unknown[]; events: string[] },
+              ) => { result: boolean };
+            };
+            const result = expr.eval(evalState, {
+              items: [],
+              events: [],
+            });
+            if (result.result) {
+              canExit = true;
+              break;
+            }
+          } catch {
+            // Expression eval failed, treat as not reachable
+          }
+        }
+      }
+
+      if (canExit) {
+        reachable.push(exitKey);
       }
     }
 

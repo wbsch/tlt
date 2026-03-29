@@ -224,6 +224,79 @@ export function getActiveEntranceKeys(
   return keys;
 }
 
+/**
+ * For a source entrance key, return its reverse (exit) key, or null if none.
+ */
+export function getExitKeyForEntrance(sourceKey: string): string | null {
+  const data = ENTRANCES_RAW[sourceKey];
+  if (!data) return null;
+  const rev = data.reverse?.trim();
+  if (!rev || !ENTRANCES_RAW[rev]) return null;
+  return rev;
+}
+
+/**
+ * Get the label for an exit key.
+ */
+export function getExitLabel(exitKey: string): string {
+  const data = ENTRANCES_RAW[exitKey];
+  if (!data) return exitKey.replace(/_/g, ' ');
+  if (data.from && data.from !== 'NONE') {
+    return data.from.replace(/^(OOT|MM) /, '');
+  }
+  return exitKey.replace(/_/g, ' ');
+}
+
+/**
+ * Get the game for an entrance/exit key.
+ */
+export function getEntranceGame(key: string): 'oot' | 'mm' | null {
+  const data = ENTRANCES_RAW[key];
+  if (!data) return null;
+  return data.game as 'oot' | 'mm';
+}
+
+/**
+ * Given an exit mapping exitSrc → exitDst, derive the corresponding entrance mapping.
+ * Exit key = reverse(entranceDst), exit destination = reverse(entranceSrc).
+ * So entrance mapping = reverse(exitDst) → reverse(exitSrc).
+ * Returns { entranceSrc, entranceDst } or null if derivation fails.
+ */
+export function deriveEntranceFromExitMapping(
+  exitSrcKey: string,
+  exitDstKey: string,
+): { entranceSrc: string; entranceDst: string } | null {
+  const exitSrcData = ENTRANCES_RAW[exitSrcKey];
+  const exitDstData = ENTRANCES_RAW[exitDstKey];
+  if (!exitSrcData?.reverse || !exitDstData?.reverse) return null;
+  const entranceDst = exitSrcData.reverse.trim();
+  const entranceSrc = exitDstData.reverse.trim();
+  if (!entranceDst || !entranceSrc) return null;
+  if (!ENTRANCES_RAW[entranceDst] || !ENTRANCES_RAW[entranceSrc]) return null;
+  return { entranceSrc, entranceDst };
+}
+
+/**
+ * Derive exit overrides from entrance overrides.
+ * For each entrance mapping src → dst, the exit mapping is reverse(dst) → reverse(src).
+ */
+export function computeExitOverrides(
+  entranceOverrides: Record<string, string>,
+): Record<string, string> {
+  const result: Record<string, string> = {};
+  for (const [src, dst] of Object.entries(entranceOverrides)) {
+    const srcData = ENTRANCES_RAW[src];
+    const dstData = ENTRANCES_RAW[dst];
+    if (!srcData?.reverse || !dstData?.reverse) continue;
+    const srcRev = srcData.reverse.trim();
+    const dstRev = dstData.reverse.trim();
+    if (!srcRev || !dstRev) continue;
+    if (!ENTRANCES_RAW[srcRev] || !ENTRANCES_RAW[dstRev]) continue;
+    result[dstRev] = srcRev;
+  }
+  return result;
+}
+
 export function filterEntranceOverridesForSettings(
   overrides: Record<string, string>,
   settings: Record<string, unknown>,

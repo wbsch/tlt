@@ -7,6 +7,10 @@ import {
   getActiveEntranceKeys,
   getTrackedEntrancePool,
   isTrackedEntranceSourceType,
+  computeExitOverrides,
+  getExitKeyForEntrance,
+  getExitLabel,
+  deriveEntranceFromExitMapping,
   type TrackedEntrancePool,
 } from '../utils/entranceRandomization';
 import { matchesSearchTerms } from '../utils/search';
@@ -33,6 +37,14 @@ export type DungeonEntranceEntry = {
   label: string;
   game: 'oot' | 'mm';
   type: string;
+  pool: TrackedEntrancePool;
+};
+
+export type ExitEntry = {
+  key: string;
+  sourceEntranceKey: string;
+  label: string;
+  game: 'oot' | 'mm';
   pool: TrackedEntrancePool;
 };
 
@@ -238,6 +250,138 @@ export function useDungeonEntrances() {
     () => Object.keys(entranceOverrides.value).length > 0,
   );
 
+  // --- Exit data ---
+
+  const exitOverridesMap = computed(() =>
+    computeExitOverrides(entranceOverrides.value),
+  );
+
+  function isExitMapped(exitKey: string): boolean {
+    return (exitOverridesMap.value[exitKey] ?? '').trim().length > 0;
+  }
+
+  function getExitDestination(exitKey: string): string {
+    return exitOverridesMap.value[exitKey] ?? '';
+  }
+
+  function getExitDestinationLabel(exitKey: string): string {
+    const dst = exitOverridesMap.value[exitKey];
+    if (!dst) return '';
+    return getExitLabel(dst);
+  }
+
+  function getExitSelectedDestination(exitKey: string): string {
+    return exitOverridesMap.value[exitKey] ?? '';
+  }
+
+  /**
+   * Set an exit mapping. Derives and stores the corresponding entrance mapping.
+   * Passing an empty dstKey clears the mapping.
+   */
+  function setExitDestination(exitKey: string, exitDstKey: string) {
+    if (!exitDstKey) {
+      // Clear: find which entrance mapping produces this exit key and remove it
+      const currentOverrides = entranceOverrides.value;
+      for (const [src, dst] of Object.entries(currentOverrides)) {
+        const dstData = ENTRANCES_RAW[dst];
+        if (dstData?.reverse?.trim() === exitKey) {
+          sessionStore.setEntranceOverride(src, null);
+          return;
+        }
+      }
+      return;
+    }
+    const derived = deriveEntranceFromExitMapping(exitKey, exitDstKey);
+    if (!derived) return;
+    sessionStore.setEntranceOverride(derived.entranceSrc, derived.entranceDst);
+  }
+
+  function isExitDestinationUsed(
+    exitDstKey: string,
+    currentExitSrcKey: string,
+  ): boolean {
+    const overrides = exitOverridesMap.value;
+    for (const [src, dst] of Object.entries(overrides)) {
+      if (src !== currentExitSrcKey && dst === exitDstKey) return true;
+    }
+    return false;
+  }
+
+  const exitDestinationOptions = computed(() => {
+    return activeExitEntries.value.map((entry) => ({
+      value: entry.key,
+      label: entry.label,
+      game: entry.game,
+      pool: entry.pool,
+    }));
+  });
+
+  function destinationOptionsForExit(
+    exit: Pick<ExitEntry, 'key' | 'game' | 'pool'>,
+  ) {
+    const ownGameMode =
+      exit.pool === 'dungeon'
+        ? erDungeonsMode.value === 'ownGame'
+        : exit.pool === 'grotto'
+          ? erGrottosMode.value === 'ownGame'
+          : erIndoorsMode.value === 'ownGame';
+    const opts = exitDestinationOptions.value.filter((dest) => {
+      if (dest.pool !== exit.pool) return false;
+      if (!ownGameMode) return true;
+      return dest.game === exit.game;
+    });
+
+    return opts.filter(
+      (dest) => !isExitDestinationUsed(dest.value, exit.key),
+    );
+  }
+
+  const activeExitEntries = computed<ExitEntry[]>(() => {
+    const entries: ExitEntry[] = [];
+    for (const entrance of activeEntrances.value) {
+      const exitKey = getExitKeyForEntrance(entrance.key);
+      if (!exitKey) continue;
+      entries.push({
+        key: exitKey,
+        sourceEntranceKey: entrance.key,
+        label: getExitLabel(exitKey),
+        game: entrance.game,
+        pool: entrance.pool,
+      });
+    }
+    return entries;
+  });
+
+  const filteredExitEntries = computed<ExitEntry[]>(() => {
+    const mappingFilter = entrancesMappingFilter.value;
+    const reachFilter = entrancesReachabilityFilter.value;
+    const query = entrancesSearchQuery.value;
+    let result = activeExitEntries.value;
+
+    if (mappingFilter !== 'all') {
+      result = result.filter((exit) => {
+        const mapped = isExitMapped(exit.key);
+        return mappingFilter === 'mapped' ? mapped : !mapped;
+      });
+    }
+
+    if (reachFilter !== 'all') {
+      const reachableSet = reachableEntranceIdSet.value;
+      result = result.filter((exit) => {
+        const isReachable = reachableSet.has(exit.key);
+        return reachFilter === 'reachable' ? isReachable : !isReachable;
+      });
+    }
+
+    if (query.trim()) {
+      result = result.filter((exit) =>
+        matchesSearchTerms([exit.label], query),
+      );
+    }
+
+    return result;
+  });
+
   return {
     sections,
     hasAvailableSections,
@@ -253,5 +397,14 @@ export function useDungeonEntrances() {
     setSelectedDestination,
     clearAllOverrides,
     hasAnyOverrides,
+    activeExitEntries,
+    filteredExitEntries,
+    exitOverridesMap,
+    isExitMapped,
+    getExitDestination,
+    getExitDestinationLabel,
+    getExitSelectedDestination,
+    setExitDestination,
+    destinationOptionsForExit,
   };
 }

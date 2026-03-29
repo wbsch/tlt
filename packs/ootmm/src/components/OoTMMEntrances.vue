@@ -3,7 +3,7 @@ import { computed, ref, nextTick } from 'vue';
 import { storeToRefs } from 'pinia';
 import { useOoTMMUiStore } from '../stores/ootmmUi';
 import { useDungeonEntrances } from '../composables/useDungeonEntrances';
-import type { DungeonEntranceEntry } from '../composables/useDungeonEntrances';
+import type { DungeonEntranceEntry, ExitEntry } from '../composables/useDungeonEntrances';
 import { selectSearchInputText } from '../utils/input';
 import { matchesSearchTerms } from '../utils/search';
 
@@ -19,6 +19,10 @@ const {
   setSelectedDestination,
   clearAllOverrides,
   hasAnyOverrides,
+  filteredExitEntries,
+  getExitSelectedDestination,
+  setExitDestination,
+  destinationOptionsForExit,
 } = useDungeonEntrances();
 
 const uiStore = useOoTMMUiStore();
@@ -40,16 +44,20 @@ const POOL_SECTIONS = [
 
 const groupedEntrances = computed(() => {
   const hasOotEntrances = ootEntrances.value.length > 0;
+  const ootExits = filteredExitEntries.value.filter((e) => e.game === 'oot');
+  const mmExits = filteredExitEntries.value.filter((e) => e.game === 'mm');
   const sections = [
     {
       id: 'oot',
       title: 'Ocarina of Time',
       entries: ootEntrances.value,
+      exits: ootExits,
     },
     {
       id: 'mm',
       title: "Majora's Mask",
       entries: mmEntrances.value,
+      exits: mmExits,
     },
   ];
 
@@ -60,7 +68,8 @@ const groupedEntrances = computed(() => {
       pools: POOL_SECTIONS.map((pool) => ({
         ...pool,
         entries: section.entries.filter((entry) => entry.pool === pool.id),
-      })).filter((pool) => pool.entries.length > 0),
+        exits: section.exits.filter((exit) => exit.pool === pool.id),
+      })).filter((pool) => pool.entries.length > 0 || pool.exits.length > 0),
     }))
     .filter((section) => section.pools.length > 0);
 });
@@ -242,6 +251,180 @@ function scrollHighlightedIntoView(srcKey: string) {
 
 function setDropdownInputRef(srcKey: string, el: unknown) {
   dropdownInputRefs.value[srcKey] = el as HTMLInputElement | null;
+}
+
+// --- Exit searchable dropdown logic ---
+
+const openExitDropdownKey = ref<string | null>(null);
+const exitDropdownQuery = ref('');
+const exitDropdownHighlightedIndex = ref(-1);
+const exitDropdownInputRefs = ref<Record<string, HTMLInputElement | null>>({});
+
+function getFilteredExitDestOptions(
+  exit: Pick<ExitEntry, 'key' | 'game' | 'pool'>,
+): DestOption[] {
+  const opts = destinationOptionsForExit(exit);
+  const query = exitDropdownQuery.value;
+  if (!query.trim()) return opts;
+  return opts.filter((opt) =>
+    matchesSearchTerms([opt.label, opt.game === 'mm' ? 'MM' : 'OoT'], query),
+  );
+}
+
+function getExitDisplayValue(
+  exitKey: string,
+  exit: Pick<ExitEntry, 'key' | 'game' | 'pool'>,
+): string {
+  const dst = getExitSelectedDestination(exitKey);
+  if (!dst) return '';
+  const opts = destinationOptionsForExit(exit);
+  const opt = opts.find((o) => o.value === dst);
+  if (!opt) return '';
+  const suffix =
+    opt.game === 'mm' ? ' (MM)' : opt.game === 'oot' ? ' (OoT)' : '';
+  return opt.label + suffix;
+}
+
+function openExitDropdown(exitKey: string) {
+  openExitDropdownKey.value = exitKey;
+  exitDropdownHighlightedIndex.value = -1;
+}
+
+function closeExitDropdown() {
+  openExitDropdownKey.value = null;
+  exitDropdownQuery.value = '';
+  exitDropdownHighlightedIndex.value = -1;
+}
+
+function handleExitDropdownFocus(exitKey: string) {
+  exitDropdownQuery.value = '';
+  openExitDropdown(exitKey);
+}
+
+function handleExitDropdownClick(exitKey: string) {
+  exitDropdownQuery.value = '';
+  openExitDropdown(exitKey);
+  exitDropdownInputRefs.value[exitKey]?.select();
+}
+
+function handleExitDropdownBlur() {
+  closeExitDropdown();
+}
+
+function handleExitDropdownInput(exitKey: string) {
+  openExitDropdown(exitKey);
+  exitDropdownHighlightedIndex.value = 0;
+}
+
+function handleExitDropdownOptionClick(exitKey: string, destValue: string) {
+  setExitDestination(exitKey, destValue);
+  closeExitDropdown();
+}
+
+function handleExitClearMapping(exitKey: string) {
+  setExitDestination(exitKey, '');
+  closeExitDropdown();
+}
+
+function handleExitDropdownKeydown(
+  event: KeyboardEvent,
+  exitKey: string,
+  exit: Pick<ExitEntry, 'key' | 'game' | 'pool'>,
+) {
+  const opts = getFilteredExitDestOptions(exit);
+
+  if (event.key === 'ArrowDown') {
+    event.preventDefault();
+    if (openExitDropdownKey.value !== exitKey) {
+      openExitDropdown(exitKey);
+      return;
+    }
+    if (opts.length === 0) return;
+    exitDropdownHighlightedIndex.value =
+      exitDropdownHighlightedIndex.value < 0
+        ? 0
+        : (exitDropdownHighlightedIndex.value + 1) % opts.length;
+    scrollExitHighlightedIntoView(exitKey);
+    return;
+  }
+
+  if (event.key === 'ArrowUp') {
+    event.preventDefault();
+    if (openExitDropdownKey.value !== exitKey) {
+      openExitDropdown(exitKey);
+      return;
+    }
+    if (opts.length === 0) return;
+    exitDropdownHighlightedIndex.value =
+      exitDropdownHighlightedIndex.value < 0
+        ? opts.length - 1
+        : (exitDropdownHighlightedIndex.value - 1 + opts.length) % opts.length;
+    scrollExitHighlightedIntoView(exitKey);
+    return;
+  }
+
+  if (event.key === 'Enter') {
+    event.preventDefault();
+    if (opts.length === 0) {
+      closeExitDropdown();
+      return;
+    }
+    const idx =
+      exitDropdownHighlightedIndex.value >= 0
+        ? exitDropdownHighlightedIndex.value
+        : 0;
+    const selectedOpt = opts[idx];
+    if (selectedOpt) {
+      setExitDestination(exitKey, selectedOpt.value);
+    }
+    closeExitDropdown();
+    exitDropdownInputRefs.value[exitKey]?.blur();
+    return;
+  }
+
+  if (event.key === 'Tab') {
+    if (openExitDropdownKey.value !== exitKey) return;
+    if (opts.length > 0) {
+      const idx =
+        exitDropdownHighlightedIndex.value >= 0
+          ? exitDropdownHighlightedIndex.value
+          : 0;
+      const selectedOpt = opts[idx];
+      if (selectedOpt) {
+        setExitDestination(exitKey, selectedOpt.value);
+      }
+    }
+    closeExitDropdown();
+    return;
+  }
+
+  if (event.key === 'Escape') {
+    event.preventDefault();
+    closeExitDropdown();
+    exitDropdownInputRefs.value[exitKey]?.blur();
+    return;
+  }
+
+  if (event.key === 'Delete' || event.key === 'Backspace') {
+    if (!exitDropdownQuery.value && getExitSelectedDestination(exitKey)) {
+      setExitDestination(exitKey, '');
+    }
+  }
+}
+
+function scrollExitHighlightedIntoView(exitKey: string) {
+  nextTick(() => {
+    const listbox = document.getElementById(`exit-dest-listbox-${exitKey}`);
+    if (!listbox) return;
+    const highlighted = listbox.querySelector('.is-highlighted');
+    if (highlighted) {
+      highlighted.scrollIntoView({ block: 'nearest' });
+    }
+  });
+}
+
+function setExitDropdownInputRef(exitKey: string, el: unknown) {
+  exitDropdownInputRefs.value[exitKey] = el as HTMLInputElement | null;
 }
 </script>
 
@@ -463,6 +646,104 @@ function setDropdownInputRef(srcKey: string, el: unknown) {
               </ul>
             </div>
           </div>
+
+          <template v-if="pool.exits.length > 0">
+            <div class="exit-section-header">Exits</div>
+            <div
+              v-for="exit in pool.exits"
+              :key="exit.key"
+              class="entrance-row exit-row"
+            >
+              <label class="entrance-label exit-label" :title="exit.key">
+                {{ exit.label }}
+              </label>
+              <div class="entrance-select-wrap">
+                <input
+                  :ref="(el) => setExitDropdownInputRef(exit.key, el)"
+                  class="entrance-select-input"
+                  :value="
+                    openExitDropdownKey === exit.key
+                      ? exitDropdownQuery
+                      : getExitDisplayValue(exit.key, exit)
+                  "
+                  :data-selected="getExitSelectedDestination(exit.key) || ''"
+                  type="text"
+                  :placeholder="
+                    getExitSelectedDestination(exit.key)
+                      ? ''
+                      : '— Not mapped —'
+                  "
+                  autocomplete="off"
+                  role="combobox"
+                  aria-autocomplete="list"
+                  :aria-expanded="openExitDropdownKey === exit.key"
+                  :aria-controls="`exit-dest-listbox-${exit.key}`"
+                  @focus="handleExitDropdownFocus(exit.key)"
+                  @click="handleExitDropdownClick(exit.key)"
+                  @input="
+                    exitDropdownQuery = ($event.target as HTMLInputElement).value;
+                    handleExitDropdownInput(exit.key);
+                  "
+                  @blur="handleExitDropdownBlur()"
+                  @keydown="handleExitDropdownKeydown($event, exit.key, exit)"
+                />
+                <button
+                  v-if="
+                    getExitSelectedDestination(exit.key) &&
+                    openExitDropdownKey !== exit.key
+                  "
+                  class="entrance-select-clear"
+                  type="button"
+                  tabindex="-1"
+                  title="Clear mapping"
+                  @mousedown.prevent
+                  @click="handleExitClearMapping(exit.key)"
+                >
+                  ×
+                </button>
+                <ul
+                  v-if="openExitDropdownKey === exit.key"
+                  :id="`exit-dest-listbox-${exit.key}`"
+                  class="entrance-dest-options"
+                  role="listbox"
+                >
+                  <li
+                    v-for="(dest, index) in getFilteredExitDestOptions(exit)"
+                    :key="dest.value"
+                    class="entrance-dest-option"
+                    :class="{
+                      'is-highlighted':
+                        index === exitDropdownHighlightedIndex,
+                    }"
+                    :data-value="dest.value"
+                    role="option"
+                    :aria-selected="index === exitDropdownHighlightedIndex"
+                    @mousedown.prevent
+                    @click="
+                      handleExitDropdownOptionClick(exit.key, dest.value)
+                    "
+                  >
+                    <span class="entrance-dest-option-label">{{
+                      dest.label
+                    }}</span>
+                    <span class="entrance-dest-option-game">{{
+                      dest.game === 'mm'
+                        ? '(MM)'
+                        : dest.game === 'oot'
+                          ? '(OoT)'
+                          : ''
+                    }}</span>
+                  </li>
+                  <li
+                    v-if="getFilteredExitDestOptions(exit).length === 0"
+                    class="entrance-dest-empty"
+                  >
+                    No destinations found
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </template>
         </div>
       </section>
     </div>
@@ -770,5 +1051,23 @@ function setDropdownInputRef(srcKey: string, el: unknown) {
   color: #9ca3af;
   font-size: 0.72rem;
   padding: 0.3rem 0.4rem;
+}
+
+.exit-section-header {
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: #9ca3af;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  margin-top: 0.4rem;
+  margin-bottom: 0.15rem;
+}
+
+.exit-row {
+  opacity: 0.85;
+}
+
+.exit-label {
+  color: #9ca3af;
 }
 </style>

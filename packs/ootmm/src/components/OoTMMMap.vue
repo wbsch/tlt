@@ -25,6 +25,7 @@ import {
 import {
   useDungeonEntrances,
   type DungeonEntranceEntry,
+  type ExitEntry,
 } from '../composables/useDungeonEntrances';
 import { OOTMM_MAP_DEFS } from '../data/maps';
 import {
@@ -140,6 +141,7 @@ type SubmenuMarkerRuntime = {
   topRightOverlays: OverlayRender[];
   countDigitImages: string[];
   entranceEntries: EntranceMenuEntryRuntime[];
+  exitEntries: ExitMenuEntryRuntime[];
   submenuMarkers: SubmenuEntryRuntime[];
   allSubmenuCodeList: string[];
   isVisible: boolean;
@@ -147,6 +149,14 @@ type SubmenuMarkerRuntime = {
 
 type EntranceMenuEntryRuntime = {
   key: string;
+  label: string;
+  game: 'oot' | 'mm';
+  pool: DungeonEntranceEntry['pool'];
+};
+
+type ExitMenuEntryRuntime = {
+  key: string;
+  sourceEntranceKey: string;
   label: string;
   game: 'oot' | 'mm';
   pool: DungeonEntranceEntry['pool'];
@@ -441,6 +451,11 @@ const {
   destinationOptionsForEntrance,
   getSelectedDestination,
   setSelectedDestination,
+  activeExitEntries,
+  filteredExitEntries,
+  getExitSelectedDestination,
+  setExitDestination,
+  destinationOptionsForExit,
 } = useDungeonEntrances();
 
 function hasResolvedLocationCode(codeList: string[]): boolean {
@@ -918,6 +933,16 @@ function toEntranceMenuEntry(
   };
 }
 
+function toExitMenuEntry(entry: ExitEntry): ExitMenuEntryRuntime {
+  return {
+    key: entry.key,
+    sourceEntranceKey: entry.sourceEntranceKey,
+    label: entry.label,
+    game: entry.game,
+    pool: entry.pool,
+  };
+}
+
 function resolveMappedDestinationEntranceId(
   sourceEntranceId: string,
   activeEntranceById: Map<string, DungeonEntranceEntry>,
@@ -1064,13 +1089,39 @@ const markerViewModels = computed<MarkerRuntime[]>(() => {
         props.settings,
       );
       const hasVisibleChecks = visibleSubmenuMarkers.length > 0;
+      // Build exit entries for this marker's entrance IDs
+      const activeExitById = new Map(
+        activeExitEntries.value.map((entry) => [entry.sourceEntranceKey, entry]),
+      );
+      const filteredExitById = new Map(
+        filteredExitEntries.value.map((entry) => [
+          entry.sourceEntranceKey,
+          entry,
+        ]),
+      );
+      const activeSubmenuExits = submenuSourceEntranceIds
+        .map((entranceId) => activeExitById.get(entranceId))
+        .filter((entry): entry is ExitEntry => Boolean(entry));
+      const visibleSubmenuExits = props.devMode
+        ? isDevUnmappedFilterActive
+          ? []
+          : activeSubmenuExits
+        : submenuSourceEntranceIds
+            .map((entranceId) => filteredExitById.get(entranceId))
+            .filter((entry): entry is ExitEntry => Boolean(entry));
+      const hasVisibleExits =
+        submenuSourceEntranceIds.length === 0
+          ? false
+          : activeSubmenuExits.length === 0
+            ? false
+            : visibleSubmenuExits.length > 0;
       const hasVisibleEntrances =
         submenuSourceEntranceIds.length === 0
           ? false
           : activeSubmenuEntrances.length === 0
             ? false
             : visibleSubmenuEntrances.length > 0;
-      const isDevVisible = hasVisibleChecks || hasVisibleEntrances;
+      const isDevVisible = hasVisibleChecks || hasVisibleEntrances || hasVisibleExits;
 
       return {
         type: 'submenu',
@@ -1084,13 +1135,14 @@ const markerViewModels = computed<MarkerRuntime[]>(() => {
         topRightOverlays: buildTopRightOverlays(overlays),
         countDigitImages,
         entranceEntries: visibleSubmenuEntrances.map(toEntranceMenuEntry),
+        exitEntries: visibleSubmenuExits.map(toExitMenuEntry),
         submenuMarkers: visibleSubmenuMarkers,
         allSubmenuCodeList: visibleSubmenuMarkers.flatMap(
           (marker) => marker.codeList,
         ),
         isVisible: props.devMode
           ? isDevVisible
-          : settingsVisible && (hasVisibleChecks || hasVisibleEntrances),
+          : settingsVisible && (hasVisibleChecks || hasVisibleEntrances || hasVisibleExits),
       };
     }
 
@@ -1808,6 +1860,18 @@ function handleEntranceDestinationChange(srcKey: string, dstKey: string): void {
   setSelectedDestination(srcKey, dstKey);
 }
 
+function getExitDestinationOptions(entry: ExitMenuEntryRuntime) {
+  return destinationOptionsForExit(entry);
+}
+
+function getExitDestinationValue(exitKey: string): string {
+  return getExitSelectedDestination(exitKey);
+}
+
+function handleExitDestinationChange(exitKey: string, dstKey: string): void {
+  setExitDestination(exitKey, dstKey);
+}
+
 function handleWheel(event: WheelEvent): void {
   // If the wheel event occurred over the popup, allow the browser to scroll the popup list
   const popupEl = popupRef.value;
@@ -1824,7 +1888,8 @@ function handleWheel(event: WheelEvent): void {
     event.target instanceof Node &&
     submenuPanelEl.contains(event.target)
   ) {
-    if ((activePanelMarker.value?.entranceEntries.length ?? 0) === 0) {
+    if ((activePanelMarker.value?.entranceEntries.length ?? 0) === 0 &&
+        (activePanelMarker.value?.exitEntries.length ?? 0) === 0) {
       return;
     }
   }
@@ -2088,7 +2153,8 @@ watch(
     const panelMarker = markerById.value.get(markerId);
     const shouldFreezePanelSize =
       panelMarker?.type === 'submenu' &&
-      panelMarker.entranceEntries.length === 0;
+      panelMarker.entranceEntries.length === 0 &&
+      panelMarker.exitEntries.length === 0;
 
     if (shouldFreezePanelSize) {
       if (submenuPanel.value.frozenWidth === null) {
@@ -2339,7 +2405,7 @@ onBeforeUnmount(() => {
         class="map-submenu-panel"
         role="dialog"
         aria-modal="false"
-        :aria-label="`Submenu panel: ${activePanelMarker.entranceEntries.length} entrances, ${activePanelMarker.submenuMarkers.length} checks`"
+        :aria-label="`Submenu panel: ${activePanelMarker.entranceEntries.length} entrances, ${activePanelMarker.exitEntries.length} exits, ${activePanelMarker.submenuMarkers.length} checks`"
         :style="submenuPanelStyle()"
         @pointerdown.stop
         @mouseenter="handleSubmenuPanelHoverStart"
@@ -2461,6 +2527,51 @@ onBeforeUnmount(() => {
               <option value="">— Not mapped —</option>
               <option
                 v-for="dest in getEntranceDestinationOptions(entry)"
+                :key="dest.value"
+                :value="dest.value"
+              >
+                {{ entranceDestinationLabel(dest) }}
+              </option>
+            </select>
+          </div>
+        </div>
+
+        <div
+          v-if="
+            activePanelMarker.exitEntries.length > 0 &&
+            (activePanelMarker.entranceEntries.length > 0 ||
+              activePanelMarker.submenuMarkers.length > 0)
+          "
+          class="map-submenu-panel__divider"
+          aria-hidden="true"
+        ></div>
+
+        <div
+          v-if="activePanelMarker.exitEntries.length > 0"
+          class="map-entrance-list map-exit-list"
+        >
+          <div class="map-exit-list__header">Exits</div>
+          <div
+            v-for="exit in activePanelMarker.exitEntries"
+            :key="exit.key"
+            class="map-entrance-list__row"
+          >
+            <label class="map-entrance-list__label" :title="exit.key">
+              {{ exit.label }}
+            </label>
+            <select
+              class="map-entrance-list__select"
+              :value="getExitDestinationValue(exit.key)"
+              @change="
+                handleExitDestinationChange(
+                  exit.key,
+                  ($event.target as HTMLSelectElement).value,
+                )
+              "
+            >
+              <option value="">— Not mapped —</option>
+              <option
+                v-for="dest in getExitDestinationOptions(exit)"
                 :key="dest.value"
                 :value="dest.value"
               >
@@ -3100,6 +3211,14 @@ onBeforeUnmount(() => {
 
 .map-entrance-list__select:hover {
   border-color: #6b7280;
+}
+
+.map-exit-list__header {
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: #9ca3af;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
 }
 
 .map-submenu-popup {
