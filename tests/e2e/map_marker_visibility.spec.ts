@@ -1,7 +1,6 @@
 import { expect, test, type Page } from '@playwright/test';
 import { resetLocalStorageAndReload, TEST_TIMEOUTS } from './helpers/tracker';
 
-const DODONGO_MAP_ID = 'oot_dodongos_cavern';
 const MQ_GOSSIP_COORDS: [number, number] = [278, 337];
 const NON_MQ_GOSSIP_COORDS: [number, number] = [341, 313];
 const MQ_DUNGEON_CODES = [
@@ -18,12 +17,6 @@ const MQ_DUNGEON_CODES = [
   'GTG',
   'Ganon',
 ] as const;
-
-type VisibilitySnapshot = {
-  activeMapId: string | null;
-  mqStoneVisible: boolean;
-  nonMqStoneVisible: boolean;
-};
 
 type Scenario = {
   includeDc: boolean;
@@ -48,122 +41,102 @@ function buildRandomScenario(includeDc: boolean): Scenario {
   return { includeDc, values };
 }
 
-type VueInternalComponent = {
-  setupState?: Record<string, unknown>;
-  props?: Record<string, unknown>;
-};
-
-type VueHostElement = HTMLElement & {
-  __vueParentComponent?: VueInternalComponent;
-};
-
-type MapMarker = {
-  image?: string;
-  coords?: [number, number];
-};
-
-async function setActiveMap(page: Page, mapId: string): Promise<void> {
-  await page.evaluate((nextMapId) => {
-    const trackerRoot = document.querySelector('.ootmm-tracker');
-    const component = trackerRoot
-      ? (trackerRoot as VueHostElement).__vueParentComponent
-      : null;
-    const setup = component?.setupState;
-    if (!setup || typeof setup.activeMapId !== 'string') {
-      throw new Error('Could not resolve activeMapId ref');
-    }
-    setup.activeMapId = nextMapId;
-  }, mapId);
+/**
+ * Select a map by typing its title into the map selector combobox.
+ */
+async function selectMap(page: Page, mapTitle: string): Promise<void> {
+  const input = page.locator('#map-selector');
+  await input.click();
+  await input.fill(mapTitle);
+  const option = page
+    .locator('.map-selector-option')
+    .filter({ hasText: mapTitle })
+    .first();
+  await expect(option).toBeVisible({ timeout: TEST_TIMEOUTS.ELEMENT_VISIBLE });
+  await option.click();
 }
 
+/**
+ * Set the map toolbar filters so all markers are potentially visible.
+ */
 async function normalizeMapVisibilityFilters(page: Page): Promise<void> {
-  await page.evaluate(() => {
-    const trackerRoot = document.querySelector('.ootmm-tracker');
-    const component = trackerRoot
-      ? (trackerRoot as VueHostElement).__vueParentComponent
-      : null;
-    const setup = component?.setupState;
-    if (!setup) {
-      throw new Error('Could not resolve tracker setup state');
-    }
+  const toolbar = page.locator('.map-toolbar');
 
-    setup.locationsSearchQuery = '';
-    setup.locationsSelectedCategory = 'all';
-    setup.locationsReachabilityFilter = 'all';
-    setup.locationsCollectionFilter = 'all';
-    setup.locationsShowGossipStones = true;
-    setup.locationsShowUnshuffled = true;
-  });
+  await toolbar
+    .locator('[aria-label="Location reachability filter"]')
+    .getByRole('button', { name: 'All', exact: true })
+    .click();
+
+  await toolbar
+    .locator('[aria-label="Location collection filter"]')
+    .getByRole('button', { name: 'All', exact: true })
+    .click();
+
+  for (const label of ['Gossip Stones', 'Unshuffled']) {
+    const checkbox = toolbar
+      .locator('.map-toolbar-toggle-label')
+      .filter({ hasText: label })
+      .locator('input[type="checkbox"]');
+    if (!(await checkbox.isChecked())) {
+      await checkbox.check();
+    }
+  }
 }
 
+/**
+ * Configure MQ dungeon setting to "specific" with the given dungeon codes
+ * via the Settings UI tab, then apply.
+ */
 async function applyMqDungeonSpecificSetting(
   page: Page,
   values: string[],
 ): Promise<void> {
-  await page.evaluate(async (nextValues) => {
-    const trackerRoot = document.querySelector('.ootmm-tracker');
-    const component = trackerRoot
-      ? (trackerRoot as VueHostElement).__vueParentComponent
-      : null;
-    const setup = component?.setupState;
-    const applySettings = setup?.handleSettingsChange;
-    const trackerSettings = setup?.trackerSettings;
-    if (typeof applySettings !== 'function' || !trackerSettings) {
-      throw new Error('Could not resolve settings apply handler');
+  await page.getByTestId('tab-settings').click();
+
+  const mqSelect = page.getByTestId('setting-input-mqDungeons');
+  await expect(mqSelect).toBeVisible({
+    timeout: TEST_TIMEOUTS.ELEMENT_VISIBLE,
+  });
+
+  await mqSelect.selectOption('specific');
+
+  const settingBlock = page.getByTestId('setting-mqDungeons');
+  await expect(
+    settingBlock.locator('.setting-multiselect-options'),
+  ).toBeVisible();
+
+  const valuesSet = new Set(values);
+  const options = settingBlock.locator('.multiselect-option');
+  const count = await options.count();
+  for (let i = 0; i < count; i++) {
+    const option = options.nth(i);
+    const dataValue = await option.getAttribute('data-value');
+    if (!dataValue) continue;
+    const input = option.locator('input[type="checkbox"]');
+    const shouldBeChecked = valuesSet.has(dataValue);
+    const isChecked = await input.isChecked();
+    if (shouldBeChecked && !isChecked) {
+      await input.check();
+    } else if (!shouldBeChecked && isChecked) {
+      await input.uncheck();
     }
+  }
 
-    const nextSettings = {
-      ...trackerSettings,
-      mqDungeons: {
-        type: 'specific',
-        values: nextValues,
-      },
-    };
-
-    await applySettings(nextSettings);
-  }, values);
-
+  await page.getByTestId('apply-settings-button').click();
   await expect(page.getByTestId('applying-settings-overlay')).toBeHidden({
     timeout: TEST_TIMEOUTS.SETTINGS_APPLY,
   });
 }
 
-async function readDodongoGossipVisibility(
-  page: Page,
-): Promise<VisibilitySnapshot> {
-  return page.evaluate(
-    ({ mqCoords, nonMqCoords }) => {
-      const mapRoot = document.querySelector('.ootmm-map');
-      const component = mapRoot
-        ? (mapRoot as VueHostElement).__vueParentComponent
-        : null;
-      const rawVisibleMarkers = component?.setupState?.visibleMarkers;
-      const visibleMarkers = Array.isArray(rawVisibleMarkers)
-        ? rawVisibleMarkers
-        : Array.isArray(rawVisibleMarkers?.value)
-          ? rawVisibleMarkers.value
-          : null;
-      if (!Array.isArray(visibleMarkers)) {
-        throw new Error('Could not resolve map visible markers');
-      }
-
-      const hasGossipAt = (coords: [number, number]) =>
-        visibleMarkers.some(
-          (marker: MapMarker) =>
-            marker?.image === 'gossip_stone' &&
-            Array.isArray(marker?.coords) &&
-            marker.coords[0] === coords[0] &&
-            marker.coords[1] === coords[1],
-        );
-
-      return {
-        activeMapId: component?.props?.activeMap?.id ?? null,
-        mqStoneVisible: hasGossipAt(mqCoords),
-        nonMqStoneVisible: hasGossipAt(nonMqCoords),
-      };
-    },
-    { mqCoords: MQ_GOSSIP_COORDS, nonMqCoords: NON_MQ_GOSSIP_COORDS },
-  );
+/**
+ * Locate a gossip-stone map marker at exact pixel coordinates.
+ */
+function gossipStoneAt(page: Page, coords: [number, number]) {
+  return page
+    .locator(
+      `.map-marker[style*="left: ${coords[0]}px"][style*="top: ${coords[1]}px"]`,
+    )
+    .filter({ has: page.locator('img[src*="gossip_stone"]') });
 }
 
 test.describe('OoTMM map marker visibility', () => {
@@ -177,8 +150,8 @@ test.describe('OoTMM map marker visibility', () => {
     test.setTimeout(120_000);
 
     await page.getByTestId('tab-world').click();
+    await selectMap(page, 'OOT Dodongos Cavern');
     await normalizeMapVisibilityFilters(page);
-    await setActiveMap(page, DODONGO_MAP_ID);
 
     const scenarios: Scenario[] = [];
     for (let i = 0; i < 6; i += 1) {
@@ -188,12 +161,23 @@ test.describe('OoTMM map marker visibility', () => {
     for (const scenario of scenarios) {
       await applyMqDungeonSpecificSetting(page, scenario.values);
 
-      await expect
-        .poll(async () => {
-          const snapshot = await readDodongoGossipVisibility(page);
-          return `${snapshot.activeMapId}|${snapshot.mqStoneVisible}|${snapshot.nonMqStoneVisible}`;
-        })
-        .toBe(`${DODONGO_MAP_ID}|${scenario.includeDc}|${!scenario.includeDc}`);
+      // Return to world tab to verify map markers
+      await page.getByTestId('tab-world').click();
+
+      const mqStone = gossipStoneAt(page, MQ_GOSSIP_COORDS);
+      const nonMqStone = gossipStoneAt(page, NON_MQ_GOSSIP_COORDS);
+
+      if (scenario.includeDc) {
+        await expect(mqStone).toBeVisible({
+          timeout: TEST_TIMEOUTS.ELEMENT_VISIBLE,
+        });
+        await expect(nonMqStone).toHaveCount(0);
+      } else {
+        await expect(nonMqStone).toBeVisible({
+          timeout: TEST_TIMEOUTS.ELEMENT_VISIBLE,
+        });
+        await expect(mqStone).toHaveCount(0);
+      }
     }
   });
 });

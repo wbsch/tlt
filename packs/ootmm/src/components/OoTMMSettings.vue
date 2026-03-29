@@ -636,6 +636,7 @@ defineExpose({
                     v-for="opt in getVisibleOptions(setting)"
                     :key="optionKey(opt.value)"
                     class="multiselect-option"
+                    :data-value="optionValueString(opt.value)"
                   >
                     <input
                       type="checkbox"
