@@ -263,12 +263,17 @@ export const useOoTMMSessionStore = defineStore('ootmm-session', () => {
     const { entrances: _stale, ...cleanPlando } = existingPlando;
 
     const isErActive = getActiveEntranceKeys(settings).size > 0;
-    const hasOverrides = isErActive && Object.keys(overrides).length > 0;
+    const normalizedOverrides = filterEntranceOverridesForSettings(
+      overrides,
+      settings,
+    );
+    const hasOverrides =
+      isErActive && Object.keys(normalizedOverrides).length > 0;
     return {
       ...settings,
       plando: {
         ...cleanPlando,
-        ...(hasOverrides ? { entrances: { ...overrides } } : {}),
+        ...(hasOverrides ? { entrances: { ...normalizedOverrides } } : {}),
       },
     };
   }

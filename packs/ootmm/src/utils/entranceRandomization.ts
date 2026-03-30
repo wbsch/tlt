@@ -371,15 +371,17 @@ export function filterEntranceOverridesForSettings(
 
   const filtered: Record<string, string> = {};
   for (const [src, dst] of Object.entries(overrides)) {
-    const normalizedSrc = normalizeTrackedEntranceKey(src);
+    const effectiveSrc = resolveToActiveEntranceKey(
+      normalizeTrackedEntranceKey(src),
+      activeKeys,
+    );
+    if (!effectiveSrc) continue;
+
     const normalizedDst = normalizeTrackedEntranceKey(dst);
-    // Prefer the raw key if it's directly active (e.g. game-link exit keys
-    // in ootmm mode), otherwise fall back to the normalized key.
-    const effectiveSrc = activeKeys.has(src) ? src : normalizedSrc;
-    if (!activeKeys.has(effectiveSrc)) continue;
-    const effectiveDst = activeKeys.has(dst) ? dst : normalizedDst;
-    if (!activeKeys.has(effectiveDst)) continue;
-    filtered[effectiveSrc] = dst;
+    const effectiveDst = resolveToActiveEntranceKey(normalizedDst, activeKeys);
+    if (!effectiveDst) continue;
+
+    filtered[effectiveSrc] = normalizedDst;
   }
   return filtered;
 }

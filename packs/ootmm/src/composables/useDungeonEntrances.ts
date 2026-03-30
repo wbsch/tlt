@@ -8,6 +8,7 @@ import {
   getTrackedEntrancePool,
   isTrackedEntranceSourceType,
   computeExitOverrides,
+  filterEntranceOverridesForSettings,
   getExitKeyForEntrance,
   getExitLabel,
   getExitEndpointLabel,
@@ -15,6 +16,7 @@ import {
   INTERIOR_GAME_LINK_SOURCE_KEYS,
   INTERIOR_GAME_LINK_EXIT_KEYS,
   getGameLinkPartner,
+  normalizeTrackedEntranceKey,
   type TrackedEntrancePool,
 } from '../utils/entranceRandomization';
 import { matchesSearchTerms } from '../utils/search';
@@ -234,20 +236,16 @@ export function useDungeonEntrances() {
 
   const destinationOptions = computed(() => {
     const opts = activeEntrances.value.map((entry) => {
-      // For game-link entrances, use the partner key as destination value
-      // but derive the label from the active (exit) key's own areas
-      // (swapping from/to) so area names stay consistent with the row heading.
+      // For game-link entrances, use the partner key as destination value and
+      // the partner's own source-side label so the option matches the actual
+      // logic edge name (e.g. MM_CLOCK_TOWN_FROM_CLOCK_TOWER).
       const partner = getGameLinkPartner(entry.key);
       if (partner) {
-        const entryData = ENTRANCES_RAW[entry.key];
-        if (entryData) {
+        const partnerData = ENTRANCES_RAW[partner];
+        if (partnerData) {
           return {
             value: partner,
-            label: entranceLabel(entry.key, {
-              ...entryData,
-              from: entryData.to,
-              to: entryData.from,
-            } as EntranceData),
+            label: entranceLabel(partner, partnerData),
             game: entry.game,
             pool: entry.pool,
           };
@@ -314,6 +312,7 @@ export function useDungeonEntrances() {
   function destinationOptionsForEntrance(
     entry: Pick<DungeonEntranceEntry, 'key' | 'game' | 'pool'>,
   ) {
+    const gamesMode = String(trackerSettings.value?.games ?? 'ootmm');
     const ownGameMode =
       entry.pool === 'dungeon'
         ? erDungeonsMode.value === 'ownGame'
@@ -325,6 +324,28 @@ export function useDungeonEntrances() {
       if (!ownGameMode) return true;
       return dest.game === entry.game;
     });
+
+    if (gamesMode === 'ootmm' && INTERIOR_GAME_LINK_EXIT_KEYS.has(entry.key)) {
+      const seenAliases = new Set(opts.map((dest) => `${dest.value}::${dest.label}`));
+      for (const exit of activeExitEntries.value) {
+        if (exit.pool !== entry.pool) continue;
+        if (ownGameMode && exit.game !== entry.game) continue;
+
+        const normalizedValue = ENTRANCES_RAW[exit.key]?.reverse?.trim();
+        if (!normalizedValue || !ENTRANCES_RAW[normalizedValue]) continue;
+
+        const alias = {
+          value: normalizedValue,
+          label: getExitEndpointLabel(exit.key),
+          game: exit.game,
+          pool: exit.pool,
+        };
+        const aliasKey = `${alias.value}::${alias.label}`;
+        if (seenAliases.has(aliasKey)) continue;
+        seenAliases.add(aliasKey);
+        opts.push(alias);
+      }
+    }
 
     return sortOptionsByGameThenLabel(
       opts.filter((dest) => !isDestinationUsed(dest.value, entry.key)),
@@ -338,8 +359,19 @@ export function useDungeonEntrances() {
     filteredEntrances.value.filter((entry) => entry.game === 'mm'),
   );
 
+  const normalizedEntranceOverrides = computed(() =>
+    filterEntranceOverridesForSettings(
+      entranceOverrides.value,
+      trackerSettings.value,
+    ),
+  );
+
   function getSelectedDestination(srcKey: string): string {
     return entranceOverrides.value[srcKey] ?? '';
+  }
+
+  function getResolvedSelectedDestination(srcKey: string): string {
+    return normalizeTrackedEntranceKey(getSelectedDestination(srcKey));
   }
 
   function setSelectedDestination(srcKey: string, dstKey: string) {
@@ -355,7 +387,53 @@ export function useDungeonEntrances() {
         if (partner) normalizedDst = partner;
       }
     }
-    sessionStore.setEntranceOverride(srcKey, normalizedDst || null);
+
+    const gamesMode = String(trackerSettings.value?.games ?? 'ootmm');
+    const nextOverrides = { ...entranceOverrides.value };
+    const previousDst = nextOverrides[srcKey] ?? '';
+
+    if (
+      gamesMode === 'ootmm' &&
+      previousDst &&
+      INTERIOR_GAME_LINK_SOURCE_KEYS.has(previousDst)
+    ) {
+      const previousPartner = getGameLinkPartner(previousDst);
+      if (previousPartner && nextOverrides[previousPartner] === srcKey) {
+        delete nextOverrides[previousPartner];
+      }
+    }
+
+    if (gamesMode === 'ootmm' && INTERIOR_GAME_LINK_EXIT_KEYS.has(srcKey)) {
+      const sourceAlias = getGameLinkPartner(srcKey);
+      if (sourceAlias) {
+        for (const [otherSrc, otherDst] of Object.entries(nextOverrides)) {
+          if (otherSrc === srcKey) continue;
+          if (otherDst === sourceAlias && nextOverrides[srcKey] === otherSrc) {
+            delete nextOverrides[otherSrc];
+          }
+        }
+      }
+    }
+
+    if (!normalizedDst) {
+      delete nextOverrides[srcKey];
+      sessionStore.setEntranceOverrides(nextOverrides);
+      return;
+    }
+
+    nextOverrides[srcKey] = normalizedDst;
+
+    if (
+      gamesMode === 'ootmm' &&
+      INTERIOR_GAME_LINK_SOURCE_KEYS.has(normalizedDst)
+    ) {
+      const partner = getGameLinkPartner(normalizedDst);
+      if (partner && partner !== srcKey) {
+        nextOverrides[partner] = srcKey;
+      }
+    }
+
+    sessionStore.setEntranceOverrides(nextOverrides);
   }
 
   function clearAllOverrides() {
@@ -453,21 +531,28 @@ export function useDungeonEntrances() {
       pool: entry.pool,
     }));
 
-    // In single-game mode game-link entrances have no polarity:
-    // also offer source-side keys as exit destinations.
-    // In ootmm mode the game-link entries have no exit rows.
-    if (gamesMode !== 'ootmm') {
-      for (const entrance of activeEntrances.value) {
-        if (!INTERIOR_GAME_LINK_SOURCE_KEYS.has(entrance.key)) continue;
-        opts.push({
-          value: entrance.key,
-          label: getExitEndpointLabel(entrance.key),
-          game: entrance.game,
-          pool: entrance.pool,
-        });
-      }
+    const seenValues = new Set(opts.map((opt) => opt.value));
+
+    // Game-link rows themselves have no meaningful exit rows, but reverse
+    // mappings from other interiors can legitimately point at their hidden
+    // partner key. Keep that partner side in the destination list so the
+    // reverse-edge row can render and stay editable.
+    for (const entrance of activeEntrances.value) {
+      const extraValue =
+        gamesMode === 'ootmm'
+          ? getGameLinkPartner(entrance.key)
+          : INTERIOR_GAME_LINK_SOURCE_KEYS.has(entrance.key)
+            ? entrance.key
+            : null;
+      if (!extraValue || seenValues.has(extraValue)) continue;
+      seenValues.add(extraValue);
+      opts.push({
+        value: extraValue,
+        label: getExitEndpointLabel(extraValue),
+        game: entrance.game,
+        pool: entrance.pool,
+      });
     }
-    // Note: ootmm mode has no exit rows for game-link, so no extras needed.
 
     return opts;
   });
@@ -589,6 +674,7 @@ export function useDungeonEntrances() {
     mmEntrances,
     destinationOptionsForEntrance,
     getSelectedDestination,
+    getResolvedSelectedDestination,
     setSelectedDestination,
     clearAllOverrides,
     hasAnyOverrides,

@@ -54,6 +54,7 @@ import {
   getTrackedEntranceKeysForBinding,
   getExitKeyForEntrance,
   computeExitOverrides,
+  filterEntranceOverridesForSettings,
   resolveToActiveEntranceKey,
 } from '../utils/entranceRandomization';
 import * as ItemsMod from '@ootmm/core/items/index';
@@ -667,8 +668,11 @@ const mapSelectorVisibleEntranceCountByMap = computed(() => {
   const reachFilter = entrancesReachabilityFilter.value;
   const mapFilter = entrancesMappingFilter.value;
   const reachableSet = reachableEntranceIdSet.value;
-  const overrides = entranceOverrides.value;
-  const exitOverrides = computeExitOverrides(overrides);
+  const normalizedOverrides = filterEntranceOverridesForSettings(
+    entranceOverrides.value,
+    (trackerSettings.value ?? {}) as Record<string, unknown>,
+  );
+  const exitOverrides = computeExitOverrides(normalizedOverrides);
 
   for (const mapDef of selectableMapDefs.value) {
     const entranceIds = entrancesByMap.get(mapDef.id);
@@ -679,7 +683,7 @@ const mapSelectorVisibleEntranceCountByMap = computed(() => {
     let count = 0;
     for (const eid of entranceIds) {
       // Count entrance
-      const isMapped = (overrides[eid] ?? '').trim().length > 0;
+      const isMapped = (normalizedOverrides[eid] ?? '').trim().length > 0;
       const entrancePassesMapping =
         mapFilter === 'all' ||
         (mapFilter === 'mapped' && isMapped) ||

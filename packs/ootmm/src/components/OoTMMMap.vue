@@ -468,6 +468,7 @@ const {
   mapFilteredEntrances: filteredDungeonEntrances,
   destinationOptionsForEntrance,
   getSelectedDestination,
+  getResolvedSelectedDestination,
   setSelectedDestination,
   activeExitEntries,
   mapFilteredExitEntries: filteredExitEntries,
@@ -977,7 +978,7 @@ function resolveMappedDestinationEntranceId(
   // Use the actual active key for override lookup — the queried key may be a
   // game-link partner alias that differs from the key in entranceOverrides.
   const actualKey = activeEntranceById.get(sourceEntranceId)!.key;
-  const selectedDestination = getSelectedDestination(actualKey).trim();
+  const selectedDestination = getResolvedSelectedDestination(actualKey).trim();
   return selectedDestination.length > 0 ? selectedDestination : null;
 }
 
