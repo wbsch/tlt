@@ -114,8 +114,17 @@ export function useDungeonEntrances() {
     entrancesSearchQuery,
   } = storeToRefs(uiStore);
 
+  const normalizedEntranceOverrides = computed(() =>
+    filterEntranceOverridesForSettings(
+      entranceOverrides.value,
+      trackerSettings.value,
+    ),
+  );
+
   function isEntranceMapped(entranceKey: string): boolean {
-    return (entranceOverrides.value[entranceKey] ?? '').trim().length > 0;
+    return (
+      (normalizedEntranceOverrides.value[entranceKey] ?? '').trim().length > 0
+    );
   }
 
   const allDungeonEntrances = computed<DungeonEntranceEntry[]>(() => {
@@ -287,13 +296,15 @@ export function useDungeonEntrances() {
   const hasAvailableSections = computed(() => sections.value.length > 0);
 
   function isDestinationUsed(dstKey: string, currentSrcKey: string): boolean {
-    for (const [src, dst] of Object.entries(entranceOverrides.value)) {
+    for (const [src, dst] of Object.entries(
+      normalizedEntranceOverrides.value,
+    )) {
       if (src !== currentSrcKey && dst === dstKey) return true;
     }
     // Game-link keys have no polarity: if partner is assigned, this key is used
     const partner = getGameLinkPartner(dstKey);
     if (partner) {
-      for (const [, dst] of Object.entries(entranceOverrides.value)) {
+      for (const [, dst] of Object.entries(normalizedEntranceOverrides.value)) {
         if (dst === partner) return true;
       }
     }
@@ -361,15 +372,8 @@ export function useDungeonEntrances() {
     filteredEntrances.value.filter((entry) => entry.game === 'mm'),
   );
 
-  const normalizedEntranceOverrides = computed(() =>
-    filterEntranceOverridesForSettings(
-      entranceOverrides.value,
-      trackerSettings.value,
-    ),
-  );
-
   function getSelectedDestination(srcKey: string): string {
-    return entranceOverrides.value[srcKey] ?? '';
+    return normalizedEntranceOverrides.value[srcKey] ?? '';
   }
 
   function getResolvedSelectedDestination(srcKey: string): string {
@@ -443,13 +447,13 @@ export function useDungeonEntrances() {
   }
 
   const hasAnyOverrides = computed(
-    () => Object.keys(entranceOverrides.value).length > 0,
+    () => Object.keys(normalizedEntranceOverrides.value).length > 0,
   );
 
   // --- Exit data ---
 
   const exitOverridesMap = computed(() =>
-    computeExitOverrides(entranceOverrides.value),
+    computeExitOverrides(normalizedEntranceOverrides.value),
   );
 
   function isExitMapped(exitKey: string): boolean {
@@ -517,7 +521,7 @@ export function useDungeonEntrances() {
       for (const [, dst] of Object.entries(overrides)) {
         if (dst === partner) return true;
       }
-      for (const [, dst] of Object.entries(entranceOverrides.value)) {
+      for (const [, dst] of Object.entries(normalizedEntranceOverrides.value)) {
         if (dst === exitDstKey || dst === partner) return true;
       }
     }
