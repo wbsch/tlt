@@ -30,9 +30,9 @@ describe('useDungeonEntrances', () => {
     );
 
     expect(bowlingExit).toBeTruthy();
-    expect(entrances.getExitSelectedDestination('OOT_MARKET_FROM_BOWLING')).toBe(
-      'OOT_MARKET_FROM_MASK_SHOP',
-    );
+    expect(
+      entrances.getExitSelectedDestination('OOT_MARKET_FROM_BOWLING'),
+    ).toBe('OOT_MARKET_FROM_MASK_SHOP');
 
     const options = entrances.destinationOptionsForExit(bowlingExit!);
     expect(
@@ -81,8 +81,9 @@ describe('useDungeonEntrances', () => {
 
     expect(clockTowerRow).toBeTruthy();
 
-    const clockTowerOptions =
-      entrances.destinationOptionsForEntrance(clockTowerRow!);
+    const clockTowerOptions = entrances.destinationOptionsForEntrance(
+      clockTowerRow!,
+    );
     expect(
       clockTowerOptions.some(
         (option) =>
@@ -116,8 +117,8 @@ describe('useDungeonEntrances', () => {
     expect(entrances.getSelectedDestination('OOT_SHOP_MASKS')).toBe(
       'OOT_BOMBCHU_BOWLING',
     );
-    expect(entrances.getResolvedSelectedDestination('OOT_BOMBCHU_BOWLING')).toBe(
-      'OOT_MARKET_FROM_MASK_SHOP',
-    );
+    expect(
+      entrances.getResolvedSelectedDestination('OOT_BOMBCHU_BOWLING'),
+    ).toBe('OOT_MARKET_FROM_MASK_SHOP');
   });
 });

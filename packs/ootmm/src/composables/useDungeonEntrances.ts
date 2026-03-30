@@ -326,7 +326,9 @@ export function useDungeonEntrances() {
     });
 
     if (gamesMode === 'ootmm' && INTERIOR_GAME_LINK_EXIT_KEYS.has(entry.key)) {
-      const seenAliases = new Set(opts.map((dest) => `${dest.value}::${dest.label}`));
+      const seenAliases = new Set(
+        opts.map((dest) => `${dest.value}::${dest.label}`),
+      );
       for (const exit of activeExitEntries.value) {
         if (exit.pool !== entry.pool) continue;
         if (ownGameMode && exit.game !== entry.game) continue;
