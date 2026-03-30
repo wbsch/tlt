@@ -72,6 +72,22 @@ export function getGameLinkPartner(key: string): string | null {
   return data?.reverse?.trim() || null;
 }
 
+/**
+ * Resolve a (possibly normalized) entrance key to the actual active key.
+ * `normalizeTrackedEntranceKey` always maps exit→source, but in ootmm mode
+ * the active key is the exit key.  This function bridges that gap by checking
+ * the game-link partner when the normalized key isn't in the active set.
+ */
+export function resolveToActiveEntranceKey(
+  normalizedKey: string,
+  activeKeys: Set<string>,
+): string | null {
+  if (activeKeys.has(normalizedKey)) return normalizedKey;
+  const partner = getGameLinkPartner(normalizedKey);
+  if (partner && activeKeys.has(partner)) return partner;
+  return null;
+}
+
 function isTrackedInteriorSource(
   key: string | undefined,
   type: string,
@@ -82,10 +98,10 @@ function isTrackedInteriorSource(
 
 function getEnabledInteriorSources(settings: Record<string, unknown>): {
   types: Set<string>;
-  sourceKeys: Set<string>;
+  gameLinkKeys: Set<string>;
 } {
   const types = new Set<string>();
-  const sourceKeys = new Set<string>();
+  const gameLinkKeys = new Set<string>();
 
   if (settings?.erIndoorsMajor) {
     types.add('indoors');
@@ -98,16 +114,16 @@ function getEnabledInteriorSources(settings: Record<string, unknown>): {
   }
   if (settings?.erIndoorsGameLinks) {
     const gamesMode = String(settings?.games ?? 'ootmm');
-    const gameLinkKeys =
+    const activeGameLinkKeys =
       gamesMode === 'ootmm'
         ? INTERIOR_GAME_LINK_EXIT_KEYS
         : INTERIOR_GAME_LINK_SOURCE_KEYS;
-    for (const key of gameLinkKeys) {
-      sourceKeys.add(key);
+    for (const key of activeGameLinkKeys) {
+      gameLinkKeys.add(key);
     }
   }
 
-  return { types, sourceKeys };
+  return { types, gameLinkKeys };
 }
 
 export function getEnabledDungeonTypes(
@@ -235,7 +251,7 @@ export function getActiveEntranceKeys(
     }
 
     if (erIndoors && erIndoors !== 'none') {
-      if (enabledInteriorSources.sourceKeys.has(key)) {
+      if (enabledInteriorSources.gameLinkKeys.has(key)) {
         keys.add(key);
         continue;
       }

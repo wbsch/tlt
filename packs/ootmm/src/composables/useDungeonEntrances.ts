@@ -233,7 +233,6 @@ export function useDungeonEntrances() {
   });
 
   const destinationOptions = computed(() => {
-    const gamesMode = String(trackerSettings.value?.games ?? 'ootmm');
     const opts = activeEntrances.value.map((entry) => {
       // For game-link entrances, use the partner key as destination value
       // but derive the label from the active (exit) key's own areas

@@ -54,7 +54,7 @@ import {
   getTrackedEntranceKeysForBinding,
   getExitKeyForEntrance,
   computeExitOverrides,
-  getGameLinkPartner,
+  resolveToActiveEntranceKey,
 } from '../utils/entranceRandomization';
 import * as ItemsMod from '@ootmm/core/items/index';
 import * as NamesMod from '@ootmm/core/names';
@@ -546,12 +546,8 @@ function addEntranceBoundCodes(
 ): void {
   for (const srcId of markerEntranceIds) {
     const normalizedSrc = normalizeTrackedEntranceKey(srcId.trim());
-    // In ootmm mode the active key may be the game-link partner of
-    // the normalized key.
-    const effectiveSrc = activeKeys.has(normalizedSrc)
-      ? normalizedSrc
-      : (getGameLinkPartner(normalizedSrc) ?? normalizedSrc);
-    if (!activeKeys.has(effectiveSrc)) continue;
+    const effectiveSrc = resolveToActiveEntranceKey(normalizedSrc, activeKeys);
+    if (!effectiveSrc) continue;
     const dstId = overrides[effectiveSrc];
     if (!dstId) continue; // Unmapped entrance – checks unreachable
     const dstEntries = ENTRANCE_CHECK_CODES_BY_ID.get(dstId);
@@ -648,16 +644,11 @@ const mapSelectorEntranceIdsByMap = computed(() => {
       ) {
         for (const srcId of marker.entranceMenu.entranceIds) {
           const normalized = normalizeTrackedEntranceKey(srcId.trim());
-          if (normalized && activeKeys.has(normalized)) {
-            entranceIds.add(normalized);
-          } else {
-            // In ootmm mode the active key may be the game-link partner.
-            const partner = normalized
-              ? getGameLinkPartner(normalized)
-              : null;
-            if (partner && activeKeys.has(partner)) {
-              entranceIds.add(partner);
-            }
+          const active = normalized
+            ? resolveToActiveEntranceKey(normalized, activeKeys)
+            : null;
+          if (active) {
+            entranceIds.add(active);
           }
         }
       }

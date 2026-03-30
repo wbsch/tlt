@@ -352,6 +352,22 @@ function submenuRuntimeCodeList(marker: SubmenuEntryRuntime): string {
   return Array.isArray(marker.codeList) ? marker.codeList.join('|') : '';
 }
 
+/**
+ * Add game-link partner aliases so markers using the normalized
+ * (opposite-direction) key still resolve to the active entry.
+ */
+function addGameLinkPartnerAliases(
+  map: Map<string, DungeonEntranceEntry>,
+  entries: readonly DungeonEntranceEntry[],
+): void {
+  for (const entry of entries) {
+    const partner = getGameLinkPartner(entry.key);
+    if (partner && !map.has(partner)) {
+      map.set(partner, entry);
+    }
+  }
+}
+
 function normalizeEntranceIdList(
   value: string[] | undefined,
   markerDef: MapMarkerDef,
@@ -1029,23 +1045,14 @@ const markerViewModels = computed<MarkerRuntime[]>(() => {
       const activeEntranceById = new Map(
         entrancesForVisibility.map((entry) => [entry.key, entry]),
       );
-      // Add game-link partner aliases so markers using the normalized
-      // (opposite-direction) key still resolve to the active entry.
-      for (const entry of entrancesForVisibility) {
-        const partner = getGameLinkPartner(entry.key);
-        if (partner && !activeEntranceById.has(partner)) {
-          activeEntranceById.set(partner, entry);
-        }
-      }
+      addGameLinkPartnerAliases(activeEntranceById, entrancesForVisibility);
       const filteredEntranceById = new Map(
         filteredDungeonEntrances.value.map((entry) => [entry.key, entry]),
       );
-      for (const entry of filteredDungeonEntrances.value) {
-        const partner = getGameLinkPartner(entry.key);
-        if (partner && !filteredEntranceById.has(partner)) {
-          filteredEntranceById.set(partner, entry);
-        }
-      }
+      addGameLinkPartnerAliases(
+        filteredEntranceById,
+        filteredDungeonEntrances.value,
+      );
       const activeSubmenuEntrances = submenuSourceEntranceIds
         .map((entranceId) => activeEntranceById.get(entranceId))
         .filter((entry): entry is DungeonEntranceEntry => Boolean(entry));
