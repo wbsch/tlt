@@ -26,6 +26,8 @@ import {
   getActiveEntranceKeys,
   isTrackedEntranceExitType,
   INTERIOR_GAME_LINK_SOURCE_KEYS,
+  INTERIOR_GAME_LINK_EXIT_KEYS,
+  getGameLinkPartner,
 } from './utils/entranceRandomization';
 
 const resolveExport = <T>(mod: unknown, key: string): T =>
@@ -463,13 +465,16 @@ export class OoTMMTracker implements TrackerPack {
         if (!activeEntranceKeys.has(key)) continue;
         if (data.from === 'NONE' || data.to === 'NONE') continue;
         if (!finalPlandoEntrances[key]) {
-          // Game-link source entrances (OOT_MARKET_FROM_MASK_SHOP, MM_CLOCK_TOWN_FROM_CLOCK_TOWER)
-          // are NOT self-mapped.  Their internal exits stay vanilla, and
-          // the cross-game connection is handled below via exit-key mapping
-          // (matching OoTMM's connectGamesDefault() format).
+          // Game-link entrances (source keys in single-game mode, exit keys
+          // in ootmm mode) are NOT self-mapped.  Their internal exits stay
+          // vanilla, and the cross-game connection is handled below via
+          // exit-key mapping (matching OoTMM's connectGamesDefault() format).
           // However, they must still be disconnected when unmapped so the
           // pathfinder cannot traverse their vanilla forward edge.
-          if (INTERIOR_GAME_LINK_SOURCE_KEYS.has(key)) {
+          if (
+            INTERIOR_GAME_LINK_SOURCE_KEYS.has(key) ||
+            INTERIOR_GAME_LINK_EXIT_KEYS.has(key)
+          ) {
             unmappedEntrances.push(key);
             continue;
           }
@@ -496,10 +501,19 @@ export class OoTMMTracker implements TrackerPack {
         const vanillaExitMapping =
           GAME_LINK_VANILLA_EXIT_MAPPING[gamesMode] ?? {};
         for (const [exitSrc, exitDst] of Object.entries(vanillaExitMapping)) {
-          if (!finalPlandoEntrances[exitSrc] && !unmappedSet.has(exitDst)) {
-            finalPlandoEntrances[exitSrc] = exitDst;
-            selfMappedNoGlobalEntrances.push(exitSrc);
+          if (finalPlandoEntrances[exitSrc]) continue;
+          // In ootmm mode the unmapped set may contain exit keys while
+          // vanilla destinations are source keys (or vice-versa).  Check
+          // both the raw destination and its game-link partner.
+          const exitDstPartner = getGameLinkPartner(exitDst);
+          if (
+            unmappedSet.has(exitDst) ||
+            (exitDstPartner && unmappedSet.has(exitDstPartner))
+          ) {
+            continue;
           }
+          finalPlandoEntrances[exitSrc] = exitDst;
+          selfMappedNoGlobalEntrances.push(exitSrc);
         }
       }
 

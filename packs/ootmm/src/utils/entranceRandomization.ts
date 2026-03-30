@@ -36,7 +36,7 @@ export const INTERIOR_GAME_LINK_SOURCE_KEYS = new Set([
   'OOT_MARKET_FROM_MASK_SHOP',
   'MM_CLOCK_TOWN_FROM_CLOCK_TOWER',
 ]);
-const INTERIOR_GAME_LINK_EXIT_KEYS = new Set([
+export const INTERIOR_GAME_LINK_EXIT_KEYS = new Set([
   'OOT_SHOP_MASKS',
   'MM_CLOCK_TOWER_FROM_CLOCK_TOWN',
 ]);
@@ -56,6 +56,21 @@ const JP_LAYOUT_GROTTO_KEYS = new Set([
 ]);
 
 export type TrackedEntrancePool = 'dungeon' | 'grotto' | 'interior';
+
+/**
+ * For game-link keys (no polarity), return the partner (reverse) key.
+ * Returns null for non-game-link keys.
+ */
+export function getGameLinkPartner(key: string): string | null {
+  if (
+    !INTERIOR_GAME_LINK_SOURCE_KEYS.has(key) &&
+    !INTERIOR_GAME_LINK_EXIT_KEYS.has(key)
+  ) {
+    return null;
+  }
+  const data = ENTRANCES_RAW[key];
+  return data?.reverse?.trim() || null;
+}
 
 function isTrackedInteriorSource(
   key: string | undefined,
@@ -82,7 +97,12 @@ function getEnabledInteriorSources(settings: Record<string, unknown>): {
     }
   }
   if (settings?.erIndoorsGameLinks) {
-    for (const key of INTERIOR_GAME_LINK_SOURCE_KEYS) {
+    const gamesMode = String(settings?.games ?? 'ootmm');
+    const gameLinkKeys =
+      gamesMode === 'ootmm'
+        ? INTERIOR_GAME_LINK_EXIT_KEYS
+        : INTERIOR_GAME_LINK_SOURCE_KEYS;
+    for (const key of gameLinkKeys) {
       sourceKeys.add(key);
     }
   }
@@ -337,12 +357,13 @@ export function filterEntranceOverridesForSettings(
   for (const [src, dst] of Object.entries(overrides)) {
     const normalizedSrc = normalizeTrackedEntranceKey(src);
     const normalizedDst = normalizeTrackedEntranceKey(dst);
-    if (!activeKeys.has(normalizedSrc)) continue;
-    if (!activeKeys.has(normalizedDst)) continue;
-    // Preserve the raw dst: game-link source keys (indoors-link type) must
-    // not be normalized to their none-type reverse because the plando needs
-    // the indoors-link key to connect to the correct overworld area.
-    filtered[normalizedSrc] = dst;
+    // Prefer the raw key if it's directly active (e.g. game-link exit keys
+    // in ootmm mode), otherwise fall back to the normalized key.
+    const effectiveSrc = activeKeys.has(src) ? src : normalizedSrc;
+    if (!activeKeys.has(effectiveSrc)) continue;
+    const effectiveDst = activeKeys.has(dst) ? dst : normalizedDst;
+    if (!activeKeys.has(effectiveDst)) continue;
+    filtered[effectiveSrc] = dst;
   }
   return filtered;
 }
