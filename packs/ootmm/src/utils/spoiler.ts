@@ -19,9 +19,65 @@ export type SpoilerLocationPlacement = {
   itemPlayer?: number;
 };
 
+export function getSpoilerLogPlayerOptions(parsed: SpoilerLogData): number[] {
+  const mode = String(parsed.settings.mode ?? '')
+    .trim()
+    .toLowerCase();
+  const players = new Set<number>();
+  const configuredPlayerCount = Number(parsed.settings.players);
+
+  if (mode !== 'multi') {
+    return [];
+  }
+
+  if (Number.isInteger(configuredPlayerCount) && configuredPlayerCount > 0) {
+    for (let player = 1; player <= configuredPlayerCount; player += 1) {
+      players.add(player);
+    }
+  }
+
+  return Array.from(players).sort((left, right) => left - right);
+}
+
 type ParseSpoilerLogOptions = {
-  startingItemsPlayer?: number;
+  player?: number;
 };
+
+type WorldFlagValue = string | { type: 'specific'; values: string[] };
+
+const WORLD_SECTION_HEADER_RE = /^World\s+(\d+)(?::|\s+\(\d+\))?$/i;
+
+function cloneWorldFlagValue(value: WorldFlagValue): WorldFlagValue {
+  if (typeof value === 'string') {
+    return value;
+  }
+
+  return {
+    type: 'specific',
+    values: [...value.values],
+  };
+}
+
+function mergeWorldFlags(
+  base: Record<string, WorldFlagValue>,
+  override?: Record<string, WorldFlagValue>,
+): Record<string, WorldFlagValue> {
+  const merged: Record<string, WorldFlagValue> = {};
+
+  for (const [key, value] of Object.entries(base)) {
+    merged[key] = cloneWorldFlagValue(value);
+  }
+
+  if (!override) {
+    return merged;
+  }
+
+  for (const [key, value] of Object.entries(override)) {
+    merged[key] = cloneWorldFlagValue(value);
+  }
+
+  return merged;
+}
 
 type Section =
   | 'settings'
@@ -66,10 +122,14 @@ export function parseSpoilerLog(
   let currentSpecialCond: string | null = null;
   let currentWorldFlag: string | null = null;
   let currentStartingItemsPlayer: number | null = null;
+  let currentWorldSectionPlayer: number | null = null;
   let currentLocationRegion: string | null = null;
   let currentLocationWorld: number | null = null;
   let hasStartingItemsPlayerHeaders = false;
   const startingItemsByPlayer: Record<number, Record<string, number>> = {};
+  const worldFlagsByPlayer: Record<number, Record<string, WorldFlagValue>> = {};
+  const junkLocationsByPlayer: Record<number, string[]> = {};
+  const preCompletedDungeonsByPlayer: Record<number, string[]> = {};
 
   for (const rawLine of lines) {
     if (!rawLine) continue;
@@ -86,12 +146,14 @@ export function parseSpoilerLog(
       section = 'settings';
       currentSpecialCond = null;
       currentWorldFlag = null;
+      currentWorldSectionPlayer = null;
       continue;
     }
     if (trimmed === 'Special Conditions') {
       section = 'specialConds';
       currentSpecialCond = null;
       currentWorldFlag = null;
+      currentWorldSectionPlayer = null;
       continue;
     }
     if (trimmed === 'Starting Items') {
@@ -99,6 +161,7 @@ export function parseSpoilerLog(
       currentSpecialCond = null;
       currentWorldFlag = null;
       currentStartingItemsPlayer = null;
+      currentWorldSectionPlayer = null;
       currentLocationRegion = null;
       currentLocationWorld = null;
       hasStartingItemsPlayerHeaders = false;
@@ -108,6 +171,7 @@ export function parseSpoilerLog(
       section = 'junkLocations';
       currentSpecialCond = null;
       currentWorldFlag = null;
+      currentWorldSectionPlayer = null;
       currentLocationRegion = null;
       currentLocationWorld = null;
       continue;
@@ -116,6 +180,7 @@ export function parseSpoilerLog(
       section = 'tricks';
       currentSpecialCond = null;
       currentWorldFlag = null;
+      currentWorldSectionPlayer = null;
       currentLocationRegion = null;
       currentLocationWorld = null;
       if (!result.tricks) {
@@ -127,6 +192,7 @@ export function parseSpoilerLog(
       section = 'worldFlags';
       currentSpecialCond = null;
       currentWorldFlag = null;
+      currentWorldSectionPlayer = null;
       currentLocationRegion = null;
       currentLocationWorld = null;
       continue;
@@ -135,6 +201,7 @@ export function parseSpoilerLog(
       section = 'preCompleted';
       currentSpecialCond = null;
       currentWorldFlag = null;
+      currentWorldSectionPlayer = null;
       currentLocationRegion = null;
       currentLocationWorld = null;
       continue;
@@ -146,6 +213,7 @@ export function parseSpoilerLog(
       section = 'locations';
       currentSpecialCond = null;
       currentWorldFlag = null;
+      currentWorldSectionPlayer = null;
       currentLocationRegion = null;
       currentLocationWorld = null;
       continue;
@@ -155,6 +223,7 @@ export function parseSpoilerLog(
       section = null;
       currentSpecialCond = null;
       currentWorldFlag = null;
+      currentWorldSectionPlayer = null;
       currentLocationRegion = null;
       currentLocationWorld = null;
       continue;
@@ -221,21 +290,53 @@ export function parseSpoilerLog(
         break;
       }
       case 'junkLocations': {
+        const worldMatch = trimmed.match(WORLD_SECTION_HEADER_RE);
+        if (worldMatch) {
+          currentWorldSectionPlayer = Number.parseInt(worldMatch[1], 10);
+          break;
+        }
         const normalized = normalizeLine(trimmed);
         if (normalized) {
-          result.junkLocations.push(normalized);
+          if (
+            currentWorldSectionPlayer !== null &&
+            !Number.isNaN(currentWorldSectionPlayer)
+          ) {
+            const entries =
+              junkLocationsByPlayer[currentWorldSectionPlayer] ?? [];
+            entries.push(normalized);
+            junkLocationsByPlayer[currentWorldSectionPlayer] = entries;
+          } else {
+            result.junkLocations.push(normalized);
+          }
         }
         break;
       }
       case 'worldFlags': {
-        if (/^World\s+\d+/i.test(trimmed)) break;
+        const worldMatch = trimmed.match(WORLD_SECTION_HEADER_RE);
+        if (worldMatch) {
+          currentWorldSectionPlayer = Number.parseInt(worldMatch[1], 10);
+          currentWorldFlag = null;
+          if (
+            !Number.isNaN(currentWorldSectionPlayer) &&
+            !worldFlagsByPlayer[currentWorldSectionPlayer]
+          ) {
+            worldFlagsByPlayer[currentWorldSectionPlayer] = {};
+          }
+          break;
+        }
         const normalized = normalizeLine(trimmed);
+        const targetWorldFlags =
+          currentWorldSectionPlayer !== null &&
+          !Number.isNaN(currentWorldSectionPlayer)
+            ? (worldFlagsByPlayer[currentWorldSectionPlayer] ??
+              (worldFlagsByPlayer[currentWorldSectionPlayer] = {}))
+            : result.worldFlags;
         if (normalized.startsWith('- ')) {
           if (!currentWorldFlag) break;
           const valueName = normalized.slice(2).trim();
-          const entry = result.worldFlags[currentWorldFlag];
+          const entry = targetWorldFlags[currentWorldFlag];
           if (!entry || typeof entry === 'string') {
-            result.worldFlags[currentWorldFlag] = {
+            targetWorldFlags[currentWorldFlag] = {
               type: 'specific',
               values: [valueName],
             };
@@ -247,7 +348,7 @@ export function parseSpoilerLog(
         if (normalized.endsWith(':') && !normalized.includes(': ')) {
           currentWorldFlag = normalized.slice(0, -1).trim();
           if (currentWorldFlag) {
-            result.worldFlags[currentWorldFlag] = {
+            targetWorldFlags[currentWorldFlag] = {
               type: 'specific',
               values: [],
             };
@@ -260,14 +361,28 @@ export function parseSpoilerLog(
         const value = normalized.slice(splitIndex + 1).trim();
         if (!name) break;
         currentWorldFlag = null;
-        result.worldFlags[name] = parseValue(value) as string;
+        targetWorldFlags[name] = parseValue(value) as string;
         break;
       }
       case 'preCompleted': {
-        if (/^World\s+\d+/i.test(trimmed)) break;
+        const worldMatch = trimmed.match(WORLD_SECTION_HEADER_RE);
+        if (worldMatch) {
+          currentWorldSectionPlayer = Number.parseInt(worldMatch[1], 10);
+          break;
+        }
         const normalized = normalizeLine(trimmed);
         if (normalized) {
-          result.preCompletedDungeons.push(normalized);
+          if (
+            currentWorldSectionPlayer !== null &&
+            !Number.isNaN(currentWorldSectionPlayer)
+          ) {
+            const entries =
+              preCompletedDungeonsByPlayer[currentWorldSectionPlayer] ?? [];
+            entries.push(normalized);
+            preCompletedDungeonsByPlayer[currentWorldSectionPlayer] = entries;
+          } else {
+            result.preCompletedDungeons.push(normalized);
+          }
         }
         break;
       }
@@ -344,9 +459,28 @@ export function parseSpoilerLog(
     .sort((left, right) => left - right);
   result.startingItemsPlayers = startingItemsPlayers;
 
-  const selectedPlayer = options.startingItemsPlayer ?? 1;
+  const selectedPlayer = options.player ?? 1;
   if (startingItemsByPlayer[selectedPlayer]) {
     result.startingItems = startingItemsByPlayer[selectedPlayer];
+  }
+
+  result.worldFlags = mergeWorldFlags(
+    result.worldFlags,
+    worldFlagsByPlayer[selectedPlayer],
+  );
+
+  if (junkLocationsByPlayer[selectedPlayer]) {
+    result.junkLocations = [
+      ...result.junkLocations,
+      ...junkLocationsByPlayer[selectedPlayer],
+    ];
+  }
+
+  if (preCompletedDungeonsByPlayer[selectedPlayer]) {
+    result.preCompletedDungeons = [
+      ...result.preCompletedDungeons,
+      ...preCompletedDungeonsByPlayer[selectedPlayer],
+    ];
   }
 
   return result;

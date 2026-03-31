@@ -24,6 +24,7 @@ import {
   getGridWheelOverlayStateItemId,
 } from '../data/itemIcons';
 import {
+  getSpoilerLogPlayerOptions,
   parseSpoilerLog,
   type SpoilerLocationPlacement,
   type SpoilerLogData,
@@ -1654,9 +1655,9 @@ function cancelSpoilerStartingItemsPlayer() {
   resolveSpoilerStartingItemsPlayer(null);
 }
 
-async function applySpoilerLog(text: string, startingItemsPlayer?: number) {
+async function applySpoilerLog(text: string, selectedPlayer?: number) {
   if (isApplyingSettings.value) return;
-  const parsed = parseSpoilerLog(text, { startingItemsPlayer });
+  const parsed = parseSpoilerLog(text, { player: selectedPlayer });
   const settingsPatch: Record<string, unknown> = {};
 
   for (const [key, value] of Object.entries(parsed.settings)) {
@@ -1715,7 +1716,7 @@ async function applySpoilerLog(text: string, startingItemsPlayer?: number) {
     applyStartingItems(parsed.startingItems);
   }
 
-  applySpoilerRewardAssignments(parsed, nextSettings, startingItemsPlayer);
+  applySpoilerRewardAssignments(parsed, nextSettings, selectedPlayer);
 
   if (parsed.junkLocations.length > 0) {
     applyJunkLocations(parsed.junkLocations);
@@ -1726,15 +1727,14 @@ async function handleSpoilerFile(file: File) {
   if (!file) return;
   const text = await file.text();
   const parsed = parseSpoilerLog(text);
+  const playerOptions = getSpoilerLogPlayerOptions(parsed);
   closeSpoilerSettingsWarningDialog();
   const warnings = collectSpoilerSettingsWarnings(parsed.settings);
   const unknownSettings = collectSpoilerUnknownSettings(parsed.settings);
   let selectedPlayer: number | undefined;
 
-  if (parsed.startingItemsPlayers.length > 1) {
-    const selected = await requestSpoilerStartingItemsPlayer(
-      parsed.startingItemsPlayers,
-    );
+  if (playerOptions.length > 1) {
+    const selected = await requestSpoilerStartingItemsPlayer(playerOptions);
     if (selected === null) {
       return;
     }
@@ -1943,7 +1943,7 @@ onBeforeUnmount(() => {
           Multiworld detected
         </h2>
         <p class="spoiler-player-dialog-text">
-          Choose which player's Starting Items should be applied.
+          Choose which player this tracker should be filled for.
         </p>
         <label class="spoiler-player-dialog-label" for="spoiler-player-select"
           >Player</label
