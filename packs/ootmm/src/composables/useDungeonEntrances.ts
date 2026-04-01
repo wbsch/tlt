@@ -154,7 +154,9 @@ export function useDungeonEntrances() {
   });
 
   function isEntranceMapped(entranceKey: string): boolean {
-    return (displayEntranceOverrides.value[entranceKey] ?? '').trim().length > 0;
+    return (
+      (displayEntranceOverrides.value[entranceKey] ?? '').trim().length > 0
+    );
   }
 
   const allDungeonEntrances = computed<DungeonEntranceEntry[]>(() => {
@@ -332,7 +334,9 @@ export function useDungeonEntrances() {
 
     const partner = getGameLinkPartner(dstKey);
     if (partner) {
-      for (const [src, dst] of Object.entries(rawActiveEntranceOverrides.value)) {
+      for (const [src, dst] of Object.entries(
+        rawActiveEntranceOverrides.value,
+      )) {
         if (src === currentSrcKey) continue;
         if (dst === partner) return true;
       }
