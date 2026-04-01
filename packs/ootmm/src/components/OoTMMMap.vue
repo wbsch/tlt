@@ -27,6 +27,7 @@ import {
   type DungeonEntranceEntry,
   type ExitEntry,
 } from '../composables/useDungeonEntrances';
+import EntranceDestinationCombobox from './EntranceDestinationCombobox.vue';
 import { OOTMM_MAP_DEFS } from '../data/maps';
 import {
   getTrackedEntranceKeysForBinding,
@@ -925,13 +926,6 @@ function markerPopupPayload(marker: PopupMarkerRuntime): MapPopupPayload {
     canMarkAll: uncollectedCheckIds.length > 0,
     markAllAffectsReachableOnly: false,
   };
-}
-
-function entranceDestinationLabel(entry: {
-  label: string;
-  game: 'oot' | 'mm';
-}): string {
-  return `${entry.label}${entry.game === 'mm' ? ' (MM)' : ' (OoT)'}`;
 }
 
 function resolveEntranceMenuIds(
@@ -1919,6 +1913,12 @@ function handleWheel(event: WheelEvent): void {
   ) {
     return;
   }
+  if (
+    event.target instanceof Element &&
+    event.target.closest('.destination-combobox__options')
+  ) {
+    return;
+  }
   const submenuPanelEl = submenuPanelRef.value;
   if (
     submenuPanelEl &&
@@ -2553,25 +2553,12 @@ onBeforeUnmount(() => {
             <label class="map-entrance-list__label" :title="entry.key">
               {{ entry.displayLabel }}
             </label>
-            <select
-              class="map-entrance-list__select"
-              :value="getEntranceDestinationValue(entry.key)"
-              @change="
-                handleEntranceDestinationChange(
-                  entry.key,
-                  ($event.target as HTMLSelectElement).value,
-                )
-              "
-            >
-              <option value="">— Not mapped —</option>
-              <option
-                v-for="dest in getEntranceDestinationOptions(entry)"
-                :key="dest.value"
-                :value="dest.value"
-              >
-                {{ entranceDestinationLabel(dest) }}
-              </option>
-            </select>
+            <EntranceDestinationCombobox
+              :dropdown-id="`map-entrance-dest-listbox-${entry.key}`"
+              :options="getEntranceDestinationOptions(entry)"
+              :model-value="getEntranceDestinationValue(entry.key)"
+              @update:model-value="handleEntranceDestinationChange(entry.key, $event)"
+            />
           </div>
         </div>
 
@@ -2601,25 +2588,12 @@ onBeforeUnmount(() => {
             >
               {{ exit.label }}
             </label>
-            <select
-              class="map-entrance-list__select"
-              :value="getExitDestinationValue(exit.key)"
-              @change="
-                handleExitDestinationChange(
-                  exit.key,
-                  ($event.target as HTMLSelectElement).value,
-                )
-              "
-            >
-              <option value="">— Not mapped —</option>
-              <option
-                v-for="dest in getExitDestinationOptions(exit)"
-                :key="dest.value"
-                :value="dest.value"
-              >
-                {{ entranceDestinationLabel(dest) }}
-              </option>
-            </select>
+            <EntranceDestinationCombobox
+              :dropdown-id="`map-exit-dest-listbox-${exit.key}`"
+              :options="getExitDestinationOptions(exit)"
+              :model-value="getExitDestinationValue(exit.key)"
+              @update:model-value="handleExitDestinationChange(exit.key, $event)"
+            />
           </div>
         </div>
       </div>
@@ -3232,27 +3206,6 @@ onBeforeUnmount(() => {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-}
-
-.map-entrance-list__select {
-  width: 100%;
-  padding: 0.3rem 0.4rem;
-  font-size: 0.75rem;
-  background: #1f2937;
-  color: #e5e7eb;
-  border: 1px solid #4b5563;
-  border-radius: 0.25rem;
-  cursor: pointer;
-  appearance: auto;
-}
-
-.map-entrance-list__select:focus {
-  outline: 2px solid #60a5fa;
-  outline-offset: -1px;
-}
-
-.map-entrance-list__select:hover {
-  border-color: #6b7280;
 }
 
 .map-exit-list__header {
