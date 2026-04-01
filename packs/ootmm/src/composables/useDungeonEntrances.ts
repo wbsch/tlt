@@ -8,6 +8,7 @@ import {
   getTrackedEntrancePool,
   isTrackedEntranceSourceType,
   computeExitOverrides,
+  computeDisplayEntranceOverrides,
   filterEntranceOverridesForSettings,
   getExitKeyForEntrance,
   getExitLabel,
@@ -17,6 +18,7 @@ import {
   INTERIOR_GAME_LINK_EXIT_KEYS,
   getGameLinkPartner,
   normalizeTrackedEntranceKey,
+  resolveToActiveEntranceKey,
   type TrackedEntrancePool,
 } from '../utils/entranceRandomization';
 import { matchesSearchTerms } from '../utils/search';
@@ -121,10 +123,38 @@ export function useDungeonEntrances() {
     ),
   );
 
+  const displayEntranceOverrides = computed(() =>
+    computeDisplayEntranceOverrides(
+      entranceOverrides.value,
+      trackerSettings.value,
+    ),
+  );
+
+  const rawActiveEntranceOverrides = computed(() => {
+    const activeKeys = getActiveEntranceKeys(trackerSettings.value);
+    if (activeKeys.size === 0) return {} as Record<string, string>;
+
+    const result: Record<string, string> = {};
+    for (const [rawSrc, rawDst] of Object.entries(entranceOverrides.value)) {
+      const effectiveSrc = resolveToActiveEntranceKey(
+        normalizeTrackedEntranceKey(rawSrc),
+        activeKeys,
+      );
+      if (!effectiveSrc) continue;
+
+      const effectiveDst = resolveToActiveEntranceKey(
+        normalizeTrackedEntranceKey(rawDst),
+        activeKeys,
+      );
+      if (!effectiveDst) continue;
+
+      result[effectiveSrc] = rawDst;
+    }
+    return result;
+  });
+
   function isEntranceMapped(entranceKey: string): boolean {
-    return (
-      (normalizedEntranceOverrides.value[entranceKey] ?? '').trim().length > 0
-    );
+    return (displayEntranceOverrides.value[entranceKey] ?? '').trim().length > 0;
   }
 
   const allDungeonEntrances = computed<DungeonEntranceEntry[]>(() => {
@@ -296,18 +326,18 @@ export function useDungeonEntrances() {
   const hasAvailableSections = computed(() => sections.value.length > 0);
 
   function isDestinationUsed(dstKey: string, currentSrcKey: string): boolean {
-    for (const [src, dst] of Object.entries(
-      normalizedEntranceOverrides.value,
-    )) {
+    for (const [src, dst] of Object.entries(rawActiveEntranceOverrides.value)) {
       if (src !== currentSrcKey && dst === dstKey) return true;
     }
-    // Game-link keys have no polarity: if partner is assigned, this key is used
+
     const partner = getGameLinkPartner(dstKey);
     if (partner) {
-      for (const [, dst] of Object.entries(normalizedEntranceOverrides.value)) {
+      for (const [src, dst] of Object.entries(rawActiveEntranceOverrides.value)) {
+        if (src === currentSrcKey) continue;
         if (dst === partner) return true;
       }
     }
+
     return false;
   }
 
@@ -348,7 +378,7 @@ export function useDungeonEntrances() {
         if (!normalizedValue || !ENTRANCES_RAW[normalizedValue]) continue;
 
         const alias = {
-          value: normalizedValue,
+          value: exit.key,
           label: getExitEndpointLabel(exit.key),
           game: exit.game,
           pool: exit.pool,
@@ -373,7 +403,7 @@ export function useDungeonEntrances() {
   );
 
   function getSelectedDestination(srcKey: string): string {
-    return normalizedEntranceOverrides.value[srcKey] ?? '';
+    return displayEntranceOverrides.value[srcKey] ?? '';
   }
 
   function getResolvedSelectedDestination(srcKey: string): string {
@@ -396,6 +426,28 @@ export function useDungeonEntrances() {
 
     const gamesMode = String(trackerSettings.value?.games ?? 'ootmm');
     const nextOverrides = { ...entranceOverrides.value };
+
+    if (!nextOverrides[srcKey] && displayEntranceOverrides.value[srcKey]) {
+      const activeKeys = getActiveEntranceKeys(trackerSettings.value);
+      for (const [otherSrc, otherDst] of Object.entries(nextOverrides)) {
+        const effectiveOtherSrc = resolveToActiveEntranceKey(
+          normalizeTrackedEntranceKey(otherSrc),
+          activeKeys,
+        );
+        const oppositeRaw = ENTRANCES_RAW[otherDst]?.reverse?.trim();
+        const effectiveOppositeSrc = oppositeRaw
+          ? resolveToActiveEntranceKey(
+              normalizeTrackedEntranceKey(oppositeRaw),
+              activeKeys,
+            )
+          : null;
+        if (effectiveOtherSrc && effectiveOppositeSrc === srcKey) {
+          delete nextOverrides[otherSrc];
+          break;
+        }
+      }
+    }
+
     const previousDst = nextOverrides[srcKey] ?? '';
 
     if (
@@ -429,16 +481,6 @@ export function useDungeonEntrances() {
 
     nextOverrides[srcKey] = normalizedDst;
 
-    if (
-      gamesMode === 'ootmm' &&
-      INTERIOR_GAME_LINK_SOURCE_KEYS.has(normalizedDst)
-    ) {
-      const partner = getGameLinkPartner(normalizedDst);
-      if (partner && partner !== srcKey) {
-        nextOverrides[partner] = srcKey;
-      }
-    }
-
     sessionStore.setEntranceOverrides(nextOverrides);
   }
 
@@ -447,7 +489,7 @@ export function useDungeonEntrances() {
   }
 
   const hasAnyOverrides = computed(
-    () => Object.keys(normalizedEntranceOverrides.value).length > 0,
+    () => Object.keys(displayEntranceOverrides.value).length > 0,
   );
 
   // --- Exit data ---

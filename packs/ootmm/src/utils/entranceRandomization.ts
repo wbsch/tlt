@@ -362,6 +362,49 @@ export function computeExitOverrides(
   return result;
 }
 
+/**
+ * Augment normalized entrance overrides with derived display-only mappings for
+ * ootmm game-link entrance rows. These rows are represented by exit-side keys
+ * in the UI, but their selected destination should mirror the reverse exit
+ * mapping of a normal interior mapped to the corresponding game-link source.
+ */
+export function computeDisplayEntranceOverrides(
+  entranceOverrides: Record<string, string>,
+  settings: Record<string, unknown>,
+): Record<string, string> {
+  const activeKeys = getActiveEntranceKeys(settings);
+  if (activeKeys.size === 0) return {};
+
+  const result: Record<string, string> = {};
+  const normalized: Record<string, string> = {};
+
+  for (const [rawSrc, rawDst] of Object.entries(entranceOverrides)) {
+    const effectiveSrc = resolveToActiveEntranceKey(
+      normalizeTrackedEntranceKey(rawSrc),
+      activeKeys,
+    );
+    if (!effectiveSrc) continue;
+
+    const effectiveDst = resolveToActiveEntranceKey(
+      normalizeTrackedEntranceKey(rawDst),
+      activeKeys,
+    );
+    if (!effectiveDst) continue;
+
+    result[effectiveSrc] = rawDst;
+    normalized[effectiveSrc] = normalizeTrackedEntranceKey(rawDst);
+  }
+
+  const exitOverrides = computeExitOverrides(normalized);
+  for (const [src, dst] of Object.entries(exitOverrides)) {
+    if (!INTERIOR_GAME_LINK_EXIT_KEYS.has(src) || result[src]) continue;
+    if (!ENTRANCES_RAW[dst]) continue;
+    result[src] = dst;
+  }
+
+  return result;
+}
+
 export function filterEntranceOverridesForSettings(
   overrides: Record<string, string>,
   settings: Record<string, unknown>,

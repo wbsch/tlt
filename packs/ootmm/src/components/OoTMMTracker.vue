@@ -55,6 +55,7 @@ import {
   getTrackedEntranceKeysForBinding,
   getExitKeyForEntrance,
   computeExitOverrides,
+  computeDisplayEntranceOverrides,
   filterEntranceOverridesForSettings,
   resolveToActiveEntranceKey,
 } from '../utils/entranceRandomization';
@@ -567,7 +568,10 @@ const mapSelectorCheckIdsByMap = computed(() => {
   const activeKeys = getActiveEntranceKeys(
     (trackerSettings.value ?? {}) as Record<string, unknown>,
   );
-  const overrides = entranceOverrides.value;
+  const overrides = filterEntranceOverridesForSettings(
+    entranceOverrides.value,
+    (trackerSettings.value ?? {}) as Record<string, unknown>,
+  );
   const isErActive = activeKeys.size > 0;
 
   for (const mapDef of selectableMapDefs.value) {
@@ -673,6 +677,10 @@ const mapSelectorVisibleEntranceCountByMap = computed(() => {
     entranceOverrides.value,
     (trackerSettings.value ?? {}) as Record<string, unknown>,
   );
+  const displayOverrides = computeDisplayEntranceOverrides(
+    entranceOverrides.value,
+    (trackerSettings.value ?? {}) as Record<string, unknown>,
+  );
   const exitOverrides = computeExitOverrides(normalizedOverrides);
 
   for (const mapDef of selectableMapDefs.value) {
@@ -684,7 +692,7 @@ const mapSelectorVisibleEntranceCountByMap = computed(() => {
     let count = 0;
     for (const eid of entranceIds) {
       // Count entrance
-      const isMapped = (normalizedOverrides[eid] ?? '').trim().length > 0;
+      const isMapped = (displayOverrides[eid] ?? '').trim().length > 0;
       const entrancePassesMapping =
         mapFilter === 'all' ||
         (mapFilter === 'mapped' && isMapped) ||

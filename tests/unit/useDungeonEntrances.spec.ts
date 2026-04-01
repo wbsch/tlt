@@ -70,7 +70,7 @@ describe('useDungeonEntrances', () => {
     expect(
       options.some(
         (option) =>
-          option.value === 'OOT_BOMBCHU_BOWLING' &&
+          option.value === 'OOT_MARKET_FROM_BOWLING' &&
           option.label === 'Market from Bombchu Bowling',
       ),
     ).toBe(true);
@@ -93,7 +93,7 @@ describe('useDungeonEntrances', () => {
     ).toBe(true);
   });
 
-  it('fills the reciprocal game-link row when a normal entrance uses a game-link exit alias', () => {
+  it('derives the inverse entrance row with the correct edge label from an entrance mapping', () => {
     const sessionStore = useOoTMMSessionStore();
     useOoTMMUiStore();
 
@@ -101,24 +101,73 @@ describe('useDungeonEntrances', () => {
       games: 'ootmm',
       erIndoors: 'full',
       erIndoorsMajor: true,
-      erIndoorsExtra: false,
+      erIndoorsExtra: true,
       erIndoorsGameLinks: true,
     };
 
     const entrances = useDungeonEntrances();
     entrances.setSelectedDestination(
-      'OOT_BOMBCHU_BOWLING',
-      'OOT_MARKET_FROM_MASK_SHOP',
+      'OOT_HOUSE_SARIA',
+      'MM_CLOCK_TOWN_FROM_CLOCK_TOWER',
     );
 
-    expect(entrances.getSelectedDestination('OOT_BOMBCHU_BOWLING')).toBe(
-      'OOT_MARKET_FROM_MASK_SHOP',
-    );
-    expect(entrances.getSelectedDestination('OOT_SHOP_MASKS')).toBe(
-      'OOT_BOMBCHU_BOWLING',
+    expect(entrances.getSelectedDestination('OOT_HOUSE_SARIA')).toBe(
+      'MM_CLOCK_TOWN_FROM_CLOCK_TOWER',
     );
     expect(
-      entrances.getResolvedSelectedDestination('OOT_BOMBCHU_BOWLING'),
-    ).toBe('OOT_MARKET_FROM_MASK_SHOP');
+      entrances.getSelectedDestination('MM_CLOCK_TOWER_FROM_CLOCK_TOWN'),
+    ).toBe('OOT_KOKIRI_FOREST_FROM_SARIA');
+    expect(
+      entrances.getExitSelectedDestination('OOT_KOKIRI_FOREST_FROM_SARIA'),
+    ).toBe('');
+    expect(
+      entrances.getExitSelectedDestination('MM_CLOCK_TOWER_FROM_CLOCK_TOWN'),
+    ).toBe('OOT_KOKIRI_FOREST_FROM_SARIA');
+    expect(
+      sessionStore.entranceOverrides['MM_CLOCK_TOWER_FROM_CLOCK_TOWN'],
+    ).toBeUndefined();
+    expect(sessionStore.entranceOverrides['OOT_HOUSE_SARIA']).toBe(
+      'MM_CLOCK_TOWN_FROM_CLOCK_TOWER',
+    );
+
+    const midoRow = entrances.activeEntrances.value.find(
+      (entry) => entry.key === 'OOT_HOUSE_MIDO',
+    );
+    expect(midoRow).toBeTruthy();
+    expect(
+      entrances
+        .destinationOptionsForEntrance(midoRow!)
+        .some((option) => option.value === 'OOT_HOUSE_SARIA'),
+    ).toBe(true);
+  });
+
+  it('derives the inverse entrance row with the correct edge label from an exit mapping', () => {
+    const sessionStore = useOoTMMSessionStore();
+    useOoTMMUiStore();
+
+    sessionStore.trackerSettings = {
+      games: 'ootmm',
+      erIndoors: 'full',
+      erIndoorsMajor: true,
+      erIndoorsExtra: true,
+      erIndoorsGameLinks: true,
+    };
+
+    const entrances = useDungeonEntrances();
+    entrances.setExitDestination(
+      'OOT_KOKIRI_FOREST_FROM_SARIA',
+      'MM_CLOCK_TOWN_FROM_CLOCK_TOWER',
+    );
+
+    expect(
+      entrances.getExitSelectedDestination('OOT_KOKIRI_FOREST_FROM_SARIA'),
+    ).toBe('MM_CLOCK_TOWN_FROM_CLOCK_TOWER');
+    expect(
+      entrances.getSelectedDestination('MM_CLOCK_TOWER_FROM_CLOCK_TOWN'),
+    ).toBe('OOT_HOUSE_SARIA');
+    expect(entrances.getSelectedDestination('OOT_HOUSE_SARIA')).toBe('');
+    expect(
+      sessionStore.entranceOverrides['MM_CLOCK_TOWER_FROM_CLOCK_TOWN'],
+    ).toBe('OOT_HOUSE_SARIA');
   });
 });
