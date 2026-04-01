@@ -29,7 +29,8 @@ function mapSubmenuEntranceSelect(page: Page, label: string) {
       '.map-submenu-panel .map-entrance-list:not(.map-exit-list) .map-entrance-list__row',
     )
     .filter({ hasText: label })
-    .locator('.map-entrance-list__select');
+    .locator('.destination-combobox__input')
+    .first();
 }
 
 async function openEntrancesTab(page: Page): Promise<void> {
@@ -192,8 +193,6 @@ async function openMapSubmenuForEntranceLabel(
       await expect(select).toBeVisible();
       return;
     }
-    await page.keyboard.press('Escape');
-    await expect(submenuPanel).toBeHidden();
   }
 
   expect(count).toBeGreaterThan(0);
@@ -285,9 +284,9 @@ test.describe('Entrance mapping refresh persistence', () => {
 
     const select = mapSubmenuEntranceSelect(page, "Link's House");
     await expect(select).toBeVisible();
-    await select.selectOption(WINDMILL_ENTRANCE_ID);
+    await selectEntranceById(select, WINDMILL_ENTRANCE_ID);
 
-    await expect(select).toHaveValue(WINDMILL_ENTRANCE_ID);
+    await expectEntranceSelectedId(select, WINDMILL_ENTRANCE_ID);
   });
 
   test('entrance filters stay selected after browser refresh', async ({

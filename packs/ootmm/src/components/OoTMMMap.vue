@@ -2557,7 +2557,9 @@ onBeforeUnmount(() => {
               :dropdown-id="`map-entrance-dest-listbox-${entry.key}`"
               :options="getEntranceDestinationOptions(entry)"
               :model-value="getEntranceDestinationValue(entry.key)"
-              @update:model-value="handleEntranceDestinationChange(entry.key, $event)"
+              @update:model-value="
+                handleEntranceDestinationChange(entry.key, $event)
+              "
             />
           </div>
         </div>
@@ -2592,7 +2594,9 @@ onBeforeUnmount(() => {
               :dropdown-id="`map-exit-dest-listbox-${exit.key}`"
               :options="getExitDestinationOptions(exit)"
               :model-value="getExitDestinationValue(exit.key)"
-              @update:model-value="handleExitDestinationChange(exit.key, $event)"
+              @update:model-value="
+                handleExitDestinationChange(exit.key, $event)
+              "
             />
           </div>
         </div>

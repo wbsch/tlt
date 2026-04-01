@@ -52,7 +52,9 @@ const filteredOptions = computed(() => {
 const displayValue = computed(() => {
   if (isOpen.value) return query.value;
   if (!props.modelValue) return '';
-  const option = props.options.find((entry) => entry.value === props.modelValue);
+  const option = props.options.find(
+    (entry) => entry.value === props.modelValue,
+  );
   return option ? formatOptionLabel(option) : '';
 });
 
@@ -233,7 +235,9 @@ function handleKeydown(event: KeyboardEvent): void {
         @mousedown.prevent
         @click="handleOptionClick(option.value)"
       >
-        <span class="destination-combobox__option-label">{{ option.label }}</span>
+        <span class="destination-combobox__option-label">{{
+          option.label
+        }}</span>
         <span class="destination-combobox__option-game">
           {{ option.game === 'mm' ? '(MM)' : '(OoT)' }}
         </span>

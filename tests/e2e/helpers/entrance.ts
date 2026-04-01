@@ -6,11 +6,12 @@ import { expect, type Locator, type Page } from '@playwright/test';
  */
 export function entranceCombobox(page: Page, labelText: string): Locator {
   return page
-    .locator('.entrance-row:not(.exit-row)')
+    .locator('.entrances-panel .entrance-row:not(.exit-row)')
     .filter({
       has: page.locator('.entrance-label', { hasText: labelText }),
     })
-    .locator('.entrance-select-input');
+    .locator('.destination-combobox__input')
+    .first();
 }
 
 /**
@@ -24,8 +25,10 @@ export async function selectEntranceById(
   await input.click();
   // Clear any existing query text so all options are shown
   await input.fill('');
-  const listbox = input.locator('..').locator('.entrance-dest-options');
-  const option = listbox.locator(`.entrance-dest-option[data-value="${id}"]`);
+  const listbox = input.locator('..').locator('.destination-combobox__options');
+  const option = listbox.locator(
+    `.destination-combobox__option[data-value="${id}"]`,
+  );
   await expect(option).toBeVisible();
   await option.click();
 }
@@ -40,9 +43,9 @@ export async function selectEntranceByLabel(
 ): Promise<void> {
   await input.click();
   await input.fill(label);
-  const listbox = input.locator('..').locator('.entrance-dest-options');
+  const listbox = input.locator('..').locator('.destination-combobox__options');
   const option = listbox
-    .locator('.entrance-dest-option')
+    .locator('.destination-combobox__option')
     .filter({ hasText: label })
     .first();
   await expect(option).toBeVisible();
@@ -53,7 +56,9 @@ export async function selectEntranceByLabel(
  * Clears the current entrance mapping by clicking the clear (×) button.
  */
 export async function clearEntranceMapping(input: Locator): Promise<void> {
-  const clearButton = input.locator('..').locator('.entrance-select-clear');
+  const clearButton = input
+    .locator('..')
+    .locator('.destination-combobox__clear');
   await expect(clearButton).toBeVisible();
   await clearButton.click();
 }
