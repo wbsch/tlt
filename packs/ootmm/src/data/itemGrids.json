@@ -741,9 +741,7 @@
                     "MM_SONG_SOARING",
                     "MM_SONG_NOTE_SOARING",
                     "MM_SONG_STORMS",
-                    "MM_SONG_NOTE_STORMS",
-                    "MM_SONG_SUN",
-                    "MM_SONG_NOTE_SUN"
+                    "MM_SONG_NOTE_STORMS"
                   ],
                   [
                     "MM_SONG_AWAKENING",
@@ -895,55 +893,87 @@
         ]
       },
       {
-        "type": "itemgrid",
-        "h_alignment": "left",
-        "item_margin": "1,1",
-        "scale": 1.05,
-        "rows": [
-          ["MM_PLATINUM_TOKEN"],
-          ["MM_STONE_OF_AGONY"],
-          ["MM_SHIELD_DEKU"],
-          [
-            "MM_SKELETON_KEY",
-            "MM_TRANSCENDENT_FAIRY",
-            "MM_SPELL_FIRE",
-            "MM_SPELL_WIND",
-            "MM_SPELL_LOVE",
-            "MM_BOOTS_IRON",
-            "MM_BOOTS_HOVER",
-            "MM_TUNIC_GORON",
-            "MM_TUNIC_ZORA"
-          ],
-          [
-            "MM_HAMMER",
-            "MM_STRENGTH",
-            "MM_SCALE",
-            "MM_BUTTON_A",
-            "MM_BUTTON_C_DOWN",
-            "MM_BUTTON_C_LEFT",
-            "MM_BUTTON_C_RIGHT",
-            "MM_BUTTON_C_UP"
-          ],
-          [
-            "MM_OWL_CLOCK_TOWN",
-            "MM_OWL_SOUTHERN_SWAMP",
-            "MM_OWL_WOODFALL",
-            "MM_OWL_MILK_ROAD",
-            "MM_OWL_MOUNTAIN_VILLAGE",
-            "MM_CLOCK1",
-            "MM_CLOCK3",
-            "MM_CLOCK5"
-          ],
-          [
-            "MM_OWL_SNOWHEAD",
-            "MM_OWL_GREAT_BAY",
-            "MM_OWL_ZORA_CAPE",
-            "MM_OWL_IKANA_CANYON",
-            "MM_OWL_STONE_TOWER",
-            "MM_CLOCK2",
-            "MM_CLOCK4",
-            "MM_CLOCK6"
-          ]
+        "type": "array",
+        "orientation": "horizontal",
+        "content": [
+          {
+            "type": "section",
+            "title": "OOT Extensions",
+            "padding": "5,10",
+            "margin": "0,8",
+            "content": [
+              {
+                "type": "itemgrid",
+                "h_alignment": "left",
+                "item_margin": "1,1",
+                "scale": 1.05,
+                "rows": [
+                  [
+                    "MM_SPELL_FIRE",
+                    "MM_SPELL_WIND",
+                    "MM_SPELL_LOVE",
+                    "MM_STONE_OF_AGONY"
+                  ],
+                  ["MM_HAMMER", "MM_STRENGTH", "MM_SCALE", "MM_SHIELD_DEKU"],
+                  [
+                    "MM_BOOTS_IRON",
+                    "MM_BOOTS_HOVER",
+                    "MM_TUNIC_GORON",
+                    "MM_TUNIC_ZORA"
+                  ],
+                  ["MM_SONG_SUN", "MM_SONG_NOTE_SUN"]
+                ]
+              }
+            ]
+          },
+          {
+            "type": "section",
+            "title": "Item Extensions",
+            "padding": "5,10",
+            "margin": "0,8",
+            "content": [
+              {
+                "type": "itemgrid",
+                "h_alignment": "left",
+                "item_margin": "1,1",
+                "scale": 1.05,
+                "rows": [
+                  [
+                    "MM_BUTTON_A",
+                    "MM_BUTTON_C_DOWN",
+                    "MM_BUTTON_C_LEFT",
+                    "MM_BUTTON_C_RIGHT",
+                    "MM_BUTTON_C_UP",
+                    "MM_PLATINUM_TOKEN"
+                  ],
+                  [
+                    "MM_OWL_CLOCK_TOWN",
+                    "MM_OWL_SOUTHERN_SWAMP",
+                    "MM_OWL_WOODFALL",
+                    "MM_OWL_MILK_ROAD",
+                    "MM_OWL_MOUNTAIN_VILLAGE",
+                    "MM_SKELETON_KEY"
+                  ],
+                  [
+                    "MM_OWL_SNOWHEAD",
+                    "MM_OWL_GREAT_BAY",
+                    "MM_OWL_ZORA_CAPE",
+                    "MM_OWL_IKANA_CANYON",
+                    "MM_OWL_STONE_TOWER",
+                    "MM_TRANSCENDENT_FAIRY"
+                  ],
+                  [
+                    "MM_CLOCK1",
+                    "MM_CLOCK3",
+                    "MM_CLOCK5",
+                    "MM_CLOCK2",
+                    "MM_CLOCK4",
+                    "MM_CLOCK6"
+                  ]
+                ]
+              }
+            ]
+          }
         ]
       }
     ]
