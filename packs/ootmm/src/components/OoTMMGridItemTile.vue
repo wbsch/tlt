@@ -37,10 +37,7 @@ if (!context) {
     @contextmenu="context.decrementItem(itemId, $event)"
     @wheel="context.handleItemWheel(itemId, $event)"
   >
-    <span
-      v-if="context.getItemTextLabel(itemId)"
-      class="item-text-label"
-    >
+    <span v-if="context.getItemTextLabel(itemId)" class="item-text-label">
       {{ context.getItemTextLabel(itemId) }}
     </span>
     <img
@@ -76,12 +73,7 @@ if (!context) {
     <span v-if="context.shouldShowItemCount(itemId)" class="item-count">{{
       context.getGridItemCount(itemId)
     }}</span>
-    <div v-if="context.isSubmenuItem(itemId)" class="submenu-indicator">
-      <span class="submenu-indicator__dot"></span>
-      <span class="submenu-indicator__dot"></span>
-      <span class="submenu-indicator__dot"></span>
-      <span class="submenu-indicator__dot"></span>
-    </div>
+    <div v-if="context.isSubmenuItem(itemId)" class="submenu-indicator">▼</div>
     <div
       v-if="context.isSubmenuItem(itemId) && context.isSubmenuOpen(itemId)"
       class="submenu-panel"
@@ -91,11 +83,17 @@ if (!context) {
       @wheel.stop
     >
       <div class="submenu-panel__header">
-        <span class="submenu-panel__title">{{ context.getGridItemTitle(itemId) }}</span>
+        <span class="submenu-panel__title">{{
+          context.getGridItemTitle(itemId)
+        }}</span>
       </div>
       <OoTMMGridNode
         v-if="context.getSubmenuNode(itemId)"
-        :node="context.getSubmenuNode(itemId) as NonNullable<ReturnType<typeof context.getSubmenuNode>>"
+        :node="
+          context.getSubmenuNode(itemId) as NonNullable<
+            ReturnType<typeof context.getSubmenuNode>
+          >
+        "
         :parent-scale="1"
       />
     </div>
@@ -282,24 +280,23 @@ if (!context) {
 
 .submenu-indicator {
   position: absolute;
-  top: 2px;
+  bottom: 2px;
   right: 2px;
-  display: grid;
-  grid-template-columns: repeat(2, 3px);
-  gap: 1px;
-  padding: 2px;
-  border-radius: 3px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 13px;
+  height: 13px;
+  padding: 0 3px;
+  border-radius: 4px;
   background: rgba(15, 23, 42, 0.88);
   border: 1px solid rgba(255, 255, 255, 0.16);
+  color: rgba(255, 255, 255, 0.88);
+  font-size: 10px;
+  font-weight: 700;
+  line-height: 1;
   z-index: 4;
   pointer-events: none;
-}
-
-.submenu-indicator__dot {
-  width: 3px;
-  height: 3px;
-  border-radius: 1px;
-  background: rgba(255, 255, 255, 0.82);
 }
 
 .submenu-panel {
@@ -311,8 +308,7 @@ if (!context) {
   padding: 10px;
   border-radius: 10px;
   border: 1px solid rgba(244, 214, 89, 0.35);
-  background:
-    linear-gradient(180deg, rgb(31, 36, 47), rgb(17, 20, 28));
+  background: linear-gradient(180deg, rgb(31, 36, 47), rgb(17, 20, 28));
   box-shadow:
     0 16px 40px rgba(0, 0, 0, 0.4),
     inset 0 1px 0 rgba(255, 255, 255, 0.06);

@@ -547,26 +547,26 @@ const filteredOotGrid = computed(() => {
     : null;
 });
 
-const filteredGridItemSubmenus = computed<Record<string, GridItemSubmenuConfig>>(
-  () => {
-    const submenus: Record<string, GridItemSubmenuConfig> = {};
+const filteredGridItemSubmenus = computed<
+  Record<string, GridItemSubmenuConfig>
+>(() => {
+  const submenus: Record<string, GridItemSubmenuConfig> = {};
 
-    for (const [ref, config] of Object.entries(rawGridItemSubmenus.value)) {
-      const submenu = filterGridElement(config.submenu);
-      if (!submenu) {
-        continue;
-      }
-
-      submenus[ref] = {
-        item: config.item,
-        title: config.title,
-        submenu: submenu as ResolvedGridNode,
-      };
+  for (const [ref, config] of Object.entries(rawGridItemSubmenus.value)) {
+    const submenu = filterGridElement(config.submenu);
+    if (!submenu) {
+      continue;
     }
 
-    return submenus;
-  },
-);
+    submenus[ref] = {
+      item: config.item,
+      title: config.title,
+      submenu: submenu as ResolvedGridNode,
+    };
+  }
+
+  return submenus;
+});
 
 const filteredSharedGrid = computed(() => {
   return sharedGrid.value

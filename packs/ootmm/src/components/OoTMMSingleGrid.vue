@@ -95,8 +95,7 @@ function closeSubmenu() {
 }
 
 function toggleSubmenu(itemId: string) {
-  openSubmenuItemId.value =
-    openSubmenuItemId.value === itemId ? null : itemId;
+  openSubmenuItemId.value = openSubmenuItemId.value === itemId ? null : itemId;
 }
 
 function getGridMultiActivation(
