@@ -90,6 +90,12 @@ export interface GridItemMultiActivation {
   activateAlso: string[];
 }
 
+export interface GridItemSubmenuConfig {
+  item: string;
+  title?: string;
+  submenu: ResolvedGridNode;
+}
+
 export interface ItemGridRenderContext {
   parseMargin: (margin?: string) => { x: number; y: number };
   getArrayStyle: (element: GridArray) => CSSProperties;
@@ -103,6 +109,9 @@ export interface ItemGridRenderContext {
   getGridItemClasses: (itemId: string) => Record<string, boolean>;
   getGridItemTitle: (itemId: string) => string;
   isEmptyGridItem: (itemId: string) => boolean;
+  isSubmenuItem: (itemId: string) => boolean;
+  isSubmenuOpen: (itemId: string) => boolean;
+  getSubmenuNode: (itemId: string) => ResolvedGridNode | null;
   toggleItem: (itemId: string) => void;
   decrementItem: (itemId: string, event: MouseEvent) => void;
   handleItemWheel: (itemId: string, event: WheelEvent) => void;

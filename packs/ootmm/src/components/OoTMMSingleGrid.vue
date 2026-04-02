@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { provide } from 'vue';
+import { onBeforeUnmount, onMounted, provide, ref } from 'vue';
 import {
   getGridItemIcon,
   getGridItemLinkedItemIds,
@@ -25,8 +25,10 @@ import {
   type GridItem,
   type GridItemMultiActivation,
   type GridItemRefAlias,
+  type GridItemSubmenuConfig,
   type GridSection,
   type ResolvedGridArray,
+  type ResolvedGridNode,
 } from './itemGridSchema';
 
 const props = defineProps<{
@@ -34,6 +36,7 @@ const props = defineProps<{
   grid: ResolvedGridArray;
   gridItemRefs?: Record<string, GridItemRefAlias>;
   gridItemMultiActivations?: Record<string, GridItemMultiActivation>;
+  gridItemSubmenus?: Record<string, GridItemSubmenuConfig>;
   labelItemIds?: string[];
   itemMaxCounts?: Map<string, number>;
   availableItemIds?: Set<string>;
@@ -51,6 +54,9 @@ function getItemCount(itemId: string): number {
 const GRID_REF_ALIAS_PREFIX = '__grid_ref__:';
 const GRID_REF_STATE_PREFIX = '__grid_ref_state__:';
 const GRID_MULTI_ACTIVATE_PREFIX = '__grid_multi_activate__:';
+const GRID_SUBMENU_PREFIX = '__grid_submenu__:';
+
+const openSubmenuItemId = ref<string | null>(null);
 
 function isGridRefAliasKey(itemId: string): boolean {
   return itemId.startsWith(GRID_REF_ALIAS_PREFIX);
@@ -66,6 +72,33 @@ function isGridMultiActivateKey(itemId: string): boolean {
   return itemId.startsWith(GRID_MULTI_ACTIVATE_PREFIX);
 }
 
+function isGridSubmenuKey(itemId: string): boolean {
+  return itemId.startsWith(GRID_SUBMENU_PREFIX);
+}
+
+function getGridSubmenu(itemId: string): GridItemSubmenuConfig | null {
+  if (!isGridSubmenuKey(itemId)) return null;
+  const ref = itemId.slice(GRID_SUBMENU_PREFIX.length);
+  return props.gridItemSubmenus?.[ref] || null;
+}
+
+function isSubmenuItem(itemId: string): boolean {
+  return Boolean(getGridSubmenu(itemId));
+}
+
+function isSubmenuOpen(itemId: string): boolean {
+  return openSubmenuItemId.value === itemId;
+}
+
+function closeSubmenu() {
+  openSubmenuItemId.value = null;
+}
+
+function toggleSubmenu(itemId: string) {
+  openSubmenuItemId.value =
+    openSubmenuItemId.value === itemId ? null : itemId;
+}
+
 function getGridMultiActivation(
   itemId: string,
 ): GridItemMultiActivation | null {
@@ -79,6 +112,8 @@ function isEmptyGridItem(itemId: string): boolean {
 
 function getBaseItemId(itemId: string): string {
   if (isEmptyGridItem(itemId)) return itemId;
+  const submenu = getGridSubmenu(itemId);
+  if (submenu) return submenu.item;
   const multiActivation = getGridMultiActivation(itemId);
   if (multiActivation) return multiActivation.item;
   return getGridRefAlias(itemId)?.item || itemId;
@@ -86,6 +121,8 @@ function getBaseItemId(itemId: string): string {
 
 function getGridItemTitle(itemId: string): string {
   if (isEmptyGridItem(itemId)) return '';
+  const submenu = getGridSubmenu(itemId);
+  if (submenu?.title) return submenu.title;
   const multiActivation = getGridMultiActivation(itemId);
   if (multiActivation?.title) return multiActivation.title;
 
@@ -96,6 +133,58 @@ function getGridItemTitle(itemId: string): string {
 
 function getAdditionalToggleItemIds(itemId: string): string[] {
   return getGridMultiActivation(itemId)?.activateAlso || [];
+}
+
+function collectNodeItemIds(node: ResolvedGridNode, itemIds: Set<string>) {
+  if (node.type === 'item') {
+    itemIds.add(node.item);
+    return;
+  }
+
+  if (node.type === 'canvas') {
+    for (const child of node.content) {
+      itemIds.add(child.item);
+    }
+    return;
+  }
+
+  if (node.type === 'itemgrid') {
+    for (const row of node.rows) {
+      for (const childItemId of row) {
+        itemIds.add(childItemId);
+      }
+    }
+    return;
+  }
+
+  for (const child of node.content) {
+    collectNodeItemIds(child, itemIds);
+  }
+}
+
+function getSubmenuNode(itemId: string): ResolvedGridNode | null {
+  return getGridSubmenu(itemId)?.submenu || null;
+}
+
+function getSubmenuOwnedCount(itemId: string): number {
+  const submenu = getGridSubmenu(itemId);
+  if (!submenu) return 0;
+
+  const itemIds = new Set<string>();
+  collectNodeItemIds(submenu.submenu, itemIds);
+
+  let ownedCount = 0;
+  for (const childItemId of itemIds) {
+    if (isEmptyGridItem(childItemId) || isLabelItem(childItemId)) {
+      continue;
+    }
+
+    if (getGridItemCount(childItemId) > 0) {
+      ownedCount += 1;
+    }
+  }
+
+  return ownedCount;
 }
 
 function changeItemCount(
@@ -184,6 +273,9 @@ function getLogicalLinkedItemIds(itemId: string): string[] | null {
 
 function getGridItemCount(itemId: string): number {
   if (isEmptyGridItem(itemId)) return 0;
+  if (getGridSubmenu(itemId)) {
+    return getSubmenuOwnedCount(itemId);
+  }
   const linkedItemIds = getLinkedItemIds(itemId);
   if (!linkedItemIds || linkedItemIds.length === 0) {
     let maxCount = getItemCount(getBaseItemId(itemId));
@@ -207,6 +299,7 @@ function getGridItemCount(itemId: string): number {
 
 function getItemMaxCount(itemId: string): number {
   if (isEmptyGridItem(itemId)) return 0;
+  if (getGridSubmenu(itemId)) return 1;
   const linkedItemIds = getLinkedItemIds(itemId);
   if (linkedItemIds && linkedItemIds.length > 0) {
     return linkedItemIds.length;
@@ -327,6 +420,10 @@ function isItemHighlightedForGrid(itemId: string): boolean {
 function toggleItem(itemId: string) {
   if (isEmptyGridItem(itemId)) return;
   if (isLabelItem(itemId)) return;
+  if (getGridSubmenu(itemId)) {
+    toggleSubmenu(itemId);
+    return;
+  }
 
   const newInventory = new Map(props.inventory);
   const current = getGridItemCount(itemId);
@@ -399,6 +496,9 @@ function decrementItem(itemId: string, event: MouseEvent) {
   event.preventDefault();
   if (isEmptyGridItem(itemId)) return;
   if (isLabelItem(itemId)) return;
+  if (getGridSubmenu(itemId)) {
+    return;
+  }
 
   const newInventory = new Map(props.inventory);
   const current = getGridItemCount(itemId);
@@ -518,6 +618,7 @@ function getWheelOverlayText(itemId: string): string | null {
 
 function handleItemWheel(itemId: string, event: WheelEvent) {
   if (isEmptyGridItem(itemId)) return;
+  if (getGridSubmenu(itemId)) return;
   const baseItemId = getBaseItemId(itemId);
   const stageCount = getGridWheelOverlayStageCount(baseItemId);
   const stateItemId = getGridWheelOverlayStateItemId(baseItemId);
@@ -551,6 +652,7 @@ function handleItemWheel(itemId: string, event: WheelEvent) {
 
 function shouldShowItemCount(itemId: string): boolean {
   if (isEmptyGridItem(itemId)) return false;
+  if (getGridSubmenu(itemId)) return false;
   return (
     getGridItemCount(itemId) > 1 &&
     !hasGridIconVariants(getBaseItemId(itemId), {
@@ -564,6 +666,7 @@ function shouldShowItemCount(itemId: string): boolean {
 
 function isItemIconDisabled(itemId: string): boolean {
   if (isEmptyGridItem(itemId)) return false;
+  if (getGridSubmenu(itemId)) return false;
   if (isLabelItem(itemId)) return false;
   if (hasItem(itemId)) return false;
   return !startsGridItemUndimmed(getBaseItemId(itemId), {
@@ -579,8 +682,39 @@ function getGridItemClasses(itemId: string) {
     'empty-slot': isEmptyGridItem(itemId),
     owned: isItemHighlightedForGrid(itemId),
     'label-item': isLabelItem(itemId),
+    'submenu-item': isSubmenuItem(itemId),
+    'submenu-open': isSubmenuOpen(itemId),
   };
 }
+
+function handleDocumentMouseDown(event: MouseEvent) {
+  if (!openSubmenuItemId.value) {
+    return;
+  }
+
+  const target = event.target;
+  if (target instanceof Element && target.closest('.grid-item-submenu')) {
+    return;
+  }
+
+  closeSubmenu();
+}
+
+function handleDocumentKeyDown(event: KeyboardEvent) {
+  if (event.key === 'Escape') {
+    closeSubmenu();
+  }
+}
+
+onMounted(() => {
+  document.addEventListener('mousedown', handleDocumentMouseDown);
+  document.addEventListener('keydown', handleDocumentKeyDown);
+});
+
+onBeforeUnmount(() => {
+  document.removeEventListener('mousedown', handleDocumentMouseDown);
+  document.removeEventListener('keydown', handleDocumentKeyDown);
+});
 
 function handleImageError(event: Event) {
   const img = event.target as HTMLImageElement;
@@ -665,6 +799,9 @@ provide(itemGridRenderContextKey, {
   getGridItemClasses,
   getGridItemTitle,
   isEmptyGridItem,
+  isSubmenuItem,
+  isSubmenuOpen,
+  getSubmenuNode,
   toggleItem,
   decrementItem,
   handleItemWheel,
@@ -682,5 +819,7 @@ provide(itemGridRenderContextKey, {
 </script>
 
 <template>
-  <OoTMMGridNode :node="grid" :parent-scale="1" />
+  <div class="single-grid-root">
+    <OoTMMGridNode :node="grid" :parent-scale="1" />
+  </div>
 </template>

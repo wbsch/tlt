@@ -2,6 +2,7 @@
 import { inject } from 'vue';
 import type { StyleValue } from 'vue';
 import { itemGridRenderContextKey } from './itemGridSchema';
+import OoTMMGridNode from './OoTMMGridNode.vue';
 
 defineProps<{
   itemId: string;
@@ -19,7 +20,13 @@ if (!context) {
 <template>
   <div
     class="grid-item"
-    :class="[context.getGridItemClasses(itemId), { 'canvas-item': canvasItem }]"
+    :class="[
+      context.getGridItemClasses(itemId),
+      {
+        'canvas-item': canvasItem,
+        'grid-item-submenu': context.isSubmenuItem(itemId),
+      },
+    ]"
     :style="style"
     :title="
       context.isEmptyGridItem(itemId)
@@ -69,6 +76,29 @@ if (!context) {
     <span v-if="context.shouldShowItemCount(itemId)" class="item-count">{{
       context.getGridItemCount(itemId)
     }}</span>
+    <div v-if="context.isSubmenuItem(itemId)" class="submenu-indicator">
+      <span class="submenu-indicator__dot"></span>
+      <span class="submenu-indicator__dot"></span>
+      <span class="submenu-indicator__dot"></span>
+      <span class="submenu-indicator__dot"></span>
+    </div>
+    <div
+      v-if="context.isSubmenuItem(itemId) && context.isSubmenuOpen(itemId)"
+      class="submenu-panel"
+      @click.stop
+      @mousedown.stop
+      @contextmenu.stop.prevent
+      @wheel.stop
+    >
+      <div class="submenu-panel__header">
+        <span class="submenu-panel__title">{{ context.getGridItemTitle(itemId) }}</span>
+      </div>
+      <OoTMMGridNode
+        v-if="context.getSubmenuNode(itemId)"
+        :node="context.getSubmenuNode(itemId) as NonNullable<ReturnType<typeof context.getSubmenuNode>>"
+        :parent-scale="1"
+      />
+    </div>
   </div>
 </template>
 
@@ -132,6 +162,26 @@ if (!context) {
   background: transparent;
 }
 
+.grid-item.submenu-item {
+  background:
+    linear-gradient(180deg, rgba(244, 214, 89, 0.18), rgba(0, 0, 0, 0.32)),
+    rgba(0, 0, 0, 0.3);
+  border-color: rgba(244, 214, 89, 0.32);
+  box-shadow: inset 0 0 0 1px rgba(255, 248, 220, 0.08);
+}
+
+.grid-item.submenu-item:hover,
+.grid-item.submenu-open {
+  background:
+    linear-gradient(180deg, rgba(244, 214, 89, 0.24), rgba(59, 130, 246, 0.2)),
+    rgba(0, 0, 0, 0.36);
+  border-color: rgba(244, 214, 89, 0.56);
+}
+
+.grid-item.submenu-open {
+  z-index: 50;
+}
+
 .item-icon {
   width: 100%;
   height: 100%;
@@ -189,16 +239,16 @@ if (!context) {
   inset: 0;
 }
 
-.grid-item:hover .item-icon,
-.grid-item:focus-visible .item-icon,
-.grid-item:focus .item-icon {
+.grid-item:hover > .item-icon,
+.grid-item:focus-visible > .item-icon,
+.grid-item:focus > .item-icon {
   will-change: transform;
   transform: translateZ(0) scale(1.12);
 }
 
-.grid-item.label-item:hover .item-icon,
-.grid-item.label-item:focus-visible .item-icon,
-.grid-item.label-item:focus .item-icon {
+.grid-item.label-item:hover > .item-icon,
+.grid-item.label-item:focus-visible > .item-icon,
+.grid-item.label-item:focus > .item-icon {
   will-change: auto;
   transform: translateZ(0);
 }
@@ -211,7 +261,7 @@ if (!context) {
   filter: grayscale(100%) brightness(0.4);
 }
 
-.grid-item.owned .item-icon {
+.grid-item.owned > .item-icon {
   filter: none;
 }
 
@@ -228,5 +278,71 @@ if (!context) {
   min-width: 14px;
   text-align: center;
   z-index: 3;
+}
+
+.submenu-indicator {
+  position: absolute;
+  top: 2px;
+  right: 2px;
+  display: grid;
+  grid-template-columns: repeat(2, 3px);
+  gap: 1px;
+  padding: 2px;
+  border-radius: 3px;
+  background: rgba(15, 23, 42, 0.88);
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  z-index: 4;
+  pointer-events: none;
+}
+
+.submenu-indicator__dot {
+  width: 3px;
+  height: 3px;
+  border-radius: 1px;
+  background: rgba(255, 255, 255, 0.82);
+}
+
+.submenu-panel {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  min-width: 360px;
+  max-width: min(420px, calc(100vw - 32px));
+  padding: 10px;
+  border-radius: 10px;
+  border: 1px solid rgba(244, 214, 89, 0.35);
+  background:
+    linear-gradient(180deg, rgb(31, 36, 47), rgb(17, 20, 28));
+  box-shadow:
+    0 16px 40px rgba(0, 0, 0, 0.4),
+    inset 0 1px 0 rgba(255, 255, 255, 0.06);
+  z-index: 40;
+  cursor: default;
+  overflow: hidden;
+  isolation: isolate;
+}
+
+.submenu-panel__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 8px;
+  padding-bottom: 6px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.submenu-panel__title {
+  color: #f7edd3;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
+
+@media (max-width: 700px) {
+  .submenu-panel {
+    right: auto;
+    left: 0;
+    min-width: 300px;
+  }
 }
 </style>

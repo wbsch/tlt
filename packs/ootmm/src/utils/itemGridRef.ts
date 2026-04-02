@@ -1,3 +1,5 @@
+import type { GridNode } from '../components/itemGridSchema';
+
 export interface ItemGridEmptyRef {
   empty: true;
 }
@@ -14,6 +16,13 @@ export interface ItemGridAliasRef {
   title?: string;
 }
 
+export interface ItemGridSubmenuRef {
+  ref: string;
+  item: string;
+  title?: string;
+  submenu: GridNode;
+}
+
 export interface ItemGridMultiActivateRef {
   item: string;
   activateAlso: string[];
@@ -24,6 +33,7 @@ export type ItemGridRef =
   | string
   | ItemGridOrRef
   | ItemGridAliasRef
+  | ItemGridSubmenuRef
   | ItemGridMultiActivateRef
   | ItemGridEmptyRef;
 
@@ -43,12 +53,30 @@ export function isItemGridOrRef(value: unknown): value is ItemGridOrRef {
 
 export function isItemGridAliasRef(value: unknown): value is ItemGridAliasRef {
   if (!value || typeof value !== 'object') return false;
+  if ('submenu' in (value as Record<string, unknown>)) return false;
   const ref = (value as { ref?: unknown }).ref;
   const item = (value as { item?: unknown }).item;
   const title = (value as { title?: unknown }).title;
   if (typeof ref !== 'string' || typeof item !== 'string') return false;
   if (title !== undefined && typeof title !== 'string') return false;
   return ref.length > 0 && item.length > 0;
+}
+
+export function isItemGridSubmenuRef(
+  value: unknown,
+): value is ItemGridSubmenuRef {
+  if (!value || typeof value !== 'object') return false;
+
+  const ref = (value as { ref?: unknown }).ref;
+  const item = (value as { item?: unknown }).item;
+  const title = (value as { title?: unknown }).title;
+  const submenu = (value as { submenu?: unknown }).submenu;
+
+  if (typeof ref !== 'string' || ref.length === 0) return false;
+  if (typeof item !== 'string' || item.length === 0) return false;
+  if (title !== undefined && typeof title !== 'string') return false;
+
+  return Boolean(submenu && typeof submenu === 'object');
 }
 
 export function isItemGridMultiActivateRef(

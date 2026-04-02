@@ -6,6 +6,7 @@ import {
   isItemGridEmptyRef,
   isItemGridMultiActivateRef,
   isItemGridOrRef,
+  isItemGridSubmenuRef,
   resolveItemGridRef,
 } from '../utils/itemGridRef';
 import {
@@ -13,8 +14,10 @@ import {
   type GridArray,
   type GridItemMultiActivation,
   type GridItemRefAlias,
+  type GridItemSubmenuConfig,
   type GridSection,
   type ResolvedGridArray,
+  type ResolvedGridNode,
 } from './itemGridSchema';
 
 // Import the grid layout JSON
@@ -39,6 +42,13 @@ const mmGrid = computed(() => grids['item_grid_tall_mm']);
 
 const GRID_REF_ALIAS_PREFIX = '__grid_ref__:';
 const GRID_MULTI_ACTIVATE_PREFIX = '__grid_multi_activate__:';
+const GRID_SUBMENU_PREFIX = '__grid_submenu__:';
+
+interface RawGridItemSubmenuConfig {
+  item: string;
+  title?: string;
+  submenu: unknown;
+}
 
 function makeGridRefAliasKey(ref: string): string {
   return `${GRID_REF_ALIAS_PREFIX}${ref}`;
@@ -61,6 +71,18 @@ function makeGridMultiActivateKey(
 
 function isGridMultiActivateKey(value: string): boolean {
   return value.startsWith(GRID_MULTI_ACTIVATE_PREFIX);
+}
+
+function makeGridSubmenuKey(ref: string): string {
+  return `${GRID_SUBMENU_PREFIX}${ref}`;
+}
+
+function isGridSubmenuKey(value: string): boolean {
+  return value.startsWith(GRID_SUBMENU_PREFIX);
+}
+
+function getGridSubmenuRefFromKey(value: string): string {
+  return value.slice(GRID_SUBMENU_PREFIX.length);
 }
 
 function collectGridItemRefAliases(
@@ -147,6 +169,49 @@ function collectGridMultiActivations(
   }
 }
 
+function collectGridSubmenus(
+  element: unknown,
+  submenus: Record<string, RawGridItemSubmenuConfig>,
+) {
+  if (!element || typeof element !== 'object') return;
+
+  if (isItemGridSubmenuRef(element)) {
+    submenus[element.ref] = {
+      item: element.item,
+      title: element.title,
+      submenu: element.submenu,
+    };
+    collectGridSubmenus(element.submenu, submenus);
+    return;
+  }
+
+  if (Array.isArray(element)) {
+    for (const child of element) {
+      collectGridSubmenus(child, submenus);
+    }
+    return;
+  }
+
+  const maybeRows = (element as { rows?: unknown }).rows;
+  if (Array.isArray(maybeRows)) {
+    for (const row of maybeRows) {
+      collectGridSubmenus(row, submenus);
+    }
+  }
+
+  const maybeContent = (element as { content?: unknown }).content;
+  if (Array.isArray(maybeContent)) {
+    for (const child of maybeContent) {
+      collectGridSubmenus(child, submenus);
+    }
+  }
+
+  const maybeItem = (element as { item?: unknown }).item;
+  if (maybeItem !== undefined) {
+    collectGridSubmenus(maybeItem, submenus);
+  }
+}
+
 const gridItemRefAliases = computed<Record<string, GridItemRefAlias>>(() => {
   const aliases: Record<string, GridItemRefAlias> = {};
   collectGridItemRefAliases(sharedGrid.value, aliases);
@@ -164,6 +229,16 @@ const gridItemMultiActivations = computed<
   collectGridMultiActivations(mmGrid.value, activations);
   return activations;
 });
+
+const rawGridItemSubmenus = computed<Record<string, RawGridItemSubmenuConfig>>(
+  () => {
+    const submenus: Record<string, RawGridItemSubmenuConfig> = {};
+    collectGridSubmenus(sharedGrid.value, submenus);
+    collectGridSubmenus(ootGrid.value, submenus);
+    collectGridSubmenus(mmGrid.value, submenus);
+    return submenus;
+  },
+);
 
 const hasOotItems = computed(() => {
   if (!props.availableItemIds || props.availableItemIds.size === 0) return true;
@@ -326,6 +401,12 @@ function resolveVisibleItemRef(itemRef: unknown): string | null {
     return EMPTY_GRID_ITEM_ID;
   }
 
+  if (isItemGridSubmenuRef(itemRef)) {
+    return filteredGridItemSubmenus.value[itemRef.ref]
+      ? makeGridSubmenuKey(itemRef.ref)
+      : null;
+  }
+
   if (isItemGridMultiActivateRef(itemRef)) {
     if (!isItemVisible(itemRef.item)) return null;
     return makeGridMultiActivateKey(itemRef.item, itemRef.activateAlso);
@@ -337,10 +418,21 @@ function resolveVisibleItemRef(itemRef: unknown): string | null {
   }
 
   if (typeof itemRef === 'string') {
+    if (isGridSubmenuKey(itemRef)) {
+      const ref = getGridSubmenuRefFromKey(itemRef);
+      return filteredGridItemSubmenus.value[ref] ? itemRef : null;
+    }
+
     if (isGridRefAliasKey(itemRef)) {
       const ref = getGridRefFromAliasKey(itemRef);
       const alias = gridItemRefAliases.value[ref];
       return alias && isItemVisible(alias.item) ? itemRef : null;
+    }
+
+    if (rawGridItemSubmenus.value[itemRef]) {
+      return filteredGridItemSubmenus.value[itemRef]
+        ? makeGridSubmenuKey(itemRef)
+        : null;
     }
 
     const alias = gridItemRefAliases.value[itemRef];
@@ -361,11 +453,19 @@ function shouldKeepHiddenGridSlot(itemRef: unknown): boolean {
     return true;
   }
 
+  if (isItemGridSubmenuRef(itemRef)) {
+    return false;
+  }
+
   if (isItemGridAliasRef(itemRef) || isItemGridMultiActivateRef(itemRef)) {
     return isLabelItemId(itemRef.item);
   }
 
   if (typeof itemRef === 'string') {
+    if (isGridSubmenuKey(itemRef) || rawGridItemSubmenus.value[itemRef]) {
+      return false;
+    }
+
     if (isGridRefAliasKey(itemRef)) {
       const ref = getGridRefFromAliasKey(itemRef);
       const alias = gridItemRefAliases.value[ref];
@@ -447,6 +547,27 @@ const filteredOotGrid = computed(() => {
     : null;
 });
 
+const filteredGridItemSubmenus = computed<Record<string, GridItemSubmenuConfig>>(
+  () => {
+    const submenus: Record<string, GridItemSubmenuConfig> = {};
+
+    for (const [ref, config] of Object.entries(rawGridItemSubmenus.value)) {
+      const submenu = filterGridElement(config.submenu);
+      if (!submenu) {
+        continue;
+      }
+
+      submenus[ref] = {
+        item: config.item,
+        title: config.title,
+        submenu: submenu as ResolvedGridNode,
+      };
+    }
+
+    return submenus;
+  },
+);
+
 const filteredSharedGrid = computed(() => {
   return sharedGrid.value
     ? (filterGridElement(sharedGrid.value) as ResolvedGridArray | null)
@@ -484,6 +605,7 @@ function handleInventoryUpdate(newInventory: Map<string, number>) {
           :grid="filteredSharedGrid"
           :grid-item-refs="gridItemRefAliases"
           :grid-item-multi-activations="gridItemMultiActivations"
+          :grid-item-submenus="filteredGridItemSubmenus"
           :label-item-ids="labelItemIds"
           :item-max-counts="itemMaxCounts"
           :available-item-ids="availableItemIds"
@@ -500,6 +622,7 @@ function handleInventoryUpdate(newInventory: Map<string, number>) {
           :grid="filteredOotGrid"
           :grid-item-refs="gridItemRefAliases"
           :grid-item-multi-activations="gridItemMultiActivations"
+          :grid-item-submenus="filteredGridItemSubmenus"
           :label-item-ids="labelItemIds"
           :item-max-counts="itemMaxCounts"
           :available-item-ids="availableItemIds"
@@ -516,6 +639,7 @@ function handleInventoryUpdate(newInventory: Map<string, number>) {
           :grid="filteredMmGrid"
           :grid-item-refs="gridItemRefAliases"
           :grid-item-multi-activations="gridItemMultiActivations"
+          :grid-item-submenus="filteredGridItemSubmenus"
           :label-item-ids="labelItemIds"
           :item-max-counts="itemMaxCounts"
           :available-item-ids="availableItemIds"
