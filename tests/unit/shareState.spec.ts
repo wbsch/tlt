@@ -1,5 +1,6 @@
 import { deflateRaw } from 'pako';
 import { beforeAll, describe, expect, it, vi } from 'vitest';
+import { DEFAULT_LEFT_SIDEBAR_WIDTH } from '@packs/ootmm/stores/ootmmUi';
 
 const textEncoder = new TextEncoder();
 
@@ -215,7 +216,7 @@ describe('shareState', () => {
             specialConds: {
               BRIDGE: {
                 count: 999,
-                stones: 'bad',
+                leftSidebarWidth: DEFAULT_LEFT_SIDEBAR_WIDTH,
               },
             },
           },
@@ -288,7 +289,7 @@ describe('shareState', () => {
       stores: {
         'ootmm-ui': {
           inventorySearchQuery: 'a'.repeat(500),
-          leftSidebarWidth: 400,
+          leftSidebarWidth: DEFAULT_LEFT_SIDEBAR_WIDTH,
         },
         'ootmm-session': {
           inventoryById: {
