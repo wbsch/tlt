@@ -189,7 +189,8 @@
                   [
                     "SHARED_BUTTON_A",
                     "SHARED_BUTTON_C_DOWN",
-                    "SHARED_BUTTON_C_LEFT"
+                    "SHARED_BUTTON_C_LEFT",
+                    "SHARED_PLATINUM_TOKEN"
                   ],
                   [
                     "SHARED_SKELETON_KEY",
@@ -995,9 +996,13 @@
                   ],
                   [
                     "MM_SMALL_KEY_WF",
+                    "MM_KEY_RING_WF",
                     "MM_SMALL_KEY_SH",
+                    "MM_KEY_RING_SH",
                     "MM_SMALL_KEY_GB",
-                    "MM_SMALL_KEY_ST"
+                    "MM_KEY_RING_GB",
+                    "MM_SMALL_KEY_ST",
+                    "MM_KEY_RING_ST"
                   ],
                   [
                     "MM_BOSS_KEY_WF",
