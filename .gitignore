@@ -30,3 +30,5 @@ dist-ssr
 
 /test-results
 /reports
+
+/public/debug.html
