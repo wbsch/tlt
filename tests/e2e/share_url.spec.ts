@@ -142,20 +142,26 @@ test.describe('share URL import/export', () => {
           page.evaluate(
             () => document.querySelector('.export-status')?.textContent ?? null,
           ),
-        { timeout: TEST_TIMEOUTS.DEFAULT_EXPECT },
+        { timeout: TEST_TIMEOUTS.SHARE_IMPORT_DETAILS },
       )
       .toContain('some invalid data was ignored');
-    await expect(page.getByTestId('share-import-details-modal')).toBeVisible();
+    await expect(page.getByTestId('share-import-details-modal')).toBeVisible({
+      timeout: TEST_TIMEOUTS.SHARE_IMPORT_DETAILS,
+    });
     await expect(page.getByTestId('share-import-details-modal')).toContainText(
       'stores.app.selectedPackId',
+      { timeout: TEST_TIMEOUTS.SHARE_IMPORT_DETAILS },
     );
     await expect(page.getByTestId('share-import-details-modal')).toContainText(
       'stores.ootmm-session.trackerSettings.games',
+      { timeout: TEST_TIMEOUTS.SHARE_IMPORT_DETAILS },
     );
     await page.getByTestId('share-import-details-close-button').click();
     await expect(page.getByTestId('share-import-details-modal')).toHaveCount(0);
     await page.getByTestId('share-status-details-button').click();
-    await expect(page.getByTestId('share-import-details-modal')).toBeVisible();
+    await expect(page.getByTestId('share-import-details-modal')).toBeVisible({
+      timeout: TEST_TIMEOUTS.SHARE_IMPORT_DETAILS,
+    });
     await page.getByTestId('share-import-details-close-button').click();
     await expect(page.getByTestId('share-import-details-modal')).toHaveCount(0);
     await waitForBoot(page);
@@ -217,7 +223,7 @@ test.describe('share URL import/export', () => {
           page.evaluate(
             () => document.querySelector('.export-status')?.textContent ?? null,
           ),
-        { timeout: TEST_TIMEOUTS.DEFAULT_EXPECT },
+        { timeout: TEST_TIMEOUTS.SHARE_IMPORT_DETAILS },
       )
       .toContain('some invalid data was ignored');
     await waitForBoot(page);
@@ -274,7 +280,7 @@ test.describe('share URL import/export', () => {
           page.evaluate(
             () => document.querySelector('.export-status')?.textContent ?? null,
           ),
-        { timeout: TEST_TIMEOUTS.DEFAULT_EXPECT },
+        { timeout: TEST_TIMEOUTS.SHARE_IMPORT_DETAILS },
       )
       .toContain('some invalid data was ignored');
     await waitForBoot(page);
