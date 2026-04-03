@@ -2,106 +2,220 @@
   "item_grid_shared": {
     "type": "array",
     "orientation": "vertical",
-    "scale": 1.2,
+    "scale": 1,
     "content": [
       {
-        "type": "itemgrid",
-        "h_alignment": "left",
-        "item_margin": "1,1",
-        "scale": 0.875,
-        "rows": [
-          [
-            "SHARED_BOW",
-            "SHARED_BOMB_BAG",
-            { "or": ["SHARED_BOMBCHU_BAG", "SHARED_BOMBCHU"] },
-            "SHARED_MAGIC_UPGRADE",
-            "SHARED_ARROW_FIRE",
-            "SHARED_ARROW_ICE",
-            "SHARED_ARROW_LIGHT",
-            "SHARED_HOOKSHOT",
-            "SHARED_TRIFORCE"
-          ],
-          [
-            "SHARED_LENS",
-            "SHARED_OCARINA",
-            "SHARED_SWORD",
-            "SHARED_SHIELD_DEKU",
-            "SHARED_SHIELD_HYLIAN",
-            "SHARED_SHIELD_MIRROR",
-            "SHARED_HAMMER",
-            "SHARED_STRENGTH",
-            "SHARED_SCALE",
-            "SHARED_SPIN_UPGRADE",
-            "SHARED_TRIFORCE_COURAGE"
-          ],
-          [
-            "SHARED_BOOTS_IRON",
-            "SHARED_BOOTS_HOVER",
-            "SHARED_TUNIC_GORON",
-            "SHARED_TUNIC_ZORA",
-            "SHARED_STONE_OF_AGONY",
-            "SHARED_SKELETON_KEY",
-            "SHARED_WALLET",
-            "SHARED_TRIFORCE_POWER"
-          ],
-          [
-            "SHARED_MASK_GORON",
-            "SHARED_MASK_ZORA",
-            "SHARED_MASK_BUNNY",
-            "SHARED_MASK_KEATON",
-            "SHARED_MASK_TRUTH",
-            "SHARED_MASK_BLAST",
-            "SHARED_MASK_STONE",
-            "SHARED_TRIFORCE_WISDOM"
-          ],
-          [
-            "SHARED_SONG_EPONA",
-            "SHARED_SONG_NOTE_EPONA",
-            "SHARED_SONG_STORMS",
-            "SHARED_SONG_NOTE_STORMS",
-            "SHARED_SONG_TIME",
-            "SHARED_SONG_NOTE_TIME",
-            "SHARED_SONG_SUN",
-            "SHARED_SONG_NOTE_SUN",
-            "SHARED_SONG_EMPTINESS",
-            "SHARED_SONG_NOTE_EMPTINESS",
-            "SHARED_SPELL_FIRE",
-            "SHARED_SPELL_WIND",
-            "SHARED_SPELL_LOVE"
-          ],
-          [
-            "SHARED_NUT_UPGRADE",
-            "SHARED_STICK_UPGRADE",
-            "SHARED_BUTTON_A",
-            "SHARED_BUTTON_C_DOWN",
-            "SHARED_BUTTON_C_LEFT",
-            "SHARED_BUTTON_C_RIGHT",
-            "SHARED_BUTTON_C_UP"
-          ],
-          [
-            "SHARED_BOTTLE_RUTO_LETTER",
-            "SHARED_BOTTLED_GOLD_DUST",
-            {
-              "ref": "Shared_Bottle1",
-              "item": "SHARED_BOTTLE_EMPTY",
-              "title": "Bottle 1"
-            },
-            {
-              "ref": "Shared_Bottle2",
-              "item": "SHARED_BOTTLE_EMPTY",
-              "title": "Bottle 2"
-            },
-            {
-              "ref": "Shared_Bottle3",
-              "item": "SHARED_BOTTLE_EMPTY",
-              "title": "Bottle 3"
-            },
-            {
-              "ref": "Shared_Bottle4",
-              "item": "SHARED_BOTTLE_EMPTY",
-              "title": "Bottle 4"
-            }
-          ]
+        "type": "array",
+        "orientation": "horizontal",
+        "content": [
+          {
+            "type": "section",
+            "title": "Items",
+            "padding": "5,10",
+            "margin": "0,8",
+            "content": [
+              {
+                "type": "itemgrid",
+                "h_alignment": "left",
+                "item_margin": "1,1",
+                "scale": 1.05,
+                "rows": [
+                  [
+                    "SHARED_BOW",
+                    "SHARED_BOMB_BAG",
+                    { "or": ["SHARED_BOMBCHU_BAG", "SHARED_BOMBCHU"] },
+                    "SHARED_HOOKSHOT"
+                  ],
+                  [
+                    "SHARED_LENS",
+                    "SHARED_OCARINA",
+                    "SHARED_HAMMER",
+                    "SHARED_MAGIC_UPGRADE"
+                  ],
+                  [
+                    "SHARED_ARROW_FIRE",
+                    "SHARED_ARROW_ICE",
+                    "SHARED_ARROW_LIGHT"
+                  ],
+                  [
+                    "SHARED_BOTTLE_RUTO_LETTER",
+                    "SHARED_BOTTLED_GOLD_DUST",
+                    {
+                      "ref": "Shared_Bottle1",
+                      "item": "SHARED_BOTTLE_EMPTY",
+                      "title": "Bottle 1"
+                    },
+                    {
+                      "ref": "Shared_Bottle2",
+                      "item": "SHARED_BOTTLE_EMPTY",
+                      "title": "Bottle 2"
+                    }
+                  ],
+                  [
+                    {
+                      "ref": "Shared_Bottle3",
+                      "item": "SHARED_BOTTLE_EMPTY",
+                      "title": "Bottle 3"
+                    },
+                    {
+                      "ref": "Shared_Bottle4",
+                      "item": "SHARED_BOTTLE_EMPTY",
+                      "title": "Bottle 4"
+                    }
+                  ]
+                ]
+              }
+            ]
+          },
+          {
+            "type": "section",
+            "title": "Equipement",
+            "padding": "5,10",
+            "margin": "0,8",
+            "content": [
+              {
+                "type": "itemgrid",
+                "h_alignment": "left",
+                "item_margin": "1,1",
+                "scale": 1.05,
+                "rows": [
+                  [
+                    "SHARED_SWORD",
+                    "SHARED_SHIELD_DEKU",
+                    "SHARED_SHIELD_HYLIAN",
+                    "SHARED_SHIELD_MIRROR",
+                    "SHARED_SPELL_FIRE"
+                  ],
+                  [
+                    "SHARED_BOOTS_IRON",
+                    "SHARED_BOOTS_HOVER",
+                    "SHARED_TUNIC_GORON",
+                    "SHARED_TUNIC_ZORA",
+                    "SHARED_SPELL_WIND"
+                  ],
+                  [
+                    "SHARED_STRENGTH",
+                    "SHARED_SCALE",
+                    "SHARED_WALLET",
+                    "SHARED_STONE_OF_AGONY",
+                    "SHARED_SPELL_LOVE"
+                  ]
+                ]
+              }
+            ]
+          },
+          {
+            "type": "section",
+            "title": "Triforce",
+            "padding": "5,10",
+            "margin": "0,8",
+            "content": [
+              {
+                "type": "itemgrid",
+                "h_alignment": "left",
+                "item_margin": "1,1",
+                "scale": 1.05,
+                "rows": [
+                  ["SHARED_TRIFORCE"],
+                  ["SHARED_TRIFORCE_COURAGE"],
+                  ["SHARED_TRIFORCE_POWER"],
+                  ["SHARED_TRIFORCE_WISDOM"]
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "type": "array",
+        "orientation": "horizontal",
+        "content": [
+          {
+            "type": "section",
+            "title": "Songs",
+            "padding": "5,10",
+            "margin": "0,8",
+            "content": [
+              {
+                "type": "itemgrid",
+                "h_alignment": "left",
+                "item_margin": "1,1",
+                "scale": 1.05,
+                "rows": [
+                  [
+                    "SHARED_SONG_TIME",
+                    "SHARED_SONG_NOTE_TIME",
+                    "SHARED_SONG_STORMS",
+                    "SHARED_SONG_NOTE_STORMS",
+                    "SHARED_SONG_EMPTINESS",
+                    "SHARED_SONG_NOTE_EMPTINESS"
+                  ],
+                  [
+                    "SHARED_SONG_EPONA",
+                    "SHARED_SONG_NOTE_EPONA",
+                    "SHARED_SONG_SUN",
+                    "SHARED_SONG_NOTE_SUN"
+                  ]
+                ]
+              }
+            ]
+          },
+          {
+            "type": "section",
+            "title": "Masks",
+            "padding": "5,10",
+            "margin": "0,8",
+            "content": [
+              {
+                "type": "itemgrid",
+                "h_alignment": "left",
+                "item_margin": "1,1",
+                "scale": 1.05,
+                "rows": [
+                  [
+                    "SHARED_MASK_GORON",
+                    "SHARED_MASK_ZORA",
+                    "SHARED_MASK_STONE",
+                    "SHARED_MASK_BLAST"
+                  ],
+                  [
+                    "SHARED_MASK_KEATON",
+                    "SHARED_MASK_BUNNY",
+                    "SHARED_MASK_TRUTH"
+                  ]
+                ]
+              }
+            ]
+          },
+          {
+            "type": "section",
+            "title": "Item Extensions",
+            "padding": "5,10",
+            "margin": "0,8",
+            "content": [
+              {
+                "type": "itemgrid",
+                "h_alignment": "left",
+                "item_margin": "1,1",
+                "scale": 1.05,
+                "rows": [
+                  [
+                    "SHARED_NUT_UPGRADE",
+                    "SHARED_STICK_UPGRADE",
+                    "SHARED_SPIN_UPGRADE",
+                    "SHARED_SKELETON_KEY"
+                  ],
+                  [
+                    "SHARED_BUTTON_A",
+                    "SHARED_BUTTON_C_DOWN",
+                    "SHARED_BUTTON_C_LEFT",
+                    "SHARED_BUTTON_C_RIGHT",
+                    "SHARED_BUTTON_C_UP"
+                  ]
+                ]
+              }
+            ]
+          }
         ]
       }
     ]
