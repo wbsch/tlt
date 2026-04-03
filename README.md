@@ -30,7 +30,10 @@ It:
 
 All settings that were available in the randomizer's code on March 15, 2026 (Version 30.1) are supported by this tracker. Excluded from this are:
 
-- All Entrance Randomizer settings except Dungeon Entrance Shuffle and Grotto Shuffle
+- All Entrance Randomizer settings except
+  - Dungeon Entrance Shuffle
+  - Grotto Shuffle
+  - Interior Entrance Shuffle
 
 There are a few settings the tracker does not represent because they are not relevant for tracking (e.g., OoT Shields). Nevertheless, The Last Tracker can be used for all options within those settings -
 you will still see what's available for you.
