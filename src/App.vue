@@ -9,6 +9,7 @@ import {
   buildShareUrl,
   collectPersistedStateFromLocalStorage,
   encodeSnapshotToHashPayload,
+  SHARE_PARTIAL_IMPORT_MESSAGE,
   SHARE_STATUS_EVENT_NAME,
   stripCollectedLocations,
   consumeShareStatus,
@@ -176,7 +177,7 @@ function handleShareStatusEvent(event: Event) {
   setShareStatus(
     message,
     detail.issues ??
-      (message === shareStatusMessage.value ? shareImportIssues.value : []),
+      (message === SHARE_PARTIAL_IMPORT_MESSAGE ? shareImportIssues.value : []),
   );
 }
 
