@@ -468,6 +468,7 @@ const RAW_ITEM_ICONS: Record<string, string> = {
   SHARED_SHIELD_DEKU: 'images/shield1.png',
   SHARED_SHIELD_HYLIAN: 'images/shield2.png',
   SHARED_SHIELD_MIRROR: 'images/shield3.png',
+  SHARED_PLATINUM_TOKEN: 'images/skulltula_platinum.png',
 };
 
 export const ITEM_ICONS: Record<string, string> = Object.fromEntries(
