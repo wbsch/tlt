@@ -549,11 +549,16 @@ function addEntranceBoundCodes(
 ): void {
   for (const srcId of markerEntranceIds) {
     const normalizedSrc = normalizeTrackedEntranceKey(srcId.trim());
+    if (!normalizedSrc) continue;
+
     const effectiveSrc = resolveToActiveEntranceKey(normalizedSrc, activeKeys);
-    if (!effectiveSrc) continue;
-    const dstId = overrides[effectiveSrc];
-    if (!dstId) continue; // Unmapped entrance – checks unreachable
-    const dstEntries = ENTRANCE_CHECK_CODES_BY_ID.get(dstId);
+    const resolvedEntranceId = effectiveSrc
+      ? overrides[effectiveSrc] ?? null
+      : normalizedSrc;
+
+    if (!resolvedEntranceId) continue;
+
+    const dstEntries = ENTRANCE_CHECK_CODES_BY_ID.get(resolvedEntranceId);
     if (!dstEntries) continue;
     for (const entry of dstEntries) {
       for (const code of normalizeMapCodeList(entry.codes)) {
@@ -572,21 +577,18 @@ const mapSelectorCheckIdsByMap = computed(() => {
     entranceOverrides.value,
     (trackerSettings.value ?? {}) as Record<string, unknown>,
   );
-  const isErActive = activeKeys.size > 0;
 
   for (const mapDef of selectableMapDefs.value) {
     const checkIds = new Set<string>();
     for (const marker of mapDef.markers) {
-      if (
-        marker.type === 'submenu' &&
-        Array.isArray(marker.markers) &&
-        marker.markers.length > 0
-      ) {
+      if (marker.type === 'submenu') {
         const markerEntranceIds = marker.entranceMenu?.entranceIds ?? [];
         const hasEntranceBinding = markerEntranceIds.length > 0;
 
-        if (hasEntranceBinding && isErActive) {
-          // Resolve codes from the mapped destination entrance
+        if (hasEntranceBinding) {
+          // Mirror the map runtime: shuffled entrances resolve via overrides,
+          // while entrance-bound submenu markers outside active ER pools fall
+          // back to their own source entrance definitions.
           addEntranceBoundCodes(
             checkIds,
             markerEntranceIds,
@@ -595,7 +597,7 @@ const mapSelectorCheckIdsByMap = computed(() => {
           );
         } else {
           // No ER or no entrance binding – use static codes
-          for (const submenuEntry of marker.markers) {
+          for (const submenuEntry of marker.markers ?? []) {
             for (const code of normalizeMapCodeList(submenuEntry.codes)) {
               addResolvedMapSelectorCode(checkIds, code);
             }
