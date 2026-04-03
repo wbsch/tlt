@@ -23,23 +23,14 @@
                   [
                     "SHARED_BOW",
                     "SHARED_BOMB_BAG",
-                    { "or": ["SHARED_BOMBCHU_BAG", "SHARED_BOMBCHU"] },
-                    "SHARED_HOOKSHOT"
-                  ],
-                  [
-                    "SHARED_LENS",
-                    "SHARED_OCARINA",
-                    "SHARED_HAMMER",
-                    "SHARED_MAGIC_UPGRADE"
-                  ],
-                  [
-                    "SHARED_ARROW_FIRE",
-                    "SHARED_ARROW_ICE",
-                    "SHARED_ARROW_LIGHT"
-                  ],
-                  [
+                    "SHARED_HOOKSHOT",
                     "SHARED_BOTTLE_RUTO_LETTER",
-                    "SHARED_BOTTLED_GOLD_DUST",
+                    "SHARED_BOTTLED_GOLD_DUST"
+                  ],
+                  [
+                    "SHARED_OCARINA",
+                    { "or": ["SHARED_BOMBCHU_BAG", "SHARED_BOMBCHU"] },
+                    "SHARED_HAMMER",
                     {
                       "ref": "Shared_Bottle1",
                       "item": "SHARED_BOTTLE_EMPTY",
@@ -52,6 +43,9 @@
                     }
                   ],
                   [
+                    "SHARED_ARROW_FIRE",
+                    "SHARED_ARROW_ICE",
+                    "SHARED_ARROW_LIGHT",
                     {
                       "ref": "Shared_Bottle3",
                       "item": "SHARED_BOTTLE_EMPTY",
@@ -62,6 +56,13 @@
                       "item": "SHARED_BOTTLE_EMPTY",
                       "title": "Bottle 4"
                     }
+                  ],
+                  [
+                    "SHARED_NUT_UPGRADE",
+                    "SHARED_STICK_UPGRADE",
+                    "SHARED_MAGIC_UPGRADE",
+                    "SHARED_SPIN_UPGRADE",
+                    "SHARED_LENS"
                   ]
                 ]
               }
@@ -100,26 +101,6 @@
                     "SHARED_STONE_OF_AGONY",
                     "SHARED_SPELL_LOVE"
                   ]
-                ]
-              }
-            ]
-          },
-          {
-            "type": "section",
-            "title": "Triforce",
-            "padding": "5,10",
-            "margin": "0,8",
-            "content": [
-              {
-                "type": "itemgrid",
-                "h_alignment": "left",
-                "item_margin": "1,1",
-                "scale": 1.05,
-                "rows": [
-                  ["SHARED_TRIFORCE"],
-                  ["SHARED_TRIFORCE_COURAGE"],
-                  ["SHARED_TRIFORCE_POWER"],
-                  ["SHARED_TRIFORCE_WISDOM"]
                 ]
               }
             ]
@@ -186,7 +167,13 @@
                 ]
               }
             ]
-          },
+          }
+        ]
+      },
+      {
+        "type": "array",
+        "orientation": "horizontal",
+        "content": [
           {
             "type": "section",
             "title": "Item Extensions",
@@ -200,17 +187,36 @@
                 "scale": 1.05,
                 "rows": [
                   [
-                    "SHARED_NUT_UPGRADE",
-                    "SHARED_STICK_UPGRADE",
-                    "SHARED_SPIN_UPGRADE",
-                    "SHARED_SKELETON_KEY"
-                  ],
-                  [
                     "SHARED_BUTTON_A",
                     "SHARED_BUTTON_C_DOWN",
-                    "SHARED_BUTTON_C_LEFT",
+                    "SHARED_BUTTON_C_LEFT"
+                  ],
+                  [
+                    "SHARED_SKELETON_KEY",
                     "SHARED_BUTTON_C_RIGHT",
                     "SHARED_BUTTON_C_UP"
+                  ]
+                ]
+              }
+            ]
+          },
+          {
+            "type": "section",
+            "title": "Triforce",
+            "padding": "5,10",
+            "margin": "0,8",
+            "content": [
+              {
+                "type": "itemgrid",
+                "h_alignment": "left",
+                "item_margin": "1,1",
+                "scale": 1.05,
+                "rows": [
+                  [
+                    "SHARED_TRIFORCE",
+                    "SHARED_TRIFORCE_COURAGE",
+                    "SHARED_TRIFORCE_POWER",
+                    "SHARED_TRIFORCE_WISDOM"
                   ]
                 ]
               }
