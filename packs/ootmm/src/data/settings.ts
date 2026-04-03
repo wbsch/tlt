@@ -3,8 +3,36 @@ import * as SettingsMod from '@ootmm/core/settings/data';
 import settingsWhitelist from './settingsWhitelist.json';
 import { DEFAULT_OOTMM_SETTINGS } from '../types/settings';
 
-// CJS interop: grab SETTINGS array from module exports
-const { SETTINGS, SUBCATEGORIES } = SettingsMod as {
+// Vite/tsx resolves this CJS-style package through an interop wrapper where
+// the actual exports currently live under `default`.
+const resolveInteropModule = (mod: unknown): Record<string, unknown> => {
+  const modRecord = mod as Record<string, unknown>;
+  const defaultValue = Object.prototype.hasOwnProperty.call(
+    modRecord,
+    'default',
+  )
+    ? modRecord['default']
+    : undefined;
+  if (defaultValue && typeof defaultValue === 'object') {
+    return defaultValue as Record<string, unknown>;
+  }
+
+  const moduleExportsValue = Object.prototype.hasOwnProperty.call(
+    modRecord,
+    'module.exports',
+  )
+    ? modRecord['module.exports']
+    : undefined;
+  if (moduleExportsValue && typeof moduleExportsValue === 'object') {
+    return moduleExportsValue as Record<string, unknown>;
+  }
+
+  return modRecord;
+};
+
+const settingsDataModule = resolveInteropModule(SettingsMod);
+
+const { SETTINGS, SUBCATEGORIES } = settingsDataModule as {
   SETTINGS?: unknown[];
   SUBCATEGORIES?: { categories?: { key?: string; category?: string }[] }[];
 };
@@ -218,6 +246,12 @@ const buildDefaultsRecord = (
   for (const def of definitions) {
     defaults[def.key] = deepCloneDefault(def.default);
   }
+
+  for (const [key, value] of Object.entries(DEFAULT_OOTMM_SETTINGS)) {
+    if (Object.prototype.hasOwnProperty.call(defaults, key)) continue;
+    defaults[key] = deepCloneDefault(value);
+  }
+
   return defaults;
 };
 

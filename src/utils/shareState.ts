@@ -13,6 +13,7 @@ import {
   TRACKER_DEFAULT_SETTINGS,
 } from '@packs/ootmm/data/settings';
 import { filterEntranceOverridesForSettings } from '@packs/ootmm/utils/entranceRandomization';
+import * as TricksMod from '@ootmm/core/settings/tricks';
 
 const SHARE_HASH_PARAM = 's';
 const SHARE_PAYLOAD_PREFIX = 'v1.';
@@ -25,6 +26,30 @@ export const SHARE_PARTIAL_IMPORT_MESSAGE =
   'Imported shared state; some invalid data was ignored.';
 const SHARE_TOP_LEVEL_KEYS = new Set(['v', 'stores']);
 const SHARE_STORE_IDS = new Set<string>(PERSIST_STORE_IDS);
+const resolveInteropModule = (mod: unknown): Record<string, unknown> => {
+  const modRecord = mod as Record<string, unknown>;
+  const defaultValue = Object.prototype.hasOwnProperty.call(
+    modRecord,
+    'default',
+  )
+    ? modRecord['default']
+    : undefined;
+  if (defaultValue && typeof defaultValue === 'object') {
+    return defaultValue as Record<string, unknown>;
+  }
+
+  const moduleExportsValue = Object.prototype.hasOwnProperty.call(
+    modRecord,
+    'module.exports',
+  )
+    ? modRecord['module.exports']
+    : undefined;
+  if (moduleExportsValue && typeof moduleExportsValue === 'object') {
+    return moduleExportsValue as Record<string, unknown>;
+  }
+
+  return modRecord;
+};
 /**
  * Maximum allowed size for decompressed share payloads (512 KiB).
  * A normal full-state export is typically 5-15 KiB; this limit prevents
@@ -38,6 +63,7 @@ const MAX_INFLATED_SIZE = 512 * 1024;
 const MAX_ENCODED_PAYLOAD_LENGTH = 128 * 1024;
 const textEncoder = new TextEncoder();
 const textDecoder = new TextDecoder();
+const tricksModule = resolveInteropModule(TricksMod);
 const IMPORT_CONFIRM_MESSAGE =
   'A shared tracker URL was detected. Importing it will replace your current local tracker progress. Continue?';
 
@@ -452,6 +478,32 @@ function normalizeImportedTrackerSettings(
     if (!Object.prototype.hasOwnProperty.call(raw, extraKey)) continue;
     normalized[extraKey] = structuredClone(raw[extraKey]);
   }
+
+  const rawTricks = Object.prototype.hasOwnProperty.call(raw, 'tricks')
+    ? raw.tricks
+    : TRACKER_DEFAULT_SETTINGS.tricks;
+  const validTrickKeys = new Set(
+    Object.keys(
+      ((tricksModule as { TRICKS?: unknown }).TRICKS ?? {}) as Record<
+        string,
+        unknown
+      >,
+    ),
+  );
+  const shouldValidateTricks = validTrickKeys.size > 0;
+  normalized.tricks = Array.isArray(rawTricks)
+    ? Array.from(
+        new Set(
+          rawTricks
+            .filter(
+              (entry): entry is string =>
+                typeof entry === 'string' &&
+                (!shouldValidateTricks || validTrickKeys.has(entry)),
+            )
+            .sort(),
+        ),
+      )
+    : [];
 
   return normalized;
 }
