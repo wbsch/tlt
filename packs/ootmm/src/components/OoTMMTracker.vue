@@ -553,7 +553,7 @@ function addEntranceBoundCodes(
 
     const effectiveSrc = resolveToActiveEntranceKey(normalizedSrc, activeKeys);
     const resolvedEntranceId = effectiveSrc
-      ? overrides[effectiveSrc] ?? null
+      ? (overrides[effectiveSrc] ?? null)
       : normalizedSrc;
 
     if (!resolvedEntranceId) continue;
