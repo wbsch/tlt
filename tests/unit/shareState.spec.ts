@@ -235,9 +235,42 @@ describe('shareState', () => {
     expect(shareState.importShareStateFromCurrentUrl()).toBe('partial');
     expect(window.location.hash).toBe('');
     expect(shareState.hasPendingShareImportCheck()).toBe(true);
-    expect(shareState.consumeShareStatusMessage()).toBe(
-      shareState.SHARE_PARTIAL_IMPORT_MESSAGE,
-    );
+    expect(shareState.consumeShareStatus()).toMatchObject({
+      message: shareState.SHARE_PARTIAL_IMPORT_MESSAGE,
+      issues: expect.arrayContaining([
+        expect.objectContaining({
+          path: 'ignoredTopLevel',
+          reason: 'Ignored unknown top-level field.',
+          received: true,
+        }),
+        expect.objectContaining({
+          path: 'stores.not-a-real-store',
+          reason: 'Ignored unknown persisted store.',
+        }),
+        expect.objectContaining({
+          path: 'stores.app.selectedPackId',
+          reason: 'Ignored invalid or unsupported field.',
+          received: 'evil-pack',
+        }),
+        expect.objectContaining({
+          path: 'stores.ootmm-session.trackerSettings.games',
+          reason: 'Adjusted value during import.',
+          imported: 'ootmm',
+        }),
+        expect.objectContaining({
+          path: 'stores.ootmm-session.trackerSettings.players',
+          reason: 'Adjusted value during import.',
+          imported: 1,
+        }),
+        expect.objectContaining({
+          path: 'stores.ootmm-session.entranceOverrides',
+          reason: 'Ignored invalid or unsupported field.',
+          received: {
+            NOT_A_REAL_ENTRANCE: 'ALSO_NOT_REAL',
+          },
+        }),
+      ]),
+    });
     expect(readPersistedStore(STORAGE_KEYS.app)).toBeNull();
     expect(readPersistedStore(STORAGE_KEYS.session)).toMatchObject({
       trackerSettings: {
@@ -284,6 +317,30 @@ describe('shareState', () => {
     );
 
     expect(decoded.partial).toBe(true);
+    expect(decoded.issues).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          path: 'stores.app.selectedPackId',
+          reason: 'Ignored invalid or unsupported field.',
+          received: 'evil-pack',
+        }),
+        expect.objectContaining({
+          path: 'stores.ootmm-ui.activeTab',
+          reason: 'Ignored invalid or unsupported field.',
+          received: 'invalid-tab',
+        }),
+        expect.objectContaining({
+          path: 'stores.ootmm-ui.inventorySearchQuery',
+          reason: 'Adjusted value during import.',
+          imported: 'a'.repeat(500),
+        }),
+        expect.objectContaining({
+          path: 'stores.ootmm-session.collectedLocationIds',
+          reason: 'Adjusted collection during import.',
+          imported: ['Check One'],
+        }),
+      ]),
+    );
     expect(decoded.snapshot).toEqual({
       v: 1,
       stores: {

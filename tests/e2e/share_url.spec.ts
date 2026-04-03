@@ -82,6 +82,15 @@ test.describe('share URL import/export', () => {
 
     await page.evaluate(() => window.localStorage.clear());
     await page.goto(shareUrl, { waitUntil: 'domcontentloaded' });
+    const importDetailsCloseButton = page.getByTestId(
+      'share-import-details-close-button',
+    );
+    if (await importDetailsCloseButton.count()) {
+      await importDetailsCloseButton.click();
+      await expect(page.getByTestId('share-import-details-modal')).toHaveCount(
+        0,
+      );
+    }
     await waitForBoot(page);
     const importedReachable = await waitForAllReachable(page);
     expect(importedReachable.total).toBeGreaterThan(0);
@@ -136,6 +145,19 @@ test.describe('share URL import/export', () => {
         { timeout: TEST_TIMEOUTS.DEFAULT_EXPECT },
       )
       .toContain('some invalid data was ignored');
+    await expect(page.getByTestId('share-import-details-modal')).toBeVisible();
+    await expect(page.getByTestId('share-import-details-modal')).toContainText(
+      'stores.app.selectedPackId',
+    );
+    await expect(page.getByTestId('share-import-details-modal')).toContainText(
+      'stores.ootmm-session.trackerSettings.games',
+    );
+    await page.getByTestId('share-import-details-close-button').click();
+    await expect(page.getByTestId('share-import-details-modal')).toHaveCount(0);
+    await page.getByTestId('share-status-details-button').click();
+    await expect(page.getByTestId('share-import-details-modal')).toBeVisible();
+    await page.getByTestId('share-import-details-close-button').click();
+    await expect(page.getByTestId('share-import-details-modal')).toHaveCount(0);
     await waitForBoot(page);
     await expect(page.getByTestId('pack-select')).toHaveValue('ootmm');
 

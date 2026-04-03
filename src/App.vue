@@ -8,10 +8,12 @@ import FairyLoader from './components/FairyLoader.vue';
 import {
   buildShareUrl,
   collectPersistedStateFromLocalStorage,
-  consumeShareStatusMessage,
   encodeSnapshotToHashPayload,
   SHARE_STATUS_EVENT_NAME,
   stripCollectedLocations,
+  consumeShareStatus,
+  type ShareImportIssue,
+  type ShareStatusPayload,
 } from './utils/shareState';
 
 const appStore = useAppStore();
@@ -21,8 +23,10 @@ const { availablePacks, selectedPackId, currentPack, isLoading, error } =
 const { hasOtherTabsOpen, connectedTabCount } = storeToRefs(syncStatusStore);
 const isResetConfirmOpen = ref(false);
 const isInfoModalOpen = ref(false);
+const isShareImportDetailsOpen = ref(false);
 const isDebugMode = ref(false);
 const shareStatusMessage = ref('');
+const shareImportIssues = ref<ShareImportIssue[]>([]);
 const isShareMenuOpen = ref(false);
 let shareStatusTimeoutId: number | null = null;
 const buildCommitDate = __TLT_BUILD_COMMIT_DATE__;
@@ -84,6 +88,29 @@ function closeInfoModal() {
   isInfoModalOpen.value = false;
 }
 
+function openShareImportDetailsModal() {
+  if (shareImportIssues.value.length === 0) return;
+  isShareImportDetailsOpen.value = true;
+}
+
+function closeShareImportDetailsModal() {
+  isShareImportDetailsOpen.value = false;
+}
+
+function formatShareImportValue(value: unknown): string {
+  if (value === undefined) {
+    return 'Not imported';
+  }
+  if (typeof value === 'string') {
+    return JSON.stringify(value);
+  }
+  try {
+    return JSON.stringify(value, null, 2) ?? String(value);
+  } catch {
+    return String(value);
+  }
+}
+
 function handleWindowKeydown(event: KeyboardEvent) {
   if (event.key !== 'Escape') {
     return;
@@ -97,6 +124,12 @@ function handleWindowKeydown(event: KeyboardEvent) {
   if (isInfoModalOpen.value) {
     event.preventDefault();
     closeInfoModal();
+    return;
+  }
+
+  if (isShareImportDetailsOpen.value) {
+    event.preventDefault();
+    closeShareImportDetailsModal();
     return;
   }
 
@@ -125,9 +158,11 @@ function clearShareStatusTimeout() {
   shareStatusTimeoutId = null;
 }
 
-function setShareStatus(message: string) {
+function setShareStatus(message: string, issues: ShareImportIssue[] = []) {
   clearShareStatusTimeout();
   shareStatusMessage.value = message;
+  shareImportIssues.value = issues;
+  isShareImportDetailsOpen.value = issues.length > 0;
   shareStatusTimeoutId = window.setTimeout(() => {
     shareStatusMessage.value = '';
     shareStatusTimeoutId = null;
@@ -135,9 +170,14 @@ function setShareStatus(message: string) {
 }
 
 function handleShareStatusEvent(event: Event) {
-  const message = (event as CustomEvent<{ message?: unknown }>).detail?.message;
+  const detail = (event as CustomEvent<ShareStatusPayload>).detail;
+  const message = detail?.message;
   if (typeof message !== 'string' || message.length === 0) return;
-  setShareStatus(message);
+  setShareStatus(
+    message,
+    detail.issues ??
+      (message === shareStatusMessage.value ? shareImportIssues.value : []),
+  );
 }
 
 async function exportState(includeCollected = false) {
@@ -186,9 +226,9 @@ function initializeDebugMode() {
 
 onMounted(() => {
   initializeDebugMode();
-  const pendingShareStatusMessage = consumeShareStatusMessage();
-  if (pendingShareStatusMessage) {
-    setShareStatus(pendingShareStatusMessage);
+  const pendingShareStatus = consumeShareStatus();
+  if (pendingShareStatus) {
+    setShareStatus(pendingShareStatus.message, pendingShareStatus.issues ?? []);
   }
   window.addEventListener('keydown', handleWindowKeydown);
   window.addEventListener(SHARE_STATUS_EVENT_NAME, handleShareStatusEvent);
@@ -315,6 +355,15 @@ onBeforeUnmount(() => {
           {{ shareStatusMessage }}
         </span>
         <button
+          v-if="shareImportIssues.length > 0"
+          type="button"
+          class="share-details-button"
+          data-testid="share-status-details-button"
+          @click="openShareImportDetailsModal"
+        >
+          Import Details
+        </button>
+        <button
           type="button"
           class="reset-button"
           data-testid="reset-tracker-state-button"
@@ -340,6 +389,65 @@ onBeforeUnmount(() => {
         :tracker="currentPack"
       />
     </main>
+
+    <div
+      v-if="isShareImportDetailsOpen"
+      class="share-import-details-backdrop"
+      data-testid="share-import-details-backdrop"
+      @click="closeShareImportDetailsModal"
+    >
+      <div
+        class="share-import-details-modal"
+        data-testid="share-import-details-modal"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="share-import-details-title"
+        aria-describedby="share-import-details-description"
+        @click.stop
+      >
+        <h2 id="share-import-details-title">
+          Some shared state could not be imported
+        </h2>
+        <p id="share-import-details-description">
+          These fields were ignored or adjusted while loading the saved state.
+        </p>
+        <div class="share-import-details-summary">
+          {{ shareImportIssues.length }} affected field{{
+            shareImportIssues.length === 1 ? '' : 's'
+          }}
+        </div>
+        <ul class="share-import-details-list">
+          <li
+            v-for="(issue, index) in shareImportIssues"
+            :key="`${issue.path}-${index}`"
+            class="share-import-details-item"
+          >
+            <div class="share-import-details-path">{{ issue.path }}</div>
+            <div class="share-import-details-reason">{{ issue.reason }}</div>
+            <div class="share-import-details-values">
+              <div class="share-import-details-value-group">
+                <span class="share-import-details-label">Received</span>
+                <pre>{{ formatShareImportValue(issue.received) }}</pre>
+              </div>
+              <div class="share-import-details-value-group">
+                <span class="share-import-details-label">Imported</span>
+                <pre>{{ formatShareImportValue(issue.imported) }}</pre>
+              </div>
+            </div>
+          </li>
+        </ul>
+        <div class="share-import-details-actions">
+          <button
+            type="button"
+            class="share-import-details-close"
+            data-testid="share-import-details-close-button"
+            @click="closeShareImportDetailsModal"
+          >
+            Close
+          </button>
+        </div>
+      </div>
+    </div>
 
     <div
       v-if="isInfoModalOpen"
@@ -612,6 +720,18 @@ onBeforeUnmount(() => {
   color: #67e8f9;
 }
 
+.share-details-button {
+  background: #3f3f46;
+  border: 1px solid #93c5fd;
+  font-size: 0.75rem;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.share-details-button:hover {
+  background: #52525b;
+}
+
 .sync-status-badge {
   display: inline-flex;
   align-items: center;
@@ -669,6 +789,128 @@ onBeforeUnmount(() => {
 
 .error {
   color: #ef4444;
+}
+
+.share-import-details-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 1950;
+  background: rgb(0 0 0 / 55%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+}
+
+.share-import-details-modal {
+  width: min(56rem, 100%);
+  max-height: calc(100vh - 2rem);
+  max-height: calc(100dvh - 2rem);
+  overflow: auto;
+  border: 1px solid #525252;
+  border-radius: 0.5rem;
+  background: #1f1f1f;
+  box-shadow: 0 16px 50px rgb(0 0 0 / 45%);
+  padding: 1rem 1rem 0.875rem;
+}
+
+.share-import-details-modal h2 {
+  margin: 0 0 0.5rem;
+  font-size: 1.1rem;
+}
+
+.share-import-details-modal p {
+  margin: 0;
+  color: #d1d5db;
+}
+
+.share-import-details-summary {
+  margin-top: 0.75rem;
+  font-size: 0.85rem;
+  color: #93c5fd;
+}
+
+.share-import-details-list {
+  list-style: none;
+  margin: 1rem 0 0;
+  padding: 0;
+  display: grid;
+  gap: 0.75rem;
+}
+
+.share-import-details-item {
+  border: 1px solid #3f3f46;
+  border-radius: 0.5rem;
+  background: #111827;
+  padding: 0.75rem;
+}
+
+.share-import-details-path {
+  font-family:
+    ui-monospace,
+    SFMono-Regular,
+    Menlo,
+    Monaco,
+    Consolas,
+    Liberation Mono,
+    Courier New,
+    monospace;
+  font-size: 0.8rem;
+  color: #f9fafb;
+  word-break: break-word;
+}
+
+.share-import-details-reason {
+  margin-top: 0.35rem;
+  color: #cbd5e1;
+  font-size: 0.85rem;
+}
+
+.share-import-details-values {
+  margin-top: 0.65rem;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.75rem;
+}
+
+.share-import-details-value-group {
+  min-width: 0;
+}
+
+.share-import-details-label {
+  display: block;
+  margin-bottom: 0.25rem;
+  color: #9ca3af;
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+.share-import-details-value-group pre {
+  margin: 0;
+  border-radius: 0.375rem;
+  background: #020617;
+  color: #e2e8f0;
+  padding: 0.65rem;
+  font-size: 0.75rem;
+  line-height: 1.4;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+.share-import-details-actions {
+  margin-top: 1rem;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.share-import-details-close {
+  background: #374151;
+}
+
+.share-import-details-close:hover {
+  background: #4b5563;
 }
 
 .info-modal-backdrop {
@@ -808,6 +1050,10 @@ onBeforeUnmount(() => {
 }
 
 @media (max-width: 520px) {
+  .share-import-details-values {
+    grid-template-columns: 1fr;
+  }
+
   .info-modal-footer-row {
     flex-direction: column;
     align-items: flex-start;

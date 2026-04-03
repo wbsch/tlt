@@ -18,6 +18,7 @@ const SHARE_HASH_PARAM = 's';
 const SHARE_PAYLOAD_PREFIX = 'v1.';
 const SHARE_SCHEMA_VERSION = 1;
 const SHARE_STATUS_SESSION_KEY = 'tlt:share-import-status:v1';
+const SHARE_STATUS_DETAILS_SESSION_KEY = 'tlt:share-import-details:v1';
 const SHARE_IMPORT_PENDING_SESSION_KEY = 'tlt:share-import-pending:v1';
 export const SHARE_STATUS_EVENT_NAME = 'tlt:share-status';
 export const SHARE_PARTIAL_IMPORT_MESSAGE =
@@ -44,9 +45,22 @@ type PersistedStoresSnapshot = Partial<
   Record<PersistStoreId, Record<string, unknown>>
 >;
 
+export type ShareImportIssue = {
+  path: string;
+  reason: string;
+  received?: unknown;
+  imported?: unknown;
+};
+
+export type ShareStatusPayload = {
+  message: string;
+  issues?: ShareImportIssue[];
+};
+
 type SharePayloadDecodeResult = {
   snapshot: PersistedSnapshot;
   partial: boolean;
+  issues: ShareImportIssue[];
 };
 
 type MultiSelectValue = {
@@ -91,6 +105,87 @@ function deepEqual(a: unknown, b: unknown): boolean {
     return true;
   }
   return false;
+}
+
+function buildIssueReason(received: unknown, imported: unknown): string {
+  if (imported === undefined) {
+    return 'Ignored invalid or unsupported field.';
+  }
+  if (Array.isArray(received) || Array.isArray(imported)) {
+    return 'Adjusted collection during import.';
+  }
+  return 'Adjusted value during import.';
+}
+
+function pushShareImportIssue(
+  issues: ShareImportIssue[],
+  issue: ShareImportIssue,
+): void {
+  issues.push(issue);
+}
+
+function collectShareImportIssues(
+  path: string,
+  received: unknown,
+  imported: unknown,
+  issues: ShareImportIssue[],
+): void {
+  if (deepEqual(received, imported)) return;
+
+  if (isPlainObject(received)) {
+    if (!isPlainObject(imported)) {
+      pushShareImportIssue(issues, {
+        path,
+        reason: buildIssueReason(received, imported),
+        received,
+        ...(imported !== undefined ? { imported } : {}),
+      });
+      return;
+    }
+
+    for (const [key, value] of Object.entries(received)) {
+      const nextPath = path ? `${path}.${key}` : key;
+      if (!Object.prototype.hasOwnProperty.call(imported, key)) {
+        pushShareImportIssue(issues, {
+          path: nextPath,
+          reason: 'Ignored invalid or unsupported field.',
+          received: value,
+        });
+        continue;
+      }
+      collectShareImportIssues(nextPath, value, imported[key], issues);
+    }
+    return;
+  }
+
+  pushShareImportIssue(issues, {
+    path,
+    reason: buildIssueReason(received, imported),
+    received,
+    ...(imported !== undefined ? { imported } : {}),
+  });
+}
+
+function sanitizeShareImportIssues(value: unknown): ShareImportIssue[] {
+  if (!Array.isArray(value)) return [];
+  return value.flatMap((entry) => {
+    if (!isPlainObject(entry)) return [];
+    if (typeof entry.path !== 'string' || typeof entry.reason !== 'string') {
+      return [];
+    }
+    return [
+      {
+        path: entry.path,
+        reason: entry.reason,
+        ...(Object.prototype.hasOwnProperty.call(entry, 'received')
+          ? { received: entry.received }
+          : {}),
+        ...(Object.prototype.hasOwnProperty.call(entry, 'imported')
+          ? { imported: entry.imported }
+          : {}),
+      },
+    ];
+  });
 }
 
 function diffSettingsFromDefaults(
@@ -409,13 +504,22 @@ function normalizeImportedSnapshot(
       stores,
     },
     partial,
+    issues: [],
   };
 }
 
-function persistShareStatusMessage(message: string): void {
+function persistShareStatus(payload: ShareStatusPayload): void {
   if (typeof window === 'undefined') return;
   try {
-    window.sessionStorage.setItem(SHARE_STATUS_SESSION_KEY, message);
+    window.sessionStorage.setItem(SHARE_STATUS_SESSION_KEY, payload.message);
+    if (payload.issues && payload.issues.length > 0) {
+      window.sessionStorage.setItem(
+        SHARE_STATUS_DETAILS_SESSION_KEY,
+        JSON.stringify(payload.issues),
+      );
+    } else {
+      window.sessionStorage.removeItem(SHARE_STATUS_DETAILS_SESSION_KEY);
+    }
   } catch {
     // Ignore sessionStorage failures; import itself should still succeed.
   }
@@ -425,16 +529,17 @@ function clearShareStatusMessage(): void {
   if (typeof window === 'undefined') return;
   try {
     window.sessionStorage.removeItem(SHARE_STATUS_SESSION_KEY);
+    window.sessionStorage.removeItem(SHARE_STATUS_DETAILS_SESSION_KEY);
   } catch {
     // Ignore sessionStorage failures; import itself should still succeed.
   }
 }
 
-function dispatchShareStatusMessage(message: string): void {
+function dispatchShareStatus(payload: ShareStatusPayload): void {
   if (typeof window === 'undefined') return;
   window.dispatchEvent(
     new CustomEvent(SHARE_STATUS_EVENT_NAME, {
-      detail: { message },
+      detail: payload,
     }),
   );
 }
@@ -468,21 +573,40 @@ export function clearPendingShareImportCheck(): void {
   }
 }
 
-export function publishShareStatusMessage(message: string): void {
-  persistShareStatusMessage(message);
-  dispatchShareStatusMessage(message);
+export function publishShareStatus(payload: ShareStatusPayload | string): void {
+  const normalized =
+    typeof payload === 'string' ? { message: payload } : payload;
+  persistShareStatus(normalized);
+  dispatchShareStatus(normalized);
 }
 
-export function consumeShareStatusMessage(): string | null {
+export function publishShareStatusMessage(message: string): void {
+  publishShareStatus(message);
+}
+
+export function consumeShareStatus(): ShareStatusPayload | null {
   if (typeof window === 'undefined') return null;
   try {
     const message = window.sessionStorage.getItem(SHARE_STATUS_SESSION_KEY);
     if (!message) return null;
     window.sessionStorage.removeItem(SHARE_STATUS_SESSION_KEY);
-    return message;
+
+    const rawIssues = window.sessionStorage.getItem(
+      SHARE_STATUS_DETAILS_SESSION_KEY,
+    );
+    window.sessionStorage.removeItem(SHARE_STATUS_DETAILS_SESSION_KEY);
+
+    const issues = rawIssues
+      ? sanitizeShareImportIssues(safeJsonParse(rawIssues))
+      : [];
+    return issues.length > 0 ? { message, issues } : { message };
   } catch {
     return null;
   }
+}
+
+export function consumeShareStatusMessage(): string | null {
+  return consumeShareStatus()?.message ?? null;
 }
 
 export function parseSharePayloadFromLocationHash(hash: string): string | null {
@@ -627,9 +751,25 @@ export function decodeHashPayloadToSnapshot(
     throw new Error('Share payload stores are invalid');
   }
 
-  let partial =
-    Object.keys(parsed).some((key) => !SHARE_TOP_LEVEL_KEYS.has(key)) ||
-    Object.keys(parsed.stores).some((key) => !SHARE_STORE_IDS.has(key));
+  const issues: ShareImportIssue[] = [];
+
+  for (const key of Object.keys(parsed)) {
+    if (SHARE_TOP_LEVEL_KEYS.has(key)) continue;
+    pushShareImportIssue(issues, {
+      path: key,
+      reason: 'Ignored unknown top-level field.',
+      received: parsed[key],
+    });
+  }
+
+  for (const key of Object.keys(parsed.stores)) {
+    if (SHARE_STORE_IDS.has(key)) continue;
+    pushShareImportIssue(issues, {
+      path: `stores.${key}`,
+      reason: 'Ignored unknown persisted store.',
+      received: parsed.stores[key],
+    });
+  }
 
   const snapshot: PersistedSnapshot = {
     v: SHARE_SCHEMA_VERSION,
@@ -638,14 +778,15 @@ export function decodeHashPayloadToSnapshot(
   for (const storeId of PERSIST_STORE_IDS) {
     const storeRaw = parsed.stores[storeId];
     if (storeRaw !== undefined && !isPlainObject(storeRaw)) {
-      partial = true;
+      pushShareImportIssue(issues, {
+        path: `stores.${storeId}`,
+        reason: 'Ignored invalid store payload.',
+        received: storeRaw,
+      });
       continue;
     }
 
     const sanitized = sanitizePersistedStateForStore(storeId, storeRaw);
-    if (!deepEqual(storeRaw ?? {}, sanitized)) {
-      partial = true;
-    }
     if (Object.keys(sanitized).length > 0) {
       snapshot.stores[storeId] = sanitized;
     }
@@ -653,9 +794,22 @@ export function decodeHashPayloadToSnapshot(
 
   const expanded = expandSnapshotSettings(snapshot);
   const normalized = normalizeImportedSnapshot(expanded);
+
+  for (const storeId of PERSIST_STORE_IDS) {
+    const storeRaw = parsed.stores[storeId];
+    if (storeRaw === undefined || !isPlainObject(storeRaw)) continue;
+    collectShareImportIssues(
+      `stores.${storeId}`,
+      storeRaw,
+      normalized.snapshot.stores[storeId] ?? {},
+      issues,
+    );
+  }
+
   return {
     snapshot: normalized.snapshot,
-    partial: partial || normalized.partial,
+    partial: issues.length > 0,
+    issues,
   };
 }
 
@@ -736,7 +890,10 @@ export function importShareStateFromCurrentUrl(
   applySnapshotToLocalStorage(decoded.snapshot);
   markPendingShareImportCheck();
   if (decoded.partial) {
-    publishShareStatusMessage(SHARE_PARTIAL_IMPORT_MESSAGE);
+    publishShareStatus({
+      message: SHARE_PARTIAL_IMPORT_MESSAGE,
+      issues: decoded.issues,
+    });
   } else {
     clearShareStatusMessage();
   }

@@ -57,11 +57,24 @@ async function readText(locator: Locator): Promise<string> {
   return raw.trim();
 }
 
+async function dismissShareImportDetailsModal(page: Page): Promise<void> {
+  const closeButton = page.getByTestId('share-import-details-close-button');
+  if ((await closeButton.count()) === 0) {
+    return;
+  }
+
+  await closeButton.click();
+  await expect(page.getByTestId('share-import-details-modal')).toHaveCount(0);
+}
+
 export async function ensureStatsExpanded(page: Page): Promise<void> {
+  await dismissShareImportDetailsModal(page);
+
   const toggle = page.locator('.stats-collapse-toggle');
   await expect(toggle).toBeVisible();
 
   if ((await toggle.getAttribute('aria-expanded')) !== 'true') {
+    await dismissShareImportDetailsModal(page);
     await toggle.click();
   }
 
