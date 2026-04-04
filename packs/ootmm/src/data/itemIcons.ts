@@ -1667,6 +1667,29 @@ export function getGridItemLinkedItemIds(
 }
 
 /**
+ * Get the max logical count implied by the Item Grid definition itself.
+ * This is derived from linked progression items or from the number of
+ * count-based icon stages when the grid defines multiple visible states.
+ */
+export function getGridItemDefinedMaxCount(
+  itemId: string,
+  context: GridIconVariantContext = {},
+): number | null {
+  const resolved = getResolvedGridIconVariants(itemId, context);
+  if (!resolved || resolved.icons.length === 0) return null;
+
+  if (resolved.linkedItemIds && resolved.linkedItemIds.length > 1) {
+    return resolved.linkedItemIds.length;
+  }
+
+  const definedMaxCount = resolved.startUndimmed
+    ? resolved.icons.length - 1
+    : resolved.icons.length;
+
+  return definedMaxCount > 1 ? definedMaxCount : null;
+}
+
+/**
  * Check whether an item has count-based Item Grid icon variants.
  */
 export function hasGridIconVariants(

@@ -26,6 +26,7 @@ import {
   filterEntranceOverridesForSettings,
   getActiveEntranceKeys,
 } from '../utils/entranceRandomization';
+import { getGridItemDefinedMaxCount } from '../data/itemIcons';
 
 const HISTORY_LIMIT = 200;
 const VANILLA_SILVER_RUPEE_PREFIX = 'OOT_RUPEE_SILVER_';
@@ -304,9 +305,36 @@ export const useOoTMMSessionStore = defineStore('ootmm-session', () => {
 
   const inventoryMap = computed(() => recordToMap(inventoryById.value));
   const availableItemIdSet = computed(() => new Set(availableItemIds.value));
-  const itemMaxCountsMap = computed(
-    () => new Map(Object.entries(itemMaxCountsById.value)),
-  );
+  function getEffectiveItemMaxCount(itemId: string, fallbackMax = 1): number {
+    const definedMaxCount =
+      getGridItemDefinedMaxCount(itemId, {
+        availableItemIds: availableItemIdSet.value,
+        inventory: inventoryMap.value,
+        settings: trackerSettings.value,
+      }) ?? 0;
+
+    return Math.max(
+      1,
+      fallbackMax,
+      itemMaxCountsById.value[itemId] ?? 0,
+      definedMaxCount,
+    );
+  }
+
+  const itemMaxCountsMap = computed(() => {
+    const next = new Map(Object.entries(itemMaxCountsById.value));
+    const itemIds = new Set<string>([
+      ...availableItemIds.value,
+      ...Object.keys(itemMaxCountsById.value),
+      ...Object.keys(inventoryById.value),
+    ]);
+
+    for (const itemId of itemIds) {
+      next.set(itemId, getEffectiveItemMaxCount(itemId));
+    }
+
+    return next;
+  });
   const reachableLocationIdSet = computed(
     () => new Set(reachableLocationIds.value),
   );
@@ -795,7 +823,7 @@ export const useOoTMMSessionStore = defineStore('ootmm-session', () => {
     options?: MutationOptions,
   ) {
     const current = inventoryById.value[itemId] ?? 0;
-    const max = Math.max(1, itemMaxCountsById.value[itemId] ?? fallbackMax);
+    const max = getEffectiveItemMaxCount(itemId, fallbackMax);
     if (current >= max) return;
     setInventoryCount(itemId, current + 1, options);
   }
@@ -1334,13 +1362,13 @@ export const useOoTMMSessionStore = defineStore('ootmm-session', () => {
     const nextInventory: Record<string, number> = {};
     if (availableItemIds.value.length > 0) {
       for (const itemId of availableItemIds.value) {
-        const maxCount = itemMaxCountsById.value[itemId] ?? 1;
+        const maxCount = getEffectiveItemMaxCount(itemId);
         nextInventory[itemId] = Math.max(1, maxCount);
       }
     } else {
       for (const item of ITEM_DATABASE) {
         if ((item.category as string) === 'junk') continue;
-        const maxCount = itemMaxCountsById.value[item.id] ?? item.maxCount ?? 1;
+        const maxCount = getEffectiveItemMaxCount(item.id, item.maxCount ?? 1);
         nextInventory[item.id] = Math.max(1, maxCount);
       }
     }
