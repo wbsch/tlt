@@ -5,6 +5,7 @@ import { useAppStore } from './stores/app';
 import { useSyncStatusStore } from './stores/syncStatus';
 import { IMPRESSUM_HTML } from './content/impressum';
 import FairyLoader from './components/FairyLoader.vue';
+import TrackerFaqModal from './components/TrackerFaqModal.vue';
 import {
   buildShareUrl,
   collectPersistedStateFromLocalStorage,
@@ -24,6 +25,7 @@ const { availablePacks, selectedPackId, currentPack, isLoading, error } =
 const { hasOtherTabsOpen, connectedTabCount } = storeToRefs(syncStatusStore);
 const isResetConfirmOpen = ref(false);
 const isInfoModalOpen = ref(false);
+const isFaqModalOpen = ref(false);
 const isShareImportDetailsOpen = ref(false);
 const isDebugMode = ref(false);
 const shareStatusMessage = ref('');
@@ -89,6 +91,14 @@ function closeInfoModal() {
   isInfoModalOpen.value = false;
 }
 
+function openFaqModal() {
+  isFaqModalOpen.value = true;
+}
+
+function closeFaqModal() {
+  isFaqModalOpen.value = false;
+}
+
 function openShareImportDetailsModal() {
   if (shareImportIssues.value.length === 0) return;
   isShareImportDetailsOpen.value = true;
@@ -125,6 +135,12 @@ function handleWindowKeydown(event: KeyboardEvent) {
   if (isInfoModalOpen.value) {
     event.preventDefault();
     closeInfoModal();
+    return;
+  }
+
+  if (isFaqModalOpen.value) {
+    event.preventDefault();
+    closeFaqModal();
     return;
   }
 
@@ -307,6 +323,14 @@ onBeforeUnmount(() => {
           SYNC: {{ connectedTabCount }} TABS
         </div>
         <button
+          type="button"
+          class="faq-button"
+          data-testid="faq-open-button"
+          @click="openFaqModal"
+        >
+          FAQ
+        </button>
+        <button
           v-if="isDebugMode"
           type="button"
           class="debug-activate-all-button"
@@ -390,6 +414,10 @@ onBeforeUnmount(() => {
         :tracker="currentPack"
       />
     </main>
+
+    <div v-if="isFaqModalOpen" data-testid="faq-modal-shell">
+      <TrackerFaqModal @close="closeFaqModal" />
+    </div>
 
     <div
       v-if="isShareImportDetailsOpen"
@@ -635,6 +663,17 @@ onBeforeUnmount(() => {
   border: 1px solid #fca5a5;
   font-size: 0.75rem;
   font-weight: 700;
+}
+
+.faq-button {
+  background: #1d4ed8;
+  border: 1px solid #93c5fd;
+  font-size: 0.75rem;
+  font-weight: 700;
+}
+
+.faq-button:hover {
+  background: #2563eb;
 }
 
 .reset-button:hover {
