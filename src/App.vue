@@ -504,7 +504,12 @@ onBeforeUnmount(() => {
             data-testid="info-impressum-close-button"
             @click="closeInfoModal"
           >
-            Close
+            <span class="modal-close-icon" aria-hidden="true">
+              <svg viewBox="0 0 12 12" focusable="false">
+                <path d="M3 3l6 6M9 3 3 9" />
+              </svg>
+            </span>
+            <span>Close</span>
           </button>
         </div>
         <!-- eslint-disable-next-line vue/no-v-html -->
@@ -1102,11 +1107,33 @@ onBeforeUnmount(() => {
   position: absolute;
   top: 0;
   right: 0;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
   background: #374151;
 }
 
 .info-modal-close:hover {
   background: #4b5563;
+}
+
+.modal-close-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.1rem;
+  height: 1.1rem;
+  border: 1px solid currentColor;
+  border-radius: 999px;
+}
+
+.modal-close-icon svg {
+  width: 0.62rem;
+  height: 0.62rem;
+  stroke: currentColor;
+  stroke-width: 1.7;
+  fill: none;
+  stroke-linecap: round;
 }
 
 .reset-confirm-backdrop {
