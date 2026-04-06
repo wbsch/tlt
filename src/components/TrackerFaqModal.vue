@@ -164,13 +164,12 @@ defineEmits<{
 
 .faq-close-button {
   flex-shrink: 0;
-  background: #334155;
-  border: 1px solid #94a3b8;
-  font-weight: 700;
+  align-self: flex-start;
+  background: #374151;
 }
 
 .faq-close-button:hover {
-  background: #475569;
+  background: #4b5563;
 }
 
 .faq-intro-grid {
@@ -301,14 +300,6 @@ defineEmits<{
 @media (max-width: 760px) {
   .faq-modal {
     padding: 1rem;
-  }
-
-  .faq-modal-header {
-    flex-direction: column;
-  }
-
-  .faq-close-button {
-    width: 100%;
   }
 
   .faq-intro-grid {

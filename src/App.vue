@@ -498,6 +498,14 @@ onBeforeUnmount(() => {
             alt="The Last Tracker logo"
             class="info-modal-logo"
           />
+          <button
+            type="button"
+            class="info-modal-close"
+            data-testid="info-impressum-close-button"
+            @click="closeInfoModal"
+          >
+            Close
+          </button>
         </div>
         <!-- eslint-disable-next-line vue/no-v-html -->
         <div class="info-modal-content" v-html="IMPRESSUM_HTML" />
@@ -533,16 +541,6 @@ onBeforeUnmount(() => {
               {{ ootmmVersionTag }}
             </span>
           </div>
-        </div>
-        <div class="info-modal-actions">
-          <button
-            type="button"
-            class="info-modal-close"
-            data-testid="info-impressum-close-button"
-            @click="closeInfoModal"
-          >
-            Close
-          </button>
         </div>
       </div>
     </div>
@@ -983,12 +981,13 @@ onBeforeUnmount(() => {
 }
 
 .info-modal-header {
+  position: relative;
   display: flex;
-  flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 0.5rem;
+  gap: 1rem;
   margin-bottom: 0.9rem;
+  min-height: 2.5rem;
 }
 
 .info-modal-logo {
@@ -1049,12 +1048,6 @@ onBeforeUnmount(() => {
   padding-top: 0.75rem;
 }
 
-.info-modal-actions {
-  margin-top: 1rem;
-  display: flex;
-  justify-content: flex-end;
-}
-
 .info-modal-footer {
   margin-top: 1rem;
   border-top: 1px solid #3f3f46;
@@ -1106,6 +1099,9 @@ onBeforeUnmount(() => {
 }
 
 .info-modal-close {
+  position: absolute;
+  top: 0;
+  right: 0;
   background: #374151;
 }
 
