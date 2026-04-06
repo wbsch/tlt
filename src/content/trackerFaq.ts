@@ -27,7 +27,7 @@ export const TRACKER_FAQ_SECTIONS: TrackerFaqSection[] = [
     id: 'basics',
     title: 'Getting Started',
     description:
-      'These answers cover the normal flow for using the tracker during a seed.',
+      'These answers cover the typical workflow for using the tracker during a seed.',
     items: [
       {
         id: 'how-to-start',
@@ -36,20 +36,20 @@ export const TRACKER_FAQ_SECTIONS: TrackerFaqSection[] = [
         blocks: [
           {
             type: 'paragraph',
-            text: 'Start by uploading your spoiler log by drag & drop anywhere or checking your settings and tricks manually before you begin tracking items. The tracker uses those choices to decide which locations are reachable.',
+            text: 'Start by uploading your spoiler log via drag-and-drop anywhere, or configure your settings and tricks manually before you begin tracking items. The tracker uses these choices to determine which locations are reachable.',
           },
           {
             type: 'list',
             items: [
-              'Click on items in the Items or the All Items Tab to record what you have already found. The starting items from your spoiler log are pre-filled.',
-              "The junk locations from your spoiler log are automatically marked as checked, so they don't show up if you filter for reachable, unchecked locations.",
-              'Use the map and the Locations sidebar to see what is currently reachable and what has already been collected.',
-              'The number next to the region names in the map drop down shows how many checks on this map are selected, depending on your current filters (reachable, collected, etc).',
+              "Click items in the Items or All Items tabs to record what you've found. Starting items from your spoiler log are pre-filled.",
+              "Junk locations from your spoiler log are automatically marked as checked, so they won't appear when filtering for reachable, unchecked locations.",
+              "Use the map and the Locations sidebar to view what is currently reachable and what you've already collected.",
+              'The number next to region names in the map dropdown shows how many checks on that map are selected, based on your current filters (reachable, collected, etc.).',
             ],
           },
           {
             type: 'paragraph',
-            text: 'As soon as you update your inventory, the tracker recalculates reachability automatically.',
+            text: 'When you update your inventory, the tracker automatically recalculates reachability.',
           },
         ],
       },
@@ -112,7 +112,7 @@ export const TRACKER_FAQ_SECTIONS: TrackerFaqSection[] = [
           },
           {
             type: 'paragraph',
-            text: 'If you have selected an Entrance Randomizer option, the number next to the check count in the map drop down is the number of entrances depending on your items, settings and filters.',
+            text: 'If an Entrance Randomizer option is selected, the number next to the check count in the map dropdown reflects the number of entrances based on your items, settings, and filters.',
           },
         ],
       },
@@ -122,7 +122,7 @@ export const TRACKER_FAQ_SECTIONS: TrackerFaqSection[] = [
     id: 'advanced',
     title: 'Special Questions',
     description:
-      'These topics cover the cases that usually need an extra explanation.',
+      'These topics cover cases that typically require extra explanation.',
     items: [
       {
         id: 'spoiler-log',
@@ -130,11 +130,11 @@ export const TRACKER_FAQ_SECTIONS: TrackerFaqSection[] = [
         blocks: [
           {
             type: 'paragraph',
-            text: 'Yes. The tracker supports spoiler log import, including drag-and-drop. That is useful if you want to preload placements, settings, or other seed information that the tracker can represent.',
+            text: 'Yes. The tracker supports spoiler log import, including drag-and-drop. This is useful for preloading placements, settings, or other seed information the tracker can represent.',
           },
           {
             type: 'paragraph',
-            text: 'If some values cannot be imported exactly, the tracker keeps working and shows Import Details so you can see what was ignored or adjusted.',
+            text: 'If some values cannot be imported exactly, the tracker continues to work and shows Import Details so you can see what was ignored or adjusted.',
           },
         ],
       },
@@ -144,14 +144,14 @@ export const TRACKER_FAQ_SECTIONS: TrackerFaqSection[] = [
         blocks: [
           {
             type: 'paragraph',
-            text: 'When supported entrance shuffle options are active, the tracker needs the discovered mappings to evaluate access correctly. Unknown or incomplete mappings can make locations stay unreachable until you enter the information.',
+            text: 'When supported entrance shuffle options are active, the tracker needs discovered mappings to evaluate access correctly. Unknown or incomplete mappings can keep locations unreachable until you enter the information.',
           },
           {
             type: 'list',
             items: [
               'Record discovered entrances in the Entrances sidebar as you find them.',
-              'Re-check reachability after updating a mapping, because the logic can unlock several regions at once.',
-              'Only the supported entrance shuffle options are represented directly in this tracker.',
+              'Re-check reachability after updating a mapping, since the logic can unlock several regions at once.',
+              'Only supported entrance shuffle options are represented directly in this tracker.',
             ],
           },
         ],
@@ -162,7 +162,7 @@ export const TRACKER_FAQ_SECTIONS: TrackerFaqSection[] = [
         blocks: [
           {
             type: 'paragraph',
-            text: 'Use Export State in the header. The tracker copies a shareable URL to your clipboard.',
+            text: 'Use Export State in the header; the tracker copies a shareable URL to your clipboard.',
           },
           {
             type: 'list',
@@ -181,14 +181,14 @@ export const TRACKER_FAQ_SECTIONS: TrackerFaqSection[] = [
         blocks: [
           {
             type: 'paragraph',
-            text: 'In almost every case, the cause is missing context rather than a display issue. The logic depends on your current settings, tricks, found items, and known entrance mappings.',
+            text: 'In most cases, the cause is missing context rather than a display issue. The logic depends on your current settings, enabled tricks, found items, and known entrance mappings.',
           },
           {
             type: 'list',
             items: [
               'Check whether the required item, song, event, or entrance mapping has been entered.',
               'Confirm that your settings and enabled tricks still match the seed you are playing.',
-              'Look at active filters in Locations or Entrances, because hidden checks may still exist but not be visible in the current view.',
+              'Check active filters in Locations or Entrances; hidden checks may exist but not be visible in the current view.',
             ],
           },
         ],
@@ -199,11 +199,11 @@ export const TRACKER_FAQ_SECTIONS: TrackerFaqSection[] = [
         blocks: [
           {
             type: 'paragraph',
-            text: 'Use Undo or Redo when you only need to step back a few actions. If the entire state is no longer trustworthy, Reset Tracker State clears the current progress and reloads the tracker.',
+            text: 'Use Undo or Redo to step back a few actions. If the entire state is no longer trustworthy, Reset Tracker State clears current progress and reloads the tracker.',
           },
           {
             type: 'paragraph',
-            text: 'Because the tracker auto-saves, a full reset is the cleanest fallback when you want to restart from scratch in the same browser.',
+            text: 'Because the tracker auto-saves, a full reset is the cleanest fallback when restarting from scratch in the same browser.',
           },
         ],
       },

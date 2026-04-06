@@ -44,16 +44,16 @@ defineEmits<{
         <section class="faq-intro-card">
           <h3>Quick Start Guide</h3>
           <ol>
-            <li>Upload your spoiler log by drag & drop.</li>
+            <li>Upload your spoiler log via drag-and-drop.</li>
             <li>Track items, checks, and discovered entrances.</li>
-            <li>Use the map and filters to plan the next route.</li>
+            <li>Use the map and filters to plan your next route.</li>
           </ol>
         </section>
         <section class="faq-intro-card">
           <h3>Good to know</h3>
           <p>
-            The tracker saves progress in your browser automatically. Export
-            State is the safest way to move that progress to another device.
+            The tracker saves progress in your browser automatically. Use Export
+            State to move that progress to another device.
           </p>
         </section>
       </div>
