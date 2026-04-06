@@ -32,41 +32,38 @@ export const TRACKER_FAQ_SECTIONS: TrackerFaqSection[] = [
       {
         id: 'how-to-start',
         question: 'How should I use the tracker during a run?',
-        defaultOpen: true,
+        defaultOpen: false,
         blocks: [
           {
             type: 'paragraph',
-            text: 'Start by checking your settings and tricks before you begin tracking items. The tracker uses those choices to decide which locations are reachable.',
+            text: 'Start by uploading your spoiler log by drag & drop anywhere or checking your settings and tricks manually before you begin tracking items. The tracker uses those choices to decide which locations are reachable.',
           },
           {
             type: 'list',
             items: [
-              'Use Settings to mirror your seed options and apply any changes.',
-              'Use Inventory and Items to record what you have already found.',
+              'Click on items in the Items or the All Items Tab to record what you have already found. The starting items from your spoiler log are pre-filled.',
+              "The junk locations from your spoiler log are automatically marked as checked, so they don't show up if you filter for reachable, unchecked locations.",
               'Use the map and the Locations sidebar to see what is currently reachable and what has already been collected.',
+              'The number next to the region names in the map drop down shows how many checks on this map are selected, depending on your current filters (reachable, collected, etc).',
             ],
           },
           {
             type: 'paragraph',
-            text: 'As soon as you update your inventory or mark a location, the tracker recalculates reachability automatically.',
+            text: 'As soon as you update your inventory, the tracker recalculates reachability automatically.',
           },
         ],
       },
       {
         id: 'stats-meaning',
-        question: 'What do reachable, checked, and remaining mean?',
+        question: 'What do reachable, checked and remaining mean?',
         blocks: [
           {
             type: 'list',
             items: [
-              'Reachable shows how many checks the current logic says you can access right now.',
+              'Reachable shows how many checks the logic says you can access with your selected settings and items.',
               'Checked shows how many locations you have already marked as collected or cleared.',
               'Remaining shows how many trackable locations are still open overall.',
             ],
-          },
-          {
-            type: 'paragraph',
-            text: 'If a count looks wrong, verify your settings, tricks, entrance mappings, and whether a location is hidden by a filter.',
           },
         ],
       },
@@ -83,7 +80,6 @@ export const TRACKER_FAQ_SECTIONS: TrackerFaqSection[] = [
             items: [
               'Locations lets you search by name and narrow the list by reachability, collection state, or category.',
               'Entrances helps you track shuffled connections when entrance randomizer options are active.',
-              'World, Inventory, and Items give you alternate ways to update progression without leaving the tracker page.',
             ],
           },
         ],
@@ -99,6 +95,24 @@ export const TRACKER_FAQ_SECTIONS: TrackerFaqSection[] = [
           {
             type: 'paragraph',
             text: 'Use Export State if you want to move the tracker to another browser or share the current state with someone else.',
+          },
+        ],
+      },
+      {
+        id: 'entrance-randomizer',
+        question: 'How do I track entrances?',
+        blocks: [
+          {
+            type: 'paragraph',
+            text: 'When entrance randomizer options are active, you can track which entrance leads where via the map or the Entrances sidebar. Filters for mapped/unmapped and reachable/unreachable entrances are available.',
+          },
+          {
+            type: 'paragraph',
+            text: 'Similar to the items filter reachable shows which entrances can be accessed with your current settings and other discovered entrances. Unmapped entrances are those for which you have not yet entered a discovered connection, while mapped entrances already have a known destination.',
+          },
+          {
+            type: 'paragraph',
+            text: 'If you have selected an Entrance Randomizer option, the number next to the check count in the map drop down is the number of entrances depending on your items, settings and filters.',
           },
         ],
       },

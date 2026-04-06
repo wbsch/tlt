@@ -22,7 +22,7 @@ defineEmits<{
       @click.stop
     >
       <div class="faq-modal-header">
-        <div>
+        <div class="faq-modal-copy">
           <div class="faq-kicker">Tracker Help</div>
           <h2 id="faq-modal-title">Frequently Asked Questions</h2>
           <p id="faq-modal-description" class="faq-modal-description">
@@ -42,9 +42,9 @@ defineEmits<{
 
       <div class="faq-intro-grid">
         <section class="faq-intro-card">
-          <h3>Use the tracker in this order</h3>
+          <h3>Quick Start Guide</h3>
           <ol>
-            <li>Set your seed options and tricks.</li>
+            <li>Upload your spoiler log by drag & drop.</li>
             <li>Track items, checks, and discovered entrances.</li>
             <li>Use the map and filters to plan the next route.</li>
           </ol>
@@ -133,6 +133,11 @@ defineEmits<{
   gap: 1rem;
 }
 
+.faq-modal-copy {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
 .faq-kicker {
   display: inline-flex;
   margin-bottom: 0.5rem;
@@ -153,7 +158,6 @@ defineEmits<{
 
 .faq-modal-description {
   margin: 0.55rem 0 0;
-  max-width: 44rem;
   color: #cbd5e1;
   line-height: 1.5;
 }
