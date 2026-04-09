@@ -935,6 +935,16 @@ function resolveEntranceMenuIds(
   return normalizeEntranceIdList(menuDef.entranceIds, markerDef);
 }
 
+function getEntranceMenuDisplayMode(
+  menuDef: MapDungeonEntranceMenuDef,
+): 'both' | 'entrances' | 'exits' {
+  const mode = menuDef.display;
+  if (mode === 'entrances' || mode === 'exits') {
+    return mode;
+  }
+  return 'both';
+}
+
 function toEntranceMenuEntry(
   entry: DungeonEntranceEntry,
 ): EntranceMenuEntryRuntime {
@@ -1033,6 +1043,11 @@ const markerViewModels = computed<MarkerRuntime[]>(() => {
       const submenuSourceEntranceIds = markerDef.entranceMenu
         ? resolveEntranceMenuIds(markerDef, markerDef.entranceMenu)
         : [];
+      const entranceMenuDisplay = markerDef.entranceMenu
+        ? getEntranceMenuDisplayMode(markerDef.entranceMenu)
+        : 'both';
+      const showsEntranceEntries = entranceMenuDisplay !== 'exits';
+      const showsExitEntries = entranceMenuDisplay !== 'entrances';
       const hasEntranceBinding = submenuSourceEntranceIds.length > 0;
       const entrancesForVisibility = props.devMode
         ? allDungeonEntrances.value
@@ -1051,13 +1066,15 @@ const markerViewModels = computed<MarkerRuntime[]>(() => {
       const activeSubmenuEntrances = submenuSourceEntranceIds
         .map((entranceId) => activeEntranceById.get(entranceId))
         .filter((entry): entry is DungeonEntranceEntry => Boolean(entry));
-      const visibleSubmenuEntrances = props.devMode
-        ? isDevUnmappedFilterActive
-          ? []
-          : activeSubmenuEntrances
-        : submenuSourceEntranceIds
-            .map((entranceId) => filteredEntranceById.get(entranceId))
-            .filter((entry): entry is DungeonEntranceEntry => Boolean(entry));
+      const visibleSubmenuEntrances = !showsEntranceEntries
+        ? []
+        : props.devMode
+          ? isDevUnmappedFilterActive
+            ? []
+            : activeSubmenuEntrances
+          : submenuSourceEntranceIds
+              .map((entranceId) => filteredEntranceById.get(entranceId))
+              .filter((entry): entry is DungeonEntranceEntry => Boolean(entry));
       const staticSubmenuMarkersRaw = markerDef.markers ?? [];
       const boundSubmenuMarkersRaw =
         !props.devMode &&
@@ -1121,21 +1138,23 @@ const markerViewModels = computed<MarkerRuntime[]>(() => {
       const activeSubmenuExits = submenuSourceEntranceIds
         .map((entranceId) => activeExitById.get(entranceId))
         .filter((entry): entry is ExitEntry => Boolean(entry));
-      const visibleSubmenuExits = props.devMode
-        ? isDevUnmappedFilterActive
-          ? []
-          : activeSubmenuExits
-        : submenuSourceEntranceIds
-            .map((entranceId) => filteredExitById.get(entranceId))
-            .filter((entry): entry is ExitEntry => Boolean(entry));
+      const visibleSubmenuExits = !showsExitEntries
+        ? []
+        : props.devMode
+          ? isDevUnmappedFilterActive
+            ? []
+            : activeSubmenuExits
+          : submenuSourceEntranceIds
+              .map((entranceId) => filteredExitById.get(entranceId))
+              .filter((entry): entry is ExitEntry => Boolean(entry));
       const hasVisibleExits =
-        submenuSourceEntranceIds.length === 0
+        !showsExitEntries || submenuSourceEntranceIds.length === 0
           ? false
           : activeSubmenuExits.length === 0
             ? false
             : visibleSubmenuExits.length > 0;
       const hasVisibleEntrances =
-        submenuSourceEntranceIds.length === 0
+        !showsEntranceEntries || submenuSourceEntranceIds.length === 0
           ? false
           : activeSubmenuEntrances.length === 0
             ? false

@@ -35,6 +35,7 @@ export type MapSubmenuEntryDef = {
 
 export type MapDungeonEntranceMenuDef = {
   entranceIds: string[];
+  display?: 'both' | 'entrances' | 'exits';
 };
 
 export type MapMarkerDef = {

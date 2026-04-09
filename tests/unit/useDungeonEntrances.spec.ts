@@ -170,4 +170,76 @@ describe('useDungeonEntrances', () => {
       sessionStore.entranceOverrides['MM_CLOCK_TOWER_FROM_CLOCK_TOWN'],
     ).toBe('OOT_HOUSE_SARIA');
   });
+
+  it('activates major region entrances and exits when region shuffle is enabled', () => {
+    const sessionStore = useOoTMMSessionStore();
+    useOoTMMUiStore();
+
+    sessionStore.trackerSettings = {
+      games: 'ootmm',
+      erRegions: 'full',
+      erRegionsExtra: true,
+      erRegionsShortcuts: true,
+    };
+
+    const entrances = useDungeonEntrances();
+
+    expect(
+      entrances.activeEntrances.value.some(
+        (entry) =>
+          entry.key === 'OOT_ZORA_RIVER_FROM_FIELD' && entry.pool === 'region',
+      ),
+    ).toBe(true);
+    expect(
+      entrances.activeEntrances.value.some(
+        (entry) =>
+          entry.key === 'OOT_MARKET_ENTRANCE_FROM_FIELD' &&
+          entry.pool === 'region',
+      ),
+    ).toBe(true);
+    expect(
+      entrances.activeEntrances.value.some(
+        (entry) =>
+          entry.key === 'OOT_ZORA_RIVER_FROM_LOST_WOODS' &&
+          entry.pool === 'region',
+      ),
+    ).toBe(true);
+    expect(
+      entrances.activeExitEntries.value.some(
+        (entry) =>
+          entry.key === 'OOT_FIELD_FROM_ZORA_RIVER' && entry.pool === 'region',
+      ),
+    ).toBe(true);
+  });
+
+  it('mixes region destinations into other mixed entrance pools when enabled', () => {
+    const sessionStore = useOoTMMSessionStore();
+    useOoTMMUiStore();
+
+    sessionStore.trackerSettings = {
+      games: 'ootmm',
+      erRegions: 'full',
+      erRegionsExtra: true,
+      erRegionsShortcuts: false,
+      erMixed: 'full',
+      erMixedRegions: true,
+      erIndoors: 'full',
+      erIndoorsMajor: true,
+      erIndoorsExtra: false,
+      erIndoorsGameLinks: false,
+      erMixedIndoors: true,
+    };
+
+    const entrances = useDungeonEntrances();
+    const kokiriShop = entrances.activeEntrances.value.find(
+      (entry) => entry.key === 'OOT_KOKIRI_SHOP',
+    );
+
+    expect(kokiriShop).toBeTruthy();
+    expect(
+      entrances
+        .destinationOptionsForEntrance(kokiriShop!)
+        .some((option) => option.value === 'OOT_MARKET_ENTRANCE_FROM_FIELD'),
+    ).toBe(true);
+  });
 });

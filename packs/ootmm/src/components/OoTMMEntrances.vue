@@ -38,6 +38,7 @@ const trackedSection = computed(
 const POOL_SECTIONS = [
   { id: 'dungeon', title: 'Dungeons' },
   { id: 'grotto', title: 'Grottos' },
+  { id: 'region', title: 'Major Regions' },
   { id: 'interior', title: 'Interiors' },
 ] as const;
 
@@ -159,8 +160,8 @@ const groupedEntrances = computed(() => {
 
     <div v-if="sections.length === 0" class="no-entrances">
       <p>
-        Enable Dungeon ER, Grotto Shuffle, or Interiors Shuffle in Settings to
-        configure entrance assignments.
+        Enable Dungeon ER, Major Regions Shuffle, Grotto Shuffle, or Interiors
+        Shuffle in Settings to configure entrance assignments.
       </p>
     </div>
 

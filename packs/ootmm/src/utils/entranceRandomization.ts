@@ -31,6 +31,7 @@ const TYPE_TO_SETTING: Record<string, string> = {
 
 const DUNGEON_TYPES = new Set(Object.keys(TYPE_TO_SETTING));
 const GROTTO_TYPES = new Set(['grotto', 'grave']);
+const REGION_TYPES = new Set(['region', 'region-extra', 'region-shortcut']);
 const INTERIOR_TYPES = new Set(['indoors', 'indoors-extra', 'indoors-pf']);
 export const INTERIOR_GAME_LINK_SOURCE_KEYS = new Set([
   'OOT_MARKET_FROM_MASK_SHOP',
@@ -45,6 +46,7 @@ const TRACKED_EXIT_TYPES = new Set([
   'dungeon-exit',
   'grotto-exit',
   'grave-exit',
+  'region-exit',
   ...INTERIOR_EXIT_TYPES,
 ]);
 const DEKU_PALACE_JP_LAYOUT = 'DekuPalace';
@@ -55,21 +57,24 @@ const JP_LAYOUT_GROTTO_KEYS = new Set([
   'MM_GROTTO_JP_LINE_END',
 ]);
 
-export type TrackedEntrancePool = 'dungeon' | 'grotto' | 'interior';
+export type TrackedEntrancePool = 'dungeon' | 'grotto' | 'region' | 'interior';
 
 const TRACKED_ENTRANCE_POOLS: TrackedEntrancePool[] = [
   'dungeon',
   'grotto',
+  'region',
   'interior',
 ];
 const TRACKED_POOL_MODE_SETTING: Record<TrackedEntrancePool, string> = {
   dungeon: 'erDungeons',
   grotto: 'erGrottos',
+  region: 'erRegions',
   interior: 'erIndoors',
 };
 const TRACKED_POOL_MIXED_SETTING: Record<TrackedEntrancePool, string> = {
   dungeon: 'erMixedDungeons',
   grotto: 'erMixedGrottos',
+  region: 'erMixedRegions',
   interior: 'erMixedIndoors',
 };
 
@@ -142,6 +147,22 @@ function getEnabledInteriorSources(settings: Record<string, unknown>): {
   return { types, gameLinkKeys };
 }
 
+function getEnabledRegionSources(
+  settings: Record<string, unknown>,
+): Set<string> {
+  const types = new Set<string>(['region']);
+
+  if (settings?.erRegionsExtra) {
+    types.add('region-extra');
+  }
+
+  if (settings?.erRegionsShortcuts) {
+    types.add('region-shortcut');
+  }
+
+  return types;
+}
+
 export function getEnabledDungeonTypes(
   settings: Record<string, unknown>,
 ): Set<string> {
@@ -161,6 +182,7 @@ export function getTrackedEntrancePool(
 ): TrackedEntrancePool | null {
   if (DUNGEON_TYPES.has(type)) return 'dungeon';
   if (GROTTO_TYPES.has(type)) return 'grotto';
+  if (REGION_TYPES.has(type)) return 'region';
   if (isTrackedInteriorSource(key, type)) return 'interior';
   return null;
 }
@@ -283,8 +305,10 @@ export function getActiveEntranceKeys(
   const keys = new Set<string>();
   const erDungeons = settings?.erDungeons;
   const erGrottos = settings?.erGrottos;
+  const erRegions = settings?.erRegions;
   const erIndoors = settings?.erIndoors;
   const enabledDungeonTypes = getEnabledDungeonTypes(settings);
+  const enabledRegionTypes = getEnabledRegionSources(settings);
   const enabledInteriorSources = getEnabledInteriorSources(settings);
 
   for (const [key, data] of Object.entries(ENTRANCES_RAW)) {
@@ -299,6 +323,15 @@ export function getActiveEntranceKeys(
     }
 
     if (erGrottos && erGrottos !== 'none' && GROTTO_TYPES.has(data.type)) {
+      keys.add(key);
+      continue;
+    }
+
+    if (
+      erRegions &&
+      erRegions !== 'none' &&
+      enabledRegionTypes.has(data.type)
+    ) {
       keys.add(key);
       continue;
     }
