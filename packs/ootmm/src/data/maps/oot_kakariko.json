@@ -593,6 +593,24 @@
       ]
     },
     {
+      "coords": [249, 115],
+      "image": "overworld_entrance",
+      "type": "submenu",
+      "entranceMenu": {
+        "entranceIds": ["OOT_DEATH_MOUNTAIN_FROM_KAKARIKO"],
+        "display": "entrances"
+      }
+    },
+    {
+      "coords": [17, 374],
+      "image": "overworld_entrance",
+      "type": "submenu",
+      "entranceMenu": {
+        "entranceIds": ["OOT_KAKARIKO_FROM_FIELD"],
+        "display": "exits"
+      }
+    },
+    {
       "coords": [276, 225],
       "image": "interior_entrance",
       "overlays": ["adult", "day"],

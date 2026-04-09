@@ -856,9 +856,13 @@
       ]
     },
     {
-      "coords": [108, 228],
-      "image": "interior_entrance",
-      "codes": "TODO KF 091 :: unnamed_stack > Forest > Forest Layers > Forest Interiors > Layer Group :: Pasted Layer #112 :: 001-001-015-011-000.png"
+      "coords": [149, 293],
+      "image": "overworld_entrance",
+      "type": "submenu",
+      "entranceMenu": {
+        "entranceIds": ["OOT_GORON_CITY_FROM_LOST_WOODS"],
+        "display": "entrances"
+      }
     }
   ]
 }

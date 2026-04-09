@@ -1084,6 +1084,33 @@
       }
     },
     {
+      "coords": [607, 224],
+      "image": "overworld_entrance",
+      "type": "submenu",
+      "entranceMenu": {
+        "entranceIds": ["OOT_GERUDO_VALLEY_FROM_FIELD"],
+        "display": "entrances"
+      }
+    },
+    {
+      "coords": [701, 426],
+      "image": "overworld_entrance",
+      "type": "submenu",
+      "entranceMenu": {
+        "entranceIds": ["OOT_LAKE_HYLIA_FROM_FIELD"],
+        "display": "entrances"
+      }
+    },
+    {
+      "coords": [951, 72],
+      "image": "overworld_entrance",
+      "type": "submenu",
+      "entranceMenu": {
+        "entranceIds": ["OOT_KAKARIKO_FROM_FIELD"],
+        "display": "entrances"
+      }
+    },
+    {
       "coords": [573, 336],
       "image": "interior_entrance",
       "type": "submenu",

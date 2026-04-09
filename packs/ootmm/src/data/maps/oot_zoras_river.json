@@ -699,6 +699,15 @@
       ]
     },
     {
+      "coords": [135, 149],
+      "image": "overworld_entrance",
+      "type": "submenu",
+      "entranceMenu": {
+        "entranceIds": ["OOT_LAKE_HYLIA_FROM_FIELD"],
+        "display": "exits"
+      }
+    },
+    {
       "coords": [182, 470],
       "image": "dungeon_entrance",
       "type": "submenu",

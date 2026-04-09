@@ -696,6 +696,24 @@
       "entranceMenu": {
         "entranceIds": ["OOT_DODONGO_CAVERN"]
       }
+    },
+    {
+      "coords": [79, 504],
+      "image": "overworld_entrance",
+      "type": "submenu",
+      "entranceMenu": {
+        "entranceIds": ["OOT_DEATH_MOUNTAIN_FROM_KAKARIKO"],
+        "display": "exits"
+      }
+    },
+    {
+      "coords": [481, 577],
+      "image": "overworld_entrance",
+      "type": "submenu",
+      "entranceMenu": {
+        "entranceIds": ["OOT_GORON_CITY_FROM_LOST_WOODS"],
+        "display": "exits"
+      }
     }
   ]
 }

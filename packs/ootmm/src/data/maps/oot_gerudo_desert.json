@@ -455,6 +455,33 @@
       }
     },
     {
+      "coords": [755, 423],
+      "image": "overworld_entrance",
+      "type": "submenu",
+      "entranceMenu": {
+        "entranceIds": ["OOT_GERUDO_FORTRESS_FROM_VALLEY"],
+        "display": "entrances"
+      }
+    },
+    {
+      "coords": [443, 415],
+      "image": "overworld_entrance",
+      "type": "submenu",
+      "entranceMenu": {
+        "entranceIds": ["OOT_GERUDO_FORTRESS_FROM_VALLEY"],
+        "display": "exits"
+      }
+    },
+    {
+      "coords": [983, 486],
+      "image": "overworld_entrance",
+      "type": "submenu",
+      "entranceMenu": {
+        "entranceIds": ["OOT_GERUDO_VALLEY_FROM_FIELD"],
+        "display": "exits"
+      }
+    },
+    {
       "coords": [833, 417],
       "image": "song_grotto",
       "type": "submenu",
