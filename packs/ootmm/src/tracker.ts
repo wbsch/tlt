@@ -1698,7 +1698,7 @@ export class OoTMMTracker implements TrackerPack {
         this.baseWispEvents.set(worldId, base);
       }
 
-      for (const [dungeonId, eventName] of Object.entries(PRECOMPLETED_WISPS)) {
+      for (const eventName of Object.values(PRECOMPLETED_WISPS)) {
         if (!base.has(eventName)) {
           base.set(eventName, spawnArea.events?.[eventName] ?? null);
         }

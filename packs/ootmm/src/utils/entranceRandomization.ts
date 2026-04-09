@@ -57,6 +57,22 @@ const JP_LAYOUT_GROTTO_KEYS = new Set([
 
 export type TrackedEntrancePool = 'dungeon' | 'grotto' | 'interior';
 
+const TRACKED_ENTRANCE_POOLS: TrackedEntrancePool[] = [
+  'dungeon',
+  'grotto',
+  'interior',
+];
+const TRACKED_POOL_MODE_SETTING: Record<TrackedEntrancePool, string> = {
+  dungeon: 'erDungeons',
+  grotto: 'erGrottos',
+  interior: 'erIndoors',
+};
+const TRACKED_POOL_MIXED_SETTING: Record<TrackedEntrancePool, string> = {
+  dungeon: 'erMixedDungeons',
+  grotto: 'erMixedGrottos',
+  interior: 'erMixedIndoors',
+};
+
 /**
  * For game-link keys (no polarity), return the partner (reverse) key.
  * Returns null for non-game-link keys.
@@ -184,6 +200,43 @@ export function getTrackedEntranceKeysForBinding(key: string): string[] {
     keys.add(key);
   }
   return [...keys];
+}
+
+function getTrackedPoolMode(
+  pool: TrackedEntrancePool,
+  settings: Record<string, unknown>,
+): string {
+  return String(settings?.[TRACKED_POOL_MODE_SETTING[pool]] ?? 'none');
+}
+
+function isTrackedPoolMixed(
+  pool: TrackedEntrancePool,
+  settings: Record<string, unknown>,
+): boolean {
+  const mixedMode = String(settings?.erMixed ?? 'none');
+  if (mixedMode === 'none') return false;
+  if (!settings?.[TRACKED_POOL_MIXED_SETTING[pool]]) return false;
+  return getTrackedPoolMode(pool, settings) === mixedMode;
+}
+
+export function getTrackedEntranceCompatiblePools(
+  pool: TrackedEntrancePool,
+  settings: Record<string, unknown>,
+): TrackedEntrancePool[] {
+  if (!isTrackedPoolMixed(pool, settings)) return [pool];
+  return TRACKED_ENTRANCE_POOLS.filter((candidatePool) =>
+    isTrackedPoolMixed(candidatePool, settings),
+  );
+}
+
+export function getTrackedEntranceOwnGameMode(
+  pool: TrackedEntrancePool,
+  settings: Record<string, unknown>,
+): boolean {
+  if (isTrackedPoolMixed(pool, settings)) {
+    return String(settings?.erMixed ?? 'none') === 'ownGame';
+  }
+  return getTrackedPoolMode(pool, settings) === 'ownGame';
 }
 
 function hasSetSettingValue(setting: unknown, value: string): boolean {

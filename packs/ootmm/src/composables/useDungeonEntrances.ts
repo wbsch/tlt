@@ -19,6 +19,8 @@ import {
   getGameLinkPartner,
   normalizeTrackedEntranceKey,
   resolveToActiveEntranceKey,
+  getTrackedEntranceCompatiblePools,
+  getTrackedEntranceOwnGameMode,
   type TrackedEntrancePool,
 } from '../utils/entranceRandomization';
 import { matchesSearchTerms } from '../utils/search';
@@ -303,15 +305,6 @@ export function useDungeonEntrances() {
     return opts;
   });
 
-  const erDungeonsMode = computed(() =>
-    String(trackerSettings.value?.erDungeons ?? 'none'),
-  );
-  const erGrottosMode = computed(() =>
-    String(trackerSettings.value?.erGrottos ?? 'none'),
-  );
-  const erIndoorsMode = computed(() =>
-    String(trackerSettings.value?.erIndoors ?? 'none'),
-  );
   const sections = computed<EntrancePanelSection[]>(() => {
     if (activeEntrances.value.length === 0) return [];
 
@@ -358,14 +351,13 @@ export function useDungeonEntrances() {
     entry: Pick<DungeonEntranceEntry, 'key' | 'game' | 'pool'>,
   ) {
     const gamesMode = String(trackerSettings.value?.games ?? 'ootmm');
-    const ownGameMode =
-      entry.pool === 'dungeon'
-        ? erDungeonsMode.value === 'ownGame'
-        : entry.pool === 'grotto'
-          ? erGrottosMode.value === 'ownGame'
-          : erIndoorsMode.value === 'ownGame';
+    const settings = trackerSettings.value ?? {};
+    const compatiblePools = new Set(
+      getTrackedEntranceCompatiblePools(entry.pool, settings),
+    );
+    const ownGameMode = getTrackedEntranceOwnGameMode(entry.pool, settings);
     const opts = destinationOptions.value.filter((dest) => {
-      if (dest.pool !== entry.pool) return false;
+      if (!compatiblePools.has(dest.pool)) return false;
       if (!ownGameMode) return true;
       return dest.game === entry.game;
     });
@@ -375,7 +367,7 @@ export function useDungeonEntrances() {
         opts.map((dest) => `${dest.value}::${dest.label}`),
       );
       for (const exit of activeExitEntries.value) {
-        if (exit.pool !== entry.pool) continue;
+        if (!compatiblePools.has(exit.pool)) continue;
         if (ownGameMode && exit.game !== entry.game) continue;
 
         const normalizedValue = ENTRANCES_RAW[exit.key]?.reverse?.trim();
@@ -612,14 +604,13 @@ export function useDungeonEntrances() {
   function destinationOptionsForExit(
     exit: Pick<ExitEntry, 'key' | 'game' | 'pool'>,
   ) {
-    const ownGameMode =
-      exit.pool === 'dungeon'
-        ? erDungeonsMode.value === 'ownGame'
-        : exit.pool === 'grotto'
-          ? erGrottosMode.value === 'ownGame'
-          : erIndoorsMode.value === 'ownGame';
+    const settings = trackerSettings.value ?? {};
+    const compatiblePools = new Set(
+      getTrackedEntranceCompatiblePools(exit.pool, settings),
+    );
+    const ownGameMode = getTrackedEntranceOwnGameMode(exit.pool, settings);
     const opts = exitDestinationOptions.value.filter((dest) => {
-      if (dest.pool !== exit.pool) return false;
+      if (!compatiblePools.has(dest.pool)) return false;
       if (!ownGameMode) return true;
       return dest.game === exit.game;
     });
