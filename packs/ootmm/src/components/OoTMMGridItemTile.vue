@@ -133,7 +133,9 @@ onBeforeUnmount(() => {
         'canvas-item': props.canvasItem,
         'grid-item-submenu': context.isSubmenuItem(props.itemId),
         'grid-item-wheel-menu': context.hasWheelOverlayMenu(props.itemId),
-        'grid-item-wheel-menu-open': context.isWheelOverlayMenuOpen(props.itemId),
+        'grid-item-wheel-menu-open': context.isWheelOverlayMenuOpen(
+          props.itemId,
+        ),
       },
     ]"
     :style="props.style"
@@ -188,7 +190,9 @@ onBeforeUnmount(() => {
     <span v-if="context.shouldShowItemCount(props.itemId)" class="item-count">{{
       context.getGridItemCount(props.itemId)
     }}</span>
-    <div v-if="context.isSubmenuItem(props.itemId)" class="submenu-indicator">▼</div>
+    <div v-if="context.isSubmenuItem(props.itemId)" class="submenu-indicator">
+      ▼
+    </div>
     <Teleport to="body">
       <div
         v-if="context.isWheelOverlayMenuOpen(props.itemId)"
@@ -211,7 +215,9 @@ onBeforeUnmount(() => {
             </div>
             <div class="wheel-menu-panel__options">
               <button
-                v-for="option in context.getWheelOverlayMenuOptions(props.itemId)"
+                v-for="option in context.getWheelOverlayMenuOptions(
+                  props.itemId,
+                )"
                 :key="`mobile-${option.stage}`"
                 type="button"
                 class="wheel-menu-option"
@@ -221,7 +227,9 @@ onBeforeUnmount(() => {
                   'wheel-menu-option-none': option.stage === 0,
                 }"
                 :data-testid="`grid-wheel-option-${props.itemId}-${option.stage}`"
-                @click.stop="context.setWheelOverlayStage(props.itemId, option.stage)"
+                @click.stop="
+                  context.setWheelOverlayStage(props.itemId, option.stage)
+                "
               >
                 <span class="wheel-menu-option__preview">
                   <span
@@ -293,7 +301,10 @@ onBeforeUnmount(() => {
       </div>
     </div>
     <div
-      v-if="context.isSubmenuItem(props.itemId) && context.isSubmenuOpen(props.itemId)"
+      v-if="
+        context.isSubmenuItem(props.itemId) &&
+        context.isSubmenuOpen(props.itemId)
+      "
       class="submenu-panel"
       @click.stop
       @mousedown.stop

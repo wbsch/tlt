@@ -142,10 +142,14 @@ function openWheelOverlayMenu(itemId: string) {
 }
 
 function getWheelOverlayOptionTitle(value: string): string {
-  return rewardRegionNameByLabelItemId.get(value) || getGridTextLabel(value) || value;
+  return (
+    rewardRegionNameByLabelItemId.get(value) || getGridTextLabel(value) || value
+  );
 }
 
-function getWheelOverlayMenuOptions(itemId: string): GridWheelOverlayMenuOption[] {
+function getWheelOverlayMenuOptions(
+  itemId: string,
+): GridWheelOverlayMenuOption[] {
   if (!hasWheelOverlayMenu(itemId)) {
     return [];
   }

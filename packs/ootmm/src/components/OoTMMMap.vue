@@ -3221,6 +3221,7 @@ onBeforeUnmount(() => {
   display: flex;
   flex-direction: column;
   gap: 0.15rem;
+  min-width: 0;
 }
 
 .map-entrance-list__label {
@@ -3481,7 +3482,13 @@ onBeforeUnmount(() => {
   }
 
   .map-submenu-panel {
-    width: 280px;
+    width: min(280px, calc(100vw - 12px));
+    max-width: calc(100vw - 12px);
+  }
+
+  .map-entrance-list {
+    width: 100%;
+    min-width: 0;
   }
 }
 </style>
