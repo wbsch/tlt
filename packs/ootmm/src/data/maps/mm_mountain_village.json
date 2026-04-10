@@ -1384,6 +1384,15 @@
       "entranceMenu": {
         "entranceIds": ["MM_TEMPLE_SNOWHEAD"]
       }
+    },
+    {
+      "coords": [357, 583],
+      "image": "overworld_entrance",
+      "type": "submenu",
+      "entranceMenu": {
+        "entranceIds": ["MM_MOUNTAIN_VILLAGE_FROM_PATH"],
+        "display": "exits"
+      }
     }
   ]
 }

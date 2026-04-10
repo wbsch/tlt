@@ -1305,6 +1305,51 @@
       }
     },
     {
+      "coords": [704, 164],
+      "image": "overworld_entrance",
+      "type": "submenu",
+      "entranceMenu": {
+        "entranceIds": ["MM_GREAT_BAY_COAST_FROM_FIELD"],
+        "display": "entrances"
+      }
+    },
+    {
+      "coords": [699, 582],
+      "image": "overworld_entrance",
+      "type": "submenu",
+      "entranceMenu": {
+        "entranceIds": ["MM_SWAMP_FROM_ROAD"],
+        "display": "entrances"
+      }
+    },
+    {
+      "coords": [521, 45],
+      "image": "overworld_entrance",
+      "type": "submenu",
+      "entranceMenu": {
+        "entranceIds": ["MM_MOUNTAIN_VILLAGE_FROM_PATH"],
+        "display": "entrances"
+      }
+    },
+    {
+      "coords": [612, 564],
+      "image": "overworld_entrance",
+      "type": "submenu",
+      "entranceMenu": {
+        "entranceIds": ["MM_IKANA_VALLEY_FROM_ROAD"],
+        "display": "entrances"
+      }
+    },
+    {
+      "coords": [13, 521],
+      "image": "overworld_entrance",
+      "type": "submenu",
+      "entranceMenu": {
+        "entranceIds": ["MM_ROMANI_RANCH_FROM_MILK_ROAD"],
+        "display": "entrances"
+      }
+    },
+    {
       "coords": [291, 218],
       "image": "heart_piece",
       "codes": "MM Clock Town Post Box"

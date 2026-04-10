@@ -819,6 +819,15 @@
       }
     },
     {
+      "coords": [803, 292],
+      "image": "overworld_entrance",
+      "type": "submenu",
+      "entranceMenu": {
+        "entranceIds": ["MM_GREAT_BAY_COAST_FROM_FIELD"],
+        "display": "exits"
+      }
+    },
+    {
       "coords": [161, 355],
       "image": "interior_entrance",
       "type": "submenu",

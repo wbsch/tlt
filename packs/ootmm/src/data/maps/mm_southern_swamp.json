@@ -899,6 +899,15 @@
       }
     },
     {
+      "coords": [464, 23],
+      "image": "overworld_entrance",
+      "type": "submenu",
+      "entranceMenu": {
+        "entranceIds": ["MM_SWAMP_FROM_ROAD"],
+        "display": "exits"
+      }
+    },
+    {
       "coords": [482, 444],
       "image": "grotto",
       "overlays": ["jp_only"],

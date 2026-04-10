@@ -473,6 +473,15 @@
       }
     },
     {
+      "coords": [730, 348],
+      "image": "overworld_entrance",
+      "type": "submenu",
+      "entranceMenu": {
+        "entranceIds": ["MM_ROMANI_RANCH_FROM_MILK_ROAD"],
+        "display": "exits"
+      }
+    },
+    {
       "coords": [312, 309],
       "image": "interior_entrance",
       "type": "submenu",

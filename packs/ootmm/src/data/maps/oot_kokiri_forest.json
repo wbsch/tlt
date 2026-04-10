@@ -856,6 +856,24 @@
       ]
     },
     {
+      "coords": [58, 399],
+      "image": "overworld_entrance",
+      "type": "submenu",
+      "entranceMenu": {
+        "entranceIds": ["OOT_LOST_WOODS_BRIDGE_FROM_FIELD"],
+        "display": "exits"
+      }
+    },
+    {
+      "coords": [208, 303],
+      "image": "overworld_entrance",
+      "type": "submenu",
+      "entranceMenu": {
+        "entranceIds": ["OOT_ZORA_RIVER_FROM_LOST_WOODS"],
+        "display": "entrances"
+      }
+    },
+    {
       "coords": [149, 293],
       "image": "overworld_entrance",
       "type": "submenu",

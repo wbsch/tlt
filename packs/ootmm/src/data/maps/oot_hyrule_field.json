@@ -1102,6 +1102,60 @@
       }
     },
     {
+      "coords": [793, 197],
+      "image": "overworld_entrance",
+      "type": "submenu",
+      "entranceMenu": {
+        "entranceIds": ["OOT_LON_LON_RANCH_FROM_FIELD"],
+        "display": "entrances"
+      }
+    },
+    {
+      "coords": [161, 363],
+      "image": "overworld_entrance",
+      "type": "submenu",
+      "entranceMenu": {
+        "entranceIds": ["OOT_LON_LON_RANCH_FROM_FIELD"],
+        "display": "exits"
+      }
+    },
+    {
+      "coords": [966, 258],
+      "image": "overworld_entrance",
+      "type": "submenu",
+      "entranceMenu": {
+        "entranceIds": ["OOT_LOST_WOODS_BRIDGE_FROM_FIELD"],
+        "display": "entrances"
+      }
+    },
+    {
+      "coords": [834, 55],
+      "image": "overworld_entrance",
+      "type": "submenu",
+      "entranceMenu": {
+        "entranceIds": ["OOT_MARKET_ENTRANCE_FROM_FIELD"],
+        "display": "entrances"
+      }
+    },
+    {
+      "coords": [419, 582],
+      "image": "overworld_entrance",
+      "type": "submenu",
+      "entranceMenu": {
+        "entranceIds": ["OOT_MARKET_ENTRANCE_FROM_FIELD"],
+        "display": "exits"
+      }
+    },
+    {
+      "coords": [979, 148],
+      "image": "overworld_entrance",
+      "type": "submenu",
+      "entranceMenu": {
+        "entranceIds": ["OOT_ZORA_RIVER_FROM_FIELD"],
+        "display": "entrances"
+      }
+    },
+    {
       "coords": [951, 72],
       "image": "overworld_entrance",
       "type": "submenu",

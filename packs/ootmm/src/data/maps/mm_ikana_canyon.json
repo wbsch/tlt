@@ -408,6 +408,15 @@
       }
     },
     {
+      "coords": [365, 572],
+      "image": "overworld_entrance",
+      "type": "submenu",
+      "entranceMenu": {
+        "entranceIds": ["MM_IKANA_VALLEY_FROM_ROAD"],
+        "display": "exits"
+      }
+    },
+    {
       "coords": [280, 360],
       "image": "dungeon_entrance",
       "type": "submenu",

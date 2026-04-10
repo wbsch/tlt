@@ -708,6 +708,42 @@
       }
     },
     {
+      "coords": [591, 532],
+      "image": "overworld_entrance",
+      "type": "submenu",
+      "entranceMenu": {
+        "entranceIds": ["OOT_LAKE_HYLIA_FROM_ZORA_DOMAIN"],
+        "display": "entrances"
+      }
+    },
+    {
+      "coords": [178, 322],
+      "image": "overworld_entrance",
+      "type": "submenu",
+      "entranceMenu": {
+        "entranceIds": ["OOT_LAKE_HYLIA_FROM_ZORA_DOMAIN"],
+        "display": "exits"
+      }
+    },
+    {
+      "coords": [365, 321],
+      "image": "overworld_entrance",
+      "type": "submenu",
+      "entranceMenu": {
+        "entranceIds": ["OOT_ZORA_RIVER_FROM_FIELD"],
+        "display": "exits"
+      }
+    },
+    {
+      "coords": [857, 118],
+      "image": "overworld_entrance",
+      "type": "submenu",
+      "entranceMenu": {
+        "entranceIds": ["OOT_ZORA_RIVER_FROM_LOST_WOODS"],
+        "display": "exits"
+      }
+    },
+    {
       "coords": [182, 470],
       "image": "dungeon_entrance",
       "type": "submenu",
