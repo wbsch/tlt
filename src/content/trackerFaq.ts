@@ -54,6 +54,20 @@ export const TRACKER_FAQ_SECTIONS: TrackerFaqSection[] = [
         ],
       },
       {
+        id: 'spoiler-log',
+        question: 'Can I import a spoiler log?',
+        blocks: [
+          {
+            type: 'paragraph',
+            text: 'Yes. The tracker supports spoiler log import, including drag-and-drop. This is useful for preloading placements, settings, or other seed information the tracker can represent.',
+          },
+          {
+            type: 'paragraph',
+            text: 'If some values cannot be imported exactly, the tracker continues to work and shows Import Details so you can see what was ignored or adjusted.',
+          },
+        ],
+      },
+      {
         id: 'stats-meaning',
         question: 'What do reachable, checked and remaining mean?',
         blocks: [
@@ -125,20 +139,6 @@ export const TRACKER_FAQ_SECTIONS: TrackerFaqSection[] = [
       'These topics cover cases that typically require extra explanation.',
     items: [
       {
-        id: 'spoiler-log',
-        question: 'Can I import a spoiler log?',
-        blocks: [
-          {
-            type: 'paragraph',
-            text: 'Yes. The tracker supports spoiler log import, including drag-and-drop. This is useful for preloading placements, settings, or other seed information the tracker can represent.',
-          },
-          {
-            type: 'paragraph',
-            text: 'If some values cannot be imported exactly, the tracker continues to work and shows Import Details so you can see what was ignored or adjusted.',
-          },
-        ],
-      },
-      {
         id: 'entrance-rando',
         question: 'How do entrance mappings affect reachability?',
         blocks: [
@@ -149,7 +149,7 @@ export const TRACKER_FAQ_SECTIONS: TrackerFaqSection[] = [
           {
             type: 'list',
             items: [
-              'Record discovered entrances in the Entrances sidebar as you find them.',
+              'Record discovered entrances on the map or in the Entrances sidebar as you find them.',
               'Re-check reachability after updating a mapping, since the logic can unlock several regions at once.',
               'Only supported entrance shuffle options are represented directly in this tracker.',
             ],
@@ -181,7 +181,7 @@ export const TRACKER_FAQ_SECTIONS: TrackerFaqSection[] = [
         blocks: [
           {
             type: 'paragraph',
-            text: 'In most cases, the cause is missing context rather than a display issue. The logic depends on your current settings, enabled tricks, found items, and known entrance mappings.',
+            text: 'In most cases, the cause is missing context rather than a bug. The logic depends on your current settings, enabled tricks, found items, and known entrance mappings.',
           },
           {
             type: 'list',
@@ -190,6 +190,10 @@ export const TRACKER_FAQ_SECTIONS: TrackerFaqSection[] = [
               'Confirm that your settings and enabled tricks still match the seed you are playing.',
               'Check active filters in Locations or Entrances; hidden checks may exist but not be visible in the current view.',
             ],
+          },
+          {
+            type: 'paragraph',
+            text: "If the check you're looking for still isn't marked as reachable, export your tracker state and post it in the #tracker-support channel on the OOTMM Discord, describing the issue.",
           },
         ],
       },
@@ -204,6 +208,20 @@ export const TRACKER_FAQ_SECTIONS: TrackerFaqSection[] = [
           {
             type: 'paragraph',
             text: 'Because the tracker auto-saves, a full reset is the cleanest fallback when restarting from scratch in the same browser.',
+          },
+        ],
+      },
+      {
+        id: 'dungeon-layout',
+        question: 'Can I put in the dungeon layout for dungeon rewards?',
+        blocks: [
+          {
+            type: 'paragraph',
+            text: 'If you import your spoiler log and selected "Dungeon Blue Warps" for Dungeon Reward Shuffle, the tracker will automatically populate the dungeon reward layouts from the log.',
+          },
+          {
+            type: 'paragraph',
+            text: 'If not, hover over a dungeon reward icon and use the scroll wheel (or trackpad gesture) to cycle through the available layouts. On mobile, long-press the icon to open a dungeon selection menu.',
           },
         ],
       },

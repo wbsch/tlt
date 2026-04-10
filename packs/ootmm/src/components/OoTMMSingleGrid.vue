@@ -1,12 +1,15 @@
 <script setup lang="ts">
 import { onBeforeUnmount, onMounted, provide, ref } from 'vue';
 import {
+  DUNGEON_REWARD_REGION_LABELS,
+  FREE_REWARD_LABEL_ITEM_ID,
   getGridItemIcon,
   getGridItemLinkedItemIds,
   getGridItemOverlay,
   getGridItemAutoSelectItemIds,
   getGridTextLabel,
   getGridWheelOverlay,
+  getGridWheelOverlayOptions,
   getGridWheelOverlayValue,
   getGridWheelOverlayStage,
   getGridWheelOverlayStageCount,
@@ -26,6 +29,7 @@ import {
   type GridItemMultiActivation,
   type GridItemRefAlias,
   type GridItemSubmenuConfig,
+  type GridWheelOverlayMenuOption,
   type GridSection,
   type ResolvedGridArray,
   type ResolvedGridNode,
@@ -57,6 +61,15 @@ const GRID_MULTI_ACTIVATE_PREFIX = '__grid_multi_activate__:';
 const GRID_SUBMENU_PREFIX = '__grid_submenu__:';
 
 const openSubmenuItemId = ref<string | null>(null);
+const openWheelOverlayMenuItemId = ref<string | null>(null);
+
+const rewardRegionNameByLabelItemId = new Map<string, string>([
+  [FREE_REWARD_LABEL_ITEM_ID, 'Free'],
+  ...DUNGEON_REWARD_REGION_LABELS.map(({ labelItemId, regionName }) => [
+    labelItemId,
+    regionName,
+  ]),
+]);
 
 function isGridRefAliasKey(itemId: string): boolean {
   return itemId.startsWith(GRID_REF_ALIAS_PREFIX);
@@ -95,7 +108,97 @@ function closeSubmenu() {
 }
 
 function toggleSubmenu(itemId: string) {
+  closeWheelOverlayMenu();
   openSubmenuItemId.value = openSubmenuItemId.value === itemId ? null : itemId;
+}
+
+function hasWheelOverlayMenu(itemId: string): boolean {
+  if (isEmptyGridItem(itemId)) return false;
+  if (isLabelItem(itemId)) return false;
+  if (getGridSubmenu(itemId)) return false;
+
+  const baseItemId = getBaseItemId(itemId);
+  return (
+    Boolean(getGridWheelOverlayStateItemId(baseItemId)) &&
+    getGridWheelOverlayStageCount(baseItemId) > 0
+  );
+}
+
+function isWheelOverlayMenuOpen(itemId: string): boolean {
+  return openWheelOverlayMenuItemId.value === itemId;
+}
+
+function closeWheelOverlayMenu() {
+  openWheelOverlayMenuItemId.value = null;
+}
+
+function openWheelOverlayMenu(itemId: string) {
+  if (!hasWheelOverlayMenu(itemId)) {
+    return;
+  }
+
+  closeSubmenu();
+  openWheelOverlayMenuItemId.value = itemId;
+}
+
+function getWheelOverlayOptionTitle(value: string): string {
+  return rewardRegionNameByLabelItemId.get(value) || getGridTextLabel(value) || value;
+}
+
+function getWheelOverlayMenuOptions(itemId: string): GridWheelOverlayMenuOption[] {
+  if (!hasWheelOverlayMenu(itemId)) {
+    return [];
+  }
+
+  const baseItemId = getBaseItemId(itemId);
+  return [
+    {
+      stage: 0,
+      title: 'None',
+      label: null,
+      iconSrc: null,
+    },
+    ...getGridWheelOverlayOptions(baseItemId).map((option) => ({
+      stage: option.stage,
+      title: getWheelOverlayOptionTitle(option.value),
+      label: getGridTextLabel(option.value),
+      iconSrc: option.overlay,
+    })),
+  ];
+}
+
+function getWheelOverlayStageForItem(itemId: string): number {
+  if (isEmptyGridItem(itemId)) return 0;
+
+  return getGridWheelOverlayStage(getBaseItemId(itemId), {
+    maxCount: getItemMaxCount(itemId),
+    availableItemIds: props.availableItemIds,
+    inventory: props.inventory,
+    settings: props.settings,
+  });
+}
+
+function setWheelOverlayStage(itemId: string, stage: number) {
+  if (!hasWheelOverlayMenu(itemId)) {
+    return;
+  }
+
+  const baseItemId = getBaseItemId(itemId);
+  const stateItemId = getGridWheelOverlayStateItemId(baseItemId);
+  const stageCount = getGridWheelOverlayStageCount(baseItemId);
+  if (!stateItemId || stage < 0 || stage > stageCount) {
+    return;
+  }
+
+  const newInventory = new Map(props.inventory);
+  if (stage > 0) {
+    newInventory.set(stateItemId, stage);
+  } else {
+    newInventory.delete(stateItemId);
+  }
+
+  closeWheelOverlayMenu();
+  emitInventoryUpdate(newInventory);
 }
 
 function getGridMultiActivation(
@@ -419,6 +522,7 @@ function isItemHighlightedForGrid(itemId: string): boolean {
 function toggleItem(itemId: string) {
   if (isEmptyGridItem(itemId)) return;
   if (isLabelItem(itemId)) return;
+  closeWheelOverlayMenu();
   if (getGridSubmenu(itemId)) {
     toggleSubmenu(itemId);
     return;
@@ -495,6 +599,7 @@ function decrementItem(itemId: string, event: MouseEvent) {
   event.preventDefault();
   if (isEmptyGridItem(itemId)) return;
   if (isLabelItem(itemId)) return;
+  closeWheelOverlayMenu();
   if (getGridSubmenu(itemId)) {
     return;
   }
@@ -628,12 +733,7 @@ function handleItemWheel(itemId: string, event: WheelEvent) {
 
   event.preventDefault();
 
-  const currentStage = getGridWheelOverlayStage(baseItemId, {
-    maxCount: getItemMaxCount(itemId),
-    availableItemIds: props.availableItemIds,
-    inventory: props.inventory,
-    settings: props.settings,
-  });
+  const currentStage = getWheelOverlayStageForItem(itemId);
   const cycleLength = stageCount + 1;
   const direction = event.deltaY > 0 ? 1 : -1;
   const nextStage =
@@ -646,6 +746,7 @@ function handleItemWheel(itemId: string, event: WheelEvent) {
     newInventory.delete(stateItemId);
   }
 
+  closeWheelOverlayMenu();
   emitInventoryUpdate(newInventory);
 }
 
@@ -686,32 +787,39 @@ function getGridItemClasses(itemId: string) {
   };
 }
 
-function handleDocumentMouseDown(event: MouseEvent) {
-  if (!openSubmenuItemId.value) {
+function handleDocumentPointerDown(event: PointerEvent) {
+  if (!openSubmenuItemId.value && !openWheelOverlayMenuItemId.value) {
     return;
   }
 
   const target = event.target;
-  if (target instanceof Element && target.closest('.grid-item-submenu')) {
-    return;
+  if (target instanceof Element) {
+    if (target.closest('.grid-item-submenu')) {
+      return;
+    }
+    if (target.closest('.grid-item-wheel-menu-open')) {
+      return;
+    }
   }
 
   closeSubmenu();
+  closeWheelOverlayMenu();
 }
 
 function handleDocumentKeyDown(event: KeyboardEvent) {
   if (event.key === 'Escape') {
     closeSubmenu();
+    closeWheelOverlayMenu();
   }
 }
 
 onMounted(() => {
-  document.addEventListener('mousedown', handleDocumentMouseDown);
+  document.addEventListener('pointerdown', handleDocumentPointerDown);
   document.addEventListener('keydown', handleDocumentKeyDown);
 });
 
 onBeforeUnmount(() => {
-  document.removeEventListener('mousedown', handleDocumentMouseDown);
+  document.removeEventListener('pointerdown', handleDocumentPointerDown);
   document.removeEventListener('keydown', handleDocumentKeyDown);
 });
 
@@ -801,6 +909,13 @@ provide(itemGridRenderContextKey, {
   isSubmenuItem,
   isSubmenuOpen,
   getSubmenuNode,
+  hasWheelOverlayMenu,
+  isWheelOverlayMenuOpen,
+  getWheelOverlayMenuOptions,
+  getWheelOverlayStage: getWheelOverlayStageForItem,
+  openWheelOverlayMenu,
+  closeWheelOverlayMenu,
+  setWheelOverlayStage,
   toggleItem,
   decrementItem,
   handleItemWheel,

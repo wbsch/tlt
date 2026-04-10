@@ -1,10 +1,10 @@
 <script setup lang="ts">
-import { inject } from 'vue';
+import { inject, onBeforeUnmount } from 'vue';
 import type { StyleValue } from 'vue';
 import { itemGridRenderContextKey } from './itemGridSchema';
 import OoTMMGridNode from './OoTMMGridNode.vue';
 
-defineProps<{
+const props = defineProps<{
   itemId: string;
   style?: StyleValue;
   canvasItem?: boolean;
@@ -12,70 +12,288 @@ defineProps<{
 
 const context = inject(itemGridRenderContextKey);
 
+const LONG_PRESS_DURATION_MS = 450;
+const LONG_PRESS_MOVE_TOLERANCE_PX = 10;
+
+let longPressTimer: number | null = null;
+let longPressPointerId: number | null = null;
+let longPressStartX = 0;
+let longPressStartY = 0;
+let suppressNextClick = false;
+let suppressNextContextMenu = false;
+let suppressionResetTimer: number | null = null;
+
 if (!context) {
   throw new Error('OoTMMGridItemTile requires item grid render context');
 }
+
+function clearLongPressState(): void {
+  if (longPressTimer !== null) {
+    window.clearTimeout(longPressTimer);
+    longPressTimer = null;
+  }
+  longPressPointerId = null;
+}
+
+function scheduleSuppressionReset(): void {
+  if (suppressionResetTimer !== null) {
+    window.clearTimeout(suppressionResetTimer);
+  }
+
+  suppressionResetTimer = window.setTimeout(() => {
+    suppressNextClick = false;
+    suppressNextContextMenu = false;
+    suppressionResetTimer = null;
+  }, 1000);
+}
+
+function stopSuppressionReset(): void {
+  if (suppressionResetTimer !== null) {
+    window.clearTimeout(suppressionResetTimer);
+    suppressionResetTimer = null;
+  }
+}
+
+function handleClick(itemId: string, event: MouseEvent): void {
+  if (suppressNextClick) {
+    suppressNextClick = false;
+    event.preventDefault();
+    event.stopPropagation();
+    return;
+  }
+
+  context.toggleItem(itemId);
+}
+
+function handleContextMenu(itemId: string, event: MouseEvent): void {
+  if (suppressNextContextMenu) {
+    suppressNextContextMenu = false;
+    event.preventDefault();
+    event.stopPropagation();
+    return;
+  }
+
+  context.decrementItem(itemId, event);
+}
+
+function handlePointerDown(itemId: string, event: PointerEvent): void {
+  if (event.pointerType !== 'touch') {
+    return;
+  }
+  if (!context.hasWheelOverlayMenu(itemId)) {
+    return;
+  }
+
+  clearLongPressState();
+  longPressPointerId = event.pointerId;
+  longPressStartX = event.clientX;
+  longPressStartY = event.clientY;
+  longPressTimer = window.setTimeout(() => {
+    suppressNextClick = true;
+    suppressNextContextMenu = true;
+    scheduleSuppressionReset();
+    context.openWheelOverlayMenu(itemId);
+    longPressTimer = null;
+  }, LONG_PRESS_DURATION_MS);
+}
+
+function handlePointerMove(event: PointerEvent): void {
+  if (event.pointerId !== longPressPointerId) {
+    return;
+  }
+
+  if (
+    Math.abs(event.clientX - longPressStartX) > LONG_PRESS_MOVE_TOLERANCE_PX ||
+    Math.abs(event.clientY - longPressStartY) > LONG_PRESS_MOVE_TOLERANCE_PX
+  ) {
+    clearLongPressState();
+  }
+}
+
+function handlePointerEnd(event: PointerEvent): void {
+  if (event.pointerId !== longPressPointerId) {
+    return;
+  }
+
+  clearLongPressState();
+}
+
+onBeforeUnmount(() => {
+  stopSuppressionReset();
+  clearLongPressState();
+});
 </script>
 
 <template>
   <div
     class="grid-item"
     :class="[
-      context.getGridItemClasses(itemId),
+      context.getGridItemClasses(props.itemId),
       {
-        'canvas-item': canvasItem,
-        'grid-item-submenu': context.isSubmenuItem(itemId),
+        'canvas-item': props.canvasItem,
+        'grid-item-submenu': context.isSubmenuItem(props.itemId),
+        'grid-item-wheel-menu': context.hasWheelOverlayMenu(props.itemId),
+        'grid-item-wheel-menu-open': context.isWheelOverlayMenuOpen(props.itemId),
       },
     ]"
-    :style="style"
+    :style="props.style"
+    :data-grid-item-id="props.itemId"
     :title="
-      context.isEmptyGridItem(itemId)
+      context.isEmptyGridItem(props.itemId)
         ? undefined
-        : context.getGridItemTitle(itemId)
+        : context.getGridItemTitle(props.itemId)
     "
-    @click="context.toggleItem(itemId)"
-    @contextmenu="context.decrementItem(itemId, $event)"
-    @wheel="context.handleItemWheel(itemId, $event)"
+    @click="handleClick(props.itemId, $event)"
+    @contextmenu="handleContextMenu(props.itemId, $event)"
+    @wheel="context.handleItemWheel(props.itemId, $event)"
+    @pointerdown="handlePointerDown(props.itemId, $event)"
+    @pointermove="handlePointerMove($event)"
+    @pointerup="handlePointerEnd($event)"
+    @pointercancel="handlePointerEnd($event)"
+    @pointerleave="handlePointerEnd($event)"
   >
-    <span v-if="context.getItemTextLabel(itemId)" class="item-text-label">
-      {{ context.getItemTextLabel(itemId) }}
+    <span v-if="context.getItemTextLabel(props.itemId)" class="item-text-label">
+      {{ context.getItemTextLabel(props.itemId) }}
     </span>
     <img
-      v-else-if="!context.isEmptyGridItem(itemId)"
-      :src="context.getIconSrc(itemId)"
-      :alt="itemId"
+      v-else-if="!context.isEmptyGridItem(props.itemId)"
+      :src="context.getIconSrc(props.itemId)"
+      :alt="props.itemId"
       class="item-icon"
-      :class="{ disabled: context.isItemIconDisabled(itemId) }"
+      :class="{ disabled: context.isItemIconDisabled(props.itemId) }"
       @error="context.handleImageError"
     />
     <img
-      v-if="context.getOverlaySrc(itemId)"
-      :src="context.getOverlaySrc(itemId) as string"
-      :alt="`${itemId} overlay`"
+      v-if="context.getOverlaySrc(props.itemId)"
+      :src="context.getOverlaySrc(props.itemId) as string"
+      :alt="`${props.itemId} overlay`"
       class="item-overlay"
-      :class="{ disabled: context.isItemIconDisabled(itemId) }"
+      :class="{ disabled: context.isItemIconDisabled(props.itemId) }"
       @error="context.handleOverlayError"
     />
     <span
-      v-if="context.getWheelOverlayText(itemId)"
+      v-if="context.getWheelOverlayText(props.itemId)"
       class="item-overlay item-wheel-overlay item-text-label item-wheel-text-label"
     >
-      {{ context.getWheelOverlayText(itemId) }}
+      {{ context.getWheelOverlayText(props.itemId) }}
     </span>
     <img
-      v-else-if="context.getWheelOverlaySrc(itemId)"
-      :src="context.getWheelOverlaySrc(itemId) as string"
-      :alt="`${itemId} wheel overlay`"
+      v-else-if="context.getWheelOverlaySrc(props.itemId)"
+      :src="context.getWheelOverlaySrc(props.itemId) as string"
+      :alt="`${props.itemId} wheel overlay`"
       class="item-overlay item-wheel-overlay"
-      :class="{ disabled: context.isItemIconDisabled(itemId) }"
+      :class="{ disabled: context.isItemIconDisabled(props.itemId) }"
       @error="context.handleOverlayError"
     />
-    <span v-if="context.shouldShowItemCount(itemId)" class="item-count">{{
-      context.getGridItemCount(itemId)
+    <span v-if="context.shouldShowItemCount(props.itemId)" class="item-count">{{
+      context.getGridItemCount(props.itemId)
     }}</span>
-    <div v-if="context.isSubmenuItem(itemId)" class="submenu-indicator">▼</div>
+    <div v-if="context.isSubmenuItem(props.itemId)" class="submenu-indicator">▼</div>
+    <Teleport to="body">
+      <div
+        v-if="context.isWheelOverlayMenuOpen(props.itemId)"
+        class="wheel-menu-sheet"
+        :data-testid="`grid-wheel-menu-${props.itemId}`"
+        @click.stop
+        @mousedown.stop
+        @pointerdown.stop
+        @contextmenu.stop.prevent
+        @wheel.stop
+      >
+        <div
+          class="wheel-menu-sheet__backdrop"
+          @click.stop="context.closeWheelOverlayMenu()"
+        />
+        <div class="wheel-menu-sheet__panel">
+          <div class="wheel-menu-panel">
+            <div class="wheel-menu-panel__header">
+              <span class="wheel-menu-panel__title">Choose dungeon</span>
+            </div>
+            <div class="wheel-menu-panel__options">
+              <button
+                v-for="option in context.getWheelOverlayMenuOptions(props.itemId)"
+                :key="`mobile-${option.stage}`"
+                type="button"
+                class="wheel-menu-option"
+                :class="{
+                  'wheel-menu-option-active':
+                    context.getWheelOverlayStage(props.itemId) === option.stage,
+                  'wheel-menu-option-none': option.stage === 0,
+                }"
+                :data-testid="`grid-wheel-option-${props.itemId}-${option.stage}`"
+                @click.stop="context.setWheelOverlayStage(props.itemId, option.stage)"
+              >
+                <span class="wheel-menu-option__preview">
+                  <span
+                    v-if="option.label"
+                    class="wheel-menu-option__label item-text-label"
+                  >
+                    {{ option.label }}
+                  </span>
+                  <img
+                    v-else-if="option.iconSrc"
+                    :src="option.iconSrc"
+                    :alt="option.title"
+                    class="wheel-menu-option__icon"
+                    @error="context.handleOverlayError"
+                  />
+                  <span v-else class="wheel-menu-option__empty">None</span>
+                </span>
+                <span class="wheel-menu-option__title">{{ option.title }}</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </Teleport>
     <div
-      v-if="context.isSubmenuItem(itemId) && context.isSubmenuOpen(itemId)"
+      v-if="context.isWheelOverlayMenuOpen(props.itemId)"
+      class="wheel-menu-panel wheel-menu-panel-inline"
+      @click.stop
+      @mousedown.stop
+      @pointerdown.stop
+      @contextmenu.stop.prevent
+      @wheel.stop
+    >
+      <div class="wheel-menu-panel__header">
+        <span class="wheel-menu-panel__title">Choose dungeon</span>
+      </div>
+      <div class="wheel-menu-panel__options">
+        <button
+          v-for="option in context.getWheelOverlayMenuOptions(props.itemId)"
+          :key="option.stage"
+          type="button"
+          class="wheel-menu-option"
+          :class="{
+            'wheel-menu-option-active':
+              context.getWheelOverlayStage(props.itemId) === option.stage,
+            'wheel-menu-option-none': option.stage === 0,
+          }"
+          :data-testid="`grid-wheel-option-${props.itemId}-${option.stage}`"
+          @click.stop="context.setWheelOverlayStage(props.itemId, option.stage)"
+        >
+          <span class="wheel-menu-option__preview">
+            <span
+              v-if="option.label"
+              class="wheel-menu-option__label item-text-label"
+            >
+              {{ option.label }}
+            </span>
+            <img
+              v-else-if="option.iconSrc"
+              :src="option.iconSrc"
+              :alt="option.title"
+              class="wheel-menu-option__icon"
+              @error="context.handleOverlayError"
+            />
+            <span v-else class="wheel-menu-option__empty">None</span>
+          </span>
+          <span class="wheel-menu-option__title">{{ option.title }}</span>
+        </button>
+      </div>
+    </div>
+    <div
+      v-if="context.isSubmenuItem(props.itemId) && context.isSubmenuOpen(props.itemId)"
       class="submenu-panel"
       @click.stop
       @mousedown.stop
@@ -84,13 +302,13 @@ if (!context) {
     >
       <div class="submenu-panel__header">
         <span class="submenu-panel__title">{{
-          context.getGridItemTitle(itemId)
+          context.getGridItemTitle(props.itemId)
         }}</span>
       </div>
       <OoTMMGridNode
-        v-if="context.getSubmenuNode(itemId)"
+        v-if="context.getSubmenuNode(props.itemId)"
         :node="
-          context.getSubmenuNode(itemId) as NonNullable<
+          context.getSubmenuNode(props.itemId) as NonNullable<
             ReturnType<typeof context.getSubmenuNode>
           >
         "
@@ -178,6 +396,10 @@ if (!context) {
 
 .grid-item.submenu-open {
   z-index: 50;
+}
+
+.grid-item-wheel-menu-open {
+  z-index: 55;
 }
 
 .item-icon {
@@ -318,6 +540,139 @@ if (!context) {
   isolation: isolate;
 }
 
+.wheel-menu-panel {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  min-width: 220px;
+  max-width: min(280px, calc(100vw - 24px));
+  padding: 10px;
+  border-radius: 10px;
+  border: 1px solid rgba(96, 165, 250, 0.35);
+  background-color: rgb(17, 20, 28);
+  background-image: linear-gradient(180deg, rgb(31, 36, 47), rgb(17, 20, 28));
+  box-shadow:
+    0 16px 40px rgba(0, 0, 0, 0.4),
+    inset 0 1px 0 rgba(255, 255, 255, 0.06);
+  z-index: 45;
+  cursor: default;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  isolation: isolate;
+  contain: paint;
+}
+
+.wheel-menu-sheet {
+  position: fixed;
+  inset: 0;
+  z-index: 2000;
+  display: none;
+  align-items: flex-end;
+  justify-content: center;
+  padding: 12px;
+  box-sizing: border-box;
+}
+
+.wheel-menu-sheet__backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(7, 11, 19, 0.78);
+}
+
+.wheel-menu-sheet__panel {
+  position: relative;
+  width: min(100%, 420px);
+  max-height: min(70vh, calc(100vh - 24px));
+  z-index: 1;
+}
+
+.wheel-menu-sheet__panel > .wheel-menu-panel {
+  position: relative;
+  top: auto;
+  right: auto;
+  min-width: 0;
+  max-width: none;
+  max-height: inherit;
+}
+
+.wheel-menu-panel__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 8px;
+}
+
+.wheel-menu-panel__title {
+  color: #e5e7eb;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.wheel-menu-panel__options {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.wheel-menu-option {
+  appearance: none;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  padding: 7px 8px;
+  cursor: pointer;
+  border: 1px solid rgba(148, 163, 184, 0.18);
+  border-radius: 8px;
+  background: rgb(19, 28, 45);
+  color: #f8fafc;
+  text-align: left;
+}
+
+.wheel-menu-option-active {
+  border-color: rgba(96, 165, 250, 0.65);
+  background: rgb(30, 41, 59);
+}
+
+.wheel-menu-option__preview {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  flex: 0 0 28px;
+  border-radius: 6px;
+  background: rgb(12, 18, 31);
+  overflow: hidden;
+}
+
+.wheel-menu-option__label {
+  font-size: 8px;
+}
+
+.wheel-menu-option__icon {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  image-rendering: pixelated;
+}
+
+.wheel-menu-option__empty {
+  color: rgba(226, 232, 240, 0.75);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.wheel-menu-option__title {
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 1.2;
+}
+
 .submenu-panel__header {
   display: flex;
   align-items: center;
@@ -339,6 +694,14 @@ if (!context) {
     right: auto;
     left: 0;
     min-width: 300px;
+  }
+
+  .wheel-menu-panel-inline {
+    display: none;
+  }
+
+  .wheel-menu-sheet {
+    display: flex;
   }
 }
 </style>

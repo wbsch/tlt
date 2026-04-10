@@ -1621,6 +1621,27 @@ export function getGridWheelOverlayValue(
   return resolved.values[stage - 1] || null;
 }
 
+export interface GridWheelOverlayOption {
+  stage: number;
+  value: string;
+  overlay: string | null;
+}
+
+export function getGridWheelOverlayOptions(
+  itemId: string,
+): GridWheelOverlayOption[] {
+  const resolved = getResolvedGridWheelOverlayConfig(itemId);
+  if (!resolved || resolved.values.length === 0) {
+    return [];
+  }
+
+  return resolved.values.map((value, index) => ({
+    stage: index + 1,
+    value,
+    overlay: resolved.overlays[index] || null,
+  }));
+}
+
 /**
  * Check whether a grid item should start undimmed at count=0.
  */

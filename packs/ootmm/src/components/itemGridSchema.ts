@@ -96,6 +96,13 @@ export interface GridItemSubmenuConfig {
   submenu: ResolvedGridNode;
 }
 
+export interface GridWheelOverlayMenuOption {
+  stage: number;
+  title: string;
+  label: string | null;
+  iconSrc: string | null;
+}
+
 export interface ItemGridRenderContext {
   parseMargin: (margin?: string) => { x: number; y: number };
   getArrayStyle: (element: GridArray) => CSSProperties;
@@ -112,6 +119,13 @@ export interface ItemGridRenderContext {
   isSubmenuItem: (itemId: string) => boolean;
   isSubmenuOpen: (itemId: string) => boolean;
   getSubmenuNode: (itemId: string) => ResolvedGridNode | null;
+  hasWheelOverlayMenu: (itemId: string) => boolean;
+  isWheelOverlayMenuOpen: (itemId: string) => boolean;
+  getWheelOverlayMenuOptions: (itemId: string) => GridWheelOverlayMenuOption[];
+  getWheelOverlayStage: (itemId: string) => number;
+  openWheelOverlayMenu: (itemId: string) => void;
+  closeWheelOverlayMenu: () => void;
+  setWheelOverlayStage: (itemId: string, stage: number) => void;
   toggleItem: (itemId: string) => void;
   decrementItem: (itemId: string, event: MouseEvent) => void;
   handleItemWheel: (itemId: string, event: WheelEvent) => void;
