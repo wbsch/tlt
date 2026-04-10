@@ -50,6 +50,7 @@ const locationData = resolveExport<typeof LocationsMod.locationData>(
   LocationsMod,
   'locationData',
 );
+const exprTrue = resolveExport<typeof ExprMod.exprTrue>(ExprMod, 'exprTrue');
 const exprHas = resolveExport<(item: unknown, count: number) => unknown>(
   ExprMod,
   'exprHas',
@@ -1688,6 +1689,15 @@ export class OoTMMTracker implements TrackerPack {
   }
 
   private applyPreCompletedWispEvents(): void {
+    const shouldApply =
+      Boolean(this.settings?.preCompletedDungeons) &&
+      this.settings?.regionState === 'dungeonBeaten';
+
+    const expanded = new Set(this.preCompletedDungeonIds);
+    if (expanded.has('ST')) {
+      expanded.add('IST');
+    }
+
     for (const [worldId, world] of this.worlds.entries()) {
       const spawnArea = world.areas?.['OOT SPAWN'];
       if (!spawnArea) continue;
@@ -1698,9 +1708,14 @@ export class OoTMMTracker implements TrackerPack {
         this.baseWispEvents.set(worldId, base);
       }
 
-      for (const eventName of Object.values(PRECOMPLETED_WISPS)) {
+      for (const [dungeonId, eventName] of Object.entries(PRECOMPLETED_WISPS)) {
         if (!base.has(eventName)) {
           base.set(eventName, spawnArea.events?.[eventName] ?? null);
+        }
+
+        if (shouldApply && expanded.has(dungeonId)) {
+          if (spawnArea.events) spawnArea.events[eventName] = exprTrue();
+          continue;
         }
 
         const original = base.get(eventName);
