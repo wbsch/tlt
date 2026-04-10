@@ -11,6 +11,12 @@ function mapSubmenuEntranceSelect(page: Page, label: string) {
     .first();
 }
 
+function mapSubmenuEntranceInputs(page: Page) {
+  return page.locator(
+    '.map-submenu-panel .map-entrance-list:not(.map-exit-list) .destination-combobox__input',
+  );
+}
+
 async function applyInteriorErSettings(page: Page): Promise<void> {
   await page.getByTestId('tab-settings').click();
 
@@ -114,6 +120,62 @@ async function openMapSubmenuForEntranceLabel(
   );
 }
 
+async function openLowestEntranceSubmenuInput(page: Page) {
+  const submenuMarkers = page.locator(
+    '.ootmm-map .map-marker[aria-label^="Submenu marker:"]',
+  );
+  const submenuPanel = page.locator('.map-submenu-panel');
+  const viewportWidth = page.viewportSize()?.width ?? 0;
+  const viewportHeight = page.viewportSize()?.height ?? 0;
+  const count = await submenuMarkers.count();
+
+  let bestMarkerIndex = -1;
+  let bestInputIndex = -1;
+  let smallestSpaceBelow = Number.POSITIVE_INFINITY;
+
+  for (let markerIndex = 0; markerIndex < count; markerIndex += 1) {
+    const marker = submenuMarkers.nth(markerIndex);
+    const markerBox = await marker.boundingBox();
+    if (
+      !markerBox ||
+      markerBox.x + markerBox.width <= 0 ||
+      markerBox.x >= viewportWidth ||
+      markerBox.y + markerBox.height <= 0 ||
+      markerBox.y >= viewportHeight
+    ) {
+      continue;
+    }
+
+    await marker.click({ force: true });
+    await expect(submenuPanel).toBeVisible();
+
+    const inputs = mapSubmenuEntranceInputs(page);
+    const inputCount = await inputs.count();
+
+    for (let inputIndex = 0; inputIndex < inputCount; inputIndex += 1) {
+      const inputBox = await inputs.nth(inputIndex).boundingBox();
+      if (!inputBox) continue;
+
+      const spaceBelow = viewportHeight - (inputBox.y + inputBox.height);
+      if (spaceBelow < smallestSpaceBelow) {
+        smallestSpaceBelow = spaceBelow;
+        bestMarkerIndex = markerIndex;
+        bestInputIndex = inputIndex;
+      }
+    }
+  }
+
+  expect(bestMarkerIndex).toBeGreaterThanOrEqual(0);
+  expect(bestInputIndex).toBeGreaterThanOrEqual(0);
+
+  await submenuMarkers.nth(bestMarkerIndex).click({ force: true });
+  await expect(submenuPanel).toBeVisible();
+
+  const targetInput = mapSubmenuEntranceInputs(page).nth(bestInputIndex);
+  await expect(targetInput).toBeVisible();
+  return targetInput;
+}
+
 test.describe('mobile entrance submenu layout', () => {
   test.use({
     viewport: { width: 390, height: 844 },
@@ -142,5 +204,41 @@ test.describe('mobile entrance submenu layout', () => {
     expect(inputBox!.x + inputBox!.width).toBeLessThanOrEqual(
       panelBox!.x + panelBox!.width,
     );
+  });
+
+  test('opens lower entrance dropdowns upward when needed', async ({
+    page,
+  }) => {
+    await resetLocalStorageAndReload(page);
+    await applyInteriorErSettings(page);
+    await selectMapFromToolbar(page, 'Hyrule Field');
+    await resetMapFiltersToAll(page);
+
+    const targetInput = await openLowestEntranceSubmenuInput(page);
+    const viewportHeight = page.viewportSize()?.height ?? 0;
+
+    const inputBox = await targetInput.boundingBox();
+    expect(inputBox).not.toBeNull();
+
+    await targetInput.click();
+
+    const listbox = targetInput
+      .locator('..')
+      .locator('.destination-combobox__options');
+    await expect(listbox).toBeVisible();
+
+    const listboxBox = await listbox.boundingBox();
+    expect(listboxBox).not.toBeNull();
+    expect(listboxBox!.y).toBeGreaterThanOrEqual(0);
+    expect(listboxBox!.y + listboxBox!.height).toBeLessThanOrEqual(
+      viewportHeight,
+    );
+
+    const availableBelow = viewportHeight - (inputBox!.y + inputBox!.height);
+    if (availableBelow < listboxBox!.height) {
+      expect(listboxBox!.y + listboxBox!.height).toBeLessThanOrEqual(
+        inputBox!.y + 1,
+      );
+    }
   });
 });

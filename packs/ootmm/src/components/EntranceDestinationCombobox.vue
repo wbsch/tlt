@@ -1,5 +1,12 @@
 <script setup lang="ts">
-import { computed, nextTick, ref } from 'vue';
+import {
+  computed,
+  nextTick,
+  onBeforeUnmount,
+  onMounted,
+  ref,
+  watch,
+} from 'vue';
 import { matchesSearchTerms } from '../utils/search';
 
 type DestinationOption = {
@@ -30,9 +37,63 @@ const inputRef = ref<HTMLInputElement | null>(null);
 const isOpen = ref(false);
 const query = ref('');
 const highlightedIndex = ref(-1);
+const dropdownPlacement = ref<'above' | 'below'>('below');
+const dropdownMaxHeight = ref('min(16rem, 45vh)');
+
+const DROPDOWN_VIEWPORT_PADDING = 8;
+const DROPDOWN_OFFSET = 4;
+const DROPDOWN_PREFERRED_MAX_HEIGHT = 16 * 16;
+const DROPDOWN_PREFERRED_VIEWPORT_RATIO = 0.45;
+const DROPDOWN_MIN_FLIP_SPACE = 120;
 
 function formatOptionLabel(option: DestinationOption): string {
   return `${option.label}${option.game === 'mm' ? ' (MM)' : ' (OoT)'}`;
+}
+
+function resetDropdownLayout(): void {
+  dropdownPlacement.value = 'below';
+  dropdownMaxHeight.value = 'min(16rem, 45vh)';
+}
+
+function updateDropdownLayout(): void {
+  if (!isOpen.value) return;
+
+  const input = inputRef.value;
+  if (!input) return;
+
+  const rect = input.getBoundingClientRect();
+  const viewportHeight = Math.max(
+    window.innerHeight,
+    document.documentElement.clientHeight,
+  );
+  const preferredMaxHeight = Math.min(
+    DROPDOWN_PREFERRED_MAX_HEIGHT,
+    viewportHeight * DROPDOWN_PREFERRED_VIEWPORT_RATIO,
+  );
+  const availableAbove = Math.max(
+    0,
+    rect.top - DROPDOWN_VIEWPORT_PADDING - DROPDOWN_OFFSET,
+  );
+  const availableBelow = Math.max(
+    0,
+    viewportHeight - rect.bottom - DROPDOWN_VIEWPORT_PADDING - DROPDOWN_OFFSET,
+  );
+  const shouldOpenAbove =
+    availableBelow < Math.min(preferredMaxHeight, DROPDOWN_MIN_FLIP_SPACE) &&
+    availableAbove > availableBelow;
+  const availableSpace = shouldOpenAbove ? availableAbove : availableBelow;
+
+  dropdownPlacement.value = shouldOpenAbove ? 'above' : 'below';
+  dropdownMaxHeight.value = `${Math.max(
+    0,
+    Math.floor(Math.min(preferredMaxHeight, availableSpace)),
+  )}px`;
+}
+
+function scheduleDropdownLayoutUpdate(): void {
+  void nextTick(() => {
+    updateDropdownLayout();
+  });
 }
 
 const filteredOptions = computed(() => {
@@ -63,12 +124,14 @@ const hasValue = computed(() => Boolean(props.modelValue) && !isOpen.value);
 function openDropdown(): void {
   isOpen.value = true;
   highlightedIndex.value = -1;
+  scheduleDropdownLayoutUpdate();
 }
 
 function closeDropdown(): void {
   isOpen.value = false;
   query.value = '';
   highlightedIndex.value = -1;
+  resetDropdownLayout();
 }
 
 function handleFocus(): void {
@@ -184,6 +247,30 @@ function handleKeydown(event: KeyboardEvent): void {
     }
   }
 }
+
+function handleViewportChange(): void {
+  updateDropdownLayout();
+}
+
+watch(filteredOptions, () => {
+  if (!isOpen.value) return;
+  scheduleDropdownLayoutUpdate();
+});
+
+watch(isOpen, (open) => {
+  if (!open) return;
+  scheduleDropdownLayoutUpdate();
+});
+
+onMounted(() => {
+  window.addEventListener('resize', handleViewportChange);
+  window.addEventListener('scroll', handleViewportChange, true);
+});
+
+onBeforeUnmount(() => {
+  window.removeEventListener('resize', handleViewportChange);
+  window.removeEventListener('scroll', handleViewportChange, true);
+});
 </script>
 
 <template>
@@ -222,6 +309,10 @@ function handleKeydown(event: KeyboardEvent): void {
       v-if="isOpen"
       :id="dropdownId"
       class="destination-combobox__options"
+      :class="{
+        'destination-combobox__options--above': dropdownPlacement === 'above',
+      }"
+      :style="{ maxHeight: dropdownMaxHeight }"
       role="listbox"
     >
       <li
@@ -320,6 +411,11 @@ function handleKeydown(event: KeyboardEvent): void {
   max-height: min(16rem, 45vh);
   overflow-y: auto;
   z-index: 16;
+}
+
+.destination-combobox__options--above {
+  top: auto;
+  bottom: calc(100% + 0.2rem);
 }
 
 .destination-combobox__option {
