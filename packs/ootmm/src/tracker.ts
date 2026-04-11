@@ -28,6 +28,7 @@ import {
   INTERIOR_GAME_LINK_SOURCE_KEYS,
   INTERIOR_GAME_LINK_EXIT_KEYS,
   getGameLinkPartner,
+  GAME_LINK_VANILLA_EXIT_MAPPING,
 } from './utils/entranceRandomization';
 
 const resolveExport = <T>(mod: unknown, key: string): T =>
@@ -210,26 +211,6 @@ const FISHING_POND_ALWAYS_INCLUDED_ITEM_IDS = new Set([
   'OOT_FISHING_POND_CHILD_LOACH_14LBS',
   'OOT_FISHING_POND_ADULT_LOACH_29LBS',
 ]);
-
-/**
- * Vanilla cross-game entrance mappings for game-link EXIT keys.
- * These match the format used by OoTMM's connectGamesDefault()
- * (which maps the overworld-door transitions, not the interior-exit transitions).
- * When erIndoorsGameLinks is active but the user hasn't assigned the game-link
- * entrances, the tracker adds these to the plando to preserve the OOT↔MM connection.
- */
-const GAME_LINK_VANILLA_EXIT_MAPPING: Record<string, Record<string, string>> = {
-  ootmm: {
-    OOT_SHOP_MASKS: 'MM_CLOCK_TOWN_FROM_CLOCK_TOWER',
-    MM_CLOCK_TOWER_FROM_CLOCK_TOWN: 'OOT_MARKET_FROM_MASK_SHOP',
-  },
-  oot: {
-    OOT_SHOP_MASKS: 'OOT_MARKET_FROM_MASK_SHOP',
-  },
-  mm: {
-    MM_CLOCK_TOWER_FROM_CLOCK_TOWN: 'MM_CLOCK_TOWN_FROM_CLOCK_TOWER',
-  },
-};
 
 const BOTTLE_ALWAYS_INCLUDED_ITEM_IDS_OOT_MM = new Set([
   'OOT_BOTTLE_EMPTY',
@@ -589,11 +570,12 @@ export class OoTMMTracker implements TrackerPack {
 
     // Save the original source-side exit expressions for all tracked ER
     // entrances before the entrance pass rewires exits to their mapped
-    // destinations.  Reachability in the UI should answer "can I stand at
+    // destinations. Reachability in the UI should answer "can I stand at
     // this entrance and enter it from the source side?"; using the mapped
     // destination exit can accidentally pick up destination-specific global
     // access expressions for grottos.
     this.savedEntranceExitExprs = new Map();
+    this.savedExitExitExprs = new Map();
     if (isErActive) {
       for (const world of this.baseWorlds) {
         const areas = (world as Record<string, unknown>).areas as Record<
@@ -601,15 +583,30 @@ export class OoTMMTracker implements TrackerPack {
           { exits?: Record<string, unknown> }
         >;
         for (const [key, data] of Object.entries(ENTRANCES_DATA)) {
-          if (!activeEntranceKeys.has(key)) continue;
           if (data.from === 'NONE' || data.to === 'NONE') continue;
 
-          const fromArea = areas[data.from];
-          const exitExpr = fromArea?.exits?.[data.to];
-          if (exitExpr) {
-            this.savedEntranceExitExprs.set(key, {
+          if (activeEntranceKeys.has(key)) {
+            const fromArea = areas[data.from];
+            const exitExpr = fromArea?.exits?.[data.to];
+            if (exitExpr) {
+              this.savedEntranceExitExprs.set(key, {
+                from: data.from,
+                expr: exitExpr,
+              });
+            }
+          }
+
+          if (!isTrackedEntranceExitType(data.type, key)) continue;
+
+          const sourceKey = data.reverse?.trim();
+          if (!sourceKey || !activeEntranceKeys.has(sourceKey)) continue;
+
+          const exitSourceArea = areas[data.from];
+          const exitSourceExpr = exitSourceArea?.exits?.[data.to];
+          if (exitSourceExpr) {
+            this.savedExitExitExprs.set(key, {
               from: data.from,
-              expr: exitExpr,
+              expr: exitSourceExpr,
             });
           }
         }
@@ -620,38 +617,6 @@ export class OoTMMTracker implements TrackerPack {
 
     const entranceResult = entrancePass.run();
     this.worlds = entranceResult.worlds;
-
-    // Save exit expressions for tracked exit-type keys from the remapped
-    // world graph.  These are used to compute exit reachability in the UI.
-    // IMPORTANT: This must happen BEFORE disconnecting unmapped entrances,
-    // otherwise the exit edges (e.g. Link's House -> Kokiri Forest) are
-    // already deleted and the expressions can't be captured.
-    this.savedExitExitExprs = new Map();
-    if (isErActive) {
-      for (const world of this.worlds) {
-        const areas = (world as Record<string, unknown>).areas as Record<
-          string,
-          { exits?: Record<string, unknown> }
-        >;
-        for (const [key, data] of Object.entries(ENTRANCES_DATA)) {
-          if (!isTrackedEntranceExitType(data.type, key)) continue;
-          if (data.from === 'NONE' || data.to === 'NONE') continue;
-          // Only save exits whose source entrance is active
-          const sourceKey = data.reverse?.trim();
-          if (!sourceKey || !activeEntranceKeys.has(sourceKey)) continue;
-
-          const fromArea = areas[data.from];
-          const exitExpr = fromArea?.exits?.[data.to];
-          if (exitExpr) {
-            this.savedExitExitExprs.set(key, {
-              from: data.from,
-              expr: exitExpr,
-            });
-          }
-        }
-        break;
-      }
-    }
 
     // Disconnect unmapped tracked entrances so their checks are unreachable.
     // We self-mapped them above to prevent random shuffling, but now we remove

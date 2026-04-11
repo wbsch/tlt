@@ -25,6 +25,9 @@ import {
 import {
   filterEntranceOverridesForSettings,
   getActiveEntranceKeys,
+  GAME_LINK_VANILLA_EXIT_MAPPING,
+  INTERIOR_GAME_LINK_EXIT_KEYS,
+  INTERIOR_GAME_LINK_SOURCE_KEYS,
 } from '../utils/entranceRandomization';
 import { getGridItemDefinedMaxCount } from '../data/itemIcons';
 
@@ -1372,7 +1375,39 @@ export const useOoTMMSessionStore = defineStore('ootmm-session', () => {
         nextInventory[item.id] = Math.max(1, maxCount);
       }
     }
+
+    const nextEntranceOverrides = {
+      ...filterEntranceOverridesForSettings(
+        entranceOverrides.value,
+        trackerSettings.value,
+      ),
+    };
+    const activeEntranceKeys = getActiveEntranceKeys(trackerSettings.value);
+    const gamesMode = String(trackerSettings.value?.games ?? 'ootmm');
+    const vanillaGameLinkMapping =
+      GAME_LINK_VANILLA_EXIT_MAPPING[gamesMode] ?? {};
+
+    for (const key of activeEntranceKeys) {
+      if (nextEntranceOverrides[key]) continue;
+
+      if (
+        INTERIOR_GAME_LINK_EXIT_KEYS.has(key) ||
+        INTERIOR_GAME_LINK_SOURCE_KEYS.has(key)
+      ) {
+        const vanillaDestination = vanillaGameLinkMapping[key];
+        if (vanillaDestination) {
+          nextEntranceOverrides[key] = vanillaDestination;
+        }
+        continue;
+      }
+
+      nextEntranceOverrides[key] = key;
+    }
+
     setInventoryFromMap(new Map(Object.entries(nextInventory)), options);
+    if (Object.keys(nextEntranceOverrides).length > 0) {
+      setEntranceOverrides(nextEntranceOverrides, options);
+    }
   }
 
   return {

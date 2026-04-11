@@ -41,6 +41,21 @@ export const INTERIOR_GAME_LINK_EXIT_KEYS = new Set([
   'OOT_SHOP_MASKS',
   'MM_CLOCK_TOWER_FROM_CLOCK_TOWN',
 ]);
+export const GAME_LINK_VANILLA_EXIT_MAPPING: Record<
+  string,
+  Record<string, string>
+> = {
+  ootmm: {
+    OOT_SHOP_MASKS: 'MM_CLOCK_TOWN_FROM_CLOCK_TOWER',
+    MM_CLOCK_TOWER_FROM_CLOCK_TOWN: 'OOT_MARKET_FROM_MASK_SHOP',
+  },
+  oot: {
+    OOT_SHOP_MASKS: 'OOT_MARKET_FROM_MASK_SHOP',
+  },
+  mm: {
+    MM_CLOCK_TOWER_FROM_CLOCK_TOWN: 'MM_CLOCK_TOWN_FROM_CLOCK_TOWER',
+  },
+};
 const INTERIOR_EXIT_TYPES = new Set(['indoors-exit']);
 const TRACKED_EXIT_TYPES = new Set([
   'dungeon-exit',
