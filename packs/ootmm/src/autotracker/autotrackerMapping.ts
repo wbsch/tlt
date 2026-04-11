@@ -159,66 +159,66 @@ function tryDungeonItemRename(
 }
 
 // ---------------------------------------------------------------------------
-// 5. OOT inventory slot value mappings (trade items)
+// 5. Trade item bitmask mappings
 // ---------------------------------------------------------------------------
+// Trade items are sent as bitmasks. Each set bit represents an obtained item.
 
-// OOT_ADULT_TRADE raw slot values → tracker item IDs
+// OOT_ADULT_TRADE: u16 bitmask (bits 0–10 mapped; bits 11+ ignored/overflow)
 const OOT_ADULT_TRADE_ITEMS: string[] = [
-  'OOT_POCKET_EGG', // 0
-  'OOT_POCKET_CUCCO', // 1
-  'OOT_COJIRO', // 2
-  'OOT_ODD_MUSHROOM', // 3
-  'OOT_ODD_POTION', // 4
-  'OOT_POACHER_SAW', // 5
-  'OOT_BROKEN_GORON_SWORD', // 6
-  'OOT_PRESCRIPTION', // 7
-  'OOT_EYEBALL_FROG', // 8
-  'OOT_EYE_DROPS', // 9
-  'OOT_CLAIM_CHECK', // 10
+  'OOT_POCKET_EGG', // bit 0
+  'OOT_POCKET_CUCCO', // bit 1
+  'OOT_COJIRO', // bit 2
+  'OOT_ODD_MUSHROOM', // bit 3
+  'OOT_ODD_POTION', // bit 4
+  'OOT_POACHER_SAW', // bit 5
+  'OOT_BROKEN_GORON_SWORD', // bit 6
+  'OOT_PRESCRIPTION', // bit 7
+  'OOT_EYEBALL_FROG', // bit 8
+  'OOT_EYE_DROPS', // bit 9
+  'OOT_CLAIM_CHECK', // bit 10
 ];
 
-// OOT_CHILD_TRADE raw slot values → tracker item IDs
+// OOT_CHILD_TRADE: u16 bitmask (bits 0–10 mapped; bits 11+ ignored/overflow)
 const OOT_CHILD_TRADE_ITEMS: string[] = [
-  'OOT_WEIRD_EGG', // 0
-  'OOT_CHICKEN', // 1
-  'OOT_ZELDA_LETTER', // 2
-  'OOT_MASK_KEATON', // 3
-  'OOT_MASK_SKULL', // 4
-  'OOT_MASK_SPOOKY', // 5
-  'OOT_MASK_BUNNY', // 6
-  'OOT_MASK_GORON', // 7
-  'OOT_MASK_ZORA', // 8
-  'OOT_MASK_GERUDO', // 9
-  'OOT_MASK_TRUTH', // 10
+  'OOT_WEIRD_EGG', // bit 0
+  'OOT_CHICKEN', // bit 1
+  'OOT_ZELDA_LETTER', // bit 2
+  'OOT_MASK_KEATON', // bit 3
+  'OOT_MASK_SKULL', // bit 4
+  'OOT_MASK_SPOOKY', // bit 5
+  'OOT_MASK_BUNNY', // bit 6
+  'OOT_MASK_GORON', // bit 7
+  'OOT_MASK_ZORA', // bit 8
+  'OOT_MASK_GERUDO', // bit 9
+  'OOT_MASK_TRUTH', // bit 10
 ];
 
-// MM_TRADE_1 raw slot values → individual tracker items
-// In OoTMM, trade slots contain cross-game items. The autotracker
-// already sends individual flags for MM trade items, so we only need
-// the slot-to-item mapping as fallback.
+// MM_TRADE_1: 6-bit bitmask
 const MM_TRADE1_ITEMS: string[] = [
-  'MM_SPELL_FIRE', // 0
-  'MM_MOON_TEAR', // 1
-  'MM_DEED_LAND', // 2
-  'MM_DEED_SWAMP', // 3
-  'MM_DEED_MOUNTAIN', // 4
-  'MM_DEED_OCEAN', // 5
+  'MM_SPELL_FIRE', // bit 0
+  'MM_MOON_TEAR', // bit 1
+  'MM_DEED_LAND', // bit 2
+  'MM_DEED_SWAMP', // bit 3
+  'MM_DEED_MOUNTAIN', // bit 4
+  'MM_DEED_OCEAN', // bit 5
 ];
 
+// MM_TRADE_2: 5-bit bitmask
 const MM_TRADE2_ITEMS: string[] = [
-  'MM_SPELL_WIND', // 0
-  'MM_BOOTS_IRON', // 1
-  'MM_TUNIC_GORON', // 2
-  'MM_ROOM_KEY', // 3
-  'MM_LETTER_TO_MAMA', // 4
+  'MM_SPELL_WIND', // bit 0
+  'MM_BOOTS_IRON', // bit 1
+  'MM_TUNIC_GORON', // bit 2
+  'MM_ROOM_KEY', // bit 3
+  'MM_LETTER_TO_MAMA', // bit 4
 ];
 
+// MM_TRADE_3: 5-bit bitmask
 const MM_TRADE3_ITEMS: string[] = [
-  'MM_SPELL_LOVE', // 0
-  'MM_BOOTS_HOVER', // 1
-  'MM_TUNIC_ZORA', // 2
-  'MM_LETTER_TO_KAFEI', // 3
-  'MM_PENDANT_OF_MEMORIES', // 4
+  'MM_SPELL_LOVE', // bit 0
+  'MM_BOOTS_HOVER', // bit 1
+  'MM_TUNIC_ZORA', // bit 2
+  'MM_LETTER_TO_KAFEI', // bit 3
+  'MM_PENDANT_OF_MEMORIES', // bit 4
 ];
 
 // IDs to skip entirely (handled by other mechanisms or not useful)
@@ -232,9 +232,7 @@ const SKIP_IDS = new Set([
   'MM_NUT', // presence flag; tracker uses MM_NUT_UPGRADE
   'OOT_STICK', // presence flag; tracker uses OOT_STICK_UPGRADE
   'MM_STICK', // presence flag; tracker uses MM_STICK_UPGRADE
-  'MM_TRADE_1', // individual items sent separately by autotracker
-  'MM_TRADE_2', // individual items sent separately by autotracker
-  'MM_TRADE_3', // individual items sent separately by autotracker
+  // MM_TRADE_1/2/3 are now handled as bitmasks below
 ]);
 
 // Items that may have SHARED_ variants depending on settings
@@ -358,21 +356,18 @@ export function translateAutotrackerItems(
       continue;
     }
 
-    // OOT inventory slot items
-    if (id === 'OOT_ADULT_TRADE') {
-      // Slot value means "current trade item" — set it and all prior
-      for (let i = 0; i <= Math.min(qty, OOT_ADULT_TRADE_ITEMS.length - 1); i++) {
-        set(OOT_ADULT_TRADE_ITEMS[i], 1);
-      }
-      continue;
-    }
-    if (id === 'OOT_CHILD_TRADE') {
-      for (
-        let i = 0;
-        i <= Math.min(qty, OOT_CHILD_TRADE_ITEMS.length - 1);
-        i++
-      ) {
-        set(OOT_CHILD_TRADE_ITEMS[i], 1);
+    // Trade item bitmasks — each set bit = one obtained item
+    const TRADE_BITMASK_MAPS: Record<string, string[]> = {
+      OOT_ADULT_TRADE: OOT_ADULT_TRADE_ITEMS,
+      OOT_CHILD_TRADE: OOT_CHILD_TRADE_ITEMS,
+      MM_TRADE_1: MM_TRADE1_ITEMS,
+      MM_TRADE_2: MM_TRADE2_ITEMS,
+      MM_TRADE_3: MM_TRADE3_ITEMS,
+    };
+    if (id in TRADE_BITMASK_MAPS) {
+      const tradeItems = TRADE_BITMASK_MAPS[id];
+      for (let bit = 0; bit < tradeItems.length; bit++) {
+        set(tradeItems[bit], (qty >> bit) & 1);
       }
       continue;
     }
