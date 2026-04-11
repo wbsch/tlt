@@ -175,11 +175,21 @@ function clearShareStatusTimeout() {
   shareStatusTimeoutId = null;
 }
 
-function setShareStatus(message: string, issues: ShareImportIssue[] = []) {
+function setShareStatus(
+  message: string,
+  issues: ShareImportIssue[] = [],
+  options: {
+    preserveDetailsVisibility?: boolean;
+  } = {},
+) {
   clearShareStatusTimeout();
   shareStatusMessage.value = message;
   shareImportIssues.value = issues;
-  isShareImportDetailsOpen.value = issues.length > 0;
+  if (issues.length === 0) {
+    isShareImportDetailsOpen.value = false;
+  } else if (!options.preserveDetailsVisibility) {
+    isShareImportDetailsOpen.value = true;
+  }
   shareStatusTimeoutId = window.setTimeout(() => {
     shareStatusMessage.value = '';
     shareStatusTimeoutId = null;
@@ -190,10 +200,17 @@ function handleShareStatusEvent(event: Event) {
   const detail = (event as CustomEvent<ShareStatusPayload>).detail;
   const message = detail?.message;
   if (typeof message !== 'string' || message.length === 0) return;
+  const shouldPreservePartialImportDetails =
+    message === SHARE_PARTIAL_IMPORT_MESSAGE &&
+    !Array.isArray(detail?.issues) &&
+    shareImportIssues.value.length > 0;
   setShareStatus(
     message,
     detail.issues ??
       (message === SHARE_PARTIAL_IMPORT_MESSAGE ? shareImportIssues.value : []),
+    {
+      preserveDetailsVisibility: shouldPreservePartialImportDetails,
+    },
   );
 }
 
