@@ -53,8 +53,6 @@ import {
   getActiveEntranceKeys,
   normalizeTrackedEntranceKey,
   getTrackedEntranceKeysForBinding,
-  getExitKeyForEntrance,
-  computeExitOverrides,
   computeDisplayEntranceOverrides,
   filterEntranceOverridesForSettings,
   resolveToActiveEntranceKey,
@@ -677,15 +675,10 @@ const mapSelectorVisibleEntranceCountByMap = computed(() => {
   const mapFilter = entrancesMappingFilter.value;
   const reachableSet = reachableEntranceIdSet.value;
   const settings = (trackerSettings.value ?? {}) as Record<string, unknown>;
-  const normalizedOverrides = filterEntranceOverridesForSettings(
-    entranceOverrides.value,
-    settings,
-  );
   const displayOverrides = computeDisplayEntranceOverrides(
     entranceOverrides.value,
     settings,
   );
-  const exitOverrides = computeExitOverrides(normalizedOverrides);
   const activeKeys = getActiveEntranceKeys(settings);
 
   const entrancePassesFilters = (entranceId: string): boolean => {
