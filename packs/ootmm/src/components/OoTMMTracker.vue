@@ -53,6 +53,8 @@ import {
   getActiveEntranceKeys,
   normalizeTrackedEntranceKey,
   getTrackedEntranceKeysForBinding,
+  getExitKeyForEntrance,
+  computeExitOverrides,
   computeDisplayEntranceOverrides,
   filterEntranceOverridesForSettings,
   resolveToActiveEntranceKey,
@@ -675,10 +677,15 @@ const mapSelectorVisibleEntranceCountByMap = computed(() => {
   const mapFilter = entrancesMappingFilter.value;
   const reachableSet = reachableEntranceIdSet.value;
   const settings = (trackerSettings.value ?? {}) as Record<string, unknown>;
+  const normalizedOverrides = filterEntranceOverridesForSettings(
+    entranceOverrides.value,
+    settings,
+  );
   const displayOverrides = computeDisplayEntranceOverrides(
     entranceOverrides.value,
     settings,
   );
+  const exitOverrides = computeExitOverrides(normalizedOverrides);
   const activeKeys = getActiveEntranceKeys(settings);
 
   const entrancePassesFilters = (entranceId: string): boolean => {
@@ -690,6 +697,22 @@ const mapSelectorVisibleEntranceCountByMap = computed(() => {
     if (!passesMapping) return false;
 
     const isReachable = reachableSet.has(entranceId);
+    return (
+      reachFilter === 'all' ||
+      (reachFilter === 'reachable' && isReachable) ||
+      (reachFilter === 'unreachable' && !isReachable)
+    );
+  };
+
+  const exitPassesFilters = (exitKey: string): boolean => {
+    const isMapped = (exitOverrides[exitKey] ?? '').trim().length > 0;
+    const passesMapping =
+      mapFilter === 'all' ||
+      (mapFilter === 'mapped' && isMapped) ||
+      (mapFilter === 'unmapped' && !isMapped);
+    if (!passesMapping) return false;
+
+    const isReachable = reachableSet.has(exitKey);
     return (
       reachFilter === 'all' ||
       (reachFilter === 'reachable' && isReachable) ||
@@ -717,7 +740,8 @@ const mapSelectorVisibleEntranceCountByMap = computed(() => {
 
       const displayMode = marker.entranceMenu.display ?? 'both';
       const showsEntrances = displayMode !== 'exits';
-      if (!showsEntrances) continue;
+      const showsExits = displayMode !== 'entrances';
+      if (!showsEntrances && !showsExits) continue;
 
       const markerEntranceIds = new Set<string>();
       for (const srcId of marker.entranceMenu.entranceIds) {
@@ -731,7 +755,12 @@ const mapSelectorVisibleEntranceCountByMap = computed(() => {
       }
 
       for (const entranceId of markerEntranceIds) {
-        if (entrancePassesFilters(entranceId)) {
+        if (showsEntrances && entrancePassesFilters(entranceId)) {
+          count += 1;
+        }
+
+        const exitKey = getExitKeyForEntrance(entranceId);
+        if (showsExits && exitKey && exitPassesFilters(exitKey)) {
           count += 1;
         }
       }
