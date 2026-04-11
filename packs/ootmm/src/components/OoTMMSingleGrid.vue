@@ -65,10 +65,12 @@ const openWheelOverlayMenuItemId = ref<string | null>(null);
 
 const rewardRegionNameByLabelItemId = new Map<string, string>([
   [FREE_REWARD_LABEL_ITEM_ID, 'Free'],
-  ...DUNGEON_REWARD_REGION_LABELS.map(({ labelItemId, regionName }) => [
-    labelItemId,
-    regionName,
-  ]),
+  ...DUNGEON_REWARD_REGION_LABELS.map(
+    ({ labelItemId, regionName }): [string, string] => [
+      labelItemId,
+      regionName,
+    ],
+  ),
 ]);
 
 function isGridRefAliasKey(itemId: string): boolean {

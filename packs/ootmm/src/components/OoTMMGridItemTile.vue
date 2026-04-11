@@ -10,7 +10,7 @@ const props = defineProps<{
   canvasItem?: boolean;
 }>();
 
-const context = inject(itemGridRenderContextKey);
+const injectedContext = inject(itemGridRenderContextKey);
 
 const LONG_PRESS_DURATION_MS = 450;
 const LONG_PRESS_MOVE_TOLERANCE_PX = 10;
@@ -23,9 +23,11 @@ let suppressNextClick = false;
 let suppressNextContextMenu = false;
 let suppressionResetTimer: number | null = null;
 
-if (!context) {
+if (!injectedContext) {
   throw new Error('OoTMMGridItemTile requires item grid render context');
 }
+
+const context = injectedContext;
 
 function clearLongPressState(): void {
   if (longPressTimer !== null) {

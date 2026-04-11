@@ -666,7 +666,8 @@ const mapSelectorEntranceIdsByMap = computed(() => {
   return byMap;
 });
 
-// Count visible entrances per map, filtered by reachability + mapping settings
+// Count visible map entrance entries, filtered by reachability + mapping settings
+// and respecting per-marker display mode.
 const mapSelectorVisibleEntranceCountByMap = computed(() => {
   const byMap = new Map<string, number>();
   const entrancesByMap = mapSelectorEntranceIdsByMap.value;
@@ -675,15 +676,33 @@ const mapSelectorVisibleEntranceCountByMap = computed(() => {
   const reachFilter = entrancesReachabilityFilter.value;
   const mapFilter = entrancesMappingFilter.value;
   const reachableSet = reachableEntranceIdSet.value;
+  const settings = (trackerSettings.value ?? {}) as Record<string, unknown>;
   const normalizedOverrides = filterEntranceOverridesForSettings(
     entranceOverrides.value,
-    (trackerSettings.value ?? {}) as Record<string, unknown>,
+    settings,
   );
   const displayOverrides = computeDisplayEntranceOverrides(
     entranceOverrides.value,
-    (trackerSettings.value ?? {}) as Record<string, unknown>,
+    settings,
   );
   const exitOverrides = computeExitOverrides(normalizedOverrides);
+  const activeKeys = getActiveEntranceKeys(settings);
+
+  const entrancePassesFilters = (entranceId: string): boolean => {
+    const isMapped = (displayOverrides[entranceId] ?? '').trim().length > 0;
+    const passesMapping =
+      mapFilter === 'all' ||
+      (mapFilter === 'mapped' && isMapped) ||
+      (mapFilter === 'unmapped' && !isMapped);
+    if (!passesMapping) return false;
+
+    const isReachable = reachableSet.has(entranceId);
+    return (
+      reachFilter === 'all' ||
+      (reachFilter === 'reachable' && isReachable) ||
+      (reachFilter === 'unreachable' && !isReachable)
+    );
+  };
 
   for (const mapDef of selectableMapDefs.value) {
     const entranceIds = entrancesByMap.get(mapDef.id);
@@ -691,40 +710,40 @@ const mapSelectorVisibleEntranceCountByMap = computed(() => {
       byMap.set(mapDef.id, 0);
       continue;
     }
+
     let count = 0;
-    for (const eid of entranceIds) {
-      // Count entrance
-      const isMapped = (displayOverrides[eid] ?? '').trim().length > 0;
-      const entrancePassesMapping =
-        mapFilter === 'all' ||
-        (mapFilter === 'mapped' && isMapped) ||
-        (mapFilter === 'unmapped' && !isMapped);
-      const isReachable = reachableSet.has(eid);
-      const entrancePassesReachability =
-        reachFilter === 'all' ||
-        (reachFilter === 'reachable' && isReachable) ||
-        (reachFilter === 'unreachable' && !isReachable);
-      if (entrancePassesMapping && entrancePassesReachability) {
-        count += 1;
+
+    for (const marker of mapDef.markers) {
+      if (
+        marker.type !== 'submenu' ||
+        !marker.entranceMenu ||
+        !Array.isArray(marker.entranceMenu.entranceIds)
+      ) {
+        continue;
       }
-      // Count exit
-      const exitKey = getExitKeyForEntrance(eid);
-      if (exitKey) {
-        const isExitMapped = (exitOverrides[exitKey] ?? '').trim().length > 0;
-        const exitPassesMapping =
-          mapFilter === 'all' ||
-          (mapFilter === 'mapped' && isExitMapped) ||
-          (mapFilter === 'unmapped' && !isExitMapped);
-        const isExitReachable = reachableSet.has(exitKey);
-        const exitPassesReachability =
-          reachFilter === 'all' ||
-          (reachFilter === 'reachable' && isExitReachable) ||
-          (reachFilter === 'unreachable' && !isExitReachable);
-        if (exitPassesMapping && exitPassesReachability) {
+
+      const displayMode = marker.entranceMenu.display ?? 'both';
+      const showsEntrances = displayMode !== 'exits';
+      if (!showsEntrances) continue;
+
+      const markerEntranceIds = new Set<string>();
+      for (const srcId of marker.entranceMenu.entranceIds) {
+        const normalized = normalizeTrackedEntranceKey(srcId.trim());
+        const active = normalized
+          ? resolveToActiveEntranceKey(normalized, activeKeys)
+          : null;
+        if (active) {
+          markerEntranceIds.add(active);
+        }
+      }
+
+      for (const entranceId of markerEntranceIds) {
+        if (entrancePassesFilters(entranceId)) {
           count += 1;
         }
       }
     }
+
     byMap.set(mapDef.id, count);
   }
   return byMap;

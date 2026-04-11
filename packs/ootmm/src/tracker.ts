@@ -460,7 +460,9 @@ export class OoTMMTracker implements TrackerPack {
     if (isErActive) {
       // Self-map every active tracked entrance to prevent random shuffling.
       // Track which ones are NOT user-assigned so we can disconnect them later.
-      // Keep special entrances with `no-global` connected while unmapped.
+      // Most `no-global` entrances stay connected while unmapped, but MM
+      // dungeon-like ones must still be disconnected or their vanilla local
+      // edge makes the interior pathfinder-reachable without a discovered map.
       for (const [key, data] of Object.entries(ENTRANCES_DATA)) {
         if (!activeEntranceKeys.has(key)) continue;
         if (data.from === 'NONE' || data.to === 'NONE') continue;
@@ -480,7 +482,12 @@ export class OoTMMTracker implements TrackerPack {
           }
           finalPlandoEntrances[key] = key;
           const isNoGlobalEntrance = Boolean(data.flags?.includes('no-global'));
-          if (!isNoGlobalEntrance) {
+          const shouldDisconnectUnmappedNoGlobal =
+            data.game === 'mm' &&
+            (data.type === 'dungeon' ||
+              data.type === 'dungeon-ctr' ||
+              data.type === 'boss');
+          if (!isNoGlobalEntrance || shouldDisconnectUnmappedNoGlobal) {
             unmappedEntrances.push(key);
           } else {
             selfMappedNoGlobalEntrances.push(key);
