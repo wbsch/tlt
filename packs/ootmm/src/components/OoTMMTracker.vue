@@ -63,6 +63,8 @@ import * as ItemsMod from '@ootmm/core/items/index';
 import * as NamesMod from '@ootmm/core/names';
 import * as SettingsDataMod from '@ootmm/core/settings/data';
 import { TRICKS } from '@ootmm/core/settings/tricks';
+import AutotrackerToggle from './AutotrackerToggle.vue';
+import { useAutotracker } from '../autotracker/useAutotracker';
 
 const props = defineProps<{
   tracker: TrackerPack;
@@ -215,6 +217,16 @@ const {
   entrancesMappingFilter,
   activeMapId,
 } = storeToRefs(uiStore);
+
+const autotracker = useAutotracker({
+  availableItemIds: availableItemIds,
+  onInventoryUpdate: (inventory) => {
+    sessionStore.setInventoryFromMap(
+      new Map(Object.entries(inventory).filter(([, v]) => v > 0)),
+      { source: 'remote', recordHistory: false },
+    );
+  },
+});
 
 const settingsRef = ref<SettingsPanelHandle | null>(null);
 const isStatsCollapsed = ref(true);
@@ -1975,6 +1987,7 @@ onBeforeUnmount(() => {
   if (windowWithHandlers.__TLT_RESET_TRACKER_STATE__ === resetTrackerState) {
     delete windowWithHandlers.__TLT_RESET_TRACKER_STATE__;
   }
+  autotracker.destroy();
   sessionStore.stopLocalSessionSync();
   mobileTrackerLayoutQuery?.removeEventListener(
     'change',
@@ -2217,6 +2230,12 @@ onBeforeUnmount(() => {
           >
             Redo ↷
           </button>
+          <AutotrackerToggle
+            :status="autotracker.status.value"
+            :enabled="autotracker.enabled.value"
+            :last-error="autotracker.lastError.value"
+            @update:enabled="autotracker.enabled.value = $event"
+          />
         </div>
       </div>
 
