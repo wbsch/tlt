@@ -225,6 +225,29 @@ export const TRACKER_FAQ_SECTIONS: TrackerFaqSection[] = [
           },
         ],
       },
+      {
+        id: 'unsupported-randomizer-settings',
+        question:
+          'Which randomizer settings are not supported by thelasttracker.org?',
+        blocks: [
+          {
+            type: 'paragraph',
+            text: 'The tracker supports most options from the current Stable Randomizer version. However, the following settings are not supported and may not be reflected in reachability or mapping:',
+          },
+          {
+            type: 'list',
+            items: [
+              'No Entrance Polarity',
+              'Decoupled Entrances',
+              'Overworld Shuffle (Major Regions Shuffle already supported!)',
+              'Spawn Shuffle',
+              'Wallmaster Shuffle',
+              'Warp Songs and Soaring Spots Shuffle',
+              'One-Ways Shuffle',
+            ],
+          },
+        ],
+      },
     ],
   },
 ];
