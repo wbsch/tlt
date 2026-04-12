@@ -220,6 +220,7 @@ const {
 
 const autotracker = useAutotracker({
   availableItemIds: availableItemIds,
+  itemMaxCounts: itemMaxCounts,
   onInventoryUpdate: (inventory) => {
     sessionStore.setInventoryFromMap(
       new Map(Object.entries(inventory).filter(([, v]) => v > 0)),

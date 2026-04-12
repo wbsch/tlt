@@ -9,6 +9,8 @@
  *   - Inventory slot raw values (OOT_ADULT_TRADE → individual trade items)
  */
 
+import { ITEM_DATABASE } from '../data/items';
+
 // ---------------------------------------------------------------------------
 // 1. Simple 1:1 renames
 // ---------------------------------------------------------------------------
@@ -117,10 +119,18 @@ const MM_DUNGEON_MAPPINGS: DungeonMapping[] = [
   { autoPrefix: 'MM_STONE_TOWER_TEMPLE', trackerAbbrev: 'ST' },
 ];
 
+const EXTRA_DUNGEON_MAPPINGS: DungeonMapping[] = [
+  { autoPrefix: 'OOT_TREASURE_SHOP', trackerAbbrev: 'TCG' },
+];
+
 function tryDungeonItemRename(
   autoId: string,
 ): { trackerId: string; isCount: boolean } | null {
-  const allMappings = [...OOT_DUNGEON_MAPPINGS, ...MM_DUNGEON_MAPPINGS];
+  const allMappings = [
+    ...OOT_DUNGEON_MAPPINGS,
+    ...MM_DUNGEON_MAPPINGS,
+    ...EXTRA_DUNGEON_MAPPINGS,
+  ];
   const gamePrefix = autoId.startsWith('MM_') ? 'MM' : 'OOT';
 
   for (const { autoPrefix, trackerAbbrev } of allMappings) {
@@ -281,6 +291,337 @@ const SHAREABLE_PREFIXES = [
   'PLATINUM_TOKEN',
 ];
 
+const DEFAULT_ITEM_MAX_COUNTS = new Map(
+  ITEM_DATABASE.filter(
+    (item): item is (typeof ITEM_DATABASE)[number] & { maxCount: number } =>
+      typeof item.maxCount === 'number',
+  ).map((item) => [item.id, item.maxCount]),
+);
+
+interface KeyGroup {
+  smallKeyId: string;
+  keyRingId: string;
+}
+
+interface SilverGroup {
+  rupeeId: string;
+  pouchId: string;
+}
+
+const OOT_KEY_GROUPS: KeyGroup[] = [
+  { smallKeyId: 'OOT_SMALL_KEY_FOREST', keyRingId: 'OOT_KEY_RING_FOREST' },
+  { smallKeyId: 'OOT_SMALL_KEY_FIRE', keyRingId: 'OOT_KEY_RING_FIRE' },
+  { smallKeyId: 'OOT_SMALL_KEY_WATER', keyRingId: 'OOT_KEY_RING_WATER' },
+  { smallKeyId: 'OOT_SMALL_KEY_SPIRIT', keyRingId: 'OOT_KEY_RING_SPIRIT' },
+  { smallKeyId: 'OOT_SMALL_KEY_SHADOW', keyRingId: 'OOT_KEY_RING_SHADOW' },
+  { smallKeyId: 'OOT_SMALL_KEY_BOTW', keyRingId: 'OOT_KEY_RING_BOTW' },
+  { smallKeyId: 'OOT_SMALL_KEY_GTG', keyRingId: 'OOT_KEY_RING_GTG' },
+  { smallKeyId: 'OOT_SMALL_KEY_GANON', keyRingId: 'OOT_KEY_RING_GANON' },
+  { smallKeyId: 'OOT_SMALL_KEY_GF', keyRingId: 'OOT_KEY_RING_GF' },
+  { smallKeyId: 'OOT_SMALL_KEY_TCG', keyRingId: 'OOT_KEY_RING_TCG' },
+];
+
+const MM_KEY_GROUPS: KeyGroup[] = [
+  { smallKeyId: 'MM_SMALL_KEY_WF', keyRingId: 'MM_KEY_RING_WF' },
+  { smallKeyId: 'MM_SMALL_KEY_SH', keyRingId: 'MM_KEY_RING_SH' },
+  { smallKeyId: 'MM_SMALL_KEY_GB', keyRingId: 'MM_KEY_RING_GB' },
+  { smallKeyId: 'MM_SMALL_KEY_ST', keyRingId: 'MM_KEY_RING_ST' },
+];
+
+const OOT_SILVER_GROUPS: SilverGroup[] = [
+  { rupeeId: 'OOT_RUPEE_SILVER_DC', pouchId: 'OOT_POUCH_SILVER_DC' },
+  { rupeeId: 'OOT_RUPEE_SILVER_BOTW', pouchId: 'OOT_POUCH_SILVER_BOTW' },
+  {
+    rupeeId: 'OOT_RUPEE_SILVER_SPIRIT_CHILD',
+    pouchId: 'OOT_POUCH_SILVER_SPIRIT_CHILD',
+  },
+  {
+    rupeeId: 'OOT_RUPEE_SILVER_SPIRIT_SUN',
+    pouchId: 'OOT_POUCH_SILVER_SPIRIT_SUN',
+  },
+  {
+    rupeeId: 'OOT_RUPEE_SILVER_SPIRIT_BOULDERS',
+    pouchId: 'OOT_POUCH_SILVER_SPIRIT_BOULDERS',
+  },
+  {
+    rupeeId: 'OOT_RUPEE_SILVER_SPIRIT_LOBBY',
+    pouchId: 'OOT_POUCH_SILVER_SPIRIT_LOBBY',
+  },
+  {
+    rupeeId: 'OOT_RUPEE_SILVER_SPIRIT_ADULT',
+    pouchId: 'OOT_POUCH_SILVER_SPIRIT_ADULT',
+  },
+  {
+    rupeeId: 'OOT_RUPEE_SILVER_SHADOW_SCYTHE',
+    pouchId: 'OOT_POUCH_SILVER_SHADOW_SCYTHE',
+  },
+  {
+    rupeeId: 'OOT_RUPEE_SILVER_SHADOW_PIT',
+    pouchId: 'OOT_POUCH_SILVER_SHADOW_PIT',
+  },
+  {
+    rupeeId: 'OOT_RUPEE_SILVER_SHADOW_SPIKES',
+    pouchId: 'OOT_POUCH_SILVER_SHADOW_SPIKES',
+  },
+  {
+    rupeeId: 'OOT_RUPEE_SILVER_SHADOW_BLADES',
+    pouchId: 'OOT_POUCH_SILVER_SHADOW_BLADES',
+  },
+  {
+    rupeeId: 'OOT_RUPEE_SILVER_IC_SCYTHE',
+    pouchId: 'OOT_POUCH_SILVER_IC_SCYTHE',
+  },
+  {
+    rupeeId: 'OOT_RUPEE_SILVER_IC_BLOCK',
+    pouchId: 'OOT_POUCH_SILVER_IC_BLOCK',
+  },
+  {
+    rupeeId: 'OOT_RUPEE_SILVER_GTG_SLOPES',
+    pouchId: 'OOT_POUCH_SILVER_GTG_SLOPES',
+  },
+  {
+    rupeeId: 'OOT_RUPEE_SILVER_GTG_LAVA',
+    pouchId: 'OOT_POUCH_SILVER_GTG_LAVA',
+  },
+  {
+    rupeeId: 'OOT_RUPEE_SILVER_GTG_WATER',
+    pouchId: 'OOT_POUCH_SILVER_GTG_WATER',
+  },
+  {
+    rupeeId: 'OOT_RUPEE_SILVER_GANON_SPIRIT',
+    pouchId: 'OOT_POUCH_SILVER_GANON_SPIRIT',
+  },
+  {
+    rupeeId: 'OOT_RUPEE_SILVER_GANON_LIGHT',
+    pouchId: 'OOT_POUCH_SILVER_GANON_LIGHT',
+  },
+  {
+    rupeeId: 'OOT_RUPEE_SILVER_GANON_FIRE',
+    pouchId: 'OOT_POUCH_SILVER_GANON_FIRE',
+  },
+  {
+    rupeeId: 'OOT_RUPEE_SILVER_GANON_FOREST',
+    pouchId: 'OOT_POUCH_SILVER_GANON_FOREST',
+  },
+  {
+    rupeeId: 'OOT_RUPEE_SILVER_GANON_SHADOW',
+    pouchId: 'OOT_POUCH_SILVER_GANON_SHADOW',
+  },
+  {
+    rupeeId: 'OOT_RUPEE_SILVER_GANON_WATER',
+    pouchId: 'OOT_POUCH_SILVER_GANON_WATER',
+  },
+];
+
+const MM_FAIRY_ITEM_IDS = [
+  'MM_STRAY_FAIRY_TOWN',
+  'MM_STRAY_FAIRY_WF',
+  'MM_STRAY_FAIRY_SH',
+  'MM_STRAY_FAIRY_GB',
+  'MM_STRAY_FAIRY_ST',
+] as const;
+
+function getItemCount(state: Record<string, number>, itemId: string): number {
+  return state[itemId] ?? 0;
+}
+
+function getItemMaxCount(
+  itemId: string,
+  itemMaxCounts: Map<string, number>,
+): number {
+  return itemMaxCounts.get(itemId) ?? DEFAULT_ITEM_MAX_COUNTS.get(itemId) ?? 1;
+}
+
+function isItemGroupRelevant(
+  availableItemIds: Set<string>,
+  itemIds: string[],
+): boolean {
+  return itemIds.some((itemId) => availableItemIds.has(itemId));
+}
+
+function isKeyGroupComplete(
+  state: Record<string, number>,
+  group: KeyGroup,
+  itemMaxCounts: Map<string, number>,
+): boolean {
+  return (
+    getItemCount(state, group.keyRingId) > 0 ||
+    getItemCount(state, group.smallKeyId) >=
+      getItemMaxCount(group.smallKeyId, itemMaxCounts)
+  );
+}
+
+function isSilverGroupComplete(
+  state: Record<string, number>,
+  group: SilverGroup,
+  itemMaxCounts: Map<string, number>,
+): boolean {
+  return (
+    getItemCount(state, group.pouchId) > 0 ||
+    getItemCount(state, group.rupeeId) >=
+      getItemMaxCount(group.rupeeId, itemMaxCounts)
+  );
+}
+
+function areKeyGroupsComplete(
+  state: Record<string, number>,
+  groups: KeyGroup[],
+  availableItemIds: Set<string>,
+  itemMaxCounts: Map<string, number>,
+): boolean {
+  const relevantGroups = groups.filter((group) =>
+    isItemGroupRelevant(availableItemIds, [group.smallKeyId, group.keyRingId]),
+  );
+  return (
+    relevantGroups.length > 0 &&
+    relevantGroups.every((group) =>
+      isKeyGroupComplete(state, group, itemMaxCounts),
+    )
+  );
+}
+
+function areSilverGroupsComplete(
+  state: Record<string, number>,
+  groups: SilverGroup[],
+  availableItemIds: Set<string>,
+  itemMaxCounts: Map<string, number>,
+): boolean {
+  const relevantGroups = groups.filter((group) =>
+    isItemGroupRelevant(availableItemIds, [group.rupeeId, group.pouchId]),
+  );
+  return (
+    relevantGroups.length > 0 &&
+    relevantGroups.every((group) =>
+      isSilverGroupComplete(state, group, itemMaxCounts),
+    )
+  );
+}
+
+function areCountItemsComplete(
+  state: Record<string, number>,
+  itemIds: string[],
+  availableItemIds: Set<string>,
+  itemMaxCounts: Map<string, number>,
+): boolean {
+  const relevantItemIds = itemIds.filter((itemId) =>
+    availableItemIds.has(itemId),
+  );
+  return (
+    relevantItemIds.length > 0 &&
+    relevantItemIds.every(
+      (itemId) =>
+        getItemCount(state, itemId) >= getItemMaxCount(itemId, itemMaxCounts),
+    )
+  );
+}
+
+function setDerivedExact(
+  state: Record<string, number>,
+  availableItemIds: Set<string>,
+  itemId: string,
+  obtained: boolean,
+) {
+  if (!availableItemIds.has(itemId)) return;
+  if (obtained) {
+    state[itemId] = 1;
+    return;
+  }
+  delete state[itemId];
+}
+
+function deriveAutotrackerOnlyItems(
+  state: Record<string, number>,
+  availableItemIds: Set<string>,
+  itemMaxCounts: Map<string, number>,
+) {
+  for (const group of OOT_KEY_GROUPS) {
+    setDerivedExact(
+      state,
+      availableItemIds,
+      group.keyRingId,
+      isItemGroupRelevant(availableItemIds, [
+        group.smallKeyId,
+        group.keyRingId,
+      ]) && isKeyGroupComplete(state, group, itemMaxCounts),
+    );
+  }
+
+  for (const group of MM_KEY_GROUPS) {
+    setDerivedExact(
+      state,
+      availableItemIds,
+      group.keyRingId,
+      isItemGroupRelevant(availableItemIds, [
+        group.smallKeyId,
+        group.keyRingId,
+      ]) && isKeyGroupComplete(state, group, itemMaxCounts),
+    );
+  }
+
+  const ootAllKeys = areKeyGroupsComplete(
+    state,
+    OOT_KEY_GROUPS,
+    availableItemIds,
+    itemMaxCounts,
+  );
+  const mmAllKeys = areKeyGroupsComplete(
+    state,
+    MM_KEY_GROUPS,
+    availableItemIds,
+    itemMaxCounts,
+  );
+  const ootAllSilver = areSilverGroupsComplete(
+    state,
+    OOT_SILVER_GROUPS,
+    availableItemIds,
+    itemMaxCounts,
+  );
+  const mmAllFairies = areCountItemsComplete(
+    state,
+    [...MM_FAIRY_ITEM_IDS],
+    availableItemIds,
+    itemMaxCounts,
+  );
+  const ootAllTokens = areCountItemsComplete(
+    state,
+    ['OOT_GS_TOKEN'],
+    availableItemIds,
+    itemMaxCounts,
+  );
+  const mmAllTokens = areCountItemsComplete(
+    state,
+    ['MM_GS_TOKEN_SWAMP', 'MM_GS_TOKEN_OCEAN'],
+    availableItemIds,
+    itemMaxCounts,
+  );
+
+  setDerivedExact(state, availableItemIds, 'OOT_KEY_RING', ootAllKeys);
+  setDerivedExact(state, availableItemIds, 'MM_KEY_RING', mmAllKeys);
+  setDerivedExact(state, availableItemIds, 'OOT_SKELETON_KEY', ootAllKeys);
+  setDerivedExact(state, availableItemIds, 'MM_SKELETON_KEY', mmAllKeys);
+  setDerivedExact(
+    state,
+    availableItemIds,
+    'SHARED_SKELETON_KEY',
+    ootAllKeys && mmAllKeys,
+  );
+  setDerivedExact(state, availableItemIds, 'OOT_PLATINUM_TOKEN', ootAllTokens);
+  setDerivedExact(state, availableItemIds, 'MM_PLATINUM_TOKEN', mmAllTokens);
+  setDerivedExact(
+    state,
+    availableItemIds,
+    'SHARED_PLATINUM_TOKEN',
+    ootAllTokens && mmAllTokens,
+  );
+  setDerivedExact(state, availableItemIds, 'OOT_RUPEE_MAGICAL', ootAllSilver);
+  setDerivedExact(
+    state,
+    availableItemIds,
+    'MM_TRANSCENDENT_FAIRY',
+    mmAllFairies,
+  );
+}
+
 function resolveTrackerId(
   gameSpecificId: string,
   availableItemIds: Set<string>,
@@ -316,6 +657,7 @@ export interface AutotrackerItem {
 export function translateAutotrackerItems(
   items: AutotrackerItem[],
   availableItemIds: Set<string>,
+  itemMaxCounts: Map<string, number>,
 ): Record<string, number> {
   const result: Record<string, number> = {};
 
@@ -384,6 +726,8 @@ export function translateAutotrackerItems(
     set(id, qty);
   }
 
+  deriveAutotrackerOnlyItems(result, availableItemIds, itemMaxCounts);
+
   return result;
 }
 
@@ -395,9 +739,14 @@ export function applyDelta(
   currentState: Map<string, number>,
   deltaItems: AutotrackerItem[],
   availableItemIds: Set<string>,
+  itemMaxCounts: Map<string, number>,
 ): Map<string, number> {
   const next = new Map(currentState);
-  const translated = translateAutotrackerItems(deltaItems, availableItemIds);
+  const translated = translateAutotrackerItems(
+    deltaItems,
+    availableItemIds,
+    itemMaxCounts,
+  );
   for (const [id, deltaQty] of Object.entries(translated)) {
     const current = next.get(id) ?? 0;
     const newVal = current + deltaQty;
@@ -407,5 +756,8 @@ export function applyDelta(
       next.delete(id);
     }
   }
-  return next;
+
+  const canonical = Object.fromEntries(next.entries());
+  deriveAutotrackerOnlyItems(canonical, availableItemIds, itemMaxCounts);
+  return new Map(Object.entries(canonical));
 }

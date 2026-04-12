@@ -14,6 +14,8 @@ export type AutotrackerStatus =
 interface AutotrackerOptions {
   /** Available item IDs from the tracker (setting-dependent). */
   availableItemIds: Ref<Set<string>>;
+  /** Effective item max counts from the tracker (setting-dependent). */
+  itemMaxCounts: Ref<Map<string, number>>;
   /** Called when the autotracker has new inventory to apply. */
   onInventoryUpdate: (inventory: Record<string, number>) => void;
 }
@@ -134,6 +136,7 @@ export function useAutotracker(options: AutotrackerOptions) {
     const translated = translateAutotrackerItems(
       msg.items,
       options.availableItemIds.value,
+      options.itemMaxCounts.value,
     );
 
     if (isInFullSync && !msg.diff) {
@@ -152,6 +155,7 @@ export function useAutotracker(options: AutotrackerOptions) {
         liveState,
         msg.items,
         options.availableItemIds.value,
+        options.itemMaxCounts.value,
       );
       if (msg.refresh) {
         pushToTracker();
