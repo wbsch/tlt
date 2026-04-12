@@ -1,5 +1,10 @@
-import { expect, test, type Page } from '@playwright/test';
-import { resetLocalStorageAndReload, TEST_TIMEOUTS } from './helpers/tracker';
+import { expect, test as base, type Page } from '@playwright/test';
+import {
+  captureTrackerStorageState,
+  gotoTracker,
+  TEST_TIMEOUTS,
+  type TrackerStorageState,
+} from './helpers/tracker';
 
 function mapSubmenuEntranceSelect(page: Page, label: string) {
   return page
@@ -176,6 +181,47 @@ async function openLowestEntranceSubmenuInput(page: Page) {
   return targetInput;
 }
 
+const MOBILE_CONTEXT_OPTIONS = {
+  viewport: { width: 390, height: 844 },
+  hasTouch: true,
+  isMobile: true,
+} as const;
+
+const test = base.extend<
+  Record<string, never>,
+  { interiorErMobileStorageState: TrackerStorageState }
+>({
+  interiorErMobileStorageState: [
+    async ({ browser }, use) => {
+      const storageState = await captureTrackerStorageState(
+        browser,
+        applyInteriorErSettings,
+        MOBILE_CONTEXT_OPTIONS,
+      );
+      await use(storageState);
+    },
+    { scope: 'worker' },
+  ],
+  context: async ({ browser, interiorErMobileStorageState }, use) => {
+    const context = await browser.newContext({
+      ...MOBILE_CONTEXT_OPTIONS,
+      storageState: interiorErMobileStorageState,
+    });
+    try {
+      await use(context);
+    } finally {
+      await context.close();
+    }
+  },
+  page: async ({ context }, use) => {
+    const page = await context.newPage();
+    await gotoTracker(page);
+    await use(page);
+  },
+});
+
+test.describe.configure({ mode: 'parallel' });
+
 test.describe('mobile entrance submenu layout', () => {
   test.use({
     viewport: { width: 390, height: 844 },
@@ -186,8 +232,6 @@ test.describe('mobile entrance submenu layout', () => {
   test('keeps entrance comboboxes inside the submenu panel', async ({
     page,
   }) => {
-    await resetLocalStorageAndReload(page);
-    await applyInteriorErSettings(page);
     await selectMapFromToolbar(page, 'Kokiri Forest');
     await resetMapFiltersToAll(page);
     await openMapSubmenuForEntranceLabel(page, "Link's House");
@@ -209,8 +253,6 @@ test.describe('mobile entrance submenu layout', () => {
   test('opens lower entrance dropdowns upward when needed', async ({
     page,
   }) => {
-    await resetLocalStorageAndReload(page);
-    await applyInteriorErSettings(page);
     await selectMapFromToolbar(page, 'Hyrule Field');
     await resetMapFiltersToAll(page);
 

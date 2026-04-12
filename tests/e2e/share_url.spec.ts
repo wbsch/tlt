@@ -1,7 +1,7 @@
 import { expect, test, type Page } from '@playwright/test';
 import { deflateRaw } from 'pako';
 import {
-  resetLocalStorageAndReload,
+  gotoTracker,
   TEST_TIMEOUTS,
   waitForAllReachable,
   waitForBoot,
@@ -63,15 +63,20 @@ async function readPersistedJson(
   }, storageKey);
 }
 
+test.describe.configure({ mode: 'parallel' });
+
 test.describe('share URL import/export', () => {
+  test.beforeEach(async ({ page }) => {
+    await installClipboardStub(page);
+    await gotoTracker(page);
+  });
+
   test('roundtrips full tracker progress through URL hash', async ({
     page,
   }) => {
     // This test performs two full boot cycles (initial + after share-URL
     // import) and hydrates the entire tracker state, so give it extra time.
     test.setTimeout(TEST_TIMEOUTS.LONG_OPERATION);
-    await installClipboardStub(page);
-    await resetLocalStorageAndReload(page);
 
     await page.getByTestId('debug-activate-all-button').click();
     await waitForAllReachable(page);
@@ -103,9 +108,6 @@ test.describe('share URL import/export', () => {
   test('drops invalid shared state fields and shows a partial-import warning', async ({
     page,
   }) => {
-    await installClipboardStub(page);
-    await resetLocalStorageAndReload(page);
-
     const partialShareUrl = buildShareUrl(page.url(), {
       v: 1,
       ignoredTopLevel: true,
@@ -189,9 +191,6 @@ test.describe('share URL import/export', () => {
   test('treats tracker-canonicalized shared settings as a partial import', async ({
     page,
   }) => {
-    await installClipboardStub(page);
-    await resetLocalStorageAndReload(page);
-
     const partialShareUrl = buildShareUrl(page.url(), {
       v: 1,
       stores: {
@@ -243,8 +242,6 @@ test.describe('share URL import/export', () => {
   test('hashchange imports partial shared state and shows the warning after reload', async ({
     page,
   }) => {
-    await installClipboardStub(page);
-    await resetLocalStorageAndReload(page);
     await waitForBoot(page);
 
     const payload = encodeSharePayload({
@@ -292,9 +289,6 @@ test.describe('share URL import/export', () => {
   test('rejects oversized share payloads without importing anything', async ({
     page,
   }) => {
-    await installClipboardStub(page);
-    await resetLocalStorageAndReload(page);
-
     const oversizedShareUrl = buildShareUrl(page.url(), {
       v: 1,
       stores: {
@@ -335,9 +329,6 @@ test.describe('share URL import/export', () => {
   test('canceling import preserves existing local progress', async ({
     page,
   }) => {
-    await installClipboardStub(page);
-    await resetLocalStorageAndReload(page);
-
     await page.getByTestId('export-state-button').click();
     const baselineShareUrl = await readCopiedShareUrl(page);
     expect(baselineShareUrl).toContain('#s=v1.');

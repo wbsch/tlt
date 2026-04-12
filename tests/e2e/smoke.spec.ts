@@ -1,7 +1,7 @@
 import { expect, test } from '@playwright/test';
 import {
+  gotoTracker,
   readTrackerStats,
-  resetLocalStorageAndReload,
   TEST_TIMEOUTS,
   waitForAllReachable,
   waitForBoot,
@@ -11,9 +11,22 @@ import {
 const BUILD_COMMIT_DATE_PATTERN = /^\d{4}-\d{2}-\d{2}$/;
 const BUILD_COMMIT_HASH_PATTERN = /^[0-9a-f]{7,40}$/i;
 
+async function expectOverlayToStayHidden(
+  page: import('@playwright/test').Page,
+) {
+  const overlay = page.getByTestId('applying-settings-overlay');
+  await expect
+    .poll(async () => await overlay.count(), {
+      timeout: 750,
+    })
+    .toBe(0);
+}
+
+test.describe.configure({ mode: 'parallel' });
+
 test.describe('OoTMM smoke', () => {
   test.beforeEach(async ({ page }) => {
-    await resetLocalStorageAndReload(page);
+    await gotoTracker(page);
   });
 
   test('boot and shell render', async ({ page }) => {
@@ -102,8 +115,7 @@ test.describe('OoTMM smoke', () => {
     await firstTrick.click();
 
     const overlay = page.getByTestId('applying-settings-overlay');
-    await page.waitForTimeout(250);
-    await expect(overlay).toHaveCount(0);
+    await expectOverlayToStayHidden(page);
 
     await page.getByTestId('apply-tricks-button').click();
     // Overlay visibility can be very brief when the main thread is blocked
@@ -130,9 +142,7 @@ test.describe('OoTMM smoke', () => {
     const initial = await firstTrick.isChecked();
     await firstTrick.click();
 
-    const overlay = page.getByTestId('applying-settings-overlay');
-    await page.waitForTimeout(250);
-    await expect(overlay).toHaveCount(0);
+    await expectOverlayToStayHidden(page);
 
     await page.getByTestId('reset-tricks-button').click();
     if (initial) {
@@ -142,8 +152,7 @@ test.describe('OoTMM smoke', () => {
     }
 
     await page.getByTestId('tab-items').click();
-    await page.waitForTimeout(250);
-    await expect(overlay).toHaveCount(0);
+    await expectOverlayToStayHidden(page);
   });
 
   test('tricks auto-apply when leaving tab with unsaved changes', async ({
@@ -179,10 +188,8 @@ test.describe('OoTMM smoke', () => {
   }) => {
     await page.getByTestId('tab-tricks').click();
 
-    const overlay = page.getByTestId('applying-settings-overlay');
     await page.getByTestId('tab-items').click();
-    await page.waitForTimeout(250);
-    await expect(overlay).toHaveCount(0);
+    await expectOverlayToStayHidden(page);
   });
 
   test('reset tracker state path recovers cleanly', async ({ page }) => {

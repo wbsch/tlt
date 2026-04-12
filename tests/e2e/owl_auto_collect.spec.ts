@@ -1,5 +1,5 @@
 import { expect, test, type Locator, type Page } from '@playwright/test';
-import { resetLocalStorageAndReload, TEST_TIMEOUTS } from './helpers/tracker';
+import { gotoTracker, TEST_TIMEOUTS } from './helpers/tracker';
 import { entranceCombobox, selectEntranceByLabel } from './helpers/entrance';
 
 const REQUIRED_ITEMS: Record<string, number> = {
@@ -122,7 +122,7 @@ async function getLocationRow(page: Page, name: string): Promise<Locator> {
 
 test.describe('Vanilla owl statue auto-collection', () => {
   test.beforeEach(async ({ page }) => {
-    await resetLocalStorageAndReload(page);
+    await gotoTracker(page);
   });
 
   test('reachable vanilla owl statues count as collected for reachability', async ({

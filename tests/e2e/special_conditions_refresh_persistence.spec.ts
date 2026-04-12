@@ -1,9 +1,5 @@
 import { expect, test, type Locator, type Page } from '@playwright/test';
-import {
-  resetLocalStorageAndReload,
-  TEST_TIMEOUTS,
-  waitForBoot,
-} from './helpers/tracker';
+import { gotoTracker, TEST_TIMEOUTS, waitForBoot } from './helpers/tracker';
 
 function moonAccessCard(page: Page): Locator {
   return page
@@ -62,7 +58,7 @@ async function readMoonSpecialCondFromLocalStorage(
 
 test.describe('Special condition refresh persistence', () => {
   test.beforeEach(async ({ page }) => {
-    await resetLocalStorageAndReload(page);
+    await gotoTracker(page);
   });
 
   test('Moon Access special condition keeps edited values after refresh', async ({

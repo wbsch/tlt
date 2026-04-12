@@ -1,7 +1,7 @@
 import { expect, test } from '@playwright/test';
 import {
+  gotoTracker,
   readReachableFraction,
-  resetLocalStorageAndReload,
   TEST_TIMEOUTS,
   waitForReachableFraction,
 } from './helpers/tracker';
@@ -13,7 +13,7 @@ import {
 
 test.describe('Dungeon Entrance Randomizer', () => {
   test.beforeEach(async ({ page }) => {
-    await resetLocalStorageAndReload(page);
+    await gotoTracker(page);
   });
 
   test('mapping and unmapping a dungeon entrance changes reachability', async ({
@@ -74,7 +74,6 @@ test.describe('Dungeon Entrance Randomizer', () => {
     await selectEntranceByLabel(dekuTreeInput, 'Forest Temple');
 
     // --- Step 4: Wait for reinit, verify more checks reachable ---
-    await page.waitForTimeout(500);
     await expect
       .poll(
         async () => {
@@ -92,7 +91,6 @@ test.describe('Dungeon Entrance Randomizer', () => {
     await clearEntranceMapping(dekuTreeInput);
 
     // --- Step 6: Wait for reinit, verify fewer checks reachable ---
-    await page.waitForTimeout(500);
     await expect
       .poll(
         async () => {

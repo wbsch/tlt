@@ -1,7 +1,9 @@
-import { expect, test, type Page } from '@playwright/test';
+import { expect, test as base, type Page } from '@playwright/test';
 import {
-  resetLocalStorageAndReload,
+  captureTrackerStorageState,
+  gotoTracker,
   TEST_TIMEOUTS,
+  type TrackerStorageState,
   waitForReachableFraction,
   waitForAllReachable,
 } from './helpers/tracker';
@@ -74,14 +76,44 @@ const TARGET_LOCATIONS = [
   { search: 'Stock Pot Inn Room Key', label: 'Stock Pot Inn Room Key' },
 ];
 
+const test = base.extend<
+  Record<string, never>,
+  { clocksEnabledStorageState: TrackerStorageState }
+>({
+  clocksEnabledStorageState: [
+    async ({ browser }, use) => {
+      const storageState = await captureTrackerStorageState(
+        browser,
+        async (page) => {
+          await enableClocksAsItems(page);
+          await waitForReachableFraction(page, TEST_TIMEOUTS.BOOT_REACHABLE);
+        },
+      );
+      await use(storageState);
+    },
+    { scope: 'worker' },
+  ],
+  context: async ({ browser, clocksEnabledStorageState }, use) => {
+    const context = await browser.newContext({
+      storageState: clocksEnabledStorageState,
+    });
+    try {
+      await use(context);
+    } finally {
+      await context.close();
+    }
+  },
+  page: async ({ context }, use) => {
+    const page = await context.newPage();
+    await gotoTracker(page);
+    await use(page);
+  },
+});
+
+test.describe.configure({ mode: 'parallel' });
+
 test.describe('OoTMM clock gating', () => {
   test.setTimeout(60_000);
-
-  test.beforeEach(async ({ page }) => {
-    await resetLocalStorageAndReload(page);
-    await enableClocksAsItems(page);
-    await waitForReachableFraction(page, TEST_TIMEOUTS.BOOT_REACHABLE);
-  });
 
   test('time-gated checks are unreachable with only ocarina + song of time', async ({
     page,

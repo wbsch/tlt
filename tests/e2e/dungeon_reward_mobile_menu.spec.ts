@@ -1,5 +1,5 @@
 import { expect, test, type Locator, type Page } from '@playwright/test';
-import { resetLocalStorageAndReload, TEST_TIMEOUTS } from './helpers/tracker';
+import { gotoTracker, TEST_TIMEOUTS } from './helpers/tracker';
 
 const REWARD_ITEM_ID = 'OOT_STONE_EMERALD';
 
@@ -11,6 +11,7 @@ async function getGridItem(page: Page, itemId: string): Promise<Locator> {
 
 async function longPressGridItem(page: Page, itemId: string): Promise<void> {
   const tile = await getGridItem(page, itemId);
+  const menu = page.getByTestId(`grid-wheel-menu-${itemId}`);
   const box = await tile.boundingBox();
   if (!box) {
     throw new Error(`Expected bounding box for grid item ${itemId}`);
@@ -28,7 +29,7 @@ async function longPressGridItem(page: Page, itemId: string): Promise<void> {
     clientX,
     clientY,
   });
-  await page.waitForTimeout(550);
+  await expect(menu).toBeVisible({ timeout: TEST_TIMEOUTS.DEFAULT_EXPECT });
   await tile.dispatchEvent('pointerup', {
     pointerId: 1,
     pointerType: 'touch',
@@ -50,7 +51,7 @@ test.describe('mobile dungeon reward menu', () => {
   test('opens on long press and applies the selected dungeon layout', async ({
     page,
   }) => {
-    await resetLocalStorageAndReload(page);
+    await gotoTracker(page);
     await page.getByTestId('tab-items').click();
 
     const tile = await getGridItem(page, REWARD_ITEM_ID);

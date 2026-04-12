@@ -1,9 +1,5 @@
 import { expect, test, type Page } from '@playwright/test';
-import {
-  resetLocalStorageAndReload,
-  TEST_TIMEOUTS,
-  waitForBoot,
-} from './helpers/tracker';
+import { gotoTracker, TEST_TIMEOUTS, waitForBoot } from './helpers/tracker';
 
 const BOMB_TEST_ID = 'inventory-item-card-OOT_BOMB_BAG';
 const SWORD_TEST_ID = 'inventory-item-card-OOT_SWORD_KOKIRI';
@@ -15,7 +11,7 @@ async function isOwned(page: Page, testId: string): Promise<boolean> {
 
 test.describe('multi-tab sync', () => {
   test.beforeEach(async ({ page }) => {
-    await resetLocalStorageAndReload(page);
+    await gotoTracker(page);
   });
 
   test('syncs gameplay changes across two tabs without overwriting', async ({

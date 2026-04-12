@@ -1,9 +1,5 @@
 import { expect, test, type Page } from '@playwright/test';
-import {
-  resetLocalStorageAndReload,
-  TEST_TIMEOUTS,
-  waitForBoot,
-} from './helpers/tracker';
+import { gotoTracker, TEST_TIMEOUTS, waitForBoot } from './helpers/tracker';
 import {
   entranceCombobox,
   selectEntranceById,
@@ -213,9 +209,11 @@ function entranceMappingGroup(page: Page) {
   );
 }
 
+test.describe.configure({ mode: 'parallel' });
+
 test.describe('Entrance mapping refresh persistence', () => {
   test.beforeEach(async ({ page }) => {
-    await resetLocalStorageAndReload(page);
+    await gotoTracker(page);
   });
 
   test('Deku Tree can be mapped to Clock Tower Roof via the Entrances UI', async ({

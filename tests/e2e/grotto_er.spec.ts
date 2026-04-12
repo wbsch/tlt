@@ -1,5 +1,5 @@
 import { expect, test } from '@playwright/test';
-import { resetLocalStorageAndReload, TEST_TIMEOUTS } from './helpers/tracker';
+import { gotoTracker, TEST_TIMEOUTS } from './helpers/tracker';
 import { entranceCombobox, selectEntranceByLabel } from './helpers/entrance';
 
 async function openEntrancesTab(page: import('@playwright/test').Page) {
@@ -66,7 +66,7 @@ async function selectMapFromToolbar(
 
 test.describe('Grotto Entrance Randomizer', () => {
   test.beforeEach(async ({ page }) => {
-    await resetLocalStorageAndReload(page);
+    await gotoTracker(page);
   });
 
   test('mapped Deku Theater grotto stays in the reachable list', async ({

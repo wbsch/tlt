@@ -1,9 +1,9 @@
 import { expect, test } from '@playwright/test';
-import { resetLocalStorageAndReload, waitForBoot } from './helpers/tracker';
+import { gotoTracker, waitForBoot } from './helpers/tracker';
 
 test.describe('tracker FAQ', () => {
   test.beforeEach(async ({ page }) => {
-    await resetLocalStorageAndReload(page);
+    await gotoTracker(page);
   });
 
   test('opens, expands questions, and closes again', async ({ page }) => {

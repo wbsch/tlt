@@ -1,6 +1,6 @@
 import { expect, test, type Page } from '@playwright/test';
 import {
-  resetLocalStorageAndReload,
+  gotoTracker,
   TEST_TIMEOUTS,
   waitForReachableFraction,
 } from './helpers/tracker';
@@ -130,7 +130,7 @@ test.describe('Clock Town Platform HP with interior ER game links', () => {
   test.setTimeout(90_000);
 
   test.beforeEach(async ({ page }) => {
-    await resetLocalStorageAndReload(page);
+    await gotoTracker(page);
   });
 
   test('unreachable without items, reachable with soaring + crossWarpMm', async ({

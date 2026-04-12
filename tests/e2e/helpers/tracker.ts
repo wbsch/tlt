@@ -1,4 +1,11 @@
-import { expect, type Locator, type Page } from '@playwright/test';
+import {
+  expect,
+  type Browser,
+  type BrowserContext,
+  type BrowserContextOptions,
+  type Page,
+  type Locator,
+} from '@playwright/test';
 
 export const TEST_TIMEOUTS = {
   DEFAULT_EXPECT: 10_000,
@@ -29,6 +36,10 @@ export type TrackerStats = {
   checked: number;
   remaining: number;
 };
+
+export type TrackerStorageState = Awaited<
+  ReturnType<BrowserContext['storageState']>
+>;
 
 function parseReachableFraction(raw: string): ReachableFraction {
   const match = raw.match(FRACTION_PATTERN);
@@ -166,9 +177,37 @@ export async function waitForBoot(page: Page): Promise<void> {
   await waitForReachableFraction(page, TEST_TIMEOUTS.BOOT_REACHABLE);
 }
 
-export async function resetLocalStorageAndReload(page: Page): Promise<void> {
-  await page.goto('/?debug=1');
+export async function gotoTracker(
+  page: Page,
+  path = '/?debug=1',
+): Promise<void> {
+  await page.goto(path, { waitUntil: 'domcontentloaded' });
+  await waitForBoot(page);
+}
+
+export async function clearLocalStorageAndReload(page: Page): Promise<void> {
   await page.evaluate(() => window.localStorage.clear());
   await page.reload({ waitUntil: 'domcontentloaded' });
   await waitForBoot(page);
+}
+
+export async function resetLocalStorageAndReload(page: Page): Promise<void> {
+  await gotoTracker(page);
+  await clearLocalStorageAndReload(page);
+}
+
+export async function captureTrackerStorageState(
+  browser: Browser,
+  prepare: (page: Page) => Promise<void>,
+  contextOptions: BrowserContextOptions = {},
+): Promise<TrackerStorageState> {
+  const context = await browser.newContext(contextOptions);
+  try {
+    const page = await context.newPage();
+    await gotoTracker(page);
+    await prepare(page);
+    return await context.storageState();
+  } finally {
+    await context.close();
+  }
 }

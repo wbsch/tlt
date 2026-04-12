@@ -1,5 +1,5 @@
 import { expect, test, type Page } from '@playwright/test';
-import { resetLocalStorageAndReload, TEST_TIMEOUTS } from './helpers/tracker';
+import { gotoTracker, TEST_TIMEOUTS } from './helpers/tracker';
 
 const MQ_GOSSIP_COORDS: [number, number] = [278, 337];
 const NON_MQ_GOSSIP_COORDS: [number, number] = [341, 313];
@@ -141,7 +141,7 @@ function gossipStoneAt(page: Page, coords: [number, number]) {
 
 test.describe('OoTMM map marker visibility', () => {
   test.beforeEach(async ({ page }) => {
-    await resetLocalStorageAndReload(page);
+    await gotoTracker(page);
   });
 
   test('Dodongo gossip stones switch visibility based on mqDungeons containing DC', async ({

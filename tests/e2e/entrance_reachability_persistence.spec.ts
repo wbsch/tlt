@@ -1,9 +1,5 @@
 import { expect, test, type Page } from '@playwright/test';
-import {
-  resetLocalStorageAndReload,
-  TEST_TIMEOUTS,
-  waitForBoot,
-} from './helpers/tracker';
+import { gotoTracker, TEST_TIMEOUTS, waitForBoot } from './helpers/tracker';
 import {
   entranceCombobox,
   selectEntranceById,
@@ -97,7 +93,7 @@ async function isCheckVisibleInCurrentMapMarkerPopups(
 
 test.describe('Entrance reachability persistence across refresh', () => {
   test.beforeEach(async ({ page }) => {
-    await resetLocalStorageAndReload(page);
+    await gotoTracker(page);
   });
 
   test('dungeon entrance panel stays populated after browser refresh with ER enabled', async ({

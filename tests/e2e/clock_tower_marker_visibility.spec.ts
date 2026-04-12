@@ -1,5 +1,5 @@
 import { expect, test, type Page } from '@playwright/test';
-import { resetLocalStorageAndReload, TEST_TIMEOUTS } from './helpers/tracker';
+import { gotoTracker, TEST_TIMEOUTS } from './helpers/tracker';
 import {
   entranceCombobox,
   selectEntranceById,
@@ -148,7 +148,7 @@ async function isClockTowerRoofMarkerVisible(page: Page): Promise<boolean> {
 
 test.describe('Clock Tower marker visibility', () => {
   test.beforeEach(async ({ page }) => {
-    await resetLocalStorageAndReload(page);
+    await gotoTracker(page);
   });
 
   test('Clock Tower Roof checks on Termina Field are visible only when unshuffled or self-mapped', async ({

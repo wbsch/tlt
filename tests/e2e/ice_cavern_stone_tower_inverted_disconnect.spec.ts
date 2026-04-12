@@ -1,5 +1,5 @@
 import { expect, test, type Page } from '@playwright/test';
-import { resetLocalStorageAndReload, TEST_TIMEOUTS } from './helpers/tracker';
+import { gotoTracker, TEST_TIMEOUTS } from './helpers/tracker';
 import {
   entranceCombobox,
   selectEntranceById,
@@ -75,7 +75,7 @@ async function setInventoryItems(
 
 test.describe('Ice Cavern to ISTT disconnect', () => {
   test.beforeEach(async ({ page }) => {
-    await resetLocalStorageAndReload(page);
+    await gotoTracker(page);
   });
 
   test('mapping Ice Cavern to Stone Tower Temple Inverted does not leak Zora Fountain gossip reachability', async ({
