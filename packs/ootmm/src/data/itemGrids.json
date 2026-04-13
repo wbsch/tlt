@@ -687,8 +687,13 @@
                 "oot_chestgame_label"
               ],
               [
-                "OOT_SMALL_KEY_GF",
-                "OOT_KEY_RING_GF",
+                {
+                  "or": [
+                    "OOT_SMALL_KEY_GF",
+                    "OOT_KEY_RING_GF",
+                    { "empty": true }
+                  ]
+                },
                 "OOT_SMALL_KEY_BOTW",
                 "OOT_KEY_RING_BOTW",
                 "OOT_SMALL_KEY_GTG",
