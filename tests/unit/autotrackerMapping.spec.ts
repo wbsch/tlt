@@ -200,6 +200,42 @@ describe('autotracker composite item inference', () => {
     expect(translated.MM_TRANSCENDENT_FAIRY).toBe(1);
   });
 
+  it('infers the MM bombchu bag from MM bombchu autotracker signals', () => {
+    const availableItemIds = makeAvailableItemIds(['MM_BOMBCHU_BAG']);
+
+    const translated = translateAutotrackerItems(
+      [{ id: 'MM_BOMBCHU', qty: 1 }],
+      availableItemIds,
+      makeItemMaxCounts({}),
+    );
+
+    expect(translated.MM_BOMBCHU_BAG).toBe(1);
+  });
+
+  it('infers first bombchu bag variants from OOT bombchu raw autotracker IDs', () => {
+    const availableItemIds = makeAvailableItemIds(['OOT_BOMBCHU_BAG_FIRST_10']);
+
+    const translated = translateAutotrackerItems(
+      [{ id: 'OOT_BOMBCHUS', qty: 1 }],
+      availableItemIds,
+      makeItemMaxCounts({}),
+    );
+
+    expect(translated.OOT_BOMBCHU_BAG_FIRST_10).toBe(1);
+  });
+
+  it('infers the shared bombchu bag from either game bombchu signals', () => {
+    const availableItemIds = makeAvailableItemIds(['SHARED_BOMBCHU_BAG']);
+
+    const translated = translateAutotrackerItems(
+      [{ id: 'MM_BOMBCHU', qty: 1 }],
+      availableItemIds,
+      makeItemMaxCounts({}),
+    );
+
+    expect(translated.SHARED_BOMBCHU_BAG).toBe(1);
+  });
+
   it('applies derived items after additive deltas', () => {
     const availableItemIds = makeAvailableItemIds([
       'MM_KEY_RING_WF',

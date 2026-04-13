@@ -529,6 +529,53 @@ function setDerivedExact(
   delete state[itemId];
 }
 
+function hasAnyPositiveItem(
+  state: Record<string, number>,
+  itemIds: string[],
+): boolean {
+  return itemIds.some((itemId) => (state[itemId] ?? 0) > 0);
+}
+
+function setDerivedFirstAvailable(
+  state: Record<string, number>,
+  availableItemIds: Set<string>,
+  itemIds: string[],
+  obtained: boolean,
+) {
+  const availableItemId = itemIds.find((itemId) =>
+    availableItemIds.has(itemId),
+  );
+  if (!availableItemId) return;
+  setDerivedExact(state, availableItemIds, availableItemId, obtained);
+}
+
+const OOT_BOMBCHU_SIGNAL_IDS = [
+  'OOT_BOMBCHUS',
+  'OOT_BOMBCHU',
+  'OOT_BOMBCHU_10',
+];
+
+const MM_BOMBCHU_SIGNAL_IDS = ['MM_BOMBCHU'];
+
+const SHARED_BOMBCHU_SIGNAL_IDS = ['SHARED_BOMBCHU'];
+
+const OOT_BOMBCHU_BAG_IDS = [
+  'OOT_BOMBCHU_BAG',
+  'OOT_BOMBCHU_BAG_FIRST_5',
+  'OOT_BOMBCHU_BAG_FIRST_10',
+  'OOT_BOMBCHU_BAG_FIRST_20',
+];
+
+const MM_BOMBCHU_BAG_IDS = [
+  'MM_BOMBCHU_BAG',
+  'MM_BOMBCHU_BAG_FIRST_1',
+  'MM_BOMBCHU_BAG_FIRST_5',
+  'MM_BOMBCHU_BAG_FIRST_10',
+  'MM_BOMBCHU_BAG_FIRST_20',
+];
+
+const SHARED_BOMBCHU_BAG_IDS = ['SHARED_BOMBCHU_BAG'];
+
 function deriveAutotrackerOnlyItems(
   state: Record<string, number>,
   availableItemIds: Set<string>,
@@ -619,6 +666,32 @@ function deriveAutotrackerOnlyItems(
     availableItemIds,
     'MM_TRANSCENDENT_FAIRY',
     mmAllFairies,
+  );
+
+  const ootBombchuObtained = hasAnyPositiveItem(state, OOT_BOMBCHU_SIGNAL_IDS);
+  const mmBombchuObtained = hasAnyPositiveItem(state, MM_BOMBCHU_SIGNAL_IDS);
+  const sharedBombchuObtained = hasAnyPositiveItem(
+    state,
+    SHARED_BOMBCHU_SIGNAL_IDS,
+  );
+
+  setDerivedFirstAvailable(
+    state,
+    availableItemIds,
+    OOT_BOMBCHU_BAG_IDS,
+    ootBombchuObtained || sharedBombchuObtained,
+  );
+  setDerivedFirstAvailable(
+    state,
+    availableItemIds,
+    MM_BOMBCHU_BAG_IDS,
+    mmBombchuObtained || sharedBombchuObtained,
+  );
+  setDerivedFirstAvailable(
+    state,
+    availableItemIds,
+    SHARED_BOMBCHU_BAG_IDS,
+    ootBombchuObtained || mmBombchuObtained || sharedBombchuObtained,
   );
 }
 
