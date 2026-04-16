@@ -65,6 +65,7 @@ import * as SettingsDataMod from '@ootmm/core/settings/data';
 import { TRICKS } from '@ootmm/core/settings/tricks';
 import AutotrackerToggle from './AutotrackerToggle.vue';
 import { useAutotracker } from '../autotracker/useAutotracker';
+import { resolveAutotrackerCheckToLocationIds } from '../autotracker/checkMapping';
 
 const props = defineProps<{
   tracker: TrackerPack;
@@ -217,17 +218,6 @@ const {
   entrancesMappingFilter,
   activeMapId,
 } = storeToRefs(uiStore);
-
-const autotracker = useAutotracker({
-  availableItemIds: availableItemIds,
-  itemMaxCounts: itemMaxCounts,
-  onInventoryUpdate: (inventory) => {
-    sessionStore.setInventoryFromMap(
-      new Map(Object.entries(inventory).filter(([, v]) => v > 0)),
-      { source: 'remote', recordHistory: false },
-    );
-  },
-});
 
 const settingsRef = ref<SettingsPanelHandle | null>(null);
 const isStatsCollapsed = ref(true);
@@ -495,6 +485,28 @@ const { resolveCodeToCheckIds: resolveMapSelectorCodeToCheckIds } =
     reachableLocationIds,
     collectedLocationIdSet,
   );
+
+const autotracker = useAutotracker({
+  availableItemIds: availableItemIds,
+  itemMaxCounts: itemMaxCounts,
+  onInventoryUpdate: (inventory) => {
+    sessionStore.setInventoryFromMap(
+      new Map(Object.entries(inventory).filter(([, v]) => v > 0)),
+      { source: 'remote', recordHistory: false },
+    );
+  },
+  resolveCheckToLocationIds: (check) =>
+    resolveAutotrackerCheckToLocationIds(
+      check,
+      resolveMapSelectorCodeToCheckIds,
+    ),
+  onCollectedLocationsUpdate: (locationIds) => {
+    sessionStore.setCollectedLocationIds(locationIds, {
+      source: 'remote',
+      recordHistory: false,
+    });
+  },
+});
 
 function normalizeMapCodeList(
   rawCodes: string | string[] | undefined,

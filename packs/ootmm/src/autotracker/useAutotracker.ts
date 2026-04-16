@@ -18,6 +18,10 @@ interface AutotrackerOptions {
   itemMaxCounts: Ref<Map<string, number>>;
   /** Called when the autotracker has new inventory to apply. */
   onInventoryUpdate: (inventory: Record<string, number>) => void;
+  /** Resolve a websocket check entry to one or more tracker location IDs. */
+  resolveCheckToLocationIds?: (check: AutotrackerCheck) => string[];
+  /** Called when the autotracker has a new collected-location state. */
+  onCollectedLocationsUpdate?: (locationIds: string[]) => void;
 }
 
 interface ItemMessage {
@@ -25,6 +29,26 @@ interface ItemMessage {
   diff: boolean;
   refresh: boolean;
   items: AutotrackerItem[];
+}
+
+export interface AutotrackerCheck {
+  id?: string;
+  name?: string;
+  checked: boolean;
+}
+
+interface CheckMessage {
+  type: 'check';
+  diff: boolean;
+  refresh: boolean;
+  checks: AutotrackerCheck[];
+}
+
+interface LocationMessage {
+  type: 'location';
+  refresh: boolean;
+  game: string;
+  sceneId: number;
 }
 
 interface RefreshMessage {
@@ -57,8 +81,10 @@ export function useAutotracker(options: AutotrackerOptions) {
 
   // Canonical autotracker state (translated to tracker IDs)
   let liveState = new Map<string, number>();
+  let liveChecks = new Map<string, AutotrackerCheck>();
   // Buffer used during full-sync
   let pendingFullState: Map<string, number> | null = null;
+  let pendingFullChecks: Map<string, AutotrackerCheck> | null = null;
   let isInFullSync = false;
 
   function connect() {
@@ -81,7 +107,7 @@ export function useAutotracker(options: AutotrackerOptions) {
       ws!.send(
         JSON.stringify({
           type: 'handshake',
-          features: ['items'],
+          features: ['items', 'checks'],
           flags: {},
         }),
       );
@@ -119,6 +145,7 @@ export function useAutotracker(options: AutotrackerOptions) {
         // Server will send a full sync automatically after handshake.
         // Prepare buffer.
         pendingFullState = new Map();
+        pendingFullChecks = new Map();
         isInFullSync = true;
         break;
 
@@ -126,10 +153,25 @@ export function useAutotracker(options: AutotrackerOptions) {
         processItemMessage(msg as ItemMessage);
         break;
 
+      case 'check':
+        processCheckMessage(msg as CheckMessage);
+        break;
+
+      case 'location':
+        break;
+
       case 'refresh':
         processRefresh();
         break;
     }
+  }
+
+  function getCheckStateKey(check: AutotrackerCheck): string | null {
+    const id = check.id?.trim();
+    if (id) return `id:${id}`;
+    const name = check.name?.trim();
+    if (name) return `name:${name}`;
+    return null;
   }
 
   function processItemMessage(msg: ItemMessage) {
@@ -175,14 +217,78 @@ export function useAutotracker(options: AutotrackerOptions) {
     }
   }
 
+  function processCheckMessage(msg: CheckMessage) {
+    if (isInFullSync && !msg.diff) {
+      for (const check of msg.checks) {
+        const key = getCheckStateKey(check);
+        if (!key) continue;
+        if (check.checked) {
+          pendingFullChecks!.set(key, check);
+        } else {
+          pendingFullChecks!.delete(key);
+        }
+      }
+      return;
+    }
+
+    if (msg.diff) {
+      liveChecks = new Map(liveChecks);
+      for (const check of msg.checks) {
+        const key = getCheckStateKey(check);
+        if (!key) continue;
+        if (check.checked) {
+          liveChecks.set(key, check);
+        } else {
+          liveChecks.delete(key);
+        }
+      }
+      if (msg.refresh) {
+        pushToTracker();
+      }
+      return;
+    }
+
+    liveChecks = new Map();
+    for (const check of msg.checks) {
+      const key = getCheckStateKey(check);
+      if (!key || !check.checked) continue;
+      liveChecks.set(key, check);
+    }
+    if (msg.refresh) {
+      pushToTracker();
+    }
+  }
+
   function processRefresh() {
-    if (isInFullSync && pendingFullState) {
+    if (isInFullSync && pendingFullState && pendingFullChecks) {
       // Full sync is complete — adopt the buffered state as live
       liveState = pendingFullState;
+      liveChecks = pendingFullChecks;
       pendingFullState = null;
+      pendingFullChecks = null;
       isInFullSync = false;
       pushToTracker();
     }
+  }
+
+  function getCollectedLocationIds(): string[] {
+    const resolveCheckToLocationIds = options.resolveCheckToLocationIds;
+    if (!resolveCheckToLocationIds) return [];
+
+    const locationIds = new Set<string>();
+    for (const check of liveChecks.values()) {
+      let resolvedIds: string[] = [];
+      try {
+        resolvedIds = resolveCheckToLocationIds(check);
+      } catch {
+        resolvedIds = [];
+      }
+      for (const locationId of resolvedIds) {
+        if (!locationId) continue;
+        locationIds.add(locationId);
+      }
+    }
+    return Array.from(locationIds);
   }
 
   function pushToTracker() {
@@ -193,6 +299,7 @@ export function useAutotracker(options: AutotrackerOptions) {
       }
     }
     options.onInventoryUpdate(record);
+    options.onCollectedLocationsUpdate?.(getCollectedLocationIds());
   }
 
   function cleanup() {
@@ -209,12 +316,14 @@ export function useAutotracker(options: AutotrackerOptions) {
       ws = null;
     }
     pendingFullState = null;
+    pendingFullChecks = null;
     isInFullSync = false;
   }
 
   function disconnect() {
     cleanup();
     liveState = new Map();
+    liveChecks = new Map();
     status.value = 'disconnected';
     lastError.value = null;
     reconnectAttempts = 0;
