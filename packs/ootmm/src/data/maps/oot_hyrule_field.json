@@ -597,41 +597,41 @@
       "coords": [714, 98],
       "image": "bush",
       "codes": [
-        "OOT Hyrule Field Bush 01",
-        "OOT Hyrule Field Bush 02",
-        "OOT Hyrule Field Bush 03",
-        "OOT Hyrule Field Bush 04",
-        "OOT Hyrule Field Bush 05",
-        "OOT Hyrule Field Bush 06"
+        "OOT Hyrule Field Bush 18",
+        "OOT Hyrule Field Bush 17",
+        "OOT Hyrule Field Bush 13",
+        "OOT Hyrule Field Bush 14",
+        "OOT Hyrule Field Bush 15",
+        "OOT Hyrule Field Bush 16"
       ]
     },
     {
       "coords": [670, 225],
       "image": "bush",
       "codes": [
-        "OOT Hyrule Field Bush 30",
-        "OOT Hyrule Field Bush 31",
-        "OOT Hyrule Field Bush 32",
-        "OOT Hyrule Field Bush 33",
-        "OOT Hyrule Field Bush 34",
-        "OOT Hyrule Field Bush 35"
+        "OOT Hyrule Field Bush 02",
+        "OOT Hyrule Field Bush 03",
+        "OOT Hyrule Field Bush 04",
+        "OOT Hyrule Field Bush 01",
+        "OOT Hyrule Field Bush 05",
+        "OOT Hyrule Field Bush 06"
       ]
     },
     {
       "coords": [712, 356],
       "image": "bush",
       "codes": [
-        "OOT Hyrule Field Bush 19",
-        "OOT Hyrule Field Bush 20",
         "OOT Hyrule Field Bush 21",
-        "OOT Hyrule Field Bush 22",
+        "OOT Hyrule Field Bush 19",
         "OOT Hyrule Field Bush 23",
-        "OOT Hyrule Field Bush 24",
-        "OOT Hyrule Field Bush 25",
-        "OOT Hyrule Field Bush 26",
-        "OOT Hyrule Field Bush 27",
-        "OOT Hyrule Field Bush 28",
-        "OOT Hyrule Field Bush 29"
+        "OOT Hyrule Field Bush 22",
+        "OOT Hyrule Field Bush 08",
+        "OOT Hyrule Field Bush 09",
+        "OOT Hyrule Field Bush 07",
+        "OOT Hyrule Field Bush 12",
+        "OOT Hyrule Field Bush 11",
+        "OOT Hyrule Field Bush 10",
+        "OOT Hyrule Field Bush 20"
       ]
     },
     {
@@ -657,18 +657,18 @@
       "coords": [843, 365],
       "image": "bush",
       "codes": [
-        "OOT Hyrule Field Bush 07",
-        "OOT Hyrule Field Bush 08",
-        "OOT Hyrule Field Bush 09",
-        "OOT Hyrule Field Bush 10",
-        "OOT Hyrule Field Bush 11",
-        "OOT Hyrule Field Bush 12",
-        "OOT Hyrule Field Bush 13",
-        "OOT Hyrule Field Bush 14",
-        "OOT Hyrule Field Bush 15",
-        "OOT Hyrule Field Bush 16",
-        "OOT Hyrule Field Bush 17",
-        "OOT Hyrule Field Bush 18"
+        "OOT Hyrule Field Bush 28",
+        "OOT Hyrule Field Bush 31",
+        "OOT Hyrule Field Bush 34",
+        "OOT Hyrule Field Bush 30",
+        "OOT Hyrule Field Bush 33",
+        "OOT Hyrule Field Bush 32",
+        "OOT Hyrule Field Bush 35",
+        "OOT Hyrule Field Bush 27",
+        "OOT Hyrule Field Bush 26",
+        "OOT Hyrule Field Bush 25",
+        "OOT Hyrule Field Bush 24",
+        "OOT Hyrule Field Bush 29"
       ]
     },
     {
