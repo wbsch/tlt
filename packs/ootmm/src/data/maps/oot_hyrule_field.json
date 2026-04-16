@@ -357,9 +357,6 @@
       "coords": [647, 210],
       "image": "bomb_grotto",
       "type": "submenu",
-      "entranceMenu": {
-        "entranceIds": ["OOT_GROTTO_FIELD_COW"]
-      },
       "markers": [
         {
           "image": "gossip_stone",
@@ -387,7 +384,10 @@
             "OOT Hyrule Field Grotto Near Gerudo Grass 2"
           ]
         }
-      ]
+      ],
+      "entranceMenu": {
+        "entranceIds": ["OOT_GROTTO_FIELD_COW"]
+      }
     },
     {
       "coords": [640, 257],
@@ -442,7 +442,6 @@
     },
     {
       "coords": [385, 133],
-
       "image": "tree",
       "codes": [
         "OOT Hyrule Castle Tree 1",
@@ -458,63 +457,63 @@
       "coords": [708, 62],
       "image": "tree",
       "codes": [
-        "OOT Hyrule Field Tree 01",
-        "OOT Hyrule Field Tree 02",
+        "OOT Hyrule Field Tree 05",
+        "OOT Hyrule Field Tree 06",
         "OOT Hyrule Field Tree 03",
-        "OOT Hyrule Field Tree 04",
-        "OOT Hyrule Field Tree 05"
+        "OOT Hyrule Field Tree 07",
+        "OOT Hyrule Field Tree 08"
       ]
     },
     {
       "coords": [732, 87],
       "image": "tree",
-      "codes": "OOT Hyrule Field Tree 07"
+      "codes": "OOT Hyrule Field Tree 04"
     },
     {
       "coords": [702, 117],
       "image": "tree",
-      "codes": "OOT Hyrule Field Tree 06"
+      "codes": "OOT Hyrule Field Tree 01"
     },
     {
       "coords": [809, 88],
       "image": "tree",
       "codes": [
-        "OOT Hyrule Field Tree 08",
-        "OOT Hyrule Field Tree 09",
-        "OOT Hyrule Field Tree 10"
+        "OOT Hyrule Field Tree 34",
+        "OOT Hyrule Field Tree 33",
+        "OOT Hyrule Field Tree 02"
       ]
     },
     {
       "coords": [878, 45],
       "image": "tree",
-      "codes": "OOT Hyrule Field Tree 11"
+      "codes": "OOT Hyrule Field Tree 35"
     },
     {
       "coords": [923, 82],
       "image": "tree",
-      "codes": "OOT Hyrule Field Tree 12"
+      "codes": "OOT Hyrule Field Tree 40"
     },
     {
       "coords": [910, 158],
       "image": "tree",
-      "codes": "OOT Hyrule Field Tree 13"
+      "codes": "OOT Hyrule Field Tree 39"
     },
     {
       "coords": [916, 229],
       "image": "tree",
       "codes": [
-        "OOT Hyrule Field Tree 14",
-        "OOT Hyrule Field Tree 15",
-        "OOT Hyrule Field Tree 16",
-        "OOT Hyrule Field Tree 17",
-        "OOT Hyrule Field Tree 18",
-        "OOT Hyrule Field Tree 19"
+        "OOT Hyrule Field Tree 29",
+        "OOT Hyrule Field Tree 30",
+        "OOT Hyrule Field Tree 31",
+        "OOT Hyrule Field Tree 27",
+        "OOT Hyrule Field Tree 32",
+        "OOT Hyrule Field Tree 28"
       ]
     },
     {
       "coords": [785, 184],
       "image": "tree",
-      "codes": "OOT Hyrule Field Tree 20"
+      "codes": "OOT Hyrule Field Tree 37"
     },
     {
       "coords": [880, 352],
@@ -533,31 +532,31 @@
       "coords": [860, 356],
       "image": "tree",
       "codes": [
-        "OOT Hyrule Field Tree 21",
+        "OOT Hyrule Field Tree 38",
+        "OOT Hyrule Field Tree 19",
+        "OOT Hyrule Field Tree 18",
+        "OOT Hyrule Field Tree 17",
+        "OOT Hyrule Field Tree 15",
+        "OOT Hyrule Field Tree 20",
+        "OOT Hyrule Field Tree 12",
+        "OOT Hyrule Field Tree 13",
+        "OOT Hyrule Field Tree 09",
+        "OOT Hyrule Field Tree 14",
+        "OOT Hyrule Field Tree 10",
+        "OOT Hyrule Field Tree 26",
         "OOT Hyrule Field Tree 22",
         "OOT Hyrule Field Tree 23",
+        "OOT Hyrule Field Tree 21",
+        "OOT Hyrule Field Tree 16",
         "OOT Hyrule Field Tree 24",
         "OOT Hyrule Field Tree 25",
-        "OOT Hyrule Field Tree 26",
-        "OOT Hyrule Field Tree 27",
-        "OOT Hyrule Field Tree 28",
-        "OOT Hyrule Field Tree 29",
-        "OOT Hyrule Field Tree 30",
-        "OOT Hyrule Field Tree 31",
-        "OOT Hyrule Field Tree 32",
-        "OOT Hyrule Field Tree 33",
-        "OOT Hyrule Field Tree 34",
-        "OOT Hyrule Field Tree 35",
-        "OOT Hyrule Field Tree 36",
-        "OOT Hyrule Field Tree 37",
-        "OOT Hyrule Field Tree 38",
-        "OOT Hyrule Field Tree 39"
+        "OOT Hyrule Field Tree 11"
       ]
     },
     {
       "coords": [741, 383],
       "image": "tree",
-      "codes": "OOT Hyrule Field Tree 40"
+      "codes": "OOT Hyrule Field Tree 36"
     },
     {
       "coords": [688, 267],
@@ -704,23 +703,20 @@
       "coords": [189, 128],
       "image": "black_pillar_entrance",
       "type": "submenu",
-      "entranceMenu": {
-        "entranceIds": ["OOT_FAIRY_DEFENSE"]
-      },
       "markers": [
         {
           "image": "npc",
           "codes": "OOT Great Fairy Defense Upgrade"
         }
-      ]
+      ],
+      "entranceMenu": {
+        "entranceIds": ["OOT_FAIRY_DEFENSE"]
+      }
     },
     {
       "coords": [44, 564],
       "image": "interior_entrance",
       "type": "submenu",
-      "entranceMenu": {
-        "entranceIds": ["OOT_SILO"]
-      },
       "markers": [
         {
           "image": "heart_piece",
@@ -734,16 +730,16 @@
             "OOT Lon Lon Ranch Silo Cow Back"
           ]
         }
-      ]
+      ],
+      "entranceMenu": {
+        "entranceIds": ["OOT_SILO"]
+      }
     },
     {
       "coords": [169, 556],
       "image": "grotto",
       "type": "submenu",
       "overlays": ["child"],
-      "entranceMenu": {
-        "entranceIds": ["OOT_GROTTO_SCRUBS3_RANCH"]
-      },
       "markers": [
         {
           "image": "business_scrub_oot",
@@ -757,15 +753,15 @@
           "image": "beehive",
           "codes": "OOT Lon Lon Ranch Grotto Hive"
         }
-      ]
+      ],
+      "entranceMenu": {
+        "entranceIds": ["OOT_GROTTO_SCRUBS3_RANCH"]
+      }
     },
     {
       "coords": [122, 398],
       "image": "interior_entrance",
       "type": "submenu",
-      "entranceMenu": {
-        "entranceIds": ["OOT_STABLES"]
-      },
       "markers": [
         {
           "image": "cow",
@@ -774,15 +770,15 @@
             "OOT Lon Lon Ranch Stables Cow Right"
           ]
         }
-      ]
+      ],
+      "entranceMenu": {
+        "entranceIds": ["OOT_STABLES"]
+      }
     },
     {
       "coords": [144, 390],
       "image": "interior_entrance",
       "type": "submenu",
-      "entranceMenu": {
-        "entranceIds": ["OOT_HOUSE_LON_LON"]
-      },
       "markers": [
         {
           "image": "npc",
@@ -802,16 +798,16 @@
             "OOT Lon Lon Ranch Talon House Pot 3"
           ]
         }
-      ]
+      ],
+      "entranceMenu": {
+        "entranceIds": ["OOT_HOUSE_LON_LON"]
+      }
     },
     {
       "coords": [301, 372],
       "image": "interior_entrance",
       "type": "submenu",
       "overlays": ["child", "night"],
-      "entranceMenu": {
-        "entranceIds": ["OOT_ALLEY_HOUSE"]
-      },
       "markers": [
         {
           "image": "pot",
@@ -821,16 +817,16 @@
             "OOT Market Back Alley East House Pot 3"
           ]
         }
-      ]
+      ],
+      "entranceMenu": {
+        "entranceIds": ["OOT_ALLEY_HOUSE"]
+      }
     },
     {
       "coords": [365, 440],
       "image": "interior_entrance",
       "type": "submenu",
       "overlays": ["child"],
-      "entranceMenu": {
-        "entranceIds": ["OOT_BOMBCHU_BOWLING"]
-      },
       "markers": [
         {
           "image": "npc",
@@ -840,23 +836,26 @@
           ],
           "overlays": ["child"]
         }
-      ]
+      ],
+      "entranceMenu": {
+        "entranceIds": ["OOT_BOMBCHU_BOWLING"]
+      }
     },
     {
       "coords": [393, 380],
       "image": "interior_entrance",
-      "overlays": ["child", "day"],
       "type": "submenu",
-      "entranceMenu": {
-        "entranceIds": ["OOT_CHILD_ARCHERY"]
-      },
+      "overlays": ["child", "day"],
       "markers": [
         {
           "image": "npc",
           "codes": "OOT Shooting Gallery Child",
           "overlays": ["child"]
         }
-      ]
+      ],
+      "entranceMenu": {
+        "entranceIds": ["OOT_CHILD_ARCHERY"]
+      }
     },
     {
       "coords": [337, 504],
@@ -880,9 +879,6 @@
       "image": "interior_entrance",
       "type": "submenu",
       "overlays": ["child", "night"],
-      "entranceMenu": {
-        "entranceIds": ["OOT_BOMBCHU_SHOP"]
-      },
       "markers": [
         {
           "image": "shop",
@@ -897,16 +893,16 @@
             "OOT Market Bombchu Shop Item 8"
           ]
         }
-      ]
+      ],
+      "entranceMenu": {
+        "entranceIds": ["OOT_BOMBCHU_SHOP"]
+      }
     },
     {
       "coords": [385, 500],
       "image": "interior_entrance",
       "type": "submenu",
       "overlays": ["child", "night"],
-      "entranceMenu": {
-        "entranceIds": ["OOT_TREASURE_GAME"]
-      },
       "markers": [
         {
           "image": "shop",
@@ -928,15 +924,15 @@
             "OOT Treasure Chest Game HP"
           ]
         }
-      ]
+      ],
+      "entranceMenu": {
+        "entranceIds": ["OOT_TREASURE_GAME"]
+      }
     },
     {
       "coords": [445, 564],
       "image": "interior_entrance",
       "type": "submenu",
-      "entranceMenu": {
-        "entranceIds": ["OOT_HOUSE_POTS"]
-      },
       "markers": [
         {
           "image": "npc",
@@ -1024,16 +1020,16 @@
           ],
           "overlays": ["adult"]
         }
-      ]
+      ],
+      "entranceMenu": {
+        "entranceIds": ["OOT_HOUSE_POTS"]
+      }
     },
     {
       "coords": [469, 456],
       "image": "interior_entrance",
       "type": "submenu",
       "overlays": ["child"],
-      "entranceMenu": {
-        "entranceIds": ["OOT_MARKET_BAZAAR"]
-      },
       "markers": [
         {
           "image": "shop",
@@ -1048,16 +1044,16 @@
             "OOT Market Bazaar Item 8"
           ]
         }
-      ]
+      ],
+      "entranceMenu": {
+        "entranceIds": ["OOT_MARKET_BAZAAR"]
+      }
     },
     {
       "coords": [469, 432],
       "image": "interior_entrance",
       "type": "submenu",
       "overlays": ["child"],
-      "entranceMenu": {
-        "entranceIds": ["OOT_MARKET_POTION"]
-      },
       "markers": [
         {
           "image": "shop",
@@ -1072,13 +1068,16 @@
             "OOT Market Potion Shop Item 8"
           ]
         }
-      ]
+      ],
+      "entranceMenu": {
+        "entranceIds": ["OOT_MARKET_POTION"]
+      }
     },
     {
       "coords": [473, 380],
       "image": "interior_entrance",
-      "overlays": ["child"],
       "type": "submenu",
+      "overlays": ["child"],
       "entranceMenu": {
         "entranceIds": ["OOT_SHOP_MASKS"]
       }
@@ -1088,8 +1087,7 @@
       "image": "overworld_entrance",
       "type": "submenu",
       "entranceMenu": {
-        "entranceIds": ["OOT_GERUDO_VALLEY_FROM_FIELD"],
-        "display": "entrances"
+        "entranceIds": ["OOT_GERUDO_VALLEY_FROM_FIELD"]
       }
     },
     {
@@ -1097,8 +1095,7 @@
       "image": "overworld_entrance",
       "type": "submenu",
       "entranceMenu": {
-        "entranceIds": ["OOT_LAKE_HYLIA_FROM_FIELD"],
-        "display": "entrances"
+        "entranceIds": ["OOT_LAKE_HYLIA_FROM_FIELD"]
       }
     },
     {
@@ -1106,8 +1103,7 @@
       "image": "overworld_entrance",
       "type": "submenu",
       "entranceMenu": {
-        "entranceIds": ["OOT_LON_LON_RANCH_FROM_FIELD"],
-        "display": "entrances"
+        "entranceIds": ["OOT_LON_LON_RANCH_FROM_FIELD"]
       }
     },
     {
@@ -1115,8 +1111,7 @@
       "image": "overworld_entrance",
       "type": "submenu",
       "entranceMenu": {
-        "entranceIds": ["OOT_LON_LON_RANCH_FROM_FIELD"],
-        "display": "exits"
+        "entranceIds": ["OOT_LON_LON_RANCH_FROM_FIELD"]
       }
     },
     {
@@ -1124,8 +1119,7 @@
       "image": "overworld_entrance",
       "type": "submenu",
       "entranceMenu": {
-        "entranceIds": ["OOT_LOST_WOODS_BRIDGE_FROM_FIELD"],
-        "display": "entrances"
+        "entranceIds": ["OOT_LOST_WOODS_BRIDGE_FROM_FIELD"]
       }
     },
     {
@@ -1133,8 +1127,7 @@
       "image": "overworld_entrance",
       "type": "submenu",
       "entranceMenu": {
-        "entranceIds": ["OOT_MARKET_ENTRANCE_FROM_FIELD"],
-        "display": "entrances"
+        "entranceIds": ["OOT_MARKET_ENTRANCE_FROM_FIELD"]
       }
     },
     {
@@ -1142,8 +1135,7 @@
       "image": "overworld_entrance",
       "type": "submenu",
       "entranceMenu": {
-        "entranceIds": ["OOT_MARKET_ENTRANCE_FROM_FIELD"],
-        "display": "exits"
+        "entranceIds": ["OOT_MARKET_ENTRANCE_FROM_FIELD"]
       }
     },
     {
@@ -1151,8 +1143,7 @@
       "image": "overworld_entrance",
       "type": "submenu",
       "entranceMenu": {
-        "entranceIds": ["OOT_ZORA_RIVER_FROM_FIELD"],
-        "display": "entrances"
+        "entranceIds": ["OOT_ZORA_RIVER_FROM_FIELD"]
       }
     },
     {
@@ -1160,17 +1151,13 @@
       "image": "overworld_entrance",
       "type": "submenu",
       "entranceMenu": {
-        "entranceIds": ["OOT_KAKARIKO_FROM_FIELD"],
-        "display": "entrances"
+        "entranceIds": ["OOT_KAKARIKO_FROM_FIELD"]
       }
     },
     {
       "coords": [573, 336],
       "image": "interior_entrance",
       "type": "submenu",
-      "entranceMenu": {
-        "entranceIds": ["OOT_TEMPLE_OF_TIME"]
-      },
       "markers": [
         {
           "image": "collectible",
@@ -1191,15 +1178,15 @@
           "image": "light_medallion",
           "codes": "OOT Temple of Time Medallion"
         }
-      ]
+      ],
+      "entranceMenu": {
+        "entranceIds": ["OOT_TEMPLE_OF_TIME"]
+      }
     },
     {
       "coords": [725, 378],
       "image": "bomb_grotto",
       "type": "submenu",
-      "entranceMenu": {
-        "entranceIds": ["OOT_GROTTO_SCRUB_HEART_PIECE"]
-      },
       "markers": [
         {
           "image": "business_scrub_oot",
@@ -1213,15 +1200,15 @@
           "image": "big_fairy_spot",
           "codes": "OOT Hyrule Field Grotto Scrub Big Fairy"
         }
-      ]
+      ],
+      "entranceMenu": {
+        "entranceIds": ["OOT_GROTTO_SCRUB_HEART_PIECE"]
+      }
     },
     {
       "coords": [754, 382],
       "image": "grotto",
       "type": "submenu",
-      "entranceMenu": {
-        "entranceIds": ["OOT_GROTTO_GENERIC_HF_OPEN"]
-      },
       "markers": [
         {
           "image": "chest",
@@ -1255,15 +1242,15 @@
           "image": "gossip_stone",
           "codes": "OOT Hyrule Field Gossip Near Lake Hylia"
         }
-      ]
+      ],
+      "entranceMenu": {
+        "entranceIds": ["OOT_GROTTO_GENERIC_HF_OPEN"]
+      }
     },
     {
       "coords": [841, 338],
       "image": "boulder_grotto",
       "type": "submenu",
-      "entranceMenu": {
-        "entranceIds": ["OOT_GROTTO_GENERIC_HF_SOUTHEAST"]
-      },
       "markers": [
         {
           "image": "chest",
@@ -1297,29 +1284,29 @@
           "image": "gossip_stone",
           "codes": "OOT Hyrule Field Gossip Southeast Grotto"
         }
-      ]
+      ],
+      "entranceMenu": {
+        "entranceIds": ["OOT_GROTTO_GENERIC_HF_SOUTHEAST"]
+      }
     },
     {
       "coords": [704, 130],
       "image": "bomb_grotto",
       "type": "submenu",
-      "entranceMenu": {
-        "entranceIds": ["OOT_GROTTO_TEKTITE"]
-      },
       "markers": [
         {
           "image": "heart_piece",
           "codes": "OOT Hyrule Field Grotto Tektite HP"
         }
-      ]
+      ],
+      "entranceMenu": {
+        "entranceIds": ["OOT_GROTTO_TEKTITE"]
+      }
     },
     {
       "coords": [724, 58],
       "image": "boulder_grotto",
       "type": "submenu",
-      "entranceMenu": {
-        "entranceIds": ["OOT_GROTTO_FAIRY_HF"]
-      },
       "markers": [
         {
           "image": "fairy",
@@ -1334,15 +1321,15 @@
             "OOT Hyrule Field Fairy Fountain Fairy 8"
           ]
         }
-      ]
+      ],
+      "entranceMenu": {
+        "entranceIds": ["OOT_GROTTO_FAIRY_HF"]
+      }
     },
     {
       "coords": [794, 80],
       "image": "boulder_grotto",
       "type": "submenu",
-      "entranceMenu": {
-        "entranceIds": ["OOT_GROTTO_GENERIC_HF_MARKET"]
-      },
       "markers": [
         {
           "image": "chest",
@@ -1376,21 +1363,24 @@
           "image": "gossip_stone",
           "codes": "OOT Hyrule Field Gossip Near Castle Town"
         }
-      ]
+      ],
+      "entranceMenu": {
+        "entranceIds": ["OOT_GROTTO_GENERIC_HF_MARKET"]
+      }
     },
     {
       "coords": [886, 56],
       "image": "bomb_grotto",
       "type": "submenu",
-      "entranceMenu": {
-        "entranceIds": ["OOT_GROTTO_FIELD_TREE"]
-      },
       "markers": [
         {
           "image": "gold_skulltula",
           "codes": "OOT Hyrule Field Grotto Near Kakariko GS"
         }
-      ]
+      ],
+      "entranceMenu": {
+        "entranceIds": ["OOT_GROTTO_FIELD_TREE"]
+      }
     },
     {
       "coords": [506, 172],
@@ -1401,23 +1391,20 @@
       "coords": [522, 172],
       "image": "crawl_space",
       "type": "submenu",
-      "entranceMenu": {
-        "entranceIds": ["OOT_FAIRY_DIN"]
-      },
       "markers": [
         {
           "image": "npc",
           "codes": "OOT Great Fairy Din's Fire"
         }
-      ]
+      ],
+      "entranceMenu": {
+        "entranceIds": ["OOT_FAIRY_DIN"]
+      }
     },
     {
       "coords": [442, 104],
       "image": "song_grotto",
       "type": "submenu",
-      "entranceMenu": {
-        "entranceIds": ["OOT_GROTTO_CASTLE"]
-      },
       "markers": [
         {
           "image": "gold_skulltula",
@@ -1449,7 +1436,10 @@
           "image": "gossip_stone",
           "codes": "OOT Hyrule Castle Gossip Grotto"
         }
-      ]
+      ],
+      "entranceMenu": {
+        "entranceIds": ["OOT_GROTTO_CASTLE"]
+      }
     },
     {
       "coords": [424, 69],
