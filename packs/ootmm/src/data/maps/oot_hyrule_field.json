@@ -157,42 +157,6 @@
       "coords": [826, 329],
       "image": "grass",
       "codes": [
-        "OOT Hyrule Field Grass Pack 4 Bush 01",
-        "OOT Hyrule Field Grass Pack 4 Bush 02",
-        "OOT Hyrule Field Grass Pack 4 Bush 03",
-        "OOT Hyrule Field Grass Pack 4 Bush 04",
-        "OOT Hyrule Field Grass Pack 4 Bush 05",
-        "OOT Hyrule Field Grass Pack 4 Bush 06",
-        "OOT Hyrule Field Grass Pack 4 Bush 07",
-        "OOT Hyrule Field Grass Pack 4 Bush 08",
-        "OOT Hyrule Field Grass Pack 4 Bush 09",
-        "OOT Hyrule Field Grass Pack 4 Bush 10",
-        "OOT Hyrule Field Grass Pack 4 Bush 11",
-        "OOT Hyrule Field Grass Pack 4 Bush 12"
-      ]
-    },
-    {
-      "coords": [796, 298],
-      "image": "grass",
-      "codes": [
-        "OOT Hyrule Field Grass Pack 3 Bush 01",
-        "OOT Hyrule Field Grass Pack 3 Bush 02",
-        "OOT Hyrule Field Grass Pack 3 Bush 03",
-        "OOT Hyrule Field Grass Pack 3 Bush 04",
-        "OOT Hyrule Field Grass Pack 3 Bush 05",
-        "OOT Hyrule Field Grass Pack 3 Bush 06",
-        "OOT Hyrule Field Grass Pack 3 Bush 07",
-        "OOT Hyrule Field Grass Pack 3 Bush 08",
-        "OOT Hyrule Field Grass Pack 3 Bush 09",
-        "OOT Hyrule Field Grass Pack 3 Bush 10",
-        "OOT Hyrule Field Grass Pack 3 Bush 11",
-        "OOT Hyrule Field Grass Pack 3 Bush 12"
-      ]
-    },
-    {
-      "coords": [891, 248],
-      "image": "grass",
-      "codes": [
         "OOT Hyrule Field Grass Pack 2 Bush 01",
         "OOT Hyrule Field Grass Pack 2 Bush 02",
         "OOT Hyrule Field Grass Pack 2 Bush 03",
@@ -208,7 +172,7 @@
       ]
     },
     {
-      "coords": [864, 138],
+      "coords": [796, 298],
       "image": "grass",
       "codes": [
         "OOT Hyrule Field Grass Pack 1 Bush 01",
@@ -223,6 +187,42 @@
         "OOT Hyrule Field Grass Pack 1 Bush 10",
         "OOT Hyrule Field Grass Pack 1 Bush 11",
         "OOT Hyrule Field Grass Pack 1 Bush 12"
+      ]
+    },
+    {
+      "coords": [891, 248],
+      "image": "grass",
+      "codes": [
+        "OOT Hyrule Field Grass Pack 4 Bush 01",
+        "OOT Hyrule Field Grass Pack 4 Bush 02",
+        "OOT Hyrule Field Grass Pack 4 Bush 03",
+        "OOT Hyrule Field Grass Pack 4 Bush 04",
+        "OOT Hyrule Field Grass Pack 4 Bush 05",
+        "OOT Hyrule Field Grass Pack 4 Bush 06",
+        "OOT Hyrule Field Grass Pack 4 Bush 07",
+        "OOT Hyrule Field Grass Pack 4 Bush 08",
+        "OOT Hyrule Field Grass Pack 4 Bush 09",
+        "OOT Hyrule Field Grass Pack 4 Bush 10",
+        "OOT Hyrule Field Grass Pack 4 Bush 11",
+        "OOT Hyrule Field Grass Pack 4 Bush 12"
+      ]
+    },
+    {
+      "coords": [864, 138],
+      "image": "grass",
+      "codes": [
+        "OOT Hyrule Field Grass Pack 3 Bush 01",
+        "OOT Hyrule Field Grass Pack 3 Bush 02",
+        "OOT Hyrule Field Grass Pack 3 Bush 03",
+        "OOT Hyrule Field Grass Pack 3 Bush 04",
+        "OOT Hyrule Field Grass Pack 3 Bush 05",
+        "OOT Hyrule Field Grass Pack 3 Bush 06",
+        "OOT Hyrule Field Grass Pack 3 Bush 07",
+        "OOT Hyrule Field Grass Pack 3 Bush 08",
+        "OOT Hyrule Field Grass Pack 3 Bush 09",
+        "OOT Hyrule Field Grass Pack 3 Bush 10",
+        "OOT Hyrule Field Grass Pack 3 Bush 11",
+        "OOT Hyrule Field Grass Pack 3 Bush 12"
       ]
     },
     {
