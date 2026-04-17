@@ -155,18 +155,18 @@
       "coords": [728, 352],
       "image": "pot",
       "codes": [
-        "OOT Graveyard Dampe Tomb Pot 1",
-        "OOT Graveyard Dampe Tomb Pot 2",
-        "OOT Graveyard Dampe Tomb Pot 3"
+        "OOT Graveyard Dampe Tomb Pot 3",
+        "OOT Graveyard Dampe Tomb Pot 4",
+        "OOT Graveyard Dampe Tomb Pot 6"
       ]
     },
     {
       "coords": [772, 352],
       "image": "pot",
       "codes": [
-        "OOT Graveyard Dampe Tomb Pot 4",
-        "OOT Graveyard Dampe Tomb Pot 5",
-        "OOT Graveyard Dampe Tomb Pot 6"
+        "OOT Graveyard Dampe Tomb Pot 1",
+        "OOT Graveyard Dampe Tomb Pot 2",
+        "OOT Graveyard Dampe Tomb Pot 5"
       ]
     },
     {
@@ -273,8 +273,8 @@
       "image": "crate",
       "overlays": ["adult"],
       "codes": [
-        "OOT Kakariko Crate Adult Back 3",
-        "OOT Kakariko Crate Adult Back 4"
+        "OOT Kakariko Crate Adult Back 1",
+        "OOT Kakariko Crate Adult Back 2"
       ]
     },
     {
@@ -297,8 +297,8 @@
       "image": "crate",
       "overlays": ["adult"],
       "codes": [
-        "OOT Kakariko Crate Adult Back 1",
-        "OOT Kakariko Crate Adult Back 2"
+        "OOT Kakariko Crate Adult Back 3",
+        "OOT Kakariko Crate Adult Back 4"
       ]
     },
     {
