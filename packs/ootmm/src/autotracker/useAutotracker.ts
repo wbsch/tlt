@@ -68,6 +68,167 @@ type ServerMessage = ItemMessage | RefreshMessage | HandshakeAckMessage;
 const DEFAULT_URL = 'ws://localhost:17026/';
 const RECONNECT_BASE_DELAY = 1000;
 const RECONNECT_MAX_DELAY = 30000;
+const GRID_REF_ALIAS_PREFIX = '__grid_ref__:';
+const GRID_REF_STATE_PREFIX = '__grid_ref_state__:';
+
+interface AutotrackerBottleSlotMapping {
+  autotrackerId: string;
+  trackerItemId: string;
+  gridRef: string;
+  sharedGridRef?: string;
+}
+
+const AUTOTRACKER_BOTTLE_SLOT_MAPPINGS: AutotrackerBottleSlotMapping[] = [
+  {
+    autotrackerId: 'OOT_BOTTLE_1',
+    trackerItemId: 'OOT_BOTTLE_EMPTY',
+    gridRef: 'Bottle1',
+    sharedGridRef: 'Shared_Bottle1',
+  },
+  {
+    autotrackerId: 'OOT_BOTTLE_2',
+    trackerItemId: 'OOT_BOTTLE_EMPTY',
+    gridRef: 'Bottle2',
+    sharedGridRef: 'Shared_Bottle2',
+  },
+  {
+    autotrackerId: 'OOT_BOTTLE_3',
+    trackerItemId: 'OOT_BOTTLE_EMPTY',
+    gridRef: 'Bottle3',
+    sharedGridRef: 'Shared_Bottle3',
+  },
+  {
+    autotrackerId: 'MM_BOTTLE_1',
+    trackerItemId: 'MM_BOTTLE_EMPTY',
+    gridRef: 'MM_Bottle1',
+    sharedGridRef: 'Shared_Bottle1',
+  },
+  {
+    autotrackerId: 'MM_BOTTLE_2',
+    trackerItemId: 'MM_BOTTLE_EMPTY',
+    gridRef: 'MM_Bottle2',
+    sharedGridRef: 'Shared_Bottle2',
+  },
+  {
+    autotrackerId: 'MM_BOTTLE_3',
+    trackerItemId: 'MM_BOTTLE_EMPTY',
+    gridRef: 'MM_Bottle3',
+    sharedGridRef: 'Shared_Bottle3',
+  },
+  {
+    autotrackerId: 'MM_BOTTLE_4',
+    trackerItemId: 'MM_BOTTLE_EMPTY',
+    gridRef: 'MM_Bottle4',
+    sharedGridRef: 'Shared_Bottle4',
+  },
+  {
+    autotrackerId: 'MM_BOTTLE_5',
+    trackerItemId: 'MM_BOTTLE_EMPTY',
+    gridRef: 'MM_Bottle5',
+  },
+  {
+    autotrackerId: 'SHARED_BOTTLE_1',
+    trackerItemId: 'SHARED_BOTTLE_EMPTY',
+    gridRef: 'Shared_Bottle1',
+    sharedGridRef: 'Shared_Bottle1',
+  },
+  {
+    autotrackerId: 'SHARED_BOTTLE_2',
+    trackerItemId: 'SHARED_BOTTLE_EMPTY',
+    gridRef: 'Shared_Bottle2',
+    sharedGridRef: 'Shared_Bottle2',
+  },
+  {
+    autotrackerId: 'SHARED_BOTTLE_3',
+    trackerItemId: 'SHARED_BOTTLE_EMPTY',
+    gridRef: 'Shared_Bottle3',
+    sharedGridRef: 'Shared_Bottle3',
+  },
+  {
+    autotrackerId: 'SHARED_BOTTLE_4',
+    trackerItemId: 'SHARED_BOTTLE_EMPTY',
+    gridRef: 'Shared_Bottle4',
+    sharedGridRef: 'Shared_Bottle4',
+  },
+];
+
+const AUTOTRACKER_BOTTLE_SLOT_MAPPING_BY_ID = new Map(
+  AUTOTRACKER_BOTTLE_SLOT_MAPPINGS.map((mapping) => [
+    mapping.autotrackerId,
+    mapping,
+  ]),
+);
+
+function makeGridRefStateKey(mapping: AutotrackerBottleSlotMapping): string {
+  return `${GRID_REF_STATE_PREFIX}${GRID_REF_ALIAS_PREFIX}${mapping.gridRef}:${mapping.trackerItemId}`;
+}
+
+function isSharedBottleMode(availableItemIds: Set<string>): boolean {
+  return (
+    availableItemIds.has('SHARED_BOTTLE_EMPTY') &&
+    !availableItemIds.has('OOT_BOTTLE_EMPTY') &&
+    !availableItemIds.has('MM_BOTTLE_EMPTY')
+  );
+}
+
+function makeSharedGridRefStateKey(
+  mapping: AutotrackerBottleSlotMapping,
+): string | null {
+  if (!mapping.sharedGridRef) {
+    return null;
+  }
+
+  return `${GRID_REF_STATE_PREFIX}${GRID_REF_ALIAS_PREFIX}${mapping.sharedGridRef}:SHARED_BOTTLE_EMPTY`;
+}
+
+function buildTrackerInventoryRecord(
+  liveState: Map<string, number>,
+  availableItemIds: Set<string>,
+): Record<string, number> {
+  const record: Record<string, number> = {};
+  const sharedBottleMode = isSharedBottleMode(availableItemIds);
+  const bottleCounts = new Map<string, number>();
+  const sharedBottleGridRefStates = new Set<string>();
+
+  for (const [id, qty] of liveState) {
+    if (qty <= 0) {
+      continue;
+    }
+
+    const bottleSlotMapping = AUTOTRACKER_BOTTLE_SLOT_MAPPING_BY_ID.get(id);
+    if (!bottleSlotMapping) {
+      record[id] = qty;
+      continue;
+    }
+
+    if (sharedBottleMode) {
+      const sharedGridRefStateKey =
+        makeSharedGridRefStateKey(bottleSlotMapping);
+      if (sharedGridRefStateKey) {
+        record[sharedGridRefStateKey] = 1;
+        sharedBottleGridRefStates.add(sharedGridRefStateKey);
+      }
+      continue;
+    }
+
+    record[makeGridRefStateKey(bottleSlotMapping)] = 1;
+    bottleCounts.set(
+      bottleSlotMapping.trackerItemId,
+      (bottleCounts.get(bottleSlotMapping.trackerItemId) ?? 0) + 1,
+    );
+  }
+
+  if (sharedBottleGridRefStates.size > 0) {
+    record.SHARED_BOTTLE_EMPTY =
+      (record.SHARED_BOTTLE_EMPTY ?? 0) + sharedBottleGridRefStates.size;
+  }
+
+  for (const [itemId, count] of bottleCounts) {
+    record[itemId] = (record[itemId] ?? 0) + count;
+  }
+
+  return record;
+}
 
 export function useAutotracker(options: AutotrackerOptions) {
   const status = ref<AutotrackerStatus>('disconnected');
@@ -292,12 +453,10 @@ export function useAutotracker(options: AutotrackerOptions) {
   }
 
   function pushToTracker() {
-    const record: Record<string, number> = {};
-    for (const [id, qty] of liveState) {
-      if (qty > 0) {
-        record[id] = qty;
-      }
-    }
+    const record = buildTrackerInventoryRecord(
+      liveState,
+      options.availableItemIds.value,
+    );
     options.onInventoryUpdate(record);
     options.onCollectedLocationsUpdate?.(getCollectedLocationIds());
   }

@@ -143,4 +143,116 @@ describe('useAutotracker checks', () => {
 
     expect(resolved).toEqual(['OOT Market Pot House Adult Pot 3@0']);
   });
+
+  it('maps bottle slot autotracker items to bottle grid refs and empty bottle counts', async () => {
+    const inventoryUpdates: Array<Record<string, number>> = [];
+    const availableItemIds = ref(
+      new Set<string>([
+        'OOT_BOTTLE_EMPTY',
+        'MM_BOTTLE_EMPTY',
+        'SHARED_BOTTLE_EMPTY',
+      ]),
+    );
+    const itemMaxCounts = ref(new Map<string, number>());
+
+    const autotracker = useAutotracker({
+      availableItemIds,
+      itemMaxCounts,
+      onInventoryUpdate: (inventory) => {
+        inventoryUpdates.push(inventory);
+      },
+    });
+
+    autotracker.enabled.value = true;
+    await nextTick();
+
+    const socket = FakeWebSocket.instances[0];
+    expect(socket).toBeDefined();
+
+    socket.emitOpen();
+    socket.emitMessage({
+      type: 'handshAck',
+      version: '0.1.0',
+      name: 'ootmm-autotracker',
+      refresh: true,
+    });
+    socket.emitMessage({
+      type: 'item',
+      diff: false,
+      refresh: false,
+      items: [
+        { id: 'OOT_BOTTLE_1', qty: 7 },
+        { id: 'OOT_BOTTLE_2', qty: 1 },
+        { id: 'MM_BOTTLE_5', qty: 3 },
+        { id: 'SHARED_BOTTLE_3', qty: 2 },
+      ],
+    });
+    socket.emitMessage({
+      type: 'refresh',
+      refresh: true,
+    });
+
+    expect(inventoryUpdates).toEqual([
+      {
+        OOT_BOTTLE_EMPTY: 2,
+        MM_BOTTLE_EMPTY: 1,
+        SHARED_BOTTLE_EMPTY: 1,
+        '__grid_ref_state__:__grid_ref__:Bottle1:OOT_BOTTLE_EMPTY': 1,
+        '__grid_ref_state__:__grid_ref__:Bottle2:OOT_BOTTLE_EMPTY': 1,
+        '__grid_ref_state__:__grid_ref__:MM_Bottle5:MM_BOTTLE_EMPTY': 1,
+        '__grid_ref_state__:__grid_ref__:Shared_Bottle3:SHARED_BOTTLE_EMPTY': 1,
+      },
+    ]);
+  });
+
+  it('maps OOT and MM bottle slot signals onto shared bottle refs when shared bottles are enabled', async () => {
+    const inventoryUpdates: Array<Record<string, number>> = [];
+    const availableItemIds = ref(new Set<string>(['SHARED_BOTTLE_EMPTY']));
+    const itemMaxCounts = ref(new Map<string, number>());
+
+    const autotracker = useAutotracker({
+      availableItemIds,
+      itemMaxCounts,
+      onInventoryUpdate: (inventory) => {
+        inventoryUpdates.push(inventory);
+      },
+    });
+
+    autotracker.enabled.value = true;
+    await nextTick();
+
+    const socket = FakeWebSocket.instances[0];
+    expect(socket).toBeDefined();
+
+    socket.emitOpen();
+    socket.emitMessage({
+      type: 'handshAck',
+      version: '0.1.0',
+      name: 'ootmm-autotracker',
+      refresh: true,
+    });
+    socket.emitMessage({
+      type: 'item',
+      diff: false,
+      refresh: false,
+      items: [
+        { id: 'OOT_BOTTLE_1', qty: 7 },
+        { id: 'MM_BOTTLE_1', qty: 1 },
+        { id: 'SHARED_BOTTLE_2', qty: 1 },
+        { id: 'MM_BOTTLE_5', qty: 3 },
+      ],
+    });
+    socket.emitMessage({
+      type: 'refresh',
+      refresh: true,
+    });
+
+    expect(inventoryUpdates).toEqual([
+      {
+        SHARED_BOTTLE_EMPTY: 2,
+        '__grid_ref_state__:__grid_ref__:Shared_Bottle1:SHARED_BOTTLE_EMPTY': 1,
+        '__grid_ref_state__:__grid_ref__:Shared_Bottle2:SHARED_BOTTLE_EMPTY': 1,
+      },
+    ]);
+  });
 });
