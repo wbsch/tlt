@@ -381,31 +381,13 @@
       "coords": [107, 295],
       "image": "grass",
       "codes": [
-        "OOT Lake Hylia Grass Pack 1 Bush 01",
-        "OOT Lake Hylia Grass Pack 1 Bush 02",
-        "OOT Lake Hylia Grass Pack 1 Bush 03",
-        "OOT Lake Hylia Grass Pack 1 Bush 04",
-        "OOT Lake Hylia Grass Pack 1 Bush 05",
-        "OOT Lake Hylia Grass Pack 1 Bush 06",
-        "OOT Lake Hylia Grass Pack 1 Bush 07",
-        "OOT Lake Hylia Grass Pack 1 Bush 08",
-        "OOT Lake Hylia Grass Pack 1 Bush 09",
-        "OOT Lake Hylia Grass Pack 1 Bush 10",
-        "OOT Lake Hylia Grass Pack 1 Bush 11",
-        "OOT Lake Hylia Grass Pack 1 Bush 12"
-      ]
-    },
-    {
-      "coords": [136, 284],
-      "image": "grass",
-      "codes": [
         "OOT Lake Hylia Grass Pack 2 Bush 01",
         "OOT Lake Hylia Grass Pack 2 Bush 02",
         "OOT Lake Hylia Grass Pack 2 Bush 03",
         "OOT Lake Hylia Grass Pack 2 Bush 04",
         "OOT Lake Hylia Grass Pack 2 Bush 05",
         "OOT Lake Hylia Grass Pack 2 Bush 06",
-        "OOT Lake Hylia Grass Pack 2 Bush 07",
+        "OOT Lake Hylia Grass Pack 1 Bush 07",
         "OOT Lake Hylia Grass Pack 2 Bush 08",
         "OOT Lake Hylia Grass Pack 2 Bush 09",
         "OOT Lake Hylia Grass Pack 2 Bush 10",
@@ -414,7 +396,7 @@
       ]
     },
     {
-      "coords": [109, 268],
+      "coords": [136, 284],
       "image": "grass",
       "codes": [
         "OOT Lake Hylia Grass Pack 3 Bush 01",
@@ -429,6 +411,24 @@
         "OOT Lake Hylia Grass Pack 3 Bush 10",
         "OOT Lake Hylia Grass Pack 3 Bush 11",
         "OOT Lake Hylia Grass Pack 3 Bush 12"
+      ]
+    },
+    {
+      "coords": [109, 268],
+      "image": "grass",
+      "codes": [
+        "OOT Lake Hylia Grass Pack 1 Bush 01",
+        "OOT Lake Hylia Grass Pack 1 Bush 02",
+        "OOT Lake Hylia Grass Pack 1 Bush 03",
+        "OOT Lake Hylia Grass Pack 1 Bush 04",
+        "OOT Lake Hylia Grass Pack 1 Bush 05",
+        "OOT Lake Hylia Grass Pack 1 Bush 06",
+        "OOT Lake Hylia Grass Pack 1 Bush 07",
+        "OOT Lake Hylia Grass Pack 1 Bush 08",
+        "OOT Lake Hylia Grass Pack 1 Bush 09",
+        "OOT Lake Hylia Grass Pack 1 Bush 10",
+        "OOT Lake Hylia Grass Pack 1 Bush 11",
+        "OOT Lake Hylia Grass Pack 1 Bush 12"
       ]
     },
     {
