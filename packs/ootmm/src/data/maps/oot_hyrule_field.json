@@ -580,7 +580,7 @@
         "OOT Hyrule Field Bush Child 04",
         "OOT Hyrule Field Bush Child 05",
         "OOT Hyrule Field Bush Child 06",
-        "OOT Hyrule Field Bush Child 07",
+        "OOT Hyrule Field Bush Child 01",
         "OOT Hyrule Field Bush Child 08",
         "OOT Hyrule Field Bush Child 09",
         "OOT Hyrule Field Bush Child 10",
@@ -591,7 +591,7 @@
       "coords": [758, 80],
       "image": "bush",
       "overlays": ["child"],
-      "codes": "OOT Hyrule Field Bush Child 01"
+      "codes": "OOT Hyrule Field Bush Child 07"
     },
     {
       "coords": [714, 98],
