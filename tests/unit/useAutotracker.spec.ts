@@ -205,6 +205,58 @@ describe('useAutotracker checks', () => {
     ]);
   });
 
+  it("does not count Ruto's Letter as an extra empty bottle slot", async () => {
+    const inventoryUpdates: Array<Record<string, number>> = [];
+    const availableItemIds = ref(
+      new Set<string>(['OOT_BOTTLE_EMPTY', 'OOT_BOTTLE_RUTO_LETTER']),
+    );
+    const itemMaxCounts = ref(new Map<string, number>());
+
+    const autotracker = useAutotracker({
+      availableItemIds,
+      itemMaxCounts,
+      onInventoryUpdate: (inventory) => {
+        inventoryUpdates.push(inventory);
+      },
+    });
+
+    autotracker.enabled.value = true;
+    await nextTick();
+
+    const socket = FakeWebSocket.instances[0];
+    expect(socket).toBeDefined();
+
+    socket.emitOpen();
+    socket.emitMessage({
+      type: 'handshAck',
+      version: '0.1.0',
+      name: 'ootmm-autotracker',
+      refresh: true,
+    });
+    socket.emitMessage({
+      type: 'item',
+      diff: false,
+      refresh: false,
+      items: [
+        { id: 'OOT_BOTTLE_1', qty: 7 },
+        { id: 'OOT_BOTTLE_2', qty: 1 },
+        { id: 'OOT_BOTTLE_RUTO_LETTER', qty: 1 },
+      ],
+    });
+    socket.emitMessage({
+      type: 'refresh',
+      refresh: true,
+    });
+
+    expect(inventoryUpdates).toEqual([
+      {
+        OOT_BOTTLE_EMPTY: 1,
+        OOT_BOTTLE_RUTO_LETTER: 1,
+        '__grid_ref_state__:__grid_ref__:Bottle1:OOT_BOTTLE_EMPTY': 1,
+      },
+    ]);
+  });
+
   it('maps OOT and MM bottle slot signals onto shared bottle refs when shared bottles are enabled', async () => {
     const inventoryUpdates: Array<Record<string, number>> = [];
     const availableItemIds = ref(new Set<string>(['SHARED_BOTTLE_EMPTY']));

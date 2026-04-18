@@ -78,6 +78,12 @@ interface AutotrackerBottleSlotMapping {
   sharedGridRef?: string;
 }
 
+const SEPARATELY_TRACKED_BOTTLE_CONTENT_BASE_IDS: Record<string, string> = {
+  OOT_BOTTLE_RUTO_LETTER: 'OOT_BOTTLE_EMPTY',
+  MM_BOTTLE_RUTO_LETTER: 'MM_BOTTLE_EMPTY',
+  SHARED_BOTTLE_RUTO_LETTER: 'SHARED_BOTTLE_EMPTY',
+};
+
 const AUTOTRACKER_BOTTLE_SLOT_MAPPINGS: AutotrackerBottleSlotMapping[] = [
   {
     autotrackerId: 'OOT_BOTTLE_1',
@@ -189,10 +195,22 @@ function buildTrackerInventoryRecord(
   const sharedBottleMode = isSharedBottleMode(availableItemIds);
   const bottleCounts = new Map<string, number>();
   const sharedBottleGridRefStates = new Set<string>();
+  const separatelyTrackedBottleContentCounts = new Map<string, number>();
 
   for (const [id, qty] of liveState) {
     if (qty <= 0) {
       continue;
+    }
+
+    const separateBottleContentBaseItemId =
+      SEPARATELY_TRACKED_BOTTLE_CONTENT_BASE_IDS[id];
+    if (separateBottleContentBaseItemId) {
+      separatelyTrackedBottleContentCounts.set(
+        separateBottleContentBaseItemId,
+        (separatelyTrackedBottleContentCounts.get(
+          separateBottleContentBaseItemId,
+        ) ?? 0) + qty,
+      );
     }
 
     const bottleSlotMapping = AUTOTRACKER_BOTTLE_SLOT_MAPPING_BY_ID.get(id);
@@ -225,6 +243,33 @@ function buildTrackerInventoryRecord(
 
   for (const [itemId, count] of bottleCounts) {
     record[itemId] = (record[itemId] ?? 0) + count;
+  }
+
+  for (const [baseItemId, count] of separatelyTrackedBottleContentCounts) {
+    if (count <= 0) {
+      continue;
+    }
+
+    const currentBottleCount = record[baseItemId] ?? 0;
+    const suppressedCount = Math.min(currentBottleCount, count);
+    if (suppressedCount <= 0) {
+      continue;
+    }
+
+    if (currentBottleCount === suppressedCount) {
+      delete record[baseItemId];
+    } else {
+      record[baseItemId] = currentBottleCount - suppressedCount;
+    }
+
+    const matchingGridRefStateKeys = Object.keys(record).filter(
+      (key) =>
+        key.startsWith(GRID_REF_STATE_PREFIX) && key.endsWith(`:${baseItemId}`),
+    );
+
+    for (const key of matchingGridRefStateKeys.slice(-suppressedCount)) {
+      delete record[key];
+    }
   }
 
   return record;
