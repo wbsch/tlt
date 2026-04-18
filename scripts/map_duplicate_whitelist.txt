@@ -146,3 +146,139 @@ MM Tingle Map Ranch
 MM Tingle Map Snowhead
 MM Tingle Map Woodfall
 OOT Dodongo Cavern Gossip
+MM Cucco Shack Bunny Mask
+MM Cucco Shack Bush 1
+MM Cucco Shack Bush 2
+MM Cucco Shack Bush 3
+MM Cucco Shack Bush 4
+MM Cucco Shack Bush 5
+MM Cucco Shack Bush 6
+MM Cucco Shack Bush 7
+MM Cucco Shack Crate 1
+MM Cucco Shack Crate 2
+MM Cucco Shack Crate 3
+MM Cucco Shack Gossip
+MM Cucco Shack Potted Plant 1 Grass
+MM Cucco Shack Potted Plant 1 Pot
+MM Cucco Shack Potted Plant 2 Grass
+MM Cucco Shack Potted Plant 2 Pot
+MM Cucco Shack Tree
+MM Cucco Shack Wonder Item 1
+MM Cucco Shack Wonder Item 2
+MM Cucco Shack Wonder Item 3
+MM Cucco Shack Wonder Item 4
+MM Cucco Shack Wonder Item 5
+MM Cucco Shack Wonder Item 6
+MM Deku Palace Sonata of Awakening
+MM Deku Shrine Mask of Scents
+MM Deku Shrine Pot 1
+MM Deku Shrine Pot 2
+MM Deku Shrine Rupee End 01
+MM Deku Shrine Rupee End 02
+MM Deku Shrine Rupee End 03
+MM Deku Shrine Rupee End 04
+MM Deku Shrine Rupee End 05
+MM Deku Shrine Rupee End 06
+MM Deku Shrine Rupee End 07
+MM Deku Shrine Rupee End 08
+MM Deku Shrine Rupee End 09
+MM Deku Shrine Rupee End 10
+MM Deku Shrine Rupee Main 01
+MM Deku Shrine Rupee Main 02
+MM Deku Shrine Rupee Main 03
+MM Deku Shrine Rupee Main 04
+MM Deku Shrine Rupee Main 05
+MM Deku Shrine Rupee Main 06
+MM Deku Shrine Rupee Main 07
+MM Deku Shrine Rupee Main 08
+MM Deku Shrine Rupee Main 09
+MM Deku Shrine Rupee Main 10
+MM Deku Shrine Rupee Main 11
+MM Deku Shrine Rupee Main 12
+MM Deku Shrine Rupee Main 13
+MM Deku Shrine Rupee Main 14
+MM Deku Shrine Rupee Main 15
+MM Deku Shrine Rupee Main 16
+MM Deku Shrine Rupee Main 17
+MM Deku Shrine Rupee Main 18
+MM Deku Shrine Rupee Main 19
+MM Deku Shrine Rupee Main 20
+MM Doggy Racetrack Chest
+MM Doggy Racetrack Gossip
+MM Doggy Racetrack HP
+MM Doggy Racetrack Pot 1
+MM Doggy Racetrack Pot 2
+MM Doggy Racetrack Pot 3
+MM Doggy Racetrack Pot 4
+MM Doggy Racetrack Soil
+MM Goron Baby
+MM Goron Race Forked Tree 1
+MM Goron Race Forked Tree 10
+MM Goron Race Forked Tree 2
+MM Goron Race Forked Tree 3
+MM Goron Race Forked Tree 4
+MM Goron Race Forked Tree 5
+MM Goron Race Forked Tree 6
+MM Goron Race Forked Tree 7
+MM Goron Race Forked Tree 8
+MM Goron Race Forked Tree 9
+MM Goron Race Pot 01
+MM Goron Race Pot 02
+MM Goron Race Pot 03
+MM Goron Race Pot 04
+MM Goron Race Pot 05
+MM Goron Race Pot 06
+MM Goron Race Pot 07
+MM Goron Race Pot 08
+MM Goron Race Pot 09
+MM Goron Race Pot 10
+MM Goron Race Pot 11
+MM Goron Race Pot 12
+MM Goron Race Pot 13
+MM Goron Race Pot 14
+MM Goron Race Pot 15
+MM Goron Race Pot 16
+MM Goron Race Pot 17
+MM Goron Race Pot 18
+MM Goron Race Pot 19
+MM Goron Race Pot 20
+MM Goron Race Pot 21
+MM Goron Race Pot 22
+MM Goron Race Pot 23
+MM Goron Race Pot 24
+MM Goron Race Pot 25
+MM Goron Race Pot 26
+MM Goron Race Pot 27
+MM Goron Race Pot 28
+MM Goron Race Pot 29
+MM Goron Race Pot 30
+MM Goron Race Reward
+MM Goron Shrine Pot 01
+MM Goron Shrine Pot 02
+MM Goron Shrine Pot 03
+MM Goron Shrine Pot 04
+MM Goron Shrine Pot 05
+MM Goron Shrine Pot 06
+MM Goron Shrine Pot 07
+MM Goron Shrine Pot 08
+MM Goron Shrine Pot 09
+MM Goron Shrine Pot 10
+MM Goron Shrine Pot 11
+MM Goron Shrine Rock 01
+MM Goron Shrine Rock 02
+MM Goron Shrine Rock 03
+MM Goron Shrine Rock 04
+MM Goron Shrine Rock 05
+MM Goron Shrine Rock 06
+MM Goron Shrine Rock 07
+MM Goron Shrine Rock 08
+MM Goron Shrine Rock 09
+MM Goron Shrine Rock 10
+MM Goron Shrine Rock 11
+MM Goron Shrine Rock 12
+MM Goron Shrine Rock 13
+MM Goron Shrine Rock 14
+MM Goron Shrine Rock 15
+MM Goron Shrine Rock 16
+MM Waterfall Rapids Beaver Race 1
+MM Waterfall Rapids Beaver Race 2
