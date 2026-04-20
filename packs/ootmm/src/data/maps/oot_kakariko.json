@@ -120,9 +120,9 @@
       "image": "pot",
       "overlays": ["child"],
       "codes": [
-        "OOT Kakariko Pot 01",
-        "OOT Kakariko Pot 02",
-        "OOT Kakariko Pot 03"
+        "OOT Kakariko Pot 07",
+        "OOT Kakariko Pot 08",
+        "OOT Kakariko Pot 09"
       ]
     },
     {
@@ -130,9 +130,9 @@
       "image": "pot",
       "overlays": ["child"],
       "codes": [
-        "OOT Kakariko Pot 04",
-        "OOT Kakariko Pot 05",
-        "OOT Kakariko Pot 06"
+        "OOT Kakariko Pot 01",
+        "OOT Kakariko Pot 02",
+        "OOT Kakariko Pot 03"
       ]
     },
     {
@@ -146,9 +146,9 @@
       "image": "pot",
       "overlays": ["child"],
       "codes": [
-        "OOT Kakariko Pot 07",
-        "OOT Kakariko Pot 08",
-        "OOT Kakariko Pot 09"
+        "OOT Kakariko Pot 04",
+        "OOT Kakariko Pot 05",
+        "OOT Kakariko Pot 06"
       ]
     },
     {
@@ -240,7 +240,7 @@
     {
       "coords": [926, 190],
       "image": "green_rupee",
-      "codes": ["OOT Graveyard Dampe Tomb Rupee 7"]
+      "codes": "OOT Graveyard Dampe Tomb Rupee 7"
     },
     {
       "coords": [858, 234],
@@ -450,9 +450,6 @@
       "coords": [229, 417],
       "image": "interior_entrance",
       "type": "submenu",
-      "entranceMenu": {
-        "entranceIds": ["OOT_HOUSE_IMPA"]
-      },
       "markers": [
         {
           "image": "wonder_item_red_rupee",
@@ -466,15 +463,15 @@
           "image": "cow",
           "codes": "OOT Kakariko Cow"
         }
-      ]
+      ],
+      "entranceMenu": {
+        "entranceIds": ["OOT_HOUSE_IMPA"]
+      }
     },
     {
       "coords": [271, 431],
       "image": "interior_entrance",
       "type": "submenu",
-      "entranceMenu": {
-        "entranceIds": ["OOT_HOUSE_IMPA_BACK"]
-      },
       "markers": [
         {
           "image": "wonder_item_red_rupee",
@@ -488,15 +485,15 @@
           "image": "cow",
           "codes": "OOT Kakariko Cow"
         }
-      ]
+      ],
+      "entranceMenu": {
+        "entranceIds": ["OOT_HOUSE_IMPA_BACK"]
+      }
     },
     {
       "coords": [229, 365],
       "image": "interior_entrance",
       "type": "submenu",
-      "entranceMenu": {
-        "entranceIds": ["OOT_HOUSE_SKULLTULA"]
-      },
       "markers": [
         {
           "image": "npc",
@@ -518,23 +515,26 @@
           "image": "npc",
           "codes": "OOT Skulltula House 50 Tokens"
         }
-      ]
+      ],
+      "entranceMenu": {
+        "entranceIds": ["OOT_HOUSE_SKULLTULA"]
+      }
     },
     {
       "coords": [270, 357],
       "image": "interior_entrance",
-      "overlays": ["adult", "day"],
       "type": "submenu",
-      "entranceMenu": {
-        "entranceIds": ["OOT_ADULT_ARCHERY"]
-      },
+      "overlays": ["adult", "day"],
       "markers": [
         {
           "image": "npc",
-          "overlays": ["adult"],
-          "codes": "OOT Shooting Gallery Adult"
+          "codes": "OOT Shooting Gallery Adult",
+          "overlays": ["adult"]
         }
-      ]
+      ],
+      "entranceMenu": {
+        "entranceIds": ["OOT_ADULT_ARCHERY"]
+      }
     },
     {
       "coords": [252, 287],
@@ -548,21 +548,21 @@
       "coords": [229, 311],
       "image": "bomb_grotto",
       "type": "submenu",
-      "entranceMenu": {
-        "entranceIds": ["OOT_GROTTO_REDEAD"]
-      },
       "markers": [
         {
           "image": "chest",
           "codes": "OOT Kakariko Grotto Front"
         }
-      ]
+      ],
+      "entranceMenu": {
+        "entranceIds": ["OOT_GROTTO_REDEAD"]
+      }
     },
     {
       "coords": [319, 328],
       "image": "dungeon_entrance",
-      "overlays": ["child"],
       "type": "submenu",
+      "overlays": ["child"],
       "entranceMenu": {
         "entranceIds": ["OOT_BOTTOM_OF_THE_WELL"]
       }
@@ -570,15 +570,11 @@
     {
       "coords": [230, 219],
       "image": "interior_entrance",
-      "overlays": ["adult", "day"],
       "type": "submenu",
-      "entranceMenu": {
-        "entranceIds": ["OOT_KAKARIKO_BAZAAR"]
-      },
+      "overlays": ["adult", "day"],
       "markers": [
         {
           "image": "shop",
-          "overlays": ["adult"],
           "codes": [
             "OOT Kakariko Bazaar Item 1",
             "OOT Kakariko Bazaar Item 2",
@@ -588,17 +584,20 @@
             "OOT Kakariko Bazaar Item 6",
             "OOT Kakariko Bazaar Item 7",
             "OOT Kakariko Bazaar Item 8"
-          ]
+          ],
+          "overlays": ["adult"]
         }
-      ]
+      ],
+      "entranceMenu": {
+        "entranceIds": ["OOT_KAKARIKO_BAZAAR"]
+      }
     },
     {
       "coords": [249, 115],
       "image": "overworld_entrance",
       "type": "submenu",
       "entranceMenu": {
-        "entranceIds": ["OOT_DEATH_MOUNTAIN_FROM_KAKARIKO"],
-        "display": "entrances"
+        "entranceIds": ["OOT_DEATH_MOUNTAIN_FROM_KAKARIKO"]
       }
     },
     {
@@ -606,22 +605,17 @@
       "image": "overworld_entrance",
       "type": "submenu",
       "entranceMenu": {
-        "entranceIds": ["OOT_KAKARIKO_FROM_FIELD"],
-        "display": "exits"
+        "entranceIds": ["OOT_KAKARIKO_FROM_FIELD"]
       }
     },
     {
       "coords": [276, 225],
       "image": "interior_entrance",
-      "overlays": ["adult", "day"],
       "type": "submenu",
-      "entranceMenu": {
-        "entranceIds": ["OOT_SHOP_POTION_KAKARIKO"]
-      },
+      "overlays": ["adult", "day"],
       "markers": [
         {
           "image": "shop",
-          "overlays": ["adult"],
           "codes": [
             "OOT Kakariko Potion Shop Item 1",
             "OOT Kakariko Potion Shop Item 2",
@@ -631,23 +625,22 @@
             "OOT Kakariko Potion Shop Item 6",
             "OOT Kakariko Potion Shop Item 7",
             "OOT Kakariko Potion Shop Item 8"
-          ]
+          ],
+          "overlays": ["adult"]
         }
-      ]
+      ],
+      "entranceMenu": {
+        "entranceIds": ["OOT_SHOP_POTION_KAKARIKO"]
+      }
     },
     {
       "coords": [302, 227],
       "image": "interior_entrance",
-      "overlays": ["adult", "day"],
       "type": "submenu",
-      "entranceMenu": {
-        "entranceIds": ["OOT_SHOP_POTION_KAKARIKO_BACK"]
-      },
-
+      "overlays": ["adult", "day"],
       "markers": [
         {
           "image": "shop",
-          "overlays": ["adult"],
           "codes": [
             "OOT Kakariko Potion Shop Item 1",
             "OOT Kakariko Potion Shop Item 2",
@@ -657,17 +650,18 @@
             "OOT Kakariko Potion Shop Item 6",
             "OOT Kakariko Potion Shop Item 7",
             "OOT Kakariko Potion Shop Item 8"
-          ]
+          ],
+          "overlays": ["adult"]
         }
-      ]
+      ],
+      "entranceMenu": {
+        "entranceIds": ["OOT_SHOP_POTION_KAKARIKO_BACK"]
+      }
     },
     {
       "coords": [314, 251],
       "image": "grotto",
       "type": "submenu",
-      "entranceMenu": {
-        "entranceIds": ["OOT_GROTTO_GENERIC_KAKARIKO"]
-      },
       "markers": [
         {
           "image": "chest",
@@ -701,47 +695,50 @@
           "image": "gossip_stone",
           "codes": "OOT Kakariko Gossip Grotto"
         }
-      ]
+      ],
+      "entranceMenu": {
+        "entranceIds": ["OOT_GROTTO_GENERIC_KAKARIKO"]
+      }
     },
     {
       "coords": [314, 269],
       "image": "interior_entrance",
-      "overlays": ["day"],
       "type": "submenu",
-      "entranceMenu": {
-        "entranceIds": ["OOT_SHOP_GRANNY"]
-      },
+      "overlays": ["day"],
       "markers": [
         {
           "image": "npc",
-          "overlays": ["adult"],
-          "codes": "OOT Kakariko Potion Shop Odd Potion"
+          "codes": "OOT Kakariko Potion Shop Odd Potion",
+          "overlays": ["adult"]
         },
         {
           "image": "shop",
-          "overlays": ["adult"],
-          "codes": "OOT Kakariko Potion Shop Buy Blue Potion"
+          "codes": "OOT Kakariko Potion Shop Buy Blue Potion",
+          "overlays": ["adult"]
         }
-      ]
+      ],
+      "entranceMenu": {
+        "entranceIds": ["OOT_SHOP_GRANNY"]
+      }
     },
     {
       "coords": [366, 323],
       "image": "interior_entrance",
       "type": "submenu",
-      "entranceMenu": {
-        "entranceIds": ["OOT_WINDMILL"]
-      },
       "markers": [
         {
           "image": "song",
-          "overlays": ["adult"],
-          "codes": "OOT Windmill Song of Storms"
+          "codes": "OOT Windmill Song of Storms",
+          "overlays": ["adult"]
         },
         {
           "image": "heart_piece",
           "codes": "OOT Windmill HP"
         }
-      ]
+      ],
+      "entranceMenu": {
+        "entranceIds": ["OOT_WINDMILL"]
+      }
     },
     {
       "coords": [632, 562],
@@ -755,9 +752,6 @@
       "coords": [681, 516],
       "image": "grotto",
       "type": "submenu",
-      "entranceMenu": {
-        "entranceIds": ["OOT_GRAVE_SHIELD"]
-      },
       "markers": [
         {
           "image": "chest",
@@ -776,29 +770,29 @@
             "OOT Graveyard Fairy Fountain Fairy 8"
           ]
         }
-      ]
+      ],
+      "entranceMenu": {
+        "entranceIds": ["OOT_GRAVE_SHIELD"]
+      }
     },
     {
       "coords": [728, 538],
       "image": "grotto",
       "type": "submenu",
-      "entranceMenu": {
-        "entranceIds": ["OOT_GRAVE_REDEAD"]
-      },
       "markers": [
         {
           "image": "chest",
           "codes": "OOT Graveyard ReDead Tomb"
         }
-      ]
+      ],
+      "entranceMenu": {
+        "entranceIds": ["OOT_GRAVE_REDEAD"]
+      }
     },
     {
       "coords": [668, 456],
       "image": "grotto",
       "type": "submenu",
-      "entranceMenu": {
-        "entranceIds": ["OOT_GRAVE_DAMPE"]
-      },
       "markers": [
         {
           "image": "pot",
@@ -852,15 +846,15 @@
           "image": "npc",
           "codes": "OOT Graveyard Dampe Tomb Reward 2"
         }
-      ]
+      ],
+      "entranceMenu": {
+        "entranceIds": ["OOT_GRAVE_DAMPE"]
+      }
     },
     {
       "coords": [788, 511],
       "image": "grotto",
       "type": "submenu",
-      "entranceMenu": {
-        "entranceIds": ["OOT_GRAVE_ROYAL"]
-      },
       "markers": [
         {
           "image": "chest",
@@ -874,7 +868,10 @@
           "image": "song",
           "codes": "OOT Graveyard Royal Tomb Song"
         }
-      ]
+      ],
+      "entranceMenu": {
+        "entranceIds": ["OOT_GRAVE_ROYAL"]
+      }
     },
     {
       "coords": [825, 509],

@@ -117,13 +117,13 @@
       "coords": [405, 396],
       "image": "crate",
       "overlays": ["child"],
-      "codes": ["OOT Market Crate 3", "OOT Market Crate 4"]
+      "codes": ["OOT Market Crate 1", "OOT Market Crate 2"]
     },
     {
       "coords": [453, 466],
       "image": "crate",
       "overlays": ["child"],
-      "codes": ["OOT Market Crate 1", "OOT Market Crate 2"]
+      "codes": ["OOT Market Crate 3", "OOT Market Crate 4"]
     },
     {
       "coords": [399, 454],
@@ -134,18 +134,18 @@
       "coords": [429, 409],
       "image": "grass",
       "codes": [
-        "OOT Market Grass 4",
-        "OOT Market Grass 5",
-        "OOT Market Grass 6"
+        "OOT Market Grass 1",
+        "OOT Market Grass 2",
+        "OOT Market Grass 3"
       ]
     },
     {
       "coords": [482, 392],
       "image": "grass",
       "codes": [
-        "OOT Market Grass 1",
-        "OOT Market Grass 2",
-        "OOT Market Grass 3"
+        "OOT Market Grass 4",
+        "OOT Market Grass 5",
+        "OOT Market Grass 6"
       ]
     },
     {
@@ -433,7 +433,7 @@
     {
       "coords": [441, 91],
       "image": "tree",
-      "codes": "OOT Hyrule Castle Tree 8"
+      "codes": "OOT Hyrule Castle Tree 7"
     },
     {
       "coords": [441, 136],
@@ -450,7 +450,7 @@
         "OOT Hyrule Castle Tree 4",
         "OOT Hyrule Castle Tree 5",
         "OOT Hyrule Castle Tree 6",
-        "OOT Hyrule Castle Tree 7"
+        "OOT Hyrule Castle Tree 8"
       ]
     },
     {
