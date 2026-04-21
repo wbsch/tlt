@@ -64,7 +64,10 @@ import * as NamesMod from '@ootmm/core/names';
 import * as SettingsDataMod from '@ootmm/core/settings/data';
 import { TRICKS } from '@ootmm/core/settings/tricks';
 import AutotrackerToggle from './AutotrackerToggle.vue';
-import { useAutotracker } from '../autotracker/useAutotracker';
+import {
+  useAutotracker,
+  type AutotrackerSyncPhase,
+} from '../autotracker/useAutotracker';
 import { resolveAutotrackerCheckToLocationIds } from '../autotracker/checkMapping';
 
 const props = defineProps<{
@@ -98,6 +101,8 @@ type SpoilerUnknownSetting = {
   key: string;
   value: string;
 };
+
+type AutotrackerStartMode = 'overwrite' | 'preserve';
 
 type DevTraceSelection = {
   checkId: string;
@@ -148,6 +153,12 @@ const normalizeName = (value: string) =>
   value.toLowerCase().replace(/\s+/g, ' ').trim();
 
 const DUNGEON_REWARD_ITEM_ID_SET = new Set<string>(DUNGEON_REWARD_ITEM_IDS);
+const DUNGEON_REWARD_STATE_ITEM_IDS = new Set<string>(
+  DUNGEON_REWARD_ITEM_IDS.flatMap((itemId) => {
+    const stateItemId = getGridWheelOverlayStateItemId(itemId);
+    return stateItemId ? [stateItemId] : [];
+  }),
+);
 const SPOILER_REWARD_REGION_LABEL_BY_NAME = new Map<string, string>(
   DUNGEON_REWARD_REGION_LABELS.map(
     ({ regionName, labelItemId }): [string, string] => [
@@ -156,6 +167,16 @@ const SPOILER_REWARD_REGION_LABEL_BY_NAME = new Map<string, string>(
     ],
   ),
 );
+const SPOILER_REWARD_REGION_ALIASES = new Map<string, string>([
+  [
+    normalizeName('Inverted Stone Tower Temple'),
+    normalizeName('Stone Tower Temple'),
+  ],
+  [
+    normalizeName('Stone Tower Temple Inverted'),
+    normalizeName('Stone Tower Temple'),
+  ],
+]);
 
 const TEMPLE_OF_TIME_MEDALLION_LOCATION_NAMES = new Set([
   normalizeName('OOT Temple of Time Medallion'),
@@ -233,6 +254,10 @@ const spoilerPlayerOptions = ref<number[]>([]);
 const spoilerSelectedPlayer = ref<number | null>(null);
 let spoilerPlayerDialogResolver: ((player: number | null) => void) | null =
   null;
+const isAutotrackerStartDialogOpen = ref(false);
+let autotrackerStartDialogResolver:
+  | ((mode: AutotrackerStartMode | null) => void)
+  | null = null;
 const mapDefs = OOTMM_MAP_DEFS;
 type SelectedGamesSetting = 'ootmm' | 'oot' | 'mm';
 const RIGHT_SIDEBAR_TABS: Array<{ id: RightSidebarTab; label: string }> = [
@@ -489,24 +514,213 @@ const { resolveCodeToCheckIds: resolveMapSelectorCodeToCheckIds } =
 const autotracker = useAutotracker({
   availableItemIds: availableItemIds,
   itemMaxCounts: itemMaxCounts,
-  onInventoryUpdate: (inventory) => {
-    sessionStore.setInventoryFromMap(
-      new Map(Object.entries(inventory).filter(([, v]) => v > 0)),
-      { source: 'remote', recordHistory: false },
-    );
+  onInventoryUpdate: (inventory, meta) => {
+    applyAutotrackerInventoryUpdate(inventory, meta.phase);
   },
   resolveCheckToLocationIds: (check) =>
     resolveAutotrackerCheckToLocationIds(
       check,
       resolveMapSelectorCodeToCheckIds,
     ),
-  onCollectedLocationsUpdate: (locationIds) => {
-    sessionStore.setCollectedLocationIds(locationIds, {
+  onCollectedLocationsUpdate: (locationIds, meta) => {
+    applyAutotrackerCollectedLocationsUpdate(locationIds, meta.phase);
+  },
+});
+
+let autotrackerStartMode: AutotrackerStartMode = 'overwrite';
+let autotrackerInitialRemoteInventory: Record<string, number> | null = null;
+let autotrackerInitialRemoteCollectedLocationIds: Set<string> | null = null;
+let autotrackerAppliedInventoryDelta = new Map<string, number>();
+let autotrackerAppliedCollectedLocationDelta = new Set<string>();
+
+function resetAutotrackerMergeState() {
+  autotrackerInitialRemoteInventory = null;
+  autotrackerInitialRemoteCollectedLocationIds = null;
+  autotrackerAppliedInventoryDelta = new Map();
+  autotrackerAppliedCollectedLocationDelta = new Set();
+}
+
+function resolveAutotrackerStartMode(mode: AutotrackerStartMode | null) {
+  if (!autotrackerStartDialogResolver) return;
+  const resolver = autotrackerStartDialogResolver;
+  autotrackerStartDialogResolver = null;
+  isAutotrackerStartDialogOpen.value = false;
+  resolver(mode);
+}
+
+function requestAutotrackerStartMode() {
+  isAutotrackerStartDialogOpen.value = true;
+  return new Promise<AutotrackerStartMode | null>((resolve) => {
+    autotrackerStartDialogResolver = resolve;
+  });
+}
+
+function startAutotrackerOverwriteMode() {
+  resolveAutotrackerStartMode('overwrite');
+}
+
+function startAutotrackerPreserveMode() {
+  resolveAutotrackerStartMode('preserve');
+}
+
+function cancelAutotrackerStartMode() {
+  resolveAutotrackerStartMode(null);
+}
+
+function setAutotrackerInventoryCount(
+  inventoryMap: Map<string, number>,
+  itemId: string,
+  count: number,
+) {
+  if (count > 0) {
+    inventoryMap.set(itemId, count);
+  } else {
+    inventoryMap.delete(itemId);
+  }
+}
+
+function adjustAutotrackerInventoryCount(
+  inventoryMap: Map<string, number>,
+  itemId: string,
+  delta: number,
+) {
+  if (delta === 0 || DUNGEON_REWARD_STATE_ITEM_IDS.has(itemId)) return;
+  const nextCount = Math.max(0, (inventoryMap.get(itemId) ?? 0) + delta);
+  setAutotrackerInventoryCount(inventoryMap, itemId, nextCount);
+}
+
+function sanitizeAutotrackerCount(value: number | undefined): number {
+  const numericValue = Number(value ?? 0);
+  if (!Number.isFinite(numericValue)) return 0;
+  return Math.max(0, Math.floor(numericValue));
+}
+
+function preserveDungeonRewardOverlayStateItems(
+  nextInventory: Map<string, number>,
+): Map<string, number> {
+  const preserved = new Map(nextInventory);
+  for (const stateItemId of DUNGEON_REWARD_STATE_ITEM_IDS) {
+    const currentCount = inventory.value.get(stateItemId) ?? 0;
+    setAutotrackerInventoryCount(preserved, stateItemId, currentCount);
+  }
+  return preserved;
+}
+
+function computeAutotrackerInventoryDelta(
+  remoteInventory: Record<string, number>,
+): Map<string, number> {
+  const baseline = autotrackerInitialRemoteInventory ?? {};
+  const delta = new Map<string, number>();
+  const itemIds = new Set([
+    ...Object.keys(baseline),
+    ...Object.keys(remoteInventory),
+  ]);
+
+  for (const itemId of itemIds) {
+    if (DUNGEON_REWARD_STATE_ITEM_IDS.has(itemId)) continue;
+    const nextCount = sanitizeAutotrackerCount(remoteInventory[itemId]);
+    const baselineCount = sanitizeAutotrackerCount(baseline[itemId]);
+    const diff = nextCount - baselineCount;
+    if (diff !== 0) {
+      delta.set(itemId, diff);
+    }
+  }
+
+  return delta;
+}
+
+function applyAutotrackerInventoryUpdate(
+  remoteInventory: Record<string, number>,
+  phase: AutotrackerSyncPhase,
+) {
+  if (autotrackerStartMode === 'preserve') {
+    if (phase === 'initial' || !autotrackerInitialRemoteInventory) {
+      autotrackerInitialRemoteInventory = { ...remoteInventory };
+      autotrackerAppliedInventoryDelta = new Map();
+      return;
+    }
+
+    const nextInventory = new Map(inventory.value);
+    for (const [itemId, previousDelta] of autotrackerAppliedInventoryDelta) {
+      adjustAutotrackerInventoryCount(nextInventory, itemId, -previousDelta);
+    }
+
+    const nextDelta = computeAutotrackerInventoryDelta(remoteInventory);
+    for (const [itemId, delta] of nextDelta) {
+      adjustAutotrackerInventoryCount(nextInventory, itemId, delta);
+    }
+
+    autotrackerAppliedInventoryDelta = nextDelta;
+    sessionStore.setInventoryFromMap(
+      preserveDungeonRewardOverlayStateItems(nextInventory),
+      { source: 'remote', recordHistory: false },
+    );
+    return;
+  }
+
+  sessionStore.setInventoryFromMap(
+    preserveDungeonRewardOverlayStateItems(
+      new Map(Object.entries(remoteInventory).filter(([, count]) => count > 0)),
+    ),
+    { source: 'remote', recordHistory: false },
+  );
+}
+
+function applyAutotrackerCollectedLocationsUpdate(
+  locationIds: string[],
+  phase: AutotrackerSyncPhase,
+) {
+  if (autotrackerStartMode === 'preserve') {
+    if (phase === 'initial' || !autotrackerInitialRemoteCollectedLocationIds) {
+      autotrackerInitialRemoteCollectedLocationIds = new Set(locationIds);
+      autotrackerAppliedCollectedLocationDelta = new Set();
+      return;
+    }
+
+    const initialLocationIds = autotrackerInitialRemoteCollectedLocationIds;
+    const nextDelta = new Set(
+      locationIds.filter((locationId) => !initialLocationIds.has(locationId)),
+    );
+    const nextCollectedLocationIds = new Set(collectedLocationIds.value);
+    for (const locationId of autotrackerAppliedCollectedLocationDelta) {
+      nextCollectedLocationIds.delete(locationId);
+    }
+    for (const locationId of nextDelta) {
+      nextCollectedLocationIds.add(locationId);
+    }
+
+    autotrackerAppliedCollectedLocationDelta = nextDelta;
+    sessionStore.setCollectedLocationIds(Array.from(nextCollectedLocationIds), {
       source: 'remote',
       recordHistory: false,
     });
-  },
-});
+    return;
+  }
+
+  sessionStore.setCollectedLocationIds(locationIds, {
+    source: 'remote',
+    recordHistory: false,
+  });
+}
+
+async function handleAutotrackerEnabledUpdate(nextEnabled: boolean) {
+  if (!nextEnabled) {
+    resetAutotrackerMergeState();
+    autotracker.enabled.value = false;
+    return;
+  }
+
+  if (autotracker.enabled.value || isAutotrackerStartDialogOpen.value) {
+    return;
+  }
+
+  const mode = await requestAutotrackerStartMode();
+  if (!mode) return;
+
+  autotrackerStartMode = mode;
+  resetAutotrackerMergeState();
+  autotracker.enabled.value = true;
+}
 
 function normalizeMapCodeList(
   rawCodes: string | string[] | undefined,
@@ -1623,7 +1837,8 @@ function shouldImportSpoilerDungeonRewards(
 
 function normalizeSpoilerRegionName(region?: string): string {
   if (!region) return '';
-  return normalizeName(region.replace(/^world\s+\d+\s+/i, ''));
+  const normalized = normalizeName(region.replace(/^world\s+\d+\s+/i, ''));
+  return SPOILER_REWARD_REGION_ALIASES.get(normalized) ?? normalized;
 }
 
 function getSpoilerRewardOverlayItemId(
@@ -2012,6 +2227,11 @@ onBeforeUnmount(() => {
     spoilerPlayerDialogResolver = null;
     resolver(null);
   }
+  if (autotrackerStartDialogResolver) {
+    const resolver = autotrackerStartDialogResolver;
+    autotrackerStartDialogResolver = null;
+    resolver(null);
+  }
   stopSidebarResize();
   window.removeEventListener('keydown', handleGlobalUndoRedoKeydown);
   window.removeEventListener('pointerdown', handleMapWarningGlobalPointerDown);
@@ -2102,6 +2322,49 @@ onBeforeUnmount(() => {
             @click="confirmSpoilerStartingItemsPlayer"
           >
             Apply
+          </button>
+        </div>
+      </div>
+    </div>
+    <div
+      v-if="isAutotrackerStartDialogOpen"
+      class="spoiler-player-dialog-overlay"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="autotracker-start-dialog-title"
+    >
+      <div class="spoiler-player-dialog">
+        <h2
+          id="autotracker-start-dialog-title"
+          class="spoiler-player-dialog-title"
+        >
+          Start autotracker
+        </h2>
+        <p class="spoiler-player-dialog-text">
+          Choose whether the autotracker should replace the current tracker
+          state or keep it and only apply future item and location deltas.
+        </p>
+        <div class="spoiler-player-dialog-actions">
+          <button
+            type="button"
+            class="history-button"
+            @click="cancelAutotrackerStartMode"
+          >
+            Cancel
+          </button>
+          <button
+            type="button"
+            class="history-button"
+            @click="startAutotrackerPreserveMode"
+          >
+            Keep current state
+          </button>
+          <button
+            type="button"
+            class="history-button"
+            @click="startAutotrackerOverwriteMode"
+          >
+            Overwrite current state
           </button>
         </div>
       </div>
@@ -2247,7 +2510,7 @@ onBeforeUnmount(() => {
             :status="autotracker.status.value"
             :enabled="autotracker.enabled.value"
             :last-error="autotracker.lastError.value"
-            @update:enabled="autotracker.enabled.value = $event"
+            @update:enabled="handleAutotrackerEnabledUpdate"
           />
         </div>
       </div>

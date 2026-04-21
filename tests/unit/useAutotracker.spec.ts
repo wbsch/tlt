@@ -4,6 +4,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import {
   useAutotracker,
   type AutotrackerCheck,
+  type AutotrackerSyncPhase,
 } from '@/../packs/ootmm/src/autotracker/useAutotracker';
 import { resolveAutotrackerCheckToLocationIds } from '@/../packs/ootmm/src/autotracker/checkMapping';
 
@@ -57,14 +58,16 @@ describe('useAutotracker checks', () => {
   it('applies full-sync collected locations from check messages', async () => {
     const inventoryUpdates: Array<Record<string, number>> = [];
     const collectedLocationUpdates: string[][] = [];
+    const phases: AutotrackerSyncPhase[] = [];
     const availableItemIds = ref(new Set<string>(['OOT_BOW']));
     const itemMaxCounts = ref(new Map<string, number>());
 
     const autotracker = useAutotracker({
       availableItemIds,
       itemMaxCounts,
-      onInventoryUpdate: (inventory) => {
+      onInventoryUpdate: (inventory, meta) => {
         inventoryUpdates.push(inventory);
+        phases.push(meta.phase);
       },
       resolveCheckToLocationIds: (check: AutotrackerCheck) => {
         if (check.name === 'Market Pot House Adult Pot 3') {
@@ -120,6 +123,7 @@ describe('useAutotracker checks', () => {
     });
 
     expect(inventoryUpdates).toEqual([{ OOT_BOW: 1 }]);
+    expect(phases).toEqual(['initial']);
     expect(collectedLocationUpdates).toEqual([
       [
         'OOT Market Pot House Adult Pot 3@0',
@@ -305,6 +309,58 @@ describe('useAutotracker checks', () => {
         '__grid_ref_state__:__grid_ref__:Shared_Bottle1:SHARED_BOTTLE_EMPTY': 1,
         '__grid_ref_state__:__grid_ref__:Shared_Bottle2:SHARED_BOTTLE_EMPTY': 1,
       },
+    ]);
+  });
+
+  it('marks diff refreshes as live updates after the initial full sync', async () => {
+    const phases: AutotrackerSyncPhase[] = [];
+    const inventoryUpdates: Array<Record<string, number>> = [];
+    const availableItemIds = ref(new Set<string>(['OOT_BOW', 'OOT_BOMB_BAG']));
+    const itemMaxCounts = ref(new Map<string, number>());
+
+    const autotracker = useAutotracker({
+      availableItemIds,
+      itemMaxCounts,
+      onInventoryUpdate: (inventory, meta) => {
+        inventoryUpdates.push(inventory);
+        phases.push(meta.phase);
+      },
+    });
+
+    autotracker.enabled.value = true;
+    await nextTick();
+
+    const socket = FakeWebSocket.instances[0];
+    expect(socket).toBeDefined();
+
+    socket.emitOpen();
+    socket.emitMessage({
+      type: 'handshAck',
+      version: '0.1.0',
+      name: 'ootmm-autotracker',
+      refresh: true,
+    });
+    socket.emitMessage({
+      type: 'item',
+      diff: false,
+      refresh: false,
+      items: [{ id: 'OOT_BOW', qty: 1 }],
+    });
+    socket.emitMessage({
+      type: 'refresh',
+      refresh: true,
+    });
+    socket.emitMessage({
+      type: 'item',
+      diff: true,
+      refresh: true,
+      items: [{ id: 'OOT_BOMB_BAG', qty: 1 }],
+    });
+
+    expect(phases).toEqual(['initial', 'live']);
+    expect(inventoryUpdates).toEqual([
+      { OOT_BOW: 1 },
+      { OOT_BOMB_BAG: 1, OOT_BOW: 1 },
     ]);
   });
 });

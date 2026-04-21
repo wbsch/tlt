@@ -11,17 +11,29 @@ export type AutotrackerStatus =
   | 'connected'
   | 'error';
 
+export type AutotrackerSyncPhase = 'initial' | 'live';
+
+interface AutotrackerUpdateMeta {
+  phase: AutotrackerSyncPhase;
+}
+
 interface AutotrackerOptions {
   /** Available item IDs from the tracker (setting-dependent). */
   availableItemIds: Ref<Set<string>>;
   /** Effective item max counts from the tracker (setting-dependent). */
   itemMaxCounts: Ref<Map<string, number>>;
   /** Called when the autotracker has new inventory to apply. */
-  onInventoryUpdate: (inventory: Record<string, number>) => void;
+  onInventoryUpdate: (
+    inventory: Record<string, number>,
+    meta: AutotrackerUpdateMeta,
+  ) => void;
   /** Resolve a websocket check entry to one or more tracker location IDs. */
   resolveCheckToLocationIds?: (check: AutotrackerCheck) => string[];
   /** Called when the autotracker has a new collected-location state. */
-  onCollectedLocationsUpdate?: (locationIds: string[]) => void;
+  onCollectedLocationsUpdate?: (
+    locationIds: string[],
+    meta: AutotrackerUpdateMeta,
+  ) => void;
 }
 
 interface ItemMessage {
@@ -63,7 +75,12 @@ interface HandshakeAckMessage {
   refresh: boolean;
 }
 
-type ServerMessage = ItemMessage | RefreshMessage | HandshakeAckMessage;
+type ServerMessage =
+  | ItemMessage
+  | CheckMessage
+  | LocationMessage
+  | RefreshMessage
+  | HandshakeAckMessage;
 
 const DEFAULT_URL = 'ws://localhost:17026/';
 const RECONNECT_BASE_DELAY = 1000;
@@ -406,7 +423,7 @@ export function useAutotracker(options: AutotrackerOptions) {
         options.itemMaxCounts.value,
       );
       if (msg.refresh) {
-        pushToTracker();
+        pushToTracker('live');
       }
     } else {
       // Non-diff, non-fullsync (shouldn't happen normally, but handle it)
@@ -418,7 +435,7 @@ export function useAutotracker(options: AutotrackerOptions) {
         }
       }
       if (msg.refresh) {
-        pushToTracker();
+        pushToTracker('live');
       }
     }
   }
@@ -449,7 +466,7 @@ export function useAutotracker(options: AutotrackerOptions) {
         }
       }
       if (msg.refresh) {
-        pushToTracker();
+        pushToTracker('live');
       }
       return;
     }
@@ -461,7 +478,7 @@ export function useAutotracker(options: AutotrackerOptions) {
       liveChecks.set(key, check);
     }
     if (msg.refresh) {
-      pushToTracker();
+      pushToTracker('live');
     }
   }
 
@@ -473,7 +490,7 @@ export function useAutotracker(options: AutotrackerOptions) {
       pendingFullState = null;
       pendingFullChecks = null;
       isInFullSync = false;
-      pushToTracker();
+      pushToTracker('initial');
     }
   }
 
@@ -497,13 +514,13 @@ export function useAutotracker(options: AutotrackerOptions) {
     return Array.from(locationIds);
   }
 
-  function pushToTracker() {
+  function pushToTracker(phase: AutotrackerSyncPhase) {
     const record = buildTrackerInventoryRecord(
       liveState,
       options.availableItemIds.value,
     );
-    options.onInventoryUpdate(record);
-    options.onCollectedLocationsUpdate?.(getCollectedLocationIds());
+    options.onInventoryUpdate(record, { phase });
+    options.onCollectedLocationsUpdate?.(getCollectedLocationIds(), { phase });
   }
 
   function cleanup() {
