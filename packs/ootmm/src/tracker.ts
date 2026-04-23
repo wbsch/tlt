@@ -417,6 +417,8 @@ export class OoTMMTracker implements TrackerPack {
       this.cachedWorldDataSettingsKey = settingsKey;
     }
 
+    this.patchCrossGameGlobalAccess(this.baseWorlds);
+
     // Run entrance pass to connect games
     this.debugLog('[OoTMM Tracker] Running entrance pass...');
     const plandoEntrances: Record<string, string> =
@@ -617,6 +619,7 @@ export class OoTMMTracker implements TrackerPack {
 
     const entranceResult = entrancePass.run();
     this.worlds = entranceResult.worlds;
+    this.patchCrossGameGlobalAccess(this.worlds);
 
     // Disconnect unmapped tracked entrances so their checks are unreachable.
     // We self-mapped them above to prevent random shuffling, but now we remove
@@ -1696,6 +1699,28 @@ export class OoTMMTracker implements TrackerPack {
         } else {
           if (spawnArea.events) spawnArea.events[eventName] = original;
         }
+      }
+    }
+  }
+
+  private patchCrossGameGlobalAccess(worlds: World[]): void {
+    if (!this.isGameEnabled('oot') || !this.isGameEnabled('mm')) {
+      return;
+    }
+
+    for (const world of worlds) {
+      const areas = world.areas as
+        | Record<string, { exits?: Record<string, unknown> }>
+        | undefined;
+      const mmSoaringArea = areas?.['MM SOARING'];
+      const mmGlobalArea = areas?.['MM GLOBAL'];
+      if (!mmSoaringArea || !mmGlobalArea) continue;
+
+      if (!mmSoaringArea.exits) {
+        mmSoaringArea.exits = {};
+      }
+      if (!mmSoaringArea.exits['MM GLOBAL']) {
+        mmSoaringArea.exits['MM GLOBAL'] = exprTrue();
       }
     }
   }
