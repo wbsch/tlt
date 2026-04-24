@@ -597,7 +597,8 @@
       "image": "overworld_entrance",
       "type": "submenu",
       "entranceMenu": {
-        "entranceIds": ["OOT_DEATH_MOUNTAIN_FROM_KAKARIKO"]
+        "entranceIds": ["OOT_DEATH_MOUNTAIN_FROM_KAKARIKO"],
+        "display": "entrances"
       }
     },
     {
@@ -605,7 +606,8 @@
       "image": "overworld_entrance",
       "type": "submenu",
       "entranceMenu": {
-        "entranceIds": ["OOT_KAKARIKO_FROM_FIELD"]
+        "entranceIds": ["OOT_KAKARIKO_FROM_FIELD"],
+        "display": "exits"
       }
     },
     {

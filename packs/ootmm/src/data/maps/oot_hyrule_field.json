@@ -1087,7 +1087,8 @@
       "image": "overworld_entrance",
       "type": "submenu",
       "entranceMenu": {
-        "entranceIds": ["OOT_GERUDO_VALLEY_FROM_FIELD"]
+        "entranceIds": ["OOT_GERUDO_VALLEY_FROM_FIELD"],
+        "display": "entrances"
       }
     },
     {
@@ -1095,7 +1096,8 @@
       "image": "overworld_entrance",
       "type": "submenu",
       "entranceMenu": {
-        "entranceIds": ["OOT_LAKE_HYLIA_FROM_FIELD"]
+        "entranceIds": ["OOT_LAKE_HYLIA_FROM_FIELD"],
+        "display": "entrances"
       }
     },
     {
@@ -1103,7 +1105,8 @@
       "image": "overworld_entrance",
       "type": "submenu",
       "entranceMenu": {
-        "entranceIds": ["OOT_LON_LON_RANCH_FROM_FIELD"]
+        "entranceIds": ["OOT_LON_LON_RANCH_FROM_FIELD"],
+        "display": "entrances"
       }
     },
     {
@@ -1111,7 +1114,8 @@
       "image": "overworld_entrance",
       "type": "submenu",
       "entranceMenu": {
-        "entranceIds": ["OOT_LON_LON_RANCH_FROM_FIELD"]
+        "entranceIds": ["OOT_LON_LON_RANCH_FROM_FIELD"],
+        "display": "exits"
       }
     },
     {
@@ -1119,7 +1123,8 @@
       "image": "overworld_entrance",
       "type": "submenu",
       "entranceMenu": {
-        "entranceIds": ["OOT_LOST_WOODS_BRIDGE_FROM_FIELD"]
+        "entranceIds": ["OOT_LOST_WOODS_BRIDGE_FROM_FIELD"],
+        "display": "entrances"
       }
     },
     {
@@ -1127,7 +1132,8 @@
       "image": "overworld_entrance",
       "type": "submenu",
       "entranceMenu": {
-        "entranceIds": ["OOT_MARKET_ENTRANCE_FROM_FIELD"]
+        "entranceIds": ["OOT_MARKET_ENTRANCE_FROM_FIELD"],
+        "display": "entrances"
       }
     },
     {
@@ -1135,7 +1141,8 @@
       "image": "overworld_entrance",
       "type": "submenu",
       "entranceMenu": {
-        "entranceIds": ["OOT_MARKET_ENTRANCE_FROM_FIELD"]
+        "entranceIds": ["OOT_MARKET_ENTRANCE_FROM_FIELD"],
+        "display": "exits"
       }
     },
     {
@@ -1143,7 +1150,8 @@
       "image": "overworld_entrance",
       "type": "submenu",
       "entranceMenu": {
-        "entranceIds": ["OOT_ZORA_RIVER_FROM_FIELD"]
+        "entranceIds": ["OOT_ZORA_RIVER_FROM_FIELD"],
+        "display": "entrances"
       }
     },
     {
@@ -1151,7 +1159,8 @@
       "image": "overworld_entrance",
       "type": "submenu",
       "entranceMenu": {
-        "entranceIds": ["OOT_KAKARIKO_FROM_FIELD"]
+        "entranceIds": ["OOT_KAKARIKO_FROM_FIELD"],
+        "display": "entrances"
       }
     },
     {

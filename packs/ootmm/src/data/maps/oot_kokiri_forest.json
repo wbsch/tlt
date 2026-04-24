@@ -866,7 +866,8 @@
       "image": "overworld_entrance",
       "type": "submenu",
       "entranceMenu": {
-        "entranceIds": ["OOT_LOST_WOODS_BRIDGE_FROM_FIELD"]
+        "entranceIds": ["OOT_LOST_WOODS_BRIDGE_FROM_FIELD"],
+        "display": "exits"
       }
     },
     {
@@ -874,7 +875,8 @@
       "image": "overworld_entrance",
       "type": "submenu",
       "entranceMenu": {
-        "entranceIds": ["OOT_ZORA_RIVER_FROM_LOST_WOODS"]
+        "entranceIds": ["OOT_ZORA_RIVER_FROM_LOST_WOODS"],
+        "display": "entrances"
       }
     },
     {
@@ -882,7 +884,8 @@
       "image": "overworld_entrance",
       "type": "submenu",
       "entranceMenu": {
-        "entranceIds": ["OOT_GORON_CITY_FROM_LOST_WOODS"]
+        "entranceIds": ["OOT_GORON_CITY_FROM_LOST_WOODS"],
+        "display": "entrances"
       }
     }
   ]
