@@ -1001,7 +1001,7 @@
     },
     {
       "coords": [158, 420],
-      "image": "boulder_grotto",
+      "image": "boulder_entrance",
       "type": "submenu",
       "entranceMenu": {
         "entranceIds": ["OOT_FAIRY_NAYRU"]

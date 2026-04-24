@@ -319,7 +319,7 @@
     },
     {
       "coords": [646, 160],
-      "image": "red_boulder",
+      "image": "red_boulder_grotto",
       "type": "submenu",
       "entranceMenu": {
         "entranceIds": ["OOT_GROTTO_SCRUBS3_DMC"]
@@ -345,7 +345,7 @@
     },
     {
       "coords": [680, 290],
-      "image": "red_boulder",
+      "image": "red_boulder_entrance",
       "type": "submenu",
       "entranceMenu": {
         "entranceIds": ["OOT_FAIRY_MAGIC2"]
@@ -495,7 +495,7 @@
     },
     {
       "coords": [813, 371],
-      "image": "grotto",
+      "image": "boulder_grotto",
       "type": "submenu",
       "entranceMenu": {
         "entranceIds": ["OOT_GROTTO_GENERIC_DMC"]
@@ -582,7 +582,7 @@
     },
     {
       "coords": [132, 56],
-      "image": "boulder_grotto",
+      "image": "boulder_entrance",
       "type": "submenu",
       "entranceMenu": {
         "entranceIds": ["OOT_FAIRY_MAGIC"]

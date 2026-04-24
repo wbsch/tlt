@@ -1383,13 +1383,8 @@
       }
     },
     {
-      "coords": [506, 172],
-      "image": "boulder_grotto",
-      "codes": "TODO KF 101 :: unnamed_stack > Hyrule > Hyrule Layers > Hyrule Entrances :: Pasted Layer #100 :: 001-001-015-025.png"
-    },
-    {
-      "coords": [522, 172],
-      "image": "crawl_space",
+      "coords": [516, 172],
+      "image": "boulder_entrance",
       "type": "submenu",
       "markers": [
         {
