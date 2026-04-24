@@ -124,7 +124,10 @@ function cloneMarker(marker: MapMarkerDef): MapMarkerDef {
     codes: Array.isArray(marker.codes) ? [...marker.codes] : marker.codes,
     markers: marker.markers?.map((entry) => cloneSubmenuEntry(entry)),
     entranceMenu: marker.entranceMenu
-      ? { entranceIds: [...marker.entranceMenu.entranceIds] }
+      ? {
+          entranceIds: [...marker.entranceMenu.entranceIds],
+          display: marker.entranceMenu.display,
+        }
       : undefined,
     visibleWhen: cloneVisibleWhen(marker.visibleWhen),
   };
@@ -778,6 +781,7 @@ function buildDraftExportMap(): MapDef | null {
         if (marker.entranceMenu) {
           exportMarker.entranceMenu = {
             entranceIds: [...marker.entranceMenu.entranceIds],
+            display: marker.entranceMenu.display,
           };
         }
       } else {
