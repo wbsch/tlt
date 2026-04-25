@@ -624,7 +624,17 @@
       "markers": [
         {
           "image": "song",
-          "codes": "MM Deku Palace Sonata of Awakening"
+          "codes": "MM Deku Palace Sonata of Awakening",
+          "visibleWhen": {
+            "and": [
+              {
+                "settings": {
+                  "erIndoors": ["ownGame", "full"],
+                  "erIndoorsMajor": "true"
+                }
+              }
+            ]
+          }
         }
       ]
     },
@@ -638,11 +648,31 @@
       "markers": [
         {
           "image": "npc",
-          "codes": "MM Deku Shrine Mask of Scents"
+          "codes": "MM Deku Shrine Mask of Scents",
+          "visibleWhen": {
+            "and": [
+              {
+                "settings": {
+                  "erIndoors": ["ownGame", "full"],
+                  "erIndoorsMajor": "true"
+                }
+              }
+            ]
+          }
         },
         {
           "image": "pot",
-          "codes": ["MM Deku Shrine Pot 1", "MM Deku Shrine Pot 2"]
+          "codes": ["MM Deku Shrine Pot 1", "MM Deku Shrine Pot 2"],
+          "visibleWhen": {
+            "and": [
+              {
+                "settings": {
+                  "erIndoors": ["ownGame", "full"],
+                  "erIndoorsMajor": "true"
+                }
+              }
+            ]
+          }
         },
         {
           "image": "green_rupee",
@@ -665,14 +695,34 @@
             "MM Deku Shrine Rupee Main 16",
             "MM Deku Shrine Rupee Main 17",
             "MM Deku Shrine Rupee Main 18"
-          ]
+          ],
+          "visibleWhen": {
+            "and": [
+              {
+                "settings": {
+                  "erIndoors": ["ownGame", "full"],
+                  "erIndoorsMajor": "true"
+                }
+              }
+            ]
+          }
         },
         {
           "image": "red_rupee",
           "codes": [
             "MM Deku Shrine Rupee Main 19",
             "MM Deku Shrine Rupee Main 20"
-          ]
+          ],
+          "visibleWhen": {
+            "and": [
+              {
+                "settings": {
+                  "erIndoors": ["ownGame", "full"],
+                  "erIndoorsMajor": "true"
+                }
+              }
+            ]
+          }
         },
         {
           "image": "green_rupee",
@@ -687,13 +737,24 @@
             "MM Deku Shrine Rupee End 08",
             "MM Deku Shrine Rupee End 09",
             "MM Deku Shrine Rupee End 10"
-          ]
+          ],
+          "visibleWhen": {
+            "and": [
+              {
+                "settings": {
+                  "erIndoors": ["ownGame", "full"],
+                  "erIndoorsMajor": "true"
+                }
+              }
+            ]
+          }
         }
       ]
     },
     {
       "coords": [949, 218],
       "image": "grotto",
+      "overlays": ["day2"],
       "type": "submenu",
       "entranceMenu": {
         "entranceIds": ["MM_GROTTO_GENERIC_WOODS"]

@@ -692,7 +692,17 @@
           "codes": [
             "MM Waterfall Rapids Beaver Race 1",
             "MM Waterfall Rapids Beaver Race 2"
-          ]
+          ],
+          "visibleWhen": {
+            "and": [
+              {
+                "settings": {
+                  "erIndoors": ["ownGame", "full"],
+                  "erIndoorsMajor": "true"
+                }
+              }
+            ]
+          }
         }
       ]
     },

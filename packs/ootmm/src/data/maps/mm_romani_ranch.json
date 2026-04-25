@@ -491,21 +491,51 @@
       "markers": [
         {
           "image": "npc",
-          "codes": ["MM Cucco Shack Bunny Mask"]
+          "codes": ["MM Cucco Shack Bunny Mask"],
+          "visibleWhen": {
+            "and": [
+              {
+                "settings": {
+                  "erIndoors": ["ownGame", "full"],
+                  "erIndoorsMajor": "true"
+                }
+              }
+            ]
+          }
         },
         {
           "image": "pot",
           "codes": [
             "MM Cucco Shack Potted Plant 1 Pot",
             "MM Cucco Shack Potted Plant 2 Pot"
-          ]
+          ],
+          "visibleWhen": {
+            "and": [
+              {
+                "settings": {
+                  "erIndoors": ["ownGame", "full"],
+                  "erIndoorsMajor": "true"
+                }
+              }
+            ]
+          }
         },
         {
           "image": "grass",
           "codes": [
             "MM Cucco Shack Potted Plant 1 Grass",
             "MM Cucco Shack Potted Plant 2 Grass"
-          ]
+          ],
+          "visibleWhen": {
+            "and": [
+              {
+                "settings": {
+                  "erIndoors": ["ownGame", "full"],
+                  "erIndoorsMajor": "true"
+                }
+              }
+            ]
+          }
         },
         {
           "image": "crate",
@@ -513,7 +543,17 @@
             "MM Cucco Shack Crate 1",
             "MM Cucco Shack Crate 2",
             "MM Cucco Shack Crate 3"
-          ]
+          ],
+          "visibleWhen": {
+            "and": [
+              {
+                "settings": {
+                  "erIndoors": ["ownGame", "full"],
+                  "erIndoorsMajor": "true"
+                }
+              }
+            ]
+          }
         },
         {
           "image": "bush",
@@ -525,15 +565,45 @@
             "MM Cucco Shack Bush 5",
             "MM Cucco Shack Bush 6",
             "MM Cucco Shack Bush 7"
-          ]
+          ],
+          "visibleWhen": {
+            "and": [
+              {
+                "settings": {
+                  "erIndoors": ["ownGame", "full"],
+                  "erIndoorsMajor": "true"
+                }
+              }
+            ]
+          }
         },
         {
           "image": "tree",
-          "codes": ["MM Cucco Shack Tree"]
+          "codes": ["MM Cucco Shack Tree"],
+          "visibleWhen": {
+            "and": [
+              {
+                "settings": {
+                  "erIndoors": ["ownGame", "full"],
+                  "erIndoorsMajor": "true"
+                }
+              }
+            ]
+          }
         },
         {
           "image": "gossip_stone",
-          "codes": ["MM Cucco Shack Gossip"]
+          "codes": ["MM Cucco Shack Gossip"],
+          "visibleWhen": {
+            "and": [
+              {
+                "settings": {
+                  "erIndoors": ["ownGame", "full"],
+                  "erIndoorsMajor": "true"
+                }
+              }
+            ]
+          }
         },
         {
           "image": "wonder_item_green_rupee",
@@ -544,7 +614,17 @@
             "MM Cucco Shack Wonder Item 4",
             "MM Cucco Shack Wonder Item 5",
             "MM Cucco Shack Wonder Item 6"
-          ]
+          ],
+          "visibleWhen": {
+            "and": [
+              {
+                "settings": {
+                  "erIndoors": ["ownGame", "full"],
+                  "erIndoorsMajor": "true"
+                }
+              }
+            ]
+          }
         }
       ]
     },
@@ -559,12 +639,32 @@
         {
           "image": "npc",
           "overlays": ["day"],
-          "codes": ["MM Doggy Racetrack HP"]
+          "codes": ["MM Doggy Racetrack HP"],
+          "visibleWhen": {
+            "and": [
+              {
+                "settings": {
+                  "erIndoors": ["ownGame", "full"],
+                  "erIndoorsMajor": "true"
+                }
+              }
+            ]
+          }
         },
         {
           "image": "chest",
           "overlays": ["day"],
-          "codes": ["MM Doggy Racetrack Chest"]
+          "codes": ["MM Doggy Racetrack Chest"],
+          "visibleWhen": {
+            "and": [
+              {
+                "settings": {
+                  "erIndoors": ["ownGame", "full"],
+                  "erIndoorsMajor": "true"
+                }
+              }
+            ]
+          }
         },
         {
           "image": "pot",
@@ -574,17 +674,47 @@
             "MM Doggy Racetrack Pot 2",
             "MM Doggy Racetrack Pot 3",
             "MM Doggy Racetrack Pot 4"
-          ]
+          ],
+          "visibleWhen": {
+            "and": [
+              {
+                "settings": {
+                  "erIndoors": ["ownGame", "full"],
+                  "erIndoorsMajor": "true"
+                }
+              }
+            ]
+          }
         },
         {
           "image": "soft_soil",
           "overlays": ["day"],
-          "codes": ["MM Doggy Racetrack Soil"]
+          "codes": ["MM Doggy Racetrack Soil"],
+          "visibleWhen": {
+            "and": [
+              {
+                "settings": {
+                  "erIndoors": ["ownGame", "full"],
+                  "erIndoorsMajor": "true"
+                }
+              }
+            ]
+          }
         },
         {
           "image": "gossip_stone",
           "overlays": ["day"],
-          "codes": ["MM Doggy Racetrack Gossip"]
+          "codes": ["MM Doggy Racetrack Gossip"],
+          "visibleWhen": {
+            "and": [
+              {
+                "settings": {
+                  "erIndoors": ["ownGame", "full"],
+                  "erIndoorsMajor": "true"
+                }
+              }
+            ]
+          }
         }
       ]
     }

@@ -456,10 +456,6 @@
           "codes": "OOT Kakariko Impa House Wonder Item"
         },
         {
-          "image": "heart_piece",
-          "codes": "OOT Kakariko Impa House HP"
-        },
-        {
           "image": "cow",
           "codes": "OOT Kakariko Cow"
         }
@@ -473,10 +469,6 @@
       "image": "interior_entrance",
       "type": "submenu",
       "markers": [
-        {
-          "image": "wonder_item_red_rupee",
-          "codes": "OOT Kakariko Impa House Wonder Item"
-        },
         {
           "image": "heart_piece",
           "codes": "OOT Kakariko Impa House HP"
@@ -805,7 +797,13 @@
             "OOT Graveyard Dampe Tomb Pot 4",
             "OOT Graveyard Dampe Tomb Pot 5",
             "OOT Graveyard Dampe Tomb Pot 6"
-          ]
+          ],
+          "visibleWhen": {
+            "or": [
+              { "settings": { "erGrottos": "ownGame" } },
+              { "settings": { "erGrottos": "full" } }
+            ]
+          }
         },
         {
           "image": "green_rupee",
@@ -818,7 +816,13 @@
             "OOT Graveyard Dampe Tomb Rupee 6",
             "OOT Graveyard Dampe Tomb Rupee 7",
             "OOT Graveyard Dampe Tomb Rupee 8"
-          ]
+          ],
+          "visibleWhen": {
+            "or": [
+              { "settings": { "erGrottos": "ownGame" } },
+              { "settings": { "erGrottos": "full" } }
+            ]
+          }
         },
         {
           "image": "wonder_item_green_rupee",
@@ -838,15 +842,33 @@
             "OOT Graveyard Dampe Tomb Wonder Item 13",
             "OOT Graveyard Dampe Tomb Wonder Item 14",
             "OOT Graveyard Dampe Tomb Wonder Item 15"
-          ]
+          ],
+          "visibleWhen": {
+            "or": [
+              { "settings": { "erGrottos": "ownGame" } },
+              { "settings": { "erGrottos": "full" } }
+            ]
+          }
         },
         {
           "image": "chest",
-          "codes": "OOT Graveyard Dampe Tomb Reward 1"
+          "codes": "OOT Graveyard Dampe Tomb Reward 1",
+          "visibleWhen": {
+            "or": [
+              { "settings": { "erGrottos": "ownGame" } },
+              { "settings": { "erGrottos": "full" } }
+            ]
+          }
         },
         {
           "image": "npc",
-          "codes": "OOT Graveyard Dampe Tomb Reward 2"
+          "codes": "OOT Graveyard Dampe Tomb Reward 2",
+          "visibleWhen": {
+            "or": [
+              { "settings": { "erGrottos": "ownGame" } },
+              { "settings": { "erGrottos": "full" } }
+            ]
+          }
         }
       ],
       "entranceMenu": {
