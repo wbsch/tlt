@@ -638,7 +638,7 @@
     },
     {
       "coords": [108, 308],
-      "image": "grotto",
+      "image": "boulder_grotto",
       "type": "submenu",
       "entranceMenu": {
         "entranceIds": ["OOT_GROTTO_TRAIL_COW"]
