@@ -187,7 +187,7 @@ onBeforeUnmount(() => {
     />
     <span
       v-if="context.getWheelOverlayText(props.itemId)"
-      class="item-overlay item-wheel-overlay item-text-label item-overlay-text-label item-wheel-text-label"
+      class="item-overlay item-wheel-overlay item-text-label item-wheel-text-label"
       :class="{ disabled: context.isItemIconDisabled(props.itemId) }"
     >
       {{ context.getWheelOverlayText(props.itemId) }}
