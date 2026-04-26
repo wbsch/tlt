@@ -6,6 +6,7 @@ import {
   getGridItemIcon,
   getGridItemLinkedItemIds,
   getGridItemOverlay,
+  getGridItemOverlayText,
   getGridItemAutoSelectItemIds,
   getGridTextLabel,
   getGridWheelOverlay,
@@ -703,6 +704,25 @@ function getOverlaySrc(itemId: string): string | null {
   });
 }
 
+function getOverlayText(itemId: string): string | null {
+  if (isEmptyGridItem(itemId)) return null;
+  const baseItemId = getBaseItemId(itemId);
+  return getGridItemOverlayText(baseItemId, getGridItemCount(itemId), {
+    maxCount: getItemMaxCount(itemId),
+    availableItemIds: props.availableItemIds,
+    inventory: props.inventory,
+    settings: props.settings,
+  });
+}
+
+function isOverlayMaxed(itemId: string): boolean {
+  if (isEmptyGridItem(itemId)) return false;
+  if (!getOverlayText(itemId)) return false;
+
+  const maxCount = getItemMaxCount(itemId);
+  return maxCount > 0 && getGridItemCount(itemId) >= maxCount;
+}
+
 function getWheelOverlaySrc(itemId: string): string | null {
   if (isEmptyGridItem(itemId)) return null;
   const baseItemId = getBaseItemId(itemId);
@@ -927,7 +947,9 @@ provide(itemGridRenderContextKey, {
   handleItemWheel,
   getIconSrc,
   getItemTextLabel,
+  getOverlayText,
   getOverlaySrc,
+  isOverlayMaxed,
   getWheelOverlaySrc,
   getWheelOverlayText,
   isItemIconDisabled,

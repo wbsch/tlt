@@ -2,6 +2,9 @@ import { afterEach, describe, expect, it } from 'vitest';
 
 import {
   GRID_ICON_VARIANTS,
+  getGridItemOverlay,
+  getGridItemOverlayText,
+  getGridItemOverlayValue,
   getGridItemAutoSelectItemId,
   getGridItemAutoSelectItemIds,
   getGridTextLabel,
@@ -48,6 +51,13 @@ describe('itemIcons grid text labels', () => {
     expect(getGridTextLabel('oot_well_label')).toBe('BotW');
     expect(getGridTextLabel('mm_stonetower_label')).toBe('Stone');
     expect(getGridTextLabel('oot_chestgame_label')).toBe('Chest');
+  });
+
+  it('resolves readable text for numeric item overlay values without PNG paths', () => {
+    expect(getGridItemOverlayValue('OOT_BOMB_BAG', 2)).toBe('30');
+    expect(getGridItemOverlayText('OOT_BOMB_BAG', 2)).toBe('30');
+    expect(getGridItemOverlay('OOT_BOMB_BAG', 2)).toBeNull();
+    expect(getGridTextLabel('500')).toBe('500');
   });
 
   it('resolves readable text for reward wheel overlay values without PNG paths', () => {

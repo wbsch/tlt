@@ -167,8 +167,18 @@ onBeforeUnmount(() => {
       :class="{ disabled: context.isItemIconDisabled(props.itemId) }"
       @error="context.handleImageError"
     />
+    <span
+      v-if="context.getOverlayText(props.itemId)"
+      class="item-overlay item-text-label item-overlay-text-label"
+      :class="{
+        'item-overlay-text-label-maxed': context.isOverlayMaxed(props.itemId),
+        disabled: context.isItemIconDisabled(props.itemId),
+      }"
+    >
+      {{ context.getOverlayText(props.itemId) }}
+    </span>
     <img
-      v-if="context.getOverlaySrc(props.itemId)"
+      v-else-if="context.getOverlaySrc(props.itemId)"
       :src="context.getOverlaySrc(props.itemId) as string"
       :alt="`${props.itemId} overlay`"
       class="item-overlay"
@@ -177,7 +187,8 @@ onBeforeUnmount(() => {
     />
     <span
       v-if="context.getWheelOverlayText(props.itemId)"
-      class="item-overlay item-wheel-overlay item-text-label item-wheel-text-label"
+      class="item-overlay item-wheel-overlay item-text-label item-overlay-text-label item-wheel-text-label"
+      :class="{ disabled: context.isItemIconDisabled(props.itemId) }"
     >
       {{ context.getWheelOverlayText(props.itemId) }}
     </span>
@@ -467,9 +478,35 @@ onBeforeUnmount(() => {
   pointer-events: none;
 }
 
+.item-overlay-text-label {
+  padding: 0 1px;
+  color: #ffffff;
+  font-size: 14px;
+  font-weight: 900;
+  line-height: 1;
+  letter-spacing: -0.05em;
+  --item-overlay-stroke-color: rgba(0, 0, 0, 0.98);
+  text-shadow:
+    -1px -1px 0 var(--item-overlay-stroke-color),
+    1px -1px 0 var(--item-overlay-stroke-color),
+    -1px 1px 0 var(--item-overlay-stroke-color),
+    1px 1px 0 var(--item-overlay-stroke-color),
+    0 1px 0 var(--item-overlay-stroke-color);
+  -webkit-text-stroke: 1px var(--item-overlay-stroke-color);
+  paint-order: stroke fill;
+}
+
+.item-overlay-text-label-maxed {
+  color: #2fb84f;
+  --item-overlay-stroke-color: rgba(255, 255, 255, 0.98);
+}
+
+.item-overlay-text-label.disabled {
+  filter: grayscale(100%) brightness(0.4);
+}
+
 .item-wheel-text-label {
-  position: absolute;
-  inset: 0;
+  z-index: 2;
 }
 
 .grid-item:hover > .item-icon,

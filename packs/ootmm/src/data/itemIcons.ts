@@ -478,6 +478,14 @@ export const ITEM_ICONS: Record<string, string> = Object.fromEntries(
 );
 
 const GRID_TEXT_LABELS: Record<string, string> = {
+  '10': '10',
+  '20': '20',
+  '30': '30',
+  '40': '40',
+  '50': '50',
+  '99': '99',
+  '200': '200',
+  '500': '500',
   free_label: 'Free',
   mm_woodfall_label: 'Wood',
   mm_snowhead_label: 'Snow',
@@ -557,6 +565,11 @@ type GridIconVariantConfig =
     };
 
 type GridWheelOverlayDefinition = string[] | GridWheelOverlayConfig;
+
+const MM_WALLET_OVERLAY_VALUES = ['99', '200', '500'];
+const STICK_UPGRADE_OVERLAY_VALUES = ['10', '20', '30'];
+const BOMB_AND_NUT_OVERLAY_VALUES = ['20', '30', '40'];
+const BOW_OVERLAY_VALUES = ['30', '40', '50'];
 
 const RAW_GRID_ICON_VARIANTS: Record<string, GridIconVariantConfig> = {
   // `when.settings` can include multiple settings at once.
@@ -686,11 +699,7 @@ const RAW_GRID_ICON_VARIANTS: Record<string, GridIconVariantConfig> = {
         'images/items/mm_wallet.png',
         'images/items/mm_giantwallet.png',
       ],
-      overlays: [
-        'images/system/mm_overlay_99.png',
-        'images/system/mm_overlay_200.png',
-        'images/system/mm_overlay_500_green.png',
-      ],
+      overlays: MM_WALLET_OVERLAY_VALUES,
       startUndimmed: true,
     },
     variants: [
@@ -708,12 +717,7 @@ const RAW_GRID_ICON_VARIANTS: Record<string, GridIconVariantConfig> = {
           'images/items/mm_giantwallet.png',
           'images/wallet3.png',
         ],
-        overlays: [
-          'images/system/mm_overlay_99.png',
-          'images/system/mm_overlay_200.png',
-          'images/system/mm_overlay_500_green.png',
-          null,
-        ],
+        overlays: [...MM_WALLET_OVERLAY_VALUES, null],
         startUndimmed: true,
       },
       {
@@ -731,13 +735,7 @@ const RAW_GRID_ICON_VARIANTS: Record<string, GridIconVariantConfig> = {
           'images/wallet3.png',
           'images/wallet3.png',
         ],
-        overlays: [
-          'images/system/mm_overlay_99.png',
-          'images/system/mm_overlay_200.png',
-          'images/system/mm_overlay_500_green.png',
-          null,
-          null,
-        ],
+        overlays: [...MM_WALLET_OVERLAY_VALUES, null, null],
         startUndimmed: true,
       },
       {
@@ -753,11 +751,7 @@ const RAW_GRID_ICON_VARIANTS: Record<string, GridIconVariantConfig> = {
           'images/items/mm_wallet.png',
           'images/items/mm_giantwallet.png',
         ],
-        overlays: [
-          'images/system/mm_overlay_99.png',
-          'images/system/mm_overlay_200.png',
-          'images/system/mm_overlay_500_green.png',
-        ],
+        overlays: MM_WALLET_OVERLAY_VALUES,
         startUndimmed: false,
       },
       {
@@ -774,12 +768,7 @@ const RAW_GRID_ICON_VARIANTS: Record<string, GridIconVariantConfig> = {
           'images/items/mm_giantwallet.png',
           'images/wallet3.png',
         ],
-        overlays: [
-          'images/system/mm_overlay_99.png',
-          'images/system/mm_overlay_200.png',
-          'images/system/mm_overlay_500_green.png',
-          null,
-        ],
+        overlays: [...MM_WALLET_OVERLAY_VALUES, null],
         startUndimmed: false,
       },
       {
@@ -797,13 +786,7 @@ const RAW_GRID_ICON_VARIANTS: Record<string, GridIconVariantConfig> = {
           'images/wallet3.png',
           'images/wallet3.png',
         ],
-        overlays: [
-          'images/system/mm_overlay_99.png',
-          'images/system/mm_overlay_200.png',
-          'images/system/mm_overlay_500_green.png',
-          null,
-          null,
-        ],
+        overlays: [...MM_WALLET_OVERLAY_VALUES, null, null],
         startUndimmed: false,
       },
     ],
@@ -811,11 +794,7 @@ const RAW_GRID_ICON_VARIANTS: Record<string, GridIconVariantConfig> = {
   OOT_STICK_UPGRADE: {
     default: {
       icons: ['images/stick.png', 'images/stick.png', 'images/stick.png'],
-      overlays: [
-        'images/overlay_10.png',
-        'images/overlay_20.png',
-        'images/overlay_30_green.png',
-      ],
+      overlays: STICK_UPGRADE_OVERLAY_VALUES,
       startUndimmed: false,
       autoSelectItemId: 'OOT_STICK',
     },
@@ -823,11 +802,7 @@ const RAW_GRID_ICON_VARIANTS: Record<string, GridIconVariantConfig> = {
   MM_STICK_UPGRADE: {
     default: {
       icons: ['images/stick.png', 'images/stick.png', 'images/stick.png'],
-      overlays: [
-        'images/overlay_10.png',
-        'images/overlay_20.png',
-        'images/overlay_30_green.png',
-      ],
+      overlays: STICK_UPGRADE_OVERLAY_VALUES,
       startUndimmed: false,
       autoSelectItemId: 'MM_STICK',
     },
@@ -835,11 +810,7 @@ const RAW_GRID_ICON_VARIANTS: Record<string, GridIconVariantConfig> = {
   SHARED_STICK_UPGRADE: {
     default: {
       icons: ['images/stick.png', 'images/stick.png', 'images/stick.png'],
-      overlays: [
-        'images/overlay_10.png',
-        'images/overlay_20.png',
-        'images/overlay_30_green.png',
-      ],
+      overlays: STICK_UPGRADE_OVERLAY_VALUES,
       startUndimmed: false,
       autoSelectItemId: 'SHARED_STICK',
     },
@@ -847,11 +818,7 @@ const RAW_GRID_ICON_VARIANTS: Record<string, GridIconVariantConfig> = {
   OOT_NUT_UPGRADE: {
     default: {
       icons: ['images/nut.png', 'images/nut.png', 'images/nut.png'],
-      overlays: [
-        'images/overlay_20.png',
-        'images/overlay_30.png',
-        'images/overlay_40_green.png',
-      ],
+      overlays: BOMB_AND_NUT_OVERLAY_VALUES,
       startUndimmed: false,
       autoSelectItemId: 'OOT_NUTS_5',
     },
@@ -859,11 +826,7 @@ const RAW_GRID_ICON_VARIANTS: Record<string, GridIconVariantConfig> = {
   SHARED_NUT_UPGRADE: {
     default: {
       icons: ['images/nut.png', 'images/nut.png', 'images/nut.png'],
-      overlays: [
-        'images/overlay_20.png',
-        'images/overlay_30.png',
-        'images/overlay_40_green.png',
-      ],
+      overlays: BOMB_AND_NUT_OVERLAY_VALUES,
       startUndimmed: false,
       autoSelectItemId: 'SHARED_NUTS_5',
     },
@@ -871,11 +834,7 @@ const RAW_GRID_ICON_VARIANTS: Record<string, GridIconVariantConfig> = {
   MM_NUT_UPGRADE: {
     default: {
       icons: ['images/nut.png', 'images/nut.png', 'images/nut.png'],
-      overlays: [
-        'images/overlay_20.png',
-        'images/overlay_30.png',
-        'images/overlay_40_green.png',
-      ],
+      overlays: BOMB_AND_NUT_OVERLAY_VALUES,
       startUndimmed: false,
       autoSelectItemId: 'MM_NUTS_5',
     },
@@ -883,11 +842,7 @@ const RAW_GRID_ICON_VARIANTS: Record<string, GridIconVariantConfig> = {
   OOT_BOMB_BAG: {
     default: {
       icons: ['images/bomb.png', 'images/bomb.png', 'images/bomb.png'],
-      overlays: [
-        'images/overlay_20.png',
-        'images/overlay_30.png',
-        'images/overlay_40_green.png',
-      ],
+      overlays: BOMB_AND_NUT_OVERLAY_VALUES,
       startUndimmed: false,
       autoSelectItemId: 'OOT_BOMBS_10',
     },
@@ -895,11 +850,7 @@ const RAW_GRID_ICON_VARIANTS: Record<string, GridIconVariantConfig> = {
   MM_BOMB_BAG: {
     default: {
       icons: ['images/bomb.png', 'images/bomb.png', 'images/bomb.png'],
-      overlays: [
-        'images/overlay_20.png',
-        'images/overlay_30.png',
-        'images/overlay_40_green.png',
-      ],
+      overlays: BOMB_AND_NUT_OVERLAY_VALUES,
       startUndimmed: false,
       autoSelectItemId: 'MM_BOMBS_10',
     },
@@ -907,11 +858,7 @@ const RAW_GRID_ICON_VARIANTS: Record<string, GridIconVariantConfig> = {
   SHARED_BOMB_BAG: {
     default: {
       icons: ['images/bomb.png', 'images/bomb.png', 'images/bomb.png'],
-      overlays: [
-        'images/overlay_20.png',
-        'images/overlay_30.png',
-        'images/overlay_40_green.png',
-      ],
+      overlays: BOMB_AND_NUT_OVERLAY_VALUES,
       startUndimmed: false,
       autoSelectItemId: 'SHARED_BOMBS_10',
     },
@@ -919,11 +866,7 @@ const RAW_GRID_ICON_VARIANTS: Record<string, GridIconVariantConfig> = {
   OOT_BOW: {
     default: {
       icons: ['images/bow.png', 'images/bow.png', 'images/bow.png'],
-      overlays: [
-        'images/overlay_30.png',
-        'images/overlay_40.png',
-        'images/overlay_50_green.png',
-      ],
+      overlays: BOW_OVERLAY_VALUES,
       startUndimmed: false,
       autoSelectItemId: 'OOT_ARROWS_10',
     },
@@ -931,11 +874,7 @@ const RAW_GRID_ICON_VARIANTS: Record<string, GridIconVariantConfig> = {
   SHARED_BOW: {
     default: {
       icons: ['images/bow.png', 'images/bow.png', 'images/bow.png'],
-      overlays: [
-        'images/overlay_30.png',
-        'images/overlay_40.png',
-        'images/overlay_50_green.png',
-      ],
+      overlays: BOW_OVERLAY_VALUES,
       startUndimmed: false,
       autoSelectItemId: 'SHARED_ARROWS_10',
     },
@@ -947,11 +886,7 @@ const RAW_GRID_ICON_VARIANTS: Record<string, GridIconVariantConfig> = {
         'images/items/mm_bow.png',
         'images/items/mm_bow.png',
       ],
-      overlays: [
-        'images/overlay_30.png',
-        'images/overlay_40.png',
-        'images/overlay_50_green.png',
-      ],
+      overlays: BOW_OVERLAY_VALUES,
       startUndimmed: false,
       autoSelectItemId: 'MM_ARROWS_10',
     },
@@ -1030,11 +965,7 @@ const RAW_GRID_ICON_VARIANTS: Record<string, GridIconVariantConfig> = {
         'images/slingshot.png',
         'images/slingshot.png',
       ],
-      overlays: [
-        'images/overlay_30.png',
-        'images/overlay_40.png',
-        'images/overlay_50_green.png',
-      ],
+      overlays: BOW_OVERLAY_VALUES,
       startUndimmed: false,
       autoSelectItemId: 'OOT_SEEDS_30',
     },
@@ -1192,7 +1123,7 @@ const RAW_GRID_WHEEL_OVERLAYS: Record<string, GridWheelOverlayDefinition> = {
 
 interface ResolvedGridWheelOverlayConfig {
   values: string[];
-  overlays: string[];
+  overlays: Array<string | null>;
   stateItemId: string;
 }
 
@@ -1215,7 +1146,11 @@ function normalizeGridWheelOverlayConfig(
   };
 }
 
-function resolveGridWheelOverlayValue(value: string): string {
+function resolveGridOverlayImageValue(value: string): string | null {
+  if (!value || GRID_TEXT_LABELS_BY_VALUE.has(value)) {
+    return null;
+  }
+
   return ITEM_ICONS[value] || withBasePath(value);
 }
 
@@ -1229,7 +1164,7 @@ const GRID_WHEEL_OVERLAYS: Record<string, ResolvedGridWheelOverlayConfig> =
           {
             values: normalizedConfig.overlays,
             overlays: normalizedConfig.overlays.map((value) =>
-              resolveGridWheelOverlayValue(value),
+              resolveGridOverlayImageValue(value),
             ),
             stateItemId:
               normalizedConfig.stateItemId ||
@@ -1242,6 +1177,7 @@ const GRID_WHEEL_OVERLAYS: Record<string, ResolvedGridWheelOverlayConfig> =
 
 interface ResolvedGridIconConfig {
   icons: string[];
+  overlayValues?: Array<string | null>;
   overlays?: Array<string | null>;
   startUndimmed: boolean;
   autoSelectItemIds?: string[];
@@ -1287,9 +1223,7 @@ function withBasePathForVariantConfig(
   return {
     default: {
       icons: normalizedDefault.icons.map((value) => withBasePath(value)),
-      overlays: normalizedDefault.overlays?.map((value) =>
-        value ? withBasePath(value) : null,
-      ),
+      overlays: normalizedDefault.overlays,
       startUndimmed: normalizedDefault.startUndimmed,
       autoSelectItemId: normalizedDefault.autoSelectItemId,
       linkedItemIds: normalizedDefault.linkedItemIds,
@@ -1297,9 +1231,7 @@ function withBasePathForVariantConfig(
     variants: config.variants?.map((variant) => ({
       when: variant.when,
       icons: variant.icons.map((value) => withBasePath(value)),
-      overlays: variant.overlays?.map((value) =>
-        value ? withBasePath(value) : null,
-      ),
+      overlays: variant.overlays,
       startUndimmed: variant.startUndimmed,
       autoSelectItemId: variant.autoSelectItemId,
       linkedItemIds: variant.linkedItemIds,
@@ -1425,6 +1357,7 @@ function getResolvedGridIconVariants(
   if (Array.isArray(config)) {
     return {
       icons: config,
+      overlayValues: undefined,
       overlays: undefined,
       startUndimmed: false,
     };
@@ -1437,7 +1370,10 @@ function getResolvedGridIconVariants(
     if (matched && matched.icons.length > 0) {
       return {
         icons: matched.icons,
-        overlays: matched.overlays,
+        overlayValues: matched.overlays,
+        overlays: matched.overlays?.map((value) =>
+          value ? resolveGridOverlayImageValue(value) : null,
+        ),
         startUndimmed: !!matched.startUndimmed,
         autoSelectItemIds: normalizeGridAutoSelectItemIds(
           matched.autoSelectItemId,
@@ -1451,7 +1387,10 @@ function getResolvedGridIconVariants(
   return normalizedDefault.icons.length > 0
     ? {
         icons: normalizedDefault.icons,
-        overlays: normalizedDefault.overlays,
+        overlayValues: normalizedDefault.overlays,
+        overlays: normalizedDefault.overlays?.map((value) =>
+          value ? resolveGridOverlayImageValue(value) : null,
+        ),
         startUndimmed: normalizedDefault.startUndimmed || false,
         autoSelectItemIds: normalizeGridAutoSelectItemIds(
           normalizedDefault.autoSelectItemId,
@@ -1542,6 +1481,33 @@ export function getGridItemOverlay(
   return resolved.overlays[variantIndex] || null;
 }
 
+export function getGridItemOverlayValue(
+  itemId: string,
+  count: number,
+  context: GridIconVariantContext = {},
+): string | null {
+  const resolved = getResolvedGridIconVariants(itemId, context);
+  if (
+    !resolved ||
+    !resolved.overlayValues ||
+    resolved.overlayValues.length === 0
+  ) {
+    return null;
+  }
+
+  const variantIndex = getResolvedGridVariantIndex(count, resolved);
+  return resolved.overlayValues[variantIndex] || null;
+}
+
+export function getGridItemOverlayText(
+  itemId: string,
+  count: number,
+  context: GridIconVariantContext = {},
+): string | null {
+  const overlayValue = getGridItemOverlayValue(itemId, count, context);
+  return overlayValue ? getGridTextLabel(overlayValue) : null;
+}
+
 /**
  * Get the inventory-backed state item ID used for mouse-wheel grid overlays.
  */
@@ -1567,7 +1533,7 @@ export function getGridWheelOverlayStageForValue(
   const resolved = getResolvedGridWheelOverlayConfig(itemId);
   if (!resolved || !overlayValue) return 0;
 
-  const normalizedOverlay = resolveGridWheelOverlayValue(overlayValue);
+  const normalizedOverlay = resolveGridOverlayImageValue(overlayValue);
   const stageIndex = resolved.values.findIndex(
     (value, index) =>
       value === overlayValue || resolved.overlays[index] === normalizedOverlay,
