@@ -245,52 +245,6 @@ const SKIP_IDS = new Set([
   // MM_TRADE_1/2/3 are now handled as bitmasks below
 ]);
 
-// Items that may have SHARED_ variants depending on settings
-const SHAREABLE_PREFIXES = [
-  'BOW',
-  'ARROW_FIRE',
-  'ARROW_ICE',
-  'ARROW_LIGHT',
-  'LENS',
-  'HAMMER',
-  'HOOKSHOT',
-  'SPELL_FIRE',
-  'SPELL_WIND',
-  'SPELL_LOVE',
-  'SONG_EPONA',
-  'SONG_STORMS',
-  'SONG_TIME',
-  'SONG_SUN',
-  'SONG_EMPTINESS',
-  'STRENGTH',
-  'SCALE',
-  'WALLET',
-  'MASK_GORON',
-  'MASK_ZORA',
-  'MASK_BUNNY',
-  'MASK_KEATON',
-  'MASK_TRUTH',
-  'MASK_BLAST',
-  'MASK_STONE',
-  'SPIN_UPGRADE',
-  'STONE_OF_AGONY',
-  'BOMBCHU',
-  'BOMBCHU_BAG',
-  'BOOTS_IRON',
-  'BOOTS_HOVER',
-  'TUNIC_GORON',
-  'TUNIC_ZORA',
-  'SKELETON_KEY',
-  'SHIELD_DEKU',
-  'SHIELD_HYLIAN',
-  'SHIELD_MIRROR',
-  'BOTTLE_EMPTY',
-  'BOMB_BAG',
-  'STICK_UPGRADE',
-  'NUT_UPGRADE',
-  'PLATINUM_TOKEN',
-];
-
 const DEFAULT_ITEM_MAX_COUNTS = new Map(
   ITEM_DATABASE.filter(
     (item): item is (typeof ITEM_DATABASE)[number] & { maxCount: number } =>
