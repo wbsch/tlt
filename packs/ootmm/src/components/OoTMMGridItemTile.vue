@@ -169,7 +169,7 @@ onBeforeUnmount(() => {
     />
     <span
       v-if="context.getOverlayText(props.itemId)"
-      class="item-overlay item-text-label item-overlay-text-label"
+      class="item-overlay item-text-label item-overlay-text-label item-count-overlay-label"
       :class="{
         'item-overlay-text-label-maxed': context.isOverlayMaxed(props.itemId),
         disabled: context.isItemIconDisabled(props.itemId),
@@ -496,9 +496,16 @@ onBeforeUnmount(() => {
   paint-order: stroke fill;
 }
 
+.item-count-overlay-label {
+  align-items: flex-end;
+  justify-content: flex-end;
+  padding: 0 3px 1px 0;
+  text-align: right;
+}
+
 .item-overlay-text-label-maxed {
   color: #2fb84f;
-  --item-overlay-stroke-color: rgba(255, 255, 255, 0.98);
+  --item-overlay-stroke-color: rgba(0, 0, 0, 0.98);
 }
 
 .item-overlay-text-label.disabled {
