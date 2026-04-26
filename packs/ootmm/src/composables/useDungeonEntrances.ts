@@ -1,6 +1,7 @@
 import { computed } from 'vue';
 import { storeToRefs } from 'pinia';
 import * as DataMod from '@ootmm/data';
+import { getItemName } from '../data/items';
 import { useOoTMMSessionStore } from '../stores/ootmmSession';
 import { useOoTMMUiStore } from '../stores/ootmmUi';
 import {
@@ -46,6 +47,7 @@ export type DungeonEntranceEntry = {
   key: string;
   label: string;
   displayLabel: string;
+  optionLabel: string;
   game: 'oot' | 'mm';
   type: string;
   pool: TrackedEntrancePool;
@@ -79,13 +81,33 @@ type MappingStats = {
   unmapped: number;
 };
 
+function stripEntranceNamePrefix(value: string | undefined): string | null {
+  if (!value || value === 'NONE') return null;
+  return value.replace(/^(OOT|MM) /, '');
+}
+
+function getWarpSongName(data: EntranceData): string | null {
+  if (data.type !== 'one-way-song') return null;
+
+  const sourceName = stripEntranceNamePrefix(data.from);
+  if (!sourceName) return null;
+
+  return getItemName(`${String(data.game).toUpperCase()}_${sourceName}`);
+}
+
+function entranceOptionLabel(key: string, data: EntranceData): string {
+  const toName = stripEntranceNamePrefix(data.to);
+
+  if (data.type === 'one-way-song' || data.type === 'one-way-statue') {
+    return toName ?? entranceLabel(key, data);
+  }
+
+  return entranceLabel(key, data);
+}
+
 function entranceLabel(key: string, data: EntranceData): string {
-  const toName =
-    data.to && data.to !== 'NONE' ? data.to.replace(/^(OOT|MM) /, '') : null;
-  const fromName =
-    data.from && data.from !== 'NONE'
-      ? data.from.replace(/^(OOT|MM) /, '')
-      : null;
+  const toName = stripEntranceNamePrefix(data.to);
+  const fromName = stripEntranceNamePrefix(data.from);
   if (toName && fromName) {
     return `${toName} from ${fromName}`;
   }
@@ -95,12 +117,17 @@ function entranceLabel(key: string, data: EntranceData): string {
 }
 
 function entranceDisplayLabel(key: string, data: EntranceData): string {
-  const toName =
-    data.to && data.to !== 'NONE' ? data.to.replace(/^(OOT|MM) /, '') : null;
-  const fromName =
-    data.from && data.from !== 'NONE'
-      ? data.from.replace(/^(OOT|MM) /, '')
-      : null;
+  const toName = stripEntranceNamePrefix(data.to);
+  const fromName = stripEntranceNamePrefix(data.from);
+
+  if (data.type === 'one-way-song') {
+    return getWarpSongName(data) ?? toName ?? entranceLabel(key, data);
+  }
+
+  if (data.type === 'one-way-statue') {
+    return toName ? `Soaring to ${toName}` : 'Soaring';
+  }
+
   if (fromName && toName) {
     return `${fromName} to ${toName}`;
   }
@@ -183,6 +210,7 @@ export function useDungeonEntrances() {
             key,
             label: entranceLabel(key, data),
             displayLabel: entranceDisplayLabel(key, data),
+            optionLabel: entranceOptionLabel(key, data),
             game: data.game as 'oot' | 'mm',
             type: data.type,
             pool: 'interior',
@@ -198,6 +226,7 @@ export function useDungeonEntrances() {
         key,
         label: entranceLabel(key, data),
         displayLabel: entranceDisplayLabel(key, data),
+        optionLabel: entranceOptionLabel(key, data),
         game: data.game as 'oot' | 'mm',
         type: data.type,
         pool,
@@ -288,7 +317,7 @@ export function useDungeonEntrances() {
         if (partnerData) {
           return {
             value: partner,
-            label: entranceLabel(partner, partnerData),
+            label: entranceOptionLabel(partner, partnerData),
             game: entry.game,
             pool: entry.pool,
           };
@@ -296,7 +325,7 @@ export function useDungeonEntrances() {
       }
       return {
         value: entry.key,
-        label: entry.label,
+        label: entry.optionLabel,
         game: entry.game,
         pool: entry.pool,
       };

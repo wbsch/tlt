@@ -242,4 +242,80 @@ describe('useDungeonEntrances', () => {
         .some((option) => option.value === 'OOT_MARKET_ENTRANCE_FROM_FIELD'),
     ).toBe(true);
   });
+
+  it('activates warp-song and soaring rows without reverse exit rows when warp shuffle is enabled', () => {
+    const sessionStore = useOoTMMSessionStore();
+    useOoTMMUiStore();
+
+    sessionStore.trackerSettings = {
+      games: 'ootmm',
+      erWarps: 'full',
+    };
+
+    const entrances = useDungeonEntrances();
+    const warpEntries = entrances.activeEntrances.value.filter(
+      (entry) => entry.pool === 'warp',
+    );
+    const meadowSong = warpEntries.find(
+      (entry) => entry.key === 'OOT_WARP_SONG_MEADOW',
+    );
+    const lightSong = warpEntries.find(
+      (entry) => entry.key === 'OOT_WARP_SONG_TEMPLE',
+    );
+    const clockTownOwl = warpEntries.find(
+      (entry) => entry.key === 'MM_WARP_OWL_CLOCK_TOWN',
+    );
+
+    expect(meadowSong).toBeTruthy();
+    expect(lightSong?.displayLabel).toBe('Prelude of Light');
+    expect(
+      warpEntries.some((entry) => entry.key === 'MM_WARP_OWL_CLOCK_TOWN'),
+    ).toBe(true);
+    expect(clockTownOwl?.displayLabel).toBe('Soaring to Owl Clock Town');
+    expect(
+      entrances.activeExitEntries.value.some((entry) => entry.pool === 'warp'),
+    ).toBe(false);
+    expect(
+      entrances
+        .destinationOptionsForEntrance(meadowSong!)
+        .some(
+          (option) =>
+            option.value === 'OOT_WARP_SONG_LAKE' &&
+            option.label === 'Lake Hylia',
+        ),
+    ).toBe(true);
+    expect(
+      entrances
+        .destinationOptionsForEntrance(meadowSong!)
+        .some(
+          (option) =>
+            option.value === 'MM_WARP_OWL_CLOCK_TOWN' &&
+            option.label === 'Owl Clock Town',
+        ),
+    ).toBe(true);
+  });
+
+  it('matches OoTMM by removing warp songs from the warp pool when one-ways already shuffle them', () => {
+    const sessionStore = useOoTMMSessionStore();
+    useOoTMMUiStore();
+
+    sessionStore.trackerSettings = {
+      games: 'ootmm',
+      erWarps: 'full',
+      erOneWays: 'full',
+      erOneWaysSongs: true,
+    };
+
+    const entrances = useDungeonEntrances();
+    const warpEntries = entrances.activeEntrances.value.filter(
+      (entry) => entry.pool === 'warp',
+    );
+
+    expect(
+      warpEntries.some((entry) => entry.key.startsWith('OOT_WARP_SONG_')),
+    ).toBe(false);
+    expect(
+      warpEntries.some((entry) => entry.key === 'MM_WARP_OWL_CLOCK_TOWN'),
+    ).toBe(true);
+  });
 });

@@ -33,6 +33,7 @@ const DUNGEON_TYPES = new Set(Object.keys(TYPE_TO_SETTING));
 const GROTTO_TYPES = new Set(['grotto', 'grave']);
 const REGION_TYPES = new Set(['region', 'region-extra', 'region-shortcut']);
 const INTERIOR_TYPES = new Set(['indoors', 'indoors-extra', 'indoors-pf']);
+const WARP_TYPES = new Set(['one-way-song', 'one-way-statue']);
 export const INTERIOR_GAME_LINK_SOURCE_KEYS = new Set([
   'OOT_MARKET_FROM_MASK_SHOP',
   'MM_CLOCK_TOWN_FROM_CLOCK_TOWER',
@@ -72,26 +73,34 @@ const JP_LAYOUT_GROTTO_KEYS = new Set([
   'MM_GROTTO_JP_LINE_END',
 ]);
 
-export type TrackedEntrancePool = 'dungeon' | 'grotto' | 'region' | 'interior';
+export type TrackedEntrancePool =
+  | 'dungeon'
+  | 'grotto'
+  | 'region'
+  | 'interior'
+  | 'warp';
 
 const TRACKED_ENTRANCE_POOLS: TrackedEntrancePool[] = [
   'dungeon',
   'grotto',
   'region',
   'interior',
+  'warp',
 ];
 const TRACKED_POOL_MODE_SETTING: Record<TrackedEntrancePool, string> = {
   dungeon: 'erDungeons',
   grotto: 'erGrottos',
   region: 'erRegions',
   interior: 'erIndoors',
+  warp: 'erWarps',
 };
-const TRACKED_POOL_MIXED_SETTING: Record<TrackedEntrancePool, string> = {
-  dungeon: 'erMixedDungeons',
-  grotto: 'erMixedGrottos',
-  region: 'erMixedRegions',
-  interior: 'erMixedIndoors',
-};
+const TRACKED_POOL_MIXED_SETTING: Partial<Record<TrackedEntrancePool, string>> =
+  {
+    dungeon: 'erMixedDungeons',
+    grotto: 'erMixedGrottos',
+    region: 'erMixedRegions',
+    interior: 'erMixedIndoors',
+  };
 
 /**
  * For game-link keys (no polarity), return the partner (reverse) key.
@@ -199,6 +208,7 @@ export function getTrackedEntrancePool(
   if (GROTTO_TYPES.has(type)) return 'grotto';
   if (REGION_TYPES.has(type)) return 'region';
   if (isTrackedInteriorSource(key, type)) return 'interior';
+  if (WARP_TYPES.has(type)) return 'warp';
   return null;
 }
 
@@ -250,10 +260,27 @@ function isTrackedPoolMixed(
   pool: TrackedEntrancePool,
   settings: Record<string, unknown>,
 ): boolean {
+  const mixedSettingKey = TRACKED_POOL_MIXED_SETTING[pool];
+  if (!mixedSettingKey) return false;
+
   const mixedMode = String(settings?.erMixed ?? 'none');
   if (mixedMode === 'none') return false;
-  if (!settings?.[TRACKED_POOL_MIXED_SETTING[pool]]) return false;
+  if (!settings?.[mixedSettingKey]) return false;
   return getTrackedPoolMode(pool, settings) === mixedMode;
+}
+
+function getEnabledWarpSources(settings: Record<string, unknown>): Set<string> {
+  const types = new Set<string>(WARP_TYPES);
+
+  if (settings?.erWarps === 'ootOnly' || settings?.erOneWaysStatues) {
+    types.delete('one-way-statue');
+  }
+
+  if (settings?.erWarps === 'mmOnly' || settings?.erOneWaysSongs) {
+    types.delete('one-way-song');
+  }
+
+  return types;
 }
 
 export function getTrackedEntranceCompatiblePools(
@@ -322,9 +349,11 @@ export function getActiveEntranceKeys(
   const erGrottos = settings?.erGrottos;
   const erRegions = settings?.erRegions;
   const erIndoors = settings?.erIndoors;
+  const erWarps = settings?.erWarps;
   const enabledDungeonTypes = getEnabledDungeonTypes(settings);
   const enabledRegionTypes = getEnabledRegionSources(settings);
   const enabledInteriorSources = getEnabledInteriorSources(settings);
+  const enabledWarpSources = getEnabledWarpSources(settings);
 
   for (const [key, data] of Object.entries(ENTRANCES_RAW)) {
     if (selectedGames === 'oot' && data.game === 'mm') continue;
@@ -360,6 +389,10 @@ export function getActiveEntranceKeys(
       if (enabledInteriorSources.types.has(data.type)) {
         keys.add(key);
       }
+    }
+
+    if (erWarps && erWarps !== 'none' && enabledWarpSources.has(data.type)) {
+      keys.add(key);
     }
   }
 
