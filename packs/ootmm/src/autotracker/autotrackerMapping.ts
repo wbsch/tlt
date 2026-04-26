@@ -722,6 +722,45 @@ export interface AutotrackerItem {
   qty: number;
 }
 
+export interface AutotrackerTranslationOptions {
+  childWalletsEnabled?: boolean;
+  mode?: 'absolute' | 'delta';
+}
+
+function isBaseWalletId(itemId: string): boolean {
+  return /^(OOT|MM)_WALLET$/.test(itemId);
+}
+
+function isBottomlessWalletId(itemId: string): boolean {
+  return /^(OOT|MM)_WALLET5$/.test(itemId);
+}
+
+function translateWalletQty(
+  rawId: string,
+  rawQty: number,
+  availableItemIds: Set<string>,
+  itemMaxCounts: Map<string, number>,
+  options: AutotrackerTranslationOptions,
+): { trackerId: string; qty: number } {
+  const baseWalletId = isBottomlessWalletId(rawId) ? rawId.slice(0, -1) : rawId;
+  const trackerId = resolveTrackerId(baseWalletId, availableItemIds);
+
+  if (options.mode === 'delta') {
+    return { trackerId, qty: rawQty };
+  }
+
+  const maxCount = getItemMaxCount(trackerId, itemMaxCounts);
+  if (isBottomlessWalletId(rawId)) {
+    return { trackerId, qty: rawQty > 0 ? maxCount : 0 };
+  }
+
+  const startLevelOffset = options.childWalletsEnabled ? 0 : 1;
+  return {
+    trackerId,
+    qty: Math.max(0, Math.min(maxCount, rawQty - startLevelOffset)),
+  };
+}
+
 /**
  * Translate a batch of autotracker items into tracker inventory entries.
  * For diff=false (full sync), qty is absolute.
@@ -731,6 +770,7 @@ export function translateAutotrackerItems(
   items: AutotrackerItem[],
   availableItemIds: Set<string>,
   itemMaxCounts: Map<string, number>,
+  options: AutotrackerTranslationOptions = {},
 ): Record<string, number> {
   const result: Record<string, number> = {};
 
@@ -787,9 +827,17 @@ export function translateAutotrackerItems(
       continue;
     }
 
-    // MM_WALLET5 → bottomless wallet flag (separate from MM_WALLET level)
-    // MM_WALLET handles main progressive level; WALLET5 is extra
-    // For now pass through
+    if (isBaseWalletId(id) || isBottomlessWalletId(id)) {
+      const wallet = translateWalletQty(
+        id,
+        qty,
+        availableItemIds,
+        itemMaxCounts,
+        options,
+      );
+      set(wallet.trackerId, wallet.qty);
+      continue;
+    }
 
     // OOT_OCARINA, MM_OCARINA — progressive level, pass through
     // OOT_QUIVER, MM_QUIVER — progressive level, pass through
@@ -813,12 +861,14 @@ export function applyDelta(
   deltaItems: AutotrackerItem[],
   availableItemIds: Set<string>,
   itemMaxCounts: Map<string, number>,
+  options: AutotrackerTranslationOptions = {},
 ): Map<string, number> {
   const next = new Map(currentState);
   const translated = translateAutotrackerItems(
     deltaItems,
     availableItemIds,
     itemMaxCounts,
+    { ...options, mode: 'delta' },
   );
   for (const [id, deltaQty] of Object.entries(translated)) {
     const current = next.get(id) ?? 0;

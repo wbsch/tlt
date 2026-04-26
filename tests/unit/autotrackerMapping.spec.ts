@@ -257,4 +257,49 @@ describe('autotracker composite item inference', () => {
     expect(nextState.get('MM_KEY_RING_WF')).toBe(1);
     expect(nextState.get('MM_SKELETON_KEY')).toBe(1);
   });
+
+  it('offsets absolute wallet levels when child wallets are disabled', () => {
+    const translated = translateAutotrackerItems(
+      [{ id: 'OOT_WALLET', qty: 2 }],
+      makeAvailableItemIds(['OOT_WALLET']),
+      makeItemMaxCounts({ OOT_WALLET: 3 }),
+      { childWalletsEnabled: false },
+    );
+
+    expect(translated.OOT_WALLET).toBe(1);
+  });
+
+  it('keeps absolute wallet levels aligned when child wallets are enabled', () => {
+    const translated = translateAutotrackerItems(
+      [{ id: 'OOT_WALLET', qty: 2 }],
+      makeAvailableItemIds(['OOT_WALLET']),
+      makeItemMaxCounts({ OOT_WALLET: 3 }),
+      { childWalletsEnabled: true },
+    );
+
+    expect(translated.OOT_WALLET).toBe(2);
+  });
+
+  it('maps bottomless wallet signals onto the shared wallet max stage', () => {
+    const translated = translateAutotrackerItems(
+      [{ id: 'OOT_WALLET5', qty: 1 }],
+      makeAvailableItemIds(['SHARED_WALLET']),
+      makeItemMaxCounts({ SHARED_WALLET: 4 }),
+      { childWalletsEnabled: false },
+    );
+
+    expect(translated.SHARED_WALLET).toBe(4);
+  });
+
+  it('treats wallet deltas as additive even without child wallets', () => {
+    const nextState = applyDelta(
+      new Map<string, number>(),
+      [{ id: 'OOT_WALLET', qty: 1 }],
+      makeAvailableItemIds(['OOT_WALLET']),
+      makeItemMaxCounts({ OOT_WALLET: 3 }),
+      { childWalletsEnabled: false },
+    );
+
+    expect(nextState.get('OOT_WALLET')).toBe(1);
+  });
 });

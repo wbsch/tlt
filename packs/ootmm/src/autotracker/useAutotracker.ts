@@ -22,6 +22,8 @@ interface AutotrackerOptions {
   availableItemIds: Ref<Set<string>>;
   /** Effective item max counts from the tracker (setting-dependent). */
   itemMaxCounts: Ref<Map<string, number>>;
+  /** Whether child wallets are enabled in the current tracker settings. */
+  childWalletsEnabled: Ref<boolean>;
   /** Called when the autotracker has new inventory to apply. */
   onInventoryUpdate: (
     inventory: Record<string, number>,
@@ -402,6 +404,7 @@ export function useAutotracker(options: AutotrackerOptions) {
       msg.items,
       options.availableItemIds.value,
       options.itemMaxCounts.value,
+      { childWalletsEnabled: options.childWalletsEnabled.value },
     );
 
     if (isInFullSync && !msg.diff) {
@@ -421,6 +424,7 @@ export function useAutotracker(options: AutotrackerOptions) {
         msg.items,
         options.availableItemIds.value,
         options.itemMaxCounts.value,
+        { childWalletsEnabled: options.childWalletsEnabled.value },
       );
       if (msg.refresh) {
         pushToTracker('live');

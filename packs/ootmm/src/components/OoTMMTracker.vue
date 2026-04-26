@@ -514,6 +514,9 @@ const { resolveCodeToCheckIds: resolveMapSelectorCodeToCheckIds } =
 const autotracker = useAutotracker({
   availableItemIds: availableItemIds,
   itemMaxCounts: itemMaxCounts,
+  childWalletsEnabled: computed(() =>
+    Boolean(trackerSettings.value?.childWallets),
+  ),
   onInventoryUpdate: (inventory, meta) => {
     applyAutotrackerInventoryUpdate(inventory, meta.phase);
   },
