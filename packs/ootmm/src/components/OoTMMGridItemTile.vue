@@ -499,7 +499,8 @@ onBeforeUnmount(() => {
 .item-count-overlay-label {
   align-items: flex-end;
   justify-content: flex-end;
-  padding: 0 3px 1px 0;
+  padding: 0 1px 1px 0;
+  font-size: 13px;
   text-align: right;
 }
 

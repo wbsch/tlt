@@ -486,6 +486,8 @@ const GRID_TEXT_LABELS: Record<string, string> = {
   '99': '99',
   '200': '200',
   '500': '500',
+  '999': '999',
+  '9999': '9999',
   free_label: 'Free',
   mm_woodfall_label: 'Wood',
   mm_snowhead_label: 'Snow',
@@ -566,7 +568,9 @@ type GridIconVariantConfig =
 
 type GridWheelOverlayDefinition = string[] | GridWheelOverlayConfig;
 
-const MM_WALLET_OVERLAY_VALUES = ['99', '200', '500'];
+const WALLET_OVERLAY_VALUES_1 = ['99', '200', '500'];
+const WALLET_OVERLAY_VALUES_2 = ['99', '200', '500', '999'];
+const WALLET_OVERLAY_VALUES_3 = ['99', '200', '500', '999', '9999'];
 const STICK_UPGRADE_OVERLAY_VALUES = ['10', '20', '30'];
 const BOMB_AND_NUT_OVERLAY_VALUES = ['20', '30', '40'];
 const BOW_OVERLAY_VALUES = ['30', '40', '50'];
@@ -605,7 +609,12 @@ const RAW_GRID_ICON_VARIANTS: Record<string, GridIconVariantConfig> = {
 
   'OOT_WALLET|SHARED_WALLET': {
     default: {
-      icons: ['images/wallet.png', 'images/wallet1.png', 'images/wallet2.png'],
+      icons: [
+        'images/items/mm_wallet.png',
+        'images/items/mm_wallet.png',
+        'images/items/mm_wallet.png',
+      ],
+      overlays: WALLET_OVERLAY_VALUES_1,
       startUndimmed: true,
     },
     variants: [
@@ -618,11 +627,12 @@ const RAW_GRID_ICON_VARIANTS: Record<string, GridIconVariantConfig> = {
           },
         },
         icons: [
-          'images/wallet.png',
-          'images/wallet1.png',
-          'images/wallet2.png',
-          'images/wallet3.png',
+          'images/items/mm_wallet.png',
+          'images/items/mm_wallet.png',
+          'images/items/mm_wallet.png',
+          'images/items/mm_wallet.png',
         ],
+        overlays: WALLET_OVERLAY_VALUES_2,
         startUndimmed: true,
       },
       {
@@ -634,12 +644,13 @@ const RAW_GRID_ICON_VARIANTS: Record<string, GridIconVariantConfig> = {
           },
         },
         icons: [
-          'images/wallet.png',
-          'images/wallet1.png',
-          'images/wallet2.png',
-          'images/wallet3.png',
-          'images/wallet3.png',
+          'images/items/mm_wallet.png',
+          'images/items/mm_wallet.png',
+          'images/items/mm_wallet.png',
+          'images/items/mm_wallet.png',
+          'images/items/mm_wallet.png',
         ],
+        overlays: WALLET_OVERLAY_VALUES_3,
         startUndimmed: true,
       },
       {
@@ -651,10 +662,11 @@ const RAW_GRID_ICON_VARIANTS: Record<string, GridIconVariantConfig> = {
           },
         },
         icons: [
-          'images/wallet.png',
-          'images/wallet1.png',
-          'images/wallet2.png',
+          'images/items/mm_wallet.png',
+          'images/items/mm_wallet.png',
+          'images/items/mm_wallet.png',
         ],
+        overlays: WALLET_OVERLAY_VALUES_1,
         startUndimmed: false,
       },
       {
@@ -666,11 +678,12 @@ const RAW_GRID_ICON_VARIANTS: Record<string, GridIconVariantConfig> = {
           },
         },
         icons: [
-          'images/wallet.png',
-          'images/wallet1.png',
-          'images/wallet2.png',
-          'images/wallet3.png',
+          'images/items/mm_wallet.png',
+          'images/items/mm_wallet.png',
+          'images/items/mm_wallet.png',
+          'images/items/mm_wallet.png',
         ],
+        overlays: WALLET_OVERLAY_VALUES_2,
         startUndimmed: false,
       },
       {
@@ -682,12 +695,13 @@ const RAW_GRID_ICON_VARIANTS: Record<string, GridIconVariantConfig> = {
           },
         },
         icons: [
-          'images/wallet.png',
-          'images/wallet1.png',
-          'images/wallet2.png',
-          'images/wallet3.png',
-          'images/wallet3.png',
+          'images/items/mm_wallet.png',
+          'images/items/mm_wallet.png',
+          'images/items/mm_wallet.png',
+          'images/items/mm_wallet.png',
+          'images/items/mm_wallet.png',
         ],
+        overlays: WALLET_OVERLAY_VALUES_3,
         startUndimmed: false,
       },
     ],
@@ -699,7 +713,7 @@ const RAW_GRID_ICON_VARIANTS: Record<string, GridIconVariantConfig> = {
         'images/items/mm_wallet.png',
         'images/items/mm_giantwallet.png',
       ],
-      overlays: MM_WALLET_OVERLAY_VALUES,
+      overlays: WALLET_OVERLAY_VALUES_1,
       startUndimmed: true,
     },
     variants: [
@@ -715,9 +729,9 @@ const RAW_GRID_ICON_VARIANTS: Record<string, GridIconVariantConfig> = {
           'images/items/mm_wallet99.png',
           'images/items/mm_wallet.png',
           'images/items/mm_giantwallet.png',
-          'images/wallet3.png',
+          'images/items/mm_giantwallet.png',
         ],
-        overlays: [...MM_WALLET_OVERLAY_VALUES, null],
+        overlays: WALLET_OVERLAY_VALUES_2,
         startUndimmed: true,
       },
       {
@@ -732,10 +746,10 @@ const RAW_GRID_ICON_VARIANTS: Record<string, GridIconVariantConfig> = {
           'images/items/mm_wallet99.png',
           'images/items/mm_wallet.png',
           'images/items/mm_giantwallet.png',
-          'images/wallet3.png',
-          'images/wallet3.png',
+          'images/items/mm_giantwallet.png',
+          'images/items/mm_giantwallet.png',
         ],
-        overlays: [...MM_WALLET_OVERLAY_VALUES, null, null],
+        overlays: WALLET_OVERLAY_VALUES_3,
         startUndimmed: true,
       },
       {
@@ -751,7 +765,7 @@ const RAW_GRID_ICON_VARIANTS: Record<string, GridIconVariantConfig> = {
           'images/items/mm_wallet.png',
           'images/items/mm_giantwallet.png',
         ],
-        overlays: MM_WALLET_OVERLAY_VALUES,
+        overlays: WALLET_OVERLAY_VALUES_1,
         startUndimmed: false,
       },
       {
@@ -766,9 +780,9 @@ const RAW_GRID_ICON_VARIANTS: Record<string, GridIconVariantConfig> = {
           'images/items/mm_wallet99.png',
           'images/items/mm_wallet.png',
           'images/items/mm_giantwallet.png',
-          'images/wallet3.png',
+          'images/items/mm_giantwallet.png',
         ],
-        overlays: [...MM_WALLET_OVERLAY_VALUES, null],
+        overlays: WALLET_OVERLAY_VALUES_2,
         startUndimmed: false,
       },
       {
@@ -783,10 +797,10 @@ const RAW_GRID_ICON_VARIANTS: Record<string, GridIconVariantConfig> = {
           'images/items/mm_wallet99.png',
           'images/items/mm_wallet.png',
           'images/items/mm_giantwallet.png',
-          'images/wallet3.png',
-          'images/wallet3.png',
+          'images/items/mm_giantwallet.png',
+          'images/items/mm_giantwallet.png',
         ],
-        overlays: [...MM_WALLET_OVERLAY_VALUES, null, null],
+        overlays: WALLET_OVERLAY_VALUES_3,
         startUndimmed: false,
       },
     ],
