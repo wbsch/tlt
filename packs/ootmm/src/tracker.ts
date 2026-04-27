@@ -21,6 +21,7 @@ import * as IsShuffledMod from '@ootmm/core/logic/is-shuffled';
 import * as DataMod from '@ootmm/data';
 
 import { ITEM_DATABASE } from './data/items';
+import { getGridItemAutoSelectItemIds } from './data/itemIcons';
 import { LOCATION_CODE_CATALOG } from './data/locationCatalog';
 import {
   getActiveEntranceKeys,
@@ -2554,6 +2555,8 @@ export class OoTMMTracker implements TrackerPack {
       );
     }
 
+    this.expandInventoryWithAutoSelectedItems(expandedInventory);
+
     for (const [itemId, count] of expandedInventory) {
       if (
         itemId.startsWith(GRID_REF_STATE_PREFIX) ||
@@ -2585,6 +2588,36 @@ export class OoTMMTracker implements TrackerPack {
       }
     }
     return playerItems;
+  }
+
+  private expandInventoryWithAutoSelectedItems(
+    inventory: Map<string, number>,
+  ): void {
+    const pendingItemIds = [...inventory.keys()];
+    const visitedItemIds = new Set<string>();
+
+    for (let index = 0; index < pendingItemIds.length; index += 1) {
+      const itemId = pendingItemIds[index];
+      if (visitedItemIds.has(itemId)) continue;
+      visitedItemIds.add(itemId);
+
+      const count = inventory.get(itemId) || 0;
+      if (count <= 0) continue;
+
+      const autoSelectItemIds = getGridItemAutoSelectItemIds(itemId, {
+        maxCount: this.itemMaxCounts.get(itemId),
+        availableItemIds: this.availableItemIds,
+        inventory,
+        settings: this.settings,
+      });
+      if (!autoSelectItemIds || autoSelectItemIds.length === 0) continue;
+
+      for (const autoSelectItemId of autoSelectItemIds) {
+        if ((inventory.get(autoSelectItemId) || 0) > 0) continue;
+        inventory.set(autoSelectItemId, 1);
+        pendingItemIds.push(autoSelectItemId);
+      }
+    }
   }
 
   private buildSilverRupeeLocationIndex(
