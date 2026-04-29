@@ -33,6 +33,7 @@ const DUNGEON_TYPES = new Set(Object.keys(TYPE_TO_SETTING));
 const GROTTO_TYPES = new Set(['grotto', 'grave']);
 const REGION_TYPES = new Set(['region', 'region-extra', 'region-shortcut']);
 const INTERIOR_TYPES = new Set(['indoors', 'indoors-extra', 'indoors-pf']);
+const SPAWN_TYPES = new Set(['spawn-child', 'spawn-adult']);
 const WARP_TYPES = new Set(['one-way-song', 'one-way-statue']);
 export const INTERIOR_GAME_LINK_SOURCE_KEYS = new Set([
   'OOT_MARKET_FROM_MASK_SHOP',
@@ -78,6 +79,7 @@ export type TrackedEntrancePool =
   | 'grotto'
   | 'region'
   | 'interior'
+  | 'spawn'
   | 'warp';
 
 const TRACKED_ENTRANCE_POOLS: TrackedEntrancePool[] = [
@@ -85,6 +87,7 @@ const TRACKED_ENTRANCE_POOLS: TrackedEntrancePool[] = [
   'grotto',
   'region',
   'interior',
+  'spawn',
   'warp',
 ];
 const TRACKED_POOL_MODE_SETTING: Record<TrackedEntrancePool, string> = {
@@ -92,6 +95,7 @@ const TRACKED_POOL_MODE_SETTING: Record<TrackedEntrancePool, string> = {
   grotto: 'erGrottos',
   region: 'erRegions',
   interior: 'erIndoors',
+  spawn: 'erSpawns',
   warp: 'erWarps',
 };
 const TRACKED_POOL_MIXED_SETTING: Partial<Record<TrackedEntrancePool, string>> =
@@ -141,6 +145,16 @@ function isTrackedInteriorSource(
   return Boolean(key && INTERIOR_GAME_LINK_SOURCE_KEYS.has(key));
 }
 
+function getActiveGameLinkKeys(settings: Record<string, unknown>): Set<string> {
+  const gamesMode = String(settings?.games ?? 'ootmm');
+  const activeGameLinkKeys =
+    gamesMode === 'ootmm'
+      ? INTERIOR_GAME_LINK_EXIT_KEYS
+      : INTERIOR_GAME_LINK_SOURCE_KEYS;
+
+  return new Set(activeGameLinkKeys);
+}
+
 function getEnabledInteriorSources(settings: Record<string, unknown>): {
   types: Set<string>;
   gameLinkKeys: Set<string>;
@@ -158,17 +172,75 @@ function getEnabledInteriorSources(settings: Record<string, unknown>): {
     }
   }
   if (settings?.erIndoorsGameLinks) {
-    const gamesMode = String(settings?.games ?? 'ootmm');
-    const activeGameLinkKeys =
-      gamesMode === 'ootmm'
-        ? INTERIOR_GAME_LINK_EXIT_KEYS
-        : INTERIOR_GAME_LINK_SOURCE_KEYS;
-    for (const key of activeGameLinkKeys) {
+    for (const key of getActiveGameLinkKeys(settings)) {
       gameLinkKeys.add(key);
     }
   }
 
   return { types, gameLinkKeys };
+}
+
+function getEnabledSpawnSourceTypes(
+  settings: Record<string, unknown>,
+): Set<string> {
+  const types = new Set<string>();
+  const mode = String(settings?.erSpawns ?? 'none');
+
+  if (mode === 'child' || mode === 'both') {
+    types.add('spawn-child');
+  }
+  if (mode === 'adult' || mode === 'both') {
+    types.add('spawn-adult');
+  }
+
+  return types;
+}
+
+function getSpawnDestinationTypes(
+  settings: Record<string, unknown>,
+): Set<string> {
+  const types = new Set<string>();
+
+  if (settings?.erDungeons && settings?.erDungeons !== 'none') {
+    for (const type of getEnabledDungeonTypes(settings)) {
+      types.add(type);
+    }
+  }
+
+  if (settings?.erGrottos && settings?.erGrottos !== 'none') {
+    for (const type of GROTTO_TYPES) {
+      types.add(type);
+    }
+  }
+
+  if (settings?.erRegions && settings?.erRegions !== 'none') {
+    for (const type of getEnabledRegionSources(settings)) {
+      types.add(type);
+    }
+  }
+
+  if (settings?.erIndoors && settings?.erIndoors !== 'none') {
+    const enabledInteriorSources = getEnabledInteriorSources(settings);
+    for (const type of enabledInteriorSources.types) {
+      types.add(type);
+    }
+  }
+
+  if (settings?.erWarps && settings?.erWarps !== 'none') {
+    for (const type of getEnabledWarpSources(settings)) {
+      types.add(type);
+    }
+  }
+
+  // OoTMM's spawn pool always includes these destination categories even when
+  // their own settings are otherwise off.
+  types.add('indoors');
+  types.add('one-way-song');
+  types.add('region');
+  types.add('spawn-child');
+  types.add('spawn-adult');
+
+  return types;
 }
 
 function getEnabledRegionSources(
@@ -208,6 +280,7 @@ export function getTrackedEntrancePool(
   if (GROTTO_TYPES.has(type)) return 'grotto';
   if (REGION_TYPES.has(type)) return 'region';
   if (isTrackedInteriorSource(key, type)) return 'interior';
+  if (SPAWN_TYPES.has(type)) return 'spawn';
   if (WARP_TYPES.has(type)) return 'warp';
   return null;
 }
@@ -287,6 +360,7 @@ export function getTrackedEntranceCompatiblePools(
   pool: TrackedEntrancePool,
   settings: Record<string, unknown>,
 ): TrackedEntrancePool[] {
+  if (pool === 'spawn') return ['spawn'];
   if (!isTrackedPoolMixed(pool, settings)) return [pool];
   return TRACKED_ENTRANCE_POOLS.filter((candidatePool) =>
     isTrackedPoolMixed(candidatePool, settings),
@@ -297,10 +371,30 @@ export function getTrackedEntranceOwnGameMode(
   pool: TrackedEntrancePool,
   settings: Record<string, unknown>,
 ): boolean {
+  if (pool === 'spawn') return true;
   if (isTrackedPoolMixed(pool, settings)) {
     return String(settings?.erMixed ?? 'none') === 'ownGame';
   }
   return getTrackedPoolMode(pool, settings) === 'ownGame';
+}
+
+export function isTrackedSpawnDestination(
+  key: string,
+  type: string,
+  settings: Record<string, unknown>,
+): boolean {
+  if (
+    INTERIOR_GAME_LINK_SOURCE_KEYS.has(key) ||
+    INTERIOR_GAME_LINK_EXIT_KEYS.has(key)
+  ) {
+    if (!settings?.erIndoorsGameLinks) {
+      return false;
+    }
+
+    return getActiveGameLinkKeys(settings).has(key);
+  }
+
+  return getSpawnDestinationTypes(settings).has(type);
 }
 
 function hasSetSettingValue(setting: unknown, value: string): boolean {
@@ -349,10 +443,12 @@ export function getActiveEntranceKeys(
   const erGrottos = settings?.erGrottos;
   const erRegions = settings?.erRegions;
   const erIndoors = settings?.erIndoors;
+  const erSpawns = settings?.erSpawns;
   const erWarps = settings?.erWarps;
   const enabledDungeonTypes = getEnabledDungeonTypes(settings);
   const enabledRegionTypes = getEnabledRegionSources(settings);
   const enabledInteriorSources = getEnabledInteriorSources(settings);
+  const enabledSpawnTypes = getEnabledSpawnSourceTypes(settings);
   const enabledWarpSources = getEnabledWarpSources(settings);
 
   for (const [key, data] of Object.entries(ENTRANCES_RAW)) {
@@ -389,6 +485,11 @@ export function getActiveEntranceKeys(
       if (enabledInteriorSources.types.has(data.type)) {
         keys.add(key);
       }
+    }
+
+    if (erSpawns && erSpawns !== 'none' && enabledSpawnTypes.has(data.type)) {
+      keys.add(key);
+      continue;
     }
 
     if (erWarps && erWarps !== 'none' && enabledWarpSources.has(data.type)) {

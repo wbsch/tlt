@@ -243,6 +243,61 @@ describe('useDungeonEntrances', () => {
     ).toBe(true);
   });
 
+  it('activates spawn rows and matches OoTMM spawn dropdown destinations', () => {
+    const sessionStore = useOoTMMSessionStore();
+    useOoTMMUiStore();
+
+    sessionStore.trackerSettings = {
+      games: 'ootmm',
+      erSpawns: 'both',
+    };
+
+    const entrances = useDungeonEntrances();
+    const childSpawn = entrances.activeEntrances.value.find(
+      (entry) => entry.key === 'OOT_SPAWN_CHILD',
+    );
+    const adultSpawn = entrances.activeEntrances.value.find(
+      (entry) => entry.key === 'OOT_SPAWN_ADULT',
+    );
+
+    expect(childSpawn?.pool).toBe('spawn');
+    expect(childSpawn?.displayLabel).toBe('Child Spawn');
+    expect(adultSpawn?.displayLabel).toBe('Adult Spawn');
+    expect(
+      entrances.activeExitEntries.value.some((entry) => entry.pool === 'spawn'),
+    ).toBe(false);
+
+    const options = entrances.destinationOptionsForEntrance(childSpawn!);
+
+    expect(
+      options.some(
+        (option) =>
+          option.value === 'OOT_SPAWN_ADULT' && option.label === 'Adult Spawn',
+      ),
+    ).toBe(true);
+    expect(
+      options.some((option) => option.value === 'OOT_KAKARIKO_FROM_FIELD'),
+    ).toBe(true);
+    expect(options.some((option) => option.value === 'OOT_KOKIRI_SHOP')).toBe(
+      true,
+    );
+    expect(
+      options.some(
+        (option) =>
+          option.value === 'OOT_WARP_SONG_LAKE' &&
+          option.label === 'Lake Hylia',
+      ),
+    ).toBe(true);
+    expect(
+      options.some((option) => option.value === 'MM_WARP_OWL_CLOCK_TOWN'),
+    ).toBe(false);
+    expect(
+      options.some(
+        (option) => option.value === 'OOT_ZORA_RIVER_FROM_LOST_WOODS',
+      ),
+    ).toBe(false);
+  });
+
   it('activates warp-song and soaring rows without reverse exit rows when warp shuffle is enabled', () => {
     const sessionStore = useOoTMMSessionStore();
     useOoTMMUiStore();

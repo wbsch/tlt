@@ -22,6 +22,7 @@ import {
   resolveToActiveEntranceKey,
   getTrackedEntranceCompatiblePools,
   getTrackedEntranceOwnGameMode,
+  isTrackedSpawnDestination,
   type TrackedEntrancePool,
 } from '../utils/entranceRandomization';
 import { matchesSearchTerms } from '../utils/search';
@@ -106,6 +107,9 @@ function entranceOptionLabel(key: string, data: EntranceData): string {
 }
 
 function entranceLabel(key: string, data: EntranceData): string {
+  if (data.type === 'spawn-child') return 'Child Spawn';
+  if (data.type === 'spawn-adult') return 'Adult Spawn';
+
   const toName = stripEntranceNamePrefix(data.to);
   const fromName = stripEntranceNamePrefix(data.from);
   if (toName && fromName) {
@@ -117,6 +121,9 @@ function entranceLabel(key: string, data: EntranceData): string {
 }
 
 function entranceDisplayLabel(key: string, data: EntranceData): string {
+  if (data.type === 'spawn-child') return 'Child Spawn';
+  if (data.type === 'spawn-adult') return 'Adult Spawn';
+
   const toName = stripEntranceNamePrefix(data.to);
   const fromName = stripEntranceNamePrefix(data.from);
 
@@ -308,9 +315,6 @@ export function useDungeonEntrances() {
 
   const destinationOptions = computed(() => {
     const opts = activeEntrances.value.map((entry) => {
-      // For game-link entrances, use the partner key as destination value and
-      // the partner's own source-side label so the option matches the actual
-      // logic edge name (e.g. MM_CLOCK_TOWN_FROM_CLOCK_TOWER).
       const partner = getGameLinkPartner(entry.key);
       if (partner) {
         const partnerData = ENTRANCES_RAW[partner];
@@ -332,6 +336,35 @@ export function useDungeonEntrances() {
     });
 
     return opts;
+  });
+
+  const spawnDestinationOptions = computed(() => {
+    const settings = trackerSettings.value ?? {};
+    return allDungeonEntrances.value
+      .filter((entry) =>
+        isTrackedSpawnDestination(entry.key, entry.type, settings),
+      )
+      .map((entry) => {
+        const partner = getGameLinkPartner(entry.key);
+        if (partner) {
+          const partnerData = ENTRANCES_RAW[partner];
+          if (partnerData) {
+            return {
+              value: partner,
+              label: entranceOptionLabel(partner, partnerData),
+              game: entry.game,
+              pool: entry.pool,
+            };
+          }
+        }
+
+        return {
+          value: entry.key,
+          label: entry.optionLabel,
+          game: entry.game,
+          pool: entry.pool,
+        };
+      });
   });
 
   const sections = computed<EntrancePanelSection[]>(() => {
@@ -379,6 +412,16 @@ export function useDungeonEntrances() {
   function destinationOptionsForEntrance(
     entry: Pick<DungeonEntranceEntry, 'key' | 'game' | 'pool'>,
   ) {
+    if (entry.pool === 'spawn') {
+      return sortOptionsByGameThenLabel(
+        spawnDestinationOptions.value.filter(
+          (dest) =>
+            dest.game === entry.game &&
+            !isDestinationUsed(dest.value, entry.key),
+        ),
+      );
+    }
+
     const gamesMode = String(trackerSettings.value?.games ?? 'ootmm');
     const settings = trackerSettings.value ?? {};
     const compatiblePools = new Set(
