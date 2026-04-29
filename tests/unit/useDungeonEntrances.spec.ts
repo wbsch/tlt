@@ -1,6 +1,7 @@
 import { beforeEach, describe, expect, it } from 'vitest';
 import { createPinia, setActivePinia } from 'pinia';
 import { useDungeonEntrances } from '@packs/ootmm/composables/useDungeonEntrances';
+import { filterEntranceOverridesForSettings } from '@packs/ootmm/utils/entranceRandomization';
 import { useOoTMMSessionStore } from '@packs/ootmm/stores/ootmmSession';
 import { useOoTMMUiStore } from '@packs/ootmm/stores/ootmmUi';
 
@@ -289,6 +290,13 @@ describe('useDungeonEntrances', () => {
       ),
     ).toBe(true);
     expect(
+      options.some(
+        (option) =>
+          option.value === 'OOT_WARP_PAD_GRAVEYARD' &&
+          option.label === 'Graveyard Upper Warp Pad',
+      ),
+    ).toBe(true);
+    expect(
       options.some((option) => option.value === 'MM_WARP_OWL_CLOCK_TOWN'),
     ).toBe(false);
     expect(
@@ -296,6 +304,51 @@ describe('useDungeonEntrances', () => {
         (option) => option.value === 'OOT_ZORA_RIVER_FROM_LOST_WOODS',
       ),
     ).toBe(false);
+  });
+
+  it('preserves spawn mappings to valid non-active destinations', () => {
+    const sessionStore = useOoTMMSessionStore();
+    useOoTMMUiStore();
+
+    sessionStore.trackerSettings = {
+      games: 'ootmm',
+      erSpawns: 'both',
+    };
+
+    const entrances = useDungeonEntrances();
+    entrances.setSelectedDestination('OOT_SPAWN_CHILD', 'OOT_KOKIRI_SHOP');
+
+    expect(sessionStore.entranceOverrides['OOT_SPAWN_CHILD']).toBe(
+      'OOT_KOKIRI_SHOP',
+    );
+    expect(entrances.getSelectedDestination('OOT_SPAWN_CHILD')).toBe(
+      'OOT_KOKIRI_SHOP',
+    );
+    expect(
+      filterEntranceOverridesForSettings(
+        sessionStore.entranceOverrides,
+        sessionStore.trackerSettings,
+      ),
+    ).toEqual({
+      OOT_SPAWN_CHILD: 'OOT_KOKIRI_SHOP',
+    });
+
+    entrances.setSelectedDestination(
+      'OOT_SPAWN_CHILD',
+      'OOT_WARP_PAD_GRAVEYARD',
+    );
+
+    expect(entrances.getSelectedDestination('OOT_SPAWN_CHILD')).toBe(
+      'OOT_WARP_PAD_GRAVEYARD',
+    );
+    expect(
+      filterEntranceOverridesForSettings(
+        sessionStore.entranceOverrides,
+        sessionStore.trackerSettings,
+      ),
+    ).toEqual({
+      OOT_SPAWN_CHILD: 'OOT_WARP_SONG_GRAVE',
+    });
   });
 
   it('activates warp-song and soaring rows without reverse exit rows when warp shuffle is enabled', () => {

@@ -23,6 +23,7 @@ import {
   getTrackedEntranceCompatiblePools,
   getTrackedEntranceOwnGameMode,
   isTrackedSpawnDestination,
+  isTrackedDestinationAllowedForSource,
   type TrackedEntrancePool,
 } from '../utils/entranceRandomization';
 import { matchesSearchTerms } from '../utils/search';
@@ -81,6 +82,15 @@ type MappingStats = {
   mapped: number;
   unmapped: number;
 };
+
+const SPAWN_DESTINATION_ALIASES = [
+  {
+    value: 'OOT_WARP_PAD_GRAVEYARD',
+    label: 'Graveyard Upper Warp Pad',
+    game: 'oot' as const,
+    pool: 'warp' as const,
+  },
+];
 
 function stripEntranceNamePrefix(value: string | undefined): string | null {
   if (!value || value === 'NONE') return null;
@@ -178,11 +188,16 @@ export function useDungeonEntrances() {
       );
       if (!effectiveSrc) continue;
 
-      const effectiveDst = resolveToActiveEntranceKey(
-        normalizeTrackedEntranceKey(rawDst),
-        activeKeys,
-      );
-      if (!effectiveDst) continue;
+      if (
+        !isTrackedDestinationAllowedForSource(
+          effectiveSrc,
+          rawDst,
+          trackerSettings.value ?? {},
+          activeKeys,
+        )
+      ) {
+        continue;
+      }
 
       result[effectiveSrc] = rawDst;
     }
@@ -340,31 +355,34 @@ export function useDungeonEntrances() {
 
   const spawnDestinationOptions = computed(() => {
     const settings = trackerSettings.value ?? {};
-    return allDungeonEntrances.value
-      .filter((entry) =>
-        isTrackedSpawnDestination(entry.key, entry.type, settings),
-      )
-      .map((entry) => {
-        const partner = getGameLinkPartner(entry.key);
-        if (partner) {
-          const partnerData = ENTRANCES_RAW[partner];
-          if (partnerData) {
-            return {
-              value: partner,
-              label: entranceOptionLabel(partner, partnerData),
-              game: entry.game,
-              pool: entry.pool,
-            };
+    return [
+      ...allDungeonEntrances.value
+        .filter((entry) =>
+          isTrackedSpawnDestination(entry.key, entry.type, settings),
+        )
+        .map((entry) => {
+          const partner = getGameLinkPartner(entry.key);
+          if (partner) {
+            const partnerData = ENTRANCES_RAW[partner];
+            if (partnerData) {
+              return {
+                value: partner,
+                label: entranceOptionLabel(partner, partnerData),
+                game: entry.game,
+                pool: entry.pool,
+              };
+            }
           }
-        }
 
-        return {
-          value: entry.key,
-          label: entry.optionLabel,
-          game: entry.game,
-          pool: entry.pool,
-        };
-      });
+          return {
+            value: entry.key,
+            label: entry.optionLabel,
+            game: entry.game,
+            pool: entry.pool,
+          };
+        }),
+      ...SPAWN_DESTINATION_ALIASES,
+    ];
   });
 
   const sections = computed<EntrancePanelSection[]>(() => {
@@ -383,8 +401,12 @@ export function useDungeonEntrances() {
   const hasAvailableSections = computed(() => sections.value.length > 0);
 
   function isDestinationUsed(dstKey: string, currentSrcKey: string): boolean {
+    const normalizedDstKey = normalizeTrackedEntranceKey(dstKey);
+
     for (const [src, dst] of Object.entries(rawActiveEntranceOverrides.value)) {
-      if (src !== currentSrcKey && dst === dstKey) return true;
+      if (src === currentSrcKey) continue;
+      if (dst === dstKey) return true;
+      if (normalizeTrackedEntranceKey(dst) === normalizedDstKey) return true;
     }
 
     const partner = getGameLinkPartner(dstKey);

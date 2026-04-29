@@ -66,6 +66,9 @@ const TRACKED_EXIT_TYPES = new Set([
   'region-exit',
   ...INTERIOR_EXIT_TYPES,
 ]);
+const TRACKED_ENTRANCE_KEY_ALIASES: Record<string, string> = {
+  OOT_WARP_PAD_GRAVEYARD: 'OOT_WARP_SONG_GRAVE',
+};
 const DEKU_PALACE_JP_LAYOUT = 'DekuPalace';
 const JP_LAYOUT_GROTTO_KEYS = new Set([
   'MM_GROTTO_JP_CLIMB_LEFT',
@@ -298,15 +301,18 @@ export function isTrackedEntranceExitType(type: string, key?: string): boolean {
 }
 
 export function normalizeTrackedEntranceKey(key: string): string {
-  const data = ENTRANCES_RAW[key];
-  if (!data || !isTrackedEntranceExitType(data.type, key)) return key;
+  const canonicalKey = TRACKED_ENTRANCE_KEY_ALIASES[key] ?? key;
+  const data = ENTRANCES_RAW[canonicalKey];
+  if (!data || !isTrackedEntranceExitType(data.type, canonicalKey)) {
+    return canonicalKey;
+  }
 
   const reverse = data.reverse?.trim();
-  if (!reverse) return key;
+  if (!reverse) return canonicalKey;
 
   const reverseData = ENTRANCES_RAW[reverse];
   if (!reverseData || !isTrackedEntranceSourceType(reverseData.type, reverse)) {
-    return key;
+    return canonicalKey;
   }
 
   return reverse;
@@ -395,6 +401,39 @@ export function isTrackedSpawnDestination(
   }
 
   return getSpawnDestinationTypes(settings).has(type);
+}
+
+export function isTrackedDestinationAllowedForSource(
+  sourceKey: string,
+  destinationKey: string,
+  settings: Record<string, unknown>,
+  activeKeys: Set<string>,
+): boolean {
+  const normalizedDestinationKey = normalizeTrackedEntranceKey(destinationKey);
+  if (resolveToActiveEntranceKey(normalizedDestinationKey, activeKeys)) {
+    return true;
+  }
+
+  const sourceData = ENTRANCES_RAW[sourceKey];
+  const destinationData = ENTRANCES_RAW[normalizedDestinationKey];
+  if (!sourceData || !destinationData) return false;
+  if (!isTrackedEntranceAvailable(normalizedDestinationKey, settings)) {
+    return false;
+  }
+
+  if (getTrackedEntrancePool(sourceData.type, sourceKey) !== 'spawn') {
+    return false;
+  }
+
+  if (sourceData.game !== destinationData.game) {
+    return false;
+  }
+
+  return isTrackedSpawnDestination(
+    normalizedDestinationKey,
+    destinationData.type,
+    settings,
+  );
 }
 
 function hasSetSettingValue(setting: unknown, value: string): boolean {
@@ -620,11 +659,16 @@ export function computeDisplayEntranceOverrides(
     );
     if (!effectiveSrc) continue;
 
-    const effectiveDst = resolveToActiveEntranceKey(
-      normalizeTrackedEntranceKey(rawDst),
-      activeKeys,
-    );
-    if (!effectiveDst) continue;
+    if (
+      !isTrackedDestinationAllowedForSource(
+        effectiveSrc,
+        rawDst,
+        settings,
+        activeKeys,
+      )
+    ) {
+      continue;
+    }
 
     result[effectiveSrc] = rawDst;
     normalized[effectiveSrc] = normalizeTrackedEntranceKey(rawDst);
@@ -656,8 +700,16 @@ export function filterEntranceOverridesForSettings(
     if (!effectiveSrc) continue;
 
     const normalizedDst = normalizeTrackedEntranceKey(dst);
-    const effectiveDst = resolveToActiveEntranceKey(normalizedDst, activeKeys);
-    if (!effectiveDst) continue;
+    if (
+      !isTrackedDestinationAllowedForSource(
+        effectiveSrc,
+        normalizedDst,
+        settings,
+        activeKeys,
+      )
+    ) {
+      continue;
+    }
 
     filtered[effectiveSrc] = normalizedDst;
   }

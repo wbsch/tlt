@@ -45,6 +45,10 @@ const TRACKER_ENTRANCE_TYPES = new Set([
   'indoors',
   'indoors-extra',
   'indoors-pf',
+  'spawn-child',
+  'spawn-adult',
+  'one-way-song',
+  'one-way-statue',
   'grotto-exit',
   'grave-exit',
 ]);
