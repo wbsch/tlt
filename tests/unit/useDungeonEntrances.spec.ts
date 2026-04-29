@@ -270,12 +270,12 @@ describe('useDungeonEntrances', () => {
 
     const options = entrances.destinationOptionsForEntrance(childSpawn!);
 
-    expect(
-      options.some(
-        (option) =>
-          option.value === 'OOT_SPAWN_ADULT' && option.label === 'Adult Spawn',
-      ),
-    ).toBe(true);
+    expect(options.some((option) => option.value === 'OOT_SPAWN_ADULT')).toBe(
+      false,
+    );
+    expect(options.some((option) => option.value === 'OOT_SPAWN_CHILD')).toBe(
+      false,
+    );
     expect(
       options.some((option) => option.value === 'OOT_KAKARIKO_FROM_FIELD'),
     ).toBe(true);
@@ -287,13 +287,6 @@ describe('useDungeonEntrances', () => {
         (option) =>
           option.value === 'OOT_WARP_SONG_LAKE' &&
           option.label === 'Lake Hylia',
-      ),
-    ).toBe(true);
-    expect(
-      options.some(
-        (option) =>
-          option.value === 'OOT_WARP_PAD_GRAVEYARD' &&
-          option.label === 'Graveyard Upper Warp Pad',
       ),
     ).toBe(true);
     expect(
@@ -331,23 +324,6 @@ describe('useDungeonEntrances', () => {
       ),
     ).toEqual({
       OOT_SPAWN_CHILD: 'OOT_KOKIRI_SHOP',
-    });
-
-    entrances.setSelectedDestination(
-      'OOT_SPAWN_CHILD',
-      'OOT_WARP_PAD_GRAVEYARD',
-    );
-
-    expect(entrances.getSelectedDestination('OOT_SPAWN_CHILD')).toBe(
-      'OOT_WARP_PAD_GRAVEYARD',
-    );
-    expect(
-      filterEntranceOverridesForSettings(
-        sessionStore.entranceOverrides,
-        sessionStore.trackerSettings,
-      ),
-    ).toEqual({
-      OOT_SPAWN_CHILD: 'OOT_WARP_SONG_GRAVE',
     });
   });
 

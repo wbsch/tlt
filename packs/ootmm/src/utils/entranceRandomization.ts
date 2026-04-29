@@ -66,9 +66,6 @@ const TRACKED_EXIT_TYPES = new Set([
   'region-exit',
   ...INTERIOR_EXIT_TYPES,
 ]);
-const TRACKED_ENTRANCE_KEY_ALIASES: Record<string, string> = {
-  OOT_WARP_PAD_GRAVEYARD: 'OOT_WARP_SONG_GRAVE',
-};
 const DEKU_PALACE_JP_LAYOUT = 'DekuPalace';
 const JP_LAYOUT_GROTTO_KEYS = new Set([
   'MM_GROTTO_JP_CLIMB_LEFT',
@@ -240,8 +237,6 @@ function getSpawnDestinationTypes(
   types.add('indoors');
   types.add('one-way-song');
   types.add('region');
-  types.add('spawn-child');
-  types.add('spawn-adult');
 
   return types;
 }
@@ -301,18 +296,15 @@ export function isTrackedEntranceExitType(type: string, key?: string): boolean {
 }
 
 export function normalizeTrackedEntranceKey(key: string): string {
-  const canonicalKey = TRACKED_ENTRANCE_KEY_ALIASES[key] ?? key;
-  const data = ENTRANCES_RAW[canonicalKey];
-  if (!data || !isTrackedEntranceExitType(data.type, canonicalKey)) {
-    return canonicalKey;
-  }
+  const data = ENTRANCES_RAW[key];
+  if (!data || !isTrackedEntranceExitType(data.type, key)) return key;
 
   const reverse = data.reverse?.trim();
-  if (!reverse) return canonicalKey;
+  if (!reverse) return key;
 
   const reverseData = ENTRANCES_RAW[reverse];
   if (!reverseData || !isTrackedEntranceSourceType(reverseData.type, reverse)) {
-    return canonicalKey;
+    return key;
   }
 
   return reverse;

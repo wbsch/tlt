@@ -83,15 +83,6 @@ type MappingStats = {
   unmapped: number;
 };
 
-const SPAWN_DESTINATION_ALIASES = [
-  {
-    value: 'OOT_WARP_PAD_GRAVEYARD',
-    label: 'Graveyard Upper Warp Pad',
-    game: 'oot' as const,
-    pool: 'warp' as const,
-  },
-];
-
 function stripEntranceNamePrefix(value: string | undefined): string | null {
   if (!value || value === 'NONE') return null;
   return value.replace(/^(OOT|MM) /, '');
@@ -355,34 +346,31 @@ export function useDungeonEntrances() {
 
   const spawnDestinationOptions = computed(() => {
     const settings = trackerSettings.value ?? {};
-    return [
-      ...allDungeonEntrances.value
-        .filter((entry) =>
-          isTrackedSpawnDestination(entry.key, entry.type, settings),
-        )
-        .map((entry) => {
-          const partner = getGameLinkPartner(entry.key);
-          if (partner) {
-            const partnerData = ENTRANCES_RAW[partner];
-            if (partnerData) {
-              return {
-                value: partner,
-                label: entranceOptionLabel(partner, partnerData),
-                game: entry.game,
-                pool: entry.pool,
-              };
-            }
+    return allDungeonEntrances.value
+      .filter((entry) =>
+        isTrackedSpawnDestination(entry.key, entry.type, settings),
+      )
+      .map((entry) => {
+        const partner = getGameLinkPartner(entry.key);
+        if (partner) {
+          const partnerData = ENTRANCES_RAW[partner];
+          if (partnerData) {
+            return {
+              value: partner,
+              label: entranceOptionLabel(partner, partnerData),
+              game: entry.game,
+              pool: entry.pool,
+            };
           }
+        }
 
-          return {
-            value: entry.key,
-            label: entry.optionLabel,
-            game: entry.game,
-            pool: entry.pool,
-          };
-        }),
-      ...SPAWN_DESTINATION_ALIASES,
-    ];
+        return {
+          value: entry.key,
+          label: entry.optionLabel,
+          game: entry.game,
+          pool: entry.pool,
+        };
+      });
   });
 
   const sections = computed<EntrancePanelSection[]>(() => {
