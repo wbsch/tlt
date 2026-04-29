@@ -261,6 +261,24 @@ export function useDungeonEntrances() {
     });
   });
 
+  const activeEntrancePoolByKey = computed(() => {
+    const pools = new Map<string, TrackedEntrancePool>();
+    for (const entrance of activeEntrances.value) {
+      pools.set(entrance.key, entrance.pool);
+    }
+    return pools;
+  });
+
+  function getEntrancePoolByKey(key: string): TrackedEntrancePool | null {
+    const activePool = activeEntrancePoolByKey.value.get(key);
+    if (activePool) return activePool;
+
+    const data = ENTRANCES_RAW[key];
+    if (!data) return null;
+
+    return getTrackedEntrancePool(data.type, key);
+  }
+
   // Reachability filter is applied first; mapping is a subset of it.
   const reachabilityScopedEntrances = computed<DungeonEntranceEntry[]>(() => {
     const filter = entrancesReachabilityFilter.value;
@@ -390,9 +408,14 @@ export function useDungeonEntrances() {
 
   function isDestinationUsed(dstKey: string, currentSrcKey: string): boolean {
     const normalizedDstKey = normalizeTrackedEntranceKey(dstKey);
+    const currentSourcePool = getEntrancePoolByKey(currentSrcKey);
 
     for (const [src, dst] of Object.entries(rawActiveEntranceOverrides.value)) {
       if (src === currentSrcKey) continue;
+      const otherSourcePool = getEntrancePoolByKey(src);
+      if (currentSourcePool === 'spawn' || otherSourcePool === 'spawn') {
+        continue;
+      }
       if (dst === dstKey) return true;
       if (normalizeTrackedEntranceKey(dst) === normalizedDstKey) return true;
     }
@@ -403,6 +426,10 @@ export function useDungeonEntrances() {
         rawActiveEntranceOverrides.value,
       )) {
         if (src === currentSrcKey) continue;
+        const otherSourcePool = getEntrancePoolByKey(src);
+        if (currentSourcePool === 'spawn' || otherSourcePool === 'spawn') {
+          continue;
+        }
         if (dst === partner) return true;
       }
     }

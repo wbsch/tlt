@@ -327,6 +327,77 @@ describe('useDungeonEntrances', () => {
     });
   });
 
+  it('treats spawn mappings as additive when destinations overlap interiors', () => {
+    const sessionStore = useOoTMMSessionStore();
+    useOoTMMUiStore();
+
+    sessionStore.trackerSettings = {
+      games: 'ootmm',
+      erSpawns: 'both',
+      erIndoors: 'full',
+      erIndoorsMajor: true,
+      erIndoorsExtra: false,
+      erIndoorsGameLinks: false,
+    };
+
+    const entrances = useDungeonEntrances();
+    const childSpawn = entrances.activeEntrances.value.find(
+      (entry) => entry.key === 'OOT_SPAWN_CHILD',
+    );
+    const adultSpawn = entrances.activeEntrances.value.find(
+      (entry) => entry.key === 'OOT_SPAWN_ADULT',
+    );
+    const sariaRow = entrances.activeEntrances.value.find(
+      (entry) => entry.key === 'OOT_HOUSE_SARIA',
+    );
+    const midoRow = entrances.activeEntrances.value.find(
+      (entry) => entry.key === 'OOT_HOUSE_MIDO',
+    );
+
+    expect(childSpawn).toBeTruthy();
+    expect(adultSpawn).toBeTruthy();
+    expect(sariaRow).toBeTruthy();
+    expect(midoRow).toBeTruthy();
+
+    entrances.setSelectedDestination('OOT_SPAWN_CHILD', 'OOT_KOKIRI_SHOP');
+
+    expect(
+      entrances
+        .destinationOptionsForEntrance(sariaRow!)
+        .some((option) => option.value === 'OOT_KOKIRI_SHOP'),
+    ).toBe(true);
+
+    entrances.setSelectedDestination('OOT_HOUSE_SARIA', 'OOT_KOKIRI_SHOP');
+
+    expect(
+      entrances
+        .destinationOptionsForEntrance(childSpawn!)
+        .some((option) => option.value === 'OOT_KOKIRI_SHOP'),
+    ).toBe(true);
+    expect(
+      entrances
+        .destinationOptionsForEntrance(adultSpawn!)
+        .some((option) => option.value === 'OOT_KOKIRI_SHOP'),
+    ).toBe(true);
+
+    entrances.setSelectedDestination('OOT_SPAWN_ADULT', 'OOT_KOKIRI_SHOP');
+
+    expect(sessionStore.entranceOverrides['OOT_HOUSE_SARIA']).toBe(
+      'OOT_KOKIRI_SHOP',
+    );
+    expect(sessionStore.entranceOverrides['OOT_SPAWN_CHILD']).toBe(
+      'OOT_KOKIRI_SHOP',
+    );
+    expect(sessionStore.entranceOverrides['OOT_SPAWN_ADULT']).toBe(
+      'OOT_KOKIRI_SHOP',
+    );
+    expect(
+      entrances
+        .destinationOptionsForEntrance(midoRow!)
+        .some((option) => option.value === 'OOT_KOKIRI_SHOP'),
+    ).toBe(false);
+  });
+
   it('activates warp-song and soaring rows without reverse exit rows when warp shuffle is enabled', () => {
     const sessionStore = useOoTMMSessionStore();
     useOoTMMUiStore();

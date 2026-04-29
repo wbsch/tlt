@@ -100,6 +100,12 @@ const ENTRANCES_DATA =
     >
   >(DataMod, 'ENTRANCES') ?? {};
 
+const SPAWN_SOURCE_TYPES = new Set(['spawn-child', 'spawn-adult']);
+
+function isSpawnEntranceSourceKey(key: string): boolean {
+  return SPAWN_SOURCE_TYPES.has(ENTRANCES_DATA[key]?.type ?? '');
+}
+
 import type { World } from '@ootmm/core/logic/world';
 import type { PlayerItems, PlayerItem } from '@ootmm/core/items/index';
 
@@ -428,6 +434,16 @@ export class OoTMMTracker implements TrackerPack {
             | Record<string, string>
             | undefined) ?? {})
         : {};
+    const nonSpawnPlandoEntrances: Record<string, string> = {};
+    const configuredSpawnEntrances: Record<string, string> = {};
+    for (const [sourceKey, destinationKey] of Object.entries(plandoEntrances)) {
+      if (isSpawnEntranceSourceKey(sourceKey)) {
+        configuredSpawnEntrances[sourceKey] = destinationKey;
+        continue;
+      }
+
+      nonSpawnPlandoEntrances[sourceKey] = destinationKey;
+    }
 
     // When ER is active, use logic: 'none' to prevent random shuffling.
     // Self-map all enabled dungeon entrances to prevent random assignment,
@@ -437,7 +453,9 @@ export class OoTMMTracker implements TrackerPack {
       this.settings as Record<string, unknown>,
     );
     const isErActive = activeEntranceKeys.size > 0;
-    const finalPlandoEntrances = { ...plandoEntrances };
+    const finalPlandoEntrances = { ...nonSpawnPlandoEntrances };
+    const activeSpawnEntrances = new Set<string>();
+    const mappedSpawnEntrances: Record<string, string> = {};
     const unmappedEntrances: string[] = [];
     const selfMappedNoGlobalEntrances: string[] = [];
 
@@ -450,6 +468,18 @@ export class OoTMMTracker implements TrackerPack {
       for (const [key, data] of Object.entries(ENTRANCES_DATA)) {
         if (!activeEntranceKeys.has(key)) continue;
         if (data.from === 'NONE' || data.to === 'NONE') continue;
+        if (isSpawnEntranceSourceKey(key)) {
+          activeSpawnEntrances.add(key);
+
+          const mappedDestination = configuredSpawnEntrances[key];
+          if (mappedDestination) {
+            mappedSpawnEntrances[key] = mappedDestination;
+          } else {
+            unmappedEntrances.push(key);
+          }
+          continue;
+        }
+
         if (!finalPlandoEntrances[key]) {
           // Game-link entrances (source keys in single-game mode, exit keys
           // in ootmm mode) are NOT self-mapped.  Their internal exits stay
@@ -697,6 +727,53 @@ export class OoTMMTracker implements TrackerPack {
               }
             }
           }
+        }
+      }
+    }
+
+    if (activeSpawnEntrances.size > 0) {
+      for (const world of this.worlds) {
+        const areas = (world as Record<string, unknown>).areas as Record<
+          string,
+          { exits?: Record<string, unknown> }
+        >;
+
+        for (const sourceKey of activeSpawnEntrances) {
+          const sourceData = ENTRANCES_DATA[sourceKey];
+          if (
+            !sourceData ||
+            sourceData.from === 'NONE' ||
+            sourceData.to === 'NONE'
+          ) {
+            continue;
+          }
+
+          const fromArea = areas[sourceData.from];
+          if (fromArea?.exits && sourceData.to in fromArea.exits) {
+            delete fromArea.exits[sourceData.to];
+          }
+        }
+
+        for (const [sourceKey, destinationKey] of Object.entries(
+          mappedSpawnEntrances,
+        )) {
+          const sourceData = ENTRANCES_DATA[sourceKey];
+          const destinationData = ENTRANCES_DATA[destinationKey];
+          if (!sourceData || !destinationData) continue;
+          if (sourceData.from === 'NONE' || destinationData.to === 'NONE') {
+            continue;
+          }
+
+          const fromArea = areas[sourceData.from];
+          if (!fromArea) continue;
+
+          const sourceExpr =
+            this.savedEntranceExitExprs.get(sourceKey)?.expr ?? exprTrue();
+
+          if (!fromArea.exits) {
+            fromArea.exits = {};
+          }
+          fromArea.exits[destinationData.to] = sourceExpr;
         }
       }
     }
