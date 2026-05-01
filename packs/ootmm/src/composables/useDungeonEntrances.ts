@@ -364,31 +364,62 @@ export function useDungeonEntrances() {
 
   const spawnDestinationOptions = computed(() => {
     const settings = trackerSettings.value ?? {};
-    return allDungeonEntrances.value
-      .filter((entry) =>
-        isTrackedSpawnDestination(entry.key, entry.type, settings),
-      )
-      .map((entry) => {
-        const partner = getGameLinkPartner(entry.key);
-        if (partner) {
-          const partnerData = ENTRANCES_RAW[partner];
-          if (partnerData) {
-            return {
-              value: partner,
-              label: entranceOptionLabel(partner, partnerData),
-              game: entry.game,
-              pool: entry.pool,
-            };
-          }
-        }
+    const opts: Array<{
+      value: string;
+      label: string;
+      game: 'oot' | 'mm';
+      pool: TrackedEntrancePool;
+    }> = [];
+    const seenValues = new Set<string>();
 
-        return {
+    const addOption = (option: {
+      value: string;
+      label: string;
+      game: 'oot' | 'mm';
+      pool: TrackedEntrancePool;
+    }) => {
+      if (seenValues.has(option.value)) return;
+      seenValues.add(option.value);
+      opts.push(option);
+    };
+
+    for (const entry of allDungeonEntrances.value) {
+      if (!isTrackedSpawnDestination(entry.key, entry.type, settings)) {
+        continue;
+      }
+
+      const partner = getGameLinkPartner(entry.key);
+      if (partner) {
+        const partnerData = ENTRANCES_RAW[partner];
+        if (partnerData) {
+          addOption({
+            value: partner,
+            label: entranceOptionLabel(partner, partnerData),
+            game: entry.game,
+            pool: entry.pool,
+          });
+        }
+      } else {
+        addOption({
           value: entry.key,
           label: entry.optionLabel,
           game: entry.game,
           pool: entry.pool,
-        };
-      });
+        });
+      }
+
+      const exitKey = getExitKeyForEntrance(entry.key);
+      if (exitKey) {
+        addOption({
+          value: exitKey,
+          label: getExitEndpointLabel(exitKey),
+          game: entry.game,
+          pool: entry.pool,
+        });
+      }
+    }
+
+    return opts;
   });
 
   const sections = computed<EntrancePanelSection[]>(() => {

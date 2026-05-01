@@ -285,6 +285,13 @@ describe('useDungeonEntrances', () => {
     expect(
       options.some(
         (option) =>
+          option.value === 'OOT_LON_LON_RANCH_FROM_HOUSE' &&
+          option.label === 'Lon Lon Ranch from Lon Lon Ranch House',
+      ),
+    ).toBe(true);
+    expect(
+      options.some(
+        (option) =>
           option.value === 'OOT_WARP_SONG_LAKE' &&
           option.label === 'Lake Hylia',
       ),
@@ -324,6 +331,37 @@ describe('useDungeonEntrances', () => {
       ),
     ).toEqual({
       OOT_SPAWN_CHILD: 'OOT_KOKIRI_SHOP',
+    });
+  });
+
+  it('preserves raw spawn mappings when selecting an exit-side destination', () => {
+    const sessionStore = useOoTMMSessionStore();
+    useOoTMMUiStore();
+
+    sessionStore.trackerSettings = {
+      games: 'ootmm',
+      erSpawns: 'both',
+    };
+
+    const entrances = useDungeonEntrances();
+    entrances.setSelectedDestination(
+      'OOT_SPAWN_CHILD',
+      'OOT_LON_LON_RANCH_FROM_HOUSE',
+    );
+
+    expect(sessionStore.entranceOverrides['OOT_SPAWN_CHILD']).toBe(
+      'OOT_LON_LON_RANCH_FROM_HOUSE',
+    );
+    expect(entrances.getSelectedDestination('OOT_SPAWN_CHILD')).toBe(
+      'OOT_LON_LON_RANCH_FROM_HOUSE',
+    );
+    expect(
+      filterEntranceOverridesForSettings(
+        sessionStore.entranceOverrides,
+        sessionStore.trackerSettings,
+      ),
+    ).toEqual({
+      OOT_SPAWN_CHILD: 'OOT_HOUSE_LON_LON',
     });
   });
 
