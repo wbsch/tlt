@@ -1550,7 +1550,9 @@ export function getGridWheelOverlayStageForValue(
   const normalizedOverlay = resolveGridOverlayImageValue(overlayValue);
   const stageIndex = resolved.values.findIndex(
     (value, index) =>
-      value === overlayValue || resolved.overlays[index] === normalizedOverlay,
+      value === overlayValue ||
+      (normalizedOverlay !== null &&
+        resolved.overlays[index] === normalizedOverlay),
   );
   return stageIndex >= 0 ? stageIndex + 1 : 0;
 }

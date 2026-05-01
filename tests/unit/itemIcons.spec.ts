@@ -8,6 +8,7 @@ import {
   getGridItemAutoSelectItemId,
   getGridItemAutoSelectItemIds,
   getGridTextLabel,
+  getGridWheelOverlayStageForValue,
   getGridWheelOverlayValue,
 } from '@/../packs/ootmm/src/data/itemIcons';
 
@@ -70,5 +71,23 @@ describe('itemIcons grid text labels', () => {
     ).toBe('oot_firetemple_label');
     expect(getGridTextLabel('oot_firetemple_label')).toBe('Fire');
     expect(getGridTextLabel('free_label')).toBe('Free');
+  });
+
+  it('keeps distinct wheel stages for different reward text labels', () => {
+    expect(
+      getGridWheelOverlayStageForValue('OOT_MEDALLION_FOREST', 'free_label'),
+    ).toBe(1);
+    expect(
+      getGridWheelOverlayStageForValue(
+        'OOT_MEDALLION_FOREST',
+        'oot_foresttemple_label',
+      ),
+    ).toBe(5);
+    expect(
+      getGridWheelOverlayStageForValue(
+        'OOT_MEDALLION_FOREST',
+        'oot_shadowtemple_label',
+      ),
+    ).toBe(9);
   });
 });
