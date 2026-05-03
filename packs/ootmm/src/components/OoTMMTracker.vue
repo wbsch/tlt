@@ -1539,6 +1539,46 @@ function applyStartingItems(startingItems: Record<string, number>) {
   sessionStore.mergeInventoryCounts(nextById);
 }
 
+/**
+ * Builds a combined starting items map from the spoiler log's explicit
+ * Starting Items section plus any items found in the POCKET region of the
+ * Location List for the selected player's world.
+ */
+function buildCombinedStartingItems(
+  parsed: SpoilerLogData,
+  selectedPlayer?: number,
+): Record<string, number> {
+  const combined: Record<string, number> = { ...parsed.startingItems };
+
+  const targetWorld = selectedPlayer ?? 1;
+
+  for (const placement of parsed.locationPlacements) {
+    if (!placement.region) continue;
+
+    const normalizedRegion = normalizeName(
+      placement.region.replace(/^world\s+\d+\s+/i, ''),
+    );
+    if (normalizedRegion !== 'pocket') continue;
+
+    // In multiworld the world field is set; only take items for the selected player.
+    // In single-player the world field is undefined, and we always include them.
+    if (
+      placement.world !== undefined &&
+      !Number.isNaN(placement.world) &&
+      placement.world !== targetWorld
+    ) {
+      continue;
+    }
+
+    const itemName = placement.item;
+    if (!itemName) continue;
+
+    combined[itemName] = (combined[itemName] ?? 0) + 1;
+  }
+
+  return combined;
+}
+
 function getSpoilerSelectedPlayer(selectedPlayer?: number): number {
   return selectedPlayer ?? 1;
 }
@@ -1763,8 +1803,12 @@ async function applySpoilerLog(text: string, selectedPlayer?: number) {
     );
   }
 
-  if (Object.keys(parsed.startingItems).length > 0) {
-    applyStartingItems(parsed.startingItems);
+  const combinedStartingItems = buildCombinedStartingItems(
+    parsed,
+    selectedPlayer,
+  );
+  if (Object.keys(combinedStartingItems).length > 0) {
+    applyStartingItems(combinedStartingItems);
   }
 
   applySpoilerRewardAssignments(parsed, nextSettings, selectedPlayer);

@@ -64,4 +64,53 @@ World Flags
       values: ['Forest Temple'],
     });
   });
+
+  it('captures POCKET region location placements', () => {
+    const parsed = parseSpoilerLog(`Location List (2)
+  POCKET (2):
+    OOT Starting Ocarina: Ocarina
+    OOT Starting Sword: Kokiri Sword
+`);
+
+    const pocketPlacements = parsed.locationPlacements.filter(
+      (p) => p.region === 'POCKET',
+    );
+    expect(pocketPlacements).toHaveLength(2);
+    expect(pocketPlacements[0]).toMatchObject({
+      location: 'OOT Starting Ocarina',
+      item: 'Ocarina',
+      region: 'POCKET',
+    });
+    expect(pocketPlacements[1]).toMatchObject({
+      location: 'OOT Starting Sword',
+      item: 'Kokiri Sword',
+      region: 'POCKET',
+    });
+  });
+
+  it('captures POCKET region placements per world in multiworld', () => {
+    const parsed = parseSpoilerLog(`Settings
+  mode: multi
+  players: 2
+
+Location List (4)
+  World 1 (2)
+  POCKET (1):
+    OOT Starting Ocarina: Ocarina
+  World 2 (2)
+  POCKET (1):
+    OOT Starting Sword: Kokiri Sword
+`);
+
+    const world1Pocket = parsed.locationPlacements.filter(
+      (p) => p.region === 'POCKET' && p.world === 1,
+    );
+    const world2Pocket = parsed.locationPlacements.filter(
+      (p) => p.region === 'POCKET' && p.world === 2,
+    );
+    expect(world1Pocket).toHaveLength(1);
+    expect(world1Pocket[0].item).toBe('Ocarina');
+    expect(world2Pocket).toHaveLength(1);
+    expect(world2Pocket[0].item).toBe('Kokiri Sword');
+  });
 });
