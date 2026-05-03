@@ -1,7 +1,6 @@
 import { ref, watch, type Ref } from 'vue';
 import {
   translateAutotrackerItems,
-  applyDelta,
   type AutotrackerItem,
 } from './autotrackerMapping';
 
@@ -23,7 +22,7 @@ interface AutotrackerOptions {
   /** Effective item max counts from the tracker (setting-dependent). */
   itemMaxCounts: Ref<Map<string, number>>;
   /** Whether child wallets are enabled in the current tracker settings. */
-  childWalletsEnabled: Ref<boolean>;
+  childWalletsEnabled?: Ref<boolean>;
   /** Called when the autotracker has new inventory to apply. */
   onInventoryUpdate: (
     inventory: Record<string, number>,
@@ -294,21 +293,61 @@ function buildTrackerInventoryRecord(
   return record;
 }
 
+function applyRawAutotrackerItems(
+  currentState: Map<string, number>,
+  items: AutotrackerItem[],
+  diff: boolean,
+): Map<string, number> {
+  const next = new Map(currentState);
+
+  for (const { id, qty } of items) {
+    const nextQty = diff ? (next.get(id) ?? 0) + qty : qty;
+    if (nextQty > 0) {
+      next.set(id, nextQty);
+    } else {
+      next.delete(id);
+    }
+  }
+
+  return next;
+}
+
+function buildTranslatedAutotrackerState(
+  rawState: Map<string, number>,
+  availableItemIds: Set<string>,
+  itemMaxCounts: Map<string, number>,
+  childWalletsEnabled: boolean,
+): Map<string, number> {
+  const translated = translateAutotrackerItems(
+    Array.from(rawState, ([id, qty]) => ({ id, qty })),
+    availableItemIds,
+    itemMaxCounts,
+    { childWalletsEnabled },
+  );
+
+  return new Map(Object.entries(translated).filter(([, qty]) => qty > 0));
+}
+
 export function useAutotracker(options: AutotrackerOptions) {
   const status = ref<AutotrackerStatus>('disconnected');
   const enabled = ref(false);
   const url = ref(DEFAULT_URL);
   const lastError = ref<string | null>(null);
 
+  function childWalletsEnabled(): boolean {
+    return options.childWalletsEnabled?.value ?? false;
+  }
+
   let ws: WebSocket | null = null;
   let reconnectTimer: ReturnType<typeof setTimeout> | null = null;
   let reconnectAttempts = 0;
 
   // Canonical autotracker state (translated to tracker IDs)
+  let liveRawState = new Map<string, number>();
   let liveState = new Map<string, number>();
   let liveChecks = new Map<string, AutotrackerCheck>();
   // Buffer used during full-sync
-  let pendingFullState: Map<string, number> | null = null;
+  let pendingFullRawState: Map<string, number> | null = null;
   let pendingFullChecks: Map<string, AutotrackerCheck> | null = null;
   let isInFullSync = false;
 
@@ -369,7 +408,7 @@ export function useAutotracker(options: AutotrackerOptions) {
         status.value = 'connected';
         // Server will send a full sync automatically after handshake.
         // Prepare buffer.
-        pendingFullState = new Map();
+        pendingFullRawState = new Map();
         pendingFullChecks = new Map();
         isInFullSync = true;
         break;
@@ -400,44 +439,34 @@ export function useAutotracker(options: AutotrackerOptions) {
   }
 
   function processItemMessage(msg: ItemMessage) {
-    const translated = translateAutotrackerItems(
-      msg.items,
-      options.availableItemIds.value,
-      options.itemMaxCounts.value,
-      { childWalletsEnabled: options.childWalletsEnabled.value },
-    );
-
     if (isInFullSync && !msg.diff) {
-      // Full sync: set absolute values in the pending buffer
-      for (const [id, qty] of Object.entries(translated)) {
-        if (qty > 0) {
-          pendingFullState!.set(
-            id,
-            Math.max(pendingFullState!.get(id) ?? 0, qty),
-          );
-        }
-      }
-    } else if (msg.diff) {
-      // Live delta: apply additively to liveState
-      liveState = applyDelta(
-        liveState,
+      pendingFullRawState = applyRawAutotrackerItems(
+        pendingFullRawState ?? new Map<string, number>(),
         msg.items,
+        false,
+      );
+    } else if (msg.diff) {
+      // Rebuild translated state from raw values so non-linear mappings
+      // (bitmasks, progressive decompositions) resolve deltas correctly.
+      liveRawState = applyRawAutotrackerItems(liveRawState, msg.items, true);
+      liveState = buildTranslatedAutotrackerState(
+        liveRawState,
         options.availableItemIds.value,
         options.itemMaxCounts.value,
-        { childWalletsEnabled: options.childWalletsEnabled.value },
+        childWalletsEnabled(),
       );
       if (msg.refresh) {
         pushToTracker('live');
       }
     } else {
       // Non-diff, non-fullsync (shouldn't happen normally, but handle it)
-      for (const [id, qty] of Object.entries(translated)) {
-        if (qty > 0) {
-          liveState.set(id, qty);
-        } else {
-          liveState.delete(id);
-        }
-      }
+      liveRawState = applyRawAutotrackerItems(liveRawState, msg.items, false);
+      liveState = buildTranslatedAutotrackerState(
+        liveRawState,
+        options.availableItemIds.value,
+        options.itemMaxCounts.value,
+        childWalletsEnabled(),
+      );
       if (msg.refresh) {
         pushToTracker('live');
       }
@@ -487,11 +516,17 @@ export function useAutotracker(options: AutotrackerOptions) {
   }
 
   function processRefresh() {
-    if (isInFullSync && pendingFullState && pendingFullChecks) {
+    if (isInFullSync && pendingFullRawState && pendingFullChecks) {
       // Full sync is complete — adopt the buffered state as live
-      liveState = pendingFullState;
+      liveRawState = pendingFullRawState;
+      liveState = buildTranslatedAutotrackerState(
+        liveRawState,
+        options.availableItemIds.value,
+        options.itemMaxCounts.value,
+        childWalletsEnabled(),
+      );
       liveChecks = pendingFullChecks;
-      pendingFullState = null;
+      pendingFullRawState = null;
       pendingFullChecks = null;
       isInFullSync = false;
       pushToTracker('initial');
@@ -540,13 +575,14 @@ export function useAutotracker(options: AutotrackerOptions) {
       ws.close();
       ws = null;
     }
-    pendingFullState = null;
+    pendingFullRawState = null;
     pendingFullChecks = null;
     isInFullSync = false;
   }
 
   function disconnect() {
     cleanup();
+    liveRawState = new Map();
     liveState = new Map();
     liveChecks = new Map();
     status.value = 'disconnected';

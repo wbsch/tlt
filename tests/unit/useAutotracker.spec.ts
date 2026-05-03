@@ -363,4 +363,55 @@ describe('useAutotracker checks', () => {
       { OOT_BOMB_BAG: 1, OOT_BOW: 1 },
     ]);
   });
+
+  it('rebuilds adult trade bitmasks from raw deltas before translating', async () => {
+    const inventoryUpdates: Array<Record<string, number>> = [];
+    const availableItemIds = ref(
+      new Set<string>(['OOT_POCKET_EGG', 'OOT_ODD_POTION']),
+    );
+    const itemMaxCounts = ref(new Map<string, number>());
+
+    const autotracker = useAutotracker({
+      availableItemIds,
+      itemMaxCounts,
+      onInventoryUpdate: (inventory) => {
+        inventoryUpdates.push(inventory);
+      },
+    });
+
+    autotracker.enabled.value = true;
+    await nextTick();
+
+    const socket = FakeWebSocket.instances[0];
+    expect(socket).toBeDefined();
+
+    socket.emitOpen();
+    socket.emitMessage({
+      type: 'handshAck',
+      version: '0.1.0',
+      name: 'ootmm-autotracker',
+      refresh: true,
+    });
+    socket.emitMessage({
+      type: 'item',
+      diff: false,
+      refresh: false,
+      items: [{ id: 'OOT_ADULT_TRADE', qty: 17 }],
+    });
+    socket.emitMessage({
+      type: 'refresh',
+      refresh: true,
+    });
+    socket.emitMessage({
+      type: 'item',
+      diff: true,
+      refresh: true,
+      items: [{ id: 'OOT_ADULT_TRADE', qty: -1 }],
+    });
+
+    expect(inventoryUpdates).toEqual([
+      { OOT_ODD_POTION: 1, OOT_POCKET_EGG: 1 },
+      { OOT_ODD_POTION: 1 },
+    ]);
+  });
 });
