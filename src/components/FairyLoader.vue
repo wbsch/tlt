@@ -1,4 +1,10 @@
 <script setup lang="ts">
+import { withBasePath } from '@packs/ootmm/utils/assetPath';
+
+const fairySpriteStyle = {
+  backgroundImage: `url("${withBasePath('images/Fairy.png')}")`,
+};
+
 withDefaults(
   defineProps<{
     label?: string;
@@ -23,7 +29,7 @@ withDefaults(
       </span>
       <span class="tlt-fairy-loader__fairy">
         <span class="fairy-glow"></span>
-        <span class="fairy-sprite"></span>
+        <span class="fairy-sprite" :style="fairySpriteStyle"></span>
         <span class="fairy-spark fairy-spark-a"></span>
         <span class="fairy-spark fairy-spark-b"></span>
       </span>
@@ -147,7 +153,7 @@ withDefaults(
   width: calc(var(--loader-size) * 0.318);
   height: calc(var(--loader-size) * 0.272);
   transform: translate(-50%, -50%);
-  background: center / contain no-repeat url('/images/Fairy.png');
+  background: center / contain no-repeat;
   filter: hue-rotate(155deg) saturate(1.6) brightness(1.14)
     drop-shadow(0 0 4px rgba(186, 237, 255, 0.95))
     drop-shadow(0 0 10px rgba(84, 191, 255, 0.9));

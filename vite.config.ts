@@ -1,11 +1,27 @@
 import { defineConfig } from 'vite';
 import vue from '@vitejs/plugin-vue';
 import { fileURLToPath, URL } from 'url';
+import { createHash } from 'crypto';
 import { execSync } from 'child_process';
+import { existsSync, readFileSync, writeFileSync } from 'fs';
+import path from 'path';
 
+const projectRoot = fileURLToPath(new URL('.', import.meta.url));
 const ootmmCoreRoot = fileURLToPath(
   new URL('./OoTMM/packages/core/src', import.meta.url),
 );
+const publicImagesRoot = fileURLToPath(
+  new URL('./public/images', import.meta.url),
+);
+const publicImageExtensions = new Set([
+  '.avif',
+  '.gif',
+  '.jpg',
+  '.jpeg',
+  '.png',
+  '.svg',
+  '.webp',
+]);
 const ootmmCjsDeps = [
   '@ootmm/core/logic/index',
   '@ootmm/core/logic/pathfind',
@@ -19,6 +35,117 @@ const ootmmCjsDeps = [
   '@ootmm/core/settings/data',
 ];
 
+function isPublicImagePath(filePath: string): boolean {
+  return (
+    filePath.startsWith(publicImagesRoot) &&
+    publicImageExtensions.has(path.extname(filePath).toLowerCase())
+  );
+}
+
+function appendCurrentPublicImageVersion(url: string): string {
+  const publicImageMatch = /^(\/|\.\/)?(images\/.*)$/.exec(url);
+  if (!publicImageMatch) {
+    return url;
+  }
+
+  const prefix = publicImageMatch[1] ?? '';
+  const publicPath = publicImageMatch[2];
+  const hashIndex = publicPath.indexOf('#');
+  const hash = hashIndex >= 0 ? publicPath.slice(hashIndex) : '';
+  const urlWithoutHash =
+    hashIndex >= 0 ? publicPath.slice(0, hashIndex) : publicPath;
+  const queryIndex = urlWithoutHash.indexOf('?');
+  const pathname =
+    queryIndex >= 0 ? urlWithoutHash.slice(0, queryIndex) : urlWithoutHash;
+  const query = queryIndex >= 0 ? urlWithoutHash.slice(queryIndex) : '';
+  if (query && new URLSearchParams(query.slice(1)).has('v')) {
+    return url;
+  }
+
+  const filePath = fileURLToPath(
+    new URL(`./public/${pathname}`, import.meta.url),
+  );
+
+  if (!existsSync(filePath)) {
+    return url;
+  }
+
+  const version = createHash('sha256')
+    .update(readFileSync(filePath))
+    .digest('hex')
+    .slice(0, 12);
+
+  return `${prefix}${pathname}${query}${query ? '&' : '?'}v=${version}${hash}`;
+}
+
+function publicImageAssetVersionPlugin() {
+  return {
+    name: 'tlt-public-image-asset-versions',
+    configureServer(server) {
+      server.watcher.add(publicImagesRoot);
+      server.watcher.on('all', (_event, filePath) => {
+        if (!isPublicImagePath(filePath)) {
+          return;
+        }
+
+        try {
+          execSync('node scripts/generate_public_image_asset_versions.ts', {
+            cwd: projectRoot,
+            stdio: 'inherit',
+          });
+        } catch (error) {
+          console.warn(
+            'Failed to regenerate public image asset versions',
+            error,
+          );
+        }
+        server.ws.send({ type: 'full-reload' });
+      });
+    },
+    transformIndexHtml: {
+      order: 'post',
+      handler(html) {
+        return html.replace(
+          /(?:\/|\.\/)?images\/[^"'()\s]+/g,
+          appendCurrentPublicImageVersion,
+        );
+      },
+    },
+    generateBundle(_options, bundle) {
+      for (const asset of Object.values(bundle)) {
+        if (asset.type !== 'asset' || !asset.fileName.endsWith('.html')) {
+          continue;
+        }
+
+        const source =
+          typeof asset.source === 'string'
+            ? asset.source
+            : Buffer.from(asset.source).toString('utf8');
+        asset.source = source.replace(
+          /(?:\/|\.\/)?images\/[^"'()\s]+/g,
+          appendCurrentPublicImageVersion,
+        );
+      }
+    },
+    writeBundle(options) {
+      const outputDirectory = path.resolve(projectRoot, options.dir ?? 'dist');
+      const indexHtmlPath = path.join(outputDirectory, 'index.html');
+      if (!existsSync(indexHtmlPath)) {
+        return;
+      }
+
+      const html = readFileSync(indexHtmlPath, 'utf8');
+      const versionedHtml = html.replace(
+        /(?:\/|\.\/)?images\/[^"'()\s]+/g,
+        appendCurrentPublicImageVersion,
+      );
+      if (versionedHtml !== html) {
+        writeFileSync(indexHtmlPath, versionedHtml, 'utf8');
+      }
+    },
+  };
+}
+
 function readGitMetadata(
   command: string,
   fallback: string,
@@ -26,7 +153,7 @@ function readGitMetadata(
 ): string {
   try {
     const value = execSync(command, {
-      cwd: fileURLToPath(new URL('.', import.meta.url)),
+      cwd: projectRoot,
       encoding: 'utf8',
       stdio: ['ignore', 'pipe', 'ignore'],
     }).trim();
@@ -64,7 +191,7 @@ const ootmmVersionTag =
 export default defineConfig({
   // Use relative asset paths so built files work from any subfolder.
   base: './',
-  plugins: [vue()],
+  plugins: [publicImageAssetVersionPlugin(), vue()],
   resolve: {
     extensions: ['.ts', '.tsx', '.mjs', '.js', '.jsx', '.json'],
     alias: {

@@ -8,12 +8,13 @@
     "node": ">=24"
   },
   "scripts": {
-    "predev": "npm run generate:map-icons && npm run generate:map-schema",
-    "prebuild": "npm run generate:map-icons && npm run generate:map-schema",
+    "predev": "npm run generate:asset-versions && npm run generate:map-icons && npm run generate:map-schema",
+    "prebuild": "npm run generate:asset-versions && npm run generate:map-icons && npm run generate:map-schema",
     "dev": "vite",
     "build": "vite build && python3 scripts/check_map_locations.py --build-warning-mode",
     "build:check": "vite build",
     "preview": "vite preview",
+    "generate:asset-versions": "node scripts/generate_public_image_asset_versions.ts",
     "generate:map-icons": "node scripts/generate_map_icon_index.ts",
     "generate:map-schema": "node scripts/generate_map_schema.ts",
     "lint": "eslint .",

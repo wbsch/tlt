@@ -6,6 +6,7 @@ import { useSyncStatusStore } from './stores/syncStatus';
 import { IMPRESSUM_HTML } from './content/impressum';
 import FairyLoader from './components/FairyLoader.vue';
 import TrackerFaqModal from './components/TrackerFaqModal.vue';
+import { withBasePath } from '@packs/ootmm/utils/assetPath';
 import {
   buildShareUrl,
   collectPersistedStateFromLocalStorage,
@@ -35,6 +36,8 @@ let shareStatusTimeoutId: number | null = null;
 const buildCommitDate = __TLT_BUILD_COMMIT_DATE__;
 const buildCommitHash = __TLT_BUILD_COMMIT_HASH__;
 const ootmmVersionTag = __TLT_OOTMM_VERSION_TAG__;
+const appLogoSrc = withBasePath('images/logo_last_tracker.png');
+const infoModalLogoSrc = withBasePath('images/thelasttracker.avif');
 
 const packComponents: Record<
   string,
@@ -282,11 +285,7 @@ onBeforeUnmount(() => {
   <div class="app-container">
     <header class="app-header">
       <div class="app-brand" @click="openInfoModal">
-        <img
-          src="/images/logo_last_tracker.png"
-          alt="The Last Tracker logo"
-          class="app-logo"
-        />
+        <img :src="appLogoSrc" alt="The Last Tracker logo" class="app-logo" />
         <div class="app-brand-title">
           <h1>The Last Tracker</h1>
           <button
@@ -511,7 +510,7 @@ onBeforeUnmount(() => {
       >
         <div class="info-modal-header">
           <img
-            src="/images/thelasttracker.avif"
+            :src="infoModalLogoSrc"
             alt="The Last Tracker logo"
             class="info-modal-logo"
           />
