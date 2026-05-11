@@ -32,10 +32,9 @@ All settings that were available in the randomizer's code on March 15, 2026 (Ver
 
 - No Entrance Polarity
 - Decoupled Entrances
+- Boss Entrance Shuffle
 - Overworld Shuffle (Major Regions Shuffle already supported!)
-- Spawn Shuffle
 - Wallmaster Shuffle
-- Warp Songs and Soaring Spots Shuffle
 - One-Ways Shuffle
 
 There are a few settings the tracker does not represent because they are not relevant for tracking (e.g., OoT Shields). Nevertheless, The Last Tracker can be used for all options within those settings -

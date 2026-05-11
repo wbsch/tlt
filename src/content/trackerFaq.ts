@@ -239,10 +239,9 @@ export const TRACKER_FAQ_SECTIONS: TrackerFaqSection[] = [
             items: [
               'No Entrance Polarity',
               'Decoupled Entrances',
+              'Boss Entrance Shuffle',
               'Overworld Shuffle (Major Regions Shuffle already supported!)',
-              'Spawn Shuffle',
               'Wallmaster Shuffle',
-              'Warp Songs and Soaring Spots Shuffle',
               'One-Ways Shuffle',
             ],
           },
