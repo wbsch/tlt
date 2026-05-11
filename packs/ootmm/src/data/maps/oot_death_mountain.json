@@ -491,7 +491,10 @@
     {
       "coords": [818, 190],
       "image": "warp_spot",
-      "codes": "TODO KF 067 :: unnamed_stack > Death Mountain > Death Mountain Layers > Death Mountain Entrances :: Pasted Layer #66 :: 001-001-013-001.png"
+      "type": "submenu",
+      "entranceMenu": {
+        "entranceIds": ["OOT_WARP_SONG_CRATER"]
+      }
     },
     {
       "coords": [813, 371],

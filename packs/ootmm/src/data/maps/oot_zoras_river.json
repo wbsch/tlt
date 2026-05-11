@@ -754,7 +754,10 @@
     {
       "coords": [169, 500],
       "image": "warp_spot",
-      "codes": "TODO KF 083 :: unnamed_stack > River > River Layers > River Entrances :: Pasted Layer #82 :: 001-001-015-003.png"
+      "type": "submenu",
+      "entranceMenu": {
+        "entranceIds": ["OOT_WARP_SONG_LAKE"]
+      }
     },
     {
       "coords": [284, 336],

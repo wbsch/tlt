@@ -1037,7 +1037,10 @@
     {
       "coords": [49, 416],
       "image": "warp_spot",
-      "codes": "TODO KF 082 :: unnamed_stack > Desert > Desert Layers > Desert Entrances :: Pasted Layer #81 :: 001-001-014-020.png"
+      "type": "submenu",
+      "entranceMenu": {
+        "entranceIds": ["OOT_WARP_SONG_DESERT"]
+      }
     },
     {
       "coords": [24, 482],

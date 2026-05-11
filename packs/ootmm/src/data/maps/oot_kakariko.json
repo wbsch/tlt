@@ -900,7 +900,10 @@
     {
       "coords": [825, 509],
       "image": "warp_spot",
-      "codes": "TODO KF 084 :: unnamed_stack > Kakariko > Kakariko Layers > Kakariko Entrances :: Pasted Layer #64 :: 001-001-013-018.png"
+      "type": "submenu",
+      "entranceMenu": {
+        "entranceIds": ["OOT_WARP_SONG_GRAVE"]
+      }
     },
     {
       "coords": [984, 509],

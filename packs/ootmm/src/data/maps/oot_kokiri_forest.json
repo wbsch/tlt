@@ -764,7 +764,10 @@
     {
       "coords": [341, 79],
       "image": "warp_spot",
-      "codes": "TODO KF 086 :: unnamed_stack > Forest > Forest Layers > Forest Entrances :: Pasted Layer #85 :: 001-001-014-011.png"
+      "type": "submenu",
+      "entranceMenu": {
+        "entranceIds": ["OOT_WARP_SONG_MEADOW"]
+      }
     },
     {
       "coords": [341, 42],

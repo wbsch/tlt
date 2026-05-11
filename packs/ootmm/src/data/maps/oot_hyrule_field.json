@@ -1193,6 +1193,14 @@
       }
     },
     {
+      "coords": [601, 336],
+      "image": "warp_spot",
+      "type": "submenu",
+      "entranceMenu": {
+        "entranceIds": ["OOT_WARP_SONG_TEMPLE"]
+      }
+    },
+    {
       "coords": [725, 378],
       "image": "bomb_grotto",
       "type": "submenu",
