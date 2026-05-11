@@ -32,9 +32,9 @@ dist-ssr
 /reports
 
 /public/debug.html
-/public/WebSocket_Schnittstelle.txt
-/public/ootmm-autotracker-darwin-amd64
-/public/ootmm-autotracker-darwin-arm64
-/public/ootmm-autotracker-linux-amd64
-/public/ootmm-autotracker-windows-amd64.exe
-/public/pj64_adapter.lua
+/public/autotracker/WebSocket_Schnittstelle.txt
+/public/autotracker/ootmm-autotracker-darwin-amd64
+/public/autotracker/ootmm-autotracker-darwin-arm64
+/public/autotracker/ootmm-autotracker-linux-amd64
+/public/autotracker/ootmm-autotracker-windows-amd64.exe
+/public/autotracker/pj64_adapter.lua
