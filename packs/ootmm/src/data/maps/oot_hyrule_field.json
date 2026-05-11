@@ -1201,6 +1201,14 @@
       }
     },
     {
+      "coords": [611, 336],
+      "image": "spawn",
+      "type": "submenu",
+      "entranceMenu": {
+        "entranceIds": ["OOT_SPAWN_ADULT"]
+      }
+    },
+    {
       "coords": [725, 378],
       "image": "bomb_grotto",
       "type": "submenu",

@@ -64,6 +64,7 @@ export const MAP_ICON_INDEX = [
   'soft_soil',
   'song',
   'song_grotto',
+  'spawn',
   'spirit_medallion',
   'stray_fairy',
   'tree',

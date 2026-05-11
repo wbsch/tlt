@@ -566,6 +566,14 @@
       }
     },
     {
+      "coords": [573, 509],
+      "image": "spawn",
+      "type": "submenu",
+      "entranceMenu": {
+        "entranceIds": ["OOT_SPAWN_CHILD"]
+      }
+    },
+    {
       "coords": [615, 464],
       "image": "interior_entrance",
       "type": "submenu",
