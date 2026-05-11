@@ -55,9 +55,25 @@
       "codes": ["MM Stone Tower Owl Statue"]
     },
     {
+      "coords": [636, 252],
+      "image": "owl_warp",
+      "type": "submenu",
+      "entranceMenu": {
+        "entranceIds": ["MM_WARP_OWL_STONE_TOWER"]
+      }
+    },
+    {
       "coords": [340, 412],
       "image": "owl_statue",
       "codes": ["MM Ikana Canyon Owl Statue"]
+    },
+    {
+      "coords": [351, 401],
+      "image": "owl_warp",
+      "type": "submenu",
+      "entranceMenu": {
+        "entranceIds": ["MM_WARP_OWL_IKANA_CANYON"]
+      }
     },
     {
       "coords": [976, 576],

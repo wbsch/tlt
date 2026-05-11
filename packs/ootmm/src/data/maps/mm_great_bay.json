@@ -77,9 +77,25 @@
       "codes": ["MM Great Bay Coast Owl Statue"]
     },
     {
+      "coords": [606, 282],
+      "image": "owl_warp",
+      "type": "submenu",
+      "entranceMenu": {
+        "entranceIds": ["MM_WARP_OWL_GREAT_BAY"]
+      }
+    },
+    {
       "coords": [382, 460],
       "image": "owl_statue",
       "codes": ["MM Zora Cape Owl Statue"]
+    },
+    {
+      "coords": [382, 444],
+      "image": "owl_warp",
+      "type": "submenu",
+      "entranceMenu": {
+        "entranceIds": ["MM_WARP_OWL_ZORA_CAPE"]
+      }
     },
     {
       "coords": [261, 108],

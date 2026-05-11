@@ -47,6 +47,7 @@ export const MAP_ICON_INDEX = [
   'odolwas_remain',
   'overworld_entrance',
   'owl_statue',
+  'owl_warp',
   'pot',
   'red_boulder',
   'red_boulder_entrance',

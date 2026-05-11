@@ -146,9 +146,25 @@
       "codes": ["MM Milk Road Owl Statue"]
     },
     {
+      "coords": [182, 545],
+      "image": "owl_warp",
+      "type": "submenu",
+      "entranceMenu": {
+        "entranceIds": ["MM_WARP_OWL_MILK_ROAD"]
+      }
+    },
+    {
       "coords": [218, 196],
       "image": "owl_statue",
       "codes": ["MM Clock Town Owl Statue"]
+    },
+    {
+      "coords": [203, 196],
+      "image": "owl_warp",
+      "type": "submenu",
+      "entranceMenu": {
+        "entranceIds": ["MM_WARP_OWL_CLOCK_TOWN"]
+      }
     },
     {
       "coords": [963, 141],

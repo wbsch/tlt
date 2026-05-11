@@ -101,9 +101,25 @@
       "codes": ["MM Mountain Village Owl Statue"]
     },
     {
+      "coords": [357, 472],
+      "image": "owl_warp",
+      "type": "submenu",
+      "entranceMenu": {
+        "entranceIds": ["MM_WARP_OWL_MOUNTAIN_VILLAGE"]
+      }
+    },
+    {
       "coords": [52, 405],
       "image": "owl_statue",
       "codes": ["MM Snowhead Owl Statue"]
+    },
+    {
+      "coords": [38, 405],
+      "image": "owl_warp",
+      "type": "submenu",
+      "entranceMenu": {
+        "entranceIds": ["MM_WARP_OWL_SNOWHEAD"]
+      }
     },
     {
       "coords": [372, 504],

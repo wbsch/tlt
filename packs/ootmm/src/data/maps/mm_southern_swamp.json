@@ -73,9 +73,25 @@
       "codes": ["MM Woodfall Owl Statue"]
     },
     {
+      "coords": [842, 516],
+      "image": "owl_warp",
+      "type": "submenu",
+      "entranceMenu": {
+        "entranceIds": ["MM_WARP_OWL_WOODFALL"]
+      }
+    },
+    {
       "coords": [406, 92],
       "image": "owl_statue",
       "codes": ["MM Southern Swamp Owl Statue"]
+    },
+    {
+      "coords": [419, 106],
+      "image": "owl_warp",
+      "type": "submenu",
+      "entranceMenu": {
+        "entranceIds": ["MM_WARP_OWL_SOUTHERN_SWAMP"]
+      }
     },
     {
       "coords": [718, 127],
