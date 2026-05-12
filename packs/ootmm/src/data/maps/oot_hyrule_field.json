@@ -351,7 +351,7 @@
     {
       "coords": [637, 210],
       "image": "red_boulder",
-      "codes": "OOT Hyrule Field Red Boulder 4"
+      "codes": "OOT Hyrule Field Red Boulder 1"
     },
     {
       "coords": [647, 210],
@@ -393,14 +393,14 @@
       "coords": [640, 257],
       "image": "red_boulder",
       "codes": [
-        "OOT Hyrule Field Red Boulder 1",
-        "OOT Hyrule Field Red Boulder 2"
+        "OOT Hyrule Field Red Boulder 2",
+        "OOT Hyrule Field Red Boulder 3"
       ]
     },
     {
       "coords": [682, 247],
       "image": "red_boulder",
-      "codes": "OOT Hyrule Field Red Boulder 3"
+      "codes": "OOT Hyrule Field Red Boulder 4"
     },
     {
       "coords": [415, 183],

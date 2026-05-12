@@ -304,7 +304,7 @@
       "coords": [853, 472],
       "image": "red_boulder",
       "overlays": ["adult"],
-      "codes": ["OOT Gerudo Valley Red Boulder After Bridge 1"]
+      "codes": ["OOT Gerudo Valley Red Boulder After Bridge 2"]
     },
     {
       "coords": [840, 484],
@@ -321,7 +321,7 @@
       "coords": [812, 440],
       "image": "red_boulder",
       "overlays": ["adult"],
-      "codes": ["OOT Gerudo Valley Red Boulder After Bridge 2"]
+      "codes": ["OOT Gerudo Valley Red Boulder After Bridge 1"]
     },
     {
       "coords": [972, 472],

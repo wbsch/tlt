@@ -256,7 +256,7 @@
       "coords": [21, 391],
       "image": "red_boulder",
       "overlays": ["adult"],
-      "codes": ["OOT Death Mountain Trail Red Boulder Lower 3"]
+      "codes": ["OOT Death Mountain Trail Red Boulder Lower 5"]
     },
     {
       "coords": [45, 377],
@@ -268,13 +268,13 @@
       "coords": [62, 335],
       "image": "red_boulder",
       "overlays": ["adult"],
-      "codes": ["OOT Death Mountain Trail Red Boulder Lower 4"]
+      "codes": ["OOT Death Mountain Trail Red Boulder Lower 3"]
     },
     {
       "coords": [62, 351],
       "image": "red_boulder",
       "overlays": ["adult"],
-      "codes": ["OOT Death Mountain Trail Red Boulder Lower 5"]
+      "codes": ["OOT Death Mountain Trail Red Boulder Lower 4"]
     },
     {
       "coords": [78, 296],
