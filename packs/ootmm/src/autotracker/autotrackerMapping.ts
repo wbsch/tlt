@@ -715,6 +715,28 @@ function translateWalletQty(
   };
 }
 
+function normalizeSharedHookshotQty(
+  state: Record<string, number>,
+  items: AutotrackerItem[],
+  availableItemIds: Set<string>,
+  itemMaxCounts: Map<string, number>,
+) {
+  if (!availableItemIds.has('SHARED_HOOKSHOT')) return;
+
+  const ootHookshotItem = items.find((item) => item.id === 'OOT_HOOKSHOT');
+  if (!ootHookshotItem) return;
+
+  const maxCount = getItemMaxCount('SHARED_HOOKSHOT', itemMaxCounts);
+  const normalizedQty = Math.max(0, Math.min(maxCount, ootHookshotItem.qty));
+
+  if (normalizedQty > 0) {
+    state.SHARED_HOOKSHOT = normalizedQty;
+    return;
+  }
+
+  delete state.SHARED_HOOKSHOT;
+}
+
 /**
  * Translate a batch of autotracker items into tracker inventory entries.
  * For diff=false (full sync), qty is absolute.
@@ -800,6 +822,8 @@ export function translateAutotrackerItems(
     // Direct pass-through (same ID or close enough)
     set(id, qty);
   }
+
+  normalizeSharedHookshotQty(result, items, availableItemIds, itemMaxCounts);
 
   deriveAutotrackerOnlyItems(result, availableItemIds, itemMaxCounts);
 

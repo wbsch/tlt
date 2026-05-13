@@ -236,6 +236,32 @@ describe('autotracker composite item inference', () => {
     expect(translated.SHARED_BOMBCHU_BAG).toBe(1);
   });
 
+  it('uses the OOT hookshot stage for shared hookshot translation', () => {
+    const translated = translateAutotrackerItems(
+      [
+        { id: 'OOT_HOOKSHOT', qty: 1 },
+        { id: 'MM_HOOKSHOT', qty: 2 },
+      ],
+      makeAvailableItemIds(['SHARED_HOOKSHOT']),
+      makeItemMaxCounts({ SHARED_HOOKSHOT: 2 }),
+    );
+
+    expect(translated.SHARED_HOOKSHOT).toBe(1);
+  });
+
+  it('reaches the second shared hookshot stage from the OOT longshot state', () => {
+    const translated = translateAutotrackerItems(
+      [
+        { id: 'OOT_HOOKSHOT', qty: 2 },
+        { id: 'MM_HOOKSHOT', qty: 2 },
+      ],
+      makeAvailableItemIds(['SHARED_HOOKSHOT']),
+      makeItemMaxCounts({ SHARED_HOOKSHOT: 2 }),
+    );
+
+    expect(translated.SHARED_HOOKSHOT).toBe(2);
+  });
+
   it('applies derived items after additive deltas', () => {
     const availableItemIds = makeAvailableItemIds([
       'MM_KEY_RING_WF',
