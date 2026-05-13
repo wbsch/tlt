@@ -247,8 +247,14 @@
         "OOT Hyrule Castle Wonder Item Moat 04",
         "OOT Hyrule Castle Wonder Item Moat 05",
         "OOT Hyrule Castle Wonder Item Moat 06",
+        "OOT Hyrule Castle Wonder Item Moat 08"
+      ]
+    },
+    {
+      "coords": [429, 84],
+      "image": "wonder_item_green_rupee",
+      "codes": [
         "OOT Hyrule Castle Wonder Item Moat 07",
-        "OOT Hyrule Castle Wonder Item Moat 08",
         "OOT Hyrule Castle Wonder Item Moat 09"
       ]
     },

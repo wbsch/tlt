@@ -319,17 +319,17 @@
     {
       "coords": [345, 304],
       "image": "wonder_item_green_rupee",
-      "codes": "OOT Sacred Meadow Wonder Item Maze 1"
+      "codes": "OOT Sacred Meadow Wonder Item Maze 2"
     },
     {
       "coords": [328, 297],
       "image": "wonder_item_green_rupee",
-      "codes": "OOT Sacred Meadow Wonder Item Maze 2"
+      "codes": "OOT Sacred Meadow Wonder Item Maze 1"
     },
     {
       "coords": [345, 286],
       "image": "wonder_item_blue_rupee",
-      "codes": "OOT Sacred Meadow Wonder Item Maze 3"
+      "codes": "OOT Sacred Meadow Wonder Item Maze 5"
     },
     {
       "coords": [328, 237],
@@ -339,7 +339,7 @@
     {
       "coords": [357, 239],
       "image": "wonder_item_green_rupee",
-      "codes": "OOT Sacred Meadow Wonder Item Maze 5"
+      "codes": "OOT Sacred Meadow Wonder Item Maze 3"
     },
     {
       "coords": [531, 550],

@@ -142,18 +142,18 @@
       "coords": [377, 228],
       "image": "pot",
       "codes": [
-        "OOT Forest Temple Pot Main Room 4",
-        "OOT Forest Temple Pot Main Room 5",
-        "OOT Forest Temple Pot Main Room 6"
+        "OOT Forest Temple Pot Main Room 1",
+        "OOT Forest Temple Pot Main Room 3",
+        "OOT Forest Temple Pot Main Room 5"
       ]
     },
     {
       "coords": [326, 228],
       "image": "pot",
       "codes": [
-        "OOT Forest Temple Pot Main Room 1",
         "OOT Forest Temple Pot Main Room 2",
-        "OOT Forest Temple Pot Main Room 3"
+        "OOT Forest Temple Pot Main Room 4",
+        "OOT Forest Temple Pot Main Room 6"
       ]
     },
     {
