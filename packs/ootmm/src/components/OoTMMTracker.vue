@@ -1088,6 +1088,7 @@ function handleMapSelectorInput() {
 
 function handleMapSelectorOptionClick(mapDef: MapDef) {
   selectMapFromSelector(mapDef);
+  mapSelectorInputRef.value?.blur();
 }
 
 function handleMapSelectorKeydown(event: KeyboardEvent) {
@@ -1138,7 +1139,11 @@ function handleMapSelectorKeydown(event: KeyboardEvent) {
 
   if (event.key === 'Escape') {
     event.preventDefault();
+    const shouldBlur = isMapSelectorOpen.value || hasMapSelectorUserInput.value;
     closeMapSelector();
+    if (shouldBlur) {
+      mapSelectorInputRef.value?.blur();
+    }
   }
 }
 
