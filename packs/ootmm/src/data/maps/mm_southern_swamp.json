@@ -222,18 +222,18 @@
       "coords": [604, 428],
       "image": "green_rupee",
       "codes": [
-        "MM Deku Palace Rupee Right 10",
-        "MM Deku Palace Rupee Right 11",
-        "MM Deku Palace Rupee Right 12",
-        "MM Deku Palace Rupee Right 13"
+        "MM Deku Palace Rupee Right 03",
+        "MM Deku Palace Rupee Right 04",
+        "MM Deku Palace Rupee Right 05",
+        "MM Deku Palace Rupee Right 06"
       ]
     },
     {
       "coords": [574, 430],
       "image": "green_rupee",
       "codes": [
-        "MM Deku Palace Rupee Right 08",
-        "MM Deku Palace Rupee Right 09"
+        "MM Deku Palace Rupee Right 01",
+        "MM Deku Palace Rupee Right 02"
       ]
     },
     {
@@ -252,12 +252,12 @@
       "coords": [552, 446],
       "image": "green_rupee",
       "codes": [
-        "MM Deku Palace Rupee Right 01",
-        "MM Deku Palace Rupee Right 02",
-        "MM Deku Palace Rupee Right 03",
-        "MM Deku Palace Rupee Right 04",
-        "MM Deku Palace Rupee Right 05",
-        "MM Deku Palace Rupee Right 06"
+        "MM Deku Palace Rupee Right 08",
+        "MM Deku Palace Rupee Right 09",
+        "MM Deku Palace Rupee Right 10",
+        "MM Deku Palace Rupee Right 11",
+        "MM Deku Palace Rupee Right 12",
+        "MM Deku Palace Rupee Right 13"
       ]
     },
     {
@@ -290,18 +290,18 @@
       "coords": [476, 459],
       "image": "green_rupee",
       "codes": [
-        "MM Deku Palace Rupee Left 1",
-        "MM Deku Palace Rupee Left 2",
-        "MM Deku Palace Rupee Left 3"
+        "MM Deku Palace Rupee Left 5",
+        "MM Deku Palace Rupee Left 6",
+        "MM Deku Palace Rupee Left 7"
       ]
     },
     {
       "coords": [442, 488],
       "image": "green_rupee",
       "codes": [
-        "MM Deku Palace Rupee Left 5",
-        "MM Deku Palace Rupee Left 6",
-        "MM Deku Palace Rupee Left 7"
+        "MM Deku Palace Rupee Left 1",
+        "MM Deku Palace Rupee Left 2",
+        "MM Deku Palace Rupee Left 3"
       ]
     },
     {

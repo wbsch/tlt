@@ -146,26 +146,26 @@
       "coords": [577, 278],
       "image": "pot",
       "codes": [
-        "MM Great Bay Coast Pot 01",
-        "MM Great Bay Coast Pot 02",
-        "MM Great Bay Coast Pot 03",
-        "MM Great Bay Coast Pot 04"
+        "MM Great Bay Coast Pot 05",
+        "MM Great Bay Coast Pot 06",
+        "MM Great Bay Coast Pot 07",
+        "MM Great Bay Coast Pot 12"
       ]
     },
     {
       "coords": [610, 181],
       "image": "pot",
-      "codes": ["MM Great Bay Coast Pot 05", "MM Great Bay Coast Pot 06"]
+      "codes": ["MM Great Bay Coast Pot 02", "MM Great Bay Coast Pot 09"]
     },
     {
       "coords": [641, 78],
       "image": "pot",
-      "codes": ["MM Great Bay Coast Pot 11", "MM Great Bay Coast Pot 12"]
+      "codes": ["MM Great Bay Coast Pot 08", "MM Great Bay Coast Pot 01"]
     },
     {
       "coords": [729, 116],
       "image": "pot",
-      "codes": ["MM Great Bay Coast Pot 09", "MM Great Bay Coast Pot 10"]
+      "codes": ["MM Great Bay Coast Pot 03", "MM Great Bay Coast Pot 10"]
     },
     {
       "coords": [750, 143],
@@ -175,7 +175,7 @@
     {
       "coords": [732, 158],
       "image": "pot",
-      "codes": ["MM Great Bay Coast Pot 08"]
+      "codes": ["MM Great Bay Coast Pot 04"]
     },
     {
       "coords": [748, 159],
@@ -185,7 +185,7 @@
     {
       "coords": [738, 181],
       "image": "pot",
-      "codes": ["MM Great Bay Coast Pot 07"]
+      "codes": ["MM Great Bay Coast Pot 11"]
     },
     {
       "coords": [752, 175],

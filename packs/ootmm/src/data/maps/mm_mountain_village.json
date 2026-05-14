@@ -139,20 +139,20 @@
       "coords": [838, 116],
       "image": "pot",
       "codes": [
-        "MM Goron Shrine Pot 01",
-        "MM Goron Shrine Pot 02",
         "MM Goron Shrine Pot 03",
-        "MM Goron Shrine Pot 04"
+        "MM Goron Shrine Pot 04",
+        "MM Goron Shrine Pot 05",
+        "MM Goron Shrine Pot 08"
       ]
     },
     {
       "coords": [719, 83],
       "image": "pot",
       "codes": [
-        "MM Goron Shrine Pot 05",
+        "MM Goron Shrine Pot 01",
+        "MM Goron Shrine Pot 02",
         "MM Goron Shrine Pot 06",
-        "MM Goron Shrine Pot 07",
-        "MM Goron Shrine Pot 08"
+        "MM Goron Shrine Pot 07"
       ]
     },
     {
@@ -563,7 +563,7 @@
       "coords": [902, 450],
       "image": "big_snowball",
       "overlays": ["cursed_state"],
-      "codes": ["MM Twin Islands Big Snowball 07"]
+      "codes": ["MM Twin Islands Big Snowball 12"]
     },
     {
       "coords": [875, 450],
@@ -599,7 +599,7 @@
       "coords": [870, 504],
       "image": "big_snowball",
       "overlays": ["cursed_state"],
-      "codes": ["MM Twin Islands Big Snowball 12"]
+      "codes": ["MM Twin Islands Big Snowball 07"]
     },
     {
       "coords": [808, 482],
@@ -627,31 +627,31 @@
       "coords": [534, 272],
       "image": "big_snowball",
       "overlays": ["cursed_state"],
-      "codes": ["MM Goron Village Big Snowball 7"]
+      "codes": ["MM Goron Village Big Snowball 2"]
     },
     {
       "coords": [552, 268],
       "image": "small_snowball",
       "overlays": ["cursed_state"],
-      "codes": ["MM Goron Village Small Snowball 09"]
+      "codes": ["MM Goron Village Small Snowball 08"]
     },
     {
       "coords": [574, 261],
       "image": "big_snowball",
       "overlays": ["cursed_state"],
-      "codes": ["MM Goron Village Big Snowball 6"]
+      "codes": ["MM Goron Village Big Snowball 7"]
     },
     {
       "coords": [597, 270],
       "image": "big_snowball",
       "overlays": ["cursed_state"],
-      "codes": ["MM Goron Village Big Snowball 5"]
+      "codes": ["MM Goron Village Big Snowball 9"]
     },
     {
       "coords": [614, 252],
       "image": "small_snowball",
       "overlays": ["cursed_state"],
-      "codes": ["MM Goron Village Small Snowball 08"]
+      "codes": ["MM Goron Village Small Snowball 06"]
     },
     {
       "coords": [634, 268],
@@ -663,85 +663,85 @@
       "coords": [667, 284],
       "image": "small_snowball",
       "overlays": ["cursed_state"],
-      "codes": ["MM Goron Village Small Snowball 07"]
+      "codes": ["MM Goron Village Small Snowball 04"]
     },
     {
       "coords": [682, 320],
       "image": "small_snowball",
       "overlays": ["cursed_state"],
-      "codes": ["MM Goron Village Small Snowball 06"]
+      "codes": ["MM Goron Village Small Snowball 11"]
     },
     {
       "coords": [670, 348],
       "image": "big_snowball",
       "overlays": ["cursed_state"],
-      "codes": ["MM Goron Village Big Snowball 3"]
+      "codes": ["MM Goron Village Big Snowball 1"]
     },
     {
       "coords": [654, 349],
       "image": "small_snowball",
       "overlays": ["cursed_state"],
-      "codes": ["MM Goron Village Small Snowball 05"]
+      "codes": ["MM Goron Village Small Snowball 09"]
     },
     {
       "coords": [600, 318],
       "image": "small_snowball",
       "overlays": ["cursed_state"],
-      "codes": ["MM Goron Village Small Snowball 04"]
+      "codes": ["MM Goron Village Small Snowball 01"]
     },
     {
       "coords": [606, 336],
       "image": "small_snowball",
       "overlays": ["cursed_state"],
-      "codes": ["MM Goron Village Small Snowball 03"]
+      "codes": ["MM Goron Village Small Snowball 12"]
     },
     {
       "coords": [606, 364],
       "image": "big_snowball",
       "overlays": ["cursed_state"],
-      "codes": ["MM Goron Village Big Snowball 2"]
+      "codes": ["MM Goron Village Big Snowball 6"]
     },
     {
       "coords": [601, 380],
       "image": "small_snowball",
       "overlays": ["cursed_state"],
-      "codes": ["MM Goron Village Small Snowball 02"]
+      "codes": ["MM Goron Village Small Snowball 07"]
     },
     {
       "coords": [580, 386],
       "image": "small_snowball",
       "overlays": ["cursed_state"],
-      "codes": ["MM Goron Village Small Snowball 01"]
+      "codes": ["MM Goron Village Small Snowball 05"]
     },
     {
       "coords": [572, 370],
       "image": "big_snowball",
       "overlays": ["cursed_state"],
-      "codes": ["MM Goron Village Big Snowball 1"]
+      "codes": ["MM Goron Village Big Snowball 8"]
     },
     {
       "coords": [530, 365],
       "image": "big_snowball",
       "overlays": ["cursed_state"],
-      "codes": ["MM Goron Village Big Snowball 9"]
+      "codes": ["MM Goron Village Big Snowball 3"]
     },
     {
       "coords": [523, 343],
       "image": "small_snowball",
       "overlays": ["cursed_state"],
-      "codes": ["MM Goron Village Small Snowball 12"]
+      "codes": ["MM Goron Village Small Snowball 03"]
     },
     {
       "coords": [518, 311],
       "image": "small_snowball",
       "overlays": ["cursed_state"],
-      "codes": ["MM Goron Village Small Snowball 11"]
+      "codes": ["MM Goron Village Small Snowball 02"]
     },
     {
       "coords": [502, 322],
       "image": "big_snowball",
       "overlays": ["cursed_state"],
-      "codes": ["MM Goron Village Big Snowball 8"]
+      "codes": ["MM Goron Village Big Snowball 5"]
     },
     {
       "coords": [464, 496],
@@ -753,7 +753,7 @@
       "coords": [444, 487],
       "image": "small_snowball",
       "overlays": ["cursed_state"],
-      "codes": ["MM Mountain Village Small Snowball Winter 4"]
+      "codes": ["MM Mountain Village Small Snowball Winter 3"]
     },
     {
       "coords": [436, 508],
@@ -765,7 +765,7 @@
       "coords": [407, 508],
       "image": "small_snowball",
       "overlays": ["cursed_state"],
-      "codes": ["MM Mountain Village Small Snowball Winter 3"]
+      "codes": ["MM Mountain Village Small Snowball Winter 2"]
     },
     {
       "coords": [396, 455],
@@ -773,7 +773,7 @@
       "overlays": ["cursed_state"],
       "codes": [
         "MM Mountain Village Small Snowball Winter 1",
-        "MM Mountain Village Small Snowball Winter 2"
+        "MM Mountain Village Small Snowball Winter 4"
       ]
     },
     {

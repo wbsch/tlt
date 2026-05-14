@@ -185,7 +185,7 @@
       "coords": [444, 228],
       "image": "pot",
       "codes": [
-        "MM Ocean Spider House Pot Main Room 1",
+        "MM Ocean Spider House Pot Main Room Boe",
         "MM Ocean Spider House Pot Main Room 2"
       ]
     },
@@ -200,7 +200,7 @@
     {
       "coords": [450, 138],
       "image": "pot",
-      "codes": ["MM Ocean Spider House Pot Main Room Boe"]
+      "codes": ["MM Ocean Spider House Pot Main Room 1"]
     },
     {
       "coords": [434, 121],
@@ -211,8 +211,8 @@
       "coords": [362, 167],
       "image": "pot",
       "codes": [
-        "MM Ocean Spider House Pot Storage 3",
-        "MM Ocean Spider House Pot Storage 4"
+        "MM Ocean Spider House Pot Storage 2",
+        "MM Ocean Spider House Pot Storage 3"
       ]
     },
     {
@@ -229,7 +229,7 @@
       "image": "pot",
       "codes": [
         "MM Ocean Spider House Pot Storage 1",
-        "MM Ocean Spider House Pot Storage 2"
+        "MM Ocean Spider House Pot Storage 4"
       ]
     },
     {
@@ -241,18 +241,18 @@
       "coords": [395, 150],
       "image": "wonder_item_green_rupee",
       "codes": [
-        "MM Ocean Spider House Wonder Item Masks 7",
-        "MM Ocean Spider House Wonder Item Masks 8",
-        "MM Ocean Spider House Wonder Item Masks 9"
+        "MM Ocean Spider House Wonder Item Masks 4",
+        "MM Ocean Spider House Wonder Item Masks 5",
+        "MM Ocean Spider House Wonder Item Masks 6"
       ]
     },
     {
       "coords": [449, 165],
       "image": "wonder_item_green_rupee",
       "codes": [
-        "MM Ocean Spider House Wonder Item Masks 4",
-        "MM Ocean Spider House Wonder Item Masks 5",
-        "MM Ocean Spider House Wonder Item Masks 6"
+        "MM Ocean Spider House Wonder Item Masks 7",
+        "MM Ocean Spider House Wonder Item Masks 8",
+        "MM Ocean Spider House Wonder Item Masks 9"
       ]
     },
     {
