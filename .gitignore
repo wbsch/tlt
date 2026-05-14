@@ -36,5 +36,7 @@ dist-ssr
 /public/autotracker/ootmm-autotracker-darwin-amd64
 /public/autotracker/ootmm-autotracker-darwin-arm64
 /public/autotracker/ootmm-autotracker-linux-amd64
+/public/autotracker/ootmm-autotracker-linux-arm64
 /public/autotracker/ootmm-autotracker-windows-amd64.exe
+/public/autotracker/ootmm-autotracker-windows-arm64.exe
 /public/autotracker/pj64_adapter.lua
