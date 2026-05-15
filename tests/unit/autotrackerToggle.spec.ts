@@ -100,8 +100,85 @@ describe('AutotrackerToggle', () => {
       const toggle = container.querySelector(
         '[data-testid="autotracker-dropdown-toggle"]',
       );
+      const button = container.querySelector(
+        '[data-testid="autotracker-button"]',
+      );
+      const indicator = container.querySelector(
+        '[data-testid="autotracker-button"] .autotracker-indicator',
+      );
+
       expect(toggle).toBeInstanceOf(HTMLButtonElement);
+      expect(button).toBeInstanceOf(HTMLButtonElement);
+      expect(indicator).toBeInstanceOf(HTMLSpanElement);
       expect((toggle as HTMLButtonElement).disabled).toBe(true);
+      expect(
+        (button as HTMLButtonElement).classList.contains(
+          'autotracker-button--active',
+        ),
+      ).toBe(true);
+      expect(
+        (toggle as HTMLButtonElement).classList.contains(
+          'autotracker-dropdown-toggle--active',
+        ),
+      ).toBe(true);
+      expect((indicator as HTMLSpanElement).style.backgroundColor).toBe(
+        'rgb(76, 175, 80)',
+      );
+    } finally {
+      app.unmount();
+      container.remove();
+    }
+  });
+
+  it('shows warning styling while autotracking is enabled without a connection', async () => {
+    const container = document.createElement('div');
+    document.body.append(container);
+    const app = createApp(AutotrackerToggle, {
+      status: 'disconnected',
+      enabled: true,
+      lastError: 'WebSocket error',
+    });
+
+    try {
+      app.mount(container);
+      await flushUi();
+
+      const button = container.querySelector(
+        '[data-testid="autotracker-button"]',
+      );
+      const toggle = container.querySelector(
+        '[data-testid="autotracker-dropdown-toggle"]',
+      );
+      const indicator = container.querySelector(
+        '[data-testid="autotracker-button"] .autotracker-indicator',
+      );
+
+      expect(button).toBeInstanceOf(HTMLButtonElement);
+      expect(toggle).toBeInstanceOf(HTMLButtonElement);
+      expect(indicator).toBeInstanceOf(HTMLSpanElement);
+      expect(
+        (button as HTMLButtonElement).classList.contains(
+          'autotracker-button--warning',
+        ),
+      ).toBe(true);
+      expect(
+        (button as HTMLButtonElement).classList.contains(
+          'autotracker-button--active',
+        ),
+      ).toBe(false);
+      expect(
+        (toggle as HTMLButtonElement).classList.contains(
+          'autotracker-dropdown-toggle--warning',
+        ),
+      ).toBe(true);
+      expect(
+        (toggle as HTMLButtonElement).classList.contains(
+          'autotracker-dropdown-toggle--active',
+        ),
+      ).toBe(false);
+      expect((indicator as HTMLSpanElement).style.backgroundColor).toBe(
+        'rgb(255, 152, 0)',
+      );
     } finally {
       app.unmount();
       container.remove();

@@ -31,18 +31,46 @@ const statusLabel = computed(() => {
   }
 });
 
+const isConnected = computed(
+  () => props.enabled && props.status === 'connected',
+);
+
+const isConnectionPending = computed(
+  () => props.enabled && props.status !== 'connected',
+);
+
+const isError = computed(
+  () => props.status === 'error' && !isConnectionPending.value,
+);
+
 const statusColor = computed(() => {
+  if (isConnected.value) {
+    return '#4caf50';
+  }
+
+  if (isConnectionPending.value || props.status === 'connecting') {
+    return '#ff9800';
+  }
+
   switch (props.status) {
-    case 'connected':
-      return '#4caf50';
-    case 'connecting':
-      return '#ff9800';
     case 'error':
       return '#f44336';
     default:
       return '#888';
   }
 });
+
+const buttonStateClasses = computed(() => ({
+  'autotracker-button--active': isConnected.value,
+  'autotracker-button--warning': isConnectionPending.value,
+  'autotracker-button--error': isError.value,
+}));
+
+const dropdownStateClasses = computed(() => ({
+  'autotracker-dropdown-toggle--active': isConnected.value,
+  'autotracker-dropdown-toggle--warning': isConnectionPending.value,
+  'autotracker-dropdown-toggle--error': isError.value,
+}));
 
 const buttonTitle = computed(() => {
   const baseTitle = lastErrorTitle();
@@ -120,10 +148,7 @@ onBeforeUnmount(() => {
     <button
       type="button"
       class="autotracker-button"
-      :class="{
-        'autotracker-button--active': enabled,
-        'autotracker-button--error': status === 'error',
-      }"
+      :class="buttonStateClasses"
       :title="buttonTitle"
       data-testid="autotracker-button"
       @click="toggle"
@@ -137,10 +162,7 @@ onBeforeUnmount(() => {
     <button
       type="button"
       class="autotracker-dropdown-toggle"
-      :class="{
-        'autotracker-dropdown-toggle--active': enabled,
-        'autotracker-dropdown-toggle--error': status === 'error',
-      }"
+      :class="dropdownStateClasses"
       data-testid="autotracker-dropdown-toggle"
       aria-label="Autotracker options"
       aria-haspopup="menu"
@@ -205,6 +227,11 @@ onBeforeUnmount(() => {
   color: #fff;
 }
 
+.autotracker-button--warning {
+  border-color: #ff9800;
+  color: #fff;
+}
+
 .autotracker-button--error {
   border-color: #f44336;
 }
@@ -241,6 +268,11 @@ onBeforeUnmount(() => {
 
 .autotracker-dropdown-toggle--active {
   border-color: #4caf50;
+  color: #fff;
+}
+
+.autotracker-dropdown-toggle--warning {
+  border-color: #ff9800;
   color: #fff;
 }
 
