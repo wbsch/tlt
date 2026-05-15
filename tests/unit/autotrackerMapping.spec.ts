@@ -236,6 +236,22 @@ describe('autotracker composite item inference', () => {
     expect(translated.SHARED_BOMBCHU_BAG).toBe(1);
   });
 
+  it('ignores the legacy OOT tunic bitmask and keeps direct tunic ids', () => {
+    const translated = translateAutotrackerItems(
+      [
+        { id: 'OOT_TUNIC', qty: 3 },
+        { id: 'OOT_TUNIC_GORON', qty: 1 },
+        { id: 'OOT_TUNIC_ZORA', qty: 1 },
+      ],
+      makeAvailableItemIds(['OOT_TUNIC_GORON', 'OOT_TUNIC_ZORA']),
+      makeItemMaxCounts({}),
+    );
+
+    expect(translated.OOT_TUNIC).toBeUndefined();
+    expect(translated.OOT_TUNIC_GORON).toBe(1);
+    expect(translated.OOT_TUNIC_ZORA).toBe(1);
+  });
+
   it('uses the OOT hookshot stage for shared hookshot translation', () => {
     const translated = translateAutotrackerItems(
       [
