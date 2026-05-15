@@ -547,6 +547,12 @@ function resetAutotrackerMergeState() {
   autotrackerAppliedCollectedLocationDelta = new Set();
 }
 
+function deactivateAutotracker() {
+  clearPendingAutotrackerStartRequest();
+  resetAutotrackerMergeState();
+  autotracker.destroy();
+}
+
 function activateAutotracker(mode: AutotrackerStartMode) {
   if (autotracker.enabled.value) {
     return;
@@ -745,13 +751,24 @@ function applyAutotrackerCollectedLocationsUpdate(
 
 function handleAutotrackerEnabledUpdate(nextEnabled: boolean) {
   if (!nextEnabled) {
-    resetAutotrackerMergeState();
-    autotracker.enabled.value = false;
+    deactivateAutotracker();
     return;
   }
 
   startAutotracker('preserve');
 }
+
+watch(
+  hasImportedSpoilerLog,
+  (nextHasImportedSpoilerLog) => {
+    if (nextHasImportedSpoilerLog || !autotracker.enabled.value) {
+      return;
+    }
+
+    deactivateAutotracker();
+  },
+  { flush: 'sync' },
+);
 
 function getUnsupportedSpoilerAutotrackerMessage(
   ootmmVersion: string | null | undefined,
@@ -1531,6 +1548,7 @@ function fillInventory() {
 }
 
 function resetTrackerState() {
+  deactivateAutotracker();
   uiStore.resetUiState();
   activeMapId.value = getPreferredActiveMapId(selectableMapDefs.value);
   void sessionStore.resetSessionStateToDefaults();
