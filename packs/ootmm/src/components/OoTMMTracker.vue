@@ -255,10 +255,6 @@ const spoilerPlayerOptions = ref<number[]>([]);
 const spoilerSelectedPlayer = ref<number | null>(null);
 let spoilerPlayerDialogResolver: ((player: number | null) => void) | null =
   null;
-const isAutotrackerStartDialogOpen = ref(false);
-let autotrackerStartDialogResolver:
-  | ((mode: AutotrackerStartMode | null) => void)
-  | null = null;
 const mapDefs = OOTMM_MAP_DEFS;
 type SelectedGamesSetting = 'ootmm' | 'oot' | 'mm';
 const RIGHT_SIDEBAR_TABS: Array<{ id: RightSidebarTab; label: string }> = [
@@ -545,31 +541,18 @@ function resetAutotrackerMergeState() {
   autotrackerAppliedCollectedLocationDelta = new Set();
 }
 
-function resolveAutotrackerStartMode(mode: AutotrackerStartMode | null) {
-  if (!autotrackerStartDialogResolver) return;
-  const resolver = autotrackerStartDialogResolver;
-  autotrackerStartDialogResolver = null;
-  isAutotrackerStartDialogOpen.value = false;
-  resolver(mode);
-}
+function enableAutotracker(mode: AutotrackerStartMode) {
+  if (autotracker.enabled.value) {
+    return;
+  }
 
-function requestAutotrackerStartMode() {
-  isAutotrackerStartDialogOpen.value = true;
-  return new Promise<AutotrackerStartMode | null>((resolve) => {
-    autotrackerStartDialogResolver = resolve;
-  });
+  autotrackerStartMode = mode;
+  resetAutotrackerMergeState();
+  autotracker.enabled.value = true;
 }
 
 function startAutotrackerOverwriteMode() {
-  resolveAutotrackerStartMode('overwrite');
-}
-
-function startAutotrackerPreserveMode() {
-  resolveAutotrackerStartMode('preserve');
-}
-
-function cancelAutotrackerStartMode() {
-  resolveAutotrackerStartMode(null);
+  enableAutotracker('overwrite');
 }
 
 function setAutotrackerInventoryCount(
@@ -708,23 +691,14 @@ function applyAutotrackerCollectedLocationsUpdate(
   });
 }
 
-async function handleAutotrackerEnabledUpdate(nextEnabled: boolean) {
+function handleAutotrackerEnabledUpdate(nextEnabled: boolean) {
   if (!nextEnabled) {
     resetAutotrackerMergeState();
     autotracker.enabled.value = false;
     return;
   }
 
-  if (autotracker.enabled.value || isAutotrackerStartDialogOpen.value) {
-    return;
-  }
-
-  const mode = await requestAutotrackerStartMode();
-  if (!mode) return;
-
-  autotrackerStartMode = mode;
-  resetAutotrackerMergeState();
-  autotracker.enabled.value = true;
+  enableAutotracker('preserve');
 }
 
 function getUnsupportedSpoilerAutotrackerMessage(
@@ -741,7 +715,7 @@ function getUnsupportedSpoilerAutotrackerMessage(
 async function maybeStartAutotrackerFromSpoiler(
   parsed: SpoilerLogData,
 ): Promise<string | null> {
-  if (autotracker.enabled.value || isAutotrackerStartDialogOpen.value) {
+  if (autotracker.enabled.value) {
     return null;
   }
 
@@ -754,9 +728,7 @@ async function maybeStartAutotrackerFromSpoiler(
     return getUnsupportedSpoilerAutotrackerMessage(parsed.ootmmVersion);
   }
 
-  autotrackerStartMode = 'preserve';
-  resetAutotrackerMergeState();
-  autotracker.enabled.value = true;
+  enableAutotracker('preserve');
   return null;
 }
 
@@ -2280,11 +2252,6 @@ onBeforeUnmount(() => {
     spoilerPlayerDialogResolver = null;
     resolver(null);
   }
-  if (autotrackerStartDialogResolver) {
-    const resolver = autotrackerStartDialogResolver;
-    autotrackerStartDialogResolver = null;
-    resolver(null);
-  }
   stopSidebarResize();
   window.removeEventListener('keydown', handleGlobalUndoRedoKeydown);
   window.removeEventListener('pointerdown', handleMapWarningGlobalPointerDown);
@@ -2375,49 +2342,6 @@ onBeforeUnmount(() => {
             @click="confirmSpoilerStartingItemsPlayer"
           >
             Apply
-          </button>
-        </div>
-      </div>
-    </div>
-    <div
-      v-if="isAutotrackerStartDialogOpen"
-      class="spoiler-player-dialog-overlay"
-      role="dialog"
-      aria-modal="true"
-      aria-labelledby="autotracker-start-dialog-title"
-    >
-      <div class="spoiler-player-dialog">
-        <h2
-          id="autotracker-start-dialog-title"
-          class="spoiler-player-dialog-title"
-        >
-          Start autotracker
-        </h2>
-        <p class="spoiler-player-dialog-text">
-          Choose whether the autotracker should replace the current tracker
-          state or keep it and only apply future item and location deltas.
-        </p>
-        <div class="spoiler-player-dialog-actions">
-          <button
-            type="button"
-            class="history-button"
-            @click="cancelAutotrackerStartMode"
-          >
-            Cancel
-          </button>
-          <button
-            type="button"
-            class="history-button"
-            @click="startAutotrackerPreserveMode"
-          >
-            Keep current state
-          </button>
-          <button
-            type="button"
-            class="history-button"
-            @click="startAutotrackerOverwriteMode"
-          >
-            Overwrite current state
           </button>
         </div>
       </div>
@@ -2570,6 +2494,7 @@ onBeforeUnmount(() => {
             :enabled="autotracker.enabled.value"
             :last-error="autotracker.lastError.value"
             @update:enabled="handleAutotrackerEnabledUpdate"
+            @start-overwrite="startAutotrackerOverwriteMode"
           />
         </div>
       </div>

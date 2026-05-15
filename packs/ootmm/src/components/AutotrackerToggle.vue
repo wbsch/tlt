@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed } from 'vue';
+import { computed, onBeforeUnmount, onMounted, ref } from 'vue';
 import type { AutotrackerStatus } from '../autotracker/useAutotracker';
 
 const props = defineProps<{
@@ -10,7 +10,11 @@ const props = defineProps<{
 
 const emit = defineEmits<{
   'update:enabled': [value: boolean];
+  'start-overwrite': [];
 }>();
+
+const rootRef = ref<HTMLElement | null>(null);
+const isMenuOpen = ref(false);
 
 const statusLabel = computed(() => {
   switch (props.status) {
@@ -40,13 +44,79 @@ const statusColor = computed(() => {
   }
 });
 
+const buttonTitle = computed(() => {
+  const baseTitle = lastErrorTitle();
+  if (props.enabled) {
+    return baseTitle;
+  }
+  return `${baseTitle} - click to keep current state`;
+});
+
+function lastErrorTitle() {
+  return props.lastError
+    ? `Autotracker: ${statusLabel.value} - ${props.lastError}`
+    : `Autotracker: ${statusLabel.value}`;
+}
+
+function closeMenu() {
+  isMenuOpen.value = false;
+}
+
+function handleDocumentClick(event: MouseEvent) {
+  if (!isMenuOpen.value) return;
+  const target = event.target;
+  if (target instanceof Node && rootRef.value?.contains(target)) {
+    return;
+  }
+  closeMenu();
+}
+
+function handleWindowKeydown(event: KeyboardEvent) {
+  if (event.key !== 'Escape' || !isMenuOpen.value) {
+    return;
+  }
+
+  event.preventDefault();
+  closeMenu();
+}
+
 function toggle() {
+  closeMenu();
   emit('update:enabled', !props.enabled);
 }
+
+function toggleMenu() {
+  if (props.enabled) {
+    return;
+  }
+  isMenuOpen.value = !isMenuOpen.value;
+}
+
+function startOverwrite() {
+  if (props.enabled) {
+    return;
+  }
+  closeMenu();
+  emit('start-overwrite');
+}
+
+onMounted(() => {
+  document.addEventListener('click', handleDocumentClick);
+  window.addEventListener('keydown', handleWindowKeydown);
+});
+
+onBeforeUnmount(() => {
+  document.removeEventListener('click', handleDocumentClick);
+  window.removeEventListener('keydown', handleWindowKeydown);
+});
 </script>
 
 <template>
-  <div class="autotracker-toggle" data-testid="autotracker-toggle">
+  <div
+    ref="rootRef"
+    class="autotracker-toggle"
+    data-testid="autotracker-toggle"
+  >
     <button
       type="button"
       class="autotracker-button"
@@ -54,11 +124,7 @@ function toggle() {
         'autotracker-button--active': enabled,
         'autotracker-button--error': status === 'error',
       }"
-      :title="
-        lastError
-          ? `Autotracker: ${statusLabel} — ${lastError}`
-          : `Autotracker: ${statusLabel}`
-      "
+      :title="buttonTitle"
       data-testid="autotracker-button"
       @click="toggle"
     >
@@ -68,13 +134,46 @@ function toggle() {
       />
       <span class="autotracker-label">AUTO</span>
     </button>
+    <button
+      type="button"
+      class="autotracker-dropdown-toggle"
+      :class="{
+        'autotracker-dropdown-toggle--active': enabled,
+        'autotracker-dropdown-toggle--error': status === 'error',
+      }"
+      data-testid="autotracker-dropdown-toggle"
+      aria-label="Autotracker options"
+      aria-haspopup="menu"
+      :aria-expanded="isMenuOpen ? 'true' : 'false'"
+      :disabled="enabled"
+      @click="toggleMenu"
+    >
+      ⋮
+    </button>
+    <div
+      v-if="isMenuOpen"
+      class="autotracker-dropdown-menu"
+      data-testid="autotracker-dropdown-menu"
+      role="menu"
+    >
+      <button
+        type="button"
+        class="autotracker-dropdown-item"
+        data-testid="autotracker-overwrite-button"
+        role="menuitem"
+        @click="startOverwrite"
+      >
+        Overwrite current state
+      </button>
+    </div>
   </div>
 </template>
 
 <style scoped>
 .autotracker-toggle {
+  position: relative;
   display: inline-flex;
-  align-items: center;
+  align-items: stretch;
 }
 
 .autotracker-button {
@@ -83,7 +182,8 @@ function toggle() {
   gap: 5px;
   padding: 4px 10px;
   border: 1px solid #555;
-  border-radius: 4px;
+  border-right: none;
+  border-radius: 4px 0 0 4px;
   background: #2a2a2a;
   color: #ccc;
   font-size: 0.8rem;
@@ -107,6 +207,75 @@ function toggle() {
 
 .autotracker-button--error {
   border-color: #f44336;
+}
+
+.autotracker-dropdown-toggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4px 7px;
+  border: 1px solid #555;
+  border-radius: 0 4px 4px 0;
+  background: #2a2a2a;
+  color: #ccc;
+  font-size: 0.8rem;
+  font-weight: 700;
+  line-height: 1;
+  cursor: pointer;
+  transition:
+    background 0.15s,
+    border-color 0.15s,
+    color 0.15s,
+    opacity 0.15s;
+}
+
+.autotracker-dropdown-toggle:hover:not(:disabled) {
+  background: #3a3a3a;
+  border-color: #777;
+}
+
+.autotracker-dropdown-toggle:disabled {
+  cursor: default;
+  opacity: 0.65;
+}
+
+.autotracker-dropdown-toggle--active {
+  border-color: #4caf50;
+  color: #fff;
+}
+
+.autotracker-dropdown-toggle--error {
+  border-color: #f44336;
+}
+
+.autotracker-dropdown-menu {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  margin-top: 0.25rem;
+  min-width: max-content;
+  border: 1px solid #555;
+  border-radius: 0.25rem;
+  background: #1f1f1f;
+  box-shadow: 0 4px 12px rgb(0 0 0 / 40%);
+  z-index: 10;
+}
+
+.autotracker-dropdown-item {
+  display: block;
+  width: 100%;
+  padding: 0.5rem 0.75rem;
+  border: none;
+  background: none;
+  color: #e5e7eb;
+  font-size: 0.75rem;
+  text-align: left;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.autotracker-dropdown-item:hover {
+  background: #3a3a3a;
 }
 
 .autotracker-indicator {
