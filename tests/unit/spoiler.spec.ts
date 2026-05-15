@@ -5,6 +5,18 @@ import {
 } from '../../packs/ootmm/src/utils/spoiler';
 
 describe('spoiler parsing', () => {
+  it('extracts the OoTMM version from the spoiler header', () => {
+    const parsed = parseSpoilerLog(`Seed: example-seed
+Version: 9.9.9-test
+SettingsString: ABCD1234
+
+Settings
+  mode: single
+`);
+
+    expect(parsed.ootmmVersion).toBe('9.9.9-test');
+  });
+
   it('detects multiworld players from mode and player count', () => {
     const parsed = parseSpoilerLog(`Settings
   mode: multi

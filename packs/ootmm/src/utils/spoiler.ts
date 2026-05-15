@@ -1,4 +1,5 @@
 export type SpoilerLogData = {
+  ootmmVersion?: string;
   settings: Record<string, string | number | boolean>;
   worldFlags: Record<string, string | { type: 'specific'; values: string[] }>;
   specialConds: Record<string, Record<string, string | number | boolean>>;
@@ -136,6 +137,12 @@ export function parseSpoilerLog(
 
     const trimmed = rawLine.trim();
     if (!trimmed) continue;
+
+    if (trimmed.startsWith('Version:')) {
+      result.ootmmVersion =
+        trimmed.slice('Version:'.length).trim() || undefined;
+      continue;
+    }
 
     if (trimmed.startsWith('SettingsString:')) {
       result.settingsString = trimmed.slice('SettingsString:'.length).trim();

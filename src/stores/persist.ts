@@ -129,6 +129,14 @@ function safeUiString(value: unknown): string | undefined {
   return value.slice(0, MAX_UI_STRING_LENGTH);
 }
 
+function safeOptionalString(value: unknown): string | null | undefined {
+  if (value === null) return null;
+  if (typeof value !== 'string') return undefined;
+  const normalized = value.trim();
+  if (!normalized) return null;
+  return normalized.slice(0, MAX_UI_STRING_LENGTH);
+}
+
 const MIN_SIDEBAR_WIDTH = 240;
 const MAX_SIDEBAR_WIDTH = 960;
 
@@ -339,6 +347,8 @@ export const PERSIST_CONFIGS: Record<PersistStoreId, PersistConfig> = {
       'shopPrices',
       'entranceOverrides',
       'trackerSettings',
+      'hasImportedSpoilerLog',
+      'importedSpoilerLogVersion',
     ],
     hydrate: (raw) => ({
       ...(isPlainObject(raw.inventoryById)
@@ -363,6 +373,16 @@ export const PERSIST_CONFIGS: Record<PersistStoreId, PersistConfig> = {
         ? {
             trackerSettings: stripPlandoEntrancesFromSettings(
               sanitizeSettingsObject(raw.trackerSettings),
+            ),
+          }
+        : {}),
+      ...(typeof raw.hasImportedSpoilerLog === 'boolean'
+        ? { hasImportedSpoilerLog: raw.hasImportedSpoilerLog }
+        : {}),
+      ...(safeOptionalString(raw.importedSpoilerLogVersion) !== undefined
+        ? {
+            importedSpoilerLogVersion: safeOptionalString(
+              raw.importedSpoilerLogVersion,
             ),
           }
         : {}),

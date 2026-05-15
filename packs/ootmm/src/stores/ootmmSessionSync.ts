@@ -24,6 +24,7 @@ type SyncOperationBase = {
     | 'world.set_entrance_overrides'
     | 'settings.apply'
     | 'settings.patch_special_conds'
+    | 'session.set_spoiler_log_state'
     | 'session.reset_defaults';
 };
 
@@ -79,6 +80,11 @@ export type OoTMMSyncOperation =
   | (SyncOperationBase & {
       type: 'settings.patch_special_conds';
       patch: Record<string, unknown>;
+    })
+  | (SyncOperationBase & {
+      type: 'session.set_spoiler_log_state';
+      imported: boolean;
+      ootmmVersion: string | null;
     })
   | (SyncOperationBase & {
       type: 'session.reset_defaults';

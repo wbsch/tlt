@@ -1995,7 +1995,7 @@ function cancelSpoilerStartingItemsPlayer() {
 }
 
 async function applySpoilerLog(text: string, selectedPlayer?: number) {
-  if (isApplyingSettings.value) return;
+  if (isApplyingSettings.value) return false;
   const parsed = parseSpoilerLog(text, { player: selectedPlayer });
   const settingsPatch: Record<string, unknown> = {};
 
@@ -2064,6 +2064,8 @@ async function applySpoilerLog(text: string, selectedPlayer?: number) {
   if (parsed.junkLocations.length > 0) {
     applyJunkLocations(parsed.junkLocations);
   }
+
+  return true;
 }
 
 async function handleSpoilerFile(file: File) {
@@ -2084,7 +2086,12 @@ async function handleSpoilerFile(file: File) {
     selectedPlayer = selected;
   }
 
-  await applySpoilerLog(text, selectedPlayer);
+  const didApplySpoiler = await applySpoilerLog(text, selectedPlayer);
+  if (!didApplySpoiler) {
+    return;
+  }
+
+  sessionStore.setSpoilerLogImportState(true, parsed.ootmmVersion ?? null);
 
   if (warnings.length > 0 || unknownSettings.length > 0) {
     spoilerSettingsWarnings.value = warnings;

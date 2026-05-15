@@ -49,6 +49,8 @@ type SessionSnapshot = {
   shopPrices: Record<string, number>;
   trackerSettings: Record<string, unknown>;
   entranceOverrides: Record<string, string>;
+  hasImportedSpoilerLog: boolean;
+  importedSpoilerLogVersion: string | null;
 };
 
 type MutationOptions = {
@@ -104,6 +106,14 @@ function mapNumberToRecord(map: Map<string, number>): Record<string, number> {
 
 function uniqueStrings(values: string[]): string[] {
   return Array.from(new Set(values));
+}
+
+function normalizeSpoilerLogVersion(
+  version: string | null | undefined,
+): string | null {
+  if (typeof version !== 'string') return null;
+  const normalized = version.trim();
+  return normalized.length > 0 ? normalized : null;
 }
 
 function areSettingsEqual(a: unknown, b: unknown): boolean {
@@ -291,6 +301,8 @@ export const useOoTMMSessionStore = defineStore('ootmm-session', () => {
   const entranceOverrides = ref<Record<string, string>>({});
 
   const trackerSettings = ref<Record<string, unknown>>({});
+  const hasImportedSpoilerLog = ref(false);
+  const importedSpoilerLogVersion = ref<string | null>(null);
   const availableItemIds = ref<string[]>([]);
   const itemMaxCountsById = ref<Record<string, number>>({});
 
@@ -396,6 +408,8 @@ export const useOoTMMSessionStore = defineStore('ootmm-session', () => {
       shopPrices: { ...shopPrices.value },
       trackerSettings: cloneSettingsRecord(trackerSettings.value),
       entranceOverrides: { ...entranceOverrides.value },
+      hasImportedSpoilerLog: hasImportedSpoilerLog.value,
+      importedSpoilerLogVersion: importedSpoilerLogVersion.value,
     };
   }
 
@@ -503,6 +517,14 @@ export const useOoTMMSessionStore = defineStore('ootmm-session', () => {
         applySpecialCondsPatch(envelope.op.patch, REMOTE_MUTATION_OPTIONS);
         return;
       }
+      case 'session.set_spoiler_log_state': {
+        setSpoilerLogImportState(
+          envelope.op.imported,
+          envelope.op.ootmmVersion,
+          REMOTE_MUTATION_OPTIONS,
+        );
+        return;
+      }
       case 'session.reset_defaults': {
         await resetSessionStateToDefaults(REMOTE_MUTATION_OPTIONS);
       }
@@ -588,6 +610,10 @@ export const useOoTMMSessionStore = defineStore('ootmm-session', () => {
     const targetEntranceOverrides = snapshot.entranceOverrides
       ? { ...snapshot.entranceOverrides }
       : {};
+    const targetHasImportedSpoilerLog = Boolean(snapshot.hasImportedSpoilerLog);
+    const targetImportedSpoilerLogVersion = targetHasImportedSpoilerLog
+      ? normalizeSpoilerLogVersion(snapshot.importedSpoilerLogVersion)
+      : null;
 
     isNavigatingHistory.value = true;
     try {
@@ -600,6 +626,8 @@ export const useOoTMMSessionStore = defineStore('ootmm-session', () => {
         shopPrices.value = targetShopPrices;
         trackerSettings.value = targetSettings;
         entranceOverrides.value = targetEntranceOverrides;
+        hasImportedSpoilerLog.value = targetHasImportedSpoilerLog;
+        importedSpoilerLogVersion.value = targetImportedSpoilerLogVersion;
         reachableLocationIds.value = [];
         reachableEntranceIds.value = [];
         canComplete.value = false;
@@ -643,6 +671,8 @@ export const useOoTMMSessionStore = defineStore('ootmm-session', () => {
       songEvents.value = targetSongEvents;
       shopPrices.value = targetShopPrices;
       entranceOverrides.value = targetEntranceOverrides;
+      hasImportedSpoilerLog.value = targetHasImportedSpoilerLog;
+      importedSpoilerLogVersion.value = targetImportedSpoilerLogVersion;
       applyPreCompletedDungeons();
       applySongEvents();
       applyShopPrices();
@@ -1023,6 +1053,37 @@ export const useOoTMMSessionStore = defineStore('ootmm-session', () => {
     }
   }
 
+  function setSpoilerLogImportState(
+    imported: boolean,
+    ootmmVersion: string | null,
+    options?: MutationOptions,
+  ) {
+    const normalizedImported = Boolean(imported);
+    const normalizedVersion = normalizedImported
+      ? normalizeSpoilerLogVersion(ootmmVersion)
+      : null;
+
+    if (
+      hasImportedSpoilerLog.value === normalizedImported &&
+      importedSpoilerLogVersion.value === normalizedVersion
+    ) {
+      return;
+    }
+
+    const previousSnapshot = captureSnapshotForMutation(options);
+    hasImportedSpoilerLog.value = normalizedImported;
+    importedSpoilerLogVersion.value = normalizedVersion;
+    recordHistoryFromSnapshot(previousSnapshot);
+    publishSyncOperation(
+      {
+        type: 'session.set_spoiler_log_state',
+        imported: normalizedImported,
+        ootmmVersion: normalizedVersion,
+      },
+      options,
+    );
+  }
+
   let reinitEntrancesTimer: ReturnType<typeof setTimeout> | null = null;
 
   function scheduleReinitializeForEntrances() {
@@ -1314,6 +1375,8 @@ export const useOoTMMSessionStore = defineStore('ootmm-session', () => {
     songEvents.value = {};
     shopPrices.value = {};
     entranceOverrides.value = {};
+    hasImportedSpoilerLog.value = false;
+    importedSpoilerLogVersion.value = null;
 
     if (!currentTracker) {
       trackerSettings.value = {};
@@ -1419,6 +1482,8 @@ export const useOoTMMSessionStore = defineStore('ootmm-session', () => {
     shopPrices,
     entranceOverrides,
     trackerSettings,
+    hasImportedSpoilerLog,
+    importedSpoilerLogVersion,
     availableItemIds,
     itemMaxCountsById,
     reachableLocationIds,
@@ -1455,6 +1520,7 @@ export const useOoTMMSessionStore = defineStore('ootmm-session', () => {
     setShopPriceForLocation,
     setEntranceOverride,
     setEntranceOverrides,
+    setSpoilerLogImportState,
     applyPreCompletedDungeons,
     applySongEvents,
     applyShopPrices,
