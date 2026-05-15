@@ -20,6 +20,17 @@ export type SpoilerLocationPlacement = {
   itemPlayer?: number;
 };
 
+export function isAutotrackingSupportedSpoilerVersion(
+  ootmmVersion: string | null | undefined,
+): boolean {
+  const normalizedVersion = ootmmVersion?.trim().toLowerCase();
+  if (!normalizedVersion) {
+    return false;
+  }
+
+  return /^v?30\.1(?:$|[.\-+ ].*)/.test(normalizedVersion);
+}
+
 export function getSpoilerLogPlayerOptions(parsed: SpoilerLogData): number[] {
   const mode = String(parsed.settings.mode ?? '')
     .trim()

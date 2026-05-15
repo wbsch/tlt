@@ -88,6 +88,11 @@ const RECONNECT_BASE_DELAY = 1000;
 const RECONNECT_MAX_DELAY = 30000;
 const GRID_REF_ALIAS_PREFIX = '__grid_ref__:';
 const GRID_REF_STATE_PREFIX = '__grid_ref_state__:';
+const HANDSHAKE_MESSAGE = JSON.stringify({
+  type: 'handshake',
+  features: ['items', 'checks'],
+  flags: {},
+});
 
 interface AutotrackerBottleSlotMapping {
   autotrackerId: string;
@@ -328,6 +333,10 @@ function buildTranslatedAutotrackerState(
   return new Map(Object.entries(translated).filter(([, qty]) => qty > 0));
 }
 
+function sendHandshake(socket: WebSocket) {
+  socket.send(HANDSHAKE_MESSAGE);
+}
+
 export function useAutotracker(options: AutotrackerOptions) {
   const status = ref<AutotrackerStatus>('disconnected');
   const enabled = ref(false);
@@ -367,14 +376,7 @@ export function useAutotracker(options: AutotrackerOptions) {
 
     ws.onopen = () => {
       reconnectAttempts = 0;
-      // Send handshake
-      ws!.send(
-        JSON.stringify({
-          type: 'handshake',
-          features: ['items', 'checks'],
-          flags: {},
-        }),
-      );
+      sendHandshake(ws!);
     };
 
     ws.onmessage = (event) => {
@@ -602,6 +604,77 @@ export function useAutotracker(options: AutotrackerOptions) {
     }, delay);
   }
 
+  function probeAvailability(timeoutMs = 1000): Promise<boolean> {
+    if (enabled.value && status.value === 'connected') {
+      return Promise.resolve(true);
+    }
+
+    return new Promise((resolve) => {
+      let probeSocket: WebSocket | null = null;
+      let timeoutId: ReturnType<typeof setTimeout> | null = null;
+      let settled = false;
+
+      const finish = (available: boolean) => {
+        if (settled) return;
+        settled = true;
+
+        if (timeoutId) {
+          clearTimeout(timeoutId);
+          timeoutId = null;
+        }
+
+        if (probeSocket) {
+          probeSocket.onopen = null;
+          probeSocket.onmessage = null;
+          probeSocket.onerror = null;
+          probeSocket.onclose = null;
+          probeSocket.close();
+          probeSocket = null;
+        }
+
+        resolve(available);
+      };
+
+      try {
+        probeSocket = new WebSocket(url.value);
+      } catch {
+        finish(false);
+        return;
+      }
+
+      timeoutId = setTimeout(() => {
+        finish(false);
+      }, timeoutMs);
+
+      probeSocket.onopen = () => {
+        try {
+          sendHandshake(probeSocket!);
+        } catch {
+          finish(false);
+        }
+      };
+
+      probeSocket.onmessage = (event) => {
+        try {
+          const msg = JSON.parse(event.data) as ServerMessage;
+          if (msg.type === 'handshAck') {
+            finish(true);
+          }
+        } catch {
+          // Ignore malformed messages while probing.
+        }
+      };
+
+      probeSocket.onerror = () => {
+        finish(false);
+      };
+
+      probeSocket.onclose = () => {
+        finish(false);
+      };
+    });
+  }
+
   // Watch enable/disable toggle
   watch(enabled, (isEnabled) => {
     if (isEnabled) {
@@ -621,6 +694,7 @@ export function useAutotracker(options: AutotrackerOptions) {
     enabled,
     url,
     lastError,
+    probeAvailability,
     destroy,
   };
 }

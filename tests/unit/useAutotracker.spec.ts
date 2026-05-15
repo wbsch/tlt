@@ -43,6 +43,10 @@ class FakeWebSocket {
       } as MessageEvent,
     );
   }
+
+  emitError() {
+    this.onerror?.call(this as unknown as WebSocket, new Event('error'));
+  }
 }
 
 describe('useAutotracker checks', () => {
@@ -413,5 +417,53 @@ describe('useAutotracker checks', () => {
       { OOT_ODD_POTION: 1, OOT_POCKET_EGG: 1 },
       { OOT_ODD_POTION: 1 },
     ]);
+  });
+
+  it('probes autotracker availability via handshake acknowledgement', async () => {
+    const autotracker = useAutotracker({
+      availableItemIds: ref(new Set<string>()),
+      itemMaxCounts: ref(new Map<string, number>()),
+      onInventoryUpdate: () => {},
+    });
+
+    const availabilityPromise = autotracker.probeAvailability(50);
+
+    const socket = FakeWebSocket.instances[0];
+    expect(socket).toBeDefined();
+
+    socket.emitOpen();
+    expect(JSON.parse(socket.sentMessages[0])).toEqual({
+      type: 'handshake',
+      features: ['items', 'checks'],
+      flags: {},
+    });
+
+    socket.emitMessage({
+      type: 'handshAck',
+      version: '0.1.0',
+      name: 'ootmm-autotracker',
+      refresh: true,
+    });
+
+    await expect(availabilityPromise).resolves.toBe(true);
+    expect(autotracker.enabled.value).toBe(false);
+  });
+
+  it('reports unavailable when the autotracker probe errors', async () => {
+    const autotracker = useAutotracker({
+      availableItemIds: ref(new Set<string>()),
+      itemMaxCounts: ref(new Map<string, number>()),
+      onInventoryUpdate: () => {},
+    });
+
+    const availabilityPromise = autotracker.probeAvailability(50);
+
+    const socket = FakeWebSocket.instances[0];
+    expect(socket).toBeDefined();
+
+    socket.emitError();
+
+    await expect(availabilityPromise).resolves.toBe(false);
+    expect(autotracker.enabled.value).toBe(false);
   });
 });

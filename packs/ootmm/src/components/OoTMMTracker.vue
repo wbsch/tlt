@@ -25,6 +25,7 @@ import {
 } from '../data/itemIcons';
 import {
   getSpoilerLogPlayerOptions,
+  isAutotrackingSupportedSpoilerVersion,
   parseSpoilerLog,
   type SpoilerLocationPlacement,
   type SpoilerLogData,
@@ -298,6 +299,7 @@ const devTraceResult = ref<TrackerLocationTraceResult | null>(null);
 const isSpoilerSettingsWarningDialogOpen = ref(false);
 const spoilerSettingsWarnings = ref<SpoilerSettingWarning[]>([]);
 const spoilerUnknownSettings = ref<SpoilerUnknownSetting[]>([]);
+const spoilerAutotrackerWarningMessage = ref<string | null>(null);
 let mapMarkerSelectNonce = 0;
 let mobileTrackerLayoutQuery: MediaQueryList | null = null;
 
@@ -723,6 +725,39 @@ async function handleAutotrackerEnabledUpdate(nextEnabled: boolean) {
   autotrackerStartMode = mode;
   resetAutotrackerMergeState();
   autotracker.enabled.value = true;
+}
+
+function getUnsupportedSpoilerAutotrackerMessage(
+  ootmmVersion: string | null | undefined,
+): string {
+  const normalizedVersion = ootmmVersion?.trim();
+  const versionLabel =
+    normalizedVersion && normalizedVersion.length > 0
+      ? normalizedVersion
+      : 'an unknown version';
+  return `An active autotracker was detected, but autotracking is only supported for OoTMM spoiler logs from version 30.1. This spoiler log reports ${versionLabel}.`;
+}
+
+async function maybeStartAutotrackerFromSpoiler(
+  parsed: SpoilerLogData,
+): Promise<string | null> {
+  if (autotracker.enabled.value || isAutotrackerStartDialogOpen.value) {
+    return null;
+  }
+
+  const hasActiveAutotracker = await autotracker.probeAvailability();
+  if (!hasActiveAutotracker) {
+    return null;
+  }
+
+  if (!isAutotrackingSupportedSpoilerVersion(parsed.ootmmVersion)) {
+    return getUnsupportedSpoilerAutotrackerMessage(parsed.ootmmVersion);
+  }
+
+  autotrackerStartMode = 'preserve';
+  resetAutotrackerMergeState();
+  autotracker.enabled.value = true;
+  return null;
 }
 
 function normalizeMapCodeList(
@@ -1770,6 +1805,7 @@ function closeSpoilerSettingsWarningDialog() {
   isSpoilerSettingsWarningDialogOpen.value = false;
   spoilerSettingsWarnings.value = [];
   spoilerUnknownSettings.value = [];
+  spoilerAutotrackerWarningMessage.value = null;
 }
 
 function applyStartingItems(startingItems: Record<string, number>) {
@@ -2093,7 +2129,14 @@ async function handleSpoilerFile(file: File) {
 
   sessionStore.setSpoilerLogImportState(true, parsed.ootmmVersion ?? null);
 
-  if (warnings.length > 0 || unknownSettings.length > 0) {
+  spoilerAutotrackerWarningMessage.value =
+    await maybeStartAutotrackerFromSpoiler(parsed);
+
+  if (
+    spoilerAutotrackerWarningMessage.value ||
+    warnings.length > 0 ||
+    unknownSettings.length > 0
+  ) {
     spoilerSettingsWarnings.value = warnings;
     spoilerUnknownSettings.value = unknownSettings;
     isSpoilerSettingsWarningDialogOpen.value = true;
@@ -2393,6 +2436,12 @@ onBeforeUnmount(() => {
         >
           Spoiler log warning
         </h2>
+        <p
+          v-if="spoilerAutotrackerWarningMessage"
+          class="spoiler-player-dialog-text"
+        >
+          {{ spoilerAutotrackerWarningMessage }}
+        </p>
         <p
           v-if="spoilerUnknownSettings.length > 0"
           class="spoiler-player-dialog-text"

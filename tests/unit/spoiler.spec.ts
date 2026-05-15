@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import {
   getSpoilerLogPlayerOptions,
+  isAutotrackingSupportedSpoilerVersion,
   parseSpoilerLog,
 } from '../../packs/ootmm/src/utils/spoiler';
 
@@ -15,6 +16,20 @@ Settings
 `);
 
     expect(parsed.ootmmVersion).toBe('9.9.9-test');
+  });
+
+  it('accepts v30.1 spoiler versions for autotracking', () => {
+    expect(isAutotrackingSupportedSpoilerVersion('v30.1')).toBe(true);
+    expect(isAutotrackingSupportedSpoilerVersion('30.1.2')).toBe(true);
+    expect(isAutotrackingSupportedSpoilerVersion(' v30.1-beta ')).toBe(true);
+  });
+
+  it('rejects unsupported spoiler versions for autotracking', () => {
+    expect(isAutotrackingSupportedSpoilerVersion(null)).toBe(false);
+    expect(isAutotrackingSupportedSpoilerVersion('')).toBe(false);
+    expect(isAutotrackingSupportedSpoilerVersion('v30.0')).toBe(false);
+    expect(isAutotrackingSupportedSpoilerVersion('30.2')).toBe(false);
+    expect(isAutotrackingSupportedSpoilerVersion('30.10')).toBe(false);
   });
 
   it('detects multiworld players from mode and player count', () => {
