@@ -78,6 +78,7 @@ const props = defineProps<{
 type SettingsPanelHandle = {
   hasUnsavedChanges: () => boolean;
   getLocalSettingsSnapshot: () => Record<string, unknown>;
+  openSpoilerFileDialog?: () => void;
 };
 
 type DevDraftIssue = {
@@ -220,6 +221,8 @@ const {
   allLocations,
   entranceOverrides,
   reachableEntranceIdSet,
+  hasImportedSpoilerLog,
+  importedSpoilerLogVersion,
 } = storeToRefs(sessionStore);
 
 const {
@@ -251,8 +254,10 @@ const isMobileTrackerLayout = ref(
 const statisticsCountsTooltip =
   'These counts exclude unshuffled tokens/fairies and gossip stones.';
 const isSpoilerPlayerDialogOpen = ref(false);
+const isAutotrackerSpoilerRequiredDialogOpen = ref(false);
 const spoilerPlayerOptions = ref<number[]>([]);
 const spoilerSelectedPlayer = ref<number | null>(null);
+const autotrackerSpoilerFileInput = ref<HTMLInputElement | null>(null);
 let spoilerPlayerDialogResolver: ((player: number | null) => void) | null =
   null;
 const mapDefs = OOTMM_MAP_DEFS;
@@ -533,6 +538,7 @@ let autotrackerInitialRemoteInventory: Record<string, number> | null = null;
 let autotrackerInitialRemoteCollectedLocationIds: Set<string> | null = null;
 let autotrackerAppliedInventoryDelta = new Map<string, number>();
 let autotrackerAppliedCollectedLocationDelta = new Set<string>();
+let pendingAutotrackerStartMode: AutotrackerStartMode | null = null;
 
 function resetAutotrackerMergeState() {
   autotrackerInitialRemoteInventory = null;
@@ -541,7 +547,7 @@ function resetAutotrackerMergeState() {
   autotrackerAppliedCollectedLocationDelta = new Set();
 }
 
-function enableAutotracker(mode: AutotrackerStartMode) {
+function activateAutotracker(mode: AutotrackerStartMode) {
   if (autotracker.enabled.value) {
     return;
   }
@@ -551,8 +557,54 @@ function enableAutotracker(mode: AutotrackerStartMode) {
   autotracker.enabled.value = true;
 }
 
+function clearPendingAutotrackerStartRequest() {
+  pendingAutotrackerStartMode = null;
+  closeAutotrackerSpoilerRequiredDialog();
+}
+
+function closeAutotrackerSpoilerRequiredDialog() {
+  isAutotrackerSpoilerRequiredDialogOpen.value = false;
+}
+
+function openAutotrackerSpoilerWarningDialog(message: string) {
+  spoilerSettingsWarnings.value = [];
+  spoilerUnknownSettings.value = [];
+  spoilerAutotrackerWarningMessage.value = message;
+  isSpoilerSettingsWarningDialogOpen.value = true;
+}
+
+function requestAutotrackerSpoilerUpload(mode: AutotrackerStartMode) {
+  pendingAutotrackerStartMode = mode;
+  isAutotrackerSpoilerRequiredDialogOpen.value = true;
+}
+
+function canStartAutotracker(mode: AutotrackerStartMode): boolean {
+  if (!hasImportedSpoilerLog.value) {
+    requestAutotrackerSpoilerUpload(mode);
+    return false;
+  }
+
+  if (!isAutotrackingSupportedSpoilerVersion(importedSpoilerLogVersion.value)) {
+    openAutotrackerSpoilerWarningDialog(
+      getUnsupportedSpoilerVersionMessage(importedSpoilerLogVersion.value),
+    );
+    return false;
+  }
+
+  return true;
+}
+
+function startAutotracker(mode: AutotrackerStartMode) {
+  if (!canStartAutotracker(mode)) {
+    return;
+  }
+
+  clearPendingAutotrackerStartRequest();
+  activateAutotracker(mode);
+}
+
 function startAutotrackerOverwriteMode() {
-  enableAutotracker('overwrite');
+  startAutotracker('overwrite');
 }
 
 function setAutotrackerInventoryCount(
@@ -698,7 +750,7 @@ function handleAutotrackerEnabledUpdate(nextEnabled: boolean) {
     return;
   }
 
-  enableAutotracker('preserve');
+  startAutotracker('preserve');
 }
 
 function getUnsupportedSpoilerAutotrackerMessage(
@@ -710,6 +762,17 @@ function getUnsupportedSpoilerAutotrackerMessage(
       ? normalizedVersion
       : 'an unknown version';
   return `An active autotracker was detected, but autotracking is only supported for OoTMM spoiler logs from version 30.1. This spoiler log reports ${versionLabel}.`;
+}
+
+function getUnsupportedSpoilerVersionMessage(
+  ootmmVersion: string | null | undefined,
+): string {
+  const normalizedVersion = ootmmVersion?.trim();
+  const versionLabel =
+    normalizedVersion && normalizedVersion.length > 0
+      ? normalizedVersion
+      : 'an unknown version';
+  return `Autotracking is only supported for OoTMM spoiler logs from version 30.1. This spoiler log reports ${versionLabel}.`;
 }
 
 async function maybeStartAutotrackerFromSpoiler(
@@ -728,7 +791,7 @@ async function maybeStartAutotrackerFromSpoiler(
     return getUnsupportedSpoilerAutotrackerMessage(parsed.ootmmVersion);
   }
 
-  enableAutotracker('preserve');
+  activateAutotracker('preserve');
   return null;
 }
 
@@ -1780,6 +1843,25 @@ function closeSpoilerSettingsWarningDialog() {
   spoilerAutotrackerWarningMessage.value = null;
 }
 
+function cancelAutotrackerSpoilerRequiredDialog() {
+  clearPendingAutotrackerStartRequest();
+}
+
+function openAutotrackerSpoilerFileDialog() {
+  if (isApplyingSettings.value) return;
+  autotrackerSpoilerFileInput.value?.click();
+}
+
+async function onAutotrackerSpoilerFileSelected(event: Event) {
+  const input = event.target as HTMLInputElement;
+  const file = input.files?.[0];
+  if (file) {
+    closeAutotrackerSpoilerRequiredDialog();
+    await handleSpoilerFile(file);
+  }
+  input.value = '';
+}
+
 function applyStartingItems(startingItems: Record<string, number>) {
   const nextById: Record<string, number> = {};
   for (const [name, count] of Object.entries(startingItems)) {
@@ -2078,40 +2160,57 @@ async function applySpoilerLog(text: string, selectedPlayer?: number) {
 
 async function handleSpoilerFile(file: File) {
   if (!file) return;
-  const text = await file.text();
-  const parsed = parseSpoilerLog(text);
-  const playerOptions = getSpoilerLogPlayerOptions(parsed);
-  closeSpoilerSettingsWarningDialog();
-  const warnings = collectSpoilerSettingsWarnings(parsed.settings);
-  const unknownSettings = collectSpoilerUnknownSettings(parsed.settings);
-  let selectedPlayer: number | undefined;
+  const requestedAutotrackerMode = pendingAutotrackerStartMode;
+  try {
+    const text = await file.text();
+    const parsed = parseSpoilerLog(text);
+    const playerOptions = getSpoilerLogPlayerOptions(parsed);
+    closeSpoilerSettingsWarningDialog();
+    const warnings = collectSpoilerSettingsWarnings(parsed.settings);
+    const unknownSettings = collectSpoilerUnknownSettings(parsed.settings);
+    let selectedPlayer: number | undefined;
 
-  if (playerOptions.length > 1) {
-    const selected = await requestSpoilerStartingItemsPlayer(playerOptions);
-    if (selected === null) {
+    if (playerOptions.length > 1) {
+      const selected = await requestSpoilerStartingItemsPlayer(playerOptions);
+      if (selected === null) {
+        return;
+      }
+      selectedPlayer = selected;
+    }
+
+    const didApplySpoiler = await applySpoilerLog(text, selectedPlayer);
+    if (!didApplySpoiler) {
       return;
     }
-    selectedPlayer = selected;
-  }
 
-  const didApplySpoiler = await applySpoilerLog(text, selectedPlayer);
-  if (!didApplySpoiler) {
-    return;
-  }
+    sessionStore.setSpoilerLogImportState(true, parsed.ootmmVersion ?? null);
 
-  sessionStore.setSpoilerLogImportState(true, parsed.ootmmVersion ?? null);
+    if (requestedAutotrackerMode) {
+      if (isAutotrackingSupportedSpoilerVersion(parsed.ootmmVersion)) {
+        activateAutotracker(requestedAutotrackerMode);
+        spoilerAutotrackerWarningMessage.value = null;
+      } else {
+        spoilerAutotrackerWarningMessage.value =
+          getUnsupportedSpoilerVersionMessage(parsed.ootmmVersion);
+      }
+    } else {
+      spoilerAutotrackerWarningMessage.value =
+        await maybeStartAutotrackerFromSpoiler(parsed);
+    }
 
-  spoilerAutotrackerWarningMessage.value =
-    await maybeStartAutotrackerFromSpoiler(parsed);
-
-  if (
-    spoilerAutotrackerWarningMessage.value ||
-    warnings.length > 0 ||
-    unknownSettings.length > 0
-  ) {
-    spoilerSettingsWarnings.value = warnings;
-    spoilerUnknownSettings.value = unknownSettings;
-    isSpoilerSettingsWarningDialogOpen.value = true;
+    if (
+      spoilerAutotrackerWarningMessage.value ||
+      warnings.length > 0 ||
+      unknownSettings.length > 0
+    ) {
+      spoilerSettingsWarnings.value = warnings;
+      spoilerUnknownSettings.value = unknownSettings;
+      isSpoilerSettingsWarningDialogOpen.value = true;
+    }
+  } finally {
+    if (requestedAutotrackerMode) {
+      clearPendingAutotrackerStartRequest();
+    }
   }
 }
 
@@ -2271,6 +2370,14 @@ onBeforeUnmount(() => {
     @dragleave="onSpoilerDragLeave"
     @drop="onSpoilerDrop"
   >
+    <input
+      ref="autotrackerSpoilerFileInput"
+      type="file"
+      accept=".txt"
+      class="spoiler-input"
+      hidden
+      @change="onAutotrackerSpoilerFileSelected"
+    />
     <div
       v-if="isApplyingSettings"
       class="applying-overlay"
@@ -2293,6 +2400,43 @@ onBeforeUnmount(() => {
       aria-live="polite"
     >
       <div class="spoiler-drop-content">Drop spoiler log to load</div>
+    </div>
+    <div
+      v-if="isAutotrackerSpoilerRequiredDialogOpen"
+      class="spoiler-player-dialog-overlay"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="autotracker-spoiler-required-title"
+    >
+      <div class="spoiler-player-dialog">
+        <h2
+          id="autotracker-spoiler-required-title"
+          class="spoiler-player-dialog-title"
+        >
+          Spoiler log required
+        </h2>
+        <p class="spoiler-player-dialog-text">
+          Autotracking only works with a spoiler log. Upload a spoiler log to
+          start autotracking.
+        </p>
+        <div class="spoiler-player-dialog-actions">
+          <button
+            type="button"
+            class="history-button"
+            @click="cancelAutotrackerSpoilerRequiredDialog"
+          >
+            Cancel
+          </button>
+          <button
+            type="button"
+            class="history-button"
+            :disabled="isApplyingSettings"
+            @click="openAutotrackerSpoilerFileDialog"
+          >
+            Upload Spoiler Log
+          </button>
+        </div>
+      </div>
     </div>
     <div
       v-if="isSpoilerPlayerDialogOpen"
