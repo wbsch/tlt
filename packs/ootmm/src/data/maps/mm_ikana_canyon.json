@@ -143,9 +143,9 @@
       "coords": [68, 568],
       "image": "wonder_item_green_rupee",
       "codes": [
-        "MM Ikana Graveyard Wonder Item 01",
-        "MM Ikana Graveyard Wonder Item 02",
-        "MM Ikana Graveyard Wonder Item 03"
+        "MM Ikana Graveyard Wonder Item 04",
+        "MM Ikana Graveyard Wonder Item 05",
+        "MM Ikana Graveyard Wonder Item 06"
       ]
     },
     {
@@ -161,9 +161,9 @@
       "coords": [36, 520],
       "image": "wonder_item_green_rupee",
       "codes": [
-        "MM Ikana Graveyard Wonder Item 04",
-        "MM Ikana Graveyard Wonder Item 05",
-        "MM Ikana Graveyard Wonder Item 06"
+        "MM Ikana Graveyard Wonder Item 01",
+        "MM Ikana Graveyard Wonder Item 02",
+        "MM Ikana Graveyard Wonder Item 03"
       ]
     },
     {
@@ -234,17 +234,17 @@
     {
       "coords": [44, 560],
       "image": "grass",
-      "codes": ["MM Ikana Graveyard Grass 1", "MM Ikana Graveyard Grass 2"]
+      "codes": ["MM Ikana Graveyard Grass 3", "MM Ikana Graveyard Grass 4"]
     },
     {
       "coords": [64, 544],
       "image": "grass",
-      "codes": ["MM Ikana Graveyard Grass 3"]
+      "codes": ["MM Ikana Graveyard Grass 5"]
     },
     {
       "coords": [68, 528],
       "image": "grass",
-      "codes": ["MM Ikana Graveyard Grass 4", "MM Ikana Graveyard Grass 5"]
+      "codes": ["MM Ikana Graveyard Grass 1", "MM Ikana Graveyard Grass 2"]
     },
     {
       "coords": [24, 416],

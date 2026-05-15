@@ -145,9 +145,9 @@
       "coords": [271, 474],
       "image": "pot",
       "codes": [
+        "OOT Goron City Pot Stairs 2",
         "OOT Goron City Pot Stairs 3",
-        "OOT Goron City Pot Stairs 4",
-        "OOT Goron City Pot Stairs 5"
+        "OOT Goron City Pot Stairs 4"
       ]
     },
     {
@@ -158,7 +158,7 @@
     {
       "coords": [423, 450],
       "image": "pot",
-      "codes": ["OOT Goron City Pot Stairs 1", "OOT Goron City Pot Stairs 2"]
+      "codes": ["OOT Goron City Pot Stairs 1", "OOT Goron City Pot Stairs 5"]
     },
     {
       "coords": [435, 258],

@@ -367,14 +367,14 @@
     {
       "coords": [523, 244],
       "image": "pot",
-      "codes": ["OOT MQ Ice Cavern Pot Main Room 3"]
+      "codes": ["OOT MQ Ice Cavern Pot Main Room 1"]
     },
     {
       "coords": [529, 283],
       "image": "pot",
       "codes": [
-        "OOT MQ Ice Cavern Pot Main Room 1",
-        "OOT MQ Ice Cavern Pot Main Room 2"
+        "OOT MQ Ice Cavern Pot Main Room 2",
+        "OOT MQ Ice Cavern Pot Main Room 3"
       ]
     },
     {
@@ -423,21 +423,21 @@
       "coords": [575, 304],
       "image": "icicle",
       "codes": [
-        "OOT MQ Ice Cavern Icicle Map Room 1",
-        "OOT MQ Ice Cavern Icicle Map Room 2"
+        "OOT MQ Ice Cavern Icicle Map Room 8",
+        "OOT MQ Ice Cavern Icicle Map Room 9"
       ]
     },
     {
       "coords": [591, 320],
       "image": "icicle",
       "codes": [
+        "OOT MQ Ice Cavern Icicle Map Room 1",
+        "OOT MQ Ice Cavern Icicle Map Room 2",
         "OOT MQ Ice Cavern Icicle Map Room 3",
         "OOT MQ Ice Cavern Icicle Map Room 4",
         "OOT MQ Ice Cavern Icicle Map Room 5",
         "OOT MQ Ice Cavern Icicle Map Room 6",
-        "OOT MQ Ice Cavern Icicle Map Room 7",
-        "OOT MQ Ice Cavern Icicle Map Room 8",
-        "OOT MQ Ice Cavern Icicle Map Room 9"
+        "OOT MQ Ice Cavern Icicle Map Room 7"
       ]
     },
     {
@@ -469,18 +469,18 @@
       "coords": [536, 263],
       "image": "red_ice",
       "codes": [
-        "OOT MQ Ice Cavern Red Ice Main Room 1",
-        "OOT MQ Ice Cavern Red Ice Main Room 2",
-        "OOT MQ Ice Cavern Red Ice Main Room 3"
+        "OOT MQ Ice Cavern Red Ice Main Room 4",
+        "OOT MQ Ice Cavern Red Ice Main Room 5",
+        "OOT MQ Ice Cavern Red Ice Main Room 6"
       ]
     },
     {
       "coords": [489, 259],
       "image": "red_ice",
       "codes": [
-        "OOT MQ Ice Cavern Red Ice Main Room 4",
-        "OOT MQ Ice Cavern Red Ice Main Room 5",
-        "OOT MQ Ice Cavern Red Ice Main Room 6"
+        "OOT MQ Ice Cavern Red Ice Main Room 1",
+        "OOT MQ Ice Cavern Red Ice Main Room 2",
+        "OOT MQ Ice Cavern Red Ice Main Room 3"
       ]
     },
     {
