@@ -70,6 +70,11 @@ import {
   type AutotrackerSyncPhase,
 } from '../autotracker/useAutotracker';
 import { resolveAutotrackerCheckToLocationIds } from '../autotracker/checkMapping';
+import {
+  buildAutotrackerInventorySnapshot,
+  mergeAutotrackerCollectedLocationsUpdate,
+  mergeAutotrackerInventoryUpdate,
+} from '../autotracker/mergeState';
 
 const props = defineProps<{
   tracker: TrackerPack;
@@ -534,17 +539,13 @@ const autotracker = useAutotracker({
 });
 
 let autotrackerStartMode: AutotrackerStartMode = 'overwrite';
-let autotrackerInitialRemoteInventory: Record<string, number> | null = null;
-let autotrackerInitialRemoteCollectedLocationIds: Set<string> | null = null;
-let autotrackerAppliedInventoryDelta = new Map<string, number>();
-let autotrackerAppliedCollectedLocationDelta = new Set<string>();
+let autotrackerLastRemoteInventory: Record<string, number> | null = null;
+let autotrackerLastRemoteCollectedLocationIds: Set<string> | null = null;
 let pendingAutotrackerStartMode: AutotrackerStartMode | null = null;
 
 function resetAutotrackerMergeState() {
-  autotrackerInitialRemoteInventory = null;
-  autotrackerInitialRemoteCollectedLocationIds = null;
-  autotrackerAppliedInventoryDelta = new Map();
-  autotrackerAppliedCollectedLocationDelta = new Set();
+  autotrackerLastRemoteInventory = null;
+  autotrackerLastRemoteCollectedLocationIds = null;
 }
 
 function deactivateAutotracker() {
@@ -625,22 +626,6 @@ function setAutotrackerInventoryCount(
   }
 }
 
-function adjustAutotrackerInventoryCount(
-  inventoryMap: Map<string, number>,
-  itemId: string,
-  delta: number,
-) {
-  if (delta === 0 || DUNGEON_REWARD_STATE_ITEM_IDS.has(itemId)) return;
-  const nextCount = Math.max(0, (inventoryMap.get(itemId) ?? 0) + delta);
-  setAutotrackerInventoryCount(inventoryMap, itemId, nextCount);
-}
-
-function sanitizeAutotrackerCount(value: number | undefined): number {
-  const numericValue = Number(value ?? 0);
-  if (!Number.isFinite(numericValue)) return 0;
-  return Math.max(0, Math.floor(numericValue));
-}
-
 function preserveDungeonRewardOverlayStateItems(
   nextInventory: Map<string, number>,
 ): Map<string, number> {
@@ -652,53 +637,27 @@ function preserveDungeonRewardOverlayStateItems(
   return preserved;
 }
 
-function computeAutotrackerInventoryDelta(
-  remoteInventory: Record<string, number>,
-): Map<string, number> {
-  const baseline = autotrackerInitialRemoteInventory ?? {};
-  const delta = new Map<string, number>();
-  const itemIds = new Set([
-    ...Object.keys(baseline),
-    ...Object.keys(remoteInventory),
-  ]);
-
-  for (const itemId of itemIds) {
-    if (DUNGEON_REWARD_STATE_ITEM_IDS.has(itemId)) continue;
-    const nextCount = sanitizeAutotrackerCount(remoteInventory[itemId]);
-    const baselineCount = sanitizeAutotrackerCount(baseline[itemId]);
-    const diff = nextCount - baselineCount;
-    if (diff !== 0) {
-      delta.set(itemId, diff);
-    }
-  }
-
-  return delta;
-}
-
 function applyAutotrackerInventoryUpdate(
   remoteInventory: Record<string, number>,
-  phase: AutotrackerSyncPhase,
+  _phase: AutotrackerSyncPhase,
 ) {
-  if (autotrackerStartMode === 'preserve') {
-    if (phase === 'initial' || !autotrackerInitialRemoteInventory) {
-      autotrackerInitialRemoteInventory = { ...remoteInventory };
-      autotrackerAppliedInventoryDelta = new Map();
+  const previousRemoteInventory = autotrackerLastRemoteInventory;
+  const nextRemoteInventory = { ...remoteInventory };
+  autotrackerLastRemoteInventory = nextRemoteInventory;
+
+  if (!previousRemoteInventory) {
+    if (autotrackerStartMode !== 'overwrite') {
       return;
     }
 
-    const nextInventory = new Map(inventory.value);
-    for (const [itemId, previousDelta] of autotrackerAppliedInventoryDelta) {
-      adjustAutotrackerInventoryCount(nextInventory, itemId, -previousDelta);
-    }
-
-    const nextDelta = computeAutotrackerInventoryDelta(remoteInventory);
-    for (const [itemId, delta] of nextDelta) {
-      adjustAutotrackerInventoryCount(nextInventory, itemId, delta);
-    }
-
-    autotrackerAppliedInventoryDelta = nextDelta;
     sessionStore.setInventoryFromMap(
-      preserveDungeonRewardOverlayStateItems(nextInventory),
+      preserveDungeonRewardOverlayStateItems(
+        buildAutotrackerInventorySnapshot(
+          nextRemoteInventory,
+          itemMaxCounts.value,
+          DUNGEON_REWARD_STATE_ITEM_IDS,
+        ),
+      ),
       { source: 'remote', recordHistory: false },
     );
     return;
@@ -706,7 +665,13 @@ function applyAutotrackerInventoryUpdate(
 
   sessionStore.setInventoryFromMap(
     preserveDungeonRewardOverlayStateItems(
-      new Map(Object.entries(remoteInventory).filter(([, count]) => count > 0)),
+      mergeAutotrackerInventoryUpdate({
+        currentInventory: inventory.value,
+        previousRemoteInventory,
+        nextRemoteInventory,
+        itemMaxCounts: itemMaxCounts.value,
+        excludedItemIds: DUNGEON_REWARD_STATE_ITEM_IDS,
+      }),
     ),
     { source: 'remote', recordHistory: false },
   );
@@ -714,39 +679,36 @@ function applyAutotrackerInventoryUpdate(
 
 function applyAutotrackerCollectedLocationsUpdate(
   locationIds: string[],
-  phase: AutotrackerSyncPhase,
+  _phase: AutotrackerSyncPhase,
 ) {
-  if (autotrackerStartMode === 'preserve') {
-    if (phase === 'initial' || !autotrackerInitialRemoteCollectedLocationIds) {
-      autotrackerInitialRemoteCollectedLocationIds = new Set(locationIds);
-      autotrackerAppliedCollectedLocationDelta = new Set();
+  const previousRemoteCollectedLocationIds =
+    autotrackerLastRemoteCollectedLocationIds;
+  const nextRemoteCollectedLocationIds = new Set(locationIds);
+  autotrackerLastRemoteCollectedLocationIds = nextRemoteCollectedLocationIds;
+
+  if (!previousRemoteCollectedLocationIds) {
+    if (autotrackerStartMode !== 'overwrite') {
       return;
     }
 
-    const initialLocationIds = autotrackerInitialRemoteCollectedLocationIds;
-    const nextDelta = new Set(
-      locationIds.filter((locationId) => !initialLocationIds.has(locationId)),
-    );
-    const nextCollectedLocationIds = new Set(collectedLocationIds.value);
-    for (const locationId of autotrackerAppliedCollectedLocationDelta) {
-      nextCollectedLocationIds.delete(locationId);
-    }
-    for (const locationId of nextDelta) {
-      nextCollectedLocationIds.add(locationId);
-    }
-
-    autotrackerAppliedCollectedLocationDelta = nextDelta;
-    sessionStore.setCollectedLocationIds(Array.from(nextCollectedLocationIds), {
+    sessionStore.setCollectedLocationIds(locationIds, {
       source: 'remote',
       recordHistory: false,
     });
     return;
   }
 
-  sessionStore.setCollectedLocationIds(locationIds, {
-    source: 'remote',
-    recordHistory: false,
-  });
+  sessionStore.setCollectedLocationIds(
+    mergeAutotrackerCollectedLocationsUpdate({
+      currentCollectedLocationIds: collectedLocationIds.value,
+      previousRemoteCollectedLocationIds,
+      nextRemoteCollectedLocationIds,
+    }),
+    {
+      source: 'remote',
+      recordHistory: false,
+    },
+  );
 }
 
 function handleAutotrackerEnabledUpdate(nextEnabled: boolean) {

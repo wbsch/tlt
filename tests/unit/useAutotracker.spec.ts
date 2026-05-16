@@ -368,6 +368,106 @@ describe('useAutotracker checks', () => {
     ]);
   });
 
+  it('rebuilds shared hookshot state for MM-only deltas in shared mode', async () => {
+    const inventoryUpdates: Array<Record<string, number>> = [];
+    const availableItemIds = ref(new Set<string>(['SHARED_HOOKSHOT']));
+    const itemMaxCounts = ref(
+      new Map<string, number>([['SHARED_HOOKSHOT', 2]]),
+    );
+
+    const autotracker = useAutotracker({
+      availableItemIds,
+      itemMaxCounts,
+      onInventoryUpdate: (inventory) => {
+        inventoryUpdates.push(inventory);
+      },
+    });
+
+    autotracker.enabled.value = true;
+    await nextTick();
+
+    const socket = FakeWebSocket.instances[0];
+    expect(socket).toBeDefined();
+
+    socket.emitOpen();
+    socket.emitMessage({
+      type: 'handshAck',
+      version: '0.1.0',
+      name: 'ootmm-autotracker',
+      refresh: true,
+    });
+    socket.emitMessage({
+      type: 'item',
+      diff: false,
+      refresh: false,
+      items: [{ id: 'OOT_HOOKSHOT', qty: 1 }],
+    });
+    socket.emitMessage({
+      type: 'refresh',
+      refresh: true,
+    });
+    socket.emitMessage({
+      type: 'item',
+      diff: true,
+      refresh: true,
+      items: [{ id: 'MM_HOOKSHOT', qty: 1 }],
+    });
+
+    expect(inventoryUpdates).toEqual([
+      { SHARED_HOOKSHOT: 1 },
+      { SHARED_HOOKSHOT: 1 },
+    ]);
+  });
+
+  it('rebuilds bottomless wallet deltas to the tracker max stage', async () => {
+    const inventoryUpdates: Array<Record<string, number>> = [];
+    const availableItemIds = ref(new Set<string>(['SHARED_WALLET']));
+    const itemMaxCounts = ref(new Map<string, number>([['SHARED_WALLET', 4]]));
+
+    const autotracker = useAutotracker({
+      availableItemIds,
+      itemMaxCounts,
+      onInventoryUpdate: (inventory) => {
+        inventoryUpdates.push(inventory);
+      },
+    });
+
+    autotracker.enabled.value = true;
+    await nextTick();
+
+    const socket = FakeWebSocket.instances[0];
+    expect(socket).toBeDefined();
+
+    socket.emitOpen();
+    socket.emitMessage({
+      type: 'handshAck',
+      version: '0.1.0',
+      name: 'ootmm-autotracker',
+      refresh: true,
+    });
+    socket.emitMessage({
+      type: 'item',
+      diff: false,
+      refresh: false,
+      items: [{ id: 'OOT_WALLET', qty: 2 }],
+    });
+    socket.emitMessage({
+      type: 'refresh',
+      refresh: true,
+    });
+    socket.emitMessage({
+      type: 'item',
+      diff: true,
+      refresh: true,
+      items: [{ id: 'OOT_WALLET5', qty: 1 }],
+    });
+
+    expect(inventoryUpdates).toEqual([
+      { SHARED_WALLET: 1 },
+      { SHARED_WALLET: 4 },
+    ]);
+  });
+
   it('rebuilds adult trade bitmasks from raw deltas before translating', async () => {
     const inventoryUpdates: Array<Record<string, number>> = [];
     const availableItemIds = ref(

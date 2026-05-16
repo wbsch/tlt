@@ -1,5 +1,7 @@
 import { ref, watch, type Ref } from 'vue';
 import {
+  applyDelta,
+  canApplyAutotrackerDeltaItemsDirectly,
   translateAutotrackerItems,
   type AutotrackerItem,
 } from './autotrackerMapping';
@@ -448,15 +450,30 @@ export function useAutotracker(options: AutotrackerOptions) {
         false,
       );
     } else if (msg.diff) {
-      // Rebuild translated state from raw values so non-linear mappings
-      // (bitmasks, progressive decompositions) resolve deltas correctly.
       liveRawState = applyRawAutotrackerItems(liveRawState, msg.items, true);
-      liveState = buildTranslatedAutotrackerState(
-        liveRawState,
-        options.availableItemIds.value,
-        options.itemMaxCounts.value,
-        childWalletsEnabled(),
-      );
+      if (
+        canApplyAutotrackerDeltaItemsDirectly(
+          msg.items,
+          options.availableItemIds.value,
+        )
+      ) {
+        liveState = applyDelta(
+          liveState,
+          msg.items,
+          options.availableItemIds.value,
+          options.itemMaxCounts.value,
+          { childWalletsEnabled: childWalletsEnabled() },
+        );
+      } else {
+        // Rebuild translated state from raw values when a raw delta affects
+        // non-linear tracker state, such as bitmasks or shared-stage remaps.
+        liveState = buildTranslatedAutotrackerState(
+          liveRawState,
+          options.availableItemIds.value,
+          options.itemMaxCounts.value,
+          childWalletsEnabled(),
+        );
+      }
       if (msg.refresh) {
         pushToTracker('live');
       }

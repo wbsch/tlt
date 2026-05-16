@@ -227,6 +227,14 @@ const MM_TRADE3_ITEMS: string[] = [
   'MM_PENDANT_OF_MEMORIES', // bit 4
 ];
 
+const TRADE_BITMASK_MAPS: Record<string, string[]> = {
+  OOT_ADULT_TRADE: OOT_ADULT_TRADE_ITEMS,
+  OOT_CHILD_TRADE: OOT_CHILD_TRADE_ITEMS,
+  MM_TRADE_1: MM_TRADE1_ITEMS,
+  MM_TRADE_2: MM_TRADE2_ITEMS,
+  MM_TRADE_3: MM_TRADE3_ITEMS,
+};
+
 // IDs to skip entirely (handled by other mechanisms or not useful)
 const SKIP_IDS = new Set([
   'OOT_HEART_PIECES', // not tracked as item
@@ -686,6 +694,38 @@ function isBottomlessWalletId(itemId: string): boolean {
   return /^(OOT|MM)_WALLET5$/.test(itemId);
 }
 
+function requiresRawStateRebuildForDelta(
+  rawId: string,
+  availableItemIds: Set<string>,
+): boolean {
+  if (rawId in OOT_EQUIPMENT_BITMASKS) {
+    return true;
+  }
+
+  if (rawId in PROGRESSIVE_TO_INDIVIDUAL) {
+    return true;
+  }
+
+  if (rawId in TRADE_BITMASK_MAPS) {
+    return true;
+  }
+
+  if (isBottomlessWalletId(rawId)) {
+    return true;
+  }
+
+  return availableItemIds.has('SHARED_HOOKSHOT') && rawId === 'MM_HOOKSHOT';
+}
+
+export function canApplyAutotrackerDeltaItemsDirectly(
+  items: AutotrackerItem[],
+  availableItemIds: Set<string>,
+): boolean {
+  return items.every(
+    ({ id }) => !requiresRawStateRebuildForDelta(id, availableItemIds),
+  );
+}
+
 function translateWalletQty(
   rawId: string,
   rawQty: number,
@@ -785,13 +825,6 @@ export function translateAutotrackerItems(
     }
 
     // Trade item bitmasks — each set bit = one obtained item
-    const TRADE_BITMASK_MAPS: Record<string, string[]> = {
-      OOT_ADULT_TRADE: OOT_ADULT_TRADE_ITEMS,
-      OOT_CHILD_TRADE: OOT_CHILD_TRADE_ITEMS,
-      MM_TRADE_1: MM_TRADE1_ITEMS,
-      MM_TRADE_2: MM_TRADE2_ITEMS,
-      MM_TRADE_3: MM_TRADE3_ITEMS,
-    };
     if (id in TRADE_BITMASK_MAPS) {
       const tradeItems = TRADE_BITMASK_MAPS[id];
       for (let bit = 0; bit < tradeItems.length; bit++) {
