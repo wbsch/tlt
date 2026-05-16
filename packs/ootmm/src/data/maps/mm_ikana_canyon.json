@@ -221,15 +221,15 @@
       "coords": [365, 401],
       "image": "grass",
       "codes": [
+        "MM Ikana Canyon Grass 1",
         "MM Ikana Canyon Grass 2",
-        "MM Ikana Canyon Grass 3",
-        "MM Ikana Canyon Grass 4"
+        "MM Ikana Canyon Grass 3"
       ]
     },
     {
       "coords": [338, 423],
       "image": "grass",
-      "codes": ["MM Ikana Canyon Grass 1"]
+      "codes": ["MM Ikana Canyon Grass 4"]
     },
     {
       "coords": [44, 560],

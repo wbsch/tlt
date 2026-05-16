@@ -149,17 +149,17 @@
       "coords": [821, 308],
       "image": "pot",
       "codes": [
-        "OOT Bottom of the Well Pot Main Room 1",
-        "OOT Bottom of the Well Pot Main Room 2"
+        "OOT Bottom of the Well Pot Main Room 4",
+        "OOT Bottom of the Well Pot Main Room 5"
       ]
     },
     {
       "coords": [753, 290],
       "image": "pot",
       "codes": [
-        "OOT Bottom of the Well Pot Main Room 3",
-        "OOT Bottom of the Well Pot Main Room 4",
-        "OOT Bottom of the Well Pot Main Room 5"
+        "OOT Bottom of the Well Pot Main Room 1",
+        "OOT Bottom of the Well Pot Main Room 2",
+        "OOT Bottom of the Well Pot Main Room 3"
       ]
     },
     {

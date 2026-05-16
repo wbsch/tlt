@@ -387,14 +387,14 @@
       "coords": [569, 480],
       "image": "grass",
       "codes": [
-        "OOT MQ Deku Tree Grass Gravestone Room 1",
-        "OOT MQ Deku Tree Grass Gravestone Room 2"
+        "OOT MQ Deku Tree Grass Gravestone Room 2",
+        "OOT MQ Deku Tree Grass Gravestone Room 3"
       ]
     },
     {
       "coords": [589, 497],
       "image": "grass",
-      "codes": "OOT MQ Deku Tree Grass Gravestone Room 3"
+      "codes": "OOT MQ Deku Tree Grass Gravestone Room 1"
     },
     {
       "coords": [613, 487],
@@ -430,16 +430,16 @@
       "coords": [717, 519],
       "image": "grass",
       "codes": [
-        "OOT MQ Deku Tree Grass Room Before Spike 1",
-        "OOT MQ Deku Tree Grass Room Before Spike 2"
+        "OOT MQ Deku Tree Grass Room Before Spike 3",
+        "OOT MQ Deku Tree Grass Room Before Spike 4"
       ]
     },
     {
       "coords": [742, 519],
       "image": "grass",
       "codes": [
-        "OOT MQ Deku Tree Grass Room Before Spike 3",
-        "OOT MQ Deku Tree Grass Room Before Spike 4"
+        "OOT MQ Deku Tree Grass Room Before Spike 1",
+        "OOT MQ Deku Tree Grass Room Before Spike 2"
       ]
     },
     {
@@ -454,16 +454,16 @@
       "coords": [732, 473],
       "image": "grass",
       "codes": [
-        "OOT MQ Deku Tree Grass Basement Lower 3",
-        "OOT MQ Deku Tree Grass Basement Lower 4"
+        "OOT MQ Deku Tree Grass Basement Lower 1",
+        "OOT MQ Deku Tree Grass Basement Lower 2"
       ]
     },
     {
       "coords": [717, 440],
       "image": "grass",
       "codes": [
-        "OOT MQ Deku Tree Grass Basement Lower 1",
-        "OOT MQ Deku Tree Grass Basement Lower 2"
+        "OOT MQ Deku Tree Grass Basement Lower 3",
+        "OOT MQ Deku Tree Grass Basement Lower 4"
       ]
     },
     {
@@ -474,22 +474,22 @@
     {
       "coords": [567, 459],
       "image": "wonder_item_heart",
-      "codes": "OOT MQ Deku Tree Wonder Item 4"
+      "codes": "OOT MQ Deku Tree Wonder Item 1"
     },
     {
       "coords": [590, 443],
       "image": "wonder_item_heart",
-      "codes": "OOT MQ Deku Tree Wonder Item 3"
+      "codes": "OOT MQ Deku Tree Wonder Item 2"
     },
     {
       "coords": [613, 452],
       "image": "wonder_item_heart",
-      "codes": "OOT MQ Deku Tree Wonder Item 2"
+      "codes": "OOT MQ Deku Tree Wonder Item 4"
     },
     {
       "coords": [604, 484],
       "image": "wonder_item_heart",
-      "codes": "OOT MQ Deku Tree Wonder Item 1"
+      "codes": "OOT MQ Deku Tree Wonder Item 3"
     },
     {
       "coords": [798, 216],
