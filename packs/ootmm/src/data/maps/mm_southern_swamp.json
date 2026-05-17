@@ -473,13 +473,13 @@
       "coords": [811, 81],
       "image": "grass",
       "overlays": ["day3"],
-      "codes": ["MM Woods of Mystery Grass NW 2"]
+      "codes": ["MM Woods of Mystery Grass NW 1"]
     },
     {
       "coords": [804, 53],
       "image": "grass",
       "overlays": ["day3"],
-      "codes": ["MM Woods of Mystery Grass NW 1"]
+      "codes": ["MM Woods of Mystery Grass NW 2"]
     },
     {
       "coords": [580, 474],

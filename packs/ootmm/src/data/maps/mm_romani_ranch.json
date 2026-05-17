@@ -115,18 +115,18 @@
       "coords": [81, 127],
       "image": "wonder_item_green_rupee",
       "codes": [
-        "MM Cucco Shack Wonder Item 1",
-        "MM Cucco Shack Wonder Item 2",
-        "MM Cucco Shack Wonder Item 3"
+        "MM Cucco Shack Wonder Item 4",
+        "MM Cucco Shack Wonder Item 5",
+        "MM Cucco Shack Wonder Item 6"
       ]
     },
     {
       "coords": [91, 104],
       "image": "wonder_item_green_rupee",
       "codes": [
-        "MM Cucco Shack Wonder Item 4",
-        "MM Cucco Shack Wonder Item 5",
-        "MM Cucco Shack Wonder Item 6"
+        "MM Cucco Shack Wonder Item 1",
+        "MM Cucco Shack Wonder Item 2",
+        "MM Cucco Shack Wonder Item 3"
       ]
     },
     {
@@ -381,17 +381,17 @@
     {
       "coords": [156, 179],
       "image": "bush",
-      "codes": ["MM Cucco Shack Bush 1"]
+      "codes": ["MM Cucco Shack Bush 2"]
     },
     {
       "coords": [164, 120],
       "image": "bush",
-      "codes": ["MM Cucco Shack Bush 2"]
+      "codes": ["MM Cucco Shack Bush 3"]
     },
     {
       "coords": [183, 112],
       "image": "bush",
-      "codes": ["MM Cucco Shack Bush 3"]
+      "codes": ["MM Cucco Shack Bush 7"]
     },
     {
       "coords": [119, 80],
@@ -406,12 +406,12 @@
     {
       "coords": [95, 126],
       "image": "bush",
-      "codes": ["MM Cucco Shack Bush 6"]
+      "codes": ["MM Cucco Shack Bush 1"]
     },
     {
       "coords": [49, 148],
       "image": "bush",
-      "codes": ["MM Cucco Shack Bush 7"]
+      "codes": ["MM Cucco Shack Bush 6"]
     },
     {
       "coords": [661, 351],

@@ -182,19 +182,19 @@
       "coords": [578, 305],
       "image": "pot",
       "codes": [
-        "MM Swamp Spider House Pot Jar Room 6",
-        "MM Swamp Spider House Pot Jar Room 7"
+        "MM Swamp Spider House Pot Jar Room 1",
+        "MM Swamp Spider House Pot Jar Room 2"
       ]
     },
     {
       "coords": [581, 403],
       "image": "pot",
       "codes": [
-        "MM Swamp Spider House Pot Jar Room 1",
-        "MM Swamp Spider House Pot Jar Room 2",
         "MM Swamp Spider House Pot Jar Room 3",
         "MM Swamp Spider House Pot Jar Room 4",
-        "MM Swamp Spider House Pot Jar Room 5"
+        "MM Swamp Spider House Pot Jar Room 5",
+        "MM Swamp Spider House Pot Jar Room 6",
+        "MM Swamp Spider House Pot Jar Room 7"
       ]
     },
     {
@@ -238,22 +238,22 @@
       "coords": [402, 443],
       "image": "crate",
       "codes": [
-        "MM Swamp Spider House Crate Monument 5",
-        "MM Swamp Spider House Crate Monument 6"
+        "MM Swamp Spider House Crate Monument 1",
+        "MM Swamp Spider House Crate Monument 4"
       ]
     },
     {
       "coords": [397, 412],
       "image": "crate",
-      "codes": ["MM Swamp Spider House Crate Monument 4"]
+      "codes": ["MM Swamp Spider House Crate Monument 2"]
     },
     {
       "coords": [397, 381],
       "image": "crate",
       "codes": [
-        "MM Swamp Spider House Crate Monument 1",
-        "MM Swamp Spider House Crate Monument 2",
-        "MM Swamp Spider House Crate Monument 3"
+        "MM Swamp Spider House Crate Monument 3",
+        "MM Swamp Spider House Crate Monument 5",
+        "MM Swamp Spider House Crate Monument 6"
       ]
     },
     {

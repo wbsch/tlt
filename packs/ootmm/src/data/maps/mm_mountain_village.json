@@ -270,25 +270,25 @@
       "coords": [901, 536],
       "image": "blue_rupee",
       "overlays": ["clear_state"],
-      "codes": ["MM Twin Islands Rupee 1"]
+      "codes": ["MM Twin Islands Rupee 3"]
     },
     {
       "coords": [942, 485],
       "image": "blue_rupee",
       "overlays": ["clear_state"],
-      "codes": ["MM Twin Islands Rupee 2"]
+      "codes": ["MM Twin Islands Rupee 4"]
     },
     {
       "coords": [916, 454],
       "image": "blue_rupee",
       "overlays": ["clear_state"],
-      "codes": ["MM Twin Islands Rupee 3"]
+      "codes": ["MM Twin Islands Rupee 1"]
     },
     {
       "coords": [851, 453],
       "image": "blue_rupee",
       "overlays": ["clear_state"],
-      "codes": ["MM Twin Islands Rupee 4"]
+      "codes": ["MM Twin Islands Rupee 2"]
     },
     {
       "coords": [420, 508],
@@ -378,22 +378,6 @@
       "image": "grass",
       "overlays": ["clear_state"],
       "codes": [
-        "MM Mountain Village Grass Pack 1 Grass 1",
-        "MM Mountain Village Grass Pack 1 Grass 2",
-        "MM Mountain Village Grass Pack 1 Grass 3",
-        "MM Mountain Village Grass Pack 1 Grass 4",
-        "MM Mountain Village Grass Pack 1 Grass 5",
-        "MM Mountain Village Grass Pack 1 Grass 6",
-        "MM Mountain Village Grass Pack 1 Grass 7",
-        "MM Mountain Village Grass Pack 1 Grass 8",
-        "MM Mountain Village Grass Pack 1 Grass 9"
-      ]
-    },
-    {
-      "coords": [395, 480],
-      "image": "grass",
-      "overlays": ["clear_state"],
-      "codes": [
         "MM Mountain Village Grass Pack 2 Grass 1",
         "MM Mountain Village Grass Pack 2 Grass 2",
         "MM Mountain Village Grass Pack 2 Grass 3",
@@ -403,6 +387,22 @@
         "MM Mountain Village Grass Pack 2 Grass 7",
         "MM Mountain Village Grass Pack 2 Grass 8",
         "MM Mountain Village Grass Pack 2 Grass 9"
+      ]
+    },
+    {
+      "coords": [395, 480],
+      "image": "grass",
+      "overlays": ["clear_state"],
+      "codes": [
+        "MM Mountain Village Grass Pack 1 Grass 1",
+        "MM Mountain Village Grass Pack 1 Grass 2",
+        "MM Mountain Village Grass Pack 1 Grass 3",
+        "MM Mountain Village Grass Pack 1 Grass 4",
+        "MM Mountain Village Grass Pack 1 Grass 5",
+        "MM Mountain Village Grass Pack 1 Grass 6",
+        "MM Mountain Village Grass Pack 1 Grass 7",
+        "MM Mountain Village Grass Pack 1 Grass 8",
+        "MM Mountain Village Grass Pack 1 Grass 9"
       ]
     },
     {
@@ -456,19 +456,19 @@
       "coords": [696, 192],
       "image": "rock",
       "codes": [
-        "MM Goron Shrine Rock 09",
-        "MM Goron Shrine Rock 10",
-        "MM Goron Shrine Rock 11"
+        "MM Goron Shrine Rock 13",
+        "MM Goron Shrine Rock 14",
+        "MM Goron Shrine Rock 15"
       ]
     },
     {
       "coords": [692, 116],
       "image": "rock",
       "codes": [
+        "MM Goron Shrine Rock 09",
+        "MM Goron Shrine Rock 10",
+        "MM Goron Shrine Rock 11",
         "MM Goron Shrine Rock 12",
-        "MM Goron Shrine Rock 13",
-        "MM Goron Shrine Rock 14",
-        "MM Goron Shrine Rock 15",
         "MM Goron Shrine Rock 16"
       ]
     },
@@ -489,17 +489,17 @@
     {
       "coords": [894, 196],
       "image": "rock",
-      "codes": ["MM Goron Shrine Rock 08"]
+      "codes": ["MM Goron Shrine Rock 05"]
     },
     {
       "coords": [878, 127],
       "image": "rock",
-      "codes": ["MM Goron Shrine Rock 07"]
+      "codes": ["MM Goron Shrine Rock 06"]
     },
     {
       "coords": [882, 92],
       "image": "rock",
-      "codes": ["MM Goron Shrine Rock 05", "MM Goron Shrine Rock 06"]
+      "codes": ["MM Goron Shrine Rock 07", "MM Goron Shrine Rock 08"]
     },
     {
       "coords": [380, 523],
@@ -818,25 +818,25 @@
       "coords": [244, 478],
       "image": "small_snowball",
       "overlays": ["clear_state"],
-      "codes": ["MM Path to Snowhead Small Snowball Spring Middle 1"]
+      "codes": ["MM Path to Snowhead Small Snowball Spring Middle 2"]
     },
     {
       "coords": [260, 478],
       "image": "big_snowball",
       "overlays": ["cursed_state"],
-      "codes": ["MM Path to Snowhead Big Snowball Middle 1"]
+      "codes": ["MM Path to Snowhead Big Snowball Middle 2"]
     },
     {
       "coords": [196, 391],
       "image": "big_snowball",
       "overlays": ["cursed_state"],
-      "codes": ["MM Path to Snowhead Big Snowball Middle 2"]
+      "codes": ["MM Path to Snowhead Big Snowball Middle 1"]
     },
     {
       "coords": [180, 391],
       "image": "small_snowball",
       "overlays": ["clear_state"],
-      "codes": ["MM Path to Snowhead Small Snowball Spring Middle 2"]
+      "codes": ["MM Path to Snowhead Small Snowball Spring Middle 1"]
     },
     {
       "coords": [197, 355],
@@ -851,7 +851,7 @@
       "coords": [178, 354],
       "image": "big_snowball",
       "overlays": ["cursed_state"],
-      "codes": ["MM Path to Snowhead Big Snowball Back 1"]
+      "codes": ["MM Path to Snowhead Big Snowball Back 2"]
     },
     {
       "coords": [162, 354],
@@ -869,7 +869,7 @@
       "coords": [144, 327],
       "image": "big_snowball",
       "overlays": ["cursed_state"],
-      "codes": ["MM Path to Snowhead Big Snowball Back 2"]
+      "codes": ["MM Path to Snowhead Big Snowball Back 1"]
     },
     {
       "coords": [43, 387],
@@ -897,13 +897,13 @@
       "coords": [130, 103],
       "image": "small_snowball",
       "overlays": ["clear_state"],
-      "codes": ["MM Snowhead Small Snowball Spring 5"]
+      "codes": ["MM Snowhead Small Snowball Spring 4"]
     },
     {
       "coords": [112, 136],
       "image": "small_snowball",
       "overlays": ["clear_state"],
-      "codes": ["MM Snowhead Small Snowball Spring 4"]
+      "codes": ["MM Snowhead Small Snowball Spring 3"]
     },
     {
       "coords": [96, 136],
@@ -921,7 +921,7 @@
       "coords": [47, 158],
       "image": "small_snowball",
       "overlays": ["clear_state"],
-      "codes": ["MM Snowhead Small Snowball Spring 3"]
+      "codes": ["MM Snowhead Small Snowball Spring 1"]
     },
     {
       "coords": [33, 145],
@@ -945,7 +945,7 @@
       "coords": [17, 127],
       "image": "small_snowball",
       "overlays": ["clear_state"],
-      "codes": ["MM Snowhead Small Snowball Spring 1"]
+      "codes": ["MM Snowhead Small Snowball Spring 5"]
     },
     {
       "coords": [912, 482],
@@ -991,7 +991,7 @@
     {
       "coords": [185, 342],
       "image": "tree",
-      "codes": ["MM Path to Snowhead Snow Tree End 1"]
+      "codes": ["MM Path to Snowhead Snow Tree End 3"]
     },
     {
       "coords": [151, 337],
@@ -1001,7 +1001,7 @@
     {
       "coords": [124, 309],
       "image": "tree",
-      "codes": ["MM Path to Snowhead Snow Tree End 3"]
+      "codes": ["MM Path to Snowhead Snow Tree End 1"]
     },
     {
       "coords": [351, 313],

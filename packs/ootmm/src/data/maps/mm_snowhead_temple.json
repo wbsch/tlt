@@ -198,19 +198,19 @@
       "coords": [306, 356],
       "image": "pot",
       "codes": [
-        "MM Snowhead Temple Pot Pillars Room Lower 4",
-        "MM Snowhead Temple Pot Pillars Room Lower 5",
-        "MM Snowhead Temple Pot Pillars Room Lower 6",
-        "MM Snowhead Temple Pot Pillars Room Lower 7"
+        "MM Snowhead Temple Pot Pillars Room Lower 1",
+        "MM Snowhead Temple Pot Pillars Room Lower 2",
+        "MM Snowhead Temple Pot Pillars Room Lower 3",
+        "MM Snowhead Temple Pot Pillars Room Lower 4"
       ]
     },
     {
       "coords": [256, 383],
       "image": "pot",
       "codes": [
-        "MM Snowhead Temple Pot Pillars Room Lower 1",
-        "MM Snowhead Temple Pot Pillars Room Lower 2",
-        "MM Snowhead Temple Pot Pillars Room Lower 3"
+        "MM Snowhead Temple Pot Pillars Room Lower 5",
+        "MM Snowhead Temple Pot Pillars Room Lower 6",
+        "MM Snowhead Temple Pot Pillars Room Lower 7"
       ]
     },
     {
@@ -225,24 +225,24 @@
       "coords": [655, 355],
       "image": "pot",
       "codes": [
-        "MM Snowhead Temple Pot Pillars Room Upper 5",
-        "MM Snowhead Temple Pot Pillars Room Upper 6"
+        "MM Snowhead Temple Pot Pillars Room Upper 1",
+        "MM Snowhead Temple Pot Pillars Room Upper 3"
       ]
     },
     {
       "coords": [573, 334],
       "image": "pot",
       "codes": [
-        "MM Snowhead Temple Pot Pillars Room Upper 3",
-        "MM Snowhead Temple Pot Pillars Room Upper 4"
+        "MM Snowhead Temple Pot Pillars Room Upper 5",
+        "MM Snowhead Temple Pot Pillars Room Upper 6"
       ]
     },
     {
       "coords": [588, 408],
       "image": "pot",
       "codes": [
-        "MM Snowhead Temple Pot Pillars Room Upper 1",
-        "MM Snowhead Temple Pot Pillars Room Upper 2"
+        "MM Snowhead Temple Pot Pillars Room Upper 2",
+        "MM Snowhead Temple Pot Pillars Room Upper 4"
       ]
     },
     {
@@ -267,15 +267,15 @@
       "codes": [
         "MM Snowhead Temple Pot Compass Room 1",
         "MM Snowhead Temple Pot Compass Room 2",
-        "MM Snowhead Temple Pot Compass Room 3"
+        "MM Snowhead Temple Pot Compass Room 5"
       ]
     },
     {
       "coords": [625, 509],
       "image": "pot",
       "codes": [
-        "MM Snowhead Temple Pot Compass Room 4",
-        "MM Snowhead Temple Pot Compass Room 5"
+        "MM Snowhead Temple Pot Compass Room 3",
+        "MM Snowhead Temple Pot Compass Room 4"
       ]
     },
     {
@@ -332,17 +332,17 @@
     {
       "coords": [88, 202],
       "image": "red_rupee",
-      "codes": ["MM Snowhead Temple Rupee 1"]
+      "codes": ["MM Snowhead Temple Rupee 2"]
     },
     {
       "coords": [111, 212],
       "image": "red_rupee",
-      "codes": ["MM Snowhead Temple Rupee 2"]
+      "codes": ["MM Snowhead Temple Rupee 3"]
     },
     {
       "coords": [129, 192],
       "image": "red_rupee",
-      "codes": ["MM Snowhead Temple Rupee 3"]
+      "codes": ["MM Snowhead Temple Rupee 1"]
     },
     {
       "coords": [369, 403],
@@ -394,18 +394,18 @@
       "coords": [142, 148],
       "image": "small_snowball",
       "codes": [
-        "MM Snowhead Temple Small Snowball Central Room 4",
-        "MM Snowhead Temple Small Snowball Central Room 5",
-        "MM Snowhead Temple Small Snowball Central Room 6"
+        "MM Snowhead Temple Small Snowball Central Room 1",
+        "MM Snowhead Temple Small Snowball Central Room 2",
+        "MM Snowhead Temple Small Snowball Central Room 3"
       ]
     },
     {
       "coords": [225, 155],
       "image": "small_snowball",
       "codes": [
-        "MM Snowhead Temple Small Snowball Central Room 1",
-        "MM Snowhead Temple Small Snowball Central Room 2",
-        "MM Snowhead Temple Small Snowball Central Room 3"
+        "MM Snowhead Temple Small Snowball Central Room 4",
+        "MM Snowhead Temple Small Snowball Central Room 5",
+        "MM Snowhead Temple Small Snowball Central Room 6"
       ]
     },
     {

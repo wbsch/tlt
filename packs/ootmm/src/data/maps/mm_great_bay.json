@@ -259,127 +259,127 @@
     {
       "coords": [602, 85],
       "image": "rock",
-      "codes": ["MM Great Bay Coast Rock Water 28"]
+      "codes": ["MM Great Bay Coast Rock Water 20"]
     },
     {
       "coords": [714, 101],
       "image": "rock",
-      "codes": ["MM Great Bay Coast Rock Ledge 3"]
+      "codes": ["MM Great Bay Coast Rock Ledge 2"]
     },
     {
       "coords": [685, 127],
       "image": "rock",
-      "codes": ["MM Great Bay Coast Rock Water 26"]
+      "codes": ["MM Great Bay Coast Rock Water 15"]
     },
     {
       "coords": [641, 137],
       "image": "rock",
-      "codes": ["MM Great Bay Coast Rock Water 27"]
+      "codes": ["MM Great Bay Coast Rock Water 21"]
     },
     {
       "coords": [691, 148],
       "image": "rock",
-      "codes": ["MM Great Bay Coast Rock Water 25"]
+      "codes": ["MM Great Bay Coast Rock Water 16"]
     },
     {
       "coords": [731, 174],
       "image": "rock",
-      "codes": ["MM Great Bay Coast Rock Ledge 2"]
+      "codes": ["MM Great Bay Coast Rock Ledge 1"]
     },
     {
       "coords": [713, 202],
       "image": "rock",
-      "codes": ["MM Great Bay Coast Rock Ledge 1"]
+      "codes": ["MM Great Bay Coast Rock Ledge 3"]
     },
     {
       "coords": [677, 206],
       "image": "rock",
-      "codes": ["MM Great Bay Coast Rock Water 24"]
+      "codes": ["MM Great Bay Coast Rock Water 18"]
     },
     {
       "coords": [665, 193],
       "image": "rock",
-      "codes": ["MM Great Bay Coast Rock Water 23"]
+      "codes": ["MM Great Bay Coast Rock Water 17"]
     },
     {
       "coords": [642, 207],
       "image": "rock",
-      "codes": ["MM Great Bay Coast Rock Water 22"]
+      "codes": ["MM Great Bay Coast Rock Water 28"]
     },
     {
       "coords": [650, 170],
       "image": "rock",
-      "codes": ["MM Great Bay Coast Rock Water 21"]
+      "codes": ["MM Great Bay Coast Rock Water 14"]
     },
     {
       "coords": [635, 170],
       "image": "rock",
-      "codes": ["MM Great Bay Coast Rock Water 20"]
+      "codes": ["MM Great Bay Coast Rock Water 13"]
     },
     {
       "coords": [612, 168],
       "image": "rock",
-      "codes": ["MM Great Bay Coast Rock Water 19"]
+      "codes": ["MM Great Bay Coast Rock Water 12"]
     },
     {
       "coords": [590, 163],
       "image": "rock",
-      "codes": ["MM Great Bay Coast Rock Water 18"]
+      "codes": ["MM Great Bay Coast Rock Water 05"]
     },
     {
       "coords": [562, 156],
       "image": "rock",
-      "codes": ["MM Great Bay Coast Rock Water 17"]
+      "codes": ["MM Great Bay Coast Rock Water 19"]
     },
     {
       "coords": [559, 172],
       "image": "rock",
-      "codes": ["MM Great Bay Coast Rock Water 16"]
+      "codes": ["MM Great Bay Coast Rock Water 03"]
     },
     {
       "coords": [583, 184],
       "image": "rock",
-      "codes": ["MM Great Bay Coast Rock Water 15"]
+      "codes": ["MM Great Bay Coast Rock Water 04"]
     },
     {
       "coords": [603, 215],
       "image": "rock",
-      "codes": ["MM Great Bay Coast Rock Water 13"]
+      "codes": ["MM Great Bay Coast Rock Water 06"]
     },
     {
       "coords": [557, 212],
       "image": "rock",
-      "codes": ["MM Great Bay Coast Rock Water 14"]
+      "codes": ["MM Great Bay Coast Rock Water 10"]
     },
     {
       "coords": [586, 239],
       "image": "rock",
-      "codes": ["MM Great Bay Coast Rock Water 12"]
+      "codes": ["MM Great Bay Coast Rock Water 07"]
     },
     {
       "coords": [602, 248],
       "image": "rock",
-      "codes": ["MM Great Bay Coast Rock Water 11"]
+      "codes": ["MM Great Bay Coast Rock Water 09"]
     },
     {
       "coords": [617, 254],
       "image": "rock",
-      "codes": ["MM Great Bay Coast Rock Water 10"]
+      "codes": ["MM Great Bay Coast Rock Water 08"]
     },
     {
       "coords": [559, 258],
       "image": "rock",
-      "codes": ["MM Great Bay Coast Rock Water 09"]
+      "codes": ["MM Great Bay Coast Rock Water 11"]
     },
     {
       "coords": [598, 297],
       "image": "rock",
-      "codes": ["MM Great Bay Coast Rock Water 08"]
+      "codes": ["MM Great Bay Coast Rock Water 27"]
     },
     {
       "coords": [620, 285],
       "image": "rock",
-      "codes": ["MM Great Bay Coast Rock Water 07"]
+      "codes": ["MM Great Bay Coast Rock Water 22"]
     },
     {
       "coords": [613, 303],
@@ -390,12 +390,12 @@
     {
       "coords": [613, 314],
       "image": "rock",
-      "codes": ["MM Great Bay Coast Rock Water 05"]
+      "codes": ["MM Great Bay Coast Rock Water 24"]
     },
     {
       "coords": [629, 298],
       "image": "rock",
-      "codes": ["MM Great Bay Coast Rock Water 06"]
+      "codes": ["MM Great Bay Coast Rock Water 23"]
     },
     {
       "coords": [644, 304],
@@ -403,8 +403,8 @@
       "codes": [
         "MM Great Bay Coast Rock Water 01",
         "MM Great Bay Coast Rock Water 02",
-        "MM Great Bay Coast Rock Water 03",
-        "MM Great Bay Coast Rock Water 04"
+        "MM Great Bay Coast Rock Water 25",
+        "MM Great Bay Coast Rock Water 26"
       ]
     },
     {
@@ -415,22 +415,22 @@
     {
       "coords": [683, 322],
       "image": "rock",
-      "codes": ["MM Great Bay Coast Rock Sand 4"]
+      "codes": ["MM Great Bay Coast Rock Sand 1"]
     },
     {
       "coords": [691, 306],
       "image": "rock",
-      "codes": ["MM Great Bay Coast Rock Sand 3"]
+      "codes": ["MM Great Bay Coast Rock Sand 4"]
     },
     {
       "coords": [705, 261],
       "image": "rock",
-      "codes": ["MM Great Bay Coast Rock Sand 1"]
+      "codes": ["MM Great Bay Coast Rock Sand 2"]
     },
     {
       "coords": [673, 249],
       "image": "rock",
-      "codes": ["MM Great Bay Coast Rock Sand 2"]
+      "codes": ["MM Great Bay Coast Rock Sand 3"]
     },
     {
       "coords": [602, 472],
@@ -465,13 +465,13 @@
       "coords": [535, 433],
       "image": "rock",
       "overlays": ["cursed_state"],
-      "codes": ["MM Zora Cape Rock Sand 2"]
+      "codes": ["MM Zora Cape Rock Sand 1"]
     },
     {
       "coords": [516, 429],
       "image": "rock",
       "overlays": ["cursed_state"],
-      "codes": ["MM Zora Cape Rock Sand 1"]
+      "codes": ["MM Zora Cape Rock Sand 2"]
     },
     {
       "coords": [457, 506],
