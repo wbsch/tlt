@@ -55,10 +55,6 @@ const OOT_EQUIPMENT_BITMASKS: Record<string, BitmaskEntry[]> = {
     { bit: 1, trackerId: 'OOT_SHIELD_HYLIAN' },
     { bit: 2, trackerId: 'OOT_SHIELD_MIRROR' },
   ],
-  OOT_BOOTS: [
-    { bit: 1, trackerId: 'OOT_BOOTS_IRON' },
-    { bit: 2, trackerId: 'OOT_BOOTS_HOVER' },
-  ],
 };
 
 // ---------------------------------------------------------------------------
@@ -240,6 +236,7 @@ const SKIP_IDS = new Set([
   'OOT_HEART_PIECES', // not tracked as item
   'MM_HEART_PIECES', // not tracked as item
   'OOT_TUNIC', // legacy combined tunic bitmask; direct tunic IDs are tracked now
+  'OOT_BOOTS', // legacy combined boots bitmask; direct boots IDs are tracked now
   'OOT_QUIVER', // upgrade level for bow, not tracked separately
   'MM_QUIVER', // upgrade level for bow, not tracked separately
   'OOT_BULLET_BAG', // upgrade level for slingshot, not tracked separately

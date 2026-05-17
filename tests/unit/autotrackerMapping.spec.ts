@@ -252,6 +252,22 @@ describe('autotracker composite item inference', () => {
     expect(translated.OOT_TUNIC_ZORA).toBe(1);
   });
 
+  it('ignores the legacy OOT boots bitmask and keeps direct boot ids', () => {
+    const translated = translateAutotrackerItems(
+      [
+        { id: 'OOT_BOOTS', qty: 3 },
+        { id: 'OOT_BOOTS_IRON', qty: 1 },
+        { id: 'OOT_BOOTS_HOVER', qty: 1 },
+      ],
+      makeAvailableItemIds(['OOT_BOOTS_IRON', 'OOT_BOOTS_HOVER']),
+      makeItemMaxCounts({}),
+    );
+
+    expect(translated.OOT_BOOTS).toBeUndefined();
+    expect(translated.OOT_BOOTS_IRON).toBe(1);
+    expect(translated.OOT_BOOTS_HOVER).toBe(1);
+  });
+
   it('uses the OOT hookshot stage for shared hookshot translation', () => {
     const translated = translateAutotrackerItems(
       [
