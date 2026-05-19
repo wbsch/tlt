@@ -8,12 +8,13 @@
     "node": ">=24"
   },
   "scripts": {
-    "predev": "npm run generate:asset-versions && npm run generate:map-icons && npm run generate:map-schema",
-    "prebuild": "npm run generate:asset-versions && npm run generate:map-icons && npm run generate:map-schema",
+    "predev": "npm run validate:autotracker-data && npm run generate:asset-versions && npm run generate:map-icons && npm run generate:map-schema",
+    "prebuild": "npm run validate:autotracker-data && npm run generate:asset-versions && npm run generate:map-icons && npm run generate:map-schema",
     "dev": "vite",
     "build": "vite build && python3 scripts/check_map_locations.py --build-warning-mode",
     "build:check": "vite build",
     "preview": "vite preview",
+    "generate:autotracker-data": "node --import tsx scripts/autotracker/generate_data.ts",
     "generate:asset-versions": "node scripts/generate_public_image_asset_versions.ts",
     "generate:map-icons": "node scripts/generate_map_icon_index.ts",
     "generate:map-schema": "node scripts/generate_map_schema.ts",
@@ -22,6 +23,7 @@
     "format": "prettier . --write",
     "format:check": "prettier . --check",
     "type-check": "vue-tsc --noEmit --project tsconfig.app.json",
+    "validate:autotracker-data": "node --import tsx scripts/autotracker/validate_data.ts",
     "audit:images": "node --import tsx scripts/audit_image_usage.ts",
     "compare:settings": "node --import tsx scripts/compare_settings.ts",
     "optimize:dirty-pngs": "bash scripts/optimize_dirty_pngs.sh",
@@ -32,7 +34,7 @@
     "test:e2e:headed": "playwright test --headed",
     "test:e2e:ui": "playwright test --ui",
     "test:e2e:install": "playwright install chromium",
-    "check-most": "npm run format && npm run lint:fix && npm run type-check && npm run build:check",
+    "check-most": "npm run format && npm run lint:fix && npm run type-check && npm run validate:autotracker-data && npm run build:check",
     "check-all": "npm run check-most && npm run test:unit && npm run test:pathfinder && npm run test:e2e"
   },
   "dependencies": {

@@ -1,7 +1,44 @@
-import inventorySlotsData from '../../../../tlt_autotracker/ootmm-autotracker/ootmm/inventory_slots.json';
-import locationsData from '../../../../tlt_autotracker/ootmm-autotracker/ootmm/locations.json';
-import specialLocationsMmData from '../../../../tlt_autotracker/ootmm-autotracker/ootmm/special_locations_mm.json';
-import specialLocationsOotData from '../../../../tlt_autotracker/ootmm-autotracker/ootmm/special_locations_oot.json';
+import autotrackerDataManifest from './data/manifest.json';
+import inventorySlotsData from './data/inventory_slots.json';
+import liveAddrsData from './data/live_addrs.json';
+import locationsData from './data/locations.json';
+import specialLocationsMmData from './data/special_locations_mm.json';
+import specialLocationsOotData from './data/special_locations_oot.json';
+
+const AUTOTRACKER_DATA_SCHEMA_VERSION = 1;
+
+type AutotrackerDataManifest = {
+  schemaVersion: number;
+  files: Record<string, number>;
+};
+
+type LiveAddrGameFile = {
+  comboCtx: string;
+  saveCtx: string;
+  payload: string;
+  foreignSaveLive?: string;
+  sharedCustomSaveLive?: string;
+};
+
+type LiveAddrFile = {
+  schemaVersion: number;
+  oot: LiveAddrGameFile;
+  mm: LiveAddrGameFile;
+};
+
+const autotrackerManifest = autotrackerDataManifest as AutotrackerDataManifest;
+if (autotrackerManifest.schemaVersion !== AUTOTRACKER_DATA_SCHEMA_VERSION) {
+  throw new Error(
+    `Unsupported autotracker data schema version: ${autotrackerManifest.schemaVersion}`,
+  );
+}
+
+const liveAddrs = liveAddrsData as LiveAddrFile;
+if (liveAddrs.schemaVersion !== 1) {
+  throw new Error(
+    `Unsupported live_addrs schema version: ${liveAddrs.schemaVersion}`,
+  );
+}
 
 export type RawAutotrackerGame = 'OoT' | 'MM';
 
@@ -48,6 +85,30 @@ export interface RawAutotrackerChunkSpec {
   name: string;
   address: number;
   length: number;
+}
+
+function parseHexAddress(raw: string | undefined, field: string): number {
+  if (!raw) {
+    throw new Error(`Missing autotracker live address for ${field}`);
+  }
+
+  const parsed = Number.parseInt(raw, 0);
+  if (!Number.isFinite(parsed)) {
+    throw new Error(`Invalid autotracker live address for ${field}: ${raw}`);
+  }
+
+  return parsed;
+}
+
+function parseHexAddressWithFallback(
+  raw: string | undefined,
+  fallback: number,
+): number {
+  if (!raw) {
+    return fallback;
+  }
+
+  return parseHexAddress(raw, 'fallback');
 }
 
 type InventorySlotFile = {
@@ -343,12 +404,29 @@ const ADDR_OOT_PLAYSTATE_PAL_11 = 0x801c6520;
 const ADDR_OOT_PLAYSTATE_DEBUG = 0x80212020;
 const ADDR_MM_PLAYSTATE_1 = 0x803e6b20;
 
-const ADDR_OOT_PAYLOAD = 0x80400000;
-const ADDR_MM_PAYLOAD = 0x80730000;
-const ADDR_OOT_FOREIGN_MM_SAVE_LIVE = 0x80443970;
-const ADDR_OOT_SHARED_CUSTOM_SAVE_LIVE = 0x80443100;
-const ADDR_MM_FOREIGN_OOT_SAVE_LIVE = 0x807729f0;
-const ADDR_MM_SHARED_CUSTOM_SAVE_LIVE = 0x80772180;
+const DEFAULT_ADDR_OOT_FOREIGN_MM_SAVE_LIVE = 0x80443970;
+const DEFAULT_ADDR_OOT_SHARED_CUSTOM_SAVE_LIVE = 0x80443100;
+const DEFAULT_ADDR_MM_FOREIGN_OOT_SAVE_LIVE = 0x807729f0;
+const DEFAULT_ADDR_MM_SHARED_CUSTOM_SAVE_LIVE = 0x80772180;
+
+const ADDR_OOT_PAYLOAD = parseHexAddress(liveAddrs.oot.payload, 'oot.payload');
+const ADDR_MM_PAYLOAD = parseHexAddress(liveAddrs.mm.payload, 'mm.payload');
+const ADDR_OOT_FOREIGN_MM_SAVE_LIVE = parseHexAddressWithFallback(
+  liveAddrs.oot.foreignSaveLive,
+  DEFAULT_ADDR_OOT_FOREIGN_MM_SAVE_LIVE,
+);
+const ADDR_OOT_SHARED_CUSTOM_SAVE_LIVE = parseHexAddressWithFallback(
+  liveAddrs.oot.sharedCustomSaveLive,
+  DEFAULT_ADDR_OOT_SHARED_CUSTOM_SAVE_LIVE,
+);
+const ADDR_MM_FOREIGN_OOT_SAVE_LIVE = parseHexAddressWithFallback(
+  liveAddrs.mm.foreignSaveLive,
+  DEFAULT_ADDR_MM_FOREIGN_OOT_SAVE_LIVE,
+);
+const ADDR_MM_SHARED_CUSTOM_SAVE_LIVE = parseHexAddressWithFallback(
+  liveAddrs.mm.sharedCustomSaveLive,
+  DEFAULT_ADDR_MM_SHARED_CUSTOM_SAVE_LIVE,
+);
 
 const SHARED_CUSTOM_SAVE_SIZE = 0x870;
 

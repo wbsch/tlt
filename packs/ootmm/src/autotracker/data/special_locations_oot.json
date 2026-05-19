@@ -1,0 +1,893 @@
+[
+  {
+    "symbol": "FAIRY_MAGIC_UPGRADE",
+    "sources": [
+      {
+        "group": "gOotExtraFlags",
+        "field": "gOotExtraFlags.greatFairies",
+        "bit": 25
+      }
+    ],
+    "note": "Great Fairy magic upgrade"
+  },
+  {
+    "symbol": "FAIRY_MAGIC_UPGRADE2",
+    "sources": [
+      {
+        "group": "gOotExtraFlags",
+        "field": "gOotExtraFlags.greatFairies",
+        "bit": 26
+      }
+    ],
+    "note": "Great Fairy magic upgrade 2"
+  },
+  {
+    "symbol": "FAIRY_DEFENSE_UPGRADE",
+    "sources": [
+      {
+        "group": "gOotExtraFlags",
+        "field": "gOotExtraFlags.greatFairies",
+        "bit": 27
+      }
+    ],
+    "note": "Great Fairy defense upgrade"
+  },
+  {
+    "symbol": "FAIRY_SPELL_WIND",
+    "sources": [
+      {
+        "group": "gOotExtraFlags",
+        "field": "gOotExtraFlags.greatFairies",
+        "bit": 28
+      }
+    ],
+    "note": "Great Fairy wind spell"
+  },
+  {
+    "symbol": "FAIRY_SPELL_FIRE",
+    "sources": [
+      {
+        "group": "gOotExtraFlags",
+        "field": "gOotExtraFlags.greatFairies",
+        "bit": 29
+      }
+    ],
+    "note": "Great Fairy fire spell"
+  },
+  {
+    "symbol": "FAIRY_SPELL_LOVE",
+    "sources": [
+      {
+        "group": "gOotExtraFlags",
+        "field": "gOotExtraFlags.greatFairies",
+        "bit": 30
+      }
+    ],
+    "note": "Great Fairy love spell"
+  },
+  {
+    "symbol": "FISH_CHILD",
+    "sources": [
+      {
+        "group": "gOotExtraFlags",
+        "field": "gOotExtraFlags.fishingChild",
+        "bit": 24
+      }
+    ],
+    "note": "Child fishing pond completed"
+  },
+  {
+    "symbol": "FISH_ADULT",
+    "sources": [
+      {
+        "group": "gOotExtraFlags",
+        "field": "gOotExtraFlags.fishingAdult",
+        "bit": 23
+      }
+    ],
+    "note": "Adult fishing pond completed"
+  },
+  {
+    "symbol": "GORON_LINK_TUNIC",
+    "sources": [
+      {
+        "group": "gOotExtraFlags",
+        "field": "gOotExtraFlags.tunicGoron",
+        "bit": 22
+      }
+    ],
+    "note": "Goron tunic trade item"
+  },
+  {
+    "symbol": "TRADE_BIGGORON_SWORD",
+    "sources": [
+      {
+        "group": "gOotExtraFlags",
+        "field": "gOotExtraFlags.biggoron",
+        "bit": 21
+      }
+    ],
+    "note": "Biggoron Sword trade item"
+  },
+  {
+    "symbol": "ZORA_KING_TUNIC",
+    "sources": [
+      {
+        "group": "gOotExtraFlags",
+        "field": "gOotExtraFlags.tunicZora",
+        "bit": 20
+      }
+    ],
+    "note": "Zora tunic trade item"
+  },
+  {
+    "symbol": "FIRE_ARROW",
+    "sources": [
+      {
+        "group": "gOotExtraFlags",
+        "field": "gOotExtraFlags.fireArrow",
+        "bit": 19
+      }
+    ],
+    "note": "Fire Arrow reward"
+  },
+  {
+    "symbol": "CHEST_GAME_KEY",
+    "sources": [
+      {
+        "group": "gOotExtraFlags",
+        "field": "gOotExtraFlags.chestGameKey",
+        "bit": 6
+      }
+    ],
+    "note": "Treasure Chest Game skeleton key"
+  },
+  {
+    "symbol": "TRADE_ODD_POTION",
+    "sources": [
+      {
+        "group": "gOotExtraFlags",
+        "field": "gOotExtraFlags.oddPotion",
+        "bit": 2
+      }
+    ],
+    "note": "Odd Potion trade item"
+  },
+  {
+    "symbol": "GERUDO_CARD",
+    "sources": [
+      {
+        "group": "inventoryQuest",
+        "field": "gOotSave.inventory.quest.value",
+        "bit": 22
+      }
+    ],
+    "note": "Gerudo Card quest item"
+  },
+  {
+    "symbol": "WEIRD_EGG",
+    "sources": [
+      {
+        "group": "gOotTradeSave",
+        "field": "gOotTradeSave.child",
+        "mask": "0x1FFE"
+      }
+    ],
+    "note": "Weird Egg child trade progression"
+  },
+  {
+    "symbol": "ZELDA_LETTER",
+    "sources": [
+      {
+        "group": "eventsChk",
+        "field": "gOotSave.context.eventsChk",
+        "flag": 89
+      }
+    ],
+    "note": "Zelda's Letter tracked with Zelda's Song learned event"
+  },
+  {
+    "symbol": "MALON_EGG",
+    "sources": [
+      {
+        "group": "eventsChk",
+        "field": "gOotSave.context.eventsChk",
+        "flag": 18
+      }
+    ],
+    "note": "Malon egg event"
+  },
+  {
+    "symbol": "MALON_SONG",
+    "sources": [
+      {
+        "group": "eventsChk",
+        "field": "gOotSave.context.eventsChk",
+        "flag": 98
+      }
+    ],
+    "note": "Epona's Song event"
+  },
+  {
+    "symbol": "MASTER_SWORD",
+    "sources": [
+      {
+        "group": "eventsChk",
+        "field": "gOotSave.context.eventsChk",
+        "flag": 79
+      }
+    ],
+    "note": "Master Sword pulled event"
+  },
+  {
+    "symbol": "LIGHT_MEDALLION",
+    "sources": [
+      {
+        "group": "eventsChk",
+        "field": "gOotSave.context.eventsChk",
+        "flag": 69
+      }
+    ],
+    "note": "Light Medallion obtained"
+  },
+  {
+    "symbol": "OCARINA_TIME_ITEM",
+    "sources": [
+      {
+        "group": "eventsChk",
+        "field": "gOotSave.context.eventsChk",
+        "flag": 67
+      }
+    ],
+    "note": "Ocarina of Time item obtained"
+  },
+  {
+    "symbol": "OCARINA_TIME_SONG",
+    "sources": [
+      {
+        "group": "eventsChk",
+        "field": "gOotSave.context.eventsChk",
+        "flag": 169
+      }
+    ],
+    "note": "Song of Time learned"
+  },
+  {
+    "symbol": "ROYAL_TOMB_SONG",
+    "sources": [
+      {
+        "group": "eventsChk",
+        "field": "gOotSave.context.eventsChk",
+        "flag": 90
+      }
+    ],
+    "note": "Song of Storms (Royal Tomb) event"
+  },
+  {
+    "symbol": "RUTO_LETTER",
+    "sources": [
+      {
+        "group": "eventsChk",
+        "field": "gOotSave.context.eventsChk",
+        "flag": 49
+      }
+    ],
+    "note": "Ruto's Letter event"
+  },
+  {
+    "symbol": "FROGS_GAME",
+    "sources": [
+      {
+        "group": "eventsChk",
+        "field": "gOotSave.context.eventsChk",
+        "flag": 208
+      }
+    ],
+    "note": "Frogs game started"
+  },
+  {
+    "symbol": "FROGS_ZL",
+    "sources": [
+      {
+        "group": "eventsChk",
+        "field": "gOotSave.context.eventsChk",
+        "flag": 209
+      }
+    ],
+    "note": "Frogs Zelda's Song"
+  },
+  {
+    "symbol": "FROGS_EPONA",
+    "sources": [
+      {
+        "group": "eventsChk",
+        "field": "gOotSave.context.eventsChk",
+        "flag": 210
+      }
+    ],
+    "note": "Frogs Epona's Song"
+  },
+  {
+    "symbol": "FROGS_SARIA",
+    "sources": [
+      {
+        "group": "eventsChk",
+        "field": "gOotSave.context.eventsChk",
+        "flag": 212
+      }
+    ],
+    "note": "Frogs Saria's Song"
+  },
+  {
+    "symbol": "FROGS_SUNS",
+    "sources": [
+      {
+        "group": "eventsChk",
+        "field": "gOotSave.context.eventsChk",
+        "flag": 211
+      }
+    ],
+    "note": "Frogs Sun's Song"
+  },
+  {
+    "symbol": "FROGS_SOT",
+    "sources": [
+      {
+        "group": "eventsChk",
+        "field": "gOotSave.context.eventsChk",
+        "flag": 213
+      }
+    ],
+    "note": "Frogs Song of Time"
+  },
+  {
+    "symbol": "FROGS_STORMS",
+    "sources": [
+      {
+        "group": "eventsChk",
+        "field": "gOotSave.context.eventsChk",
+        "flag": 214
+      }
+    ],
+    "note": "Frogs Song of Storms"
+  },
+  {
+    "symbol": "SARIA_SONG",
+    "sources": [
+      {
+        "group": "eventsChk",
+        "field": "gOotSave.context.eventsChk",
+        "flag": 88
+      }
+    ],
+    "note": "Saria's Song event"
+  },
+  {
+    "symbol": "ZORA_DIVING_GAME",
+    "sources": [
+      {
+        "group": "eventsChk",
+        "field": "gOotSave.context.eventsChk",
+        "flag": 56
+      }
+    ],
+    "note": "Zora Diving Game completed"
+  },
+  {
+    "symbol": "GS_10",
+    "sources": [
+      {
+        "group": "eventsChk",
+        "field": "gOotSave.context.eventsChk",
+        "flag": 218
+      }
+    ],
+    "note": "10 Golden Skulltulas collected"
+  },
+  {
+    "symbol": "GS_20",
+    "sources": [
+      {
+        "group": "eventsChk",
+        "field": "gOotSave.context.eventsChk",
+        "flag": 219
+      }
+    ],
+    "note": "20 Golden Skulltulas collected"
+  },
+  {
+    "symbol": "GS_30",
+    "sources": [
+      {
+        "group": "eventsChk",
+        "field": "gOotSave.context.eventsChk",
+        "flag": 220
+      }
+    ],
+    "note": "30 Golden Skulltulas collected"
+  },
+  {
+    "symbol": "GS_40",
+    "sources": [
+      {
+        "group": "eventsChk",
+        "field": "gOotSave.context.eventsChk",
+        "flag": 221
+      }
+    ],
+    "note": "40 Golden Skulltulas collected"
+  },
+  {
+    "symbol": "GS_50",
+    "sources": [
+      {
+        "group": "eventsChk",
+        "field": "gOotSave.context.eventsChk",
+        "flag": 222
+      }
+    ],
+    "note": "50 Golden Skulltulas collected"
+  },
+  {
+    "symbol": "SARIA_OCARINA",
+    "sources": [
+      {
+        "group": "eventsChk",
+        "field": "gOotSave.context.eventsChk",
+        "flag": 193
+      }
+    ],
+    "note": "Saria's Ocarina obtained"
+  },
+  {
+    "symbol": "SHEIK_FOREST",
+    "sources": [
+      {
+        "group": "eventsChk",
+        "field": "gOotSave.context.eventsChk",
+        "flag": 80
+      }
+    ],
+    "note": "Forest Temple boss defeated"
+  },
+  {
+    "symbol": "SHEIK_FIRE",
+    "sources": [
+      {
+        "group": "eventsChk",
+        "field": "gOotSave.context.eventsChk",
+        "flag": 81
+      }
+    ],
+    "note": "Fire Temple boss defeated"
+  },
+  {
+    "symbol": "SHEIK_WATER",
+    "sources": [
+      {
+        "group": "eventsChk",
+        "field": "gOotSave.context.eventsChk",
+        "flag": 82
+      }
+    ],
+    "note": "Water Temple boss defeated"
+  },
+  {
+    "symbol": "SHEIK_SHADOW",
+    "sources": [
+      {
+        "group": "eventsChk",
+        "field": "gOotSave.context.eventsChk",
+        "flag": 84
+      }
+    ],
+    "note": "Shadow Temple boss defeated"
+  },
+  {
+    "symbol": "SHEIK_LIGHT",
+    "sources": [
+      {
+        "group": "eventsChk",
+        "field": "gOotSave.context.eventsChk",
+        "flag": 85
+      }
+    ],
+    "note": "Light Temple boss defeated"
+  },
+  {
+    "symbol": "SHEIK_SPIRIT",
+    "sources": [
+      {
+        "group": "eventsChk",
+        "field": "gOotSave.context.eventsChk",
+        "flag": 172
+      }
+    ],
+    "note": "Spirit Temple boss defeated"
+  },
+  {
+    "symbol": "SONG_STORMS",
+    "sources": [
+      {
+        "group": "eventsChk",
+        "field": "gOotSave.context.eventsChk",
+        "flag": 91
+      }
+    ],
+    "note": "Song of Storms learned"
+  },
+  {
+    "symbol": "ZELDA_LETTER_EVENT",
+    "sources": [
+      {
+        "group": "eventsChk",
+        "field": "gOotSave.context.eventsChk",
+        "flag": 64
+      }
+    ],
+    "note": "Zelda's Letter event flag"
+  },
+  {
+    "symbol": "ZELDA_LIGHT_ARROW",
+    "sources": [
+      {
+        "group": "eventsChk",
+        "field": "gOotSave.context.eventsChk",
+        "flag": 196
+      }
+    ],
+    "note": "Light Arrows obtained"
+  },
+  {
+    "symbol": "ZELDA_SONG",
+    "sources": [
+      {
+        "group": "eventsChk",
+        "field": "gOotSave.context.eventsChk",
+        "flag": 89
+      }
+    ],
+    "note": "Zelda's Song learned"
+  },
+  {
+    "symbol": "ANJU_BOTTLE",
+    "sources": [
+      {
+        "group": "eventsItem",
+        "field": "gOotSave.context.eventsItem",
+        "flag": 12
+      }
+    ],
+    "note": "Anju's Bottle obtained"
+  },
+  {
+    "symbol": "TALON_BOTTLE",
+    "sources": [
+      {
+        "group": "eventsItem",
+        "field": "gOotSave.context.eventsItem",
+        "flag": 2
+      }
+    ],
+    "note": "Talon Bottle obtained"
+  },
+  {
+    "symbol": "SHOOTING_GAME_CHILD",
+    "sources": [
+      {
+        "group": "eventsItem",
+        "field": "gOotSave.context.eventsItem",
+        "flag": 13
+      }
+    ],
+    "note": "Shooting Gallery (Child) reward"
+  },
+  {
+    "symbol": "SHOOTING_GAME_ADULT",
+    "sources": [
+      {
+        "group": "eventsItem",
+        "field": "gOotSave.context.eventsItem",
+        "flag": 14
+      }
+    ],
+    "note": "Shooting Gallery (Adult) reward"
+  },
+  {
+    "symbol": "GERUDO_ARCHERY_2",
+    "sources": [
+      {
+        "group": "eventsItem",
+        "field": "gOotSave.context.eventsItem",
+        "flag": 15
+      }
+    ],
+    "note": "Gerudo Archery second reward"
+  },
+  {
+    "symbol": "LABORATORY_DIVE",
+    "sources": [
+      {
+        "group": "eventsItem",
+        "field": "gOotSave.context.eventsItem",
+        "flag": 16
+      }
+    ],
+    "note": "Laboratory Dive reward"
+  },
+  {
+    "symbol": "BOMBCHU_BOWLING_1",
+    "sources": [
+      {
+        "group": "eventsItem",
+        "field": "gOotSave.context.eventsItem",
+        "flag": 17
+      }
+    ],
+    "note": "Bombchu Bowling first reward"
+  },
+  {
+    "symbol": "BOMBCHU_BOWLING_2",
+    "sources": [
+      {
+        "group": "eventsItem",
+        "field": "gOotSave.context.eventsItem",
+        "flag": 18
+      }
+    ],
+    "note": "Bombchu Bowling second reward"
+  },
+  {
+    "symbol": "BLUE_WARP_GOHMA",
+    "sources": [
+      {
+        "group": "eventsChk",
+        "field": "gOotSave.context.eventsChk",
+        "flag": 25
+      }
+    ],
+    "note": "Deku Tree boss blue warp reward event"
+  },
+  {
+    "symbol": "BLUE_WARP_KING_DODONGO",
+    "sources": [
+      {
+        "group": "eventsChk",
+        "field": "gOotSave.context.eventsChk",
+        "flag": 37
+      }
+    ],
+    "note": "Dodongo Cavern boss blue warp reward event"
+  },
+  {
+    "symbol": "BLUE_WARP_BARINADE",
+    "sources": [
+      {
+        "group": "eventsChk",
+        "field": "gOotSave.context.eventsChk",
+        "flag": 55
+      }
+    ],
+    "note": "Jabu-Jabu boss blue warp reward event"
+  },
+  {
+    "symbol": "BLUE_WARP_PHANTOM_GANON",
+    "sources": [
+      {
+        "group": "eventsChk",
+        "field": "gOotSave.context.eventsChk",
+        "flag": 72
+      }
+    ],
+    "note": "Forest Temple boss blue warp reward event"
+  },
+  {
+    "symbol": "BLUE_WARP_VOLVAGIA",
+    "sources": [
+      {
+        "group": "eventsChk",
+        "field": "gOotSave.context.eventsChk",
+        "flag": 73
+      }
+    ],
+    "note": "Fire Temple boss blue warp reward event"
+  },
+  {
+    "symbol": "BLUE_WARP_MORPHA",
+    "sources": [
+      {
+        "group": "eventsChk",
+        "field": "gOotSave.context.eventsChk",
+        "flag": 74
+      }
+    ],
+    "note": "Water Temple boss blue warp reward event"
+  },
+  {
+    "symbol": "BLUE_WARP_BONGO_BONGO",
+    "sources": [
+      {
+        "group": "eventsChk",
+        "field": "gOotSave.context.eventsChk",
+        "flag": 97
+      }
+    ],
+    "note": "Shadow Temple boss blue warp reward event"
+  },
+  {
+    "symbol": "BLUE_WARP_TWINROVA",
+    "sources": [
+      {
+        "group": "eventsChk",
+        "field": "gOotSave.context.eventsChk",
+        "flag": 200
+      }
+    ],
+    "note": "Spirit Temple boss blue warp reward event"
+  },
+  {
+    "symbol": "KAKARIKO_ROOF_MAN",
+    "sources": [
+      {
+        "group": "eventsItem",
+        "field": "gOotSave.context.eventsItem",
+        "flag": 21
+      }
+    ],
+    "note": "Kakariko Roof Man reward"
+  },
+  {
+    "symbol": "LOST_WOODS_SKULL_KID",
+    "sources": [
+      {
+        "group": "eventsItem",
+        "field": "gOotSave.context.eventsItem",
+        "flag": 22
+      }
+    ],
+    "note": "Lost Woods Skull Kid reward"
+  },
+  {
+    "symbol": "LOST_WOODS_TARGET",
+    "sources": [
+      {
+        "group": "eventsItem",
+        "field": "gOotSave.context.eventsItem",
+        "flag": 29
+      }
+    ],
+    "note": "Lost Woods Target reward"
+  },
+  {
+    "symbol": "THEATER_STICKS",
+    "sources": [
+      {
+        "group": "eventsItem",
+        "field": "gOotSave.context.eventsItem",
+        "flag": 30
+      }
+    ],
+    "note": "Deku Theater Skull Mask reward"
+  },
+  {
+    "symbol": "THEATER_NUTS",
+    "sources": [
+      {
+        "group": "eventsItem",
+        "field": "gOotSave.context.eventsItem",
+        "flag": 31
+      }
+    ],
+    "note": "Deku Theater Mask of Truth reward"
+  },
+  {
+    "symbol": "DARUNIA_BRACELET",
+    "sources": [
+      {
+        "group": "eventsItem",
+        "field": "gOotSave.context.eventsItem",
+        "flag": 32
+      }
+    ],
+    "note": "Darunia's Bracelet obtained"
+  },
+  {
+    "symbol": "TRADE_POCKET_EGG",
+    "sources": [
+      {
+        "group": "eventsItem",
+        "field": "gOotSave.context.eventsItem",
+        "flag": 44
+      }
+    ],
+    "note": "Trade sequence Pocket Egg event"
+  },
+  {
+    "symbol": "MASK_SELL_KEATON",
+    "sources": [
+      {
+        "group": "eventsItem",
+        "field": "gOotSave.context.eventsItem",
+        "flag": 56
+      }
+    ],
+    "note": "Keaton Mask sold"
+  },
+  {
+    "symbol": "MASK_SELL_SKULL",
+    "sources": [
+      {
+        "group": "eventsItem",
+        "field": "gOotSave.context.eventsItem",
+        "flag": 57
+      }
+    ],
+    "note": "Skull Mask sold"
+  },
+  {
+    "symbol": "MASK_SELL_SPOOKY",
+    "sources": [
+      {
+        "group": "eventsItem",
+        "field": "gOotSave.context.eventsItem",
+        "flag": 58
+      }
+    ],
+    "note": "Spooky Mask sold"
+  },
+  {
+    "symbol": "MASK_SELL_BUNNY",
+    "sources": [
+      {
+        "group": "eventsItem",
+        "field": "gOotSave.context.eventsItem",
+        "flag": 59
+      }
+    ],
+    "note": "Bunny Hood sold"
+  },
+  {
+    "symbol": "GORON_BOMB_BAG",
+    "sources": [
+      {
+        "group": "eventsMisc",
+        "field": "gOotSave.context.eventsMisc",
+        "flag": 286
+      }
+    ],
+    "note": "Goron Bomb Bag obtained"
+  },
+  {
+    "symbol": "GERUDO_ARCHERY_1",
+    "sources": [
+      {
+        "group": "eventsMisc",
+        "field": "gOotSave.context.eventsMisc",
+        "flag": 400
+      }
+    ],
+    "note": "Gerudo Archery first reward"
+  },
+  {
+    "symbol": "DOG_LADY",
+    "sources": [
+      {
+        "group": "eventsMisc",
+        "field": "gOotSave.context.eventsMisc",
+        "flag": 401
+      }
+    ],
+    "note": "Dog Lady Heart Piece"
+  },
+  {
+    "symbol": "MEDIGORON",
+    "sources": [
+      {
+        "group": "eventsMisc",
+        "field": "gOotSave.context.eventsMisc",
+        "flag": 178
+      }
+    ],
+    "note": "Medigoron obtained"
+  }
+]

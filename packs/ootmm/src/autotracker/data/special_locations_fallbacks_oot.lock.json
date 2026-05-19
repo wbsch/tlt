@@ -1,0 +1,650 @@
+[
+  {
+    "symbol": "ANJU_BOTTLE",
+    "source": {
+      "group": "eventsItem",
+      "field": "gOotSave.context.eventsItem",
+      "flag": 12
+    }
+  },
+  {
+    "symbol": "BLUE_WARP_BARINADE",
+    "source": {
+      "group": "eventsChk",
+      "field": "gOotSave.context.eventsChk",
+      "flag": 55
+    }
+  },
+  {
+    "symbol": "BLUE_WARP_BONGO_BONGO",
+    "source": {
+      "group": "eventsChk",
+      "field": "gOotSave.context.eventsChk",
+      "flag": 97
+    }
+  },
+  {
+    "symbol": "BLUE_WARP_GOHMA",
+    "source": {
+      "group": "eventsChk",
+      "field": "gOotSave.context.eventsChk",
+      "flag": 25
+    }
+  },
+  {
+    "symbol": "BLUE_WARP_KING_DODONGO",
+    "source": {
+      "group": "eventsChk",
+      "field": "gOotSave.context.eventsChk",
+      "flag": 37
+    }
+  },
+  {
+    "symbol": "BLUE_WARP_MORPHA",
+    "source": {
+      "group": "eventsChk",
+      "field": "gOotSave.context.eventsChk",
+      "flag": 74
+    }
+  },
+  {
+    "symbol": "BLUE_WARP_PHANTOM_GANON",
+    "source": {
+      "group": "eventsChk",
+      "field": "gOotSave.context.eventsChk",
+      "flag": 72
+    }
+  },
+  {
+    "symbol": "BLUE_WARP_TWINROVA",
+    "source": {
+      "group": "eventsChk",
+      "field": "gOotSave.context.eventsChk",
+      "flag": 200
+    }
+  },
+  {
+    "symbol": "BLUE_WARP_VOLVAGIA",
+    "source": {
+      "group": "eventsChk",
+      "field": "gOotSave.context.eventsChk",
+      "flag": 73
+    }
+  },
+  {
+    "symbol": "BOMBCHU_BOWLING_1",
+    "source": {
+      "group": "eventsItem",
+      "field": "gOotSave.context.eventsItem",
+      "flag": 17
+    }
+  },
+  {
+    "symbol": "BOMBCHU_BOWLING_2",
+    "source": {
+      "group": "eventsItem",
+      "field": "gOotSave.context.eventsItem",
+      "flag": 18
+    }
+  },
+  {
+    "symbol": "CHEST_GAME_KEY",
+    "source": {
+      "group": "gOotExtraFlags",
+      "field": "gOotExtraFlags.chestGameKey",
+      "bit": 6
+    }
+  },
+  {
+    "symbol": "DARUNIA_BRACELET",
+    "source": {
+      "group": "eventsItem",
+      "field": "gOotSave.context.eventsItem",
+      "flag": 32
+    }
+  },
+  {
+    "symbol": "DOG_LADY",
+    "source": {
+      "group": "eventsMisc",
+      "field": "gOotSave.context.eventsMisc",
+      "flag": 401
+    }
+  },
+  {
+    "symbol": "FAIRY_DEFENSE_UPGRADE",
+    "source": {
+      "group": "gOotExtraFlags",
+      "field": "gOotExtraFlags.greatFairies",
+      "bit": 27
+    }
+  },
+  {
+    "symbol": "FAIRY_MAGIC_UPGRADE",
+    "source": {
+      "group": "gOotExtraFlags",
+      "field": "gOotExtraFlags.greatFairies",
+      "bit": 25
+    }
+  },
+  {
+    "symbol": "FAIRY_MAGIC_UPGRADE2",
+    "source": {
+      "group": "gOotExtraFlags",
+      "field": "gOotExtraFlags.greatFairies",
+      "bit": 26
+    }
+  },
+  {
+    "symbol": "FAIRY_SPELL_FIRE",
+    "source": {
+      "group": "gOotExtraFlags",
+      "field": "gOotExtraFlags.greatFairies",
+      "bit": 29
+    }
+  },
+  {
+    "symbol": "FAIRY_SPELL_LOVE",
+    "source": {
+      "group": "gOotExtraFlags",
+      "field": "gOotExtraFlags.greatFairies",
+      "bit": 30
+    }
+  },
+  {
+    "symbol": "FAIRY_SPELL_WIND",
+    "source": {
+      "group": "gOotExtraFlags",
+      "field": "gOotExtraFlags.greatFairies",
+      "bit": 28
+    }
+  },
+  {
+    "symbol": "FIRE_ARROW",
+    "source": {
+      "group": "gOotExtraFlags",
+      "field": "gOotExtraFlags.fireArrow",
+      "bit": 19
+    }
+  },
+  {
+    "symbol": "FISH_ADULT",
+    "source": {
+      "group": "gOotExtraFlags",
+      "field": "gOotExtraFlags.fishingAdult",
+      "bit": 23
+    }
+  },
+  {
+    "symbol": "FISH_CHILD",
+    "source": {
+      "group": "gOotExtraFlags",
+      "field": "gOotExtraFlags.fishingChild",
+      "bit": 24
+    }
+  },
+  {
+    "symbol": "FROGS_EPONA",
+    "source": {
+      "group": "eventsChk",
+      "field": "gOotSave.context.eventsChk",
+      "flag": 210
+    }
+  },
+  {
+    "symbol": "FROGS_GAME",
+    "source": {
+      "group": "eventsChk",
+      "field": "gOotSave.context.eventsChk",
+      "flag": 208
+    }
+  },
+  {
+    "symbol": "FROGS_SARIA",
+    "source": {
+      "group": "eventsChk",
+      "field": "gOotSave.context.eventsChk",
+      "flag": 212
+    }
+  },
+  {
+    "symbol": "FROGS_SOT",
+    "source": {
+      "group": "eventsChk",
+      "field": "gOotSave.context.eventsChk",
+      "flag": 213
+    }
+  },
+  {
+    "symbol": "FROGS_STORMS",
+    "source": {
+      "group": "eventsChk",
+      "field": "gOotSave.context.eventsChk",
+      "flag": 214
+    }
+  },
+  {
+    "symbol": "FROGS_SUNS",
+    "source": {
+      "group": "eventsChk",
+      "field": "gOotSave.context.eventsChk",
+      "flag": 211
+    }
+  },
+  {
+    "symbol": "FROGS_ZL",
+    "source": {
+      "group": "eventsChk",
+      "field": "gOotSave.context.eventsChk",
+      "flag": 209
+    }
+  },
+  {
+    "symbol": "GERUDO_ARCHERY_1",
+    "source": {
+      "group": "eventsMisc",
+      "field": "gOotSave.context.eventsMisc",
+      "flag": 400
+    }
+  },
+  {
+    "symbol": "GERUDO_ARCHERY_2",
+    "source": {
+      "group": "eventsItem",
+      "field": "gOotSave.context.eventsItem",
+      "flag": 15
+    }
+  },
+  {
+    "symbol": "GERUDO_CARD",
+    "source": {
+      "group": "inventoryQuest",
+      "field": "gOotSave.inventory.quest.value",
+      "bit": 22
+    }
+  },
+  {
+    "symbol": "GORON_BOMB_BAG",
+    "source": {
+      "group": "eventsMisc",
+      "field": "gOotSave.context.eventsMisc",
+      "flag": 286
+    }
+  },
+  {
+    "symbol": "GORON_LINK_TUNIC",
+    "source": {
+      "group": "gOotExtraFlags",
+      "field": "gOotExtraFlags.tunicGoron",
+      "bit": 22
+    }
+  },
+  {
+    "symbol": "GS_10",
+    "source": {
+      "group": "eventsChk",
+      "field": "gOotSave.context.eventsChk",
+      "flag": 218
+    }
+  },
+  {
+    "symbol": "GS_20",
+    "source": {
+      "group": "eventsChk",
+      "field": "gOotSave.context.eventsChk",
+      "flag": 219
+    }
+  },
+  {
+    "symbol": "GS_30",
+    "source": {
+      "group": "eventsChk",
+      "field": "gOotSave.context.eventsChk",
+      "flag": 220
+    }
+  },
+  {
+    "symbol": "GS_40",
+    "source": {
+      "group": "eventsChk",
+      "field": "gOotSave.context.eventsChk",
+      "flag": 221
+    }
+  },
+  {
+    "symbol": "GS_50",
+    "source": {
+      "group": "eventsChk",
+      "field": "gOotSave.context.eventsChk",
+      "flag": 222
+    }
+  },
+  {
+    "symbol": "KAKARIKO_ROOF_MAN",
+    "source": {
+      "group": "eventsItem",
+      "field": "gOotSave.context.eventsItem",
+      "flag": 21
+    }
+  },
+  {
+    "symbol": "LABORATORY_DIVE",
+    "source": {
+      "group": "eventsItem",
+      "field": "gOotSave.context.eventsItem",
+      "flag": 16
+    }
+  },
+  {
+    "symbol": "LIGHT_MEDALLION",
+    "source": {
+      "group": "eventsChk",
+      "field": "gOotSave.context.eventsChk",
+      "flag": 69
+    }
+  },
+  {
+    "symbol": "LOST_WOODS_SKULL_KID",
+    "source": {
+      "group": "eventsItem",
+      "field": "gOotSave.context.eventsItem",
+      "flag": 22
+    }
+  },
+  {
+    "symbol": "LOST_WOODS_TARGET",
+    "source": {
+      "group": "eventsItem",
+      "field": "gOotSave.context.eventsItem",
+      "flag": 29
+    }
+  },
+  {
+    "symbol": "MALON_EGG",
+    "source": {
+      "group": "eventsChk",
+      "field": "gOotSave.context.eventsChk",
+      "flag": 18
+    }
+  },
+  {
+    "symbol": "MALON_SONG",
+    "source": {
+      "group": "eventsChk",
+      "field": "gOotSave.context.eventsChk",
+      "flag": 98
+    }
+  },
+  {
+    "symbol": "MASK_SELL_BUNNY",
+    "source": {
+      "group": "eventsItem",
+      "field": "gOotSave.context.eventsItem",
+      "flag": 59
+    }
+  },
+  {
+    "symbol": "MASK_SELL_KEATON",
+    "source": {
+      "group": "eventsItem",
+      "field": "gOotSave.context.eventsItem",
+      "flag": 56
+    }
+  },
+  {
+    "symbol": "MASK_SELL_SKULL",
+    "source": {
+      "group": "eventsItem",
+      "field": "gOotSave.context.eventsItem",
+      "flag": 57
+    }
+  },
+  {
+    "symbol": "MASK_SELL_SPOOKY",
+    "source": {
+      "group": "eventsItem",
+      "field": "gOotSave.context.eventsItem",
+      "flag": 58
+    }
+  },
+  {
+    "symbol": "MASTER_SWORD",
+    "source": {
+      "group": "eventsChk",
+      "field": "gOotSave.context.eventsChk",
+      "flag": 79
+    }
+  },
+  {
+    "symbol": "MEDIGORON",
+    "source": {
+      "group": "eventsMisc",
+      "field": "gOotSave.context.eventsMisc",
+      "flag": 178
+    }
+  },
+  {
+    "symbol": "OCARINA_TIME_ITEM",
+    "source": {
+      "group": "eventsChk",
+      "field": "gOotSave.context.eventsChk",
+      "flag": 67
+    }
+  },
+  {
+    "symbol": "OCARINA_TIME_SONG",
+    "source": {
+      "group": "eventsChk",
+      "field": "gOotSave.context.eventsChk",
+      "flag": 169
+    }
+  },
+  {
+    "symbol": "ROYAL_TOMB_SONG",
+    "source": {
+      "group": "eventsChk",
+      "field": "gOotSave.context.eventsChk",
+      "flag": 90
+    }
+  },
+  {
+    "symbol": "RUTO_LETTER",
+    "source": {
+      "group": "eventsChk",
+      "field": "gOotSave.context.eventsChk",
+      "flag": 49
+    }
+  },
+  {
+    "symbol": "SARIA_OCARINA",
+    "source": {
+      "group": "eventsChk",
+      "field": "gOotSave.context.eventsChk",
+      "flag": 193
+    }
+  },
+  {
+    "symbol": "SARIA_SONG",
+    "source": {
+      "group": "eventsChk",
+      "field": "gOotSave.context.eventsChk",
+      "flag": 88
+    }
+  },
+  {
+    "symbol": "SHEIK_FIRE",
+    "source": {
+      "group": "eventsChk",
+      "field": "gOotSave.context.eventsChk",
+      "flag": 81
+    }
+  },
+  {
+    "symbol": "SHEIK_FOREST",
+    "source": {
+      "group": "eventsChk",
+      "field": "gOotSave.context.eventsChk",
+      "flag": 80
+    }
+  },
+  {
+    "symbol": "SHEIK_LIGHT",
+    "source": {
+      "group": "eventsChk",
+      "field": "gOotSave.context.eventsChk",
+      "flag": 85
+    }
+  },
+  {
+    "symbol": "SHEIK_SHADOW",
+    "source": {
+      "group": "eventsChk",
+      "field": "gOotSave.context.eventsChk",
+      "flag": 84
+    }
+  },
+  {
+    "symbol": "SHEIK_SPIRIT",
+    "source": {
+      "group": "eventsChk",
+      "field": "gOotSave.context.eventsChk",
+      "flag": 172
+    }
+  },
+  {
+    "symbol": "SHEIK_WATER",
+    "source": {
+      "group": "eventsChk",
+      "field": "gOotSave.context.eventsChk",
+      "flag": 82
+    }
+  },
+  {
+    "symbol": "SHOOTING_GAME_ADULT",
+    "source": {
+      "group": "eventsItem",
+      "field": "gOotSave.context.eventsItem",
+      "flag": 14
+    }
+  },
+  {
+    "symbol": "SHOOTING_GAME_CHILD",
+    "source": {
+      "group": "eventsItem",
+      "field": "gOotSave.context.eventsItem",
+      "flag": 13
+    }
+  },
+  {
+    "symbol": "SONG_STORMS",
+    "source": {
+      "group": "eventsChk",
+      "field": "gOotSave.context.eventsChk",
+      "flag": 91
+    }
+  },
+  {
+    "symbol": "TALON_BOTTLE",
+    "source": {
+      "group": "eventsItem",
+      "field": "gOotSave.context.eventsItem",
+      "flag": 2
+    }
+  },
+  {
+    "symbol": "THEATER_NUTS",
+    "source": {
+      "group": "eventsItem",
+      "field": "gOotSave.context.eventsItem",
+      "flag": 31
+    }
+  },
+  {
+    "symbol": "THEATER_STICKS",
+    "source": {
+      "group": "eventsItem",
+      "field": "gOotSave.context.eventsItem",
+      "flag": 30
+    }
+  },
+  {
+    "symbol": "TRADE_BIGGORON_SWORD",
+    "source": {
+      "group": "gOotExtraFlags",
+      "field": "gOotExtraFlags.biggoron",
+      "bit": 21
+    }
+  },
+  {
+    "symbol": "TRADE_ODD_POTION",
+    "source": {
+      "group": "gOotExtraFlags",
+      "field": "gOotExtraFlags.oddPotion",
+      "bit": 2
+    }
+  },
+  {
+    "symbol": "TRADE_POCKET_EGG",
+    "source": {
+      "group": "eventsItem",
+      "field": "gOotSave.context.eventsItem",
+      "flag": 44
+    }
+  },
+  {
+    "symbol": "WEIRD_EGG",
+    "source": {
+      "group": "gOotTradeSave",
+      "field": "gOotTradeSave.child",
+      "mask": "0x1FFE"
+    }
+  },
+  {
+    "symbol": "ZELDA_LETTER",
+    "source": {
+      "group": "eventsChk",
+      "field": "gOotSave.context.eventsChk",
+      "flag": 89
+    }
+  },
+  {
+    "symbol": "ZELDA_LETTER_EVENT",
+    "source": {
+      "group": "eventsChk",
+      "field": "gOotSave.context.eventsChk",
+      "flag": 64
+    }
+  },
+  {
+    "symbol": "ZELDA_LIGHT_ARROW",
+    "source": {
+      "group": "eventsChk",
+      "field": "gOotSave.context.eventsChk",
+      "flag": 196
+    }
+  },
+  {
+    "symbol": "ZELDA_SONG",
+    "source": {
+      "group": "eventsChk",
+      "field": "gOotSave.context.eventsChk",
+      "flag": 89
+    }
+  },
+  {
+    "symbol": "ZORA_DIVING_GAME",
+    "source": {
+      "group": "eventsChk",
+      "field": "gOotSave.context.eventsChk",
+      "flag": 56
+    }
+  },
+  {
+    "symbol": "ZORA_KING_TUNIC",
+    "source": {
+      "group": "gOotExtraFlags",
+      "field": "gOotExtraFlags.tunicZora",
+      "bit": 20
+    }
+  }
+]
