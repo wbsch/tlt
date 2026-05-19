@@ -235,6 +235,7 @@ export const PERSIST_CONFIGS: Record<PersistStoreId, PersistConfig> = {
       'rightSidebarWidth',
       'activeMapId',
       'settingsSearchQuery',
+      'autotrackerProtocolMode',
     ],
     hydrate: (raw) => {
       const next: Record<string, unknown> = {
@@ -304,6 +305,10 @@ export const PERSIST_CONFIGS: Record<PersistStoreId, PersistConfig> = {
           : {}),
         ...(typeof raw.settingsSearchQuery === 'string'
           ? { settingsSearchQuery: safeUiString(raw.settingsSearchQuery) }
+          : {}),
+        ...(raw.autotrackerProtocolMode === 'legacy' ||
+        raw.autotrackerProtocolMode === 'raw'
+          ? { autotrackerProtocolMode: raw.autotrackerProtocolMode }
           : {}),
       };
 

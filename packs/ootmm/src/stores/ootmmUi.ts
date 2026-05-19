@@ -6,6 +6,7 @@ export type RightSidebarTab = 'locations' | 'entrances';
 export type ReachabilityFilter = 'all' | 'reachable' | 'unreachable';
 export type CollectionFilter = 'all' | 'collected' | 'uncollected';
 export type EntranceMappingFilter = 'all' | 'mapped' | 'unmapped';
+export type AutotrackerProtocolMode = 'legacy' | 'raw';
 export const DEFAULT_LEFT_SIDEBAR_WIDTH = 420;
 export const DEFAULT_RIGHT_SIDEBAR_WIDTH = 400;
 
@@ -38,6 +39,7 @@ export const useOoTMMUiStore = defineStore('ootmm-ui', () => {
   const entrancesSearchQuery = ref('');
 
   const settingsSearchQuery = ref('');
+  const autotrackerProtocolMode = ref<AutotrackerProtocolMode>('legacy');
 
   const isSpoilerDragActive = ref(false);
   const spoilerDragDepth = ref(0);
@@ -88,6 +90,13 @@ export const useOoTMMUiStore = defineStore('ootmm-ui', () => {
     rightSidebarWidth.value = Math.floor(width);
   }
 
+  function setAutotrackerProtocolMode(mode: AutotrackerProtocolMode) {
+    if (mode !== 'legacy' && mode !== 'raw') {
+      return;
+    }
+    autotrackerProtocolMode.value = mode;
+  }
+
   function resetUiState() {
     activeTab.value = 'grid';
     isRightSidebarOpen.value = true;
@@ -131,6 +140,7 @@ export const useOoTMMUiStore = defineStore('ootmm-ui', () => {
     entrancesMappingFilter,
     entrancesSearchQuery,
     settingsSearchQuery,
+    autotrackerProtocolMode,
     isSpoilerDragActive,
     spoilerDragDepth,
     leftSidebarWidth,
@@ -143,6 +153,7 @@ export const useOoTMMUiStore = defineStore('ootmm-ui', () => {
     setSpoilerDragDepth,
     setLeftSidebarWidth,
     setRightSidebarWidth,
+    setAutotrackerProtocolMode,
     resetUiState,
     activeMapId,
   };

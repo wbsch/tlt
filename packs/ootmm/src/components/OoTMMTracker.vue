@@ -247,6 +247,7 @@ const {
   entrancesReachabilityFilter,
   entrancesMappingFilter,
   activeMapId,
+  autotrackerProtocolMode,
 } = storeToRefs(uiStore);
 
 const settingsRef = ref<SettingsPanelHandle | null>(null);
@@ -522,6 +523,7 @@ const { resolveCodeToCheckIds: resolveMapSelectorCodeToCheckIds } =
 const autotracker = useAutotracker({
   availableItemIds: availableItemIds,
   itemMaxCounts: itemMaxCounts,
+  protocolMode: autotrackerProtocolMode,
   childWalletsEnabled: computed(() =>
     Boolean(trackerSettings.value?.childWallets),
   ),
@@ -2617,7 +2619,9 @@ onBeforeUnmount(() => {
             :status="autotracker.status.value"
             :enabled="autotracker.enabled.value"
             :last-error="autotracker.lastError.value"
+            :protocol-mode="autotrackerProtocolMode"
             @update:enabled="handleAutotrackerEnabledUpdate"
+            @update:protocol-mode="uiStore.setAutotrackerProtocolMode"
             @start-overwrite="startAutotrackerOverwriteMode"
           />
         </div>

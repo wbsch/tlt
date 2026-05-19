@@ -1,15 +1,20 @@
 <script setup lang="ts">
 import { computed, onBeforeUnmount, onMounted, ref } from 'vue';
-import type { AutotrackerStatus } from '../autotracker/useAutotracker';
+import type {
+  AutotrackerProtocolMode,
+  AutotrackerStatus,
+} from '../autotracker/useAutotracker';
 
 const props = defineProps<{
   status: AutotrackerStatus;
   enabled: boolean;
   lastError: string | null;
+  protocolMode: AutotrackerProtocolMode;
 }>();
 
 const emit = defineEmits<{
   'update:enabled': [value: boolean];
+  'update:protocolMode': [value: AutotrackerProtocolMode];
   'start-overwrite': [];
 }>();
 
@@ -72,8 +77,12 @@ const dropdownStateClasses = computed(() => ({
   'autotracker-dropdown-toggle--error': isError.value,
 }));
 
+const protocolModeLabel = computed(() =>
+  props.protocolMode === 'raw' ? 'Raw' : 'Legacy',
+);
+
 const buttonTitle = computed(() => {
-  const baseTitle = lastErrorTitle();
+  const baseTitle = `${lastErrorTitle()} - ${protocolModeLabel.value} protocol`;
   if (props.enabled) {
     return baseTitle;
   }
@@ -126,6 +135,13 @@ function startOverwrite() {
   }
   closeMenu();
   emit('start-overwrite');
+}
+
+function setProtocolMode(mode: AutotrackerProtocolMode) {
+  if (props.enabled || props.protocolMode === mode) {
+    return;
+  }
+  emit('update:protocolMode', mode);
 }
 
 onMounted(() => {
@@ -186,6 +202,33 @@ onBeforeUnmount(() => {
         @click="startOverwrite"
       >
         Overwrite current state
+      </button>
+      <div class="autotracker-dropdown-section-label">Protocol</div>
+      <button
+        type="button"
+        class="autotracker-dropdown-item"
+        :class="{
+          'autotracker-dropdown-item--selected': protocolMode === 'legacy',
+        }"
+        data-testid="autotracker-protocol-legacy-button"
+        role="menuitemradio"
+        :aria-checked="protocolMode === 'legacy' ? 'true' : 'false'"
+        @click="setProtocolMode('legacy')"
+      >
+        Legacy protocol
+      </button>
+      <button
+        type="button"
+        class="autotracker-dropdown-item"
+        :class="{
+          'autotracker-dropdown-item--selected': protocolMode === 'raw',
+        }"
+        data-testid="autotracker-protocol-raw-button"
+        role="menuitemradio"
+        :aria-checked="protocolMode === 'raw' ? 'true' : 'false'"
+        @click="setProtocolMode('raw')"
+      >
+        Raw protocol
       </button>
     </div>
   </div>
@@ -308,6 +351,24 @@ onBeforeUnmount(() => {
 
 .autotracker-dropdown-item:hover {
   background: #3a3a3a;
+}
+
+.autotracker-dropdown-item--selected {
+  color: #fff;
+  background: #2f4d32;
+}
+
+.autotracker-dropdown-item--selected:hover {
+  background: #3b6240;
+}
+
+.autotracker-dropdown-section-label {
+  padding: 0.45rem 0.75rem 0.2rem;
+  color: #9ca3af;
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
 }
 
 .autotracker-indicator {

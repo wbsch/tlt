@@ -1,0 +1,69 @@
+Refactoring-Plan: Go-Autotracker (tlt_autotracker) als Raw-Passthrough, Logik in tlt
+Ziel ist eine saubere Trennung:
+Der Go-Autotracker liefert nur noch rohe Save-Daten über WebSocket.
+Die komplette fachliche Auswertung (Speicherbereich-Erkennung, Parsing, Item-/Check-Extraktion, JSON-basierte Mappings) liegt danach in tlt.
+
+Leitentscheidungen
+Transportformat: Base64-kodierte Binär-Chunks über WebSocket.
+Rollout: Parallelbetrieb mit Go-vs-TS-Vergleich vor dem Umschalten.
+Zielstruktur für Migration: packs/ootmm/src, tests/unit, scripts/autotracker.
+Scope: Alle JSON-Basen, Tests und Skripte aus dem Go-Interpretationspfad werden nach tlt überführt.
+Phase 0: Vertrag und Scope einfrieren
+Neues Raw-WebSocket-Protokoll definieren:
+Nachrichtentypen, Felder, Reihenfolge, Refresh-/Full-Sync-Verhalten.
+Verantwortungen klar abgrenzen:
+Go = Emulator-I/O und Raw-Read.
+tlt = komplette Interpretation und Mapping.
+Abnahmekriterien festlegen:
+Funktionsparität, Testergebnisparität, Laufzeitparität.
+Phase 1: Go auf Transport reduzieren
+Raw-Stream im Go-WebSocket-Server einführen.
+Bestehende Go-Interpretation temporär hinter Feature-Flag behalten.
+Hot-Path bereinigen:
+Keine Item-/Check-Berechnung mehr im Go-Produktivpfad.
+Go-Tests auf Transport fokussieren:
+Reihenfolge, Full-Sync, Base64-Integrität.
+Phase 2: Parsing und Semantik in tlt aufbauen
+Raw-Ingest-Pipeline in tlt implementieren.
+Speicherbereich-Erkennung aus Go nach TypeScript portieren.
+Binärparser für OoT/MM/Shared-Strukturen in TypeScript portieren.
+Item-/Check-Extraktion aus Go nach TypeScript portieren.
+In bestehende tlt-Autotracker-Flows integrieren, Store-APIs stabil halten.
+Feature-Flag für Legacy-Stream vs. Raw-zu-TS-Stream einsetzen.
+Phase 3: JSON-Basis nach tlt verlagern
+Go-embedded JSON-Dateien als tlt-owned Datenbasis übernehmen.
+Generierungs- und Validierungsskripte nach scripts/autotracker migrieren.
+Build/CI so verdrahten, dass JSON-Generierung und Validierung verpflichtend sind.
+Datenformat stabil halten, Änderungen nur versioniert einführen.
+Phase 4: Tests und Skripte umziehen
+Go-Interpretationstests in tlt-Tests portieren.
+Snapshot-/Diff-/Analyse-Skripte in tlt-Scriptstruktur migrieren.
+Paritätsharness einführen:
+Gleiche Raw-Fixtures durch Go-Altlogik und TS-Neulogik laufen lassen.
+Im Go-Projekt nur noch Transport-/Emulator-nahe Tests belassen.
+Phase 5: Parallelbetrieb und Cutover
+Dual-Path aktivieren und strukturierte Diffs erfassen.
+Abweichungen kategorisieren und systematisch beheben:
+Regionserkennung, Offsets, Bitfelder, Mapping.
+Nach stabiler Parität TS als Standard aktivieren.
+Go-Legacy-Interpretation nach Rollback-Fenster entfernen.
+Phase 6: Doku und Betriebsreife
+Architektur- und Entwicklerdoku aktualisieren.
+Raw-Frame-Capture/Replay für reproduzierbares Debugging dokumentieren.
+Performance-Budgets definieren:
+Payload-Größe, Parse-Latenz, Update-Frequenz.
+Verifikation
+Paritätstests:
+Output von Go-Legacy und TS-Neu muss für Items/Checks/Locations übereinstimmen.
+Unit-/Integrationstests in tlt müssen grün sein.
+Build muss grün sein.
+Reachability-Test muss voll durchlaufen.
+Browser-Check mit Debug Activate All muss volle Erreichbarkeit liefern.
+In Scope
+Go-zu-tlt-Verlagerung aller Interpretationslogiken.
+Übernahme der JSON-Basis in tlt.
+Umzug aller relevanten Tests und Skripte.
+Out of Scope
+Umbau von Emulator-Backends.
+Änderungen innerhalb der externen OoTMM-Quellen.
+UI-Redesign außerhalb autotracker-relevanter Integrationspunkte.
