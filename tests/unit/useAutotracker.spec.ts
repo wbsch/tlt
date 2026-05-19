@@ -97,7 +97,7 @@ describe('useAutotracker checks', () => {
     expect(JSON.parse(socket.sentMessages[0])).toEqual({
       type: 'handshake',
       features: ['items', 'checks'],
-      flags: {},
+      flags: { protocol: 'legacy' },
     });
 
     socket.emitMessage({
@@ -535,7 +535,7 @@ describe('useAutotracker checks', () => {
     expect(JSON.parse(socket.sentMessages[0])).toEqual({
       type: 'handshake',
       features: ['items', 'checks'],
-      flags: {},
+      flags: { protocol: 'legacy' },
     });
 
     socket.emitMessage({
