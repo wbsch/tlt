@@ -215,7 +215,7 @@ onBeforeUnmount(() => {
         :aria-checked="protocolMode === 'legacy' ? 'true' : 'false'"
         @click="setProtocolMode('legacy')"
       >
-        Legacy protocol
+        Legacy protocol (rollback)
       </button>
       <button
         type="button"

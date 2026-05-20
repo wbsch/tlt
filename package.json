@@ -31,6 +31,7 @@
     "test:pathfinder": "node --import tsx scripts/pathfinder-tests/run_ootmm.ts tests/pathfinder/tests_silke.jsonc",
     "test:pathfinder:web": "node --import tsx scripts/pathfinder-tests/run_silke_playwright.ts tests/pathfinder/tests_silke.jsonc",
     "test:autotracker:parity": "node --import tsx scripts/autotracker/check_fixture_parity.ts",
+    "test:autotracker:parity:report": "node --import tsx scripts/autotracker/report_fixture_parity_diffs.ts",
     "test:unit": "vitest run",
     "test:e2e": "playwright test",
     "test:e2e:headed": "playwright test --headed",

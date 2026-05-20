@@ -39,7 +39,9 @@ export const useOoTMMUiStore = defineStore('ootmm-ui', () => {
   const entrancesSearchQuery = ref('');
 
   const settingsSearchQuery = ref('');
-  const autotrackerProtocolMode = ref<AutotrackerProtocolMode>('legacy');
+  // Phase 5 cutover: prefer TS raw parsing by default while keeping
+  // manual rollback to legacy mode via the autotracker menu.
+  const autotrackerProtocolMode = ref<AutotrackerProtocolMode>('raw');
 
   const isSpoilerDragActive = ref(false);
   const spoilerDragDepth = ref(0);
