@@ -7,6 +7,7 @@ import {
 } from './autotrackerMapping';
 import {
   createRawAutotrackerParser,
+  RAW_MEMORY_AREAS_BY_GAME,
   type RawAutotrackerMessage,
 } from './rawFrameParser';
 
@@ -363,6 +364,14 @@ function buildHandshakeMessage(protocolMode: AutotrackerProtocolMode): string {
     flags: {
       protocol: protocolMode,
     },
+    ...(protocolMode === 'raw'
+      ? {
+          memoryAreas: {
+            oot: RAW_MEMORY_AREAS_BY_GAME.oot,
+            mm: RAW_MEMORY_AREAS_BY_GAME.mm,
+          },
+        }
+      : {}),
   });
 }
 

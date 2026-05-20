@@ -4,6 +4,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import {
   useAutotracker,
   type AutotrackerCheck,
+  type AutotrackerProtocolMode,
   type AutotrackerSyncPhase,
 } from '@/../packs/ootmm/src/autotracker/useAutotracker';
 import { resolveAutotrackerCheckToLocationIds } from '@/../packs/ootmm/src/autotracker/checkMapping';
@@ -517,6 +518,48 @@ describe('useAutotracker checks', () => {
       { OOT_ODD_POTION: 1, OOT_POCKET_EGG: 1 },
       { OOT_ODD_POTION: 1 },
     ]);
+  });
+
+  it('requests only active-game raw memory areas in raw mode', async () => {
+    const autotracker = useAutotracker({
+      availableItemIds: ref(new Set<string>()),
+      itemMaxCounts: ref(new Map<string, number>()),
+      protocolMode: ref<AutotrackerProtocolMode>('raw'),
+      onInventoryUpdate: () => {},
+    });
+
+    autotracker.enabled.value = true;
+    await nextTick();
+
+    const socket = FakeWebSocket.instances[0];
+    expect(socket).toBeDefined();
+
+    socket.emitOpen();
+
+    const handshake = JSON.parse(socket.sentMessages[0]);
+    expect(handshake).toMatchObject({
+      type: 'handshake',
+      features: ['raw'],
+      flags: { protocol: 'raw' },
+      memoryAreas: {
+        oot: expect.arrayContaining([
+          'oot_save_ctx',
+          'oot_payload',
+          'oot_playstate_core',
+          'oot_playstate_tail',
+        ]),
+        mm: expect.arrayContaining([
+          'mm_save_ctx',
+          'mm_payload',
+          'mm_playstate_core',
+          'mm_playstate_tail',
+        ]),
+      },
+    });
+    expect(handshake.memoryAreas.oot).not.toContain('mm_save_ctx');
+    expect(handshake.memoryAreas.mm).not.toContain('oot_save_ctx');
+    expect(handshake.memoryAreas.oot).not.toContain('combo_ctx_oot');
+    expect(handshake.memoryAreas.mm).not.toContain('combo_ctx_mm');
   });
 
   it('probes autotracker availability via handshake acknowledgement', async () => {
