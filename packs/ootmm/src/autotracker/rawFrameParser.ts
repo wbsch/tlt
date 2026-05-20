@@ -16,6 +16,9 @@ type LiveAddrGameFile = {
   comboCtx: string;
   saveCtx: string;
   payload: string;
+  comboConfigLive?: string;
+  runtimeMaxKeysLive?: string;
+  runtimeSilverRupeeDataLive?: string;
   foreignSaveLive?: string;
   sharedCustomSaveLive?: string;
 };
@@ -386,15 +389,8 @@ type DecodedRawChunk = {
 
 type RawFrameMemory = Map<string, DecodedRawChunk>;
 
-const COMBO_CTX_SIZE = 0x20;
-
-const OOT_SAVE_CTX_SIZE = 0x1450;
 const OOT_SAVE_SIZE = 0x1354;
-const MM_SAVE_CTX_SIZE = 0x48d0;
 const MM_SAVE_SIZE = 0x3ca0;
-
-const OOT_PAYLOAD_SIZE = 0x80000;
-const MM_PAYLOAD_SIZE = 0x50000;
 
 const ADDR_OOT_PLAYSTATE_NTSC_10 = 0x801c84a0;
 const ADDR_OOT_PLAYSTATE_NTSC_11 = 0x801c8660;
@@ -408,9 +404,13 @@ const DEFAULT_ADDR_OOT_FOREIGN_MM_SAVE_LIVE = 0x80443970;
 const DEFAULT_ADDR_OOT_SHARED_CUSTOM_SAVE_LIVE = 0x80443100;
 const DEFAULT_ADDR_MM_FOREIGN_OOT_SAVE_LIVE = 0x807729f0;
 const DEFAULT_ADDR_MM_SHARED_CUSTOM_SAVE_LIVE = 0x80772180;
+const DEFAULT_ADDR_OOT_RUNTIME_MAX_KEYS_LIVE = 0x80441c78;
+const DEFAULT_ADDR_OOT_RUNTIME_OOT_COMBO_CONFIG_LIVE = 0x804416c8;
+const DEFAULT_ADDR_OOT_RUNTIME_SILVER_RUPEE_DATA_LIVE = 0x8042ec10;
+const DEFAULT_ADDR_MM_RUNTIME_OOT_COMBO_CONFIG_LIVE = 0x80770b18;
 
-const ADDR_OOT_PAYLOAD = parseHexAddress(liveAddrs.oot.payload, 'oot.payload');
-const ADDR_MM_PAYLOAD = parseHexAddress(liveAddrs.mm.payload, 'mm.payload');
+const ADDR_OOT_SAVE_CTX = parseHexAddress(liveAddrs.oot.saveCtx, 'oot.saveCtx');
+const ADDR_MM_SAVE_CTX = parseHexAddress(liveAddrs.mm.saveCtx, 'mm.saveCtx');
 const ADDR_OOT_FOREIGN_MM_SAVE_LIVE = parseHexAddressWithFallback(
   liveAddrs.oot.foreignSaveLive,
   DEFAULT_ADDR_OOT_FOREIGN_MM_SAVE_LIVE,
@@ -426,6 +426,22 @@ const ADDR_MM_FOREIGN_OOT_SAVE_LIVE = parseHexAddressWithFallback(
 const ADDR_MM_SHARED_CUSTOM_SAVE_LIVE = parseHexAddressWithFallback(
   liveAddrs.mm.sharedCustomSaveLive,
   DEFAULT_ADDR_MM_SHARED_CUSTOM_SAVE_LIVE,
+);
+const ADDR_OOT_RUNTIME_MAX_KEYS_LIVE = parseHexAddressWithFallback(
+  liveAddrs.oot.runtimeMaxKeysLive,
+  DEFAULT_ADDR_OOT_RUNTIME_MAX_KEYS_LIVE,
+);
+const ADDR_OOT_RUNTIME_OOT_COMBO_CONFIG_LIVE = parseHexAddressWithFallback(
+  liveAddrs.oot.comboConfigLive,
+  DEFAULT_ADDR_OOT_RUNTIME_OOT_COMBO_CONFIG_LIVE,
+);
+const ADDR_OOT_RUNTIME_SILVER_RUPEE_DATA_LIVE = parseHexAddressWithFallback(
+  liveAddrs.oot.runtimeSilverRupeeDataLive,
+  DEFAULT_ADDR_OOT_RUNTIME_SILVER_RUPEE_DATA_LIVE,
+);
+const ADDR_MM_RUNTIME_OOT_COMBO_CONFIG_LIVE = parseHexAddressWithFallback(
+  liveAddrs.mm.comboConfigLive,
+  DEFAULT_ADDR_MM_RUNTIME_OOT_COMBO_CONFIG_LIVE,
 );
 
 const SHARED_CUSTOM_SAVE_SIZE = 0x870;
@@ -838,42 +854,105 @@ const OOT_PLAYSTATE_CANDIDATE_ADDRS = [
 ];
 
 const MM_PLAYSTATE_CANDIDATE_ADDRS = [ADDR_MM_PLAYSTATE_1];
+const OOT_SAVE_CTX_CHUNK = 'oot_save_ctx';
+const MM_SAVE_CTX_CHUNK = 'mm_save_ctx';
+const OOT_FOREIGN_MM_SAVE_CHUNK = 'oot_foreign_mm_save';
+const MM_FOREIGN_OOT_SAVE_CHUNK = 'mm_foreign_oot_save';
+const OOT_SHARED_CUSTOM_SAVE_CHUNK = 'oot_shared_custom_save';
+const MM_SHARED_CUSTOM_SAVE_CHUNK = 'mm_shared_custom_save';
+const OOT_RUNTIME_COMBO_CONFIG_CHUNK = 'oot_runtime_combo_config';
+const MM_RUNTIME_COMBO_CONFIG_CHUNK = 'mm_runtime_combo_config';
+const OOT_RUNTIME_SILVER_RUPEE_DATA_CHUNK = 'oot_runtime_silver_rupee_data';
+const OOT_RUNTIME_MAX_KEYS_CHUNK = 'oot_runtime_max_keys';
 const OOT_PLAYSTATE_CORE_CHUNK = 'oot_playstate_core';
 const OOT_PLAYSTATE_TAIL_CHUNK = 'oot_playstate_tail';
 const MM_PLAYSTATE_CORE_CHUNK = 'mm_playstate_core';
 const MM_PLAYSTATE_TAIL_CHUNK = 'mm_playstate_tail';
+const OOT_SAVE_CTX_USED_SIZE = Math.max(OOT_SAVE_SIZE, OOT_CTX_OFF_GAME_MODE + 4);
+const MM_SAVE_CTX_USED_SIZE = Math.max(
+  MM_SAVE_SIZE,
+  MM_CTX_OFF_GAME_MODE + 4,
+  MM_CTX_OFF_CYCLE_FLAGS + MM_PERM_COUNT * 0x14,
+);
+const INVENTORY_SLOT_FILE = inventorySlotsData as InventorySlotFile;
+const SHARED_STATE_READ_SIZE = Math.max(
+  SHARED_CUSTOM_SAVE_SIZE,
+  INVENTORY_SLOT_FILE.catalog.shared.trackedSize,
+  SHARED_SONG_NOTES_OFFSET + SHARED_SONG_NOTE_COUNT,
+  SHARED_BOMBCHU_BAG_FLAGS_OFFSET + 1,
+);
 
 export const RAW_CHUNK_SPECS: RawAutotrackerChunkSpec[] = [
-  { name: 'combo_ctx_oot', address: 0, length: COMBO_CTX_SIZE },
-  { name: 'combo_ctx_mm', address: 0, length: COMBO_CTX_SIZE },
-  { name: 'oot_save_ctx', address: 0, length: OOT_SAVE_CTX_SIZE },
-  { name: 'mm_save_ctx', address: 0, length: MM_SAVE_CTX_SIZE },
-  { name: 'oot_payload', address: ADDR_OOT_PAYLOAD, length: OOT_PAYLOAD_SIZE },
-  { name: 'mm_payload', address: ADDR_MM_PAYLOAD, length: MM_PAYLOAD_SIZE },
-  ...OOT_PLAYSTATE_CANDIDATE_ADDRS.flatMap((address, index) => [
-    {
-      name: `oot_playstate_candidate_${index}_core`,
-      address: address + OOT_PLAY_OFF_SCENE_ID,
-      length: OOT_RAW_PLAYSTATE_CORE_SIZE,
-    },
-    {
-      name: `oot_playstate_candidate_${index}_tail`,
-      address: address + OOT_PLAY_OFF_CURRENT_ROOM,
-      length: OOT_RAW_PLAYSTATE_TAIL_SIZE,
-    },
-  ]),
-  ...MM_PLAYSTATE_CANDIDATE_ADDRS.flatMap((address, index) => [
-    {
-      name: `mm_playstate_candidate_${index}_core`,
-      address: address + MM_PLAY_OFF_SCENE_ID,
-      length: MM_RAW_PLAYSTATE_CORE_SIZE,
-    },
-    {
-      name: `mm_playstate_candidate_${index}_tail`,
-      address: address + MM_PLAY_OFF_CURRENT_ROOM,
-      length: MM_RAW_PLAYSTATE_TAIL_SIZE,
-    },
-  ]),
+  {
+    name: OOT_SAVE_CTX_CHUNK,
+    address: ADDR_OOT_SAVE_CTX,
+    length: OOT_SAVE_CTX_USED_SIZE,
+  },
+  {
+    name: MM_SAVE_CTX_CHUNK,
+    address: ADDR_MM_SAVE_CTX,
+    length: MM_SAVE_CTX_USED_SIZE,
+  },
+  {
+    name: OOT_FOREIGN_MM_SAVE_CHUNK,
+    address: ADDR_OOT_FOREIGN_MM_SAVE_LIVE,
+    length: MM_SAVE_SIZE,
+  },
+  {
+    name: OOT_SHARED_CUSTOM_SAVE_CHUNK,
+    address: ADDR_OOT_SHARED_CUSTOM_SAVE_LIVE,
+    length: SHARED_STATE_READ_SIZE,
+  },
+  {
+    name: OOT_RUNTIME_COMBO_CONFIG_CHUNK,
+    address: ADDR_OOT_RUNTIME_OOT_COMBO_CONFIG_LIVE,
+    length: OOT_COMBO_CONFIG_SIZE,
+  },
+  {
+    name: OOT_RUNTIME_SILVER_RUPEE_DATA_CHUNK,
+    address: ADDR_OOT_RUNTIME_SILVER_RUPEE_DATA_LIVE,
+    length: OOT_SILVER_RUPEE_DATA_SIZE,
+  },
+  {
+    name: OOT_RUNTIME_MAX_KEYS_CHUNK,
+    address: ADDR_OOT_RUNTIME_MAX_KEYS_LIVE,
+    length: OOT_MAX_KEYS_BLOCK_SIZE,
+  },
+  {
+    name: OOT_PLAYSTATE_CORE_CHUNK,
+    address: ADDR_OOT_PLAYSTATE_NTSC_10 + OOT_PLAY_OFF_SCENE_ID,
+    length: OOT_RAW_PLAYSTATE_CORE_SIZE,
+  },
+  {
+    name: OOT_PLAYSTATE_TAIL_CHUNK,
+    address: ADDR_OOT_PLAYSTATE_NTSC_10 + OOT_PLAY_OFF_CURRENT_ROOM,
+    length: OOT_RAW_PLAYSTATE_TAIL_SIZE,
+  },
+  {
+    name: MM_FOREIGN_OOT_SAVE_CHUNK,
+    address: ADDR_MM_FOREIGN_OOT_SAVE_LIVE,
+    length: OOT_SAVE_SIZE,
+  },
+  {
+    name: MM_SHARED_CUSTOM_SAVE_CHUNK,
+    address: ADDR_MM_SHARED_CUSTOM_SAVE_LIVE,
+    length: SHARED_STATE_READ_SIZE,
+  },
+  {
+    name: MM_RUNTIME_COMBO_CONFIG_CHUNK,
+    address: ADDR_MM_RUNTIME_OOT_COMBO_CONFIG_LIVE,
+    length: OOT_COMBO_CONFIG_SIZE,
+  },
+  {
+    name: MM_PLAYSTATE_CORE_CHUNK,
+    address: ADDR_MM_PLAYSTATE_1 + MM_PLAY_OFF_SCENE_ID,
+    length: MM_RAW_PLAYSTATE_CORE_SIZE,
+  },
+  {
+    name: MM_PLAYSTATE_TAIL_CHUNK,
+    address: ADDR_MM_PLAYSTATE_1 + MM_PLAY_OFF_CURRENT_ROOM,
+    length: MM_RAW_PLAYSTATE_TAIL_SIZE,
+  },
 ];
 
 export interface RawAutotrackerMemoryAreas {
@@ -882,21 +961,14 @@ export interface RawAutotrackerMemoryAreas {
 }
 
 export const RAW_MEMORY_AREAS_BY_GAME: RawAutotrackerMemoryAreas = {
-  oot: [
-    'oot_save_ctx',
-    'oot_payload',
-    OOT_PLAYSTATE_CORE_CHUNK,
-    OOT_PLAYSTATE_TAIL_CHUNK,
-  ],
-  mm: [
-    'mm_save_ctx',
-    'mm_payload',
-    MM_PLAYSTATE_CORE_CHUNK,
-    MM_PLAYSTATE_TAIL_CHUNK,
-  ],
+  oot: RAW_CHUNK_SPECS.filter((spec) => spec.name.startsWith('oot_')).map(
+    (spec) => spec.name,
+  ),
+  mm: RAW_CHUNK_SPECS.filter((spec) => spec.name.startsWith('mm_')).map(
+    (spec) => spec.name,
+  ),
 };
 
-const INVENTORY_SLOT_FILE = inventorySlotsData as InventorySlotFile;
 const LOCATION_FILE = locationsData as LocationFile;
 const MM_SPECIAL_LOCATION_ENTRIES =
   specialLocationsMmData as MmSpecialLocationEntry[];
@@ -996,9 +1068,8 @@ class RawAutotrackerParserImpl implements RawAutotrackerParser {
     };
 
     if (activeGame === 'OoT') {
-      const ootSaveChunk = memory.get('oot_save_ctx');
-      const ootPayloadChunk = memory.get('oot_payload');
-      if (!ootSaveChunk || !ootPayloadChunk) {
+      const ootSaveChunk = memory.get(OOT_SAVE_CTX_CHUNK);
+      if (!ootSaveChunk) {
         return null;
       }
       parseOotSave(state.oot, ootSaveChunk.data);
@@ -1010,19 +1081,14 @@ class RawAutotrackerParserImpl implements RawAutotrackerParser {
         state.oot.liveTempCollectFlag = ootLiveSample.tempCollect;
         state.oot.hasLiveSceneFlags = true;
       }
-      this.readForeignMmState(ootPayloadChunk, state.mm);
+      this.readForeignMmState(memory, state.mm);
       this.overlayLastKnownMm(saveIndex, state.mm);
       state.mm.extraFlags2 = state.oot.extraRecords[EXTRA_IDX_MM_FLAGS2] ?? 0;
-      this.readSharedState(
-        ootPayloadChunk,
-        ADDR_OOT_SHARED_CUSTOM_SAVE_LIVE,
-        state,
-      );
-      readOotRuntimeConfig(ootPayloadChunk.data, true, state.oot);
+      this.readSharedState(memory, activeGame, state);
+      readOotRuntimeConfigFromMemory(memory, activeGame, state.oot);
     } else {
-      const mmSaveChunk = memory.get('mm_save_ctx');
-      const mmPayloadChunk = memory.get('mm_payload');
-      if (!mmSaveChunk || !mmPayloadChunk) {
+      const mmSaveChunk = memory.get(MM_SAVE_CTX_CHUNK);
+      if (!mmSaveChunk) {
         return null;
       }
       parseMmSave(state.mm, mmSaveChunk.data);
@@ -1035,29 +1101,34 @@ class RawAutotrackerParserImpl implements RawAutotrackerParser {
         state.mm.liveCollectFlags = mmLiveSample.collectFlags;
         state.mm.hasLiveSceneFlags = true;
       }
-      this.readForeignOotState(mmPayloadChunk, state.oot);
+      this.readForeignOotState(memory, state.oot);
       state.mm.extraFlags2 = state.oot.extraRecords[EXTRA_IDX_MM_FLAGS2] ?? 0;
-      this.readSharedState(
-        mmPayloadChunk,
-        ADDR_MM_SHARED_CUSTOM_SAVE_LIVE,
-        state,
-      );
-      readOotRuntimeConfig(mmPayloadChunk.data, false, state.oot);
+      this.readSharedState(memory, activeGame, state);
+      readOotRuntimeConfigFromMemory(memory, activeGame, state.oot);
     }
 
     return state;
   }
 
-  private readForeignOotState(payload: DecodedRawChunk, oot: OotState): void {
-    const data = sliceAbsoluteChunk(
-      payload,
-      ADDR_MM_FOREIGN_OOT_SAVE_LIVE,
-      OOT_SAVE_SIZE,
-    );
+  private readForeignOotState(memory: RawFrameMemory, oot: OotState): void {
+    const direct = memory.get(MM_FOREIGN_OOT_SAVE_CHUNK);
+    const directShared = memory.get(MM_SHARED_CUSTOM_SAVE_CHUNK);
     if (
-      data &&
-      validateForeignOotSaveAt(payload, ADDR_MM_FOREIGN_OOT_SAVE_LIVE, data)
+      direct &&
+      validateForeignOotSaveWithSharedState(
+        direct.data,
+        directShared?.data ?? null,
+      )
     ) {
+      parseOotSave(oot, direct.data);
+      return;
+    }
+
+    const payload = memory.get('mm_payload');
+    const data = payload
+      ? sliceAbsoluteChunk(payload, ADDR_MM_FOREIGN_OOT_SAVE_LIVE, OOT_SAVE_SIZE)
+      : null;
+    if (data && validateForeignOotSaveAt(payload!, ADDR_MM_FOREIGN_OOT_SAVE_LIVE, data)) {
       parseOotSave(oot, data);
       return;
     }
@@ -1070,12 +1141,17 @@ class RawAutotrackerParserImpl implements RawAutotrackerParser {
     resetEmptyOotState(oot);
   }
 
-  private readForeignMmState(payload: DecodedRawChunk, mm: MmState): void {
-    const data = sliceAbsoluteChunk(
-      payload,
-      ADDR_OOT_FOREIGN_MM_SAVE_LIVE,
-      MM_SAVE_SIZE,
-    );
+  private readForeignMmState(memory: RawFrameMemory, mm: MmState): void {
+    const direct = memory.get(OOT_FOREIGN_MM_SAVE_CHUNK);
+    if (direct && validateForeignMmSave(direct.data)) {
+      parseMmSave(mm, direct.data);
+      return;
+    }
+
+    const payload = memory.get('oot_payload');
+    const data = payload
+      ? sliceAbsoluteChunk(payload, ADDR_OOT_FOREIGN_MM_SAVE_LIVE, MM_SAVE_SIZE)
+      : null;
     if (data && validateForeignMmSave(data)) {
       parseMmSave(mm, data);
       return;
@@ -1090,15 +1166,31 @@ class RawAutotrackerParserImpl implements RawAutotrackerParser {
   }
 
   private readSharedState(
-    payload: DecodedRawChunk,
-    sharedAddress: number,
+    memory: RawFrameMemory,
+    activeGame: RawAutotrackerGame,
     state: GameState,
   ): void {
-    const data = sliceAbsoluteChunk(
-      payload,
-      sharedAddress,
-      sharedStateReadSize(),
+    const direct = memory.get(
+      activeGame === 'OoT'
+        ? OOT_SHARED_CUSTOM_SAVE_CHUNK
+        : MM_SHARED_CUSTOM_SAVE_CHUNK,
     );
+    if (direct) {
+      const parsed = parseSharedState(direct.data);
+      if (parsed) {
+        copySharedState(state.shared, parsed);
+        return;
+      }
+    }
+
+    const payload = memory.get(activeGame === 'OoT' ? 'oot_payload' : 'mm_payload');
+    const sharedAddress =
+      activeGame === 'OoT'
+        ? ADDR_OOT_SHARED_CUSTOM_SAVE_LIVE
+        : ADDR_MM_SHARED_CUSTOM_SAVE_LIVE;
+    const data = payload
+      ? sliceAbsoluteChunk(payload, sharedAddress, sharedStateReadSize())
+      : null;
     if (data) {
       const parsed = parseSharedState(data);
       if (parsed) {
@@ -1889,6 +1981,64 @@ function readOotRuntimeConfig(
   }
 }
 
+function readOotRuntimeConfigFromMemory(
+  memory: RawFrameMemory,
+  activeGame: RawAutotrackerGame,
+  oot: OotState,
+): void {
+  oot.runtimeMqBits = 0;
+  oot.hasRuntimeMqBits = false;
+  oot.bronzeScaleEnabled = false;
+
+  const comboChunk = memory.get(
+    activeGame === 'OoT'
+      ? OOT_RUNTIME_COMBO_CONFIG_CHUNK
+      : MM_RUNTIME_COMBO_CONFIG_CHUNK,
+  );
+  if (comboChunk && validateOotComboConfig(comboChunk.data)) {
+    oot.runtimeMqBits = readU32BE(comboChunk.data, OOT_COMBO_CONFIG_MQ_OFFSET);
+    oot.hasRuntimeMqBits = true;
+    oot.bronzeScaleEnabled = ootComboConfigFlagEnabled(
+      comboChunk.data.subarray(
+        OOT_COMBO_CONFIG_FLAGS_OFFSET,
+        OOT_COMBO_CONFIG_FLAGS_OFFSET + OOT_COMBO_CONFIG_FLAGS_COUNT,
+      ),
+      OOT_COMBO_CONFIG_FLAG_BRONZE_SCALE,
+    );
+  } else {
+    const payload = memory.get(activeGame === 'OoT' ? 'oot_payload' : 'mm_payload');
+    if (payload) {
+      readOotRuntimeConfig(payload.data, activeGame === 'OoT', oot);
+      return;
+    }
+  }
+
+  oot.runtimeMaxKeys.fill(0);
+  oot.hasRuntimeMaxKeys = false;
+  oot.runtimeSilverRupeeCounts.fill(0);
+  oot.hasRuntimeSilverRupeeCounts = false;
+  if (activeGame !== 'OoT') {
+    return;
+  }
+
+  const silverChunk = memory.get(OOT_RUNTIME_SILVER_RUPEE_DATA_CHUNK);
+  if (silverChunk && validateSilverRupeeData(silverChunk.data)) {
+    for (let index = 0; index < OOT_SILVER_RUPEE_SET_COUNT; index++) {
+      oot.runtimeSilverRupeeCounts[index] =
+        silverChunk.data[index * 4 + 3] ?? 0;
+    }
+    oot.hasRuntimeSilverRupeeCounts = true;
+  }
+
+  const maxKeysChunk = memory.get(OOT_RUNTIME_MAX_KEYS_CHUNK);
+  if (maxKeysChunk && validateOotMaxKeyBlock(maxKeysChunk.data)) {
+    for (let index = 0; index < OOT_RUNTIME_SCENE_COUNT; index++) {
+      oot.runtimeMaxKeys[index] = maxKeysChunk.data[index] ?? 0;
+    }
+    oot.hasRuntimeMaxKeys = true;
+  }
+}
+
 function locateSilverRupeeData(payload: Uint8Array): number {
   for (
     let offset = 0;
@@ -2451,24 +2601,31 @@ function validateForeignOotSaveAt(
   address: number,
   data: Uint8Array,
 ): boolean {
-  if (validateOotSave(data)) {
-    return true;
-  }
-  if (!isPlausibleOotSave(data)) {
-    return false;
-  }
-
   if (address >= payload.address + SHARED_CUSTOM_SAVE_SIZE) {
     const prefix = sliceAbsoluteChunk(
       payload,
       address - SHARED_CUSTOM_SAVE_SIZE,
       sharedStateReadSize(),
     );
-    if (prefix && parseSharedState(prefix)) {
-      return true;
-    }
+    return validateForeignOotSaveWithSharedState(data, prefix);
   }
 
+  return validateForeignOotSave(data);
+}
+
+function validateForeignOotSaveWithSharedState(
+  data: Uint8Array,
+  sharedData: Uint8Array | null,
+): boolean {
+  if (validateOotSave(data)) {
+    return true;
+  }
+  if (!isPlausibleOotSave(data)) {
+    return false;
+  }
+  if (sharedData && parseSharedState(sharedData)) {
+    return true;
+  }
   return validateForeignOotSave(data);
 }
 
@@ -4361,12 +4518,7 @@ function trailingZeros(value: number): number {
 }
 
 function sharedStateReadSize(): number {
-  return Math.max(
-    SHARED_CUSTOM_SAVE_SIZE,
-    SHARED_STORAGE.trackedSize,
-    SHARED_SONG_NOTES_OFFSET + SHARED_SONG_NOTE_COUNT,
-    SHARED_BOMBCHU_BAG_FLAGS_OFFSET + 1,
-  );
+  return SHARED_STATE_READ_SIZE;
 }
 
 function sliceAbsoluteChunk(

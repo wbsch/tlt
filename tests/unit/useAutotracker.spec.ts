@@ -544,13 +544,19 @@ describe('useAutotracker checks', () => {
       memoryAreas: {
         oot: expect.arrayContaining([
           'oot_save_ctx',
-          'oot_payload',
+          'oot_foreign_mm_save',
+          'oot_shared_custom_save',
+          'oot_runtime_combo_config',
+          'oot_runtime_silver_rupee_data',
+          'oot_runtime_max_keys',
           'oot_playstate_core',
           'oot_playstate_tail',
         ]),
         mm: expect.arrayContaining([
           'mm_save_ctx',
-          'mm_payload',
+          'mm_foreign_oot_save',
+          'mm_shared_custom_save',
+          'mm_runtime_combo_config',
           'mm_playstate_core',
           'mm_playstate_tail',
         ]),
@@ -560,6 +566,8 @@ describe('useAutotracker checks', () => {
     expect(handshake.memoryAreas.mm).not.toContain('oot_save_ctx');
     expect(handshake.memoryAreas.oot).not.toContain('combo_ctx_oot');
     expect(handshake.memoryAreas.mm).not.toContain('combo_ctx_mm');
+    expect(handshake.memoryAreas.oot).not.toContain('oot_payload');
+    expect(handshake.memoryAreas.mm).not.toContain('mm_payload');
   });
 
   it('probes autotracker availability via handshake acknowledgement', async () => {

@@ -48,12 +48,6 @@ export const RAW_FIXTURE_ROOT = path.resolve(
 );
 
 const FIXED_CHUNK_REGION_NAMES = new Map<string, string>([
-  ['combo_ctx_oot', 'comboCtxOot'],
-  ['combo_ctx_mm', 'comboCtxMm'],
-  ['oot_save_ctx', 'ootSaveContext'],
-  ['mm_save_ctx', 'mmSaveContext'],
-  ['oot_payload', 'ootPayload'],
-  ['mm_payload', 'mmPayload'],
 ]);
 
 const LEGACY_ONLY_EXPECTED_ITEM_IDS = new Set(['OOT_BOOTS']);
@@ -379,21 +373,6 @@ function sliceRegions(
   return null;
 }
 
-function sliceRegionByName(
-  regions: LoadedRegion[],
-  name: string,
-  size: number,
-): Uint8Array | null {
-  const region = regions.find((entry) => entry.name === name);
-  if (!region) {
-    return null;
-  }
-  if (region.data.length < size) {
-    throw new Error(`Region ${name} shorter than expected ${size}`);
-  }
-  return region.data.slice(0, size);
-}
-
 export function buildRawMessage(
   fixtureName: string,
   sequence = 1,
@@ -402,10 +381,7 @@ export function buildRawMessage(
   const regions = loadRegions(fixture);
 
   const chunks = RAW_CHUNK_SPECS.flatMap((spec) => {
-    const namedRegion = FIXED_CHUNK_REGION_NAMES.get(spec.name);
-    const data = namedRegion
-      ? sliceRegionByName(regions, namedRegion, spec.length)
-      : sliceRegions(regions, spec.address, spec.length);
+    const data = sliceRegions(regions, spec.address, spec.length);
     if (!data) {
       return [];
     }
