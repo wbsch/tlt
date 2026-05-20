@@ -71,6 +71,11 @@ npm run build
 - `npm run test:e2e`
 - `node --import tsx scripts/pathfinder-tests/reachability_full_inventory.ts` (logic reachability sanity check)
 
+## Autotracker Docs
+
+- Raw protocol, capture/replay workflow, and operations checklist:
+  - `docs/autotracker-raw-operations.md`
+
 ## Debug / Dev Flags
 
 - `?debug=1`
