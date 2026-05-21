@@ -9,7 +9,7 @@ const { parseRawMessageMock, resetRawParserMock } = vi.hoisted(() => ({
 vi.mock('@/../packs/ootmm/src/autotracker/rawFrameParser', () => ({
   RAW_CHUNK_SPECS_BY_GAME: {
     oot: [
-      { name: 'oot_save_ctx', address: 0x8011a5d0, length: 5120 },
+      { name: 'oot_save_state', address: 0x8011a5d4, length: 3888 },
       { name: 'oot_foreign_mm_save', address: 0x80443970, length: 15520 },
       { name: 'oot_shared_custom_save', address: 0x80443100, length: 2118 },
       { name: 'oot_runtime_combo_config', address: 0x804416c8, length: 732 },
@@ -19,16 +19,20 @@ vi.mock('@/../packs/ootmm/src/autotracker/rawFrameParser', () => ({
         length: 72,
       },
       { name: 'oot_runtime_max_keys', address: 0x80441c78, length: 21 },
-      { name: 'oot_playstate_core', address: 0x801c8544, length: 7332 },
-      { name: 'oot_playstate_tail', address: 0x801da160, length: 301 },
+      { name: 'oot_playstate_scene', address: 0x801c8544, length: 2 },
+      { name: 'oot_playstate_room', address: 0x801da15c, length: 1 },
+      { name: 'oot_playstate_link_age', address: 0x801da288, length: 1 },
+      { name: 'oot_playstate_flags', address: 0x801ca1d8, length: 20 },
     ],
     mm: [
-      { name: 'mm_save_ctx', address: 0x801ef670, length: 20384 },
+      { name: 'mm_save_state', address: 0x801ef6b0, length: 3868 },
+      { name: 'mm_cycle_flags', address: 0x801f35d8, length: 2400 },
       { name: 'mm_foreign_oot_save', address: 0x807729f0, length: 4948 },
       { name: 'mm_shared_custom_save', address: 0x80772180, length: 2118 },
       { name: 'mm_runtime_combo_config', address: 0x80770b18, length: 732 },
-      { name: 'mm_playstate_core', address: 0x803e6bc4, length: 7636 },
-      { name: 'mm_playstate_tail', address: 0x8041f220, length: 356 },
+      { name: 'mm_playstate_scene', address: 0x803e6bc4, length: 2 },
+      { name: 'mm_playstate_room', address: 0x803ff200, length: 1 },
+      { name: 'mm_playstate_flags', address: 0x803e8978, length: 32 },
     ],
   },
   createRawAutotrackerParser: () => ({
@@ -138,7 +142,7 @@ describe('useAutotracker checks', () => {
       flags: { protocol: 'raw' },
       memoryAreas: {
         oot: [
-          { name: 'oot_save_ctx', address: 0x8011a5d0, length: 5120 },
+          { name: 'oot_save_state', address: 0x8011a5d4, length: 3888 },
           { name: 'oot_foreign_mm_save', address: 0x80443970, length: 15520 },
           { name: 'oot_shared_custom_save', address: 0x80443100, length: 2118 },
           {
@@ -152,11 +156,14 @@ describe('useAutotracker checks', () => {
             length: 72,
           },
           { name: 'oot_runtime_max_keys', address: 0x80441c78, length: 21 },
-          { name: 'oot_playstate_core', address: 0x801c8544, length: 7332 },
-          { name: 'oot_playstate_tail', address: 0x801da160, length: 301 },
+          { name: 'oot_playstate_scene', address: 0x801c8544, length: 2 },
+          { name: 'oot_playstate_room', address: 0x801da15c, length: 1 },
+          { name: 'oot_playstate_link_age', address: 0x801da288, length: 1 },
+          { name: 'oot_playstate_flags', address: 0x801ca1d8, length: 20 },
         ],
         mm: [
-          { name: 'mm_save_ctx', address: 0x801ef670, length: 20384 },
+          { name: 'mm_save_state', address: 0x801ef6b0, length: 3868 },
+          { name: 'mm_cycle_flags', address: 0x801f35d8, length: 2400 },
           { name: 'mm_foreign_oot_save', address: 0x807729f0, length: 4948 },
           { name: 'mm_shared_custom_save', address: 0x80772180, length: 2118 },
           {
@@ -164,8 +171,9 @@ describe('useAutotracker checks', () => {
             address: 0x80770b18,
             length: 732,
           },
-          { name: 'mm_playstate_core', address: 0x803e6bc4, length: 7636 },
-          { name: 'mm_playstate_tail', address: 0x8041f220, length: 356 },
+          { name: 'mm_playstate_scene', address: 0x803e6bc4, length: 2 },
+          { name: 'mm_playstate_room', address: 0x803ff200, length: 1 },
+          { name: 'mm_playstate_flags', address: 0x803e8978, length: 32 },
         ],
       },
     });
@@ -690,33 +698,37 @@ describe('useAutotracker checks', () => {
       flags: { protocol: 'raw' },
       memoryAreas: {
         oot: expect.arrayContaining([
-          expect.objectContaining({ name: 'oot_save_ctx' }),
+          expect.objectContaining({ name: 'oot_save_state' }),
           expect.objectContaining({ name: 'oot_foreign_mm_save' }),
           expect.objectContaining({ name: 'oot_shared_custom_save' }),
           expect.objectContaining({ name: 'oot_runtime_combo_config' }),
           expect.objectContaining({ name: 'oot_runtime_silver_rupee_data' }),
           expect.objectContaining({ name: 'oot_runtime_max_keys' }),
-          expect.objectContaining({ name: 'oot_playstate_core' }),
-          expect.objectContaining({ name: 'oot_playstate_tail' }),
+          expect.objectContaining({ name: 'oot_playstate_scene' }),
+          expect.objectContaining({ name: 'oot_playstate_room' }),
+          expect.objectContaining({ name: 'oot_playstate_link_age' }),
+          expect.objectContaining({ name: 'oot_playstate_flags' }),
         ]),
         mm: expect.arrayContaining([
-          expect.objectContaining({ name: 'mm_save_ctx' }),
+          expect.objectContaining({ name: 'mm_save_state' }),
+          expect.objectContaining({ name: 'mm_cycle_flags' }),
           expect.objectContaining({ name: 'mm_foreign_oot_save' }),
           expect.objectContaining({ name: 'mm_shared_custom_save' }),
           expect.objectContaining({ name: 'mm_runtime_combo_config' }),
-          expect.objectContaining({ name: 'mm_playstate_core' }),
-          expect.objectContaining({ name: 'mm_playstate_tail' }),
+          expect.objectContaining({ name: 'mm_playstate_scene' }),
+          expect.objectContaining({ name: 'mm_playstate_room' }),
+          expect.objectContaining({ name: 'mm_playstate_flags' }),
         ]),
       },
     });
     expect(
       handshake.memoryAreas.oot.some(
-        (area: { name: string }) => area.name === 'mm_save_ctx',
+        (area: { name: string }) => area.name === 'mm_save_state',
       ),
     ).toBe(false);
     expect(
       handshake.memoryAreas.mm.some(
-        (area: { name: string }) => area.name === 'oot_save_ctx',
+        (area: { name: string }) => area.name === 'oot_save_state',
       ),
     ).toBe(false);
     expect(

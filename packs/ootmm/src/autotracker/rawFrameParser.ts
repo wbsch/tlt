@@ -398,11 +398,6 @@ const OOT_SAVE_SIZE = 0x1354;
 const MM_SAVE_SIZE = 0x3ca0;
 
 const ADDR_OOT_PLAYSTATE_NTSC_10 = 0x801c84a0;
-const ADDR_OOT_PLAYSTATE_NTSC_11 = 0x801c8660;
-const ADDR_OOT_PLAYSTATE_NTSC_12 = 0x801c8d60;
-const ADDR_OOT_PLAYSTATE_PAL_10 = 0x801c64e0;
-const ADDR_OOT_PLAYSTATE_PAL_11 = 0x801c6520;
-const ADDR_OOT_PLAYSTATE_DEBUG = 0x80212020;
 const ADDR_MM_PLAYSTATE_1 = 0x803e6b20;
 
 const DEFAULT_ADDR_OOT_FOREIGN_MM_SAVE_LIVE = 0x80443970;
@@ -480,31 +475,23 @@ const OOT_COMBO_CONFIG_SONG_EVENT_COUNT = 18;
 const OOT_COMBO_CONFIG_FLAG_BRONZE_SCALE = 192;
 
 const OOT_PLAY_OFF_SCENE_ID = 0x00a4;
-const OOT_PLAY_OFF_ACTOR_TOTAL = 0x1c2c;
 const OOT_PLAY_OFF_CHEST_FLAGS = 0x1d38;
 const OOT_PLAY_OFF_COLLECT_FLAGS = 0x1d44;
 const OOT_PLAY_OFF_TEMP_COLLECT = 0x1d48;
 const OOT_PLAY_OFF_CURRENT_ROOM = 0x11cbc;
-const OOT_PLAY_OFF_GAMEPLAY_FRAMES = 0x11de4;
 const OOT_PLAY_OFF_LINK_AGE_ON_LOAD = 0x11de8;
 
 const MM_PLAY_OFF_SCENE_ID = 0x00a4;
-const MM_PLAY_OFF_ACTOR_TOTAL = 0x1cae;
 const MM_PLAY_OFF_SWITCH0_FLAGS = 0x1e58;
 const MM_PLAY_OFF_SWITCH1_FLAGS = 0x1e5c;
 const MM_PLAY_OFF_CHEST_FLAGS = 0x1e68;
 const MM_PLAY_OFF_COLLECT_FLAGS = 0x1e74;
 const MM_PLAY_OFF_CURRENT_ROOM = 0x186e0;
-const MM_PLAY_OFF_GAMEPLAY_FRAMES = 0x18840;
 
-const OOT_RAW_PLAYSTATE_CORE_SIZE =
-  OOT_PLAY_OFF_TEMP_COLLECT + 4 - OOT_PLAY_OFF_SCENE_ID;
-const OOT_RAW_PLAYSTATE_TAIL_SIZE =
-  OOT_PLAY_OFF_LINK_AGE_ON_LOAD + 1 - OOT_PLAY_OFF_CURRENT_ROOM;
-const MM_RAW_PLAYSTATE_CORE_SIZE =
-  MM_PLAY_OFF_COLLECT_FLAGS + 4 - MM_PLAY_OFF_SCENE_ID;
-const MM_RAW_PLAYSTATE_TAIL_SIZE =
-  MM_PLAY_OFF_GAMEPLAY_FRAMES + 4 - MM_PLAY_OFF_CURRENT_ROOM;
+const OOT_PLAYSTATE_FLAGS_SIZE =
+  OOT_PLAY_OFF_TEMP_COLLECT + 4 - OOT_PLAY_OFF_CHEST_FLAGS;
+const MM_PLAYSTATE_FLAGS_SIZE =
+  MM_PLAY_OFF_COLLECT_FLAGS + 4 - MM_PLAY_OFF_SWITCH0_FLAGS;
 
 const OOT_OFF_SCENE_ID = 0x66;
 const OOT_OFF_MAGIC_ACQUIRED = 0x3a;
@@ -531,6 +518,7 @@ const OOT_PERM_ENTRY_SIZE = 0x1c;
 const OOT_PERM_COUNT = 124;
 const OOT_PERM_EXTRA_OFF = 0x10;
 const OOT_CTX_OFF_GAME_MODE = 0x135c;
+const OOT_ACTIVE_SAVE_END = OOT_OFF_EVENTS_MISC + 30 * 2;
 
 const MM_OFF_PLAYER_FORM = 0x20;
 const MM_OFF_DAY = 0x18;
@@ -555,6 +543,9 @@ const MM_PERM_ENTRY_SIZE = 0x1c;
 const MM_PERM_COUNT = 120;
 const MM_CTX_OFF_GAME_MODE = 0x3ca8;
 const MM_CTX_OFF_CYCLE_FLAGS = 0x3f68;
+const MM_ACTIVE_SAVE_START = MM_OFF_MAGIC_ACQUIRED;
+const MM_ACTIVE_SAVE_END = MM_OFF_WEEK_EVENT_REG + 100;
+const MM_CYCLE_FLAGS_SIZE = MM_PERM_COUNT * 0x14;
 
 const EXTRA_IDX_OOT_TRADE = 0;
 const EXTRA_IDX_OOT_FLAGS = 2;
@@ -849,18 +840,8 @@ const SHARED_CHECK_BITMAP_NAMES = [
   'progressiveFlags',
 ] as const;
 
-const OOT_PLAYSTATE_CANDIDATE_ADDRS = [
-  ADDR_OOT_PLAYSTATE_NTSC_10,
-  ADDR_OOT_PLAYSTATE_NTSC_11,
-  ADDR_OOT_PLAYSTATE_NTSC_12,
-  ADDR_OOT_PLAYSTATE_PAL_10,
-  ADDR_OOT_PLAYSTATE_PAL_11,
-  ADDR_OOT_PLAYSTATE_DEBUG,
-];
-
-const MM_PLAYSTATE_CANDIDATE_ADDRS = [ADDR_MM_PLAYSTATE_1];
-const OOT_SAVE_CTX_CHUNK = 'oot_save_ctx';
-const MM_SAVE_CTX_CHUNK = 'mm_save_ctx';
+const OOT_SAVE_CTX_CHUNK = 'oot_save_state';
+const MM_SAVE_CTX_CHUNK = 'mm_save_state';
 const OOT_FOREIGN_MM_SAVE_CHUNK = 'oot_foreign_mm_save';
 const MM_FOREIGN_OOT_SAVE_CHUNK = 'mm_foreign_oot_save';
 const OOT_SHARED_CUSTOM_SAVE_CHUNK = 'oot_shared_custom_save';
@@ -869,10 +850,14 @@ const OOT_RUNTIME_COMBO_CONFIG_CHUNK = 'oot_runtime_combo_config';
 const MM_RUNTIME_COMBO_CONFIG_CHUNK = 'mm_runtime_combo_config';
 const OOT_RUNTIME_SILVER_RUPEE_DATA_CHUNK = 'oot_runtime_silver_rupee_data';
 const OOT_RUNTIME_MAX_KEYS_CHUNK = 'oot_runtime_max_keys';
-const OOT_PLAYSTATE_CORE_CHUNK = 'oot_playstate_core';
-const OOT_PLAYSTATE_TAIL_CHUNK = 'oot_playstate_tail';
-const MM_PLAYSTATE_CORE_CHUNK = 'mm_playstate_core';
-const MM_PLAYSTATE_TAIL_CHUNK = 'mm_playstate_tail';
+const MM_CYCLE_FLAGS_CHUNK = 'mm_cycle_flags';
+const OOT_PLAYSTATE_SCENE_CHUNK = 'oot_playstate_scene';
+const OOT_PLAYSTATE_ROOM_CHUNK = 'oot_playstate_room';
+const OOT_PLAYSTATE_LINK_AGE_CHUNK = 'oot_playstate_link_age';
+const OOT_PLAYSTATE_FLAGS_CHUNK = 'oot_playstate_flags';
+const MM_PLAYSTATE_SCENE_CHUNK = 'mm_playstate_scene';
+const MM_PLAYSTATE_ROOM_CHUNK = 'mm_playstate_room';
+const MM_PLAYSTATE_FLAGS_CHUNK = 'mm_playstate_flags';
 const OOT_SAVE_CTX_USED_SIZE = Math.max(
   OOT_SAVE_SIZE,
   OOT_CTX_OFF_GAME_MODE + 4,
@@ -890,17 +875,30 @@ const SHARED_STATE_READ_SIZE = Math.max(
   SHARED_BOMBCHU_BAG_FLAGS_OFFSET + 1,
 );
 
-export const RAW_CHUNK_SPECS: RawAutotrackerChunkSpec[] = [
+const ACTIVE_OOT_SAVE_CHUNK_SPECS: RawAutotrackerChunkSpec[] = [
   {
     name: OOT_SAVE_CTX_CHUNK,
-    address: ADDR_OOT_SAVE_CTX,
-    length: OOT_SAVE_CTX_USED_SIZE,
+    address: ADDR_OOT_SAVE_CTX + OOT_OFF_AGE,
+    length: OOT_ACTIVE_SAVE_END - OOT_OFF_AGE,
   },
+];
+
+const ACTIVE_MM_SAVE_CHUNK_SPECS: RawAutotrackerChunkSpec[] = [
   {
     name: MM_SAVE_CTX_CHUNK,
-    address: ADDR_MM_SAVE_CTX,
-    length: MM_SAVE_CTX_USED_SIZE,
+    address: ADDR_MM_SAVE_CTX + MM_ACTIVE_SAVE_START,
+    length: MM_ACTIVE_SAVE_END - MM_ACTIVE_SAVE_START,
   },
+  {
+    name: MM_CYCLE_FLAGS_CHUNK,
+    address: ADDR_MM_SAVE_CTX + MM_CTX_OFF_CYCLE_FLAGS,
+    length: MM_CYCLE_FLAGS_SIZE,
+  },
+];
+
+export const RAW_CHUNK_SPECS: RawAutotrackerChunkSpec[] = [
+  ...ACTIVE_OOT_SAVE_CHUNK_SPECS,
+  ...ACTIVE_MM_SAVE_CHUNK_SPECS,
   {
     name: OOT_FOREIGN_MM_SAVE_CHUNK,
     address: ADDR_OOT_FOREIGN_MM_SAVE_LIVE,
@@ -927,14 +925,24 @@ export const RAW_CHUNK_SPECS: RawAutotrackerChunkSpec[] = [
     length: OOT_MAX_KEYS_BLOCK_SIZE,
   },
   {
-    name: OOT_PLAYSTATE_CORE_CHUNK,
+    name: OOT_PLAYSTATE_SCENE_CHUNK,
     address: ADDR_OOT_PLAYSTATE_NTSC_10 + OOT_PLAY_OFF_SCENE_ID,
-    length: OOT_RAW_PLAYSTATE_CORE_SIZE,
+    length: 2,
   },
   {
-    name: OOT_PLAYSTATE_TAIL_CHUNK,
+    name: OOT_PLAYSTATE_ROOM_CHUNK,
     address: ADDR_OOT_PLAYSTATE_NTSC_10 + OOT_PLAY_OFF_CURRENT_ROOM,
-    length: OOT_RAW_PLAYSTATE_TAIL_SIZE,
+    length: 1,
+  },
+  {
+    name: OOT_PLAYSTATE_LINK_AGE_CHUNK,
+    address: ADDR_OOT_PLAYSTATE_NTSC_10 + OOT_PLAY_OFF_LINK_AGE_ON_LOAD,
+    length: 1,
+  },
+  {
+    name: OOT_PLAYSTATE_FLAGS_CHUNK,
+    address: ADDR_OOT_PLAYSTATE_NTSC_10 + OOT_PLAY_OFF_CHEST_FLAGS,
+    length: OOT_PLAYSTATE_FLAGS_SIZE,
   },
   {
     name: MM_FOREIGN_OOT_SAVE_CHUNK,
@@ -952,14 +960,19 @@ export const RAW_CHUNK_SPECS: RawAutotrackerChunkSpec[] = [
     length: OOT_COMBO_CONFIG_SIZE,
   },
   {
-    name: MM_PLAYSTATE_CORE_CHUNK,
+    name: MM_PLAYSTATE_SCENE_CHUNK,
     address: ADDR_MM_PLAYSTATE_1 + MM_PLAY_OFF_SCENE_ID,
-    length: MM_RAW_PLAYSTATE_CORE_SIZE,
+    length: 2,
   },
   {
-    name: MM_PLAYSTATE_TAIL_CHUNK,
+    name: MM_PLAYSTATE_ROOM_CHUNK,
     address: ADDR_MM_PLAYSTATE_1 + MM_PLAY_OFF_CURRENT_ROOM,
-    length: MM_RAW_PLAYSTATE_TAIL_SIZE,
+    length: 1,
+  },
+  {
+    name: MM_PLAYSTATE_FLAGS_CHUNK,
+    address: ADDR_MM_PLAYSTATE_1 + MM_PLAY_OFF_SWITCH0_FLAGS,
+    length: MM_PLAYSTATE_FLAGS_SIZE,
   },
 ];
 
@@ -1081,11 +1094,16 @@ class RawAutotrackerParserImpl implements RawAutotrackerParser {
     };
 
     if (activeGame === 'OoT') {
-      const ootSaveChunk = memory.get(OOT_SAVE_CTX_CHUNK);
-      if (!ootSaveChunk) {
+      const ootSaveData = buildActiveSaveData(
+        memory,
+        ADDR_OOT_SAVE_CTX,
+        OOT_SAVE_CTX_USED_SIZE,
+        ACTIVE_OOT_SAVE_CHUNK_SPECS,
+      );
+      if (!ootSaveData) {
         return null;
       }
-      parseOotSave(state.oot, ootSaveChunk.data);
+      parseOotSave(state.oot, ootSaveData);
       const ootLiveSample = readOotPlayStateSample(memory);
       if (ootLiveSample) {
         state.oot.liveSceneId = ootLiveSample.sceneId;
@@ -1100,11 +1118,16 @@ class RawAutotrackerParserImpl implements RawAutotrackerParser {
       this.readSharedState(memory, activeGame, state);
       readOotRuntimeConfigFromMemory(memory, activeGame, state.oot);
     } else {
-      const mmSaveChunk = memory.get(MM_SAVE_CTX_CHUNK);
-      if (!mmSaveChunk) {
+      const mmSaveData = buildActiveSaveData(
+        memory,
+        ADDR_MM_SAVE_CTX,
+        MM_SAVE_CTX_USED_SIZE,
+        ACTIVE_MM_SAVE_CHUNK_SPECS,
+      );
+      if (!mmSaveData) {
         return null;
       }
-      parseMmSave(state.mm, mmSaveChunk.data);
+      parseMmSave(state.mm, mmSaveData);
       const mmLiveSample = readMmPlayStateSample(memory);
       if (mmLiveSample) {
         state.mm.liveSceneId = mmLiveSample.sceneId;
@@ -1746,82 +1769,29 @@ function getOotSourceInfo(
 
 function readOotPlayStateSample(memory: RawFrameMemory): {
   sceneId: number;
-  actorTotal: number;
   currentRoom: number;
   linkAgeOnLoad: number;
-  gameplayFrames: number;
   chestFlags: number;
   collectFlags: number;
   tempCollect: number;
 } | null {
-  const directCore = memory.get(OOT_PLAYSTATE_CORE_CHUNK);
-  const directTail = memory.get(OOT_PLAYSTATE_TAIL_CHUNK);
-  if (directCore && directTail) {
+  const directScene = memory.get(OOT_PLAYSTATE_SCENE_CHUNK);
+  const directRoom = memory.get(OOT_PLAYSTATE_ROOM_CHUNK);
+  const directLinkAge = memory.get(OOT_PLAYSTATE_LINK_AGE_CHUNK);
+  const directFlags = memory.get(OOT_PLAYSTATE_FLAGS_CHUNK);
+  if (directScene && directRoom && directLinkAge && directFlags) {
     const sample = {
-      sceneId: readU16BE(directCore.data, 0),
-      actorTotal: readU8(
-        directCore.data,
-        OOT_PLAY_OFF_ACTOR_TOTAL - OOT_PLAY_OFF_SCENE_ID,
-      ),
-      currentRoom: readU8(directTail.data, 0),
-      linkAgeOnLoad: readU8(
-        directTail.data,
-        OOT_PLAY_OFF_LINK_AGE_ON_LOAD - OOT_PLAY_OFF_CURRENT_ROOM,
-      ),
-      gameplayFrames: readU32BE(
-        directTail.data,
-        OOT_PLAY_OFF_GAMEPLAY_FRAMES - OOT_PLAY_OFF_CURRENT_ROOM,
-      ),
-      chestFlags: readU32BE(
-        directCore.data,
-        OOT_PLAY_OFF_CHEST_FLAGS - OOT_PLAY_OFF_SCENE_ID,
-      ),
+      sceneId: readU16BE(directScene.data, 0),
+      currentRoom: readU8(directRoom.data, 0),
+      linkAgeOnLoad: readU8(directLinkAge.data, 0),
+      chestFlags: readU32BE(directFlags.data, 0),
       collectFlags: readU32BE(
-        directCore.data,
-        OOT_PLAY_OFF_COLLECT_FLAGS - OOT_PLAY_OFF_SCENE_ID,
+        directFlags.data,
+        OOT_PLAY_OFF_COLLECT_FLAGS - OOT_PLAY_OFF_CHEST_FLAGS,
       ),
       tempCollect: readU32BE(
-        directCore.data,
-        OOT_PLAY_OFF_TEMP_COLLECT - OOT_PLAY_OFF_SCENE_ID,
-      ),
-    };
-    if (isPlausibleOotPlayStateSample(sample)) {
-      return sample;
-    }
-  }
-
-  for (let index = 0; index < OOT_PLAYSTATE_CANDIDATE_ADDRS.length; index++) {
-    const core = memory.get(`oot_playstate_candidate_${index}_core`);
-    const tail = memory.get(`oot_playstate_candidate_${index}_tail`);
-    if (!core || !tail) {
-      continue;
-    }
-    const sample = {
-      sceneId: readU16BE(core.data, 0),
-      actorTotal: readU8(
-        core.data,
-        OOT_PLAY_OFF_ACTOR_TOTAL - OOT_PLAY_OFF_SCENE_ID,
-      ),
-      currentRoom: readU8(tail.data, 0),
-      linkAgeOnLoad: readU8(
-        tail.data,
-        OOT_PLAY_OFF_LINK_AGE_ON_LOAD - OOT_PLAY_OFF_CURRENT_ROOM,
-      ),
-      gameplayFrames: readU32BE(
-        tail.data,
-        OOT_PLAY_OFF_GAMEPLAY_FRAMES - OOT_PLAY_OFF_CURRENT_ROOM,
-      ),
-      chestFlags: readU32BE(
-        core.data,
-        OOT_PLAY_OFF_CHEST_FLAGS - OOT_PLAY_OFF_SCENE_ID,
-      ),
-      collectFlags: readU32BE(
-        core.data,
-        OOT_PLAY_OFF_COLLECT_FLAGS - OOT_PLAY_OFF_SCENE_ID,
-      ),
-      tempCollect: readU32BE(
-        core.data,
-        OOT_PLAY_OFF_TEMP_COLLECT - OOT_PLAY_OFF_SCENE_ID,
+        directFlags.data,
+        OOT_PLAY_OFF_TEMP_COLLECT - OOT_PLAY_OFF_CHEST_FLAGS,
       ),
     };
     if (isPlausibleOotPlayStateSample(sample)) {
@@ -1834,99 +1804,43 @@ function readOotPlayStateSample(memory: RawFrameMemory): {
 
 function isPlausibleOotPlayStateSample(sample: {
   sceneId: number;
-  actorTotal: number;
   currentRoom: number;
   linkAgeOnLoad: number;
-  gameplayFrames: number;
 }): boolean {
   return (
     sample.sceneId < OOT_PERM_COUNT &&
-    sample.actorTotal > 0 &&
-    sample.actorTotal <= 200 &&
     sample.currentRoom < 0x40 &&
-    sample.linkAgeOnLoad <= 1 &&
-    sample.gameplayFrames > 0
+    sample.linkAgeOnLoad <= 1
   );
 }
 
 function readMmPlayStateSample(memory: RawFrameMemory): {
   sceneId: number;
-  actorTotal: number;
   currentRoom: number;
-  gameplayFrames: number;
   switch0Flags: number;
   switch1Flags: number;
   chestFlags: number;
   collectFlags: number;
 } | null {
-  const directCore = memory.get(MM_PLAYSTATE_CORE_CHUNK);
-  const directTail = memory.get(MM_PLAYSTATE_TAIL_CHUNK);
-  if (directCore && directTail) {
+  const directScene = memory.get(MM_PLAYSTATE_SCENE_CHUNK);
+  const directRoom = memory.get(MM_PLAYSTATE_ROOM_CHUNK);
+  const directFlags = memory.get(MM_PLAYSTATE_FLAGS_CHUNK);
+  if (directScene && directRoom && directFlags) {
     const sample = {
-      sceneId: readU16BE(directCore.data, 0),
-      actorTotal: readU8(
-        directCore.data,
-        MM_PLAY_OFF_ACTOR_TOTAL - MM_PLAY_OFF_SCENE_ID,
-      ),
-      currentRoom: readU8(directTail.data, 0),
-      gameplayFrames: readU32BE(
-        directTail.data,
-        MM_PLAY_OFF_GAMEPLAY_FRAMES - MM_PLAY_OFF_CURRENT_ROOM,
-      ),
-      switch0Flags: readU32BE(
-        directCore.data,
-        MM_PLAY_OFF_SWITCH0_FLAGS - MM_PLAY_OFF_SCENE_ID,
-      ),
+      sceneId: readU16BE(directScene.data, 0),
+      currentRoom: readU8(directRoom.data, 0),
+      switch0Flags: readU32BE(directFlags.data, 0),
       switch1Flags: readU32BE(
-        directCore.data,
-        MM_PLAY_OFF_SWITCH1_FLAGS - MM_PLAY_OFF_SCENE_ID,
+        directFlags.data,
+        MM_PLAY_OFF_SWITCH1_FLAGS - MM_PLAY_OFF_SWITCH0_FLAGS,
       ),
       chestFlags: readU32BE(
-        directCore.data,
-        MM_PLAY_OFF_CHEST_FLAGS - MM_PLAY_OFF_SCENE_ID,
+        directFlags.data,
+        MM_PLAY_OFF_CHEST_FLAGS - MM_PLAY_OFF_SWITCH0_FLAGS,
       ),
       collectFlags: readU32BE(
-        directCore.data,
-        MM_PLAY_OFF_COLLECT_FLAGS - MM_PLAY_OFF_SCENE_ID,
-      ),
-    };
-    if (isPlausibleMmPlayStateSample(sample)) {
-      return sample;
-    }
-  }
-
-  for (let index = 0; index < MM_PLAYSTATE_CANDIDATE_ADDRS.length; index++) {
-    const core = memory.get(`mm_playstate_candidate_${index}_core`);
-    const tail = memory.get(`mm_playstate_candidate_${index}_tail`);
-    if (!core || !tail) {
-      continue;
-    }
-    const sample = {
-      sceneId: readU16BE(core.data, 0),
-      actorTotal: readU8(
-        core.data,
-        MM_PLAY_OFF_ACTOR_TOTAL - MM_PLAY_OFF_SCENE_ID,
-      ),
-      currentRoom: readU8(tail.data, 0),
-      gameplayFrames: readU32BE(
-        tail.data,
-        MM_PLAY_OFF_GAMEPLAY_FRAMES - MM_PLAY_OFF_CURRENT_ROOM,
-      ),
-      switch0Flags: readU32BE(
-        core.data,
-        MM_PLAY_OFF_SWITCH0_FLAGS - MM_PLAY_OFF_SCENE_ID,
-      ),
-      switch1Flags: readU32BE(
-        core.data,
-        MM_PLAY_OFF_SWITCH1_FLAGS - MM_PLAY_OFF_SCENE_ID,
-      ),
-      chestFlags: readU32BE(
-        core.data,
-        MM_PLAY_OFF_CHEST_FLAGS - MM_PLAY_OFF_SCENE_ID,
-      ),
-      collectFlags: readU32BE(
-        core.data,
-        MM_PLAY_OFF_COLLECT_FLAGS - MM_PLAY_OFF_SCENE_ID,
+        directFlags.data,
+        MM_PLAY_OFF_COLLECT_FLAGS - MM_PLAY_OFF_SWITCH0_FLAGS,
       ),
     };
     if (isPlausibleMmPlayStateSample(sample)) {
@@ -1939,17 +1853,9 @@ function readMmPlayStateSample(memory: RawFrameMemory): {
 
 function isPlausibleMmPlayStateSample(sample: {
   sceneId: number;
-  actorTotal: number;
   currentRoom: number;
-  gameplayFrames: number;
 }): boolean {
-  return (
-    sample.sceneId < MM_PERM_COUNT &&
-    sample.actorTotal > 0 &&
-    sample.actorTotal <= 200 &&
-    sample.currentRoom < 0x40 &&
-    sample.gameplayFrames > 0
-  );
+  return sample.sceneId < MM_PERM_COUNT && sample.currentRoom < 0x40;
 }
 
 function readOotRuntimeConfig(
@@ -4558,6 +4464,31 @@ function sliceAbsoluteChunk(
     return null;
   }
   return chunk.data.slice(offset, offset + size);
+}
+
+function buildActiveSaveData(
+  memory: RawFrameMemory,
+  baseAddress: number,
+  fullLength: number,
+  specs: RawAutotrackerChunkSpec[],
+): Uint8Array | null {
+  const data = new Uint8Array(fullLength);
+
+  for (const spec of specs) {
+    const chunk = memory.get(spec.name);
+    if (!chunk) {
+      return null;
+    }
+
+    const offset = spec.address - baseAddress;
+    if (offset < 0 || offset + chunk.data.length > data.length) {
+      return null;
+    }
+
+    data.set(chunk.data, offset);
+  }
+
+  return data;
 }
 
 function createEmptyOotState(): OotState {
