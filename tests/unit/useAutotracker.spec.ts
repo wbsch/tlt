@@ -1,10 +1,45 @@
 import { nextTick, ref } from 'vue';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
+const { parseRawMessageMock, resetRawParserMock } = vi.hoisted(() => ({
+  parseRawMessageMock: vi.fn(),
+  resetRawParserMock: vi.fn(),
+}));
+
+vi.mock('@/../packs/ootmm/src/autotracker/rawFrameParser', () => ({
+  RAW_CHUNK_SPECS_BY_GAME: {
+    oot: [
+      { name: 'oot_save_ctx', address: 0x8011a5d0, length: 5120 },
+      { name: 'oot_foreign_mm_save', address: 0x80443970, length: 15520 },
+      { name: 'oot_shared_custom_save', address: 0x80443100, length: 2118 },
+      { name: 'oot_runtime_combo_config', address: 0x804416c8, length: 732 },
+      {
+        name: 'oot_runtime_silver_rupee_data',
+        address: 0x8042ec10,
+        length: 72,
+      },
+      { name: 'oot_runtime_max_keys', address: 0x80441c78, length: 21 },
+      { name: 'oot_playstate_core', address: 0x801c8544, length: 7332 },
+      { name: 'oot_playstate_tail', address: 0x801da160, length: 301 },
+    ],
+    mm: [
+      { name: 'mm_save_ctx', address: 0x801ef670, length: 20384 },
+      { name: 'mm_foreign_oot_save', address: 0x807729f0, length: 4948 },
+      { name: 'mm_shared_custom_save', address: 0x80772180, length: 2118 },
+      { name: 'mm_runtime_combo_config', address: 0x80770b18, length: 732 },
+      { name: 'mm_playstate_core', address: 0x803e6bc4, length: 7636 },
+      { name: 'mm_playstate_tail', address: 0x8041f220, length: 356 },
+    ],
+  },
+  createRawAutotrackerParser: () => ({
+    parse: parseRawMessageMock,
+    reset: resetRawParserMock,
+  }),
+}));
+
 import {
   useAutotracker,
   type AutotrackerCheck,
-  type AutotrackerProtocolMode,
   type AutotrackerSyncPhase,
 } from '@/../packs/ootmm/src/autotracker/useAutotracker';
 import { resolveAutotrackerCheckToLocationIds } from '@/../packs/ootmm/src/autotracker/checkMapping';
@@ -54,13 +89,15 @@ describe('useAutotracker checks', () => {
   beforeEach(() => {
     FakeWebSocket.instances = [];
     vi.stubGlobal('WebSocket', FakeWebSocket);
+    parseRawMessageMock.mockReset();
+    resetRawParserMock.mockReset();
   });
 
   afterEach(() => {
     vi.unstubAllGlobals();
   });
 
-  it('applies full-sync collected locations from check messages', async () => {
+  it('applies collected locations from the initial raw snapshot', async () => {
     const inventoryUpdates: Array<Record<string, number>> = [];
     const collectedLocationUpdates: string[][] = [];
     const phases: AutotrackerSyncPhase[] = [];
@@ -97,8 +134,48 @@ describe('useAutotracker checks', () => {
     socket.emitOpen();
     expect(JSON.parse(socket.sentMessages[0])).toEqual({
       type: 'handshake',
-      features: ['items', 'checks'],
-      flags: { protocol: 'legacy' },
+      features: ['raw'],
+      flags: { protocol: 'raw' },
+      memoryAreas: {
+        oot: [
+          { name: 'oot_save_ctx', address: 0x8011a5d0, length: 5120 },
+          { name: 'oot_foreign_mm_save', address: 0x80443970, length: 15520 },
+          { name: 'oot_shared_custom_save', address: 0x80443100, length: 2118 },
+          {
+            name: 'oot_runtime_combo_config',
+            address: 0x804416c8,
+            length: 732,
+          },
+          {
+            name: 'oot_runtime_silver_rupee_data',
+            address: 0x8042ec10,
+            length: 72,
+          },
+          { name: 'oot_runtime_max_keys', address: 0x80441c78, length: 21 },
+          { name: 'oot_playstate_core', address: 0x801c8544, length: 7332 },
+          { name: 'oot_playstate_tail', address: 0x801da160, length: 301 },
+        ],
+        mm: [
+          { name: 'mm_save_ctx', address: 0x801ef670, length: 20384 },
+          { name: 'mm_foreign_oot_save', address: 0x807729f0, length: 4948 },
+          { name: 'mm_shared_custom_save', address: 0x80772180, length: 2118 },
+          {
+            name: 'mm_runtime_combo_config',
+            address: 0x80770b18,
+            length: 732,
+          },
+          { name: 'mm_playstate_core', address: 0x803e6bc4, length: 7636 },
+          { name: 'mm_playstate_tail', address: 0x8041f220, length: 356 },
+        ],
+      },
+    });
+
+    parseRawMessageMock.mockReturnValueOnce({
+      items: [{ id: 'OOT_BOW', qty: 1 }],
+      checks: [
+        { name: 'Market Pot House Adult Pot 3', checked: true },
+        { name: 'Market Pot House Adult Pot 6', checked: true },
+      ],
     });
 
     socket.emitMessage({
@@ -108,23 +185,14 @@ describe('useAutotracker checks', () => {
       refresh: true,
     });
     socket.emitMessage({
-      type: 'item',
+      type: 'raw',
+      schemaVersion: '1',
       diff: false,
-      refresh: false,
-      items: [{ id: 'OOT_BOW', qty: 1 }],
-    });
-    socket.emitMessage({
-      type: 'check',
-      diff: false,
-      refresh: false,
-      checks: [
-        { name: 'Market Pot House Adult Pot 3', checked: true },
-        { name: 'Market Pot House Adult Pot 6', checked: true },
-      ],
-    });
-    socket.emitMessage({
-      type: 'refresh',
       refresh: true,
+      sequence: 1,
+      game: 'OoT',
+      saveIndex: 0,
+      chunks: [],
     });
 
     expect(inventoryUpdates).toEqual([{ OOT_BOW: 1 }]);
@@ -178,6 +246,16 @@ describe('useAutotracker checks', () => {
     const socket = FakeWebSocket.instances[0];
     expect(socket).toBeDefined();
 
+    parseRawMessageMock.mockReturnValueOnce({
+      items: [
+        { id: 'OOT_BOTTLE_1', qty: 7 },
+        { id: 'OOT_BOTTLE_2', qty: 1 },
+        { id: 'MM_BOTTLE_5', qty: 3 },
+        { id: 'SHARED_BOTTLE_3', qty: 2 },
+      ],
+      checks: [],
+    });
+
     socket.emitOpen();
     socket.emitMessage({
       type: 'handshAck',
@@ -186,19 +264,14 @@ describe('useAutotracker checks', () => {
       refresh: true,
     });
     socket.emitMessage({
-      type: 'item',
+      type: 'raw',
+      schemaVersion: '1',
       diff: false,
-      refresh: false,
-      items: [
-        { id: 'OOT_BOTTLE_1', qty: 7 },
-        { id: 'OOT_BOTTLE_2', qty: 1 },
-        { id: 'MM_BOTTLE_5', qty: 3 },
-        { id: 'SHARED_BOTTLE_3', qty: 2 },
-      ],
-    });
-    socket.emitMessage({
-      type: 'refresh',
       refresh: true,
+      sequence: 1,
+      game: 'OoT',
+      saveIndex: 0,
+      chunks: [],
     });
 
     expect(inventoryUpdates).toEqual([
@@ -235,6 +308,15 @@ describe('useAutotracker checks', () => {
     const socket = FakeWebSocket.instances[0];
     expect(socket).toBeDefined();
 
+    parseRawMessageMock.mockReturnValueOnce({
+      items: [
+        { id: 'OOT_BOTTLE_1', qty: 7 },
+        { id: 'OOT_BOTTLE_2', qty: 1 },
+        { id: 'OOT_BOTTLE_RUTO_LETTER', qty: 1 },
+      ],
+      checks: [],
+    });
+
     socket.emitOpen();
     socket.emitMessage({
       type: 'handshAck',
@@ -243,18 +325,14 @@ describe('useAutotracker checks', () => {
       refresh: true,
     });
     socket.emitMessage({
-      type: 'item',
+      type: 'raw',
+      schemaVersion: '1',
       diff: false,
-      refresh: false,
-      items: [
-        { id: 'OOT_BOTTLE_1', qty: 7 },
-        { id: 'OOT_BOTTLE_2', qty: 1 },
-        { id: 'OOT_BOTTLE_RUTO_LETTER', qty: 1 },
-      ],
-    });
-    socket.emitMessage({
-      type: 'refresh',
       refresh: true,
+      sequence: 1,
+      game: 'OoT',
+      saveIndex: 0,
+      chunks: [],
     });
 
     expect(inventoryUpdates).toEqual([
@@ -285,6 +363,16 @@ describe('useAutotracker checks', () => {
     const socket = FakeWebSocket.instances[0];
     expect(socket).toBeDefined();
 
+    parseRawMessageMock.mockReturnValueOnce({
+      items: [
+        { id: 'OOT_BOTTLE_1', qty: 7 },
+        { id: 'MM_BOTTLE_1', qty: 1 },
+        { id: 'SHARED_BOTTLE_2', qty: 1 },
+        { id: 'MM_BOTTLE_5', qty: 3 },
+      ],
+      checks: [],
+    });
+
     socket.emitOpen();
     socket.emitMessage({
       type: 'handshAck',
@@ -293,19 +381,14 @@ describe('useAutotracker checks', () => {
       refresh: true,
     });
     socket.emitMessage({
-      type: 'item',
+      type: 'raw',
+      schemaVersion: '1',
       diff: false,
-      refresh: false,
-      items: [
-        { id: 'OOT_BOTTLE_1', qty: 7 },
-        { id: 'MM_BOTTLE_1', qty: 1 },
-        { id: 'SHARED_BOTTLE_2', qty: 1 },
-        { id: 'MM_BOTTLE_5', qty: 3 },
-      ],
-    });
-    socket.emitMessage({
-      type: 'refresh',
       refresh: true,
+      sequence: 1,
+      game: 'OoT',
+      saveIndex: 0,
+      chunks: [],
     });
 
     expect(inventoryUpdates).toEqual([
@@ -317,7 +400,7 @@ describe('useAutotracker checks', () => {
     ]);
   });
 
-  it('marks diff refreshes as live updates after the initial full sync', async () => {
+  it('marks subsequent raw snapshots as live updates after the initial snapshot', async () => {
     const phases: AutotrackerSyncPhase[] = [];
     const inventoryUpdates: Array<Record<string, number>> = [];
     const availableItemIds = ref(new Set<string>(['OOT_BOW', 'OOT_BOMB_BAG']));
@@ -338,6 +421,19 @@ describe('useAutotracker checks', () => {
     const socket = FakeWebSocket.instances[0];
     expect(socket).toBeDefined();
 
+    parseRawMessageMock
+      .mockReturnValueOnce({
+        items: [{ id: 'OOT_BOW', qty: 1 }],
+        checks: [],
+      })
+      .mockReturnValueOnce({
+        items: [
+          { id: 'OOT_BOW', qty: 1 },
+          { id: 'OOT_BOMB_BAG', qty: 1 },
+        ],
+        checks: [],
+      });
+
     socket.emitOpen();
     socket.emitMessage({
       type: 'handshAck',
@@ -346,20 +442,24 @@ describe('useAutotracker checks', () => {
       refresh: true,
     });
     socket.emitMessage({
-      type: 'item',
+      type: 'raw',
+      schemaVersion: '1',
       diff: false,
-      refresh: false,
-      items: [{ id: 'OOT_BOW', qty: 1 }],
+      refresh: true,
+      sequence: 1,
+      game: 'OoT',
+      saveIndex: 0,
+      chunks: [],
     });
     socket.emitMessage({
-      type: 'refresh',
+      type: 'raw',
+      schemaVersion: '1',
+      diff: false,
       refresh: true,
-    });
-    socket.emitMessage({
-      type: 'item',
-      diff: true,
-      refresh: true,
-      items: [{ id: 'OOT_BOMB_BAG', qty: 1 }],
+      sequence: 2,
+      game: 'OoT',
+      saveIndex: 0,
+      chunks: [],
     });
 
     expect(phases).toEqual(['initial', 'live']);
@@ -390,6 +490,19 @@ describe('useAutotracker checks', () => {
     const socket = FakeWebSocket.instances[0];
     expect(socket).toBeDefined();
 
+    parseRawMessageMock
+      .mockReturnValueOnce({
+        items: [{ id: 'OOT_HOOKSHOT', qty: 1 }],
+        checks: [],
+      })
+      .mockReturnValueOnce({
+        items: [
+          { id: 'OOT_HOOKSHOT', qty: 1 },
+          { id: 'MM_HOOKSHOT', qty: 1 },
+        ],
+        checks: [],
+      });
+
     socket.emitOpen();
     socket.emitMessage({
       type: 'handshAck',
@@ -398,20 +511,24 @@ describe('useAutotracker checks', () => {
       refresh: true,
     });
     socket.emitMessage({
-      type: 'item',
+      type: 'raw',
+      schemaVersion: '1',
       diff: false,
-      refresh: false,
-      items: [{ id: 'OOT_HOOKSHOT', qty: 1 }],
+      refresh: true,
+      sequence: 1,
+      game: 'OoT',
+      saveIndex: 0,
+      chunks: [],
     });
     socket.emitMessage({
-      type: 'refresh',
+      type: 'raw',
+      schemaVersion: '1',
+      diff: false,
       refresh: true,
-    });
-    socket.emitMessage({
-      type: 'item',
-      diff: true,
-      refresh: true,
-      items: [{ id: 'MM_HOOKSHOT', qty: 1 }],
+      sequence: 2,
+      game: 'MM',
+      saveIndex: 0,
+      chunks: [],
     });
 
     expect(inventoryUpdates).toEqual([
@@ -439,6 +556,19 @@ describe('useAutotracker checks', () => {
     const socket = FakeWebSocket.instances[0];
     expect(socket).toBeDefined();
 
+    parseRawMessageMock
+      .mockReturnValueOnce({
+        items: [{ id: 'OOT_WALLET', qty: 2 }],
+        checks: [],
+      })
+      .mockReturnValueOnce({
+        items: [
+          { id: 'OOT_WALLET', qty: 2 },
+          { id: 'OOT_WALLET5', qty: 1 },
+        ],
+        checks: [],
+      });
+
     socket.emitOpen();
     socket.emitMessage({
       type: 'handshAck',
@@ -447,20 +577,24 @@ describe('useAutotracker checks', () => {
       refresh: true,
     });
     socket.emitMessage({
-      type: 'item',
+      type: 'raw',
+      schemaVersion: '1',
       diff: false,
-      refresh: false,
-      items: [{ id: 'OOT_WALLET', qty: 2 }],
+      refresh: true,
+      sequence: 1,
+      game: 'OoT',
+      saveIndex: 0,
+      chunks: [],
     });
     socket.emitMessage({
-      type: 'refresh',
+      type: 'raw',
+      schemaVersion: '1',
+      diff: false,
       refresh: true,
-    });
-    socket.emitMessage({
-      type: 'item',
-      diff: true,
-      refresh: true,
-      items: [{ id: 'OOT_WALLET5', qty: 1 }],
+      sequence: 2,
+      game: 'OoT',
+      saveIndex: 0,
+      chunks: [],
     });
 
     expect(inventoryUpdates).toEqual([
@@ -490,6 +624,16 @@ describe('useAutotracker checks', () => {
     const socket = FakeWebSocket.instances[0];
     expect(socket).toBeDefined();
 
+    parseRawMessageMock
+      .mockReturnValueOnce({
+        items: [{ id: 'OOT_ADULT_TRADE', qty: 17 }],
+        checks: [],
+      })
+      .mockReturnValueOnce({
+        items: [{ id: 'OOT_ADULT_TRADE', qty: 16 }],
+        checks: [],
+      });
+
     socket.emitOpen();
     socket.emitMessage({
       type: 'handshAck',
@@ -498,20 +642,24 @@ describe('useAutotracker checks', () => {
       refresh: true,
     });
     socket.emitMessage({
-      type: 'item',
+      type: 'raw',
+      schemaVersion: '1',
       diff: false,
-      refresh: false,
-      items: [{ id: 'OOT_ADULT_TRADE', qty: 17 }],
+      refresh: true,
+      sequence: 1,
+      game: 'OoT',
+      saveIndex: 0,
+      chunks: [],
     });
     socket.emitMessage({
-      type: 'refresh',
+      type: 'raw',
+      schemaVersion: '1',
+      diff: false,
       refresh: true,
-    });
-    socket.emitMessage({
-      type: 'item',
-      diff: true,
-      refresh: true,
-      items: [{ id: 'OOT_ADULT_TRADE', qty: -1 }],
+      sequence: 2,
+      game: 'OoT',
+      saveIndex: 0,
+      chunks: [],
     });
 
     expect(inventoryUpdates).toEqual([
@@ -520,11 +668,10 @@ describe('useAutotracker checks', () => {
     ]);
   });
 
-  it('requests only active-game raw memory areas in raw mode', async () => {
+  it('requests only active-game raw memory areas', async () => {
     const autotracker = useAutotracker({
       availableItemIds: ref(new Set<string>()),
       itemMaxCounts: ref(new Map<string, number>()),
-      protocolMode: ref<AutotrackerProtocolMode>('raw'),
       onInventoryUpdate: () => {},
     });
 
@@ -543,31 +690,55 @@ describe('useAutotracker checks', () => {
       flags: { protocol: 'raw' },
       memoryAreas: {
         oot: expect.arrayContaining([
-          'oot_save_ctx',
-          'oot_foreign_mm_save',
-          'oot_shared_custom_save',
-          'oot_runtime_combo_config',
-          'oot_runtime_silver_rupee_data',
-          'oot_runtime_max_keys',
-          'oot_playstate_core',
-          'oot_playstate_tail',
+          expect.objectContaining({ name: 'oot_save_ctx' }),
+          expect.objectContaining({ name: 'oot_foreign_mm_save' }),
+          expect.objectContaining({ name: 'oot_shared_custom_save' }),
+          expect.objectContaining({ name: 'oot_runtime_combo_config' }),
+          expect.objectContaining({ name: 'oot_runtime_silver_rupee_data' }),
+          expect.objectContaining({ name: 'oot_runtime_max_keys' }),
+          expect.objectContaining({ name: 'oot_playstate_core' }),
+          expect.objectContaining({ name: 'oot_playstate_tail' }),
         ]),
         mm: expect.arrayContaining([
-          'mm_save_ctx',
-          'mm_foreign_oot_save',
-          'mm_shared_custom_save',
-          'mm_runtime_combo_config',
-          'mm_playstate_core',
-          'mm_playstate_tail',
+          expect.objectContaining({ name: 'mm_save_ctx' }),
+          expect.objectContaining({ name: 'mm_foreign_oot_save' }),
+          expect.objectContaining({ name: 'mm_shared_custom_save' }),
+          expect.objectContaining({ name: 'mm_runtime_combo_config' }),
+          expect.objectContaining({ name: 'mm_playstate_core' }),
+          expect.objectContaining({ name: 'mm_playstate_tail' }),
         ]),
       },
     });
-    expect(handshake.memoryAreas.oot).not.toContain('mm_save_ctx');
-    expect(handshake.memoryAreas.mm).not.toContain('oot_save_ctx');
-    expect(handshake.memoryAreas.oot).not.toContain('combo_ctx_oot');
-    expect(handshake.memoryAreas.mm).not.toContain('combo_ctx_mm');
-    expect(handshake.memoryAreas.oot).not.toContain('oot_payload');
-    expect(handshake.memoryAreas.mm).not.toContain('mm_payload');
+    expect(
+      handshake.memoryAreas.oot.some(
+        (area: { name: string }) => area.name === 'mm_save_ctx',
+      ),
+    ).toBe(false);
+    expect(
+      handshake.memoryAreas.mm.some(
+        (area: { name: string }) => area.name === 'oot_save_ctx',
+      ),
+    ).toBe(false);
+    expect(
+      handshake.memoryAreas.oot.some(
+        (area: { name: string }) => area.name === 'combo_ctx_oot',
+      ),
+    ).toBe(false);
+    expect(
+      handshake.memoryAreas.mm.some(
+        (area: { name: string }) => area.name === 'combo_ctx_mm',
+      ),
+    ).toBe(false);
+    expect(
+      handshake.memoryAreas.oot.some(
+        (area: { name: string }) => area.name === 'oot_payload',
+      ),
+    ).toBe(false);
+    expect(
+      handshake.memoryAreas.mm.some(
+        (area: { name: string }) => area.name === 'mm_payload',
+      ),
+    ).toBe(false);
   });
 
   it('probes autotracker availability via handshake acknowledgement', async () => {
@@ -583,10 +754,10 @@ describe('useAutotracker checks', () => {
     expect(socket).toBeDefined();
 
     socket.emitOpen();
-    expect(JSON.parse(socket.sentMessages[0])).toEqual({
+    expect(JSON.parse(socket.sentMessages[0])).toMatchObject({
       type: 'handshake',
-      features: ['items', 'checks'],
-      flags: { protocol: 'legacy' },
+      features: ['raw'],
+      flags: { protocol: 'raw' },
     });
 
     socket.emitMessage({

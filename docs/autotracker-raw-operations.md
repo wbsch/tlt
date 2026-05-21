@@ -113,24 +113,12 @@ tests/fixtures/autotracker/dumps/
 
 2. Keep the filename descriptive and stable.
 
-### Replay and compare
+### Replay fixtures
 
-Run parity on all fixtures:
-
-```bash
-npm run test:autotracker:parity
-```
-
-Run parity for selected fixtures:
+Run the raw fixture smoke and transition coverage:
 
 ```bash
-node --import tsx scripts/autotracker/check_fixture_parity.ts my-scenario-name.json
-```
-
-Get a structured diff report:
-
-```bash
-npm run test:autotracker:parity:report
+npm run test:unit -- tests/unit/rawFrameParser.spec.ts tests/unit/rawFrameSnapshotTransitions.spec.ts
 ```
 
 ## Performance Budgets

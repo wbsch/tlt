@@ -90,6 +90,11 @@ export interface RawAutotrackerChunkSpec {
   length: number;
 }
 
+export interface RawAutotrackerChunkSpecsByGame {
+  oot: RawAutotrackerChunkSpec[];
+  mm: RawAutotrackerChunkSpec[];
+}
+
 function parseHexAddress(raw: string | undefined, field: string): number {
   if (!raw) {
     throw new Error(`Missing autotracker live address for ${field}`);
@@ -868,7 +873,10 @@ const OOT_PLAYSTATE_CORE_CHUNK = 'oot_playstate_core';
 const OOT_PLAYSTATE_TAIL_CHUNK = 'oot_playstate_tail';
 const MM_PLAYSTATE_CORE_CHUNK = 'mm_playstate_core';
 const MM_PLAYSTATE_TAIL_CHUNK = 'mm_playstate_tail';
-const OOT_SAVE_CTX_USED_SIZE = Math.max(OOT_SAVE_SIZE, OOT_CTX_OFF_GAME_MODE + 4);
+const OOT_SAVE_CTX_USED_SIZE = Math.max(
+  OOT_SAVE_SIZE,
+  OOT_CTX_OFF_GAME_MODE + 4,
+);
 const MM_SAVE_CTX_USED_SIZE = Math.max(
   MM_SAVE_SIZE,
   MM_CTX_OFF_GAME_MODE + 4,
@@ -954,6 +962,11 @@ export const RAW_CHUNK_SPECS: RawAutotrackerChunkSpec[] = [
     length: MM_RAW_PLAYSTATE_TAIL_SIZE,
   },
 ];
+
+export const RAW_CHUNK_SPECS_BY_GAME: RawAutotrackerChunkSpecsByGame = {
+  oot: RAW_CHUNK_SPECS.filter((spec) => spec.name.startsWith('oot_')),
+  mm: RAW_CHUNK_SPECS.filter((spec) => spec.name.startsWith('mm_')),
+};
 
 export interface RawAutotrackerMemoryAreas {
   oot: string[];
@@ -1126,9 +1139,16 @@ class RawAutotrackerParserImpl implements RawAutotrackerParser {
 
     const payload = memory.get('mm_payload');
     const data = payload
-      ? sliceAbsoluteChunk(payload, ADDR_MM_FOREIGN_OOT_SAVE_LIVE, OOT_SAVE_SIZE)
+      ? sliceAbsoluteChunk(
+          payload,
+          ADDR_MM_FOREIGN_OOT_SAVE_LIVE,
+          OOT_SAVE_SIZE,
+        )
       : null;
-    if (data && validateForeignOotSaveAt(payload!, ADDR_MM_FOREIGN_OOT_SAVE_LIVE, data)) {
+    if (
+      data &&
+      validateForeignOotSaveAt(payload!, ADDR_MM_FOREIGN_OOT_SAVE_LIVE, data)
+    ) {
       parseOotSave(oot, data);
       return;
     }
@@ -1183,7 +1203,9 @@ class RawAutotrackerParserImpl implements RawAutotrackerParser {
       }
     }
 
-    const payload = memory.get(activeGame === 'OoT' ? 'oot_payload' : 'mm_payload');
+    const payload = memory.get(
+      activeGame === 'OoT' ? 'oot_payload' : 'mm_payload',
+    );
     const sharedAddress =
       activeGame === 'OoT'
         ? ADDR_OOT_SHARED_CUSTOM_SAVE_LIVE
@@ -2006,7 +2028,9 @@ function readOotRuntimeConfigFromMemory(
       OOT_COMBO_CONFIG_FLAG_BRONZE_SCALE,
     );
   } else {
-    const payload = memory.get(activeGame === 'OoT' ? 'oot_payload' : 'mm_payload');
+    const payload = memory.get(
+      activeGame === 'OoT' ? 'oot_payload' : 'mm_payload',
+    );
     if (payload) {
       readOotRuntimeConfig(payload.data, activeGame === 'OoT', oot);
       return;

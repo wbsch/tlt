@@ -1,13 +1,11 @@
 import { ref, watch, type Ref } from 'vue';
 import {
-  applyDelta,
-  canApplyAutotrackerDeltaItemsDirectly,
   translateAutotrackerItems,
   type AutotrackerItem,
 } from './autotrackerMapping';
 import {
   createRawAutotrackerParser,
-  RAW_MEMORY_AREAS_BY_GAME,
+  RAW_CHUNK_SPECS_BY_GAME,
   type RawAutotrackerMessage,
 } from './rawFrameParser';
 
@@ -16,8 +14,6 @@ export type AutotrackerStatus =
   | 'connecting'
   | 'connected'
   | 'error';
-
-export type AutotrackerProtocolMode = 'legacy' | 'raw';
 
 export type AutotrackerSyncPhase = 'initial' | 'live';
 
@@ -30,8 +26,6 @@ interface AutotrackerOptions {
   availableItemIds: Ref<Set<string>>;
   /** Effective item max counts from the tracker (setting-dependent). */
   itemMaxCounts: Ref<Map<string, number>>;
-  /** WebSocket protocol mode to request from the autotracker server. */
-  protocolMode?: Ref<AutotrackerProtocolMode>;
   /** Whether child wallets are enabled in the current tracker settings. */
   childWalletsEnabled?: Ref<boolean>;
   /** Called when the autotracker has new inventory to apply. */
@@ -48,36 +42,10 @@ interface AutotrackerOptions {
   ) => void;
 }
 
-interface ItemMessage {
-  type: 'item';
-  diff: boolean;
-  refresh: boolean;
-  items: AutotrackerItem[];
-}
-
 export interface AutotrackerCheck {
   id?: string;
   name?: string;
   checked: boolean;
-}
-
-interface CheckMessage {
-  type: 'check';
-  diff: boolean;
-  refresh: boolean;
-  checks: AutotrackerCheck[];
-}
-
-interface LocationMessage {
-  type: 'location';
-  refresh: boolean;
-  game: string;
-  sceneId: number;
-}
-
-interface RefreshMessage {
-  type: 'refresh';
-  refresh: true;
 }
 
 interface HandshakeAckMessage {
@@ -89,20 +57,13 @@ interface HandshakeAckMessage {
   features?: string[];
 }
 
-type ServerMessage =
-  | ItemMessage
-  | CheckMessage
-  | LocationMessage
-  | RefreshMessage
-  | HandshakeAckMessage
-  | RawAutotrackerMessage;
+type ServerMessage = HandshakeAckMessage | RawAutotrackerMessage;
 
 const DEFAULT_URL = 'ws://localhost:17026/';
 const RECONNECT_BASE_DELAY = 1000;
 const RECONNECT_MAX_DELAY = 30000;
 const GRID_REF_ALIAS_PREFIX = '__grid_ref__:';
 const GRID_REF_STATE_PREFIX = '__grid_ref_state__:';
-const LEGACY_HANDSHAKE_FEATURES = ['items', 'checks'];
 const RAW_HANDSHAKE_FEATURES = ['raw'];
 
 interface AutotrackerBottleSlotMapping {
@@ -344,42 +305,22 @@ function buildTranslatedAutotrackerState(
   return new Map(Object.entries(translated).filter(([, qty]) => qty > 0));
 }
 
-function normalizeProtocolMode(
-  value: string | null | undefined,
-): AutotrackerProtocolMode | null {
-  const normalized = value?.trim().toLowerCase();
-  if (normalized === 'legacy' || normalized === 'raw') {
-    return normalized;
-  }
-  return null;
-}
-
-function buildHandshakeMessage(protocolMode: AutotrackerProtocolMode): string {
+function buildHandshakeMessage(): string {
   return JSON.stringify({
     type: 'handshake',
-    features:
-      protocolMode === 'raw'
-        ? RAW_HANDSHAKE_FEATURES
-        : LEGACY_HANDSHAKE_FEATURES,
+    features: RAW_HANDSHAKE_FEATURES,
     flags: {
-      protocol: protocolMode,
+      protocol: 'raw',
     },
-    ...(protocolMode === 'raw'
-      ? {
-          memoryAreas: {
-            oot: RAW_MEMORY_AREAS_BY_GAME.oot,
-            mm: RAW_MEMORY_AREAS_BY_GAME.mm,
-          },
-        }
-      : {}),
+    memoryAreas: {
+      oot: RAW_CHUNK_SPECS_BY_GAME.oot,
+      mm: RAW_CHUNK_SPECS_BY_GAME.mm,
+    },
   });
 }
 
-function sendHandshake(
-  socket: WebSocket,
-  protocolMode: AutotrackerProtocolMode,
-) {
-  socket.send(buildHandshakeMessage(protocolMode));
+function sendHandshake(socket: WebSocket) {
+  socket.send(buildHandshakeMessage());
 }
 
 export function useAutotracker(options: AutotrackerOptions) {
@@ -393,30 +334,20 @@ export function useAutotracker(options: AutotrackerOptions) {
     return options.childWalletsEnabled?.value ?? false;
   }
 
-  function requestedProtocolMode(): AutotrackerProtocolMode {
-    return options.protocolMode?.value ?? 'legacy';
-  }
-
   let ws: WebSocket | null = null;
   let reconnectTimer: ReturnType<typeof setTimeout> | null = null;
   let reconnectAttempts = 0;
-  let negotiatedProtocolMode: AutotrackerProtocolMode = requestedProtocolMode();
   let hasReceivedRawSnapshot = false;
 
   // Canonical autotracker state (translated to tracker IDs)
   let liveRawState = new Map<string, number>();
   let liveState = new Map<string, number>();
   let liveChecks = new Map<string, AutotrackerCheck>();
-  // Buffer used during full-sync
-  let pendingFullRawState: Map<string, number> | null = null;
-  let pendingFullChecks: Map<string, AutotrackerCheck> | null = null;
-  let isInFullSync = false;
 
   function connect() {
     cleanup();
     status.value = 'connecting';
     lastError.value = null;
-    negotiatedProtocolMode = requestedProtocolMode();
     hasReceivedRawSnapshot = false;
 
     try {
@@ -430,7 +361,7 @@ export function useAutotracker(options: AutotrackerOptions) {
 
     ws.onopen = () => {
       reconnectAttempts = 0;
-      sendHandshake(ws!, requestedProtocolMode());
+      sendHandshake(ws!);
     };
 
     ws.onmessage = (event) => {
@@ -462,37 +393,10 @@ export function useAutotracker(options: AutotrackerOptions) {
     switch (msg.type) {
       case 'handshAck':
         status.value = 'connected';
-        negotiatedProtocolMode =
-          normalizeProtocolMode(msg.mode) ?? requestedProtocolMode();
-        if (negotiatedProtocolMode === 'legacy') {
-          // Server will send a full sync automatically after handshake.
-          pendingFullRawState = new Map();
-          pendingFullChecks = new Map();
-          isInFullSync = true;
-        } else {
-          pendingFullRawState = null;
-          pendingFullChecks = null;
-          isInFullSync = false;
-        }
-        break;
-
-      case 'item':
-        processItemMessage(msg as ItemMessage);
-        break;
-
-      case 'check':
-        processCheckMessage(msg as CheckMessage);
         break;
 
       case 'raw':
         processRawMessage(msg as RawAutotrackerMessage);
-        break;
-
-      case 'location':
-        break;
-
-      case 'refresh':
-        processRefresh();
         break;
     }
   }
@@ -511,56 +415,6 @@ export function useAutotracker(options: AutotrackerOptions) {
       const key = getCheckStateKey(check);
       if (!key || !check.checked) continue;
       liveChecks.set(key, check);
-    }
-  }
-
-  function processItemMessage(msg: ItemMessage) {
-    if (isInFullSync && !msg.diff) {
-      pendingFullRawState = applyRawAutotrackerItems(
-        pendingFullRawState ?? new Map<string, number>(),
-        msg.items,
-        false,
-      );
-    } else if (msg.diff) {
-      liveRawState = applyRawAutotrackerItems(liveRawState, msg.items, true);
-      if (
-        canApplyAutotrackerDeltaItemsDirectly(
-          msg.items,
-          options.availableItemIds.value,
-        )
-      ) {
-        liveState = applyDelta(
-          liveState,
-          msg.items,
-          options.availableItemIds.value,
-          options.itemMaxCounts.value,
-          { childWalletsEnabled: childWalletsEnabled() },
-        );
-      } else {
-        // Rebuild translated state from raw values when a raw delta affects
-        // non-linear tracker state, such as bitmasks or shared-stage remaps.
-        liveState = buildTranslatedAutotrackerState(
-          liveRawState,
-          options.availableItemIds.value,
-          options.itemMaxCounts.value,
-          childWalletsEnabled(),
-        );
-      }
-      if (msg.refresh) {
-        pushToTracker('live');
-      }
-    } else {
-      // Non-diff, non-fullsync (shouldn't happen normally, but handle it)
-      liveRawState = applyRawAutotrackerItems(liveRawState, msg.items, false);
-      liveState = buildTranslatedAutotrackerState(
-        liveRawState,
-        options.availableItemIds.value,
-        options.itemMaxCounts.value,
-        childWalletsEnabled(),
-      );
-      if (msg.refresh) {
-        pushToTracker('live');
-      }
     }
   }
 
@@ -585,61 +439,6 @@ export function useAutotracker(options: AutotrackerOptions) {
     hasReceivedRawSnapshot = true;
     if (msg.refresh) {
       pushToTracker(phase);
-    }
-  }
-
-  function processCheckMessage(msg: CheckMessage) {
-    if (isInFullSync && !msg.diff) {
-      for (const check of msg.checks) {
-        const key = getCheckStateKey(check);
-        if (!key) continue;
-        if (check.checked) {
-          pendingFullChecks!.set(key, check);
-        } else {
-          pendingFullChecks!.delete(key);
-        }
-      }
-      return;
-    }
-
-    if (msg.diff) {
-      liveChecks = new Map(liveChecks);
-      for (const check of msg.checks) {
-        const key = getCheckStateKey(check);
-        if (!key) continue;
-        if (check.checked) {
-          liveChecks.set(key, check);
-        } else {
-          liveChecks.delete(key);
-        }
-      }
-      if (msg.refresh) {
-        pushToTracker('live');
-      }
-      return;
-    }
-
-    replaceLiveChecks(msg.checks);
-    if (msg.refresh) {
-      pushToTracker('live');
-    }
-  }
-
-  function processRefresh() {
-    if (isInFullSync && pendingFullRawState && pendingFullChecks) {
-      // Full sync is complete — adopt the buffered state as live
-      liveRawState = pendingFullRawState;
-      liveState = buildTranslatedAutotrackerState(
-        liveRawState,
-        options.availableItemIds.value,
-        options.itemMaxCounts.value,
-        childWalletsEnabled(),
-      );
-      liveChecks = pendingFullChecks;
-      pendingFullRawState = null;
-      pendingFullChecks = null;
-      isInFullSync = false;
-      pushToTracker('initial');
     }
   }
 
@@ -685,11 +484,7 @@ export function useAutotracker(options: AutotrackerOptions) {
       ws.close();
       ws = null;
     }
-    pendingFullRawState = null;
-    pendingFullChecks = null;
-    isInFullSync = false;
     hasReceivedRawSnapshot = false;
-    negotiatedProtocolMode = requestedProtocolMode();
     rawParser.reset();
   }
 
@@ -759,7 +554,7 @@ export function useAutotracker(options: AutotrackerOptions) {
 
       probeSocket.onopen = () => {
         try {
-          sendHandshake(probeSocket!, requestedProtocolMode());
+          sendHandshake(probeSocket!);
         } catch {
           finish(false);
         }
@@ -794,17 +589,6 @@ export function useAutotracker(options: AutotrackerOptions) {
       disconnect();
     }
   });
-
-  if (options.protocolMode) {
-    watch(options.protocolMode, (mode, previousMode) => {
-      if (mode === previousMode) {
-        return;
-      }
-      if (enabled.value) {
-        connect();
-      }
-    });
-  }
 
   function destroy() {
     enabled.value = false;

@@ -15,7 +15,6 @@
     "build:check": "vite build",
     "preview": "vite preview",
     "generate:autotracker-data": "node --import tsx scripts/autotracker/generate_data.ts",
-    "analyze:autotracker:fixtures": "node --import tsx scripts/autotracker/diff_fixture_summaries.ts",
     "generate:asset-versions": "node scripts/generate_public_image_asset_versions.ts",
     "generate:map-icons": "node scripts/generate_map_icon_index.ts",
     "generate:map-schema": "node scripts/generate_map_schema.ts",
@@ -30,15 +29,13 @@
     "optimize:dirty-pngs": "bash scripts/optimize_dirty_pngs.sh",
     "test:pathfinder": "node --import tsx scripts/pathfinder-tests/run_ootmm.ts tests/pathfinder/tests_silke.jsonc",
     "test:pathfinder:web": "node --import tsx scripts/pathfinder-tests/run_silke_playwright.ts tests/pathfinder/tests_silke.jsonc",
-    "test:autotracker:parity": "node --import tsx scripts/autotracker/check_fixture_parity.ts",
-    "test:autotracker:parity:report": "node --import tsx scripts/autotracker/report_fixture_parity_diffs.ts",
     "test:unit": "vitest run",
     "test:e2e": "playwright test",
     "test:e2e:headed": "playwright test --headed",
     "test:e2e:ui": "playwright test --ui",
     "test:e2e:install": "playwright install chromium",
     "check-most": "npm run format && npm run lint:fix && npm run type-check && npm run validate:autotracker-data && npm run build:check",
-    "check-all": "npm run check-most && npm run test:unit && npm run test:autotracker:parity && npm run test:pathfinder && npm run test:e2e"
+    "check-all": "npm run check-most && npm run test:unit && npm run test:pathfinder && npm run test:e2e"
   },
   "dependencies": {
     "lodash": "^4.17.21",
