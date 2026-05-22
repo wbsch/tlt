@@ -538,6 +538,25 @@ const autotracker = useAutotracker({
   },
 });
 
+const isAutotrackerVersionWarningDismissed = ref(false);
+
+const visibleAutotrackerVersionWarning = computed(() => {
+  if (isAutotrackerVersionWarningDismissed.value) {
+    return null;
+  }
+
+  return autotracker.versionWarning.value;
+});
+
+watch(
+  () => autotracker.versionWarning.value,
+  (warning, previousWarning) => {
+    if (warning !== previousWarning) {
+      isAutotrackerVersionWarningDismissed.value = false;
+    }
+  },
+);
+
 let autotrackerStartMode: AutotrackerStartMode = 'overwrite';
 let autotrackerLastRemoteInventory: Record<string, number> | null = null;
 let autotrackerLastRemoteCollectedLocationIds: Set<string> | null = null;
@@ -612,6 +631,10 @@ function startAutotracker(mode: AutotrackerStartMode) {
 
 function startAutotrackerOverwriteMode() {
   startAutotracker('overwrite');
+}
+
+function dismissAutotrackerVersionWarning() {
+  isAutotrackerVersionWarningDismissed.value = true;
 }
 
 function setAutotrackerInventoryCount(
@@ -2596,30 +2619,51 @@ onBeforeUnmount(() => {
             }}</span>
           </div>
         </div>
-        <div class="history-actions">
-          <button
-            type="button"
-            class="history-button"
-            :disabled="isApplyingSettings || !canUndo"
-            @click="undo"
+        <div class="history-controls">
+          <div class="history-actions">
+            <button
+              type="button"
+              class="history-button"
+              :disabled="isApplyingSettings || !canUndo"
+              @click="undo"
+            >
+              ↶ Undo
+            </button>
+            <button
+              type="button"
+              class="history-button"
+              :disabled="isApplyingSettings || !canRedo"
+              @click="redo"
+            >
+              Redo ↷
+            </button>
+            <AutotrackerToggle
+              :status="autotracker.status.value"
+              :enabled="autotracker.enabled.value"
+              :last-error="autotracker.lastError.value"
+              :warning-message="autotracker.versionWarning.value"
+              @update:enabled="handleAutotrackerEnabledUpdate"
+              @start-overwrite="startAutotrackerOverwriteMode"
+            />
+          </div>
+          <div
+            v-if="visibleAutotrackerVersionWarning"
+            class="autotracker-inline-warning"
+            data-testid="autotracker-inline-warning"
           >
-            ↶ Undo
-          </button>
-          <button
-            type="button"
-            class="history-button"
-            :disabled="isApplyingSettings || !canRedo"
-            @click="redo"
-          >
-            Redo ↷
-          </button>
-          <AutotrackerToggle
-            :status="autotracker.status.value"
-            :enabled="autotracker.enabled.value"
-            :last-error="autotracker.lastError.value"
-            @update:enabled="handleAutotrackerEnabledUpdate"
-            @start-overwrite="startAutotrackerOverwriteMode"
-          />
+            <button
+              type="button"
+              class="autotracker-inline-warning-close"
+              aria-label="Dismiss autotracker warning"
+              data-testid="autotracker-inline-warning-close"
+              @click="dismissAutotrackerVersionWarning"
+            >
+              ×
+            </button>
+            <p class="autotracker-inline-warning-text">
+              {{ visibleAutotrackerVersionWarning }}
+            </p>
+          </div>
         </div>
       </div>
 
@@ -3489,8 +3533,14 @@ onBeforeUnmount(() => {
   font-weight: 600;
 }
 
-.history-actions {
+.history-controls {
   margin-top: 0.55rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.55rem;
+}
+
+.history-actions {
   display: flex;
   gap: 0.45rem;
 }
@@ -3501,6 +3551,46 @@ onBeforeUnmount(() => {
   font-size: 0.72rem;
   text-transform: uppercase;
   letter-spacing: 0.03em;
+}
+
+.autotracker-inline-warning {
+  position: relative;
+  padding: 0.6rem 2rem 0.6rem 0.75rem;
+  border: 1px solid #8a6d1f;
+  border-radius: 0.35rem;
+  background: #3a2f08;
+  color: #ffe08a;
+}
+
+.autotracker-inline-warning-text {
+  margin: 0;
+  font-size: 0.72rem;
+  line-height: 1.4;
+}
+
+.autotracker-inline-warning-close {
+  position: absolute;
+  top: 0.3rem;
+  right: 0.3rem;
+  width: 1.4rem;
+  height: 1.4rem;
+  padding: 0;
+  border: none;
+  border-radius: 999px;
+  background: transparent;
+  color: #ffe08a;
+  font-size: 1rem;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.autotracker-inline-warning-close:hover {
+  background: rgba(255, 224, 138, 0.12);
+}
+
+.autotracker-inline-warning-close:focus-visible {
+  outline: 2px solid #fcd34d;
+  outline-offset: 2px;
 }
 
 .tabs {

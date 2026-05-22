@@ -6,6 +6,7 @@ const props = defineProps<{
   status: AutotrackerStatus;
   enabled: boolean;
   lastError: string | null;
+  warningMessage?: string | null;
 }>();
 
 const emit = defineEmits<{
@@ -15,6 +16,8 @@ const emit = defineEmits<{
 
 const rootRef = ref<HTMLElement | null>(null);
 const isMenuOpen = ref(false);
+
+const warningMessage = computed(() => props.warningMessage?.trim() || null);
 
 const statusLabel = computed(() => {
   switch (props.status) {
@@ -81,9 +84,11 @@ const buttonTitle = computed(() => {
 });
 
 function lastErrorTitle() {
-  return props.lastError
-    ? `Autotracker: ${statusLabel.value} - ${props.lastError}`
-    : `Autotracker: ${statusLabel.value}`;
+  return warningMessage.value
+    ? `Autotracker: ${statusLabel.value} - ${warningMessage.value}`
+    : props.lastError
+      ? `Autotracker: ${statusLabel.value} - ${props.lastError}`
+      : `Autotracker: ${statusLabel.value}`;
 }
 
 function closeMenu() {

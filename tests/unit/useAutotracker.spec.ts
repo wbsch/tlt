@@ -48,6 +48,8 @@ import {
 } from '@/../packs/ootmm/src/autotracker/useAutotracker';
 import { resolveAutotrackerCheckToLocationIds } from '@/../packs/ootmm/src/autotracker/checkMapping';
 
+const CURRENT_AUTOTRACKER_VERSION = '0.1.1';
+
 class FakeWebSocket {
   static instances: FakeWebSocket[] = [];
 
@@ -188,7 +190,7 @@ describe('useAutotracker checks', () => {
 
     socket.emitMessage({
       type: 'handshAck',
-      version: '0.1.0',
+      version: CURRENT_AUTOTRACKER_VERSION,
       name: 'ootmm-autotracker',
       refresh: true,
     });
@@ -267,7 +269,7 @@ describe('useAutotracker checks', () => {
     socket.emitOpen();
     socket.emitMessage({
       type: 'handshAck',
-      version: '0.1.0',
+      version: CURRENT_AUTOTRACKER_VERSION,
       name: 'ootmm-autotracker',
       refresh: true,
     });
@@ -328,7 +330,7 @@ describe('useAutotracker checks', () => {
     socket.emitOpen();
     socket.emitMessage({
       type: 'handshAck',
-      version: '0.1.0',
+      version: CURRENT_AUTOTRACKER_VERSION,
       name: 'ootmm-autotracker',
       refresh: true,
     });
@@ -384,7 +386,7 @@ describe('useAutotracker checks', () => {
     socket.emitOpen();
     socket.emitMessage({
       type: 'handshAck',
-      version: '0.1.0',
+      version: CURRENT_AUTOTRACKER_VERSION,
       name: 'ootmm-autotracker',
       refresh: true,
     });
@@ -445,7 +447,7 @@ describe('useAutotracker checks', () => {
     socket.emitOpen();
     socket.emitMessage({
       type: 'handshAck',
-      version: '0.1.0',
+      version: CURRENT_AUTOTRACKER_VERSION,
       name: 'ootmm-autotracker',
       refresh: true,
     });
@@ -514,7 +516,7 @@ describe('useAutotracker checks', () => {
     socket.emitOpen();
     socket.emitMessage({
       type: 'handshAck',
-      version: '0.1.0',
+      version: CURRENT_AUTOTRACKER_VERSION,
       name: 'ootmm-autotracker',
       refresh: true,
     });
@@ -580,7 +582,7 @@ describe('useAutotracker checks', () => {
     socket.emitOpen();
     socket.emitMessage({
       type: 'handshAck',
-      version: '0.1.0',
+      version: CURRENT_AUTOTRACKER_VERSION,
       name: 'ootmm-autotracker',
       refresh: true,
     });
@@ -645,7 +647,7 @@ describe('useAutotracker checks', () => {
     socket.emitOpen();
     socket.emitMessage({
       type: 'handshAck',
-      version: '0.1.0',
+      version: CURRENT_AUTOTRACKER_VERSION,
       name: 'ootmm-autotracker',
       refresh: true,
     });
@@ -774,13 +776,55 @@ describe('useAutotracker checks', () => {
 
     socket.emitMessage({
       type: 'handshAck',
-      version: '0.1.0',
+      version: CURRENT_AUTOTRACKER_VERSION,
       name: 'ootmm-autotracker',
       refresh: true,
     });
 
     await expect(availabilityPromise).resolves.toBe(true);
     expect(autotracker.enabled.value).toBe(false);
+  });
+
+  it('reports an outdated autotracker version from the handshake ack', async () => {
+    const inventoryUpdates: Array<Record<string, number>> = [];
+    const autotracker = useAutotracker({
+      availableItemIds: ref(new Set<string>()),
+      itemMaxCounts: ref(new Map<string, number>()),
+      onInventoryUpdate: (inventory) => {
+        inventoryUpdates.push(inventory);
+      },
+    });
+
+    autotracker.enabled.value = true;
+    await nextTick();
+
+    const socket = FakeWebSocket.instances[0];
+    expect(socket).toBeDefined();
+
+    socket.emitOpen();
+    socket.emitMessage({
+      type: 'handshAck',
+      version: '0.1.0',
+      name: 'ootmm-autotracker',
+      refresh: true,
+    });
+    socket.emitMessage({
+      type: 'raw',
+      schemaVersion: '1',
+      diff: false,
+      refresh: true,
+      sequence: 1,
+      game: 'OoT',
+      saveIndex: 0,
+      chunks: [],
+    });
+
+    expect(autotracker.enabled.value).toBe(false);
+    expect(autotracker.status.value).toBe('disconnected');
+    expect(autotracker.versionWarning.value).toBe(
+      'You are using an outdated autotracker version (0.1.0). Please update to version 0.1.1 or newer.',
+    );
+    expect(inventoryUpdates).toEqual([]);
   });
 
   it('reports unavailable when the autotracker probe errors', async () => {

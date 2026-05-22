@@ -184,4 +184,36 @@ describe('AutotrackerToggle', () => {
       container.remove();
     }
   });
+
+  it('keeps the outdated-version warning in the button title only', async () => {
+    const container = document.createElement('div');
+    document.body.append(container);
+    const app = createApp(AutotrackerToggle, {
+      status: 'connected',
+      enabled: true,
+      lastError: null,
+      warningMessage:
+        'You are using an outdated autotracker version (0.1.0). Please update to version 0.1.1 or newer.',
+    });
+
+    try {
+      app.mount(container);
+      await flushUi();
+
+      const warning = container.querySelector(
+        '[data-testid="autotracker-warning"]',
+      );
+      const button = container.querySelector(
+        '[data-testid="autotracker-button"]',
+      );
+
+      expect(warning).toBeNull();
+      expect((button as HTMLButtonElement).title).toContain(
+        'outdated autotracker version',
+      );
+    } finally {
+      app.unmount();
+      container.remove();
+    }
+  });
 });

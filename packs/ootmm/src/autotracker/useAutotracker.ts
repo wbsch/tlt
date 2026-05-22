@@ -65,6 +65,7 @@ const RECONNECT_MAX_DELAY = 30000;
 const GRID_REF_ALIAS_PREFIX = '__grid_ref__:';
 const GRID_REF_STATE_PREFIX = '__grid_ref_state__:';
 const RAW_HANDSHAKE_FEATURES = ['raw'];
+const MIN_SUPPORTED_AUTOTRACKER_VERSION = '0.1.1';
 
 interface AutotrackerBottleSlotMapping {
   autotrackerId: string;
@@ -323,11 +324,80 @@ function sendHandshake(socket: WebSocket) {
   socket.send(buildHandshakeMessage());
 }
 
+function parseAutotrackerVersionParts(
+  version: string | null | undefined,
+): [number, number, number] | null {
+  if (typeof version !== 'string') {
+    return null;
+  }
+
+  const normalizedVersion = version.trim();
+  if (!normalizedVersion) {
+    return null;
+  }
+
+  const match = normalizedVersion.match(/^v?(\d+)(?:\.(\d+))?(?:\.(\d+))?/i);
+  if (!match) {
+    return null;
+  }
+
+  return [
+    Number.parseInt(match[1], 10),
+    Number.parseInt(match[2] ?? '0', 10),
+    Number.parseInt(match[3] ?? '0', 10),
+  ];
+}
+
+function compareAutotrackerVersions(
+  left: string | null | undefined,
+  right: string | null | undefined,
+): number | null {
+  const leftParts = parseAutotrackerVersionParts(left);
+  const rightParts = parseAutotrackerVersionParts(right);
+
+  if (!leftParts || !rightParts) {
+    return null;
+  }
+
+  for (let index = 0; index < leftParts.length; index += 1) {
+    if (leftParts[index] === rightParts[index]) {
+      continue;
+    }
+
+    return leftParts[index] < rightParts[index] ? -1 : 1;
+  }
+
+  return 0;
+}
+
+function buildAutotrackerVersionWarning(
+  version: string | null | undefined,
+): string | null {
+  const normalizedVersion = version?.trim() ?? '';
+  const comparison = compareAutotrackerVersions(
+    normalizedVersion,
+    MIN_SUPPORTED_AUTOTRACKER_VERSION,
+  );
+
+  if (comparison !== null && comparison >= 0) {
+    return null;
+  }
+
+  const updateMessage = `Please update to version ${MIN_SUPPORTED_AUTOTRACKER_VERSION} or newer.`;
+
+  if (!normalizedVersion) {
+    return `You are using an outdated autotracker version that does not report its version. ${updateMessage}`;
+  }
+
+  return `You are using an outdated autotracker version (${normalizedVersion}). ${updateMessage}`;
+}
+
 export function useAutotracker(options: AutotrackerOptions) {
   const status = ref<AutotrackerStatus>('disconnected');
   const enabled = ref(false);
   const url = ref(DEFAULT_URL);
   const lastError = ref<string | null>(null);
+  const versionWarning = ref<string | null>(null);
   const rawParser = createRawAutotrackerParser();
 
   function childWalletsEnabled(): boolean {
@@ -338,6 +408,7 @@ export function useAutotracker(options: AutotrackerOptions) {
   let reconnectTimer: ReturnType<typeof setTimeout> | null = null;
   let reconnectAttempts = 0;
   let hasReceivedRawSnapshot = false;
+  let preserveVersionWarningOnDisable = false;
 
   // Canonical autotracker state (translated to tracker IDs)
   let liveRawState = new Map<string, number>();
@@ -348,6 +419,7 @@ export function useAutotracker(options: AutotrackerOptions) {
     cleanup();
     status.value = 'connecting';
     lastError.value = null;
+    versionWarning.value = null;
     hasReceivedRawSnapshot = false;
 
     try {
@@ -392,7 +464,18 @@ export function useAutotracker(options: AutotrackerOptions) {
   function handleMessage(msg: ServerMessage) {
     switch (msg.type) {
       case 'handshAck':
-        status.value = 'connected';
+        {
+          const warning = buildAutotrackerVersionWarning(msg.version);
+          if (warning) {
+            versionWarning.value = warning;
+            preserveVersionWarningOnDisable = true;
+            disconnect(true);
+            enabled.value = false;
+            break;
+          }
+
+          status.value = 'connected';
+        }
         break;
 
       case 'raw':
@@ -419,6 +502,10 @@ export function useAutotracker(options: AutotrackerOptions) {
   }
 
   function processRawMessage(msg: RawAutotrackerMessage) {
+    if (!enabled.value) {
+      return;
+    }
+
     const parsed = rawParser.parse(msg);
     if (!parsed) {
       return;
@@ -488,13 +575,16 @@ export function useAutotracker(options: AutotrackerOptions) {
     rawParser.reset();
   }
 
-  function disconnect() {
+  function disconnect(preserveVersionWarning = false) {
     cleanup();
     liveRawState = new Map();
     liveState = new Map();
     liveChecks = new Map();
     status.value = 'disconnected';
     lastError.value = null;
+    if (!preserveVersionWarning) {
+      versionWarning.value = null;
+    }
     reconnectAttempts = 0;
   }
 
@@ -586,7 +676,8 @@ export function useAutotracker(options: AutotrackerOptions) {
     if (isEnabled) {
       connect();
     } else {
-      disconnect();
+      disconnect(preserveVersionWarningOnDisable);
+      preserveVersionWarningOnDisable = false;
     }
   });
 
@@ -600,6 +691,7 @@ export function useAutotracker(options: AutotrackerOptions) {
     enabled,
     url,
     lastError,
+    versionWarning,
     probeAvailability,
     destroy,
   };
