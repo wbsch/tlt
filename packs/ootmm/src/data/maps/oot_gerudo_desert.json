@@ -261,12 +261,12 @@
     {
       "coords": [136, 549],
       "image": "wonder_item_blue_rupee",
-      "codes": ["OOT Desert Colossus Wonder Item Oasis 1"]
+      "codes": ["OOT Desert Colossus Wonder Item Oasis 2"]
     },
     {
       "coords": [136, 565],
       "image": "wonder_item_small_magic_jar",
-      "codes": ["OOT Desert Colossus Wonder Item Oasis 2"]
+      "codes": ["OOT Desert Colossus Wonder Item Oasis 1"]
     },
     {
       "coords": [104, 572],
@@ -361,20 +361,6 @@
       "coords": [68, 428],
       "image": "rock",
       "codes": [
-        "OOT Desert Colossus Rock Circle 1 Rock 1",
-        "OOT Desert Colossus Rock Circle 1 Rock 2",
-        "OOT Desert Colossus Rock Circle 1 Rock 3",
-        "OOT Desert Colossus Rock Circle 1 Rock 4",
-        "OOT Desert Colossus Rock Circle 1 Rock 5",
-        "OOT Desert Colossus Rock Circle 1 Rock 6",
-        "OOT Desert Colossus Rock Circle 1 Rock 7",
-        "OOT Desert Colossus Rock Circle 1 Rock 8"
-      ]
-    },
-    {
-      "coords": [45, 442],
-      "image": "rock",
-      "codes": [
         "OOT Desert Colossus Rock Circle 2 Rock 1",
         "OOT Desert Colossus Rock Circle 2 Rock 2",
         "OOT Desert Colossus Rock Circle 2 Rock 3",
@@ -383,6 +369,20 @@
         "OOT Desert Colossus Rock Circle 2 Rock 6",
         "OOT Desert Colossus Rock Circle 2 Rock 7",
         "OOT Desert Colossus Rock Circle 2 Rock 8"
+      ]
+    },
+    {
+      "coords": [45, 442],
+      "image": "rock",
+      "codes": [
+        "OOT Desert Colossus Rock Circle 1 Rock 1",
+        "OOT Desert Colossus Rock Circle 1 Rock 2",
+        "OOT Desert Colossus Rock Circle 1 Rock 3",
+        "OOT Desert Colossus Rock Circle 1 Rock 4",
+        "OOT Desert Colossus Rock Circle 1 Rock 5",
+        "OOT Desert Colossus Rock Circle 1 Rock 6",
+        "OOT Desert Colossus Rock Circle 1 Rock 7",
+        "OOT Desert Colossus Rock Circle 1 Rock 8"
       ]
     },
     {

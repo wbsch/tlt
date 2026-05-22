@@ -13,7 +13,7 @@
     {
       "coords": [398, 510],
       "image": "chest",
-      "codes": ["MM Stone Tower Temple Inverted East Lower Chest"]
+      "codes": ["MM Stone Tower Temple Inverted East Upper Chest"]
     },
     {
       "coords": [325, 386],
@@ -43,12 +43,12 @@
     {
       "coords": [710, 511],
       "image": "chest",
-      "codes": ["MM Stone Tower Temple Inverted East Upper Chest"]
+      "codes": ["MM Stone Tower Temple Inverted East Middle Chest"]
     },
     {
       "coords": [710, 473],
       "image": "chest",
-      "codes": ["MM Stone Tower Temple Inverted East Middle Chest"]
+      "codes": ["MM Stone Tower Temple Inverted East Lower Chest"]
     },
     {
       "coords": [790, 485],
@@ -215,17 +215,17 @@
     {
       "coords": [751, 500],
       "image": "pot",
-      "codes": ["MM Stone Tower Temple Inverted Pot Gomess 4"]
+      "codes": ["MM Stone Tower Temple Inverted Pot Gomess 3"]
     },
     {
       "coords": [777, 500],
       "image": "pot",
-      "codes": ["MM Stone Tower Temple Inverted Pot Gomess 3"]
+      "codes": ["MM Stone Tower Temple Inverted Pot Gomess 2"]
     },
     {
       "coords": [777, 471],
       "image": "pot",
-      "codes": ["MM Stone Tower Temple Inverted Pot Gomess 2"]
+      "codes": ["MM Stone Tower Temple Inverted Pot Gomess 4"]
     },
     {
       "coords": [751, 471],
@@ -344,18 +344,18 @@
       "coords": [636, 439],
       "image": "blue_rupee",
       "codes": [
-        "MM Stone Tower Temple Inverted Rupee Pre-Boss Back 1",
         "MM Stone Tower Temple Inverted Rupee Pre-Boss Back 2",
         "MM Stone Tower Temple Inverted Rupee Pre-Boss Back 3",
-        "MM Stone Tower Temple Inverted Rupee Pre-Boss Back 4"
+        "MM Stone Tower Temple Inverted Rupee Pre-Boss Front 1",
+        "MM Stone Tower Temple Inverted Rupee Pre-Boss Front 2"
       ]
     },
     {
       "coords": [655, 439],
       "image": "blue_rupee",
       "codes": [
-        "MM Stone Tower Temple Inverted Rupee Pre-Boss Front 1",
-        "MM Stone Tower Temple Inverted Rupee Pre-Boss Front 2",
+        "MM Stone Tower Temple Inverted Rupee Pre-Boss Back 1",
+        "MM Stone Tower Temple Inverted Rupee Pre-Boss Back 4",
         "MM Stone Tower Temple Inverted Rupee Pre-Boss Front 3",
         "MM Stone Tower Temple Inverted Rupee Pre-Boss Front 4"
       ]

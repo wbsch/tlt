@@ -352,14 +352,14 @@
       "coords": [765, 226],
       "image": "small_crate",
       "codes": [
-        "OOT MQ Forest Temple Spinning Red Pool Room Small Crate 2",
-        "OOT MQ Forest Temple Spinning Red Pool Room Small Crate 3"
+        "OOT MQ Forest Temple Spinning Red Pool Room Small Crate 1",
+        "OOT MQ Forest Temple Spinning Red Pool Room Small Crate 2"
       ]
     },
     {
       "coords": [733, 210],
       "image": "small_crate",
-      "codes": ["OOT MQ Forest Temple Spinning Red Pool Room Small Crate 1"]
+      "codes": ["OOT MQ Forest Temple Spinning Red Pool Room Small Crate 3"]
     }
   ]
 }

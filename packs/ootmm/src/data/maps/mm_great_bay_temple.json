@@ -214,8 +214,8 @@
       "coords": [597, 231],
       "image": "pot",
       "codes": [
-        "MM Great Bay Temple Pot Green Pipe 2 1",
-        "MM Great Bay Temple Pot Green Pipe 2 2"
+        "MM Great Bay Temple Pot Green Pipe 2 7",
+        "MM Great Bay Temple Pot Green Pipe 2 8"
       ]
     },
     {
@@ -232,16 +232,16 @@
       "coords": [622, 241],
       "image": "pot",
       "codes": [
-        "MM Great Bay Temple Pot Green Pipe 2 7",
-        "MM Great Bay Temple Pot Green Pipe 2 8"
+        "MM Great Bay Temple Pot Green Pipe 2 1",
+        "MM Great Bay Temple Pot Green Pipe 2 2"
       ]
     },
     {
       "coords": [735, 176],
       "image": "pot",
       "codes": [
-        "MM Great Bay Temple Pot Wart 3",
-        "MM Great Bay Temple Pot Wart 4"
+        "MM Great Bay Temple Pot Wart 2",
+        "MM Great Bay Temple Pot Wart 7"
       ]
     },
     {
@@ -249,7 +249,7 @@
       "image": "pot",
       "codes": [
         "MM Great Bay Temple Pot Wart 5",
-        "MM Great Bay Temple Pot Wart 6"
+        "MM Great Bay Temple Pot Wart 8"
       ]
     },
     {
@@ -257,15 +257,15 @@
       "image": "pot",
       "codes": [
         "MM Great Bay Temple Pot Wart 1",
-        "MM Great Bay Temple Pot Wart 2"
+        "MM Great Bay Temple Pot Wart 3"
       ]
     },
     {
       "coords": [759, 202],
       "image": "pot",
       "codes": [
-        "MM Great Bay Temple Pot Wart 7",
-        "MM Great Bay Temple Pot Wart 8"
+        "MM Great Bay Temple Pot Wart 4",
+        "MM Great Bay Temple Pot Wart 6"
       ]
     },
     {
@@ -289,7 +289,7 @@
     {
       "coords": [799, 203],
       "image": "pot",
-      "codes": ["MM Great Bay Temple Pot Green Pipe 1 2"]
+      "codes": ["MM Great Bay Temple Pot Green Pipe 1 1"]
     },
     {
       "coords": [828, 203],
@@ -299,7 +299,7 @@
     {
       "coords": [799, 235],
       "image": "pot",
-      "codes": ["MM Great Bay Temple Pot Green Pipe 1 1"]
+      "codes": ["MM Great Bay Temple Pot Green Pipe 1 2"]
     },
     {
       "coords": [828, 235],
@@ -383,39 +383,39 @@
       "coords": [539, 173],
       "image": "small_crate",
       "codes": [
-        "MM Great Bay Temple Crate Before Boss Key 05",
-        "MM Great Bay Temple Crate Before Boss Key 06",
-        "MM Great Bay Temple Crate Before Boss Key 07",
-        "MM Great Bay Temple Crate Before Boss Key 08"
+        "MM Great Bay Temple Crate Before Boss Key 01",
+        "MM Great Bay Temple Crate Before Boss Key 03",
+        "MM Great Bay Temple Crate Before Boss Key 09",
+        "MM Great Bay Temple Crate Before Boss Key 11"
       ]
     },
     {
       "coords": [539, 193],
       "image": "small_crate",
       "codes": [
-        "MM Great Bay Temple Crate Before Boss Key 01",
         "MM Great Bay Temple Crate Before Boss Key 02",
-        "MM Great Bay Temple Crate Before Boss Key 03",
-        "MM Great Bay Temple Crate Before Boss Key 04"
+        "MM Great Bay Temple Crate Before Boss Key 04",
+        "MM Great Bay Temple Crate Before Boss Key 10",
+        "MM Great Bay Temple Crate Before Boss Key 12"
       ]
     },
     {
       "coords": [560, 173],
       "image": "small_crate",
       "codes": [
-        "MM Great Bay Temple Crate Before Boss Key 09",
-        "MM Great Bay Temple Crate Before Boss Key 10",
-        "MM Great Bay Temple Crate Before Boss Key 11",
-        "MM Great Bay Temple Crate Before Boss Key 12"
+        "MM Great Bay Temple Crate Before Boss Key 05",
+        "MM Great Bay Temple Crate Before Boss Key 07",
+        "MM Great Bay Temple Crate Before Boss Key 13",
+        "MM Great Bay Temple Crate Before Boss Key 15"
       ]
     },
     {
       "coords": [560, 193],
       "image": "small_crate",
       "codes": [
-        "MM Great Bay Temple Crate Before Boss Key 13",
+        "MM Great Bay Temple Crate Before Boss Key 06",
+        "MM Great Bay Temple Crate Before Boss Key 08",
         "MM Great Bay Temple Crate Before Boss Key 14",
-        "MM Great Bay Temple Crate Before Boss Key 15",
         "MM Great Bay Temple Crate Before Boss Key 16"
       ]
     },
@@ -440,19 +440,19 @@
       "coords": [904, 286],
       "image": "crate",
       "codes": [
-        "MM Great Bay Temple Crate Green Pipe 4",
-        "MM Great Bay Temple Crate Green Pipe 5",
-        "MM Great Bay Temple Crate Green Pipe 6",
-        "MM Great Bay Temple Crate Green Pipe 7"
+        "MM Great Bay Temple Crate Green Pipe 1",
+        "MM Great Bay Temple Crate Green Pipe 2",
+        "MM Great Bay Temple Crate Green Pipe 3",
+        "MM Great Bay Temple Crate Green Pipe 4"
       ]
     },
     {
       "coords": [897, 269],
       "image": "crate",
       "codes": [
-        "MM Great Bay Temple Crate Green Pipe 1",
-        "MM Great Bay Temple Crate Green Pipe 2",
-        "MM Great Bay Temple Crate Green Pipe 3"
+        "MM Great Bay Temple Crate Green Pipe 5",
+        "MM Great Bay Temple Crate Green Pipe 6",
+        "MM Great Bay Temple Crate Green Pipe 7"
       ]
     },
     {
@@ -477,16 +477,16 @@
       "image": "barrel",
       "codes": [
         "MM Great Bay Temple Barrel Chu Room 1",
-        "MM Great Bay Temple Barrel Chu Room 2",
-        "MM Great Bay Temple Barrel Chu Room 3"
+        "MM Great Bay Temple Barrel Chu Room 4",
+        "MM Great Bay Temple Barrel Chu Room 5"
       ]
     },
     {
       "coords": [854, 344],
       "image": "barrel",
       "codes": [
-        "MM Great Bay Temple Barrel Chu Room 4",
-        "MM Great Bay Temple Barrel Chu Room 5"
+        "MM Great Bay Temple Barrel Chu Room 2",
+        "MM Great Bay Temple Barrel Chu Room 3"
       ]
     },
     {

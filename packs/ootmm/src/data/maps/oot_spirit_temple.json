@@ -411,7 +411,7 @@
       "coords": [678, 407],
       "image": "pot",
       "codes": [
-        "OOT MQ Spirit Temple Pot Statue Room Lower 2",
+        "OOT MQ Spirit Temple Pot Statue Room Lower 1",
         "OOT MQ Spirit Temple Pot Statue Room Lower 3"
       ]
     },
@@ -428,7 +428,7 @@
     {
       "coords": [613, 414],
       "image": "pot",
-      "codes": "OOT MQ Spirit Temple Pot Statue Room Lower 1"
+      "codes": "OOT MQ Spirit Temple Pot Statue Room Lower 2"
     },
     {
       "coords": [683, 162],
@@ -472,12 +472,12 @@
     {
       "coords": [259, 191],
       "image": "pot",
-      "codes": "OOT MQ Spirit Temple Pot Child Sun Room 1"
+      "codes": "OOT MQ Spirit Temple Pot Child Sun Room 2"
     },
     {
       "coords": [259, 231],
       "image": "pot",
-      "codes": "OOT MQ Spirit Temple Pot Child Sun Room 2"
+      "codes": "OOT MQ Spirit Temple Pot Child Sun Room 1"
     },
     {
       "coords": [280, 369],
@@ -519,7 +519,7 @@
       "coords": [355, 519],
       "image": "pot",
       "codes": [
-        "OOT MQ Spirit Temple Pot Entrance 3",
+        "OOT MQ Spirit Temple Pot Entrance 2",
         "OOT MQ Spirit Temple Pot Entrance 4"
       ]
     },
@@ -528,7 +528,7 @@
       "image": "pot",
       "codes": [
         "OOT MQ Spirit Temple Pot Entrance 1",
-        "OOT MQ Spirit Temple Pot Entrance 2"
+        "OOT MQ Spirit Temple Pot Entrance 3"
       ]
     },
     {

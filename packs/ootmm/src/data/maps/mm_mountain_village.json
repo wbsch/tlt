@@ -168,12 +168,12 @@
       "coords": [325, 305],
       "image": "pot",
       "codes": [
-        "MM Goron Race Pot 12",
-        "MM Goron Race Pot 13",
-        "MM Goron Race Pot 14",
-        "MM Goron Race Pot 15",
-        "MM Goron Race Pot 16",
-        "MM Goron Race Pot 17"
+        "MM Goron Race Pot 04",
+        "MM Goron Race Pot 07",
+        "MM Goron Race Pot 08",
+        "MM Goron Race Pot 09",
+        "MM Goron Race Pot 10",
+        "MM Goron Race Pot 11"
       ]
     },
     {
@@ -184,75 +184,75 @@
     {
       "coords": [311, 261],
       "image": "pot",
-      "codes": ["MM Goron Race Pot 19"]
+      "codes": ["MM Goron Race Pot 06"]
     },
     {
       "coords": [327, 259],
       "image": "pot",
-      "codes": ["MM Goron Race Pot 11"]
+      "codes": ["MM Goron Race Pot 02"]
     },
     {
       "coords": [292, 230],
       "image": "pot",
-      "codes": ["MM Goron Race Pot 21"]
+      "codes": ["MM Goron Race Pot 03"]
     },
     {
       "coords": [308, 236],
       "image": "pot",
-      "codes": ["MM Goron Race Pot 20"]
+      "codes": ["MM Goron Race Pot 01"]
     },
     {
       "coords": [326, 232],
       "image": "pot",
-      "codes": ["MM Goron Race Pot 10"]
+      "codes": ["MM Goron Race Pot 15"]
     },
     {
       "coords": [326, 206],
       "image": "pot",
-      "codes": ["MM Goron Race Pot 09"]
+      "codes": ["MM Goron Race Pot 25"]
     },
     {
       "coords": [341, 190],
       "image": "pot",
       "codes": [
-        "MM Goron Race Pot 22",
-        "MM Goron Race Pot 23",
-        "MM Goron Race Pot 24",
-        "MM Goron Race Pot 25",
-        "MM Goron Race Pot 26"
+        "MM Goron Race Pot 16",
+        "MM Goron Race Pot 17",
+        "MM Goron Race Pot 18",
+        "MM Goron Race Pot 19",
+        "MM Goron Race Pot 20"
       ]
     },
     {
       "coords": [321, 164],
       "image": "pot",
-      "codes": ["MM Goron Race Pot 07", "MM Goron Race Pot 08"]
+      "codes": ["MM Goron Race Pot 26", "MM Goron Race Pot 27"]
     },
     {
       "coords": [290, 160],
       "image": "pot",
       "codes": [
-        "MM Goron Race Pot 30",
-        "MM Goron Race Pot 29",
-        "MM Goron Race Pot 28",
-        "MM Goron Race Pot 27"
+        "MM Goron Race Pot 21",
+        "MM Goron Race Pot 22",
+        "MM Goron Race Pot 23",
+        "MM Goron Race Pot 24"
       ]
     },
     {
       "coords": [312, 124],
       "image": "pot",
       "codes": [
-        "MM Goron Race Pot 04",
-        "MM Goron Race Pot 05",
-        "MM Goron Race Pot 06"
+        "MM Goron Race Pot 28",
+        "MM Goron Race Pot 29",
+        "MM Goron Race Pot 30"
       ]
     },
     {
       "coords": [364, 101],
       "image": "pot",
       "codes": [
-        "MM Goron Race Pot 01",
-        "MM Goron Race Pot 02",
-        "MM Goron Race Pot 03"
+        "MM Goron Race Pot 12",
+        "MM Goron Race Pot 13",
+        "MM Goron Race Pot 14"
       ]
     },
     {
@@ -885,13 +885,13 @@
       "coords": [100, 64],
       "image": "big_snowball",
       "overlays": ["cursed_state"],
-      "codes": ["MM Snowhead Big Snowball 6"]
+      "codes": ["MM Snowhead Big Snowball 5"]
     },
     {
       "coords": [114, 103],
       "image": "big_snowball",
       "overlays": ["cursed_state"],
-      "codes": ["MM Snowhead Big Snowball 5"]
+      "codes": ["MM Snowhead Big Snowball 4"]
     },
     {
       "coords": [130, 103],
@@ -909,13 +909,13 @@
       "coords": [96, 136],
       "image": "big_snowball",
       "overlays": ["cursed_state"],
-      "codes": ["MM Snowhead Big Snowball 4"]
+      "codes": ["MM Snowhead Big Snowball 3"]
     },
     {
       "coords": [63, 158],
       "image": "big_snowball",
       "overlays": ["cursed_state"],
-      "codes": ["MM Snowhead Big Snowball 3"]
+      "codes": ["MM Snowhead Big Snowball 1"]
     },
     {
       "coords": [47, 158],
@@ -939,7 +939,7 @@
       "coords": [33, 127],
       "image": "big_snowball",
       "overlays": ["cursed_state"],
-      "codes": ["MM Snowhead Big Snowball 1"]
+      "codes": ["MM Snowhead Big Snowball 6"]
     },
     {
       "coords": [17, 127],

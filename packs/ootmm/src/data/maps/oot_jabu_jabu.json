@@ -301,14 +301,14 @@
       "coords": [654, 274],
       "image": "grass",
       "codes": [
-        "OOT MQ Jabu-Jabu Grass Main Room Bottom 2",
-        "OOT MQ Jabu-Jabu Grass Main Room Bottom 3"
+        "OOT MQ Jabu-Jabu Grass Main Room Bottom 1",
+        "OOT MQ Jabu-Jabu Grass Main Room Bottom 2"
       ]
     },
     {
       "coords": [650, 295],
       "image": "grass",
-      "codes": ["OOT MQ Jabu-Jabu Grass Main Room Bottom 1"]
+      "codes": ["OOT MQ Jabu-Jabu Grass Main Room Bottom 3"]
     },
     {
       "coords": [363, 194],

@@ -448,7 +448,7 @@
       "image": "small_crate",
       "codes": [
         "OOT MQ Fire Temple 3F Lava Room High Ledge Small Crate",
-        "OOT MQ Fire Temple 3F Lava Room Lower Small Crate 2"
+        "OOT MQ Fire Temple 3F Lava Room Lower Small Crate 1"
       ]
     },
     {
@@ -467,7 +467,7 @@
     {
       "coords": [240, 170],
       "image": "small_crate",
-      "codes": ["OOT MQ Fire Temple 3F Lava Room Lower Small Crate 1"]
+      "codes": ["OOT MQ Fire Temple 3F Lava Room Lower Small Crate 2"]
     },
     {
       "coords": [472, 454],

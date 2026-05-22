@@ -179,42 +179,42 @@
       "coords": [976, 349],
       "image": "grass",
       "codes": [
-        "MM Ancient Castle of Ikana Grass 01",
-        "MM Ancient Castle of Ikana Grass 02",
-        "MM Ancient Castle of Ikana Grass 03"
+        "MM Ancient Castle of Ikana Grass 10",
+        "MM Ancient Castle of Ikana Grass 11",
+        "MM Ancient Castle of Ikana Grass 12"
       ]
     },
     {
       "coords": [898, 377],
       "image": "grass",
-      "codes": ["MM Ancient Castle of Ikana Grass 04"]
+      "codes": ["MM Ancient Castle of Ikana Grass 09"]
     },
     {
       "coords": [839, 489],
       "image": "grass",
       "codes": [
-        "MM Ancient Castle of Ikana Grass 05",
         "MM Ancient Castle of Ikana Grass 06",
-        "MM Ancient Castle of Ikana Grass 07"
+        "MM Ancient Castle of Ikana Grass 07",
+        "MM Ancient Castle of Ikana Grass 08"
       ]
     },
     {
       "coords": [867, 553],
       "image": "grass",
-      "codes": ["MM Ancient Castle of Ikana Grass 08"]
+      "codes": ["MM Ancient Castle of Ikana Grass 05"]
     },
     {
       "coords": [897, 553],
       "image": "grass",
-      "codes": ["MM Ancient Castle of Ikana Grass 09"]
+      "codes": ["MM Ancient Castle of Ikana Grass 04"]
     },
     {
       "coords": [928, 552],
       "image": "grass",
       "codes": [
-        "MM Ancient Castle of Ikana Grass 10",
-        "MM Ancient Castle of Ikana Grass 11",
-        "MM Ancient Castle of Ikana Grass 12"
+        "MM Ancient Castle of Ikana Grass 01",
+        "MM Ancient Castle of Ikana Grass 02",
+        "MM Ancient Castle of Ikana Grass 03"
       ]
     },
     {

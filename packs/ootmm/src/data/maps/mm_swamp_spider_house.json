@@ -93,12 +93,12 @@
     {
       "coords": [534, 155],
       "image": "gold_skulltula",
-      "codes": ["MM Swamp Skulltula Tree Room Hive"]
+      "codes": ["MM Swamp Skulltula Tree Room Grass 1"]
     },
     {
       "coords": [535, 101],
       "image": "gold_skulltula",
-      "codes": ["MM Swamp Skulltula Tree Room Grass 1"]
+      "codes": ["MM Swamp Skulltula Tree Room Hive"]
     },
     {
       "coords": [509, 109],
@@ -313,18 +313,18 @@
       "coords": [517, 353],
       "image": "wonder_item_green_rupee",
       "codes": [
-        "MM Swamp Spider House Wonder Item Pillars 10",
-        "MM Swamp Spider House Wonder Item Pillars 11",
-        "MM Swamp Spider House Wonder Item Pillars 12"
+        "MM Swamp Spider House Wonder Item Pillars 07",
+        "MM Swamp Spider House Wonder Item Pillars 08",
+        "MM Swamp Spider House Wonder Item Pillars 09"
       ]
     },
     {
       "coords": [501, 353],
       "image": "wonder_item_green_rupee",
       "codes": [
-        "MM Swamp Spider House Wonder Item Pillars 08",
-        "MM Swamp Spider House Wonder Item Pillars 09",
-        "MM Swamp Spider House Wonder Item Pillars 07"
+        "MM Swamp Spider House Wonder Item Pillars 10",
+        "MM Swamp Spider House Wonder Item Pillars 11",
+        "MM Swamp Spider House Wonder Item Pillars 12"
       ]
     },
     {

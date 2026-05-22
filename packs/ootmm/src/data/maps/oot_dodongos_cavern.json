@@ -357,47 +357,47 @@
     {
       "coords": [227, 304],
       "image": "pot",
-      "codes": "OOT MQ Dodongo Cavern Pot Stairs 4"
+      "codes": "OOT MQ Dodongo Cavern Pot Stairs 1"
     },
     {
       "coords": [257, 304],
       "image": "pot",
-      "codes": "OOT MQ Dodongo Cavern Pot Stairs 1"
+      "codes": "OOT MQ Dodongo Cavern Pot Stairs 3"
     },
     {
       "coords": [227, 332],
       "image": "pot",
-      "codes": "OOT MQ Dodongo Cavern Pot Stairs 3"
+      "codes": "OOT MQ Dodongo Cavern Pot Stairs 2"
     },
     {
       "coords": [257, 333],
       "image": "pot",
-      "codes": "OOT MQ Dodongo Cavern Pot Stairs 2"
+      "codes": "OOT MQ Dodongo Cavern Pot Stairs 4"
     },
     {
       "coords": [304, 275],
       "image": "pot",
-      "codes": "OOT MQ Dodongo Cavern Pot Before Boss 1"
+      "codes": "OOT MQ Dodongo Cavern Pot Before Boss 2"
     },
     {
       "coords": [323, 258],
       "image": "pot",
-      "codes": "OOT MQ Dodongo Cavern Pot Before Boss 2"
+      "codes": "OOT MQ Dodongo Cavern Pot Before Boss 1"
     },
     {
       "coords": [347, 234],
       "image": "pot",
       "codes": [
-        "OOT MQ Dodongo Cavern Pot Before Boss Loop 3",
-        "OOT MQ Dodongo Cavern Pot Before Boss Loop 4"
+        "OOT MQ Dodongo Cavern Pot Before Boss Loop 1",
+        "OOT MQ Dodongo Cavern Pot Before Boss Loop 2"
       ]
     },
     {
       "coords": [368, 248],
       "image": "pot",
       "codes": [
-        "OOT MQ Dodongo Cavern Pot Before Boss Loop 1",
-        "OOT MQ Dodongo Cavern Pot Before Boss Loop 2"
+        "OOT MQ Dodongo Cavern Pot Before Boss Loop 3",
+        "OOT MQ Dodongo Cavern Pot Before Boss Loop 4"
       ]
     },
     {
@@ -447,12 +447,12 @@
     {
       "coords": [700, 359],
       "image": "pot",
-      "codes": "OOT MQ Dodongo Cavern Pot Before Miniboss 1"
+      "codes": "OOT MQ Dodongo Cavern Pot Before Miniboss 2"
     },
     {
       "coords": [717, 374],
       "image": "pot",
-      "codes": "OOT MQ Dodongo Cavern Pot Before Miniboss 2"
+      "codes": "OOT MQ Dodongo Cavern Pot Before Miniboss 1"
     },
     {
       "coords": [722, 342],
@@ -466,16 +466,16 @@
       "coords": [743, 336],
       "image": "pot",
       "codes": [
-        "OOT MQ Dodongo Cavern Pot Miniboss 3",
-        "OOT MQ Dodongo Cavern Pot Miniboss 4"
+        "OOT MQ Dodongo Cavern Pot Miniboss 1",
+        "OOT MQ Dodongo Cavern Pot Miniboss 2"
       ]
     },
     {
-      "coords": [756, 348],
+      "coords": [760, 328],
       "image": "pot",
       "codes": [
-        "OOT MQ Dodongo Cavern Pot Miniboss 1",
-        "OOT MQ Dodongo Cavern Pot Miniboss 2"
+        "OOT MQ Dodongo Cavern Pot Miniboss 3",
+        "OOT MQ Dodongo Cavern Pot Miniboss 4"
       ]
     },
     {
@@ -537,12 +537,12 @@
     {
       "coords": [700, 343],
       "image": "crate",
-      "codes": "OOT MQ Dodongo Cavern Room After Upper Lizalfos Large Crate 2"
+      "codes": "OOT MQ Dodongo Cavern Room After Upper Lizalfos Large Crate 1"
     },
     {
       "coords": [722, 333],
       "image": "crate",
-      "codes": "OOT MQ Dodongo Cavern Room After Upper Lizalfos Large Crate 1"
+      "codes": "OOT MQ Dodongo Cavern Room After Upper Lizalfos Large Crate 2"
     },
     {
       "coords": [348, 194],

@@ -222,6 +222,7 @@
     {
       "coords": [178, 341],
       "image": "green_rupee",
+      "overlays": ["child"],
       "codes": [
         "OOT Lake Hylia Rupee 1",
         "OOT Lake Hylia Rupee 2",
