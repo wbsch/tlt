@@ -75,6 +75,11 @@ export interface RawAutotrackerCheck {
 }
 
 export interface ParsedRawAutotrackerSnapshot {
+  activeGame: RawAutotrackerGame;
+  saveIndex: number;
+  ootSceneId: number;
+  mmDay: number;
+  mmPlayerForm: number;
   items: RawAutotrackerItem[];
   checks: RawAutotrackerCheck[];
 }
@@ -1068,6 +1073,11 @@ class RawAutotrackerParserImpl implements RawAutotrackerParser {
     this.rememberSharedState(state.shared);
 
     return {
+      activeGame: state.activeGame,
+      saveIndex: state.saveIndex >>> 0,
+      ootSceneId: state.oot.sceneId >>> 0,
+      mmDay: state.mm.day >>> 0,
+      mmPlayerForm: state.mm.playerForm >>> 0,
       items: extractItems(state),
       checks: extractChecks(state),
     };

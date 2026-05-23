@@ -170,6 +170,29 @@ function debugActivateAll() {
   }
 }
 
+async function debugDumpAutotracker() {
+  const dumpFn = (
+    window as Window & {
+      __TLT_DEBUG_DUMP_AUTOTRACKER__?: () => boolean | Promise<boolean>;
+    }
+  ).__TLT_DEBUG_DUMP_AUTOTRACKER__;
+
+  if (typeof dumpFn !== 'function') {
+    setShareStatus('Autotracker dump unavailable');
+    return;
+  }
+
+  try {
+    const didDump = await Promise.resolve(dumpFn());
+    setShareStatus(
+      didDump ? 'Autotracker dump downloaded' : 'Autotracker dump unavailable',
+    );
+  } catch (error) {
+    console.error('Failed to dump autotracker state:', error);
+    setShareStatus('Failed to dump autotracker');
+  }
+}
+
 function clearShareStatusTimeout() {
   if (shareStatusTimeoutId === null) {
     return;
@@ -258,7 +281,8 @@ function handleDocumentClick(event: MouseEvent) {
 
 function initializeDebugMode() {
   const params = new URLSearchParams(window.location.search);
-  isDebugMode.value = params.get('debug') === '1';
+  isDebugMode.value =
+    params.get('debug') === '1' || params.get('devmode') === '1';
 }
 
 onMounted(() => {
@@ -354,6 +378,15 @@ onBeforeUnmount(() => {
           @click="debugActivateAll"
         >
           Debug: Activate All
+        </button>
+        <button
+          v-if="isDebugMode"
+          type="button"
+          class="debug-activate-all-button"
+          data-testid="debug-autotracker-dump-button"
+          @click="debugDumpAutotracker"
+        >
+          Debug: Dump Autotracker
         </button>
         <div class="export-button-group">
           <button
