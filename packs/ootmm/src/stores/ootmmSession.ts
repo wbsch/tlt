@@ -63,6 +63,11 @@ const REMOTE_MUTATION_OPTIONS: MutationOptions = {
   recordHistory: false,
 };
 
+const AUTOTRACKER_MUTATION_OPTIONS: MutationOptions = {
+  source: 'remote',
+  recordHistory: true,
+};
+
 function mapToRecord(map: Map<string, number>): Record<string, number> {
   return Object.fromEntries(map.entries());
 }
@@ -106,6 +111,15 @@ function mapNumberToRecord(map: Map<string, number>): Record<string, number> {
 
 function uniqueStrings(values: string[]): string[] {
   return Array.from(new Set(values));
+}
+
+function areStringSetsEqual(a: string[], b: string[]): boolean {
+  if (a.length !== b.length) return false;
+  const values = new Set(a);
+  for (const value of b) {
+    if (!values.has(value)) return false;
+  }
+  return true;
 }
 
 function normalizeSpoilerLogVersion(
@@ -893,6 +907,62 @@ export const useOoTMMSessionStore = defineStore('ootmm-session', () => {
     setInventoryFromMap(next, options);
   }
 
+  function applyAutotrackerDelta(
+    newInventory: Map<string, number>,
+    ids: string[],
+    options: MutationOptions = AUTOTRACKER_MUTATION_OPTIONS,
+  ) {
+    const nextInventoryById = sanitizeInventoryRecord(
+      mapToRecord(newInventory),
+    );
+    const nextCollectedLocationIds = uniqueStrings(ids);
+    const inventoryChanged = !areSettingsEqual(
+      inventoryById.value,
+      nextInventoryById,
+    );
+    const collectedLocationsChanged = !areStringSetsEqual(
+      collectedLocationIds.value,
+      nextCollectedLocationIds,
+    );
+
+    if (!inventoryChanged && !collectedLocationsChanged) {
+      return;
+    }
+
+    const previousSnapshot = captureSnapshotForMutation(options);
+
+    if (inventoryChanged) {
+      inventoryById.value = nextInventoryById;
+      recomputeReachability();
+    }
+
+    if (collectedLocationsChanged) {
+      collectedLocationIds.value = nextCollectedLocationIds;
+    }
+
+    recordHistoryFromSnapshot(previousSnapshot);
+
+    if (inventoryChanged) {
+      publishSyncOperation(
+        {
+          type: 'inventory.set_full',
+          inventoryById: { ...inventoryById.value },
+        },
+        options,
+      );
+    }
+
+    if (collectedLocationsChanged) {
+      publishSyncOperation(
+        {
+          type: 'locations.set_ids',
+          ids: [...collectedLocationIds.value],
+        },
+        options,
+      );
+    }
+  }
+
   function toggleCollectedLocation(
     locationId: string,
     options?: MutationOptions,
@@ -1512,6 +1582,7 @@ export const useOoTMMSessionStore = defineStore('ootmm-session', () => {
     decrementItem,
     toggleItem,
     mergeInventoryCounts,
+    applyAutotrackerDelta,
     toggleCollectedLocation,
     setCollectedLocationIds,
     setPreCompletedDungeons,
