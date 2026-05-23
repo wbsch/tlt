@@ -75,6 +75,11 @@ npm run build
 
 - Raw protocol, capture/replay workflow, and operations checklist:
   - `docs/autotracker-raw-operations.md`
+- Security defaults:
+  - The local autotracker WebSocket now binds to `127.0.0.1:17026` by default.
+  - Allowed browser origins default to `http://localhost:5173` and `https://www.thelasttracker.org`.
+  - If you serve TLT from another HTTP or HTTPS origin, pass `-ws-allowed-origins` to the autotracker.
+  - `file://` or other `Origin: null` clients are intentionally rejected.
 
 ## Debug / Dev Flags
 

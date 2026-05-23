@@ -26,6 +26,26 @@ Primary implementation points:
 - `packs/ootmm/src/autotracker/useAutotracker.ts`
 - `packs/ootmm/src/autotracker/rawFrameParser.ts`
 
+## WebSocket Binding and Origin Policy
+
+The autotracker hardens browser access at the WebSocket handshake rather than through generic HTTP CORS headers.
+
+- Default listen address: `127.0.0.1:17026`
+- Default allowed browser origins:
+  - `http://localhost:5173`
+  - `https://www.thelasttracker.org`
+- Additional origins can be configured with `-ws-allowed-origins`, using a comma-separated list of exact HTTP or HTTPS origins.
+- The bind address can still be overridden with `-ws-addr` when explicit non-loopback exposure is required.
+- Missing origins and `Origin: null` are rejected. If you want autotracker access in a built app, serve the files from an HTTP or HTTPS origin instead of opening them directly from disk.
+
+Example:
+
+```bash
+./ootmm-autotracker \
+  -ws-addr 127.0.0.1:17026 \
+  -ws-allowed-origins http://localhost:5173,https://tracker.example.com
+```
+
 ## Raw WebSocket Contract (Schema Version 1)
 
 ### Client handshake request
@@ -150,3 +170,8 @@ Minimum checks before shipping autotracker-related changes:
 3. `npm run build`
 4. `node --import tsx scripts/pathfinder-tests/reachability_full_inventory.ts`
 5. Browser check at `http://localhost:5173/?debug=1`: click **Debug: Activate All** and confirm full reachability (all checks reachable).
+
+Additional checks for transport-security changes:
+
+- `cd tlt_autotracker/ootmm-autotracker && go test ./...`
+- Confirm a WebSocket handshake from a disallowed origin is rejected.
