@@ -354,6 +354,63 @@ describe('useAutotracker checks', () => {
     ]);
   });
 
+  it('does not count Gold Dust as an extra empty bottle slot', async () => {
+    const inventoryUpdates: Array<Record<string, number>> = [];
+    const availableItemIds = ref(
+      new Set<string>(['MM_BOTTLE_EMPTY', 'MM_BOTTLED_GOLD_DUST']),
+    );
+    const itemMaxCounts = ref(new Map<string, number>());
+
+    const autotracker = useAutotracker({
+      availableItemIds,
+      itemMaxCounts,
+      onInventoryUpdate: (inventory) => {
+        inventoryUpdates.push(inventory);
+      },
+    });
+
+    autotracker.enabled.value = true;
+    await nextTick();
+
+    const socket = FakeWebSocket.instances[0];
+    expect(socket).toBeDefined();
+
+    parseRawMessageMock.mockReturnValueOnce({
+      items: [
+        { id: 'MM_BOTTLE_1', qty: 7 },
+        { id: 'MM_BOTTLE_2', qty: 1 },
+        { id: 'MM_BOTTLED_GOLD_DUST', qty: 1 },
+      ],
+      checks: [],
+    });
+
+    socket.emitOpen();
+    socket.emitMessage({
+      type: 'handshAck',
+      version: CURRENT_AUTOTRACKER_VERSION,
+      name: 'ootmm-autotracker',
+      refresh: true,
+    });
+    socket.emitMessage({
+      type: 'raw',
+      schemaVersion: '1',
+      diff: false,
+      refresh: true,
+      sequence: 1,
+      game: 'Mm',
+      saveIndex: 0,
+      chunks: [],
+    });
+
+    expect(inventoryUpdates).toEqual([
+      {
+        MM_BOTTLE_EMPTY: 1,
+        MM_BOTTLED_GOLD_DUST: 1,
+        '__grid_ref_state__:__grid_ref__:MM_Bottle1:MM_BOTTLE_EMPTY': 1,
+      },
+    ]);
+  });
+
   it('maps OOT and MM bottle slot signals onto shared bottle refs when shared bottles are enabled', async () => {
     const inventoryUpdates: Array<Record<string, number>> = [];
     const availableItemIds = ref(new Set<string>(['SHARED_BOTTLE_EMPTY']));
