@@ -124,6 +124,14 @@ type PendingAutotrackerInventoryUpdate = {
   phase: AutotrackerSyncPhase;
 };
 
+type AutotrackerToastKind = 'item' | 'location';
+
+type AutotrackerToast = {
+  id: number;
+  kind: AutotrackerToastKind;
+  message: string;
+};
+
 type DevTraceSelection = {
   checkId: string;
   label: string;
@@ -177,6 +185,8 @@ type AutotrackerDumpFile = {
 
 const AUTOTRACKER_DUMP_SCHEMA_VERSION = 1;
 const AUTOTRACKER_DUMP_TIMEOUT_MS = 5000;
+const AUTOTRACKER_TOAST_DURATION_MS = 5000;
+const MAX_AUTOTRACKER_TOASTS = 10;
 const GRID_REF_ALIAS_PREFIX = '__grid_ref__:';
 const GRID_REF_STATE_PREFIX = '__grid_ref_state__:';
 
@@ -604,6 +614,15 @@ const activeVisibleRightSidebarTab = computed<RightSidebarTab>(() =>
 const collectedLocationIdSet = computed(
   () => new Set(collectedLocationIds.value),
 );
+const locationNamesById = computed(
+  () =>
+    new Map(
+      allLocations.value.map((location): [string, string] => [
+        location.id,
+        location.name,
+      ]),
+    ),
+);
 const locationVisibilityFilters = computed<LocationVisibilityFilters>(() => ({
   searchQuery: locationsSearchQuery.value,
   selectedCategory: locationsSelectedCategory.value,
@@ -727,6 +746,12 @@ let autotrackerStartMode: AutotrackerStartMode = 'overwrite';
 let autotrackerLastRemoteInventory: Record<string, number> | null = null;
 let autotrackerLastRemoteCollectedLocationIds: Set<string> | null = null;
 let pendingAutotrackerStartMode: AutotrackerStartMode | null = null;
+let nextAutotrackerToastId = 0;
+const autotrackerToastMessages = ref<AutotrackerToast[]>([]);
+const autotrackerToastTimeouts = new Map<
+  number,
+  ReturnType<typeof setTimeout>
+>();
 
 function resetAutotrackerMergeState() {
   autotrackerLastRemoteInventory = null;
@@ -753,6 +778,126 @@ function activateAutotracker(mode: AutotrackerStartMode) {
 function clearPendingAutotrackerStartRequest() {
   pendingAutotrackerStartMode = null;
   closeAutotrackerSpoilerRequiredDialog();
+}
+
+function clearAutotrackerToastTimeout(toastId: number) {
+  const timeoutId = autotrackerToastTimeouts.get(toastId);
+  if (timeoutId === undefined) {
+    return;
+  }
+
+  clearTimeout(timeoutId);
+  autotrackerToastTimeouts.delete(toastId);
+}
+
+function clearAutotrackerToasts() {
+  for (const timeoutId of autotrackerToastTimeouts.values()) {
+    clearTimeout(timeoutId);
+  }
+  autotrackerToastTimeouts.clear();
+  autotrackerToastMessages.value = [];
+}
+
+function enqueueAutotrackerToast(kind: AutotrackerToastKind, message: string) {
+  const toast: AutotrackerToast = {
+    id: nextAutotrackerToastId,
+    kind,
+    message,
+  };
+  nextAutotrackerToastId += 1;
+
+  const nextToasts = [toast, ...autotrackerToastMessages.value];
+  if (nextToasts.length > MAX_AUTOTRACKER_TOASTS) {
+    for (const removedToast of nextToasts.slice(MAX_AUTOTRACKER_TOASTS)) {
+      clearAutotrackerToastTimeout(removedToast.id);
+    }
+  }
+  autotrackerToastMessages.value = nextToasts.slice(0, MAX_AUTOTRACKER_TOASTS);
+
+  const timeoutId = setTimeout(() => {
+    autotrackerToastTimeouts.delete(toast.id);
+    autotrackerToastMessages.value = autotrackerToastMessages.value.filter(
+      (entry) => entry.id !== toast.id,
+    );
+  }, AUTOTRACKER_TOAST_DURATION_MS);
+
+  autotrackerToastTimeouts.set(toast.id, timeoutId);
+}
+
+function shouldShowAutotrackerItemToast(itemId: string): boolean {
+  if (itemId.startsWith(GRID_REF_ALIAS_PREFIX)) {
+    return false;
+  }
+
+  if (itemId.startsWith(GRID_REF_STATE_PREFIX)) {
+    return false;
+  }
+
+  if (DUNGEON_REWARD_STATE_ITEM_IDS.has(itemId)) {
+    return false;
+  }
+
+  return availableItemIds.value.has(itemId);
+}
+
+function getAutotrackerItemToastMessage(itemId: string, gainedCount: number) {
+  const label = itemName ? itemName(itemId) : itemId;
+  return gainedCount > 1
+    ? `Autotracked item: ${label} (+${gainedCount})`
+    : `Autotracked item: ${label}`;
+}
+
+function getAutotrackerLocationToastMessage(locationId: string) {
+  const label = locationNamesById.value.get(locationId) ?? locationId;
+  return `Autotracked location: ${label}`;
+}
+
+function queueAutotrackerInventoryToasts(
+  currentInventory: Map<string, number>,
+  nextInventory: Map<string, number>,
+  phase: AutotrackerSyncPhase,
+) {
+  if (phase !== 'live') {
+    return;
+  }
+
+  for (const [itemId, nextCount] of nextInventory) {
+    if (!shouldShowAutotrackerItemToast(itemId)) {
+      continue;
+    }
+
+    const currentCount = currentInventory.get(itemId) ?? 0;
+    if (nextCount <= currentCount) {
+      continue;
+    }
+
+    enqueueAutotrackerToast(
+      'item',
+      getAutotrackerItemToastMessage(itemId, nextCount - currentCount),
+    );
+  }
+}
+
+function queueAutotrackerLocationToasts(
+  currentLocationIds: readonly string[],
+  nextLocationIds: string[],
+  phase: AutotrackerSyncPhase,
+) {
+  if (phase !== 'live') {
+    return;
+  }
+
+  const currentLocationIdSet = new Set(currentLocationIds);
+  for (const locationId of nextLocationIds) {
+    if (currentLocationIdSet.has(locationId)) {
+      continue;
+    }
+
+    enqueueAutotrackerToast(
+      'location',
+      getAutotrackerLocationToastMessage(locationId),
+    );
+  }
 }
 
 function closeAutotrackerSpoilerRequiredDialog() {
@@ -906,6 +1051,17 @@ function applyPendingAutotrackerDelta(
   if (!nextInventory || !nextCollectedLocationIds) {
     return;
   }
+
+  queueAutotrackerLocationToasts(
+    collectedLocationIds.value,
+    nextCollectedLocationIds,
+    phase,
+  );
+  queueAutotrackerInventoryToasts(
+    inventory.value,
+    nextInventory,
+    pendingInventoryUpdate.phase,
+  );
 
   sessionStore.applyAutotrackerDelta(nextInventory, nextCollectedLocationIds);
 }
@@ -2908,6 +3064,7 @@ onBeforeUnmount(() => {
   if (windowWithHandlers.__TLT_RESET_TRACKER_STATE__ === resetTrackerState) {
     delete windowWithHandlers.__TLT_RESET_TRACKER_STATE__;
   }
+  clearAutotrackerToasts();
   autotracker.destroy();
   sessionStore.stopLocalSessionSync();
   mobileTrackerLayoutQuery?.removeEventListener(
@@ -3132,6 +3289,21 @@ onBeforeUnmount(() => {
             OK
           </button>
         </div>
+      </div>
+    </div>
+    <div
+      v-if="autotrackerToastMessages.length > 0"
+      class="autotracker-toast-stack"
+      role="status"
+      aria-live="polite"
+    >
+      <div
+        v-for="toast in autotrackerToastMessages"
+        :key="toast.id"
+        class="autotracker-toast"
+        :class="`autotracker-toast--${toast.kind}`"
+      >
+        {{ toast.message }}
       </div>
     </div>
     <div class="tracker-sidebar" :style="leftSidebarStyle">
@@ -3905,6 +4077,43 @@ onBeforeUnmount(() => {
   color: #e5e7eb;
   text-transform: uppercase;
   letter-spacing: 0.06em;
+}
+
+.autotracker-toast-stack {
+  position: absolute;
+  left: 50%;
+  bottom: 1rem;
+  transform: translateX(-50%);
+  width: min(40rem, calc(100% - 2rem));
+  display: flex;
+  flex-direction: column-reverse;
+  align-items: center;
+  gap: 0.45rem;
+  pointer-events: none;
+  z-index: 12;
+}
+
+.autotracker-toast {
+  width: fit-content;
+  max-width: 100%;
+  padding: 0.7rem 1rem;
+  border: 1px solid #4b5563;
+  border-radius: 999px;
+  background: rgba(17, 24, 39, 0.94);
+  color: #f9fafb;
+  font-size: 0.82rem;
+  line-height: 1.35;
+  text-align: center;
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.35);
+  backdrop-filter: blur(10px);
+}
+
+.autotracker-toast--item {
+  border-color: rgba(34, 197, 94, 0.45);
+}
+
+.autotracker-toast--location {
+  border-color: rgba(96, 165, 250, 0.45);
 }
 
 .spoiler-player-dialog-overlay {
