@@ -92,7 +92,7 @@
     {
       "coords": [731, 175],
       "image": "pot",
-      "codes": ["MM Moon Trial Goron Pot 10", "MM Moon Trial Goron Pot 11"]
+      "codes": ["MM Moon Trial Goron Pot 07", "MM Moon Trial Goron Pot 08"]
     },
     {
       "coords": [768, 144],
@@ -103,10 +103,10 @@
       "coords": [731, 78],
       "image": "pot",
       "codes": [
-        "MM Moon Trial Goron Pot 06",
-        "MM Moon Trial Goron Pot 07",
         "MM Moon Trial Goron Pot 08",
-        "MM Moon Trial Goron Pot 09"
+        "MM Moon Trial Goron Pot 09",
+        "MM Moon Trial Goron Pot 10",
+        "MM Moon Trial Goron Pot 11"
       ]
     },
     {

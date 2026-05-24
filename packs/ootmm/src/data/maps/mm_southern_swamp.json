@@ -141,42 +141,42 @@
       "coords": [203, 315],
       "image": "green_rupee",
       "codes": [
-        "MM Deku Shrine Rupee Main 16",
-        "MM Deku Shrine Rupee Main 17",
-        "MM Deku Shrine Rupee Main 18"
+        "MM Deku Shrine Rupee Main 18",
+        "MM Deku Shrine Rupee Main 19",
+        "MM Deku Shrine Rupee Main 20"
       ]
     },
     {
       "coords": [188, 332],
       "image": "green_rupee",
       "codes": [
-        "MM Deku Shrine Rupee Main 13",
-        "MM Deku Shrine Rupee Main 14",
-        "MM Deku Shrine Rupee Main 15"
+        "MM Deku Shrine Rupee Main 15",
+        "MM Deku Shrine Rupee Main 16",
+        "MM Deku Shrine Rupee Main 17"
       ]
     },
     {
       "coords": [137, 359],
       "image": "green_rupee",
       "codes": [
-        "MM Deku Shrine Rupee Main 10",
-        "MM Deku Shrine Rupee Main 11",
-        "MM Deku Shrine Rupee Main 12"
+        "MM Deku Shrine Rupee Main 12",
+        "MM Deku Shrine Rupee Main 13",
+        "MM Deku Shrine Rupee Main 14"
       ]
     },
     {
       "coords": [99, 353],
       "image": "green_rupee",
       "codes": [
-        "MM Deku Shrine Rupee Main 07",
-        "MM Deku Shrine Rupee Main 08",
-        "MM Deku Shrine Rupee Main 09"
+        "MM Deku Shrine Rupee Main 09",
+        "MM Deku Shrine Rupee Main 10",
+        "MM Deku Shrine Rupee Main 11"
       ]
     },
     {
       "coords": [108, 453],
       "image": "red_rupee",
-      "codes": ["MM Deku Shrine Rupee Main 19", "MM Deku Shrine Rupee Main 20"]
+      "codes": ["MM Deku Shrine Rupee Main 07", "MM Deku Shrine Rupee Main 08"]
     },
     {
       "coords": [95, 496],
@@ -193,30 +193,30 @@
     {
       "coords": [59, 451],
       "image": "green_rupee",
-      "codes": ["MM Deku Shrine Rupee End 03", "MM Deku Shrine Rupee End 04"]
+      "codes": ["MM Deku Shrine Rupee End 09", "MM Deku Shrine Rupee End 10"]
     },
     {
       "coords": [41, 440],
       "image": "green_rupee",
       "codes": [
-        "MM Deku Shrine Rupee End 05",
         "MM Deku Shrine Rupee End 06",
-        "MM Deku Shrine Rupee End 07"
+        "MM Deku Shrine Rupee End 07",
+        "MM Deku Shrine Rupee End 08"
       ]
     },
     {
       "coords": [23, 448],
       "image": "green_rupee",
       "codes": [
-        "MM Deku Shrine Rupee End 08",
-        "MM Deku Shrine Rupee End 09",
-        "MM Deku Shrine Rupee End 10"
+        "MM Deku Shrine Rupee End 01",
+        "MM Deku Shrine Rupee End 02",
+        "MM Deku Shrine Rupee End 03"
       ]
     },
     {
       "coords": [36, 463],
       "image": "green_rupee",
-      "codes": ["MM Deku Shrine Rupee End 01", "MM Deku Shrine Rupee End 02"]
+      "codes": ["MM Deku Shrine Rupee End 04", "MM Deku Shrine Rupee End 05"]
     },
     {
       "coords": [604, 428],

@@ -157,8 +157,8 @@
       "coords": [351, 300],
       "image": "pot",
       "codes": [
-        "MM Woodfall Temple Pot Main Room Lower 5",
-        "MM Woodfall Temple Pot Main Room Lower 6"
+        "MM Woodfall Temple Pot Main Room Lower 2",
+        "MM Woodfall Temple Pot Main Room Lower 3"
       ]
     },
     {
@@ -174,9 +174,9 @@
       "image": "pot",
       "codes": [
         "MM Woodfall Temple Pot Main Room Lower 1",
-        "MM Woodfall Temple Pot Main Room Lower 2",
-        "MM Woodfall Temple Pot Main Room Lower 3",
-        "MM Woodfall Temple Pot Main Room Lower 4"
+        "MM Woodfall Temple Pot Main Room Lower 4",
+        "MM Woodfall Temple Pot Main Room Lower 5",
+        "MM Woodfall Temple Pot Main Room Lower 6"
       ]
     },
     {
@@ -221,26 +221,26 @@
       "coords": [640, 303],
       "image": "grass",
       "codes": [
-        "MM Woodfall Temple Grass Pits Room 01",
         "MM Woodfall Temple Grass Pits Room 02",
-        "MM Woodfall Temple Grass Pits Room 03",
-        "MM Woodfall Temple Grass Pits Room 04"
+        "MM Woodfall Temple Grass Pits Room 04",
+        "MM Woodfall Temple Grass Pits Room 05",
+        "MM Woodfall Temple Grass Pits Room 06"
       ]
     },
     {
       "coords": [644, 322],
       "image": "grass",
       "codes": [
-        "MM Woodfall Temple Grass Pits Room 05",
-        "MM Woodfall Temple Grass Pits Room 06"
+        "MM Woodfall Temple Grass Pits Room 01",
+        "MM Woodfall Temple Grass Pits Room 03"
       ]
     },
     {
       "coords": [617, 320],
       "image": "grass",
       "codes": [
+        "MM Woodfall Temple Grass Pits Room 07",
         "MM Woodfall Temple Grass Pits Room 09",
-        "MM Woodfall Temple Grass Pits Room 10",
         "MM Woodfall Temple Grass Pits Room 11"
       ]
     },
@@ -248,25 +248,25 @@
       "coords": [620, 303],
       "image": "grass",
       "codes": [
-        "MM Woodfall Temple Grass Pits Room 07",
-        "MM Woodfall Temple Grass Pits Room 08"
+        "MM Woodfall Temple Grass Pits Room 08",
+        "MM Woodfall Temple Grass Pits Room 10"
       ]
     },
     {
       "coords": [484, 312],
       "image": "grass",
       "codes": [
-        "MM Woodfall Temple Grass Map Room 4",
-        "MM Woodfall Temple Grass Map Room 5"
+        "MM Woodfall Temple Grass Map Room 1",
+        "MM Woodfall Temple Grass Map Room 3"
       ]
     },
     {
       "coords": [456, 310],
       "image": "grass",
       "codes": [
-        "MM Woodfall Temple Grass Map Room 1",
         "MM Woodfall Temple Grass Map Room 2",
-        "MM Woodfall Temple Grass Map Room 3"
+        "MM Woodfall Temple Grass Map Room 4",
+        "MM Woodfall Temple Grass Map Room 5"
       ]
     },
     {
@@ -303,7 +303,7 @@
       "coords": [366, 244],
       "image": "grass",
       "codes": [
-        "MM Woodfall Temple Grass Pre-Boss 4",
+        "MM Woodfall Temple Grass Pre-Boss 1",
         "MM Woodfall Temple Grass Pre-Boss 5"
       ]
     },
@@ -311,23 +311,23 @@
       "coords": [350, 252],
       "image": "grass",
       "codes": [
-        "MM Woodfall Temple Grass Pre-Boss 1",
         "MM Woodfall Temple Grass Pre-Boss 2",
-        "MM Woodfall Temple Grass Pre-Boss 3"
+        "MM Woodfall Temple Grass Pre-Boss 3",
+        "MM Woodfall Temple Grass Pre-Boss 4"
       ]
     },
     {
       "coords": [303, 287],
       "image": "grass",
       "codes": [
-        "MM Woodfall Temple Grass Main Room 2",
+        "MM Woodfall Temple Grass Main Room 1",
         "MM Woodfall Temple Grass Main Room 3"
       ]
     },
     {
       "coords": [322, 335],
       "image": "grass",
-      "codes": ["MM Woodfall Temple Grass Main Room 1"]
+      "codes": ["MM Woodfall Temple Grass Main Room 2"]
     },
     {
       "coords": [338, 357],

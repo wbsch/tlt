@@ -8,12 +8,12 @@
     {
       "coords": [316, 84],
       "image": "chest",
-      "codes": ["MM Pinnacle Rock Chest 1"]
+      "codes": ["MM Pinnacle Rock Chest 2"]
     },
     {
       "coords": [355, 203],
       "image": "chest",
-      "codes": ["MM Pinnacle Rock Chest 2"]
+      "codes": ["MM Pinnacle Rock Chest 1"]
     },
     {
       "coords": [361, 164],
@@ -100,47 +100,47 @@
     {
       "coords": [261, 108],
       "image": "pot",
-      "codes": ["MM Pinnacle Rock Pot 01", "MM Pinnacle Rock Pot 02"]
+      "codes": ["MM Pinnacle Rock Pot 07", "MM Pinnacle Rock Pot 08"]
     },
     {
       "coords": [296, 126],
       "image": "pot",
-      "codes": ["MM Pinnacle Rock Pot 10"]
+      "codes": ["MM Pinnacle Rock Pot 02"]
     },
     {
       "coords": [309, 142],
       "image": "pot",
-      "codes": ["MM Pinnacle Rock Pot 09"]
+      "codes": ["MM Pinnacle Rock Pot 01"]
     },
     {
       "coords": [284, 202],
       "image": "pot",
-      "codes": ["MM Pinnacle Rock Pot 05"]
+      "codes": ["MM Pinnacle Rock Pot 04"]
     },
     {
       "coords": [281, 163],
       "image": "pot",
-      "codes": ["MM Pinnacle Rock Pot 07"]
+      "codes": ["MM Pinnacle Rock Pot 11"]
     },
     {
       "coords": [299, 180],
       "image": "pot",
-      "codes": ["MM Pinnacle Rock Pot 06"]
+      "codes": ["MM Pinnacle Rock Pot 10"]
     },
     {
       "coords": [313, 162],
       "image": "pot",
-      "codes": ["MM Pinnacle Rock Pot 08"]
+      "codes": ["MM Pinnacle Rock Pot 09"]
     },
     {
       "coords": [340, 146],
       "image": "pot",
-      "codes": ["MM Pinnacle Rock Pot 11"]
+      "codes": ["MM Pinnacle Rock Pot 03"]
     },
     {
       "coords": [363, 133],
       "image": "pot",
-      "codes": ["MM Pinnacle Rock Pot 03", "MM Pinnacle Rock Pot 04"]
+      "codes": ["MM Pinnacle Rock Pot 05", "MM Pinnacle Rock Pot 06"]
     },
     {
       "coords": [577, 278],

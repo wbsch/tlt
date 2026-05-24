@@ -977,7 +977,7 @@
     },
     {
       "coords": [932, 475],
-      "image": "boulder_grotto",
+      "image": "boulder_entrance",
       "type": "submenu",
       "entranceMenu": {
         "entranceIds": ["OOT_FAIRY_FARORE"]

@@ -13,12 +13,12 @@
     {
       "coords": [329, 406],
       "image": "chest",
-      "codes": ["MM Pirate Fortress Entrance Chest 1"]
+      "codes": ["MM Pirate Fortress Entrance Chest 3"]
     },
     {
       "coords": [235, 221],
       "image": "chest",
-      "codes": ["MM Pirate Fortress Entrance Chest 3"]
+      "codes": ["MM Pirate Fortress Entrance Chest 1"]
     },
     {
       "coords": [442, 305],
@@ -84,13 +84,13 @@
     {
       "coords": [525, 265],
       "image": "pot",
-      "codes": ["MM Pirate Fortress Sewers Pot End 1"]
+      "codes": ["MM Pirate Fortress Sewers Pot End 2"]
     },
     {
       "coords": [548, 286],
       "image": "pot",
       "codes": [
-        "MM Pirate Fortress Sewers Pot End 2",
+        "MM Pirate Fortress Sewers Pot End 1",
         "MM Pirate Fortress Sewers Pot End 3"
       ]
     },
@@ -191,12 +191,12 @@
       "coords": [465, 106],
       "image": "barrel",
       "codes": [
+        "MM Pirate Fortress Sewers Barrel Cage Room 01",
+        "MM Pirate Fortress Sewers Barrel Cage Room 02",
+        "MM Pirate Fortress Sewers Barrel Cage Room 03",
+        "MM Pirate Fortress Sewers Barrel Cage Room 06",
         "MM Pirate Fortress Sewers Barrel Cage Room 08",
-        "MM Pirate Fortress Sewers Barrel Cage Room 09",
-        "MM Pirate Fortress Sewers Barrel Cage Room 10",
-        "MM Pirate Fortress Sewers Barrel Cage Room 11",
-        "MM Pirate Fortress Sewers Barrel Cage Room 12",
-        "MM Pirate Fortress Sewers Barrel Cage Room 13"
+        "MM Pirate Fortress Sewers Barrel Cage Room 09"
       ]
     },
     {
@@ -205,26 +205,26 @@
       "codes": [
         "MM Pirate Fortress Sewers Barrel Cage Room 04",
         "MM Pirate Fortress Sewers Barrel Cage Room 05",
-        "MM Pirate Fortress Sewers Barrel Cage Room 06",
-        "MM Pirate Fortress Sewers Barrel Cage Room 07"
+        "MM Pirate Fortress Sewers Barrel Cage Room 07",
+        "MM Pirate Fortress Sewers Barrel Cage Room 10"
       ]
     },
     {
       "coords": [485, 132],
       "image": "barrel",
       "codes": [
-        "MM Pirate Fortress Sewers Barrel Cage Room 01",
-        "MM Pirate Fortress Sewers Barrel Cage Room 02",
-        "MM Pirate Fortress Sewers Barrel Cage Room 03"
+        "MM Pirate Fortress Sewers Barrel Cage Room 14",
+        "MM Pirate Fortress Sewers Barrel Cage Room 15",
+        "MM Pirate Fortress Sewers Barrel Cage Room 16"
       ]
     },
     {
       "coords": [510, 170],
       "image": "barrel",
       "codes": [
-        "MM Pirate Fortress Sewers Barrel Cage Room 14",
-        "MM Pirate Fortress Sewers Barrel Cage Room 15",
-        "MM Pirate Fortress Sewers Barrel Cage Room 16"
+        "MM Pirate Fortress Sewers Barrel Cage Room 11",
+        "MM Pirate Fortress Sewers Barrel Cage Room 12",
+        "MM Pirate Fortress Sewers Barrel Cage Room 13"
       ]
     },
     {
@@ -258,16 +258,7 @@
     },
     {
       "coords": [689, 348],
-      "image": "green_rupee",
-      "codes": [
-        "MM Pirate Fortress Interior Wonder Item Skull Eyes 4",
-        "MM Pirate Fortress Interior Wonder Item Skull Eyes 5",
-        "MM Pirate Fortress Interior Wonder Item Skull Eyes 6"
-      ]
-    },
-    {
-      "coords": [689, 365],
-      "image": "green_rupee",
+      "image": "wonder_item_green_rupee",
       "codes": [
         "MM Pirate Fortress Interior Wonder Item Skull Eyes 1",
         "MM Pirate Fortress Interior Wonder Item Skull Eyes 2",
@@ -275,8 +266,17 @@
       ]
     },
     {
+      "coords": [689, 365],
+      "image": "wonder_item_green_rupee",
+      "codes": [
+        "MM Pirate Fortress Interior Wonder Item Skull Eyes 4",
+        "MM Pirate Fortress Interior Wonder Item Skull Eyes 5",
+        "MM Pirate Fortress Interior Wonder Item Skull Eyes 6"
+      ]
+    },
+    {
       "coords": [835, 357],
-      "image": "green_rupee",
+      "image": "wonder_item_green_rupee",
       "codes": [
         "MM Pirate Fortress Interior Wonder Item Skull Forehead 1",
         "MM Pirate Fortress Interior Wonder Item Skull Forehead 2",
