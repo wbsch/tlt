@@ -1150,7 +1150,12 @@
         {
           "image": "shop",
           "overlays": ["day3"],
-          "codes": "MM Curiosity Shop All-Night Mask"
+          "codes": ["MM Curiosity Shop All-Night Mask"]
+        },
+        {
+          "image": "shop",
+          "overlays": ["day3"],
+          "codes": ["MM Bomb Shop Bomb Bag 2"]
         }
       ]
     },
