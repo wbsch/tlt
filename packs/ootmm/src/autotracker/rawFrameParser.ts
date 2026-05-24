@@ -2931,8 +2931,13 @@ function extractItems(state: GameState): RawAutotrackerItem[] {
   );
 
   const ootTradeRecord = oot.extraRecords[EXTRA_IDX_OOT_TRADE] ?? 0;
+  const ootTradeSaveRecord = oot.extraRecords[EXTRA_IDX_OOT_TRADE_SAVE] ?? 0;
   appendPositiveItem(items, 'OOT_CHILD_TRADE', ootTradeRecord >>> 16);
-  appendPositiveItem(items, 'OOT_ADULT_TRADE', ootTradeRecord & 0xffff);
+  appendPositiveItem(
+    items,
+    'OOT_ADULT_TRADE',
+    (ootTradeRecord | ootTradeSaveRecord) & 0xffff,
+  );
 
   for (let index = 0; index < 20; index++) {
     const dungeonItem = oot.dungeonItems[index] ?? 0;

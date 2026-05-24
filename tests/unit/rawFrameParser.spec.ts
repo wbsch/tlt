@@ -1,6 +1,11 @@
 import { describe, expect, it } from 'vitest';
 
-import { createRawAutotrackerParser } from '@/../packs/ootmm/src/autotracker/rawFrameParser';
+import {
+  createRawAutotrackerParser,
+  RAW_CHUNK_SPECS,
+  type RawAutotrackerMessage,
+} from '@/../packs/ootmm/src/autotracker/rawFrameParser';
+import { translateAutotrackerItems } from '@/../packs/ootmm/src/autotracker/autotrackerMapping';
 import {
   buildRawMessage,
   listRawFixtureNames,
@@ -8,6 +13,67 @@ import {
   parsedCheckSet,
   parsedItemMap,
 } from '../helpers/autotrackerFixtures';
+
+const EMPTY_INVENTORY_ITEM = 0xff;
+const OOT_SAVE_CHUNK_NAME = 'oot_save_state';
+const OOT_OFF_AGE = 0x04;
+const OOT_OFF_INV_ITEMS = 0x74;
+const OOT_OFF_PERM = 0x0d4;
+const OOT_PERM_ENTRY_SIZE = 0x1c;
+const OOT_PERM_EXTRA_OFF = 0x10;
+const EXTRA_IDX_OOT_TRADE = 0;
+const EXTRA_IDX_OOT_TRADE_SAVE = 10;
+const OOT_ITEM_SLOT_COUNT = 24;
+
+function writeU32BE(data: Uint8Array, offset: number, value: number): void {
+  data[offset] = (value >>> 24) & 0xff;
+  data[offset + 1] = (value >>> 16) & 0xff;
+  data[offset + 2] = (value >>> 8) & 0xff;
+  data[offset + 3] = value & 0xff;
+}
+
+function buildMinimalOotMessage(
+  extraRecords: Record<number, number>,
+): RawAutotrackerMessage {
+  const ootSaveSpec = RAW_CHUNK_SPECS.find(
+    (spec) => spec.name === OOT_SAVE_CHUNK_NAME,
+  );
+  if (!ootSaveSpec) {
+    throw new Error('Missing OoT save chunk spec');
+  }
+
+  const data = new Uint8Array(ootSaveSpec.length);
+  data.fill(
+    EMPTY_INVENTORY_ITEM,
+    OOT_OFF_INV_ITEMS - OOT_OFF_AGE,
+    OOT_OFF_INV_ITEMS - OOT_OFF_AGE + OOT_ITEM_SLOT_COUNT,
+  );
+
+  for (const [rawIndex, value] of Object.entries(extraRecords)) {
+    const index = Number.parseInt(rawIndex, 10);
+    const offset =
+      OOT_OFF_PERM + index * OOT_PERM_ENTRY_SIZE + OOT_PERM_EXTRA_OFF - OOT_OFF_AGE;
+    writeU32BE(data, offset, value >>> 0);
+  }
+
+  return {
+    type: 'raw',
+    schemaVersion: '1',
+    diff: false,
+    refresh: true,
+    sequence: 1,
+    game: 'OoT',
+    saveIndex: 0,
+    chunks: [
+      {
+        name: ootSaveSpec.name,
+        address: ootSaveSpec.address,
+        length: ootSaveSpec.length,
+        data,
+      },
+    ],
+  };
+}
 
 describe('raw frame parser', () => {
   it.each(listRawFixtureNames())(
@@ -56,5 +122,29 @@ describe('raw frame parser', () => {
 
     expect(checks.has('Clock Town Tree HP')).toBe(true);
     expect(checks.has('Clock Town Platform HP')).toBe(true);
+  });
+
+  it('keeps consumed adult trade items owned after the next trade step is reached', () => {
+    const parser = createRawAutotrackerParser();
+    const parsed = parser.parse(
+      buildMinimalOotMessage({
+        [EXTRA_IDX_OOT_TRADE]: 1 << 4,
+        [EXTRA_IDX_OOT_TRADE_SAVE]: (1 << 3) | (1 << 4),
+      }),
+    );
+
+    expect(parsed).not.toBeNull();
+
+    const items = parsedItemMap(parsed!.items);
+    expect(items.get('OOT_ADULT_TRADE')).toBe((1 << 3) | (1 << 4));
+
+    const translated = translateAutotrackerItems(
+      parsed!.items,
+      new Set(['OOT_ODD_MUSHROOM', 'OOT_ODD_POTION']),
+      new Map(),
+    );
+
+    expect(translated.OOT_ODD_MUSHROOM).toBe(1);
+    expect(translated.OOT_ODD_POTION).toBe(1);
   });
 });
