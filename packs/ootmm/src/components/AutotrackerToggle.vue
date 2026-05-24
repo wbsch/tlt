@@ -271,6 +271,11 @@ onBeforeUnmount(() => {
   opacity: 0.65;
 }
 
+.autotracker-dropdown-toggle--active:disabled,
+.autotracker-dropdown-toggle--warning:disabled {
+  opacity: 1;
+}
+
 .autotracker-dropdown-toggle--active {
   border-color: #4caf50;
   color: #fff;
