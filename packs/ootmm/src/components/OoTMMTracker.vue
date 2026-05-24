@@ -117,6 +117,11 @@ type SpoilerUnknownSetting = {
   value: string;
 };
 
+type DeferredAutotrackerSpoilerWarnings = {
+  warnings: SpoilerSettingWarning[];
+  unknownSettings: SpoilerUnknownSetting[];
+};
+
 type AutotrackerStartMode = 'overwrite' | 'preserve';
 
 type PendingAutotrackerInventoryUpdate = {
@@ -431,6 +436,7 @@ const statisticsCountsTooltip =
   'These counts exclude unshuffled tokens/fairies and gossip stones.';
 const isSpoilerPlayerDialogOpen = ref(false);
 const isAutotrackerSpoilerRequiredDialogOpen = ref(false);
+const isAutotrackerSpoilerVersionWarningDialogOpen = ref(false);
 const spoilerPlayerOptions = ref<number[]>([]);
 const spoilerSelectedPlayer = ref<number | null>(null);
 const autotrackerSpoilerFileInput = ref<HTMLInputElement | null>(null);
@@ -477,6 +483,9 @@ const isSpoilerSettingsWarningDialogOpen = ref(false);
 const spoilerSettingsWarnings = ref<SpoilerSettingWarning[]>([]);
 const spoilerUnknownSettings = ref<SpoilerUnknownSetting[]>([]);
 const spoilerAutotrackerWarningMessage = ref<string | null>(null);
+const autotrackerSpoilerVersionWarningMessage = ref<string | null>(null);
+const deferredAutotrackerSpoilerWarnings =
+  ref<DeferredAutotrackerSpoilerWarnings | null>(null);
 let mapMarkerSelectNonce = 0;
 let mobileTrackerLayoutQuery: MediaQueryList | null = null;
 
@@ -781,6 +790,7 @@ function activateAutotracker(mode: AutotrackerStartMode) {
 function clearPendingAutotrackerStartRequest() {
   pendingAutotrackerStartMode = null;
   closeAutotrackerSpoilerRequiredDialog();
+  closeAutotrackerSpoilerVersionWarningDialog();
 }
 
 function clearAutotrackerToastTimeout(toastId: number) {
@@ -907,11 +917,67 @@ function closeAutotrackerSpoilerRequiredDialog() {
   isAutotrackerSpoilerRequiredDialogOpen.value = false;
 }
 
-function openAutotrackerSpoilerWarningDialog(message: string) {
-  spoilerSettingsWarnings.value = [];
-  spoilerUnknownSettings.value = [];
-  spoilerAutotrackerWarningMessage.value = message;
+function closeAutotrackerSpoilerVersionWarningDialog() {
+  isAutotrackerSpoilerVersionWarningDialogOpen.value = false;
+  autotrackerSpoilerVersionWarningMessage.value = null;
+}
+
+function setDeferredAutotrackerSpoilerWarnings(
+  warnings: SpoilerSettingWarning[],
+  unknownSettings: SpoilerUnknownSetting[],
+) {
+  deferredAutotrackerSpoilerWarnings.value =
+    warnings.length > 0 || unknownSettings.length > 0
+      ? {
+          warnings: [...warnings],
+          unknownSettings: [...unknownSettings],
+        }
+      : null;
+}
+
+function clearDeferredAutotrackerSpoilerWarnings() {
+  deferredAutotrackerSpoilerWarnings.value = null;
+}
+
+function openSpoilerSettingsWarningDialog(options: {
+  warnings?: SpoilerSettingWarning[];
+  unknownSettings?: SpoilerUnknownSetting[];
+  autotrackerWarningMessage?: string | null;
+}) {
+  const {
+    warnings = [],
+    unknownSettings = [],
+    autotrackerWarningMessage = null,
+  } = options;
+
+  spoilerSettingsWarnings.value = [...warnings];
+  spoilerUnknownSettings.value = [...unknownSettings];
+  spoilerAutotrackerWarningMessage.value = autotrackerWarningMessage;
   isSpoilerSettingsWarningDialogOpen.value = true;
+}
+
+function openAutotrackerSpoilerVersionWarningDialog(
+  message: string,
+  warnings: SpoilerSettingWarning[] = [],
+  unknownSettings: SpoilerUnknownSetting[] = [],
+) {
+  closeSpoilerSettingsWarningDialog();
+  setDeferredAutotrackerSpoilerWarnings(warnings, unknownSettings);
+  autotrackerSpoilerVersionWarningMessage.value = message;
+  isAutotrackerSpoilerVersionWarningDialogOpen.value = true;
+}
+
+function showDeferredAutotrackerSpoilerWarnings() {
+  const deferredWarnings = deferredAutotrackerSpoilerWarnings.value;
+  clearDeferredAutotrackerSpoilerWarnings();
+  if (!deferredWarnings) {
+    return;
+  }
+
+  openSpoilerSettingsWarningDialog({
+    warnings: deferredWarnings.warnings,
+    unknownSettings: deferredWarnings.unknownSettings,
+  });
 }
 
 function requestAutotrackerSpoilerUpload(mode: AutotrackerStartMode) {
@@ -926,7 +992,8 @@ function canStartAutotracker(mode: AutotrackerStartMode): boolean {
   }
 
   if (!isAutotrackingSupportedSpoilerVersion(importedSpoilerLogVersion.value)) {
-    openAutotrackerSpoilerWarningDialog(
+    pendingAutotrackerStartMode = mode;
+    openAutotrackerSpoilerVersionWarningDialog(
       getUnsupportedSpoilerVersionMessage(importedSpoilerLogVersion.value),
     );
     return false;
@@ -2565,6 +2632,12 @@ function closeSpoilerSettingsWarningDialog() {
 
 function cancelAutotrackerSpoilerRequiredDialog() {
   clearPendingAutotrackerStartRequest();
+  clearDeferredAutotrackerSpoilerWarnings();
+}
+
+function cancelAutotrackerSpoilerVersionWarningDialog() {
+  clearPendingAutotrackerStartRequest();
+  showDeferredAutotrackerSpoilerWarnings();
 }
 
 function openAutotrackerSpoilerFileDialog() {
@@ -2577,6 +2650,7 @@ async function onAutotrackerSpoilerFileSelected(event: Event) {
   const file = input.files?.[0];
   if (file) {
     closeAutotrackerSpoilerRequiredDialog();
+    closeAutotrackerSpoilerVersionWarningDialog();
     await handleSpoilerFile(file);
   }
   input.value = '';
@@ -2881,6 +2955,8 @@ async function applySpoilerLog(text: string, selectedPlayer?: number) {
 async function handleSpoilerFile(file: File) {
   if (!file) return;
   const requestedAutotrackerMode = pendingAutotrackerStartMode;
+  let shouldClearPendingAutotrackerStartRequest =
+    requestedAutotrackerMode !== null;
   try {
     const text = await file.text();
     const parsed = parseSpoilerLog(text);
@@ -2908,12 +2984,19 @@ async function handleSpoilerFile(file: File) {
     if (requestedAutotrackerMode) {
       if (isAutotrackingSupportedSpoilerVersion(parsed.ootmmVersion)) {
         activateAutotracker(requestedAutotrackerMode);
+        clearDeferredAutotrackerSpoilerWarnings();
         spoilerAutotrackerWarningMessage.value = null;
       } else {
-        spoilerAutotrackerWarningMessage.value =
-          getUnsupportedSpoilerVersionMessage(parsed.ootmmVersion);
+        openAutotrackerSpoilerVersionWarningDialog(
+          getUnsupportedSpoilerVersionMessage(parsed.ootmmVersion),
+          warnings,
+          unknownSettings,
+        );
+        shouldClearPendingAutotrackerStartRequest = false;
+        return;
       }
     } else {
+      clearDeferredAutotrackerSpoilerWarnings();
       spoilerAutotrackerWarningMessage.value =
         await maybeStartAutotrackerFromSpoiler(parsed);
     }
@@ -2923,12 +3006,14 @@ async function handleSpoilerFile(file: File) {
       warnings.length > 0 ||
       unknownSettings.length > 0
     ) {
-      spoilerSettingsWarnings.value = warnings;
-      spoilerUnknownSettings.value = unknownSettings;
-      isSpoilerSettingsWarningDialogOpen.value = true;
+      openSpoilerSettingsWarningDialog({
+        warnings,
+        unknownSettings,
+        autotrackerWarningMessage: spoilerAutotrackerWarningMessage.value,
+      });
     }
   } finally {
-    if (requestedAutotrackerMode) {
+    if (requestedAutotrackerMode && shouldClearPendingAutotrackerStartRequest) {
       clearPendingAutotrackerStartRequest();
     }
   }
@@ -3163,6 +3248,45 @@ onBeforeUnmount(() => {
             @click="openAutotrackerSpoilerFileDialog"
           >
             Upload Spoiler Log
+          </button>
+        </div>
+      </div>
+    </div>
+    <div
+      v-if="isAutotrackerSpoilerVersionWarningDialogOpen"
+      class="spoiler-player-dialog-overlay"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="autotracker-spoiler-version-warning-title"
+      data-testid="autotracker-spoiler-version-warning-dialog"
+    >
+      <div class="spoiler-player-dialog spoiler-settings-warning-dialog">
+        <h2
+          id="autotracker-spoiler-version-warning-title"
+          class="spoiler-player-dialog-title"
+        >
+          Unsupported spoiler log version
+        </h2>
+        <p class="spoiler-player-dialog-text">
+          {{ autotrackerSpoilerVersionWarningMessage }}
+        </p>
+        <div class="spoiler-player-dialog-actions">
+          <button
+            type="button"
+            class="history-button"
+            data-testid="autotracker-spoiler-version-warning-cancel"
+            @click="cancelAutotrackerSpoilerVersionWarningDialog"
+          >
+            Cancel
+          </button>
+          <button
+            type="button"
+            class="history-button"
+            :disabled="isApplyingSettings"
+            data-testid="autotracker-spoiler-version-warning-upload"
+            @click="openAutotrackerSpoilerFileDialog"
+          >
+            Upload New Spoiler Log
           </button>
         </div>
       </div>
