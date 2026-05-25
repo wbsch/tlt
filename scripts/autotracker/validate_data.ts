@@ -3,6 +3,7 @@ import { tmpdir } from 'node:os';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { spawnSync } from 'node:child_process';
+import { formatGeneratedFiles } from './format_generated_files.ts';
 
 const SCRIPT_DIR = path.dirname(fileURLToPath(import.meta.url));
 const REPO_ROOT = path.resolve(SCRIPT_DIR, '../..');
@@ -60,7 +61,7 @@ function assertExactMatch(
   const expected = readUtf8(expectedPath);
   if (actual !== expected) {
     throw new Error(
-      `${fileName} is out of date. Run \"npm run generate:autotracker-data\" and commit the result.`,
+      `${fileName} is out of date. Run "npm run generate:autotracker-data" and commit the result.`,
     );
   }
 }
@@ -133,6 +134,7 @@ function maybeValidateLiveAddrsExact(tempDir: string): void {
     '--output',
     path.join(tempDir, 'live_addrs.json'),
   ]);
+  formatGeneratedFiles(REPO_ROOT, [path.join(tempDir, 'live_addrs.json')]);
 
   const actual = readUtf8(path.join(DATA_DIR, 'live_addrs.json'));
   const expected = readUtf8(path.join(tempDir, 'live_addrs.json'));
@@ -145,6 +147,9 @@ function maybeValidateLiveAddrsExact(tempDir: string): void {
 
 function main(): void {
   const tempDir = mkdtempSync(path.join(tmpdir(), 'tlt-autotracker-data-'));
+  const generatedExactFiles = EXACT_FILES.map((fileName) =>
+    path.join(tempDir, fileName),
+  );
 
   try {
     runPython('generate_inventory_slots.py', [
@@ -178,6 +183,8 @@ function main(): void {
       path.join(tempDir, 'special_locations_fallbacks_oot.lock.json'),
       '--update-fallback-baseline',
     ]);
+
+    formatGeneratedFiles(REPO_ROOT, generatedExactFiles);
 
     for (const fileName of EXACT_FILES) {
       assertExactMatch(fileName, tempDir);

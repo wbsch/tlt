@@ -52,7 +52,10 @@ function buildMinimalOotMessage(
   for (const [rawIndex, value] of Object.entries(extraRecords)) {
     const index = Number.parseInt(rawIndex, 10);
     const offset =
-      OOT_OFF_PERM + index * OOT_PERM_ENTRY_SIZE + OOT_PERM_EXTRA_OFF - OOT_OFF_AGE;
+      OOT_OFF_PERM +
+      index * OOT_PERM_ENTRY_SIZE +
+      OOT_PERM_EXTRA_OFF -
+      OOT_OFF_AGE;
     writeU32BE(data, offset, value >>> 0);
   }
 

@@ -120,7 +120,10 @@ defineEmits<{
                   <template v-else>{{ block.text }}</template>
                 </p>
                 <ul v-else>
-                  <li v-for="(entry, entryIndex) in block.items" :key="entryIndex">
+                  <li
+                    v-for="(entry, entryIndex) in block.items"
+                    :key="entryIndex"
+                  >
                     <template v-if="isRichTextArray(entry)">
                       <template
                         v-for="(part, partIndex) in entry"

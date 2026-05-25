@@ -2,6 +2,7 @@ import { copyFileSync, existsSync, mkdirSync } from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { spawnSync } from 'node:child_process';
+import { formatGeneratedFiles } from './format_generated_files.ts';
 
 const SCRIPT_DIR = path.dirname(fileURLToPath(import.meta.url));
 const REPO_ROOT = path.resolve(SCRIPT_DIR, '../..');
@@ -67,6 +68,15 @@ function parseArgs(argv: string[]): GenerateOptions {
 function main(): void {
   const options = parseArgs(process.argv.slice(2));
   mkdirSync(DATA_DIR, { recursive: true });
+  const generatedFiles = [
+    path.join(DATA_DIR, 'inventory_slots.json'),
+    path.join(DATA_DIR, 'locations.json'),
+    path.join(DATA_DIR, 'special_locations_mm.json'),
+    path.join(DATA_DIR, 'special_locations_oot.json'),
+    path.join(DATA_DIR, 'special_locations_fallbacks_mm.lock.json'),
+    path.join(DATA_DIR, 'special_locations_fallbacks_oot.lock.json'),
+    path.join(DATA_DIR, 'live_addrs.json'),
+  ];
 
   runPython('generate_inventory_slots.py', [
     '--ootmm-repo',
@@ -123,6 +133,7 @@ function main(): void {
       selectSeedFile('live_addrs.json'),
       path.join(DATA_DIR, 'live_addrs.json'),
     );
+    formatGeneratedFiles(REPO_ROOT, generatedFiles);
     return;
   }
 
@@ -137,6 +148,7 @@ function main(): void {
     liveAddrsArgs.push('--patchfile', patchfile);
   }
   runPython('export_live_addrs.py', liveAddrsArgs);
+  formatGeneratedFiles(REPO_ROOT, generatedFiles);
 }
 
 main();

@@ -40,10 +40,7 @@
       "slot": "ITS_OOT_OCARINA",
       "itemId": "OOT_OCARINA",
       "quantity": {
-        "stages": [
-          7,
-          8
-        ]
+        "stages": [7, 8]
       }
     },
     {
@@ -56,10 +53,7 @@
       "slot": "ITS_OOT_HOOKSHOT",
       "itemId": "OOT_HOOKSHOT",
       "quantity": {
-        "stages": [
-          10,
-          11
-        ]
+        "stages": [10, 11]
       }
     },
     {
@@ -130,20 +124,7 @@
       "slot": "ITS_OOT_TRADE_ADULT",
       "itemId": "OOT_ADULT_TRADE",
       "quantity": {
-        "stages": [
-          45,
-          46,
-          47,
-          48,
-          49,
-          50,
-          51,
-          52,
-          53,
-          54,
-          55,
-          20
-        ],
+        "stages": [45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 20],
         "maxWithBottle": true
       }
     },
@@ -152,22 +133,7 @@
       "slot": "ITS_OOT_TRADE_CHILD",
       "itemId": "OOT_CHILD_TRADE",
       "quantity": {
-        "stages": [
-          33,
-          34,
-          35,
-          36,
-          37,
-          38,
-          39,
-          40,
-          41,
-          42,
-          43,
-          156,
-          157,
-          20
-        ],
+        "stages": [33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 156, 157, 20],
         "maxWithBottle": true
       }
     }
@@ -178,10 +144,7 @@
       "slot": "ITS_MM_OCARINA",
       "itemId": "MM_OCARINA",
       "quantity": {
-        "stages": [
-          5,
-          0
-        ]
+        "stages": [5, 0]
       }
     },
     {
@@ -209,14 +172,7 @@
       "slot": "ITS_MM_TRADE1",
       "itemId": "MM_TRADE_1",
       "quantity": {
-        "stages": [
-          176,
-          40,
-          41,
-          42,
-          43,
-          44
-        ]
+        "stages": [176, 40, 41, 42, 43, 44]
       }
     },
     {
@@ -249,13 +205,7 @@
       "slot": "ITS_MM_TRADE2",
       "itemId": "MM_TRADE_2",
       "quantity": {
-        "stages": [
-          174,
-          177,
-          179,
-          45,
-          46
-        ]
+        "stages": [174, 177, 179, 45, 46]
       }
     },
     {
@@ -278,10 +228,7 @@
       "slot": "ITS_MM_HOOKSHOT",
       "itemId": "MM_HOOKSHOT",
       "quantity": {
-        "stages": [
-          17,
-          15
-        ]
+        "stages": [17, 15]
       }
     },
     {
@@ -289,10 +236,7 @@
       "slot": "ITS_MM_GREAT_FAIRY_SWORD",
       "itemId": "MM_GREAT_FAIRY_SWORD",
       "quantity": {
-        "stages": [
-          16,
-          181
-        ]
+        "stages": [16, 181]
       }
     },
     {
@@ -300,13 +244,7 @@
       "slot": "ITS_MM_TRADE3",
       "itemId": "MM_TRADE_3",
       "quantity": {
-        "stages": [
-          175,
-          178,
-          180,
-          47,
-          48
-        ]
+        "stages": [175, 178, 180, 47, 48]
       }
     },
     {
