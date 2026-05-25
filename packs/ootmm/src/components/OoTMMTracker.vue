@@ -88,6 +88,9 @@ const props = defineProps<{
   tracker: TrackerPack;
 }>();
 
+const AUTOTRACKER_RELEASES_LATEST_URL =
+  'https://github.com/jupiter0fire/tlt-autotracker/releases/latest';
+
 type SettingsPanelHandle = {
   hasUnsavedChanges: () => boolean;
   getLocalSettingsSnapshot: () => Record<string, unknown>;
@@ -3527,6 +3530,14 @@ onBeforeUnmount(() => {
             </button>
             <p class="autotracker-inline-warning-text">
               {{ visibleAutotrackerVersionWarning }}
+              <a
+                class="autotracker-inline-warning-link"
+                :href="AUTOTRACKER_RELEASES_LATEST_URL"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                Updated version on Github.
+              </a>
             </p>
           </div>
         </div>
@@ -4468,6 +4479,18 @@ onBeforeUnmount(() => {
   margin: 0;
   font-size: 0.72rem;
   line-height: 1.4;
+}
+
+.autotracker-inline-warning-link {
+  color: inherit;
+  text-decoration: underline;
+  text-underline-offset: 0.12em;
+}
+
+.autotracker-inline-warning-link:focus-visible {
+  outline: 2px solid #fcd34d;
+  outline-offset: 2px;
+  border-radius: 0.12rem;
 }
 
 .autotracker-inline-warning-close {
