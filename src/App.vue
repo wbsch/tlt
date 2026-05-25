@@ -10,12 +10,18 @@ import { withBasePath } from '@packs/ootmm/utils/assetPath';
 import { TRACKER_FAQ_OPEN_EVENT_NAME } from './utils/trackerFaq';
 import {
   buildShareUrl,
+  clearPendingShareImportConfirmation,
+  clearSharePayloadFromCurrentUrl,
   collectPersistedStateFromLocalStorage,
+  consumeShareImportConfirmationMessage,
+  importShareStateFromCurrentUrl,
   encodeSnapshotToHashPayload,
+  SHARE_IMPORT_CONFIRMATION_EVENT_NAME,
   SHARE_PARTIAL_IMPORT_MESSAGE,
   SHARE_STATUS_EVENT_NAME,
   stripCollectedLocations,
   consumeShareStatus,
+  type ShareImportConfirmationPayload,
   type ShareImportIssue,
   type ShareStatusPayload,
 } from './utils/shareState';
@@ -28,9 +34,11 @@ const { hasOtherTabsOpen, connectedTabCount } = storeToRefs(syncStatusStore);
 const isResetConfirmOpen = ref(false);
 const isInfoModalOpen = ref(false);
 const isFaqModalOpen = ref(false);
+const isShareImportConfirmOpen = ref(false);
 const isShareImportDetailsOpen = ref(false);
 const isDebugMode = ref(false);
 const shareStatusMessage = ref('');
+const shareImportConfirmMessage = ref('');
 const shareImportIssues = ref<ShareImportIssue[]>([]);
 const isShareMenuOpen = ref(false);
 let shareStatusTimeoutId: number | null = null;
@@ -108,6 +116,32 @@ function openShareImportDetailsModal() {
   isShareImportDetailsOpen.value = true;
 }
 
+function openShareImportConfirmModal(message: string) {
+  if (message.length === 0) return;
+  isShareMenuOpen.value = false;
+  shareImportConfirmMessage.value = message;
+  isShareImportConfirmOpen.value = true;
+}
+
+function closeShareImportConfirmModal() {
+  isShareImportConfirmOpen.value = false;
+  shareImportConfirmMessage.value = '';
+}
+
+function cancelShareImportConfirmation() {
+  clearPendingShareImportConfirmation();
+  clearSharePayloadFromCurrentUrl();
+  closeShareImportConfirmModal();
+}
+
+function confirmShareImport() {
+  const result = importShareStateFromCurrentUrl(() => true);
+  closeShareImportConfirmModal();
+  if (result === 'imported' || result === 'partial') {
+    window.location.reload();
+  }
+}
+
 function closeShareImportDetailsModal() {
   isShareImportDetailsOpen.value = false;
 }
@@ -139,6 +173,12 @@ function handleWindowKeydown(event: KeyboardEvent) {
   if (isInfoModalOpen.value) {
     event.preventDefault();
     closeInfoModal();
+    return;
+  }
+
+  if (isShareImportConfirmOpen.value) {
+    event.preventDefault();
+    cancelShareImportConfirmation();
     return;
   }
 
@@ -241,6 +281,13 @@ function handleShareStatusEvent(event: Event) {
   );
 }
 
+function handleShareImportConfirmationEvent(event: Event) {
+  const detail = (event as CustomEvent<ShareImportConfirmationPayload>).detail;
+  const message = detail?.message;
+  if (typeof message !== 'string' || message.length === 0) return;
+  openShareImportConfirmModal(message);
+}
+
 function handleTrackerFaqOpen() {
   openFaqModal();
 }
@@ -292,11 +339,20 @@ function initializeDebugMode() {
 
 onMounted(() => {
   initializeDebugMode();
+  const pendingShareImportConfirmation =
+    consumeShareImportConfirmationMessage();
+  if (pendingShareImportConfirmation) {
+    openShareImportConfirmModal(pendingShareImportConfirmation);
+  }
   const pendingShareStatus = consumeShareStatus();
   if (pendingShareStatus) {
     setShareStatus(pendingShareStatus.message, pendingShareStatus.issues ?? []);
   }
   window.addEventListener('keydown', handleWindowKeydown);
+  window.addEventListener(
+    SHARE_IMPORT_CONFIRMATION_EVENT_NAME,
+    handleShareImportConfirmationEvent,
+  );
   window.addEventListener(SHARE_STATUS_EVENT_NAME, handleShareStatusEvent);
   window.addEventListener(TRACKER_FAQ_OPEN_EVENT_NAME, handleTrackerFaqOpen);
   document.addEventListener('click', handleDocumentClick);
@@ -306,6 +362,10 @@ onMounted(() => {
 onBeforeUnmount(() => {
   clearShareStatusTimeout();
   window.removeEventListener('keydown', handleWindowKeydown);
+  window.removeEventListener(
+    SHARE_IMPORT_CONFIRMATION_EVENT_NAME,
+    handleShareImportConfirmationEvent,
+  );
   window.removeEventListener(SHARE_STATUS_EVENT_NAME, handleShareStatusEvent);
   window.removeEventListener(TRACKER_FAQ_OPEN_EVENT_NAME, handleTrackerFaqOpen);
   document.removeEventListener('click', handleDocumentClick);
@@ -473,6 +533,46 @@ onBeforeUnmount(() => {
 
     <div v-if="isFaqModalOpen" data-testid="faq-modal-shell">
       <TrackerFaqModal @close="closeFaqModal" />
+    </div>
+
+    <div
+      v-if="isShareImportConfirmOpen"
+      class="share-import-confirm-backdrop"
+      data-testid="share-import-confirm-backdrop"
+      @click="cancelShareImportConfirmation"
+    >
+      <div
+        class="share-import-confirm-modal"
+        data-testid="share-import-confirm-modal"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="share-import-confirm-title"
+        aria-describedby="share-import-confirm-description"
+        @click.stop
+      >
+        <h2 id="share-import-confirm-title">Shared tracker URL detected</h2>
+        <p id="share-import-confirm-description">
+          {{ shareImportConfirmMessage }}
+        </p>
+        <div class="share-import-confirm-actions">
+          <button
+            type="button"
+            class="share-import-confirm-cancel"
+            data-testid="share-import-confirm-cancel-button"
+            @click="cancelShareImportConfirmation"
+          >
+            Keep Current State
+          </button>
+          <button
+            type="button"
+            class="share-import-confirm-apply"
+            data-testid="share-import-confirm-apply-button"
+            @click="confirmShareImport"
+          >
+            Import Shared State
+          </button>
+        </div>
+      </div>
     </div>
 
     <div
@@ -890,6 +990,60 @@ onBeforeUnmount(() => {
   color: #ef4444;
 }
 
+.share-import-confirm-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 1975;
+  background: rgb(0 0 0 / 55%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+}
+
+.share-import-confirm-modal {
+  width: min(30rem, 100%);
+  border: 1px solid #525252;
+  border-radius: 0.5rem;
+  background: #1f1f1f;
+  box-shadow: 0 16px 50px rgb(0 0 0 / 45%);
+  padding: 1rem 1rem 0.875rem;
+}
+
+.share-import-confirm-modal h2 {
+  margin: 0 0 0.5rem;
+  font-size: 1.1rem;
+}
+
+.share-import-confirm-modal p {
+  margin: 0;
+  color: #d1d5db;
+}
+
+.share-import-confirm-actions {
+  margin-top: 1rem;
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.5rem;
+}
+
+.share-import-confirm-cancel {
+  background: #4b5563;
+}
+
+.share-import-confirm-cancel:hover {
+  background: #6b7280;
+}
+
+.share-import-confirm-apply {
+  background: #155e75;
+  border: 1px solid #67e8f9;
+}
+
+.share-import-confirm-apply:hover {
+  background: #0e7490;
+}
+
 .share-import-details-backdrop {
   position: fixed;
   inset: 0;
@@ -1264,6 +1418,11 @@ onBeforeUnmount(() => {
   .pack-selector select {
     flex: 1;
     min-width: 0;
+  }
+
+  .share-import-confirm-actions {
+    flex-direction: column-reverse;
+    align-items: stretch;
   }
 }
 

@@ -201,6 +201,32 @@ describe('shareState', () => {
     );
   });
 
+  it('queues an in-app confirmation before overwriting meaningful local state', () => {
+    seedRepresentativeLocalState();
+    const existingSnapshot = shareState.collectPersistedStateFromLocalStorage();
+    const payload = makeCompressedPayload({
+      v: 1,
+      stores: {
+        app: {
+          selectedPackId: 'ootmm',
+        },
+      },
+    });
+
+    window.history.replaceState(null, '', `/#s=${payload}`);
+
+    expect(shareState.handleShareStateImportFromCurrentUrl()).toBe(
+      'confirmation-required',
+    );
+    expect(shareState.consumeShareImportConfirmationMessage()).toContain(
+      'replace your current local tracker progress',
+    );
+    expect(window.location.hash).toContain('#s=');
+    expect(shareState.collectPersistedStateFromLocalStorage()).toEqual(
+      existingSnapshot,
+    );
+  });
+
   it('marks partial imports, publishes the warning, and sets the pending check flag', () => {
     const payload = makeCompressedPayload({
       v: 1,
@@ -428,12 +454,17 @@ describe('shareState', () => {
 
     window.sessionStorage.setItem(SHARE_STATUS_SESSION_KEY, 'stale status');
     window.sessionStorage.setItem(SHARE_IMPORT_PENDING_SESSION_KEY, '1');
+    window.sessionStorage.setItem(
+      'tlt:share-import-confirmation:v1',
+      'stale confirmation',
+    );
     window.history.replaceState(null, '', '/#s=v1.!!!!');
 
     expect(shareState.importShareStateFromCurrentUrl()).toBe('invalid');
     expect(window.location.hash).toBe('');
     expect(shareState.hasPendingShareImportCheck()).toBe(false);
     expect(shareState.consumeShareStatusMessage()).toBeNull();
+    expect(shareState.consumeShareImportConfirmationMessage()).toBeNull();
     expect(shareState.collectPersistedStateFromLocalStorage()).toEqual(
       existingSnapshot,
     );

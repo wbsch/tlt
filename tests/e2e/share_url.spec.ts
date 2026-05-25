@@ -336,27 +336,75 @@ test.describe('share URL import/export', () => {
     await page.getByTestId('debug-activate-all-button').click();
     await waitForAllReachable(page);
 
-    let dialogType = '';
-    let dialogMessage = '';
-    const dialogHandled = new Promise<void>((resolve, reject) => {
-      page.once('dialog', (dialog) => {
-        dialogType = dialog.type();
-        dialogMessage = dialog.message();
-        void dialog.dismiss().then(resolve).catch(reject);
-      });
+    const dialogs: string[] = [];
+    page.on('dialog', (dialog) => {
+      dialogs.push(dialog.type());
+      void dialog.dismiss();
     });
 
     await page.goto(baselineShareUrl, { waitUntil: 'domcontentloaded' });
-    await dialogHandled;
-    expect(dialogType).toBe('confirm');
-    expect(dialogMessage).toContain(
+    await page.waitForSelector('body.tlt-app-mounted', {
+      timeout: TEST_TIMEOUTS.BOOT_SELECTOR,
+    });
+    await expect(page.getByTestId('share-import-confirm-modal')).toBeVisible({
+      timeout: TEST_TIMEOUTS.SHARE_IMPORT_DETAILS,
+    });
+    await expect(page.getByTestId('share-import-confirm-modal')).toContainText(
       'replace your current local tracker progress',
+      { timeout: TEST_TIMEOUTS.SHARE_IMPORT_DETAILS },
     );
+    expect(dialogs).toEqual([]);
+    await page.getByTestId('share-import-confirm-cancel-button').click();
+    await expect(page.getByTestId('share-import-confirm-modal')).toHaveCount(0);
 
     await waitForBoot(page);
     const afterCancel = await waitForAllReachable(page);
     expect(afterCancel.total).toBeGreaterThan(0);
     expect(afterCancel.reachable).toBe(afterCancel.total);
+
+    const hash = await page.evaluate(() => window.location.hash);
+    expect(hash).toBe('');
+  });
+
+  test('confirming import from existing progress uses the in-app modal', async ({
+    page,
+  }) => {
+    const replacementShareUrl = buildShareUrl(page.url(), {
+      v: 1,
+      stores: {
+        app: {
+          selectedPackId: 'ootmm',
+        },
+        'ootmm-session': {
+          inventoryById: {
+            ITEM_ALPHA: 1,
+          },
+        },
+      },
+    });
+
+    await page.getByTestId('debug-activate-all-button').click();
+    await waitForAllReachable(page);
+
+    await page.goto(replacementShareUrl, { waitUntil: 'domcontentloaded' });
+    await page.waitForSelector('body.tlt-app-mounted', {
+      timeout: TEST_TIMEOUTS.BOOT_SELECTOR,
+    });
+    await expect(page.getByTestId('share-import-confirm-modal')).toBeVisible({
+      timeout: TEST_TIMEOUTS.SHARE_IMPORT_DETAILS,
+    });
+    await page.getByTestId('share-import-confirm-apply-button').click();
+
+    await waitForBoot(page);
+    const sessionState = await readPersistedJson(page, 'tlt:ootmm-session:v1');
+    expect(sessionState?.inventoryById).toMatchObject({
+      ITEM_ALPHA: 1,
+    });
+    expect(
+      Object.keys(
+        (sessionState?.inventoryById as Record<string, unknown>) ?? {},
+      ),
+    ).toEqual(['ITEM_ALPHA']);
 
     const hash = await page.evaluate(() => window.location.hash);
     expect(hash).toBe('');

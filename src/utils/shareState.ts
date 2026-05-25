@@ -21,7 +21,11 @@ const SHARE_SCHEMA_VERSION = 1;
 const SHARE_STATUS_SESSION_KEY = 'tlt:share-import-status:v1';
 const SHARE_STATUS_DETAILS_SESSION_KEY = 'tlt:share-import-details:v1';
 const SHARE_IMPORT_PENDING_SESSION_KEY = 'tlt:share-import-pending:v1';
+const SHARE_IMPORT_CONFIRMATION_SESSION_KEY =
+  'tlt:share-import-confirmation:v1';
 export const SHARE_STATUS_EVENT_NAME = 'tlt:share-status';
+export const SHARE_IMPORT_CONFIRMATION_EVENT_NAME =
+  'tlt:share-import-confirmation';
 export const SHARE_PARTIAL_IMPORT_MESSAGE =
   'Imported shared state; some invalid data was ignored.';
 const SHARE_TOP_LEVEL_KEYS = new Set(['v', 'stores']);
@@ -83,6 +87,10 @@ export type ShareStatusPayload = {
   issues?: ShareImportIssue[];
 };
 
+export type ShareImportConfirmationPayload = {
+  message: string;
+};
+
 type SharePayloadDecodeResult = {
   snapshot: PersistedSnapshot;
   partial: boolean;
@@ -105,6 +113,10 @@ export type ShareStateImportResult =
   | 'partial'
   | 'skipped'
   | 'invalid';
+
+export type ShareStateImportHandlingResult =
+  | ShareStateImportResult
+  | 'confirmation-required';
 
 function isPlainObject(value: unknown): value is Record<string, unknown> {
   return Boolean(value) && typeof value === 'object' && !Array.isArray(value);
@@ -596,6 +608,60 @@ function dispatchShareStatus(payload: ShareStatusPayload): void {
   );
 }
 
+function persistShareImportConfirmation(message: string): void {
+  if (typeof window === 'undefined') return;
+  try {
+    window.sessionStorage.setItem(
+      SHARE_IMPORT_CONFIRMATION_SESSION_KEY,
+      message,
+    );
+  } catch {
+    // Ignore sessionStorage failures; import flow should still continue.
+  }
+}
+
+export function clearPendingShareImportConfirmation(): void {
+  if (typeof window === 'undefined') return;
+  try {
+    window.sessionStorage.removeItem(SHARE_IMPORT_CONFIRMATION_SESSION_KEY);
+  } catch {
+    // Ignore sessionStorage failures; import flow should still continue.
+  }
+}
+
+function dispatchShareImportConfirmation(message: string): void {
+  if (typeof window === 'undefined') return;
+  window.dispatchEvent(
+    new CustomEvent<ShareImportConfirmationPayload>(
+      SHARE_IMPORT_CONFIRMATION_EVENT_NAME,
+      {
+        detail: { message },
+      },
+    ),
+  );
+}
+
+export function requestShareImportConfirmation(
+  message: string = IMPORT_CONFIRM_MESSAGE,
+): void {
+  persistShareImportConfirmation(message);
+  dispatchShareImportConfirmation(message);
+}
+
+export function consumeShareImportConfirmationMessage(): string | null {
+  if (typeof window === 'undefined') return null;
+  try {
+    const message = window.sessionStorage.getItem(
+      SHARE_IMPORT_CONFIRMATION_SESSION_KEY,
+    );
+    if (!message) return null;
+    window.sessionStorage.removeItem(SHARE_IMPORT_CONFIRMATION_SESSION_KEY);
+    return message;
+  } catch {
+    return null;
+  }
+}
+
 function markPendingShareImportCheck(): void {
   if (typeof window === 'undefined') return;
   try {
@@ -910,35 +976,19 @@ export function buildShareUrl(currentUrl: URL, payload: string): string {
   return next.toString();
 }
 
-export function importShareStateFromCurrentUrl(
-  confirmOverwrite: (message: string) => boolean = (message) =>
-    window.confirm(message),
+function handleInvalidShareImport(error: unknown): ShareStateImportResult {
+  console.warn('[Share] Ignoring invalid share payload:', error);
+  clearPendingShareImportCheck();
+  clearShareStatusMessage();
+  clearPendingShareImportConfirmation();
+  clearSharePayloadFromCurrentUrl();
+  return 'invalid';
+}
+
+function finalizeShareStateImport(
+  decoded: SharePayloadDecodeResult,
 ): ShareStateImportResult {
-  if (typeof window === 'undefined') return 'none';
-  const payload = parseSharePayloadFromLocationHash(window.location.hash);
-  if (!payload) return 'none';
-
-  let decoded: SharePayloadDecodeResult;
-  try {
-    decoded = decodeHashPayloadToSnapshot(payload);
-  } catch (error) {
-    console.warn('[Share] Ignoring invalid share payload:', error);
-    clearPendingShareImportCheck();
-    clearShareStatusMessage();
-    clearSharePayloadFromCurrentUrl();
-    return 'invalid';
-  }
-
-  const shouldOverwrite = !hasMeaningfulLocalState()
-    ? true
-    : confirmOverwrite(IMPORT_CONFIRM_MESSAGE);
-  if (!shouldOverwrite) {
-    clearPendingShareImportCheck();
-    clearShareStatusMessage();
-    clearSharePayloadFromCurrentUrl();
-    return 'skipped';
-  }
-
+  clearPendingShareImportConfirmation();
   applySnapshotToLocalStorage(decoded.snapshot);
   markPendingShareImportCheck();
   if (decoded.partial) {
@@ -951,4 +1001,53 @@ export function importShareStateFromCurrentUrl(
   }
   clearSharePayloadFromCurrentUrl();
   return decoded.partial ? 'partial' : 'imported';
+}
+
+export function handleShareStateImportFromCurrentUrl(): ShareStateImportHandlingResult {
+  if (typeof window === 'undefined') return 'none';
+  const payload = parseSharePayloadFromLocationHash(window.location.hash);
+  if (!payload) return 'none';
+
+  let decoded: SharePayloadDecodeResult;
+  try {
+    decoded = decodeHashPayloadToSnapshot(payload);
+  } catch (error) {
+    return handleInvalidShareImport(error);
+  }
+
+  if (hasMeaningfulLocalState()) {
+    requestShareImportConfirmation();
+    return 'confirmation-required';
+  }
+
+  return finalizeShareStateImport(decoded);
+}
+
+export function importShareStateFromCurrentUrl(
+  confirmOverwrite: (message: string) => boolean = (message) =>
+    window.confirm(message),
+): ShareStateImportResult {
+  if (typeof window === 'undefined') return 'none';
+  const payload = parseSharePayloadFromLocationHash(window.location.hash);
+  if (!payload) return 'none';
+
+  let decoded: SharePayloadDecodeResult;
+  try {
+    decoded = decodeHashPayloadToSnapshot(payload);
+  } catch (error) {
+    return handleInvalidShareImport(error);
+  }
+
+  const shouldOverwrite = !hasMeaningfulLocalState()
+    ? true
+    : confirmOverwrite(IMPORT_CONFIRM_MESSAGE);
+  if (!shouldOverwrite) {
+    clearPendingShareImportCheck();
+    clearShareStatusMessage();
+    clearPendingShareImportConfirmation();
+    clearSharePayloadFromCurrentUrl();
+    return 'skipped';
+  }
+
+  return finalizeShareStateImport(decoded);
 }

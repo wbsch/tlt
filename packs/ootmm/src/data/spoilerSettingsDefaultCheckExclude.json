@@ -66,5 +66,6 @@
   "trapsQuantity",
   "triforcePieces",
   "triforceSharedMulti",
-  "voidWarpMm"
+  "voidWarpMm",
+  "noDuplicatePlaythroughHints"
 ]
