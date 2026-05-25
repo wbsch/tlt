@@ -155,6 +155,22 @@ function buildIssueReason(received: unknown, imported: unknown): string {
   return 'Adjusted value during import.';
 }
 
+function areEquivalentShareImportValues(
+  path: string,
+  received: unknown,
+  imported: unknown,
+): boolean {
+  if (deepEqual(received, imported)) return true;
+
+  return (
+    path === 'stores.ootmm-session.entranceOverrides' &&
+    isPlainObject(received) &&
+    Object.keys(received).length === 0 &&
+    (imported === undefined ||
+      (isPlainObject(imported) && Object.keys(imported).length === 0))
+  );
+}
+
 function pushShareImportIssue(
   issues: ShareImportIssue[],
   issue: ShareImportIssue,
@@ -168,7 +184,7 @@ function collectShareImportIssues(
   imported: unknown,
   issues: ShareImportIssue[],
 ): void {
-  if (deepEqual(received, imported)) return;
+  if (areEquivalentShareImportValues(path, received, imported)) return;
 
   if (isPlainObject(received)) {
     if (!isPlainObject(imported)) {
@@ -184,6 +200,9 @@ function collectShareImportIssues(
     for (const [key, value] of Object.entries(received)) {
       const nextPath = path ? `${path}.${key}` : key;
       if (!Object.prototype.hasOwnProperty.call(imported, key)) {
+        if (areEquivalentShareImportValues(nextPath, value, undefined)) {
+          continue;
+        }
         pushShareImportIssue(issues, {
           path: nextPath,
           reason: 'Ignored invalid or unsupported field.',

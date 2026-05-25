@@ -309,6 +309,41 @@ describe('shareState', () => {
     ).toBeUndefined();
   });
 
+  it('imports empty entrance overrides without reporting a partial import', () => {
+    const payload = makeCompressedPayload({
+      v: 1,
+      stores: {
+        app: {
+          selectedPackId: 'ootmm',
+        },
+        'ootmm-session': {
+          trackerSettings: {
+            games: 'ootmm',
+            players: 1,
+          },
+          entranceOverrides: {},
+        },
+      },
+    });
+
+    window.localStorage.clear();
+    window.sessionStorage.clear();
+    window.history.replaceState(null, '', `/#s=${payload}`);
+
+    expect(shareState.importShareStateFromCurrentUrl()).toBe('imported');
+    expect(window.location.hash).toBe('');
+    expect(shareState.consumeShareStatus()).toBeNull();
+    expect(readPersistedStore(STORAGE_KEYS.session)).toMatchObject({
+      trackerSettings: {
+        games: 'ootmm',
+        players: 1,
+      },
+    });
+    expect(
+      readPersistedStore(STORAGE_KEYS.session)?.entranceOverrides,
+    ).toBeUndefined();
+  });
+
   it('sanitizes known stores and marks the payload partial when store fields are invalid', () => {
     const decoded = shareState.decodeHashPayloadToSnapshot(
       makeCompressedPayload({
