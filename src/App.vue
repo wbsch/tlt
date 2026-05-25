@@ -7,6 +7,7 @@ import { IMPRESSUM_HTML } from './content/impressum';
 import FairyLoader from './components/FairyLoader.vue';
 import TrackerFaqModal from './components/TrackerFaqModal.vue';
 import { withBasePath } from '@packs/ootmm/utils/assetPath';
+import { TRACKER_FAQ_OPEN_EVENT_NAME } from './utils/trackerFaq';
 import {
   buildShareUrl,
   collectPersistedStateFromLocalStorage,
@@ -240,6 +241,10 @@ function handleShareStatusEvent(event: Event) {
   );
 }
 
+function handleTrackerFaqOpen() {
+  openFaqModal();
+}
+
 async function exportState(includeCollected = false) {
   isShareMenuOpen.value = false;
   try {
@@ -293,6 +298,7 @@ onMounted(() => {
   }
   window.addEventListener('keydown', handleWindowKeydown);
   window.addEventListener(SHARE_STATUS_EVENT_NAME, handleShareStatusEvent);
+  window.addEventListener(TRACKER_FAQ_OPEN_EVENT_NAME, handleTrackerFaqOpen);
   document.addEventListener('click', handleDocumentClick);
   appStore.initialize();
 });
@@ -301,6 +307,7 @@ onBeforeUnmount(() => {
   clearShareStatusTimeout();
   window.removeEventListener('keydown', handleWindowKeydown);
   window.removeEventListener(SHARE_STATUS_EVENT_NAME, handleShareStatusEvent);
+  window.removeEventListener(TRACKER_FAQ_OPEN_EVENT_NAME, handleTrackerFaqOpen);
   document.removeEventListener('click', handleDocumentClick);
 });
 </script>

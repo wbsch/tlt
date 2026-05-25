@@ -2,6 +2,7 @@
 import { computed, onBeforeUnmount, onMounted, ref, watch } from 'vue';
 import { storeToRefs } from 'pinia';
 import type { TrackerLocationTraceResult, TrackerPack } from '@/types/tracker';
+import { requestTrackerFaqOpen } from '@/utils/trackerFaq';
 import OoTMMInventory from './OoTMMInventory.vue';
 import OoTMMLocations from './OoTMMLocations.vue';
 import OoTMMEntrances from './OoTMMEntrances.vue';
@@ -90,6 +91,8 @@ const props = defineProps<{
 
 const AUTOTRACKER_RELEASES_LATEST_URL =
   'https://github.com/jupiter0fire/tlt-autotracker/releases/latest';
+const AUTOTRACKER_NOT_FOUND_WARNING_MESSAGE =
+  'No autotracker was found. Please start the autotracker.';
 
 type SettingsPanelHandle = {
   hasUnsavedChanges: () => boolean;
@@ -739,13 +742,40 @@ const autotracker = useAutotracker({
 });
 
 const isAutotrackerVersionWarningDismissed = ref(false);
+const autotrackerConnectionWarningMessage = ref<string | null>(null);
 
-const visibleAutotrackerVersionWarning = computed(() => {
+const visibleAutotrackerInlineWarning = computed<
+  | {
+      kind: 'connection';
+      message: string;
+    }
+  | {
+      kind: 'version';
+      message: string;
+    }
+  | null
+>(() => {
+  const connectionWarning = autotrackerConnectionWarningMessage.value?.trim();
+  if (connectionWarning) {
+    return {
+      kind: 'connection',
+      message: connectionWarning,
+    };
+  }
+
   if (isAutotrackerVersionWarningDismissed.value) {
     return null;
   }
 
-  return autotracker.versionWarning.value;
+  const versionWarning = autotracker.versionWarning.value?.trim();
+  if (!versionWarning) {
+    return null;
+  }
+
+  return {
+    kind: 'version',
+    message: versionWarning,
+  };
 });
 
 watch(
@@ -753,6 +783,19 @@ watch(
   (warning, previousWarning) => {
     if (warning !== previousWarning) {
       isAutotrackerVersionWarningDismissed.value = false;
+    }
+
+    if (warning) {
+      autotrackerConnectionWarningMessage.value = null;
+    }
+  },
+);
+
+watch(
+  () => autotracker.status.value,
+  (status) => {
+    if (status === 'connected') {
+      autotrackerConnectionWarningMessage.value = null;
     }
   },
 );
@@ -776,6 +819,7 @@ function resetAutotrackerMergeState() {
 
 function deactivateAutotracker() {
   clearPendingAutotrackerStartRequest();
+  autotrackerConnectionWarningMessage.value = null;
   resetAutotrackerMergeState();
   autotracker.destroy();
 }
@@ -786,6 +830,7 @@ function activateAutotracker(mode: AutotrackerStartMode) {
   }
 
   autotrackerStartMode = mode;
+  autotrackerConnectionWarningMessage.value = null;
   resetAutotrackerMergeState();
   autotracker.enabled.value = true;
 }
@@ -1005,21 +1050,44 @@ function canStartAutotracker(mode: AutotrackerStartMode): boolean {
   return true;
 }
 
-function startAutotracker(mode: AutotrackerStartMode) {
+async function startAutotracker(mode: AutotrackerStartMode) {
+  autotrackerConnectionWarningMessage.value = null;
+
   if (!canStartAutotracker(mode)) {
     return;
   }
 
   clearPendingAutotrackerStartRequest();
   activateAutotracker(mode);
+
+  const hasActiveAutotracker = await autotracker.probeAvailability();
+  if (!autotracker.enabled.value || hasActiveAutotracker) {
+    return;
+  }
+
+  autotrackerConnectionWarningMessage.value =
+    AUTOTRACKER_NOT_FOUND_WARNING_MESSAGE;
 }
 
 function startAutotrackerOverwriteMode() {
-  startAutotracker('overwrite');
+  void startAutotracker('overwrite');
 }
 
 function dismissAutotrackerVersionWarning() {
   isAutotrackerVersionWarningDismissed.value = true;
+}
+
+function dismissAutotrackerInlineWarning() {
+  if (visibleAutotrackerInlineWarning.value?.kind === 'connection') {
+    autotrackerConnectionWarningMessage.value = null;
+    return;
+  }
+
+  dismissAutotrackerVersionWarning();
+}
+
+function openAutotrackerFaq() {
+  requestTrackerFaqOpen();
 }
 
 function setAutotrackerInventoryCount(
@@ -1145,7 +1213,7 @@ function handleAutotrackerEnabledUpdate(nextEnabled: boolean) {
     return;
   }
 
-  startAutotracker('preserve');
+  void startAutotracker('preserve');
 }
 
 watch(
@@ -2986,7 +3054,7 @@ async function handleSpoilerFile(file: File) {
 
     if (requestedAutotrackerMode) {
       if (isAutotrackingSupportedSpoilerVersion(parsed.ootmmVersion)) {
-        activateAutotracker(requestedAutotrackerMode);
+        await startAutotracker(requestedAutotrackerMode);
         clearDeferredAutotrackerSpoilerWarnings();
         spoilerAutotrackerWarningMessage.value = null;
       } else {
@@ -3515,7 +3583,7 @@ onBeforeUnmount(() => {
             />
           </div>
           <div
-            v-if="visibleAutotrackerVersionWarning"
+            v-if="visibleAutotrackerInlineWarning"
             class="autotracker-inline-warning"
             data-testid="autotracker-inline-warning"
           >
@@ -3524,20 +3592,36 @@ onBeforeUnmount(() => {
               class="autotracker-inline-warning-close"
               aria-label="Dismiss autotracker warning"
               data-testid="autotracker-inline-warning-close"
-              @click="dismissAutotrackerVersionWarning"
+              @click="dismissAutotrackerInlineWarning"
             >
               ×
             </button>
             <p class="autotracker-inline-warning-text">
-              {{ visibleAutotrackerVersionWarning }}
-              <a
-                class="autotracker-inline-warning-link"
-                :href="AUTOTRACKER_RELEASES_LATEST_URL"
-                target="_blank"
-                rel="noopener noreferrer"
+              <template
+                v-if="visibleAutotrackerInlineWarning.kind === 'connection'"
               >
-                Updated version on Github.
-              </a>
+                {{ visibleAutotrackerInlineWarning.message }}
+                You can find more information about autotracking in the
+                <a
+                  href="#"
+                  class="autotracker-inline-warning-link"
+                  data-testid="autotracker-inline-warning-faq-link"
+                  @click.prevent="openAutotrackerFaq"
+                >
+                  FAQs </a
+                >.
+              </template>
+              <template v-else>
+                {{ visibleAutotrackerInlineWarning.message }}
+                <a
+                  class="autotracker-inline-warning-link"
+                  :href="AUTOTRACKER_RELEASES_LATEST_URL"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  Updated version on Github.
+                </a>
+              </template>
             </p>
           </div>
         </div>
