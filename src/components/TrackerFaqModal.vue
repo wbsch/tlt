@@ -1,5 +1,13 @@
 <script setup lang="ts">
-import { TRACKER_FAQ_SECTIONS } from '@/content/trackerFaq';
+import {
+  TRACKER_FAQ_SECTIONS,
+  type TrackerFaqInlineContent,
+  type TrackerFaqRichText,
+} from '@/content/trackerFaq';
+
+const isRichTextArray = (
+  value: TrackerFaqRichText,
+): value is TrackerFaqInlineContent[] => Array.isArray(value);
 
 defineEmits<{
   close: [];
@@ -91,9 +99,47 @@ defineEmits<{
                 v-for="(block, blockIndex) in item.blocks"
                 :key="blockIndex"
               >
-                <p v-if="block.type === 'paragraph'">{{ block.text }}</p>
+                <p v-if="block.type === 'paragraph'">
+                  <template v-if="isRichTextArray(block.text)">
+                    <template
+                      v-for="(entry, entryIndex) in block.text"
+                      :key="`${blockIndex}-${entryIndex}`"
+                    >
+                      <span v-if="entry.type === 'text'">{{ entry.text }}</span>
+                      <a
+                        v-else
+                        class="faq-inline-link"
+                        :href="entry.href"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
+                        {{ entry.text }}
+                      </a>
+                    </template>
+                  </template>
+                  <template v-else>{{ block.text }}</template>
+                </p>
                 <ul v-else>
-                  <li v-for="entry in block.items" :key="entry">{{ entry }}</li>
+                  <li v-for="(entry, entryIndex) in block.items" :key="entryIndex">
+                    <template v-if="isRichTextArray(entry)">
+                      <template
+                        v-for="(part, partIndex) in entry"
+                        :key="`${blockIndex}-${entryIndex}-${partIndex}`"
+                      >
+                        <span v-if="part.type === 'text'">{{ part.text }}</span>
+                        <a
+                          v-else
+                          class="faq-inline-link"
+                          :href="part.href"
+                          target="_blank"
+                          rel="noopener noreferrer"
+                        >
+                          {{ part.text }}
+                        </a>
+                      </template>
+                    </template>
+                    <template v-else>{{ entry }}</template>
+                  </li>
                 </ul>
               </template>
             </div>
@@ -305,6 +351,15 @@ defineEmits<{
 .faq-answer p {
   margin: 0;
   line-height: 1.55;
+}
+
+.faq-inline-link {
+  color: #7dd3fc;
+  font-weight: 600;
+}
+
+.faq-inline-link:hover {
+  color: #bae6fd;
 }
 
 .faq-answer p + p,

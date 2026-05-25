@@ -1,12 +1,37 @@
-export type TrackerFaqContentBlock =
+export type TrackerFaqInlineContent =
   | {
-      type: 'paragraph';
+      type: 'text';
       text: string;
     }
   | {
-      type: 'list';
-      items: string[];
+      type: 'link';
+      text: string;
+      href: string;
     };
+
+export type TrackerFaqRichText = string | TrackerFaqInlineContent[];
+
+export type TrackerFaqContentBlock =
+  | {
+      type: 'paragraph';
+      text: TrackerFaqRichText;
+    }
+  | {
+      type: 'list';
+      items: TrackerFaqRichText[];
+    };
+
+const WINDOWS_AUTOTRACKER_URL =
+  'https://github.com/jupiter0fire/tlt-autotracker/releases/latest/download/ootmm-autotracker-v0.1.1-windows-amd64.exe';
+
+const LINUX_AUTOTRACKER_URL =
+  'https://github.com/jupiter0fire/tlt-autotracker/releases/latest/download/ootmm-autotracker-v0.1.1-linux-amd64';
+
+const ADAPTER_LUA_URL =
+  'https://github.com/jupiter0fire/tlt-autotracker/releases/latest/download/pj64_adapter.lua';
+
+const GITHUB_REL_LATEST_URL =
+  'https://github.com/jupiter0fire/tlt-autotracker/releases/latest';
 
 export type TrackerFaqItem = {
   id: string;
@@ -64,6 +89,136 @@ export const TRACKER_FAQ_SECTIONS: TrackerFaqSection[] = [
           {
             type: 'paragraph',
             text: 'If some values cannot be imported exactly, the tracker continues to work and shows Import Details so you can see what was ignored or adjusted.',
+          },
+        ],
+      },
+      {
+        id: 'autotracking',
+        question: 'How do I set up autotracking for Project64-EM?',
+        blocks: [
+          {
+            type: 'paragraph',
+            text: 'Only randomizer version v30.1 is supported (no dev seeds). Autotracking only works after you import a spoiler log.',
+          },
+          {
+            type: 'paragraph',
+            text: [
+              {
+                type: 'text',
+                text: 'Download the autotracker for ',
+              },
+              {
+                type: 'link',
+                text: 'Windows',
+                href: WINDOWS_AUTOTRACKER_URL,
+              },
+              {
+                type: 'text',
+                text: ' or ',
+              },
+              {
+                type: 'link',
+                text: 'Linux',
+                href: LINUX_AUTOTRACKER_URL,
+              },
+              {
+                type: 'text',
+                text: ' (for other versions see ',
+              },
+              {
+                type: 'link',
+                text: 'Github',
+                href: GITHUB_REL_LATEST_URL,
+              },
+              {
+                type: 'text',
+                text: ') and also download the ',
+              },
+              {
+                type: 'link',
+                text: 'adapter Lua file',
+                href: ADAPTER_LUA_URL,
+              },
+              {
+                type: 'text',
+                text: '. Put the adapter Lua in the same folder as the Multiworld/Coop Lua script, inside the Scripts folder of Project64-EM.',
+              },
+            ],
+          },
+          {
+            type: 'list',
+            items: [
+              'Generate a seed and open it in Project64-EM.',
+              'Start the autotracker.',
+              'In Project64-EM, open File -> Lua Scripts and double-click pj64-adapter.lua.',
+              'Upload the spoiler log to thelasttracker.org.',
+              'If The Last Tracker does not connect automatically, click Auto.',
+              'Potentially, your browser will display a popup regarding access to the autotracker. You need to grant access there once.',
+            ],
+          },
+          {
+            type: 'paragraph',
+            text: 'A green outline around the Auto button means the autotracker connected successfully. An orange outline means no connection to the autotracker has been established yet.',
+          },
+        ],
+      },
+      {
+        id: 'autotracking',
+        question: 'How do I set up autotracking for RetroArch?',
+        blocks: [
+          {
+            type: 'paragraph',
+            text: 'Only randomizer version v30.1 is supported (no dev seeds). Autotracking only works after you import a spoiler log.',
+          },
+          {
+            type: 'paragraph',
+            text: [
+              {
+                type: 'text',
+                text: 'Download the autotracker for ',
+              },
+              {
+                type: 'link',
+                text: 'Windows',
+                href: WINDOWS_AUTOTRACKER_URL,
+              },
+              {
+                type: 'text',
+                text: ' or ',
+              },
+              {
+                type: 'link',
+                text: 'Linux',
+                href: LINUX_AUTOTRACKER_URL,
+              },
+              {
+                type: 'text',
+                text: ' (for other versions see ',
+              },
+              {
+                type: 'link',
+                text: 'Github',
+                href: GITHUB_REL_LATEST_URL,
+              },
+              {
+                type: 'text',
+                text: '). If this is your first time using autotracking, enable Show Advanced Settings under Settings -> User Interface. Then enable Network Commands under Settings -> Network and leave the Network Command Port set to 55355.',
+              },
+            ],
+          },
+          {
+            type: 'list',
+            items: [
+              'Generate a seed and open it in RetroArch.',
+              'Start the autotracker.',
+              'Upload the spoiler log to thelasttracker.org.',
+              'If The Last Tracker does not connect automatically, click Auto.',
+              'Potentially, your browser will display a popup regarding access to the autotracker. You need to grant access there once.',
+            ],
+          },
+          {
+            type: 'paragraph',
+            text: 'A green outline around the Auto button means the autotracker connected successfully. An orange outline means no connection to the autotracker has been established yet.',
           },
         ],
       },
