@@ -18,6 +18,7 @@ import {
   INTERIOR_GAME_LINK_SOURCE_KEYS,
   INTERIOR_GAME_LINK_EXIT_KEYS,
   getGameLinkPartner,
+  normalizeTrackedDestinationKeyForSource,
   normalizeTrackedEntranceKey,
   resolveToActiveEntranceKey,
   getTrackedEntranceCompatiblePools,
@@ -543,7 +544,10 @@ export function useDungeonEntrances() {
   }
 
   function getResolvedSelectedDestination(srcKey: string): string {
-    return normalizeTrackedEntranceKey(getSelectedDestination(srcKey));
+    return normalizeTrackedDestinationKeyForSource(
+      srcKey,
+      getSelectedDestination(srcKey),
+    );
   }
 
   function setSelectedDestination(srcKey: string, dstKey: string) {

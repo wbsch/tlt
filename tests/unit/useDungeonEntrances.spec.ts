@@ -355,13 +355,50 @@ describe('useDungeonEntrances', () => {
     expect(entrances.getSelectedDestination('OOT_SPAWN_CHILD')).toBe(
       'OOT_LON_LON_RANCH_FROM_HOUSE',
     );
+    expect(entrances.getResolvedSelectedDestination('OOT_SPAWN_CHILD')).toBe(
+      'OOT_LON_LON_RANCH_FROM_HOUSE',
+    );
     expect(
       filterEntranceOverridesForSettings(
         sessionStore.entranceOverrides,
         sessionStore.trackerSettings,
       ),
     ).toEqual({
-      OOT_SPAWN_CHILD: 'OOT_HOUSE_LON_LON',
+      OOT_SPAWN_CHILD: 'OOT_LON_LON_RANCH_FROM_HOUSE',
+    });
+  });
+
+  it('keeps adult spawn mapped to the selected exit-side fairy edge', () => {
+    const sessionStore = useOoTMMSessionStore();
+    useOoTMMUiStore();
+
+    sessionStore.trackerSettings = {
+      games: 'ootmm',
+      erSpawns: 'both',
+    };
+
+    const entrances = useDungeonEntrances();
+    entrances.setSelectedDestination(
+      'OOT_SPAWN_ADULT',
+      'OOT_DEATH_MOUNTAIN_FROM_FAIRY',
+    );
+
+    expect(sessionStore.entranceOverrides['OOT_SPAWN_ADULT']).toBe(
+      'OOT_DEATH_MOUNTAIN_FROM_FAIRY',
+    );
+    expect(entrances.getSelectedDestination('OOT_SPAWN_ADULT')).toBe(
+      'OOT_DEATH_MOUNTAIN_FROM_FAIRY',
+    );
+    expect(entrances.getResolvedSelectedDestination('OOT_SPAWN_ADULT')).toBe(
+      'OOT_DEATH_MOUNTAIN_FROM_FAIRY',
+    );
+    expect(
+      filterEntranceOverridesForSettings(
+        sessionStore.entranceOverrides,
+        sessionStore.trackerSettings,
+      ),
+    ).toEqual({
+      OOT_SPAWN_ADULT: 'OOT_DEATH_MOUNTAIN_FROM_FAIRY',
     });
   });
 

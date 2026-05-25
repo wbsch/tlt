@@ -310,6 +310,40 @@ export function normalizeTrackedEntranceKey(key: string): string {
   return reverse;
 }
 
+export function normalizeTrackedDestinationKeyForSource(
+  sourceKey: string,
+  destinationKey: string,
+): string {
+  const sourceData = ENTRANCES_RAW[sourceKey];
+  if (!sourceData) return normalizeTrackedEntranceKey(destinationKey);
+
+  if (getTrackedEntrancePool(sourceData.type, sourceKey) === 'spawn') {
+    return destinationKey;
+  }
+
+  return normalizeTrackedEntranceKey(destinationKey);
+}
+
+function getTrackedDestinationValidationKeyForSource(
+  sourceKey: string,
+  destinationKey: string,
+): string {
+  const sourceData = ENTRANCES_RAW[sourceKey];
+  if (!sourceData) return normalizeTrackedEntranceKey(destinationKey);
+
+  if (getTrackedEntrancePool(sourceData.type, sourceKey) !== 'spawn') {
+    return normalizeTrackedEntranceKey(destinationKey);
+  }
+
+  const destinationData = ENTRANCES_RAW[destinationKey];
+  if (!destinationData) return destinationKey;
+  if (!isTrackedEntranceExitType(destinationData.type, destinationKey)) {
+    return destinationKey;
+  }
+
+  return normalizeTrackedEntranceKey(destinationKey);
+}
+
 export function getTrackedEntranceKeysForBinding(key: string): string[] {
   const normalized = normalizeTrackedEntranceKey(key);
   const keys = new Set<string>([normalized]);
@@ -401,19 +435,25 @@ export function isTrackedDestinationAllowedForSource(
   settings: Record<string, unknown>,
   activeKeys: Set<string>,
 ): boolean {
-  const normalizedDestinationKey = normalizeTrackedEntranceKey(destinationKey);
-  if (resolveToActiveEntranceKey(normalizedDestinationKey, activeKeys)) {
-    return true;
-  }
-
   const sourceData = ENTRANCES_RAW[sourceKey];
-  const destinationData = ENTRANCES_RAW[normalizedDestinationKey];
-  if (!sourceData || !destinationData) return false;
-  if (!isTrackedEntranceAvailable(normalizedDestinationKey, settings)) {
+  if (!sourceData) return false;
+
+  const sourcePool = getTrackedEntrancePool(sourceData.type, sourceKey);
+  const normalizedDestinationKey = normalizeTrackedEntranceKey(destinationKey);
+  if (sourcePool !== 'spawn') {
+    if (resolveToActiveEntranceKey(normalizedDestinationKey, activeKeys)) {
+      return true;
+    }
     return false;
   }
 
-  if (getTrackedEntrancePool(sourceData.type, sourceKey) !== 'spawn') {
+  const validationDestinationKey = getTrackedDestinationValidationKeyForSource(
+    sourceKey,
+    destinationKey,
+  );
+  const destinationData = ENTRANCES_RAW[validationDestinationKey];
+  if (!destinationData) return false;
+  if (!isTrackedEntranceAvailable(validationDestinationKey, settings)) {
     return false;
   }
 
@@ -422,7 +462,7 @@ export function isTrackedDestinationAllowedForSource(
   }
 
   return isTrackedSpawnDestination(
-    normalizedDestinationKey,
+    validationDestinationKey,
     destinationData.type,
     settings,
   );
@@ -663,7 +703,10 @@ export function computeDisplayEntranceOverrides(
     }
 
     result[effectiveSrc] = rawDst;
-    normalized[effectiveSrc] = normalizeTrackedEntranceKey(rawDst);
+    normalized[effectiveSrc] = normalizeTrackedDestinationKeyForSource(
+      effectiveSrc,
+      rawDst,
+    );
   }
 
   const exitOverrides = computeExitOverrides(normalized);
@@ -691,11 +734,10 @@ export function filterEntranceOverridesForSettings(
     );
     if (!effectiveSrc) continue;
 
-    const normalizedDst = normalizeTrackedEntranceKey(dst);
     if (
       !isTrackedDestinationAllowedForSource(
         effectiveSrc,
-        normalizedDst,
+        dst,
         settings,
         activeKeys,
       )
@@ -703,6 +745,10 @@ export function filterEntranceOverridesForSettings(
       continue;
     }
 
+    const normalizedDst = normalizeTrackedDestinationKeyForSource(
+      effectiveSrc,
+      dst,
+    );
     filtered[effectiveSrc] = normalizedDst;
   }
   return filtered;
