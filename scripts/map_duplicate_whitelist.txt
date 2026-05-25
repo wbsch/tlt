@@ -282,3 +282,4 @@ MM Goron Shrine Rock 15
 MM Goron Shrine Rock 16
 MM Waterfall Rapids Beaver Race 1
 MM Waterfall Rapids Beaver Race 2
+MM Bomb Shop Bomb Bag 2
