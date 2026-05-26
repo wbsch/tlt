@@ -36,6 +36,7 @@ const trackedSection = computed(
 );
 
 const POOL_SECTIONS = [
+  { id: 'boss', title: 'Boss Entrances' },
   { id: 'dungeon', title: 'Dungeons' },
   { id: 'grotto', title: 'Grottos' },
   { id: 'region', title: 'Major Regions' },
@@ -162,9 +163,9 @@ const groupedEntrances = computed(() => {
 
     <div v-if="sections.length === 0" class="no-entrances">
       <p>
-        Enable Dungeon ER, Major Regions Shuffle, Grotto Shuffle, Interiors
-        Shuffle, Spawn Shuffle, or Warp Songs and Soaring Spots Shuffle in
-        Settings to configure entrance assignments.
+        Enable Boss Entrance Shuffle, Dungeon ER, Major Regions Shuffle, Grotto
+        Shuffle, Interiors Shuffle, Spawn Shuffle, or Warp Songs and Soaring
+        Spots Shuffle in Settings to configure entrance assignments.
       </p>
     </div>
 

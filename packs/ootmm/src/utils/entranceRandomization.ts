@@ -30,6 +30,7 @@ const TYPE_TO_SETTING: Record<string, string> = {
 };
 
 const DUNGEON_TYPES = new Set(Object.keys(TYPE_TO_SETTING));
+const BOSS_TYPES = new Set(['boss']);
 const GROTTO_TYPES = new Set(['grotto', 'grave']);
 const REGION_TYPES = new Set(['region', 'region-extra', 'region-shortcut']);
 const INTERIOR_TYPES = new Set(['indoors', 'indoors-extra', 'indoors-pf']);
@@ -75,6 +76,7 @@ const JP_LAYOUT_GROTTO_KEYS = new Set([
 ]);
 
 export type TrackedEntrancePool =
+  | 'boss'
   | 'dungeon'
   | 'grotto'
   | 'region'
@@ -83,6 +85,7 @@ export type TrackedEntrancePool =
   | 'warp';
 
 const TRACKED_ENTRANCE_POOLS: TrackedEntrancePool[] = [
+  'boss',
   'dungeon',
   'grotto',
   'region',
@@ -91,6 +94,7 @@ const TRACKED_ENTRANCE_POOLS: TrackedEntrancePool[] = [
   'warp',
 ];
 const TRACKED_POOL_MODE_SETTING: Record<TrackedEntrancePool, string> = {
+  boss: 'erBoss',
   dungeon: 'erDungeons',
   grotto: 'erGrottos',
   region: 'erRegions',
@@ -274,6 +278,7 @@ export function getTrackedEntrancePool(
   type: string,
   key?: string,
 ): TrackedEntrancePool | null {
+  if (BOSS_TYPES.has(type)) return 'boss';
   if (DUNGEON_TYPES.has(type)) return 'dungeon';
   if (GROTTO_TYPES.has(type)) return 'grotto';
   if (REGION_TYPES.has(type)) return 'region';
@@ -511,6 +516,7 @@ export function getActiveEntranceKeys(
   const selectedGames = String(settings?.games ?? 'ootmm');
   const keys = new Set<string>();
   const erDungeons = settings?.erDungeons;
+  const erBoss = settings?.erBoss;
   const erGrottos = settings?.erGrottos;
   const erRegions = settings?.erRegions;
   const erIndoors = settings?.erIndoors;
@@ -526,6 +532,11 @@ export function getActiveEntranceKeys(
     if (selectedGames === 'oot' && data.game === 'mm') continue;
     if (selectedGames === 'mm' && data.game === 'oot') continue;
     if (!isTrackedEntranceAvailable(key, settings)) continue;
+
+    if (erBoss && erBoss !== 'none' && BOSS_TYPES.has(data.type)) {
+      keys.add(key);
+      continue;
+    }
 
     if (erDungeons && erDungeons !== 'none' && DUNGEON_TYPES.has(data.type)) {
       if (!enabledDungeonTypes.has(data.type)) continue;

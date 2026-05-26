@@ -244,6 +244,69 @@ describe('useDungeonEntrances', () => {
     ).toBe(true);
   });
 
+  it('activates boss entrances as their own tracked pool when boss shuffle is enabled', () => {
+    const sessionStore = useOoTMMSessionStore();
+    useOoTMMUiStore();
+
+    sessionStore.trackerSettings = {
+      games: 'ootmm',
+      erBoss: 'full',
+    };
+
+    const entrances = useDungeonEntrances();
+    const bossRow = entrances.activeEntrances.value.find(
+      (entry) => entry.key === 'OOT_BOSS_TEMPLE_FOREST',
+    );
+
+    expect(bossRow?.pool).toBe('boss');
+    expect(
+      entrances
+        .destinationOptionsForEntrance(bossRow!)
+        .some((option) => option.value === 'MM_BOSS_TEMPLE_WOODFALL'),
+    ).toBe(true);
+    expect(
+      entrances
+        .destinationOptionsForEntrance(bossRow!)
+        .some((option) => option.value === 'OOT_TEMPLE_FOREST'),
+    ).toBe(false);
+  });
+
+  it('keeps boss entrances separate from dungeon mixed pools without a dedicated boss mixed setting', () => {
+    const sessionStore = useOoTMMSessionStore();
+    useOoTMMUiStore();
+
+    sessionStore.trackerSettings = {
+      games: 'ootmm',
+      erBoss: 'full',
+      erDungeons: 'full',
+      erMajorDungeons: true,
+      erMinorDungeons: true,
+      erMixed: 'full',
+      erMixedDungeons: true,
+    };
+
+    const entrances = useDungeonEntrances();
+    const bossRow = entrances.activeEntrances.value.find(
+      (entry) => entry.key === 'OOT_BOSS_TEMPLE_FOREST',
+    );
+    const dungeonRow = entrances.activeEntrances.value.find(
+      (entry) => entry.key === 'OOT_TEMPLE_FOREST',
+    );
+
+    expect(bossRow?.pool).toBe('boss');
+    expect(dungeonRow?.pool).toBe('dungeon');
+    expect(
+      entrances
+        .destinationOptionsForEntrance(bossRow!)
+        .some((option) => option.value === 'OOT_TEMPLE_FOREST'),
+    ).toBe(false);
+    expect(
+      entrances
+        .destinationOptionsForEntrance(dungeonRow!)
+        .some((option) => option.value === 'OOT_BOSS_TEMPLE_FIRE'),
+    ).toBe(false);
+  });
+
   it('activates spawn rows and matches OoTMM spawn dropdown destinations', () => {
     const sessionStore = useOoTMMSessionStore();
     useOoTMMUiStore();

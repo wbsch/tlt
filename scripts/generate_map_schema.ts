@@ -27,6 +27,7 @@ const OUTPUT_FILE = path.resolve(
 );
 
 const TRACKER_ENTRANCE_TYPES = new Set([
+  'boss',
   'dungeon',
   'dungeon-minor',
   'dungeon-ganon',
