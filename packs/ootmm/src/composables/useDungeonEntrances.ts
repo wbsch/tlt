@@ -8,6 +8,7 @@ import {
   getActiveEntranceKeys,
   getTrackedEntrancePool,
   isTrackedEntranceSourceType,
+  computeEffectiveTrackedEntranceOverrides,
   computeExitOverrides,
   computeDisplayEntranceOverrides,
   filterEntranceOverridesForSettings,
@@ -169,31 +170,10 @@ export function useDungeonEntrances() {
   );
 
   const rawActiveEntranceOverrides = computed(() => {
-    const activeKeys = getActiveEntranceKeys(trackerSettings.value);
-    if (activeKeys.size === 0) return {} as Record<string, string>;
-
-    const result: Record<string, string> = {};
-    for (const [rawSrc, rawDst] of Object.entries(entranceOverrides.value)) {
-      const effectiveSrc = resolveToActiveEntranceKey(
-        normalizeTrackedEntranceKey(rawSrc),
-        activeKeys,
-      );
-      if (!effectiveSrc) continue;
-
-      if (
-        !isTrackedDestinationAllowedForSource(
-          effectiveSrc,
-          rawDst,
-          trackerSettings.value ?? {},
-          activeKeys,
-        )
-      ) {
-        continue;
-      }
-
-      result[effectiveSrc] = rawDst;
-    }
-    return result;
+    return computeEffectiveTrackedEntranceOverrides(
+      entranceOverrides.value,
+      trackerSettings.value ?? {},
+    );
   });
 
   function isEntranceMapped(entranceKey: string): boolean {
@@ -318,17 +298,18 @@ export function useDungeonEntrances() {
     const entranceReachable = activeEntrances.value.filter((entrance) =>
       reachableSet.has(entrance.key),
     ).length;
-    const exitReachable = activeExitEntries.value.filter((exit) =>
+    const exitReachable = sidebarActiveExitEntries.value.filter((exit) =>
       reachableSet.has(exit.key),
     ).length;
-    const total = activeEntrances.value.length + activeExitEntries.value.length;
+    const total =
+      activeEntrances.value.length + sidebarActiveExitEntries.value.length;
     const reachable = entranceReachable + exitReachable;
     return { total, reachable, unreachable: total - reachable };
   });
 
   const mappingStats = computed<MappingStats>(() => {
     const entrances = reachabilityScopedEntrances.value;
-    const exits = reachabilityScopedExits.value;
+    const exits = sidebarReachabilityScopedExits.value;
     const entranceMapped = entrances.filter((e) =>
       isEntranceMapped(e.key),
     ).length;
@@ -503,28 +484,43 @@ export function useDungeonEntrances() {
       return dest.game === entry.game;
     });
 
-    if (gamesMode === 'ootmm' && INTERIOR_GAME_LINK_EXIT_KEYS.has(entry.key)) {
-      const seenAliases = new Set(
-        opts.map((dest) => `${dest.value}::${dest.label}`),
-      );
-      for (const exit of activeExitEntries.value) {
-        if (!compatiblePools.has(exit.pool)) continue;
-        if (ownGameMode && exit.game !== entry.game) continue;
+    const seenAliases = new Set(
+      opts.map((dest) => `${dest.value}::${dest.label}`),
+    );
 
+    const addExitAlias = (exit: ExitEntry | undefined) => {
+      if (!exit) return;
+      if (!compatiblePools.has(exit.pool)) return;
+      if (ownGameMode && exit.game !== entry.game) return;
+
+      const alias = {
+        value: exit.key,
+        label: getExitEndpointLabel(exit.key),
+        game: exit.game,
+        pool: exit.pool,
+      };
+      const aliasKey = `${alias.value}::${alias.label}`;
+      if (seenAliases.has(aliasKey)) return;
+      seenAliases.add(aliasKey);
+      opts.push(alias);
+    };
+
+    if (gamesMode === 'ootmm' && INTERIOR_GAME_LINK_EXIT_KEYS.has(entry.key)) {
+      for (const exit of activeExitEntries.value) {
         const normalizedValue = ENTRANCES_RAW[exit.key]?.reverse?.trim();
         if (!normalizedValue || !ENTRANCES_RAW[normalizedValue]) continue;
 
-        const alias = {
-          value: exit.key,
-          label: getExitEndpointLabel(exit.key),
-          game: exit.game,
-          pool: exit.pool,
-        };
-        const aliasKey = `${alias.value}::${alias.label}`;
-        if (seenAliases.has(aliasKey)) continue;
-        seenAliases.add(aliasKey);
-        opts.push(alias);
+        addExitAlias(exit);
       }
+    }
+
+    const selectedDestination = displayEntranceOverrides.value[entry.key] ?? '';
+    if (selectedDestination) {
+      addExitAlias(
+        activeExitEntries.value.find(
+          (exit) => exit.key === selectedDestination,
+        ),
+      );
     }
 
     return sortOptionsByGameThenLabel(
@@ -789,6 +785,12 @@ export function useDungeonEntrances() {
     return entries;
   });
 
+  const sidebarActiveExitEntries = computed<ExitEntry[]>(() => {
+    return activeExitEntries.value.filter((exit) => {
+      return !activeEntrancePoolByKey.value.has(exit.key);
+    });
+  });
+
   /** Entrances filtered by reachability + mapping only (no search query). Used by the map. */
   const mapFilteredEntrances = computed<DungeonEntranceEntry[]>(() => {
     const mappingFilter = entrancesMappingFilter.value;
@@ -804,12 +806,12 @@ export function useDungeonEntrances() {
     return result;
   });
 
-  const reachabilityScopedExits = computed<ExitEntry[]>(() => {
+  const sidebarReachabilityScopedExits = computed<ExitEntry[]>(() => {
     const filter = entrancesReachabilityFilter.value;
-    if (filter === 'all') return activeExitEntries.value;
+    if (filter === 'all') return sidebarActiveExitEntries.value;
 
     const reachableSet = reachableEntranceIdSet.value;
-    return activeExitEntries.value.filter((exit) => {
+    return sidebarActiveExitEntries.value.filter((exit) => {
       const isReachable = reachableSet.has(exit.key);
       return filter === 'reachable' ? isReachable : !isReachable;
     });
@@ -818,7 +820,7 @@ export function useDungeonEntrances() {
   const filteredExitEntries = computed<ExitEntry[]>(() => {
     const mappingFilter = entrancesMappingFilter.value;
     const query = entrancesSearchQuery.value;
-    let result = reachabilityScopedExits.value;
+    let result = sidebarReachabilityScopedExits.value;
 
     if (mappingFilter !== 'all') {
       result = result.filter((exit) => {
@@ -835,9 +837,20 @@ export function useDungeonEntrances() {
   });
 
   /** Exits filtered by reachability + mapping only (no search query). Used by the map. */
+  const mapReachabilityScopedExits = computed<ExitEntry[]>(() => {
+    const filter = entrancesReachabilityFilter.value;
+    if (filter === 'all') return activeExitEntries.value;
+
+    const reachableSet = reachableEntranceIdSet.value;
+    return activeExitEntries.value.filter((exit) => {
+      const isReachable = reachableSet.has(exit.key);
+      return filter === 'reachable' ? isReachable : !isReachable;
+    });
+  });
+
   const mapFilteredExitEntries = computed<ExitEntry[]>(() => {
     const mappingFilter = entrancesMappingFilter.value;
-    let result = reachabilityScopedExits.value;
+    let result = mapReachabilityScopedExits.value;
 
     if (mappingFilter !== 'all') {
       result = result.filter((exit) => {

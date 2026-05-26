@@ -33,6 +33,7 @@ const DUNGEON_TYPES = new Set(Object.keys(TYPE_TO_SETTING));
 const BOSS_TYPES = new Set(['boss']);
 const GROTTO_TYPES = new Set(['grotto', 'grave']);
 const REGION_TYPES = new Set(['region', 'region-extra', 'region-shortcut']);
+const OVERWORLD_TYPES = new Set(['overworld', 'overworld-pf']);
 const INTERIOR_TYPES = new Set(['indoors', 'indoors-extra', 'indoors-pf']);
 const SPAWN_TYPES = new Set(['spawn-child', 'spawn-adult']);
 const WARP_TYPES = new Set(['one-way-song', 'one-way-statue']);
@@ -80,6 +81,7 @@ export type TrackedEntrancePool =
   | 'dungeon'
   | 'grotto'
   | 'region'
+  | 'overworld'
   | 'interior'
   | 'spawn'
   | 'warp';
@@ -89,6 +91,7 @@ const TRACKED_ENTRANCE_POOLS: TrackedEntrancePool[] = [
   'dungeon',
   'grotto',
   'region',
+  'overworld',
   'interior',
   'spawn',
   'warp',
@@ -98,6 +101,7 @@ const TRACKED_POOL_MODE_SETTING: Record<TrackedEntrancePool, string> = {
   dungeon: 'erDungeons',
   grotto: 'erGrottos',
   region: 'erRegions',
+  overworld: 'erOverworld',
   interior: 'erIndoors',
   spawn: 'erSpawns',
   warp: 'erWarps',
@@ -107,6 +111,7 @@ const TRACKED_POOL_MIXED_SETTING: Partial<Record<TrackedEntrancePool, string>> =
     dungeon: 'erMixedDungeons',
     grotto: 'erMixedGrottos',
     region: 'erMixedRegions',
+    overworld: 'erMixedOverworld',
     interior: 'erMixedIndoors',
   };
 
@@ -261,6 +266,18 @@ function getEnabledRegionSources(
   return types;
 }
 
+function getEnabledOverworldSources(
+  settings: Record<string, unknown>,
+): Set<string> {
+  const types = new Set<string>(['overworld']);
+
+  if (settings?.erPiratesWorld) {
+    types.add('overworld-pf');
+  }
+
+  return types;
+}
+
 export function getEnabledDungeonTypes(
   settings: Record<string, unknown>,
 ): Set<string> {
@@ -282,6 +299,7 @@ export function getTrackedEntrancePool(
   if (DUNGEON_TYPES.has(type)) return 'dungeon';
   if (GROTTO_TYPES.has(type)) return 'grotto';
   if (REGION_TYPES.has(type)) return 'region';
+  if (OVERWORLD_TYPES.has(type)) return 'overworld';
   if (isTrackedInteriorSource(key, type)) return 'interior';
   if (SPAWN_TYPES.has(type)) return 'spawn';
   if (WARP_TYPES.has(type)) return 'warp';
@@ -510,6 +528,55 @@ export function isTrackedEntranceAvailable(
   return true;
 }
 
+export function computeEffectiveTrackedEntranceOverrides(
+  overrides: Record<string, string>,
+  settings: Record<string, unknown>,
+): Record<string, string> {
+  const activeKeys = getActiveEntranceKeys(settings);
+  if (activeKeys.size === 0) return {};
+
+  const result: Record<string, string> = {};
+  const normalized: Record<string, string> = {};
+
+  for (const [rawSrc, rawDst] of Object.entries(overrides)) {
+    const effectiveSrc = resolveToActiveEntranceKey(
+      normalizeTrackedEntranceKey(rawSrc),
+      activeKeys,
+    );
+    if (!effectiveSrc) continue;
+
+    if (
+      !isTrackedDestinationAllowedForSource(
+        effectiveSrc,
+        rawDst,
+        settings,
+        activeKeys,
+      )
+    ) {
+      continue;
+    }
+
+    result[effectiveSrc] = rawDst;
+    normalized[effectiveSrc] = normalizeTrackedDestinationKeyForSource(
+      effectiveSrc,
+      rawDst,
+    );
+  }
+
+  const derivedOverrides = computeExitOverrides(normalized);
+  for (const [src, dst] of Object.entries(derivedOverrides)) {
+    if (result[src]) continue;
+    if (!activeKeys.has(src)) continue;
+    if (!ENTRANCES_RAW[dst]) continue;
+    if (!isTrackedDestinationAllowedForSource(src, dst, settings, activeKeys)) {
+      continue;
+    }
+    result[src] = dst;
+  }
+
+  return result;
+}
+
 export function getActiveEntranceKeys(
   settings: Record<string, unknown>,
 ): Set<string> {
@@ -519,11 +586,13 @@ export function getActiveEntranceKeys(
   const erBoss = settings?.erBoss;
   const erGrottos = settings?.erGrottos;
   const erRegions = settings?.erRegions;
+  const erOverworld = settings?.erOverworld;
   const erIndoors = settings?.erIndoors;
   const erSpawns = settings?.erSpawns;
   const erWarps = settings?.erWarps;
   const enabledDungeonTypes = getEnabledDungeonTypes(settings);
   const enabledRegionTypes = getEnabledRegionSources(settings);
+  const enabledOverworldTypes = getEnabledOverworldSources(settings);
   const enabledInteriorSources = getEnabledInteriorSources(settings);
   const enabledSpawnTypes = getEnabledSpawnSourceTypes(settings);
   const enabledWarpSources = getEnabledWarpSources(settings);
@@ -553,6 +622,15 @@ export function getActiveEntranceKeys(
       erRegions &&
       erRegions !== 'none' &&
       enabledRegionTypes.has(data.type)
+    ) {
+      keys.add(key);
+      continue;
+    }
+
+    if (
+      erOverworld &&
+      erOverworld !== 'none' &&
+      enabledOverworldTypes.has(data.type)
     ) {
       keys.add(key);
       continue;
@@ -689,45 +767,7 @@ export function computeDisplayEntranceOverrides(
   entranceOverrides: Record<string, string>,
   settings: Record<string, unknown>,
 ): Record<string, string> {
-  const activeKeys = getActiveEntranceKeys(settings);
-  if (activeKeys.size === 0) return {};
-
-  const result: Record<string, string> = {};
-  const normalized: Record<string, string> = {};
-
-  for (const [rawSrc, rawDst] of Object.entries(entranceOverrides)) {
-    const effectiveSrc = resolveToActiveEntranceKey(
-      normalizeTrackedEntranceKey(rawSrc),
-      activeKeys,
-    );
-    if (!effectiveSrc) continue;
-
-    if (
-      !isTrackedDestinationAllowedForSource(
-        effectiveSrc,
-        rawDst,
-        settings,
-        activeKeys,
-      )
-    ) {
-      continue;
-    }
-
-    result[effectiveSrc] = rawDst;
-    normalized[effectiveSrc] = normalizeTrackedDestinationKeyForSource(
-      effectiveSrc,
-      rawDst,
-    );
-  }
-
-  const exitOverrides = computeExitOverrides(normalized);
-  for (const [src, dst] of Object.entries(exitOverrides)) {
-    if (!INTERIOR_GAME_LINK_EXIT_KEYS.has(src) || result[src]) continue;
-    if (!ENTRANCES_RAW[dst]) continue;
-    result[src] = dst;
-  }
-
-  return result;
+  return computeEffectiveTrackedEntranceOverrides(entranceOverrides, settings);
 }
 
 export function filterEntranceOverridesForSettings(

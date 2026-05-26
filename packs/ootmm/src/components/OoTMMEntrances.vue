@@ -40,6 +40,7 @@ const POOL_SECTIONS = [
   { id: 'dungeon', title: 'Dungeons' },
   { id: 'grotto', title: 'Grottos' },
   { id: 'region', title: 'Major Regions' },
+  { id: 'overworld', title: 'Overworld' },
   { id: 'interior', title: 'Interiors' },
   { id: 'spawn', title: 'Spawns' },
   { id: 'warp', title: 'Warp Songs / Soaring' },
@@ -164,8 +165,9 @@ const groupedEntrances = computed(() => {
     <div v-if="sections.length === 0" class="no-entrances">
       <p>
         Enable Boss Entrance Shuffle, Dungeon ER, Major Regions Shuffle, Grotto
-        Shuffle, Interiors Shuffle, Spawn Shuffle, or Warp Songs and Soaring
-        Spots Shuffle in Settings to configure entrance assignments.
+        Shuffle, Overworld Shuffle, Interiors Shuffle, Spawn Shuffle, or Warp
+        Songs and Soaring Spots Shuffle in Settings to configure entrance
+        assignments.
       </p>
     </div>
 

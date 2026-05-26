@@ -24,6 +24,7 @@ import { ITEM_DATABASE } from './data/items';
 import { getGridItemAutoSelectItemIds } from './data/itemIcons';
 import { LOCATION_CODE_CATALOG } from './data/locationCatalog';
 import {
+  computeEffectiveTrackedEntranceOverrides,
   getActiveEntranceKeys,
   isTrackedEntranceExitType,
   INTERIOR_GAME_LINK_SOURCE_KEYS,
@@ -453,7 +454,13 @@ export class OoTMMTracker implements TrackerPack {
       this.settings as Record<string, unknown>,
     );
     const isErActive = activeEntranceKeys.size > 0;
-    const finalPlandoEntrances = { ...nonSpawnPlandoEntrances };
+    const finalPlandoEntrances = {
+      ...nonSpawnPlandoEntrances,
+      ...computeEffectiveTrackedEntranceOverrides(
+        nonSpawnPlandoEntrances,
+        this.settings as Record<string, unknown>,
+      ),
+    };
     const activeSpawnEntrances = new Set<string>();
     const mappedSpawnEntrances: Record<string, string> = {};
     const unmappedEntrances: string[] = [];

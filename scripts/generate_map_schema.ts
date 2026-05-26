@@ -43,6 +43,8 @@ const TRACKER_ENTRANCE_TYPES = new Set([
   'region',
   'region-extra',
   'region-shortcut',
+  'overworld',
+  'overworld-pf',
   'indoors',
   'indoors-extra',
   'indoors-pf',

@@ -394,7 +394,6 @@ export const TRACKER_FAQ_SECTIONS: TrackerFaqSection[] = [
             items: [
               'No Entrance Polarity',
               'Decoupled Entrances',
-              'Overworld Shuffle (Major Regions Shuffle already supported!)',
               'Wallmaster Shuffle',
               'One-Ways Shuffle',
             ],
