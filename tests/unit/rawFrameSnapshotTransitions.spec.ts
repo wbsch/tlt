@@ -1,7 +1,139 @@
 import { describe, expect, it } from 'vitest';
 
-import { createRawAutotrackerParser } from '@/../packs/ootmm/src/autotracker/rawFrameParser';
-import { parseFixture, parsedCheckSet } from '../helpers/autotrackerFixtures';
+import {
+  RAW_CHUNK_SPECS,
+  createRawAutotrackerParser,
+} from '@/../packs/ootmm/src/autotracker/rawFrameParser';
+import {
+  buildRawMessage,
+  parseFixture,
+  parsedCheckSet,
+} from '../helpers/autotrackerFixtures';
+
+const OOT_SAVE_SCENE_FLAGS_OFFSET = 0x0d0;
+const OOT_PERM_ENTRY_SIZE = 0x1c;
+
+function setU16BE(data: Uint8Array, offset: number, value: number) {
+  data[offset] = (value >>> 8) & 0xff;
+  data[offset + 1] = value & 0xff;
+}
+
+function setU32BE(data: Uint8Array, offset: number, value: number) {
+  data[offset] = (value >>> 24) & 0xff;
+  data[offset + 1] = (value >>> 16) & 0xff;
+  data[offset + 2] = (value >>> 8) & 0xff;
+  data[offset + 3] = value & 0xff;
+}
+
+function zeroOotSceneChestFlags(data: Uint8Array, sceneId: number) {
+  const offset = OOT_SAVE_SCENE_FLAGS_OFFSET + sceneId * OOT_PERM_ENTRY_SIZE;
+  setU32BE(data, offset, 0);
+}
+
+function replaceChunkData(
+  fixtureName: string,
+  sequence: number,
+  overrides: ReadonlyMap<string, Uint8Array>,
+) {
+  const { fixture, message } = buildRawMessage(fixtureName, sequence);
+  const seenChunkNames = new Set<string>();
+
+  const chunks = message.chunks.map((chunk) => {
+    seenChunkNames.add(chunk.name);
+    const data = overrides.get(chunk.name);
+    if (!data) {
+      return chunk;
+    }
+
+    return {
+      ...chunk,
+      length: data.length,
+      data: Buffer.from(data).toString('base64'),
+    };
+  });
+
+  for (const [name, data] of overrides) {
+    if (seenChunkNames.has(name)) {
+      continue;
+    }
+
+    const spec = RAW_CHUNK_SPECS.find((entry) => entry.name === name);
+    if (!spec) {
+      throw new Error(`Unknown raw chunk override ${name}`);
+    }
+
+    chunks.push({
+      name,
+      address: spec.address,
+      length: data.length,
+      data: Buffer.from(data).toString('base64'),
+    });
+  }
+
+  return {
+    fixture,
+    message: {
+      ...message,
+      chunks,
+    },
+  };
+}
+
+function buildOotLiveSceneMessage(
+  fixtureName: string,
+  sequence: number,
+  sceneId: number,
+  chestFlags: number,
+) {
+  const base = buildRawMessage(fixtureName, sequence);
+  const saveChunk = base.message.chunks.find(
+    (chunk) => chunk.name === 'oot_save_state',
+  );
+  const sceneChunk = base.message.chunks.find(
+    (chunk) => chunk.name === 'oot_playstate_scene',
+  );
+  const roomChunk = base.message.chunks.find(
+    (chunk) => chunk.name === 'oot_playstate_room',
+  );
+  const linkAgeChunk = base.message.chunks.find(
+    (chunk) => chunk.name === 'oot_playstate_link_age',
+  );
+  const flagsChunk = base.message.chunks.find(
+    (chunk) => chunk.name === 'oot_playstate_flags',
+  );
+
+  if (!saveChunk) {
+    throw new Error(`Fixture ${fixtureName} is missing oot_save_state`);
+  }
+
+  const saveData = Uint8Array.from(Buffer.from(saveChunk.data, 'base64'));
+  zeroOotSceneChestFlags(saveData, 40);
+  zeroOotSceneChestFlags(saveData, 85);
+
+  const sceneData = new Uint8Array(sceneChunk?.length ?? 2);
+  setU16BE(sceneData, 0, sceneId);
+
+  const roomData = new Uint8Array(roomChunk?.length ?? 1);
+  roomData[0] = 0;
+
+  const linkAgeData = new Uint8Array(linkAgeChunk?.length ?? 1);
+  linkAgeData[0] = 1;
+
+  const flagsData = new Uint8Array(flagsChunk?.length ?? 20);
+  setU32BE(flagsData, 0, chestFlags);
+
+  return replaceChunkData(
+    fixtureName,
+    sequence,
+    new Map([
+      ['oot_save_state', saveData],
+      ['oot_playstate_scene', sceneData],
+      ['oot_playstate_room', roomData],
+      ['oot_playstate_link_age', linkAgeData],
+      ['oot_playstate_flags', flagsData],
+    ]),
+  );
+}
 
 function getChecks(
   fixtureName: string,
@@ -38,6 +170,39 @@ function expectChecksAbsent(checks: Set<string>, names: string[]) {
 }
 
 describe('raw frame snapshot transitions', () => {
+  it('ignores the first OoT live-scene sample after a scene change', () => {
+    const fixtureName = 'after-bombchu-2-20260501-202008.json';
+    const parser = createRawAutotrackerParser();
+
+    const previousScene = parser.parse(
+      buildOotLiveSceneMessage(fixtureName, 1, 40, 0x0000000f).message,
+    );
+    const mixedScene = parser.parse(
+      buildOotLiveSceneMessage(fixtureName, 2, 85, 0x0000000f).message,
+    );
+    const stableScene = parser.parse(
+      buildOotLiveSceneMessage(fixtureName, 3, 85, 0x00000001).message,
+    );
+
+    if (!previousScene || !mixedScene || !stableScene) {
+      throw new Error('Failed to parse synthetic OoT transition frames');
+    }
+
+    const previousChecks = parsedCheckSet(previousScene.checks);
+    const mixedChecks = parsedCheckSet(mixedScene.checks);
+    const stableChecks = parsedCheckSet(stableScene.checks);
+
+    expect(previousChecks.has("Mido's House Top Left")).toBe(true);
+    expect(previousChecks.has("Mido's House Top Right")).toBe(true);
+    expect(previousChecks.has("Mido's House Bottom Left")).toBe(true);
+    expect(previousChecks.has("Mido's House Bottom Right")).toBe(true);
+    expect(previousChecks.has('Kokiri Forest Kokiri Sword Chest')).toBe(false);
+
+    expect(mixedChecks.has('Kokiri Forest Kokiri Sword Chest')).toBe(false);
+
+    expect(stableChecks.has('Kokiri Forest Kokiri Sword Chest')).toBe(true);
+  });
+
   it('tracks the Initial Song of Healing extra-flag transition', () => {
     const parser = createRawAutotrackerParser();
     const withoutChecks = getChecks(

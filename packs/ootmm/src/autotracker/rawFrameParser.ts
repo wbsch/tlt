@@ -1047,6 +1047,7 @@ class RawAutotrackerParserImpl implements RawAutotrackerParser {
   private lastKnownMm: MmState | null = null;
   private lastKnownMmSaveIndex: number | null = null;
   private lastKnownShared: SharedCustomState | null = null;
+  private lastObservedOotLiveSceneId: number | null = null;
 
   parse(message: RawAutotrackerMessage): ParsedRawAutotrackerSnapshot | null {
     if (message.schemaVersion !== '1' || message.diff) {
@@ -1088,6 +1089,7 @@ class RawAutotrackerParserImpl implements RawAutotrackerParser {
     this.lastKnownMm = null;
     this.lastKnownMmSaveIndex = null;
     this.lastKnownShared = null;
+    this.lastObservedOotLiveSceneId = null;
   }
 
   private parseGameState(
@@ -1115,7 +1117,10 @@ class RawAutotrackerParserImpl implements RawAutotrackerParser {
       }
       parseOotSave(state.oot, ootSaveData);
       const ootLiveSample = readOotPlayStateSample(memory);
-      if (ootLiveSample) {
+      if (
+        ootLiveSample &&
+        this.shouldApplyOotLiveSceneSample(ootLiveSample.sceneId)
+      ) {
         state.oot.liveSceneId = ootLiveSample.sceneId;
         state.oot.liveChestFlags = ootLiveSample.chestFlags;
         state.oot.liveCollectFlags = ootLiveSample.collectFlags;
@@ -1278,6 +1283,17 @@ class RawAutotrackerParserImpl implements RawAutotrackerParser {
     }
     mm.townStrayFairy = mm.townStrayFairy || this.lastKnownMm.townStrayFairy;
     mm.extraFlags2 |= this.lastKnownMm.extraFlags2;
+  }
+
+  private shouldApplyOotLiveSceneSample(sceneId: number): boolean {
+    const previousSceneId = this.lastObservedOotLiveSceneId;
+    this.lastObservedOotLiveSceneId = sceneId;
+
+    // Scene id and scene flags come from separate memory reads. On room
+    // transitions, the first sample can combine the new scene id with stale
+    // chest flags from the previous room. Skip that first changed-scene sample
+    // and wait for one stable frame in the new scene.
+    return previousSceneId == null || previousSceneId === sceneId;
   }
 
   private rememberOotState(oot: OotState): void {
