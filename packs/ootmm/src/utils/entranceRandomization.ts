@@ -29,6 +29,8 @@ const TYPE_TO_SETTING: Record<string, string> = {
   'dungeon-ctr': 'erMoon',
 };
 
+type TrackedEntrancePolarity = 'in' | 'out' | 'any';
+
 const DUNGEON_TYPES = new Set(Object.keys(TYPE_TO_SETTING));
 const BOSS_TYPES = new Set(['boss']);
 const GROTTO_TYPES = new Set(['grotto', 'grave']);
@@ -74,6 +76,42 @@ const JP_LAYOUT_GROTTO_KEYS = new Set([
   'MM_GROTTO_JP_CLIMB_RIGHT',
   'MM_GROTTO_JP_LINE_START',
   'MM_GROTTO_JP_LINE_END',
+]);
+const POLARITY_ANY_OVERWORLD = new Set<string>([
+  'region',
+  'region-extra',
+  'region-shortcut',
+  'region-exit',
+]);
+const POLARITY_IN = new Set<string>([
+  'boss',
+  'dungeon',
+  'dungeon-minor',
+  'dungeon-ganon',
+  'dungeon-ganon-tower',
+  'dungeon-sh',
+  'dungeon-pf',
+  'dungeon-btw',
+  'dungeon-acoi',
+  'dungeon-ss',
+  'dungeon-ctr',
+  'wallmaster',
+  'region',
+  'region-extra',
+  'region-shortcut',
+  'indoors',
+  'indoors-pf',
+  'indoors-extra',
+  'indoors-special',
+  'grotto',
+  'grave',
+]);
+const POLARITY_OUT = new Set<string>([
+  'dungeon-exit',
+  'indoors-exit',
+  'region-exit',
+  'grotto-exit',
+  'grave-exit',
 ]);
 
 export type TrackedEntrancePool =
@@ -269,10 +307,18 @@ function getEnabledRegionSources(
 function getEnabledOverworldSources(
   settings: Record<string, unknown>,
 ): Set<string> {
-  const types = new Set<string>(['overworld']);
+  // OoTMM's overworld pool includes all major-region edges,
+  // their extras/shortcuts, and the dedicated overworld edges.
+  const types = new Set<string>([
+    'region',
+    'region-extra',
+    'region-shortcut',
+    'overworld',
+  ]);
 
   if (settings?.erPiratesWorld) {
     types.add('overworld-pf');
+    types.add('dungeon-pf');
   }
 
   return types;
@@ -294,11 +340,22 @@ export function getEnabledDungeonTypes(
 export function getTrackedEntrancePool(
   type: string,
   key?: string,
+  settings?: Record<string, unknown>,
 ): TrackedEntrancePool | null {
+  const overworldEnabled = String(settings?.erOverworld ?? 'none') !== 'none';
+
   if (BOSS_TYPES.has(type)) return 'boss';
+  if (type === 'dungeon-pf' && overworldEnabled && settings?.erPiratesWorld) {
+    return 'overworld';
+  }
   if (DUNGEON_TYPES.has(type)) return 'dungeon';
   if (GROTTO_TYPES.has(type)) return 'grotto';
-  if (REGION_TYPES.has(type)) return 'region';
+  if (REGION_TYPES.has(type)) {
+    if (overworldEnabled) {
+      return 'overworld';
+    }
+    return 'region';
+  }
   if (OVERWORLD_TYPES.has(type)) return 'overworld';
   if (isTrackedInteriorSource(key, type)) return 'interior';
   if (SPAWN_TYPES.has(type)) return 'spawn';
@@ -433,6 +490,56 @@ export function getTrackedEntranceOwnGameMode(
   return getTrackedPoolMode(pool, settings) === 'ownGame';
 }
 
+export function getTrackedEntrancePolarity(
+  key: string,
+  settings: Record<string, unknown>,
+): TrackedEntrancePolarity {
+  if (
+    INTERIOR_GAME_LINK_SOURCE_KEYS.has(key) ||
+    INTERIOR_GAME_LINK_EXIT_KEYS.has(key)
+  ) {
+    return 'any';
+  }
+
+  const data = ENTRANCES_RAW[key];
+  if (!data) return 'any';
+
+  if (
+    String(settings?.erOverworld ?? 'none') !== 'none' &&
+    POLARITY_ANY_OVERWORLD.has(data.type)
+  ) {
+    return 'any';
+  }
+
+  if (POLARITY_IN.has(data.type)) {
+    return 'in';
+  }
+
+  if (POLARITY_OUT.has(data.type)) {
+    return 'out';
+  }
+
+  return 'any';
+}
+
+export function doTrackedEntrancePolaritiesMatch(
+  sourceKey: string,
+  destinationKey: string,
+  settings: Record<string, unknown>,
+): boolean {
+  const sourcePolarity = getTrackedEntrancePolarity(sourceKey, settings);
+  const destinationPolarity = getTrackedEntrancePolarity(
+    destinationKey,
+    settings,
+  );
+
+  if (sourcePolarity === 'any' || destinationPolarity === 'any') {
+    return true;
+  }
+
+  return sourcePolarity === destinationPolarity;
+}
+
 export function isTrackedSpawnDestination(
   key: string,
   type: string,
@@ -537,6 +644,7 @@ export function computeEffectiveTrackedEntranceOverrides(
 
   const result: Record<string, string> = {};
   const normalized: Record<string, string> = {};
+  const derivedAliasSources = new Set<string>();
 
   for (const [rawSrc, rawDst] of Object.entries(overrides)) {
     const effectiveSrc = resolveToActiveEntranceKey(
@@ -556,22 +664,48 @@ export function computeEffectiveTrackedEntranceOverrides(
       continue;
     }
 
-    result[effectiveSrc] = rawDst;
-    normalized[effectiveSrc] = normalizeTrackedDestinationKeyForSource(
+    const normalizedDst = normalizeTrackedDestinationKeyForSource(
       effectiveSrc,
       rawDst,
     );
+
+    result[effectiveSrc] = rawDst;
+    normalized[effectiveSrc] = normalizedDst;
+
+    if (normalizedDst !== rawDst) {
+      const derivedSrc = ENTRANCES_RAW[normalizedDst]?.reverse?.trim();
+      if (derivedSrc) {
+        derivedAliasSources.add(derivedSrc);
+      }
+    }
   }
 
   const derivedOverrides = computeExitOverrides(normalized);
   for (const [src, dst] of Object.entries(derivedOverrides)) {
-    if (result[src]) continue;
-    if (!activeKeys.has(src)) continue;
+    let effectiveSrc = src;
+    if (!activeKeys.has(effectiveSrc)) {
+      if (!derivedAliasSources.has(src)) continue;
+      const resolvedSrc = resolveToActiveEntranceKey(
+        normalizeTrackedEntranceKey(src),
+        activeKeys,
+      );
+      if (!resolvedSrc) continue;
+      effectiveSrc = resolvedSrc;
+    }
+
+    if (result[effectiveSrc]) continue;
     if (!ENTRANCES_RAW[dst]) continue;
-    if (!isTrackedDestinationAllowedForSource(src, dst, settings, activeKeys)) {
+    if (
+      !isTrackedDestinationAllowedForSource(
+        effectiveSrc,
+        dst,
+        settings,
+        activeKeys,
+      )
+    ) {
       continue;
     }
-    result[src] = dst;
+    result[effectiveSrc] = dst;
   }
 
   return result;
@@ -796,11 +930,7 @@ export function filterEntranceOverridesForSettings(
       continue;
     }
 
-    const normalizedDst = normalizeTrackedDestinationKeyForSource(
-      effectiveSrc,
-      dst,
-    );
-    filtered[effectiveSrc] = normalizedDst;
+    filtered[effectiveSrc] = dst;
   }
   return filtered;
 }

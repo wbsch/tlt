@@ -213,6 +213,61 @@ describe('useDungeonEntrances', () => {
     ).toBe(true);
   });
 
+  it('treats base major-region edges as overworld pool entries when overworld shuffle is enabled', () => {
+    const sessionStore = useOoTMMSessionStore();
+    useOoTMMUiStore();
+
+    sessionStore.trackerSettings = {
+      games: 'ootmm',
+      erOverworld: 'full',
+      erPiratesWorld: true,
+    };
+
+    const entrances = useDungeonEntrances();
+
+    expect(
+      entrances.activeEntrances.value.some(
+        (entry) =>
+          entry.key === 'OOT_LAKE_HYLIA_FROM_FIELD' &&
+          entry.pool === 'overworld',
+      ),
+    ).toBe(true);
+    expect(
+      entrances.activeExitEntries.value.some(
+        (entry) =>
+          entry.key === 'OOT_FIELD_FROM_LAKE_HYLIA' &&
+          entry.pool === 'overworld',
+      ),
+    ).toBe(true);
+    expect(
+      entrances.activeEntrances.value.some(
+        (entry) =>
+          entry.key === 'OOT_MARKET_ENTRANCE_FROM_FIELD' &&
+          entry.pool === 'overworld',
+      ),
+    ).toBe(true);
+    expect(
+      entrances.activeEntrances.value.some(
+        (entry) =>
+          entry.key === 'OOT_GORON_CITY_FROM_LOST_WOODS' &&
+          entry.pool === 'overworld',
+      ),
+    ).toBe(true);
+    expect(
+      entrances.activeEntrances.value.some(
+        (entry) =>
+          entry.key === 'OOT_LAKE_HYLIA_FROM_ZORA_DOMAIN' &&
+          entry.pool === 'overworld',
+      ),
+    ).toBe(true);
+    expect(
+      entrances.activeEntrances.value.some(
+        (entry) =>
+          entry.key === 'MM_PIRATE_FORTRESS' && entry.pool === 'overworld',
+      ),
+    ).toBe(true);
+  });
+
   it('mixes region destinations into other mixed entrance pools when enabled', () => {
     const sessionStore = useOoTMMSessionStore();
     useOoTMMUiStore();
@@ -242,6 +297,129 @@ describe('useDungeonEntrances', () => {
         .destinationOptionsForEntrance(kokiriShop!)
         .some((option) => option.value === 'OOT_MARKET_ENTRANCE_FROM_FIELD'),
     ).toBe(true);
+  });
+
+  it('offers exit-side aliases for ordinary reversible entrance destinations', () => {
+    const sessionStore = useOoTMMSessionStore();
+    useOoTMMUiStore();
+
+    sessionStore.trackerSettings = {
+      games: 'ootmm',
+      erOverworld: 'full',
+    };
+
+    const entrances = useDungeonEntrances();
+    const marketEntryway = entrances.activeEntrances.value.find(
+      (entry) => entry.key === 'OOT_MARKET_ENTRANCE_FROM_MARKET',
+    );
+
+    expect(marketEntryway).toBeTruthy();
+    expect(
+      entrances
+        .destinationOptionsForEntrance(marketEntryway!)
+        .some((option) => option.value === 'OOT_FIELD_FROM_KAKARIKO'),
+    ).toBe(true);
+  });
+
+  it('does not offer dungeon-exit aliases for dungeon entrance rows', () => {
+    const sessionStore = useOoTMMSessionStore();
+    useOoTMMUiStore();
+
+    sessionStore.trackerSettings = {
+      games: 'ootmm',
+      erDungeons: 'full',
+      erMajorDungeons: true,
+      erMinorDungeons: false,
+      erGanonCastle: false,
+      erGanonTower: false,
+      erMoon: false,
+      erSpiderHouses: false,
+      erPirateFortress: false,
+      erBeneathWell: false,
+      erIkanaCastle: false,
+      erSecretShrine: false,
+    };
+
+    const entrances = useDungeonEntrances();
+    const forestTemple = entrances.activeEntrances.value.find(
+      (entry) => entry.key === 'OOT_TEMPLE_FOREST',
+    );
+
+    expect(forestTemple).toBeTruthy();
+    expect(
+      entrances
+        .destinationOptionsForEntrance(forestTemple!)
+        .some(
+          (option) => option.value === 'OOT_SACRED_MEADOW_FROM_TEMPLE_FOREST',
+        ),
+    ).toBe(false);
+  });
+
+  it('preserves ordinary exit-side aliases when filtering entrance overrides', () => {
+    const sessionStore = useOoTMMSessionStore();
+    useOoTMMUiStore();
+
+    sessionStore.trackerSettings = {
+      games: 'ootmm',
+      erOverworld: 'full',
+    };
+
+    const entrances = useDungeonEntrances();
+    entrances.setSelectedDestination(
+      'OOT_MARKET_ENTRANCE_FROM_MARKET',
+      'OOT_FIELD_FROM_KAKARIKO',
+    );
+
+    expect(
+      sessionStore.entranceOverrides['OOT_MARKET_ENTRANCE_FROM_MARKET'],
+    ).toBe('OOT_FIELD_FROM_KAKARIKO');
+    expect(
+      entrances.getSelectedDestination('OOT_MARKET_ENTRANCE_FROM_MARKET'),
+    ).toBe('OOT_FIELD_FROM_KAKARIKO');
+    expect(
+      entrances.getResolvedSelectedDestination(
+        'OOT_MARKET_ENTRANCE_FROM_MARKET',
+      ),
+    ).toBe('OOT_KAKARIKO_FROM_FIELD');
+    expect(
+      filterEntranceOverridesForSettings(
+        sessionStore.entranceOverrides,
+        sessionStore.trackerSettings,
+      ),
+    ).toEqual({
+      OOT_MARKET_ENTRANCE_FROM_MARKET: 'OOT_FIELD_FROM_KAKARIKO',
+    });
+  });
+
+  it('derives the inverse active entrance row from ordinary exit-side aliases', () => {
+    const sessionStore = useOoTMMSessionStore();
+    useOoTMMUiStore();
+
+    sessionStore.trackerSettings = {
+      games: 'ootmm',
+      erOverworld: 'full',
+    };
+
+    const entrances = useDungeonEntrances();
+    entrances.setSelectedDestination(
+      'OOT_MARKET_ENTRANCE_FROM_MARKET',
+      'OOT_FIELD_FROM_KAKARIKO',
+    );
+
+    expect(
+      entrances.getSelectedDestination('OOT_MARKET_ENTRANCE_FROM_MARKET'),
+    ).toBe('OOT_FIELD_FROM_KAKARIKO');
+    expect(
+      entrances.getResolvedSelectedDestination(
+        'OOT_MARKET_ENTRANCE_FROM_MARKET',
+      ),
+    ).toBe('OOT_KAKARIKO_FROM_FIELD');
+    expect(entrances.getSelectedDestination('OOT_KAKARIKO_FROM_FIELD')).toBe(
+      'OOT_MARKET_FROM_MARKET_ENTRANCE',
+    );
+    expect(
+      sessionStore.entranceOverrides['OOT_KAKARIKO_FROM_FIELD'],
+    ).toBeUndefined();
   });
 
   it('activates boss entrances as their own tracked pool when boss shuffle is enabled', () => {

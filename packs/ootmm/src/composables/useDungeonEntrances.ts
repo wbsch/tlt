@@ -24,8 +24,8 @@ import {
   resolveToActiveEntranceKey,
   getTrackedEntranceCompatiblePools,
   getTrackedEntranceOwnGameMode,
+  doTrackedEntrancePolaritiesMatch,
   isTrackedSpawnDestination,
-  isTrackedDestinationAllowedForSource,
   type TrackedEntrancePool,
 } from '../utils/entranceRandomization';
 import { matchesSearchTerms } from '../utils/search';
@@ -207,14 +207,23 @@ export function useDungeonEntrances() {
             optionLabel: entranceOptionLabel(key, data),
             game: data.game as 'oot' | 'mm',
             type: data.type,
-            pool: 'interior',
+            pool:
+              getTrackedEntrancePool(
+                data.type,
+                key,
+                trackerSettings.value ?? {},
+              ) ?? 'interior',
           });
         }
         continue;
       }
 
       if (!isTrackedEntranceSourceType(data.type, key)) continue;
-      const pool = getTrackedEntrancePool(data.type, key);
+      const pool = getTrackedEntrancePool(
+        data.type,
+        key,
+        trackerSettings.value ?? {},
+      );
       if (!pool) continue;
       entries.push({
         key,
@@ -257,7 +266,7 @@ export function useDungeonEntrances() {
     const data = ENTRANCES_RAW[key];
     if (!data) return null;
 
-    return getTrackedEntrancePool(data.type, key);
+    return getTrackedEntrancePool(data.type, key, trackerSettings.value ?? {});
   }
 
   // Reachability filter is applied first; mapping is a subset of it.
@@ -320,26 +329,61 @@ export function useDungeonEntrances() {
   });
 
   const destinationOptions = computed(() => {
-    const opts = activeEntrances.value.map((entry) => {
+    const opts: Array<{
+      value: string;
+      label: string;
+      game: 'oot' | 'mm';
+      pool: TrackedEntrancePool;
+    }> = [];
+    const seenValues = new Set<string>();
+
+    const addOption = (option: {
+      value: string;
+      label: string;
+      game: 'oot' | 'mm';
+      pool: TrackedEntrancePool;
+    }) => {
+      if (seenValues.has(option.value)) return;
+      seenValues.add(option.value);
+      opts.push(option);
+    };
+
+    for (const entry of activeEntrances.value) {
       const partner = getGameLinkPartner(entry.key);
-      if (partner) {
-        const partnerData = ENTRANCES_RAW[partner];
-        if (partnerData) {
-          return {
-            value: partner,
-            label: entranceOptionLabel(partner, partnerData),
-            game: entry.game,
-            pool: entry.pool,
-          };
-        }
-      }
-      return {
-        value: entry.key,
-        label: entry.optionLabel,
+      const primaryValue = partner || entry.key;
+      const primaryData = partner ? ENTRANCES_RAW[partner] : null;
+
+      addOption({
+        value: primaryValue,
+        label: primaryData
+          ? entranceOptionLabel(primaryValue, primaryData)
+          : entry.optionLabel,
         game: entry.game,
         pool: entry.pool,
-      };
-    });
+      });
+
+      if (entry.key !== primaryValue) {
+        addOption({
+          value: entry.key,
+          label:
+            normalizeTrackedEntranceKey(entry.key) !== entry.key
+              ? getExitEndpointLabel(entry.key)
+              : entry.optionLabel,
+          game: entry.game,
+          pool: entry.pool,
+        });
+      }
+
+      const exitKey = getExitKeyForEntrance(entry.key);
+      if (exitKey && exitKey !== primaryValue && exitKey !== entry.key) {
+        addOption({
+          value: exitKey,
+          label: getExitEndpointLabel(exitKey),
+          game: entry.game,
+          pool: entry.pool,
+        });
+      }
+    }
 
     return opts;
   });
@@ -420,7 +464,6 @@ export function useDungeonEntrances() {
   const hasAvailableSections = computed(() => sections.value.length > 0);
 
   function isDestinationUsed(dstKey: string, currentSrcKey: string): boolean {
-    const normalizedDstKey = normalizeTrackedEntranceKey(dstKey);
     const currentSourcePool = getEntrancePoolByKey(currentSrcKey);
 
     for (const [src, dst] of Object.entries(rawActiveEntranceOverrides.value)) {
@@ -430,7 +473,6 @@ export function useDungeonEntrances() {
         continue;
       }
       if (dst === dstKey) return true;
-      if (normalizeTrackedEntranceKey(dst) === normalizedDstKey) return true;
     }
 
     const partner = getGameLinkPartner(dstKey);
@@ -474,6 +516,7 @@ export function useDungeonEntrances() {
 
     const gamesMode = String(trackerSettings.value?.games ?? 'ootmm');
     const settings = trackerSettings.value ?? {};
+    const selectedDestination = displayEntranceOverrides.value[entry.key] ?? '';
     const compatiblePools = new Set(
       getTrackedEntranceCompatiblePools(entry.pool, settings),
     );
@@ -514,7 +557,6 @@ export function useDungeonEntrances() {
       }
     }
 
-    const selectedDestination = displayEntranceOverrides.value[entry.key] ?? '';
     if (selectedDestination) {
       addExitAlias(
         activeExitEntries.value.find(
@@ -524,7 +566,21 @@ export function useDungeonEntrances() {
     }
 
     return sortOptionsByGameThenLabel(
-      opts.filter((dest) => !isDestinationUsed(dest.value, entry.key)),
+      opts.filter((dest) => {
+        if (isDestinationUsed(dest.value, entry.key)) {
+          return false;
+        }
+
+        if (dest.value === selectedDestination) {
+          return true;
+        }
+
+        return doTrackedEntrancePolaritiesMatch(
+          entry.key,
+          dest.value,
+          settings,
+        );
+      }),
     );
   }
 

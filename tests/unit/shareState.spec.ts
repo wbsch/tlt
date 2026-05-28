@@ -344,6 +344,43 @@ describe('shareState', () => {
     ).toBeUndefined();
   });
 
+  it('preserves ordinary exit-side entrance override aliases during shared-state import', () => {
+    const payload = makeCompressedPayload({
+      v: 1,
+      stores: {
+        app: {
+          selectedPackId: 'ootmm',
+        },
+        'ootmm-session': {
+          trackerSettings: {
+            games: 'ootmm',
+            erOverworld: 'full',
+          },
+          entranceOverrides: {
+            OOT_MARKET_ENTRANCE_FROM_MARKET: 'OOT_FIELD_FROM_KAKARIKO',
+          },
+        },
+      },
+    });
+
+    window.localStorage.clear();
+    window.sessionStorage.clear();
+    window.history.replaceState(null, '', `/#s=${payload}`);
+
+    expect(shareState.importShareStateFromCurrentUrl()).toBe('imported');
+    expect(window.location.hash).toBe('');
+    expect(shareState.consumeShareStatus()).toBeNull();
+    expect(readPersistedStore(STORAGE_KEYS.session)).toMatchObject({
+      entranceOverrides: {
+        OOT_MARKET_ENTRANCE_FROM_MARKET: 'OOT_FIELD_FROM_KAKARIKO',
+      },
+      trackerSettings: {
+        erOverworld: 'full',
+        games: 'ootmm',
+      },
+    });
+  });
+
   it('sanitizes known stores and marks the payload partial when store fields are invalid', () => {
     const decoded = shareState.decodeHashPayloadToSnapshot(
       makeCompressedPayload({
