@@ -6,14 +6,110 @@
   "height": 600,
   "markers": [
     {
-      "coords": [792, 80],
+      "coords": [800, 95],
+      "image": "boss_entrance",
+      "type": "submenu",
+      "entranceMenu": {
+        "entranceIds": ["MM_BOSS_TEMPLE_SNOWHEAD"]
+      },
+      "markers": [
+        {
+          "image": "heart_container",
+          "codes": ["MM Snowhead Temple Boss HC"],
+          "visibleWhen": {
+            "and": [
+              {
+                "settings": {
+                  "erBoss": ["ownGame", "full"]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "image": "gohts_remain",
+          "codes": ["MM Snowhead Temple Boss"],
+          "visibleWhen": {
+            "and": [
+              {
+                "settings": {
+                  "erBoss": ["ownGame", "full"]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "image": "song",
+          "codes": ["MM Oath to Order"],
+          "visibleWhen": {
+            "and": [
+              {
+                "settings": {
+                  "erBoss": ["ownGame", "full"]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "image": "pot",
+          "codes": [
+            "MM Snowhead Temple Boss Pot 01",
+            "MM Snowhead Temple Boss Pot 02",
+            "MM Snowhead Temple Boss Pot 03",
+            "MM Snowhead Temple Boss Pot 04",
+            "MM Snowhead Temple Boss Pot 05",
+            "MM Snowhead Temple Boss Pot 06",
+            "MM Snowhead Temple Boss Pot 07",
+            "MM Snowhead Temple Boss Pot 08",
+            "MM Snowhead Temple Boss Pot 09",
+            "MM Snowhead Temple Boss Pot 10"
+          ],
+          "visibleWhen": {
+            "and": [
+              {
+                "settings": {
+                  "erBoss": ["ownGame", "full"]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "image": "pot",
+          "codes": [
+            "MM Snowhead Temple Boss Pot Early 1",
+            "MM Snowhead Temple Boss Pot Early 2",
+            "MM Snowhead Temple Boss Pot Early 3",
+            "MM Snowhead Temple Boss Pot Early 4"
+          ],
+          "visibleWhen": {
+            "and": [
+              {
+                "settings": {
+                  "erBoss": ["ownGame", "full"]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "coords": [784, 80],
       "image": "heart_container",
       "codes": ["MM Snowhead Temple Boss HC"]
     },
     {
-      "coords": [808, 80],
+      "coords": [800, 80],
       "image": "gohts_remain",
       "codes": ["MM Snowhead Temple Boss"]
+    },
+    {
+      "coords": [816, 80],
+      "image": "song",
+      "codes": ["MM Oath to Order"]
     },
     {
       "coords": [843, 99],

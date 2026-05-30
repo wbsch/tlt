@@ -183,6 +183,42 @@
       "codes": ["OOT MQ Forest Temple Antichamber"]
     },
     {
+      "coords": [652, 404],
+      "image": "boss_entrance",
+      "type": "submenu",
+      "entranceMenu": {
+        "entranceIds": ["OOT_BOSS_TEMPLE_FOREST"]
+      },
+      "markers": [
+        {
+          "image": "heart_container",
+          "codes": ["OOT Forest Temple Boss Container"],
+          "visibleWhen": {
+            "and": [
+              {
+                "settings": {
+                  "erBoss": ["ownGame", "full"]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "image": "forest_medallion",
+          "codes": ["OOT Forest Temple Boss"],
+          "visibleWhen": {
+            "and": [
+              {
+                "settings": {
+                  "erBoss": ["ownGame", "full"]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
       "coords": [645, 385],
       "image": "heart_container",
       "codes": ["OOT Forest Temple Boss Container"]

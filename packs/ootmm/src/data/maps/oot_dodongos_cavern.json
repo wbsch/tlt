@@ -232,6 +232,55 @@
       }
     },
     {
+      "coords": [296, 266],
+      "image": "boss_entrance",
+      "type": "submenu",
+      "entranceMenu": {
+        "entranceIds": ["OOT_BOSS_DODONGO_CAVERN"]
+      },
+      "markers": [
+        {
+          "image": "goron_ruby",
+          "codes": "OOT Dodongo Cavern Boss",
+          "visibleWhen": {
+            "and": [
+              {
+                "settings": {
+                  "erBoss": ["ownGame", "full"]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "image": "heart_container",
+          "codes": "OOT Dodongo Cavern Boss Container",
+          "visibleWhen": {
+            "and": [
+              {
+                "settings": {
+                  "erBoss": ["ownGame", "full"]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "image": "chest",
+          "codes": "OOT Dodongo Cavern Boss Chest",
+          "visibleWhen": {
+            "and": [
+              {
+                "settings": {
+                  "erBoss": ["ownGame", "full"]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
       "coords": [248, 266],
       "image": "goron_ruby",
       "codes": "OOT Dodongo Cavern Boss"

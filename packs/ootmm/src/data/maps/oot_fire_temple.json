@@ -212,6 +212,42 @@
       "codes": ["OOT MQ Fire Temple Early Lower Left Chest"]
     },
     {
+      "coords": [301, 466],
+      "image": "boss_entrance",
+      "type": "submenu",
+      "entranceMenu": {
+        "entranceIds": ["OOT_BOSS_TEMPLE_FIRE"]
+      },
+      "markers": [
+        {
+          "image": "heart_container",
+          "codes": ["OOT Fire Temple Boss Container"],
+          "visibleWhen": {
+            "and": [
+              {
+                "settings": {
+                  "erBoss": ["ownGame", "full"]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "image": "fire_medallion",
+          "codes": ["OOT Fire Temple Boss"],
+          "visibleWhen": {
+            "and": [
+              {
+                "settings": {
+                  "erBoss": ["ownGame", "full"]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
       "coords": [285, 466],
       "image": "heart_container",
       "codes": ["OOT Fire Temple Boss Container"]

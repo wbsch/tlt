@@ -407,6 +407,42 @@
       "codes": "OOT MQ Shadow Temple Hidden Dead Hand Chest"
     },
     {
+      "coords": [299, 479],
+      "image": "boss_entrance",
+      "type": "submenu",
+      "entranceMenu": {
+        "entranceIds": ["OOT_BOSS_TEMPLE_SHADOW"]
+      },
+      "markers": [
+        {
+          "image": "heart_container",
+          "codes": "OOT Shadow Temple Boss HC",
+          "visibleWhen": {
+            "and": [
+              {
+                "settings": {
+                  "erBoss": ["ownGame", "full"]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "image": "shadow_medallion",
+          "codes": "OOT Shadow Temple Boss",
+          "visibleWhen": {
+            "and": [
+              {
+                "settings": {
+                  "erBoss": ["ownGame", "full"]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
       "coords": [307, 494],
       "image": "heart_container",
       "codes": "OOT Shadow Temple Boss HC"

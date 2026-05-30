@@ -6,14 +6,109 @@
   "height": 600,
   "markers": [
     {
-      "coords": [445, 327],
+      "coords": [478, 322],
+      "image": "boss_entrance",
+      "type": "submenu",
+      "entranceMenu": {
+        "entranceIds": ["MM_BOSS_TEMPLE_GREAT_BAY"]
+      },
+      "markers": [
+        {
+          "image": "heart_container",
+          "codes": ["MM Great Bay Temple Boss HC"],
+          "visibleWhen": {
+            "and": [
+              {
+                "settings": {
+                  "erBoss": ["ownGame", "full"]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "image": "gyorgs_remain",
+          "codes": ["MM Great Bay Temple Boss"],
+          "visibleWhen": {
+            "and": [
+              {
+                "settings": {
+                  "erBoss": ["ownGame", "full"]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "image": "song",
+          "codes": ["MM Oath to Order"],
+          "visibleWhen": {
+            "and": [
+              {
+                "settings": {
+                  "erBoss": ["ownGame", "full"]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "image": "pot",
+          "codes": [
+            "MM Great Bay Temple Boss Pot 1",
+            "MM Great Bay Temple Boss Pot 2",
+            "MM Great Bay Temple Boss Pot 3",
+            "MM Great Bay Temple Boss Pot 4"
+          ],
+          "visibleWhen": {
+            "and": [
+              {
+                "settings": {
+                  "erBoss": ["ownGame", "full"]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "image": "pot",
+          "codes": [
+            "MM Great Bay Temple Boss Pot Underwater 1",
+            "MM Great Bay Temple Boss Pot Underwater 2",
+            "MM Great Bay Temple Boss Pot Underwater 3",
+            "MM Great Bay Temple Boss Pot Underwater 4"
+          ],
+          "visibleWhen": {
+            "and": [
+              {
+                "settings": {
+                  "erBoss": ["ownGame", "full"]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "coords": [430, 327],
       "image": "gyorgs_remain",
       "codes": ["MM Great Bay Temple Boss"]
     },
     {
-      "coords": [462, 327],
+      "coords": [446, 327],
       "image": "heart_container",
       "codes": ["MM Great Bay Temple Boss HC"]
+    },
+    {
+      "coords": [462, 327],
+      "image": "song",
+      "codes": ["MM Oath to Order"]
+    },
+    {
+      "coords": [528, 224],
+      "image": "chest",
+      "codes": ["MM Great Bay Temple Compass"]
     },
     {
       "coords": [528, 224],
@@ -146,7 +241,7 @@
       ]
     },
     {
-      "coords": [446, 311],
+      "coords": [438, 311],
       "image": "pot",
       "codes": [
         "MM Great Bay Temple Boss Pot 1",
@@ -156,7 +251,7 @@
       ]
     },
     {
-      "coords": [462, 311],
+      "coords": [454, 311],
       "image": "pot",
       "codes": [
         "MM Great Bay Temple Boss Pot Underwater 1",

@@ -41,6 +41,64 @@
       "codes": "OOT Deku Tree Boss Container"
     },
     {
+      "coords": [368, 388],
+      "image": "boss_entrance",
+      "type": "submenu",
+      "markers": [
+        {
+          "image": "heart_container",
+          "codes": "OOT Deku Tree Boss Container",
+          "visibleWhen": {
+            "and": [
+              {
+                "settings": {
+                  "erBoss": ["ownGame", "full"]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "image": "kokiri_emerald",
+          "codes": "OOT Deku Tree Boss",
+          "visibleWhen": {
+            "and": [
+              {
+                "settings": {
+                  "erBoss": ["ownGame", "full"]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "image": "grass",
+          "codes": [
+            "OOT Deku Tree Boss Grass 1",
+            "OOT Deku Tree Boss Grass 2",
+            "OOT Deku Tree Boss Grass 3",
+            "OOT Deku Tree Boss Grass 4",
+            "OOT Deku Tree Boss Grass 5",
+            "OOT Deku Tree Boss Grass 6",
+            "OOT Deku Tree Boss Grass 7",
+            "OOT Deku Tree Boss Grass 8"
+          ],
+          "visibleWhen": {
+            "and": [
+              {
+                "settings": {
+                  "erBoss": ["ownGame", "full"]
+                }
+              }
+            ]
+          }
+        }
+      ],
+      "entranceMenu": {
+        "entranceIds": ["OOT_BOSS_DEKU_TREE"]
+      }
+    },
+    {
       "coords": [384, 367],
       "image": "kokiri_emerald",
       "codes": "OOT Deku Tree Boss"

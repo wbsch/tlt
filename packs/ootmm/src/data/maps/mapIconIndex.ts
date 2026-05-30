@@ -9,6 +9,7 @@ export const MAP_ICON_INDEX = [
   'black_pillar_entrance',
   'blue_rupee',
   'bomb_grotto',
+  'boss_entrance',
   'boulder_entrance',
   'boulder_grotto',
   'bush',

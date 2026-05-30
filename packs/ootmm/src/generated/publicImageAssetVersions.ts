@@ -176,6 +176,7 @@ export const PUBLIC_IMAGE_ASSET_VERSIONS = {
   'images/map_icons/black_pillar_entrance.png': '8eda8137c19d',
   'images/map_icons/blue_rupee.png': '2e379525bd21',
   'images/map_icons/bomb_grotto.png': '5da7f6d3adb4',
+  'images/map_icons/boss_entrance.png': 'd7336b5374a5',
   'images/map_icons/boulder_entrance.png': '574a0dd98978',
   'images/map_icons/boulder_grotto.png': '4f9f52051012',
   'images/map_icons/bush.png': '3ccaeb5ebc43',

@@ -206,6 +206,42 @@
       "codes": ["OOT MQ Water Temple Map Chest"]
     },
     {
+      "coords": [692, 186],
+      "image": "boss_entrance",
+      "type": "submenu",
+      "entranceMenu": {
+        "entranceIds": ["OOT_BOSS_TEMPLE_WATER"]
+      },
+      "markers": [
+        {
+          "image": "heart_container",
+          "codes": ["OOT Water Temple Boss HC"],
+          "visibleWhen": {
+            "and": [
+              {
+                "settings": {
+                  "erBoss": ["ownGame", "full"]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "image": "water_medallion",
+          "codes": ["OOT Water Temple Boss"],
+          "visibleWhen": {
+            "and": [
+              {
+                "settings": {
+                  "erBoss": ["ownGame", "full"]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
       "coords": [684, 170],
       "image": "heart_container",
       "codes": ["OOT Water Temple Boss HC"]

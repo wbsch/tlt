@@ -368,6 +368,42 @@
       "codes": "OOT MQ Spirit Temple Statue Room Ledge Chest"
     },
     {
+      "coords": [345, 116],
+      "image": "boss_entrance",
+      "type": "submenu",
+      "entranceMenu": {
+        "entranceIds": ["OOT_BOSS_TEMPLE_SPIRIT"]
+      },
+      "markers": [
+        {
+          "image": "heart_container",
+          "codes": "OOT Spirit Temple Boss HC",
+          "visibleWhen": {
+            "and": [
+              {
+                "settings": {
+                  "erBoss": ["ownGame", "full"]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "image": "spirit_medallion",
+          "codes": "OOT Spirit Temple Boss",
+          "visibleWhen": {
+            "and": [
+              {
+                "settings": {
+                  "erBoss": ["ownGame", "full"]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
       "coords": [336, 105],
       "image": "heart_container",
       "codes": "OOT Spirit Temple Boss HC"

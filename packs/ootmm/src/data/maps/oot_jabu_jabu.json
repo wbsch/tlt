@@ -85,6 +85,62 @@
       "codes": ["OOT MQ Jabu-Jabu Back Chest"]
     },
     {
+      "coords": [399, 319],
+      "image": "boss_entrance",
+      "type": "submenu",
+      "entranceMenu": {
+        "entranceIds": ["OOT_BOSS_JABU_JABU"]
+      },
+      "markers": [
+        {
+          "image": "heart_container",
+          "codes": ["OOT Jabu-Jabu Boss Container"],
+          "visibleWhen": {
+            "and": [
+              {
+                "settings": {
+                  "erBoss": ["ownGame", "full"]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "image": "zora_sapphire",
+          "codes": ["OOT Jabu-Jabu Boss"],
+          "visibleWhen": {
+            "and": [
+              {
+                "settings": {
+                  "erBoss": ["ownGame", "full"]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "image": "pot",
+          "codes": [
+            "OOT Jabu-Jabu Boss Pot 1",
+            "OOT Jabu-Jabu Boss Pot 2",
+            "OOT Jabu-Jabu Boss Pot 3",
+            "OOT Jabu-Jabu Boss Pot 4",
+            "OOT Jabu-Jabu Boss Pot 5",
+            "OOT Jabu-Jabu Boss Pot 6"
+          ],
+          "visibleWhen": {
+            "and": [
+              {
+                "settings": {
+                  "erBoss": ["ownGame", "full"]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
       "coords": [399, 304],
       "image": "heart_container",
       "codes": ["OOT Jabu-Jabu Boss Container"]
