@@ -990,6 +990,42 @@
       ]
     },
     {
+      "coords": [797, 396],
+      "image": "overworld_entrance",
+      "type": "submenu",
+      "entranceMenu": {
+        "entranceIds": ["OOT_DOMAIN_FROM_FOUNTAIN"],
+        "display": "entrances"
+      }
+    },
+    {
+      "coords": [583, 341],
+      "image": "overworld_entrance",
+      "type": "submenu",
+      "entranceMenu": {
+        "entranceIds": ["OOT_DOMAIN_FROM_FOUNTAIN"],
+        "display": "exits"
+      }
+    },
+    {
+      "coords": [886, 65],
+      "image": "overworld_entrance",
+      "type": "submenu",
+      "entranceMenu": {
+        "entranceIds": ["OOT_RIVER_FROM_DOMAIN"],
+        "display": "exits"
+      }
+    },
+    {
+      "coords": [504, 527],
+      "image": "overworld_entrance",
+      "type": "submenu",
+      "entranceMenu": {
+        "entranceIds": ["OOT_RIVER_FROM_DOMAIN"],
+        "display": "entrances"
+      }
+    },
+    {
       "coords": [904, 251],
       "image": "dungeon_entrance",
       "type": "submenu",

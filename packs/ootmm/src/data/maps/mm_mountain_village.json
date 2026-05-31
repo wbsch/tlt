@@ -1462,6 +1462,78 @@
       }
     },
     {
+      "coords": [983, 504],
+      "image": "overworld_entrance",
+      "type": "submenu",
+      "entranceMenu": {
+        "entranceIds": ["MM_TWIN_ISLANDS_FROM_GORON_VILLAGE"],
+        "display": "exits"
+      }
+    },
+    {
+      "coords": [510, 400],
+      "image": "overworld_entrance",
+      "type": "submenu",
+      "entranceMenu": {
+        "entranceIds": ["MM_TWIN_ISLANDS_FROM_GORON_VILLAGE"],
+        "display": "entrances"
+      }
+    },
+    {
+      "coords": [230, 583],
+      "image": "overworld_entrance",
+      "type": "submenu",
+      "entranceMenu": {
+        "entranceIds": ["MM_SNOWHEAD_PATH_FROM_MOUNTAIN_VILLAGE"],
+        "display": "exits"
+      }
+    },
+    {
+      "coords": [315, 419],
+      "image": "overworld_entrance",
+      "type": "submenu",
+      "entranceMenu": {
+        "entranceIds": ["MM_SNOWHEAD_PATH_FROM_MOUNTAIN_VILLAGE"],
+        "display": "entrances"
+      }
+    },
+    {
+      "coords": [703, 562],
+      "image": "overworld_entrance",
+      "type": "submenu",
+      "entranceMenu": {
+        "entranceIds": ["MM_MOUNTAIN_VILLAGE_FROM_TWIN_ISLANDS"],
+        "display": "entrances"
+      }
+    },
+    {
+      "coords": [486, 532],
+      "image": "overworld_entrance",
+      "type": "submenu",
+      "entranceMenu": {
+        "entranceIds": ["MM_MOUNTAIN_VILLAGE_FROM_TWIN_ISLANDS"],
+        "display": "exits"
+      }
+    },
+    {
+      "coords": [45, 421],
+      "image": "overworld_entrance",
+      "type": "submenu",
+      "entranceMenu": {
+        "entranceIds": ["MM_SNOWHEAD_FROM_SNOWHEAD_PATH"],
+        "display": "exits"
+      }
+    },
+    {
+      "coords": [111, 272],
+      "image": "overworld_entrance",
+      "type": "submenu",
+      "entranceMenu": {
+        "entranceIds": ["MM_SNOWHEAD_FROM_SNOWHEAD_PATH"],
+        "display": "entrances"
+      }
+    },
+    {
       "coords": [357, 583],
       "image": "overworld_entrance",
       "type": "submenu",

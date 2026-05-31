@@ -325,6 +325,51 @@
       }
     },
     {
+      "coords": [423, 392],
+      "image": "overworld_entrance",
+      "type": "submenu",
+      "entranceMenu": {
+        "entranceIds": ["MM_IKANA_CASTLE_GARDENS"],
+        "display": "entrances"
+      }
+    },
+    {
+      "coords": [745, 410],
+      "image": "overworld_entrance",
+      "type": "submenu",
+      "entranceMenu": {
+        "entranceIds": ["MM_IKANA_CASTLE_GARDENS"],
+        "display": "exits"
+      }
+    },
+    {
+      "coords": [475, 228],
+      "image": "overworld_entrance",
+      "type": "submenu",
+      "entranceMenu": {
+        "entranceIds": ["MM_STONE_TOWER"],
+        "display": "entrances"
+      }
+    },
+    {
+      "coords": [636, 221],
+      "image": "overworld_entrance",
+      "type": "submenu",
+      "entranceMenu": {
+        "entranceIds": ["MM_STONE_TOWER"],
+        "display": "exits"
+      }
+    },
+    {
+      "coords": [56, 583],
+      "image": "overworld_entrance",
+      "type": "submenu",
+      "entranceMenu": {
+        "entranceIds": ["MM_IKANA_GRAVEYARD"],
+        "display": "exits"
+      }
+    },
+    {
       "coords": [946, 368],
       "image": "dungeon_entrance",
       "type": "submenu",

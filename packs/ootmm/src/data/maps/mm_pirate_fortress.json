@@ -284,11 +284,57 @@
       ]
     },
     {
+      "coords": [338, 146],
+      "image": "overworld_entrance",
+      "type": "submenu",
+      "entranceMenu": {
+        "entranceIds": ["MM_PIRATE_FORTRESS_INTERIOR"],
+        "display": "entrances"
+      }
+    },
+    {
+      "coords": [589, 290],
+      "image": "overworld_entrance",
+      "type": "submenu",
+      "entranceMenu": {
+        "entranceIds": ["MM_PIRATE_FORTRESS_INTERIOR"],
+        "display": "exits"
+      }
+    },
+    {
       "coords": [323, 219],
       "image": "interior_entrance",
       "type": "submenu",
       "entranceMenu": {
-        "entranceIds": ["MM_SEWERS_FROM_EXTERIOR_DOOR"]
+        "entranceIds": ["MM_SEWERS_FROM_EXTERIOR_DOOR"],
+        "display": "entrances"
+      }
+    },
+    {
+      "coords": [340, 371],
+      "image": "overworld_entrance",
+      "type": "submenu",
+      "entranceMenu": {
+        "entranceIds": ["MM_PIRATE_FORTRESS_INTERIOR_FROM_LOOKOUT"],
+        "display": "entrances"
+      }
+    },
+    {
+      "coords": [545, 454],
+      "image": "overworld_entrance",
+      "type": "submenu",
+      "entranceMenu": {
+        "entranceIds": ["MM_PIRATE_FORTRESS_INTERIOR_FROM_LOOKOUT"],
+        "display": "exits"
+      }
+    },
+    {
+      "coords": [533, 293],
+      "image": "interior_entrance",
+      "type": "submenu",
+      "entranceMenu": {
+        "entranceIds": ["MM_SEWERS_FROM_EXTERIOR_DOOR"],
+        "display": "exits"
       }
     }
   ]

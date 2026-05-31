@@ -1160,6 +1160,303 @@
       ]
     },
     {
+      "coords": [103, 582],
+      "image": "overworld_entrance",
+      "type": "submenu",
+      "entranceMenu": {
+        "entranceIds": ["MM_GORMAN_BACK_FROM_MILK_ROAD"],
+        "display": "entrances"
+      }
+    },
+    {
+      "coords": [862, 44],
+      "image": "overworld_entrance",
+      "type": "submenu",
+      "entranceMenu": {
+        "entranceIds": ["MM_MOUNTAIN_VILLAGE_PATH_FROM_TERMINA_FIELD"],
+        "display": "entrances"
+      }
+    },
+    {
+      "coords": [593, 297],
+      "image": "overworld_entrance",
+      "type": "submenu",
+      "entranceMenu": {
+        "entranceIds": ["MM_MOUNTAIN_VILLAGE_PATH_FROM_TERMINA_FIELD"],
+        "display": "exits"
+      }
+    },
+    {
+      "coords": [338, 116],
+      "image": "overworld_entrance",
+      "type": "submenu",
+      "entranceMenu": {
+        "entranceIds": ["MM_CLOCK_TOWN_NORTH_FROM_EAST"],
+        "display": "exits"
+      }
+    },
+    {
+      "coords": [366, 116],
+      "image": "overworld_entrance",
+      "type": "submenu",
+      "entranceMenu": {
+        "entranceIds": ["MM_CLOCK_TOWN_NORTH_FROM_EAST"],
+        "display": "entrances"
+      }
+    },
+    {
+      "coords": [315, 348],
+      "image": "overworld_entrance",
+      "type": "submenu",
+      "entranceMenu": {
+        "entranceIds": ["MM_CLOCK_TOWN_SOUTH_BOTTOM_FROM_EAST"],
+        "display": "exits"
+      }
+    },
+    {
+      "coords": [348, 348],
+      "image": "overworld_entrance",
+      "type": "submenu",
+      "entranceMenu": {
+        "entranceIds": ["MM_CLOCK_TOWN_SOUTH_BOTTOM_FROM_EAST"],
+        "display": "entrances"
+      }
+    },
+    {
+      "coords": [302, 233],
+      "image": "overworld_entrance",
+      "type": "submenu",
+      "entranceMenu": {
+        "entranceIds": ["MM_CLOCK_TOWN_SOUTH_TOP_FROM_EAST"],
+        "display": "exits"
+      }
+    },
+    {
+      "coords": [322, 233],
+      "image": "overworld_entrance",
+      "type": "submenu",
+      "entranceMenu": {
+        "entranceIds": ["MM_CLOCK_TOWN_SOUTH_TOP_FROM_EAST"],
+        "display": "entrances"
+      }
+    },
+    {
+      "coords": [450, 238],
+      "image": "overworld_entrance",
+      "type": "submenu",
+      "entranceMenu": {
+        "entranceIds": ["MM_TERMINA_FIELD_FROM_CLOCK_TOWN_EAST"],
+        "display": "entrances"
+      }
+    },
+    {
+      "coords": [909, 163],
+      "image": "overworld_entrance",
+      "type": "submenu",
+      "entranceMenu": {
+        "entranceIds": ["MM_TERMINA_FIELD_FROM_CLOCK_TOWN_EAST"],
+        "display": "exits"
+      }
+    },
+    {
+      "coords": [250, 132],
+      "image": "overworld_entrance",
+      "type": "submenu",
+      "entranceMenu": {
+        "entranceIds": ["MM_CLOCK_TOWN_NORTH_FROM_SOUTH"],
+        "display": "exits"
+      }
+    },
+    {
+      "coords": [250, 158],
+      "image": "overworld_entrance",
+      "type": "submenu",
+      "entranceMenu": {
+        "entranceIds": ["MM_CLOCK_TOWN_NORTH_FROM_SOUTH"],
+        "display": "entrances"
+      }
+    },
+    {
+      "coords": [224, 11],
+      "image": "overworld_entrance",
+      "type": "submenu",
+      "entranceMenu": {
+        "entranceIds": ["MM_CLOCK_TOWN_NORTH_FROM_FIELD"],
+        "display": "exits"
+      }
+    },
+    {
+      "coords": [865, 116],
+      "image": "overworld_entrance",
+      "type": "submenu",
+      "entranceMenu": {
+        "entranceIds": ["MM_CLOCK_TOWN_NORTH_FROM_FIELD"],
+        "display": "entrances"
+      }
+    },
+    {
+      "coords": [182, 383],
+      "image": "overworld_entrance",
+      "type": "submenu",
+      "entranceMenu": {
+        "entranceIds": ["MM_CLOCK_TOWN_SOUTH_FROM_LAUNDRY_POOL"],
+        "display": "exits"
+      }
+    },
+    {
+      "coords": [166, 383],
+      "image": "overworld_entrance",
+      "type": "submenu",
+      "entranceMenu": {
+        "entranceIds": ["MM_CLOCK_TOWN_SOUTH_FROM_LAUNDRY_POOL"],
+        "display": "entrances"
+      }
+    },
+    {
+      "coords": [249, 401],
+      "image": "overworld_entrance",
+      "type": "submenu",
+      "entranceMenu": {
+        "entranceIds": ["MM_TERMINA_FIELD_FROM_CLOCK_TOWN_SOUTH"],
+        "display": "entrances"
+      }
+    },
+    {
+      "coords": [863, 202],
+      "image": "overworld_entrance",
+      "type": "submenu",
+      "entranceMenu": {
+        "entranceIds": ["MM_TERMINA_FIELD_FROM_CLOCK_TOWN_SOUTH"],
+        "display": "exits"
+      }
+    },
+    {
+      "coords": [177, 309],
+      "image": "overworld_entrance",
+      "type": "submenu",
+      "entranceMenu": {
+        "entranceIds": ["MM_CLOCK_TOWN_SOUTH_BOTTOM_FROM_WEST"],
+        "display": "exits"
+      }
+    },
+    {
+      "coords": [146, 311],
+      "image": "overworld_entrance",
+      "type": "submenu",
+      "entranceMenu": {
+        "entranceIds": ["MM_CLOCK_TOWN_SOUTH_BOTTOM_FROM_WEST"],
+        "display": "entrances"
+      }
+    },
+    {
+      "coords": [167, 195],
+      "image": "overworld_entrance",
+      "type": "submenu",
+      "entranceMenu": {
+        "entranceIds": ["MM_CLOCK_TOWN_WEST_FROM_SOUTH_TOP"],
+        "display": "entrances"
+      }
+    },
+    {
+      "coords": [144, 195],
+      "image": "overworld_entrance",
+      "type": "submenu",
+      "entranceMenu": {
+        "entranceIds": ["MM_CLOCK_TOWN_WEST_FROM_SOUTH_TOP"],
+        "display": "exits"
+      }
+    },
+    {
+      "coords": [15, 199],
+      "image": "overworld_entrance",
+      "type": "submenu",
+      "entranceMenu": {
+        "entranceIds": ["MM_TERMINA_FIELD_FROM_CLOCK_TOWN_WEST"],
+        "display": "entrances"
+      }
+    },
+    {
+      "coords": [819, 162],
+      "image": "overworld_entrance",
+      "type": "submenu",
+      "entranceMenu": {
+        "entranceIds": ["MM_TERMINA_FIELD_FROM_CLOCK_TOWN_WEST"],
+        "display": "exits"
+      }
+    },
+    {
+      "coords": [199, 582],
+      "image": "overworld_entrance",
+      "type": "submenu",
+      "entranceMenu": {
+        "entranceIds": ["MM_GORMAN_TRACK_FROM_MILK_ROAD"],
+        "display": "entrances"
+      }
+    },
+    {
+      "coords": [477, 492],
+      "image": "overworld_entrance",
+      "type": "submenu",
+      "entranceMenu": {
+        "entranceIds": ["MM_IKANA_GRAVEYARD"],
+        "display": "entrances"
+      }
+    },
+    {
+      "coords": [784, 265],
+      "image": "overworld_entrance",
+      "type": "submenu",
+      "entranceMenu": {
+        "entranceIds": ["MM_MILK_ROAD_FROM_FIELD"],
+        "display": "entrances"
+      }
+    },
+    {
+      "coords": [982, 152],
+      "image": "overworld_entrance",
+      "type": "submenu",
+      "entranceMenu": {
+        "entranceIds": ["MM_TERMINA_FIELD_FROM_ROAD_TO_IKANA"],
+        "display": "exits"
+      }
+    },
+    {
+      "coords": [337, 556],
+      "image": "overworld_entrance",
+      "type": "submenu",
+      "entranceMenu": {
+        "entranceIds": ["MM_TERMINA_FIELD_FROM_ROAD_TO_IKANA"],
+        "display": "entrances"
+      }
+    },
+    {
+      "coords": [861, 305],
+      "image": "overworld_entrance",
+      "type": "submenu",
+      "entranceMenu": {
+        "entranceIds": ["MM_TERMINA_FIELD_FROM_ROAD_TO_SWAMP"],
+        "display": "exits"
+      }
+    },
+    {
+      "coords": [728, 299],
+      "image": "overworld_entrance",
+      "type": "submenu",
+      "entranceMenu": {
+        "entranceIds": ["MM_TERMINA_FIELD_FROM_ROAD_TO_SWAMP"],
+        "display": "entrances"
+      }
+    },
+    {
+      "coords": [269, 546],
+      "image": "overworld_entrance",
+      "type": "submenu",
+      "entranceMenu": {
+        "entranceIds": ["MM_MILK_ROAD_FROM_FIELD"],
+        "display": "exits"
+      }
+    },
+    {
       "coords": [78, 298],
       "image": "interior_entrance",
       "type": "submenu",

@@ -688,6 +688,78 @@
       }
     },
     {
+      "coords": [673, 333],
+      "image": "overworld_entrance",
+      "type": "submenu",
+      "entranceMenu": {
+        "entranceIds": ["MM_GREAT_BAY_COAST_FROM_ZORA_CAPE"],
+        "display": "exits"
+      }
+    },
+    {
+      "coords": [501, 402],
+      "image": "overworld_entrance",
+      "type": "submenu",
+      "entranceMenu": {
+        "entranceIds": ["MM_GREAT_BAY_COAST_FROM_ZORA_CAPE"],
+        "display": "entrances"
+      }
+    },
+    {
+      "coords": [463, 149],
+      "image": "overworld_entrance",
+      "type": "submenu",
+      "entranceMenu": {
+        "entranceIds": ["MM_GREAT_BAY_FROM_PINNACLE_ROCK"],
+        "display": "entrances"
+      }
+    },
+    {
+      "coords": [533, 155],
+      "image": "overworld_entrance",
+      "type": "submenu",
+      "entranceMenu": {
+        "entranceIds": ["MM_GREAT_BAY_FROM_PINNACLE_ROCK"],
+        "display": "exits"
+      }
+    },
+    {
+      "coords": [30, 573],
+      "image": "overworld_entrance",
+      "type": "submenu",
+      "entranceMenu": {
+        "entranceIds": ["MM_ZORA_HALL_UNDERWATER"],
+        "display": "exits"
+      }
+    },
+    {
+      "coords": [427, 449],
+      "image": "overworld_entrance",
+      "type": "submenu",
+      "entranceMenu": {
+        "entranceIds": ["MM_ZORA_HALL_UNDERWATER"],
+        "display": "entrances"
+      }
+    },
+    {
+      "coords": [285, 462],
+      "image": "overworld_entrance",
+      "type": "submenu",
+      "entranceMenu": {
+        "entranceIds": ["MM_ZORA_HALL_LEDGE"],
+        "display": "exits"
+      }
+    },
+    {
+      "coords": [392, 449],
+      "image": "overworld_entrance",
+      "type": "submenu",
+      "entranceMenu": {
+        "entranceIds": ["MM_ZORA_HALL_LEDGE"],
+        "display": "entrances"
+      }
+    },
+    {
       "coords": [718, 297],
       "image": "interior_entrance",
       "type": "submenu",

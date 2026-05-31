@@ -552,6 +552,78 @@
       }
     },
     {
+      "coords": [569, 557],
+      "image": "overworld_entrance",
+      "type": "submenu",
+      "entranceMenu": {
+        "entranceIds": ["MM_DEKU_PALACE_LEDGE"],
+        "display": "exits"
+      }
+    },
+    {
+      "coords": [267, 223],
+      "image": "overworld_entrance",
+      "type": "submenu",
+      "entranceMenu": {
+        "entranceIds": ["MM_DEKU_PALACE_LEDGE"],
+        "display": "entrances"
+      }
+    },
+    {
+      "coords": [296, 293],
+      "image": "overworld_entrance",
+      "type": "submenu",
+      "entranceMenu": {
+        "entranceIds": ["MM_DEKU_PALACE_MAIN_ENTRANCE"],
+        "display": "entrances"
+      }
+    },
+    {
+      "coords": [513, 581],
+      "image": "overworld_entrance",
+      "type": "submenu",
+      "entranceMenu": {
+        "entranceIds": ["MM_DEKU_PALACE_MAIN_ENTRANCE"],
+        "display": "exits"
+      }
+    },
+    {
+      "coords": [383, 222],
+      "image": "overworld_entrance",
+      "type": "submenu",
+      "entranceMenu": {
+        "entranceIds": ["MM_WOODFALL"],
+        "display": "entrances"
+      }
+    },
+    {
+      "coords": [839, 336],
+      "image": "overworld_entrance",
+      "type": "submenu",
+      "entranceMenu": {
+        "entranceIds": ["MM_WOODFALL"],
+        "display": "exits"
+      }
+    },
+    {
+      "coords": [708, 42],
+      "image": "overworld_entrance",
+      "type": "submenu",
+      "entranceMenu": {
+        "entranceIds": ["MM_MYSTERY_WOODS"],
+        "display": "entrances"
+      }
+    },
+    {
+      "coords": [875, 246],
+      "image": "overworld_entrance",
+      "type": "submenu",
+      "entranceMenu": {
+        "entranceIds": ["MM_MYSTERY_WOODS"],
+        "display": "exits"
+      }
+    },
+    {
       "coords": [461, 119],
       "image": "interior_entrance",
       "type": "submenu",

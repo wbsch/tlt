@@ -482,6 +482,24 @@
       }
     },
     {
+      "coords": [800, 555],
+      "image": "overworld_entrance",
+      "type": "submenu",
+      "entranceMenu": {
+        "entranceIds": ["MM_GORMAN_BACK_FROM_MILK_ROAD"],
+        "display": "exits"
+      }
+    },
+    {
+      "coords": [800, 400],
+      "image": "overworld_entrance",
+      "type": "submenu",
+      "entranceMenu": {
+        "entranceIds": ["MM_GORMAN_TRACK_FROM_MILK_ROAD"],
+        "display": "exits"
+      }
+    },
+    {
       "coords": [312, 309],
       "image": "interior_entrance",
       "type": "submenu",

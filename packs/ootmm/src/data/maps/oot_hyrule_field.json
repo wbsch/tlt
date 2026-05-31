@@ -1115,6 +1115,32 @@
       }
     },
     {
+      "coords": [417, 380],
+      "image": "overworld_entrance",
+      "type": "submenu",
+      "entranceMenu": {
+        "entranceIds": ["OOT_MARKET_FROM_CASTLE"],
+        "display": "exits"
+      }
+    },
+    {
+      "coords": [393, 240],
+      "image": "overworld_entrance",
+      "type": "submenu",
+      "entranceMenu": {
+        "entranceIds": ["OOT_MARKET_FROM_CASTLE"],
+        "display": "entrances"
+      }
+    },
+    {
+      "coords": [501, 398],
+      "image": "overworld_entrance",
+      "type": "submenu",
+      "entranceMenu": {
+        "entranceIds": ["OOT_MARKET_FROM_TEMPLE_OF_TIME_ENTRYWAY"]
+      }
+    },
+    {
       "coords": [793, 197],
       "image": "overworld_entrance",
       "type": "submenu",
