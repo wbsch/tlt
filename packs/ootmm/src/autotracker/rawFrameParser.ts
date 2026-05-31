@@ -517,7 +517,6 @@ const OOT_OFF_EVENTS_CHK = 0x0ed4;
 const OOT_OFF_EVENTS_ITEM = 0x0ef0;
 const OOT_OFF_EVENTS_MISC = 0x0ef8;
 const OOT_OFF_GS_FLAGS = 0x0e9c;
-const OOT_OFF_CHECKSUM = 0x1352;
 const OOT_OFF_AGE = 0x04;
 const OOT_PERM_ENTRY_SIZE = 0x1c;
 const OOT_PERM_COUNT = 124;
@@ -543,7 +542,6 @@ const MM_OFF_PERM_SCENES = 0x0f8;
 const MM_OFF_SKULL_SWAMP = 0x0ec0;
 const MM_OFF_SKULL_OCEAN = 0x0ec2;
 const MM_OFF_WEEK_EVENT_REG = 0x0ef8;
-const MM_OFF_CHECKSUM = 0x100a;
 const MM_PERM_ENTRY_SIZE = 0x1c;
 const MM_PERM_COUNT = 120;
 const MM_CTX_OFF_GAME_MODE = 0x3ca8;
@@ -673,8 +671,6 @@ const MM_ITEM_GOLD_DUST = 0x22;
 const MM_ITEM_RUTO_LETTER = 0xb6;
 
 const EMPTY_INVENTORY_ITEM = 0xff;
-const MAX_FOREIGN_OOT_CHECKSUM_DELTA = 0x1000;
-const MAX_FOREIGN_MM_CHECKSUM_DELTA = 0x0400;
 const MIN_PLAUSIBLE_OOT_EMPTY_INVENTORY_SLOT = 4;
 
 const SHARED_COINS_OFFSET = 0x7c0;
@@ -880,19 +876,141 @@ const SHARED_STATE_READ_SIZE = Math.max(
   SHARED_BOMBCHU_BAG_FLAGS_OFFSET + 1,
 );
 
+const buildSharedStateChunkSpecs = (
+  prefix: 'oot' | 'mm',
+  baseAddress: number,
+  layout: SharedStorageLayout,
+): RawAutotrackerChunkSpec[] => {
+  const specs: RawAutotrackerChunkSpec[] = layout.bitmaps.map((bitmap) => ({
+    name: `${prefix}_shared_custom_save_bitmap_${bitmap.name}`,
+    address: baseAddress + bitmap.offset,
+    length: bitmap.size,
+  }));
+
+  specs.push(
+    {
+      name: `${prefix}_shared_custom_save_half_days`,
+      address: baseAddress + SHARED_HALF_DAYS_OFFSET,
+      length: 1,
+    },
+    {
+      name: `${prefix}_shared_custom_save_fish_weights`,
+      address: baseAddress + SHARED_CAUGHT_CHILD_FISH_WEIGHT_OFFSET,
+      length:
+        SHARED_CAUGHT_ADULT_FISH_WEIGHT_OFFSET +
+        SHARED_CAUGHT_FISH_WEIGHT_COUNT -
+        SHARED_CAUGHT_CHILD_FISH_WEIGHT_OFFSET,
+    },
+    {
+      name: `${prefix}_shared_custom_save_coins_and_masks`,
+      address: baseAddress + SHARED_COINS_OFFSET,
+      length: SHARED_OCARINA_BUTTON_MASK_MM_OFFSET + 2 - SHARED_COINS_OFFSET,
+    },
+    {
+      name: `${prefix}_shared_custom_save_bombchu_bag_flags`,
+      address: baseAddress + SHARED_BOMBCHU_BAG_FLAGS_OFFSET,
+      length: 1,
+    },
+    {
+      name: `${prefix}_shared_custom_save_song_notes`,
+      address: baseAddress + SHARED_SONG_NOTES_OFFSET,
+      length: SHARED_SONG_NOTE_COUNT,
+    },
+  );
+
+  specs.sort((left, right) => {
+    if (left.address === right.address) {
+      return left.name.localeCompare(right.name);
+    }
+    return left.address - right.address;
+  });
+
+  return specs;
+};
+
 const ACTIVE_OOT_SAVE_CHUNK_SPECS: RawAutotrackerChunkSpec[] = [
   {
-    name: OOT_SAVE_CTX_CHUNK,
+    name: 'oot_save_state_age',
     address: ADDR_OOT_SAVE_CTX + OOT_OFF_AGE,
-    length: OOT_ACTIVE_SAVE_END - OOT_OFF_AGE,
+    length: 4,
+  },
+  {
+    name: 'oot_save_state_magic',
+    address: ADDR_OOT_SAVE_CTX + OOT_OFF_MAGIC_ACQUIRED,
+    length: OOT_OFF_OCARINA_GAME_ROUND + 1 - OOT_OFF_MAGIC_ACQUIRED,
+  },
+  {
+    name: 'oot_save_state_scene',
+    address: ADDR_OOT_SAVE_CTX + OOT_OFF_SCENE_ID,
+    length: 2,
+  },
+  {
+    name: 'oot_save_state_inventory',
+    address: ADDR_OOT_SAVE_CTX + OOT_OFF_INV_ITEMS,
+    length: OOT_OFF_GOLD_TOKENS + 2 - OOT_OFF_INV_ITEMS,
+  },
+  {
+    name: 'oot_save_state_scene_flags',
+    address: ADDR_OOT_SAVE_CTX + OOT_OFF_PERM,
+    length: OOT_PERM_COUNT * OOT_PERM_ENTRY_SIZE,
+  },
+  {
+    name: 'oot_save_state_gs_flags',
+    address: ADDR_OOT_SAVE_CTX + OOT_OFF_GS_FLAGS,
+    length: 6 * 4,
+  },
+  {
+    name: 'oot_save_state_events',
+    address: ADDR_OOT_SAVE_CTX + OOT_OFF_EVENTS_CHK,
+    length: OOT_ACTIVE_SAVE_END - OOT_OFF_EVENTS_CHK,
   },
 ];
 
 const ACTIVE_MM_SAVE_CHUNK_SPECS: RawAutotrackerChunkSpec[] = [
   {
-    name: MM_SAVE_CTX_CHUNK,
+    name: 'mm_save_state_time',
+    address: ADDR_MM_SAVE_CTX + MM_OFF_TIME,
+    length: 2,
+  },
+  {
+    name: 'mm_save_state_day',
+    address: ADDR_MM_SAVE_CTX + MM_OFF_DAY,
+    length: 4,
+  },
+  {
+    name: 'mm_save_state_player_form',
+    address: ADDR_MM_SAVE_CTX + MM_OFF_PLAYER_FORM,
+    length: 1,
+  },
+  {
+    name: 'mm_save_state_magic',
     address: ADDR_MM_SAVE_CTX + MM_ACTIVE_SAVE_START,
-    length: MM_ACTIVE_SAVE_END - MM_ACTIVE_SAVE_START,
+    length: MM_OFF_DOUBLE_MAGIC + 1 - MM_ACTIVE_SAVE_START,
+  },
+  {
+    name: 'mm_save_state_owl_flags',
+    address: ADDR_MM_SAVE_CTX + MM_OFF_OWL_ACTIVATION_FLAGS,
+    length: 2,
+  },
+  {
+    name: 'mm_save_state_inventory',
+    address: ADDR_MM_SAVE_CTX + MM_OFF_EQUIPMENT,
+    length: MM_OFF_STRAY_FAIRIES + 10 - MM_OFF_EQUIPMENT,
+  },
+  {
+    name: 'mm_save_state_scene_flags',
+    address: ADDR_MM_SAVE_CTX + MM_OFF_PERM_SCENES,
+    length: MM_PERM_COUNT * MM_PERM_ENTRY_SIZE,
+  },
+  {
+    name: 'mm_save_state_skull_tokens',
+    address: ADDR_MM_SAVE_CTX + MM_OFF_SKULL_SWAMP,
+    length: MM_OFF_SKULL_OCEAN + 2 - MM_OFF_SKULL_SWAMP,
+  },
+  {
+    name: 'mm_save_state_week_events',
+    address: ADDR_MM_SAVE_CTX + MM_OFF_WEEK_EVENT_REG,
+    length: MM_ACTIVE_SAVE_END - MM_OFF_WEEK_EVENT_REG,
   },
   {
     name: MM_CYCLE_FLAGS_CHUNK,
@@ -901,53 +1019,192 @@ const ACTIVE_MM_SAVE_CHUNK_SPECS: RawAutotrackerChunkSpec[] = [
   },
 ];
 
-export const RAW_CHUNK_SPECS: RawAutotrackerChunkSpec[] = [
-  ...ACTIVE_OOT_SAVE_CHUNK_SPECS,
-  ...ACTIVE_MM_SAVE_CHUNK_SPECS,
+const FOREIGN_OOT_SAVE_CHUNK_SPECS: RawAutotrackerChunkSpec[] = [
+  {
+    name: 'mm_foreign_oot_save_age',
+    address: ADDR_MM_FOREIGN_OOT_SAVE_LIVE + OOT_OFF_AGE,
+    length: 4,
+  },
+  {
+    name: 'mm_foreign_oot_save_magic',
+    address: ADDR_MM_FOREIGN_OOT_SAVE_LIVE + OOT_OFF_MAGIC_ACQUIRED,
+    length: OOT_OFF_OCARINA_GAME_ROUND + 1 - OOT_OFF_MAGIC_ACQUIRED,
+  },
+  {
+    name: 'mm_foreign_oot_save_scene',
+    address: ADDR_MM_FOREIGN_OOT_SAVE_LIVE + OOT_OFF_SCENE_ID,
+    length: 2,
+  },
+  {
+    name: 'mm_foreign_oot_save_inventory',
+    address: ADDR_MM_FOREIGN_OOT_SAVE_LIVE + OOT_OFF_INV_ITEMS,
+    length: OOT_OFF_GOLD_TOKENS + 2 - OOT_OFF_INV_ITEMS,
+  },
+  {
+    name: 'mm_foreign_oot_save_scene_flags',
+    address: ADDR_MM_FOREIGN_OOT_SAVE_LIVE + OOT_OFF_PERM,
+    length: OOT_PERM_COUNT * OOT_PERM_ENTRY_SIZE,
+  },
+  {
+    name: 'mm_foreign_oot_save_gs_flags',
+    address: ADDR_MM_FOREIGN_OOT_SAVE_LIVE + OOT_OFF_GS_FLAGS,
+    length: 6 * 4,
+  },
+  {
+    name: 'mm_foreign_oot_save_events',
+    address: ADDR_MM_FOREIGN_OOT_SAVE_LIVE + OOT_OFF_EVENTS_CHK,
+    length: OOT_ACTIVE_SAVE_END - OOT_OFF_EVENTS_CHK,
+  },
+];
+
+const FOREIGN_MM_SAVE_CHUNK_SPECS: RawAutotrackerChunkSpec[] = [
+  {
+    name: 'oot_foreign_mm_save_time',
+    address: ADDR_OOT_FOREIGN_MM_SAVE_LIVE + MM_OFF_TIME,
+    length: 2,
+  },
+  {
+    name: 'oot_foreign_mm_save_day',
+    address: ADDR_OOT_FOREIGN_MM_SAVE_LIVE + MM_OFF_DAY,
+    length: 4,
+  },
+  {
+    name: 'oot_foreign_mm_save_player_form',
+    address: ADDR_OOT_FOREIGN_MM_SAVE_LIVE + MM_OFF_PLAYER_FORM,
+    length: 1,
+  },
+  {
+    name: 'oot_foreign_mm_save_magic',
+    address: ADDR_OOT_FOREIGN_MM_SAVE_LIVE + MM_ACTIVE_SAVE_START,
+    length: MM_OFF_DOUBLE_MAGIC + 1 - MM_ACTIVE_SAVE_START,
+  },
+  {
+    name: 'oot_foreign_mm_save_owl_flags',
+    address: ADDR_OOT_FOREIGN_MM_SAVE_LIVE + MM_OFF_OWL_ACTIVATION_FLAGS,
+    length: 2,
+  },
+  {
+    name: 'oot_foreign_mm_save_inventory',
+    address: ADDR_OOT_FOREIGN_MM_SAVE_LIVE + MM_OFF_EQUIPMENT,
+    length: MM_OFF_STRAY_FAIRIES + 10 - MM_OFF_EQUIPMENT,
+  },
+  {
+    name: 'oot_foreign_mm_save_scene_flags',
+    address: ADDR_OOT_FOREIGN_MM_SAVE_LIVE + MM_OFF_PERM_SCENES,
+    length: MM_PERM_COUNT * MM_PERM_ENTRY_SIZE,
+  },
+  {
+    name: 'oot_foreign_mm_save_skull_tokens',
+    address: ADDR_OOT_FOREIGN_MM_SAVE_LIVE + MM_OFF_SKULL_SWAMP,
+    length: MM_OFF_SKULL_OCEAN + 2 - MM_OFF_SKULL_SWAMP,
+  },
+  {
+    name: 'oot_foreign_mm_save_week_events',
+    address: ADDR_OOT_FOREIGN_MM_SAVE_LIVE + MM_OFF_WEEK_EVENT_REG,
+    length: MM_ACTIVE_SAVE_END - MM_OFF_WEEK_EVENT_REG,
+  },
+  {
+    name: 'oot_foreign_mm_cycle_flags',
+    address: ADDR_OOT_FOREIGN_MM_SAVE_LIVE + MM_CTX_OFF_CYCLE_FLAGS,
+    length: MM_CYCLE_FLAGS_SIZE,
+  },
+];
+
+const OOT_SHARED_STATE_CHUNK_SPECS = buildSharedStateChunkSpecs(
+  'oot',
+  ADDR_OOT_SHARED_CUSTOM_SAVE_LIVE,
+  INVENTORY_SLOT_FILE.catalog.shared,
+);
+
+const MM_SHARED_STATE_CHUNK_SPECS = buildSharedStateChunkSpecs(
+  'mm',
+  ADDR_MM_SHARED_CUSTOM_SAVE_LIVE,
+  INVENTORY_SLOT_FILE.catalog.shared,
+);
+
+export const RAW_CHUNK_SPECS_BY_GAME: RawAutotrackerChunkSpecsByGame = {
+  oot: [
+    ...ACTIVE_OOT_SAVE_CHUNK_SPECS,
+    ...FOREIGN_MM_SAVE_CHUNK_SPECS,
+    ...OOT_SHARED_STATE_CHUNK_SPECS,
+    {
+      name: OOT_RUNTIME_COMBO_CONFIG_CHUNK,
+      address: ADDR_OOT_RUNTIME_OOT_COMBO_CONFIG_LIVE,
+      length: OOT_COMBO_CONFIG_SIZE,
+    },
+    {
+      name: OOT_RUNTIME_SILVER_RUPEE_DATA_CHUNK,
+      address: ADDR_OOT_RUNTIME_SILVER_RUPEE_DATA_LIVE,
+      length: OOT_SILVER_RUPEE_DATA_SIZE,
+    },
+    {
+      name: OOT_RUNTIME_MAX_KEYS_CHUNK,
+      address: ADDR_OOT_RUNTIME_MAX_KEYS_LIVE,
+      length: OOT_MAX_KEYS_BLOCK_SIZE,
+    },
+    {
+      name: OOT_PLAYSTATE_SCENE_CHUNK,
+      address: ADDR_OOT_PLAYSTATE_NTSC_10 + OOT_PLAY_OFF_SCENE_ID,
+      length: 2,
+    },
+    {
+      name: OOT_PLAYSTATE_ROOM_CHUNK,
+      address: ADDR_OOT_PLAYSTATE_NTSC_10 + OOT_PLAY_OFF_CURRENT_ROOM,
+      length: 1,
+    },
+    {
+      name: OOT_PLAYSTATE_LINK_AGE_CHUNK,
+      address: ADDR_OOT_PLAYSTATE_NTSC_10 + OOT_PLAY_OFF_LINK_AGE_ON_LOAD,
+      length: 1,
+    },
+    {
+      name: OOT_PLAYSTATE_FLAGS_CHUNK,
+      address: ADDR_OOT_PLAYSTATE_NTSC_10 + OOT_PLAY_OFF_CHEST_FLAGS,
+      length: OOT_PLAYSTATE_FLAGS_SIZE,
+    },
+  ],
+  mm: [
+    ...ACTIVE_MM_SAVE_CHUNK_SPECS,
+    ...FOREIGN_OOT_SAVE_CHUNK_SPECS,
+    ...MM_SHARED_STATE_CHUNK_SPECS,
+    {
+      name: MM_RUNTIME_COMBO_CONFIG_CHUNK,
+      address: ADDR_MM_RUNTIME_OOT_COMBO_CONFIG_LIVE,
+      length: OOT_COMBO_CONFIG_SIZE,
+    },
+    {
+      name: MM_PLAYSTATE_SCENE_CHUNK,
+      address: ADDR_MM_PLAYSTATE_1 + MM_PLAY_OFF_SCENE_ID,
+      length: 2,
+    },
+    {
+      name: MM_PLAYSTATE_ROOM_CHUNK,
+      address: ADDR_MM_PLAYSTATE_1 + MM_PLAY_OFF_CURRENT_ROOM,
+      length: 1,
+    },
+    {
+      name: MM_PLAYSTATE_FLAGS_CHUNK,
+      address: ADDR_MM_PLAYSTATE_1 + MM_PLAY_OFF_SWITCH0_FLAGS,
+      length: MM_PLAYSTATE_FLAGS_SIZE,
+    },
+  ],
+};
+
+const LEGACY_RAW_CHUNK_SPECS: RawAutotrackerChunkSpec[] = [
+  {
+    name: OOT_SAVE_CTX_CHUNK,
+    address: ADDR_OOT_SAVE_CTX + OOT_OFF_AGE,
+    length: OOT_ACTIVE_SAVE_END - OOT_OFF_AGE,
+  },
+  {
+    name: MM_SAVE_CTX_CHUNK,
+    address: ADDR_MM_SAVE_CTX + MM_ACTIVE_SAVE_START,
+    length: MM_ACTIVE_SAVE_END - MM_ACTIVE_SAVE_START,
+  },
   {
     name: OOT_FOREIGN_MM_SAVE_CHUNK,
     address: ADDR_OOT_FOREIGN_MM_SAVE_LIVE,
     length: MM_SAVE_SIZE,
-  },
-  {
-    name: OOT_SHARED_CUSTOM_SAVE_CHUNK,
-    address: ADDR_OOT_SHARED_CUSTOM_SAVE_LIVE,
-    length: SHARED_STATE_READ_SIZE,
-  },
-  {
-    name: OOT_RUNTIME_COMBO_CONFIG_CHUNK,
-    address: ADDR_OOT_RUNTIME_OOT_COMBO_CONFIG_LIVE,
-    length: OOT_COMBO_CONFIG_SIZE,
-  },
-  {
-    name: OOT_RUNTIME_SILVER_RUPEE_DATA_CHUNK,
-    address: ADDR_OOT_RUNTIME_SILVER_RUPEE_DATA_LIVE,
-    length: OOT_SILVER_RUPEE_DATA_SIZE,
-  },
-  {
-    name: OOT_RUNTIME_MAX_KEYS_CHUNK,
-    address: ADDR_OOT_RUNTIME_MAX_KEYS_LIVE,
-    length: OOT_MAX_KEYS_BLOCK_SIZE,
-  },
-  {
-    name: OOT_PLAYSTATE_SCENE_CHUNK,
-    address: ADDR_OOT_PLAYSTATE_NTSC_10 + OOT_PLAY_OFF_SCENE_ID,
-    length: 2,
-  },
-  {
-    name: OOT_PLAYSTATE_ROOM_CHUNK,
-    address: ADDR_OOT_PLAYSTATE_NTSC_10 + OOT_PLAY_OFF_CURRENT_ROOM,
-    length: 1,
-  },
-  {
-    name: OOT_PLAYSTATE_LINK_AGE_CHUNK,
-    address: ADDR_OOT_PLAYSTATE_NTSC_10 + OOT_PLAY_OFF_LINK_AGE_ON_LOAD,
-    length: 1,
-  },
-  {
-    name: OOT_PLAYSTATE_FLAGS_CHUNK,
-    address: ADDR_OOT_PLAYSTATE_NTSC_10 + OOT_PLAY_OFF_CHEST_FLAGS,
-    length: OOT_PLAYSTATE_FLAGS_SIZE,
   },
   {
     name: MM_FOREIGN_OOT_SAVE_CHUNK,
@@ -955,36 +1212,22 @@ export const RAW_CHUNK_SPECS: RawAutotrackerChunkSpec[] = [
     length: OOT_SAVE_SIZE,
   },
   {
+    name: OOT_SHARED_CUSTOM_SAVE_CHUNK,
+    address: ADDR_OOT_SHARED_CUSTOM_SAVE_LIVE,
+    length: SHARED_STATE_READ_SIZE,
+  },
+  {
     name: MM_SHARED_CUSTOM_SAVE_CHUNK,
     address: ADDR_MM_SHARED_CUSTOM_SAVE_LIVE,
     length: SHARED_STATE_READ_SIZE,
   },
-  {
-    name: MM_RUNTIME_COMBO_CONFIG_CHUNK,
-    address: ADDR_MM_RUNTIME_OOT_COMBO_CONFIG_LIVE,
-    length: OOT_COMBO_CONFIG_SIZE,
-  },
-  {
-    name: MM_PLAYSTATE_SCENE_CHUNK,
-    address: ADDR_MM_PLAYSTATE_1 + MM_PLAY_OFF_SCENE_ID,
-    length: 2,
-  },
-  {
-    name: MM_PLAYSTATE_ROOM_CHUNK,
-    address: ADDR_MM_PLAYSTATE_1 + MM_PLAY_OFF_CURRENT_ROOM,
-    length: 1,
-  },
-  {
-    name: MM_PLAYSTATE_FLAGS_CHUNK,
-    address: ADDR_MM_PLAYSTATE_1 + MM_PLAY_OFF_SWITCH0_FLAGS,
-    length: MM_PLAYSTATE_FLAGS_SIZE,
-  },
 ];
 
-export const RAW_CHUNK_SPECS_BY_GAME: RawAutotrackerChunkSpecsByGame = {
-  oot: RAW_CHUNK_SPECS.filter((spec) => spec.name.startsWith('oot_')),
-  mm: RAW_CHUNK_SPECS.filter((spec) => spec.name.startsWith('mm_')),
-};
+export const RAW_CHUNK_SPECS: RawAutotrackerChunkSpec[] = [
+  ...RAW_CHUNK_SPECS_BY_GAME.oot,
+  ...RAW_CHUNK_SPECS_BY_GAME.mm,
+  ...LEGACY_RAW_CHUNK_SPECS,
+];
 
 export interface RawAutotrackerMemoryAreas {
   oot: string[];
@@ -992,12 +1235,8 @@ export interface RawAutotrackerMemoryAreas {
 }
 
 export const RAW_MEMORY_AREAS_BY_GAME: RawAutotrackerMemoryAreas = {
-  oot: RAW_CHUNK_SPECS.filter((spec) => spec.name.startsWith('oot_')).map(
-    (spec) => spec.name,
-  ),
-  mm: RAW_CHUNK_SPECS.filter((spec) => spec.name.startsWith('mm_')).map(
-    (spec) => spec.name,
-  ),
+  oot: RAW_CHUNK_SPECS_BY_GAME.oot.map((spec) => spec.name),
+  mm: RAW_CHUNK_SPECS_BY_GAME.mm.map((spec) => spec.name),
 };
 
 const LOCATION_FILE = locationsData as LocationFile;
@@ -1106,11 +1345,12 @@ class RawAutotrackerParserImpl implements RawAutotrackerParser {
     };
 
     if (activeGame === 'OoT') {
-      const ootSaveData = buildActiveSaveData(
+      const ootSaveData = buildChunkedData(
         memory,
         ADDR_OOT_SAVE_CTX,
         OOT_SAVE_CTX_USED_SIZE,
         ACTIVE_OOT_SAVE_CHUNK_SPECS,
+        OOT_SAVE_CTX_CHUNK,
       );
       if (!ootSaveData) {
         return null;
@@ -1133,11 +1373,12 @@ class RawAutotrackerParserImpl implements RawAutotrackerParser {
       this.readSharedState(memory, activeGame, state);
       readOotRuntimeConfigFromMemory(memory, activeGame, state.oot);
     } else {
-      const mmSaveData = buildActiveSaveData(
+      const mmSaveData = buildChunkedData(
         memory,
         ADDR_MM_SAVE_CTX,
         MM_SAVE_CTX_USED_SIZE,
         ACTIVE_MM_SAVE_CHUNK_SPECS,
+        MM_SAVE_CTX_CHUNK,
       );
       if (!mmSaveData) {
         return null;
@@ -1162,16 +1403,15 @@ class RawAutotrackerParserImpl implements RawAutotrackerParser {
   }
 
   private readForeignOotState(memory: RawFrameMemory, oot: OotState): void {
-    const direct = memory.get(MM_FOREIGN_OOT_SAVE_CHUNK);
-    const directShared = memory.get(MM_SHARED_CUSTOM_SAVE_CHUNK);
-    if (
-      direct &&
-      validateForeignOotSaveWithSharedState(
-        direct.data,
-        directShared?.data ?? null,
-      )
-    ) {
-      parseOotSave(oot, direct.data);
+    const direct = buildChunkedData(
+      memory,
+      ADDR_MM_FOREIGN_OOT_SAVE_LIVE,
+      OOT_SAVE_CTX_USED_SIZE,
+      FOREIGN_OOT_SAVE_CHUNK_SPECS,
+      MM_FOREIGN_OOT_SAVE_CHUNK,
+    );
+    if (direct && validateForeignOotSave(direct)) {
+      parseOotSave(oot, direct);
       return;
     }
 
@@ -1183,10 +1423,7 @@ class RawAutotrackerParserImpl implements RawAutotrackerParser {
           OOT_SAVE_SIZE,
         )
       : null;
-    if (
-      data &&
-      validateForeignOotSaveAt(payload!, ADDR_MM_FOREIGN_OOT_SAVE_LIVE, data)
-    ) {
+    if (data && validateForeignOotSave(data)) {
       parseOotSave(oot, data);
       return;
     }
@@ -1200,9 +1437,15 @@ class RawAutotrackerParserImpl implements RawAutotrackerParser {
   }
 
   private readForeignMmState(memory: RawFrameMemory, mm: MmState): void {
-    const direct = memory.get(OOT_FOREIGN_MM_SAVE_CHUNK);
-    if (direct && validateForeignMmSave(direct.data)) {
-      parseMmSave(mm, direct.data);
+    const direct = buildChunkedData(
+      memory,
+      ADDR_OOT_FOREIGN_MM_SAVE_LIVE,
+      MM_SAVE_CTX_USED_SIZE,
+      FOREIGN_MM_SAVE_CHUNK_SPECS,
+      OOT_FOREIGN_MM_SAVE_CHUNK,
+    );
+    if (direct && validateForeignMmSave(direct)) {
+      parseMmSave(mm, direct);
       return;
     }
 
@@ -1228,13 +1471,21 @@ class RawAutotrackerParserImpl implements RawAutotrackerParser {
     activeGame: RawAutotrackerGame,
     state: GameState,
   ): void {
-    const direct = memory.get(
+    const direct = buildChunkedData(
+      memory,
+      activeGame === 'OoT'
+        ? ADDR_OOT_SHARED_CUSTOM_SAVE_LIVE
+        : ADDR_MM_SHARED_CUSTOM_SAVE_LIVE,
+      sharedStateReadSize(),
+      activeGame === 'OoT'
+        ? OOT_SHARED_STATE_CHUNK_SPECS
+        : MM_SHARED_STATE_CHUNK_SPECS,
       activeGame === 'OoT'
         ? OOT_SHARED_CUSTOM_SAVE_CHUNK
         : MM_SHARED_CUSTOM_SAVE_CHUNK,
     );
     if (direct) {
-      const parsed = parseSharedState(direct.data);
+      const parsed = parseSharedState(direct);
       if (parsed) {
         copySharedState(state.shared, parsed);
         return;
@@ -2552,127 +2803,12 @@ function sharedBitmapHasNoUnusedBits(
   return true;
 }
 
-function validateForeignOotSaveAt(
-  payload: DecodedRawChunk,
-  address: number,
-  data: Uint8Array,
-): boolean {
-  if (address >= payload.address + SHARED_CUSTOM_SAVE_SIZE) {
-    const prefix = sliceAbsoluteChunk(
-      payload,
-      address - SHARED_CUSTOM_SAVE_SIZE,
-      sharedStateReadSize(),
-    );
-    return validateForeignOotSaveWithSharedState(data, prefix);
-  }
-
-  return validateForeignOotSave(data);
-}
-
-function validateForeignOotSaveWithSharedState(
-  data: Uint8Array,
-  sharedData: Uint8Array | null,
-): boolean {
-  if (validateOotSave(data)) {
-    return true;
-  }
-  if (!isPlausibleOotSave(data)) {
-    return false;
-  }
-  if (sharedData && parseSharedState(sharedData)) {
-    return true;
-  }
-  return validateForeignOotSave(data);
-}
-
-function validateOotSave(data: Uint8Array): boolean {
-  if (data.length < OOT_SAVE_SIZE) {
-    return false;
-  }
-  return ootChecksum(data) === readU16BE(data, OOT_OFF_CHECKSUM);
-}
-
 function validateForeignOotSave(data: Uint8Array): boolean {
-  if (validateOotSave(data)) {
-    return true;
-  }
-  const delta = ootChecksumDelta(data);
-  return (
-    delta != null &&
-    delta <= MAX_FOREIGN_OOT_CHECKSUM_DELTA &&
-    isPlausibleOotSave(data)
-  );
+  return isPlausibleOotSave(data);
 }
 
 function validateForeignMmSave(data: Uint8Array): boolean {
-  if (validateMmSave(data)) {
-    return true;
-  }
-  const delta = mmChecksumDelta(data);
-  return (
-    delta != null &&
-    delta <= MAX_FOREIGN_MM_CHECKSUM_DELTA &&
-    isPlausibleMmSave(data)
-  );
-}
-
-function validateMmSave(data: Uint8Array): boolean {
-  if (data.length < MM_SAVE_SIZE) {
-    return false;
-  }
-  return mmChecksum(data) === readU16BE(data, MM_OFF_CHECKSUM);
-}
-
-function ootChecksum(data: Uint8Array): number {
-  let checksum = 0;
-  for (let index = 0; index < OOT_SAVE_SIZE; index += 2) {
-    if (index === OOT_OFF_CHECKSUM) {
-      continue;
-    }
-    checksum = (checksum + readU16BE(data, index)) & 0xffff;
-  }
-  return checksum;
-}
-
-function ootChecksumDelta(data: Uint8Array): number | null {
-  if (data.length < OOT_SAVE_SIZE) {
-    return null;
-  }
-  const expected = readU16BE(data, OOT_OFF_CHECKSUM);
-  if (expected === 0) {
-    return null;
-  }
-  let delta = Math.abs(ootChecksum(data) - expected);
-  if (delta > 0x8000) {
-    delta = 0x10000 - delta;
-  }
-  return delta;
-}
-
-function mmChecksum(data: Uint8Array): number {
-  let checksum = 0;
-  for (let index = 0; index < MM_SAVE_SIZE; index++) {
-    if (index === MM_OFF_CHECKSUM || index === MM_OFF_CHECKSUM + 1) {
-      continue;
-    }
-    checksum = (checksum + (data[index] ?? 0)) & 0xffff;
-  }
-  return checksum;
-}
-
-function mmChecksumDelta(data: Uint8Array): number | null {
-  if (data.length < MM_SAVE_SIZE) {
-    return null;
-  }
-  const expected = readU16BE(data, MM_OFF_CHECKSUM);
-  if (expected === 0) {
-    return null;
-  }
-  let delta = Math.abs(mmChecksum(data) - expected);
-  if (delta > 0x8000) {
-    delta = 0x10000 - delta;
-  }
-  return delta;
+  return isPlausibleMmSave(data);
 }
 
 function isPlausibleOotSave(data: Uint8Array): boolean {
@@ -4497,29 +4633,64 @@ function sliceAbsoluteChunk(
   return chunk.data.slice(offset, offset + size);
 }
 
-function buildActiveSaveData(
+function buildChunkedData(
   memory: RawFrameMemory,
   baseAddress: number,
   fullLength: number,
   specs: RawAutotrackerChunkSpec[],
+  legacyChunkName?: string,
 ): Uint8Array | null {
   const data = new Uint8Array(fullLength);
+  const legacyChunk = legacyChunkName ? memory.get(legacyChunkName) : undefined;
+  if (legacyChunkName) {
+    if (legacyChunk) {
+      if (!copyChunkIntoBuffer(data, legacyChunk, baseAddress)) {
+        return null;
+      }
+    }
+  }
 
   for (const spec of specs) {
     const chunk = memory.get(spec.name);
     if (!chunk) {
+      if (legacyChunk && chunkInRange(legacyChunk, spec.address, spec.length)) {
+        continue;
+      }
       return null;
     }
 
-    const offset = spec.address - baseAddress;
-    if (offset < 0 || offset + chunk.data.length > data.length) {
+    if (!copyChunkIntoBuffer(data, chunk, baseAddress)) {
       return null;
     }
-
-    data.set(chunk.data, offset);
   }
 
   return data;
+}
+
+function copyChunkIntoBuffer(
+  target: Uint8Array,
+  chunk: DecodedRawChunk,
+  baseAddress: number,
+): boolean {
+  const offset = chunk.address - baseAddress;
+  if (offset < 0 || offset + chunk.data.length > target.length) {
+    return false;
+  }
+
+  target.set(chunk.data, offset);
+  return true;
+}
+
+function chunkInRange(
+  chunk: DecodedRawChunk,
+  absoluteAddress: number,
+  size: number,
+): boolean {
+  if (absoluteAddress < chunk.address) {
+    return false;
+  }
+  const offset = absoluteAddress - chunk.address;
+  return offset >= 0 && offset + size <= chunk.data.length;
 }
 
 function createEmptyOotState(): OotState {

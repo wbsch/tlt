@@ -122,7 +122,7 @@ function buildOotLiveSceneMessage(
   const flagsData = new Uint8Array(flagsChunk?.length ?? 20);
   setU32BE(flagsData, 0, chestFlags);
 
-  return replaceChunkData(
+  const baseMessage = replaceChunkData(
     fixtureName,
     sequence,
     new Map([
@@ -133,6 +133,16 @@ function buildOotLiveSceneMessage(
       ['oot_playstate_flags', flagsData],
     ]),
   );
+
+  return {
+    fixture: base.fixture,
+    message: {
+      ...baseMessage.message,
+      chunks: baseMessage.message.chunks.filter(
+        (chunk) => !chunk.name.startsWith('oot_save_state_'),
+      ),
+    },
+  };
 }
 
 function getChecks(

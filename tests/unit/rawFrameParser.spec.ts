@@ -3,6 +3,7 @@ import { describe, expect, it } from 'vitest';
 import {
   createRawAutotrackerParser,
   RAW_CHUNK_SPECS,
+  RAW_CHUNK_SPECS_BY_GAME,
   type RawAutotrackerMessage,
 } from '@/../packs/ootmm/src/autotracker/rawFrameParser';
 import { translateAutotrackerItems } from '@/../packs/ootmm/src/autotracker/autotrackerMapping';
@@ -79,6 +80,68 @@ function buildMinimalOotMessage(
 }
 
 describe('raw frame parser', () => {
+  it('exposes sparse live chunk requests without legacy monolithic save or shared chunks', () => {
+    expect(
+      RAW_CHUNK_SPECS_BY_GAME.oot.some(
+        (spec) => spec.name === 'oot_save_state',
+      ),
+    ).toBe(false);
+    expect(
+      RAW_CHUNK_SPECS_BY_GAME.mm.some((spec) => spec.name === 'mm_save_state'),
+    ).toBe(false);
+    expect(
+      RAW_CHUNK_SPECS_BY_GAME.oot.some(
+        (spec) => spec.name === 'oot_foreign_mm_save',
+      ),
+    ).toBe(false);
+    expect(
+      RAW_CHUNK_SPECS_BY_GAME.mm.some(
+        (spec) => spec.name === 'mm_foreign_oot_save',
+      ),
+    ).toBe(false);
+    expect(
+      RAW_CHUNK_SPECS_BY_GAME.oot.some(
+        (spec) => spec.name === 'oot_shared_custom_save',
+      ),
+    ).toBe(false);
+    expect(
+      RAW_CHUNK_SPECS_BY_GAME.mm.some(
+        (spec) => spec.name === 'mm_shared_custom_save',
+      ),
+    ).toBe(false);
+
+    expect(
+      RAW_CHUNK_SPECS_BY_GAME.oot.some(
+        (spec) => spec.name === 'oot_save_state_inventory',
+      ),
+    ).toBe(true);
+    expect(
+      RAW_CHUNK_SPECS_BY_GAME.mm.some(
+        (spec) => spec.name === 'mm_save_state_week_events',
+      ),
+    ).toBe(true);
+    expect(
+      RAW_CHUNK_SPECS_BY_GAME.oot.some(
+        (spec) => spec.name === 'oot_foreign_mm_save_week_events',
+      ),
+    ).toBe(true);
+    expect(
+      RAW_CHUNK_SPECS_BY_GAME.mm.some(
+        (spec) => spec.name === 'mm_foreign_oot_save_events',
+      ),
+    ).toBe(true);
+    expect(
+      RAW_CHUNK_SPECS_BY_GAME.oot.some(
+        (spec) => spec.name === 'oot_shared_custom_save_song_notes',
+      ),
+    ).toBe(true);
+    expect(
+      RAW_CHUNK_SPECS_BY_GAME.mm.some(
+        (spec) => spec.name === 'mm_shared_custom_save_song_notes',
+      ),
+    ).toBe(true);
+  });
+
   it.each(listRawFixtureNames())(
     'parses %s as a raw snapshot',
     (fixtureName) => {
@@ -88,6 +151,28 @@ describe('raw frame parser', () => {
       expect(parsed).not.toBeNull();
     },
   );
+
+  it.each([
+    'test-20260501-125454.json',
+    'before-madame-aroma-20260501-170327.json',
+  ])('parses %s with only sparse live chunks present', (fixtureName) => {
+    const parser = createRawAutotrackerParser();
+    const { message } = buildRawMessage(fixtureName, 1);
+    const parsed = parser.parse({
+      ...message,
+      chunks: message.chunks.filter(
+        (chunk) =>
+          chunk.name !== 'oot_save_state' &&
+          chunk.name !== 'mm_save_state' &&
+          chunk.name !== 'oot_foreign_mm_save' &&
+          chunk.name !== 'mm_foreign_oot_save' &&
+          chunk.name !== 'oot_shared_custom_save' &&
+          chunk.name !== 'mm_shared_custom_save',
+      ),
+    });
+
+    expect(parsed).not.toBeNull();
+  });
 
   it('emits the known tracker-native extras that legacy summaries omit', () => {
     const parser = createRawAutotrackerParser();
