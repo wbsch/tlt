@@ -354,6 +354,11 @@ type GameState = {
   shared: SharedCustomState;
 };
 
+type LivePlayStateSignature = {
+  sceneId: number;
+  currentRoom: number;
+};
+
 type OotSymbolCheckSource =
   | 'extra-flags'
   | 'quest'
@@ -968,11 +973,6 @@ const ACTIVE_OOT_SAVE_CHUNK_SPECS: RawAutotrackerChunkSpec[] = [
 
 const ACTIVE_MM_SAVE_CHUNK_SPECS: RawAutotrackerChunkSpec[] = [
   {
-    name: 'mm_save_state_time',
-    address: ADDR_MM_SAVE_CTX + MM_OFF_TIME,
-    length: 2,
-  },
-  {
     name: 'mm_save_state_day',
     address: ADDR_MM_SAVE_CTX + MM_OFF_DAY,
     length: 4,
@@ -1058,11 +1058,6 @@ const FOREIGN_OOT_SAVE_CHUNK_SPECS: RawAutotrackerChunkSpec[] = [
 ];
 
 const FOREIGN_MM_SAVE_CHUNK_SPECS: RawAutotrackerChunkSpec[] = [
-  {
-    name: 'oot_foreign_mm_save_time',
-    address: ADDR_OOT_FOREIGN_MM_SAVE_LIVE + MM_OFF_TIME,
-    length: 2,
-  },
   {
     name: 'oot_foreign_mm_save_day',
     address: ADDR_OOT_FOREIGN_MM_SAVE_LIVE + MM_OFF_DAY,
@@ -1286,7 +1281,11 @@ class RawAutotrackerParserImpl implements RawAutotrackerParser {
   private lastKnownMm: MmState | null = null;
   private lastKnownMmSaveIndex: number | null = null;
   private lastKnownShared: SharedCustomState | null = null;
-  private lastObservedOotLiveSceneId: number | null = null;
+  private lastStableActiveGame: RawAutotrackerGame | null = null;
+  private lastStableOotLiveSignature: string | null = null;
+  private lastStableMmLiveSignature: string | null = null;
+  private pendingLiveTransitionGame: RawAutotrackerGame | null = null;
+  private pendingLiveTransitionSignature: string | null = null;
 
   parse(message: RawAutotrackerMessage): ParsedRawAutotrackerSnapshot | null {
     if (message.schemaVersion !== '1' || message.diff) {
@@ -1328,7 +1327,11 @@ class RawAutotrackerParserImpl implements RawAutotrackerParser {
     this.lastKnownMm = null;
     this.lastKnownMmSaveIndex = null;
     this.lastKnownShared = null;
-    this.lastObservedOotLiveSceneId = null;
+    this.lastStableActiveGame = null;
+    this.lastStableOotLiveSignature = null;
+    this.lastStableMmLiveSignature = null;
+    this.pendingLiveTransitionGame = null;
+    this.pendingLiveTransitionSignature = null;
   }
 
   private parseGameState(
@@ -1356,11 +1359,21 @@ class RawAutotrackerParserImpl implements RawAutotrackerParser {
         return null;
       }
       parseOotSave(state.oot, ootSaveData);
+      const ootLiveSignature = readOotPlayStateSignature(memory);
       const ootLiveSample = readOotPlayStateSample(memory);
+      const hasOotLiveSample = ootLiveSample != null;
+      const canAcceptOotLiveSample =
+        hasOotLiveSample && ootLiveSample.sceneId === state.oot.sceneId;
       if (
-        ootLiveSample &&
-        this.shouldApplyOotLiveSceneSample(ootLiveSample.sceneId)
+        this.shouldDeferActiveGameFrame(
+          'OoT',
+          ootLiveSignature,
+          hasOotLiveSample,
+        )
       ) {
+        return null;
+      }
+      if (ootLiveSample && canAcceptOotLiveSample) {
         state.oot.liveSceneId = ootLiveSample.sceneId;
         state.oot.liveChestFlags = ootLiveSample.chestFlags;
         state.oot.liveCollectFlags = ootLiveSample.collectFlags;
@@ -1372,6 +1385,7 @@ class RawAutotrackerParserImpl implements RawAutotrackerParser {
       state.mm.extraFlags2 = state.oot.extraRecords[EXTRA_IDX_MM_FLAGS2] ?? 0;
       this.readSharedState(memory, activeGame, state);
       readOotRuntimeConfigFromMemory(memory, activeGame, state.oot);
+      this.restoreLastKnownOotRuntimeState(activeGame, state);
     } else {
       const mmSaveData = buildChunkedData(
         memory,
@@ -1384,7 +1398,17 @@ class RawAutotrackerParserImpl implements RawAutotrackerParser {
         return null;
       }
       parseMmSave(state.mm, mmSaveData);
+      const mmLiveSignature = readMmPlayStateSignature(memory);
       const mmLiveSample = readMmPlayStateSample(memory);
+      if (
+        this.shouldDeferActiveGameFrame(
+          'MM',
+          mmLiveSignature,
+          mmLiveSample != null,
+        )
+      ) {
+        return null;
+      }
       if (mmLiveSample) {
         state.mm.liveSceneId = mmLiveSample.sceneId;
         state.mm.liveChestFlags = mmLiveSample.chestFlags;
@@ -1397,6 +1421,7 @@ class RawAutotrackerParserImpl implements RawAutotrackerParser {
       state.mm.extraFlags2 = state.oot.extraRecords[EXTRA_IDX_MM_FLAGS2] ?? 0;
       this.readSharedState(memory, activeGame, state);
       readOotRuntimeConfigFromMemory(memory, activeGame, state.oot);
+      this.restoreLastKnownOotRuntimeState(activeGame, state);
     }
 
     return state;
@@ -1486,7 +1511,10 @@ class RawAutotrackerParserImpl implements RawAutotrackerParser {
     );
     if (direct) {
       const parsed = parseSharedState(direct);
-      if (parsed) {
+      if (
+        parsed &&
+        !this.shouldReuseLastKnownSharedState(parsed, activeGame, state)
+      ) {
         copySharedState(state.shared, parsed);
         return;
       }
@@ -1504,7 +1532,10 @@ class RawAutotrackerParserImpl implements RawAutotrackerParser {
       : null;
     if (data) {
       const parsed = parseSharedState(data);
-      if (parsed) {
+      if (
+        parsed &&
+        !this.shouldReuseLastKnownSharedState(parsed, activeGame, state)
+      ) {
         copySharedState(state.shared, parsed);
         return;
       }
@@ -1516,6 +1547,66 @@ class RawAutotrackerParserImpl implements RawAutotrackerParser {
     }
 
     state.shared = createEmptySharedState();
+  }
+
+  private shouldReuseLastKnownSharedState(
+    shared: SharedCustomState,
+    activeGame: RawAutotrackerGame,
+    state: GameState,
+  ): boolean {
+    if (
+      !this.lastKnownShared ||
+      !sharedStateHasMeaningfulData(this.lastKnownShared)
+    ) {
+      return false;
+    }
+
+    if (sharedStateHasMeaningfulData(shared)) {
+      return false;
+    }
+
+    // During the OoT/MM handoff the shared custom save can transiently read as
+    // all-zero while the active game's core save data remains unchanged.
+    return this.activeGameCoreStateMatchesLastKnown(activeGame, state);
+  }
+
+  private activeGameCoreStateMatchesLastKnown(
+    activeGame: RawAutotrackerGame,
+    state: GameState,
+  ): boolean {
+    if (activeGame === 'OoT') {
+      return (
+        this.lastKnownOot != null &&
+        ootCoreProgressMatches(state.oot, this.lastKnownOot)
+      );
+    }
+
+    return (
+      this.lastKnownMm != null &&
+      mmCoreProgressMatches(state.mm, this.lastKnownMm)
+    );
+  }
+
+  private restoreLastKnownOotRuntimeState(
+    activeGame: RawAutotrackerGame,
+    state: GameState,
+  ): void {
+    if (
+      !this.lastKnownOot ||
+      !ootRuntimeStateHasMeaningfulData(this.lastKnownOot)
+    ) {
+      return;
+    }
+
+    if (!ootRuntimeStateLooksTransitionEmpty(state.oot)) {
+      return;
+    }
+
+    if (!this.activeGameCoreStateMatchesLastKnown(activeGame, state)) {
+      return;
+    }
+
+    copyOotRuntimeState(state.oot, this.lastKnownOot);
   }
 
   private overlayLastKnownMm(saveIndex: number, mm: MmState): void {
@@ -1536,15 +1627,66 @@ class RawAutotrackerParserImpl implements RawAutotrackerParser {
     mm.extraFlags2 |= this.lastKnownMm.extraFlags2;
   }
 
-  private shouldApplyOotLiveSceneSample(sceneId: number): boolean {
-    const previousSceneId = this.lastObservedOotLiveSceneId;
-    this.lastObservedOotLiveSceneId = sceneId;
+  private shouldDeferActiveGameFrame(
+    activeGame: RawAutotrackerGame,
+    signature: LivePlayStateSignature | null,
+    canAccept: boolean,
+  ): boolean {
+    if (!signature) {
+      return false;
+    }
 
-    // Scene id and scene flags come from separate memory reads. On room
-    // transitions, the first sample can combine the new scene id with stale
-    // chest flags from the previous room. Skip that first changed-scene sample
-    // and wait for one stable frame in the new scene.
-    return previousSceneId == null || previousSceneId === sceneId;
+    const signatureKey = livePlayStateSignatureKey(signature);
+    if (!canAccept) {
+      this.pendingLiveTransitionGame = activeGame;
+      this.pendingLiveTransitionSignature = signatureKey;
+      return true;
+    }
+
+    const stableSignature =
+      activeGame === 'OoT'
+        ? this.lastStableOotLiveSignature
+        : this.lastStableMmLiveSignature;
+
+    if (this.lastStableActiveGame === null) {
+      this.markStableActiveGameFrame(activeGame, signatureKey);
+      return false;
+    }
+
+    if (
+      this.lastStableActiveGame === activeGame &&
+      stableSignature === signatureKey
+    ) {
+      this.pendingLiveTransitionGame = null;
+      this.pendingLiveTransitionSignature = null;
+      return false;
+    }
+
+    if (
+      this.pendingLiveTransitionGame === activeGame &&
+      this.pendingLiveTransitionSignature === signatureKey
+    ) {
+      this.markStableActiveGameFrame(activeGame, signatureKey);
+      return false;
+    }
+
+    this.pendingLiveTransitionGame = activeGame;
+    this.pendingLiveTransitionSignature = signatureKey;
+    return true;
+  }
+
+  private markStableActiveGameFrame(
+    activeGame: RawAutotrackerGame,
+    signatureKey: string,
+  ): void {
+    this.lastStableActiveGame = activeGame;
+    if (activeGame === 'OoT') {
+      this.lastStableOotLiveSignature = signatureKey;
+    } else {
+      this.lastStableMmLiveSignature = signatureKey;
+    }
+    this.pendingLiveTransitionGame = null;
+    this.pendingLiveTransitionSignature = null;
   }
 
   private rememberOotState(oot: OotState): void {
@@ -2079,6 +2221,21 @@ function readOotPlayStateSample(memory: RawFrameMemory): {
   return null;
 }
 
+function readOotPlayStateSignature(
+  memory: RawFrameMemory,
+): LivePlayStateSignature | null {
+  const directScene = memory.get(OOT_PLAYSTATE_SCENE_CHUNK);
+  const directRoom = memory.get(OOT_PLAYSTATE_ROOM_CHUNK);
+  if (!directScene || !directRoom) {
+    return null;
+  }
+
+  return {
+    sceneId: readU16BE(directScene.data, 0),
+    currentRoom: readU8(directRoom.data, 0),
+  };
+}
+
 function isPlausibleOotPlayStateSample(sample: {
   sceneId: number;
   currentRoom: number;
@@ -2128,11 +2285,30 @@ function readMmPlayStateSample(memory: RawFrameMemory): {
   return null;
 }
 
+function readMmPlayStateSignature(
+  memory: RawFrameMemory,
+): LivePlayStateSignature | null {
+  const directScene = memory.get(MM_PLAYSTATE_SCENE_CHUNK);
+  const directRoom = memory.get(MM_PLAYSTATE_ROOM_CHUNK);
+  if (!directScene || !directRoom) {
+    return null;
+  }
+
+  return {
+    sceneId: readU16BE(directScene.data, 0),
+    currentRoom: readU8(directRoom.data, 0),
+  };
+}
+
 function isPlausibleMmPlayStateSample(sample: {
   sceneId: number;
   currentRoom: number;
 }): boolean {
   return sample.sceneId < MM_PERM_COUNT && sample.currentRoom < 0x40;
+}
+
+function livePlayStateSignatureKey(signature: LivePlayStateSignature): string {
+  return `${signature.sceneId}:${signature.currentRoom}`;
 }
 
 function readOotRuntimeConfig(
@@ -2875,6 +3051,125 @@ function isPlausibleMmSave(data: Uint8Array): boolean {
     }
   }
   return true;
+}
+
+function sharedStateHasMeaningfulData(shared: SharedCustomState): boolean {
+  for (const bitmap of shared.bitmaps.values()) {
+    if (typedArrayHasNonZeroValue(bitmap)) {
+      return true;
+    }
+  }
+
+  return (
+    shared.coins.some((value) => value > 0) ||
+    (shared.ocarinaButtonMaskOot !== 0 &&
+      shared.ocarinaButtonMaskOot !== SHARED_OCARINA_BUTTON_MASK_DISABLED) ||
+    (shared.ocarinaButtonMaskMm !== 0 &&
+      shared.ocarinaButtonMaskMm !== SHARED_OCARINA_BUTTON_MASK_DISABLED) ||
+    shared.bombchuBagOot > 0 ||
+    shared.bombchuBagMm > 0 ||
+    shared.songNotes.some((value) => value > 0) ||
+    shared.caughtChildFishWeights.some((value) => value > 0) ||
+    shared.caughtAdultFishWeights.some((value) => value > 0)
+  );
+}
+
+function ootRuntimeStateHasMeaningfulData(oot: OotState): boolean {
+  return (
+    oot.hasRuntimeMqBits ||
+    oot.hasRuntimeMaxKeys ||
+    oot.hasRuntimeSilverRupeeCounts
+  );
+}
+
+function ootRuntimeStateLooksTransitionEmpty(oot: OotState): boolean {
+  return (
+    !oot.hasRuntimeMqBits &&
+    !oot.hasRuntimeSilverRupeeCounts &&
+    (!oot.hasRuntimeMaxKeys || arrayValuesAllEqual(oot.runtimeMaxKeys, 0))
+  );
+}
+
+function copyOotRuntimeState(target: OotState, source: OotState): void {
+  target.runtimeMqBits = source.runtimeMqBits;
+  target.hasRuntimeMqBits = source.hasRuntimeMqBits;
+  target.runtimeMaxKeys = [...source.runtimeMaxKeys];
+  target.hasRuntimeMaxKeys = source.hasRuntimeMaxKeys;
+  target.runtimeSilverRupeeCounts = [...source.runtimeSilverRupeeCounts];
+  target.hasRuntimeSilverRupeeCounts = source.hasRuntimeSilverRupeeCounts;
+  target.bronzeScaleEnabled = source.bronzeScaleEnabled;
+}
+
+function ootCoreProgressMatches(
+  current: OotState,
+  previous: OotState,
+): boolean {
+  return (
+    current.age === previous.age &&
+    current.hasMagic === previous.hasMagic &&
+    current.hasDoubleMagic === previous.hasDoubleMagic &&
+    current.isBiggoronSword === previous.isBiggoronSword &&
+    current.beans === previous.beans &&
+    current.equipment === previous.equipment &&
+    current.upgrades === previous.upgrades &&
+    current.questItems === previous.questItems &&
+    current.goldTokens === previous.goldTokens &&
+    arrayValuesEqual(current.items, previous.items) &&
+    arrayValuesEqual(current.dungeonItems, previous.dungeonItems) &&
+    arrayValuesEqual(current.dungeonKeys, previous.dungeonKeys) &&
+    arrayValuesEqual(current.extraRecords, previous.extraRecords)
+  );
+}
+
+function mmCoreProgressMatches(current: MmState, previous: MmState): boolean {
+  return (
+    current.hasMagic === previous.hasMagic &&
+    current.hasDoubleMagic === previous.hasDoubleMagic &&
+    current.equipment === previous.equipment &&
+    current.upgrades === previous.upgrades &&
+    current.questItems === previous.questItems &&
+    current.owlActivationFlags === previous.owlActivationFlags &&
+    current.skullTokensSwamp === previous.skullTokensSwamp &&
+    current.skullTokensOcean === previous.skullTokensOcean &&
+    arrayValuesEqual(current.items, previous.items) &&
+    arrayValuesEqual(current.dungeonItems, previous.dungeonItems) &&
+    arrayValuesEqual(current.dungeonKeys, previous.dungeonKeys) &&
+    arrayValuesEqual(current.strayFairies, previous.strayFairies)
+  );
+}
+
+function arrayValuesEqual(left: number[], right: number[]): boolean {
+  if (left.length !== right.length) {
+    return false;
+  }
+
+  for (let index = 0; index < left.length; index++) {
+    if (left[index] !== right[index]) {
+      return false;
+    }
+  }
+
+  return true;
+}
+
+function arrayValuesAllEqual(values: number[], expected: number): boolean {
+  for (const value of values) {
+    if (value !== expected) {
+      return false;
+    }
+  }
+
+  return true;
+}
+
+function typedArrayHasNonZeroValue(values: Uint8Array): boolean {
+  for (const value of values) {
+    if (value !== 0) {
+      return true;
+    }
+  }
+
+  return false;
 }
 
 function extractItems(state: GameState): RawAutotrackerItem[] {

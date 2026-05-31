@@ -11,7 +11,11 @@ import {
 } from '../helpers/autotrackerFixtures';
 
 const OOT_SAVE_SCENE_FLAGS_OFFSET = 0x0d0;
+const OOT_SAVE_SCENE_OFFSET = 0x62;
 const OOT_PERM_ENTRY_SIZE = 0x1c;
+const MM_PLAYSTATE_SWITCH1_FLAGS_OFFSET = 4;
+const MM_PLAYSTATE_CHEST_FLAGS_OFFSET = 16;
+const MM_PLAYSTATE_COLLECT_FLAGS_OFFSET = 28;
 
 function setU16BE(data: Uint8Array, offset: number, value: number) {
   data[offset] = (value >>> 8) & 0xff;
@@ -82,8 +86,15 @@ function replaceChunkData(
 function buildOotLiveSceneMessage(
   fixtureName: string,
   sequence: number,
-  sceneId: number,
-  chestFlags: number,
+  options: {
+    liveSceneId: number;
+    saveSceneId?: number;
+    currentRoom?: number;
+    linkAgeOnLoad?: number;
+    chestFlags?: number;
+    collectFlags?: number;
+    tempCollectFlags?: number;
+  },
 ) {
   const base = buildRawMessage(fixtureName, sequence);
   const saveChunk = base.message.chunks.find(
@@ -109,18 +120,25 @@ function buildOotLiveSceneMessage(
   const saveData = Uint8Array.from(Buffer.from(saveChunk.data, 'base64'));
   zeroOotSceneChestFlags(saveData, 40);
   zeroOotSceneChestFlags(saveData, 85);
+  setU16BE(
+    saveData,
+    OOT_SAVE_SCENE_OFFSET,
+    options.saveSceneId ?? options.liveSceneId,
+  );
 
   const sceneData = new Uint8Array(sceneChunk?.length ?? 2);
-  setU16BE(sceneData, 0, sceneId);
+  setU16BE(sceneData, 0, options.liveSceneId);
 
   const roomData = new Uint8Array(roomChunk?.length ?? 1);
-  roomData[0] = 0;
+  roomData[0] = options.currentRoom ?? 0;
 
   const linkAgeData = new Uint8Array(linkAgeChunk?.length ?? 1);
-  linkAgeData[0] = 1;
+  linkAgeData[0] = options.linkAgeOnLoad ?? 1;
 
   const flagsData = new Uint8Array(flagsChunk?.length ?? 20);
-  setU32BE(flagsData, 0, chestFlags);
+  setU32BE(flagsData, 0, options.chestFlags ?? 0);
+  setU32BE(flagsData, 12, options.collectFlags ?? 0);
+  setU32BE(flagsData, 16, options.tempCollectFlags ?? 0);
 
   const baseMessage = replaceChunkData(
     fixtureName,
@@ -143,6 +161,49 @@ function buildOotLiveSceneMessage(
       ),
     },
   };
+}
+
+function buildMmLiveSceneMessage(
+  fixtureName: string,
+  sequence: number,
+  options: {
+    liveSceneId: number;
+    currentRoom?: number;
+    switch0Flags?: number;
+    switch1Flags?: number;
+    chestFlags?: number;
+    collectFlags?: number;
+  },
+) {
+  const sceneData = new Uint8Array(2);
+  setU16BE(sceneData, 0, options.liveSceneId);
+
+  const roomData = new Uint8Array(1);
+  roomData[0] = options.currentRoom ?? 0;
+
+  const flagsData = new Uint8Array(32);
+  setU32BE(flagsData, 0, options.switch0Flags ?? 0);
+  setU32BE(
+    flagsData,
+    MM_PLAYSTATE_SWITCH1_FLAGS_OFFSET,
+    options.switch1Flags ?? 0,
+  );
+  setU32BE(flagsData, MM_PLAYSTATE_CHEST_FLAGS_OFFSET, options.chestFlags ?? 0);
+  setU32BE(
+    flagsData,
+    MM_PLAYSTATE_COLLECT_FLAGS_OFFSET,
+    options.collectFlags ?? 0,
+  );
+
+  return replaceChunkData(
+    fixtureName,
+    sequence,
+    new Map([
+      ['mm_playstate_scene', sceneData],
+      ['mm_playstate_room', roomData],
+      ['mm_playstate_flags', flagsData],
+    ]),
+  );
 }
 
 function getChecks(
@@ -180,26 +241,69 @@ function expectChecksAbsent(checks: Set<string>, names: string[]) {
 }
 
 describe('raw frame snapshot transitions', () => {
+  it('ignores OoT live scene flags when live and saved scenes disagree', () => {
+    const fixtureName = 'after-bombchu-2-20260501-202008.json';
+    const parser = createRawAutotrackerParser();
+
+    const mixedScene = parser.parse(
+      buildOotLiveSceneMessage(fixtureName, 1, {
+        liveSceneId: 85,
+        saveSceneId: 40,
+        chestFlags: 0x00000001,
+      }).message,
+    );
+    const stableScene = parser.parse(
+      buildOotLiveSceneMessage(fixtureName, 2, {
+        liveSceneId: 85,
+        saveSceneId: 85,
+        chestFlags: 0x00000001,
+      }).message,
+    );
+
+    if (!mixedScene || !stableScene) {
+      throw new Error('Failed to parse synthetic OoT mismatch frames');
+    }
+
+    const mixedChecks = parsedCheckSet(mixedScene.checks);
+    const stableChecks = parsedCheckSet(stableScene.checks);
+
+    expect(mixedChecks.has('Kokiri Forest Kokiri Sword Chest')).toBe(false);
+    expect(mixedScene.items.length).toBeGreaterThan(0);
+    expect(stableScene).not.toBeNull();
+    expect(stableChecks.has('Kokiri Forest Kokiri Sword Chest')).toBe(true);
+  });
+
   it('ignores the first OoT live-scene sample after a scene change', () => {
     const fixtureName = 'after-bombchu-2-20260501-202008.json';
     const parser = createRawAutotrackerParser();
 
     const previousScene = parser.parse(
-      buildOotLiveSceneMessage(fixtureName, 1, 40, 0x0000000f).message,
+      buildOotLiveSceneMessage(fixtureName, 1, {
+        liveSceneId: 40,
+        saveSceneId: 40,
+        chestFlags: 0x0000000f,
+      }).message,
     );
     const mixedScene = parser.parse(
-      buildOotLiveSceneMessage(fixtureName, 2, 85, 0x0000000f).message,
+      buildOotLiveSceneMessage(fixtureName, 2, {
+        liveSceneId: 85,
+        saveSceneId: 85,
+        chestFlags: 0x0000000f,
+      }).message,
     );
     const stableScene = parser.parse(
-      buildOotLiveSceneMessage(fixtureName, 3, 85, 0x00000001).message,
+      buildOotLiveSceneMessage(fixtureName, 3, {
+        liveSceneId: 85,
+        saveSceneId: 85,
+        chestFlags: 0x00000001,
+      }).message,
     );
 
-    if (!previousScene || !mixedScene || !stableScene) {
+    if (!previousScene || !stableScene) {
       throw new Error('Failed to parse synthetic OoT transition frames');
     }
 
     const previousChecks = parsedCheckSet(previousScene.checks);
-    const mixedChecks = parsedCheckSet(mixedScene.checks);
     const stableChecks = parsedCheckSet(stableScene.checks);
 
     expect(previousChecks.has("Mido's House Top Left")).toBe(true);
@@ -208,9 +312,65 @@ describe('raw frame snapshot transitions', () => {
     expect(previousChecks.has("Mido's House Bottom Right")).toBe(true);
     expect(previousChecks.has('Kokiri Forest Kokiri Sword Chest')).toBe(false);
 
-    expect(mixedChecks.has('Kokiri Forest Kokiri Sword Chest')).toBe(false);
+    expect(mixedScene).toBeNull();
 
     expect(stableChecks.has('Kokiri Forest Kokiri Sword Chest')).toBe(true);
+  });
+
+  it('ignores the first MM live-scene sample after a scene change', () => {
+    const fixtureName =
+      'mm-without-initial-song-of-healing-20260501-143756.json';
+    const parser = createRawAutotrackerParser();
+
+    const previousScene = parser.parse(
+      buildMmLiveSceneMessage(fixtureName, 1, {
+        liveSceneId: 5,
+        chestFlags: 0,
+      }).message,
+    );
+    const mixedScene = parser.parse(
+      buildMmLiveSceneMessage(fixtureName, 2, {
+        liveSceneId: 6,
+        chestFlags: 0x00000001,
+      }).message,
+    );
+    const stableScene = parser.parse(
+      buildMmLiveSceneMessage(fixtureName, 3, {
+        liveSceneId: 6,
+        chestFlags: 0x00000001,
+      }).message,
+    );
+
+    expect(previousScene).not.toBeNull();
+    expect(mixedScene).toBeNull();
+    expect(stableScene).not.toBeNull();
+  });
+
+  it('ignores the first MM frame after switching from OoT', () => {
+    const ootFixture = 'after-bombchu-2-20260501-202008.json';
+    const mmFixture = 'mm-without-initial-song-of-healing-20260501-143756.json';
+    const parser = createRawAutotrackerParser();
+
+    const ootScene = parser.parse(
+      buildOotLiveSceneMessage(ootFixture, 1, {
+        liveSceneId: 40,
+        saveSceneId: 40,
+      }).message,
+    );
+    const firstMmScene = parser.parse(
+      buildMmLiveSceneMessage(mmFixture, 2, {
+        liveSceneId: 6,
+      }).message,
+    );
+    const stableMmScene = parser.parse(
+      buildMmLiveSceneMessage(mmFixture, 3, {
+        liveSceneId: 6,
+      }).message,
+    );
+
+    expect(ootScene).not.toBeNull();
+    expect(firstMmScene).toBeNull();
+    expect(stableMmScene).not.toBeNull();
   });
 
   it('tracks the Initial Song of Healing extra-flag transition', () => {

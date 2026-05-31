@@ -109,6 +109,16 @@ describe('raw frame parser', () => {
         (spec) => spec.name === 'mm_shared_custom_save',
       ),
     ).toBe(false);
+    expect(
+      RAW_CHUNK_SPECS_BY_GAME.mm.some(
+        (spec) => spec.name === 'mm_save_state_time',
+      ),
+    ).toBe(false);
+    expect(
+      RAW_CHUNK_SPECS_BY_GAME.oot.some(
+        (spec) => spec.name === 'oot_foreign_mm_save_time',
+      ),
+    ).toBe(false);
 
     expect(
       RAW_CHUNK_SPECS_BY_GAME.oot.some(
