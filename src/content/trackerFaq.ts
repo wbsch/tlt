@@ -28,7 +28,7 @@ const LINUX_AUTOTRACKER_URL =
   'https://github.com/jupiter0fire/tlt-autotracker/releases/latest/download/ootmm-autotracker-v0.1.1-linux-amd64';
 
 const ADAPTER_LUA_URL =
-  'https://github.com/jupiter0fire/tlt-autotracker/releases/latest/download/pj64_adapter.lua';
+  'https://github.com/jupiter0fire/tlt-autotracker/releases/latest/download/tlt_autotracking_v1.lua';
 
 const GITHUB_REL_LATEST_URL =
   'https://github.com/jupiter0fire/tlt-autotracker/releases/latest';
@@ -150,7 +150,7 @@ export const TRACKER_FAQ_SECTIONS: TrackerFaqSection[] = [
             items: [
               'Generate a seed and open it in Project64-EM.',
               'Start the autotracker.',
-              'In Project64-EM, open File -> Lua Scripts and double-click pj64-adapter.lua.',
+              'In Project64-EM, open File -> Lua Scripts and double-click tlt_autotracking_v1.lua.',
               'Upload the spoiler log to thelasttracker.org.',
               'If The Last Tracker does not connect automatically, click Auto.',
               'Potentially, your browser will display a popup regarding access to the autotracker. You need to grant access there once.',
