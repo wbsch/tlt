@@ -1107,6 +1107,14 @@
       }
     },
     {
+      "coords": [419, 498],
+      "image": "overworld_entrance",
+      "type": "submenu",
+      "entranceMenu": {
+        "entranceIds": ["OOT_MARKET_FROM_MARKET_ENTRANCE"]
+      }
+    },
+    {
       "coords": [793, 197],
       "image": "overworld_entrance",
       "type": "submenu",

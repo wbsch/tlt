@@ -50,6 +50,60 @@
       "codes": ["OOT Darunia"]
     },
     {
+      "coords": [419, 195],
+      "image": "overworld_entrance",
+      "type": "submenu",
+      "entranceMenu": {
+        "entranceIds": ["OOT_CRATER_FROM_GORON_CITY"],
+        "display": "entrances"
+      }
+    },
+    {
+      "coords": [613, 210],
+      "image": "overworld_entrance",
+      "type": "submenu",
+      "entranceMenu": {
+        "entranceIds": ["OOT_GORON_CITY_FROM_CRATER"],
+        "display": "entrances"
+      }
+    },
+    {
+      "coords": [155, 45],
+      "image": "overworld_entrance",
+      "type": "submenu",
+      "entranceMenu": {
+        "entranceIds": ["OOT_DEATH_MOUNTAIN_CRATER"],
+        "display": "entrances"
+      }
+    },
+    {
+      "coords": [694, 415],
+      "image": "overworld_entrance",
+      "type": "submenu",
+      "entranceMenu": {
+        "entranceIds": ["OOT_TRAIL_SUMMIT_FROM_CRATER"],
+        "display": "entrances"
+      }
+    },
+    {
+      "coords": [417, 579],
+      "image": "overworld_entrance",
+      "type": "submenu",
+      "entranceMenu": {
+        "entranceIds": ["OOT_DEATH_MOUNTAIN_FROM_GORON_CITY"],
+        "display": "entrances"
+      }
+    },
+    {
+      "coords": [132, 265],
+      "image": "overworld_entrance",
+      "type": "submenu",
+      "entranceMenu": {
+        "entranceIds": ["OOT_GORON_CITY"],
+        "display": "entrances"
+      }
+    },
+    {
       "coords": [434, 302],
       "image": "npc",
       "overlays": ["child"],

@@ -537,6 +537,24 @@
       }
     },
     {
+      "coords": [438, 394],
+      "image": "overworld_entrance",
+      "type": "submenu",
+      "entranceMenu": {
+        "entranceIds": ["OOT_GRAVEYARD"],
+        "display": "entrances"
+      }
+    },
+    {
+      "coords": [555, 530],
+      "image": "overworld_entrance",
+      "type": "submenu",
+      "entranceMenu": {
+        "entranceIds": ["OOT_GRAVEYARD"],
+        "display": "exits"
+      }
+    },
+    {
       "coords": [229, 311],
       "image": "bomb_grotto",
       "type": "submenu",

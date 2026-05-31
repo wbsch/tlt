@@ -543,6 +543,60 @@
       }
     },
     {
+      "coords": [90, 399],
+      "image": "overworld_entrance",
+      "type": "submenu",
+      "entranceMenu": {
+        "entranceIds": ["OOT_FOREST_FROM_LOST_WOODS_BRIDGE"],
+        "display": "entrances"
+      }
+    },
+    {
+      "coords": [456, 398],
+      "image": "overworld_entrance",
+      "type": "submenu",
+      "entranceMenu": {
+        "entranceIds": ["OOT_LOST_WOODS_BRIDGE_FROM_FOREST"],
+        "display": "entrances"
+      }
+    },
+    {
+      "coords": [116, 350],
+      "image": "overworld_entrance",
+      "type": "submenu",
+      "entranceMenu": {
+        "entranceIds": ["OOT_KOKIRI_FOREST_FROM_LOST_WOODS"],
+        "display": "entrances"
+      }
+    },
+    {
+      "coords": [558, 294],
+      "image": "overworld_entrance",
+      "type": "submenu",
+      "entranceMenu": {
+        "entranceIds": ["OOT_LOST_WOODS_FROM_KOKIRI_FOREST"],
+        "display": "entrances"
+      }
+    },
+    {
+      "coords": [329, 351],
+      "image": "overworld_entrance",
+      "type": "submenu",
+      "entranceMenu": {
+        "entranceIds": ["OOT_SACRED_FOREST_MEADOW"],
+        "display": "exits"
+      }
+    },
+    {
+      "coords": [147, 219],
+      "image": "overworld_entrance",
+      "type": "submenu",
+      "entranceMenu": {
+        "entranceIds": ["OOT_SACRED_FOREST_MEADOW"],
+        "display": "entrances"
+      }
+    },
+    {
       "coords": [573, 497],
       "image": "interior_entrance",
       "type": "submenu",

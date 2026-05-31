@@ -227,6 +227,42 @@
       "codes": ["OOT Haunted Wasteland Crate Deep"]
     },
     {
+      "coords": [16, 148],
+      "image": "overworld_entrance",
+      "type": "submenu",
+      "entranceMenu": {
+        "entranceIds": ["OOT_COLOSSUS"],
+        "display": "entrances"
+      }
+    },
+    {
+      "coords": [238, 472],
+      "image": "overworld_entrance",
+      "type": "submenu",
+      "entranceMenu": {
+        "entranceIds": ["OOT_WASTELAND_FROM_COLOSSUS"],
+        "display": "entrances"
+      }
+    },
+    {
+      "coords": [307, 167],
+      "image": "overworld_entrance",
+      "type": "submenu",
+      "entranceMenu": {
+        "entranceIds": ["OOT_WASTELAND"],
+        "display": "entrances"
+      }
+    },
+    {
+      "coords": [208, 229],
+      "image": "overworld_entrance",
+      "type": "submenu",
+      "entranceMenu": {
+        "entranceIds": ["OOT_FORTRESS_FROM_WASTELAND"],
+        "display": "entrances"
+      }
+    },
+    {
       "coords": [879, 437],
       "image": "wonder_item_red_rupee",
       "overlays": ["adult"],
