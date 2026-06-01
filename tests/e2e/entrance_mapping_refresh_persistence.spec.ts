@@ -287,6 +287,98 @@ test.describe('Entrance mapping refresh persistence', () => {
     await expectEntranceSelectedId(select, WINDMILL_ENTRANCE_ID);
   });
 
+  test('map exit mappings mirror on paired Pirate Fortress map rows', async ({
+    page,
+  }) => {
+    await page.getByTestId('tab-settings').click();
+
+    const search = page.getByTestId('settings-search-input');
+    await expect(search).toBeVisible();
+
+    await search.fill('erOverworld');
+    const erOverworldSelect = page.getByTestId('setting-input-erOverworld');
+    await expect(erOverworldSelect).toBeVisible();
+    await erOverworldSelect.selectOption('full');
+
+    await search.fill('erPiratesWorld');
+    const erPiratesWorldCheckbox = page.getByTestId(
+      'setting-input-erPiratesWorld',
+    );
+    await expect(erPiratesWorldCheckbox).toBeVisible();
+    await erPiratesWorldCheckbox.check();
+
+    const overlay = page.getByTestId('applying-settings-overlay');
+    await page.getByTestId('apply-settings-button').click();
+    await expect(overlay).toBeHidden({
+      timeout: TEST_TIMEOUTS.SETTINGS_APPLY,
+    });
+
+    await selectMapFromToolbar(page, 'MM Termina Field');
+    await resetMapFiltersToAll(page);
+
+    const terminaMarkers = page.locator(
+      '.ootmm-map .map-marker[aria-label^="Submenu marker:"]',
+    );
+    const terminaSubmenuPanel = page.locator('.map-submenu-panel');
+    let terminaExitSelect = null as ReturnType<Page['locator']> | null;
+    const terminaMarkerCount = await terminaMarkers.count();
+
+    for (let index = 0; index < terminaMarkerCount; index += 1) {
+      await terminaMarkers.nth(index).click({ force: true });
+      await expect(terminaSubmenuPanel).toBeVisible();
+      const candidate = terminaSubmenuPanel
+        .locator('.map-exit-list .map-entrance-list__row')
+        .filter({ hasText: 'Clock Town South to Laundry Pool' })
+        .locator('.destination-combobox__input')
+        .first();
+      if ((await candidate.count()) > 0) {
+        terminaExitSelect = candidate;
+        break;
+      }
+    }
+
+    expect(terminaExitSelect).not.toBeNull();
+    await expect(terminaExitSelect!).toBeVisible();
+    await selectEntranceById(terminaExitSelect, 'MM_EXTERIOR_GATE_FROM_SEWERS');
+    await expectEntranceSelectedId(
+      terminaExitSelect!,
+      'MM_EXTERIOR_GATE_FROM_SEWERS',
+    );
+
+    await selectMapFromToolbar(page, 'MM Pirate Fortress');
+    await resetMapFiltersToAll(page);
+
+    const submenuMarkers = page.locator(
+      '.ootmm-map .map-marker[aria-label^="Submenu marker:"]',
+    );
+    const submenuPanel = page.locator('.map-submenu-panel');
+    let pirateExitSelect = null as ReturnType<Page['locator']> | null;
+    const markerCount = await submenuMarkers.count();
+
+    for (let index = 0; index < markerCount; index += 1) {
+      await submenuMarkers.nth(index).click({ force: true });
+      await expect(submenuPanel).toBeVisible();
+      const candidate = submenuPanel
+        .locator('.map-exit-list .map-entrance-list__row')
+        .filter({
+          hasText: 'Pirate Fortress Entrance to Pirate Fortress Sewers',
+        })
+        .locator('.destination-combobox__input')
+        .first();
+      if ((await candidate.count()) > 0) {
+        pirateExitSelect = candidate;
+        break;
+      }
+    }
+
+    expect(pirateExitSelect).not.toBeNull();
+    await expect(pirateExitSelect!).toBeVisible();
+    await expectEntranceSelectedId(
+      pirateExitSelect!,
+      'MM_CLOCK_TOWN_SOUTH_FROM_LAUNDRY_POOL',
+    );
+  });
+
   test('entrance filters stay selected after browser refresh', async ({
     page,
   }) => {

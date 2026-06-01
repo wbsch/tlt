@@ -336,6 +336,24 @@
         "entranceIds": ["MM_SEWERS_FROM_EXTERIOR_DOOR"],
         "display": "exits"
       }
+    },
+    {
+      "coords": [318, 360],
+      "image": "overworld_entrance",
+      "type": "submenu",
+      "entranceMenu": {
+        "entranceIds": ["MM_EXTERIOR_GATE_FROM_SEWERS"],
+        "display": "exits"
+      }
+    },
+    {
+      "coords": [359, 371],
+      "image": "overworld_entrance",
+      "type": "submenu",
+      "entranceMenu": {
+        "entranceIds": ["MM_EXTERIOR_GATE_FROM_SEWERS"],
+        "display": "entrances"
+      }
     }
   ]
 }

@@ -690,22 +690,30 @@ export function useDungeonEntrances() {
     computeExitOverrides(normalizedEntranceOverrides.value),
   );
 
+  function getDisplayExitDestination(exitKey: string): string {
+    return (
+      exitOverridesMap.value[exitKey] ??
+      displayEntranceOverrides.value[exitKey] ??
+      ''
+    );
+  }
+
   function isExitMapped(exitKey: string): boolean {
-    return (exitOverridesMap.value[exitKey] ?? '').trim().length > 0;
+    return getDisplayExitDestination(exitKey).trim().length > 0;
   }
 
   function getExitDestination(exitKey: string): string {
-    return exitOverridesMap.value[exitKey] ?? '';
+    return getDisplayExitDestination(exitKey);
   }
 
   function getExitDestinationLabel(exitKey: string): string {
-    const dst = exitOverridesMap.value[exitKey];
+    const dst = getDisplayExitDestination(exitKey);
     if (!dst) return '';
     return getExitLabel(dst);
   }
 
   function getExitSelectedDestination(exitKey: string): string {
-    return exitOverridesMap.value[exitKey] ?? '';
+    return getDisplayExitDestination(exitKey);
   }
 
   /**
@@ -801,6 +809,7 @@ export function useDungeonEntrances() {
     exit: Pick<ExitEntry, 'key' | 'game' | 'pool'>,
   ) {
     const settings = trackerSettings.value ?? {};
+    const selectedDestination = getDisplayExitDestination(exit.key);
     const compatiblePools = new Set(
       getTrackedEntranceCompatiblePools(exit.pool, settings),
     );
@@ -812,7 +821,12 @@ export function useDungeonEntrances() {
     });
 
     return sortOptionsByGameThenLabel(
-      opts.filter((dest) => !isExitDestinationUsed(dest.value, exit.key)),
+      opts.filter((dest) => {
+        if (dest.value === selectedDestination) {
+          return true;
+        }
+        return !isExitDestinationUsed(dest.value, exit.key);
+      }),
     );
   }
 
