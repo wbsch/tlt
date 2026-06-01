@@ -1286,6 +1286,7 @@ class RawAutotrackerParserImpl implements RawAutotrackerParser {
   private lastStableMmLiveSignature: string | null = null;
   private pendingLiveTransitionGame: RawAutotrackerGame | null = null;
   private pendingLiveTransitionSignature: string | null = null;
+  private pendingLiveTransitionTimestamp: number | null = null;
 
   parse(message: RawAutotrackerMessage): ParsedRawAutotrackerSnapshot | null {
     if (message.schemaVersion !== '1' || message.diff) {
@@ -1332,6 +1333,7 @@ class RawAutotrackerParserImpl implements RawAutotrackerParser {
     this.lastStableMmLiveSignature = null;
     this.pendingLiveTransitionGame = null;
     this.pendingLiveTransitionSignature = null;
+    this.pendingLiveTransitionTimestamp = null;
   }
 
   private parseGameState(
@@ -1361,19 +1363,16 @@ class RawAutotrackerParserImpl implements RawAutotrackerParser {
       parseOotSave(state.oot, ootSaveData);
       const ootLiveSignature = readOotPlayStateSignature(memory);
       const ootLiveSample = readOotPlayStateSample(memory);
-      const hasOotLiveSample = ootLiveSample != null;
-      const canAcceptOotLiveSample =
-        hasOotLiveSample && ootLiveSample.sceneId === state.oot.sceneId;
       if (
         this.shouldDeferActiveGameFrame(
           'OoT',
           ootLiveSignature,
-          hasOotLiveSample,
+          ootLiveSample != null,
         )
       ) {
         return null;
       }
-      if (ootLiveSample && canAcceptOotLiveSample) {
+      if (ootLiveSample) {
         state.oot.liveSceneId = ootLiveSample.sceneId;
         state.oot.liveChestFlags = ootLiveSample.chestFlags;
         state.oot.liveCollectFlags = ootLiveSample.collectFlags;
@@ -1637,9 +1636,27 @@ class RawAutotrackerParserImpl implements RawAutotrackerParser {
     }
 
     const signatureKey = livePlayStateSignatureKey(signature);
+
+    // Timeout-based acceptance: if a transition has been pending for 1 s
+    // without new data, the autotracker is idle → state is stable.
+    if (
+      this.pendingLiveTransitionGame === activeGame &&
+      this.pendingLiveTransitionSignature === signatureKey &&
+      this.pendingLiveTransitionTimestamp !== null
+    ) {
+      const elapsed = Date.now() - this.pendingLiveTransitionTimestamp;
+      if (elapsed >= 1000) {
+        this.markStableActiveGameFrame(activeGame, signatureKey);
+        return false;
+      }
+    }
+
     if (!canAccept) {
       this.pendingLiveTransitionGame = activeGame;
       this.pendingLiveTransitionSignature = signatureKey;
+      // Don't record a timestamp for implausible samples – we never want
+      // to accept nonsense data via timeout.
+      this.pendingLiveTransitionTimestamp = null;
       return true;
     }
 
@@ -1659,7 +1676,19 @@ class RawAutotrackerParserImpl implements RawAutotrackerParser {
     ) {
       this.pendingLiveTransitionGame = null;
       this.pendingLiveTransitionSignature = null;
+      this.pendingLiveTransitionTimestamp = null;
       return false;
+    }
+
+    // If only the room changed (scene is the same), accept immediately.
+    // Room transitions within a scene are legitimate player movement,
+    // and implausible room values are already rejected by canAccept=false.
+    if (this.lastStableActiveGame === activeGame && stableSignature !== null) {
+      const stableSceneId = Number(stableSignature.split(':')[0]);
+      if (stableSceneId === signature.sceneId) {
+        this.markStableActiveGameFrame(activeGame, signatureKey);
+        return false;
+      }
     }
 
     if (
@@ -1672,6 +1701,7 @@ class RawAutotrackerParserImpl implements RawAutotrackerParser {
 
     this.pendingLiveTransitionGame = activeGame;
     this.pendingLiveTransitionSignature = signatureKey;
+    this.pendingLiveTransitionTimestamp = Date.now();
     return true;
   }
 
@@ -1687,6 +1717,7 @@ class RawAutotrackerParserImpl implements RawAutotrackerParser {
     }
     this.pendingLiveTransitionGame = null;
     this.pendingLiveTransitionSignature = null;
+    this.pendingLiveTransitionTimestamp = null;
   }
 
   private rememberOotState(oot: OotState): void {

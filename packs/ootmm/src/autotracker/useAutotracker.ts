@@ -412,6 +412,8 @@ export function useAutotracker(options: AutotrackerOptions) {
   let reconnectAttempts = 0;
   let hasReceivedRawSnapshot = false;
   let preserveVersionWarningOnDisable = false;
+  let lastRawMessage: RawAutotrackerMessage | null = null;
+  let idleAcceptTimer: ReturnType<typeof setTimeout> | null = null;
 
   // Canonical autotracker state (translated to tracker IDs)
   let liveRawState = new Map<string, number>();
@@ -509,9 +511,25 @@ export function useAutotracker(options: AutotrackerOptions) {
       return;
     }
 
+    lastRawMessage = msg;
+
     const parsed = rawParser.parse(msg);
     if (!parsed) {
+      // Frame was deferred (scene transition in progress). Start a timer so
+      // that after 1 s of silence the pending transition is accepted.
+      if (!idleAcceptTimer) {
+        idleAcceptTimer = setTimeout(() => {
+          idleAcceptTimer = null;
+          tryIdleAccept();
+        }, 1000);
+      }
       return;
+    }
+
+    // Frame was accepted – cancel any pending idle-accept timer.
+    if (idleAcceptTimer) {
+      clearTimeout(idleAcceptTimer);
+      idleAcceptTimer = null;
     }
 
     liveRawState = applyRawAutotrackerItems(new Map(), parsed.items, false);
@@ -530,6 +548,32 @@ export function useAutotracker(options: AutotrackerOptions) {
     if (msg.refresh) {
       pushToTracker(phase);
     }
+  }
+
+  /**
+   * After 1 s of silence from the autotracker, re-parse the last message.
+   * The parser's timeout-based acceptance will then accept any pending
+   * transition that has been stable for ≥ 1 s.
+   */
+  function tryIdleAccept() {
+    if (!lastRawMessage) {
+      return;
+    }
+    const parsed = rawParser.parse(lastRawMessage);
+    if (!parsed) {
+      return;
+    }
+
+    liveRawState = applyRawAutotrackerItems(new Map(), parsed.items, false);
+    liveState = buildTranslatedAutotrackerState(
+      liveRawState,
+      options.availableItemIds.value,
+      options.itemMaxCounts.value,
+      childWalletsEnabled(),
+    );
+    replaceLiveChecks(parsed.checks);
+
+    pushToTracker('live');
   }
 
   function getCollectedLocationIds(): string[] {
@@ -566,6 +610,10 @@ export function useAutotracker(options: AutotrackerOptions) {
       clearTimeout(reconnectTimer);
       reconnectTimer = null;
     }
+    if (idleAcceptTimer) {
+      clearTimeout(idleAcceptTimer);
+      idleAcceptTimer = null;
+    }
     if (ws) {
       ws.onopen = null;
       ws.onmessage = null;
@@ -576,6 +624,7 @@ export function useAutotracker(options: AutotrackerOptions) {
     }
     hasReceivedRawSnapshot = false;
     rawParser.reset();
+    lastRawMessage = null;
   }
 
   function disconnect(preserveVersionWarning = false) {

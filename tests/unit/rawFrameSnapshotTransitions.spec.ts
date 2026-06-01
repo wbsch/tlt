@@ -241,7 +241,7 @@ function expectChecksAbsent(checks: Set<string>, names: string[]) {
 }
 
 describe('raw frame snapshot transitions', () => {
-  it('ignores OoT live scene flags when live and saved scenes disagree', () => {
+  it('applies OoT live scene flags even when live and saved scenes disagree', () => {
     const fixtureName = 'after-bombchu-2-20260501-202008.json';
     const parser = createRawAutotrackerParser();
 
@@ -267,7 +267,8 @@ describe('raw frame snapshot transitions', () => {
     const mixedChecks = parsedCheckSet(mixedScene.checks);
     const stableChecks = parsedCheckSet(stableScene.checks);
 
-    expect(mixedChecks.has('Kokiri Forest Kokiri Sword Chest')).toBe(false);
+    // Live scene flags should be applied even when live scene differs from saved scene
+    expect(mixedChecks.has('Kokiri Forest Kokiri Sword Chest')).toBe(true);
     expect(mixedScene.items.length).toBeGreaterThan(0);
     expect(stableScene).not.toBeNull();
     expect(stableChecks.has('Kokiri Forest Kokiri Sword Chest')).toBe(true);
