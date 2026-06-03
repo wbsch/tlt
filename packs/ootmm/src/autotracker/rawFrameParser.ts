@@ -676,7 +676,6 @@ const MM_ITEM_GOLD_DUST = 0x22;
 const MM_ITEM_RUTO_LETTER = 0xb6;
 
 const EMPTY_INVENTORY_ITEM = 0xff;
-const MIN_PLAUSIBLE_OOT_EMPTY_INVENTORY_SLOT = 4;
 
 const SHARED_COINS_OFFSET = 0x7c0;
 const SHARED_COIN_COUNT = 4;
@@ -3028,16 +3027,6 @@ function isPlausibleOotSave(data: Uint8Array): boolean {
     return false;
   }
 
-  let emptySlots = 0;
-  for (let index = 0; index < 24; index++) {
-    if ((data[OOT_OFF_INV_ITEMS + index] ?? 0) === EMPTY_INVENTORY_ITEM) {
-      emptySlots++;
-    }
-  }
-  if (emptySlots < MIN_PLAUSIBLE_OOT_EMPTY_INVENTORY_SLOT) {
-    return false;
-  }
-
   if (readU16BE(data, OOT_OFF_GOLD_TOKENS) > 100) {
     return false;
   }
@@ -3058,15 +3047,6 @@ function isPlausibleMmSave(data: Uint8Array): boolean {
   }
   const day = readU32BE(data, MM_OFF_DAY);
   if (day > 4) {
-    return false;
-  }
-  let emptySlots = 0;
-  for (let index = 0; index < 48; index++) {
-    if ((data[MM_OFF_INV_ITEMS + index] ?? 0) === EMPTY_INVENTORY_ITEM) {
-      emptySlots++;
-    }
-  }
-  if (emptySlots < 16) {
     return false;
   }
   for (let index = 0; index < 9; index++) {
