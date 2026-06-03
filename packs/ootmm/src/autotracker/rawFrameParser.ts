@@ -1637,7 +1637,7 @@ class RawAutotrackerParserImpl implements RawAutotrackerParser {
 
     const signatureKey = livePlayStateSignatureKey(signature);
 
-    // Timeout-based acceptance: if a transition has been pending for 1 s
+    // Timeout-based acceptance: if a transition has been pending for 1 s
     // without new data, the autotracker is idle → state is stable.
     if (
       this.pendingLiveTransitionGame === activeGame &&

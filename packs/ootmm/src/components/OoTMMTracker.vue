@@ -1,7 +1,11 @@
 <script setup lang="ts">
 import { computed, onBeforeUnmount, onMounted, ref, watch } from 'vue';
 import { storeToRefs } from 'pinia';
-import type { TrackerLocationTraceResult, TrackerPack } from '@/types/tracker';
+import type {
+  LocationInfo,
+  TrackerLocationTraceResult,
+  TrackerPack,
+} from '@/types/tracker';
 import { requestTrackerFaqOpen } from '@/utils/trackerFaq';
 import OoTMMInventory from './OoTMMInventory.vue';
 import OoTMMLocations from './OoTMMLocations.vue';
@@ -641,6 +645,15 @@ const locationNamesById = computed(
       ]),
     ),
 );
+const locationInfoById = computed(
+  () =>
+    new Map(
+      allLocations.value.map((location): [string, LocationInfo] => [
+        location.id,
+        location,
+      ]),
+    ),
+);
 const locationVisibilityFilters = computed<LocationVisibilityFilters>(() => ({
   searchQuery: locationsSearchQuery.value,
   selectedCategory: locationsSelectedCategory.value,
@@ -951,6 +964,17 @@ function queueAutotrackerLocationToasts(
   const currentLocationIdSet = new Set(currentLocationIds);
   for (const locationId of nextLocationIds) {
     if (currentLocationIdSet.has(locationId)) {
+      continue;
+    }
+
+    const locationInfo = locationInfoById.value.get(locationId);
+    if (
+      locationInfo &&
+      !matchesLocationBaseVisibility(
+        locationInfo,
+        locationVisibilityFilters.value,
+      )
+    ) {
       continue;
     }
 
