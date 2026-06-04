@@ -3302,7 +3302,23 @@ function extractItems(state: GameState): RawAutotrackerItem[] {
 
   const ootTunics = (oot.equipment >> 8) & 0x0f;
   const ootBoots = (oot.equipment >> 12) & 0x0f;
-  appendPositiveItem(items, 'OOT_SWORD', oot.equipment & 0x0f);
+  // info.inventory.equipment.swords is an ownership bitmask (OOT_SWORD):
+  //   bit 0 → EQ_OOT_SWORD_KOKIRI     → OOT_SWORD_KOKIRI
+  //   bit 1 → EQ_OOT_SWORD_MASTER     → OOT_SWORD_MASTER
+  //   bit 2 → EQ_OOT_SWORD_KNIFE      → OOT_SWORD_KNIFE (Giant's/Goron Knife)
+  //   bit 4 → isBiggoronSword flag    → OOT_SWORD_BIGGORON
+  // Both Giant's Knife and Biggoron's Sword set bit 2 in the save data.
+  // isBiggoronSword (save+0x3e) is only set for Biggoron's Sword, so when it is
+  // set we must clear bit 2 to avoid a false Goron Knife detection.
+  // The delta system will preserve an already-tracked Goron Knife.
+  {
+    let swordBits = oot.equipment & 0x0f;
+    if (oot.isBiggoronSword) {
+      swordBits |= 0x10; // encode Biggoron's Sword as bit 4
+      swordBits &= ~0x04; // clear bit 2 (ambiguous with Knife)
+    }
+    appendPositiveItem(items, 'OOT_SWORD', swordBits);
+  }
   appendPositiveItem(items, 'OOT_SHIELD', (oot.equipment >> 4) & 0x0f);
   appendPositiveItem(items, 'OOT_TUNIC', ootEquipmentLevel(ootTunics));
   appendPositiveItem(

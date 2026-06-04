@@ -4,7 +4,7 @@
  * The autotracker sends raw save-data IDs that differ from the tracker's
  * canonical IDs in several ways:
  *   - Song teleport names (MINUET → TP_FOREST)
- *   - Equipment bitmasks (OOT_SWORD as bitmask → individual items)
+ *   - Equipment bitmasks (OOT_SWORD, OOT_SHIELD as bitmask → individual items)
  *   - Dungeon item naming (FIRE_TEMPLE_KEYS → SMALL_KEY_FIRE)
  *   - Inventory slot raw values (OOT_ADULT_TRADE → individual trade items)
  */
@@ -48,7 +48,8 @@ const OOT_EQUIPMENT_BITMASKS: Record<string, BitmaskEntry[]> = {
   OOT_SWORD: [
     { bit: 0, trackerId: 'OOT_SWORD_KOKIRI' },
     { bit: 1, trackerId: 'OOT_SWORD_MASTER' },
-    { bit: 2, trackerId: 'OOT_SWORD_BIGGORON' },
+    { bit: 2, trackerId: 'OOT_SWORD_KNIFE' },
+    { bit: 4, trackerId: 'OOT_SWORD_BIGGORON' },
   ],
   OOT_SHIELD: [
     { bit: 0, trackerId: 'OOT_SHIELD_DEKU' },
