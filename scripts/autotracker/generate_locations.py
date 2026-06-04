@@ -270,7 +270,7 @@ def build_location_mapping(repo_root: pathlib.Path) -> dict[str, object]:
                         raw_id = int(value, 0)
                     except ValueError:
                         continue
-                    if raw_id >= 0x30:
+                    if raw_id >= 0x40:
                         scene_kind = "collect"
                     elif raw_id >= 0x20:
                         scene_kind = "switch1"

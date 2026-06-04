@@ -769,36 +769,12 @@
       "name": "Ikana Valley Scrub HP"
     },
     {
-      "key": "MM_collect_27_16",
-      "name": "Woodfall Temple SF Main Bubble"
-    },
-    {
-      "key": "MM_collect_27_17",
-      "name": "Woodfall Temple SF Maze Skulltula"
-    },
-    {
-      "key": "MM_collect_27_18",
-      "name": "Woodfall Temple SF Pre-Boss Top Right"
-    },
-    {
       "key": "MM_collect_29_10",
       "name": "Ancient Castle of Ikana HP"
     },
     {
       "key": "MM_collect_31_31",
       "name": "Woodfall Temple Boss Container"
-    },
-    {
-      "key": "MM_collect_33_16",
-      "name": "Snowhead Temple SF Bridge Pillar"
-    },
-    {
-      "key": "MM_collect_33_17",
-      "name": "Snowhead Temple SF Dinolfos 2"
-    },
-    {
-      "key": "MM_collect_33_18",
-      "name": "Snowhead Temple SF Map Room"
     },
     {
       "key": "MM_collect_35_12",
@@ -843,18 +819,6 @@
     {
       "key": "MM_collect_71_1",
       "name": "Moon Trial Zora HP"
-    },
-    {
-      "key": "MM_collect_73_16",
-      "name": "Great Bay Temple SF Water Wheel Platform"
-    },
-    {
-      "key": "MM_collect_73_17",
-      "name": "Great Bay Temple SF Pre-Boss Above Water"
-    },
-    {
-      "key": "MM_collect_73_18",
-      "name": "Great Bay Temple SF Water Wheel Skulltula"
     },
     {
       "key": "MM_collect_76_30",
@@ -969,6 +933,18 @@
       "name": "Woodfall Temple SF Maze Bubble"
     },
     {
+      "key": "MM_switch1_27_16",
+      "name": "Woodfall Temple SF Main Bubble"
+    },
+    {
+      "key": "MM_switch1_27_17",
+      "name": "Woodfall Temple SF Maze Skulltula"
+    },
+    {
+      "key": "MM_switch1_27_18",
+      "name": "Woodfall Temple SF Pre-Boss Top Right"
+    },
+    {
       "key": "MM_switch1_33_11",
       "name": "Snowhead Temple SF Snow Room"
     },
@@ -985,8 +961,32 @@
       "name": "Snowhead Temple SF Bridge Under Platform"
     },
     {
+      "key": "MM_switch1_33_16",
+      "name": "Snowhead Temple SF Bridge Pillar"
+    },
+    {
+      "key": "MM_switch1_33_17",
+      "name": "Snowhead Temple SF Dinolfos 2"
+    },
+    {
+      "key": "MM_switch1_33_18",
+      "name": "Snowhead Temple SF Map Room"
+    },
+    {
       "key": "MM_switch1_73_15",
       "name": "Great Bay Temple SF Pre-Boss Underwater"
+    },
+    {
+      "key": "MM_switch1_73_16",
+      "name": "Great Bay Temple SF Water Wheel Platform"
+    },
+    {
+      "key": "MM_switch1_73_17",
+      "name": "Great Bay Temple SF Pre-Boss Above Water"
+    },
+    {
+      "key": "MM_switch1_73_18",
+      "name": "Great Bay Temple SF Water Wheel Skulltula"
     },
     {
       "key": "OOT_chest_0_0",
