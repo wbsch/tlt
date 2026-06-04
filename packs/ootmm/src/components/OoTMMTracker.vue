@@ -80,9 +80,15 @@ import {
   RAW_CHUNK_SPECS_BY_GAME,
   createRawAutotrackerParser,
   type RawAutotrackerCheck,
+  type RawAutotrackerGame,
   type RawAutotrackerItem,
   type RawAutotrackerMessage,
 } from '../autotracker/rawFrameParser';
+import {
+  OOT_SCENE_TO_MAP,
+  MM_SCENE_TO_MAP,
+  DEFAULT_MAP_FOR_GAME,
+} from '../autotracker/sceneToMap';
 import {
   buildAutotrackerInventorySnapshot,
   mergeAutotrackerCollectedLocationsUpdate,
@@ -728,6 +734,20 @@ const { resolveCodeToCheckIds: resolveMapSelectorCodeToCheckIds } =
     collectedLocationIdSet,
   );
 
+/** Synchronous callback for auto-map-switching on scene/game changes. */
+function handleSceneChange(game: RawAutotrackerGame, sceneId: number): void {
+  const targetMap =
+    game === 'OoT'
+      ? (OOT_SCENE_TO_MAP[sceneId] ?? DEFAULT_MAP_FOR_GAME['OoT'])
+      : (MM_SCENE_TO_MAP[sceneId] ?? DEFAULT_MAP_FOR_GAME['MM']);
+  if (!targetMap) return;
+
+  const isSelectable = selectableMapDefs.value.some((m) => m.id === targetMap);
+  if (isSelectable && targetMap !== activeMapId.value) {
+    activeMapId.value = targetMap;
+  }
+}
+
 // useAutotracker pushes inventory and collected locations back-to-back for the
 // same delta. Buffer the inventory half so the store can record one undo step.
 let pendingAutotrackerInventoryUpdate: PendingAutotrackerInventoryUpdate | null =
@@ -753,7 +773,41 @@ const autotracker = useAutotracker({
   onCollectedLocationsUpdate: (locationIds, meta) => {
     applyPendingAutotrackerDelta(locationIds, meta.phase);
   },
+  onSceneChange: handleSceneChange,
 });
+
+// Debug helpers – expose autotracker state for console testing
+if (typeof window !== 'undefined') {
+  (window as any).__debugAt = {
+    setOotScene: (id: number) => {
+      autotracker.ootSceneId.value = id;
+      handleSceneChange('OoT', id);
+    },
+    setMmScene: (id: number) => {
+      autotracker.mmSceneId.value = id;
+      handleSceneChange('MM', id);
+    },
+    setActiveGame: (g: 'OoT' | 'MM') => {
+      autotracker.activeGame.value = g;
+    },
+    setEnabled: (v: boolean) => {
+      autotracker.enabled.value = v;
+    },
+    getState: () => ({
+      activeGame: autotracker.activeGame.value,
+      ootSceneId: autotracker.ootSceneId.value,
+      mmSceneId: autotracker.mmSceneId.value,
+      enabled: autotracker.enabled.value,
+      activeMapId: activeMapId.value,
+    }),
+    triggerSceneChange: (game: 'OoT' | 'MM', sceneId: number) => {
+      autotracker.activeGame.value = game;
+      if (game === 'OoT') autotracker.ootSceneId.value = sceneId;
+      else autotracker.mmSceneId.value = sceneId;
+      handleSceneChange(game, sceneId);
+    },
+  };
+}
 
 const isAutotrackerVersionWarningDismissed = ref(false);
 const autotrackerConnectionWarningMessage = ref<string | null>(null);
@@ -810,6 +864,7 @@ watch(
   (status) => {
     if (status === 'connected') {
       autotrackerConnectionWarningMessage.value = null;
+      return;
     }
   },
 );

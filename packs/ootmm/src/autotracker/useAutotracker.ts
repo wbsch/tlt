@@ -6,6 +6,8 @@ import {
 import {
   createRawAutotrackerParser,
   RAW_CHUNK_SPECS_BY_GAME,
+  type ParsedRawAutotrackerSnapshot,
+  type RawAutotrackerGame,
   type RawAutotrackerMessage,
 } from './rawFrameParser';
 
@@ -40,6 +42,12 @@ interface AutotrackerOptions {
     locationIds: string[],
     meta: AutotrackerUpdateMeta,
   ) => void;
+  /**
+   * Called when the autotracker detects a scene or game change.
+   * Fires synchronously in processRawMessage/tryIdleAccept, not via a Vue
+   * watcher, so it is guaranteed to run as soon as a new scene is accepted.
+   */
+  onSceneChange?: (activeGame: RawAutotrackerGame, sceneId: number) => void;
 }
 
 export interface AutotrackerCheck {
@@ -401,6 +409,35 @@ export function useAutotracker(options: AutotrackerOptions) {
   const url = ref(DEFAULT_URL);
   const lastError = ref<string | null>(null);
   const versionWarning = ref<string | null>(null);
+
+  /** Current active game detected by the autotracker. */
+  const activeGame = ref<RawAutotrackerGame | null>(null);
+  /** Current OoT scene ID (from save context). */
+  const ootSceneId = ref(0);
+  /** Current MM scene ID (from live play state). */
+  const mmSceneId = ref(0);
+
+  /** Tracked scene key for the onSceneChange callback. */
+  let lastTrackedSceneKey = '';
+
+  /**
+   * Called from processRawMessage and tryIdleAccept to fire the
+   * onSceneChange callback synchronously when the active game or scene
+   * ID changes.
+   */
+  function notifySceneChange(parsed: ParsedRawAutotrackerSnapshot): void {
+    const sceneKey =
+      parsed.activeGame === 'OoT'
+        ? `OoT:${parsed.ootSceneId}`
+        : `MM:${parsed.mmSceneId}`;
+    if (sceneKey !== lastTrackedSceneKey && options.onSceneChange) {
+      lastTrackedSceneKey = sceneKey;
+      const sceneId =
+        parsed.activeGame === 'OoT' ? parsed.ootSceneId : parsed.mmSceneId;
+      options.onSceneChange(parsed.activeGame, sceneId);
+    }
+  }
+
   const rawParser = createRawAutotrackerParser();
 
   function childWalletsEnabled(): boolean {
@@ -532,6 +569,14 @@ export function useAutotracker(options: AutotrackerOptions) {
       idleAcceptTimer = null;
     }
 
+    activeGame.value = parsed.activeGame;
+    ootSceneId.value = parsed.ootSceneId;
+    mmSceneId.value = parsed.mmSceneId;
+
+    // Synchronous scene-change notification (not reliant on Vue watchers).
+    // Only fires when the game or scene ID actually changes.
+    notifySceneChange(parsed);
+
     liveRawState = applyRawAutotrackerItems(new Map(), parsed.items, false);
     liveState = buildTranslatedAutotrackerState(
       liveRawState,
@@ -563,6 +608,13 @@ export function useAutotracker(options: AutotrackerOptions) {
     if (!parsed) {
       return;
     }
+
+    activeGame.value = parsed.activeGame;
+    ootSceneId.value = parsed.ootSceneId;
+    mmSceneId.value = parsed.mmSceneId;
+
+    // Synchronous scene-change notification (not reliant on Vue watchers).
+    notifySceneChange(parsed);
 
     liveRawState = applyRawAutotrackerItems(new Map(), parsed.items, false);
     liveState = buildTranslatedAutotrackerState(
@@ -632,6 +684,10 @@ export function useAutotracker(options: AutotrackerOptions) {
     liveRawState = new Map();
     liveState = new Map();
     liveChecks = new Map();
+    activeGame.value = null;
+    ootSceneId.value = 0;
+    mmSceneId.value = 0;
+    lastTrackedSceneKey = '';
     status.value = 'disconnected';
     lastError.value = null;
     if (!preserveVersionWarning) {
@@ -744,6 +800,9 @@ export function useAutotracker(options: AutotrackerOptions) {
     url,
     lastError,
     versionWarning,
+    activeGame,
+    ootSceneId,
+    mmSceneId,
     probeAvailability,
     destroy,
   };

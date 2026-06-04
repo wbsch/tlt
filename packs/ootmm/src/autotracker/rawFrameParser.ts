@@ -78,6 +78,7 @@ export interface ParsedRawAutotrackerSnapshot {
   activeGame: RawAutotrackerGame;
   saveIndex: number;
   ootSceneId: number;
+  mmSceneId: number;
   mmDay: number;
   mmPlayerForm: number;
   items: RawAutotrackerItem[];
@@ -1312,10 +1313,17 @@ class RawAutotrackerParserImpl implements RawAutotrackerParser {
     this.rememberMmState(state.mm, state.saveIndex);
     this.rememberSharedState(state.shared);
 
+    // Use the live (play-state) scene ID for auto-map-switching, as it
+    // updates immediately on scene transitions. Fall back to the save-context
+    // scene ID when no live sample is available yet (liveSceneId == 0).
+    const ootSceneId =
+      state.oot.liveSceneId !== 0 ? state.oot.liveSceneId : state.oot.sceneId;
+
     return {
       activeGame: state.activeGame,
       saveIndex: state.saveIndex >>> 0,
-      ootSceneId: state.oot.sceneId >>> 0,
+      ootSceneId: ootSceneId >>> 0,
+      mmSceneId: state.mm.liveSceneId >>> 0,
       mmDay: state.mm.day >>> 0,
       mmPlayerForm: state.mm.playerForm >>> 0,
       items: extractItems(state),
