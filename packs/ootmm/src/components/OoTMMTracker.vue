@@ -405,6 +405,7 @@ const {
   preCompletedDungeons,
   songEvents,
   collectedLocationIds,
+  junkLocationIds,
   isApplyingSettings,
   preCompletedEnabled,
   canUndo,
@@ -1184,7 +1185,21 @@ function resolveAutotrackerCollectedLocationsUpdate(
       return null;
     }
 
-    return locationIds;
+    // Ensure junk locations from the spoiler log are never set to uncollected
+    // during an overwrite, since the autotracker does not track them separately.
+    const protectedIds = new Set(locationIds);
+    for (const id of junkLocationIds.value) {
+      protectedIds.add(id);
+    }
+
+    // Also ensure pre-completed dungeon locations remain collected.
+    const preCompletedLocationIds =
+      props.tracker.getPreCompletedLocationIds?.() ?? [];
+    for (const id of preCompletedLocationIds) {
+      protectedIds.add(id);
+    }
+
+    return Array.from(protectedIds);
   }
 
   return mergeAutotrackerCollectedLocationsUpdate({
@@ -2931,6 +2946,7 @@ function applyJunkLocations(junkLocations: string[]) {
     byName.set(key, existing);
   }
   const next = new Set(collectedLocationIds.value);
+  const resolvedIds: string[] = [];
   for (const locName of junkLocations) {
     const ids = byName.get(normalizeName(locName));
     if (!ids) {
@@ -2939,9 +2955,11 @@ function applyJunkLocations(junkLocations: string[]) {
     }
     for (const id of ids) {
       next.add(id);
+      resolvedIds.push(id);
     }
   }
   sessionStore.setCollectedLocationIds(Array.from(next));
+  junkLocationIds.value = resolvedIds;
 }
 
 function requestSpoilerStartingItemsPlayer(players: number[]) {

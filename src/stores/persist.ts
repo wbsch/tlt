@@ -343,6 +343,7 @@ export const PERSIST_CONFIGS: Record<PersistStoreId, PersistConfig> = {
       'inventoryById',
       'collectedLocationIds',
       'preCompletedDungeons',
+      'junkLocationIds',
       'songEvents',
       'shopPrices',
       'entranceOverrides',
@@ -359,6 +360,9 @@ export const PERSIST_CONFIGS: Record<PersistStoreId, PersistConfig> = {
         : {}),
       ...(Array.isArray(raw.preCompletedDungeons)
         ? { preCompletedDungeons: stringArray(raw.preCompletedDungeons) }
+        : {}),
+      ...(Array.isArray(raw.junkLocationIds)
+        ? { junkLocationIds: stringArray(raw.junkLocationIds) }
         : {}),
       ...(isPlainObject(raw.songEvents)
         ? { songEvents: nonNegativeNumberRecord(raw.songEvents) }

@@ -51,6 +51,7 @@ type SessionSnapshot = {
   entranceOverrides: Record<string, string>;
   hasImportedSpoilerLog: boolean;
   importedSpoilerLogVersion: string | null;
+  junkLocationIds: string[];
 };
 
 type MutationOptions = {
@@ -309,6 +310,7 @@ export const useOoTMMSessionStore = defineStore('ootmm-session', () => {
   const inventoryById = ref<Record<string, number>>({});
   const collectedLocationIds = ref<string[]>([]);
   const preCompletedDungeons = ref<string[]>([]);
+  const junkLocationIds = ref<string[]>([]);
   const autoCollectedPreCompletedLocationIds = ref<string[]>([]);
   const songEvents = ref<Record<string, number>>({});
   const shopPrices = ref<Record<string, number>>({});
@@ -418,6 +420,7 @@ export const useOoTMMSessionStore = defineStore('ootmm-session', () => {
       inventoryById: sanitizeInventoryRecord({ ...inventoryById.value }),
       collectedLocationIds: [...collectedLocationIds.value],
       preCompletedDungeons: [...preCompletedDungeons.value],
+      junkLocationIds: [...junkLocationIds.value],
       songEvents: { ...songEvents.value },
       shopPrices: { ...shopPrices.value },
       trackerSettings: cloneSettingsRecord(trackerSettings.value),
@@ -635,6 +638,9 @@ export const useOoTMMSessionStore = defineStore('ootmm-session', () => {
         inventoryById.value = targetInventoryById;
         collectedLocationIds.value = targetCollectedLocationIds;
         preCompletedDungeons.value = targetPreCompletedDungeons;
+        junkLocationIds.value = targetHasImportedSpoilerLog
+          ? uniqueStrings(snapshot.junkLocationIds ?? [])
+          : [];
         autoCollectedPreCompletedLocationIds.value = [];
         songEvents.value = targetSongEvents;
         shopPrices.value = targetShopPrices;
@@ -681,6 +687,9 @@ export const useOoTMMSessionStore = defineStore('ootmm-session', () => {
       }
 
       preCompletedDungeons.value = targetPreCompletedDungeons;
+      junkLocationIds.value = targetHasImportedSpoilerLog
+        ? uniqueStrings(snapshot.junkLocationIds ?? [])
+        : [];
       autoCollectedPreCompletedLocationIds.value = [];
       songEvents.value = targetSongEvents;
       shopPrices.value = targetShopPrices;
@@ -1441,6 +1450,7 @@ export const useOoTMMSessionStore = defineStore('ootmm-session', () => {
     inventoryById.value = {};
     collectedLocationIds.value = [];
     preCompletedDungeons.value = [];
+    junkLocationIds.value = [];
     autoCollectedPreCompletedLocationIds.value = [];
     songEvents.value = {};
     shopPrices.value = {};
@@ -1548,6 +1558,7 @@ export const useOoTMMSessionStore = defineStore('ootmm-session', () => {
     inventoryById,
     collectedLocationIds,
     preCompletedDungeons,
+    junkLocationIds,
     songEvents,
     shopPrices,
     entranceOverrides,
