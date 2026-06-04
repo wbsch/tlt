@@ -285,15 +285,22 @@ describe('raw frame snapshot transitions', () => {
         chestFlags: 0x0000000f,
       }).message,
     );
-    const mixedScene = parser.parse(
+    const firstNewScene = parser.parse(
       buildOotLiveSceneMessage(fixtureName, 2, {
         liveSceneId: 85,
         saveSceneId: 85,
         chestFlags: 0x0000000f,
       }).message,
     );
-    const stableScene = parser.parse(
+    const secondNewScene = parser.parse(
       buildOotLiveSceneMessage(fixtureName, 3, {
+        liveSceneId: 85,
+        saveSceneId: 85,
+        chestFlags: 0x0000000f,
+      }).message,
+    );
+    const stableScene = parser.parse(
+      buildOotLiveSceneMessage(fixtureName, 4, {
         liveSceneId: 85,
         saveSceneId: 85,
         chestFlags: 0x00000001,
@@ -313,7 +320,8 @@ describe('raw frame snapshot transitions', () => {
     expect(previousChecks.has("Mido's House Bottom Right")).toBe(true);
     expect(previousChecks.has('Kokiri Forest Kokiri Sword Chest')).toBe(false);
 
-    expect(mixedScene).toBeNull();
+    expect(firstNewScene).toBeNull();
+    expect(secondNewScene).toBeNull();
 
     expect(stableChecks.has('Kokiri Forest Kokiri Sword Chest')).toBe(true);
   });
@@ -329,21 +337,28 @@ describe('raw frame snapshot transitions', () => {
         chestFlags: 0,
       }).message,
     );
-    const mixedScene = parser.parse(
+    const firstNewScene = parser.parse(
       buildMmLiveSceneMessage(fixtureName, 2, {
         liveSceneId: 6,
         chestFlags: 0x00000001,
       }).message,
     );
-    const stableScene = parser.parse(
+    const secondNewScene = parser.parse(
       buildMmLiveSceneMessage(fixtureName, 3, {
+        liveSceneId: 6,
+        chestFlags: 0x00000001,
+      }).message,
+    );
+    const stableScene = parser.parse(
+      buildMmLiveSceneMessage(fixtureName, 4, {
         liveSceneId: 6,
         chestFlags: 0x00000001,
       }).message,
     );
 
     expect(previousScene).not.toBeNull();
-    expect(mixedScene).toBeNull();
+    expect(firstNewScene).toBeNull();
+    expect(secondNewScene).toBeNull();
     expect(stableScene).not.toBeNull();
   });
 
@@ -363,14 +378,20 @@ describe('raw frame snapshot transitions', () => {
         liveSceneId: 6,
       }).message,
     );
-    const stableMmScene = parser.parse(
+    const secondMmScene = parser.parse(
       buildMmLiveSceneMessage(mmFixture, 3, {
+        liveSceneId: 6,
+      }).message,
+    );
+    const stableMmScene = parser.parse(
+      buildMmLiveSceneMessage(mmFixture, 4, {
         liveSceneId: 6,
       }).message,
     );
 
     expect(ootScene).not.toBeNull();
     expect(firstMmScene).toBeNull();
+    expect(secondMmScene).toBeNull();
     expect(stableMmScene).not.toBeNull();
   });
 

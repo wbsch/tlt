@@ -1286,6 +1286,7 @@ class RawAutotrackerParserImpl implements RawAutotrackerParser {
   private pendingLiveTransitionGame: RawAutotrackerGame | null = null;
   private pendingLiveTransitionSignature: string | null = null;
   private pendingLiveTransitionTimestamp: number | null = null;
+  private pendingLiveTransitionDiscardCount = 0;
 
   parse(message: RawAutotrackerMessage): ParsedRawAutotrackerSnapshot | null {
     if (message.schemaVersion !== '1' || message.diff) {
@@ -1333,6 +1334,7 @@ class RawAutotrackerParserImpl implements RawAutotrackerParser {
     this.pendingLiveTransitionGame = null;
     this.pendingLiveTransitionSignature = null;
     this.pendingLiveTransitionTimestamp = null;
+    this.pendingLiveTransitionDiscardCount = 0;
   }
 
   private parseGameState(
@@ -1645,6 +1647,7 @@ class RawAutotrackerParserImpl implements RawAutotrackerParser {
     ) {
       const elapsed = Date.now() - this.pendingLiveTransitionTimestamp;
       if (elapsed >= 1000) {
+        this.pendingLiveTransitionDiscardCount = 0;
         this.markStableActiveGameFrame(activeGame, signatureKey);
         return false;
       }
@@ -1676,6 +1679,7 @@ class RawAutotrackerParserImpl implements RawAutotrackerParser {
       this.pendingLiveTransitionGame = null;
       this.pendingLiveTransitionSignature = null;
       this.pendingLiveTransitionTimestamp = null;
+      this.pendingLiveTransitionDiscardCount = 0;
       return false;
     }
 
@@ -1694,6 +1698,10 @@ class RawAutotrackerParserImpl implements RawAutotrackerParser {
       this.pendingLiveTransitionGame === activeGame &&
       this.pendingLiveTransitionSignature === signatureKey
     ) {
+      if (this.pendingLiveTransitionDiscardCount > 0) {
+        this.pendingLiveTransitionDiscardCount--;
+        return true;
+      }
       this.markStableActiveGameFrame(activeGame, signatureKey);
       return false;
     }
@@ -1701,6 +1709,7 @@ class RawAutotrackerParserImpl implements RawAutotrackerParser {
     this.pendingLiveTransitionGame = activeGame;
     this.pendingLiveTransitionSignature = signatureKey;
     this.pendingLiveTransitionTimestamp = Date.now();
+    this.pendingLiveTransitionDiscardCount = 1;
     return true;
   }
 
@@ -1717,6 +1726,7 @@ class RawAutotrackerParserImpl implements RawAutotrackerParser {
     this.pendingLiveTransitionGame = null;
     this.pendingLiveTransitionSignature = null;
     this.pendingLiveTransitionTimestamp = null;
+    this.pendingLiveTransitionDiscardCount = 0;
   }
 
   private rememberOotState(oot: OotState): void {
