@@ -31,6 +31,11 @@ const SIMPLE_RENAMES: Record<string, string> = {
   // MM notebook
   MM_NOTEBOOK: 'MM_BOMBER_NOTEBOOK',
 
+  // OOT_QUIVER, MM_QUIVER — upgrade level for bow (0-3), mapped to bow item so
+  // the qty drives icon variant selection (30/40/50 arrow overlays)
+  OOT_QUIVER: 'OOT_BOW',
+  MM_QUIVER: 'MM_BOW',
+
   // Ganon boss key
   OOT_GANON_BK: 'OOT_BOSS_KEY_GANON',
 };
@@ -238,8 +243,7 @@ const SKIP_IDS = new Set([
   'MM_HEART_PIECES', // not tracked as item
   'OOT_TUNIC', // legacy combined tunic bitmask; direct tunic IDs are tracked now
   'OOT_BOOTS', // legacy combined boots bitmask; direct boots IDs are tracked now
-  'OOT_QUIVER', // upgrade level for bow, not tracked separately
-  'MM_QUIVER', // upgrade level for bow, not tracked separately
+  // OOT_QUIVER, MM_QUIVER — remapped to OOT_BOW/MM_BOW via SIMPLE_RENAMES
   'OOT_BULLET_BAG', // upgrade level for slingshot, not tracked separately
   'OOT_DEKU_NUTS', // presence flag; tracker uses OOT_NUT_UPGRADE
   'MM_NUT', // presence flag; tracker uses MM_NUT_UPGRADE
