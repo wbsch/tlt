@@ -567,6 +567,7 @@ const EXTRA_IDX_OOT_TRADE_SAVE = 10;
 const EXTRA_IDX_MM_OWL_FLAGS = 11;
 const EXTRA_IDX_MM_FLAGS3 = 13;
 const EXTRA_IDX_OOT_SILVER_1 = 14;
+const EXTRA_IDX_OOT_TRIFORCE = 19;
 
 const QUEST_OOT_MEDALLION_FOREST = 0;
 const QUEST_OOT_MEDALLION_FIRE = 1;
@@ -3471,6 +3472,11 @@ function extractItems(state: GameState): RawAutotrackerItem[] {
     items,
     'OOT_GANON_BK',
     boolToInt(((oot.extraRecords[EXTRA_IDX_OOT_FLAGS] ?? 0) & 1) !== 0),
+  );
+  appendPositiveItem(
+    items,
+    'OOT_TRIFORCE',
+    oot.extraRecords[EXTRA_IDX_OOT_TRIFORCE] ?? 0,
   );
 
   appendQuestBit(

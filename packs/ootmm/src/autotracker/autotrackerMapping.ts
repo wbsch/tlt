@@ -38,6 +38,9 @@ const SIMPLE_RENAMES: Record<string, string> = {
 
   // Ganon boss key
   OOT_GANON_BK: 'OOT_BOSS_KEY_GANON',
+
+  // Triforce pieces count from extra record
+  OOT_TRIFORCE: 'SHARED_TRIFORCE',
 };
 
 // ---------------------------------------------------------------------------
