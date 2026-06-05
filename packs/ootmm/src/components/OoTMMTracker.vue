@@ -84,11 +84,7 @@ import {
   type RawAutotrackerItem,
   type RawAutotrackerMessage,
 } from '../autotracker/rawFrameParser';
-import {
-  OOT_SCENE_TO_MAP,
-  MM_SCENE_TO_MAP,
-  DEFAULT_MAP_FOR_GAME,
-} from '../autotracker/sceneToMap';
+import { OOT_SCENE_TO_MAP, MM_SCENE_TO_MAP } from '../autotracker/sceneToMap';
 import {
   buildAutotrackerInventorySnapshot,
   mergeAutotrackerCollectedLocationsUpdate,
@@ -736,15 +732,18 @@ const { resolveCodeToCheckIds: resolveMapSelectorCodeToCheckIds } =
 
 /** Synchronous callback for auto-map-switching on scene/game changes. */
 function handleSceneChange(game: RawAutotrackerGame, sceneId: number): void {
-  const targetMap =
-    game === 'OoT'
-      ? (OOT_SCENE_TO_MAP[sceneId] ?? DEFAULT_MAP_FOR_GAME['OoT'])
-      : (MM_SCENE_TO_MAP[sceneId] ?? DEFAULT_MAP_FOR_GAME['MM']);
-  if (!targetMap) return;
+  // Respect the auto-map-switch toggle setting.
+  if (!trackerSettings.value?.autoMapSwitch) return;
 
-  const isSelectable = selectableMapDefs.value.some((m) => m.id === targetMap);
-  if (isSelectable && targetMap !== activeMapId.value) {
-    activeMapId.value = targetMap;
+  const mapForScene =
+    game === 'OoT' ? OOT_SCENE_TO_MAP[sceneId] : MM_SCENE_TO_MAP[sceneId];
+  if (!mapForScene) return;
+
+  const isSelectable = selectableMapDefs.value.some(
+    (m) => m.id === mapForScene,
+  );
+  if (isSelectable && mapForScene !== activeMapId.value) {
+    activeMapId.value = mapForScene;
   }
 }
 
@@ -1301,10 +1300,34 @@ function applyPendingAutotrackerDelta(
   sessionStore.applyAutotrackerDelta(nextInventory, nextCollectedLocationIds);
 }
 
+function updateAutoMapSwitch(enabled: boolean) {
+  trackerSettings.value = {
+    ...trackerSettings.value,
+    autoMapSwitch: enabled,
+  };
+
+  // When toggled ON, immediately jump to the current scene's map.
+  if (enabled) {
+    const game = autotracker.activeGame.value;
+    if (game) {
+      const sceneId =
+        game === 'OoT'
+          ? autotracker.ootSceneId.value
+          : autotracker.mmSceneId.value;
+      handleSceneChange(game, sceneId);
+    }
+  }
+}
+
 function handleAutotrackerEnabledUpdate(nextEnabled: boolean) {
   if (!nextEnabled) {
     deactivateAutotracker();
     return;
+  }
+
+  // When autotracking is enabled, automatically enable auto-map-switch.
+  if (!trackerSettings.value?.autoMapSwitch) {
+    updateAutoMapSwitch(true);
   }
 
   void startAutotracker('preserve');
@@ -3679,6 +3702,21 @@ onBeforeUnmount(() => {
               @start-overwrite="startAutotrackerOverwriteMode"
             />
           </div>
+          <label
+            v-if="autotracker.enabled.value"
+            class="auto-map-switch"
+            data-testid="auto-map-switch"
+          >
+            <input
+              type="checkbox"
+              class="auto-map-switch-input"
+              :checked="Boolean(trackerSettings?.autoMapSwitch)"
+              @change="
+                updateAutoMapSwitch(($event.target as HTMLInputElement).checked)
+              "
+            />
+            <span class="auto-map-switch-label">Auto-Switch Map</span>
+          </label>
           <div
             v-if="visibleAutotrackerInlineWarning"
             class="autotracker-inline-warning"
@@ -4697,6 +4735,28 @@ onBeforeUnmount(() => {
 .autotracker-inline-warning-close:focus-visible {
   outline: 2px solid #fcd34d;
   outline-offset: 2px;
+}
+
+.auto-map-switch {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  cursor: pointer;
+  user-select: none;
+}
+
+.auto-map-switch-input {
+  flex-shrink: 0;
+  width: 0.85rem;
+  height: 0.85rem;
+  cursor: pointer;
+  accent-color: #4fc3f7;
+}
+
+.auto-map-switch-label {
+  font-size: 0.7rem;
+  line-height: 1.15;
+  color: #d4d4d4;
 }
 
 .tabs {

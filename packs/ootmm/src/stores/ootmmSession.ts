@@ -317,6 +317,35 @@ export const useOoTMMSessionStore = defineStore('ootmm-session', () => {
   const entranceOverrides = ref<Record<string, string>>({});
 
   const trackerSettings = ref<Record<string, unknown>>({});
+
+  /**
+   * Keys that are tracker-only (not from the OoTMM core) and must be
+   * preserved across tracker re-initializations.
+   */
+  const TRACKER_ONLY_SETTING_KEYS = new Set<string>(['autoMapSwitch']);
+
+  /**
+   * Preserve tracker-only keys when applying settings from the tracker.
+   * Looks in the previous trackerSettings first, and if not found there,
+   * falls back to the `applyContext` (the settings that were sent to the
+   * tracker). This ensures newly added tracker-only settings survive the
+   * first apply even when not yet present in trackerSettings.
+   */
+  function preserveTrackerOnlySettings(
+    raw: Record<string, unknown>,
+    context?: Record<string, unknown>,
+  ): Record<string, unknown> {
+    const merged = { ...raw };
+    for (const key of TRACKER_ONLY_SETTING_KEYS) {
+      if (key in trackerSettings.value) {
+        merged[key] = trackerSettings.value[key];
+      } else if (context && key in context) {
+        merged[key] = context[key];
+      }
+    }
+    return merged;
+  }
+
   const hasImportedSpoilerLog = ref(false);
   const importedSpoilerLogVersion = ref<string | null>(null);
   const availableItemIds = ref<string[]>([]);
@@ -671,7 +700,10 @@ export const useOoTMMSessionStore = defineStore('ootmm-session', () => {
             targetEntranceOverrides,
           );
           await currentTracker.initialize(settingsWithEntrances);
-          trackerSettings.value = { ...currentTracker.getSettings() };
+          trackerSettings.value = preserveTrackerOnlySettings(
+            { ...currentTracker.getSettings() },
+            targetSettings,
+          );
           availableItemIds.value = setToArray(
             currentTracker.getAvailableItemIds?.() ?? new Set<string>(),
           );
@@ -797,7 +829,10 @@ export const useOoTMMSessionStore = defineStore('ootmm-session', () => {
         isApplyingSettings.value = false;
       }
     }
-    trackerSettings.value = { ...nextTracker.getSettings() };
+    trackerSettings.value = preserveTrackerOnlySettings(
+      { ...nextTracker.getSettings() },
+      targetSettings,
+    );
     if (shouldCheckImportedShareSettings) {
       const importedSettings = stripPlandoEntrances(targetSettings);
       const canonicalSettings = stripPlandoEntrances(trackerSettings.value);
@@ -820,7 +855,9 @@ export const useOoTMMSessionStore = defineStore('ootmm-session', () => {
 
   function initializeFromTracker() {
     if (!tracker.value) return;
-    trackerSettings.value = { ...tracker.value.getSettings() };
+    trackerSettings.value = preserveTrackerOnlySettings({
+      ...tracker.value.getSettings(),
+    });
     availableItemIds.value = setToArray(
       tracker.value.getAvailableItemIds?.() ?? new Set<string>(),
     );
@@ -1190,7 +1227,9 @@ export const useOoTMMSessionStore = defineStore('ootmm-session', () => {
         entranceOverrides.value,
       );
       await currentTracker.initialize(settingsWithEntrances);
-      trackerSettings.value = { ...currentTracker.getSettings() };
+      trackerSettings.value = preserveTrackerOnlySettings({
+        ...currentTracker.getSettings(),
+      });
       availableItemIds.value = setToArray(
         currentTracker.getAvailableItemIds?.() ?? new Set<string>(),
       );
@@ -1310,7 +1349,9 @@ export const useOoTMMSessionStore = defineStore('ootmm-session', () => {
     if (!currentTracker || !currentTracker.setSpecialConds) return;
     const previousSnapshot = captureSnapshotForMutation(options);
     currentTracker.setSpecialConds(patch);
-    trackerSettings.value = { ...currentTracker.getSettings() };
+    trackerSettings.value = preserveTrackerOnlySettings({
+      ...currentTracker.getSettings(),
+    });
     recomputeReachability();
     recordHistoryFromSnapshot(previousSnapshot);
     publishSyncOperation(
@@ -1361,7 +1402,10 @@ export const useOoTMMSessionStore = defineStore('ootmm-session', () => {
         nextEntranceOverrides,
       );
       await currentTracker.initialize(settingsWithEntrances);
-      trackerSettings.value = { ...currentTracker.getSettings() };
+      trackerSettings.value = preserveTrackerOnlySettings(
+        { ...currentTracker.getSettings() },
+        nextSettings,
+      );
       entranceOverrides.value = nextEntranceOverrides;
       availableItemIds.value = setToArray(
         currentTracker.getAvailableItemIds?.() ?? new Set<string>(),
@@ -1482,7 +1526,9 @@ export const useOoTMMSessionStore = defineStore('ootmm-session', () => {
       );
       currentTracker.reset();
       await currentTracker.initialize({});
-      trackerSettings.value = { ...currentTracker.getSettings() };
+      trackerSettings.value = preserveTrackerOnlySettings({
+        ...currentTracker.getSettings(),
+      });
       availableItemIds.value = setToArray(
         currentTracker.getAvailableItemIds?.() ?? new Set<string>(),
       );

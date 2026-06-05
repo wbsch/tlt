@@ -3,7 +3,7 @@
  * These map IDs correspond to the JSON files in ../data/maps/.
  */
 export const OOT_SCENE_TO_MAP: Record<number, string> = {
-  0: 'oot_kokiri_forest', // OOT_DEKU_TREE
+  0: 'oot_deku_tree', // OOT_DEKU_TREE
   1: 'oot_dodongos_cavern', // OOT_DODONGO_CAVERN
   2: 'oot_jabu_jabu', // OOT_INSIDE_JABU_JABU
   3: 'oot_forest_temple', // OOT_TEMPLE_FOREST
@@ -16,10 +16,10 @@ export const OOT_SCENE_TO_MAP: Record<number, string> = {
   10: 'oot_ganons_castle', // OOT_GANON_TOWER
   11: 'oot_gerudo_training_ground', // OOT_GERUDO_TRAINING_GROUND
   12: 'oot_gerudo_desert', // OOT_THIEVES_HIDEOUT
-  13: 'oot_hyrule_field', // OOT_INSIDE_GANON_CASTLE
+  13: 'oot_ganons_castle', // OOT_INSIDE_GANON_CASTLE
   14: 'oot_ganons_castle', // OOT_GANON_TOWER_COLLAPSING
-  15: 'oot_hyrule_field', // OOT_INSIDE_GANON_CASTLE_COLLAPSING
-  17: 'oot_kokiri_forest', // OOT_LAIR_GOHMA (Deku Tree)
+  15: 'oot_ganons_castle', // OOT_INSIDE_GANON_CASTLE_COLLAPSING
+  17: 'oot_deku_tree', // OOT_LAIR_GOHMA (Deku Tree)
   18: 'oot_dodongos_cavern', // OOT_LAIR_KING_DODONGO
   19: 'oot_jabu_jabu', // OOT_LAIR_BARINADE
   20: 'oot_forest_temple', // OOT_LAIR_PHANTOM_GANON
@@ -44,7 +44,7 @@ export const OOT_SCENE_TO_MAP: Record<number, string> = {
   40: 'oot_kokiri_forest', // OOT_KOKIRI_MIDO
   41: 'oot_kokiri_forest', // OOT_KOKIRI_SARIA
   42: 'oot_kakariko', // OOT_CARPENTER_BOSS_HOUSE
-  43: 'oot_kakariko', // OOT_BACK_ALLEY_HOUSE
+  43: 'oot_hyrule_field', // OOT_BACK_ALLEY_HOUSE
   44: 'oot_hyrule_field', // OOT_BAZAAR
   45: 'oot_kokiri_forest', // OOT_KOKIRI_SHOP
   46: 'oot_death_mountain', // OOT_GORON_SHOP
@@ -53,30 +53,25 @@ export const OOT_SCENE_TO_MAP: Record<number, string> = {
   49: 'oot_hyrule_field', // OOT_MARKET_POTION_SHOP
   50: 'oot_hyrule_field', // OOT_BOMBCHU_SHOP
   51: 'oot_hyrule_field', // OOT_HAPPY_MASK_SHOP
-  52: 'oot_hyrule_field', // OOT_LINK_HOUSE
+  52: 'oot_kokiri_forest', // OOT_LINK_HOUSE
   53: 'oot_hyrule_field', // OOT_BACK_ALLEY_HOUSE2
   54: 'oot_hyrule_field', // OOT_STABLE
-  55: 'oot_hyrule_field', // OOT_IMPA_HOUSE
-  56: 'oot_hyrule_field', // OOT_LABORATORY
-  57: 'oot_hyrule_field', // OOT_CARPENTER_TENT
+  55: 'oot_kakariko', // OOT_IMPA_HOUSE
+  56: 'oot_zoras_river', // OOT_LABORATORY
+  57: 'oot_gerudo_desert', // OOT_CARPENTER_TENT
   58: 'oot_kakariko', // OOT_GRAVEKEEPER_HUT
-  59: 'oot_hyrule_field', // OOT_GREAT_FAIRY_FOUNTAIN_UPGRADES
-  60: 'oot_hyrule_field', // OOT_FAIRY_FOUNTAIN
-  61: 'oot_hyrule_field', // OOT_GREAT_FAIRY_FOUNTAIN_SPELLS
-  62: 'oot_hyrule_field', // OOT_GROTTOS (generic)
   63: 'oot_kakariko', // OOT_TOMB_REDEAD
   64: 'oot_kakariko', // OOT_TOMB_FAIRY
   65: 'oot_kakariko', // OOT_TOMB_ROYAL
-  66: 'oot_hyrule_field', // OOT_SHOOTING_GALLERY
   67: 'oot_hyrule_field', // OOT_TEMPLE_OF_TIME
   68: 'oot_hyrule_field', // OOT_CHAMBER_OF_THE_SAGES
   69: 'oot_hyrule_field', // OOT_CASTLE_MAZE_DAY
   70: 'oot_hyrule_field', // OOT_CASTLE_MAZE_NIGHT
   72: 'oot_kakariko', // OOT_TOMB_DAMPE_WINDMILL
-  73: 'oot_hyrule_field', // OOT_FISHING_POND
+  73: 'oot_zoras_river', // OOT_FISHING_POND
   74: 'oot_hyrule_field', // OOT_CASTLE_COURTYARD
   75: 'oot_hyrule_field', // OOT_BOMBCHU_BOWLING_ALLEY
-  76: 'oot_kakariko', // OOT_RANCH_HOUSE_SILO (Lon Lon)
+  76: 'oot_hyrule_field', // OOT_RANCH_HOUSE_SILO (Lon Lon)
   77: 'oot_hyrule_field', // OOT_GUARD_HOUSE
   78: 'oot_kakariko', // OOT_GRANNY_POTION_SHOP
   79: 'oot_ganons_castle', // OOT_GANON_BATTLE_ARENA
@@ -87,7 +82,7 @@ export const OOT_SCENE_TO_MAP: Record<number, string> = {
   84: 'oot_zoras_river', // OOT_ZORA_RIVER
   85: 'oot_kokiri_forest', // OOT_KOKIRI_FOREST
   86: 'oot_kokiri_forest', // OOT_SACRED_FOREST_MEADOW
-  87: 'oot_hyrule_field', // OOT_LAKE_HYLIA
+  87: 'oot_zoras_river', // OOT_LAKE_HYLIA
   88: 'oot_zoras_river', // OOT_ZORA_DOMAIN
   89: 'oot_zoras_river', // OOT_ZORA_FOUNTAIN
   90: 'oot_gerudo_desert', // OOT_GERUDO_VALLEY
@@ -109,16 +104,16 @@ export const OOT_SCENE_TO_MAP: Record<number, string> = {
  */
 export const MM_SCENE_TO_MAP: Record<number, string> = {
   0: 'mm_southern_swamp', // MM_SOUTHERN_SWAMP_CLEAR
-  12: 'mm_beneath_the_well', // MM_BENEATH_THE_GRAVEYARD
+  12: 'mm_ikana_canyon', // MM_BENEATH_THE_GRAVEYARD
   19: 'mm_ikana_canyon', // MM_IKANA_CANYON
   20: 'mm_pirate_fortress', // MM_PIRATE_FORTRESS_EXTERIOR
   22: 'mm_stone_tower_temple', // MM_TEMPLE_STONE_TOWER
   24: 'mm_stone_tower_temple', // MM_TEMPLE_STONE_TOWER_INVERTED
   27: 'mm_woodfall_temple', // MM_TEMPLE_WOODFALL
-  28: 'mm_mountain_village', // MM_PATH_MOUNTAIN_VILLAGE
-  29: 'mm_ikana_canyon', // MM_CASTLE_IKANA
+  28: 'mm_termina_field', // MM_PATH_MOUNTAIN_VILLAGE
+  29: 'mm_ikana_castle', // MM_CASTLE_IKANA
   32: 'mm_snowhead_temple', // MM_TEMPLE_SNOWHEAD (via Snowhead)
-  33: 'mm_mountain_village', // MM_SNOWHEAD (summit)
+  33: 'mm_snowhead_temple', // MM_SNOWHEAD (summit)
   34: 'mm_termina_field', // MM_MILK_ROAD
   42: 'mm_moon', // MM_MOON_LINK_TITLE
   45: 'mm_termina_field', // MM_TERMINA_FIELD_OPENING
@@ -130,13 +125,13 @@ export const MM_SCENE_TO_MAP: Record<number, string> = {
   64: 'mm_southern_swamp', // MM_SOUTHERN_SWAMP (main)
   67: 'mm_ikana_canyon', // MM_IKANA_GRAVEYARD
   69: 'mm_southern_swamp', // MM_WOODS_MYSTERY
-  70: 'mm_woodfall_temple', // MM_WOODFALL (preamble)
+  70: 'mm_southern_swamp', // MM_WOODFALL (preamble)
   71: 'mm_moon', // MM_MOON (trial)
   73: 'mm_great_bay', // MM_GREAT_BAY (coast area)
-  76: 'mm_ikana_canyon', // MM_IKANA_CASTLE
+  76: 'mm_ikana_castle', // MM_IKANA_CASTLE
   80: 'mm_mountain_village', // MM_MOUNTAIN_VILLAGE_WINTER
-  82: 'mm_ikana_canyon', // MM_DEKU_SHRINE (in Ikana)
-  83: 'mm_ikana_canyon', // MM_ROAD_IKANA
+  82: 'mm_southern_swamp', // MM_DEKU_SHRINE (in Ikana)
+  83: 'mm_termina_field', // MM_ROAD_IKANA
   88: 'mm_stone_tower_temple', // MM_STONE_TOWER
   89: 'mm_stone_tower_temple', // MM_STONE_TOWER_INVERTED
   90: 'mm_mountain_village', // MM_MOUNTAIN_VILLAGE_SPRING
