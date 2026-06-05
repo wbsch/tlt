@@ -769,12 +769,28 @@
       "name": "Ikana Valley Scrub HP"
     },
     {
+      "key": "MM_collect_27_28",
+      "name": "Woodfall Temple SF Main Pot"
+    },
+    {
+      "key": "MM_collect_27_29",
+      "name": "Woodfall Temple SF Maze Beehive"
+    },
+    {
+      "key": "MM_collect_27_30",
+      "name": "Woodfall Temple SF Water Room Beehive"
+    },
+    {
       "key": "MM_collect_29_10",
       "name": "Ancient Castle of Ikana HP"
     },
     {
       "key": "MM_collect_31_31",
       "name": "Woodfall Temple Boss Container"
+    },
+    {
+      "key": "MM_collect_33_30",
+      "name": "Snowhead Temple SF Compass Room Crate"
     },
     {
       "key": "MM_collect_35_12",
@@ -819,6 +835,26 @@
     {
       "key": "MM_collect_71_1",
       "name": "Moon Trial Zora HP"
+    },
+    {
+      "key": "MM_collect_73_26",
+      "name": "Great Bay Temple SF Green Pipe 3 Barrel"
+    },
+    {
+      "key": "MM_collect_73_27",
+      "name": "Great Bay Temple SF Central Room Underwater Pot"
+    },
+    {
+      "key": "MM_collect_73_28",
+      "name": "Great Bay Temple SF Central Room Barrel"
+    },
+    {
+      "key": "MM_collect_73_29",
+      "name": "Great Bay Temple SF Compass Room Pot"
+    },
+    {
+      "key": "MM_collect_73_30",
+      "name": "Great Bay Temple SF Map Room Pot"
     },
     {
       "key": "MM_collect_76_30",
@@ -871,42 +907,6 @@
     {
       "key": "MM_cow_23",
       "name": "Beneath The Well Cow"
-    },
-    {
-      "key": "MM_switch0_27_28",
-      "name": "Woodfall Temple SF Main Pot"
-    },
-    {
-      "key": "MM_switch0_27_29",
-      "name": "Woodfall Temple SF Maze Beehive"
-    },
-    {
-      "key": "MM_switch0_27_30",
-      "name": "Woodfall Temple SF Water Room Beehive"
-    },
-    {
-      "key": "MM_switch0_33_30",
-      "name": "Snowhead Temple SF Compass Room Crate"
-    },
-    {
-      "key": "MM_switch0_73_26",
-      "name": "Great Bay Temple SF Green Pipe 3 Barrel"
-    },
-    {
-      "key": "MM_switch0_73_27",
-      "name": "Great Bay Temple SF Central Room Underwater Pot"
-    },
-    {
-      "key": "MM_switch0_73_28",
-      "name": "Great Bay Temple SF Central Room Barrel"
-    },
-    {
-      "key": "MM_switch0_73_29",
-      "name": "Great Bay Temple SF Compass Room Pot"
-    },
-    {
-      "key": "MM_switch0_73_30",
-      "name": "Great Bay Temple SF Map Room Pot"
     },
     {
       "key": "MM_switch1_27_10",

@@ -102,15 +102,20 @@ function fmtBitDiff(
 
 // ── Known region decoders ───────────────────────────────────────────────────
 
-/** Playstate flags: known u32 fields at fixed offsets */
-const PLAYSTATE_FLAG_FIELDS: { offset: number; name: string }[] = [
+/** Playstate flags: known u32 fields at fixed offsets (OoT layout) */
+const OOT_PLAYSTATE_FLAG_FIELDS: { offset: number; name: string }[] = [
+  { offset: 0, name: 'chest' },
+  { offset: 4, name: 'switch' },
+  { offset: 8, name: 'collect' },
+  { offset: 12, name: 'tempCollect' },
+];
+
+/** Playstate flags: known u32 fields at fixed offsets (MM layout) */
+const MM_PLAYSTATE_FLAG_FIELDS: { offset: number; name: string }[] = [
   { offset: 0, name: 'switch0' },
   { offset: 4, name: 'switch1' },
-  { offset: 8, name: 'tempSwch' },
-  { offset: 12, name: 'chest' },
-  { offset: 16, name: 'clear' },
-  { offset: 20, name: 'tempClr' },
-  { offset: 24, name: 'collect' },
+  { offset: 16, name: 'chest' },
+  { offset: 28, name: 'collect' },
 ];
 
 /** OoT PermanentSceneFlags: 0x1c per scene */
@@ -156,11 +161,12 @@ function buildRegionDecoder(name: string, size: number): RegionDecoder {
     name === 'mm_playstate_flags' ||
     name === 'oot_playstate_flags'
   ) {
-    const stride = Math.max(...PLAYSTATE_FLAG_FIELDS.map((f) => f.offset)) + 4;
+    const isMM = name.startsWith('mm');
+    const fields = isMM ? MM_PLAYSTATE_FLAG_FIELDS : OOT_PLAYSTATE_FLAG_FIELDS;
+    const stride = Math.max(...fields.map((f) => f.offset)) + 4;
     return {
-      description: 'playstate flags (named u32 fields)',
-      decode: (bB, bA) =>
-        decodeStructured(bB, bA, stride, PLAYSTATE_FLAG_FIELDS, ''),
+      description: `playstate flags (named u32 fields, ${isMM ? 'MM' : 'OoT'} layout)`,
+      decode: (bB, bA) => decodeStructured(bB, bA, stride, fields, ''),
     };
   }
 
@@ -175,7 +181,10 @@ function buildRegionDecoder(name: string, size: number): RegionDecoder {
   }
 
   // MM scene flags (permanent, 0x1c per scene)
-  if (name === 'oot_foreign_mm_save_scene_flags') {
+  if (
+    name === 'oot_foreign_mm_save_scene_flags' ||
+    name === 'mm_save_state_scene_flags'
+  ) {
     const stride = 0x1c;
     return {
       description: `MM scene flags (${MM_SCENE_FLAG_FIELDS.length} fields × ${Math.floor(size / stride)} scenes)`,
@@ -185,7 +194,7 @@ function buildRegionDecoder(name: string, size: number): RegionDecoder {
   }
 
   // MM cycle flags (0x14 per scene)
-  if (name === 'oot_foreign_mm_cycle_flags') {
+  if (name === 'oot_foreign_mm_cycle_flags' || name === 'mm_cycle_flags') {
     const stride = 0x14;
     return {
       description: `MM cycle flags (${MM_CYCLE_FLAG_FIELDS.length} fields × ${Math.floor(size / stride)} scenes)`,

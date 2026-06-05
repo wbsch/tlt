@@ -270,12 +270,10 @@ def build_location_mapping(repo_root: pathlib.Path) -> dict[str, object]:
                         raw_id = int(value, 0)
                     except ValueError:
                         continue
-                    if raw_id >= 0x40:
-                        scene_kind = "collect"
-                    elif raw_id >= 0x20:
+                    if raw_id >= 0x20:
                         scene_kind = "switch1"
                     else:
-                        scene_kind = "switch0"
+                        scene_kind = "collect"
                     bit = raw_id & 0x1F
                     key = scene_check_key(game, scene_id, scene_kind, bit)
                     add_unique_mapping(scene_checks_raw, scene_conflicts, key, location)
