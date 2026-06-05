@@ -461,7 +461,6 @@ const RAW_ITEM_ICONS: Record<string, string> = {
   SHARED_BOTTLE_EMPTY: 'images/bottle.png',
   SHARED_BOTTLED_GOLD_DUST: 'images/items/mm_dust.png',
   SHARED_BOTTLE_RUTO_LETTER: 'images/bottle_letter.png',
-  OOT_TRIFORCE: 'images/triforce_piece.png',
   SHARED_TRIFORCE: 'images/triforce_piece.png',
   SHARED_TRIFORCE_POWER: 'images/triforce_piece.png',
   SHARED_TRIFORCE_WISDOM: 'images/triforce_piece.png',

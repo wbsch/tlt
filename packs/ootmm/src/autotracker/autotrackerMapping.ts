@@ -38,9 +38,6 @@ const SIMPLE_RENAMES: Record<string, string> = {
 
   // Ganon boss key
   OOT_GANON_BK: 'OOT_BOSS_KEY_GANON',
-
-  // Triforce pieces count from extra record
-  OOT_TRIFORCE: 'SHARED_TRIFORCE',
 };
 
 // ---------------------------------------------------------------------------
@@ -803,6 +800,15 @@ export function translateAutotrackerItems(
     // Simple renames
     if (id in SIMPLE_RENAMES) {
       set(SIMPLE_RENAMES[id], qty);
+      continue;
+    }
+
+    // Triforce piece count → total count + individual pieces
+    if (id === 'OOT_TRIFORCE') {
+      set('SHARED_TRIFORCE', qty);
+      set('SHARED_TRIFORCE_COURAGE', qty >= 1 ? 1 : 0);
+      set('SHARED_TRIFORCE_POWER', qty >= 2 ? 1 : 0);
+      set('SHARED_TRIFORCE_WISDOM', qty >= 3 ? 1 : 0);
       continue;
     }
 
