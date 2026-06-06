@@ -781,6 +781,7 @@ const autotracker = useAutotracker({
 
 // Debug helpers – expose autotracker state for console testing
 if (typeof window !== 'undefined') {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   (window as any).__debugAt = {
     setOotScene: (id: number) => {
       autotracker.ootSceneId.value = id;

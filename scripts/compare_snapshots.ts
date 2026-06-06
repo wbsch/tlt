@@ -15,6 +15,40 @@
 
 import fs from 'fs';
 
+// ── Types ────────────────────────────────────────────────────────────────────
+
+interface SnapshotRegion {
+  name: string;
+  size: number;
+  data: string;
+  offset?: number;
+}
+
+interface SnapshotSummaryItem {
+  id: string;
+  qty: number;
+}
+
+interface SnapshotSummary {
+  activeGame: string;
+  saveIndex: number;
+  items: SnapshotSummaryItem[];
+  locations: string[];
+}
+
+interface RawFrame {
+  sequence: number;
+  diff?: Record<string, unknown>;
+}
+
+interface AutotrackerSnapshot {
+  schemaVersion: number;
+  createdAt: string;
+  rawFrame?: RawFrame;
+  summary?: SnapshotSummary;
+  regions: SnapshotRegion[];
+}
+
 // ── CLI ──────────────────────────────────────────────────────────────────────
 const args = process.argv.slice(2);
 
@@ -41,17 +75,19 @@ Compares two autotracker snapshots and shows what changed at byte and bit level.
 }
 
 // ── Load ─────────────────────────────────────────────────────────────────────
-let before: any;
-let after: any;
+let before: AutotrackerSnapshot;
+let after: AutotrackerSnapshot;
 try {
   before = JSON.parse(fs.readFileSync(beforePath, 'utf8'));
   after = JSON.parse(fs.readFileSync(afterPath, 'utf8'));
-} catch (e: any) {
-  console.error(`Error loading snapshots: ${e.message}`);
+} catch (e: unknown) {
+  console.error(
+    `Error loading snapshots: ${e instanceof Error ? e.message : String(e)}`,
+  );
   process.exit(1);
 }
 
-function validateSnapshot(s: any, label: string): boolean {
+function validateSnapshot(s: AutotrackerSnapshot, label: string): boolean {
   if (!s || s.schemaVersion !== 1) {
     console.error(`${label}: invalid snapshot (schemaVersion != 1)`);
     return false;
