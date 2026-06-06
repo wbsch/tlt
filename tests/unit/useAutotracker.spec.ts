@@ -879,7 +879,7 @@ describe('useAutotracker checks', () => {
     expect(autotracker.enabled.value).toBe(false);
     expect(autotracker.status.value).toBe('disconnected');
     expect(autotracker.versionWarning.value).toBe(
-      'You are using an outdated autotracker version. Please update to version 0.1.2 or newer.',
+      'You are using an outdated autotracker version (0.1.0). Please update to version 0.1.2 or newer.',
     );
     expect(inventoryUpdates).toEqual([]);
   });
