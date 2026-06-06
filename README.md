@@ -32,8 +32,6 @@ All settings that were available in the randomizer's code on March 15, 2026 (Ver
 
 - No Entrance Polarity
 - Decoupled Entrances
-- Boss Entrance Shuffle
-- Overworld Shuffle (Major Regions Shuffle already supported!)
 - Wallmaster Shuffle
 - One-Ways Shuffle
 
