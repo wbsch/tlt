@@ -563,6 +563,18 @@ export const useOoTMMSessionStore = defineStore('ootmm-session', () => {
         applySpecialCondsPatch(envelope.op.patch, REMOTE_MUTATION_OPTIONS);
         return;
       }
+      case 'world.set_entrance_override': {
+        setEntranceOverride(
+          envelope.op.src,
+          envelope.op.dst,
+          REMOTE_MUTATION_OPTIONS,
+        );
+        return;
+      }
+      case 'world.set_entrance_overrides': {
+        setEntranceOverrides(envelope.op.overrides, REMOTE_MUTATION_OPTIONS);
+        return;
+      }
       case 'session.set_spoiler_log_state': {
         setSpoilerLogImportState(
           envelope.op.imported,

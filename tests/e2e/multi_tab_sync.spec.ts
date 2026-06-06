@@ -1,12 +1,59 @@
 import { expect, test, type Page } from '@playwright/test';
 import { gotoTracker, TEST_TIMEOUTS, waitForBoot } from './helpers/tracker';
+import {
+  clearEntranceMapping,
+  entranceCombobox,
+  expectEntranceSelectedId,
+  expectEntranceUnmapped,
+  selectEntranceById,
+} from './helpers/entrance';
 
 const BOMB_TEST_ID = 'inventory-item-card-OOT_BOMB_BAG';
 const SWORD_TEST_ID = 'inventory-item-card-OOT_SWORD_KOKIRI';
+const CLOCK_TOWER_ROOF_ENTRANCE_ID = 'MM_CLOCK_TOWER_ROOF';
 
 async function isOwned(page: Page, testId: string): Promise<boolean> {
   const className = await page.getByTestId(testId).getAttribute('class');
   return (className ?? '').split(/\s+/).includes('owned');
+}
+
+async function enableDungeonEntranceSyncScenario(page: Page): Promise<void> {
+  await page.getByTestId('tab-settings').click();
+
+  const search = page.getByTestId('settings-search-input');
+  await expect(search).toBeVisible();
+
+  await search.fill('Dungeon Entrance Shuffle');
+  const erDungeonsSelect = page.getByTestId('setting-input-erDungeons');
+  await expect(erDungeonsSelect).toBeVisible();
+  await erDungeonsSelect.selectOption('full');
+
+  await search.fill('Shuffle Major Dungeons');
+  const erMajorDungeonsCheckbox = page.getByTestId(
+    'setting-input-erMajorDungeons',
+  );
+  await expect(erMajorDungeonsCheckbox).toBeVisible();
+  await erMajorDungeonsCheckbox.check();
+
+  await search.fill('Clock Tower Roof');
+  const erMoonCheckbox = page.getByTestId('setting-input-erMoon');
+  await expect(erMoonCheckbox).toBeVisible();
+  await erMoonCheckbox.check();
+
+  const overlay = page.getByTestId('applying-settings-overlay');
+  await page.getByTestId('apply-settings-button').click();
+  await expect(overlay).toBeHidden({
+    timeout: TEST_TIMEOUTS.SETTINGS_APPLY,
+  });
+}
+
+async function openEntrancesTab(page: Page): Promise<void> {
+  const sidebarToggle = page.getByTestId('right-sidebar-toggle');
+  await expect(sidebarToggle).toBeVisible();
+  if ((await sidebarToggle.getAttribute('aria-expanded')) === 'false') {
+    await sidebarToggle.click();
+  }
+  await page.getByTestId('right-sidebar-tab-entrances').click();
 }
 
 test.describe('multi-tab sync', () => {
@@ -82,6 +129,43 @@ test.describe('multi-tab sync', () => {
         timeout: TEST_TIMEOUTS.SYNC_POLL,
       })
       .toBe(false);
+
+    await pageTwo.close();
+  });
+
+  test('entrance mappings propagate across two tabs', async ({ page }) => {
+    await enableDungeonEntranceSyncScenario(page);
+
+    const pageTwo = await page.context().newPage();
+    await pageTwo.goto('/?debug=1');
+    await waitForBoot(pageTwo);
+
+    await openEntrancesTab(page);
+    await openEntrancesTab(pageTwo);
+
+    const dekuTreeInput = entranceCombobox(page, 'Deku Tree');
+    const dekuTreeInputTwo = entranceCombobox(pageTwo, 'Deku Tree');
+
+    await expect(dekuTreeInput).toBeVisible();
+    await expect(dekuTreeInputTwo).toBeVisible();
+
+    await selectEntranceById(dekuTreeInput, CLOCK_TOWER_ROOF_ENTRANCE_ID);
+
+    await expectEntranceSelectedId(dekuTreeInput, CLOCK_TOWER_ROOF_ENTRANCE_ID);
+    await expect
+      .poll(async () => {
+        return await dekuTreeInputTwo.getAttribute('data-selected');
+      })
+      .toBe(CLOCK_TOWER_ROOF_ENTRANCE_ID);
+
+    await clearEntranceMapping(dekuTreeInputTwo);
+
+    await expectEntranceUnmapped(dekuTreeInputTwo);
+    await expect
+      .poll(async () => {
+        return await dekuTreeInput.getAttribute('data-selected');
+      })
+      .toBe('');
 
     await pageTwo.close();
   });
