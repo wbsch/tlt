@@ -283,3 +283,81 @@ MM Goron Shrine Rock 16
 MM Waterfall Rapids Beaver Race 1
 MM Waterfall Rapids Beaver Race 2
 MM Bomb Shop Bomb Bag 2
+MM Great Bay Temple Boss
+MM Great Bay Temple Boss HC
+MM Great Bay Temple Boss Pot 1
+MM Great Bay Temple Boss Pot 2
+MM Great Bay Temple Boss Pot 3
+MM Great Bay Temple Boss Pot 4
+MM Great Bay Temple Boss Pot Underwater 1
+MM Great Bay Temple Boss Pot Underwater 2
+MM Great Bay Temple Boss Pot Underwater 3
+MM Great Bay Temple Boss Pot Underwater 4
+MM Oath to Order
+MM Snowhead Temple Boss
+MM Snowhead Temple Boss HC
+MM Snowhead Temple Boss Pot 01
+MM Snowhead Temple Boss Pot 02
+MM Snowhead Temple Boss Pot 03
+MM Snowhead Temple Boss Pot 04
+MM Snowhead Temple Boss Pot 05
+MM Snowhead Temple Boss Pot 06
+MM Snowhead Temple Boss Pot 07
+MM Snowhead Temple Boss Pot 08
+MM Snowhead Temple Boss Pot 09
+MM Snowhead Temple Boss Pot 10
+MM Snowhead Temple Boss Pot Early 1
+MM Snowhead Temple Boss Pot Early 2
+MM Snowhead Temple Boss Pot Early 3
+MM Snowhead Temple Boss Pot Early 4
+MM Stone Tower Temple Inverted Boss
+MM Stone Tower Temple Inverted Boss HC
+MM Woodfall Temple Boss
+MM Woodfall Temple Boss Container
+MM Woodfall Temple Boss Grass 01
+MM Woodfall Temple Boss Grass 02
+MM Woodfall Temple Boss Grass 03
+MM Woodfall Temple Boss Grass 04
+MM Woodfall Temple Boss Grass 05
+MM Woodfall Temple Boss Grass 06
+MM Woodfall Temple Boss Grass 07
+MM Woodfall Temple Boss Grass 08
+MM Woodfall Temple Boss Grass 09
+MM Woodfall Temple Boss Grass 10
+MM Woodfall Temple Boss Grass 11
+MM Woodfall Temple Boss Grass 12
+MM Woodfall Temple Boss Grass 13
+MM Woodfall Temple Boss Grass 14
+MM Woodfall Temple Boss Grass 15
+MM Woodfall Temple Boss Grass 16
+OOT Deku Tree Boss
+OOT Deku Tree Boss Container
+OOT Deku Tree Boss Grass 1
+OOT Deku Tree Boss Grass 2
+OOT Deku Tree Boss Grass 3
+OOT Deku Tree Boss Grass 4
+OOT Deku Tree Boss Grass 5
+OOT Deku Tree Boss Grass 6
+OOT Deku Tree Boss Grass 7
+OOT Deku Tree Boss Grass 8
+OOT Dodongo Cavern Boss
+OOT Dodongo Cavern Boss Chest
+OOT Dodongo Cavern Boss Container
+OOT Fire Temple Boss
+OOT Fire Temple Boss Container
+OOT Forest Temple Boss
+OOT Forest Temple Boss Container
+OOT Jabu-Jabu Boss
+OOT Jabu-Jabu Boss Container
+OOT Jabu-Jabu Boss Pot 1
+OOT Jabu-Jabu Boss Pot 2
+OOT Jabu-Jabu Boss Pot 3
+OOT Jabu-Jabu Boss Pot 4
+OOT Jabu-Jabu Boss Pot 5
+OOT Jabu-Jabu Boss Pot 6
+OOT Shadow Temple Boss
+OOT Shadow Temple Boss HC
+OOT Spirit Temple Boss
+OOT Spirit Temple Boss HC
+OOT Water Temple Boss
+OOT Water Temple Boss HC
