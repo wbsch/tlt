@@ -48,7 +48,7 @@ import {
 } from '@/../packs/ootmm/src/autotracker/useAutotracker';
 import { resolveAutotrackerCheckToLocationIds } from '@/../packs/ootmm/src/autotracker/checkMapping';
 
-const CURRENT_AUTOTRACKER_VERSION = '0.1.1';
+const CURRENT_AUTOTRACKER_VERSION = '0.1.2';
 
 class FakeWebSocket {
   static instances: FakeWebSocket[] = [];
@@ -879,7 +879,7 @@ describe('useAutotracker checks', () => {
     expect(autotracker.enabled.value).toBe(false);
     expect(autotracker.status.value).toBe('disconnected');
     expect(autotracker.versionWarning.value).toBe(
-      'You are using an outdated autotracker version (0.1.0). Please update to version 0.1.1 or newer.',
+      'You are using an outdated autotracker version. Please update to version 0.1.2 or newer.',
     );
     expect(inventoryUpdates).toEqual([]);
   });

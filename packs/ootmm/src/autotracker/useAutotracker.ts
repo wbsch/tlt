@@ -73,7 +73,7 @@ const RECONNECT_MAX_DELAY = 30000;
 const GRID_REF_ALIAS_PREFIX = '__grid_ref__:';
 const GRID_REF_STATE_PREFIX = '__grid_ref_state__:';
 const RAW_HANDSHAKE_FEATURES = ['raw'];
-const MIN_SUPPORTED_AUTOTRACKER_VERSION = '0.1.1';
+const MIN_SUPPORTED_AUTOTRACKER_VERSION = '0.1.2';
 
 interface AutotrackerBottleSlotMapping {
   autotrackerId: string;

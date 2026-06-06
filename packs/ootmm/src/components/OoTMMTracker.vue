@@ -97,6 +97,10 @@ const props = defineProps<{
 
 const AUTOTRACKER_RELEASES_LATEST_URL =
   'https://github.com/jupiter0fire/tlt-autotracker/releases/latest';
+const AUTOTRACKER_WINDOWS_DOWNLOAD_URL =
+  'https://github.com/jupiter0fire/tlt-autotracker/releases/latest/download/ootmm-autotracker-v0.1.2-windows-amd64.exe';
+const AUTOTRACKER_LINUX_DOWNLOAD_URL =
+  'https://github.com/jupiter0fire/tlt-autotracker/releases/latest/download/ootmm-autotracker-v0.1.2-linux-amd64';
 const AUTOTRACKER_NOT_FOUND_WARNING_MESSAGE =
   'No autotracker was found. Please start the autotracker.';
 
@@ -3748,14 +3752,32 @@ onBeforeUnmount(() => {
               </template>
               <template v-else>
                 {{ visibleAutotrackerInlineWarning.message }}
+                Updated version for
+                <a
+                  class="autotracker-inline-warning-link"
+                  :href="AUTOTRACKER_WINDOWS_DOWNLOAD_URL"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  Windows</a
+                >
+                and
+                <a
+                  class="autotracker-inline-warning-link"
+                  :href="AUTOTRACKER_LINUX_DOWNLOAD_URL"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  Linux</a
+                >. Other versions see
                 <a
                   class="autotracker-inline-warning-link"
                   :href="AUTOTRACKER_RELEASES_LATEST_URL"
                   target="_blank"
                   rel="noopener noreferrer"
                 >
-                  Updated version on Github.
-                </a>
+                  Github</a
+                >.
               </template>
             </p>
           </div>
