@@ -1370,6 +1370,9 @@ class RawAutotrackerParserImpl implements RawAutotrackerParser {
       if (!ootSaveData) {
         return null;
       }
+      if (!isPlausibleOotSave(ootSaveData)) {
+        return null;
+      }
       parseOotSave(state.oot, ootSaveData);
       const ootLiveSignature = readOotPlayStateSignature(memory);
       const ootLiveSample = readOotPlayStateSample(memory);
@@ -1404,6 +1407,9 @@ class RawAutotrackerParserImpl implements RawAutotrackerParser {
         MM_SAVE_CTX_CHUNK,
       );
       if (!mmSaveData) {
+        return null;
+      }
+      if (!isPlausibleMmSave(mmSaveData)) {
         return null;
       }
       parseMmSave(state.mm, mmSaveData);
@@ -1571,6 +1577,17 @@ class RawAutotrackerParserImpl implements RawAutotrackerParser {
     }
 
     if (sharedStateHasMeaningfulData(shared)) {
+      // The current shared state has data, but during OoT/MM handoff it can
+      // be partially degraded: MM bitmaps go to zero while OoT bitmaps stay.
+      // If the core game state is unchanged, prefer the last known shared
+      // state over a degraded one so items (souls, coins, buttons, clocks)
+      // don't momentarily disappear.
+      if (
+        this.activeGameCoreStateMatchesLastKnown(activeGame, state) &&
+        sharedStateDegradedFrom(shared, this.lastKnownShared)
+      ) {
+        return true;
+      }
       return false;
     }
 
@@ -1663,6 +1680,15 @@ class RawAutotrackerParserImpl implements RawAutotrackerParser {
     }
 
     if (!canAccept) {
+      // Don't let an invalid playstate sample overwrite an existing
+      // pending transition for the same game.  The pending state retains
+      // the last valid signature, its discard count, and its timestamp,
+      // so the next valid frame can make progress through the gate or
+      // eventually be accepted via timeout.
+      if (this.pendingLiveTransitionGame === activeGame) {
+        return true;
+      }
+
       this.pendingLiveTransitionGame = activeGame;
       this.pendingLiveTransitionSignature = signatureKey;
       // Don't record a timestamp for implausible samples – we never want
@@ -3056,6 +3082,18 @@ function isPlausibleOotSave(data: Uint8Array): boolean {
     }
   }
 
+  // Reject if the permanent scene-flags region is entirely zero — this
+  // indicates uninitialised/reset memory (e.g. emulator soft-reset).
+  if (
+    !saveDataRegionHasNonZeroValue(
+      data,
+      OOT_OFF_PERM,
+      OOT_PERM_COUNT * OOT_PERM_ENTRY_SIZE,
+    )
+  ) {
+    return false;
+  }
+
   return true;
 }
 
@@ -3080,7 +3118,91 @@ function isPlausibleMmSave(data: Uint8Array): boolean {
       return false;
     }
   }
+
+  // Reject if none of the key data regions carry any non-zero values —
+  // this indicates uninitialised/reset memory (e.g. emulator soft-reset).
+  // We check equipment, permanent scene flags AND cycle flags because MM
+  // saves may legitimately have all-zero scene/cycle flags while still
+  // carrying items/equipment (e.g. right after a story cutscene).
+  const hasEquipment =
+    MM_OFF_EQUIPMENT + 2 <= data.length &&
+    readU16BE(data, MM_OFF_EQUIPMENT) !== 0;
+  const hasSceneFlags = saveDataRegionHasNonZeroValue(
+    data,
+    MM_OFF_PERM_SCENES,
+    MM_PERM_COUNT * MM_PERM_ENTRY_SIZE,
+  );
+  const hasCycleFlags = saveDataRegionHasNonZeroValue(
+    data,
+    MM_CTX_OFF_CYCLE_FLAGS,
+    MM_CYCLE_FLAGS_SIZE,
+  );
+  if (!hasEquipment && !hasSceneFlags && !hasCycleFlags) {
+    return false;
+  }
+
   return true;
+}
+
+/**
+ * Returns true when at least one byte in the range [startOffset, startOffset + length)
+ * within `data` is non-zero.  Used to reject save-context dumps that are entirely
+ * zeroed out (e.g. emulator soft-reset / uninitialised memory).
+ */
+function saveDataRegionHasNonZeroValue(
+  data: Uint8Array,
+  startOffset: number,
+  length: number,
+): boolean {
+  const end = Math.min(startOffset + length, data.length);
+  for (let i = startOffset; i < end; i++) {
+    if (data[i] !== 0) return true;
+  }
+  return false;
+}
+
+/**
+ * Returns true if the current shared state has lost data compared to the
+ * last known shared state — i.e. at least one bitmap or scalar field
+ * that was non-zero is now all-zero.  Used to detect the OoT/MM handoff
+ * case where MM-related shared data slabs read as transiently empty
+ * while the active game core save is unchanged.
+ */
+function sharedStateDegradedFrom(
+  current: SharedCustomState,
+  previous: SharedCustomState,
+): boolean {
+  for (const [name, prevBitmap] of previous.bitmaps) {
+    const currBitmap = current.bitmaps.get(name);
+    if (
+      currBitmap &&
+      typedArrayHasNonZeroValue(prevBitmap) &&
+      !typedArrayHasNonZeroValue(currBitmap)
+    ) {
+      return true;
+    }
+  }
+
+  if (previous.coins.some((v) => v > 0) && !current.coins.some((v) => v > 0)) {
+    return true;
+  }
+
+  if (
+    (previous.bombchuBagOot > 0 || previous.bombchuBagMm > 0) &&
+    current.bombchuBagOot === 0 &&
+    current.bombchuBagMm === 0
+  ) {
+    return true;
+  }
+
+  if (
+    previous.songNotes.some((v) => v > 0) &&
+    !current.songNotes.some((v) => v > 0)
+  ) {
+    return true;
+  }
+
+  return false;
 }
 
 function sharedStateHasMeaningfulData(shared: SharedCustomState): boolean {
