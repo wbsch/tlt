@@ -70,7 +70,7 @@
           },
           {
             "type": "section",
-            "title": "Equipement",
+            "title": "Equipment",
             "padding": "5,10",
             "margin": "0,8",
             "content": [
@@ -299,7 +299,7 @@
           },
           {
             "type": "section",
-            "title": "Equipement",
+            "title": "Equipment",
             "padding": "5,10",
             "content": [
               {
@@ -827,7 +827,7 @@
           },
           {
             "type": "section",
-            "title": "Equipement",
+            "title": "Equipment",
             "padding": "5,10",
             "margin": "0,8",
             "content": [
