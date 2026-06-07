@@ -7,6 +7,7 @@ import { IMPRESSUM_HTML } from './content/impressum';
 import FairyLoader from './components/FairyLoader.vue';
 import TrackerFaqModal from './components/TrackerFaqModal.vue';
 import { withBasePath } from '@packs/ootmm/utils/assetPath';
+import { buildCoopShareUrl } from '@packs/ootmm/utils/coopFlag';
 import { TRACKER_FAQ_OPEN_EVENT_NAME } from './utils/trackerFaq';
 import {
   buildShareUrl,
@@ -20,6 +21,7 @@ import {
   SHARE_PARTIAL_IMPORT_MESSAGE,
   SHARE_STATUS_EVENT_NAME,
   stripCollectedLocations,
+  stripCoopRoomCode,
   consumeShareStatus,
   type ShareImportConfirmationPayload,
   type ShareImportIssue,
@@ -30,7 +32,8 @@ const appStore = useAppStore();
 const syncStatusStore = useSyncStatusStore();
 const { availablePacks, selectedPackId, currentPack, isLoading, error } =
   storeToRefs(appStore);
-const { hasOtherTabsOpen, connectedTabCount } = storeToRefs(syncStatusStore);
+const { hasOtherTabsOpen, connectedTabCount, isCoopRoomActive, coopRoomCode } =
+  storeToRefs(syncStatusStore);
 const isResetConfirmOpen = ref(false);
 const isInfoModalOpen = ref(false);
 const isFaqModalOpen = ref(false);
@@ -134,7 +137,17 @@ function cancelShareImportConfirmation() {
   closeShareImportConfirmModal();
 }
 
+function leaveCoopRoomIfActive() {
+  if (!isCoopRoomActive.value) return;
+  const leaveFn = (window as Window & { __TLT_LEAVE_COOP__?: () => void })
+    .__TLT_LEAVE_COOP__;
+  if (typeof leaveFn === 'function') {
+    leaveFn();
+  }
+}
+
 function confirmShareImport() {
+  leaveCoopRoomIfActive();
   const result = importShareStateFromCurrentUrl(() => true);
   closeShareImportConfirmModal();
   if (result === 'imported' || result === 'partial') {
@@ -296,6 +309,7 @@ async function exportState(includeCollected = false) {
   isShareMenuOpen.value = false;
   try {
     let snapshot = collectPersistedStateFromLocalStorage();
+    snapshot = stripCoopRoomCode(snapshot);
     if (!includeCollected) {
       snapshot = stripCollectedLocations(snapshot);
     }
@@ -317,6 +331,46 @@ async function exportState(includeCollected = false) {
   } catch (error) {
     console.error('Failed to export state:', error);
     setShareStatus('Failed to export state');
+  }
+}
+
+async function exportCoopUrl() {
+  isShareMenuOpen.value = false;
+  const code = coopRoomCode.value;
+  if (!code) return;
+  try {
+    const shareUrl = buildCoopShareUrl(code);
+
+    if (navigator.clipboard?.writeText) {
+      await navigator.clipboard.writeText(shareUrl);
+      setShareStatus('Coop URL copied to clipboard');
+      return;
+    }
+
+    window.prompt('Copy this coop URL:', shareUrl);
+    setShareStatus('Coop URL ready');
+  } catch (error) {
+    console.error('Failed to export coop URL:', error);
+    setShareStatus('Failed to export coop URL');
+  }
+}
+
+async function copyCoopCode() {
+  isShareMenuOpen.value = false;
+  const code = coopRoomCode.value;
+  if (!code) return;
+  try {
+    if (navigator.clipboard?.writeText) {
+      await navigator.clipboard.writeText(code);
+      setShareStatus('Coop code copied to clipboard');
+      return;
+    }
+
+    window.prompt('Copy this coop code:', code);
+    setShareStatus('Coop code ready');
+  } catch (error) {
+    console.error('Failed to copy coop code:', error);
+    setShareStatus('Failed to copy coop code');
   }
 }
 
@@ -456,36 +510,84 @@ onBeforeUnmount(() => {
           Debug: Dump Autotracker
         </button>
         <div class="export-button-group">
-          <button
-            type="button"
-            class="export-button"
-            data-testid="export-state-button"
-            @click="exportState(false)"
-          >
-            EXPORT STATE
-          </button>
-          <button
-            type="button"
-            class="export-dropdown-toggle"
-            data-testid="export-dropdown-toggle"
-            aria-label="Export options"
-            @click="toggleShareMenu"
-          >
-            ⋮
-          </button>
-          <div
-            v-if="isShareMenuOpen"
-            class="export-dropdown-menu"
-            data-testid="export-dropdown-menu"
-          >
+          <template v-if="isCoopRoomActive">
             <button
               type="button"
-              class="export-dropdown-item"
-              @click="exportState(true)"
+              class="export-button"
+              data-testid="export-coop-url-button"
+              @click="exportCoopUrl"
             >
-              Include collected locations
+              COPY COOP URL
             </button>
-          </div>
+            <button
+              type="button"
+              class="export-dropdown-toggle"
+              data-testid="export-coop-dropdown-toggle"
+              aria-label="Coop URL options"
+              @click="toggleShareMenu"
+            >
+              ⋮
+            </button>
+            <div
+              v-if="isShareMenuOpen"
+              class="export-dropdown-menu"
+              data-testid="export-coop-dropdown-menu"
+            >
+              <button
+                type="button"
+                class="export-dropdown-item"
+                @click="copyCoopCode"
+              >
+                Code only
+              </button>
+              <button
+                type="button"
+                class="export-dropdown-item"
+                @click="exportState(false)"
+              >
+                Snapshot
+              </button>
+              <button
+                type="button"
+                class="export-dropdown-item"
+                @click="exportState(true)"
+              >
+                Snapshot + locations
+              </button>
+            </div>
+          </template>
+          <template v-else>
+            <button
+              type="button"
+              class="export-button"
+              data-testid="export-state-button"
+              @click="exportState(false)"
+            >
+              EXPORT STATE
+            </button>
+            <button
+              type="button"
+              class="export-dropdown-toggle"
+              data-testid="export-dropdown-toggle"
+              aria-label="Export options"
+              @click="toggleShareMenu"
+            >
+              ⋮
+            </button>
+            <div
+              v-if="isShareMenuOpen"
+              class="export-dropdown-menu"
+              data-testid="export-dropdown-menu"
+            >
+              <button
+                type="button"
+                class="export-dropdown-item"
+                @click="exportState(true)"
+              >
+                Include collected locations
+              </button>
+            </div>
+          </template>
         </div>
         <span
           v-if="shareStatusMessage"
@@ -554,6 +656,13 @@ onBeforeUnmount(() => {
         <p id="share-import-confirm-description">
           {{ shareImportConfirmMessage }}
         </p>
+        <p
+          v-if="isCoopRoomActive"
+          class="share-import-confirm-coop-warning"
+          data-testid="share-import-confirm-coop-warning"
+        >
+          You are currently in a coop room. Importing will leave the room.
+        </p>
         <div class="share-import-confirm-actions">
           <button
             type="button"
@@ -569,7 +678,9 @@ onBeforeUnmount(() => {
             data-testid="share-import-confirm-apply-button"
             @click="confirmShareImport"
           >
-            Import Shared State
+            {{
+              isCoopRoomActive ? 'Leave Coop & Import' : 'Import Shared State'
+            }}
           </button>
         </div>
       </div>
@@ -721,9 +832,19 @@ onBeforeUnmount(() => {
         aria-describedby="reset-tracker-confirm-description"
         @click.stop
       >
-        <h2 id="reset-tracker-confirm-title">Reset tracker state?</h2>
+        <h2 id="reset-tracker-confirm-title">
+          {{
+            isCoopRoomActive ? 'Leave coop and reset?' : 'Reset tracker state?'
+          }}
+        </h2>
         <p id="reset-tracker-confirm-description">
-          This clears your current tracker progress and reloads the page.
+          <template v-if="isCoopRoomActive">
+            Resetting will leave the current coop room and clear your tracker
+            progress.
+          </template>
+          <template v-else>
+            This clears your current tracker progress and reloads the page.
+          </template>
         </p>
         <div class="reset-confirm-actions">
           <button
@@ -740,7 +861,9 @@ onBeforeUnmount(() => {
             data-testid="reset-tracker-confirm-apply-button"
             @click="confirmResetTrackerState"
           >
-            Reset Tracker State
+            {{
+              isCoopRoomActive ? 'Leave Coop & Reset' : 'Reset Tracker State'
+            }}
           </button>
         </div>
       </div>
@@ -1018,6 +1141,11 @@ onBeforeUnmount(() => {
 .share-import-confirm-modal p {
   margin: 0;
   color: #d1d5db;
+}
+
+.share-import-confirm-coop-warning {
+  margin-top: 0.5rem !important;
+  color: #ffc857 !important;
 }
 
 .share-import-confirm-actions {

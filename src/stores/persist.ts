@@ -2,6 +2,7 @@ import type { PiniaPluginContext } from 'pinia';
 import { isSafeKey, safeJsonParse } from '@/utils/safeJson';
 import { TRACKER_DEFAULT_SETTINGS } from '@packs/ootmm/data/settings';
 import { DEFAULT_OOTMM_SETTINGS } from '@packs/ootmm/types/settings';
+import { isValidCoopRoomCode } from '@packs/ootmm/utils/coopFlag';
 import {
   DEFAULT_LEFT_SIDEBAR_WIDTH,
   DEFAULT_RIGHT_SIDEBAR_WIDTH,
@@ -351,6 +352,7 @@ export const PERSIST_CONFIGS: Record<PersistStoreId, PersistConfig> = {
       'trackerSettings',
       'hasImportedSpoilerLog',
       'importedSpoilerLogVersion',
+      'coopRoomCode',
     ],
     hydrate: (raw) => ({
       ...(isPlainObject(raw.inventoryById)
@@ -411,6 +413,13 @@ export const PERSIST_CONFIGS: Record<PersistStoreId, PersistConfig> = {
             ),
           }
         : {}),
+      ...(() => {
+        const coopRoomCode = safeOptionalString(raw.coopRoomCode);
+        return typeof coopRoomCode === 'string' &&
+          isValidCoopRoomCode(coopRoomCode)
+          ? { coopRoomCode }
+          : {};
+      })(),
     }),
     serialize: (picked) => {
       if (!isPlainObject(picked.trackerSettings)) return picked;

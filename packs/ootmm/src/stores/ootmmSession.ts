@@ -6,7 +6,7 @@ import {
   publishShareStatusMessage,
   SHARE_PARTIAL_IMPORT_MESSAGE,
 } from '@/utils/shareState';
-import { computed, markRaw, nextTick, ref } from 'vue';
+import { computed, markRaw, nextTick, ref, watch } from 'vue';
 import type { TrackerPack } from '@/types/tracker';
 import { useSyncStatusStore } from '@/stores/syncStatus';
 import { ITEM_DATABASE } from '../data/items';
@@ -23,6 +23,11 @@ import {
   type OoTMMSyncOperationEnvelope,
 } from './ootmmSessionSync';
 import {
+  createOoTMMRoomSessionSync,
+  defaultRoomSyncUrl,
+  type OoTMMRoomSnapshotEnvelope,
+} from './ootmmRoomSync';
+import {
   cleanupEntranceOverridesForSettings,
   computeCoupledReverse,
   filterEntranceOverridesForSettings,
@@ -32,6 +37,7 @@ import {
   INTERIOR_GAME_LINK_SOURCE_KEYS,
 } from '../utils/entranceRandomization';
 import { getGridItemDefinedMaxCount } from '../data/itemIcons';
+import { isValidCoopRoomCode } from '../utils/coopFlag';
 
 const HISTORY_LIMIT = 200;
 const VANILLA_SILVER_RUPEE_PREFIX = 'OOT_RUPEE_SILVER_';
@@ -186,6 +192,10 @@ function cloneSettingsRecord(
   value: Record<string, unknown>,
 ): Record<string, unknown> {
   return deepCloneValue(value) as Record<string, unknown>;
+}
+
+function cloneSyncOperation(operation: OoTMMSyncOperation): OoTMMSyncOperation {
+  return deepCloneValue(operation) as OoTMMSyncOperation;
 }
 
 function stripPlandoEntrances(
@@ -363,7 +373,16 @@ export const useOoTMMSessionStore = defineStore('ootmm-session', () => {
   const redoHistory = ref<SessionSnapshot[]>([]);
   const isNavigatingHistory = ref(false);
   let syncConnection: OoTMMSessionSyncConnection | null = null;
+  let roomConnection: OoTMMSessionSyncConnection | null = null;
   let remoteOperationQueue: Promise<void> = Promise.resolve();
+  let pendingRoomOperations: OoTMMSyncOperation[] = [];
+  let pendingRoomReplayQueue: Promise<void> = Promise.resolve();
+  let roomSyncGeneration = 0;
+  const coopRoomCode = ref<string | null>(null);
+  const coopPeerCount = ref(0);
+  const coopConnectionState = ref<
+    'idle' | 'connecting' | 'connected' | 'disconnected'
+  >('idle');
 
   const inventoryMap = computed(() => recordToMap(inventoryById.value));
   const availableItemIdSet = computed(() => new Set(availableItemIds.value));
@@ -406,8 +425,14 @@ export const useOoTMMSessionStore = defineStore('ootmm-session', () => {
   const preCompletedEnabled = computed(() =>
     Boolean(trackerSettings.value?.preCompletedDungeons),
   );
-  const canUndo = computed(() => undoHistory.value.length > 0);
-  const canRedo = computed(() => redoHistory.value.length > 0);
+  // Undo/redo is disabled while in a coop room: it republishes the entire
+  // snapshot as authoritative ops, which would clobber concurrent peer edits.
+  const canUndo = computed(
+    () => coopRoomCode.value === null && undoHistory.value.length > 0,
+  );
+  const canRedo = computed(
+    () => coopRoomCode.value === null && redoHistory.value.length > 0,
+  );
 
   const allLocations = computed(() => {
     void locationsVersion.value;
@@ -422,7 +447,7 @@ export const useOoTMMSessionStore = defineStore('ootmm-session', () => {
   }
 
   function shouldPublishSync(options?: MutationOptions): boolean {
-    if (!syncConnection) return false;
+    if (!syncConnection && !roomConnection) return false;
     return options?.source !== 'remote';
   }
 
@@ -438,12 +463,124 @@ export const useOoTMMSessionStore = defineStore('ootmm-session', () => {
     recordHistoryEntry(snapshot);
   }
 
+  function queuePendingRoomOperation(operation: OoTMMSyncOperation): void {
+    pendingRoomOperations.push(cloneSyncOperation(operation));
+  }
+
+  function flushPendingRoomOperations(): void {
+    if (
+      !roomConnection ||
+      coopConnectionState.value !== 'connected' ||
+      pendingRoomOperations.length === 0
+    ) {
+      return;
+    }
+
+    const activeConnection = roomConnection;
+    const activeRoomCode = coopRoomCode.value;
+    const activeGeneration = roomSyncGeneration;
+    const operations = pendingRoomOperations;
+    let replayIndex = 0;
+    pendingRoomOperations = [];
+
+    pendingRoomReplayQueue = pendingRoomReplayQueue
+      .then(async () => {
+        for (; replayIndex < operations.length; replayIndex += 1) {
+          const operation = operations[replayIndex];
+          if (roomSyncGeneration !== activeGeneration) return;
+          if (
+            roomConnection !== activeConnection ||
+            coopConnectionState.value !== 'connected'
+          ) {
+            pendingRoomOperations = [
+              ...operations
+                .slice(replayIndex)
+                .map((op) => cloneSyncOperation(op)),
+              ...pendingRoomOperations,
+            ];
+            return;
+          }
+
+          await applyRemoteOperation({
+            schema: 1,
+            sessionId: activeRoomCode ?? '',
+            opId: `pending-room:${Date.now()}:${replayIndex}`,
+            actorId: getLocalSyncActorId(),
+            lamport: 0,
+            ts: Date.now(),
+            op: operation,
+          });
+          activeConnection.publish(operation);
+        }
+      })
+      .catch((error) => {
+        if (roomSyncGeneration !== activeGeneration) return;
+        pendingRoomOperations = [
+          ...operations.slice(replayIndex).map((op) => cloneSyncOperation(op)),
+          ...pendingRoomOperations,
+        ];
+        console.error('[OoTMM Sync] Failed to replay queued room ops:', error);
+      });
+  }
+
   function publishSyncOperation(
     operation: OoTMMSyncOperation,
     options?: MutationOptions,
   ): void {
     if (!shouldPublishSync(options)) return;
     syncConnection?.publish(operation);
+    // `session.reset_defaults` is intentionally never a room op: the relay has
+    // no reset op (it would drop the connection), and resetting exits coop only
+    // through the UI's confirmation modal — never silently from the store.
+    if (operation.type !== 'session.reset_defaults') {
+      if (coopConnectionState.value === 'connected') {
+        roomConnection?.publish(operation);
+      } else if (roomConnection) {
+        queuePendingRoomOperation(operation);
+      }
+    }
+  }
+
+  function publishSnapshotAsOps(snapshot: SessionSnapshot): void {
+    if (!shouldPublishSync()) return;
+    // Never replay a whole snapshot into a coop room: it would overwrite every
+    // peer's concurrent edits with this client's full state. Undo/redo (the
+    // only callers) are already disabled in coop via canUndo/canRedo, but guard
+    // here too so the invariant doesn't depend on those computeds.
+    if (coopRoomCode.value !== null) return;
+    publishSyncOperation({
+      type: 'settings.apply',
+      settings: cloneSettingsRecord(snapshot.trackerSettings),
+    });
+    publishSyncOperation({
+      type: 'world.set_entrance_overrides',
+      overrides: { ...snapshot.entranceOverrides },
+    });
+    publishSyncOperation({
+      type: 'world.set_precompleted',
+      ids: [...snapshot.preCompletedDungeons],
+    });
+    publishSyncOperation({
+      type: 'world.set_song_events',
+      events: { ...snapshot.songEvents },
+    });
+    publishSyncOperation({
+      type: 'world.set_shop_prices',
+      prices: { ...snapshot.shopPrices },
+    });
+    publishSyncOperation({
+      type: 'inventory.set_full',
+      inventoryById: { ...snapshot.inventoryById },
+    });
+    publishSyncOperation({
+      type: 'locations.set_ids',
+      ids: [...snapshot.collectedLocationIds],
+    });
+    publishSyncOperation({
+      type: 'session.set_spoiler_log_state',
+      imported: snapshot.hasImportedSpoilerLog,
+      ootmmVersion: snapshot.importedSpoilerLogVersion,
+    });
   }
 
   function captureSessionSnapshot(): SessionSnapshot {
@@ -495,9 +632,37 @@ export const useOoTMMSessionStore = defineStore('ootmm-session', () => {
     redoHistory.value = [];
   }
 
+  // Remote operations must not be applied while a *local* settings-apply is
+  // re-initializing the tracker: several handlers (special-conds, song events,
+  // shop prices, even a nested settings.apply) intentionally no-op while
+  // isApplyingSettings is true, so an op processed in that window would be
+  // silently dropped and this client would diverge from the room. Defer such
+  // ops until the window closes, then apply them in their original order.
+  let settingsApplyIdleWaiters: Array<() => void> = [];
+  watch(
+    isApplyingSettings,
+    (applying) => {
+      if (applying || settingsApplyIdleWaiters.length === 0) return;
+      const waiters = settingsApplyIdleWaiters;
+      settingsApplyIdleWaiters = [];
+      for (const resolve of waiters) resolve();
+    },
+    { flush: 'sync' },
+  );
+
+  function whenSettingsApplyIdle(): Promise<void> {
+    if (!isApplyingSettings.value) return Promise.resolve();
+    return new Promise<void>((resolve) => {
+      settingsApplyIdleWaiters.push(resolve);
+    });
+  }
+
   async function applyRemoteOperation(
     envelope: OoTMMSyncOperationEnvelope,
   ): Promise<void> {
+    // A remote op may be dequeued while a local applySettings holds the tracker
+    // mid-reinitialization; wait it out so the op is applied, not dropped.
+    await whenSettingsApplyIdle();
     switch (envelope.op.type) {
       case 'inventory.set_full': {
         setInventoryFromMap(
@@ -599,6 +764,20 @@ export const useOoTMMSessionStore = defineStore('ootmm-session', () => {
       });
   }
 
+  // Run snapshot import on the same queue as remote ops so the two can never
+  // interleave at await points (e.g. a stale op still draining when a reconnect
+  // snapshot lands). The snapshot is chained last, so it stays authoritative.
+  function enqueueRoomSnapshot(
+    snapshot: OoTMMRoomSnapshotEnvelope,
+  ): Promise<void> {
+    remoteOperationQueue = remoteOperationQueue
+      .then(() => applyRoomSnapshot(snapshot))
+      .catch((error) => {
+        console.error('[OoTMM Sync] Failed to apply room snapshot:', error);
+      });
+    return remoteOperationQueue;
+  }
+
   function startLocalSessionSync(sessionId = OOTMM_LOCAL_SESSION_ID): void {
     if (typeof window === 'undefined') return;
     if (syncConnection) return;
@@ -623,6 +802,128 @@ export const useOoTMMSessionStore = defineStore('ootmm-session', () => {
     syncConnection.disconnect();
     syncConnection = null;
     syncStatusStore.resetSyncStatus();
+  }
+
+  function captureRoomSnapshotEnvelope(
+    roomId: string,
+  ): OoTMMRoomSnapshotEnvelope {
+    return {
+      protocolSchema: 1,
+      stateSchema: 1,
+      stateType: 'ootmm-session',
+      sessionId: roomId,
+      baselineSeq: 0,
+      capturedAt: Date.now(),
+      state: {
+        inventoryById: sanitizeInventoryRecord({ ...inventoryById.value }),
+        collectedLocationIds: [...collectedLocationIds.value],
+        preCompletedDungeons: [...preCompletedDungeons.value],
+        songEvents: { ...songEvents.value },
+        shopPrices: { ...shopPrices.value },
+        trackerSettings: cloneSettingsRecord(trackerSettings.value),
+        entranceOverrides: { ...entranceOverrides.value },
+        hasImportedSpoilerLog: hasImportedSpoilerLog.value,
+        importedSpoilerLogVersion: importedSpoilerLogVersion.value,
+      },
+    };
+  }
+
+  async function applyRoomSnapshot(
+    snapshot: OoTMMRoomSnapshotEnvelope,
+  ): Promise<void> {
+    const state = snapshot.state;
+    if (state.trackerSettings && typeof state.trackerSettings === 'object') {
+      await applySettings(state.trackerSettings, REMOTE_MUTATION_OPTIONS);
+    }
+    setEntranceOverrides(
+      state.entranceOverrides ?? {},
+      REMOTE_MUTATION_OPTIONS,
+    );
+    setPreCompletedDungeons(
+      state.preCompletedDungeons ?? [],
+      REMOTE_MUTATION_OPTIONS,
+    );
+    setSongEvents(state.songEvents ?? {}, REMOTE_MUTATION_OPTIONS);
+    setShopPrices(state.shopPrices ?? {}, REMOTE_MUTATION_OPTIONS);
+    setInventoryFromMap(
+      new Map(Object.entries(state.inventoryById ?? {})),
+      REMOTE_MUTATION_OPTIONS,
+    );
+    setCollectedLocationIds(
+      state.collectedLocationIds ?? [],
+      REMOTE_MUTATION_OPTIONS,
+    );
+    setSpoilerLogImportState(
+      Boolean(state.hasImportedSpoilerLog),
+      state.importedSpoilerLogVersion ?? null,
+      REMOTE_MUTATION_OPTIONS,
+    );
+  }
+
+  function startRoomSync(options: { roomCode: string; url?: string }): void {
+    if (typeof window === 'undefined') return;
+    const trimmed = options.roomCode.trim();
+    if (!isValidCoopRoomCode(trimmed)) return;
+    if (roomConnection) stopRoomSync();
+    roomSyncGeneration += 1;
+    pendingRoomOperations = [];
+
+    // Room mode is server-authoritative: don't also run the local cross-tab
+    // broadcast, or the same edit reaches other tabs twice (via BroadcastChannel
+    // and via the relay) under two different opIds. Same-browser tabs still sync
+    // through the relay, each as its own peer.
+    stopLocalSessionSync();
+
+    coopRoomCode.value = trimmed;
+    coopConnectionState.value = 'connecting';
+    coopPeerCount.value = 0;
+    syncStatusStore.setCoopRoomActive(true);
+    syncStatusStore.setCoopRoomCode(trimmed);
+
+    roomConnection = createOoTMMRoomSessionSync({
+      url: options.url ?? defaultRoomSyncUrl(),
+      roomId: trimmed,
+      roomKey: trimmed,
+      actorId: getLocalSyncActorId(),
+      captureSeedSnapshot: () => captureRoomSnapshotEnvelope(trimmed),
+      callbacks: {
+        onRemoteOperation: enqueueRemoteOperation,
+        onSnapshot: enqueueRoomSnapshot,
+        onPresenceChange: (peerCount) => {
+          coopPeerCount.value = peerCount;
+          syncStatusStore.setCoopPeerCount(peerCount);
+        },
+        onRemoteActivity: () => {
+          syncStatusStore.markSyncReceived();
+        },
+        onConnectionChange: (state) => {
+          coopConnectionState.value = state;
+          if (state === 'connected') {
+            flushPendingRoomOperations();
+          }
+        },
+      },
+    });
+  }
+
+  function stopRoomSync(): void {
+    if (!roomConnection) return;
+    roomConnection.disconnect();
+    roomConnection = null;
+    roomSyncGeneration += 1;
+    pendingRoomOperations = [];
+    coopPeerCount.value = 0;
+    coopConnectionState.value = 'idle';
+    syncStatusStore.setCoopPeerCount(0);
+    syncStatusStore.setCoopRoomActive(false);
+    // Resume local cross-tab sync now that we're no longer room-authoritative.
+    startLocalSessionSync();
+  }
+
+  function leaveRoom(): void {
+    stopRoomSync();
+    coopRoomCode.value = null;
+    syncStatusStore.setCoopRoomCode(null);
   }
 
   function pushUndoSnapshot(snapshot: SessionSnapshot) {
@@ -766,6 +1067,7 @@ export const useOoTMMSessionStore = defineStore('ootmm-session', () => {
     if (!restored) return;
     undoHistory.value = undoHistory.value.slice(0, -1);
     pushRedoSnapshot(currentSnapshot);
+    publishSnapshotAsOps(targetSnapshot);
   }
 
   async function redo() {
@@ -777,11 +1079,20 @@ export const useOoTMMSessionStore = defineStore('ootmm-session', () => {
     if (!restored) return;
     redoHistory.value = redoHistory.value.slice(0, -1);
     pushUndoSnapshot(currentSnapshot);
+    publishSnapshotAsOps(targetSnapshot);
   }
 
-  async function attachTracker(nextTracker: TrackerPack) {
+  async function attachTracker(
+    nextTracker: TrackerPack,
+    options?: { deferInit?: boolean },
+  ) {
     clearHistory();
     tracker.value = markRaw(nextTracker) as TrackerPack;
+    if (options?.deferInit) {
+      // Caller (coop auto-join) will drive initialize() via the room snapshot's
+      // applySettings, so skip the persisted-state init to avoid a double init.
+      return;
+    }
     const shouldCheckImportedShareSettings = hasPendingShareImportCheck();
     const persistedSettings = cloneSettingsRecord(trackerSettings.value);
     const hasPersistedSettings = Object.keys(persistedSettings).length > 0;
@@ -1061,6 +1372,35 @@ export const useOoTMMSessionStore = defineStore('ootmm-session', () => {
     );
   }
 
+  // Additively mark locations collected, emitting a granular `locations.
+  // set_collected` per newly-added id. Use this for "mark all reachable"-style
+  // bulk *adds*: emitting `locations.set_ids` (a whole-list replace) would
+  // clobber a peer's concurrent collect at the relay (lost update), whereas
+  // granular collects merge and converge.
+  function collectLocationIds(ids: string[], options?: MutationOptions) {
+    const next = new Set(collectedLocationIds.value);
+    const added: string[] = [];
+    for (const id of ids) {
+      if (!id || next.has(id)) continue;
+      next.add(id);
+      added.push(id);
+    }
+    if (added.length === 0) return;
+    const previousSnapshot = captureSnapshotForMutation(options);
+    collectedLocationIds.value = Array.from(next);
+    recordHistoryFromSnapshot(previousSnapshot);
+    for (const id of added) {
+      publishSyncOperation(
+        {
+          type: 'locations.set_collected',
+          locationId: id,
+          collected: true,
+        },
+        options,
+      );
+    }
+  }
+
   function setPreCompletedDungeons(ids: string[], options?: MutationOptions) {
     const previousSnapshot = captureSnapshotForMutation(options);
     preCompletedDungeons.value = uniqueStrings(ids);
@@ -1146,13 +1486,21 @@ export const useOoTMMSessionStore = defineStore('ootmm-session', () => {
     const next = { ...entranceOverrides.value };
     const decoupled = Boolean(trackerSettings.value?.erDecoupled);
 
+    // Coupling is re-derived per client, but the relay stores single edges and
+    // has no coupling concept. Mirror the coupled partner edge to the relay as a
+    // second op so its per-key snapshot stays consistent — otherwise a coupled
+    // *delete* issued from the reverse side leaves the forward edge alive in the
+    // snapshot and a late joiner re-couples a pair every live peer deleted.
+    let partnerOp: { src: string; dst: string | null } | null = null;
+
     if (dst === null || dst === '') {
       // Also remove the coupled reverse entry before deleting src.
       const oldDst = entranceOverrides.value[src];
       if (oldDst && !decoupled) {
         const partner = computeCoupledReverse(src, oldDst);
-        if (partner) {
+        if (partner && next[partner.reverseSrc] !== undefined) {
           delete next[partner.reverseSrc];
+          partnerOp = { src: partner.reverseSrc, dst: null };
         }
       }
       delete next[src];
@@ -1168,6 +1516,7 @@ export const useOoTMMSessionStore = defineStore('ootmm-session', () => {
             next[partner.reverseSrc] = partner.reverseDst;
           }
         }
+        partnerOp = { src: partner.reverseSrc, dst: partner.reverseDst };
       }
     }
 
@@ -1181,9 +1530,17 @@ export const useOoTMMSessionStore = defineStore('ootmm-session', () => {
       },
       options,
     );
-    if (options?.source !== 'remote') {
-      scheduleReinitializeForEntrances();
+    if (partnerOp) {
+      publishSyncOperation(
+        {
+          type: 'world.set_entrance_override',
+          src: partnerOp.src,
+          dst: partnerOp.dst,
+        },
+        options,
+      );
     }
+    scheduleReinitializeForEntrances();
   }
 
   function setEntranceOverrides(
@@ -1217,9 +1574,7 @@ export const useOoTMMSessionStore = defineStore('ootmm-session', () => {
       },
       options,
     );
-    if (options?.source !== 'remote') {
-      scheduleReinitializeForEntrances();
-    }
+    scheduleReinitializeForEntrances();
   }
 
   function setSpoilerLogImportState(
@@ -1692,6 +2047,12 @@ export const useOoTMMSessionStore = defineStore('ootmm-session', () => {
     allLocations,
     startLocalSessionSync,
     stopLocalSessionSync,
+    startRoomSync,
+    stopRoomSync,
+    leaveRoom,
+    coopRoomCode,
+    coopPeerCount,
+    coopConnectionState,
     attachTracker,
     initializeFromTracker,
     setInventoryFromMap,
@@ -1703,6 +2064,7 @@ export const useOoTMMSessionStore = defineStore('ootmm-session', () => {
     applyAutotrackerDelta,
     toggleCollectedLocation,
     setCollectedLocationIds,
+    collectLocationIds,
     setPreCompletedDungeons,
     setSongEvents,
     setShopPrices,

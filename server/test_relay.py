@@ -1,0 +1,738 @@
+from __future__ import annotations
+
+import asyncio
+import json
+import tempfile
+import unittest
+from pathlib import Path
+from unittest.mock import MagicMock
+
+from server.relay import (
+    MAX_SNAPSHOT_BYTES,
+    ProtocolError,
+    RelayServer,
+    ROOM_CREATION_WINDOW_MS,
+    normalize_join_message,
+)
+
+
+class FakeWebSocket:
+    def __init__(self) -> None:
+        self.sent: list[str] = []
+        self.closed = False
+        self.close_code: int | None = None
+        self.close_reason: str | None = None
+
+    async def send(self, payload: str) -> None:
+        self.sent.append(payload)
+
+    async def close(self, code: int | None = None, reason: str | None = None) -> None:
+        self.closed = True
+        self.close_code = code
+        self.close_reason = reason
+
+
+async def _cancel_sender_tasks(relay: RelayServer) -> None:
+    for room in list(relay.rooms.values()):
+        for client in list(room.clients.values()):
+            task = client.sender_task
+            if task is not None and not task.done():
+                task.cancel()
+                try:
+                    await task
+                except (asyncio.CancelledError, Exception):
+                    pass
+
+
+class FakeIncomingWebSocket(FakeWebSocket):
+    def __init__(self, incoming: list[str]) -> None:
+        super().__init__()
+        self._incoming = incoming
+
+    async def recv(self) -> str:
+        if not self._incoming:
+            raise AssertionError("recv called with no messages queued")
+        return self._incoming.pop(0)
+
+    def __aiter__(self) -> "FakeIncomingWebSocket":
+        return self
+
+    async def __anext__(self) -> str:
+        if not self._incoming:
+            raise StopAsyncIteration
+        return self._incoming.pop(0)
+
+
+class RelayIntegrationTests(unittest.IsolatedAsyncioTestCase):
+    async def asyncSetUp(self) -> None:
+        self.tmpdir = tempfile.TemporaryDirectory()
+        self.db_path = str(Path(self.tmpdir.name) / "test-sync.db")
+        self.relay = RelayServer(self.db_path, idle_prune_days=7.0)
+        self.room_id = "integrationroom"
+        self.room_key = "integrationkey0"
+        # Materialize the room the same way a first join would (auto-create).
+        await self.relay.get_room(self.room_id, self.room_key)
+
+    async def asyncTearDown(self) -> None:
+        await _cancel_sender_tasks(self.relay)
+        self.relay.db.close()
+        self.tmpdir.cleanup()
+
+    async def _drain_room(self) -> None:
+        room = self.relay.rooms.get(self.room_id)
+        if room is None:
+            return
+        pending = [client.outbox.join() for client in list(room.clients.values())]
+        if pending:
+            await asyncio.gather(*pending)
+
+    async def connect(
+        self,
+        actor_id: str = "actor-a",
+        room_key: str | None = None,
+    ):
+        websocket = FakeWebSocket()
+        join_message = {
+            "type": "join",
+            "roomId": self.room_id,
+            "roomKey": room_key if room_key is not None else self.room_key,
+            "actorId": actor_id,
+        }
+        await self.relay.join(websocket, join_message)
+        await self._drain_room()
+        joined = json.loads(websocket.sent[0])
+        snapshot = json.loads(websocket.sent[1])
+        return websocket, joined, snapshot
+
+    async def test_join_sends_snapshot_and_baseline(self) -> None:
+        _, joined, snapshot = await self.connect()
+        self.assertEqual(
+            joined,
+            {
+                "type": "joined",
+                "roomId": self.room_id,
+                "baselineSeq": 0,
+                "peerCount": 1,
+            },
+        )
+        self.assertEqual(snapshot["type"], "snapshot")
+        envelope = snapshot["snapshotEnvelope"]
+        self.assertEqual(envelope["sessionId"], self.room_id)
+        self.assertEqual(envelope["baselineSeq"], 0)
+        self.assertEqual(envelope["state"]["inventoryById"], {})
+        self.assertFalse(envelope["state"]["hasImportedSpoilerLog"])
+        self.assertIsNone(envelope["state"]["importedSpoilerLogVersion"])
+
+    async def test_join_unknown_room_auto_creates_it(self) -> None:
+        new_room_id = "autocreatedroom"
+        new_room_key = "autocreatedkey"
+        await self.relay.join(
+            FakeWebSocket(),
+            {
+                "type": "join",
+                "roomId": new_room_id,
+                "roomKey": new_room_key,
+                "actorId": "actor-x",
+            },
+        )
+        new_room = self.relay.rooms.get(new_room_id)
+        if new_room is not None:
+            pending = [
+                client.outbox.join() for client in list(new_room.clients.values())
+            ]
+            if pending:
+                await asyncio.gather(*pending)
+        row = self.relay.db.execute(
+            "SELECT room_key FROM rooms WHERE room_id = ?",
+            (new_room_id,),
+        ).fetchone()
+        self.assertIsNotNone(row)
+        self.assertEqual(row["room_key"], new_room_key)
+
+        with self.assertRaises(ProtocolError) as cm:
+            await self.relay.join(
+                FakeWebSocket(),
+                {
+                    "type": "join",
+                    "roomId": new_room_id,
+                    "roomKey": "wrongkey",
+                    "actorId": "actor-y",
+                },
+            )
+        self.assertEqual(str(cm.exception), "invalid roomKey")
+
+    def test_normalize_join_accepts_optional_snapshot(self) -> None:
+        # The real browser client always attaches a snapshotEnvelope. This is the
+        # exact validator that previously rejected every real join.
+        seed = {"state": {"inventoryById": {"OOT_BOW": 2}}}
+        normalized = normalize_join_message(
+            {
+                "type": "join",
+                "roomId": "roomcode1",
+                "roomKey": "roomkey01",
+                "actorId": "actor-a",
+                "snapshotEnvelope": seed,
+            }
+        )
+        self.assertEqual(normalized["seedSnapshot"], seed)
+
+        without = normalize_join_message(
+            {
+                "type": "join",
+                "roomId": "roomcode1",
+                "roomKey": "roomkey01",
+                "actorId": "actor-a",
+            }
+        )
+        self.assertIsNone(without["seedSnapshot"])
+
+        with self.assertRaises(ProtocolError):
+            normalize_join_message(
+                {
+                    "type": "join",
+                    "roomId": "roomcode1",
+                    "roomKey": "roomkey01",
+                    "actorId": "actor-a",
+                    "bogus": 1,
+                }
+            )
+
+        with self.assertRaises(ProtocolError):
+            normalize_join_message(
+                {
+                    "type": "join",
+                    "roomId": "room-code1",
+                    "roomKey": "roomkey01",
+                    "actorId": "actor-a",
+                }
+            )
+
+    def test_normalize_join_rejects_short_room_code(self) -> None:
+        # Codes shorter than ROOM_CODE_MIN_LENGTH are refused so a trivially
+        # brute-forceable room can never be opened.
+        for short_code in ("room1", "key1", "abc"):
+            with self.assertRaises(ProtocolError):
+                normalize_join_message(
+                    {
+                        "type": "join",
+                        "roomId": short_code,
+                        "roomKey": "roomkey01",
+                        "actorId": "actor-a",
+                    }
+                )
+            with self.assertRaises(ProtocolError):
+                normalize_join_message(
+                    {
+                        "type": "join",
+                        "roomId": "roomcode1",
+                        "roomKey": short_code,
+                        "actorId": "actor-a",
+                    }
+                )
+
+    async def test_join_seeds_new_room_from_snapshot(self) -> None:
+        join_message = normalize_join_message(
+            {
+                "type": "join",
+                "roomId": "seededroom",
+                "roomKey": "seededkey",
+                "actorId": "actor-a",
+                "snapshotEnvelope": {
+                    "state": {
+                        "inventoryById": {"OOT_BOW": 3, "OOT_ZERO": 0},
+                        "collectedLocationIds": ["LOC_B", "LOC_A"],
+                        "hasImportedSpoilerLog": True,
+                        "importedSpoilerLogVersion": "1.2.3",
+                    }
+                },
+            }
+        )
+        await self.relay.join(FakeWebSocket(), join_message)
+        snapshot = json.loads(
+            self.relay.db.execute(
+                "SELECT snapshot_json FROM rooms WHERE room_id = ?",
+                ("seededroom",),
+            ).fetchone()["snapshot_json"]
+        )
+        state = snapshot["state"]
+        # Zero-count items dropped, ids sorted, spoiler state preserved.
+        self.assertEqual(state["inventoryById"], {"OOT_BOW": 3})
+        self.assertEqual(state["collectedLocationIds"], ["LOC_A", "LOC_B"])
+        self.assertTrue(state["hasImportedSpoilerLog"])
+        self.assertEqual(state["importedSpoilerLogVersion"], "1.2.3")
+
+    async def test_seed_is_ignored_for_existing_room(self) -> None:
+        # self.room_id already exists (created in setUp) with empty state.
+        join_message = normalize_join_message(
+            {
+                "type": "join",
+                "roomId": self.room_id,
+                "roomKey": self.room_key,
+                "actorId": "actor-a",
+                "snapshotEnvelope": {
+                    "state": {"inventoryById": {"OOT_BOW": 9}},
+                },
+            }
+        )
+        await self.relay.join(FakeWebSocket(), join_message)
+        snapshot = json.loads(
+            self.relay.db.execute(
+                "SELECT snapshot_json FROM rooms WHERE room_id = ?",
+                (self.room_id,),
+            ).fetchone()["snapshot_json"]
+        )
+        self.assertEqual(snapshot["state"]["inventoryById"], {})
+
+    async def test_op_exceeding_snapshot_cap_is_rejected(self) -> None:
+        websocket, _, _ = await self.connect()
+        room = self.relay.rooms[self.room_id]
+        # Few enough entries to stay under MAX_JSON_ITEMS, but long keys push the
+        # serialized snapshot past MAX_SNAPSHOT_BYTES.
+        key_len = 200
+        entries = (MAX_SNAPSHOT_BYTES // key_len) + 64
+        huge_inventory = {f"ITEM_{i:0>{key_len - 5}}": 1 for i in range(entries)}
+        with self.assertRaises(ProtocolError) as cm:
+            await self.relay.handle_operation(
+                room,
+                websocket,
+                {
+                    "protocolSchema": 1,
+                    "sessionId": self.room_id,
+                    "opId": "op-huge",
+                    "actorId": "actor-a",
+                    "clientClock": 1,
+                    "ts": 1000,
+                    "op": {"type": "inventory.set_full", "inventoryById": huge_inventory},
+                },
+            )
+        self.assertEqual(str(cm.exception), "room state too large")
+        # The room is unchanged and still joinable.
+        row = self.relay.db.execute(
+            "SELECT latest_seq FROM rooms WHERE room_id = ?",
+            (self.room_id,),
+        ).fetchone()
+        self.assertEqual(row["latest_seq"], 0)
+
+    async def test_duplicate_op_id_is_ignored(self) -> None:
+        websocket, _, _ = await self.connect()
+        room = self.relay.rooms[self.room_id]
+        envelope = {
+            "protocolSchema": 1,
+            "sessionId": self.room_id,
+            "opId": "same-op",
+            "actorId": "actor-a",
+            "clientClock": 1,
+            "ts": 1000,
+            "op": {
+                "type": "inventory.set_count",
+                "itemId": "OOT_BOW",
+                "count": 1,
+            },
+        }
+
+        await self.relay.handle_operation(room, websocket, envelope)
+        await self.relay.handle_operation(room, websocket, envelope)
+        await self._drain_room()
+
+        op_events = [json.loads(msg) for msg in websocket.sent if json.loads(msg).get("type") == "op"]
+        self.assertEqual(len(op_events), 1)
+        self.assertEqual(op_events[0]["serverSeq"], 1)
+
+        row = self.relay.db.execute(
+            "SELECT latest_seq, snapshot_json FROM rooms WHERE room_id = ?",
+            (self.room_id,),
+        ).fetchone()
+        self.assertEqual(row["latest_seq"], 1)
+        snapshot = json.loads(row["snapshot_json"])
+        self.assertEqual(snapshot["baselineSeq"], 1)
+        self.assertEqual(snapshot["state"]["inventoryById"], {"OOT_BOW": 1})
+
+    async def test_invalid_room_key_is_rejected(self) -> None:
+        with self.assertRaises(ProtocolError) as cm:
+            await self.relay.join(
+                FakeWebSocket(),
+                {
+                    "type": "join",
+                    "roomId": self.room_id,
+                    "roomKey": "wrongkey",
+                    "actorId": "actor-b",
+                },
+            )
+        self.assertEqual(str(cm.exception), "invalid roomKey")
+
+    async def test_second_join_sees_updated_snapshot_baseline(self) -> None:
+        first, _, _ = await self.connect(actor_id="actor-a")
+        room = self.relay.rooms[self.room_id]
+        await self.relay.handle_operation(
+            room,
+            first,
+            {
+                "protocolSchema": 1,
+                "sessionId": self.room_id,
+                "opId": "op-1",
+                "actorId": "actor-a",
+                "clientClock": 1,
+                "ts": 1000,
+                "op": {
+                    "type": "locations.set_collected",
+                    "locationId": "LOCATION_1",
+                    "collected": True,
+                },
+            },
+        )
+
+        second, joined, snapshot = await self.connect(actor_id="actor-b")
+        self.assertEqual(joined["baselineSeq"], 1)
+        self.assertEqual(snapshot["snapshotEnvelope"]["baselineSeq"], 1)
+        self.assertEqual(
+            snapshot["snapshotEnvelope"]["state"]["collectedLocationIds"],
+            ["LOCATION_1"],
+        )
+        self.assertEqual(joined["peerCount"], 2)
+
+    async def test_join_broadcasts_peer_count_to_existing_clients(self) -> None:
+        first, _, _ = await self.connect(actor_id="actor-a")
+        before = len(first.sent)
+        await self.connect(actor_id="actor-b")
+        peer_events = [
+            json.loads(msg)
+            for msg in first.sent[before:]
+            if json.loads(msg).get("type") == "peers"
+        ]
+        self.assertEqual(peer_events[-1]["peerCount"], 2)
+
+    async def test_anyone_with_room_key_can_write(self) -> None:
+        await self.connect(actor_id="actor-a")
+        second, _, _ = await self.connect(actor_id="actor-b")
+        room = self.relay.rooms[self.room_id]
+        await self.relay.handle_operation(
+            room,
+            second,
+            {
+                "protocolSchema": 1,
+                "sessionId": self.room_id,
+                "opId": "op-from-second",
+                "actorId": "actor-b",
+                "clientClock": 1,
+                "ts": 1000,
+                "op": {
+                    "type": "inventory.set_count",
+                    "itemId": "OOT_BOW",
+                    "count": 1,
+                },
+            },
+        )
+        snapshot = json.loads(
+            self.relay.db.execute(
+                "SELECT snapshot_json FROM rooms WHERE room_id = ?",
+                (self.room_id,),
+            ).fetchone()["snapshot_json"]
+        )
+        self.assertEqual(snapshot["state"]["inventoryById"], {"OOT_BOW": 1})
+
+    async def test_set_spoiler_log_state_op(self) -> None:
+        websocket, _, _ = await self.connect()
+        room = self.relay.rooms[self.room_id]
+        await self.relay.handle_operation(
+            room,
+            websocket,
+            {
+                "protocolSchema": 1,
+                "sessionId": self.room_id,
+                "opId": "op-spoiler",
+                "actorId": "actor-a",
+                "clientClock": 1,
+                "ts": 1000,
+                "op": {
+                    "type": "session.set_spoiler_log_state",
+                    "imported": True,
+                    "ootmmVersion": "1.2.3",
+                },
+            },
+        )
+        snapshot = json.loads(
+            self.relay.db.execute(
+                "SELECT snapshot_json FROM rooms WHERE room_id = ?",
+                (self.room_id,),
+            ).fetchone()["snapshot_json"]
+        )
+        self.assertTrue(snapshot["state"]["hasImportedSpoilerLog"])
+        self.assertEqual(snapshot["state"]["importedSpoilerLogVersion"], "1.2.3")
+
+    async def test_slow_peer_is_evicted_and_does_not_block_room(self) -> None:
+        fast, _, _ = await self.connect(actor_id="fast")
+        slow, _, _ = await self.connect(actor_id="slow")
+        room = self.relay.rooms[self.room_id]
+
+        slow_client = room.clients[slow]
+        slow_client.sender_task.cancel()
+        try:
+            await slow_client.sender_task
+        except asyncio.CancelledError:
+            pass
+        while not slow_client.outbox.full():
+            slow_client.outbox.put_nowait("dummy")
+
+        envelope = {
+            "protocolSchema": 1,
+            "sessionId": self.room_id,
+            "opId": "op-broadcast",
+            "actorId": "fast",
+            "clientClock": 1,
+            "ts": 1000,
+            "op": {"type": "inventory.set_count", "itemId": "OOT_BOW", "count": 1},
+        }
+        await self.relay.handle_operation(room, fast, envelope)
+        for _ in range(5):
+            await asyncio.sleep(0)
+
+        self.assertNotIn(slow, room.clients)
+        self.assertIn(fast, room.clients)
+        self.assertTrue(
+            slow.closed or slow.close_code is not None,
+            msg="slow peer should be scheduled for close",
+        )
+
+        await room.clients[fast].outbox.join()
+        types_seen = [json.loads(msg).get("type") for msg in fast.sent]
+        self.assertIn("op", types_seen)
+        self.assertEqual(types_seen[-1], "peers")
+        peers_payloads = [json.loads(m) for m in fast.sent if json.loads(m).get("type") == "peers"]
+        self.assertEqual(peers_payloads[-1]["peerCount"], 1)
+
+    async def test_handler_sends_error_and_closes_on_protocol_violation(self) -> None:
+        websocket = FakeIncomingWebSocket(
+            [
+                json.dumps(
+                    {
+                        "type": "join",
+                        "roomId": self.room_id,
+                        "roomKey": self.room_key,
+                        "actorId": "actor-a",
+                    }
+                ),
+                json.dumps({"type": "bogus"}),
+            ]
+        )
+
+        await self.relay.handler(websocket)
+
+        error_events = [
+            json.loads(msg)
+            for msg in websocket.sent
+            if json.loads(msg).get("type") == "error"
+        ]
+        self.assertEqual(len(error_events), 1)
+        self.assertEqual(websocket.close_code, 1008)
+        self.assertEqual(websocket.close_reason, "protocol error")
+
+
+class IdlePruneTests(unittest.IsolatedAsyncioTestCase):
+    async def asyncSetUp(self) -> None:
+        self.tmpdir = tempfile.TemporaryDirectory()
+        self.db_path = str(Path(self.tmpdir.name) / "test-sync.db")
+        self.relay = RelayServer(self.db_path, idle_prune_days=0.0001)
+
+    async def asyncTearDown(self) -> None:
+        await _cancel_sender_tasks(self.relay)
+        self.relay.db.close()
+        self.tmpdir.cleanup()
+
+    async def test_prune_deletes_idle_rooms_without_clients(self) -> None:
+        room_id = room_key = "prunedroom01"
+        websocket = FakeWebSocket()
+        await self.relay.join(
+            websocket,
+            {
+                "type": "join",
+                "roomId": room_id,
+                "roomKey": room_key,
+                "actorId": "actor-a",
+            },
+        )
+        await self.relay.disconnect(self.relay.rooms.get(room_id), websocket)
+        self.relay.db.execute(
+            "UPDATE rooms SET updated_at_ms = 0 WHERE room_id = ?",
+            (room_id,),
+        )
+        self.relay.db.commit()
+
+        removed = await self.relay.prune_idle_rooms()
+
+        self.assertEqual(removed, 1)
+        row = self.relay.db.execute(
+            "SELECT 1 FROM rooms WHERE room_id = ?",
+            (room_id,),
+        ).fetchone()
+        self.assertIsNone(row)
+
+    async def test_prune_keeps_rooms_with_active_clients(self) -> None:
+        room_id = room_key = "activeroom01"
+        websocket = FakeWebSocket()
+        await self.relay.join(
+            websocket,
+            {
+                "type": "join",
+                "roomId": room_id,
+                "roomKey": room_key,
+                "actorId": "actor-a",
+            },
+        )
+        self.relay.db.execute(
+            "UPDATE rooms SET updated_at_ms = 0 WHERE room_id = ?",
+            (room_id,),
+        )
+        self.relay.db.commit()
+
+        removed = await self.relay.prune_idle_rooms()
+
+        self.assertEqual(removed, 0)
+        row = self.relay.db.execute(
+            "SELECT 1 FROM rooms WHERE room_id = ?",
+            (room_id,),
+        ).fetchone()
+        self.assertIsNotNone(row)
+
+    async def test_prune_disabled_when_idle_days_zero(self) -> None:
+        relay = RelayServer(str(Path(self.tmpdir.name) / "disabled.db"), idle_prune_days=0)
+        try:
+            room_id = room_key = "disabledroom"
+            websocket = FakeWebSocket()
+            await relay.join(
+                websocket,
+                {
+                    "type": "join",
+                    "roomId": room_id,
+                    "roomKey": room_key,
+                    "actorId": "actor-a",
+                },
+            )
+            await relay.disconnect(relay.rooms.get(room_id), websocket)
+            relay.db.execute(
+                "UPDATE rooms SET updated_at_ms = 0 WHERE room_id = ?",
+                (room_id,),
+            )
+            relay.db.commit()
+
+            removed = await relay.prune_idle_rooms()
+            self.assertEqual(removed, 0)
+        finally:
+            await _cancel_sender_tasks(relay)
+            relay.db.close()
+
+
+class HealthzTests(unittest.IsolatedAsyncioTestCase):
+    async def asyncSetUp(self) -> None:
+        self.tmpdir = tempfile.TemporaryDirectory()
+        self.db_path = str(Path(self.tmpdir.name) / "test-sync.db")
+        self.relay = RelayServer(self.db_path)
+
+    async def asyncTearDown(self) -> None:
+        self.relay.db.close()
+        self.tmpdir.cleanup()
+
+    async def test_healthz_returns_ok(self) -> None:
+        connection = MagicMock()
+        connection.respond = MagicMock(return_value="sentinel")
+        request = MagicMock()
+        request.path = "/healthz"
+
+        result = await self.relay.process_request(connection, request)
+
+        self.assertEqual(result, "sentinel")
+        connection.respond.assert_called_once()
+        status_arg = connection.respond.call_args.args[0]
+        self.assertEqual(int(status_arg), 200)
+
+    async def test_non_healthz_path_falls_through(self) -> None:
+        connection = MagicMock()
+        request = MagicMock()
+        request.path = "/other"
+
+        result = await self.relay.process_request(connection, request)
+
+        self.assertIsNone(result)
+        connection.respond.assert_not_called()
+
+    async def test_rooms_new_endpoint_is_gone(self) -> None:
+        connection = MagicMock()
+        request = MagicMock()
+        request.path = "/rooms/new"
+
+        result = await self.relay.process_request(connection, request)
+
+        self.assertIsNone(result)
+        connection.respond.assert_not_called()
+
+
+class RoomCreationLimitTests(unittest.IsolatedAsyncioTestCase):
+    async def asyncSetUp(self) -> None:
+        self.tmpdir = tempfile.TemporaryDirectory()
+        self.db_path = str(Path(self.tmpdir.name) / "test-sync.db")
+
+    async def asyncTearDown(self) -> None:
+        self.tmpdir.cleanup()
+
+    async def _join_new_room(self, relay: RelayServer, suffix: str) -> None:
+        room_code = f"roomcode{suffix}"
+        await relay.join(
+            FakeWebSocket(),
+            {
+                "type": "join",
+                "roomId": room_code,
+                "roomKey": room_code,
+                "actorId": "actor-a",
+            },
+        )
+
+    async def test_rate_limit_blocks_creation_past_ceiling(self) -> None:
+        relay = RelayServer(self.db_path, max_new_rooms_per_minute=2)
+        try:
+            await self._join_new_room(relay, "001")
+            await self._join_new_room(relay, "002")
+            with self.assertRaises(ProtocolError) as cm:
+                await self._join_new_room(relay, "003")
+            self.assertIn("rate limit", str(cm.exception))
+        finally:
+            await _cancel_sender_tasks(relay)
+            relay.db.close()
+
+    async def test_rate_limit_does_not_block_joins_to_existing_rooms(self) -> None:
+        relay = RelayServer(self.db_path, max_new_rooms_per_minute=1)
+        try:
+            await self._join_new_room(relay, "001")
+            # Re-joining the same room is not a creation, so it must not be
+            # rate-limited even though the per-minute budget is spent.
+            for _ in range(5):
+                await self._join_new_room(relay, "001")
+        finally:
+            await _cancel_sender_tasks(relay)
+            relay.db.close()
+
+    async def test_rate_limit_window_slides(self) -> None:
+        relay = RelayServer(self.db_path, max_new_rooms_per_minute=1)
+        try:
+            await self._join_new_room(relay, "001")
+            with self.assertRaises(ProtocolError):
+                await self._join_new_room(relay, "002")
+            # Age the recorded creation out of the rolling window.
+            relay._recent_room_creations[0] -= ROOM_CREATION_WINDOW_MS + 1
+            await self._join_new_room(relay, "003")
+        finally:
+            await _cancel_sender_tasks(relay)
+            relay.db.close()
+
+    async def test_storage_limit_blocks_creation(self) -> None:
+        # Any existing room already pushes the db past a 0-byte ceiling.
+        relay = RelayServer(self.db_path, max_db_bytes=0)
+        try:
+            with self.assertRaises(ProtocolError) as cm:
+                await self._join_new_room(relay, "001")
+            self.assertIn("storage is full", str(cm.exception))
+        finally:
+            await _cancel_sender_tasks(relay)
+            relay.db.close()
+
+
+if __name__ == "__main__":
+    unittest.main()

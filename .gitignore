@@ -44,3 +44,10 @@ dist-ssr
 /local
 /plans
 /public/shared-states.json
+
+# Coop sync relay
+/server/sync.db
+/server/sync.db-shm
+/server/sync.db-wal
+/server/__pycache__/
+/server/.venv/

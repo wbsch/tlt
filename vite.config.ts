@@ -236,4 +236,17 @@ export default defineConfig({
   optimizeDeps: {
     include: ootmmCjsDeps,
   },
+  server: {
+    proxy: {
+      '/coop/ws': {
+        target: 'ws://127.0.0.1:8765',
+        ws: true,
+        rewrite: () => '/',
+      },
+      '/coop/healthz': {
+        target: 'http://127.0.0.1:8765',
+        rewrite: () => '/healthz',
+      },
+    },
+  },
 });

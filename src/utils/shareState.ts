@@ -823,6 +823,18 @@ export function stripCollectedLocations(
   return { ...snapshot, stores };
 }
 
+export function stripCoopRoomCode(
+  snapshot: PersistedSnapshot,
+): PersistedSnapshot {
+  const stores = { ...snapshot.stores };
+  if (stores['ootmm-session']) {
+    const session = { ...stores['ootmm-session'] };
+    delete session.coopRoomCode;
+    stores['ootmm-session'] = session;
+  }
+  return { ...snapshot, stores };
+}
+
 function diffSnapshotSettings(snapshot: PersistedSnapshot): PersistedSnapshot {
   const stores = { ...snapshot.stores };
   const session = stores['ootmm-session'];

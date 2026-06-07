@@ -68,6 +68,12 @@ import * as NamesMod from '@ootmm/core/names';
 import * as SettingsDataMod from '@ootmm/core/settings/data';
 import { TRICKS } from '@ootmm/core/settings/tricks';
 import AutotrackerToggle from './AutotrackerToggle.vue';
+import CoopPanel from './CoopPanel.vue';
+import {
+  clearCoopAutoJoinCodeFromUrl,
+  getCoopAutoJoinCode,
+  isCoopFeatureEnabled,
+} from '../utils/coopFlag';
 import {
   useAutotracker,
   type AutotrackerSyncPhase,
@@ -396,6 +402,7 @@ for (const [key, trick] of Object.entries(ALL_TRICKS)) {
 
 const sessionStore = useOoTMMSessionStore();
 const uiStore = useOoTMMUiStore();
+const coopFlagEnabled = isCoopFeatureEnabled();
 const { hasAvailableSections: hasAvailableEntranceSections, activeEntrances } =
   useDungeonEntrances();
 
@@ -419,7 +426,29 @@ const {
   reachableEntranceIdSet,
   hasImportedSpoilerLog,
   importedSpoilerLogVersion,
+  coopRoomCode,
+  coopConnectionState,
 } = storeToRefs(sessionStore);
+
+const pendingCoopRoomCode = coopFlagEnabled
+  ? (getCoopAutoJoinCode() ?? coopRoomCode.value)
+  : coopRoomCode.value;
+const isJoiningCoopRoom = ref(pendingCoopRoomCode !== null);
+
+function cancelCoopJoin() {
+  if (!isJoiningCoopRoom.value) return;
+  sessionStore.leaveRoom();
+  // Hydrate the tracker from persisted local state so it's usable without coop.
+  void sessionStore.attachTracker(props.tracker);
+  isJoiningCoopRoom.value = false;
+}
+
+const isCoopActive = computed(() => coopRoomCode.value !== null);
+const isCoopVisible = computed(
+  () => coopFlagEnabled || coopRoomCode.value !== null,
+);
+const canUndoWithCoop = computed(() => canUndo.value && !isCoopActive.value);
+const canRedoWithCoop = computed(() => canRedo.value && !isCoopActive.value);
 
 const {
   activeTab,
@@ -1643,10 +1672,18 @@ watch(
 watch(
   () => props.tracker,
   (nextTracker) => {
-    sessionStore.attachTracker(nextTracker);
+    sessionStore.attachTracker(nextTracker, {
+      deferInit: isJoiningCoopRoom.value,
+    });
   },
   { immediate: true },
 );
+
+watch(coopConnectionState, (state) => {
+  if (state === 'connected' && isJoiningCoopRoom.value) {
+    isJoiningCoopRoom.value = false;
+  }
+});
 
 watch(
   preCompletedEnabled,
@@ -2408,10 +2445,17 @@ async function exportAutotrackerDump(): Promise<boolean> {
 }
 
 function resetTrackerState() {
+  if (isCoopActive.value) {
+    sessionStore.leaveRoom();
+  }
   deactivateAutotracker();
   uiStore.resetUiState();
   activeMapId.value = getPreferredActiveMapId(selectableMapDefs.value);
   void sessionStore.resetSessionStateToDefaults();
+}
+
+function leaveCoopRoom() {
+  sessionStore.leaveRoom();
 }
 
 function handleMapToggleCollected(checkId: string) {
@@ -2420,11 +2464,9 @@ function handleMapToggleCollected(checkId: string) {
 
 function handleMapMarkAllReachable(checkIds: string[]) {
   if (checkIds.length === 0) return;
-  const next = new Set(collectedLocationIds.value);
-  for (const checkId of checkIds) {
-    next.add(checkId);
-  }
-  sessionStore.setCollectedLocationIds(Array.from(next));
+  // Additive bulk collect: emit granular collects so a coop peer's concurrent
+  // collect isn't clobbered by a whole-list set_ids replace.
+  sessionStore.collectLocationIds(checkIds);
 }
 
 function handleMapPopupOpen() {}
@@ -2559,12 +2601,12 @@ function handleSidebarResizePointerUp(event: PointerEvent) {
 }
 
 async function undo() {
-  if (isApplyingSettings.value || !canUndo.value) return;
+  if (isApplyingSettings.value || !canUndoWithCoop.value) return;
   await sessionStore.undo();
 }
 
 async function redo() {
-  if (isApplyingSettings.value || !canRedo.value) return;
+  if (isApplyingSettings.value || !canRedoWithCoop.value) return;
   await sessionStore.redo();
 }
 
@@ -2926,7 +2968,6 @@ function applyJunkLocations(junkLocations: string[]) {
     existing.push(loc.id);
     byName.set(key, existing);
   }
-  const next = new Set(collectedLocationIds.value);
   const resolvedIds: string[] = [];
   for (const locName of junkLocations) {
     const ids = byName.get(normalizeName(locName));
@@ -2935,11 +2976,11 @@ function applyJunkLocations(junkLocations: string[]) {
       continue;
     }
     for (const id of ids) {
-      next.add(id);
       resolvedIds.push(id);
     }
   }
-  sessionStore.setCollectedLocationIds(Array.from(next));
+  // Additive bulk collect (granular ops); see handleMapMarkAllReachable.
+  sessionStore.collectLocationIds(resolvedIds);
   junkLocationIds.value = resolvedIds;
 }
 
@@ -3227,14 +3268,27 @@ function handleMobileTrackerLayoutChange(event: MediaQueryListEvent) {
 
 onMounted(() => {
   sessionStore.startLocalSessionSync();
+  if (coopFlagEnabled || sessionStore.coopRoomCode) {
+    const autoJoinCode = coopFlagEnabled ? getCoopAutoJoinCode() : null;
+    const persistedRoomCode = sessionStore.coopRoomCode;
+    const roomCodeToJoin = autoJoinCode ?? persistedRoomCode;
+    if (roomCodeToJoin) {
+      sessionStore.startRoomSync({ roomCode: roomCodeToJoin });
+    }
+    if (autoJoinCode) {
+      clearCoopAutoJoinCodeFromUrl();
+    }
+  }
   const windowWithHandlers = window as Window & {
     __TLT_DEBUG_ACTIVATE_ALL__?: () => void;
     __TLT_DEBUG_DUMP_AUTOTRACKER__?: () => boolean | Promise<boolean>;
     __TLT_RESET_TRACKER_STATE__?: () => void;
+    __TLT_LEAVE_COOP__?: () => void;
   };
   windowWithHandlers.__TLT_DEBUG_ACTIVATE_ALL__ = fillInventory;
   windowWithHandlers.__TLT_DEBUG_DUMP_AUTOTRACKER__ = exportAutotrackerDump;
   windowWithHandlers.__TLT_RESET_TRACKER_STATE__ = resetTrackerState;
+  windowWithHandlers.__TLT_LEAVE_COOP__ = leaveCoopRoom;
   mobileTrackerLayoutQuery = window.matchMedia(MOBILE_TRACKER_LAYOUT_QUERY);
   isMobileTrackerLayout.value = mobileTrackerLayoutQuery.matches;
   mobileTrackerLayoutQuery.addEventListener(
@@ -3256,6 +3310,7 @@ onBeforeUnmount(() => {
     __TLT_DEBUG_ACTIVATE_ALL__?: () => void;
     __TLT_DEBUG_DUMP_AUTOTRACKER__?: () => boolean | Promise<boolean>;
     __TLT_RESET_TRACKER_STATE__?: () => void;
+    __TLT_LEAVE_COOP__?: () => void;
   };
   if (windowWithHandlers.__TLT_DEBUG_ACTIVATE_ALL__ === fillInventory) {
     delete windowWithHandlers.__TLT_DEBUG_ACTIVATE_ALL__;
@@ -3268,9 +3323,13 @@ onBeforeUnmount(() => {
   if (windowWithHandlers.__TLT_RESET_TRACKER_STATE__ === resetTrackerState) {
     delete windowWithHandlers.__TLT_RESET_TRACKER_STATE__;
   }
+  if (windowWithHandlers.__TLT_LEAVE_COOP__ === leaveCoopRoom) {
+    delete windowWithHandlers.__TLT_LEAVE_COOP__;
+  }
   clearAutotrackerToasts();
   autotracker.destroy();
   sessionStore.stopLocalSessionSync();
+  sessionStore.stopRoomSync();
   mobileTrackerLayoutQuery?.removeEventListener(
     'change',
     handleMobileTrackerLayoutChange,
@@ -3321,6 +3380,29 @@ onBeforeUnmount(() => {
           label="Applying settings..."
           subtitle="Recalculating tracker logic"
         />
+      </div>
+    </div>
+    <div
+      v-if="isJoiningCoopRoom"
+      class="applying-overlay"
+      data-testid="joining-coop-overlay"
+      role="status"
+      aria-live="polite"
+    >
+      <div class="applying-overlay__content joining-coop-overlay__content">
+        <FairyLoader
+          size="sm"
+          label="Joining co-op room..."
+          :subtitle="coopRoomCode ? `Room ${coopRoomCode}` : ''"
+        />
+        <button
+          type="button"
+          class="history-button"
+          data-testid="joining-coop-cancel-button"
+          @click="cancelCoopJoin"
+        >
+          Cancel
+        </button>
       </div>
     </div>
     <div
@@ -3605,7 +3687,12 @@ onBeforeUnmount(() => {
             <button
               type="button"
               class="history-button"
-              :disabled="isApplyingSettings || !canUndo"
+              :disabled="isApplyingSettings || !canUndoWithCoop"
+              :title="
+                isCoopActive
+                  ? 'Undo is disabled while coop is active'
+                  : undefined
+              "
               @click="undo"
             >
               ↶ Undo
@@ -3613,7 +3700,12 @@ onBeforeUnmount(() => {
             <button
               type="button"
               class="history-button"
-              :disabled="isApplyingSettings || !canRedo"
+              :disabled="isApplyingSettings || !canRedoWithCoop"
+              :title="
+                isCoopActive
+                  ? 'Redo is disabled while coop is active'
+                  : undefined
+              "
               @click="redo"
             >
               Redo ↷
@@ -3626,6 +3718,7 @@ onBeforeUnmount(() => {
               @update:enabled="handleAutotrackerEnabledUpdate"
               @start-overwrite="startAutotrackerOverwriteMode"
             />
+            <CoopPanel v-if="isCoopVisible" />
           </div>
           <label
             v-if="autotracker.enabled.value"
@@ -4354,6 +4447,13 @@ onBeforeUnmount(() => {
   padding: 1rem 1.25rem;
   min-width: 220px;
   box-shadow: 0 12px 30px rgba(0, 0, 0, 0.45);
+}
+
+.joining-coop-overlay__content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.75rem;
 }
 
 .spoiler-drop-overlay {
