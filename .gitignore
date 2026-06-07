@@ -40,3 +40,5 @@ dist-ssr
 /public/autotracker/ootmm-autotracker-windows-amd64.exe
 /public/autotracker/ootmm-autotracker-windows-arm64.exe
 /public/autotracker/pj64_adapter.lua
+
+/local
