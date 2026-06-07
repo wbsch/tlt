@@ -112,23 +112,27 @@ export const MM_SCENE_TO_MAP: Record<number, string> = {
   27: 'mm_woodfall_temple', // MM_TEMPLE_WOODFALL
   28: 'mm_termina_field', // MM_PATH_MOUNTAIN_VILLAGE
   29: 'mm_ikana_castle', // MM_CASTLE_IKANA
-  32: 'mm_snowhead_temple', // MM_TEMPLE_SNOWHEAD (via Snowhead)
+  32: 'mm_termina_field', // MM_TOWN_SHOOTING_GALLERY
   33: 'mm_snowhead_temple', // MM_SNOWHEAD (summit)
   34: 'mm_termina_field', // MM_MILK_ROAD
-  42: 'mm_moon', // MM_MOON_LINK_TITLE
+  42: 'mm_moon', // MM_MOON_DEKU
   45: 'mm_termina_field', // MM_TERMINA_FIELD_OPENING
-  50: 'mm_great_bay_temple', // MM_TEMPLE_GREAT_BAY
+  50: 'mm_mountain_village', // MM_GORON_SHRINE
   53: 'mm_romani_ranch', // MM_ROMANI_RANCH
   55: 'mm_great_bay', // MM_GREAT_BAY_COAST
   56: 'mm_great_bay', // MM_ZORA_CAPE
+  59: 'mm_pirate_fortress', // MM_PIRATE_FORTRESS_ENTRANCE
   63: 'mm_moon', // MM_MOON (other areas)
   64: 'mm_southern_swamp', // MM_SOUTHERN_SWAMP (main)
   67: 'mm_ikana_canyon', // MM_IKANA_GRAVEYARD
-  69: 'mm_southern_swamp', // MM_WOODS_MYSTERY
+  69: 'mm_southern_swamp', // MM_SOUTHERN_SWAMP
   70: 'mm_southern_swamp', // MM_WOODFALL (preamble)
   71: 'mm_moon', // MM_MOON (trial)
-  73: 'mm_great_bay', // MM_GREAT_BAY (coast area)
-  76: 'mm_ikana_castle', // MM_IKANA_CASTLE
+  72: 'mm_mountain_village', // MM_MOUNTAIN_VILLAGE_SPRING
+  73: 'mm_great_bay_temple', // MM_GREAT_BAY_TEMPLE
+  75: 'mm_beneath_the_well', // MM_BENEATH_THE_WELL
+  76: 'mm_great_bay', // MM_ZORA_HALL_ROOMS
+  77: 'mm_mountain_village', // MM_MOUNTAIN_VILLAGE_WINTER
   80: 'mm_mountain_village', // MM_MOUNTAIN_VILLAGE_WINTER
   82: 'mm_southern_swamp', // MM_DEKU_SHRINE (in Ikana)
   83: 'mm_termina_field', // MM_ROAD_IKANA
