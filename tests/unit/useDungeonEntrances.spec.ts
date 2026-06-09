@@ -789,4 +789,45 @@ describe('useDungeonEntrances', () => {
       warpEntries.some((entry) => entry.key === 'MM_WARP_OWL_CLOCK_TOWN'),
     ).toBe(true);
   });
+
+  it('gives the "Lost Woods Bridge to Hyrule Field" exit row the same destination options as the "Lost Woods Bridge to Kokiri Forest" entrance row', () => {
+    const sessionStore = useOoTMMSessionStore();
+    useOoTMMUiStore();
+
+    sessionStore.trackerSettings = {
+      games: 'ootmm',
+      erOverworld: 'full',
+      erGrottos: 'full',
+      erMixed: 'full',
+      erMixedGrottos: true,
+      erMixedOverworld: true,
+    };
+
+    const entrances = useDungeonEntrances();
+
+    // Exit row: "Lost Woods Bridge to Hyrule Field" (type: region-exit → pool: overworld).
+    const lwbToFieldExit = entrances.activeExitEntries.value.find(
+      (entry) => entry.key === 'OOT_FIELD_FROM_LOST_WOODS_BRIDGE',
+    );
+
+    // Entrance row: "Lost Woods Bridge to Kokiri Forest" (type: overworld → pool: overworld).
+    const lwbToForestEntrance = entrances.activeEntrances.value.find(
+      (entry) => entry.key === 'OOT_FOREST_FROM_LOST_WOODS_BRIDGE',
+    );
+
+    expect(lwbToFieldExit).toBeTruthy();
+    expect(lwbToForestEntrance).toBeTruthy();
+    expect(lwbToFieldExit!.pool).toBe('overworld');
+    expect(lwbToForestEntrance!.pool).toBe('overworld');
+
+    const fieldOptions = entrances.destinationOptionsForExit(lwbToFieldExit!);
+    const forestOptions = entrances.destinationOptionsForEntrance(
+      lwbToForestEntrance!,
+    );
+
+    const fieldValues = fieldOptions.map((o) => o.value).sort();
+    const forestValues = forestOptions.map((o) => o.value).sort();
+
+    expect(fieldValues).toEqual(forestValues);
+  });
 });
