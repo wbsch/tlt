@@ -7,6 +7,7 @@ import {
   getGridItemLinkedItemIds,
   getGridItemOverlay,
   getGridItemOverlayText,
+  getGridIconBadge,
   getGridItemAutoSelectItemIds,
   getGridTextLabel,
   getGridWheelOverlay,
@@ -693,6 +694,11 @@ function getItemTextLabel(itemId: string): string | null {
   return getGridTextLabel(getBaseItemId(itemId));
 }
 
+function getItemIconBadge(itemId: string): string | null {
+  if (isEmptyGridItem(itemId)) return null;
+  return getGridIconBadge(getBaseItemId(itemId));
+}
+
 function getOverlaySrc(itemId: string): string | null {
   if (isEmptyGridItem(itemId)) return null;
   const baseItemId = getBaseItemId(itemId);
@@ -947,6 +953,7 @@ provide(itemGridRenderContextKey, {
   handleItemWheel,
   getIconSrc,
   getItemTextLabel,
+  getGridIconBadge: getItemIconBadge,
   getOverlayText,
   getOverlaySrc,
   isOverlayMaxed,

@@ -168,6 +168,13 @@ onBeforeUnmount(() => {
       @error="context.handleImageError"
     />
     <span
+      v-if="context.getGridIconBadge(props.itemId)"
+      class="item-icon-badge"
+      :class="{ disabled: context.isItemIconDisabled(props.itemId) }"
+    >
+      {{ context.getGridIconBadge(props.itemId) }}
+    </span>
+    <span
       v-if="context.getOverlayText(props.itemId)"
       class="item-overlay item-text-label item-overlay-text-label item-count-overlay-label"
       :class="{
@@ -541,6 +548,48 @@ onBeforeUnmount(() => {
 
 .grid-item.owned > .item-icon {
   filter: none;
+}
+
+.item-icon-badge {
+  position: absolute;
+  bottom: 1px;
+  left: 0;
+  right: 0;
+  text-align: center;
+  color: #f7edd3;
+  font-size: 8px;
+  font-weight: 800;
+  line-height: 1;
+  letter-spacing: 0.02em;
+  text-shadow:
+    -1px -1px 0 rgba(0, 0, 0, 0.95),
+    1px -1px 0 rgba(0, 0, 0, 0.95),
+    -1px 1px 0 rgba(0, 0, 0, 0.95),
+    1px 1px 0 rgba(0, 0, 0, 0.95);
+  pointer-events: none;
+  user-select: none;
+  z-index: 3;
+  transform-origin: bottom center;
+  transform: translateZ(0);
+  transition: transform 0.15s ease;
+}
+
+.grid-item:hover > .item-icon-badge,
+.grid-item:focus-visible > .item-icon-badge,
+.grid-item:focus > .item-icon-badge {
+  will-change: transform;
+  transform: translateZ(0) scale(1.12);
+}
+
+.grid-item.label-item:hover > .item-icon-badge,
+.grid-item.label-item:focus-visible > .item-icon-badge,
+.grid-item.label-item:focus > .item-icon-badge {
+  will-change: auto;
+  transform: translateZ(0);
+}
+
+.item-icon-badge.disabled {
+  filter: grayscale(100%) brightness(0.4);
 }
 
 .item-count {

@@ -131,6 +131,7 @@ export interface ItemGridRenderContext {
   handleItemWheel: (itemId: string, event: WheelEvent) => void;
   getIconSrc: (itemId: string) => string;
   getItemTextLabel: (itemId: string) => string | null;
+  getGridIconBadge: (itemId: string) => string | null;
   getOverlayText: (itemId: string) => string | null;
   getOverlaySrc: (itemId: string) => string | null;
   isOverlayMaxed: (itemId: string) => boolean;

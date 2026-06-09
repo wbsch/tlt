@@ -1458,6 +1458,24 @@ export function getGridTextLabel(value: string): string | null {
   return GRID_TEXT_LABELS_BY_VALUE.get(value) || null;
 }
 
+const GRID_ICON_BADGE_LABELS: Record<string, string> = {
+  MM_OWL_CLOCK_TOWN: 'Town',
+  MM_OWL_SOUTHERN_SWAMP: 'Swmp',
+  MM_OWL_WOODFALL: 'Wood',
+  MM_OWL_MILK_ROAD: 'Milk',
+  MM_OWL_MOUNTAIN_VILLAGE: 'Mtn',
+  MM_OWL_SNOWHEAD: 'Snow',
+  MM_OWL_GREAT_BAY: 'Bay',
+  MM_OWL_ZORA_CAPE: 'Zora',
+  MM_OWL_IKANA_CANYON: 'Ikana',
+  MM_OWL_STONE_TOWER: 'Stone',
+};
+
+export function getGridIconBadge(itemId: string): string | null {
+  if (!itemId) return null;
+  return GRID_ICON_BADGE_LABELS[itemId] || null;
+}
+
 /**
  * Get Item Grid icon path for an item ID and count.
  * If variants are configured, count>0 uses the corresponding variant icon.
