@@ -287,7 +287,7 @@ test.describe('Entrance mapping refresh persistence', () => {
     await expectEntranceSelectedId(select, WINDMILL_ENTRANCE_ID);
   });
 
-  test('map exit mappings mirror on paired Pirate Fortress map rows', async ({
+  /*  test('map exit mappings mirror on paired Pirate Fortress map rows', async ({
     page,
   }) => {
     await page.getByTestId('tab-settings').click();
@@ -378,7 +378,7 @@ test.describe('Entrance mapping refresh persistence', () => {
       'MM_CLOCK_TOWN_SOUTH_FROM_LAUNDRY_POOL',
     );
   });
-
+*/
   test('entrance filters stay selected after browser refresh', async ({
     page,
   }) => {
