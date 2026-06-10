@@ -30,9 +30,7 @@ import {
 import EntranceDestinationCombobox from './EntranceDestinationCombobox.vue';
 import { OOTMM_MAP_DEFS } from '../data/maps';
 import {
-  getTrackedEntranceKeysForBinding,
   isTrackedEntranceAvailable,
-  normalizeTrackedEntranceKey,
   getGameLinkPartner,
 } from '../utils/entranceRandomization';
 import { matchesMapSettingsVisibility } from '../utils/mapSettingsVisibility';
@@ -380,7 +378,7 @@ function normalizeEntranceIdList(
         configured.flatMap((id) => {
           const trimmed = typeof id === 'string' ? id.trim() : '';
           if (trimmed.length === 0) return [];
-          return [normalizeTrackedEntranceKey(trimmed)];
+          return [trimmed];
         }),
       ),
     ];
@@ -430,13 +428,11 @@ const ENTRANCE_SUBMENU_ENTRIES_BY_ID = (() => {
       }));
 
       for (const entranceId of entranceIds) {
-        for (const bindingId of getTrackedEntranceKeysForBinding(entranceId)) {
-          const existing = byId.get(bindingId);
-          if (existing) {
-            existing.push(...normalizedEntries.map(cloneSubmenuEntry));
-          } else {
-            byId.set(bindingId, normalizedEntries.map(cloneSubmenuEntry));
-          }
+        const existing = byId.get(entranceId);
+        if (existing) {
+          existing.push(...normalizedEntries.map(cloneSubmenuEntry));
+        } else {
+          byId.set(entranceId, normalizedEntries.map(cloneSubmenuEntry));
         }
       }
     }

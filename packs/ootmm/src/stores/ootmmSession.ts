@@ -23,11 +23,13 @@ import {
   type OoTMMSyncOperationEnvelope,
 } from './ootmmSessionSync';
 import {
+  computeCoupledReverse,
   filterEntranceOverridesForSettings,
   getActiveEntranceKeys,
   GAME_LINK_VANILLA_EXIT_MAPPING,
   INTERIOR_GAME_LINK_EXIT_KEYS,
   INTERIOR_GAME_LINK_SOURCE_KEYS,
+  getEdgeReverse,
 } from '../utils/entranceRandomization';
 import { getGridItemDefinedMaxCount } from '../data/itemIcons';
 
@@ -1142,11 +1144,29 @@ export const useOoTMMSessionStore = defineStore('ootmm-session', () => {
     if (!src) return;
     const previousSnapshot = captureSnapshotForMutation(options);
     const next = { ...entranceOverrides.value };
+
     if (dst === null || dst === '') {
+      // Also remove the coupled reverse entry before deleting src.
+      const oldDst = entranceOverrides.value[src];
+      if (oldDst) {
+        const partner = computeCoupledReverse(src, oldDst);
+        if (partner) {
+          delete next[partner.reverseSrc];
+        }
+      }
       delete next[src];
     } else {
       next[src] = dst;
+      // Idempotent coupling: set the reverse edge if not already correct.
+      const partner = computeCoupledReverse(src, dst);
+      if (partner) {
+        const existingPartnerDst = next[partner.reverseSrc];
+        if (existingPartnerDst !== partner.reverseDst) {
+          next[partner.reverseSrc] = partner.reverseDst;
+        }
+      }
     }
+
     entranceOverrides.value = next;
     recordHistoryFromSnapshot(previousSnapshot);
     publishSyncOperation(
@@ -1167,7 +1187,15 @@ export const useOoTMMSessionStore = defineStore('ootmm-session', () => {
     options?: MutationOptions,
   ) {
     const previousSnapshot = captureSnapshotForMutation(options);
-    entranceOverrides.value = { ...overrides };
+    // Fill in missing reverse edges in-place (idempotent).
+    const coupled = { ...overrides };
+    for (const [src, dst] of Object.entries(overrides)) {
+      const partner = computeCoupledReverse(src, dst);
+      if (partner && !(partner.reverseSrc in coupled)) {
+        coupled[partner.reverseSrc] = partner.reverseDst;
+      }
+    }
+    entranceOverrides.value = coupled;
     recordHistoryFromSnapshot(previousSnapshot);
     publishSyncOperation(
       {

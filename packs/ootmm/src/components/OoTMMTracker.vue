@@ -57,13 +57,8 @@ import { OOTMM_MAP_DEFS } from '../data/maps';
 import type { MapDef, MapSubmenuEntryDef } from '../data/maps/types';
 import {
   getActiveEntranceKeys,
-  normalizeTrackedEntranceKey,
-  getTrackedEntranceKeysForBinding,
-  getExitKeyForEntrance,
-  computeExitOverrides,
-  computeDisplayEntranceOverrides,
+  getEdgeReverse,
   filterEntranceOverridesForSettings,
-  resolveToActiveEntranceKey,
 } from '../utils/entranceRandomization';
 import * as ItemsMod from '@ootmm/core/items/index';
 import * as NamesMod from '@ootmm/core/names';
@@ -1424,7 +1419,7 @@ const ENTRANCE_CHECK_CODES_BY_ID: ReadonlyMap<string, MapSubmenuEntryDef[]> =
         if (!Array.isArray(markerDef.markers) || markerDef.markers.length === 0)
           continue;
         const entranceIds = (markerDef.entranceMenu.entranceIds ?? [])
-          .map((id) => normalizeTrackedEntranceKey(id.trim()))
+          .map((id) => id.trim())
           .filter((id) => id.length > 0);
         if (entranceIds.length === 0) continue;
         const entries: MapSubmenuEntryDef[] = markerDef.markers.map((e) => ({
@@ -1434,15 +1429,11 @@ const ENTRANCE_CHECK_CODES_BY_ID: ReadonlyMap<string, MapSubmenuEntryDef[]> =
           visibleWhen: e.visibleWhen,
         }));
         for (const entranceId of entranceIds) {
-          for (const bindingId of getTrackedEntranceKeysForBinding(
-            entranceId,
-          )) {
-            const existing = byId.get(bindingId);
-            if (existing) {
-              existing.push(...entries);
-            } else {
-              byId.set(bindingId, [...entries]);
-            }
+          const existing = byId.get(entranceId);
+          if (existing) {
+            existing.push(...entries);
+          } else {
+            byId.set(entranceId, [...entries]);
           }
         }
       }
@@ -1453,21 +1444,22 @@ const ENTRANCE_CHECK_CODES_BY_ID: ReadonlyMap<string, MapSubmenuEntryDef[]> =
 function addEntranceBoundCodes(
   checkIds: Set<string>,
   markerEntranceIds: string[],
-  activeKeys: Set<string>,
   overrides: Record<string, string>,
 ): void {
   for (const srcId of markerEntranceIds) {
-    const normalizedSrc = normalizeTrackedEntranceKey(srcId.trim());
-    if (!normalizedSrc) continue;
+    const trimmed = srcId.trim();
+    if (!trimmed) continue;
 
-    const effectiveSrc = resolveToActiveEntranceKey(normalizedSrc, activeKeys);
-    const resolvedEntranceId = effectiveSrc
-      ? (overrides[effectiveSrc] ?? null)
-      : normalizedSrc;
-
+    const resolvedEntranceId = overrides[trimmed] ?? null;
     if (!resolvedEntranceId) continue;
 
-    const dstEntries = ENTRANCE_CHECK_CODES_BY_ID.get(resolvedEntranceId);
+    // Look up check codes by the resolved destination entrance ID.
+    // If not found directly, try the reverse (exit→entrance fallback).
+    const dstEntries =
+      ENTRANCE_CHECK_CODES_BY_ID.get(resolvedEntranceId) ??
+      (getEdgeReverse(resolvedEntranceId)
+        ? ENTRANCE_CHECK_CODES_BY_ID.get(getEdgeReverse(resolvedEntranceId)!)
+        : undefined);
     if (!dstEntries) continue;
     for (const entry of dstEntries) {
       for (const code of normalizeMapCodeList(entry.codes)) {
@@ -1479,9 +1471,6 @@ function addEntranceBoundCodes(
 
 const mapSelectorCheckIdsByMap = computed(() => {
   const byMap = new Map<string, Set<string>>();
-  const activeKeys = getActiveEntranceKeys(
-    (trackerSettings.value ?? {}) as Record<string, unknown>,
-  );
   const overrides = filterEntranceOverridesForSettings(
     entranceOverrides.value,
     (trackerSettings.value ?? {}) as Record<string, unknown>,
@@ -1498,12 +1487,7 @@ const mapSelectorCheckIdsByMap = computed(() => {
           // Mirror the map runtime: shuffled entrances resolve via overrides,
           // while entrance-bound submenu markers outside active ER pools fall
           // back to their own source entrance definitions.
-          addEntranceBoundCodes(
-            checkIds,
-            markerEntranceIds,
-            activeKeys,
-            overrides,
-          );
+          addEntranceBoundCodes(checkIds, markerEntranceIds, overrides);
         } else {
           // No ER or no entrance binding – use static codes
           for (const submenuEntry of marker.markers ?? []) {
@@ -1560,12 +1544,9 @@ const mapSelectorEntranceIdsByMap = computed(() => {
         Array.isArray(marker.entranceMenu.entranceIds)
       ) {
         for (const srcId of marker.entranceMenu.entranceIds) {
-          const normalized = normalizeTrackedEntranceKey(srcId.trim());
-          const active = normalized
-            ? resolveToActiveEntranceKey(normalized, activeKeys)
-            : null;
-          if (active) {
-            entranceIds.add(active);
+          const trimmed = srcId.trim();
+          if (trimmed && activeKeys.has(trimmed)) {
+            entranceIds.add(trimmed);
           }
         }
       }
@@ -1585,43 +1566,19 @@ const mapSelectorVisibleEntranceCountByMap = computed(() => {
   const reachFilter = entrancesReachabilityFilter.value;
   const mapFilter = entrancesMappingFilter.value;
   const reachableSet = reachableEntranceIdSet.value;
-  const settings = (trackerSettings.value ?? {}) as Record<string, unknown>;
-  const normalizedOverrides = filterEntranceOverridesForSettings(
-    entranceOverrides.value,
-    settings,
+  const activeKeys = getActiveEntranceKeys(
+    (trackerSettings.value ?? {}) as Record<string, unknown>,
   );
-  const displayOverrides = computeDisplayEntranceOverrides(
-    entranceOverrides.value,
-    settings,
-  );
-  const exitOverrides = computeExitOverrides(normalizedOverrides);
-  const activeKeys = getActiveEntranceKeys(settings);
 
-  const entrancePassesFilters = (entranceId: string): boolean => {
-    const isMapped = (displayOverrides[entranceId] ?? '').trim().length > 0;
+  const passesFilters = (key: string): boolean => {
+    const isMapped = (entranceOverrides.value[key] ?? '').trim().length > 0;
     const passesMapping =
       mapFilter === 'all' ||
       (mapFilter === 'mapped' && isMapped) ||
       (mapFilter === 'unmapped' && !isMapped);
     if (!passesMapping) return false;
 
-    const isReachable = reachableSet.has(entranceId);
-    return (
-      reachFilter === 'all' ||
-      (reachFilter === 'reachable' && isReachable) ||
-      (reachFilter === 'unreachable' && !isReachable)
-    );
-  };
-
-  const exitPassesFilters = (exitKey: string): boolean => {
-    const isMapped = (exitOverrides[exitKey] ?? '').trim().length > 0;
-    const passesMapping =
-      mapFilter === 'all' ||
-      (mapFilter === 'mapped' && isMapped) ||
-      (mapFilter === 'unmapped' && !isMapped);
-    if (!passesMapping) return false;
-
-    const isReachable = reachableSet.has(exitKey);
+    const isReachable = reachableSet.has(key);
     return (
       reachFilter === 'all' ||
       (reachFilter === 'reachable' && isReachable) ||
@@ -1654,22 +1611,20 @@ const mapSelectorVisibleEntranceCountByMap = computed(() => {
 
       const markerEntranceIds = new Set<string>();
       for (const srcId of marker.entranceMenu.entranceIds) {
-        const normalized = normalizeTrackedEntranceKey(srcId.trim());
-        const active = normalized
-          ? resolveToActiveEntranceKey(normalized, activeKeys)
-          : null;
-        if (active) {
-          markerEntranceIds.add(active);
+        const trimmed = srcId.trim();
+        if (trimmed && activeKeys.has(trimmed)) {
+          markerEntranceIds.add(trimmed);
         }
       }
 
       for (const entranceId of markerEntranceIds) {
-        if (showsEntrances && entrancePassesFilters(entranceId)) {
+        if (showsEntrances && passesFilters(entranceId)) {
           count += 1;
         }
 
-        const exitKey = getExitKeyForEntrance(entranceId);
-        if (showsExits && exitKey && exitPassesFilters(exitKey)) {
+        // For display: "exits", count the partner (reverse) key.
+        const partnerKey = getEdgeReverse(entranceId);
+        if (showsExits && partnerKey && passesFilters(partnerKey)) {
           count += 1;
         }
       }

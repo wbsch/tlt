@@ -1,7 +1,7 @@
 import { readFileSync, readdirSync } from 'node:fs';
 import path from 'node:path';
 import { describe, expect, it } from 'vitest';
-import { getActiveEntranceKeys } from '@packs/ootmm/utils/entranceRandomization';
+import { getActiveEntranceKeys } from '../../packs/ootmm/src/utils/entranceRandomization';
 
 type EntranceData = {
   game: 'oot' | 'mm';

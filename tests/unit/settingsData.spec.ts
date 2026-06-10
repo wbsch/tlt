@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { SETTINGS_DEFINITIONS } from '@packs/ootmm/data/settings';
+import { SETTINGS_DEFINITIONS } from '../../packs/ootmm/src/data/settings';
 
 describe('tracker settings definitions', () => {
   it('surfaces boss entrance shuffle in the whitelisted tracker settings', () => {

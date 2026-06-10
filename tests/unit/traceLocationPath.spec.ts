@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { OoTMMTracker } from '@packs/ootmm/tracker';
+import { OoTMMTracker } from '../../packs/ootmm/src/tracker';
 
 describe('traceLocationPath', () => {
   it('reconstructs a multi-step path for reachable interior checks', async () => {

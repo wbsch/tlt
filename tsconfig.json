@@ -43,6 +43,6 @@
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true
   },
-  "include": ["src/**/*", "packs/**/*"],
+  "include": ["src/**/*", "packs/**/*", "tests/**/*"],
   "exclude": ["node_modules", "dist", "OoTMM/**/*"]
 }

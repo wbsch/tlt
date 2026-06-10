@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { OoTMMTracker } from '@packs/ootmm/tracker';
+import { OoTMMTracker } from '../../packs/ootmm/src/tracker';
 
 describe('entrance reachability', () => {
   it('keeps mapped reverse exits reachable from their original source side', async () => {

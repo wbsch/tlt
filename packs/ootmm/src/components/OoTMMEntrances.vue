@@ -233,10 +233,7 @@ const groupedEntrances = computed(() => {
               :key="exit.key"
               class="entrance-row exit-row"
             >
-              <label
-                class="entrance-label exit-label"
-                :title="exit.sourceEntranceKey"
-              >
+              <label class="entrance-label exit-label" :title="exit.key">
                 {{ exit.label }}
               </label>
               <EntranceDestinationCombobox

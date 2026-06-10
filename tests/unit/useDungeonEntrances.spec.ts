@@ -1,9 +1,9 @@
 import { beforeEach, describe, expect, it } from 'vitest';
 import { createPinia, setActivePinia } from 'pinia';
-import { useDungeonEntrances } from '@packs/ootmm/composables/useDungeonEntrances';
-import { filterEntranceOverridesForSettings } from '@packs/ootmm/utils/entranceRandomization';
-import { useOoTMMSessionStore } from '@packs/ootmm/stores/ootmmSession';
-import { useOoTMMUiStore } from '@packs/ootmm/stores/ootmmUi';
+import { useDungeonEntrances } from '../../packs/ootmm/src/composables/useDungeonEntrances';
+import { filterEntranceOverridesForSettings } from '../../packs/ootmm/src/utils/entranceRandomization';
+import { useOoTMMSessionStore } from '../../packs/ootmm/src/stores/ootmmSession';
+import { useOoTMMUiStore } from '../../packs/ootmm/src/stores/ootmmUi';
 
 describe('useDungeonEntrances', () => {
   beforeEach(() => {
@@ -126,7 +126,7 @@ describe('useDungeonEntrances', () => {
     ).toBe('OOT_KOKIRI_FOREST_FROM_SARIA');
     expect(
       sessionStore.entranceOverrides['MM_CLOCK_TOWER_FROM_CLOCK_TOWN'],
-    ).toBeUndefined();
+    ).toBe('OOT_KOKIRI_FOREST_FROM_SARIA');
     expect(sessionStore.entranceOverrides['OOT_HOUSE_SARIA']).toBe(
       'MM_CLOCK_TOWN_FROM_CLOCK_TOWER',
     );
@@ -380,13 +380,14 @@ describe('useDungeonEntrances', () => {
       entrances.getResolvedSelectedDestination(
         'OOT_MARKET_ENTRANCE_FROM_MARKET',
       ),
-    ).toBe('OOT_KAKARIKO_FROM_FIELD');
+    ).toBe('OOT_FIELD_FROM_KAKARIKO');
     expect(
       filterEntranceOverridesForSettings(
         sessionStore.entranceOverrides,
         sessionStore.trackerSettings,
       ),
     ).toEqual({
+      OOT_KAKARIKO_FROM_FIELD: 'OOT_MARKET_FROM_MARKET_ENTRANCE',
       OOT_MARKET_ENTRANCE_FROM_MARKET: 'OOT_FIELD_FROM_KAKARIKO',
     });
   });
@@ -413,13 +414,13 @@ describe('useDungeonEntrances', () => {
       entrances.getResolvedSelectedDestination(
         'OOT_MARKET_ENTRANCE_FROM_MARKET',
       ),
-    ).toBe('OOT_KAKARIKO_FROM_FIELD');
+    ).toBe('OOT_FIELD_FROM_KAKARIKO');
     expect(entrances.getSelectedDestination('OOT_KAKARIKO_FROM_FIELD')).toBe(
       'OOT_MARKET_FROM_MARKET_ENTRANCE',
     );
-    expect(
-      sessionStore.entranceOverrides['OOT_KAKARIKO_FROM_FIELD'],
-    ).toBeUndefined();
+    expect(sessionStore.entranceOverrides['OOT_KAKARIKO_FROM_FIELD']).toBe(
+      'OOT_MARKET_FROM_MARKET_ENTRANCE',
+    );
   });
 
   it('activates boss entrances as their own tracked pool when boss shuffle is enabled', () => {
@@ -807,12 +808,14 @@ describe('useDungeonEntrances', () => {
 
     // Exit row: "Lost Woods Bridge to Hyrule Field" (type: region-exit → pool: overworld).
     const lwbToFieldExit = entrances.activeExitEntries.value.find(
-      (entry) => entry.key === 'OOT_FIELD_FROM_LOST_WOODS_BRIDGE',
+      (entry: { key: string }) =>
+        entry.key === 'OOT_FIELD_FROM_LOST_WOODS_BRIDGE',
     );
 
     // Entrance row: "Lost Woods Bridge to Kokiri Forest" (type: overworld → pool: overworld).
     const lwbToForestEntrance = entrances.activeEntrances.value.find(
-      (entry) => entry.key === 'OOT_FOREST_FROM_LOST_WOODS_BRIDGE',
+      (entry: { key: string }) =>
+        entry.key === 'OOT_FOREST_FROM_LOST_WOODS_BRIDGE',
     );
 
     expect(lwbToFieldExit).toBeTruthy();
@@ -825,8 +828,12 @@ describe('useDungeonEntrances', () => {
       lwbToForestEntrance!,
     );
 
-    const fieldValues = fieldOptions.map((o) => o.value).sort();
-    const forestValues = forestOptions.map((o) => o.value).sort();
+    const fieldValues = fieldOptions
+      .map((o: { value: string }) => o.value)
+      .sort();
+    const forestValues = forestOptions
+      .map((o: { value: string }) => o.value)
+      .sort();
 
     expect(fieldValues).toEqual(forestValues);
   });

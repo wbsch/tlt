@@ -1,6 +1,6 @@
 import { deflateRaw } from 'pako';
 import { beforeAll, describe, expect, it, vi } from 'vitest';
-import { DEFAULT_LEFT_SIDEBAR_WIDTH } from '@packs/ootmm/stores/ootmmUi';
+import { DEFAULT_LEFT_SIDEBAR_WIDTH } from '../../packs/ootmm/src/stores/ootmmUi';
 
 const textEncoder = new TextEncoder();
 

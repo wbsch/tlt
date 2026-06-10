@@ -8,20 +8,11 @@ import {
   getActiveEntranceKeys,
   getTrackedEntrancePool,
   isTrackedEntranceSourceType,
-  computeEffectiveTrackedEntranceOverrides,
-  computeExitOverrides,
-  computeDisplayEntranceOverrides,
-  filterEntranceOverridesForSettings,
-  getExitKeyForEntrance,
   getExitLabel,
   getExitEndpointLabel,
-  deriveEntranceFromExitMapping,
+  getEdgeReverse,
   INTERIOR_GAME_LINK_SOURCE_KEYS,
   INTERIOR_GAME_LINK_EXIT_KEYS,
-  getGameLinkPartner,
-  normalizeTrackedDestinationKeyForSource,
-  normalizeTrackedEntranceKey,
-  resolveToActiveEntranceKey,
   getTrackedEntranceCompatiblePools,
   getTrackedEntranceOwnGameMode,
   doTrackedEntrancePolaritiesMatch,
@@ -155,31 +146,8 @@ export function useDungeonEntrances() {
     entrancesSearchQuery,
   } = storeToRefs(uiStore);
 
-  const normalizedEntranceOverrides = computed(() =>
-    filterEntranceOverridesForSettings(
-      entranceOverrides.value,
-      trackerSettings.value,
-    ),
-  );
-
-  const displayEntranceOverrides = computed(() =>
-    computeDisplayEntranceOverrides(
-      entranceOverrides.value,
-      trackerSettings.value,
-    ),
-  );
-
-  const rawActiveEntranceOverrides = computed(() => {
-    return computeEffectiveTrackedEntranceOverrides(
-      entranceOverrides.value,
-      trackerSettings.value ?? {},
-    );
-  });
-
   function isEntranceMapped(entranceKey: string): boolean {
-    return (
-      (displayEntranceOverrides.value[entranceKey] ?? '').trim().length > 0
-    );
+    return (entranceOverrides.value[entranceKey] ?? '').trim().length > 0;
   }
 
   const allDungeonEntrances = computed<DungeonEntranceEntry[]>(() => {
@@ -349,33 +317,17 @@ export function useDungeonEntrances() {
     };
 
     for (const entry of activeEntrances.value) {
-      const partner = getGameLinkPartner(entry.key);
-      const primaryValue = partner || entry.key;
-      const primaryData = partner ? ENTRANCES_RAW[partner] : null;
-
+      // Add entrance key.
       addOption({
-        value: primaryValue,
-        label: primaryData
-          ? entranceOptionLabel(primaryValue, primaryData)
-          : entry.optionLabel,
+        value: entry.key,
+        label: entry.optionLabel,
         game: entry.game,
         pool: entry.pool,
       });
 
-      if (entry.key !== primaryValue) {
-        addOption({
-          value: entry.key,
-          label:
-            normalizeTrackedEntranceKey(entry.key) !== entry.key
-              ? getExitEndpointLabel(entry.key)
-              : entry.optionLabel,
-          game: entry.game,
-          pool: entry.pool,
-        });
-      }
-
-      const exitKey = getExitKeyForEntrance(entry.key);
-      if (exitKey && exitKey !== primaryValue && exitKey !== entry.key) {
+      // Add exit (reverse) key if present.
+      const exitKey = getEdgeReverse(entry.key);
+      if (exitKey) {
         addOption({
           value: exitKey,
           label: getExitEndpointLabel(exitKey),
@@ -414,27 +366,14 @@ export function useDungeonEntrances() {
         continue;
       }
 
-      const partner = getGameLinkPartner(entry.key);
-      if (partner) {
-        const partnerData = ENTRANCES_RAW[partner];
-        if (partnerData) {
-          addOption({
-            value: partner,
-            label: entranceOptionLabel(partner, partnerData),
-            game: entry.game,
-            pool: entry.pool,
-          });
-        }
-      } else {
-        addOption({
-          value: entry.key,
-          label: entry.optionLabel,
-          game: entry.game,
-          pool: entry.pool,
-        });
-      }
+      addOption({
+        value: entry.key,
+        label: entry.optionLabel,
+        game: entry.game,
+        pool: entry.pool,
+      });
 
-      const exitKey = getExitKeyForEntrance(entry.key);
+      const exitKey = getEdgeReverse(entry.key);
       if (exitKey) {
         addOption({
           value: exitKey,
@@ -466,27 +405,13 @@ export function useDungeonEntrances() {
   function isDestinationUsed(dstKey: string, currentSrcKey: string): boolean {
     const currentSourcePool = getEntrancePoolByKey(currentSrcKey);
 
-    for (const [src, dst] of Object.entries(rawActiveEntranceOverrides.value)) {
+    for (const [src, dst] of Object.entries(entranceOverrides.value)) {
       if (src === currentSrcKey) continue;
       const otherSourcePool = getEntrancePoolByKey(src);
       if (currentSourcePool === 'spawn' || otherSourcePool === 'spawn') {
         continue;
       }
       if (dst === dstKey) return true;
-    }
-
-    const partner = getGameLinkPartner(dstKey);
-    if (partner) {
-      for (const [src, dst] of Object.entries(
-        rawActiveEntranceOverrides.value,
-      )) {
-        if (src === currentSrcKey) continue;
-        const otherSourcePool = getEntrancePoolByKey(src);
-        if (currentSourcePool === 'spawn' || otherSourcePool === 'spawn') {
-          continue;
-        }
-        if (dst === partner) return true;
-      }
     }
 
     return false;
@@ -514,9 +439,8 @@ export function useDungeonEntrances() {
       );
     }
 
-    const gamesMode = String(trackerSettings.value?.games ?? 'ootmm');
     const settings = trackerSettings.value ?? {};
-    const selectedDestination = displayEntranceOverrides.value[entry.key] ?? '';
+    const selectedDestination = entranceOverrides.value[entry.key] ?? '';
     const compatiblePools = new Set(
       getTrackedEntranceCompatiblePools(entry.pool, settings),
     );
@@ -526,44 +450,6 @@ export function useDungeonEntrances() {
       if (!ownGameMode) return true;
       return dest.game === entry.game;
     });
-
-    const seenAliases = new Set(
-      opts.map((dest) => `${dest.value}::${dest.label}`),
-    );
-
-    const addExitAlias = (exit: ExitEntry | undefined) => {
-      if (!exit) return;
-      if (!compatiblePools.has(exit.pool)) return;
-      if (ownGameMode && exit.game !== entry.game) return;
-
-      const alias = {
-        value: exit.key,
-        label: getExitEndpointLabel(exit.key),
-        game: exit.game,
-        pool: exit.pool,
-      };
-      const aliasKey = `${alias.value}::${alias.label}`;
-      if (seenAliases.has(aliasKey)) return;
-      seenAliases.add(aliasKey);
-      opts.push(alias);
-    };
-
-    if (gamesMode === 'ootmm' && INTERIOR_GAME_LINK_EXIT_KEYS.has(entry.key)) {
-      for (const exit of activeExitEntries.value) {
-        const normalizedValue = ENTRANCES_RAW[exit.key]?.reverse?.trim();
-        if (!normalizedValue || !ENTRANCES_RAW[normalizedValue]) continue;
-
-        addExitAlias(exit);
-      }
-    }
-
-    if (selectedDestination) {
-      addExitAlias(
-        activeExitEntries.value.find(
-          (exit) => exit.key === selectedDestination,
-        ),
-      );
-    }
 
     return sortOptionsByGameThenLabel(
       opts.filter((dest) => {
@@ -592,88 +478,15 @@ export function useDungeonEntrances() {
   );
 
   function getSelectedDestination(srcKey: string): string {
-    return displayEntranceOverrides.value[srcKey] ?? '';
+    return entranceOverrides.value[srcKey] ?? '';
   }
 
   function getResolvedSelectedDestination(srcKey: string): string {
-    return normalizeTrackedDestinationKeyForSource(
-      srcKey,
-      getSelectedDestination(srcKey),
-    );
+    return getSelectedDestination(srcKey);
   }
 
   function setSelectedDestination(srcKey: string, dstKey: string) {
-    // In single-game mode, game-link exit keys selected as entrance
-    // destinations must be normalized to the source key so the plando
-    // and exit override derivation stay correct.
-    // In ootmm mode the exit keys are the active keys and must be preserved.
-    let normalizedDst = dstKey;
-    if (dstKey && INTERIOR_GAME_LINK_EXIT_KEYS.has(dstKey)) {
-      const gamesMode = String(trackerSettings.value?.games ?? 'ootmm');
-      if (gamesMode !== 'ootmm') {
-        const partner = getGameLinkPartner(dstKey);
-        if (partner) normalizedDst = partner;
-      }
-    }
-
-    const gamesMode = String(trackerSettings.value?.games ?? 'ootmm');
-    const nextOverrides = { ...entranceOverrides.value };
-
-    if (!nextOverrides[srcKey] && displayEntranceOverrides.value[srcKey]) {
-      const activeKeys = getActiveEntranceKeys(trackerSettings.value);
-      for (const [otherSrc, otherDst] of Object.entries(nextOverrides)) {
-        const effectiveOtherSrc = resolveToActiveEntranceKey(
-          normalizeTrackedEntranceKey(otherSrc),
-          activeKeys,
-        );
-        const oppositeRaw = ENTRANCES_RAW[otherDst]?.reverse?.trim();
-        const effectiveOppositeSrc = oppositeRaw
-          ? resolveToActiveEntranceKey(
-              normalizeTrackedEntranceKey(oppositeRaw),
-              activeKeys,
-            )
-          : null;
-        if (effectiveOtherSrc && effectiveOppositeSrc === srcKey) {
-          delete nextOverrides[otherSrc];
-          break;
-        }
-      }
-    }
-
-    const previousDst = nextOverrides[srcKey] ?? '';
-
-    if (
-      gamesMode === 'ootmm' &&
-      previousDst &&
-      INTERIOR_GAME_LINK_SOURCE_KEYS.has(previousDst)
-    ) {
-      const previousPartner = getGameLinkPartner(previousDst);
-      if (previousPartner && nextOverrides[previousPartner] === srcKey) {
-        delete nextOverrides[previousPartner];
-      }
-    }
-
-    if (gamesMode === 'ootmm' && INTERIOR_GAME_LINK_EXIT_KEYS.has(srcKey)) {
-      const sourceAlias = getGameLinkPartner(srcKey);
-      if (sourceAlias) {
-        for (const [otherSrc, otherDst] of Object.entries(nextOverrides)) {
-          if (otherSrc === srcKey) continue;
-          if (otherDst === sourceAlias && nextOverrides[srcKey] === otherSrc) {
-            delete nextOverrides[otherSrc];
-          }
-        }
-      }
-    }
-
-    if (!normalizedDst) {
-      delete nextOverrides[srcKey];
-      sessionStore.setEntranceOverrides(nextOverrides);
-      return;
-    }
-
-    nextOverrides[srcKey] = normalizedDst;
-
-    sessionStore.setEntranceOverrides(nextOverrides);
+    sessionStore.setEntranceOverride(srcKey, dstKey || null);
   }
 
   function clearAllOverrides() {
@@ -681,140 +494,59 @@ export function useDungeonEntrances() {
   }
 
   const hasAnyOverrides = computed(
-    () => Object.keys(displayEntranceOverrides.value).length > 0,
+    () => Object.keys(entranceOverrides.value).length > 0,
   );
 
   // --- Exit data ---
 
-  const exitOverridesMap = computed(() =>
-    computeExitOverrides(normalizedEntranceOverrides.value),
-  );
-
-  function getDisplayExitDestination(exitKey: string): string {
-    return (
-      exitOverridesMap.value[exitKey] ??
-      displayEntranceOverrides.value[exitKey] ??
-      ''
-    );
-  }
-
   function isExitMapped(exitKey: string): boolean {
-    return getDisplayExitDestination(exitKey).trim().length > 0;
+    return (entranceOverrides.value[exitKey] ?? '').trim().length > 0;
   }
 
   function getExitDestination(exitKey: string): string {
-    return getDisplayExitDestination(exitKey);
+    return entranceOverrides.value[exitKey] ?? '';
   }
 
   function getExitDestinationLabel(exitKey: string): string {
-    const dst = getDisplayExitDestination(exitKey);
+    const dst = entranceOverrides.value[exitKey] ?? '';
     if (!dst) return '';
     return getExitLabel(dst);
   }
 
   function getExitSelectedDestination(exitKey: string): string {
-    return getDisplayExitDestination(exitKey);
+    return entranceOverrides.value[exitKey] ?? '';
   }
 
   /**
-   * Set an exit mapping. Derives and stores the corresponding entrance mapping.
-   * Passing an empty dstKey clears the mapping.
+   * Set an exit mapping directly. The store coupling (Phase 2.1) automatically
+   * sets the reverse entrance mapping. Passing an empty dstKey clears it.
    */
   function setExitDestination(exitKey: string, exitDstKey: string) {
-    if (!exitDstKey) {
-      // Clear: find which entrance mapping produces this exit key and remove it
-      const currentOverrides = entranceOverrides.value;
-      for (const [src, dst] of Object.entries(currentOverrides)) {
-        const dstData = ENTRANCES_RAW[dst];
-        if (dstData?.reverse?.trim() === exitKey) {
-          sessionStore.setEntranceOverride(src, null);
-          return;
-        }
-      }
-      return;
-    }
-    // In single-game mode, game-link source keys selected as exit
-    // destinations must be normalized to the exit key.
-    // In ootmm mode the source keys don't appear in exit dropdowns.
-    let normalizedExitDst = exitDstKey;
-    if (INTERIOR_GAME_LINK_SOURCE_KEYS.has(exitDstKey)) {
-      const gamesMode = String(trackerSettings.value?.games ?? 'ootmm');
-      if (gamesMode !== 'ootmm') {
-        const partner = getGameLinkPartner(exitDstKey);
-        if (partner) normalizedExitDst = partner;
-      }
-    }
-    const derived = deriveEntranceFromExitMapping(exitKey, normalizedExitDst);
-    if (!derived) return;
-    sessionStore.setEntranceOverride(derived.entranceSrc, derived.entranceDst);
+    sessionStore.setEntranceOverride(exitKey, exitDstKey || null);
   }
 
   function isExitDestinationUsed(
     exitDstKey: string,
     currentExitSrcKey: string,
   ): boolean {
-    const overrides = exitOverridesMap.value;
-    for (const [src, dst] of Object.entries(overrides)) {
+    for (const [src, dst] of Object.entries(entranceOverrides.value)) {
       if (src !== currentExitSrcKey && dst === exitDstKey) return true;
-    }
-    // Game-link keys have no polarity: check partner in both override maps
-    const partner = getGameLinkPartner(exitDstKey);
-    if (partner) {
-      for (const [, dst] of Object.entries(overrides)) {
-        if (dst === partner) return true;
-      }
-      for (const [, dst] of Object.entries(normalizedEntranceOverrides.value)) {
-        if (dst === exitDstKey || dst === partner) return true;
-      }
     }
     return false;
   }
-
-  const exitDestinationOptions = computed(() => {
-    const gamesMode = String(trackerSettings.value?.games ?? 'ootmm');
-    const opts = activeExitEntries.value.map((entry) => ({
-      value: entry.key,
-      label: getExitEndpointLabel(entry.key),
-      game: entry.game,
-      pool: entry.pool,
-    }));
-
-    const seenValues = new Set(opts.map((opt) => opt.value));
-
-    // Game-link rows themselves have no meaningful exit rows, but reverse
-    // mappings from other interiors can legitimately point at their hidden
-    // partner key. Keep that partner side in the destination list so the
-    // reverse-edge row can render and stay editable.
-    for (const entrance of activeEntrances.value) {
-      const extraValue =
-        gamesMode === 'ootmm'
-          ? getGameLinkPartner(entrance.key)
-          : INTERIOR_GAME_LINK_SOURCE_KEYS.has(entrance.key)
-            ? entrance.key
-            : null;
-      if (!extraValue || seenValues.has(extraValue)) continue;
-      seenValues.add(extraValue);
-      opts.push({
-        value: extraValue,
-        label: getExitEndpointLabel(extraValue),
-        game: entrance.game,
-        pool: entrance.pool,
-      });
-    }
-
-    return opts;
-  });
 
   function destinationOptionsForExit(
     exit: Pick<ExitEntry, 'key' | 'game' | 'pool'>,
   ) {
     const settings = trackerSettings.value ?? {};
-    const selectedDestination = getDisplayExitDestination(exit.key);
+    const selectedDestination = entranceOverrides.value[exit.key] ?? '';
     const compatiblePools = new Set(
       getTrackedEntranceCompatiblePools(exit.pool, settings),
     );
     const ownGameMode = getTrackedEntranceOwnGameMode(exit.pool, settings);
-    const opts = exitDestinationOptions.value.filter((dest) => {
+    const activeKeys = getActiveEntranceKeys(settings);
+
+    const opts = destinationOptions.value.filter((dest) => {
       if (!compatiblePools.has(dest.pool)) return false;
       if (!ownGameMode) return true;
       return dest.game === exit.game;
@@ -822,10 +554,13 @@ export function useDungeonEntrances() {
 
     return sortOptionsByGameThenLabel(
       opts.filter((dest) => {
-        if (dest.value === selectedDestination) {
-          return true;
-        }
-        return !isExitDestinationUsed(dest.value, exit.key);
+        if (dest.value === selectedDestination) return true;
+        if (isExitDestinationUsed(dest.value, exit.key)) return false;
+        // The destination (or its reverse for exit-type keys) must be
+        // an active entrance source.
+        if (activeKeys.has(dest.value)) return true;
+        const reverse = getEdgeReverse(dest.value);
+        return reverse !== null && activeKeys.has(reverse);
       }),
     );
   }
@@ -842,7 +577,7 @@ export function useDungeonEntrances() {
       ) {
         continue;
       }
-      const exitKey = getExitKeyForEntrance(entrance.key);
+      const exitKey = getEdgeReverse(entrance.key);
       if (!exitKey) continue;
       entries.push({
         key: exitKey,
@@ -952,7 +687,6 @@ export function useDungeonEntrances() {
     filteredExitEntries,
     mapFilteredEntrances,
     mapFilteredExitEntries,
-    exitOverridesMap,
     isExitMapped,
     getExitDestination,
     getExitDestinationLabel,

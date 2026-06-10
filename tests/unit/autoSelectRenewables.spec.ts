@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { OoTMMTracker } from '@packs/ootmm/tracker';
+import { OoTMMTracker } from '../../packs/ootmm/src/tracker';
 
 function toItemIdSet(items: Map<unknown, number>): Set<string> {
   return new Set(

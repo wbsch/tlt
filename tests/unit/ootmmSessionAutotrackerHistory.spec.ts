@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, it } from 'vitest';
 import { createPinia, setActivePinia } from 'pinia';
-import { useOoTMMSessionStore } from '@packs/ootmm/stores/ootmmSession';
+import { useOoTMMSessionStore } from '../../packs/ootmm/src/stores/ootmmSession';
 
 describe('ootmm session autotracker history', () => {
   beforeEach(() => {

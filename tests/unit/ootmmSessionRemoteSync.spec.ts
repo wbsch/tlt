@@ -1,10 +1,10 @@
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 import { createPinia, setActivePinia } from 'pinia';
-import { useOoTMMSessionStore } from '@packs/ootmm/stores/ootmmSession';
+import { useOoTMMSessionStore } from '../../packs/ootmm/src/stores/ootmmSession';
 import {
   OOTMM_LOCAL_SESSION_ID,
   type OoTMMSyncOperationEnvelope,
-} from '@packs/ootmm/stores/ootmmSessionSync';
+} from '../../packs/ootmm/src/stores/ootmmSessionSync';
 
 describe('ootmm session remote sync', () => {
   let opsChannel: BroadcastChannel;

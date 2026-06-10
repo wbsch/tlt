@@ -169,19 +169,29 @@ export function getGameLinkPartner(key: string): string | null {
 }
 
 /**
- * Resolve a (possibly normalized) entrance key to the actual active key.
- * `normalizeTrackedEntranceKey` always maps exit→source, but in ootmm mode
- * the active key is the exit key.  This function bridges that gap by checking
- * the game-link partner when the normalized key isn't in the active set.
+ * Return the reverse (partner) key for a given entrance/exit key,
+ * or null if none exists.
  */
-export function resolveToActiveEntranceKey(
-  normalizedKey: string,
-  activeKeys: Set<string>,
-): string | null {
-  if (activeKeys.has(normalizedKey)) return normalizedKey;
-  const partner = getGameLinkPartner(normalizedKey);
-  if (partner && activeKeys.has(partner)) return partner;
-  return null;
+export function getEdgeReverse(key: string): string | null {
+  const data = ENTRANCES_RAW[key];
+  if (!data) return null;
+  const rev = data.reverse?.trim();
+  if (!rev || !ENTRANCES_RAW[rev]) return null;
+  return rev;
+}
+
+/**
+ * Given a directed edge src → dst, compute the reverse edge.
+ * Returns { reverseSrc: reverse(dst), reverseDst: reverse(src) } or null.
+ */
+export function computeCoupledReverse(
+  src: string,
+  dst: string,
+): { reverseSrc: string; reverseDst: string } | null {
+  const reverseDst = getEdgeReverse(src);
+  const reverseSrc = getEdgeReverse(dst);
+  if (!reverseSrc || !reverseDst) return null;
+  return { reverseSrc, reverseDst };
 }
 
 function isTrackedInteriorSource(
@@ -375,65 +385,6 @@ export function isTrackedEntranceExitType(type: string, key?: string): boolean {
   return Boolean(key && INTERIOR_GAME_LINK_EXIT_KEYS.has(key));
 }
 
-export function normalizeTrackedEntranceKey(key: string): string {
-  const data = ENTRANCES_RAW[key];
-  if (!data || !isTrackedEntranceExitType(data.type, key)) return key;
-
-  const reverse = data.reverse?.trim();
-  if (!reverse) return key;
-
-  const reverseData = ENTRANCES_RAW[reverse];
-  if (!reverseData || !isTrackedEntranceSourceType(reverseData.type, reverse)) {
-    return key;
-  }
-
-  return reverse;
-}
-
-export function normalizeTrackedDestinationKeyForSource(
-  sourceKey: string,
-  destinationKey: string,
-): string {
-  const sourceData = ENTRANCES_RAW[sourceKey];
-  if (!sourceData) return normalizeTrackedEntranceKey(destinationKey);
-
-  if (getTrackedEntrancePool(sourceData.type, sourceKey) === 'spawn') {
-    return destinationKey;
-  }
-
-  return normalizeTrackedEntranceKey(destinationKey);
-}
-
-function getTrackedDestinationValidationKeyForSource(
-  sourceKey: string,
-  destinationKey: string,
-): string {
-  const sourceData = ENTRANCES_RAW[sourceKey];
-  if (!sourceData) return normalizeTrackedEntranceKey(destinationKey);
-
-  if (getTrackedEntrancePool(sourceData.type, sourceKey) !== 'spawn') {
-    return normalizeTrackedEntranceKey(destinationKey);
-  }
-
-  const destinationData = ENTRANCES_RAW[destinationKey];
-  if (!destinationData) return destinationKey;
-  if (!isTrackedEntranceExitType(destinationData.type, destinationKey)) {
-    return destinationKey;
-  }
-
-  return normalizeTrackedEntranceKey(destinationKey);
-}
-
-export function getTrackedEntranceKeysForBinding(key: string): string[] {
-  const normalized = normalizeTrackedEntranceKey(key);
-  const keys = new Set<string>([normalized]);
-  const data = ENTRANCES_RAW[key];
-  if (data && isTrackedEntranceExitType(data.type, key)) {
-    keys.add(key);
-  }
-  return [...keys];
-}
-
 function getTrackedPoolMode(
   pool: TrackedEntrancePool,
   settings: Record<string, unknown>,
@@ -569,33 +520,32 @@ export function isTrackedDestinationAllowedForSource(
   if (!sourceData) return false;
 
   const sourcePool = getTrackedEntrancePool(sourceData.type, sourceKey);
-  const normalizedDestinationKey = normalizeTrackedEntranceKey(destinationKey);
   if (sourcePool !== 'spawn') {
-    if (resolveToActiveEntranceKey(normalizedDestinationKey, activeKeys)) {
-      return true;
-    }
+    // Non-spawn: destination itself or its reverse must be in activeKeys.
+    if (activeKeys.has(destinationKey)) return true;
+    const rev = getEdgeReverse(destinationKey);
+    if (rev && activeKeys.has(rev)) return true;
     return false;
   }
 
-  const validationDestinationKey = getTrackedDestinationValidationKeyForSource(
-    sourceKey,
-    destinationKey,
-  );
-  const destinationData = ENTRANCES_RAW[validationDestinationKey];
-  if (!destinationData) return false;
-  if (!isTrackedEntranceAvailable(validationDestinationKey, settings)) {
-    return false;
-  }
+  // Spawn sources: check both the raw destination and its reverse.
+  const dstData = ENTRANCES_RAW[destinationKey];
+  const dstRev = getEdgeReverse(destinationKey);
+  const dstRevData = dstRev ? ENTRANCES_RAW[dstRev] : null;
 
-  if (sourceData.game !== destinationData.game) {
-    return false;
-  }
+  const candidates = [
+    { key: destinationKey, data: dstData },
+    ...(dstRev && dstRevData ? [{ key: dstRev, data: dstRevData }] : []),
+  ];
 
-  return isTrackedSpawnDestination(
-    validationDestinationKey,
-    destinationData.type,
-    settings,
-  );
+  const valid = candidates.some(({ key, data }) => {
+    if (!data) return false;
+    if (!isTrackedEntranceAvailable(key, settings)) return false;
+    if (sourceData.game !== data.game) return false;
+    return isTrackedSpawnDestination(key, data.type, settings);
+  });
+
+  return valid;
 }
 
 function hasSetSettingValue(setting: unknown, value: string): boolean {
@@ -625,11 +575,12 @@ export function isTrackedEntranceAvailable(
   key: string,
   settings: Record<string, unknown>,
 ): boolean {
-  const normalized = normalizeTrackedEntranceKey(key);
-  if (
-    JP_LAYOUT_GROTTO_KEYS.has(normalized) &&
-    !hasDekuPalaceJpLayout(settings)
-  ) {
+  // Check both the raw key and its reverse against JP_LAYOUT_GROTTO_KEYS.
+  const isJpGrotto =
+    JP_LAYOUT_GROTTO_KEYS.has(key) ||
+    (getEdgeReverse(key) !== null &&
+      JP_LAYOUT_GROTTO_KEYS.has(getEdgeReverse(key)!));
+  if (isJpGrotto && !hasDekuPalaceJpLayout(settings)) {
     return false;
   }
   return true;
@@ -643,19 +594,14 @@ export function computeEffectiveTrackedEntranceOverrides(
   if (activeKeys.size === 0) return {};
 
   const result: Record<string, string> = {};
-  const normalized: Record<string, string> = {};
-  const derivedAliasSources = new Set<string>();
 
   for (const [rawSrc, rawDst] of Object.entries(overrides)) {
-    const effectiveSrc = resolveToActiveEntranceKey(
-      normalizeTrackedEntranceKey(rawSrc),
-      activeKeys,
-    );
-    if (!effectiveSrc) continue;
+    // Only accept sources directly in activeKeys.
+    if (!activeKeys.has(rawSrc)) continue;
 
     if (
       !isTrackedDestinationAllowedForSource(
-        effectiveSrc,
+        rawSrc,
         rawDst,
         settings,
         activeKeys,
@@ -664,48 +610,8 @@ export function computeEffectiveTrackedEntranceOverrides(
       continue;
     }
 
-    const normalizedDst = normalizeTrackedDestinationKeyForSource(
-      effectiveSrc,
-      rawDst,
-    );
-
-    result[effectiveSrc] = rawDst;
-    normalized[effectiveSrc] = normalizedDst;
-
-    if (normalizedDst !== rawDst) {
-      const derivedSrc = ENTRANCES_RAW[normalizedDst]?.reverse?.trim();
-      if (derivedSrc) {
-        derivedAliasSources.add(derivedSrc);
-      }
-    }
-  }
-
-  const derivedOverrides = computeExitOverrides(normalized);
-  for (const [src, dst] of Object.entries(derivedOverrides)) {
-    let effectiveSrc = src;
-    if (!activeKeys.has(effectiveSrc)) {
-      if (!derivedAliasSources.has(src)) continue;
-      const resolvedSrc = resolveToActiveEntranceKey(
-        normalizeTrackedEntranceKey(src),
-        activeKeys,
-      );
-      if (!resolvedSrc) continue;
-      effectiveSrc = resolvedSrc;
-    }
-
-    if (result[effectiveSrc]) continue;
-    if (!ENTRANCES_RAW[dst]) continue;
-    if (
-      !isTrackedDestinationAllowedForSource(
-        effectiveSrc,
-        dst,
-        settings,
-        activeKeys,
-      )
-    ) {
-      continue;
-    }
-    result[effectiveSrc] = dst;
+    if (!ENTRANCES_RAW[rawDst]) continue;
+    result[rawSrc] = rawDst;
   }
 
   return result;
@@ -795,17 +701,6 @@ export function getActiveEntranceKeys(
 }
 
 /**
- * For a source entrance key, return its reverse (exit) key, or null if none.
- */
-export function getExitKeyForEntrance(sourceKey: string): string | null {
-  const data = ENTRANCES_RAW[sourceKey];
-  if (!data) return null;
-  const rev = data.reverse?.trim();
-  if (!rev || !ENTRANCES_RAW[rev]) return null;
-  return rev;
-}
-
-/**
  * Get the label for an exit key (the dungeon you're exiting from).
  */
 export function getExitLabel(exitKey: string): string {
@@ -850,60 +745,6 @@ export function getEntranceGame(key: string): 'oot' | 'mm' | null {
   return data.game as 'oot' | 'mm';
 }
 
-/**
- * Given an exit mapping exitSrc → exitDst, derive the corresponding entrance mapping.
- * Exit key = reverse(entranceDst), exit destination = reverse(entranceSrc).
- * So entrance mapping = reverse(exitDst) → reverse(exitSrc).
- * Returns { entranceSrc, entranceDst } or null if derivation fails.
- */
-export function deriveEntranceFromExitMapping(
-  exitSrcKey: string,
-  exitDstKey: string,
-): { entranceSrc: string; entranceDst: string } | null {
-  const exitSrcData = ENTRANCES_RAW[exitSrcKey];
-  const exitDstData = ENTRANCES_RAW[exitDstKey];
-  if (!exitSrcData?.reverse || !exitDstData?.reverse) return null;
-  const entranceDst = exitSrcData.reverse.trim();
-  const entranceSrc = exitDstData.reverse.trim();
-  if (!entranceDst || !entranceSrc) return null;
-  if (!ENTRANCES_RAW[entranceDst] || !ENTRANCES_RAW[entranceSrc]) return null;
-  return { entranceSrc, entranceDst };
-}
-
-/**
- * Derive exit overrides from entrance overrides.
- * For each entrance mapping src → dst, the exit mapping is reverse(dst) → reverse(src).
- */
-export function computeExitOverrides(
-  entranceOverrides: Record<string, string>,
-): Record<string, string> {
-  const result: Record<string, string> = {};
-  for (const [src, dst] of Object.entries(entranceOverrides)) {
-    const srcData = ENTRANCES_RAW[src];
-    const dstData = ENTRANCES_RAW[dst];
-    if (!srcData?.reverse || !dstData?.reverse) continue;
-    const srcRev = srcData.reverse.trim();
-    const dstRev = dstData.reverse.trim();
-    if (!srcRev || !dstRev) continue;
-    if (!ENTRANCES_RAW[srcRev] || !ENTRANCES_RAW[dstRev]) continue;
-    result[dstRev] = srcRev;
-  }
-  return result;
-}
-
-/**
- * Augment normalized entrance overrides with derived display-only mappings for
- * ootmm game-link entrance rows. These rows are represented by exit-side keys
- * in the UI, but their selected destination should mirror the reverse exit
- * mapping of a normal interior mapped to the corresponding game-link source.
- */
-export function computeDisplayEntranceOverrides(
-  entranceOverrides: Record<string, string>,
-  settings: Record<string, unknown>,
-): Record<string, string> {
-  return computeEffectiveTrackedEntranceOverrides(entranceOverrides, settings);
-}
-
 export function filterEntranceOverridesForSettings(
   overrides: Record<string, string>,
   settings: Record<string, unknown>,
@@ -913,24 +754,19 @@ export function filterEntranceOverridesForSettings(
 
   const filtered: Record<string, string> = {};
   for (const [src, dst] of Object.entries(overrides)) {
-    const effectiveSrc = resolveToActiveEntranceKey(
-      normalizeTrackedEntranceKey(src),
-      activeKeys,
-    );
-    if (!effectiveSrc) continue;
+    // Only accept sources directly in activeKeys (entrance case).
+    // Exit sources are skipped — the coupling (Phase 2.1) guarantees
+    // a corresponding entrance→entrance pair exists.
+    if (!activeKeys.has(src)) continue;
 
-    if (
-      !isTrackedDestinationAllowedForSource(
-        effectiveSrc,
-        dst,
-        settings,
-        activeKeys,
-      )
-    ) {
+    if (!isTrackedDestinationAllowedForSource(src, dst, settings, activeKeys)) {
       continue;
     }
 
-    filtered[effectiveSrc] = dst;
+    // Preserve the raw destination — normalization is handled downstream
+    // (e.g. in computeEffectiveTrackedEntranceOverrides for the tracker,
+    // or by the OoTMM core for plando).
+    filtered[src] = dst;
   }
   return filtered;
 }

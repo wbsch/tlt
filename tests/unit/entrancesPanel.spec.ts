@@ -2,8 +2,8 @@ import { createApp, nextTick } from 'vue';
 import { createPinia, setActivePinia } from 'pinia';
 import { describe, expect, it } from 'vitest';
 import OoTMMEntrances from '../../packs/ootmm/src/components/OoTMMEntrances.vue';
-import { useOoTMMSessionStore } from '@packs/ootmm/stores/ootmmSession';
-import { useOoTMMUiStore } from '@packs/ootmm/stores/ootmmUi';
+import { useOoTMMSessionStore } from '../../packs/ootmm/src/stores/ootmmSession';
+import { useOoTMMUiStore } from '../../packs/ootmm/src/stores/ootmmUi';
 
 async function flushUi(): Promise<void> {
   await Promise.resolve();
