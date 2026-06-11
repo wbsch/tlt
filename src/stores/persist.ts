@@ -6,6 +6,7 @@ import {
   DEFAULT_LEFT_SIDEBAR_WIDTH,
   DEFAULT_RIGHT_SIDEBAR_WIDTH,
 } from '@packs/ootmm/stores/ootmmUi';
+import { migrateEntranceOverrides } from '@/utils/entranceMigration';
 
 export type PersistConfig = {
   key: string;
@@ -371,7 +372,19 @@ export const PERSIST_CONFIGS: Record<PersistStoreId, PersistConfig> = {
         ? { shopPrices: nonNegativeNumberRecord(raw.shopPrices) }
         : {}),
       ...(isPlainObject(raw.entranceOverrides)
-        ? { entranceOverrides: stringRecord(raw.entranceOverrides) }
+        ? (() => {
+            const overrides = stringRecord(raw.entranceOverrides);
+            try {
+              return {
+                entranceOverrides: migrateEntranceOverrides(overrides),
+              };
+            } catch {
+              // Migration failed silently — keep the original (un-migrated)
+              // overrides. This prevents a migration bug from breaking the
+              // entire session hydration.
+              return { entranceOverrides: overrides };
+            }
+          })()
         : {}),
       ...(isPlainObject(raw.trackerSettings)
         ? {
