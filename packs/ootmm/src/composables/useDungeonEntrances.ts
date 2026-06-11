@@ -7,6 +7,7 @@ import { useOoTMMUiStore } from '../stores/ootmmUi';
 import {
   getActiveEntranceKeys,
   getTrackedEntrancePool,
+  getTrackedEntrancePolarity,
   isTrackedEntranceSourceType,
   getExitLabel,
   getExitEndpointLabel,
@@ -592,7 +593,15 @@ export function useDungeonEntrances() {
 
   const sidebarActiveExitEntries = computed<ExitEntry[]>(() => {
     return activeExitEntries.value.filter((exit) => {
-      return !activeEntrancePoolByKey.value.has(exit.key);
+      if (activeEntrancePoolByKey.value.has(exit.key)) return false;
+      // When polarity is 'any' (e.g. region-exit with erOverworld),
+      // the entry is not exclusively an exit — skip the dedicated Exits section.
+      if (
+        getTrackedEntrancePolarity(exit.key, trackerSettings.value ?? {}) ===
+        'any'
+      )
+        return false;
+      return true;
     });
   });
 

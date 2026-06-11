@@ -32,6 +32,9 @@ import { OOTMM_MAP_DEFS } from '../data/maps';
 import {
   isTrackedEntranceAvailable,
   getGameLinkPartner,
+  getTrackedEntrancePolarity,
+  getEdgeReverse,
+  getExitLabel,
 } from '../utils/entranceRandomization';
 import { matchesMapSettingsVisibility } from '../utils/mapSettingsVisibility';
 import type {
@@ -1042,8 +1045,6 @@ const markerViewModels = computed<MarkerRuntime[]>(() => {
       const entranceMenuDisplay = markerDef.entranceMenu
         ? getEntranceMenuDisplayMode(markerDef.entranceMenu)
         : 'both';
-      const showsEntranceEntries = entranceMenuDisplay !== 'exits';
-      const showsExitEntries = entranceMenuDisplay !== 'entrances';
       const hasEntranceBinding = submenuSourceEntranceIds.length > 0;
       const entrancesForVisibility = props.devMode
         ? allDungeonEntrances.value
@@ -1059,18 +1060,22 @@ const markerViewModels = computed<MarkerRuntime[]>(() => {
         filteredEntranceById,
         filteredDungeonEntrances.value,
       );
-      const activeSubmenuEntrances = submenuSourceEntranceIds
-        .map((entranceId) => activeEntranceById.get(entranceId))
-        .filter((entry): entry is DungeonEntranceEntry => Boolean(entry));
-      const visibleSubmenuEntrances = !showsEntranceEntries
-        ? []
-        : props.devMode
-          ? isDevUnmappedFilterActive
-            ? []
-            : activeSubmenuEntrances
-          : submenuSourceEntranceIds
-              .map((entranceId) => filteredEntranceById.get(entranceId))
-              .filter((entry): entry is DungeonEntranceEntry => Boolean(entry));
+      // Dev-mode: exit entries for ALL entrances (not just active ones)
+      const devExitEntries = props.devMode
+        ? allDungeonEntrances.value
+            .map((entrance) => {
+              const exitKey = getEdgeReverse(entrance.key);
+              if (!exitKey) return null;
+              return {
+                key: exitKey,
+                sourceEntranceKey: entrance.key,
+                label: getExitLabel(exitKey),
+                game: entrance.game,
+                pool: entrance.pool,
+              } as ExitEntry;
+            })
+            .filter((e): e is ExitEntry => e !== null)
+        : [];
       const staticSubmenuMarkersRaw = markerDef.markers ?? [];
       const boundSubmenuMarkersRaw =
         !props.devMode &&
@@ -1118,43 +1123,110 @@ const markerViewModels = computed<MarkerRuntime[]>(() => {
         props.settings,
       );
       const hasVisibleChecks = visibleSubmenuMarkers.length > 0;
-      // Build exit entries for this marker's entrance IDs
-      const activeExitById = new Map(
-        activeExitEntries.value.map((entry) => [
-          entry.sourceEntranceKey,
-          entry,
-        ]),
+      // Per-entrance polarity routing for entrance/exit entries
+      const exitByKeyForVisibility = new Map(
+        (props.devMode ? devExitEntries : activeExitEntries.value).map(
+          (entry) => [entry.key, entry],
+        ),
       );
-      const filteredExitById = new Map(
-        filteredExitEntries.value.map((entry) => [
-          entry.sourceEntranceKey,
-          entry,
-        ]),
+      const filteredExitByKey = new Map(
+        filteredExitEntries.value.map((entry) => [entry.key, entry]),
       );
-      const activeSubmenuExits = submenuSourceEntranceIds
-        .map((entranceId) => activeExitById.get(entranceId))
-        .filter((entry): entry is ExitEntry => Boolean(entry));
-      const visibleSubmenuExits = !showsExitEntries
-        ? []
-        : props.devMode
-          ? isDevUnmappedFilterActive
-            ? []
-            : activeSubmenuExits
-          : submenuSourceEntranceIds
-              .map((entranceId) => filteredExitById.get(entranceId))
-              .filter((entry): entry is ExitEntry => Boolean(entry));
-      const hasVisibleExits =
-        !showsExitEntries || submenuSourceEntranceIds.length === 0
-          ? false
-          : activeSubmenuExits.length === 0
-            ? false
-            : visibleSubmenuExits.length > 0;
-      const hasVisibleEntrances =
-        !showsEntranceEntries || submenuSourceEntranceIds.length === 0
-          ? false
-          : activeSubmenuEntrances.length === 0
-            ? false
-            : visibleSubmenuEntrances.length > 0;
+      const visibleSubmenuEntrances: EntranceMenuEntryRuntime[] = [];
+      const visibleSubmenuExits: ExitMenuEntryRuntime[] = [];
+      const dedupKeys = new Set<string>();
+      for (const entranceId of submenuSourceEntranceIds) {
+        let displayKeys: string[];
+        if (entranceMenuDisplay === 'both') {
+          const reverse = getEdgeReverse(entranceId);
+          displayKeys = reverse ? [entranceId, reverse] : [entranceId];
+        } else if (entranceMenuDisplay === 'entrances') {
+          displayKeys = [entranceId];
+        } else {
+          // 'exits'
+          const reverse = getEdgeReverse(entranceId);
+          displayKeys = reverse ? [reverse] : [entranceId];
+        }
+        for (const key of displayKeys) {
+          if (dedupKeys.has(key)) continue;
+          dedupKeys.add(key);
+          const polarity = getTrackedEntrancePolarity(
+            key,
+            props.settings ?? {},
+          );
+          if (polarity === 'out') {
+            // → Exit list
+            let exitEntry: ExitEntry | undefined;
+            if (props.devMode) {
+              if (!isDevUnmappedFilterActive) {
+                exitEntry = exitByKeyForVisibility.get(key);
+                if (!exitEntry) {
+                  // Cross-pool: key has polarity 'out' but only in entrance pool
+                  const entrance = activeEntranceById.get(key);
+                  if (entrance) {
+                    exitEntry = {
+                      key: entrance.key,
+                      sourceEntranceKey:
+                        getEdgeReverse(entrance.key) ?? entrance.key,
+                      label: getExitLabel(entrance.key),
+                      game: entrance.game,
+                      pool: entrance.pool,
+                    };
+                  }
+                }
+              }
+            } else {
+              exitEntry = filteredExitByKey.get(key);
+              if (!exitEntry) {
+                // Cross-pool: key with polarity 'out' only in entrance pool
+                const entrance = filteredEntranceById.get(key);
+                if (entrance) {
+                  exitEntry = {
+                    key: entrance.key,
+                    sourceEntranceKey:
+                      getEdgeReverse(entrance.key) ?? entrance.key,
+                    label: getExitLabel(entrance.key),
+                    game: entrance.game,
+                    pool: entrance.pool,
+                  };
+                }
+              }
+            }
+            if (exitEntry) {
+              visibleSubmenuExits.push(toExitMenuEntry(exitEntry));
+            }
+          } else {
+            // → Entrance list (polarity 'in' or 'any')
+            let entranceEntry: DungeonEntranceEntry | undefined;
+            if (props.devMode) {
+              if (!isDevUnmappedFilterActive) {
+                entranceEntry = activeEntranceById.get(key);
+              }
+            } else {
+              entranceEntry = filteredEntranceById.get(key);
+            }
+            if (entranceEntry) {
+              visibleSubmenuEntrances.push(toEntranceMenuEntry(entranceEntry));
+            } else if (!props.devMode || !isDevUnmappedFilterActive) {
+              // Cross-pool: key not in entrance pool, look up in exit map
+              const exitPoolEntry = props.devMode
+                ? exitByKeyForVisibility.get(key)
+                : filteredExitByKey.get(key);
+              if (exitPoolEntry) {
+                visibleSubmenuEntrances.push({
+                  key: exitPoolEntry.key,
+                  label: exitPoolEntry.label,
+                  displayLabel: getExitLabel(exitPoolEntry.key),
+                  game: exitPoolEntry.game,
+                  pool: exitPoolEntry.pool,
+                });
+              }
+            }
+          }
+        }
+      }
+      const hasVisibleExits = visibleSubmenuExits.length > 0;
+      const hasVisibleEntrances = visibleSubmenuEntrances.length > 0;
       const totalVisibleCount =
         visibleSubmenuCheckIds.size +
         visibleSubmenuEntrances.length +
@@ -1179,8 +1251,8 @@ const markerViewModels = computed<MarkerRuntime[]>(() => {
         bottomLeftOverlays: buildBottomLeftOverlays(overlays),
         topRightOverlays: buildTopRightOverlays(overlays),
         countDigitImages,
-        entranceEntries: visibleSubmenuEntrances.map(toEntranceMenuEntry),
-        exitEntries: visibleSubmenuExits.map(toExitMenuEntry),
+        entranceEntries: visibleSubmenuEntrances,
+        exitEntries: visibleSubmenuExits,
         submenuMarkers: visibleSubmenuMarkers,
         allSubmenuCodeList: visibleSubmenuMarkers.flatMap(
           (marker) => marker.codeList,
