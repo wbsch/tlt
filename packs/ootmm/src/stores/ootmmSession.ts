@@ -23,6 +23,7 @@ import {
   type OoTMMSyncOperationEnvelope,
 } from './ootmmSessionSync';
 import {
+  cleanupEntranceOverridesForSettings,
   computeCoupledReverse,
   filterEntranceOverridesForSettings,
   getActiveEntranceKeys,
@@ -1420,7 +1421,7 @@ export const useOoTMMSessionStore = defineStore('ootmm-session', () => {
       trackerSettings.value,
       nextSettings,
     );
-    const nextEntranceOverrides = filterEntranceOverridesForSettings(
+    const nextEntranceOverrides = cleanupEntranceOverridesForSettings(
       entranceOverrides.value,
       nextSettings,
     );
@@ -1606,7 +1607,7 @@ export const useOoTMMSessionStore = defineStore('ootmm-session', () => {
     }
 
     const nextEntranceOverrides = {
-      ...filterEntranceOverridesForSettings(
+      ...cleanupEntranceOverridesForSettings(
         entranceOverrides.value,
         trackerSettings.value,
       ),

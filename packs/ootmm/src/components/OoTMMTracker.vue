@@ -58,7 +58,6 @@ import type { MapDef, MapSubmenuEntryDef } from '../data/maps/types';
 import {
   getActiveEntranceKeys,
   getEdgeReverse,
-  filterEntranceOverridesForSettings,
 } from '../utils/entranceRandomization';
 import * as ItemsMod from '@ootmm/core/items/index';
 import * as NamesMod from '@ootmm/core/names';
@@ -1471,10 +1470,7 @@ function addEntranceBoundCodes(
 
 const mapSelectorCheckIdsByMap = computed(() => {
   const byMap = new Map<string, Set<string>>();
-  const overrides = filterEntranceOverridesForSettings(
-    entranceOverrides.value,
-    (trackerSettings.value ?? {}) as Record<string, unknown>,
-  );
+  const overrides = entranceOverrides.value;
 
   for (const mapDef of selectableMapDefs.value) {
     const checkIds = new Set<string>();

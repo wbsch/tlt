@@ -745,6 +745,38 @@ export function getEntranceGame(key: string): 'oot' | 'mm' | null {
   return data.game as 'oot' | 'mm';
 }
 
+/**
+ * Remove entrance overrides whose source (or its reverse) is not in the
+ * active entrance keys. Unlike filterEntranceOverridesForSettings, this
+ * does NOT strip exit keys — both directions of a coupled pair are kept.
+ * Use this for tracker-internal cleanup (e.g. after settings change).
+ */
+export function cleanupEntranceOverridesForSettings(
+  overrides: Record<string, string>,
+  settings: Record<string, unknown>,
+): Record<string, string> {
+  const activeKeys = getActiveEntranceKeys(settings);
+  if (activeKeys.size === 0) return {};
+
+  const cleaned: Record<string, string> = {};
+  for (const [src, dst] of Object.entries(overrides)) {
+    // Keep if src is active, or its reverse is active (exit key case)
+    if (
+      activeKeys.has(src) ||
+      (getEdgeReverse(src) && activeKeys.has(getEdgeReverse(src)!))
+    ) {
+      // Also validate destination
+      if (
+        !isTrackedDestinationAllowedForSource(src, dst, settings, activeKeys)
+      ) {
+        continue;
+      }
+      cleaned[src] = dst;
+    }
+  }
+  return cleaned;
+}
+
 export function filterEntranceOverridesForSettings(
   overrides: Record<string, string>,
   settings: Record<string, unknown>,
@@ -757,6 +789,9 @@ export function filterEntranceOverridesForSettings(
     // Only accept sources directly in activeKeys (entrance case).
     // Exit sources are skipped — the coupling (Phase 2.1) guarantees
     // a corresponding entrance→entrance pair exists.
+    // This function is ONLY called by injectEntranceOverridesIntoSettings
+    // (the plando boundary). For tracker-internal cleanup, use
+    // cleanupEntranceOverridesForSettings.
     if (!activeKeys.has(src)) continue;
 
     if (!isTrackedDestinationAllowedForSource(src, dst, settings, activeKeys)) {

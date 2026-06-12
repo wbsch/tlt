@@ -12,7 +12,6 @@ import {
   ALL_SETTINGS_DEFINITIONS,
   TRACKER_DEFAULT_SETTINGS,
 } from '@packs/ootmm/data/settings';
-import { filterEntranceOverridesForSettings } from '@packs/ootmm/utils/entranceRandomization';
 import * as TricksMod from '@ootmm/core/settings/tricks';
 
 const SHARE_HASH_PARAM = 's';
@@ -559,20 +558,10 @@ function normalizeImportedSnapshot(
       }
       normalizedSession.trackerSettings = normalizedSettings;
 
-      if (isPlainObject(session.entranceOverrides)) {
-        const filtered = filterEntranceOverridesForSettings(
-          session.entranceOverrides as Record<string, string>,
-          normalizedSettings,
-        );
-        if (!deepEqual(session.entranceOverrides, filtered)) {
-          partial = true;
-        }
-        if (Object.keys(filtered).length > 0) {
-          normalizedSession.entranceOverrides = filtered;
-        } else {
-          delete normalizedSession.entranceOverrides;
-        }
-      }
+      // entranceOverrides is not filtered here anymore — the plando
+      // boundary (injectEntranceOverridesIntoSettings) handles
+      // normalization for the OoTMM core. Exit keys are preserved
+      // for tracker-internal use.
     } else if (isPlainObject(session.entranceOverrides)) {
       partial = true;
       delete normalizedSession.entranceOverrides;
@@ -935,6 +924,9 @@ export function decodeHashPayloadToSnapshot(
   for (const storeId of PERSIST_STORE_IDS) {
     const storeRaw = parsed.stores[storeId];
     if (storeRaw === undefined || !isPlainObject(storeRaw)) continue;
+
+    // No pre-filter needed: normalizeImportedSnapshot no longer normalizes
+    // entranceOverrides, so storeRaw and normalized match.
     collectShareImportIssues(
       `stores.${storeId}`,
       storeRaw,

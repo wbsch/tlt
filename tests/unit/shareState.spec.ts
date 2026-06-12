@@ -288,13 +288,6 @@ describe('shareState', () => {
           reason: 'Adjusted value during import.',
           imported: 1,
         }),
-        expect.objectContaining({
-          path: 'stores.ootmm-session.entranceOverrides',
-          reason: 'Ignored invalid or unsupported field.',
-          received: {
-            NOT_A_REAL_ENTRANCE: 'ALSO_NOT_REAL',
-          },
-        }),
       ]),
     });
     expect(readPersistedStore(STORAGE_KEYS.app)).toBeNull();
@@ -304,9 +297,11 @@ describe('shareState', () => {
         players: 1,
       },
     });
-    expect(
-      readPersistedStore(STORAGE_KEYS.session)?.entranceOverrides,
-    ).toBeUndefined();
+    expect(readPersistedStore(STORAGE_KEYS.session)?.entranceOverrides).toEqual(
+      {
+        NOT_A_REAL_ENTRANCE: 'ALSO_NOT_REAL',
+      },
+    );
   });
 
   it('imports empty entrance overrides without reporting a partial import', () => {
@@ -339,9 +334,9 @@ describe('shareState', () => {
         players: 1,
       },
     });
-    expect(
-      readPersistedStore(STORAGE_KEYS.session)?.entranceOverrides,
-    ).toBeUndefined();
+    expect(readPersistedStore(STORAGE_KEYS.session)?.entranceOverrides).toEqual(
+      {},
+    );
   });
 
   it('preserves ordinary exit-side entrance override aliases during shared-state import', () => {
