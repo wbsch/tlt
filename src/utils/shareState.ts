@@ -1070,3 +1070,107 @@ export function importShareStateFromCurrentUrl(
 
   return finalizeShareStateImport(decoded);
 }
+
+// ---------------------------------------------------------------------------
+// Preset state loading from JSON config
+// ---------------------------------------------------------------------------
+
+/**
+ * Path (relative to the app root) to the JSON file that maps preset keys to
+ * shared state payloads. This file is served as a static asset from `public/`.
+ */
+const SHARED_STATES_CONFIG_PATH = '/shared-states.json';
+
+/**
+ * Load a preset shared state from the JSON config and apply it directly to
+ * localStorage without any confirmation dialog, then clean up the URL.
+ *
+ * Expected URL format:  http://localhost:5173/?preset=<key>
+ *
+ * @returns `true` if a preset was found and applied, `false` otherwise.
+ */
+export async function handlePresetImportFromUrl(): Promise<boolean> {
+  if (typeof window === 'undefined') return false;
+
+  const params = new URLSearchParams(window.location.search);
+  const presetKey = params.get('preset');
+  if (!presetKey) return false;
+
+  let config: Record<string, string>;
+  try {
+    const response = await fetch(SHARED_STATES_CONFIG_PATH);
+    if (!response.ok) {
+      console.warn(
+        `[Share] Failed to load preset config: ${response.status} ${response.statusText}`,
+      );
+      return false;
+    }
+    config = (await response.json()) as Record<string, string>;
+  } catch (error) {
+    console.warn('[Share] Failed to load shared states config:', error);
+    return false;
+  }
+
+  const rawPayload = config[presetKey];
+  if (typeof rawPayload !== 'string' || rawPayload.length === 0) {
+    console.warn(
+      `[Share] Preset "${presetKey}" not found or empty in shared states config`,
+    );
+    return false;
+  }
+
+  // The payload can be either "#s=v1.XXXX…" or just "s=v1.XXXX…"
+  const hashContent = rawPayload.startsWith('#')
+    ? rawPayload.slice(1)
+    : rawPayload;
+  const hashParams = new URLSearchParams(hashContent);
+  const encodedPayload = hashParams.get(SHARE_HASH_PARAM);
+  if (!encodedPayload) {
+    console.warn(
+      `[Share] Preset "${presetKey}" does not contain a valid share payload`,
+    );
+    return false;
+  }
+
+  let decoded: SharePayloadDecodeResult;
+  try {
+    decoded = decodeHashPayloadToSnapshot(encodedPayload);
+  } catch (error) {
+    console.warn(
+      `[Share] Failed to decode preset "${presetKey}" payload:`,
+      error,
+    );
+    return false;
+  }
+
+  // Clear any existing local state before applying the preset
+  for (const storeId of PERSIST_STORE_IDS) {
+    const key = PERSIST_CONFIGS[storeId].key;
+    try {
+      window.localStorage.removeItem(key);
+    } catch {
+      // Ignore localStorage errors
+    }
+  }
+
+  applySnapshotToLocalStorage(decoded.snapshot);
+
+  // Show any import issues via the status bar / Import Details modal
+  if (decoded.partial && decoded.issues.length > 0) {
+    publishShareStatus({
+      message: SHARE_PARTIAL_IMPORT_MESSAGE,
+      issues: decoded.issues,
+    });
+  } else {
+    clearShareStatusMessage();
+  }
+
+  // Clean up the URL: remove the `preset` param and any hash
+  params.delete('preset');
+  const newSearch = params.toString();
+  const newUrl = window.location.pathname + (newSearch ? `?${newSearch}` : '');
+  window.history.replaceState(window.history.state, '', newUrl);
+
+  console.log(`[Share] Preset "${presetKey}" loaded successfully`);
+  return true;
+}
