@@ -323,6 +323,7 @@ function getEnabledOverworldSources(
     'region',
     'region-extra',
     'region-shortcut',
+    'region-exit',
     'overworld',
   ]);
 
@@ -366,6 +367,9 @@ export function getTrackedEntrancePool(
     }
     return 'region';
   }
+  if (type === 'region-exit' && overworldEnabled) {
+    return 'overworld';
+  }
   if (OVERWORLD_TYPES.has(type)) return 'overworld';
   if (isTrackedInteriorSource(key, type)) return 'interior';
   if (SPAWN_TYPES.has(type)) return 'spawn';
@@ -376,8 +380,9 @@ export function getTrackedEntrancePool(
 export function isTrackedEntranceSourceType(
   type: string,
   key?: string,
+  settings?: Record<string, unknown>,
 ): boolean {
-  return getTrackedEntrancePool(type, key) !== null;
+  return getTrackedEntrancePool(type, key, settings) !== null;
 }
 
 export function isTrackedEntranceExitType(type: string, key?: string): boolean {

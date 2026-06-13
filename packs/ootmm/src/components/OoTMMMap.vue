@@ -1077,12 +1077,30 @@ const markerViewModels = computed<MarkerRuntime[]>(() => {
             .filter((e): e is ExitEntry => e !== null)
         : [];
       const staticSubmenuMarkersRaw = markerDef.markers ?? [];
+      // Determine which entrance IDs to use for check resolution based on display mode.
+      // Mirrors the UI dropdown row logic below.
+      const resolveEntranceIds = (() => {
+        if (entranceMenuDisplay === 'both') {
+          return [...new Set(submenuSourceEntranceIds.flatMap((id) => {
+            const reverse = getEdgeReverse(id);
+            return reverse ? [id, reverse] : [id];
+          }))];
+        }
+        if (entranceMenuDisplay === 'entrances') {
+          return submenuSourceEntranceIds;
+        }
+        // 'exits': resolve the reverse entrance ID
+        return submenuSourceEntranceIds.flatMap((id) => {
+          const reverse = getEdgeReverse(id);
+          return reverse ? [reverse] : [id];
+        });
+      })();
       const boundSubmenuMarkersRaw =
         !props.devMode &&
         hasEntranceBinding &&
         submenuSourceEntranceIds.length > 0
           ? resolveBoundSubmenuEntryDefs(
-              submenuSourceEntranceIds,
+              resolveEntranceIds,
               activeEntranceById,
             )
           : [];

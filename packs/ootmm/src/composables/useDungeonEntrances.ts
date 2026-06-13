@@ -187,7 +187,14 @@ export function useDungeonEntrances() {
         continue;
       }
 
-      if (!isTrackedEntranceSourceType(data.type, key)) continue;
+      if (
+        !isTrackedEntranceSourceType(
+          data.type,
+          key,
+          trackerSettings.value ?? {},
+        )
+      )
+        continue;
       const pool = getTrackedEntrancePool(
         data.type,
         key,
