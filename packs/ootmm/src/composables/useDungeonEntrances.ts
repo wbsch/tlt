@@ -434,9 +434,16 @@ export function useDungeonEntrances() {
     });
   }
 
-  function destinationOptionsForEntrance(
+  type EntranceOption = {
+    value: string;
+    label: string;
+    game: 'oot' | 'mm';
+    pool: TrackedEntrancePool;
+  };
+
+  function computeOptionsForEntrance(
     entry: Pick<DungeonEntranceEntry, 'key' | 'game' | 'pool'>,
-  ) {
+  ): EntranceOption[] {
     if (entry.pool === 'spawn') {
       return sortOptionsByGameThenLabel(
         spawnDestinationOptions.value.filter(
@@ -476,6 +483,12 @@ export function useDungeonEntrances() {
         );
       }),
     );
+  }
+
+  function destinationOptionsForEntrance(
+    entry: Pick<DungeonEntranceEntry, 'key' | 'game' | 'pool'>,
+  ): EntranceOption[] {
+    return entranceOptionsByKey.value.get(entry.key) ?? [];
   }
 
   const ootEntrances = computed(() =>
@@ -543,9 +556,9 @@ export function useDungeonEntrances() {
     return false;
   }
 
-  function destinationOptionsForExit(
+  function computeOptionsForExit(
     exit: Pick<ExitEntry, 'key' | 'game' | 'pool'>,
-  ) {
+  ): EntranceOption[] {
     const settings = trackerSettings.value ?? {};
     const selectedDestination = entranceOverrides.value[exit.key] ?? '';
     const compatiblePools = new Set(
@@ -571,6 +584,12 @@ export function useDungeonEntrances() {
         return reverse !== null && activeKeys.has(reverse);
       }),
     );
+  }
+
+  function destinationOptionsForExit(
+    exit: Pick<ExitEntry, 'key' | 'game' | 'pool'>,
+  ): EntranceOption[] {
+    return exitOptionsByKey.value.get(exit.key) ?? [];
   }
 
   const activeExitEntries = computed<ExitEntry[]>(() => {
@@ -680,6 +699,22 @@ export function useDungeonEntrances() {
       });
     }
 
+    return result;
+  });
+
+  const entranceOptionsByKey = computed<Map<string, EntranceOption[]>>(() => {
+    const result = new Map<string, EntranceOption[]>();
+    for (const entrance of activeEntrances.value) {
+      result.set(entrance.key, computeOptionsForEntrance(entrance));
+    }
+    return result;
+  });
+
+  const exitOptionsByKey = computed<Map<string, EntranceOption[]>>(() => {
+    const result = new Map<string, EntranceOption[]>();
+    for (const exit of activeExitEntries.value) {
+      result.set(exit.key, computeOptionsForExit(exit));
+    }
     return result;
   });
 
