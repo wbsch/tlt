@@ -8,7 +8,7 @@ import prettier from 'eslint-config-prettier';
 
 export default [
   {
-    ignores: ['dist/**', 'node_modules/**', 'OoTMM/**'],
+    ignores: ['dist/**', 'node_modules/**', 'tlt_autotracker/**', 'OoTMM/**'],
   },
   {
     languageOptions: {
