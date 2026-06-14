@@ -1085,7 +1085,8 @@
       "type": "submenu",
       "overlays": ["child"],
       "entranceMenu": {
-        "entranceIds": ["OOT_SHOP_MASKS"]
+        "entranceIds": ["OOT_SHOP_MASKS"],
+        "display": "entrances"
       }
     },
     {
