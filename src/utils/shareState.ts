@@ -28,6 +28,15 @@ export const SHARE_IMPORT_CONFIRMATION_EVENT_NAME =
   'tlt:share-import-confirmation';
 export const SHARE_PARTIAL_IMPORT_MESSAGE =
   'Imported shared state; some invalid data was ignored.';
+
+/**
+ * Setting keys that are strictly local/tracker-only and must never be
+ * included in any shared state payload. These keys are filtered out
+ * during both export and import comparison to avoid false-positive
+ * "ignored field" warnings.
+ */
+const SHARE_EXCLUDED_SETTINGS_KEYS = new Set<string>(['autoMapSwitch']);
+
 const SHARE_TOP_LEVEL_KEYS = new Set(['v', 'stores']);
 const SHARE_STORE_IDS = new Set<string>(PERSIST_STORE_IDS);
 const resolveInteropModule = (mod: unknown): Record<string, unknown> => {
@@ -250,6 +259,7 @@ function diffSettingsFromDefaults(
 ): Record<string, unknown> {
   const diff: Record<string, unknown> = {};
   for (const [key, value] of Object.entries(settings)) {
+    if (SHARE_EXCLUDED_SETTINGS_KEYS.has(key)) continue;
     if (!deepEqual(value, TRACKER_DEFAULT_SETTINGS[key])) {
       diff[key] = value;
     }
@@ -843,6 +853,27 @@ function expandSnapshotSettings(
   return { ...snapshot, stores };
 }
 
+/**
+ * Recursively strip SHARE_EXCLUDED_SETTINGS_KEYS from trackerSettings
+ * in a store object, returning a new object suitable for issue comparison
+ * during import. This prevents excluded keys from triggering false-positive
+ * "Ignored invalid or unsupported field" warnings.
+ */
+function stripShareExcludedKeys(
+  storeRaw: Record<string, unknown>,
+): Record<string, unknown> {
+  if (!isPlainObject(storeRaw)) return storeRaw;
+  const result = { ...storeRaw };
+  if (isPlainObject(result.trackerSettings)) {
+    const settings = { ...result.trackerSettings } as Record<string, unknown>;
+    for (const key of SHARE_EXCLUDED_SETTINGS_KEYS) {
+      delete settings[key];
+    }
+    result.trackerSettings = settings;
+  }
+  return result;
+}
+
 export function encodeSnapshotToHashPayload(
   snapshot: PersistedSnapshot,
 ): string {
@@ -939,11 +970,16 @@ export function decodeHashPayloadToSnapshot(
     const storeRaw = parsed.stores[storeId];
     if (storeRaw === undefined || !isPlainObject(storeRaw)) continue;
 
+    // Strip excluded keys before comparison to avoid false-positive
+    // "ignored field" issues for tracker-only settings that are never
+    // part of the shared state protocol.
+    const storeRawForComparison = stripShareExcludedKeys(storeRaw);
+
     // Collect issues by comparing original store data against the normalized
     // snapshot — any dropped or adjusted fields will be detected here.
     collectShareImportIssues(
       `stores.${storeId}`,
-      storeRaw,
+      storeRawForComparison,
       normalized.snapshot.stores[storeId] ?? {},
       issues,
     );
