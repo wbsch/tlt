@@ -327,7 +327,7 @@ test.describe('Entrance mapping refresh persistence', () => {
       await terminaMarkers.nth(index).click({ force: true });
       await expect(terminaSubmenuPanel).toBeVisible();
       const candidate = terminaSubmenuPanel
-        .locator('.map-exit-list .map-entrance-list__row')
+        .locator('.map-entrance-list:not(.map-exit-list) .map-entrance-list__row')
         .filter({ hasText: 'Clock Town South to Laundry Pool' })
         .locator('.destination-combobox__input')
         .first();
@@ -339,7 +339,7 @@ test.describe('Entrance mapping refresh persistence', () => {
 
     expect(terminaExitSelect).not.toBeNull();
     await expect(terminaExitSelect!).toBeVisible();
-    await selectEntranceById(terminaExitSelect, 'MM_EXTERIOR_GATE_FROM_SEWERS');
+    await selectEntranceById(terminaExitSelect!, 'MM_EXTERIOR_GATE_FROM_SEWERS');
     await expectEntranceSelectedId(
       terminaExitSelect!,
       'MM_EXTERIOR_GATE_FROM_SEWERS',
@@ -359,7 +359,7 @@ test.describe('Entrance mapping refresh persistence', () => {
       await submenuMarkers.nth(index).click({ force: true });
       await expect(submenuPanel).toBeVisible();
       const candidate = submenuPanel
-        .locator('.map-exit-list .map-entrance-list__row')
+        .locator('.map-entrance-list:not(.map-exit-list) .map-entrance-list__row')
         .filter({
           hasText: 'Pirate Fortress Entrance to Pirate Fortress Sewers',
         })

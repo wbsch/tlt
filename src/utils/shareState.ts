@@ -13,6 +13,7 @@ import {
   TRACKER_DEFAULT_SETTINGS,
 } from '@packs/ootmm/data/settings';
 import * as TricksMod from '@ootmm/core/settings/tricks';
+import { ENTRANCES } from '@ootmm/data';
 
 const SHARE_HASH_PARAM = 's';
 const SHARE_PAYLOAD_PREFIX = 'v1.';
@@ -558,10 +559,23 @@ function normalizeImportedSnapshot(
       }
       normalizedSession.trackerSettings = normalizedSettings;
 
-      // entranceOverrides is not filtered here anymore — the plando
-      // boundary (injectEntranceOverridesIntoSettings) handles
-      // normalization for the OoTMM core. Exit keys are preserved
-      // for tracker-internal use.
+      // Filter entrance overrides to only include valid entrance names.
+      // Exit keys and coupled reverse entries also have entries in
+      // ENTRANCES, so they are naturally preserved.
+      if (isPlainObject(normalizedSession.entranceOverrides)) {
+        const overrides = normalizedSession.entranceOverrides as Record<string, string>;
+        const validEntrances = new Set(Object.keys(ENTRANCES));
+        const filtered: Record<string, string> = {};
+        for (const [src, dst] of Object.entries(overrides)) {
+          if (validEntrances.has(src) && validEntrances.has(dst)) {
+            filtered[src] = dst;
+          }
+        }
+        if (Object.keys(filtered).length !== Object.keys(overrides).length) {
+          partial = true;
+        }
+        normalizedSession.entranceOverrides = filtered;
+      }
     } else if (isPlainObject(session.entranceOverrides)) {
       partial = true;
       delete normalizedSession.entranceOverrides;
