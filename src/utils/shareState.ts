@@ -558,27 +558,27 @@ function normalizeImportedSnapshot(
         partial = true;
       }
       normalizedSession.trackerSettings = normalizedSettings;
+    }
 
-      // Filter entrance overrides to only include valid entrance names.
-      // Exit keys and coupled reverse entries also have entries in
-      // ENTRANCES, so they are naturally preserved.
-      if (isPlainObject(normalizedSession.entranceOverrides)) {
-        const overrides = normalizedSession.entranceOverrides as Record<string, string>;
-        const validEntrances = new Set(Object.keys(ENTRANCES));
-        const filtered: Record<string, string> = {};
-        for (const [src, dst] of Object.entries(overrides)) {
-          if (validEntrances.has(src) && validEntrances.has(dst)) {
-            filtered[src] = dst;
-          }
+    // Filter entrance overrides to only include valid entrance names.
+    // Exit keys and coupled reverse entries also have entries in
+    // ENTRANCES, so they are naturally preserved.
+    if (isPlainObject(normalizedSession.entranceOverrides)) {
+      const overrides = normalizedSession.entranceOverrides as Record<
+        string,
+        string
+      >;
+      const validEntrances = new Set(Object.keys(ENTRANCES));
+      const filtered: Record<string, string> = {};
+      for (const [src, dst] of Object.entries(overrides)) {
+        if (validEntrances.has(src) && validEntrances.has(dst)) {
+          filtered[src] = dst;
         }
-        if (Object.keys(filtered).length !== Object.keys(overrides).length) {
-          partial = true;
-        }
-        normalizedSession.entranceOverrides = filtered;
       }
-    } else if (isPlainObject(session.entranceOverrides)) {
-      partial = true;
-      delete normalizedSession.entranceOverrides;
+      if (Object.keys(filtered).length !== Object.keys(overrides).length) {
+        partial = true;
+      }
+      normalizedSession.entranceOverrides = filtered;
     }
 
     stores['ootmm-session'] = normalizedSession;
@@ -939,8 +939,8 @@ export function decodeHashPayloadToSnapshot(
     const storeRaw = parsed.stores[storeId];
     if (storeRaw === undefined || !isPlainObject(storeRaw)) continue;
 
-    // No pre-filter needed: normalizeImportedSnapshot no longer normalizes
-    // entranceOverrides, so storeRaw and normalized match.
+    // Collect issues by comparing original store data against the normalized
+    // snapshot — any dropped or adjusted fields will be detected here.
     collectShareImportIssues(
       `stores.${storeId}`,
       storeRaw,

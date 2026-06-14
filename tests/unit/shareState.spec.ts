@@ -288,6 +288,11 @@ describe('shareState', () => {
           reason: 'Adjusted value during import.',
           imported: 1,
         }),
+        expect.objectContaining({
+          path: 'stores.ootmm-session.entranceOverrides.NOT_A_REAL_ENTRANCE',
+          reason: 'Ignored invalid or unsupported field.',
+          received: 'ALSO_NOT_REAL',
+        }),
       ]),
     });
     expect(readPersistedStore(STORAGE_KEYS.app)).toBeNull();
@@ -298,9 +303,7 @@ describe('shareState', () => {
       },
     });
     expect(readPersistedStore(STORAGE_KEYS.session)?.entranceOverrides).toEqual(
-      {
-        NOT_A_REAL_ENTRANCE: 'ALSO_NOT_REAL',
-      },
+      {},
     );
   });
 
