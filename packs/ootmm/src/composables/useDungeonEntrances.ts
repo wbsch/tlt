@@ -410,19 +410,34 @@ export function useDungeonEntrances() {
   });
   const hasAvailableSections = computed(() => sections.value.length > 0);
 
+  /** Set of destination keys currently used by non-spawn sources. */
+  const usedDestinationKeysByNonSpawn = computed(() => {
+    const used = new Set<string>();
+    const overrides = entranceOverrides.value;
+    for (const src of Object.keys(overrides)) {
+      const dst = overrides[src];
+      if (!dst) continue;
+      const pool = getEntrancePoolByKey(src);
+      if (pool === 'spawn') continue;
+      used.add(dst);
+    }
+    return used;
+  });
+
   function isDestinationUsed(dstKey: string, currentSrcKey: string): boolean {
     const currentSourcePool = getEntrancePoolByKey(currentSrcKey);
-
-    for (const [src, dst] of Object.entries(entranceOverrides.value)) {
-      if (src === currentSrcKey) continue;
-      const otherSourcePool = getEntrancePoolByKey(src);
-      if (currentSourcePool === 'spawn' || otherSourcePool === 'spawn') {
-        continue;
-      }
-      if (dst === dstKey) return true;
+    if (currentSourcePool === 'spawn') {
+      return false;
     }
 
-    return false;
+    // If the current source already maps to this destination,
+    // it's not considered "used" by someone else.
+    const currentDst = entranceOverrides.value[currentSrcKey] ?? '';
+    if (currentDst === dstKey) {
+      return false;
+    }
+
+    return usedDestinationKeysByNonSpawn.value.has(dstKey);
   }
 
   function sortOptionsByGameThenLabel<
@@ -546,14 +561,26 @@ export function useDungeonEntrances() {
     sessionStore.setEntranceOverride(exitKey, exitDstKey || null);
   }
 
+  /** Set of all destination keys currently used (including spawn sources). */
+  const usedDestinationKeys = computed(() => {
+    const used = new Set<string>();
+    const overrides = entranceOverrides.value;
+    for (const dst of Object.values(overrides)) {
+      if (dst) used.add(dst);
+    }
+    return used;
+  });
+
   function isExitDestinationUsed(
     exitDstKey: string,
     currentExitSrcKey: string,
   ): boolean {
-    for (const [src, dst] of Object.entries(entranceOverrides.value)) {
-      if (src !== currentExitSrcKey && dst === exitDstKey) return true;
-    }
-    return false;
+    // If the current exit source already maps to this destination,
+    // it's not considered "used" by someone else.
+    const currentDst = entranceOverrides.value[currentExitSrcKey] ?? '';
+    if (currentDst === exitDstKey) return false;
+
+    return usedDestinationKeys.value.has(exitDstKey);
   }
 
   function computeOptionsForExit(

@@ -30,7 +30,6 @@ import {
   GAME_LINK_VANILLA_EXIT_MAPPING,
   INTERIOR_GAME_LINK_EXIT_KEYS,
   INTERIOR_GAME_LINK_SOURCE_KEYS,
-  getEdgeReverse,
 } from '../utils/entranceRandomization';
 import { getGridItemDefinedMaxCount } from '../data/itemIcons';
 

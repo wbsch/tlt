@@ -1081,10 +1081,14 @@ const markerViewModels = computed<MarkerRuntime[]>(() => {
       // Mirrors the UI dropdown row logic below.
       const resolveEntranceIds = (() => {
         if (entranceMenuDisplay === 'both') {
-          return [...new Set(submenuSourceEntranceIds.flatMap((id) => {
-            const reverse = getEdgeReverse(id);
-            return reverse ? [id, reverse] : [id];
-          }))];
+          return [
+            ...new Set(
+              submenuSourceEntranceIds.flatMap((id) => {
+                const reverse = getEdgeReverse(id);
+                return reverse ? [id, reverse] : [id];
+              }),
+            ),
+          ];
         }
         if (entranceMenuDisplay === 'entrances') {
           return submenuSourceEntranceIds;
@@ -1099,10 +1103,7 @@ const markerViewModels = computed<MarkerRuntime[]>(() => {
         !props.devMode &&
         hasEntranceBinding &&
         submenuSourceEntranceIds.length > 0
-          ? resolveBoundSubmenuEntryDefs(
-              resolveEntranceIds,
-              activeEntranceById,
-            )
+          ? resolveBoundSubmenuEntryDefs(resolveEntranceIds, activeEntranceById)
           : [];
       const submenuMarkersRaw = props.devMode
         ? staticSubmenuMarkersRaw
