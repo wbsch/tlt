@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest';
 
 import {
   createRawAutotrackerParser,
+  isPlausibleMmSave,
   RAW_CHUNK_SPECS,
   RAW_CHUNK_SPECS_BY_GAME,
   type RawAutotrackerMessage,
@@ -244,5 +245,44 @@ describe('raw frame parser', () => {
 
     expect(translated.OOT_ODD_MUSHROOM).toBe(1);
     expect(translated.OOT_ODD_POTION).toBe(1);
+  });
+});
+
+describe('isPlausibleMmSave conditional all-zero rejection', () => {
+  // Offsets within the MM save buffer
+  const MM_OFF_DAY = 0x18;
+  const MM_OFF_PLAYER_FORM = 0x20;
+  const MM_OFF_EQUIPMENT = 0x6c;
+  const MM_OFF_DUNGEON_KEYS = 0xca;
+  const MM_OFF_STRAY_FAIRIES = 0xd4;
+  const MM_OFF_PERM_SCENES = 0x0f8;
+
+  /** Creates a minimal, valid-looking MM save buffer.
+   *  All fields required by isPlausibleMmSave pass their range checks.
+   *  Equipment, permanent scene flags, and cycle flags are all zero.
+   *  One Stray Fairy is set to verify that data outside the three
+   *  checked regions does not cause rejection when rejectAllZero is false.
+   */
+  function buildMinimalMmSaveBuffer(strayFairyValue = 1): Uint8Array {
+    // Buffer must cover all reads up to the last stray fairy byte (0xd4 + 10 = 0xde).
+    const buffer = new Uint8Array(MM_OFF_STRAY_FAIRIES + 10);
+    buffer[MM_OFF_PLAYER_FORM] = 0; // valid (≤ 4)
+    // readU32BE at MM_OFF_DAY → all zeros → day = 0 (valid, ≤ 4)
+    // Dungeon keys at 0xca..0xd2 all zero → toSignedByte(0) = 0 (valid, -1..9)
+    // Equipment at 0x6c → zero
+    // Scene flags at 0x0f8 and cycle flags at 0x3f68 are beyond the buffer,
+    // so saveDataRegionHasNonZeroValue trivially returns false (all-zero).
+    buffer[MM_OFF_STRAY_FAIRIES] = strayFairyValue;
+    return buffer;
+  }
+
+  it('accepts a save with Stray Fairies but all-zero equipment/scene/cycle when rejectAllZero is false', () => {
+    const data = buildMinimalMmSaveBuffer(4);
+    expect(isPlausibleMmSave(data, false)).toBe(true);
+  });
+
+  it('rejects a save with Stray Fairies but all-zero equipment/scene/cycle when rejectAllZero is true', () => {
+    const data = buildMinimalMmSaveBuffer(4);
+    expect(isPlausibleMmSave(data, true)).toBe(false);
   });
 });

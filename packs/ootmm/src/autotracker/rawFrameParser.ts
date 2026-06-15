@@ -1289,6 +1289,7 @@ class RawAutotrackerParserImpl implements RawAutotrackerParser {
   private pendingLiveTransitionSignature: string | null = null;
   private pendingLiveTransitionTimestamp: number | null = null;
   private pendingLiveTransitionDiscardCount = 0;
+  private hasEverSeenNonZeroMmRegions = false;
 
   parse(message: RawAutotrackerMessage): ParsedRawAutotrackerSnapshot | null {
     if (message.schemaVersion !== '1' || message.diff) {
@@ -1344,6 +1345,7 @@ class RawAutotrackerParserImpl implements RawAutotrackerParser {
     this.pendingLiveTransitionSignature = null;
     this.pendingLiveTransitionTimestamp = null;
     this.pendingLiveTransitionDiscardCount = 0;
+    this.hasEverSeenNonZeroMmRegions = false;
   }
 
   private parseGameState(
@@ -1409,8 +1411,11 @@ class RawAutotrackerParserImpl implements RawAutotrackerParser {
       if (!mmSaveData) {
         return null;
       }
-      if (!isPlausibleMmSave(mmSaveData)) {
+      if (!isPlausibleMmSave(mmSaveData, this.hasEverSeenNonZeroMmRegions)) {
         return null;
+      }
+      if (!mmSaveRegionsAreAllZero(mmSaveData)) {
+        this.hasEverSeenNonZeroMmRegions = true;
       }
       parseMmSave(state.mm, mmSaveData);
       const mmLiveSignature = readMmPlayStateSignature(memory);
@@ -1484,7 +1489,13 @@ class RawAutotrackerParserImpl implements RawAutotrackerParser {
       FOREIGN_MM_SAVE_CHUNK_SPECS,
       OOT_FOREIGN_MM_SAVE_CHUNK,
     );
-    if (direct && validateForeignMmSave(direct)) {
+    if (
+      direct &&
+      validateForeignMmSave(direct, this.hasEverSeenNonZeroMmRegions)
+    ) {
+      if (!mmSaveRegionsAreAllZero(direct)) {
+        this.hasEverSeenNonZeroMmRegions = true;
+      }
       parseMmSave(mm, direct);
       return;
     }
@@ -1493,7 +1504,10 @@ class RawAutotrackerParserImpl implements RawAutotrackerParser {
     const data = payload
       ? sliceAbsoluteChunk(payload, ADDR_OOT_FOREIGN_MM_SAVE_LIVE, MM_SAVE_SIZE)
       : null;
-    if (data && validateForeignMmSave(data)) {
+    if (data && validateForeignMmSave(data, this.hasEverSeenNonZeroMmRegions)) {
+      if (!mmSaveRegionsAreAllZero(data)) {
+        this.hasEverSeenNonZeroMmRegions = true;
+      }
       parseMmSave(mm, data);
       return;
     }
@@ -3058,8 +3072,11 @@ function validateForeignOotSave(data: Uint8Array): boolean {
   return isPlausibleOotSave(data);
 }
 
-function validateForeignMmSave(data: Uint8Array): boolean {
-  return isPlausibleMmSave(data);
+export function validateForeignMmSave(
+  data: Uint8Array,
+  rejectAllZero = true,
+): boolean {
+  return isPlausibleMmSave(data, rejectAllZero);
 }
 
 function isPlausibleOotSave(data: Uint8Array): boolean {
@@ -3097,7 +3114,10 @@ function isPlausibleOotSave(data: Uint8Array): boolean {
   return true;
 }
 
-function isPlausibleMmSave(data: Uint8Array): boolean {
+export function isPlausibleMmSave(
+  data: Uint8Array,
+  rejectAllZero = true,
+): boolean {
   const playerForm = data[MM_OFF_PLAYER_FORM] ?? 0;
   if (playerForm > 4) {
     return false;
@@ -3124,22 +3144,42 @@ function isPlausibleMmSave(data: Uint8Array): boolean {
   // We check equipment, permanent scene flags AND cycle flags because MM
   // saves may legitimately have all-zero scene/cycle flags while still
   // carrying items/equipment (e.g. right after a story cutscene).
+  //
+  // This check is only enforced once we have previously seen a frame
+  // where at least one of the three regions was non-zero.  Before that,
+  // an all-zero save is accepted so that legitimate saves that only
+  // carry data outside the three checked regions (e.g. Stray Fairies in
+  // the foreign-MM area while playing OoT) are not discarded.
+  if (rejectAllZero && mmSaveRegionsAreAllZero(data)) {
+    return false;
+  }
+
+  return true;
+}
+
+/**
+ * Returns true when equipment, permanent scene flags, AND cycle flags are
+ * all zero in the given MM save buffer.
+ */
+export function mmSaveRegionsAreAllZero(data: Uint8Array): boolean {
   const hasEquipment =
     MM_OFF_EQUIPMENT + 2 <= data.length &&
     readU16BE(data, MM_OFF_EQUIPMENT) !== 0;
+  if (hasEquipment) return false;
+
   const hasSceneFlags = saveDataRegionHasNonZeroValue(
     data,
     MM_OFF_PERM_SCENES,
     MM_PERM_COUNT * MM_PERM_ENTRY_SIZE,
   );
+  if (hasSceneFlags) return false;
+
   const hasCycleFlags = saveDataRegionHasNonZeroValue(
     data,
     MM_CTX_OFF_CYCLE_FLAGS,
     MM_CYCLE_FLAGS_SIZE,
   );
-  if (!hasEquipment && !hasSceneFlags && !hasCycleFlags) {
-    return false;
-  }
+  if (hasCycleFlags) return false;
 
   return true;
 }
