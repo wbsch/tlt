@@ -54,11 +54,15 @@ import {
   type TrackerTab,
 } from '../stores/ootmmUi';
 import { OOTMM_MAP_DEFS } from '../data/maps';
-import type { MapDef, MapSubmenuEntryDef } from '../data/maps/types';
+import type { MapDef } from '../data/maps/types';
 import {
   getActiveEntranceKeys,
   getEdgeReverse,
 } from '../utils/entranceRandomization';
+import {
+  resolveEntranceBoundCodes,
+  normalizeMapCodeList,
+} from '../utils/mapSelectorCounts';
 import * as ItemsMod from '@ootmm/core/items/index';
 import * as NamesMod from '@ootmm/core/names';
 import * as SettingsDataMod from '@ootmm/core/settings/data';
@@ -1386,13 +1390,6 @@ async function maybeStartAutotrackerFromSpoiler(
   return null;
 }
 
-function normalizeMapCodeList(
-  rawCodes: string | string[] | undefined,
-): string[] {
-  const rawList = Array.isArray(rawCodes) ? rawCodes : [rawCodes ?? ''];
-  return rawList.map((code) => code.trim()).filter((code) => code.length > 0);
-}
-
 function looksLikeLocationId(value: string): boolean {
   return /@\d+$/.test(value);
 }
@@ -1406,71 +1403,12 @@ function addResolvedMapSelectorCode(checkIds: Set<string>, code: string): void {
   }
 }
 
-// Static lookup: entrance ID → check codes from map marker definitions.
-// For each entrance with markers on a map, stores the codes of checks
-// behind that entrance.
-const ENTRANCE_CHECK_CODES_BY_ID: ReadonlyMap<string, MapSubmenuEntryDef[]> =
-  (() => {
-    const byId = new Map<string, MapSubmenuEntryDef[]>();
-    for (const mapDef of OOTMM_MAP_DEFS) {
-      for (const markerDef of mapDef.markers) {
-        if (markerDef.type !== 'submenu' || !markerDef.entranceMenu) continue;
-        if (!Array.isArray(markerDef.markers) || markerDef.markers.length === 0)
-          continue;
-        const entranceIds = (markerDef.entranceMenu.entranceIds ?? [])
-          .map((id) => id.trim())
-          .filter((id) => id.length > 0);
-        if (entranceIds.length === 0) continue;
-        const entries: MapSubmenuEntryDef[] = markerDef.markers.map((e) => ({
-          image: e.image,
-          overlays: e.overlays,
-          codes: e.codes,
-          visibleWhen: e.visibleWhen,
-        }));
-        for (const entranceId of entranceIds) {
-          const existing = byId.get(entranceId);
-          if (existing) {
-            existing.push(...entries);
-          } else {
-            byId.set(entranceId, [...entries]);
-          }
-        }
-      }
-    }
-    return byId;
-  })();
-
-function addEntranceBoundCodes(
-  checkIds: Set<string>,
-  markerEntranceIds: string[],
-  overrides: Record<string, string>,
-): void {
-  for (const srcId of markerEntranceIds) {
-    const trimmed = srcId.trim();
-    if (!trimmed) continue;
-
-    const resolvedEntranceId = overrides[trimmed] ?? null;
-    if (!resolvedEntranceId) continue;
-
-    // Look up check codes by the resolved destination entrance ID.
-    // If not found directly, try the reverse (exit→entrance fallback).
-    const dstEntries =
-      ENTRANCE_CHECK_CODES_BY_ID.get(resolvedEntranceId) ??
-      (getEdgeReverse(resolvedEntranceId)
-        ? ENTRANCE_CHECK_CODES_BY_ID.get(getEdgeReverse(resolvedEntranceId)!)
-        : undefined);
-    if (!dstEntries) continue;
-    for (const entry of dstEntries) {
-      for (const code of normalizeMapCodeList(entry.codes)) {
-        addResolvedMapSelectorCode(checkIds, code);
-      }
-    }
-  }
-}
-
 const mapSelectorCheckIdsByMap = computed(() => {
   const byMap = new Map<string, Set<string>>();
   const overrides = entranceOverrides.value;
+  const activeEntranceKeys = getActiveEntranceKeys(
+    (trackerSettings.value ?? {}) as Record<string, unknown>,
+  );
 
   for (const mapDef of selectableMapDefs.value) {
     const checkIds = new Set<string>();
@@ -1480,10 +1418,13 @@ const mapSelectorCheckIdsByMap = computed(() => {
         const hasEntranceBinding = markerEntranceIds.length > 0;
 
         if (hasEntranceBinding) {
-          // Mirror the map runtime: shuffled entrances resolve via overrides,
-          // while entrance-bound submenu markers outside active ER pools fall
-          // back to their own source entrance definitions.
-          addEntranceBoundCodes(checkIds, markerEntranceIds, overrides);
+          for (const code of resolveEntranceBoundCodes(
+            markerEntranceIds,
+            overrides,
+            activeEntranceKeys,
+          )) {
+            addResolvedMapSelectorCode(checkIds, code);
+          }
         } else {
           // No ER or no entrance binding – use static codes
           for (const submenuEntry of marker.markers ?? []) {
