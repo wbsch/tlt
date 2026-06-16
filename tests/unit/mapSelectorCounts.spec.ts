@@ -149,7 +149,7 @@ describe('resolveEntranceBoundCodes', () => {
  * Verify that a key exists as an entrance with a reverse edge.
  * Uses the same getEdgeReverse logic as the module under test.
  */
-function getEdgeReverseExists(key: string): boolean {
+function getEdgeReverseExists(_key: string): boolean {
   // Check via the module's ENTRANCE_CHECK_CODES_BY_ID that the reverse
   // lookup would succeed — we import getEdgeReverse indirectly through
   // our knowledge that OOT_KOKIRI_FOREST_FROM_SARIA's reverse is

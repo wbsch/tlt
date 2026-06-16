@@ -250,12 +250,8 @@ describe('raw frame parser', () => {
 
 describe('isPlausibleMmSave conditional all-zero rejection', () => {
   // Offsets within the MM save buffer
-  const MM_OFF_DAY = 0x18;
   const MM_OFF_PLAYER_FORM = 0x20;
-  const MM_OFF_EQUIPMENT = 0x6c;
-  const MM_OFF_DUNGEON_KEYS = 0xca;
   const MM_OFF_STRAY_FAIRIES = 0xd4;
-  const MM_OFF_PERM_SCENES = 0x0f8;
 
   /** Creates a minimal, valid-looking MM save buffer.
    *  All fields required by isPlausibleMmSave pass their range checks.
