@@ -3587,7 +3587,11 @@ function extractItems(state: GameState): RawAutotrackerItem[] {
 
   const ootTradeRecord = oot.extraRecords[EXTRA_IDX_OOT_TRADE] ?? 0;
   const ootTradeSaveRecord = oot.extraRecords[EXTRA_IDX_OOT_TRADE_SAVE] ?? 0;
-  appendPositiveItem(items, 'OOT_CHILD_TRADE', ootTradeRecord >>> 16);
+  appendPositiveItem(
+    items,
+    'OOT_CHILD_TRADE',
+    (ootTradeRecord >>> 16) | (ootTradeSaveRecord >>> 16),
+  );
   appendPositiveItem(
     items,
     'OOT_ADULT_TRADE',
