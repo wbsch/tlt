@@ -229,7 +229,7 @@ export const TRACKER_FAQ_SECTIONS: TrackerFaqSection[] = [
           {
             type: 'list',
             items: [
-              'The two checks "Zora River Bean Seller" and "Market House Big Poes" cannot be cleanly tracked by the autotracker.',
+              'The three checks "Zora River Bean Seller", "Market House Big Poes" and "Chest Game HP" cannot be cleanly tracked by the autotracker.',
               'The Goron Knife is not cleanly detected if you already have the Biggoron Sword.',
               'In Triforce Hunt mode, the autotracker cannot distinguish between the different Triforce Pieces.',
               'The last two limitations exist because the tracker sees the same information that the user sees in the in-game Inventory/Equipment screen.',
