@@ -3027,6 +3027,28 @@ async function applySpoilerLog(text: string, selectedPlayer?: number) {
     parsed,
     selectedPlayer,
   );
+
+  // When Clocks Shuffle is enabled and Progressive Clocks is set to
+  // Ascending or Descending, mark the corresponding clock as a starting
+  // item. The progressiveClocks setting itself is not whitelisted since
+  // it's irrelevant for logic — this is only about the starting item.
+  if (nextSettings.clocks === true) {
+    const progClocks = String(
+      parsed.settings.progressiveClocks ?? '',
+    ).toLowerCase();
+    if (progClocks === 'ascending') {
+      combinedStartingItems['Clock (Day 1)'] = Math.max(
+        combinedStartingItems['Clock (Day 1)'] ?? 0,
+        1,
+      );
+    } else if (progClocks === 'descending') {
+      combinedStartingItems['Clock (Night 3)'] = Math.max(
+        combinedStartingItems['Clock (Night 3)'] ?? 0,
+        1,
+      );
+    }
+  }
+
   if (Object.keys(combinedStartingItems).length > 0) {
     applyStartingItems(combinedStartingItems);
   }
