@@ -236,7 +236,7 @@
       "slot": "ITS_MM_GREAT_FAIRY_SWORD",
       "itemId": "MM_GREAT_FAIRY_SWORD",
       "quantity": {
-        "stages": [16, 181]
+        "stages": [16]
       }
     },
     {
@@ -2640,11 +2640,19 @@
         }
       },
       {
+        "itemId": "MM_GREAT_FAIRY_SWORD",
+        "source": {
+          "kind": "oot-extra-bit",
+          "record": 4,
+          "bit": 25
+        }
+      },
+      {
         "itemId": "MM_HAMMER",
         "source": {
           "kind": "oot-extra-bit",
           "record": 4,
-          "bit": 6
+          "bit": 26
         }
       },
       {

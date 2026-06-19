@@ -4918,7 +4918,7 @@ function inventorySlotQty(
 
 function stageQty(itemId: number, stages: number[]): number {
   const index = stages.indexOf(itemId);
-  return index >= 0 ? index + 1 : 1;
+  return index >= 0 ? index + 1 : 0;
 }
 
 function isOotBottleItem(itemId: number): boolean {

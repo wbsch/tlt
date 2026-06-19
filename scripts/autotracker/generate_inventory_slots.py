@@ -81,7 +81,7 @@ SLOT_QUANTITY_RULES = {
     "ITS_MM_TRADE1": {"stages": [0xB0, 0x28, 0x29, 0x2A, 0x2B, 0x2C]},
     "ITS_MM_TRADE2": {"stages": [0xAE, 0xB1, 0xB3, 0x2D, 0x2E]},
     "ITS_MM_HOOKSHOT": {"stages": [0x11, 0x0F]},
-    "ITS_MM_GREAT_FAIRY_SWORD": {"stages": [0x10, 0xB5]},
+    "ITS_MM_GREAT_FAIRY_SWORD": {"stages": [0x10]},
     "ITS_MM_TRADE3": {"stages": [0xAF, 0xB2, 0xB4, 0x2F, 0x30]},
 }
 
@@ -149,7 +149,8 @@ SPECIAL_ITEM_SOURCES = [
     {"itemId": "MM_TRANSCENDENT_FAIRY", "source": {"kind": "mm-derived-transcendent-fairy"}},
     {"itemId": "OOT_SCALE_BRONZE", "source": {"kind": "shared-bitmap-bit", "block": "progressiveFlags", "bit": 4}},
     {"itemId": "MM_SCALE_BRONZE", "source": {"kind": "shared-bitmap-bit", "block": "progressiveFlags", "bit": 3}},
-    {"itemId": "MM_HAMMER", "source": {"kind": "oot-extra-bit", "record": 4, "bit": 6}},
+    {"itemId": "MM_GREAT_FAIRY_SWORD", "source": {"kind": "oot-extra-bit", "record": 4, "bit": 25}},
+    {"itemId": "MM_HAMMER", "source": {"kind": "oot-extra-bit", "record": 4, "bit": 26}},
     {"itemId": "MM_SPELL_FIRE", "source": {"kind": "oot-extra-bit", "record": 5, "bit": 10}},
     {"itemId": "MM_MOON_TEAR", "source": {"kind": "oot-extra-bit", "record": 5, "bit": 11}},
     {"itemId": "MM_DEED_LAND", "source": {"kind": "oot-extra-bit", "record": 5, "bit": 12}},
