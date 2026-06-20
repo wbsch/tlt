@@ -46,6 +46,7 @@ export const MAP_ICON_INDEX = [
   'light_medallion',
   'npc',
   'odolwas_remain',
+  'one_way_entrance',
   'overworld_entrance',
   'owl_statue',
   'owl_warp',

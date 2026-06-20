@@ -931,6 +931,78 @@
       }
     },
     {
+      "coords": [117, 321],
+      "image": "one_way_entrance",
+      "type": "submenu",
+      "entranceMenu": {
+        "entranceIds": ["OOT_LOST_WOODS_FROM_LOST_WOODS_NORTH"],
+        "display": "exits"
+      }
+    },
+    {
+      "coords": [180, 223],
+      "image": "one_way_entrance",
+      "type": "submenu",
+      "entranceMenu": {
+        "entranceIds": ["OOT_LOST_WOODS_FROM_LOST_WOODS_NORTH"],
+        "display": "exits"
+      }
+    },
+    {
+      "coords": [193, 238],
+      "image": "one_way_entrance",
+      "type": "submenu",
+      "entranceMenu": {
+        "entranceIds": ["OOT_LOST_WOODS_FROM_LOST_WOODS_EAST"],
+        "display": "exits"
+      }
+    },
+    {
+      "coords": [193, 270],
+      "image": "one_way_entrance",
+      "type": "submenu",
+      "entranceMenu": {
+        "entranceIds": ["OOT_LOST_WOODS_FROM_LOST_WOODS_EAST"],
+        "display": "exits"
+      }
+    },
+    {
+      "coords": [149, 350],
+      "image": "one_way_entrance",
+      "type": "submenu",
+      "entranceMenu": {
+        "entranceIds": ["OOT_LOST_WOODS_FROM_LOST_WOODS_SOUTH"],
+        "display": "exits"
+      }
+    },
+    {
+      "coords": [134, 238],
+      "image": "one_way_entrance",
+      "type": "submenu",
+      "entranceMenu": {
+        "entranceIds": ["OOT_LOST_WOODS_FROM_LOST_WOODS_WEST"],
+        "display": "exits"
+      }
+    },
+    {
+      "coords": [146, 246],
+      "image": "one_way_entrance",
+      "type": "submenu",
+      "entranceMenu": {
+        "entranceIds": ["OOT_LOST_WOODS_FROM_LOST_WOODS_SOUTH"],
+        "display": "exits"
+      }
+    },
+    {
+      "coords": [137, 301],
+      "image": "one_way_entrance",
+      "type": "submenu",
+      "entranceMenu": {
+        "entranceIds": ["OOT_LOST_WOODS_FROM_LOST_WOODS_WEST"],
+        "display": "exits"
+      }
+    },
+    {
       "coords": [208, 303],
       "image": "overworld_entrance",
       "type": "submenu",

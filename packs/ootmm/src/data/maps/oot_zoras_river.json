@@ -1026,6 +1026,15 @@
       }
     },
     {
+      "coords": [72, 435],
+      "image": "one_way_entrance",
+      "type": "submenu",
+      "entranceMenu": {
+        "entranceIds": ["OOT_FIELD_OWL"],
+        "display": "entrances"
+      }
+    },
+    {
       "coords": [904, 251],
       "image": "dungeon_entrance",
       "type": "submenu",

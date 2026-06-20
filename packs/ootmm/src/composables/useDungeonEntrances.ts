@@ -10,6 +10,7 @@ import {
   getTrackedEntrancePolarity,
   isTrackedEntranceSourceType,
   isTrackedWallmasterDestination,
+  isTrackedOneWayDestination,
   getExitLabel,
   getExitEndpointLabel,
   getEdgeReverse,
@@ -92,9 +93,22 @@ function getWarpSongName(data: EntranceData): string | null {
   return getItemName(`${String(data.game).toUpperCase()}_${sourceName}`);
 }
 
-function entranceOptionLabel(key: string, data: EntranceData): string {
+function entranceOptionLabel(
+  key: string,
+  data: EntranceData,
+  pool?: TrackedEntrancePool | null,
+): string {
   const toName = stripEntranceNamePrefix(data.to);
 
+  if (pool === 'one-way') {
+    if (data.type === 'one-way-song') {
+      const name = getWarpSongName(data) ?? entranceLabel(key, data);
+      return `One-Way: ${name}`;
+    }
+    if (data.type === 'one-way-statue') {
+      return toName ? `One-Way Soaring to ${toName}` : 'One-Way Soaring';
+    }
+  }
   if (data.type === 'one-way-song' || data.type === 'one-way-statue') {
     return toName ?? entranceLabel(key, data);
   }
@@ -104,10 +118,14 @@ function entranceOptionLabel(key: string, data: EntranceData): string {
     return `Wallmaster @ ${locationName}`;
   }
 
-  return entranceLabel(key, data);
+  return entranceLabel(key, data, pool);
 }
 
-function entranceLabel(key: string, data: EntranceData): string {
+function entranceLabel(
+  key: string,
+  data: EntranceData,
+  pool?: TrackedEntrancePool | null,
+): string {
   if (data.type === 'spawn-child') return 'Child Spawn';
   if (data.type === 'spawn-adult') return 'Adult Spawn';
 
@@ -116,6 +134,40 @@ function entranceLabel(key: string, data: EntranceData): string {
       .replace(/^(OOT|MM) /, '')
       .replace(/ Wallmaster\b/, '');
     return `Wallmaster: ${locationName}`;
+  }
+
+  if (data.type === 'one-way') {
+    const name = (data.from ?? '').replace(/^(OOT|MM) /, '');
+    return `One-Way: ${name}`;
+  }
+  if (data.type === 'one-way-ikana') {
+    const dir = key.includes('KEG') ? 'Keg' : 'Block';
+    return `One-Way: Ikana Castle ${dir}`;
+  }
+  if (data.type === 'one-way-owl') {
+    const fromName = stripEntranceNamePrefix(data.from);
+    const toName = stripEntranceNamePrefix(data.to);
+    return `One-Way Owl: ${fromName} → ${toName}`;
+  }
+  if (data.type === 'one-way-woods') {
+    const from = data.from ?? '';
+    const dirMatch = from.match(/Lost (North|East|South|West)$/);
+    const dir = dirMatch ? dirMatch[1] : from;
+    return `One-Way: Lost Woods ${dir}`;
+  }
+  if (data.type === 'one-way-water-void') {
+    const area = stripEntranceNamePrefix(data.from) ?? key;
+    return `One-Way Void: ${area}`;
+  }
+  if (pool === 'one-way') {
+    if (data.type === 'one-way-song') {
+      const name = getWarpSongName(data) ?? entranceLabel(key, data);
+      return `One-Way: ${name}`;
+    }
+    if (data.type === 'one-way-statue') {
+      const toName = stripEntranceNamePrefix(data.to);
+      return toName ? `One-Way Soaring to ${toName}` : 'One-Way Soaring';
+    }
   }
 
   const toName = stripEntranceNamePrefix(data.to);
@@ -128,7 +180,11 @@ function entranceLabel(key: string, data: EntranceData): string {
   return key.replace(/_/g, ' ');
 }
 
-function entranceDisplayLabel(key: string, data: EntranceData): string {
+function entranceDisplayLabel(
+  key: string,
+  data: EntranceData,
+  pool?: TrackedEntrancePool | null,
+): string {
   if (data.type === 'spawn-child') return 'Child Spawn';
   if (data.type === 'spawn-adult') return 'Adult Spawn';
 
@@ -137,6 +193,40 @@ function entranceDisplayLabel(key: string, data: EntranceData): string {
       .replace(/^(OOT|MM) /, '')
       .replace(/ Wallmaster\b/, '');
     return `Wallmaster: ${locationName}`;
+  }
+
+  if (data.type === 'one-way') {
+    const name = (data.from ?? '').replace(/^(OOT|MM) /, '');
+    return `One-Way: ${name}`;
+  }
+  if (data.type === 'one-way-ikana') {
+    const dir = key.includes('KEG') ? 'Keg' : 'Block';
+    return `One-Way: Ikana Castle ${dir}`;
+  }
+  if (data.type === 'one-way-owl') {
+    const fromName = stripEntranceNamePrefix(data.from);
+    const toName = stripEntranceNamePrefix(data.to);
+    return `One-Way Owl: ${fromName} → ${toName}`;
+  }
+  if (data.type === 'one-way-woods') {
+    const from = data.from ?? '';
+    const dirMatch = from.match(/Lost (North|East|South|West)$/);
+    const dir = dirMatch ? dirMatch[1] : from;
+    return `One-Way: Lost Woods ${dir}`;
+  }
+  if (data.type === 'one-way-water-void') {
+    const area = stripEntranceNamePrefix(data.from) ?? key;
+    return `One-Way Void: ${area}`;
+  }
+  if (pool === 'one-way') {
+    if (data.type === 'one-way-song') {
+      const name = getWarpSongName(data) ?? entranceLabel(key, data);
+      return `One-Way: ${name}`;
+    }
+    if (data.type === 'one-way-statue') {
+      const toName = stripEntranceNamePrefix(data.to);
+      return toName ? `One-Way Soaring to ${toName}` : 'One-Way Soaring';
+    }
   }
 
   const toName = stripEntranceNamePrefix(data.to);
@@ -153,7 +243,7 @@ function entranceDisplayLabel(key: string, data: EntranceData): string {
   if (fromName && toName) {
     return `${fromName} to ${toName}`;
   }
-  return entranceLabel(key, data);
+  return entranceLabel(key, data, pool);
 }
 
 export function useDungeonEntrances() {
@@ -189,19 +279,20 @@ export function useDungeonEntrances() {
         INTERIOR_GAME_LINK_EXIT_KEYS.has(key)
       ) {
         if (gameLinkActiveKeys.has(key)) {
+          const gameLinkPool =
+            getTrackedEntrancePool(
+              data.type,
+              key,
+              trackerSettings.value ?? {},
+            ) ?? 'interior';
           entries.push({
             key,
-            label: entranceLabel(key, data),
-            displayLabel: entranceDisplayLabel(key, data),
-            optionLabel: entranceOptionLabel(key, data),
+            label: entranceLabel(key, data, gameLinkPool),
+            displayLabel: entranceDisplayLabel(key, data, gameLinkPool),
+            optionLabel: entranceOptionLabel(key, data, gameLinkPool),
             game: data.game as 'oot' | 'mm',
             type: data.type,
-            pool:
-              getTrackedEntrancePool(
-                data.type,
-                key,
-                trackerSettings.value ?? {},
-              ) ?? 'interior',
+            pool: gameLinkPool,
           });
         }
         continue;
@@ -223,9 +314,9 @@ export function useDungeonEntrances() {
       if (!pool) continue;
       entries.push({
         key,
-        label: entranceLabel(key, data),
-        displayLabel: entranceDisplayLabel(key, data),
-        optionLabel: entranceOptionLabel(key, data),
+        label: entranceLabel(key, data, pool),
+        displayLabel: entranceDisplayLabel(key, data, pool),
+        optionLabel: entranceOptionLabel(key, data, pool),
         game: data.game as 'oot' | 'mm',
         type: data.type,
         pool,
@@ -345,7 +436,7 @@ export function useDungeonEntrances() {
     };
 
     for (const entry of activeEntrances.value) {
-      if (entry.pool === 'wallmaster') continue;
+      if (entry.pool === 'wallmaster' || entry.pool === 'one-way') continue;
 
       // Add entrance key.
       addOption({
@@ -465,6 +556,53 @@ export function useDungeonEntrances() {
     return opts;
   });
 
+  const oneWayDestinationOptions = computed(() => {
+    const settings = trackerSettings.value ?? {};
+    const opts: Array<{
+      value: string;
+      label: string;
+      game: 'oot' | 'mm';
+      pool: TrackedEntrancePool;
+    }> = [];
+    const seenValues = new Set<string>();
+
+    const addOption = (option: {
+      value: string;
+      label: string;
+      game: 'oot' | 'mm';
+      pool: TrackedEntrancePool;
+    }) => {
+      if (seenValues.has(option.value)) return;
+      seenValues.add(option.value);
+      opts.push(option);
+    };
+
+    for (const entry of allDungeonEntrances.value) {
+      if (!isTrackedOneWayDestination(entry.type, settings)) {
+        continue;
+      }
+
+      addOption({
+        value: entry.key,
+        label: entry.optionLabel,
+        game: entry.game,
+        pool: entry.pool,
+      });
+
+      const exitKey = getEdgeReverse(entry.key);
+      if (exitKey) {
+        addOption({
+          value: exitKey,
+          label: getExitEndpointLabel(exitKey),
+          game: entry.game,
+          pool: entry.pool,
+        });
+      }
+    }
+
+    return opts;
+  });
+
   const sections = computed<EntrancePanelSection[]>(() => {
     if (activeEntrances.value.length === 0) return [];
 
@@ -488,7 +626,9 @@ export function useDungeonEntrances() {
       const dst = overrides[src];
       if (!dst) continue;
       const pool = getEntrancePoolByKey(src);
-      if (pool === 'spawn' || pool === 'wallmaster') continue;
+      const oneWayAlias =
+        pool === 'one-way' && trackerSettings.value?.erOneWaysAnywhere;
+      if (pool === 'spawn' || pool === 'wallmaster' || oneWayAlias) continue;
       used.add(dst);
     }
     return used;
@@ -496,7 +636,14 @@ export function useDungeonEntrances() {
 
   function isDestinationUsed(dstKey: string, currentSrcKey: string): boolean {
     const currentSourcePool = getEntrancePoolByKey(currentSrcKey);
-    if (currentSourcePool === 'spawn' || currentSourcePool === 'wallmaster') {
+    const oneWayAlias =
+      currentSourcePool === 'one-way' &&
+      trackerSettings.value?.erOneWaysAnywhere;
+    if (
+      currentSourcePool === 'spawn' ||
+      currentSourcePool === 'wallmaster' ||
+      oneWayAlias
+    ) {
       return false;
     }
 
@@ -541,11 +688,27 @@ export function useDungeonEntrances() {
 
     if (entry.pool === 'wallmaster') {
       const settings = trackerSettings.value ?? {};
-      const ownGameMode = getTrackedEntranceOwnGameMode(
-        'wallmaster',
-        settings,
-      );
+      const ownGameMode = getTrackedEntranceOwnGameMode('wallmaster', settings);
       const opts = wallmasterDestinationOptions.value.filter((dest) => {
+        if (!ownGameMode) return true;
+        return dest.game === entry.game;
+      });
+      return sortOptionsByGameThenLabel(
+        opts.filter((dest) => {
+          if (isDestinationUsed(dest.value, entry.key)) return false;
+          return doTrackedEntrancePolaritiesMatch(
+            entry.key,
+            dest.value,
+            settings,
+          );
+        }),
+      );
+    }
+
+    if (entry.pool === 'one-way') {
+      const settings = trackerSettings.value ?? {};
+      const ownGameMode = getTrackedEntranceOwnGameMode('one-way', settings);
+      const opts = oneWayDestinationOptions.value.filter((dest) => {
         if (!ownGameMode) return true;
         return dest.game === entry.game;
       });

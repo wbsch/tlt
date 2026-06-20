@@ -213,6 +213,7 @@ export const PUBLIC_IMAGE_ASSET_VERSIONS = {
   'images/map_icons/light_medallion.png': '1f5f234ea2c1',
   'images/map_icons/npc.png': '12d9d9e7cdb4',
   'images/map_icons/odolwas_remain.png': '60795663beb7',
+  'images/map_icons/one_way_entrance.png': 'ce231c134baf',
   'images/map_icons/overworld_entrance.png': '08caf83295bb',
   'images/map_icons/owl_statue.png': '27216c093814',
   'images/map_icons/owl_warp.png': '2124df4c559d',

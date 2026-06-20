@@ -378,6 +378,30 @@
       }
     },
     {
+      "coords": [560, 577],
+      "image": "one_way_entrance",
+      "type": "submenu",
+      "entranceMenu": {
+        "entranceIds": ["MM_SWAMP_FROM_IKANA_CANYON"]
+      }
+    },
+    {
+      "coords": [877, 465],
+      "image": "one_way_entrance",
+      "type": "submenu",
+      "entranceMenu": {
+        "entranceIds": ["MM_IKANA_CASTLE_INTERIOR_KEG"]
+      }
+    },
+    {
+      "coords": [901, 507],
+      "image": "one_way_entrance",
+      "type": "submenu",
+      "entranceMenu": {
+        "entranceIds": ["MM_IKANA_CASTLE_INTERIOR_BLOCK"]
+      }
+    },
+    {
       "coords": [946, 368],
       "image": "dungeon_entrance",
       "type": "submenu",

@@ -751,6 +751,42 @@
       }
     },
     {
+      "coords": [523, 287],
+      "image": "one_way_entrance",
+      "type": "submenu",
+      "entranceMenu": {
+        "entranceIds": ["MM_VOID_GREAT_BAY"],
+        "display": "exits"
+      }
+    },
+    {
+      "coords": [507, 172],
+      "image": "one_way_entrance",
+      "type": "submenu",
+      "entranceMenu": {
+        "entranceIds": ["MM_VOID_GREAT_BAY_BY_PINNACLE_ROCK"],
+        "display": "exits"
+      }
+    },
+    {
+      "coords": [418, 149],
+      "image": "one_way_entrance",
+      "type": "submenu",
+      "entranceMenu": {
+        "entranceIds": ["MM_VOID_PINNACLE_ROCK"],
+        "display": "exits"
+      }
+    },
+    {
+      "coords": [372, 518],
+      "image": "one_way_entrance",
+      "type": "submenu",
+      "entranceMenu": {
+        "entranceIds": ["MM_VOID_ZORA_CAPE"],
+        "display": "exits"
+      }
+    },
+    {
       "coords": [392, 449],
       "image": "overworld_entrance",
       "type": "submenu",

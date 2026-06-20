@@ -41,6 +41,25 @@ const INTERIOR_TYPES = new Set(['indoors', 'indoors-extra', 'indoors-pf']);
 const SPAWN_TYPES = new Set(['spawn-child', 'spawn-adult']);
 const WARP_TYPES = new Set(['one-way-song', 'one-way-statue']);
 const WALLMASTER_TYPES = new Set(['wallmaster']);
+const ONE_WAY_TYPES = new Set([
+  'one-way',
+  'one-way-ikana',
+  'one-way-song',
+  'one-way-statue',
+  'one-way-owl',
+  'one-way-woods',
+  'one-way-water-void',
+]);
+
+const ONE_WAY_SUB_SETTING_BY_TYPE: Record<string, string> = {
+  'one-way': 'erOneWaysMajor',
+  'one-way-ikana': 'erOneWaysIkana',
+  'one-way-song': 'erOneWaysSongs',
+  'one-way-statue': 'erOneWaysStatues',
+  'one-way-owl': 'erOneWaysOwls',
+  'one-way-woods': 'erOneWaysWoods',
+  'one-way-water-void': 'erOneWaysWaterVoids',
+};
 
 /** Wallmasters that exist ONLY in MQ dungeons (absent from vanilla). */
 const WALLMASTER_MQ_ONLY: Record<string, string> = {
@@ -141,7 +160,8 @@ export type TrackedEntrancePool =
   | 'interior'
   | 'spawn'
   | 'warp'
-  | 'wallmaster';
+  | 'wallmaster'
+  | 'one-way';
 
 const TRACKED_ENTRANCE_POOLS: TrackedEntrancePool[] = [
   'boss',
@@ -153,6 +173,7 @@ const TRACKED_ENTRANCE_POOLS: TrackedEntrancePool[] = [
   'spawn',
   'warp',
   'wallmaster',
+  'one-way',
 ];
 const TRACKED_POOL_MODE_SETTING: Record<TrackedEntrancePool, string> = {
   boss: 'erBoss',
@@ -164,6 +185,7 @@ const TRACKED_POOL_MODE_SETTING: Record<TrackedEntrancePool, string> = {
   spawn: 'erSpawns',
   warp: 'erWarps',
   wallmaster: 'erWallmasters',
+  'one-way': 'erOneWays',
 };
 const TRACKED_POOL_MIXED_SETTING: Partial<Record<TrackedEntrancePool, string>> =
   {
@@ -394,6 +416,20 @@ export function getTrackedEntrancePool(
   if (OVERWORLD_TYPES.has(type)) return 'overworld';
   if (isTrackedInteriorSource(key, type)) return 'interior';
   if (SPAWN_TYPES.has(type)) return 'spawn';
+  if (ONE_WAY_TYPES.has(type)) {
+    // song/statue: only return 'one-way' if erOneWays is active AND sub-toggle is on
+    const subKey = ONE_WAY_SUB_SETTING_BY_TYPE[type];
+    if (
+      subKey &&
+      (!settings?.erOneWays ||
+        settings.erOneWays === 'none' ||
+        !settings[subKey])
+    ) {
+      // Fall through to WARP_TYPES check below for song/statue
+    } else {
+      return 'one-way';
+    }
+  }
   if (WARP_TYPES.has(type)) return 'warp';
   if (WALLMASTER_TYPES.has(type)) return 'wallmaster';
   return null;
@@ -553,6 +589,12 @@ export function isTrackedDestinationAllowedForSource(
     return isTrackedWallmasterDestination(dstData.type);
   }
 
+  if (sourcePool === 'one-way') {
+    const dstData = ENTRANCES_RAW[destinationKey];
+    if (!dstData) return false;
+    return isTrackedOneWayDestination(dstData.type, settings);
+  }
+
   if (sourcePool !== 'spawn') {
     // Non-spawn: destination itself or its reverse must be in activeKeys.
     if (activeKeys.has(destinationKey)) return true;
@@ -598,11 +640,46 @@ function hasSetSettingValue(setting: unknown, value: string): boolean {
   return Array.isArray(values) && values.includes(value);
 }
 
-export function isTrackedWallmasterDestination(
-  type: string,
-): boolean {
+export function isTrackedWallmasterDestination(type: string): boolean {
   if (DUNGEON_TYPES.has(type)) return true;
   if (BOSS_TYPES.has(type)) return true;
+  return false;
+}
+
+function isOneWayTypeEnabled(
+  type: string,
+  settings?: Record<string, unknown>,
+): boolean {
+  if (!ONE_WAY_TYPES.has(type)) return false;
+  const subKey = ONE_WAY_SUB_SETTING_BY_TYPE[type];
+  // Only check sub-toggle when settings are provided; without settings
+  // (e.g. during plando import) allow all one-way types.
+  if (subKey && settings && !settings[subKey]) return false;
+  return true;
+}
+
+export function isTrackedOneWayDestination(
+  type: string,
+  settings?: Record<string, unknown>,
+): boolean {
+  // Standard mode: one-ways shuffle among themselves
+  if (!settings?.erOneWaysAnywhere) {
+    return isOneWayTypeEnabled(type, settings);
+  }
+
+  // Anywhere mode: one-ways can target ALL shuffled destination types
+  // (matches OoTMM's poolOneWaysAnywhere which uses poolsTypesDst()).
+  // Note: OoTMM includes boss only when erBoss !== 'none', but the
+  // tracker doesn't gate this — boss entrances offered as destinations
+  // even with boss ER off is harmless (plando doesn't validate pools).
+  if (isOneWayTypeEnabled(type, settings)) return true;
+  if (DUNGEON_TYPES.has(type)) return true;
+  if (BOSS_TYPES.has(type)) return true;
+  if (REGION_TYPES.has(type)) return true;
+  if (GROTTO_TYPES.has(type)) return true;
+  if (INTERIOR_TYPES.has(type)) return true;
+  if (OVERWORLD_TYPES.has(type)) return true;
+  if (type === 'region-exit') return true;
   return false;
 }
 
@@ -733,6 +810,14 @@ export function getActiveEntranceKeys(
       continue;
     }
 
+    const erOneWays = settings?.erOneWays;
+    if (erOneWays && erOneWays !== 'none' && ONE_WAY_TYPES.has(data.type)) {
+      const subSettingKey = ONE_WAY_SUB_SETTING_BY_TYPE[data.type];
+      if (subSettingKey && !settings?.[subSettingKey]) continue;
+      keys.add(key);
+      continue;
+    }
+
     if (erWarps && erWarps !== 'none' && enabledWarpSources.has(data.type)) {
       keys.add(key);
     }
@@ -745,12 +830,18 @@ export function getActiveEntranceKeys(
     ) {
       // MQ-only wallmaster: skip if dungeon is NOT in mqDungeons
       const mqDungeonCode = WALLMASTER_MQ_ONLY[key];
-      if (mqDungeonCode && !isSettingContains(settings, 'mqDungeons', mqDungeonCode)) {
+      if (
+        mqDungeonCode &&
+        !isSettingContains(settings, 'mqDungeons', mqDungeonCode)
+      ) {
         continue;
       }
       // Vanilla-only wallmaster: skip if dungeon IS in mqDungeons
       const vanillaDungeonCode = WALLMASTER_VANILLA_ONLY[key];
-      if (vanillaDungeonCode && isSettingContains(settings, 'mqDungeons', vanillaDungeonCode)) {
+      if (
+        vanillaDungeonCode &&
+        isSettingContains(settings, 'mqDungeons', vanillaDungeonCode)
+      ) {
         continue;
       }
       keys.add(key);

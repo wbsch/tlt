@@ -95,6 +95,15 @@
       }
     },
     {
+      "coords": [147, 62],
+      "image": "one_way_entrance",
+      "type": "submenu",
+      "entranceMenu": {
+        "entranceIds": ["OOT_VILLAGE_OWL"],
+        "display": "entrances"
+      }
+    },
+    {
       "coords": [132, 265],
       "image": "overworld_entrance",
       "type": "submenu",

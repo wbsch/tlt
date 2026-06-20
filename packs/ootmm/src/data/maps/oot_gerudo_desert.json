@@ -263,6 +263,15 @@
       }
     },
     {
+      "coords": [901, 582],
+      "image": "one_way_entrance",
+      "type": "submenu",
+      "entranceMenu": {
+        "entranceIds": ["OOT_LAKE_HYLIA_FROM_VALLEY"],
+        "display": "entrances"
+      }
+    },
+    {
       "coords": [879, 437],
       "image": "wonder_item_red_rupee",
       "overlays": ["adult"],
