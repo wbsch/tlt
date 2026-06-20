@@ -54,6 +54,7 @@ const TRACKER_ENTRANCE_TYPES = new Set([
   'one-way-statue',
   'grotto-exit',
   'grave-exit',
+  'wallmaster',
 ]);
 
 const NORMALIZED_INTERIOR_REVERSE_TYPES = new Set([

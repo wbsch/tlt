@@ -70,6 +70,7 @@ export const MAP_ICON_INDEX = [
   'stray_fairy',
   'tree',
   'twinmolds_remain',
+  'wallmaster',
   'warp_spot',
   'water_medallion',
   'wonder_item_arrows',

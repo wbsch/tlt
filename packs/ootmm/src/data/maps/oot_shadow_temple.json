@@ -719,6 +719,14 @@
       "codes": "OOT MQ Shadow Temple Guillotines Room Big Fairy"
     },
     {
+      "coords": [715, 522],
+      "image": "wallmaster",
+      "type": "submenu",
+      "entranceMenu": {
+        "entranceIds": ["OOT_WALLMASTER_SHADOW"]
+      }
+    },
+    {
       "coords": [235, 411],
       "image": "wonder_item_random",
       "codes": "TODO KF 052 :: unnamed_stack > Shadow Temple > MQ Shadow > MQ Shadow Wonder :: Pasted Layer #51 :: 001-001-008-000.png"

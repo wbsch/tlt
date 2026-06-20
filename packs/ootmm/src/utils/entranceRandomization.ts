@@ -1,4 +1,5 @@
 import * as DataMod from '@ootmm/data';
+import { isSettingContains } from './mapSettingsVisibility';
 
 const resolveExport = <T>(mod: unknown, key: string): T => {
   const modObj = mod as { default?: Record<string, T>; [k: string]: unknown };
@@ -39,6 +40,23 @@ const OVERWORLD_TYPES = new Set(['overworld', 'overworld-pf']);
 const INTERIOR_TYPES = new Set(['indoors', 'indoors-extra', 'indoors-pf']);
 const SPAWN_TYPES = new Set(['spawn-child', 'spawn-adult']);
 const WARP_TYPES = new Set(['one-way-song', 'one-way-statue']);
+const WALLMASTER_TYPES = new Set(['wallmaster']);
+
+/** Wallmasters that exist ONLY in MQ dungeons (absent from vanilla). */
+const WALLMASTER_MQ_ONLY: Record<string, string> = {
+  OOT_WALLMASTER_SPIRIT_CHILD_SUN: 'Spirit',
+  OOT_WALLMASTER_SPIRIT_STATUE: 'Spirit',
+  OOT_WALLMASTER_BOTW_BASEMENT: 'BotW',
+  OOT_WALLMASTER_BOTW_PIT: 'BotW',
+};
+
+/** Wallmasters that exist ONLY in vanilla dungeons (absent from MQ). */
+const WALLMASTER_VANILLA_ONLY: Record<string, string> = {
+  OOT_WALLMASTER_SHADOW: 'Shadow',
+  OOT_WALLMASTER_SPIRIT_CHILD_RUPEES: 'Spirit',
+  OOT_WALLMASTER_GANON_LIGHT: 'Ganon',
+};
+
 export const INTERIOR_GAME_LINK_SOURCE_KEYS = new Set([
   'OOT_MARKET_FROM_MASK_SHOP',
   'MM_CLOCK_TOWN_FROM_CLOCK_TOWER',
@@ -122,7 +140,8 @@ export type TrackedEntrancePool =
   | 'overworld'
   | 'interior'
   | 'spawn'
-  | 'warp';
+  | 'warp'
+  | 'wallmaster';
 
 const TRACKED_ENTRANCE_POOLS: TrackedEntrancePool[] = [
   'boss',
@@ -133,6 +152,7 @@ const TRACKED_ENTRANCE_POOLS: TrackedEntrancePool[] = [
   'interior',
   'spawn',
   'warp',
+  'wallmaster',
 ];
 const TRACKED_POOL_MODE_SETTING: Record<TrackedEntrancePool, string> = {
   boss: 'erBoss',
@@ -143,6 +163,7 @@ const TRACKED_POOL_MODE_SETTING: Record<TrackedEntrancePool, string> = {
   interior: 'erIndoors',
   spawn: 'erSpawns',
   warp: 'erWarps',
+  wallmaster: 'erWallmasters',
 };
 const TRACKED_POOL_MIXED_SETTING: Partial<Record<TrackedEntrancePool, string>> =
   {
@@ -374,6 +395,7 @@ export function getTrackedEntrancePool(
   if (isTrackedInteriorSource(key, type)) return 'interior';
   if (SPAWN_TYPES.has(type)) return 'spawn';
   if (WARP_TYPES.has(type)) return 'warp';
+  if (WALLMASTER_TYPES.has(type)) return 'wallmaster';
   return null;
 }
 
@@ -525,6 +547,12 @@ export function isTrackedDestinationAllowedForSource(
   if (!sourceData) return false;
 
   const sourcePool = getTrackedEntrancePool(sourceData.type, sourceKey);
+  if (sourcePool === 'wallmaster') {
+    const dstData = ENTRANCES_RAW[destinationKey];
+    if (!dstData) return false;
+    return isTrackedWallmasterDestination(dstData.type);
+  }
+
   if (sourcePool !== 'spawn') {
     // Non-spawn: destination itself or its reverse must be in activeKeys.
     if (activeKeys.has(destinationKey)) return true;
@@ -568,6 +596,14 @@ function hasSetSettingValue(setting: unknown, value: string): boolean {
 
   const values = (setting as { values?: unknown }).values;
   return Array.isArray(values) && values.includes(value);
+}
+
+export function isTrackedWallmasterDestination(
+  type: string,
+): boolean {
+  if (DUNGEON_TYPES.has(type)) return true;
+  if (BOSS_TYPES.has(type)) return true;
+  return false;
 }
 
 export function hasDekuPalaceJpLayout(
@@ -698,6 +734,25 @@ export function getActiveEntranceKeys(
     }
 
     if (erWarps && erWarps !== 'none' && enabledWarpSources.has(data.type)) {
+      keys.add(key);
+    }
+
+    const erWallmasters = settings?.erWallmasters;
+    if (
+      erWallmasters &&
+      erWallmasters !== 'none' &&
+      WALLMASTER_TYPES.has(data.type)
+    ) {
+      // MQ-only wallmaster: skip if dungeon is NOT in mqDungeons
+      const mqDungeonCode = WALLMASTER_MQ_ONLY[key];
+      if (mqDungeonCode && !isSettingContains(settings, 'mqDungeons', mqDungeonCode)) {
+        continue;
+      }
+      // Vanilla-only wallmaster: skip if dungeon IS in mqDungeons
+      const vanillaDungeonCode = WALLMASTER_VANILLA_ONLY[key];
+      if (vanillaDungeonCode && isSettingContains(settings, 'mqDungeons', vanillaDungeonCode)) {
+        continue;
+      }
       keys.add(key);
     }
   }

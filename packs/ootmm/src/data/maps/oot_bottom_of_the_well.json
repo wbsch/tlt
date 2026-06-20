@@ -31,6 +31,30 @@
       "codes": "OOT Bottom of the Well Coffin"
     },
     {
+      "coords": [824, 268],
+      "image": "wallmaster",
+      "type": "submenu",
+      "entranceMenu": {
+        "entranceIds": ["OOT_WALLMASTER_BOTW_MAIN"]
+      }
+    },
+    {
+      "coords": [224, 269],
+      "image": "wallmaster",
+      "type": "submenu",
+      "entranceMenu": {
+        "entranceIds": ["OOT_WALLMASTER_BOTW_BASEMENT"]
+      }
+    },
+    {
+      "coords": [894, 221],
+      "image": "wallmaster",
+      "type": "submenu",
+      "entranceMenu": {
+        "entranceIds": ["OOT_WALLMASTER_BOTW_PIT"]
+      }
+    },
+    {
       "coords": [749, 192],
       "image": "chest",
       "codes": "OOT Bottom of the Well Back West"

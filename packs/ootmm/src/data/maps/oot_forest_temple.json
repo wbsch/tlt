@@ -46,9 +46,25 @@
       "codes": "OOT Forest Temple Poe Key"
     },
     {
-      "coords": [553, 102],
+      "coords": [561, 97],
       "image": "chest",
       "codes": "OOT Forest Temple Boss Key"
+    },
+    {
+      "coords": [555, 105],
+      "image": "wallmaster",
+      "type": "submenu",
+      "entranceMenu": {
+        "entranceIds": ["OOT_WALLMASTER_FOREST_CORRIDOR_WEST"]
+      }
+    },
+    {
+      "coords": [750, 104],
+      "image": "wallmaster",
+      "type": "submenu",
+      "entranceMenu": {
+        "entranceIds": ["OOT_WALLMASTER_FOREST_CORRIDOR_EAST"]
+      }
     },
     {
       "coords": [451, 157],

@@ -370,6 +370,14 @@
       }
     },
     {
+      "coords": [26, 474],
+      "image": "wallmaster",
+      "type": "submenu",
+      "entranceMenu": {
+        "entranceIds": ["MM_WALLMASTER_DAMPE"]
+      }
+    },
+    {
       "coords": [946, 368],
       "image": "dungeon_entrance",
       "type": "submenu",

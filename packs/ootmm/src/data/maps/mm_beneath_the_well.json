@@ -138,6 +138,30 @@
       "coords": [671, 436],
       "image": "bush",
       "codes": ["MM Beneath The Well Bush 1"]
+    },
+    {
+      "coords": [524, 435],
+      "image": "wallmaster",
+      "type": "submenu",
+      "entranceMenu": {
+        "entranceIds": ["MM_WALLMASTER_BTW_ENTRANCE"]
+      }
+    },
+    {
+      "coords": [524, 261],
+      "image": "wallmaster",
+      "type": "submenu",
+      "entranceMenu": {
+        "entranceIds": ["MM_WALLMASTER_BTW_EXIT"]
+      }
+    },
+    {
+      "coords": [427, 244],
+      "image": "wallmaster",
+      "type": "submenu",
+      "entranceMenu": {
+        "entranceIds": ["MM_WALLMASTER_BTW_FOUNTAIN"]
+      }
     }
   ]
 }

@@ -102,9 +102,14 @@ const ENTRANCES_DATA =
   >(DataMod, 'ENTRANCES') ?? {};
 
 const SPAWN_SOURCE_TYPES = new Set(['spawn-child', 'spawn-adult']);
+const WALLMASTER_SOURCE_TYPES = new Set(['wallmaster']);
 
 function isSpawnEntranceSourceKey(key: string): boolean {
   return SPAWN_SOURCE_TYPES.has(ENTRANCES_DATA[key]?.type ?? '');
+}
+
+function isWallmasterEntranceSourceKey(key: string): boolean {
+  return WALLMASTER_SOURCE_TYPES.has(ENTRANCES_DATA[key]?.type ?? '');
 }
 
 import type { World } from '@ootmm/core/logic/world';
@@ -484,6 +489,11 @@ export class OoTMMTracker implements TrackerPack {
           } else {
             unmappedEntrances.push(key);
           }
+          continue;
+        }
+
+        if (isWallmasterEntranceSourceKey(key)) {
+          unmappedEntrances.push(key);
           continue;
         }
 

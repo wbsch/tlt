@@ -167,6 +167,14 @@
       "codes": "OOT Gerudo Training Grounds SR Slope Front Above"
     },
     {
+      "coords": [399, 334],
+      "image": "wallmaster",
+      "type": "submenu",
+      "entranceMenu": {
+        "entranceIds": ["OOT_WALLMASTER_GTG"]
+      }
+    },
+    {
       "coords": [580, 401],
       "image": "heart",
       "codes": [

@@ -142,7 +142,39 @@
       ]
     },
     {
-      "coords": [258, 208],
+      "coords": [707, 429],
+      "image": "wallmaster",
+      "type": "submenu",
+      "entranceMenu": {
+        "entranceIds": ["OOT_WALLMASTER_SPIRIT_ADULT_CLIMB"]
+      }
+    },
+    {
+      "coords": [251, 208],
+      "image": "wallmaster",
+      "type": "submenu",
+      "entranceMenu": {
+        "entranceIds": ["OOT_WALLMASTER_SPIRIT_CHILD_SUN"]
+      }
+    },
+    {
+      "coords": [311, 410],
+      "image": "wallmaster",
+      "type": "submenu",
+      "entranceMenu": {
+        "entranceIds": ["OOT_WALLMASTER_SPIRIT_CHILD_RUPEES"]
+      }
+    },
+    {
+      "coords": [346, 152],
+      "image": "wallmaster",
+      "type": "submenu",
+      "entranceMenu": {
+        "entranceIds": ["OOT_WALLMASTER_SPIRIT_STATUE"]
+      }
+    },
+    {
+      "coords": [267, 208],
       "image": "silver_rupee",
       "codes": [
         "OOT Spirit Temple SR Sun 1",

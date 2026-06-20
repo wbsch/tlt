@@ -237,6 +237,7 @@ export const PUBLIC_IMAGE_ASSET_VERSIONS = {
   'images/map_icons/stray_fairy.png': '9e22541628c1',
   'images/map_icons/tree.png': '5b3ef61b6b0c',
   'images/map_icons/twinmolds_remain.png': 'd968d03c8ce8',
+  'images/map_icons/wallmaster.png': 'c6691f8038e2',
   'images/map_icons/warp_spot.png': '68a5602ed6fc',
   'images/map_icons/water_medallion.png': '52efa1744e02',
   'images/map_icons/wonder_item_arrows.png': 'aa56c5738d57',

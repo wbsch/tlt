@@ -152,3 +152,16 @@ export function matchesMapSettingsVisibility(
 
   return true;
 }
+
+/**
+ * Check whether a Set-like setting (e.g. `mqDungeons`) contains a specific value.
+ * Supports `'none'`, `'all'`, `'specific'`, and `'random-mixed'` modes.
+ */
+export function isSettingContains(
+  settings: Record<string, unknown>,
+  key: string,
+  value: string,
+): boolean {
+  const actual = getSettingValue(settings, key);
+  return containsExpectedValue(actual, value);
+}

@@ -9,6 +9,7 @@ import {
   getTrackedEntrancePool,
   getTrackedEntrancePolarity,
   isTrackedEntranceSourceType,
+  isTrackedWallmasterDestination,
   getExitLabel,
   getExitEndpointLabel,
   getEdgeReverse,
@@ -98,12 +99,24 @@ function entranceOptionLabel(key: string, data: EntranceData): string {
     return toName ?? entranceLabel(key, data);
   }
 
+  if (data.type === 'wallmaster') {
+    const locationName = (data.from ?? '').replace(/^(OOT|MM) /, '');
+    return `Wallmaster @ ${locationName}`;
+  }
+
   return entranceLabel(key, data);
 }
 
 function entranceLabel(key: string, data: EntranceData): string {
   if (data.type === 'spawn-child') return 'Child Spawn';
   if (data.type === 'spawn-adult') return 'Adult Spawn';
+
+  if (data.type === 'wallmaster') {
+    const locationName = (data.from ?? '')
+      .replace(/^(OOT|MM) /, '')
+      .replace(/ Wallmaster\b/, '');
+    return `Wallmaster: ${locationName}`;
+  }
 
   const toName = stripEntranceNamePrefix(data.to);
   const fromName = stripEntranceNamePrefix(data.from);
@@ -118,6 +131,13 @@ function entranceLabel(key: string, data: EntranceData): string {
 function entranceDisplayLabel(key: string, data: EntranceData): string {
   if (data.type === 'spawn-child') return 'Child Spawn';
   if (data.type === 'spawn-adult') return 'Adult Spawn';
+
+  if (data.type === 'wallmaster') {
+    const locationName = (data.from ?? '')
+      .replace(/^(OOT|MM) /, '')
+      .replace(/ Wallmaster\b/, '');
+    return `Wallmaster: ${locationName}`;
+  }
 
   const toName = stripEntranceNamePrefix(data.to);
   const fromName = stripEntranceNamePrefix(data.from);
@@ -325,6 +345,8 @@ export function useDungeonEntrances() {
     };
 
     for (const entry of activeEntrances.value) {
+      if (entry.pool === 'wallmaster') continue;
+
       // Add entrance key.
       addOption({
         value: entry.key,
@@ -395,6 +417,54 @@ export function useDungeonEntrances() {
     return opts;
   });
 
+  const wallmasterDestinationOptions = computed(() => {
+    const settings = trackerSettings.value ?? {};
+    const opts: Array<{
+      value: string;
+      label: string;
+      game: 'oot' | 'mm';
+      pool: TrackedEntrancePool;
+    }> = [];
+    const seenValues = new Set<string>();
+
+    const addOption = (option: {
+      value: string;
+      label: string;
+      game: 'oot' | 'mm';
+      pool: TrackedEntrancePool;
+    }) => {
+      if (seenValues.has(option.value)) return;
+      seenValues.add(option.value);
+      opts.push(option);
+    };
+
+    for (const entry of allDungeonEntrances.value) {
+      if (!isTrackedWallmasterDestination(entry.type)) {
+        continue;
+      }
+
+      addOption({
+        value: entry.key,
+        label: entry.optionLabel,
+        game: entry.game,
+        pool: entry.pool,
+      });
+
+      // Also offer the exit (reverse) key if present
+      const exitKey = getEdgeReverse(entry.key);
+      if (exitKey) {
+        addOption({
+          value: exitKey,
+          label: getExitEndpointLabel(exitKey),
+          game: entry.game,
+          pool: entry.pool,
+        });
+      }
+    }
+
+    return opts;
+  });
+
   const sections = computed<EntrancePanelSection[]>(() => {
     if (activeEntrances.value.length === 0) return [];
 
@@ -410,7 +480,7 @@ export function useDungeonEntrances() {
   });
   const hasAvailableSections = computed(() => sections.value.length > 0);
 
-  /** Set of destination keys currently used by non-spawn sources. */
+  /** Set of destination keys currently used by non-spawn, non-wallmaster sources. */
   const usedDestinationKeysByNonSpawn = computed(() => {
     const used = new Set<string>();
     const overrides = entranceOverrides.value;
@@ -418,7 +488,7 @@ export function useDungeonEntrances() {
       const dst = overrides[src];
       if (!dst) continue;
       const pool = getEntrancePoolByKey(src);
-      if (pool === 'spawn') continue;
+      if (pool === 'spawn' || pool === 'wallmaster') continue;
       used.add(dst);
     }
     return used;
@@ -426,7 +496,7 @@ export function useDungeonEntrances() {
 
   function isDestinationUsed(dstKey: string, currentSrcKey: string): boolean {
     const currentSourcePool = getEntrancePoolByKey(currentSrcKey);
-    if (currentSourcePool === 'spawn') {
+    if (currentSourcePool === 'spawn' || currentSourcePool === 'wallmaster') {
       return false;
     }
 
@@ -466,6 +536,28 @@ export function useDungeonEntrances() {
             dest.game === entry.game &&
             !isDestinationUsed(dest.value, entry.key),
         ),
+      );
+    }
+
+    if (entry.pool === 'wallmaster') {
+      const settings = trackerSettings.value ?? {};
+      const ownGameMode = getTrackedEntranceOwnGameMode(
+        'wallmaster',
+        settings,
+      );
+      const opts = wallmasterDestinationOptions.value.filter((dest) => {
+        if (!ownGameMode) return true;
+        return dest.game === entry.game;
+      });
+      return sortOptionsByGameThenLabel(
+        opts.filter((dest) => {
+          if (isDestinationUsed(dest.value, entry.key)) return false;
+          return doTrackedEntrancePolaritiesMatch(
+            entry.key,
+            dest.value,
+            settings,
+          );
+        }),
       );
     }
 

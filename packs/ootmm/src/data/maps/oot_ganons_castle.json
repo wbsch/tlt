@@ -190,6 +190,22 @@
       ]
     },
     {
+      "coords": [468, 371],
+      "image": "wallmaster",
+      "type": "submenu",
+      "entranceMenu": {
+        "entranceIds": ["OOT_WALLMASTER_GANON_SPIRIT"]
+      }
+    },
+    {
+      "coords": [404, 307],
+      "image": "wallmaster",
+      "type": "submenu",
+      "entranceMenu": {
+        "entranceIds": ["OOT_WALLMASTER_GANON_LIGHT"]
+      }
+    },
+    {
       "coords": [625, 307],
       "image": "pot",
       "codes": [

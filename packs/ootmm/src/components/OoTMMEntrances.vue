@@ -44,6 +44,7 @@ const POOL_SECTIONS = [
   { id: 'interior', title: 'Interiors' },
   { id: 'spawn', title: 'Spawns' },
   { id: 'warp', title: 'Warp Songs / Soaring' },
+  { id: 'wallmaster', title: 'Wallmasters' },
 ] as const;
 
 const groupedEntrances = computed(() => {
