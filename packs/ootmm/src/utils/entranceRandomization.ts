@@ -835,9 +835,14 @@ export function getActiveEntranceKeys(
     const erOneWays = settings?.erOneWays;
     if (erOneWays && erOneWays !== 'none' && ONE_WAY_TYPES.has(data.type)) {
       const subSettingKey = ONE_WAY_SUB_SETTING_BY_TYPE[data.type];
-      if (subSettingKey && !settings?.[subSettingKey]) continue;
-      keys.add(key);
-      continue;
+      if (subSettingKey && !settings?.[subSettingKey]) {
+        // Sub-setting off → don't add as 'one-way', but fall through
+        // so warp types (one-way-song/one-way-statue) can still be
+        // activated via the WARP_TYPES check below.
+      } else {
+        keys.add(key);
+        continue;
+      }
     }
 
     if (erWarps && erWarps !== 'none' && enabledWarpSources.has(data.type)) {

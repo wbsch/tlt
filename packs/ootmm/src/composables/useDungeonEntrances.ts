@@ -487,7 +487,6 @@ export function useDungeonEntrances() {
   });
 
   const wallmasterDestinationOptions = computed(() => {
-    const _settings = trackerSettings.value ?? {};
     const opts: Array<{
       value: string;
       label: string;

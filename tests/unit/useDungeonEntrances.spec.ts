@@ -535,7 +535,7 @@ describe('useDungeonEntrances', () => {
       options.some(
         (option) =>
           option.value === 'OOT_WARP_SONG_LAKE' &&
-          option.label === 'Lake Hylia',
+          option.label === 'Lake Hylia Warp Pad',
       ),
     ).toBe(true);
     expect(
@@ -753,7 +753,7 @@ describe('useDungeonEntrances', () => {
         .some(
           (option) =>
             option.value === 'OOT_WARP_SONG_LAKE' &&
-            option.label === 'Lake Hylia',
+            option.label === 'Lake Hylia Warp Pad',
         ),
     ).toBe(true);
     expect(
