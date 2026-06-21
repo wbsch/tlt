@@ -109,17 +109,17 @@ function entranceOptionLabel(
 ): string {
   const toName = stripEntranceNamePrefix(data.to);
 
-  if (pool === 'one-way') {
-    if (data.type === 'one-way-statue') {
-      return toName ?? 'Soaring';
-    }
-  }
   if (data.type === 'one-way-song') {
     const baseName = toName ?? entranceLabel(key, data);
     return appendWarpPadName(baseName);
   }
   if (data.type === 'one-way-statue') {
     return toName ?? entranceLabel(key, data);
+  }
+
+  if (data.type === 'one-way-owl') {
+    const toName = stripEntranceNamePrefix(data.to);
+    return `Owl Flight ${toName}`;
   }
 
   if (data.type === 'wallmaster') {
@@ -133,7 +133,7 @@ function entranceOptionLabel(
 function entranceLabel(
   key: string,
   data: EntranceData,
-  pool?: TrackedEntrancePool | null,
+  _pool?: TrackedEntrancePool | null,
 ): string {
   if (data.type === 'spawn-child') return 'Child Spawn';
   if (data.type === 'spawn-adult') return 'Adult Spawn';
@@ -151,8 +151,7 @@ function entranceLabel(
   }
   if (data.type === 'one-way-owl') {
     const fromName = stripEntranceNamePrefix(data.from);
-    const toName = stripEntranceNamePrefix(data.to);
-    return `${fromName} → ${toName}`;
+    return `Owl Flight ${fromName}`;
   }
   if (data.type === 'one-way-woods') {
     const from = data.from ?? '';
@@ -163,13 +162,6 @@ function entranceLabel(
   if (data.type === 'one-way-water-void') {
     const area = stripEntranceNamePrefix(data.from) ?? key;
     return area;
-  }
-
-  if (pool === 'one-way') {
-    if (data.type === 'one-way-statue') {
-      const toName = stripEntranceNamePrefix(data.to);
-      return toName ?? 'Soaring';
-    }
   }
 
   const toName = stripEntranceNamePrefix(data.to);
@@ -203,8 +195,7 @@ function entranceDisplayLabel(
   }
   if (data.type === 'one-way-owl') {
     const fromName = stripEntranceNamePrefix(data.from);
-    const toName = stripEntranceNamePrefix(data.to);
-    return `${fromName} → ${toName}`;
+    return `Owl Flight ${fromName}`;
   }
   if (data.type === 'one-way-woods') {
     const from = data.from ?? '';
@@ -216,13 +207,6 @@ function entranceDisplayLabel(
     const area = stripEntranceNamePrefix(data.from) ?? key;
     return area;
   }
-  if (pool === 'one-way') {
-    if (data.type === 'one-way-statue') {
-      const toName = stripEntranceNamePrefix(data.to);
-      return toName ?? 'Soaring';
-    }
-  }
-
   const toName = stripEntranceNamePrefix(data.to);
   const fromName = stripEntranceNamePrefix(data.from);
 
@@ -503,7 +487,7 @@ export function useDungeonEntrances() {
   });
 
   const wallmasterDestinationOptions = computed(() => {
-    const settings = trackerSettings.value ?? {};
+    const _settings = trackerSettings.value ?? {};
     const opts: Array<{
       value: string;
       label: string;

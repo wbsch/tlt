@@ -669,17 +669,39 @@ export function isTrackedOneWayDestination(
 
   // Anywhere mode: one-ways can target ALL shuffled destination types
   // (matches OoTMM's poolOneWaysAnywhere which uses poolsTypesDst()).
-  // Note: OoTMM includes boss only when erBoss !== 'none', but the
-  // tracker doesn't gate this — boss entrances offered as destinations
-  // even with boss ER off is harmless (plando doesn't validate pools).
+  // Each pool's types are only included if that pool's ER setting is
+  // active (not 'none').  Dungeon types are always included regardless
+  // (matching OoTMM's unconditional poolOneWaysAnywhere addition of
+  // dungeon / dungeon-minor / dungeon-sh).  Boss is gated behind
+  // erBoss !== 'none', matching the OoTMM solver.
   if (isOneWayTypeEnabled(type, settings)) return true;
   if (DUNGEON_TYPES.has(type)) return true;
-  if (BOSS_TYPES.has(type)) return true;
-  if (REGION_TYPES.has(type)) return true;
-  if (GROTTO_TYPES.has(type)) return true;
-  if (INTERIOR_TYPES.has(type)) return true;
-  if (OVERWORLD_TYPES.has(type)) return true;
-  if (type === 'region-exit') return true;
+  if (settings?.erBoss && settings?.erBoss !== 'none' && BOSS_TYPES.has(type))
+    return true;
+  if (
+    settings?.erRegions &&
+    settings?.erRegions !== 'none' &&
+    (REGION_TYPES.has(type) || type === 'region-exit')
+  )
+    return true;
+  if (
+    settings?.erGrottos &&
+    settings?.erGrottos !== 'none' &&
+    GROTTO_TYPES.has(type)
+  )
+    return true;
+  if (
+    settings?.erIndoors &&
+    settings?.erIndoors !== 'none' &&
+    INTERIOR_TYPES.has(type)
+  )
+    return true;
+  if (
+    settings?.erOverworld &&
+    settings?.erOverworld !== 'none' &&
+    OVERWORLD_TYPES.has(type)
+  )
+    return true;
   return false;
 }
 
