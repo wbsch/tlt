@@ -397,6 +397,7 @@ export function getTrackedEntrancePool(
   settings?: Record<string, unknown>,
 ): TrackedEntrancePool | null {
   const overworldEnabled = String(settings?.erOverworld ?? 'none') !== 'none';
+  const noPolarity = Boolean(settings?.erNoPolarity);
 
   if (BOSS_TYPES.has(type)) return 'boss';
   if (type === 'dungeon-pf' && overworldEnabled && settings?.erPiratesWorld) {
@@ -412,6 +413,18 @@ export function getTrackedEntrancePool(
   }
   if (type === 'region-exit' && overworldEnabled) {
     return 'overworld';
+  }
+  // erNoPolarity: exit types become source types in their corresponding pools,
+  // mirroring OoTMM's assumedFromPools behavior.
+  if (noPolarity) {
+    if (type === 'dungeon-exit') return 'dungeon';
+    if (type === 'grotto-exit' || type === 'grave-exit') return 'grotto';
+    if (type === 'indoors-exit') return 'interior';
+    // region-exit: only reaches here when overworld is OFF.
+    // When overworld is ON, the existing check above catches it.
+    if (type === 'region-exit') {
+      return overworldEnabled ? 'overworld' : 'region';
+    }
   }
   if (OVERWORLD_TYPES.has(type)) return 'overworld';
   if (isTrackedInteriorSource(key, type)) return 'interior';
@@ -508,6 +521,11 @@ export function getTrackedEntrancePolarity(
   key: string,
   settings: Record<string, unknown>,
 ): TrackedEntrancePolarity {
+  // erNoPolarity disables all polarity distinctions
+  if (settings?.erNoPolarity) {
+    return 'any';
+  }
+
   if (
     INTERIOR_GAME_LINK_SOURCE_KEYS.has(key) ||
     INTERIOR_GAME_LINK_EXIT_KEYS.has(key)
@@ -872,6 +890,61 @@ export function getActiveEntranceKeys(
         continue;
       }
       keys.add(key);
+    }
+
+    // erNoPolarity: exit types appear as entrance rows in the sidebar
+    // (polarity is 'any', so they won't appear in the exit section).
+    // Only activate an exit key when its corresponding entrance (reverse)
+    // has a type that is actually active — erNoPolarity itself must not
+    // enable disabled pools or subtypes.
+    if (settings?.erNoPolarity) {
+      if (data.type === 'dungeon-exit') {
+        const revKey = getEdgeReverse(key);
+        const revType = revKey && ENTRANCES_RAW[revKey]?.type;
+        if (
+          erDungeons &&
+          erDungeons !== 'none' &&
+          revType &&
+          enabledDungeonTypes.has(revType)
+        ) {
+          keys.add(key);
+          continue;
+        }
+      }
+
+      if (data.type === 'grotto-exit' || data.type === 'grave-exit') {
+        if (erGrottos && erGrottos !== 'none') {
+          keys.add(key);
+          continue;
+        }
+      }
+
+      if (data.type === 'region-exit') {
+        const revKey = getEdgeReverse(key);
+        const revType = revKey && ENTRANCES_RAW[revKey]?.type;
+        if (
+          erRegions &&
+          erRegions !== 'none' &&
+          revType &&
+          enabledRegionTypes.has(revType) &&
+          !(erOverworld && erOverworld !== 'none')
+        ) {
+          keys.add(key);
+          continue;
+        }
+      }
+
+      if (data.type === 'indoors-exit') {
+        const revKey = getEdgeReverse(key);
+        const revType = revKey && ENTRANCES_RAW[revKey]?.type;
+        const reverseActive =
+          (revType && enabledInteriorSources.types.has(revType)) ||
+          (revKey && enabledInteriorSources.gameLinkKeys.has(revKey));
+        if (erIndoors && erIndoors !== 'none' && reverseActive) {
+          keys.add(key);
+          continue;
+        }
+      }
     }
   }
 
