@@ -127,6 +127,21 @@ function entranceOptionLabel(
     return `Wallmaster @ ${locationName}`;
   }
 
+  if (data.type === 'one-way-woods') {
+    const from = data.from ?? '';
+    const dirMatch = from.match(/Lost (North|East|South|West)$/);
+    const dir = dirMatch ? dirMatch[1] : from;
+    return `One-Way Lost Woods from ${dir}`;
+  }
+
+  if (data.type === 'one-way-ikana') {
+    const dir = key.includes('KEG') ? 'Keg' : 'Block';
+    const dest = key.includes('KEG')
+      ? 'Ikana Castle Main Hall'
+      : 'Ikana Castle South Interior';
+    return `${dest} from Ikana Castle Roof ${dir}`;
+  }
+
   return entranceLabel(key, data, pool);
 }
 
@@ -147,7 +162,10 @@ function entranceLabel(
 
   if (data.type === 'one-way-ikana') {
     const dir = key.includes('KEG') ? 'Keg' : 'Block';
-    return `Ikana Castle ${dir}`;
+    const dest = key.includes('KEG')
+      ? 'Ikana Castle Main Hall'
+      : 'Ikana Castle South Interior';
+    return `Ikana Castle Roof ${dir} to ${dest}`;
   }
   if (data.type === 'one-way-owl') {
     const fromName = stripEntranceNamePrefix(data.from);
@@ -157,7 +175,7 @@ function entranceLabel(
     const from = data.from ?? '';
     const dirMatch = from.match(/Lost (North|East|South|West)$/);
     const dir = dirMatch ? dirMatch[1] : from;
-    return `Lost Woods ${dir}`;
+    return `One-Way Lost Woods ${dir}`;
   }
   if (data.type === 'one-way-water-void') {
     const area = stripEntranceNamePrefix(data.from) ?? key;
@@ -191,7 +209,10 @@ function entranceDisplayLabel(
 
   if (data.type === 'one-way-ikana') {
     const dir = key.includes('KEG') ? 'Keg' : 'Block';
-    return `Ikana Castle ${dir}`;
+    const dest = key.includes('KEG')
+      ? 'Ikana Castle Main Hall'
+      : 'Ikana Castle South Interior';
+    return `Ikana Castle Roof ${dir} to ${dest}`;
   }
   if (data.type === 'one-way-owl') {
     const fromName = stripEntranceNamePrefix(data.from);
@@ -201,7 +222,7 @@ function entranceDisplayLabel(
     const from = data.from ?? '';
     const dirMatch = from.match(/Lost (North|East|South|West)$/);
     const dir = dirMatch ? dirMatch[1] : from;
-    return `Lost Woods ${dir}`;
+    return `One-Way Lost Woods ${dir}`;
   }
   if (data.type === 'one-way-water-void') {
     const area = stripEntranceNamePrefix(data.from) ?? key;
