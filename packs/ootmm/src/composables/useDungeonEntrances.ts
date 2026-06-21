@@ -93,6 +93,15 @@ function getWarpSongName(data: EntranceData): string | null {
   return getItemName(`${String(data.game).toUpperCase()}_${sourceName}`);
 }
 
+function appendWarpPadName(destination: string): string {
+  // "Death Mountain Crater Warp" already contains "Warp" → append only " Pad"
+  // "Lake Hylia" → append " Warp Pad"
+  if (destination.includes('Warp')) {
+    return `${destination} Pad`;
+  }
+  return `${destination} Warp Pad`;
+}
+
 function entranceOptionLabel(
   key: string,
   data: EntranceData,
@@ -101,15 +110,15 @@ function entranceOptionLabel(
   const toName = stripEntranceNamePrefix(data.to);
 
   if (pool === 'one-way') {
-    if (data.type === 'one-way-song') {
-      const name = getWarpSongName(data) ?? entranceLabel(key, data);
-      return `One-Way: ${name}`;
-    }
     if (data.type === 'one-way-statue') {
-      return toName ? `One-Way Soaring to ${toName}` : 'One-Way Soaring';
+      return toName ?? 'Soaring';
     }
   }
-  if (data.type === 'one-way-song' || data.type === 'one-way-statue') {
+  if (data.type === 'one-way-song') {
+    const baseName = toName ?? entranceLabel(key, data);
+    return appendWarpPadName(baseName);
+  }
+  if (data.type === 'one-way-statue') {
     return toName ?? entranceLabel(key, data);
   }
 
@@ -136,37 +145,30 @@ function entranceLabel(
     return `Wallmaster: ${locationName}`;
   }
 
-  if (data.type === 'one-way') {
-    const name = (data.from ?? '').replace(/^(OOT|MM) /, '');
-    return `One-Way: ${name}`;
-  }
   if (data.type === 'one-way-ikana') {
     const dir = key.includes('KEG') ? 'Keg' : 'Block';
-    return `One-Way: Ikana Castle ${dir}`;
+    return `Ikana Castle ${dir}`;
   }
   if (data.type === 'one-way-owl') {
     const fromName = stripEntranceNamePrefix(data.from);
     const toName = stripEntranceNamePrefix(data.to);
-    return `One-Way Owl: ${fromName} → ${toName}`;
+    return `${fromName} → ${toName}`;
   }
   if (data.type === 'one-way-woods') {
     const from = data.from ?? '';
     const dirMatch = from.match(/Lost (North|East|South|West)$/);
     const dir = dirMatch ? dirMatch[1] : from;
-    return `One-Way: Lost Woods ${dir}`;
+    return `Lost Woods ${dir}`;
   }
   if (data.type === 'one-way-water-void') {
     const area = stripEntranceNamePrefix(data.from) ?? key;
-    return `One-Way Void: ${area}`;
+    return area;
   }
+
   if (pool === 'one-way') {
-    if (data.type === 'one-way-song') {
-      const name = getWarpSongName(data) ?? entranceLabel(key, data);
-      return `One-Way: ${name}`;
-    }
     if (data.type === 'one-way-statue') {
       const toName = stripEntranceNamePrefix(data.to);
-      return toName ? `One-Way Soaring to ${toName}` : 'One-Way Soaring';
+      return toName ?? 'Soaring';
     }
   }
 
@@ -195,37 +197,29 @@ function entranceDisplayLabel(
     return `Wallmaster: ${locationName}`;
   }
 
-  if (data.type === 'one-way') {
-    const name = (data.from ?? '').replace(/^(OOT|MM) /, '');
-    return `One-Way: ${name}`;
-  }
   if (data.type === 'one-way-ikana') {
     const dir = key.includes('KEG') ? 'Keg' : 'Block';
-    return `One-Way: Ikana Castle ${dir}`;
+    return `Ikana Castle ${dir}`;
   }
   if (data.type === 'one-way-owl') {
     const fromName = stripEntranceNamePrefix(data.from);
     const toName = stripEntranceNamePrefix(data.to);
-    return `One-Way Owl: ${fromName} → ${toName}`;
+    return `${fromName} → ${toName}`;
   }
   if (data.type === 'one-way-woods') {
     const from = data.from ?? '';
     const dirMatch = from.match(/Lost (North|East|South|West)$/);
     const dir = dirMatch ? dirMatch[1] : from;
-    return `One-Way: Lost Woods ${dir}`;
+    return `Lost Woods ${dir}`;
   }
   if (data.type === 'one-way-water-void') {
     const area = stripEntranceNamePrefix(data.from) ?? key;
-    return `One-Way Void: ${area}`;
+    return area;
   }
   if (pool === 'one-way') {
-    if (data.type === 'one-way-song') {
-      const name = getWarpSongName(data) ?? entranceLabel(key, data);
-      return `One-Way: ${name}`;
-    }
     if (data.type === 'one-way-statue') {
       const toName = stripEntranceNamePrefix(data.to);
-      return toName ? `One-Way Soaring to ${toName}` : 'One-Way Soaring';
+      return toName ?? 'Soaring';
     }
   }
 
