@@ -1277,8 +1277,16 @@ export const useOoTMMSessionStore = defineStore('ootmm-session', () => {
         currentTracker.getItemMaxCounts?.() ?? new Map<string, number>(),
       );
       applyPreCompletedDungeons();
-      applySongEvents();
-      applyShopPrices();
+      // Force song events and shop prices to be applied even though
+      // isApplyingSettings is true.  During entrance reinitialization
+      // the tracker is fully initialized and the UI state is stable,
+      // so the usual race-condition concerns for reload do not apply.
+      // Skipping these calls corrupts the pathfinder state because
+      // applyPreCompletedDungeons already replaces the pathfinder (with
+      // empty starting items), and without applySongEvents the worlds'
+      // songEvents and the pathfinder reference are left stale.
+      applySongEvents(true);
+      applyShopPrices(true);
       recomputeReachability();
     } catch (error) {
       console.error('Failed to reinitialize for entrance overrides:', error);
