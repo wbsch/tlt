@@ -375,8 +375,16 @@ export const PERSIST_CONFIGS: Record<PersistStoreId, PersistConfig> = {
         ? (() => {
             const overrides = stringRecord(raw.entranceOverrides);
             try {
+              // Only migrate (add missing reverse entries) when NOT decoupled.
+              // In decoupled mode, missing reverse entries are intentional.
+              const decoupled = Boolean(
+                (raw.trackerSettings as Record<string, unknown> | undefined)
+                  ?.erDecoupled,
+              );
               return {
-                entranceOverrides: migrateEntranceOverrides(overrides),
+                entranceOverrides: decoupled
+                  ? overrides
+                  : migrateEntranceOverrides(overrides),
               };
             } catch {
               // Migration failed silently — keep the original (un-migrated)

@@ -1144,11 +1144,12 @@ export const useOoTMMSessionStore = defineStore('ootmm-session', () => {
     if (!src) return;
     const previousSnapshot = captureSnapshotForMutation(options);
     const next = { ...entranceOverrides.value };
+    const decoupled = Boolean(trackerSettings.value?.erDecoupled);
 
     if (dst === null || dst === '') {
       // Also remove the coupled reverse entry before deleting src.
       const oldDst = entranceOverrides.value[src];
-      if (oldDst) {
+      if (oldDst && !decoupled) {
         const partner = computeCoupledReverse(src, oldDst);
         if (partner) {
           delete next[partner.reverseSrc];
@@ -1158,11 +1159,14 @@ export const useOoTMMSessionStore = defineStore('ootmm-session', () => {
     } else {
       next[src] = dst;
       // Idempotent coupling: set the reverse edge if not already correct.
-      const partner = computeCoupledReverse(src, dst);
-      if (partner) {
-        const existingPartnerDst = next[partner.reverseSrc];
-        if (existingPartnerDst !== partner.reverseDst) {
-          next[partner.reverseSrc] = partner.reverseDst;
+      // Skip entirely when decoupled.
+      if (!decoupled) {
+        const partner = computeCoupledReverse(src, dst);
+        if (partner) {
+          const existingPartnerDst = next[partner.reverseSrc];
+          if (existingPartnerDst !== partner.reverseDst) {
+            next[partner.reverseSrc] = partner.reverseDst;
+          }
         }
       }
     }
@@ -1187,15 +1191,24 @@ export const useOoTMMSessionStore = defineStore('ootmm-session', () => {
     options?: MutationOptions,
   ) {
     const previousSnapshot = captureSnapshotForMutation(options);
-    // Fill in missing reverse edges in-place (idempotent).
-    const coupled = { ...overrides };
-    for (const [src, dst] of Object.entries(overrides)) {
-      const partner = computeCoupledReverse(src, dst);
-      if (partner && !(partner.reverseSrc in coupled)) {
-        coupled[partner.reverseSrc] = partner.reverseDst;
+    const decoupled = Boolean(trackerSettings.value?.erDecoupled);
+
+    let result: Record<string, string>;
+    if (decoupled) {
+      // No coupling — use overrides as-is.
+      result = { ...overrides };
+    } else {
+      // Fill in missing reverse edges in-place (idempotent).
+      const coupled = { ...overrides };
+      for (const [src, dst] of Object.entries(overrides)) {
+        const partner = computeCoupledReverse(src, dst);
+        if (partner && !(partner.reverseSrc in coupled)) {
+          coupled[partner.reverseSrc] = partner.reverseDst;
+        }
       }
+      result = coupled;
     }
-    entranceOverrides.value = coupled;
+    entranceOverrides.value = result;
     recordHistoryFromSnapshot(previousSnapshot);
     publishSyncOperation(
       {

@@ -751,11 +751,18 @@ export function computeEffectiveTrackedEntranceOverrides(
   const activeKeys = getActiveEntranceKeys(settings);
   if (activeKeys.size === 0) return {};
 
+  const decoupled = Boolean(settings?.erDecoupled);
   const result: Record<string, string> = {};
 
   for (const [rawSrc, rawDst] of Object.entries(overrides)) {
     // Only accept sources directly in activeKeys.
-    if (!activeKeys.has(rawSrc)) continue;
+    // In decoupled mode, also accept exit keys as independent sources.
+    if (!activeKeys.has(rawSrc)) {
+      if (!decoupled) continue;
+      const rev = getEdgeReverse(rawSrc);
+      if (!rev || !activeKeys.has(rev)) continue;
+      if (!ENTRANCES_RAW[rawSrc]) continue;
+    }
 
     if (
       !isTrackedDestinationAllowedForSource(
@@ -1035,15 +1042,21 @@ export function filterEntranceOverridesForSettings(
   const activeKeys = getActiveEntranceKeys(settings);
   if (activeKeys.size === 0) return {};
 
+  const decoupled = Boolean(settings?.erDecoupled);
   const filtered: Record<string, string> = {};
   for (const [src, dst] of Object.entries(overrides)) {
     // Only accept sources directly in activeKeys (entrance case).
-    // Exit sources are skipped — the coupling (Phase 2.1) guarantees
+    // Exit sources are skipped in coupled mode — the coupling guarantees
     // a corresponding entrance→entrance pair exists.
-    // This function is ONLY called by injectEntranceOverridesIntoSettings
-    // (the plando boundary). For tracker-internal cleanup, use
-    // cleanupEntranceOverridesForSettings.
-    if (!activeKeys.has(src)) continue;
+    // In decoupled mode, exit sources are independent and must be preserved.
+    if (!activeKeys.has(src)) {
+      if (!decoupled) continue;
+      // In decoupled mode: accept exit keys whose reverse is an active entrance.
+      const rev = getEdgeReverse(src);
+      if (!rev || !activeKeys.has(rev)) continue;
+      // Also validate the exit key exists in raw data.
+      if (!ENTRANCES_RAW[src]) continue;
+    }
 
     if (!isTrackedDestinationAllowedForSource(src, dst, settings, activeKeys)) {
       continue;
