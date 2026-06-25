@@ -123,7 +123,7 @@ export const MM_SCENE_TO_MAP: Record<number, string> = {
   56: 'mm_great_bay', // MM_ZORA_CAPE
   59: 'mm_pirate_fortress', // MM_PIRATE_FORTRESS_ENTRANCE
   63: 'mm_moon', // MM_MOON (other areas)
-  64: 'mm_southern_swamp', // MM_SOUTHERN_SWAMP (main)
+  64: 'mm_termina_field', // MM_ROAD_SOUTHERN_SWAMP
   67: 'mm_ikana_canyon', // MM_IKANA_GRAVEYARD
   69: 'mm_southern_swamp', // MM_SOUTHERN_SWAMP
   70: 'mm_southern_swamp', // MM_WOODFALL (preamble)
