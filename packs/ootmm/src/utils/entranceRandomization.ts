@@ -1069,3 +1069,42 @@ export function filterEntranceOverridesForSettings(
   }
   return filtered;
 }
+
+/**
+ * Maps wallmaster (and similar "parasitic") entrance keys to the entrance key
+ * of the location they physically reside in. Used to force the host location's
+ * map marker to be visible when the child entrance is active, even if the host's
+ * own shuffle pool is disabled.
+ */
+export const ENTRANCE_HOST_MAP: Record<string, string> = {
+  // Dampe's wallmaster lives inside the Night 3 grave
+  MM_WALLMASTER_DAMPE: 'MM_GRAVE_NIGHT3',
+};
+
+/** Inverted: host key → list of child keys that reside there */
+const HOST_TO_CHILDREN: Map<string, string[]> = (() => {
+  const map = new Map<string, string[]>();
+  for (const [childKey, hostKey] of Object.entries(ENTRANCE_HOST_MAP)) {
+    const list = map.get(hostKey);
+    if (list) {
+      list.push(childKey);
+    } else {
+      map.set(hostKey, [childKey]);
+    }
+  }
+  return map;
+})();
+
+/**
+ * Given a host entrance key and a set of active entrance keys,
+ * return all child entrance keys that are hosted by the host
+ * AND currently active.
+ */
+export function getActiveChildrenForHost(
+  hostKey: string,
+  activeKeys: ReadonlySet<string>,
+): string[] {
+  const children = HOST_TO_CHILDREN.get(hostKey);
+  if (!children) return [];
+  return children.filter((c) => activeKeys.has(c));
+}

@@ -36,6 +36,8 @@ import {
   getTrackedEntrancePolarity,
   getEdgeReverse,
   getExitLabel,
+  getActiveEntranceKeys,
+  getActiveChildrenForHost,
 } from '../utils/entranceRandomization';
 import { matchesMapSettingsVisibility } from '../utils/mapSettingsVisibility';
 import type {
@@ -1034,6 +1036,9 @@ const markerViewModels = computed<MarkerRuntime[]>(() => {
   }
   const isDevUnmappedFilterActive = props.devMode && props.devShowUnmappedOnly;
   const showMqMarkersOnly = props.devMode && props.devMqMarkerMode === 'mq';
+  const activeEntranceKeys = props.devMode
+    ? new Set<string>()
+    : getActiveEntranceKeys(props.settings ?? {});
 
   return mapDef.markers.map((markerDef, markerIndex) => {
     const markerId = `${mapDef.id}:${markerIndex}`;
@@ -1044,6 +1049,9 @@ const markerViewModels = computed<MarkerRuntime[]>(() => {
       const submenuSourceEntranceIds = markerDef.entranceMenu
         ? resolveEntranceMenuIds(markerDef, markerDef.entranceMenu)
         : [];
+      const activeHostedEntranceIds = submenuSourceEntranceIds.flatMap(
+        (hostId) => getActiveChildrenForHost(hostId, activeEntranceKeys),
+      );
       const entranceMenuDisplay = markerDef.entranceMenu
         ? getEntranceMenuDisplayMode(markerDef.entranceMenu)
         : 'both';
@@ -1101,16 +1109,23 @@ const markerViewModels = computed<MarkerRuntime[]>(() => {
           return reverse ? [reverse] : [id];
         });
       })();
+      const anySourceEntranceActive = submenuSourceEntranceIds.some(
+        (id) => activeEntranceById.has(id) || filteredEntranceById.has(id),
+      );
       const boundSubmenuMarkersRaw =
         !props.devMode &&
         hasEntranceBinding &&
-        submenuSourceEntranceIds.length > 0
+        submenuSourceEntranceIds.length > 0 &&
+        anySourceEntranceActive
           ? resolveBoundSubmenuEntryDefs(resolveEntranceIds, activeEntranceById)
           : [];
       const submenuMarkersRaw = props.devMode
         ? staticSubmenuMarkersRaw
-        : hasEntranceBinding
-          ? boundSubmenuMarkersRaw
+        : hasEntranceBinding &&
+            (anySourceEntranceActive || activeHostedEntranceIds.length > 0)
+          ? anySourceEntranceActive
+            ? boundSubmenuMarkersRaw
+            : staticSubmenuMarkersRaw
           : staticSubmenuMarkersRaw;
       const submenuMarkers = buildSubmenuRuntimeEntries(
         markerId,
@@ -1246,6 +1261,17 @@ const markerViewModels = computed<MarkerRuntime[]>(() => {
           }
         }
       }
+      // Add hosted child entrances to the panel
+      for (const childKey of activeHostedEntranceIds) {
+        if (dedupKeys.has(childKey)) continue;
+        dedupKeys.add(childKey);
+        const entranceEntry = props.devMode
+          ? activeEntranceById.get(childKey)
+          : filteredEntranceById.get(childKey);
+        if (entranceEntry) {
+          visibleSubmenuEntrances.push(toEntranceMenuEntry(entranceEntry));
+        }
+      }
       const hasVisibleExits = visibleSubmenuExits.length > 0;
       const hasVisibleEntrances = visibleSubmenuEntrances.length > 0;
       const totalVisibleCount =
@@ -1258,8 +1284,12 @@ const markerViewModels = computed<MarkerRuntime[]>(() => {
               .split('')
               .map((digit) => resolveDigitImage(digit))
           : [];
+      const hasVisibleHostedEntrances = activeHostedEntranceIds.length > 0;
       const isDevVisible =
-        hasVisibleChecks || hasVisibleEntrances || hasVisibleExits;
+        hasVisibleChecks ||
+        hasVisibleEntrances ||
+        hasVisibleExits ||
+        hasVisibleHostedEntrances;
 
       return {
         type: 'submenu',
@@ -1281,7 +1311,10 @@ const markerViewModels = computed<MarkerRuntime[]>(() => {
         isVisible: props.devMode
           ? isDevVisible
           : settingsVisible &&
-            (hasVisibleChecks || hasVisibleEntrances || hasVisibleExits),
+            (hasVisibleChecks ||
+              hasVisibleEntrances ||
+              hasVisibleExits ||
+              hasVisibleHostedEntrances),
       };
     }
 
