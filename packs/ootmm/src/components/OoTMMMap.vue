@@ -12,6 +12,7 @@ import {
   resolveDayComboOverlayImage,
   resolveDigitImage,
   resolveMasterQuestLabelImage,
+  resolveWallmasterLabelImage,
   resolveMapImage,
   resolveMarkerImage,
   resolveOverlayImage,
@@ -59,6 +60,7 @@ const MAP_POPUP_HEIGHT = 230;
 const SUBMENU_PANEL_WIDTH = 320;
 const SUBMENU_PANEL_HEIGHT = 220;
 const MASTER_QUEST_LABEL_COORDS = { x: 613, y: 70 } as const;
+const WALLMASTER_LABEL_COORDS = { x: 6, y: 535 } as const;
 const MQ_DUNGEON_CODE_BY_MAP_ID: Record<string, string> = {
   oot_deku_tree: 'DT',
   oot_dodongos_cavern: 'DC',
@@ -1402,6 +1404,16 @@ const masterQuestLabelStyle = computed<Record<string, string>>(() => ({
   top: `${MASTER_QUEST_LABEL_COORDS.y}px`,
 }));
 
+const showWallmasterLabel = computed(() => {
+  const markerId = 'mm_ikana_canyon:48';
+  return markerById.value.get(markerId)?.isVisible ?? false;
+});
+
+const wallmasterLabelStyle = computed<Record<string, string>>(() => ({
+  left: `${WALLMASTER_LABEL_COORDS.x}px`,
+  top: `${WALLMASTER_LABEL_COORDS.y}px`,
+}));
+
 function markerStyle(marker: MarkerRuntime): Record<string, string> {
   return {
     left: `${marker.coords[0]}px`,
@@ -2452,6 +2464,14 @@ onBeforeUnmount(() => {
           alt="Master Quest selected"
           draggable="false"
         />
+        <img
+          v-if="showWallmasterLabel"
+          class="ootmm-map__wallmaster-label"
+          :src="resolveWallmasterLabelImage()"
+          :style="wallmasterLabelStyle"
+          alt="Wallmaster Shuffle active"
+          draggable="false"
+        />
 
         <button
           v-for="marker in visibleMarkers"
@@ -3072,6 +3092,13 @@ onBeforeUnmount(() => {
 .ootmm-map__mq-label {
   position: absolute;
   transform: translate(-50%, -50%);
+  display: block;
+  pointer-events: none;
+  user-select: none;
+}
+
+.ootmm-map__wallmaster-label {
+  position: absolute;
   display: block;
   pointer-events: none;
   user-select: none;

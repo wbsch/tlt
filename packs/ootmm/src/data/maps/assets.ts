@@ -2,6 +2,7 @@ import type { MapMarkerOverlay } from './types';
 import { withBasePath } from '../../utils/assetPath';
 
 const MASTER_QUEST_LABEL_IMAGE = withBasePath('images/label_master_quest.png');
+const WALLMASTER_LABEL_IMAGE = withBasePath('images/speech_bubble.png');
 
 export function resolveMapImage(image: string): string {
   return withBasePath(`images/maps/${image}.png`);
@@ -41,4 +42,8 @@ export function resolveDigitImage(digit: string): string {
 
 export function resolveMasterQuestLabelImage(): string {
   return MASTER_QUEST_LABEL_IMAGE;
+}
+
+export function resolveWallmasterLabelImage(): string {
+  return WALLMASTER_LABEL_IMAGE;
 }
