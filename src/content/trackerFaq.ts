@@ -281,7 +281,7 @@ export const TRACKER_FAQ_SECTIONS: TrackerFaqSection[] = [
           },
           {
             type: 'paragraph',
-            text: 'A green outline around the Auto button means the autotracker connected successfully. An orange outline means no connection to the autotracker has been established yet.',
+            text: 'A green outline around the Auto button means the autotracker connected successfully. An orange outline means no connection to the autotracker has been established yet. You cannot use the multiclient and autotracking at the same time, because Ares only allows one external connection',
           },
         ],
       },
