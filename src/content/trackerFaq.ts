@@ -22,10 +22,10 @@ export type TrackerFaqContentBlock =
     };
 
 const WINDOWS_AUTOTRACKER_URL =
-  'https://github.com/jupiter0fire/tlt-autotracker/releases/latest/download/ootmm-autotracker-v0.1.2-windows-amd64.exe';
+  'https://github.com/jupiter0fire/tlt-autotracker/releases/latest/download/ootmm-autotracker-v0.2.1-windows-amd64.exe';
 
 const LINUX_AUTOTRACKER_URL =
-  'https://github.com/jupiter0fire/tlt-autotracker/releases/latest/download/ootmm-autotracker-v0.1.2-linux-amd64';
+  'https://github.com/jupiter0fire/tlt-autotracker/releases/latest/download/ootmm-autotracker-v0.2.1-linux-amd64';
 
 const ADAPTER_LUA_URL =
   'https://github.com/jupiter0fire/tlt-autotracker/releases/latest/download/tlt_autotracking_v1.lua';
@@ -152,8 +152,9 @@ export const TRACKER_FAQ_SECTIONS: TrackerFaqSection[] = [
               'Start the autotracker.',
               'In Project64-EM, open File -> Lua Scripts and double-click tlt_autotracking_v1.lua.',
               'Upload the spoiler log to thelasttracker.org.',
-              'If The Last Tracker does not connect automatically, click Auto.',
+              'If The Last Tracker does not connect automatically, click Auto. Check if the autotracker shows that it is connected to Project64 and the tracker.',
               'Potentially, your browser will display a popup regarding access to the autotracker. You need to grant access there once.',
+              'The autotracker currently tracks items and locations, but not entrances, song events, or similar.',
             ],
           },
           {
@@ -202,7 +203,7 @@ export const TRACKER_FAQ_SECTIONS: TrackerFaqSection[] = [
               },
               {
                 type: 'text',
-                text: '). If this is your first time using autotracking, enable Show Advanced Settings under Settings -> User Interface. Then enable Network Commands under Settings -> Network and leave the Network Command Port set to 55355.',
+                text: '). If this is your first time using autotracking, you have to enable network commands in RetroArch. Enable Show Advanced Settings under Settings -> User Interface. Then enable Network Commands under Settings -> Network and leave the Network Command Port set to 55355.',
               },
             ],
           },
@@ -212,8 +213,70 @@ export const TRACKER_FAQ_SECTIONS: TrackerFaqSection[] = [
               'Generate a seed and open it in RetroArch.',
               'Start the autotracker.',
               'Upload the spoiler log to thelasttracker.org.',
-              'If The Last Tracker does not connect automatically, click Auto.',
+              'If The Last Tracker does not connect automatically, click Auto. Check if the autotracker shows that it is connected to RetroArch and the tracker.',
               'Potentially, your browser will display a popup regarding access to the autotracker. You need to grant access there once.',
+              'The autotracker currently tracks items and locations, but not entrances, song events, or similar.',
+            ],
+          },
+          {
+            type: 'paragraph',
+            text: 'A green outline around the Auto button means the autotracker connected successfully. An orange outline means no connection to the autotracker has been established yet.',
+          },
+        ],
+      },
+      {
+        id: 'autotracking',
+        question: 'How do I set up autotracking for Ares',
+        blocks: [
+          {
+            type: 'paragraph',
+            text: 'Only randomizer version v30.1 is supported (no dev seeds). Autotracking only works after you import a spoiler log.',
+          },
+          {
+            type: 'paragraph',
+            text: [
+              {
+                type: 'text',
+                text: 'Download the autotracker for ',
+              },
+              {
+                type: 'link',
+                text: 'Windows',
+                href: WINDOWS_AUTOTRACKER_URL,
+              },
+              {
+                type: 'text',
+                text: ' or ',
+              },
+              {
+                type: 'link',
+                text: 'Linux',
+                href: LINUX_AUTOTRACKER_URL,
+              },
+              {
+                type: 'text',
+                text: ' (for other versions see ',
+              },
+              {
+                type: 'link',
+                text: 'Github',
+                href: GITHUB_REL_LATEST_URL,
+              },
+              {
+                type: 'text',
+                text: '). If this is your first time using autotracking, you have to enable GDB debugging in Ares. Toggle "Enabled" and "Use IPv4" under Settings -> Debug. Leave the Port set to 9123.',
+              },
+            ],
+          },
+          {
+            type: 'list',
+            items: [
+              'Generate a seed and open it in Ares.',
+              'Start the autotracker.',
+              'Upload the spoiler log to thelasttracker.org.',
+              'If The Last Tracker does not connect automatically, click Auto. Check if the autotracker shows that it is connected to Ares and the tracker.',
+              'Potentially, your browser will display a popup regarding access to the autotracker. You need to grant access there once.',
+              'The autotracker currently tracks items and locations, but not entrances, song events, or similar.',
             ],
           },
           {
