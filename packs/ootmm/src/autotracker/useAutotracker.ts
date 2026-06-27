@@ -451,6 +451,7 @@ export function useAutotracker(options: AutotrackerOptions) {
   let preserveVersionWarningOnDisable = false;
   let lastRawMessage: RawAutotrackerMessage | null = null;
   let idleAcceptTimer: ReturnType<typeof setTimeout> | null = null;
+  let wasEverOpened = false;
 
   // Canonical autotracker state (translated to tracker IDs)
   let liveRawState = new Map<string, number>();
@@ -475,6 +476,7 @@ export function useAutotracker(options: AutotrackerOptions) {
 
     ws.onopen = () => {
       reconnectAttempts = 0;
+      wasEverOpened = true;
       sendHandshake(ws!);
     };
 
@@ -493,10 +495,11 @@ export function useAutotracker(options: AutotrackerOptions) {
     };
 
     ws.onclose = () => {
+      const hadBeenOpened = wasEverOpened;
       ws = null;
       if (enabled.value) {
         status.value = 'disconnected';
-        scheduleReconnect();
+        scheduleReconnect(hadBeenOpened);
       } else {
         status.value = 'disconnected';
       }
@@ -675,6 +678,7 @@ export function useAutotracker(options: AutotrackerOptions) {
       ws = null;
     }
     hasReceivedRawSnapshot = false;
+    wasEverOpened = false;
     rawParser.reset();
     lastRawMessage = null;
     lastTrackedSceneKey = '';
@@ -697,10 +701,19 @@ export function useAutotracker(options: AutotrackerOptions) {
     reconnectAttempts = 0;
   }
 
-  function scheduleReconnect() {
+  /**
+   * Schedule a reconnect attempt.  When the WebSocket was never successfully
+   * opened (e.g. because the user hasn't accepted Chrome's localhost permission
+   * dialog yet), use a much longer base delay so the dialog doesn't flicker
+   * or close before the user can interact with it.
+   */
+  function scheduleReconnect(hadBeenOpened = true) {
     if (!enabled.value) return;
+    const baseDelay = hadBeenOpened
+      ? RECONNECT_BASE_DELAY
+      : RECONNECT_BASE_DELAY * 5;
     const delay = Math.min(
-      RECONNECT_BASE_DELAY * 2 ** reconnectAttempts,
+      baseDelay * 2 ** reconnectAttempts,
       RECONNECT_MAX_DELAY,
     );
     reconnectAttempts++;
@@ -709,9 +722,34 @@ export function useAutotracker(options: AutotrackerOptions) {
     }, delay);
   }
 
+  /**
+   * Check whether the autotracker is reachable.
+   *
+   * If the main connection is already established we return true immediately.
+   * If it's currently connecting we wait for that attempt to settle instead of
+   * opening a *second* WebSocket to the same URL – duplicate connections can
+   * confuse Chrome's localhost-permission dialog and make it close before the
+   * user can interact with it.
+   */
   function probeAvailability(timeoutMs = 1000): Promise<boolean> {
     if (enabled.value && status.value === 'connected') {
       return Promise.resolve(true);
+    }
+
+    // If the main connection is still in flight, wait for it to settle
+    // rather than opening a duplicate WebSocket.
+    if (enabled.value && status.value === 'connecting') {
+      return new Promise((resolve) => {
+        const stopWatch = watch(status, (newStatus) => {
+          if (newStatus === 'connected') {
+            stopWatch();
+            resolve(true);
+          } else if (newStatus === 'disconnected' || newStatus === 'error') {
+            stopWatch();
+            resolve(false);
+          }
+        });
+      });
     }
 
     return new Promise((resolve) => {
