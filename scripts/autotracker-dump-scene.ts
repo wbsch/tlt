@@ -102,7 +102,7 @@ ws.on('message', (raw: Buffer) => {
         }
       }
     }
-  } catch (e) {
+  } catch (_e) {
     console.log('Unparseable message:', text.substring(0, 200));
   }
 });
