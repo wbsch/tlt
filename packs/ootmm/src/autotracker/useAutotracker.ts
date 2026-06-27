@@ -677,6 +677,7 @@ export function useAutotracker(options: AutotrackerOptions) {
     hasReceivedRawSnapshot = false;
     rawParser.reset();
     lastRawMessage = null;
+    lastTrackedSceneKey = '';
   }
 
   function disconnect(preserveVersionWarning = false) {
@@ -794,6 +795,10 @@ export function useAutotracker(options: AutotrackerOptions) {
     disconnect();
   }
 
+  function resetSceneTracking(): void {
+    lastTrackedSceneKey = '';
+  }
+
   return {
     status,
     enabled,
@@ -805,5 +810,6 @@ export function useAutotracker(options: AutotrackerOptions) {
     mmSceneId,
     probeAvailability,
     destroy,
+    resetSceneTracking,
   };
 }

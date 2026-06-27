@@ -1311,6 +1311,12 @@ function updateAutoMapSwitch(enabled: boolean) {
 
   // When toggled ON, immediately jump to the current scene's map.
   if (enabled) {
+    // Reset the autotracker's scene-tracking key so that the next raw
+    // frame unconditionally triggers notifySceneChange. Otherwise,
+    // lastTrackedSceneKey from before the toggle may silently suppress
+    // all future scene-change callbacks.
+    autotracker.resetSceneTracking();
+
     const game = autotracker.activeGame.value;
     if (game) {
       const sceneId =
