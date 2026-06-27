@@ -38,3 +38,14 @@ export interface OoTMMLocation {
   region: string;
   position?: { x: number; y: number };
 }
+
+/** A single spoiler log placement, resolved to internal IDs. */
+export interface ResolvedSpoilerPlacement {
+  itemId: string;
+  itemName: string;
+  locationId: string;
+  locationName: string;
+  region?: string;
+  world?: number;
+  itemPlayer?: number;
+}

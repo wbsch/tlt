@@ -1,4 +1,5 @@
 import { safeJsonParse } from '@/utils/safeJson';
+import type { ResolvedSpoilerPlacement } from '../types';
 
 export const OOTMM_LOCAL_SESSION_ID = 'ootmm:local-default';
 
@@ -27,6 +28,7 @@ type SyncOperationBase = {
     | 'settings.patch_special_conds'
     | 'session.set_spoiler_log_state'
     | 'session.set_spoiler_fish_ids'
+    | 'session.set_spoiler_placements'
     | 'session.reset_defaults';
 };
 
@@ -95,6 +97,10 @@ export type OoTMMSyncOperation =
   | (SyncOperationBase & {
       type: 'session.set_spoiler_fish_ids';
       ids: string[];
+    })
+  | (SyncOperationBase & {
+      type: 'session.set_spoiler_placements';
+      placements: ResolvedSpoilerPlacement[];
     })
   | (SyncOperationBase & {
       type: 'session.reset_defaults';

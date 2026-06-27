@@ -30,7 +30,7 @@ const VALID_TABS = new Set([
   'world',
   'tricks',
 ]);
-const VALID_RIGHT_SIDEBAR_TABS = new Set(['locations', 'entrances']);
+const VALID_RIGHT_SIDEBAR_TABS = new Set(['locations', 'entrances', 'spoiler']);
 const VALID_REACHABILITY_FILTERS = new Set(['all', 'reachable', 'unreachable']);
 const VALID_COLLECTION_FILTERS = new Set(['all', 'collected', 'uncollected']);
 const VALID_ENTRANCE_MAPPING_FILTERS = new Set(['all', 'mapped', 'unmapped']);
@@ -350,6 +350,7 @@ export const PERSIST_CONFIGS: Record<PersistStoreId, PersistConfig> = {
       'needsLegacyCrossWarpMmSynthesis',
       'spoilerFishItemIds',
       'coopRoomCode',
+      'spoilerPlacements',
     ],
     hydrate: (raw) => {
       const inventory: Record<string, number> = isPlainObject(raw.inventoryById)
@@ -431,6 +432,24 @@ export const PERSIST_CONFIGS: Record<PersistStoreId, PersistConfig> = {
               importedSpoilerLogVersion: safeOptionalString(
                 raw.importedSpoilerLogVersion,
               ),
+            }
+          : {}),
+        ...(Array.isArray(raw.spoilerPlacements)
+          ? {
+              spoilerPlacements: (raw.spoilerPlacements as unknown[])
+                .filter((p): p is Record<string, unknown> => isPlainObject(p))
+                .map((p) => ({
+                  itemId: typeof p.itemId === 'string' ? p.itemId : 'JUNK',
+                  itemName: typeof p.itemName === 'string' ? p.itemName : '',
+                  locationId:
+                    typeof p.locationId === 'string' ? p.locationId : '',
+                  locationName:
+                    typeof p.locationName === 'string' ? p.locationName : '',
+                  region: typeof p.region === 'string' ? p.region : undefined,
+                  world: typeof p.world === 'number' ? p.world : undefined,
+                  itemPlayer:
+                    typeof p.itemPlayer === 'number' ? p.itemPlayer : undefined,
+                })),
             }
           : {}),
         ...(() => {

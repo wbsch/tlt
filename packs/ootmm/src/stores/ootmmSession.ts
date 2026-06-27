@@ -31,6 +31,7 @@ import {
   type OoTMMRoomSnapshotEnvelope,
   type OoTMMRoomSyncConnection,
 } from './ootmmRoomSync';
+import type { ResolvedSpoilerPlacement } from '../types';
 import {
   cleanupEntranceOverridesForSettings,
   computeCoupledReverse,
@@ -71,6 +72,7 @@ type SessionSnapshot = {
   needsLegacyCrossWarpOotSynthesis: boolean;
   needsLegacyCrossWarpMmSynthesis: boolean;
   spoilerFishItemIds: string[];
+  spoilerPlacements: ResolvedSpoilerPlacement[];
 };
 
 type MutationOptions = {
@@ -406,6 +408,7 @@ export const useOoTMMSessionStore = defineStore('ootmm-session', () => {
   const importedSpoilerLogVersion = ref<string | null>(null);
   const needsLegacyCrossWarpOotSynthesis = ref(false);
   const needsLegacyCrossWarpMmSynthesis = ref(false);
+  const spoilerPlacements = ref<ResolvedSpoilerPlacement[]>([]);
   const availableItemIds = ref<string[]>([]);
   const spoilerFishItemIds = ref<string[]>([]);
   const itemMaxCountsById = ref<Record<string, number>>({});
@@ -490,6 +493,59 @@ export const useOoTMMSessionStore = defineStore('ootmm-session', () => {
   const allLocations = computed(() => {
     void locationsVersion.value;
     return tracker.value?.getAllLocations() ?? [];
+  });
+
+  // Derived spoiler placement lookup maps
+  const spoilerItemToLocationIds = computed<Record<string, string[]>>(() => {
+    const map: Record<string, string[]> = {};
+    for (const p of spoilerPlacements.value) {
+      const existing = map[p.itemId];
+      if (existing) {
+        if (!existing.includes(p.locationId)) {
+          existing.push(p.locationId);
+        }
+      } else {
+        map[p.itemId] = [p.locationId];
+      }
+    }
+    return map;
+  });
+
+  const spoilerLocationToItemId = computed<Record<string, string>>(() => {
+    const map: Record<string, string> = {};
+    for (const p of spoilerPlacements.value) {
+      // Only set if not already set — first placement wins
+      if (!(p.locationId in map)) {
+        map[p.locationId] = p.itemId;
+      }
+    }
+    return map;
+  });
+
+  const spoilerItemToRegion = computed<Record<string, string>>(() => {
+    const map: Record<string, string> = {};
+    for (const p of spoilerPlacements.value) {
+      if (p.region && !(p.itemId in map)) {
+        map[p.itemId] = p.region;
+      }
+    }
+    return map;
+  });
+
+  const spoilerRegionToItemIds = computed<Record<string, string[]>>(() => {
+    const map: Record<string, string[]> = {};
+    for (const p of spoilerPlacements.value) {
+      if (!p.region) continue;
+      const existing = map[p.region];
+      if (existing) {
+        if (!existing.includes(p.itemId)) {
+          existing.push(p.itemId);
+        }
+      } else {
+        map[p.region] = [p.itemId];
+      }
+    }
+    return map;
   });
 
   function shouldRecordHistory(options?: MutationOptions): boolean {
@@ -675,6 +731,7 @@ export const useOoTMMSessionStore = defineStore('ootmm-session', () => {
       needsLegacyCrossWarpOotSynthesis: needsLegacyCrossWarpOotSynthesis.value,
       needsLegacyCrossWarpMmSynthesis: needsLegacyCrossWarpMmSynthesis.value,
       spoilerFishItemIds: [...spoilerFishItemIds.value],
+      spoilerPlacements: spoilerPlacements.value.map((p) => ({ ...p })),
     };
   }
 
@@ -836,6 +893,10 @@ export const useOoTMMSessionStore = defineStore('ootmm-session', () => {
       }
       case 'session.set_spoiler_fish_ids': {
         spoilerFishItemIds.value = uniqueStrings(envelope.op.ids ?? []);
+        return;
+      }
+      case 'session.set_spoiler_placements': {
+        setSpoilerPlacements(envelope.op.placements, REMOTE_MUTATION_OPTIONS);
         return;
       }
       case 'session.reset_defaults': {
@@ -1104,6 +1165,9 @@ export const useOoTMMSessionStore = defineStore('ootmm-session', () => {
         spoilerFishItemIds.value = uniqueStrings(
           snapshot.spoilerFishItemIds ?? [],
         );
+        spoilerPlacements.value = (snapshot.spoilerPlacements ?? []).map(
+          (p) => ({ ...p }),
+        );
         reachableLocationIds.value = [];
         reachableEntranceIds.value = [];
         canComplete.value = false;
@@ -1162,6 +1226,9 @@ export const useOoTMMSessionStore = defineStore('ootmm-session', () => {
       spoilerFishItemIds.value = uniqueStrings(
         snapshot.spoilerFishItemIds ?? [],
       );
+      spoilerPlacements.value = (snapshot.spoilerPlacements ?? []).map((p) => ({
+        ...p,
+      }));
       applyPreCompletedDungeons();
       applySongEvents();
       applyShopPrices();
@@ -1810,6 +1877,19 @@ export const useOoTMMSessionStore = defineStore('ootmm-session', () => {
     spoilerFishItemIds.value = Array.from(ids);
   }
 
+  function setSpoilerPlacements(
+    placements: ResolvedSpoilerPlacement[],
+    options?: MutationOptions,
+  ) {
+    const previousSnapshot = captureSnapshotForMutation(options);
+    spoilerPlacements.value = placements.map((p) => ({ ...p }));
+    recordHistoryFromSnapshot(previousSnapshot);
+    publishSyncOperation(
+      { type: 'session.set_spoiler_placements', placements },
+      options,
+    );
+  }
+
   let reinitEntrancesTimer: ReturnType<typeof setTimeout> | null = null;
 
   function scheduleReinitializeForEntrances() {
@@ -2150,6 +2230,7 @@ export const useOoTMMSessionStore = defineStore('ootmm-session', () => {
     needsLegacyCrossWarpOotSynthesis.value = false;
     needsLegacyCrossWarpMmSynthesis.value = false;
     spoilerFishItemIds.value = [];
+    spoilerPlacements.value = [];
 
     if (!currentTracker) {
       trackerSettings.value = {};
@@ -2263,6 +2344,11 @@ export const useOoTMMSessionStore = defineStore('ootmm-session', () => {
     importedSpoilerLogVersion,
     needsLegacyCrossWarpOotSynthesis,
     needsLegacyCrossWarpMmSynthesis,
+    spoilerPlacements,
+    spoilerItemToLocationIds,
+    spoilerLocationToItemId,
+    spoilerItemToRegion,
+    spoilerRegionToItemIds,
     availableItemIds,
     spoilerFishItemIds,
     itemMaxCountsById,
@@ -2313,6 +2399,7 @@ export const useOoTMMSessionStore = defineStore('ootmm-session', () => {
     setNeedsLegacyCrossWarpOotSynthesis,
     setNeedsLegacyCrossWarpMmSynthesis,
     setSpoilerFishItemIds,
+    setSpoilerPlacements,
     applyPreCompletedDungeons,
     applySongEvents,
     applyShopPrices,

@@ -2,7 +2,7 @@ import { defineStore } from 'pinia';
 import { ref } from 'vue';
 
 export type TrackerTab = 'inventory' | 'settings' | 'grid' | 'world' | 'tricks';
-export type RightSidebarTab = 'locations' | 'entrances';
+export type RightSidebarTab = 'locations' | 'entrances' | 'spoiler';
 export type ReachabilityFilter = 'all' | 'reachable' | 'unreachable';
 export type CollectionFilter = 'all' | 'collected' | 'uncollected';
 export type EntranceMappingFilter = 'all' | 'mapped' | 'unmapped';
@@ -56,7 +56,7 @@ export const useOoTMMUiStore = defineStore('ootmm-ui', () => {
   }
 
   function setActiveRightSidebarTab(tab: RightSidebarTab) {
-    if (tab !== 'locations' && tab !== 'entrances') {
+    if (tab !== 'locations' && tab !== 'entrances' && tab !== 'spoiler') {
       activeRightSidebarTab.value = 'locations';
       return;
     }

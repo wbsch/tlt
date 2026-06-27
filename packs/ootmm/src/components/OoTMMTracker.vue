@@ -10,6 +10,7 @@ import { requestTrackerFaqOpen } from '@/utils/trackerFaq';
 import OoTMMInventory from './OoTMMInventory.vue';
 import OoTMMLocations from './OoTMMLocations.vue';
 import OoTMMEntrances from './OoTMMEntrances.vue';
+import OoTMMSpoilerLookup from './OoTMMSpoilerLookup.vue';
 import OoTMMSettings from './OoTMMSettings.vue';
 import OoTMMItemGrid from './OoTMMItemGrid.vue';
 import OoTMMWorld from './OoTMMWorld.vue';
@@ -47,6 +48,7 @@ import {
   synthesizeOotToMmItemsForInventory,
   synthesizeMmToOotItemsForInventory,
 } from '../utils/spoilerSettingsMigration';
+import type { ResolvedSpoilerPlacement } from '../types';
 import { useDungeonEntrances } from '../composables/useDungeonEntrances';
 import { useLocationCodeLookup } from '../composables/useLocationCodeLookup';
 import {
@@ -740,6 +742,7 @@ type SelectedGamesSetting = 'ootmm' | 'oot' | 'mm';
 const RIGHT_SIDEBAR_TABS: Array<{ id: RightSidebarTab; label: string }> = [
   { id: 'locations', label: 'Locations' },
   { id: 'entrances', label: 'Entrances' },
+  { id: 'spoiler', label: 'Spoiler' },
 ];
 const DEFAULT_MAP_ID = 'oot_kokiri_forest';
 
@@ -905,7 +908,10 @@ const activeMap = computed<MapDef | null>(() => {
 });
 const availableRightSidebarTabs = computed(() =>
   RIGHT_SIDEBAR_TABS.filter(
-    (tab) => tab.id === 'locations' || hasAvailableEntranceSections.value,
+    (tab) =>
+      tab.id === 'locations' ||
+      (tab.id === 'entrances' && hasAvailableEntranceSections.value) ||
+      (tab.id === 'spoiler' && hasImportedSpoilerLog.value),
   ),
 );
 const shouldShowRightSidebarTabs = computed(
@@ -3770,6 +3776,73 @@ function applyJunkLocations(junkLocations: string[]) {
   sessionStore.setJunkLocationIds(resolvedIds);
 }
 
+function resolveSpoilerPlacements(
+  parsed: SpoilerLogData,
+  selectedPlayer?: number,
+): ResolvedSpoilerPlacement[] {
+  const targetWorld = selectedPlayer ?? 1;
+  const placements: ResolvedSpoilerPlacement[] = [];
+
+  // Build location name -> IDs map (same pattern as applyJunkLocations)
+  const locations = allLocations.value;
+  const byName = new Map<string, string[]>();
+  for (const loc of locations) {
+    const key = normalizeName(loc.name);
+    const existing = byName.get(key) ?? [];
+    existing.push(loc.id);
+    byName.set(key, existing);
+  }
+
+  for (const placement of parsed.locationPlacements) {
+    // Multiworld: skip placements belonging to another player's world
+    if (placement.world !== undefined && placement.world !== targetWorld) {
+      continue;
+    }
+
+    // Resolve item name -> item ID
+    let itemId: string | undefined = itemNameToId.get(
+      normalizeName(placement.item),
+    );
+    if (!itemId) {
+      // Junk items (rupees, hearts, etc.) not in the item database
+      itemId = 'JUNK';
+    }
+
+    // Resolve location name -> location IDs
+    const locationIds = byName.get(normalizeName(placement.location));
+    if (!locationIds || locationIds.length === 0) {
+      console.warn(
+        '[OoTMM Tracker] Spoiler placement location not found:',
+        placement.location,
+      );
+      continue;
+    }
+
+    if (locationIds.length > 1) {
+      console.warn(
+        '[OoTMM Tracker] Ambiguous spoiler location name, matching multiple IDs:',
+        placement.location,
+        locationIds,
+      );
+    }
+
+    // If multiple location IDs match, create one entry per ID
+    for (const locationId of locationIds) {
+      placements.push({
+        itemId,
+        itemName: placement.item,
+        locationId,
+        locationName: placement.location,
+        region: placement.region,
+        world: placement.world,
+        itemPlayer: placement.itemPlayer,
+      });
+    }
+  }
+
+  return placements;
+}
+
 function requestSpoilerStartingItemsPlayer(players: number[]) {
   spoilerPlayerOptions.value = [...players];
   spoilerSelectedPlayer.value = players[0] ?? null;
@@ -3932,6 +4005,10 @@ async function applySpoilerLog(text: string, selectedPlayer?: number) {
   if (parsed.junkLocations.length > 0) {
     applyJunkLocations(parsed.junkLocations);
   }
+
+  // Resolve and store spoiler placements for lookup features
+  const placements = resolveSpoilerPlacements(parsed, selectedPlayer);
+  sessionStore.setSpoilerPlacements(placements);
 
   return true;
 }
@@ -5527,6 +5604,11 @@ onBeforeUnmount(() => {
               <OoTMMEntrances
                 v-else-if="activeVisibleRightSidebarTab === 'entrances'"
                 class="map-entrances"
+              />
+
+              <OoTMMSpoilerLookup
+                v-else-if="activeVisibleRightSidebarTab === 'spoiler'"
+                class="spoiler-lookup"
               />
             </div>
           </div>
