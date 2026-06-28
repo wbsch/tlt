@@ -2331,6 +2331,7 @@ export const useOoTMMSessionStore = defineStore('ootmm-session', () => {
     needsLegacyCrossWarpMmSynthesis.value = false;
     spoilerFishItemIds.value = [];
     spoilerPlacements.value = [];
+    hintsText.value = null;
     hintTracker.value = createEmptyHintTrackerState();
     hintProtectedLocationIds.value = [];
 

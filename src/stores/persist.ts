@@ -30,7 +30,7 @@ const VALID_TABS = new Set([
   'world',
   'tricks',
 ]);
-const VALID_RIGHT_SIDEBAR_TABS = new Set(['locations', 'entrances', 'spoiler']);
+const VALID_RIGHT_SIDEBAR_TABS = new Set(['locations', 'entrances', 'hints']);
 const VALID_REACHABILITY_FILTERS = new Set(['all', 'reachable', 'unreachable']);
 const VALID_COLLECTION_FILTERS = new Set(['all', 'collected', 'uncollected']);
 const VALID_ENTRANCE_MAPPING_FILTERS = new Set(['all', 'mapped', 'unmapped']);
@@ -213,6 +213,96 @@ function stringRecord(value: unknown): Record<string, string> {
   return next;
 }
 
+// ── Hint tracker state sanitizers ──
+
+function sanitizeRecordedPathHintArray(
+  value: unknown,
+): { region: string; subType: string; subId?: number }[] {
+  if (!Array.isArray(value)) return [];
+  return value.filter(
+    (entry): entry is { region: string; subType: string; subId?: number } =>
+      isPlainObject(entry) &&
+      typeof entry.region === 'string' &&
+      isSafeKey(entry.region) &&
+      typeof entry.subType === 'string',
+  );
+}
+
+function sanitizeRecordedItemExactHintArray(
+  value: unknown,
+): { location: string; itemId: string }[] {
+  if (!Array.isArray(value)) return [];
+  return value.filter(
+    (entry): entry is { location: string; itemId: string } =>
+      isPlainObject(entry) &&
+      typeof entry.location === 'string' &&
+      isSafeKey(entry.location) &&
+      typeof entry.itemId === 'string' &&
+      isSafeKey(entry.itemId),
+  );
+}
+
+function sanitizeRecordedItemRegionHintArray(
+  value: unknown,
+): { region: string; itemId: string }[] {
+  if (!Array.isArray(value)) return [];
+  return value.filter(
+    (entry): entry is { region: string; itemId: string } =>
+      isPlainObject(entry) &&
+      typeof entry.region === 'string' &&
+      isSafeKey(entry.region) &&
+      typeof entry.itemId === 'string' &&
+      isSafeKey(entry.itemId),
+  );
+}
+
+function sanitizeRecordedFoolishHintArray(
+  value: unknown,
+): { region: string }[] {
+  if (!Array.isArray(value)) return [];
+  return value.filter(
+    (entry): entry is { region: string } =>
+      isPlainObject(entry) &&
+      typeof entry.region === 'string' &&
+      isSafeKey(entry.region),
+  );
+}
+
+function sanitizeRecordedMoonHintArray(
+  value: unknown,
+): { region: string; itemId: string }[] {
+  if (!Array.isArray(value)) return [];
+  return value.filter(
+    (entry): entry is { region: string; itemId: string } =>
+      isPlainObject(entry) &&
+      typeof entry.region === 'string' &&
+      isSafeKey(entry.region) &&
+      typeof entry.itemId === 'string' &&
+      isSafeKey(entry.itemId),
+  );
+}
+
+function sanitizeHintTrackerState(value: unknown): Record<string, unknown> {
+  if (!isPlainObject(value)) {
+    return {
+      pathHints: [],
+      alwaysSometimesHints: [],
+      regionHints: [],
+      foolishHints: [],
+      moonHints: [],
+    };
+  }
+  return {
+    pathHints: sanitizeRecordedPathHintArray(value.pathHints),
+    alwaysSometimesHints: sanitizeRecordedItemExactHintArray(
+      value.alwaysSometimesHints,
+    ),
+    regionHints: sanitizeRecordedItemRegionHintArray(value.regionHints),
+    foolishHints: sanitizeRecordedFoolishHintArray(value.foolishHints),
+    moonHints: sanitizeRecordedMoonHintArray(value.moonHints),
+  };
+}
+
 export const PERSIST_CONFIGS: Record<PersistStoreId, PersistConfig> = {
   app: {
     key: 'tlt:app',
@@ -351,6 +441,9 @@ export const PERSIST_CONFIGS: Record<PersistStoreId, PersistConfig> = {
       'spoilerFishItemIds',
       'coopRoomCode',
       'spoilerPlacements',
+      'hintsText',
+      'hintTracker',
+      'hintProtectedLocationIds',
     ],
     hydrate: (raw) => {
       const inventory: Record<string, number> = isPlainObject(raw.inventoryById)
@@ -450,6 +543,21 @@ export const PERSIST_CONFIGS: Record<PersistStoreId, PersistConfig> = {
                   itemPlayer:
                     typeof p.itemPlayer === 'number' ? p.itemPlayer : undefined,
                 })),
+            }
+          : {}),
+        ...(typeof raw.hintsText === 'string'
+          ? { hintsText: raw.hintsText }
+          : raw.hintsText === null
+            ? { hintsText: null }
+            : {}),
+        ...(isPlainObject(raw.hintTracker)
+          ? { hintTracker: sanitizeHintTrackerState(raw.hintTracker) }
+          : {}),
+        ...(Array.isArray(raw.hintProtectedLocationIds)
+          ? {
+              hintProtectedLocationIds: stringArray(
+                raw.hintProtectedLocationIds,
+              ),
             }
           : {}),
         ...(() => {
