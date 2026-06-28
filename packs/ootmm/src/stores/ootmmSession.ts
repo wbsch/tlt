@@ -32,6 +32,15 @@ import {
   type OoTMMRoomSyncConnection,
 } from './ootmmRoomSync';
 import type { ResolvedSpoilerPlacement } from '../types';
+import type {
+  HintTrackerState,
+  RecordedPathHint,
+  RecordedItemExactHint,
+  RecordedItemRegionHint,
+  RecordedFoolishHint,
+  HintSyncOperation,
+} from '../data/hintTypes';
+import { createEmptyHintTrackerState } from '../data/hintTypes';
 import {
   cleanupEntranceOverridesForSettings,
   computeCoupledReverse,
@@ -73,6 +82,9 @@ type SessionSnapshot = {
   needsLegacyCrossWarpMmSynthesis: boolean;
   spoilerFishItemIds: string[];
   spoilerPlacements: ResolvedSpoilerPlacement[];
+  hintsText: string | null;
+  hintTracker: HintTrackerState;
+  hintProtectedLocationIds: string[];
 };
 
 type MutationOptions = {
@@ -369,6 +381,8 @@ export const useOoTMMSessionStore = defineStore('ootmm-session', () => {
   const collectedLocationIds = ref<string[]>([]);
   const preCompletedDungeons = ref<string[]>([]);
   const junkLocationIds = ref<string[]>([]);
+  const hintProtectedLocationIds = ref<string[]>([]);
+  const hintTracker = ref<HintTrackerState>(createEmptyHintTrackerState());
   const autoCollectedPreCompletedLocationIds = ref<string[]>([]);
   const songEvents = ref<Record<string, number>>({});
   const shopPrices = ref<Record<string, number>>({});
@@ -409,6 +423,7 @@ export const useOoTMMSessionStore = defineStore('ootmm-session', () => {
   const needsLegacyCrossWarpOotSynthesis = ref(false);
   const needsLegacyCrossWarpMmSynthesis = ref(false);
   const spoilerPlacements = ref<ResolvedSpoilerPlacement[]>([]);
+  const hintsText = ref<string | null>(null);
   const availableItemIds = ref<string[]>([]);
   const spoilerFishItemIds = ref<string[]>([]);
   const itemMaxCountsById = ref<Record<string, number>>({});
@@ -732,6 +747,15 @@ export const useOoTMMSessionStore = defineStore('ootmm-session', () => {
       needsLegacyCrossWarpMmSynthesis: needsLegacyCrossWarpMmSynthesis.value,
       spoilerFishItemIds: [...spoilerFishItemIds.value],
       spoilerPlacements: spoilerPlacements.value.map((p) => ({ ...p })),
+      hintsText: hintsText.value,
+      hintTracker: {
+        pathHints: hintTracker.value.pathHints.map((h) => ({ ...h })),
+        alwaysHints: hintTracker.value.alwaysHints.map((h) => ({ ...h })),
+        sometimesHints: hintTracker.value.sometimesHints.map((h) => ({ ...h })),
+        regionHints: hintTracker.value.regionHints.map((h) => ({ ...h })),
+        foolishHints: hintTracker.value.foolishHints.map((h) => ({ ...h })),
+      },
+      hintProtectedLocationIds: [...hintProtectedLocationIds.value],
     };
   }
 
@@ -889,6 +913,9 @@ export const useOoTMMSessionStore = defineStore('ootmm-session', () => {
           envelope.op.ootmmVersion,
           REMOTE_MUTATION_OPTIONS,
         );
+        if (envelope.op.hintsText !== undefined) {
+          hintsText.value = envelope.op.hintsText;
+        }
         return;
       }
       case 'session.set_spoiler_fish_ids': {
@@ -901,6 +928,56 @@ export const useOoTMMSessionStore = defineStore('ootmm-session', () => {
       }
       case 'session.reset_defaults': {
         await resetSessionStateToDefaults(REMOTE_MUTATION_OPTIONS);
+        return;
+      }
+      // Hint tracker operations
+      case 'hints.path.add': {
+        addPathHint(envelope.op.hint, REMOTE_MUTATION_OPTIONS);
+        return;
+      }
+      case 'hints.path.remove': {
+        removePathHint(envelope.op.index, REMOTE_MUTATION_OPTIONS);
+        return;
+      }
+      case 'hints.always.add': {
+        addAlwaysHint(envelope.op.hint, REMOTE_MUTATION_OPTIONS);
+        return;
+      }
+      case 'hints.always.remove': {
+        removeAlwaysHint(envelope.op.index, REMOTE_MUTATION_OPTIONS);
+        return;
+      }
+      case 'hints.sometimes.add': {
+        addSometimesHint(envelope.op.hint, REMOTE_MUTATION_OPTIONS);
+        return;
+      }
+      case 'hints.sometimes.remove': {
+        removeSometimesHint(envelope.op.index, REMOTE_MUTATION_OPTIONS);
+        return;
+      }
+      case 'hints.region.add': {
+        addRegionHint(envelope.op.hint, REMOTE_MUTATION_OPTIONS);
+        return;
+      }
+      case 'hints.region.remove': {
+        removeRegionHint(envelope.op.index, REMOTE_MUTATION_OPTIONS);
+        return;
+      }
+      case 'hints.foolish.add': {
+        addFoolishHint(envelope.op.hint, REMOTE_MUTATION_OPTIONS);
+        return;
+      }
+      case 'hints.foolish.remove': {
+        removeFoolishHint(envelope.op.index, REMOTE_MUTATION_OPTIONS);
+        return;
+      }
+      case 'hints.set_full': {
+        setHintTrackerState(envelope.op.state, REMOTE_MUTATION_OPTIONS);
+        return;
+      }
+      case 'hints.protected_location_ids.set': {
+        hintProtectedLocationIds.value = envelope.op.ids;
+        return;
       }
     }
   }
@@ -1168,6 +1245,11 @@ export const useOoTMMSessionStore = defineStore('ootmm-session', () => {
         spoilerPlacements.value = (snapshot.spoilerPlacements ?? []).map(
           (p) => ({ ...p }),
         );
+        hintsText.value = snapshot.hintsText ?? null;
+        hintTracker.value =
+          snapshot.hintTracker ?? createEmptyHintTrackerState();
+        hintProtectedLocationIds.value =
+          snapshot.hintProtectedLocationIds ?? [];
         reachableLocationIds.value = [];
         reachableEntranceIds.value = [];
         canComplete.value = false;
@@ -1229,6 +1311,9 @@ export const useOoTMMSessionStore = defineStore('ootmm-session', () => {
       spoilerPlacements.value = (snapshot.spoilerPlacements ?? []).map((p) => ({
         ...p,
       }));
+      hintsText.value = snapshot.hintsText ?? null;
+      hintTracker.value = snapshot.hintTracker ?? createEmptyHintTrackerState();
+      hintProtectedLocationIds.value = snapshot.hintProtectedLocationIds ?? [];
       applyPreCompletedDungeons();
       applySongEvents();
       applyShopPrices();
@@ -1854,12 +1939,16 @@ export const useOoTMMSessionStore = defineStore('ootmm-session', () => {
     const previousSnapshot = captureSnapshotForMutation(options);
     hasImportedSpoilerLog.value = normalizedImported;
     importedSpoilerLogVersion.value = normalizedVersion;
+    if (!normalizedImported) {
+      hintsText.value = null;
+    }
     recordHistoryFromSnapshot(previousSnapshot);
     publishSyncOperation(
       {
         type: 'session.set_spoiler_log_state',
         imported: normalizedImported,
         ootmmVersion: normalizedVersion,
+        hintsText: hintsText.value,
       },
       options,
     );
@@ -1875,6 +1964,12 @@ export const useOoTMMSessionStore = defineStore('ootmm-session', () => {
 
   function setSpoilerFishItemIds(ids: Set<string>) {
     spoilerFishItemIds.value = Array.from(ids);
+  }
+
+  function setHintsText(text: string | null, options?: MutationOptions) {
+    hintsText.value = text;
+    // hintsText alone isn't directly synced; it's included in
+    // set_spoiler_log_state when the spoiler log is imported.
   }
 
   function setSpoilerPlacements(
@@ -2231,6 +2326,8 @@ export const useOoTMMSessionStore = defineStore('ootmm-session', () => {
     needsLegacyCrossWarpMmSynthesis.value = false;
     spoilerFishItemIds.value = [];
     spoilerPlacements.value = [];
+    hintTracker.value = createEmptyHintTrackerState();
+    hintProtectedLocationIds.value = [];
 
     if (!currentTracker) {
       trackerSettings.value = {};
@@ -2330,12 +2427,184 @@ export const useOoTMMSessionStore = defineStore('ootmm-session', () => {
     }
   }
 
+  // ── Hint Tracker Mutations ──
+
+  function addPathHint(hint: RecordedPathHint, options?: MutationOptions) {
+    const previousSnapshot = captureSnapshotForMutation(options);
+    hintTracker.value = {
+      ...hintTracker.value,
+      pathHints: [...hintTracker.value.pathHints, { ...hint }],
+    };
+    recordHistoryFromSnapshot(previousSnapshot);
+    publishSyncOperation({ type: 'hints.path.add', hint }, options);
+  }
+
+  function removePathHint(index: number, options?: MutationOptions) {
+    const previousSnapshot = captureSnapshotForMutation(options);
+    const next = [...hintTracker.value.pathHints];
+    if (index < 0 || index >= next.length) return;
+    next.splice(index, 1);
+    hintTracker.value = { ...hintTracker.value, pathHints: next };
+    recordHistoryFromSnapshot(previousSnapshot);
+    publishSyncOperation({ type: 'hints.path.remove', index }, options);
+  }
+
+  function addAlwaysHint(
+    hint: RecordedItemExactHint,
+    options?: MutationOptions,
+  ) {
+    const previousSnapshot = captureSnapshotForMutation(options);
+    hintTracker.value = {
+      ...hintTracker.value,
+      alwaysHints: [...hintTracker.value.alwaysHints, { ...hint }],
+    };
+    recordHistoryFromSnapshot(previousSnapshot);
+    publishSyncOperation({ type: 'hints.always.add', hint }, options);
+  }
+
+  function removeAlwaysHint(index: number, options?: MutationOptions) {
+    const previousSnapshot = captureSnapshotForMutation(options);
+    const next = [...hintTracker.value.alwaysHints];
+    if (index < 0 || index >= next.length) return;
+    next.splice(index, 1);
+    hintTracker.value = { ...hintTracker.value, alwaysHints: next };
+    recordHistoryFromSnapshot(previousSnapshot);
+    publishSyncOperation({ type: 'hints.always.remove', index }, options);
+  }
+
+  function addSometimesHint(
+    hint: RecordedItemExactHint,
+    options?: MutationOptions,
+  ) {
+    const previousSnapshot = captureSnapshotForMutation(options);
+    hintTracker.value = {
+      ...hintTracker.value,
+      sometimesHints: [...hintTracker.value.sometimesHints, { ...hint }],
+    };
+    recordHistoryFromSnapshot(previousSnapshot);
+    publishSyncOperation({ type: 'hints.sometimes.add', hint }, options);
+  }
+
+  function removeSometimesHint(index: number, options?: MutationOptions) {
+    const previousSnapshot = captureSnapshotForMutation(options);
+    const next = [...hintTracker.value.sometimesHints];
+    if (index < 0 || index >= next.length) return;
+    next.splice(index, 1);
+    hintTracker.value = { ...hintTracker.value, sometimesHints: next };
+    recordHistoryFromSnapshot(previousSnapshot);
+    publishSyncOperation({ type: 'hints.sometimes.remove', index }, options);
+  }
+
+  function addRegionHint(
+    hint: RecordedItemRegionHint,
+    options?: MutationOptions,
+  ) {
+    const previousSnapshot = captureSnapshotForMutation(options);
+    hintTracker.value = {
+      ...hintTracker.value,
+      regionHints: [...hintTracker.value.regionHints, { ...hint }],
+    };
+    recordHistoryFromSnapshot(previousSnapshot);
+    publishSyncOperation({ type: 'hints.region.add', hint }, options);
+  }
+
+  function removeRegionHint(index: number, options?: MutationOptions) {
+    const previousSnapshot = captureSnapshotForMutation(options);
+    const next = [...hintTracker.value.regionHints];
+    if (index < 0 || index >= next.length) return;
+    next.splice(index, 1);
+    hintTracker.value = { ...hintTracker.value, regionHints: next };
+    recordHistoryFromSnapshot(previousSnapshot);
+    publishSyncOperation({ type: 'hints.region.remove', index }, options);
+  }
+
+  function addFoolishHint(
+    hint: RecordedFoolishHint,
+    options?: MutationOptions,
+  ) {
+    const previousSnapshot = captureSnapshotForMutation(options);
+    hintTracker.value = {
+      ...hintTracker.value,
+      foolishHints: [...hintTracker.value.foolishHints, { ...hint }],
+    };
+    recordHistoryFromSnapshot(previousSnapshot);
+    publishSyncOperation({ type: 'hints.foolish.add', hint }, options);
+  }
+
+  function removeFoolishHint(index: number, options?: MutationOptions) {
+    const previousSnapshot = captureSnapshotForMutation(options);
+    const next = [...hintTracker.value.foolishHints];
+    if (index < 0 || index >= next.length) return;
+    next.splice(index, 1);
+    hintTracker.value = { ...hintTracker.value, foolishHints: next };
+    recordHistoryFromSnapshot(previousSnapshot);
+    publishSyncOperation({ type: 'hints.foolish.remove', index }, options);
+  }
+
+  function setHintTrackerState(
+    state: HintTrackerState,
+    options?: MutationOptions,
+  ) {
+    const previousSnapshot = captureSnapshotForMutation(options);
+    hintTracker.value = {
+      pathHints: state.pathHints.map((h) => ({ ...h })),
+      alwaysHints: state.alwaysHints.map((h) => ({ ...h })),
+      sometimesHints: state.sometimesHints.map((h) => ({ ...h })),
+      regionHints: state.regionHints.map((h) => ({ ...h })),
+      foolishHints: state.foolishHints.map((h) => ({ ...h })),
+    };
+    recordHistoryFromSnapshot(previousSnapshot);
+    publishSyncOperation({ type: 'hints.set_full', state }, options);
+  }
+
+  function addHintProtectedLocationIds(
+    ids: string[],
+    options?: MutationOptions,
+  ) {
+    if (ids.length === 0) return;
+    const next = new Set(hintProtectedLocationIds.value);
+    for (const id of ids) {
+      if (id) next.add(id);
+    }
+    const nextArray = Array.from(next);
+    if (nextArray.length === hintProtectedLocationIds.value.length) return;
+    const previousSnapshot = captureSnapshotForMutation(options);
+    hintProtectedLocationIds.value = nextArray;
+    recordHistoryFromSnapshot(previousSnapshot);
+    publishSyncOperation(
+      { type: 'hints.protected_location_ids.set', ids: nextArray },
+      options,
+    );
+  }
+
+  function removeHintProtectedLocationIds(
+    ids: string[],
+    options?: MutationOptions,
+  ) {
+    if (ids.length === 0) return;
+    const next = new Set(hintProtectedLocationIds.value);
+    for (const id of ids) {
+      next.delete(id);
+    }
+    const nextArray = Array.from(next);
+    if (nextArray.length === hintProtectedLocationIds.value.length) return;
+    const previousSnapshot = captureSnapshotForMutation(options);
+    hintProtectedLocationIds.value = nextArray;
+    recordHistoryFromSnapshot(previousSnapshot);
+    publishSyncOperation(
+      { type: 'hints.protected_location_ids.set', ids: nextArray },
+      options,
+    );
+  }
+
   return {
     tracker,
     inventoryById,
     collectedLocationIds,
     preCompletedDungeons,
     junkLocationIds,
+    hintTracker,
+    hintProtectedLocationIds,
     songEvents,
     shopPrices,
     entranceOverrides,
@@ -2345,6 +2614,7 @@ export const useOoTMMSessionStore = defineStore('ootmm-session', () => {
     needsLegacyCrossWarpOotSynthesis,
     needsLegacyCrossWarpMmSynthesis,
     spoilerPlacements,
+    hintsText,
     spoilerItemToLocationIds,
     spoilerLocationToItemId,
     spoilerItemToRegion,
@@ -2400,6 +2670,7 @@ export const useOoTMMSessionStore = defineStore('ootmm-session', () => {
     setNeedsLegacyCrossWarpMmSynthesis,
     setSpoilerFishItemIds,
     setSpoilerPlacements,
+    setHintsText,
     applyPreCompletedDungeons,
     applySongEvents,
     applyShopPrices,
@@ -2411,5 +2682,22 @@ export const useOoTMMSessionStore = defineStore('ootmm-session', () => {
     recomputeReachability,
     resetSessionStateToDefaults,
     fillInventoryForDebugActivateAll,
+    // Hint tracker state
+    hintTracker,
+    hintProtectedLocationIds,
+    // Hint tracker mutations
+    addPathHint,
+    removePathHint,
+    addAlwaysHint,
+    removeAlwaysHint,
+    addSometimesHint,
+    removeSometimesHint,
+    addRegionHint,
+    removeRegionHint,
+    addFoolishHint,
+    removeFoolishHint,
+    setHintTrackerState,
+    addHintProtectedLocationIds,
+    removeHintProtectedLocationIds,
   };
 });

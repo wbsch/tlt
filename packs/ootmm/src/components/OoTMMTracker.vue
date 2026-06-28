@@ -11,6 +11,7 @@ import OoTMMInventory from './OoTMMInventory.vue';
 import OoTMMLocations from './OoTMMLocations.vue';
 import OoTMMEntrances from './OoTMMEntrances.vue';
 import OoTMMSpoilerLookup from './OoTMMSpoilerLookup.vue';
+import HintTrackerPanel from './HintTrackerPanel.vue';
 import OoTMMSettings from './OoTMMSettings.vue';
 import OoTMMItemGrid from './OoTMMItemGrid.vue';
 import OoTMMWorld from './OoTMMWorld.vue';
@@ -742,8 +743,11 @@ type SelectedGamesSetting = 'ootmm' | 'oot' | 'mm';
 const RIGHT_SIDEBAR_TABS: Array<{ id: RightSidebarTab; label: string }> = [
   { id: 'locations', label: 'Locations' },
   { id: 'entrances', label: 'Entrances' },
-  { id: 'spoiler', label: 'Spoiler' },
+  { id: 'hints', label: 'Hints' },
 ];
+const hintsTabLabel = computed(() =>
+  hasImportedSpoilerLog.value ? 'Hints & Spoiler' : 'Hints',
+);
 const DEFAULT_MAP_ID = 'oot_kokiri_forest';
 
 function getPreferredActiveMapId(availableMapDefs: readonly MapDef[]): string {
@@ -911,7 +915,7 @@ const availableRightSidebarTabs = computed(() =>
     (tab) =>
       tab.id === 'locations' ||
       (tab.id === 'entrances' && hasAvailableEntranceSections.value) ||
-      (tab.id === 'spoiler' && hasImportedSpoilerLog.value),
+      tab.id === 'hints', // Always show the hints tab
   ),
 );
 const shouldShowRightSidebarTabs = computed(
@@ -921,7 +925,9 @@ const activeVisibleRightSidebarTab = computed<RightSidebarTab>(() =>
   activeRightSidebarTab.value === 'entrances' &&
   !hasAvailableEntranceSections.value
     ? 'locations'
-    : activeRightSidebarTab.value,
+    : activeRightSidebarTab.value === 'spoiler'
+      ? 'hints'
+      : activeRightSidebarTab.value,
 );
 const collectedLocationIdSet = computed(
   () => new Set(collectedLocationIds.value),
@@ -1633,6 +1639,11 @@ function applyAutotrackerLocationsFrame({
     // during an overwrite, since the autotracker does not track them separately.
     const protectedIds = new Set(locationIds);
     for (const id of junkLocationIds.value) {
+      protectedIds.add(id);
+    }
+
+    // Also ensure hint-protected locations (Foolish/Junk hints) remain collected.
+    for (const id of sessionStore.hintProtectedLocationIds) {
       protectedIds.add(id);
     }
 
@@ -4064,6 +4075,7 @@ async function handleSpoilerFile(file: File) {
       return;
     }
 
+    sessionStore.setHintsText(parsed.hintsText ?? null);
     sessionStore.setSpoilerLogImportState(true, parsed.ootmmVersion ?? null);
 
     if (requestedAutotrackerMode) {
@@ -5589,7 +5601,7 @@ onBeforeUnmount(() => {
                 :class="{ active: activeVisibleRightSidebarTab === tab.id }"
                 @click="uiStore.setActiveRightSidebarTab(tab.id)"
               >
-                {{ tab.label }}
+                {{ tab.id === 'hints' ? hintsTabLabel : tab.label }}
               </button>
             </div>
 
@@ -5606,8 +5618,8 @@ onBeforeUnmount(() => {
                 class="map-entrances"
               />
 
-              <OoTMMSpoilerLookup
-                v-else-if="activeVisibleRightSidebarTab === 'spoiler'"
+              <HintTrackerPanel
+                v-else-if="activeVisibleRightSidebarTab === 'hints'"
                 class="spoiler-lookup"
               />
             </div>

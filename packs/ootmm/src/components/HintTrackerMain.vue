@@ -1,0 +1,1257 @@
+<script setup lang="ts">
+import { computed, ref, watch } from 'vue';
+import { useOoTMMSessionStore } from '../stores/ootmmSession';
+import { storeToRefs } from 'pinia';
+import { getRegionOptions, getRegionDisplayName } from '../data/regionNames';
+import {
+  ALWAYS_HINT_CHECKS,
+  SOMETIMES_HINT_CHECKS,
+} from '../data/hintCheckLocations';
+import type {
+  PathSubType,
+  RecordedPathHint,
+  RecordedItemExactHint,
+  RecordedItemRegionHint,
+  RecordedFoolishHint,
+} from '../data/hintTypes';
+import HintItemPicker from './HintItemPicker.vue';
+import HintMissingSummary from './HintMissingSummary.vue';
+import {
+  parseSpoilerHints,
+  type ParsedHintsData,
+} from '../utils/hintSpoilerAnalysis';
+import { getItemIcon } from '../data/itemIcons';
+import { GI_ITEM_LIST } from '../data/giItems';
+import { ITEM_DATABASE } from '../data/items';
+
+const sessionStore = useOoTMMSessionStore();
+const {
+  hintTracker,
+  hintProtectedLocationIds,
+  spoilerPlacements,
+  collectedLocationIds,
+  hasImportedSpoilerLog,
+  inventoryById,
+  hintsText,
+} = storeToRefs(sessionStore);
+
+// ── Collapsible sections ──
+const isPathCollapsed = ref(false);
+const isAlwaysCollapsed = ref(true);
+const isSometimesCollapsed = ref(true);
+const isRegionCollapsed = ref(true);
+const isFoolishCollapsed = ref(true);
+
+// ── Add form state ──
+// Path
+const pathFormRegion = ref('');
+const pathFormSubType = ref<PathSubType>('woth');
+const pathFormSubId = ref<number>(0);
+const isPathFormOpen = ref(false);
+
+// Always
+const alwaysFormLocation = ref('');
+const alwaysFormItem = ref('');
+const isAlwaysFormOpen = ref(false);
+
+// Sometimes
+const sometimesFormLocation = ref('');
+const sometimesFormItem = ref('');
+const isSometimesFormOpen = ref(false);
+
+// Region
+const regionFormRegion = ref('');
+const regionFormItem = ref('');
+const isRegionFormOpen = ref(false);
+
+// Foolish
+const foolishFormRegion = ref('');
+const isFoolishFormOpen = ref(false);
+
+// ── Region options ──
+const regionOptions = computed(() => getRegionOptions());
+
+// ── Spoiler log hint data (for filtering combo options) ──
+const parsedSpoilerHints = computed<ParsedHintsData | null>(() => {
+  if (!hintsText.value) return null;
+  try {
+    return parseSpoilerHints(hintsText.value);
+  } catch {
+    return null;
+  }
+});
+
+// Build map: region display name → region ID for reverse lookup
+function buildRegionNameToIdMap(): Map<string, string> {
+  const map = new Map<string, string>();
+  for (const opt of getRegionOptions()) {
+    map.set(opt.label, opt.value);
+  }
+  return map;
+}
+
+/** Filter region options to only those present in the spoiler log for the given category. */
+function filterRegionsBySpoiler(
+  availableNames: Set<string> | undefined,
+): boolean {
+  if (
+    !hasImportedSpoilerLog.value ||
+    !availableNames ||
+    availableNames.size === 0
+  ) {
+    return false;
+  }
+  return true;
+}
+
+/** Resolve spoiler region display names to region IDs. */
+function getRegionIdsFromDisplayNames(names: Set<string>): Set<string> {
+  const nameToId = buildRegionNameToIdMap();
+  const ids = new Set<string>();
+  for (const name of names) {
+    const id = nameToId.get(name);
+    if (id) ids.add(id);
+  }
+  return ids;
+}
+
+// ── Filtered options (when spoiler log is loaded) ──
+const regionOptionsForPath = computed(() => {
+  if (!parsedSpoilerHints.value?.availableRegionsForPath?.size) {
+    return regionOptions.value;
+  }
+  const availableIds = getRegionIdsFromDisplayNames(
+    parsedSpoilerHints.value.availableRegionsForPath,
+  );
+  if (availableIds.size === 0) return regionOptions.value;
+  return regionOptions.value.filter((opt) => availableIds.has(opt.value));
+});
+
+const regionOptionsForRegion = computed(() => {
+  if (!parsedSpoilerHints.value?.availableRegionsForRegion?.size) {
+    return regionOptions.value;
+  }
+  const availableIds = getRegionIdsFromDisplayNames(
+    parsedSpoilerHints.value.availableRegionsForRegion,
+  );
+  if (availableIds.size === 0) return regionOptions.value;
+  return regionOptions.value.filter((opt) => availableIds.has(opt.value));
+});
+
+const regionOptionsForFoolish = computed(() => {
+  if (!parsedSpoilerHints.value?.availableRegionsForFoolish?.size) {
+    return regionOptions.value;
+  }
+  const availableIds = getRegionIdsFromDisplayNames(
+    parsedSpoilerHints.value.availableRegionsForFoolish,
+  );
+  if (availableIds.size === 0) return regionOptions.value;
+  return regionOptions.value.filter((opt) => availableIds.has(opt.value));
+});
+
+// ── Path subtype options ──
+interface SubTypeOption {
+  value: PathSubType;
+  label: string;
+}
+const PATH_SUBTYPE_OPTIONS: SubTypeOption[] = [
+  { value: 'woth', label: 'Way of the Hero' },
+  { value: 'triforce', label: 'Triforce' },
+  { value: 'dungeon', label: 'Dungeon' },
+  { value: 'boss', label: 'Boss' },
+  { value: 'end-boss', label: 'End Boss' },
+  { value: 'event', label: 'Event' },
+];
+
+// ── Path subId options per subtype ──
+interface SubIdOption {
+  value: number;
+  label: string;
+}
+
+const PATH_SUBID_OPTIONS: Record<PathSubType, SubIdOption[]> = {
+  woth: [],
+  triforce: [
+    { value: 0, label: 'Power' },
+    { value: 1, label: 'Courage' },
+    { value: 2, label: 'Wisdom' },
+  ],
+  dungeon: [
+    { value: 0, label: 'Deku Tree' },
+    { value: 1, label: "Dodongo's Cavern" },
+    { value: 2, label: "Jabu-Jabu's Belly" },
+    { value: 3, label: 'Forest Temple' },
+    { value: 4, label: 'Fire Temple' },
+    { value: 5, label: 'Water Temple' },
+    { value: 6, label: 'Shadow Temple' },
+    { value: 7, label: 'Spirit Temple' },
+    { value: 8, label: 'Bottom of the Well' },
+    { value: 9, label: 'Ice Cavern' },
+    { value: 10, label: "Gerudo's Training Grounds" },
+    { value: 11, label: "Ganon's Castle" },
+    { value: 12, label: 'Woodfall Temple' },
+    { value: 13, label: 'Snowhead Temple' },
+    { value: 14, label: 'Great Bay Temple' },
+    { value: 15, label: 'Stone Tower Temple' },
+  ],
+  boss: [
+    { value: 0, label: 'Gohma' },
+    { value: 1, label: 'King Dodongo' },
+    { value: 2, label: 'Barinade' },
+    { value: 3, label: 'Phantom Ganon' },
+    { value: 4, label: 'Volvagia' },
+    { value: 5, label: 'Morpha' },
+    { value: 6, label: 'Bongo-Bongo' },
+    { value: 7, label: 'Twinrova' },
+    { value: 8, label: 'Odolwa' },
+    { value: 9, label: 'Goht' },
+    { value: 10, label: 'Gyorg' },
+    { value: 11, label: 'Twinmold' },
+  ],
+  'end-boss': [
+    { value: 0, label: 'Ganon' },
+    { value: 1, label: 'Majora' },
+  ],
+  event: [
+    { value: 0, label: 'Time Travel' },
+    { value: 1, label: 'Rainbow Bridge' },
+    { value: 2, label: 'Termina' },
+    { value: 3, label: 'Moon' },
+  ],
+};
+
+const currentSubIdOptions = computed(() => {
+  return PATH_SUBID_OPTIONS[pathFormSubType.value] ?? [];
+});
+
+// Reset subId when subtype changes
+watch(pathFormSubType, () => {
+  const options = PATH_SUBID_OPTIONS[pathFormSubType.value] ?? [];
+  if (options.length > 0) {
+    pathFormSubId.value = options[0].value;
+  } else {
+    pathFormSubId.value = 0;
+  }
+});
+
+// ── Path subtype options (filtered by spoiler log) ──
+const pathSubTypeOptions = computed(() => {
+  const available = parsedSpoilerHints.value?.availablePathSubTypes;
+  if (!available || available.size === 0) return PATH_SUBTYPE_OPTIONS;
+  return PATH_SUBTYPE_OPTIONS.filter((opt) => available.has(opt.value));
+});
+
+// ── Always/Sometimes location options ──
+const alwaysLocationOptions = computed(() =>
+  ALWAYS_HINT_CHECKS.map((c) => ({
+    value: c.id,
+    label: c.locationName,
+  })),
+);
+const sometimesLocationOptions = computed(() =>
+  SOMETIMES_HINT_CHECKS.map((c) => ({
+    value: c.id,
+    label: c.locationName,
+  })),
+);
+
+// ── Items in region (for path hints) ──
+const regionToItemsMap = computed(() => {
+  const map = new Map<
+    string,
+    Array<{
+      itemId: string;
+      itemName: string;
+      iconPath: string;
+      locationName: string;
+    }>
+  >();
+  if (!spoilerPlacements.value || !hasImportedSpoilerLog.value) return map;
+
+  for (const p of spoilerPlacements.value) {
+    if (!p.region) continue;
+    const entry = map.get(p.region);
+    const itemEntry = {
+      itemId: p.itemId,
+      itemName: p.itemName,
+      iconPath: getItemIcon(p.itemId),
+      locationName: p.locationName,
+    };
+    if (entry) {
+      entry.push(itemEntry);
+    } else {
+      map.set(p.region, [itemEntry]);
+    }
+  }
+  return map;
+});
+
+const collectedLocationIdSet = computed(
+  () => new Set(collectedLocationIds.value),
+);
+
+function getItemsInRegion(regionId: string): Array<{
+  itemId: string;
+  itemName: string;
+  iconPath: string;
+  locationName: string;
+}> {
+  const all = regionToItemsMap.value.get(regionId) ?? [];
+  // Filter to only items that have been collected
+  return all.filter((item) => {
+    // Check if any placement with this item and region is collected
+    return spoilerPlacements.value.some(
+      (p) =>
+        p.region === regionId &&
+        p.itemId === item.itemId &&
+        collectedLocationIdSet.value.has(p.locationId),
+    );
+  });
+}
+
+// ── Actions ──
+
+// ── Item name lookup ──
+const itemNameById = computed(() => {
+  const map = new Map<string, string>();
+  for (const item of GI_ITEM_LIST) map.set(item.id, item.name);
+  for (const item of ITEM_DATABASE) {
+    if (!map.has(item.id)) map.set(item.id, item.name);
+  }
+  return map;
+});
+
+function resolveItemName(itemId: string): string {
+  return itemNameById.value.get(itemId) ?? itemId;
+}
+
+function addPathHint() {
+  if (!pathFormRegion.value) return;
+  const hint: RecordedPathHint = {
+    region: pathFormRegion.value,
+    subType: pathFormSubType.value,
+    subId: pathFormSubType.value !== 'woth' ? pathFormSubId.value : undefined,
+  };
+  sessionStore.addPathHint(hint);
+  // Reset form
+  pathFormRegion.value = '';
+  pathFormSubType.value = 'woth';
+  pathFormSubId.value = 0;
+  isPathFormOpen.value = false;
+}
+
+function removePathHint(index: number) {
+  sessionStore.removePathHint(index);
+}
+
+function addAlwaysHint() {
+  if (!alwaysFormLocation.value || !alwaysFormItem.value) return;
+  const hint: RecordedItemExactHint = {
+    location: alwaysFormLocation.value,
+    itemId: alwaysFormItem.value,
+  };
+  sessionStore.addAlwaysHint(hint);
+
+  // If Junk, set the associated locations to collected and protect them
+  if (alwaysFormItem.value === 'JUNK') {
+    const checkDef = ALWAYS_HINT_CHECKS.find(
+      (c) => c.id === alwaysFormLocation.value,
+    );
+    if (checkDef && checkDef.locationCodes.length > 0) {
+      const nextCollected = new Set(collectedLocationIds.value);
+      for (const code of checkDef.locationCodes) {
+        nextCollected.add(code);
+      }
+      sessionStore.setCollectedLocationIds(Array.from(nextCollected));
+      sessionStore.addHintProtectedLocationIds(checkDef.locationCodes);
+    }
+  }
+
+  alwaysFormLocation.value = '';
+  alwaysFormItem.value = '';
+  isAlwaysFormOpen.value = false;
+}
+
+function removeAlwaysHint(index: number) {
+  const hint = hintTracker.value.alwaysHints[index];
+  if (!hint) return;
+
+  // If it was a Junk hint with protected locations, ask the user
+  if (hint.itemId === 'JUNK') {
+    const checkDef = ALWAYS_HINT_CHECKS.find((c) => c.id === hint.location);
+    if (checkDef && checkDef.locationCodes.length > 0) {
+      const keepCollected = window.confirm(
+        'This hint has locations set to collected. Keep them collected? ' +
+          'Click "OK" to keep them collected, or "Cancel" to revert them to uncollected.',
+      );
+      if (!keepCollected) {
+        // Revert: remove both protection and collected state
+        sessionStore.removeHintProtectedLocationIds(checkDef.locationCodes);
+        const nextCollected = new Set(collectedLocationIds.value);
+        for (const code of checkDef.locationCodes) {
+          nextCollected.delete(code);
+        }
+        sessionStore.setCollectedLocationIds(Array.from(nextCollected));
+      }
+      // If keepCollected, the location IDs stay in hintProtectedLocationIds
+    }
+  }
+
+  sessionStore.removeAlwaysHint(index);
+}
+
+function addSometimesHint() {
+  if (!sometimesFormLocation.value || !sometimesFormItem.value) return;
+  const hint: RecordedItemExactHint = {
+    location: sometimesFormLocation.value,
+    itemId: sometimesFormItem.value,
+  };
+  sessionStore.addSometimesHint(hint);
+
+  // If Junk, set the associated locations to collected and protect them
+  if (sometimesFormItem.value === 'JUNK') {
+    const checkDef = SOMETIMES_HINT_CHECKS.find(
+      (c) => c.id === sometimesFormLocation.value,
+    );
+    if (checkDef && checkDef.locationCodes.length > 0) {
+      const nextCollected = new Set(collectedLocationIds.value);
+      for (const code of checkDef.locationCodes) {
+        nextCollected.add(code);
+      }
+      sessionStore.setCollectedLocationIds(Array.from(nextCollected));
+      sessionStore.addHintProtectedLocationIds(checkDef.locationCodes);
+    }
+  }
+
+  sometimesFormLocation.value = '';
+  sometimesFormItem.value = '';
+  isSometimesFormOpen.value = false;
+}
+
+function removeSometimesHint(index: number) {
+  const hint = hintTracker.value.sometimesHints[index];
+  if (!hint) return;
+
+  // If it was a Junk hint with protected locations
+  if (hint.itemId === 'JUNK') {
+    const checkDef = SOMETIMES_HINT_CHECKS.find((c) => c.id === hint.location);
+    if (checkDef && checkDef.locationCodes.length > 0) {
+      const keepCollected = window.confirm(
+        'This hint has locations set to collected. Keep them collected? ' +
+          'Click "OK" to keep them collected, or "Cancel" to revert them to uncollected.',
+      );
+      if (!keepCollected) {
+        // Revert: remove both protection and collected state
+        sessionStore.removeHintProtectedLocationIds(checkDef.locationCodes);
+        const nextCollected = new Set(collectedLocationIds.value);
+        for (const code of checkDef.locationCodes) {
+          nextCollected.delete(code);
+        }
+        sessionStore.setCollectedLocationIds(Array.from(nextCollected));
+      }
+      // If keepCollected, the location IDs stay in hintProtectedLocationIds
+    }
+  }
+
+  sessionStore.removeSometimesHint(index);
+}
+
+function addRegionHint() {
+  if (!regionFormRegion.value || !regionFormItem.value) return;
+  const hint: RecordedItemRegionHint = {
+    region: regionFormRegion.value,
+    itemId: regionFormItem.value,
+  };
+  sessionStore.addRegionHint(hint);
+
+  regionFormRegion.value = '';
+  regionFormItem.value = '';
+  isRegionFormOpen.value = false;
+}
+
+function removeRegionHint(index: number) {
+  sessionStore.removeRegionHint(index);
+}
+
+function addFoolishHint() {
+  if (!foolishFormRegion.value) return;
+  const hint: RecordedFoolishHint = {
+    region: foolishFormRegion.value,
+  };
+  sessionStore.addFoolishHint(hint);
+
+  // Set all locations in this region to collected
+  // We use spoiler placements to find locations in this region
+  if (hasImportedSpoilerLog.value && spoilerPlacements.value.length > 0) {
+    const regionLocationIds = spoilerPlacements.value
+      .filter((p) => p.region === foolishFormRegion.value)
+      .map((p) => p.locationId)
+      .filter((id) => id);
+
+    if (regionLocationIds.length > 0) {
+      const nextCollected = new Set(collectedLocationIds.value);
+      for (const id of regionLocationIds) {
+        nextCollected.add(id);
+      }
+      sessionStore.setCollectedLocationIds(Array.from(nextCollected));
+      sessionStore.addHintProtectedLocationIds(regionLocationIds);
+    }
+  }
+
+  foolishFormRegion.value = '';
+  isFoolishFormOpen.value = false;
+}
+
+function removeFoolishHint(index: number) {
+  const hint = hintTracker.value.foolishHints[index];
+  if (!hint) return;
+
+  // Find location IDs for this region
+  const regionLocationIds = spoilerPlacements.value
+    .filter((p) => p.region === hint.region)
+    .map((p) => p.locationId)
+    .filter((id) => id);
+
+  if (regionLocationIds.length > 0) {
+    const keepCollected = window.confirm(
+      'This Foolish hint marked all locations in this region as collected. ' +
+        'Keep them collected? ' +
+        'Click "OK" to keep them collected, or "Cancel" to revert them to uncollected.',
+    );
+    if (!keepCollected) {
+      // Revert: remove both protection and collected state
+      sessionStore.removeHintProtectedLocationIds(regionLocationIds);
+      const nextCollected = new Set(collectedLocationIds.value);
+      for (const id of regionLocationIds) {
+        nextCollected.delete(id);
+      }
+      sessionStore.setCollectedLocationIds(Array.from(nextCollected));
+    }
+    // If keepCollected, the location IDs stay in hintProtectedLocationIds
+  }
+
+  sessionStore.removeFoolishHint(index);
+}
+</script>
+
+<template>
+  <div class="hint-tracker-main">
+    <!-- Missing Summary (only with spoiler log) -->
+    <HintMissingSummary v-if="hasImportedSpoilerLog" />
+
+    <!-- ── Path / Way of the Hero ── -->
+    <div class="hint-category">
+      <button
+        class="hint-category__header"
+        @click="isPathCollapsed = !isPathCollapsed"
+      >
+        <span class="hint-category__toggle">{{
+          isPathCollapsed ? '▸' : '▾'
+        }}</span>
+        <span class="hint-category__title">Path / Way of the Hero</span>
+        <span class="hint-category__count"
+          >({{ hintTracker.pathHints.length }})</span
+        >
+      </button>
+
+      <div v-if="!isPathCollapsed" class="hint-category__body">
+        <!-- Add form -->
+        <div v-if="isPathFormOpen" class="hint-add-form">
+          <div class="hint-add-form__field">
+            <label>Region</label>
+            <select v-model="pathFormRegion" class="hint-combobox">
+              <option value="" disabled>Select region...</option>
+              <option
+                v-for="opt in regionOptionsForPath"
+                :key="opt.value"
+                :value="opt.value"
+              >
+                {{ opt.label }}
+              </option>
+            </select>
+          </div>
+          <div class="hint-add-form__field">
+            <label>Subtype</label>
+            <select v-model="pathFormSubType" class="hint-combobox">
+              <option
+                v-for="opt in pathSubTypeOptions"
+                :key="opt.value"
+                :value="opt.value"
+              >
+                {{ opt.label }}
+              </option>
+            </select>
+          </div>
+          <div
+            v-if="currentSubIdOptions.length > 0"
+            class="hint-add-form__field"
+          >
+            <label>Detail</label>
+            <select v-model="pathFormSubId" class="hint-combobox">
+              <option
+                v-for="opt in currentSubIdOptions"
+                :key="opt.value"
+                :value="opt.value"
+              >
+                {{ opt.label }}
+              </option>
+            </select>
+          </div>
+          <div class="hint-add-form__actions">
+            <button
+              class="hint-btn hint-btn--primary"
+              @click="addPathHint"
+              :disabled="!pathFormRegion"
+            >
+              Save
+            </button>
+            <button
+              class="hint-btn hint-btn--secondary"
+              @click="isPathFormOpen = false"
+            >
+              Cancel
+            </button>
+          </div>
+        </div>
+
+        <!-- Recorded hints -->
+        <div
+          v-for="(hint, idx) in hintTracker.pathHints"
+          :key="idx"
+          class="hint-row"
+        >
+          <div class="hint-row__info">
+            <strong>{{ getRegionDisplayName(hint.region) }}</strong>
+            <span class="hint-row__subtype">{{
+              pathSubTypeOptions.find((s) => s.value === hint.subType)?.label ??
+              hint.subType
+            }}</span>
+            <span v-if="hint.subId !== undefined" class="hint-row__subid">{{
+              PATH_SUBID_OPTIONS[hint.subType]?.find(
+                (o) => o.value === hint.subId,
+              )?.label ?? `#${hint.subId}`
+            }}</span>
+          </div>
+          <!-- Items in region (spoiler-only, collected items) -->
+          <div v-if="hasImportedSpoilerLog" class="hint-row__items">
+            <div
+              v-for="(item, iidx) in getItemsInRegion(hint.region)"
+              :key="iidx"
+              class="hint-row__item"
+            >
+              <img
+                v-if="item.iconPath"
+                :src="item.iconPath"
+                class="hint-item-icon"
+                :alt="item.itemName"
+              />
+              <span class="hint-item-name">{{ item.itemName }}</span>
+            </div>
+            <div
+              v-if="getItemsInRegion(hint.region).length === 0"
+              class="hint-row__empty"
+            >
+              No collected items in this region yet
+            </div>
+          </div>
+          <button
+            class="hint-row__delete"
+            @click="removePathHint(idx)"
+            title="Delete hint"
+          >
+            🗑
+          </button>
+        </div>
+
+        <button
+          v-if="!isPathFormOpen"
+          class="hint-btn hint-btn--add"
+          @click="isPathFormOpen = true"
+        >
+          + Add Path Hint
+        </button>
+      </div>
+    </div>
+
+    <!-- ── Always ── -->
+    <div class="hint-category">
+      <button
+        class="hint-category__header"
+        @click="isAlwaysCollapsed = !isAlwaysCollapsed"
+      >
+        <span class="hint-category__toggle">{{
+          isAlwaysCollapsed ? '▸' : '▾'
+        }}</span>
+        <span class="hint-category__title">Always</span>
+        <span class="hint-category__count"
+          >({{ hintTracker.alwaysHints.length }})</span
+        >
+      </button>
+
+      <div v-if="!isAlwaysCollapsed" class="hint-category__body">
+        <div v-if="isAlwaysFormOpen" class="hint-add-form">
+          <div class="hint-add-form__field">
+            <label>Check Location</label>
+            <select v-model="alwaysFormLocation" class="hint-combobox">
+              <option value="" disabled>Select location...</option>
+              <option
+                v-for="opt in alwaysLocationOptions"
+                :key="opt.value"
+                :value="opt.value"
+              >
+                {{ opt.label }}
+              </option>
+            </select>
+          </div>
+          <div class="hint-add-form__field">
+            <label>Item</label>
+            <HintItemPicker v-model="alwaysFormItem" />
+          </div>
+          <div class="hint-add-form__actions">
+            <button
+              class="hint-btn hint-btn--primary"
+              @click="addAlwaysHint"
+              :disabled="!alwaysFormLocation || !alwaysFormItem"
+            >
+              Save
+            </button>
+            <button
+              class="hint-btn hint-btn--secondary"
+              @click="isAlwaysFormOpen = false"
+            >
+              Cancel
+            </button>
+          </div>
+        </div>
+
+        <div
+          v-for="(hint, idx) in hintTracker.alwaysHints"
+          :key="idx"
+          class="hint-row"
+        >
+          <div class="hint-row__info">
+            <strong>{{
+              ALWAYS_HINT_CHECKS.find((c) => c.id === hint.location)
+                ?.locationName ?? hint.location
+            }}</strong>
+            <span v-if="hint.itemId === 'JUNK'" class="hint-row__junk"
+              >Junk</span
+            >
+            <template v-else>
+              <img
+                v-if="getItemIcon(hint.itemId)"
+                :src="getItemIcon(hint.itemId)"
+                class="hint-item-icon"
+                :alt="hint.itemId"
+              />
+              <span class="hint-row__item-name">{{
+                resolveItemName(hint.itemId)
+              }}</span>
+            </template>
+          </div>
+          <button
+            class="hint-row__delete"
+            @click="removeAlwaysHint(idx)"
+            title="Delete hint"
+          >
+            🗑
+          </button>
+        </div>
+
+        <button
+          v-if="!isAlwaysFormOpen"
+          class="hint-btn hint-btn--add"
+          @click="isAlwaysFormOpen = true"
+        >
+          + Add Always Hint
+        </button>
+      </div>
+    </div>
+
+    <!-- ── Sometimes ── -->
+    <div class="hint-category">
+      <button
+        class="hint-category__header"
+        @click="isSometimesCollapsed = !isSometimesCollapsed"
+      >
+        <span class="hint-category__toggle">{{
+          isSometimesCollapsed ? '▸' : '▾'
+        }}</span>
+        <span class="hint-category__title">Sometimes</span>
+        <span class="hint-category__count"
+          >({{ hintTracker.sometimesHints.length }})</span
+        >
+      </button>
+
+      <div v-if="!isSometimesCollapsed" class="hint-category__body">
+        <div v-if="isSometimesFormOpen" class="hint-add-form">
+          <div class="hint-add-form__field">
+            <label>Check Location</label>
+            <select v-model="sometimesFormLocation" class="hint-combobox">
+              <option value="" disabled>Select location...</option>
+              <option
+                v-for="opt in sometimesLocationOptions"
+                :key="opt.value"
+                :value="opt.value"
+              >
+                {{ opt.label }}
+              </option>
+            </select>
+          </div>
+          <div class="hint-add-form__field">
+            <label>Item</label>
+            <HintItemPicker v-model="sometimesFormItem" />
+          </div>
+          <div class="hint-add-form__actions">
+            <button
+              class="hint-btn hint-btn--primary"
+              @click="addSometimesHint"
+              :disabled="!sometimesFormLocation || !sometimesFormItem"
+            >
+              Save
+            </button>
+            <button
+              class="hint-btn hint-btn--secondary"
+              @click="isSometimesFormOpen = false"
+            >
+              Cancel
+            </button>
+          </div>
+        </div>
+
+        <div
+          v-for="(hint, idx) in hintTracker.sometimesHints"
+          :key="idx"
+          class="hint-row"
+        >
+          <div class="hint-row__info">
+            <strong>{{
+              SOMETIMES_HINT_CHECKS.find((c) => c.id === hint.location)
+                ?.locationName ?? hint.location
+            }}</strong>
+            <span v-if="hint.itemId === 'JUNK'" class="hint-row__junk"
+              >Junk</span
+            >
+            <template v-else>
+              <img
+                v-if="getItemIcon(hint.itemId)"
+                :src="getItemIcon(hint.itemId)"
+                class="hint-item-icon"
+                :alt="hint.itemId"
+              />
+              <span class="hint-row__item-name">{{
+                resolveItemName(hint.itemId)
+              }}</span>
+            </template>
+          </div>
+          <button
+            class="hint-row__delete"
+            @click="removeSometimesHint(idx)"
+            title="Delete hint"
+          >
+            🗑
+          </button>
+        </div>
+
+        <button
+          v-if="!isSometimesFormOpen"
+          class="hint-btn hint-btn--add"
+          @click="isSometimesFormOpen = true"
+        >
+          + Add Sometimes Hint
+        </button>
+      </div>
+    </div>
+
+    <!-- ── Region Hints (Playthrough + Item merged) ── -->
+    <div class="hint-category">
+      <button
+        class="hint-category__header"
+        @click="isRegionCollapsed = !isRegionCollapsed"
+      >
+        <span class="hint-category__toggle">{{
+          isRegionCollapsed ? '▸' : '▾'
+        }}</span>
+        <span class="hint-category__title">Region Hints</span>
+        <span class="hint-category__count"
+          >({{ hintTracker.regionHints.length }})</span
+        >
+      </button>
+
+      <div v-if="!isRegionCollapsed" class="hint-category__body">
+        <div v-if="isRegionFormOpen" class="hint-add-form">
+          <div class="hint-add-form__field">
+            <label>Region</label>
+            <select v-model="regionFormRegion" class="hint-combobox">
+              <option value="" disabled>Select region...</option>
+              <option
+                v-for="opt in regionOptionsForRegion"
+                :key="opt.value"
+                :value="opt.value"
+              >
+                {{ opt.label }}
+              </option>
+            </select>
+          </div>
+          <div class="hint-add-form__field">
+            <label>Item</label>
+            <HintItemPicker v-model="regionFormItem" />
+          </div>
+          <div class="hint-add-form__actions">
+            <button
+              class="hint-btn hint-btn--primary"
+              @click="addRegionHint"
+              :disabled="!regionFormRegion || !regionFormItem"
+            >
+              Save
+            </button>
+            <button
+              class="hint-btn hint-btn--secondary"
+              @click="isRegionFormOpen = false"
+            >
+              Cancel
+            </button>
+          </div>
+        </div>
+
+        <div
+          v-for="(hint, idx) in hintTracker.regionHints"
+          :key="idx"
+          class="hint-row"
+        >
+          <div class="hint-row__info">
+            <strong>{{ getRegionDisplayName(hint.region) }}</strong>
+            <span v-if="hint.itemId === 'JUNK'" class="hint-row__junk"
+              >Junk</span
+            >
+            <template v-else>
+              <img
+                v-if="getItemIcon(hint.itemId)"
+                :src="getItemIcon(hint.itemId)"
+                class="hint-item-icon"
+                :alt="hint.itemId"
+              />
+              <span class="hint-row__item-name">{{
+                resolveItemName(hint.itemId)
+              }}</span>
+            </template>
+          </div>
+          <button
+            class="hint-row__delete"
+            @click="removeRegionHint(idx)"
+            title="Delete hint"
+          >
+            🗑
+          </button>
+        </div>
+
+        <button
+          v-if="!isRegionFormOpen"
+          class="hint-btn hint-btn--add"
+          @click="isRegionFormOpen = true"
+        >
+          + Add Region Hint
+        </button>
+      </div>
+    </div>
+
+    <!-- ── Foolish ── -->
+    <div class="hint-category">
+      <button
+        class="hint-category__header"
+        @click="isFoolishCollapsed = !isFoolishCollapsed"
+      >
+        <span class="hint-category__toggle">{{
+          isFoolishCollapsed ? '▸' : '▾'
+        }}</span>
+        <span class="hint-category__title">Foolish</span>
+        <span class="hint-category__count"
+          >({{ hintTracker.foolishHints.length }})</span
+        >
+      </button>
+
+      <div v-if="!isFoolishCollapsed" class="hint-category__body">
+        <div v-if="isFoolishFormOpen" class="hint-add-form">
+          <div class="hint-add-form__field">
+            <label>Region</label>
+            <select v-model="foolishFormRegion" class="hint-combobox">
+              <option value="" disabled>Select region...</option>
+              <option
+                v-for="opt in regionOptionsForFoolish"
+                :key="opt.value"
+                :value="opt.value"
+              >
+                {{ opt.label }}
+              </option>
+            </select>
+          </div>
+          <div class="hint-add-form__actions">
+            <button
+              class="hint-btn hint-btn--primary"
+              @click="addFoolishHint"
+              :disabled="!foolishFormRegion"
+            >
+              Save
+            </button>
+            <button
+              class="hint-btn hint-btn--secondary"
+              @click="isFoolishFormOpen = false"
+            >
+              Cancel
+            </button>
+          </div>
+        </div>
+
+        <div
+          v-for="(hint, idx) in hintTracker.foolishHints"
+          :key="idx"
+          class="hint-row"
+        >
+          <div class="hint-row__info">
+            <strong>{{ getRegionDisplayName(hint.region) }}</strong>
+            <span class="hint-row__subtype">Foolish</span>
+          </div>
+          <button
+            class="hint-row__delete"
+            @click="removeFoolishHint(idx)"
+            title="Delete hint"
+          >
+            🗑
+          </button>
+        </div>
+
+        <button
+          v-if="!isFoolishFormOpen"
+          class="hint-btn hint-btn--add"
+          @click="isFoolishFormOpen = true"
+        >
+          + Add Foolish Hint
+        </button>
+      </div>
+    </div>
+  </div>
+</template>
+
+<style scoped>
+.hint-tracker-main {
+  padding: 8px;
+}
+
+/* ── Category sections ── */
+.hint-category {
+  margin-bottom: 4px;
+  border: 1px solid #3a3a3a;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.hint-category__header {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  width: 100%;
+  padding: 8px 10px;
+  background: #2a2a2a;
+  border: none;
+  color: #ccc;
+  cursor: pointer;
+  font-size: 0.85rem;
+  text-align: left;
+}
+
+.hint-category__header:hover {
+  background: #333;
+}
+
+.hint-category__toggle {
+  font-size: 0.75rem;
+  width: 12px;
+}
+
+.hint-category__title {
+  flex: 1;
+  font-weight: 600;
+}
+
+.hint-category__count {
+  color: #888;
+  font-size: 0.8rem;
+}
+
+.hint-category__body {
+  padding: 6px 10px 10px;
+  background: #222;
+}
+
+/* ── Add form ── */
+.hint-add-form {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 8px;
+  margin-bottom: 8px;
+  background: #2a2a2a;
+  border-radius: 4px;
+}
+
+.hint-add-form__field {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.hint-add-form__field label {
+  font-size: 0.75rem;
+  color: #999;
+}
+
+.hint-add-form__actions {
+  display: flex;
+  gap: 6px;
+  margin-top: 4px;
+}
+
+/* ── Combobox / select ── */
+.hint-combobox {
+  width: 100%;
+  padding: 4px 6px;
+  border: 1px solid #555;
+  border-radius: 3px;
+  background: #333;
+  color: #ddd;
+  font-size: 0.8rem;
+  outline: none;
+}
+
+.hint-combobox:focus {
+  border-color: #4a8ac0;
+}
+
+/* ── Buttons ── */
+.hint-btn {
+  padding: 4px 10px;
+  border: 1px solid #555;
+  border-radius: 3px;
+  cursor: pointer;
+  font-size: 0.8rem;
+}
+
+.hint-btn--primary {
+  background: #2a6a3a;
+  border-color: #3a8a4a;
+  color: #ddd;
+}
+
+.hint-btn--primary:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+
+.hint-btn--secondary {
+  background: #444;
+  color: #ccc;
+}
+
+.hint-btn--add {
+  width: 100%;
+  padding: 6px;
+  background: #2a2a2a;
+  border-style: dashed;
+  color: #8a8;
+}
+
+.hint-btn--add:hover {
+  background: #333;
+  border-color: #6a8;
+}
+
+/* ── Rows ── */
+.hint-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 6px;
+  padding: 4px 0;
+  border-bottom: 1px solid #333;
+}
+
+.hint-row:last-child {
+  border-bottom: none;
+}
+
+.hint-row__info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  font-size: 0.8rem;
+}
+
+.hint-row__subtype {
+  color: #888;
+  font-size: 0.75rem;
+}
+
+.hint-row__subid {
+  color: #68a;
+  font-size: 0.75rem;
+  font-style: italic;
+}
+
+.hint-row__junk {
+  color: #a66;
+  font-weight: 600;
+  font-size: 0.75rem;
+}
+
+.hint-row__item-name {
+  color: #aaa;
+  font-size: 0.75rem;
+}
+
+.hint-row__delete {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 2px 4px;
+  font-size: 0.9rem;
+  opacity: 0.6;
+}
+
+.hint-row__delete:hover {
+  opacity: 1;
+}
+
+/* ── Items in region ── */
+.hint-row__items {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin-top: 2px;
+}
+
+.hint-row__item {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  padding: 2px 6px;
+  background: #2a2a2a;
+  border-radius: 3px;
+  font-size: 0.7rem;
+}
+
+.hint-item-icon {
+  width: 20px;
+  height: 20px;
+  object-fit: contain;
+}
+
+.hint-item-name {
+  color: #aaa;
+}
+
+.hint-row__empty {
+  color: #666;
+  font-style: italic;
+  font-size: 0.7rem;
+}
+</style>

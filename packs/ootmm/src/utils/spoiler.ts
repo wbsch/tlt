@@ -12,6 +12,8 @@ export type SpoilerLogData = {
   locationPlacements: SpoilerLocationPlacement[];
   tricks?: string[];
   settingsString?: string;
+  /** Raw text of the "Hints" section, for separate parsing */
+  hintsText?: string;
 };
 
 export type SpoilerLocationPlacement = {
@@ -100,6 +102,7 @@ type Section =
   | 'preCompleted'
   | 'locations'
   | 'tricks'
+  | 'hints'
   | null;
 
 const normalizeLine = (value: string) => value.replace(/\s+/g, ' ').trim();
@@ -234,6 +237,16 @@ export function parseSpoilerLog(
       currentWorldSectionPlayer = null;
       currentLocationRegion = null;
       currentLocationWorld = null;
+      continue;
+    }
+    if (trimmed === 'Hints') {
+      section = 'hints';
+      currentSpecialCond = null;
+      currentWorldFlag = null;
+      currentWorldSectionPlayer = null;
+      currentLocationRegion = null;
+      currentLocationWorld = null;
+      result.hintsText = '';
       continue;
     }
 
@@ -401,6 +414,13 @@ export function parseSpoilerLog(
           } else {
             result.preCompletedDungeons.push(normalized);
           }
+        }
+        break;
+      }
+      case 'hints': {
+        // Capture raw lines of the Hints section for separate parsing
+        if (result.hintsText !== undefined) {
+          result.hintsText += `${rawLine}\n`;
         }
         break;
       }

@@ -29,7 +29,20 @@ type SyncOperationBase = {
     | 'session.set_spoiler_log_state'
     | 'session.set_spoiler_fish_ids'
     | 'session.set_spoiler_placements'
-    | 'session.reset_defaults';
+    | 'session.reset_defaults'
+    // Hint tracker operations
+    | 'hints.path.add'
+    | 'hints.path.remove'
+    | 'hints.always.add'
+    | 'hints.always.remove'
+    | 'hints.sometimes.add'
+    | 'hints.sometimes.remove'
+    | 'hints.region.add'
+    | 'hints.region.remove'
+    | 'hints.foolish.add'
+    | 'hints.foolish.remove'
+    | 'hints.set_full'
+    | 'hints.protected_location_ids.set';
 };
 
 export type OoTMMSyncOperation =
@@ -93,6 +106,7 @@ export type OoTMMSyncOperation =
       type: 'session.set_spoiler_log_state';
       imported: boolean;
       ootmmVersion: string | null;
+      hintsText: string | null;
     })
   | (SyncOperationBase & {
       type: 'session.set_spoiler_fish_ids';
@@ -104,6 +118,55 @@ export type OoTMMSyncOperation =
     })
   | (SyncOperationBase & {
       type: 'session.reset_defaults';
+    })
+  // Hint tracker operations
+  | (SyncOperationBase & {
+      type: 'hints.path.add';
+      hint: import('../data/hintTypes').RecordedPathHint;
+    })
+  | (SyncOperationBase & {
+      type: 'hints.path.remove';
+      index: number;
+    })
+  | (SyncOperationBase & {
+      type: 'hints.always.add';
+      hint: import('../data/hintTypes').RecordedItemExactHint;
+    })
+  | (SyncOperationBase & {
+      type: 'hints.always.remove';
+      index: number;
+    })
+  | (SyncOperationBase & {
+      type: 'hints.sometimes.add';
+      hint: import('../data/hintTypes').RecordedItemExactHint;
+    })
+  | (SyncOperationBase & {
+      type: 'hints.sometimes.remove';
+      index: number;
+    })
+  | (SyncOperationBase & {
+      type: 'hints.region.add';
+      hint: import('../data/hintTypes').RecordedItemRegionHint;
+    })
+  | (SyncOperationBase & {
+      type: 'hints.region.remove';
+      index: number;
+    })
+  | (SyncOperationBase & {
+      type: 'hints.foolish.add';
+      hint: import('../data/hintTypes').RecordedFoolishHint;
+    })
+  | (SyncOperationBase & {
+      type: 'hints.foolish.remove';
+      index: number;
+    })
+  | (SyncOperationBase & {
+      type: 'hints.set_full';
+      state: import('../data/hintTypes').HintTrackerState;
+    })
+  | (SyncOperationBase & {
+      type: 'hints.protected_location_ids.set';
+      ids: string[];
     });
 
 export type OoTMMSyncOperationEnvelope = {

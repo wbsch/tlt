@@ -59,6 +59,7 @@ export const PUBLIC_IMAGE_ASSET_VERSIONS = {
   'images/coin_red.png': '37933f432595',
   'images/coin_yellow.png': '378d5b6b5928',
   'images/cojiro.png': 'f3079da0a59d',
+  'images/crossed_out.png': '02e6cd1290e9',
   'images/cucco.png': '3da60640124a',
   'images/deku_stick.png': '925aee128bef',
   'images/din.png': '763288c33388',
