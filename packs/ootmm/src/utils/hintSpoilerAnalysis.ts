@@ -4,7 +4,12 @@
 
 import type { PathSubType, ParsedSpoilerHint } from '../data/hintTypes';
 
-export type HintCategory = 'path' | 'foolish' | 'item-exact' | 'item-region';
+export type HintCategory =
+  | 'path'
+  | 'foolish'
+  | 'item-exact'
+  | 'item-region'
+  | 'moon';
 
 export type ParsedHintsData = {
   /** All parsed hints from the spoiler log */
@@ -21,7 +26,26 @@ export type ParsedHintsData = {
   availableRegionsForPath: Set<string>;
   availableRegionsForFoolish: Set<string>;
   availableRegionsForRegion: Set<string>;
+  availableRegionsForMoon: Set<string>;
 };
+
+/** Split a line into columns separated by 2+ spaces */
+function splitByDoubleSpaces(line: string): string[] {
+  return line
+    .split(/\s{2,}/)
+    .map((s) => s.trim())
+    .filter(Boolean);
+}
+
+/** Extract item name and optional note (e.g. "(sometimes required)") from a field */
+function parseItemField(field: string): { itemName: string; note: string } {
+  const noteMatch = field.match(/\s*\(([^)]*)\)\s*$/);
+  const note = noteMatch ? noteMatch[1] : '';
+  const itemName = noteMatch
+    ? field.slice(0, noteMatch.index).trim()
+    : field.trim();
+  return { itemName, note };
+}
 
 /** Parse the raw Hints section text from a spoiler log */
 export function parseSpoilerHints(hintsText: string): ParsedHintsData {
@@ -31,6 +55,7 @@ export function parseSpoilerHints(hintsText: string): ParsedHintsData {
     foolish: new Set(),
     'item-exact': new Set(),
     'item-region': new Set(),
+    moon: new Set(),
   };
   const availablePathSubTypes = new Set<PathSubType>();
   const availablePathSubIds: Partial<Record<PathSubType, Set<number>>> = {};
@@ -38,6 +63,7 @@ export function parseSpoilerHints(hintsText: string): ParsedHintsData {
   const availableRegionsForPath = new Set<string>();
   const availableRegionsForFoolish = new Set<string>();
   const availableRegionsForRegion = new Set<string>();
+  const availableRegionsForMoon = new Set<string>();
 
   // Helper to add subId to available set
   function addSubId(type: PathSubType, id: number) {
@@ -97,6 +123,8 @@ export function parseSpoilerHints(hintsText: string): ParsedHintsData {
     | 'foolish-regions'
     | null = null;
   let currentPathLabel: string | null = null;
+  /** Carry-over gossip stone name for multi-line entries in specific/regional sections */
+  let lastGossipStone: string | undefined = undefined;
 
   // Known path subtype labels
   const PATH_SUBTYPE_LABELS: Record<string, PathSubType> = {
@@ -258,38 +286,55 @@ export function parseSpoilerHints(hintsText: string): ParsedHintsData {
         break;
       }
       case 'foolish': {
-        // Format: "MM Ikana Canyon Gossip Upper" (a gossip stone location)
-        // Or "East Clock Town" (a region name in the foolish section)
-
-        // Check if it looks like a region name (no "Gossip" in it)
-        if (!trimmed.toLowerCase().includes('gossip')) {
-          // This is a region name for a foolish hint
+        // Format: "GossipStoneName (2+ spaces) RegionName"
+        // Example: "MM Ikana Canyon Gossip Upper                    East Clock Town"
+        const spaceParts = splitByDoubleSpaces(trimmed);
+        if (spaceParts.length >= 2) {
+          // The second part is the region name
+          const regionName = spaceParts[spaceParts.length - 1];
           hints.push({
             type: 'foolish',
-            region: trimmed,
+            region: regionName,
           });
-          byCategory['foolish'].add(trimmed);
-          availableRegionsForFoolish.add(trimmed);
+          if (!byCategory['foolish'].has(regionName)) {
+            byCategory['foolish'].add(regionName);
+            availableRegionsForFoolish.add(regionName);
+          }
         }
         break;
       }
       case 'specific': {
-        // Format: "MM Gossip Location: MM Check Location: Item Name (note)"
-        // Example: "MM Great Bay Coast Gossip: MM Road to Ikana Stone Mask: Mask of Scents (not required)"
-        const parts = trimmed.split(':');
-        if (parts.length < 2) break;
+        // Format: "GossipStoneName (2+ spaces) CheckLocation (2+ spaces) ItemName (note)"
+        // Example: "MM Great Bay Coast Gossip    MM Road to Ikana Stone Mask    Mask of Scents (not required)"
+        // Continuation lines (no gossip stone):
+        // "                                CheckLocation (2+ spaces) ItemName (note)"
+        const spaceParts = splitByDoubleSpaces(trimmed);
 
-        // The last part is the item, the second-to-last is the check location
-        const lastPart = parts[parts.length - 1].trim();
-        const checkLocation =
-          parts.length >= 3 ? parts[parts.length - 2].trim() : '';
-        const itemName = lastPart.replace(/\s*\([^)]*\)\s*$/, '').trim();
+        let gossipStone: string | undefined;
+        let checkLocation: string;
+        let itemField: string;
 
-        if (checkLocation) {
+        if (spaceParts.length >= 3) {
+          // Full line: gossip stone + check location + item
+          gossipStone = spaceParts[0];
+          lastGossipStone = gossipStone;
+          checkLocation = spaceParts[1];
+          itemField = spaceParts[spaceParts.length - 1];
+        } else if (spaceParts.length === 2 && lastGossipStone) {
+          // Continuation line: check location + item (carry over gossip stone)
+          checkLocation = spaceParts[0];
+          itemField = spaceParts[1];
+        } else {
+          break;
+        }
+
+        const { itemName } = parseItemField(itemField);
+
+        if (checkLocation && itemName) {
           hints.push({
             type: 'item-exact',
             checkLocation,
-            itemName: itemName || undefined,
+            itemName,
           });
 
           const dedupKey = `${checkLocation}:${itemName}`;
@@ -301,41 +346,70 @@ export function parseSpoilerHints(hintsText: string): ParsedHintsData {
         break;
       }
       case 'regional': {
-        // Format: "MM Gossip Location: Region Name: Item Name (note)"
-        // Example: "MM Doggy Racetrack Gossip: Ikana Graveyard: Shared Ice Arrows (sometimes required)"
-        const parts = trimmed.split(':');
-        if (parts.length < 2) break;
+        // Format: "GossipStoneName (2+ spaces) RegionName (2+ spaces) ItemName (note)"
+        // Example: "MM Doggy Racetrack Gossip    Ikana Graveyard    Shared Ice Arrows (sometimes required)"
+        // Moon Trial entries (GossipStone starts with "MM Moon Trial"):
+        //   "MM Moon Trial Deku Gossip Back    Stone Tower Temple    Bunny Hood (not required)"
+        const spaceParts = splitByDoubleSpaces(trimmed);
 
-        // Second-to-last is the region, last is the item
-        const region = parts.length >= 3 ? parts[parts.length - 2].trim() : '';
-        const lastPart = parts[parts.length - 1].trim();
-        const itemName = lastPart.replace(/\s*\([^)]*\)\s*$/, '').trim();
+        let gossipStone: string | undefined;
+        let region: string;
+        let itemField: string;
 
-        if (region) {
-          hints.push({
-            type: 'item-region',
-            region,
-            itemName: itemName || undefined,
-          });
+        if (spaceParts.length >= 3) {
+          // Full line: gossip stone + region + item
+          gossipStone = spaceParts[0];
+          lastGossipStone = gossipStone;
+          region = spaceParts[1];
+          itemField = spaceParts[spaceParts.length - 1];
+        } else if (spaceParts.length === 2 && lastGossipStone) {
+          // Continuation line
+          region = spaceParts[0];
+          itemField = spaceParts[1];
+        } else {
+          break;
+        }
 
-          const dedupKey = `${region}:${itemName}`;
-          if (!byCategory['item-region'].has(dedupKey)) {
-            byCategory['item-region'].add(dedupKey);
-            availableRegionsForRegion.add(region);
+        const { itemName } = parseItemField(itemField);
+
+        if (region && itemName) {
+          const isMoonTrial = (gossipStone ?? lastGossipStone ?? '')
+            .toLowerCase()
+            .includes('moon trial');
+
+          if (isMoonTrial) {
+            hints.push({
+              type: 'moon',
+              region,
+              itemName,
+            });
+            const dedupKey = `${region}:${itemName}`;
+            if (!byCategory['moon'].has(dedupKey)) {
+              byCategory['moon'].add(dedupKey);
+              availableRegionsForMoon.add(region);
+            }
+          } else {
+            hints.push({
+              type: 'item-region',
+              region,
+              itemName,
+            });
+            const dedupKey = `${region}:${itemName}`;
+            if (!byCategory['item-region'].has(dedupKey)) {
+              byCategory['item-region'].add(dedupKey);
+              availableRegionsForRegion.add(region);
+            }
           }
         }
         break;
       }
       case 'foolish-regions': {
         // Format: "Region Name: count"
+        // This is metadata showing how many gossip stones point to each region.
+        // It's NOT individual hints, so we only track for UI filtering.
         const colonIdx = trimmed.indexOf(':');
         if (colonIdx > 0) {
           const regionName = trimmed.slice(0, colonIdx).trim();
-          hints.push({
-            type: 'foolish',
-            region: regionName,
-          });
-          byCategory['foolish'].add(regionName);
           availableRegionsForFoolish.add(regionName);
         }
         break;
@@ -352,6 +426,7 @@ export function parseSpoilerHints(hintsText: string): ParsedHintsData {
     availableRegionsForPath,
     availableRegionsForFoolish,
     availableRegionsForRegion,
+    availableRegionsForMoon,
   };
 }
 
@@ -367,5 +442,6 @@ export function getExpectedHintCounts(
     foolish: parsed.byCategory.foolish.size,
     'item-exact': parsed.byCategory['item-exact'].size,
     'item-region': parsed.byCategory['item-region'].size,
+    moon: parsed.byCategory.moon.size,
   };
 }

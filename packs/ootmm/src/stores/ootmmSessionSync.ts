@@ -33,14 +33,14 @@ type SyncOperationBase = {
     // Hint tracker operations
     | 'hints.path.add'
     | 'hints.path.remove'
-    | 'hints.always.add'
-    | 'hints.always.remove'
-    | 'hints.sometimes.add'
-    | 'hints.sometimes.remove'
+    | 'hints.always-sometimes.add'
+    | 'hints.always-sometimes.remove'
     | 'hints.region.add'
     | 'hints.region.remove'
     | 'hints.foolish.add'
     | 'hints.foolish.remove'
+    | 'hints.moon.add'
+    | 'hints.moon.remove'
     | 'hints.set_full'
     | 'hints.protected_location_ids.set';
 };

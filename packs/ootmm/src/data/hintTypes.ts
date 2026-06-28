@@ -28,21 +28,26 @@ export interface RecordedFoolishHint {
   region: string; // Region ID
 }
 
+export interface RecordedMoonHint {
+  region: string; // Region ID
+  itemId: string; // Item ID (or "JUNK")
+}
+
 export interface HintTrackerState {
   pathHints: RecordedPathHint[];
-  alwaysHints: RecordedItemExactHint[];
-  sometimesHints: RecordedItemExactHint[];
+  alwaysSometimesHints: RecordedItemExactHint[];
   regionHints: RecordedItemRegionHint[];
   foolishHints: RecordedFoolishHint[];
+  moonHints: RecordedMoonHint[];
 }
 
 export function createEmptyHintTrackerState(): HintTrackerState {
   return {
     pathHints: [],
-    alwaysHints: [],
-    sometimesHints: [],
+    alwaysSometimesHints: [],
     regionHints: [],
     foolishHints: [],
+    moonHints: [],
   };
 }
 
@@ -53,6 +58,7 @@ export type ParsedHintType =
   | 'foolish'
   | 'item-exact'
   | 'item-region'
+  | 'moon'
   | 'junk';
 
 export interface ParsedSpoilerHint {
@@ -70,14 +76,14 @@ export interface ParsedSpoilerHint {
 export type HintSyncOperation =
   | { type: 'hints.path.add'; hint: RecordedPathHint }
   | { type: 'hints.path.remove'; index: number }
-  | { type: 'hints.always.add'; hint: RecordedItemExactHint }
-  | { type: 'hints.always.remove'; index: number }
-  | { type: 'hints.sometimes.add'; hint: RecordedItemExactHint }
-  | { type: 'hints.sometimes.remove'; index: number }
+  | { type: 'hints.always-sometimes.add'; hint: RecordedItemExactHint }
+  | { type: 'hints.always-sometimes.remove'; index: number }
   | { type: 'hints.region.add'; hint: RecordedItemRegionHint }
   | { type: 'hints.region.remove'; index: number }
   | { type: 'hints.foolish.add'; hint: RecordedFoolishHint }
   | { type: 'hints.foolish.remove'; index: number }
+  | { type: 'hints.moon.add'; hint: RecordedMoonHint }
+  | { type: 'hints.moon.remove'; index: number }
   | { type: 'hints.set_full'; state: HintTrackerState }
   | { type: 'hints.protected_location_ids.set'; ids: string[] };
 

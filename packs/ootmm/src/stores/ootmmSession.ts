@@ -750,10 +750,12 @@ export const useOoTMMSessionStore = defineStore('ootmm-session', () => {
       hintsText: hintsText.value,
       hintTracker: {
         pathHints: hintTracker.value.pathHints.map((h) => ({ ...h })),
-        alwaysHints: hintTracker.value.alwaysHints.map((h) => ({ ...h })),
-        sometimesHints: hintTracker.value.sometimesHints.map((h) => ({ ...h })),
+        alwaysSometimesHints: hintTracker.value.alwaysSometimesHints.map(
+          (h) => ({ ...h }),
+        ),
         regionHints: hintTracker.value.regionHints.map((h) => ({ ...h })),
         foolishHints: hintTracker.value.foolishHints.map((h) => ({ ...h })),
+        moonHints: hintTracker.value.moonHints.map((h) => ({ ...h })),
       },
       hintProtectedLocationIds: [...hintProtectedLocationIds.value],
     };
@@ -939,20 +941,12 @@ export const useOoTMMSessionStore = defineStore('ootmm-session', () => {
         removePathHint(envelope.op.index, REMOTE_MUTATION_OPTIONS);
         return;
       }
-      case 'hints.always.add': {
-        addAlwaysHint(envelope.op.hint, REMOTE_MUTATION_OPTIONS);
+      case 'hints.always-sometimes.add': {
+        addAlwaysSometimesHint(envelope.op.hint, REMOTE_MUTATION_OPTIONS);
         return;
       }
-      case 'hints.always.remove': {
-        removeAlwaysHint(envelope.op.index, REMOTE_MUTATION_OPTIONS);
-        return;
-      }
-      case 'hints.sometimes.add': {
-        addSometimesHint(envelope.op.hint, REMOTE_MUTATION_OPTIONS);
-        return;
-      }
-      case 'hints.sometimes.remove': {
-        removeSometimesHint(envelope.op.index, REMOTE_MUTATION_OPTIONS);
+      case 'hints.always-sometimes.remove': {
+        removeAlwaysSometimesHint(envelope.op.index, REMOTE_MUTATION_OPTIONS);
         return;
       }
       case 'hints.region.add': {
@@ -969,6 +963,14 @@ export const useOoTMMSessionStore = defineStore('ootmm-session', () => {
       }
       case 'hints.foolish.remove': {
         removeFoolishHint(envelope.op.index, REMOTE_MUTATION_OPTIONS);
+        return;
+      }
+      case 'hints.moon.add': {
+        addMoonHint(envelope.op.hint, REMOTE_MUTATION_OPTIONS);
+        return;
+      }
+      case 'hints.moon.remove': {
+        removeMoonHint(envelope.op.index, REMOTE_MUTATION_OPTIONS);
         return;
       }
       case 'hints.set_full': {
@@ -1247,7 +1249,8 @@ export const useOoTMMSessionStore = defineStore('ootmm-session', () => {
         );
         hintsText.value = snapshot.hintsText ?? null;
         hintTracker.value =
-          snapshot.hintTracker ?? createEmptyHintTrackerState();
+          (snapshot.hintTracker as HintTrackerState) ??
+          createEmptyHintTrackerState();
         hintProtectedLocationIds.value =
           snapshot.hintProtectedLocationIds ?? [];
         reachableLocationIds.value = [];
@@ -1312,7 +1315,9 @@ export const useOoTMMSessionStore = defineStore('ootmm-session', () => {
         ...p,
       }));
       hintsText.value = snapshot.hintsText ?? null;
-      hintTracker.value = snapshot.hintTracker ?? createEmptyHintTrackerState();
+      hintTracker.value =
+        (snapshot.hintTracker as HintTrackerState) ??
+        createEmptyHintTrackerState();
       hintProtectedLocationIds.value = snapshot.hintProtectedLocationIds ?? [];
       applyPreCompletedDungeons();
       applySongEvents();
@@ -2449,50 +2454,33 @@ export const useOoTMMSessionStore = defineStore('ootmm-session', () => {
     publishSyncOperation({ type: 'hints.path.remove', index }, options);
   }
 
-  function addAlwaysHint(
+  function addAlwaysSometimesHint(
     hint: RecordedItemExactHint,
     options?: MutationOptions,
   ) {
     const previousSnapshot = captureSnapshotForMutation(options);
     hintTracker.value = {
       ...hintTracker.value,
-      alwaysHints: [...hintTracker.value.alwaysHints, { ...hint }],
+      alwaysSometimesHints: [
+        ...hintTracker.value.alwaysSometimesHints,
+        { ...hint },
+      ],
     };
     recordHistoryFromSnapshot(previousSnapshot);
-    publishSyncOperation({ type: 'hints.always.add', hint }, options);
+    publishSyncOperation({ type: 'hints.always-sometimes.add', hint }, options);
   }
 
-  function removeAlwaysHint(index: number, options?: MutationOptions) {
+  function removeAlwaysSometimesHint(index: number, options?: MutationOptions) {
     const previousSnapshot = captureSnapshotForMutation(options);
-    const next = [...hintTracker.value.alwaysHints];
+    const next = [...hintTracker.value.alwaysSometimesHints];
     if (index < 0 || index >= next.length) return;
     next.splice(index, 1);
-    hintTracker.value = { ...hintTracker.value, alwaysHints: next };
+    hintTracker.value = { ...hintTracker.value, alwaysSometimesHints: next };
     recordHistoryFromSnapshot(previousSnapshot);
-    publishSyncOperation({ type: 'hints.always.remove', index }, options);
-  }
-
-  function addSometimesHint(
-    hint: RecordedItemExactHint,
-    options?: MutationOptions,
-  ) {
-    const previousSnapshot = captureSnapshotForMutation(options);
-    hintTracker.value = {
-      ...hintTracker.value,
-      sometimesHints: [...hintTracker.value.sometimesHints, { ...hint }],
-    };
-    recordHistoryFromSnapshot(previousSnapshot);
-    publishSyncOperation({ type: 'hints.sometimes.add', hint }, options);
-  }
-
-  function removeSometimesHint(index: number, options?: MutationOptions) {
-    const previousSnapshot = captureSnapshotForMutation(options);
-    const next = [...hintTracker.value.sometimesHints];
-    if (index < 0 || index >= next.length) return;
-    next.splice(index, 1);
-    hintTracker.value = { ...hintTracker.value, sometimesHints: next };
-    recordHistoryFromSnapshot(previousSnapshot);
-    publishSyncOperation({ type: 'hints.sometimes.remove', index }, options);
+    publishSyncOperation(
+      { type: 'hints.always-sometimes.remove', index },
+      options,
+    );
   }
 
   function addRegionHint(
@@ -2541,6 +2529,26 @@ export const useOoTMMSessionStore = defineStore('ootmm-session', () => {
     publishSyncOperation({ type: 'hints.foolish.remove', index }, options);
   }
 
+  function addMoonHint(hint: RecordedMoonHint, options?: MutationOptions) {
+    const previousSnapshot = captureSnapshotForMutation(options);
+    hintTracker.value = {
+      ...hintTracker.value,
+      moonHints: [...hintTracker.value.moonHints, { ...hint }],
+    };
+    recordHistoryFromSnapshot(previousSnapshot);
+    publishSyncOperation({ type: 'hints.moon.add', hint }, options);
+  }
+
+  function removeMoonHint(index: number, options?: MutationOptions) {
+    const previousSnapshot = captureSnapshotForMutation(options);
+    const next = [...hintTracker.value.moonHints];
+    if (index < 0 || index >= next.length) return;
+    next.splice(index, 1);
+    hintTracker.value = { ...hintTracker.value, moonHints: next };
+    recordHistoryFromSnapshot(previousSnapshot);
+    publishSyncOperation({ type: 'hints.moon.remove', index }, options);
+  }
+
   function setHintTrackerState(
     state: HintTrackerState,
     options?: MutationOptions,
@@ -2548,10 +2556,10 @@ export const useOoTMMSessionStore = defineStore('ootmm-session', () => {
     const previousSnapshot = captureSnapshotForMutation(options);
     hintTracker.value = {
       pathHints: state.pathHints.map((h) => ({ ...h })),
-      alwaysHints: state.alwaysHints.map((h) => ({ ...h })),
-      sometimesHints: state.sometimesHints.map((h) => ({ ...h })),
+      alwaysSometimesHints: state.alwaysSometimesHints.map((h) => ({ ...h })),
       regionHints: state.regionHints.map((h) => ({ ...h })),
       foolishHints: state.foolishHints.map((h) => ({ ...h })),
+      moonHints: state.moonHints.map((h) => ({ ...h })),
     };
     recordHistoryFromSnapshot(previousSnapshot);
     publishSyncOperation({ type: 'hints.set_full', state }, options);
@@ -2688,14 +2696,14 @@ export const useOoTMMSessionStore = defineStore('ootmm-session', () => {
     // Hint tracker mutations
     addPathHint,
     removePathHint,
-    addAlwaysHint,
-    removeAlwaysHint,
-    addSometimesHint,
-    removeSometimesHint,
+    addAlwaysSometimesHint,
+    removeAlwaysSometimesHint,
     addRegionHint,
     removeRegionHint,
     addFoolishHint,
     removeFoolishHint,
+    addMoonHint,
+    removeMoonHint,
     setHintTrackerState,
     addHintProtectedLocationIds,
     removeHintProtectedLocationIds,

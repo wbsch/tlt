@@ -17,6 +17,7 @@ const CATEGORY_LABELS: Record<HintCategory, string> = {
   foolish: 'Foolish',
   'item-exact': 'Always/Sometimes',
   'item-region': 'Region',
+  moon: 'Moon',
 };
 
 /** Total counts expected from the spoiler log */
@@ -33,11 +34,10 @@ const expectedCounts = computed(() => {
 /** Current recorded counts by category */
 const recordedCounts = computed(() => ({
   path: hintTracker.value.pathHints.length,
-  'item-exact':
-    hintTracker.value.alwaysHints.length +
-    hintTracker.value.sometimesHints.length,
+  'item-exact': hintTracker.value.alwaysSometimesHints.length,
   'item-region': hintTracker.value.regionHints.length,
   foolish: hintTracker.value.foolishHints.length,
+  moon: hintTracker.value.moonHints.length,
 }));
 
 const hintCounts = computed(() => {
@@ -48,6 +48,7 @@ const hintCounts = computed(() => {
   const expectedRegion = expected['item-region'] ?? 0;
   const expectedFoolish = expected.foolish ?? 0;
   const expectedPath = expected.path ?? 0;
+  const expectedMoon = expected.moon ?? 0;
 
   const pathCount = {
     expected: expectedPath,
@@ -65,12 +66,17 @@ const hintCounts = computed(() => {
     expected: expectedFoolish,
     found: Math.min(recordedCounts.value.foolish, expectedFoolish),
   };
+  const moonCount = {
+    expected: expectedMoon,
+    found: Math.min(recordedCounts.value.moon, expectedMoon),
+  };
 
   return {
     path: pathCount,
     'item-exact': itemExactCount,
     'item-region': regionCount,
     foolish: foolishCount,
+    moon: moonCount,
   } as Record<HintCategory, { expected: number; found: number }>;
 });
 
