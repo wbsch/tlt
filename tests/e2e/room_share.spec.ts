@@ -129,6 +129,8 @@ async function joinRoom(page: Page, code: string): Promise<void> {
   await expect(input).toBeVisible();
   await input.fill(code);
   await input.press('Enter');
+  // Joining is destructive (adopts the room's state), so it now prompts first.
+  await page.getByTestId('coop-join-confirm-apply-button').click();
   await expect(page.getByTestId('coop-status')).toContainText(/Connected/i, {
     timeout: 15_000,
   });

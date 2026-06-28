@@ -97,7 +97,10 @@ with a protocol error. Note `session.reset_defaults` is intentionally **not**
 accepted: resetting tracker state exits coop (the client leaves the room before
 resetting), so a reset op never reaches the relay.
 
-Duplicate `opId`s (per room) are silently dropped — clients may retry.
+Duplicate `opId`s are **not** deduped server-side: every op is an absolute
+set/replace, so reapplying one yields the same snapshot, and clients dedup by
+`opId` themselves. (If a non-idempotent/delta op is ever added, server-side
+dedup has to come back.)
 
 ## Limits
 
@@ -108,9 +111,17 @@ Duplicate `opId`s (per room) are silently dropped — clients may retry.
   snapshot always fits in a peer's receive buffer and a room can never grow into
   an un-joinable state.
 - Total SQLite storage is capped at `MAX_DB_BYTES` (1 GiB). Past this the relay
-  refuses to create **new** rooms; existing rooms keep working.
+  refuses to create **new** rooms; existing rooms keep working. Idle-room
+  pruning runs `incremental_vacuum` to return freed pages to the OS, so the cap
+  recovers after a spike instead of staying pinned at the high-water mark. (The
+  DB is created with `auto_vacuum=INCREMENTAL`; a pre-existing `sync.db` made
+  before this needs a one-time `VACUUM` to enable it.)
 - New-room creation is globally rate-limited to `MAX_NEW_ROOMS_PER_MINUTE` (60)
   per rolling minute. Joins to rooms that already exist are never limited.
+- A single room holds at most `MAX_CLIENTS_PER_ROOM` (16) clients; further joins
+  are rejected. This bounds broadcast fan-out and per-room memory.
+- A connection must send its `join` within `JOIN_TIMEOUT_SEC` (10s) of opening
+  or the relay drops it, so anonymous sockets can't be held open for free.
 - Room codes must be alphanumeric and at least `ROOM_CODE_MIN_LENGTH` (8)
   characters.
 
@@ -167,8 +178,32 @@ ExecStart=/srv/tlt/.venv/bin/python /srv/tlt/server/relay.py \
 Restart=on-failure
 User=tlt
 
+# Cap RAM via the systemd cgroup (relay.py has no memory flag of its own).
+# MemoryHigh is a soft cap: the kernel reclaims/throttles past it. MemoryMax is
+# the hard cap: exceed it and the process is OOM-killed, then Restart=on-failure
+# brings it back. RAM scales with concurrent active rooms (~120 KiB worst-case
+# per room) plus per-connection WebSocket buffers, so this is generous headroom.
+MemoryHigh=200M
+MemoryMax=256M
+
 [Install]
 WantedBy=multi-user.target
+```
+
+Prefer `MemoryMax`/`MemoryHigh` over `LimitAS=`/`ulimit -v`: those cap _virtual_
+address space, and Python + asyncio map far more virtual memory than they
+actually use, so a VM limit triggers spurious `MemoryError`s well below real
+usage. After editing the unit, reload and restart:
+
+```bash
+systemctl daemon-reload
+systemctl restart tlt-relay   # use your unit's actual name
+```
+
+Watch real usage to tune the caps down:
+
+```bash
+systemctl show tlt-relay -p MemoryCurrent,MemoryPeak,MemoryMax
 ```
 
 ## Tests

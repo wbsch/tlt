@@ -532,12 +532,14 @@ export const useOoTMMSessionStore = defineStore('ootmm-session', () => {
     // `session.reset_defaults` is intentionally never a room op: the relay has
     // no reset op (it would drop the connection), and resetting exits coop only
     // through the UI's confirmation modal — never silently from the store.
-    if (operation.type !== 'session.reset_defaults') {
-      if (coopConnectionState.value === 'connected') {
-        roomConnection?.publish(operation);
-      } else if (roomConnection) {
-        queuePendingRoomOperation(operation);
-      }
+    if (operation.type === 'session.reset_defaults' || !roomConnection) return;
+    // Queue anything publish() couldn't actually send. Branching on
+    // coopConnectionState alone dropped ops written in the window where the
+    // socket is already CLOSING but the state ref hasn't flipped to
+    // 'disconnected' yet; publish() reports the real socket readiness, so those
+    // ops now get queued and replayed after the reconnect snapshot.
+    if (!roomConnection.publish(operation)) {
+      queuePendingRoomOperation(operation);
     }
   }
 
@@ -575,6 +577,10 @@ export const useOoTMMSessionStore = defineStore('ootmm-session', () => {
     publishSyncOperation({
       type: 'locations.set_ids',
       ids: [...snapshot.collectedLocationIds],
+    });
+    publishSyncOperation({
+      type: 'locations.set_junk_ids',
+      ids: [...snapshot.junkLocationIds],
     });
     publishSyncOperation({
       type: 'session.set_spoiler_log_state',
@@ -691,6 +697,10 @@ export const useOoTMMSessionStore = defineStore('ootmm-session', () => {
       }
       case 'locations.set_ids': {
         setCollectedLocationIds(envelope.op.ids, REMOTE_MUTATION_OPTIONS);
+        return;
+      }
+      case 'locations.set_junk_ids': {
+        setJunkLocationIds(envelope.op.ids, REMOTE_MUTATION_OPTIONS);
         return;
       }
       case 'world.set_precompleted': {
@@ -817,6 +827,7 @@ export const useOoTMMSessionStore = defineStore('ootmm-session', () => {
       state: {
         inventoryById: sanitizeInventoryRecord({ ...inventoryById.value }),
         collectedLocationIds: [...collectedLocationIds.value],
+        junkLocationIds: [...junkLocationIds.value],
         preCompletedDungeons: [...preCompletedDungeons.value],
         songEvents: { ...songEvents.value },
         shopPrices: { ...shopPrices.value },
@@ -853,6 +864,7 @@ export const useOoTMMSessionStore = defineStore('ootmm-session', () => {
       state.collectedLocationIds ?? [],
       REMOTE_MUTATION_OPTIONS,
     );
+    setJunkLocationIds(state.junkLocationIds ?? [], REMOTE_MUTATION_OPTIONS);
     setSpoilerLogImportState(
       Boolean(state.hasImportedSpoilerLog),
       state.importedSpoilerLogVersion ?? null,
@@ -1372,6 +1384,25 @@ export const useOoTMMSessionStore = defineStore('ootmm-session', () => {
     );
   }
 
+  // Junk locations are derived from a spoiler-log import (one player imports the
+  // log; the resolved ids are a whole-list batch, not concurrently edited
+  // per-id), so a whole-list replace op is fine here — unlike collectLocationIds
+  // which must stay granular to avoid clobbering peers' concurrent collects.
+  function setJunkLocationIds(ids: string[], options?: MutationOptions) {
+    const next = uniqueStrings(ids);
+    if (areStringSetsEqual(junkLocationIds.value, next)) return;
+    const previousSnapshot = captureSnapshotForMutation(options);
+    junkLocationIds.value = next;
+    recordHistoryFromSnapshot(previousSnapshot);
+    publishSyncOperation(
+      {
+        type: 'locations.set_junk_ids',
+        ids: [...junkLocationIds.value],
+      },
+      options,
+    );
+  }
+
   // Additively mark locations collected, emitting a granular `locations.
   // set_collected` per newly-added id. Use this for "mark all reachable"-style
   // bulk *adds*: emitting `locations.set_ids` (a whole-list replace) would
@@ -1515,8 +1546,8 @@ export const useOoTMMSessionStore = defineStore('ootmm-session', () => {
           if (existingPartnerDst !== partner.reverseDst) {
             next[partner.reverseSrc] = partner.reverseDst;
           }
+          partnerOp = { src: partner.reverseSrc, dst: partner.reverseDst };
         }
-        partnerOp = { src: partner.reverseSrc, dst: partner.reverseDst };
       }
     }
 
@@ -2064,6 +2095,7 @@ export const useOoTMMSessionStore = defineStore('ootmm-session', () => {
     applyAutotrackerDelta,
     toggleCollectedLocation,
     setCollectedLocationIds,
+    setJunkLocationIds,
     collectLocationIds,
     setPreCompletedDungeons,
     setSongEvents,

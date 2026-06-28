@@ -1164,6 +1164,12 @@ function canStartAutotracker(mode: AutotrackerStartMode): boolean {
 async function startAutotracker(mode: AutotrackerStartMode) {
   autotrackerConnectionWarningMessage.value = null;
 
+  // Mutually exclusive with coop (docs/coop-sync.md §7). Central guard so the
+  // overflow "Overwrite current state" path is covered too, not just the toggle.
+  if (isCoopActive.value) {
+    return;
+  }
+
   if (!canStartAutotracker(mode)) {
     return;
   }
@@ -1360,6 +1366,14 @@ function updateAutoMapSwitch(enabled: boolean) {
 function handleAutotrackerEnabledUpdate(nextEnabled: boolean) {
   if (!nextEnabled) {
     deactivateAutotracker();
+    return;
+  }
+
+  // Coop and autotracking are mutually exclusive (docs/coop-sync.md §7). The
+  // toggle is disabled in a room, but guard here too: coop can auto-join on
+  // load, so don't rely on the disabled attribute alone. Bail before the
+  // auto-map-switch side effect.
+  if (isCoopActive.value) {
     return;
   }
 
@@ -2981,7 +2995,9 @@ function applyJunkLocations(junkLocations: string[]) {
   }
   // Additive bulk collect (granular ops); see handleMapMarkAllReachable.
   sessionStore.collectLocationIds(resolvedIds);
-  junkLocationIds.value = resolvedIds;
+  // Publish junk ids through the store so they sync to coop peers / other tabs
+  // (whole-list replace; see setJunkLocationIds) instead of a local-only ref write.
+  sessionStore.setJunkLocationIds(resolvedIds);
 }
 
 function requestSpoilerStartingItemsPlayer(players: number[]) {
@@ -3715,10 +3731,14 @@ onBeforeUnmount(() => {
               :enabled="autotracker.enabled.value"
               :last-error="autotracker.lastError.value"
               :warning-message="autotracker.versionWarning.value"
+              :coop-active="isCoopActive"
               @update:enabled="handleAutotrackerEnabledUpdate"
               @start-overwrite="startAutotrackerOverwriteMode"
             />
-            <CoopPanel v-if="isCoopVisible" />
+            <CoopPanel
+              v-if="isCoopVisible"
+              :autotracker-active="autotracker.enabled.value"
+            />
           </div>
           <label
             v-if="autotracker.enabled.value"

@@ -5,7 +5,7 @@ import json
 import tempfile
 import unittest
 from pathlib import Path
-from unittest.mock import MagicMock
+from unittest.mock import MagicMock, patch
 
 from server.relay import (
     MAX_SNAPSHOT_BYTES,
@@ -61,6 +61,14 @@ class FakeIncomingWebSocket(FakeWebSocket):
         if not self._incoming:
             raise StopAsyncIteration
         return self._incoming.pop(0)
+
+
+class HangingWebSocket(FakeWebSocket):
+    """A socket whose recv() never resolves, to exercise the join timeout."""
+
+    async def recv(self) -> str:
+        await asyncio.Future()
+        raise AssertionError("unreachable")
 
 
 class RelayIntegrationTests(unittest.IsolatedAsyncioTestCase):
@@ -120,6 +128,7 @@ class RelayIntegrationTests(unittest.IsolatedAsyncioTestCase):
         self.assertEqual(envelope["sessionId"], self.room_id)
         self.assertEqual(envelope["baselineSeq"], 0)
         self.assertEqual(envelope["state"]["inventoryById"], {})
+        self.assertEqual(envelope["state"]["junkLocationIds"], [])
         self.assertFalse(envelope["state"]["hasImportedSpoilerLog"])
         self.assertIsNone(envelope["state"]["importedSpoilerLogVersion"])
 
@@ -313,7 +322,11 @@ class RelayIntegrationTests(unittest.IsolatedAsyncioTestCase):
         ).fetchone()
         self.assertEqual(row["latest_seq"], 0)
 
-    async def test_duplicate_op_id_is_ignored(self) -> None:
+    async def test_duplicate_op_id_is_reapplied_idempotently(self) -> None:
+        # The server no longer dedups by opId; every op is an absolute
+        # set/replace, so reapplying a duplicate must leave the state identical
+        # to applying it once. (That idempotency is what makes dropping the
+        # seen_ops table safe.)
         websocket, _, _ = await self.connect()
         room = self.relay.rooms[self.room_id]
         envelope = {
@@ -334,18 +347,29 @@ class RelayIntegrationTests(unittest.IsolatedAsyncioTestCase):
         await self.relay.handle_operation(room, websocket, envelope)
         await self._drain_room()
 
+        # Without dedup the duplicate is rebroadcast; peers tolerate it because
+        # they dedup by opId client-side.
         op_events = [json.loads(msg) for msg in websocket.sent if json.loads(msg).get("type") == "op"]
-        self.assertEqual(len(op_events), 1)
-        self.assertEqual(op_events[0]["serverSeq"], 1)
+        self.assertEqual(len(op_events), 2)
+        self.assertEqual([e["serverSeq"] for e in op_events], [1, 2])
 
         row = self.relay.db.execute(
             "SELECT latest_seq, snapshot_json FROM rooms WHERE room_id = ?",
             (self.room_id,),
         ).fetchone()
-        self.assertEqual(row["latest_seq"], 1)
+        self.assertEqual(row["latest_seq"], 2)
         snapshot = json.loads(row["snapshot_json"])
-        self.assertEqual(snapshot["baselineSeq"], 1)
+        self.assertEqual(snapshot["baselineSeq"], 2)
+        # Idempotent: the state is the same as if the op had been applied once.
         self.assertEqual(snapshot["state"]["inventoryById"], {"OOT_BOW": 1})
+
+    async def test_handler_drops_connection_without_timely_join(self) -> None:
+        websocket = HangingWebSocket()
+        with patch("server.relay.JOIN_TIMEOUT_SEC", 0.01):
+            await self.relay.handler(websocket)
+        self.assertTrue(websocket.closed)
+        self.assertEqual(websocket.close_code, 1008)
+        self.assertEqual(websocket.close_reason, "join timeout")
 
     async def test_invalid_room_key_is_rejected(self) -> None:
         with self.assertRaises(ProtocolError) as cm:
@@ -459,6 +483,59 @@ class RelayIntegrationTests(unittest.IsolatedAsyncioTestCase):
         self.assertTrue(snapshot["state"]["hasImportedSpoilerLog"])
         self.assertEqual(snapshot["state"]["importedSpoilerLogVersion"], "1.2.3")
 
+    async def test_set_junk_ids_op(self) -> None:
+        websocket, _, _ = await self.connect()
+        room = self.relay.rooms[self.room_id]
+        await self.relay.handle_operation(
+            room,
+            websocket,
+            {
+                "protocolSchema": 1,
+                "sessionId": self.room_id,
+                "opId": "op-junk",
+                "actorId": "actor-a",
+                "clientClock": 1,
+                "ts": 1000,
+                # handle_operation receives an already-normalized envelope
+                # (normalize_operation runs earlier in the handler); dedup/sort
+                # of ids is covered by test_join_seeds_junk_location_ids.
+                "op": {
+                    "type": "locations.set_junk_ids",
+                    "ids": ["LOC_A", "LOC_B"],
+                },
+            },
+        )
+        snapshot = json.loads(
+            self.relay.db.execute(
+                "SELECT snapshot_json FROM rooms WHERE room_id = ?",
+                (self.room_id,),
+            ).fetchone()["snapshot_json"]
+        )
+        # Stored, and kept separate from collectedLocationIds.
+        self.assertEqual(snapshot["state"]["junkLocationIds"], ["LOC_A", "LOC_B"])
+        self.assertEqual(snapshot["state"]["collectedLocationIds"], [])
+
+    async def test_join_seeds_junk_location_ids(self) -> None:
+        join_message = normalize_join_message(
+            {
+                "type": "join",
+                "roomId": "junkseedroom",
+                "roomKey": "junkseedkey0",
+                "actorId": "actor-a",
+                "snapshotEnvelope": {
+                    "state": {"junkLocationIds": ["LOC_Z", "LOC_A"]},
+                },
+            }
+        )
+        await self.relay.join(FakeWebSocket(), join_message)
+        snapshot = json.loads(
+            self.relay.db.execute(
+                "SELECT snapshot_json FROM rooms WHERE room_id = ?",
+                ("junkseedroom",),
+            ).fetchone()["snapshot_json"]
+        )
+        self.assertEqual(snapshot["state"]["junkLocationIds"], ["LOC_A", "LOC_Z"])
+
     async def test_slow_peer_is_evicted_and_does_not_block_room(self) -> None:
         fast, _, _ = await self.connect(actor_id="fast")
         slow, _, _ = await self.connect(actor_id="slow")
@@ -515,7 +592,13 @@ class RelayIntegrationTests(unittest.IsolatedAsyncioTestCase):
             ]
         )
 
-        await self.relay.handler(websocket)
+        with self.assertLogs("tlt.sync_relay", level="WARNING") as logs:
+            await self.relay.handler(websocket)
+
+        self.assertTrue(
+            any("protocol error" in line for line in logs.output),
+            logs.output,
+        )
 
         error_events = [
             json.loads(msg)
@@ -619,6 +702,46 @@ class IdlePruneTests(unittest.IsolatedAsyncioTestCase):
         finally:
             await _cancel_sender_tasks(relay)
             relay.db.close()
+
+    async def test_fresh_db_uses_incremental_auto_vacuum(self) -> None:
+        mode = self.relay.db.execute("PRAGMA auto_vacuum").fetchone()[0]
+        self.assertEqual(mode, 2)  # 2 == INCREMENTAL
+
+    async def test_prune_reclaims_disk_via_incremental_vacuum(self) -> None:
+        # A room with a sizable snapshot spans several pages; pruning it should
+        # return those pages to the OS so the size cap recovers.
+        room_id = room_key = "bigroomcode1"
+        websocket = FakeWebSocket()
+        await self.relay.join(
+            websocket,
+            {
+                "type": "join",
+                "roomId": room_id,
+                "roomKey": room_key,
+                "actorId": "actor-a",
+                "seedSnapshot": {
+                    "state": {
+                        "collectedLocationIds": [f"LOC_{i:05d}" for i in range(3000)],
+                    },
+                },
+            },
+        )
+        await self.relay.disconnect(self.relay.rooms.get(room_id), websocket)
+        pages_with_room = self.relay.db.execute("PRAGMA page_count").fetchone()[0]
+
+        self.relay.db.execute(
+            "UPDATE rooms SET updated_at_ms = 0 WHERE room_id = ?",
+            (room_id,),
+        )
+        self.relay.db.commit()
+        removed = await self.relay.prune_idle_rooms()
+
+        self.assertEqual(removed, 1)
+        # incremental_vacuum returned the freed pages to the OS: nothing is left
+        # stranded on the freelist and the file actually shrank.
+        self.assertEqual(self.relay.db.execute("PRAGMA freelist_count").fetchone()[0], 0)
+        pages_after_prune = self.relay.db.execute("PRAGMA page_count").fetchone()[0]
+        self.assertLess(pages_after_prune, pages_with_room)
 
 
 class HealthzTests(unittest.IsolatedAsyncioTestCase):
@@ -729,6 +852,35 @@ class RoomCreationLimitTests(unittest.IsolatedAsyncioTestCase):
             with self.assertRaises(ProtocolError) as cm:
                 await self._join_new_room(relay, "001")
             self.assertIn("storage is full", str(cm.exception))
+        finally:
+            await _cancel_sender_tasks(relay)
+            relay.db.close()
+
+    async def test_per_room_client_cap_blocks_extra_joins(self) -> None:
+        relay = RelayServer(self.db_path, max_clients_per_room=2)
+        code = "sharedroom1"
+        try:
+            for actor in ("a", "b"):
+                await relay.join(
+                    FakeWebSocket(),
+                    {
+                        "type": "join",
+                        "roomId": code,
+                        "roomKey": code,
+                        "actorId": f"actor-{actor}",
+                    },
+                )
+            with self.assertRaises(ProtocolError) as cm:
+                await relay.join(
+                    FakeWebSocket(),
+                    {
+                        "type": "join",
+                        "roomId": code,
+                        "roomKey": code,
+                        "actorId": "actor-c",
+                    },
+                )
+            self.assertIn("full", str(cm.exception))
         finally:
             await _cancel_sender_tasks(relay)
             relay.db.close()

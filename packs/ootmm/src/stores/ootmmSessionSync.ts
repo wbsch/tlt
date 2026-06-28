@@ -16,6 +16,7 @@ type SyncOperationBase = {
     | 'inventory.set_count'
     | 'locations.set_collected'
     | 'locations.set_ids'
+    | 'locations.set_junk_ids'
     | 'world.set_precompleted'
     | 'world.set_song_events'
     | 'world.set_shop_prices'
@@ -45,6 +46,10 @@ export type OoTMMSyncOperation =
     })
   | (SyncOperationBase & {
       type: 'locations.set_ids';
+      ids: string[];
+    })
+  | (SyncOperationBase & {
+      type: 'locations.set_junk_ids';
       ids: string[];
     })
   | (SyncOperationBase & {
@@ -114,7 +119,10 @@ export type OoTMMSessionSyncCallbacks = {
 };
 
 export type OoTMMSessionSyncConnection = {
-  publish: (op: OoTMMSyncOperation) => void;
+  // Returns whether the op was actually sent. The local cross-tab transport is
+  // best-effort and always reports true; the room transport reports false when
+  // the socket isn't open so the caller can queue and replay it.
+  publish: (op: OoTMMSyncOperation) => boolean;
   disconnect: () => void;
 };
 
@@ -335,6 +343,7 @@ export function createOoTMMLocalSessionSync(options: {
       markSeen(envelope.opId);
       safePost(opsChannel, envelope);
       publishToStorage(envelope);
+      return true;
     },
     disconnect() {
       if (heartbeatTimer !== null && typeof window !== 'undefined') {

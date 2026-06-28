@@ -225,6 +225,94 @@ describe('ootmm room sync', () => {
     });
   });
 
+  it('queues an op published in the socket-death window (G1)', async () => {
+    const { sessionStore, socket } = await joinRoom('ROOMD');
+    // Simulate the window where the socket is already CLOSING but the 'close'
+    // event hasn't fired yet, so coopConnectionState still reads 'connected'.
+    // Pre-fix this op went to publish() on a dead socket and was silently
+    // dropped (never queued), then reverted by the reconnect snapshot.
+    socket.readyState = 2; // CLOSING
+    sessionStore.toggleCollectedLocation('CHECK_DYING');
+    expect(sessionStore.collectedLocationIds).toContain('CHECK_DYING');
+
+    // Now let the socket actually close and reconnect.
+    socket.close();
+    await delay(650);
+    await flushMicrotasks();
+    const reconnectSocket = MockWebSocket.instances[1];
+    expect(reconnectSocket).toBeDefined();
+    reconnectSocket.emitMessage({
+      type: 'joined',
+      roomId: 'ROOMD',
+      baselineSeq: 0,
+      peerCount: 1,
+    });
+    reconnectSocket.emitMessage({
+      type: 'snapshot',
+      snapshotEnvelope: {
+        protocolSchema: 1,
+        stateSchema: 1,
+        stateType: 'ootmm-session',
+        sessionId: 'ROOMD',
+        baselineSeq: 0,
+        capturedAt: 0,
+        state: {
+          inventoryById: {},
+          collectedLocationIds: [],
+          preCompletedDungeons: [],
+          songEvents: {},
+          shopPrices: {},
+          trackerSettings: {},
+          entranceOverrides: {},
+          hasImportedSpoilerLog: false,
+          importedSpoilerLogVersion: null,
+        },
+      },
+    });
+    await flushMicrotasks();
+
+    // The op survived: re-applied on top of the reconnect snapshot and re-sent.
+    expect(sessionStore.collectedLocationIds).toContain('CHECK_DYING');
+    const replayed = reconnectSocket.sent
+      .slice(1)
+      .map((raw) => JSON.parse(raw))
+      .find((message) => message.type === 'op');
+    expect(replayed?.envelope.op).toEqual({
+      type: 'locations.set_collected',
+      locationId: 'CHECK_DYING',
+      collected: true,
+    });
+  });
+
+  it('publishes junk location ids to the room socket and applies remote ones', async () => {
+    const { sessionStore, socket } = await joinRoom('ROOMJ');
+    const before = socket.sent.length;
+    sessionStore.setJunkLocationIds(['LOC_A', 'LOC_B']);
+    const published = socket.sent.slice(before).map((raw) => JSON.parse(raw));
+    const opMsg = published.find(
+      (m) => m.type === 'op' && m.envelope.op.type === 'locations.set_junk_ids',
+    );
+    expect(opMsg).toBeDefined();
+    expect([...opMsg.envelope.op.ids].sort()).toEqual(['LOC_A', 'LOC_B']);
+
+    // A remote junk op updates local state without echoing back.
+    socket.emitMessage({
+      type: 'op',
+      serverSeq: 2,
+      envelope: {
+        protocolSchema: 1,
+        sessionId: 'ROOMJ',
+        opId: 'remote-junk',
+        actorId: 'other-actor',
+        clientClock: 5,
+        ts: Date.now(),
+        op: { type: 'locations.set_junk_ids', ids: ['LOC_C'] },
+      },
+    });
+    await flushMicrotasks();
+    expect(sessionStore.junkLocationIds).toEqual(['LOC_C']);
+  });
+
   it('rejects non-alphanumeric room codes before opening a socket', () => {
     const sessionStore = useOoTMMSessionStore();
     sessionStore.startRoomSync({ roomCode: 'bad-room', url: 'ws://test/' });

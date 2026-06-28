@@ -7,7 +7,20 @@ const props = defineProps<{
   enabled: boolean;
   lastError: string | null;
   warningMessage?: string | null;
+  /**
+   * Coop and autotracking are mutually exclusive (see docs/coop-sync.md §7).
+   * While in a room the toggle is blocked from turning autotracking on.
+   */
+  coopActive?: boolean;
 }>();
+
+const COOP_BLOCKED_TITLE = 'Autotracking is unavailable while coop is active';
+
+// Block turning autotracking *on* while in a room; never block turning it off
+// (so a stray both-active state stays recoverable from the UI).
+const isCoopBlocked = computed(
+  () => Boolean(props.coopActive) && !props.enabled,
+);
 
 const emit = defineEmits<{
   'update:enabled': [value: boolean];
@@ -76,6 +89,9 @@ const dropdownStateClasses = computed(() => ({
 }));
 
 const buttonTitle = computed(() => {
+  if (isCoopBlocked.value) {
+    return COOP_BLOCKED_TITLE;
+  }
   const baseTitle = lastErrorTitle();
   if (props.enabled) {
     return baseTitle;
@@ -114,19 +130,22 @@ function handleWindowKeydown(event: KeyboardEvent) {
 }
 
 function toggle() {
+  if (isCoopBlocked.value) {
+    return;
+  }
   closeMenu();
   emit('update:enabled', !props.enabled);
 }
 
 function toggleMenu() {
-  if (props.enabled) {
+  if (props.enabled || props.coopActive) {
     return;
   }
   isMenuOpen.value = !isMenuOpen.value;
 }
 
 function startOverwrite() {
-  if (props.enabled) {
+  if (props.enabled || props.coopActive) {
     return;
   }
   closeMenu();
@@ -155,6 +174,7 @@ onBeforeUnmount(() => {
       class="autotracker-button"
       :class="buttonStateClasses"
       :title="buttonTitle"
+      :disabled="isCoopBlocked"
       data-testid="autotracker-button"
       @click="toggle"
     >
@@ -172,7 +192,8 @@ onBeforeUnmount(() => {
       aria-label="Autotracker options"
       aria-haspopup="menu"
       :aria-expanded="isMenuOpen ? 'true' : 'false'"
-      :disabled="enabled"
+      :title="coopActive ? COOP_BLOCKED_TITLE : undefined"
+      :disabled="enabled || coopActive"
       @click="toggleMenu"
     >
       ⋮
@@ -222,9 +243,14 @@ onBeforeUnmount(() => {
   white-space: nowrap;
 }
 
-.autotracker-button:hover {
+.autotracker-button:hover:not(:disabled) {
   background: #3a3a3a;
   border-color: #777;
+}
+
+.autotracker-button:disabled {
+  cursor: default;
+  opacity: 0.65;
 }
 
 .autotracker-button--active {

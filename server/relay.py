@@ -40,6 +40,13 @@ MAX_DB_BYTES = 1024 * 1024 * 1024  # 1 GiB
 # may be created per rolling window. Joins to existing rooms are never limited.
 ROOM_CREATION_WINDOW_MS = 60 * 1000
 MAX_NEW_ROOMS_PER_MINUTE = 60
+# Cap on simultaneous clients in a single room. Coop sessions are small; this
+# bounds the broadcast fan-out (one op -> N sends) and per-room memory against
+# someone who has a room code and opens many connections to it.
+MAX_CLIENTS_PER_ROOM = 16
+# A connection must send its join frame within this many seconds of opening or
+# the relay drops it, so an anonymous socket can't be held open for free.
+JOIN_TIMEOUT_SEC = 10
 MAX_ID_LENGTH = 256
 # Shortest room code the relay will accept. The browser generates 8-char codes;
 # rejecting anything shorter keeps a trivially brute-forceable room off the wire.
@@ -50,8 +57,6 @@ MAX_JSON_DEPTH = 16
 # every collected location + settings in one message) while staying bounded.
 MAX_JSON_ITEMS = 20000
 MAX_JSON_STRING_LENGTH = 4096
-PRUNE_SEEN_OPS_EVERY = 256
-SEEN_OP_RETENTION_MS = 7 * 24 * 60 * 60 * 1000
 IDLE_PRUNE_INTERVAL_SEC = 6 * 60 * 60
 OUTBOX_MAX_MESSAGES = 32
 SLOW_PEER_CLOSE_CODE = 1011
@@ -63,6 +68,7 @@ OP_TYPES = {
     "inventory.set_count",
     "locations.set_collected",
     "locations.set_ids",
+    "locations.set_junk_ids",
     "world.set_precompleted",
     "world.set_song_events",
     "world.set_shop_prices",
@@ -264,6 +270,7 @@ def default_room_document() -> dict[str, Any]:
     return {
         "inventoryById": {},
         "collectedLocationIds": [],
+        "junkLocationIds": [],
         "preCompletedDungeons": [],
         "songEvents": {},
         "shopPrices": {},
@@ -302,6 +309,10 @@ def normalize_room_document(value: Any) -> dict[str, Any]:
     if "collectedLocationIds" in value:
         document["collectedLocationIds"] = normalize_id_list(
             value["collectedLocationIds"], "seed.collectedLocationIds"
+        )
+    if "junkLocationIds" in value:
+        document["junkLocationIds"] = normalize_id_list(
+            value["junkLocationIds"], "seed.junkLocationIds"
         )
     if "preCompletedDungeons" in value:
         document["preCompletedDungeons"] = normalize_id_list(
@@ -449,6 +460,12 @@ def normalize_operation(operation: dict[str, Any]) -> dict[str, Any]:
             "type": op_type,
             "ids": normalize_id_list(operation["ids"], "ids"),
         }
+    if op_type == "locations.set_junk_ids":
+        require_exact_keys(operation, {"type", "ids"}, op_type)
+        return {
+            "type": op_type,
+            "ids": normalize_id_list(operation["ids"], "ids"),
+        }
     if op_type == "world.set_precompleted":
         require_exact_keys(operation, {"type", "ids"}, op_type)
         return {
@@ -546,6 +563,8 @@ def reduce_snapshot(snapshot_envelope: dict[str, Any], envelope: dict[str, Any],
         state["collectedLocationIds"] = sorted(current)
     elif op_type == "locations.set_ids":
         state["collectedLocationIds"] = list(op["ids"])
+    elif op_type == "locations.set_junk_ids":
+        state["junkLocationIds"] = list(op["ids"])
     elif op_type == "world.set_precompleted":
         state["preCompletedDungeons"] = list(op["ids"])
     elif op_type == "world.set_song_events":
@@ -599,9 +618,16 @@ class RelayServer:
         idle_prune_days: float = 7.0,
         max_db_bytes: int = MAX_DB_BYTES,
         max_new_rooms_per_minute: int = MAX_NEW_ROOMS_PER_MINUTE,
+        max_clients_per_room: int = MAX_CLIENTS_PER_ROOM,
     ):
         self.db = sqlite3.connect(db_path, check_same_thread=False)
         self.db.row_factory = sqlite3.Row
+        # auto_vacuum only takes effect on a fresh database; an existing file
+        # created without it stays NONE until a one-time VACUUM. It lets the
+        # idle-prune path return freed pages to the OS (see prune_idle_rooms) so
+        # the size cap recovers after rooms are deleted instead of staying stuck
+        # at the high-water mark.
+        self.db.execute("PRAGMA auto_vacuum=INCREMENTAL")
         self.db.execute("PRAGMA journal_mode=WAL")
         self.db.execute("PRAGMA synchronous=NORMAL")
         self.db.execute("PRAGMA busy_timeout=5000")
@@ -612,6 +638,7 @@ class RelayServer:
         self.idle_prune_ms = max(0, int(idle_prune_days * 24 * 60 * 60 * 1000))
         self.max_db_bytes = max_db_bytes
         self.max_new_rooms_per_minute = max_new_rooms_per_minute
+        self.max_clients_per_room = max_clients_per_room
         # Timestamps (ms) of recent room creations, oldest first. Guarded by
         # rooms_lock, same as every other room-creation path.
         self._recent_room_creations: deque[int] = deque()
@@ -629,16 +656,6 @@ class RelayServer:
               snapshot_json TEXT NOT NULL,
               updated_at_ms INTEGER NOT NULL
             );
-
-            CREATE TABLE IF NOT EXISTS seen_ops (
-              room_id TEXT NOT NULL,
-              op_id TEXT NOT NULL,
-              seen_at_ms INTEGER NOT NULL,
-              PRIMARY KEY (room_id, op_id)
-            );
-
-            CREATE INDEX IF NOT EXISTS seen_ops_room_seen_idx
-            ON seen_ops (room_id, seen_at_ms);
             """
         )
         self.db.commit()
@@ -766,6 +783,8 @@ class RelayServer:
             seed_snapshot=join_message.get("seedSnapshot"),
         )
         async with room.lock:
+            if len(room.clients) >= self.max_clients_per_room:
+                raise ProtocolError("room is full")
             client = ClientConnection(actor_id=join_message["actorId"])
             room.clients[websocket] = client
             client.sender_task = asyncio.create_task(
@@ -876,17 +895,10 @@ class RelayServer:
             client = room.clients.get(websocket)
             if client is None:
                 raise ProtocolError("client is not joined")
-            duplicate = self.db.execute(
-                """
-                SELECT 1
-                FROM seen_ops
-                WHERE room_id = ? AND op_id = ?
-                """,
-                (room.room_id, envelope["opId"]),
-            ).fetchone()
-            if duplicate is not None:
-                return
-
+            # No server-side opId dedup: every op is an absolute set/replace, so
+            # reduce_snapshot is idempotent and reapplying a duplicate yields the
+            # same snapshot. Clients also dedup by opId. If a non-idempotent
+            # (delta) op is ever added, dedup must come back.
             committed_at = now_ms()
             next_seq = room.latest_seq + 1
             next_snapshot = reduce_snapshot(room.snapshot_envelope, envelope, captured_at=committed_at)
@@ -900,15 +912,10 @@ class RelayServer:
                 # keeps the room joinable instead of bricking it.
                 raise ProtocolError("room state too large")
 
-            self.db.execute("BEGIN IMMEDIATE")
+            # Single statement, so the implicit transaction is enough; the
+            # rollback guard keeps a failed write from leaving an open
+            # transaction on the shared connection.
             try:
-                self.db.execute(
-                    """
-                    INSERT INTO seen_ops (room_id, op_id, seen_at_ms)
-                    VALUES (?, ?, ?)
-                    """,
-                    (room.room_id, envelope["opId"], committed_at),
-                )
                 self.db.execute(
                     """
                     UPDATE rooms
@@ -929,16 +936,6 @@ class RelayServer:
 
             room.latest_seq = next_seq
             room.snapshot_envelope = next_snapshot
-
-            if next_seq % PRUNE_SEEN_OPS_EVERY == 0:
-                self.db.execute(
-                    """
-                    DELETE FROM seen_ops
-                    WHERE room_id = ? AND seen_at_ms < ?
-                    """,
-                    (room.room_id, committed_at - SEEN_OP_RETENTION_MS),
-                )
-                self.db.commit()
 
             payload = json.dumps(
                 {
@@ -979,10 +976,16 @@ class RelayServer:
                 if room_id in self.rooms and self.rooms[room_id].clients:
                     continue
                 self.db.execute("DELETE FROM rooms WHERE room_id = ?", (room_id,))
-                self.db.execute("DELETE FROM seen_ops WHERE room_id = ?", (room_id,))
                 self.rooms.pop(room_id, None)
                 removed += 1
             self.db.commit()
+            if removed:
+                # Return the freed pages to the OS so the size cap recovers
+                # instead of staying pinned at the high-water mark. The result
+                # rows must be drained or only a single page is reclaimed. No-op
+                # unless the database is in auto_vacuum=INCREMENTAL mode.
+                self.db.execute("PRAGMA incremental_vacuum").fetchall()
+                self.db.commit()
         if removed:
             LOG.info("pruned idle rooms count=%s", removed)
         return removed
@@ -1002,7 +1005,13 @@ class RelayServer:
         join_actor_id = "<unknown>"
 
         try:
-            raw = await websocket.recv()
+            try:
+                raw = await asyncio.wait_for(
+                    websocket.recv(), timeout=JOIN_TIMEOUT_SEC
+                )
+            except asyncio.TimeoutError:
+                await websocket.close(code=1008, reason="join timeout")
+                return
             if not isinstance(raw, str):
                 raise ProtocolError("binary messages are not supported")
             join_message = normalize_join_message(parse_json_message(raw))

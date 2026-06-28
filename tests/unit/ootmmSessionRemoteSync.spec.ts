@@ -71,4 +71,24 @@ describe('ootmm session remote sync', () => {
 
     sessionStore.stopLocalSessionSync();
   });
+
+  it('applies remote junk location ids without polluting undo history', async () => {
+    const sessionStore = useOoTMMSessionStore();
+    sessionStore.startLocalSessionSync();
+
+    pushRemoteOp({
+      type: 'locations.set_junk_ids',
+      ids: ['LOC_B', 'LOC_A'],
+    });
+
+    await new Promise((resolve) => setTimeout(resolve, 50));
+
+    expect([...sessionStore.junkLocationIds].sort()).toEqual([
+      'LOC_A',
+      'LOC_B',
+    ]);
+    expect(sessionStore.undoHistory).toHaveLength(0);
+
+    sessionStore.stopLocalSessionSync();
+  });
 });

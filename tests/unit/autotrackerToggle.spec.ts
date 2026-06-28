@@ -8,6 +8,7 @@ type ToggleMountProps = {
   enabled?: boolean;
   lastError?: string | null;
   warningMessage?: string | null;
+  coopActive?: boolean;
   'onUpdate:enabled'?: (value: boolean) => void;
   onStartOverwrite?: () => void;
 };
@@ -190,6 +191,50 @@ describe('AutotrackerToggle', () => {
       expect((indicator as HTMLSpanElement).style.backgroundColor).toBe(
         'rgb(255, 152, 0)',
       );
+    } finally {
+      view.cleanup();
+    }
+  });
+
+  it('blocks turning autotracking on while coop is active', async () => {
+    const updateEnabled = vi.fn();
+    const startOverwrite = vi.fn();
+    const view = mountToggle({
+      coopActive: true,
+      enabled: false,
+      'onUpdate:enabled': updateEnabled,
+      onStartOverwrite: startOverwrite,
+    });
+
+    try {
+      await flushUi();
+
+      const button = view.container.querySelector(
+        '[data-testid="autotracker-button"]',
+      ) as HTMLButtonElement;
+      const toggle = view.container.querySelector(
+        '[data-testid="autotracker-dropdown-toggle"]',
+      ) as HTMLButtonElement;
+
+      expect(button.disabled).toBe(true);
+      expect(toggle.disabled).toBe(true);
+      expect(button.title).toBe(
+        'Autotracking is unavailable while coop is active',
+      );
+
+      // Clicking the (disabled) controls must not start autotracking.
+      button.click();
+      toggle.click();
+      await flushUi();
+
+      expect(updateEnabled).not.toHaveBeenCalled();
+      expect(startOverwrite).not.toHaveBeenCalled();
+      // The overflow menu never opens while blocked.
+      expect(
+        view.container.querySelector(
+          '[data-testid="autotracker-dropdown-menu"]',
+        ),
+      ).toBeNull();
     } finally {
       view.cleanup();
     }

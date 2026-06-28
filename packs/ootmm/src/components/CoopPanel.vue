@@ -25,12 +25,20 @@ function generateRoomCode(): string {
   return out.join('');
 }
 
+// Coop and autotracking are mutually exclusive (see docs/coop-sync.md §7).
+// Autotracker state lives in OoTMMTracker, not the store, so it's passed in.
+const props = defineProps<{
+  autotrackerActive?: boolean;
+}>();
+
 const sessionStore = useOoTMMSessionStore();
 const { coopRoomCode, coopPeerCount, coopConnectionState } =
   storeToRefs(sessionStore);
 
 const joinCodeInput = ref('');
 const copyStatus = ref<'idle' | 'copied'>('idle');
+const isJoinConfirmOpen = ref(false);
+const pendingJoinCode = ref('');
 
 const isConnected = computed(() => coopConnectionState.value === 'connected');
 const isJoined = computed(() => coopRoomCode.value !== null);
@@ -54,14 +62,34 @@ const statusLabel = computed(() => {
 });
 
 function handleStart() {
+  if (props.autotrackerActive) return;
   sessionStore.startRoomSync({ roomCode: generateRoomCode() });
 }
 
 function handleJoin() {
+  if (props.autotrackerActive) return;
   const code = normalizedJoinCode.value;
+  if (!isValidCoopRoomCode(code)) return;
+  // Joining adopts the room's state and replaces local tracker progress, so
+  // always confirm first. Consent stays in the UI layer (the store's
+  // startRoomSync is also used by non-destructive auto-rejoin and "Start coop").
+  pendingJoinCode.value = code;
+  isJoinConfirmOpen.value = true;
+}
+
+function confirmJoin() {
+  const code = pendingJoinCode.value;
+  isJoinConfirmOpen.value = false;
+  pendingJoinCode.value = '';
+  if (props.autotrackerActive) return;
   if (!isValidCoopRoomCode(code)) return;
   sessionStore.startRoomSync({ roomCode: code });
   joinCodeInput.value = '';
+}
+
+function cancelJoin() {
+  isJoinConfirmOpen.value = false;
+  pendingJoinCode.value = '';
 }
 
 function handleLeave() {
@@ -100,6 +128,10 @@ async function handleCopyCode() {
         <button
           type="button"
           class="coop-panel-button"
+          :disabled="autotrackerActive"
+          :title="
+            autotrackerActive ? 'Stop autotracking to use coop' : undefined
+          "
           data-testid="coop-start-button"
           @click="handleStart"
         >
@@ -115,6 +147,7 @@ async function handleCopyCode() {
           spellcheck="false"
           autocomplete="off"
           pattern="[A-Za-z0-9]+"
+          :disabled="autotrackerActive"
           :aria-invalid="
             joinCodeInput.trim() && !canJoinCode ? 'true' : undefined
           "
@@ -124,13 +157,20 @@ async function handleCopyCode() {
         <button
           type="button"
           class="coop-panel-button"
-          :disabled="!canJoinCode"
+          :disabled="!canJoinCode || autotrackerActive"
           data-testid="coop-join-button"
           @click="handleJoin"
         >
           Join
         </button>
       </div>
+      <p
+        v-if="autotrackerActive"
+        class="coop-panel-hint"
+        data-testid="coop-autotracker-blocked-hint"
+      >
+        Stop autotracking to use coop.
+      </p>
     </template>
     <div v-else class="coop-panel-row">
       <code class="coop-panel-code" data-testid="coop-room-code">{{
@@ -157,6 +197,47 @@ async function handleCopyCode() {
       Share the room code with another player. State will sync once both are
       connected.
     </p>
+
+    <div
+      v-if="isJoinConfirmOpen"
+      class="coop-confirm-backdrop"
+      data-testid="coop-join-confirm-backdrop"
+      @click="cancelJoin"
+    >
+      <div
+        class="coop-confirm-modal"
+        data-testid="coop-join-confirm-modal"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="coop-join-confirm-title"
+        aria-describedby="coop-join-confirm-description"
+        @click.stop
+      >
+        <h2 id="coop-join-confirm-title">Join coop room?</h2>
+        <p id="coop-join-confirm-description">
+          Joining replaces your current tracker state with the room's shared
+          state. This can't be undone.
+        </p>
+        <div class="coop-confirm-actions">
+          <button
+            type="button"
+            class="coop-panel-button"
+            data-testid="coop-join-confirm-cancel-button"
+            @click="cancelJoin"
+          >
+            Cancel
+          </button>
+          <button
+            type="button"
+            class="coop-panel-button coop-panel-button-danger"
+            data-testid="coop-join-confirm-apply-button"
+            @click="confirmJoin"
+          >
+            Join &amp; Replace
+          </button>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -222,6 +303,11 @@ async function handleCopyCode() {
   font: inherit;
 }
 
+.coop-panel-input:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
 .coop-panel-button {
   padding: 0.25rem 0.6rem;
   border-radius: 4px;
@@ -265,5 +351,44 @@ async function handleCopyCode() {
   margin: 0.2rem 0 0 0;
   font-size: 0.75rem;
   opacity: 0.7;
+}
+
+.coop-confirm-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.6);
+  padding: 1rem;
+}
+
+.coop-confirm-modal {
+  max-width: 320px;
+  width: 100%;
+  padding: 1rem 1.25rem;
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  background: #2a2a2a;
+  color: #fff;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+}
+
+.coop-confirm-modal h2 {
+  margin: 0 0 0.5rem 0;
+  font-size: 1rem;
+}
+
+.coop-confirm-modal p {
+  margin: 0 0 1rem 0;
+  font-size: 0.85rem;
+  opacity: 0.85;
+}
+
+.coop-confirm-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.5rem;
 }
 </style>

@@ -17,6 +17,7 @@ const MAX_RECONNECT_DELAY_MS = 10_000;
 export type OoTMMRoomSessionSnapshot = {
   inventoryById: Record<string, number>;
   collectedLocationIds: string[];
+  junkLocationIds: string[];
   preCompletedDungeons: string[];
   songEvents: Record<string, number>;
   shopPrices: Record<string, number>;
@@ -459,7 +460,14 @@ export function createOoTMMRoomSessionSync(
 
   return {
     publish(op) {
-      if (!ready || !socket || socket.readyState !== WebSocket.OPEN) return;
+      // Return whether the op was actually put on the wire. The caller queues
+      // anything that wasn't sent (incl. the window where the socket is already
+      // CLOSING but the connection state ref still says 'connected'), so a
+      // mid-disconnect edit isn't silently dropped and reverted by the
+      // reconnect snapshot.
+      if (!ready || !socket || socket.readyState !== WebSocket.OPEN) {
+        return false;
+      }
       clientClock += 1;
       const opId = randomId();
       markSeen(seenOpIds, seenOpOrder, opId);
@@ -477,6 +485,7 @@ export function createOoTMMRoomSessionSync(
           },
         }),
       );
+      return true;
     },
     disconnect() {
       disposed = true;

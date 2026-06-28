@@ -173,7 +173,8 @@ describe('coop protocol edge cases (audit regressions)', () => {
         if (op.dst === null || op.dst === '') delete relayOverrides[op.src];
         else relayOverrides[op.src] = op.dst;
       } else if (op.type === 'world.set_entrance_overrides') {
-        for (const key of Object.keys(relayOverrides)) delete relayOverrides[key];
+        for (const key of Object.keys(relayOverrides))
+          delete relayOverrides[key];
         Object.assign(relayOverrides, op.overrides);
       }
     }
