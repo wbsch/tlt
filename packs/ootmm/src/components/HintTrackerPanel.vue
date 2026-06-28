@@ -66,7 +66,6 @@ const isHintSectionCollapsed = ref(false);
   border: 1px solid #3a4a3a;
   border-radius: 4px;
   background: #1a1e1a;
-  overflow: hidden;
 }
 
 .hint-tracker-panel__section-header {
