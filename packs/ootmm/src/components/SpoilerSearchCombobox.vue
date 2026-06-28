@@ -1,0 +1,433 @@
+<script setup lang="ts">
+import {
+  computed,
+  nextTick,
+  onBeforeUnmount,
+  onMounted,
+  ref,
+  watch,
+} from 'vue';
+import { matchesSearchTerms } from '../utils/search';
+
+type ComboboxOption = {
+  value: string;
+  label: string;
+};
+
+const props = withDefaults(
+  defineProps<{
+    options: readonly ComboboxOption[];
+    modelValue: string;
+    placeholder?: string;
+    emptyText?: string;
+  }>(),
+  {
+    placeholder: 'Search...',
+    emptyText: 'No matches found',
+  },
+);
+
+const emit = defineEmits<{
+  (e: 'update:modelValue', value: string): void;
+}>();
+
+const dropdownId = 'spoiler-search-options';
+const inputRef = ref<HTMLInputElement | null>(null);
+const isOpen = ref(false);
+const query = ref('');
+const highlightedIndex = ref(-1);
+const dropdownPlacement = ref<'above' | 'below'>('below');
+const dropdownMaxHeight = ref('min(16rem, 45vh)');
+
+const DROPDOWN_VIEWPORT_PADDING = 8;
+const DROPDOWN_OFFSET = 4;
+const DROPDOWN_PREFERRED_MAX_HEIGHT = 16 * 16;
+const DROPDOWN_PREFERRED_VIEWPORT_RATIO = 0.45;
+const DROPDOWN_MIN_FLIP_SPACE = 120;
+
+function resetDropdownLayout(): void {
+  dropdownPlacement.value = 'below';
+  dropdownMaxHeight.value = 'min(16rem, 45vh)';
+}
+
+function updateDropdownLayout(): void {
+  if (!isOpen.value) return;
+
+  const input = inputRef.value;
+  if (!input) return;
+
+  const rect = input.getBoundingClientRect();
+  const viewportHeight = Math.max(
+    window.innerHeight,
+    document.documentElement.clientHeight,
+  );
+  const preferredMaxHeight = Math.min(
+    DROPDOWN_PREFERRED_MAX_HEIGHT,
+    viewportHeight * DROPDOWN_PREFERRED_VIEWPORT_RATIO,
+  );
+  const availableAbove = Math.max(
+    0,
+    rect.top - DROPDOWN_VIEWPORT_PADDING - DROPDOWN_OFFSET,
+  );
+  const availableBelow = Math.max(
+    0,
+    viewportHeight - rect.bottom - DROPDOWN_VIEWPORT_PADDING - DROPDOWN_OFFSET,
+  );
+  const shouldOpenAbove =
+    availableBelow < Math.min(preferredMaxHeight, DROPDOWN_MIN_FLIP_SPACE) &&
+    availableAbove > availableBelow;
+  const availableSpace = shouldOpenAbove ? availableAbove : availableBelow;
+
+  dropdownPlacement.value = shouldOpenAbove ? 'above' : 'below';
+  dropdownMaxHeight.value = `${Math.max(
+    0,
+    Math.floor(Math.min(preferredMaxHeight, availableSpace)),
+  )}px`;
+}
+
+function scheduleDropdownLayoutUpdate(): void {
+  void nextTick(() => {
+    updateDropdownLayout();
+  });
+}
+
+const filteredOptions = computed(() => {
+  if (!query.value.trim()) return [...props.options];
+  return props.options.filter((option) =>
+    matchesSearchTerms([option.label], query.value),
+  );
+});
+
+const displayValue = computed(() => {
+  if (isOpen.value) return query.value;
+  if (!props.modelValue) return '';
+  const option = props.options.find(
+    (entry) => entry.value === props.modelValue,
+  );
+  return option ? option.label : '';
+});
+
+const hasValue = computed(() => Boolean(props.modelValue) && !isOpen.value);
+
+function openDropdown(): void {
+  isOpen.value = true;
+  highlightedIndex.value = -1;
+  scheduleDropdownLayoutUpdate();
+}
+
+function closeDropdown(): void {
+  isOpen.value = false;
+  query.value = '';
+  highlightedIndex.value = -1;
+  resetDropdownLayout();
+}
+
+function handleFocus(): void {
+  query.value = '';
+  openDropdown();
+}
+
+function handleClick(): void {
+  query.value = '';
+  openDropdown();
+  inputRef.value?.select();
+}
+
+function handleInput(event: Event): void {
+  query.value = (event.target as HTMLInputElement).value;
+  openDropdown();
+  highlightedIndex.value = 0;
+}
+
+function handleOptionClick(value: string): void {
+  emit('update:modelValue', value);
+  closeDropdown();
+}
+
+function handleClear(): void {
+  emit('update:modelValue', '');
+  closeDropdown();
+}
+
+function scrollHighlightedIntoView(): void {
+  nextTick(() => {
+    const listbox = document.getElementById(dropdownId);
+    if (!listbox) return;
+    const highlighted = listbox.querySelector('.is-highlighted');
+    if (highlighted) {
+      highlighted.scrollIntoView({ block: 'nearest' });
+    }
+  });
+}
+
+function handleKeydown(event: KeyboardEvent): void {
+  const options = filteredOptions.value;
+
+  if (event.key === 'ArrowDown') {
+    event.preventDefault();
+    if (!isOpen.value) {
+      openDropdown();
+      return;
+    }
+    if (options.length === 0) return;
+    highlightedIndex.value =
+      highlightedIndex.value < 0
+        ? 0
+        : (highlightedIndex.value + 1) % options.length;
+    scrollHighlightedIntoView();
+    return;
+  }
+
+  if (event.key === 'ArrowUp') {
+    event.preventDefault();
+    if (!isOpen.value) {
+      openDropdown();
+      return;
+    }
+    if (options.length === 0) return;
+    highlightedIndex.value =
+      highlightedIndex.value < 0
+        ? options.length - 1
+        : (highlightedIndex.value - 1 + options.length) % options.length;
+    scrollHighlightedIntoView();
+    return;
+  }
+
+  if (event.key === 'Enter') {
+    event.preventDefault();
+    if (options.length === 0) {
+      closeDropdown();
+      return;
+    }
+    const selected =
+      options[highlightedIndex.value >= 0 ? highlightedIndex.value : 0];
+    if (selected) {
+      emit('update:modelValue', selected.value);
+    }
+    closeDropdown();
+    inputRef.value?.blur();
+    return;
+  }
+
+  if (event.key === 'Tab') {
+    if (!isOpen.value) return;
+    if (options.length > 0) {
+      const selected =
+        options[highlightedIndex.value >= 0 ? highlightedIndex.value : 0];
+      if (selected) {
+        emit('update:modelValue', selected.value);
+      }
+    }
+    closeDropdown();
+    return;
+  }
+
+  if (event.key === 'Escape') {
+    event.preventDefault();
+    closeDropdown();
+    inputRef.value?.blur();
+    return;
+  }
+
+  if (event.key === 'Delete' || event.key === 'Backspace') {
+    if (!query.value && props.modelValue) {
+      emit('update:modelValue', '');
+    }
+  }
+}
+
+function handleViewportChange(): void {
+  updateDropdownLayout();
+}
+
+watch(filteredOptions, () => {
+  if (!isOpen.value) return;
+  scheduleDropdownLayoutUpdate();
+});
+
+watch(isOpen, (open) => {
+  if (!open) return;
+  scheduleDropdownLayoutUpdate();
+});
+
+onMounted(() => {
+  window.addEventListener('resize', handleViewportChange);
+  window.addEventListener('scroll', handleViewportChange, true);
+});
+
+onBeforeUnmount(() => {
+  window.removeEventListener('resize', handleViewportChange);
+  window.removeEventListener('scroll', handleViewportChange, true);
+});
+</script>
+
+<template>
+  <div class="spoiler-search-combobox">
+    <input
+      ref="inputRef"
+      class="spoiler-search-combobox__input"
+      :class="{ 'has-value': hasValue }"
+      :value="displayValue"
+      :data-selected="modelValue || ''"
+      type="text"
+      :placeholder="modelValue ? '' : placeholder"
+      autocomplete="off"
+      role="combobox"
+      aria-autocomplete="list"
+      :aria-expanded="isOpen"
+      :aria-controls="dropdownId"
+      @focus="handleFocus"
+      @click="handleClick"
+      @input="handleInput"
+      @blur="closeDropdown"
+      @keydown="handleKeydown"
+    />
+    <button
+      v-if="hasValue"
+      class="spoiler-search-combobox__clear"
+      type="button"
+      tabindex="-1"
+      title="Clear"
+      @mousedown.prevent
+      @click="handleClear"
+    >
+      ×
+    </button>
+    <ul
+      v-if="isOpen"
+      :id="dropdownId"
+      class="spoiler-search-combobox__options"
+      :class="{
+        'spoiler-search-combobox__options--above':
+          dropdownPlacement === 'above',
+      }"
+      :style="{ maxHeight: dropdownMaxHeight }"
+      role="listbox"
+    >
+      <li
+        v-for="(option, index) in filteredOptions"
+        :key="option.value"
+        class="spoiler-search-combobox__option"
+        :class="{ 'is-highlighted': index === highlightedIndex }"
+        :data-value="option.value"
+        role="option"
+        :aria-selected="index === highlightedIndex"
+        @mousedown.prevent
+        @click="handleOptionClick(option.value)"
+      >
+        <span class="spoiler-search-combobox__option-label">{{
+          option.label
+        }}</span>
+      </li>
+      <li
+        v-if="filteredOptions.length === 0"
+        class="spoiler-search-combobox__empty"
+      >
+        {{ emptyText }}
+      </li>
+    </ul>
+  </div>
+</template>
+
+<style scoped>
+.spoiler-search-combobox {
+  position: relative;
+  width: 100%;
+}
+
+.spoiler-search-combobox__input {
+  width: 100%;
+  padding: 0.3rem 1.5rem 0.3rem 0.4rem;
+  font-size: 0.75rem;
+  background: #1f2937;
+  color: #e5e7eb;
+  border: 1px solid #4b5563;
+  border-radius: 0.25rem;
+  cursor: text;
+  box-sizing: border-box;
+}
+
+.spoiler-search-combobox__input::placeholder {
+  color: #6b7280;
+}
+
+.spoiler-search-combobox__input.has-value {
+  color: #93c5fd;
+}
+
+.spoiler-search-combobox__input:focus {
+  outline: 2px solid #60a5fa;
+  outline-offset: -1px;
+}
+
+.spoiler-search-combobox__input:hover {
+  border-color: #6b7280;
+}
+
+.spoiler-search-combobox__clear {
+  position: absolute;
+  right: 0.2rem;
+  top: 50%;
+  transform: translateY(-50%);
+  border: none;
+  background: none;
+  color: #9ca3af;
+  font-size: 0.9rem;
+  line-height: 1;
+  cursor: pointer;
+  padding: 0 0.2rem;
+}
+
+.spoiler-search-combobox__clear:hover {
+  color: #f87171;
+}
+
+.spoiler-search-combobox__options {
+  list-style: none;
+  margin: 0;
+  padding: 0.25rem;
+  position: absolute;
+  top: calc(100% + 0.2rem);
+  left: 0;
+  right: 0;
+  border: 1px solid #4b5563;
+  border-radius: 0.35rem;
+  background: #111827;
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.45);
+  max-height: min(16rem, 45vh);
+  overflow-y: auto;
+  z-index: 16;
+}
+
+.spoiler-search-combobox__options--above {
+  top: auto;
+  bottom: calc(100% + 0.2rem);
+}
+
+.spoiler-search-combobox__option {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 0.5rem;
+  padding: 0.3rem 0.4rem;
+  border-radius: 0.25rem;
+  cursor: pointer;
+}
+
+.spoiler-search-combobox__option:hover,
+.spoiler-search-combobox__option.is-highlighted {
+  background: #1f2937;
+}
+
+.spoiler-search-combobox__option-label {
+  color: #e5e7eb;
+  font-size: 0.75rem;
+  min-width: 0;
+}
+
+.spoiler-search-combobox__empty {
+  color: #9ca3af;
+  font-size: 0.72rem;
+  padding: 0.3rem 0.4rem;
+}
+</style>
