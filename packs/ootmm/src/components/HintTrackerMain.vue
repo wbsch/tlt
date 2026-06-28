@@ -1107,9 +1107,9 @@ function removeMoonHint(index: number) {
 }
 
 .hint-btn--primary {
-  background: #2a6a3a;
-  border-color: #3a8a4a;
-  color: #ddd;
+  background: #2563eb;
+  border-color: #3b82f6;
+  color: #fff;
 }
 
 .hint-btn--primary:disabled {
@@ -1127,12 +1127,12 @@ function removeMoonHint(index: number) {
   padding: 6px;
   background: #2a2a2a;
   border-style: dashed;
-  color: #8a8;
+  color: #60a5fa;
 }
 
 .hint-btn--add:hover {
   background: #333;
-  border-color: #6a8;
+  border-color: #3b82f6;
 }
 
 /* ── Rows ── */

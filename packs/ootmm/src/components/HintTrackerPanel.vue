@@ -63,7 +63,7 @@ const isHintSectionCollapsed = ref(false);
 }
 
 .hint-tracker-panel__section {
-  border: 1px solid #3a4a3a;
+  border: 1px solid #3a4a5a;
   border-radius: 4px;
   background: #1a1e1a;
 }
@@ -73,7 +73,7 @@ const isHintSectionCollapsed = ref(false);
   align-items: center;
   gap: 6px;
   padding: 6px 8px;
-  background: #2a3a2a;
+  background: #2a2a3a;
   cursor: pointer;
   user-select: none;
   font-size: 0.85rem;
@@ -82,7 +82,7 @@ const isHintSectionCollapsed = ref(false);
 }
 
 .hint-tracker-panel__section-header:hover {
-  background: #3a4a3a;
+  background: #3a3a4a;
 }
 
 .hint-tracker-panel__collapse-icon {

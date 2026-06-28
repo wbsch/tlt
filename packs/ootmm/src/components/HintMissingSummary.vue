@@ -122,8 +122,8 @@ const totalSummary = computed(() => {
 .hint-missing-summary {
   padding: 8px;
   margin-bottom: 8px;
-  background: #1e2a1e;
-  border: 1px solid #3a5a3a;
+  background: #1a1e2a;
+  border: 1px solid #3a4a5a;
   border-radius: 4px;
 }
 
@@ -136,7 +136,7 @@ const totalSummary = computed(() => {
 }
 
 .hint-missing-summary__total {
-  color: #8a8;
+  color: #60a5fa;
   font-weight: 600;
 }
 
@@ -150,7 +150,7 @@ const totalSummary = computed(() => {
   display: flex;
   justify-content: space-between;
   padding: 2px 6px;
-  background: #2a3a2a;
+  background: #2a2a3a;
   border-radius: 3px;
   font-size: 0.75rem;
 }
@@ -160,7 +160,7 @@ const totalSummary = computed(() => {
 }
 
 .hint-missing-summary__value {
-  color: #8a8;
+  color: #60a5fa;
   font-weight: 600;
 }
 </style>
