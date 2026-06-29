@@ -7,7 +7,6 @@ import { IMPRESSUM_HTML } from './content/impressum';
 import FairyLoader from './components/FairyLoader.vue';
 import TrackerFaqModal from './components/TrackerFaqModal.vue';
 import { withBasePath } from '@packs/ootmm/utils/assetPath';
-import { buildCoopShareUrl } from '@packs/ootmm/utils/coopFlag';
 import { TRACKER_FAQ_OPEN_EVENT_NAME } from './utils/trackerFaq';
 import {
   buildShareUrl,
@@ -32,7 +31,7 @@ const appStore = useAppStore();
 const syncStatusStore = useSyncStatusStore();
 const { availablePacks, selectedPackId, currentPack, isLoading, error } =
   storeToRefs(appStore);
-const { hasOtherTabsOpen, connectedTabCount, isCoopRoomActive, coopRoomCode } =
+const { hasOtherTabsOpen, connectedTabCount, isCoopRoomActive } =
   storeToRefs(syncStatusStore);
 const isResetConfirmOpen = ref(false);
 const isInfoModalOpen = ref(false);
@@ -334,27 +333,6 @@ async function exportState(includeCollected = false) {
   }
 }
 
-async function exportCoopUrl() {
-  isShareMenuOpen.value = false;
-  const code = coopRoomCode.value;
-  if (!code) return;
-  try {
-    const shareUrl = buildCoopShareUrl(code);
-
-    if (navigator.clipboard?.writeText) {
-      await navigator.clipboard.writeText(shareUrl);
-      setShareStatus('Coop URL copied to clipboard');
-      return;
-    }
-
-    window.prompt('Copy this coop URL:', shareUrl);
-    setShareStatus('Coop URL ready');
-  } catch (error) {
-    console.error('Failed to export coop URL:', error);
-    setShareStatus('Failed to export coop URL');
-  }
-}
-
 function toggleShareMenu() {
   isShareMenuOpen.value = !isShareMenuOpen.value;
 }
@@ -494,77 +472,36 @@ onBeforeUnmount(() => {
           Debug: Dump Autotracker
         </button>
         <div class="export-button-group">
-          <template v-if="isCoopRoomActive">
+          <button
+            type="button"
+            class="export-button"
+            data-testid="export-state-button"
+            @click="exportState(false)"
+          >
+            EXPORT STATE
+          </button>
+          <button
+            type="button"
+            class="export-dropdown-toggle"
+            data-testid="export-dropdown-toggle"
+            aria-label="Export options"
+            @click="toggleShareMenu"
+          >
+            ⋮
+          </button>
+          <div
+            v-if="isShareMenuOpen"
+            class="export-dropdown-menu"
+            data-testid="export-dropdown-menu"
+          >
             <button
               type="button"
-              class="export-button"
-              data-testid="export-coop-url-button"
-              @click="exportCoopUrl"
+              class="export-dropdown-item"
+              @click="exportState(true)"
             >
-              COPY COOP URL
+              Include collected locations
             </button>
-            <button
-              type="button"
-              class="export-dropdown-toggle"
-              data-testid="export-coop-dropdown-toggle"
-              aria-label="Coop URL options"
-              @click="toggleShareMenu"
-            >
-              ⋮
-            </button>
-            <div
-              v-if="isShareMenuOpen"
-              class="export-dropdown-menu"
-              data-testid="export-coop-dropdown-menu"
-            >
-              <button
-                type="button"
-                class="export-dropdown-item"
-                @click="exportState(false)"
-              >
-                Snapshot
-              </button>
-              <button
-                type="button"
-                class="export-dropdown-item"
-                @click="exportState(true)"
-              >
-                Snapshot + locations
-              </button>
-            </div>
-          </template>
-          <template v-else>
-            <button
-              type="button"
-              class="export-button"
-              data-testid="export-state-button"
-              @click="exportState(false)"
-            >
-              EXPORT STATE
-            </button>
-            <button
-              type="button"
-              class="export-dropdown-toggle"
-              data-testid="export-dropdown-toggle"
-              aria-label="Export options"
-              @click="toggleShareMenu"
-            >
-              ⋮
-            </button>
-            <div
-              v-if="isShareMenuOpen"
-              class="export-dropdown-menu"
-              data-testid="export-dropdown-menu"
-            >
-              <button
-                type="button"
-                class="export-dropdown-item"
-                @click="exportState(true)"
-              >
-                Include collected locations
-              </button>
-            </div>
-          </template>
+          </div>
         </div>
         <span
           v-if="shareStatusMessage"
