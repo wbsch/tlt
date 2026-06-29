@@ -492,6 +492,10 @@ function cancelCoopStart() {
 // link-join or auto-rejoin), so they can grab the invite URL before doing
 // anything else. The same URL stays available via the "COPY COOP URL" button.
 const isCoopCreatedOpen = ref(false);
+// The URL is only meaningful once the relay has actually accepted us and
+// established the room (coopConnectionState === 'connected'). Until then we show
+// a spinner. Latched so a transient drop after success doesn't hide the URL.
+const isCoopRoomCreated = ref(false);
 const createdCoopShareUrl = ref('');
 const isCoopShareUrlCopied = ref(false);
 let coopShareUrlCopiedResetTimeout: number | null = null;
@@ -504,7 +508,16 @@ function confirmCoopStart() {
   sessionStore.startRoomSync({ roomCode });
   createdCoopShareUrl.value = buildCoopShareUrl(roomCode);
   isCoopShareUrlCopied.value = false;
+  isCoopRoomCreated.value = false;
   isCoopCreatedOpen.value = true;
+}
+
+// Cancelling while the room is still being created backs all the way out, so a
+// server that never accepts us doesn't leave a half-created room behind.
+function cancelCoopCreation() {
+  isCoopCreatedOpen.value = false;
+  isCoopShareUrlCopied.value = false;
+  leaveCoopRoom();
 }
 
 async function copyCreatedCoopUrl() {
@@ -533,6 +546,7 @@ async function copyCreatedCoopUrl() {
 function closeCoopCreated() {
   isCoopCreatedOpen.value = false;
   isCoopShareUrlCopied.value = false;
+  isCoopRoomCreated.value = false;
 }
 
 // Leaving stops syncing but keeps local progress; still confirmed so an
@@ -1801,6 +1815,11 @@ watch(
 watch(coopConnectionState, (state) => {
   if (state === 'connected' && isJoiningCoopRoom.value) {
     isJoiningCoopRoom.value = false;
+  }
+  // Flip the "room created" modal from its spinner to the share URL only once
+  // the relay has actually accepted the connection and seeded the room.
+  if (state === 'connected' && isCoopCreatedOpen.value) {
+    isCoopRoomCreated.value = true;
   }
 });
 
@@ -3599,44 +3618,67 @@ onBeforeUnmount(() => {
       role="dialog"
       aria-modal="true"
       aria-labelledby="coop-created-title"
-      aria-describedby="coop-created-description"
     >
       <div class="spoiler-player-dialog" data-testid="coop-created-modal">
-        <h2 id="coop-created-title" class="spoiler-player-dialog-title">
-          Co-op room created
-        </h2>
-        <p id="coop-created-description" class="spoiler-player-dialog-text">
-          Share this link to invite others to your room:
-        </p>
-        <input
-          class="coop-created-url"
-          data-testid="coop-created-url"
-          :value="createdCoopShareUrl"
-          readonly
-          @focus="($event.target as HTMLInputElement).select()"
-        />
-        <p class="spoiler-player-dialog-text coop-created-hint">
-          You can copy it again anytime with the
-          <strong>COPY COOP URL</strong> button.
-        </p>
-        <div class="spoiler-player-dialog-actions">
-          <button
-            type="button"
-            class="history-button"
-            data-testid="coop-created-copy-button"
-            @click="copyCreatedCoopUrl"
-          >
-            {{ isCoopShareUrlCopied ? 'Copied!' : 'Copy URL' }}
-          </button>
-          <button
-            type="button"
-            class="history-button"
-            data-testid="coop-created-done-button"
-            @click="closeCoopCreated"
-          >
-            Done
-          </button>
-        </div>
+        <template v-if="isCoopRoomCreated">
+          <h2 id="coop-created-title" class="spoiler-player-dialog-title">
+            Co-op room created
+          </h2>
+          <p class="spoiler-player-dialog-text">
+            Share this link to invite others to your room:
+          </p>
+          <input
+            class="coop-created-url"
+            data-testid="coop-created-url"
+            :value="createdCoopShareUrl"
+            readonly
+            @focus="($event.target as HTMLInputElement).select()"
+          />
+          <p class="spoiler-player-dialog-text coop-created-hint">
+            You can copy it again anytime with the
+            <strong>COPY COOP URL</strong> button.
+          </p>
+          <div class="spoiler-player-dialog-actions">
+            <button
+              type="button"
+              class="history-button"
+              data-testid="coop-created-copy-button"
+              @click="copyCreatedCoopUrl"
+            >
+              {{ isCoopShareUrlCopied ? 'Copied!' : 'Copy URL' }}
+            </button>
+            <button
+              type="button"
+              class="history-button"
+              data-testid="coop-created-done-button"
+              @click="closeCoopCreated"
+            >
+              Done
+            </button>
+          </div>
+        </template>
+        <template v-else>
+          <h2 id="coop-created-title" class="spoiler-player-dialog-title">
+            Creating your room…
+          </h2>
+          <div class="coop-created-creating" data-testid="coop-created-spinner">
+            <FairyLoader
+              size="sm"
+              label="Setting up your room…"
+              subtitle="Waiting for the server to accept the connection."
+            />
+          </div>
+          <div class="spoiler-player-dialog-actions">
+            <button
+              type="button"
+              class="history-button"
+              data-testid="coop-created-cancel-button"
+              @click="cancelCoopCreation"
+            >
+              Cancel
+            </button>
+          </div>
+        </template>
       </div>
     </div>
     <div
@@ -4879,6 +4921,12 @@ onBeforeUnmount(() => {
 .coop-created-hint {
   font-size: 0.78rem;
   opacity: 0.85;
+}
+
+.coop-created-creating {
+  display: flex;
+  justify-content: center;
+  padding: 0.5rem 0;
 }
 
 .spoiler-player-dialog-label {

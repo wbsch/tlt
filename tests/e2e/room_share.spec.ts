@@ -132,12 +132,12 @@ async function createRoom(page: Page): Promise<string> {
   await waitForBoot(page);
   await page.getByTestId('coop-button').click();
   await page.getByTestId('coop-start-confirm-apply-button').click();
-  const shareUrl = await page.getByTestId('coop-created-url').inputValue();
+  // The URL only appears once the relay has actually accepted us and created
+  // the room; until then the modal shows a spinner.
+  const urlField = page.getByTestId('coop-created-url');
+  await expect(urlField).toBeVisible({ timeout: 15_000 });
+  const shareUrl = await urlField.inputValue();
   await page.getByTestId('coop-created-done-button').click();
-  await expect(page.getByTestId('coop-button')).toHaveClass(
-    /coop-button--active/,
-    { timeout: 15_000 },
-  );
   const code = shareUrl.match(/coop-room=([A-Za-z0-9]+)/)?.[1];
   if (!code) throw new Error('Expected a room code after starting coop');
   return code;
@@ -227,8 +227,10 @@ test.describe('coop room share', () => {
 
       const modal = page.getByTestId('coop-created-modal');
       await expect(modal).toBeVisible();
+      // The URL only shows once the relay has created the room.
       await expect(page.getByTestId('coop-created-url')).toHaveValue(
         /coop-room=[A-Za-z0-9]+/,
+        { timeout: 15_000 },
       );
       // Points the user at the persistent way to re-copy the link.
       await expect(modal).toContainText(/COPY COOP URL/i);
@@ -241,6 +243,45 @@ test.describe('coop room share', () => {
         { timeout: 15_000 },
       );
       await expect(modal).toBeHidden();
+    } finally {
+      await context.close();
+    }
+  });
+
+  test('shows a spinner until the room is created; cancel backs out', async ({
+    browser,
+  }) => {
+    test.setTimeout(120_000);
+    const context = await browser.newContext();
+    try {
+      const page = await context.newPage();
+      // Point coop at a dead relay so the connection never completes — the room
+      // is never actually created, so no URL should appear.
+      await page.addInitScript(() => {
+        Object.defineProperty(window, '__TLT_COOP_WS_URL__', {
+          configurable: true,
+          value: 'ws://127.0.0.1:9/',
+        });
+      });
+      await page.goto('/?debug=1&coop=true');
+      await waitForBoot(page);
+
+      await page.getByTestId('coop-button').click();
+      await page.getByTestId('coop-start-confirm-apply-button').click();
+
+      const modal = page.getByTestId('coop-created-modal');
+      await expect(modal).toBeVisible();
+      await expect(page.getByTestId('coop-created-spinner')).toBeVisible();
+      // No URL while the room isn't actually created.
+      await expect(page.getByTestId('coop-created-url')).toHaveCount(0);
+
+      // Cancel backs all the way out — no lingering room.
+      await page.getByTestId('coop-created-cancel-button').click();
+      await expect(modal).toBeHidden();
+      await expect(page.getByTestId('coop-button')).toHaveAttribute(
+        'title',
+        /Not connected/i,
+      );
     } finally {
       await context.close();
     }
