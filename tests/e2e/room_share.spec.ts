@@ -124,16 +124,21 @@ async function setRoomSyncUrl(page: Page): Promise<void> {
   }, `ws://${RELAY_HOST}:${RELAY_PORT}/`);
 }
 
-// The room creator uses "Start coop", which generates a random code. We read
-// that code back so a peer can join via its link.
+// The room creator clicks the COOP button and confirms the explanation modal. A
+// random code is generated and the share URL is shown once in a "room created"
+// modal, which we read the code back from so a peer can join.
 async function createRoom(page: Page): Promise<string> {
   await page.goto('/?debug=1&coop=true');
   await waitForBoot(page);
-  await page.getByTestId('coop-start-button').click();
-  await expect(page.getByTestId('coop-status')).toContainText(/Connected/i, {
-    timeout: 15_000,
-  });
-  const code = (await page.getByTestId('coop-room-code').textContent())?.trim();
+  await page.getByTestId('coop-button').click();
+  await page.getByTestId('coop-start-confirm-apply-button').click();
+  const shareUrl = await page.getByTestId('coop-created-url').inputValue();
+  await page.getByTestId('coop-created-done-button').click();
+  await expect(page.getByTestId('coop-button')).toHaveClass(
+    /coop-button--active/,
+    { timeout: 15_000 },
+  );
+  const code = shareUrl.match(/coop-room=([A-Za-z0-9]+)/)?.[1];
   if (!code) throw new Error('Expected a room code after starting coop');
   return code;
 }
@@ -146,9 +151,10 @@ async function joinRoom(page: Page, code: string): Promise<void> {
   await page.goto(`/?debug=1&coop=true#coop-room=${code}`);
   await page.getByTestId('coop-join-confirm-apply-button').click();
   await waitForBoot(page);
-  await expect(page.getByTestId('coop-status')).toContainText(/Connected/i, {
-    timeout: 15_000,
-  });
+  await expect(page.getByTestId('coop-button')).toHaveClass(
+    /coop-button--active/,
+    { timeout: 15_000 },
+  );
 }
 
 test.describe('coop room share', () => {
@@ -207,6 +213,39 @@ test.describe('coop room share', () => {
     }
   });
 
+  test('creating a room shows the share URL once', async ({ browser }) => {
+    test.setTimeout(120_000);
+    const context = await browser.newContext();
+    try {
+      const page = await context.newPage();
+      await setRoomSyncUrl(page);
+      await page.goto('/?debug=1&coop=true');
+      await waitForBoot(page);
+
+      await page.getByTestId('coop-button').click();
+      await page.getByTestId('coop-start-confirm-apply-button').click();
+
+      const modal = page.getByTestId('coop-created-modal');
+      await expect(modal).toBeVisible();
+      await expect(page.getByTestId('coop-created-url')).toHaveValue(
+        /coop-room=[A-Za-z0-9]+/,
+      );
+      // Points the user at the persistent way to re-copy the link.
+      await expect(modal).toContainText(/COPY COOP URL/i);
+
+      // Dismissing it leaves us connected and it doesn't pop back up.
+      await page.getByTestId('coop-created-done-button').click();
+      await expect(modal).toBeHidden();
+      await expect(page.getByTestId('coop-button')).toHaveClass(
+        /coop-button--active/,
+        { timeout: 15_000 },
+      );
+      await expect(modal).toBeHidden();
+    } finally {
+      await context.close();
+    }
+  });
+
   test('reset while in coop prompts before leaving the room', async ({
     browser,
   }) => {
@@ -229,17 +268,57 @@ test.describe('coop room share', () => {
       // Cancel keeps us in the room.
       await page.getByTestId('reset-tracker-confirm-cancel-button').click();
       await expect(modal).toBeHidden();
-      await expect(page.getByTestId('coop-status')).toContainText(/Connected/i);
+      await expect(page.getByTestId('coop-button')).toHaveClass(
+        /coop-button--active/,
+      );
 
-      // Confirm leaves the room (the join UI returns).
+      // Confirm leaves the room (the COOP button returns to its idle state).
       await page.getByTestId('reset-tracker-state-button').click();
       await expect(
         page.getByTestId('reset-tracker-confirm-modal'),
       ).toBeVisible();
       await page.getByTestId('reset-tracker-confirm-apply-button').click();
-      await expect(page.getByTestId('coop-start-button')).toBeVisible({
-        timeout: TEST_TIMEOUTS.SYNC_POLL,
-      });
+      await expect(page.getByTestId('coop-button')).toHaveAttribute(
+        'title',
+        /Not connected/i,
+        { timeout: TEST_TIMEOUTS.SYNC_POLL },
+      );
+    } finally {
+      await context.close();
+    }
+  });
+
+  test('clicking COOP to leave prompts; cancel stays, confirm leaves', async ({
+    browser,
+  }) => {
+    test.setTimeout(120_000);
+    const context = await browser.newContext();
+    try {
+      const page = await context.newPage();
+      await setRoomSyncUrl(page);
+      await createRoom(page);
+
+      // Clicking the connected COOP button must prompt — never drop out of the
+      // room on a stray click.
+      await page.getByTestId('coop-button').click();
+      const modal = page.getByTestId('coop-leave-confirm-modal');
+      await expect(modal).toBeVisible();
+
+      // Cancel keeps us in the room.
+      await page.getByTestId('coop-leave-confirm-cancel-button').click();
+      await expect(modal).toBeHidden();
+      await expect(page.getByTestId('coop-button')).toHaveClass(
+        /coop-button--active/,
+      );
+
+      // Confirm leaves the room (the COOP button returns to its idle state).
+      await page.getByTestId('coop-button').click();
+      await page.getByTestId('coop-leave-confirm-apply-button').click();
+      await expect(page.getByTestId('coop-button')).toHaveAttribute(
+        'title',
+        /Not connected/i,
+        { timeout: TEST_TIMEOUTS.SYNC_POLL },
+      );
     } finally {
       await context.close();
     }
@@ -264,8 +343,9 @@ test.describe('coop room share', () => {
       await expect(modal).toBeHidden();
       await expect(page.getByTestId('joining-coop-overlay')).toBeHidden();
       await waitForBoot(page);
-      await expect(page.getByTestId('coop-start-button')).toBeVisible();
-      await expect(page.getByTestId('coop-status')).toContainText(
+      await expect(page.getByTestId('coop-button')).toBeVisible();
+      await expect(page.getByTestId('coop-button')).toHaveAttribute(
+        'title',
         /Not connected/i,
       );
     } finally {

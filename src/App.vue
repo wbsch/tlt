@@ -355,25 +355,6 @@ async function exportCoopUrl() {
   }
 }
 
-async function copyCoopCode() {
-  isShareMenuOpen.value = false;
-  const code = coopRoomCode.value;
-  if (!code) return;
-  try {
-    if (navigator.clipboard?.writeText) {
-      await navigator.clipboard.writeText(code);
-      setShareStatus('Coop code copied to clipboard');
-      return;
-    }
-
-    window.prompt('Copy this coop code:', code);
-    setShareStatus('Coop code ready');
-  } catch (error) {
-    console.error('Failed to copy coop code:', error);
-    setShareStatus('Failed to copy coop code');
-  }
-}
-
 function toggleShareMenu() {
   isShareMenuOpen.value = !isShareMenuOpen.value;
 }
@@ -536,13 +517,6 @@ onBeforeUnmount(() => {
               class="export-dropdown-menu"
               data-testid="export-coop-dropdown-menu"
             >
-              <button
-                type="button"
-                class="export-dropdown-item"
-                @click="copyCoopCode"
-              >
-                Code only
-              </button>
               <button
                 type="button"
                 class="export-dropdown-item"

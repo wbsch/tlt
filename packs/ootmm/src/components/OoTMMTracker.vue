@@ -70,7 +70,9 @@ import { TRICKS } from '@ootmm/core/settings/tricks';
 import AutotrackerToggle from './AutotrackerToggle.vue';
 import CoopPanel from './CoopPanel.vue';
 import {
+  buildCoopShareUrl,
   clearCoopAutoJoinCodeFromUrl,
+  generateCoopRoomCode,
   getCoopAutoJoinCode,
   isCoopFeatureEnabled,
 } from '../utils/coopFlag';
@@ -471,6 +473,85 @@ const isCoopActive = computed(() => coopRoomCode.value !== null);
 const isCoopVisible = computed(
   () => coopFlagEnabled || coopRoomCode.value !== null,
 );
+
+// Starting a fresh room is non-destructive locally, but it spins up a shared
+// session others can join, so the COOP button (mirroring the AUTO toggle) opens
+// an explanation modal first. Aborting must NOT create a room.
+const isCoopStartConfirmOpen = ref(false);
+
+function requestCoopStart() {
+  if (isCoopActive.value || autotracker.enabled.value) return;
+  isCoopStartConfirmOpen.value = true;
+}
+
+function cancelCoopStart() {
+  isCoopStartConfirmOpen.value = false;
+}
+
+// Shown once, right after the user creates a room from the button (never on a
+// link-join or auto-rejoin), so they can grab the invite URL before doing
+// anything else. The same URL stays available via the "COPY COOP URL" button.
+const isCoopCreatedOpen = ref(false);
+const createdCoopShareUrl = ref('');
+const isCoopShareUrlCopied = ref(false);
+let coopShareUrlCopiedResetTimeout: number | null = null;
+
+function confirmCoopStart() {
+  isCoopStartConfirmOpen.value = false;
+  // Re-check the guards: state can change while the modal is open.
+  if (isCoopActive.value || autotracker.enabled.value) return;
+  const roomCode = generateCoopRoomCode();
+  sessionStore.startRoomSync({ roomCode });
+  createdCoopShareUrl.value = buildCoopShareUrl(roomCode);
+  isCoopShareUrlCopied.value = false;
+  isCoopCreatedOpen.value = true;
+}
+
+async function copyCreatedCoopUrl() {
+  const url = createdCoopShareUrl.value;
+  if (!url) return;
+  try {
+    if (navigator.clipboard?.writeText) {
+      await navigator.clipboard.writeText(url);
+      isCoopShareUrlCopied.value = true;
+      if (coopShareUrlCopiedResetTimeout !== null) {
+        window.clearTimeout(coopShareUrlCopiedResetTimeout);
+      }
+      coopShareUrlCopiedResetTimeout = window.setTimeout(() => {
+        isCoopShareUrlCopied.value = false;
+        coopShareUrlCopiedResetTimeout = null;
+      }, 2000);
+      return;
+    }
+    window.prompt('Copy this coop URL:', url);
+  } catch (error) {
+    console.error('Failed to copy coop URL:', error);
+    window.prompt('Copy this coop URL:', url);
+  }
+}
+
+function closeCoopCreated() {
+  isCoopCreatedOpen.value = false;
+  isCoopShareUrlCopied.value = false;
+}
+
+// Leaving stops syncing but keeps local progress; still confirmed so an
+// accidental click on the COOP button can't drop you out of a shared session.
+const isCoopLeaveConfirmOpen = ref(false);
+
+function requestCoopLeave() {
+  if (!isCoopActive.value) return;
+  isCoopLeaveConfirmOpen.value = true;
+}
+
+function cancelCoopLeave() {
+  isCoopLeaveConfirmOpen.value = false;
+}
+
+function confirmCoopLeave() {
+  isCoopLeaveConfirmOpen.value = false;
+  leaveCoopRoom();
+}
 const canUndoWithCoop = computed(() => canUndo.value && !isCoopActive.value);
 const canRedoWithCoop = computed(() => canRedo.value && !isCoopActive.value);
 
@@ -3365,6 +3446,10 @@ onBeforeUnmount(() => {
     delete windowWithHandlers.__TLT_LEAVE_COOP__;
   }
   clearAutotrackerToasts();
+  if (coopShareUrlCopiedResetTimeout !== null) {
+    window.clearTimeout(coopShareUrlCopiedResetTimeout);
+    coopShareUrlCopiedResetTimeout = null;
+  }
   autotracker.destroy();
   sessionStore.stopLocalSessionSync();
   sessionStore.stopRoomSync();
@@ -3433,7 +3518,10 @@ onBeforeUnmount(() => {
         <h2 id="coop-join-confirm-title" class="spoiler-player-dialog-title">
           Join co-op room?
         </h2>
-        <p id="coop-join-confirm-description" class="spoiler-player-dialog-text">
+        <p
+          id="coop-join-confirm-description"
+          class="spoiler-player-dialog-text"
+        >
           Joining this room replaces your current tracker state with the room's
           shared state. This can't be undone.
         </p>
@@ -3453,6 +3541,141 @@ onBeforeUnmount(() => {
             @click="confirmCoopJoin"
           >
             Join &amp; Replace
+          </button>
+        </div>
+      </div>
+    </div>
+    <div
+      v-if="isCoopStartConfirmOpen"
+      class="spoiler-player-dialog-overlay"
+      data-testid="coop-start-confirm-overlay"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="coop-start-confirm-title"
+      aria-describedby="coop-start-confirm-description"
+    >
+      <div class="spoiler-player-dialog" data-testid="coop-start-confirm-modal">
+        <h2 id="coop-start-confirm-title" class="spoiler-player-dialog-title">
+          Start a co-op room?
+        </h2>
+        <p
+          id="coop-start-confirm-description"
+          class="spoiler-player-dialog-text"
+        >
+          Opens a new shared room you can invite others to:
+        </p>
+        <ul class="spoiler-player-dialog-list">
+          <li>
+            Items, locations and settings sync live with everyone who joins.
+          </li>
+          <li>Your current tracker becomes the room's starting state.</li>
+          <li>Autotracking is off while you're in a room.</li>
+          <li>You can leave anytime; cancelling creates no room.</li>
+        </ul>
+        <div class="spoiler-player-dialog-actions">
+          <button
+            type="button"
+            class="history-button"
+            data-testid="coop-start-confirm-cancel-button"
+            @click="cancelCoopStart"
+          >
+            Cancel
+          </button>
+          <button
+            type="button"
+            class="history-button"
+            data-testid="coop-start-confirm-apply-button"
+            @click="confirmCoopStart"
+          >
+            Start co-op
+          </button>
+        </div>
+      </div>
+    </div>
+    <div
+      v-if="isCoopCreatedOpen"
+      class="spoiler-player-dialog-overlay"
+      data-testid="coop-created-overlay"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="coop-created-title"
+      aria-describedby="coop-created-description"
+    >
+      <div class="spoiler-player-dialog" data-testid="coop-created-modal">
+        <h2 id="coop-created-title" class="spoiler-player-dialog-title">
+          Co-op room created
+        </h2>
+        <p id="coop-created-description" class="spoiler-player-dialog-text">
+          Share this link to invite others to your room:
+        </p>
+        <input
+          class="coop-created-url"
+          data-testid="coop-created-url"
+          :value="createdCoopShareUrl"
+          readonly
+          @focus="($event.target as HTMLInputElement).select()"
+        />
+        <p class="spoiler-player-dialog-text coop-created-hint">
+          You can copy it again anytime with the
+          <strong>COPY COOP URL</strong> button.
+        </p>
+        <div class="spoiler-player-dialog-actions">
+          <button
+            type="button"
+            class="history-button"
+            data-testid="coop-created-copy-button"
+            @click="copyCreatedCoopUrl"
+          >
+            {{ isCoopShareUrlCopied ? 'Copied!' : 'Copy URL' }}
+          </button>
+          <button
+            type="button"
+            class="history-button"
+            data-testid="coop-created-done-button"
+            @click="closeCoopCreated"
+          >
+            Done
+          </button>
+        </div>
+      </div>
+    </div>
+    <div
+      v-if="isCoopLeaveConfirmOpen"
+      class="spoiler-player-dialog-overlay"
+      data-testid="coop-leave-confirm-overlay"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="coop-leave-confirm-title"
+      aria-describedby="coop-leave-confirm-description"
+    >
+      <div class="spoiler-player-dialog" data-testid="coop-leave-confirm-modal">
+        <h2 id="coop-leave-confirm-title" class="spoiler-player-dialog-title">
+          Leave the co-op room?
+        </h2>
+        <p
+          id="coop-leave-confirm-description"
+          class="spoiler-player-dialog-text"
+        >
+          You'll stop syncing with the room and go back to tracking solo. Your
+          current progress stays exactly as it is. Others can keep playing in
+          the room without you.
+        </p>
+        <div class="spoiler-player-dialog-actions">
+          <button
+            type="button"
+            class="history-button"
+            data-testid="coop-leave-confirm-cancel-button"
+            @click="cancelCoopLeave"
+          >
+            Cancel
+          </button>
+          <button
+            type="button"
+            class="history-button"
+            data-testid="coop-leave-confirm-apply-button"
+            @click="confirmCoopLeave"
+          >
+            Leave room
           </button>
         </div>
       </div>
@@ -3798,6 +4021,8 @@ onBeforeUnmount(() => {
               <CoopPanel
                 v-if="isCoopVisible"
                 :autotracker-active="autotracker.enabled.value"
+                @request-start="requestCoopStart"
+                @request-leave="requestCoopLeave"
               />
             </Teleport>
           </div>
@@ -4628,6 +4853,32 @@ onBeforeUnmount(() => {
   margin: 0;
   color: #cbd5e1;
   font-size: 0.85rem;
+}
+
+.spoiler-player-dialog-list {
+  margin: 0;
+  padding-left: 1.1rem;
+  color: #cbd5e1;
+  font-size: 0.85rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+}
+
+.coop-created-url {
+  width: 100%;
+  padding: 0.45rem 0.5rem;
+  border: 1px solid #4b5563;
+  border-radius: 0.35rem;
+  background: #111827;
+  color: #e5e7eb;
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 0.8rem;
+}
+
+.coop-created-hint {
+  font-size: 0.78rem;
+  opacity: 0.85;
 }
 
 .spoiler-player-dialog-label {

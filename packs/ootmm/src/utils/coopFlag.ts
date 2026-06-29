@@ -1,5 +1,27 @@
 const COOP_ROOM_CODE_PATTERN = /^[A-Za-z0-9]+$/;
 const COOP_AUTO_JOIN_HASH_PARAM = 'coop-room';
+const COOP_ROOM_CODE_ALPHABET =
+  'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+const COOP_ROOM_CODE_LENGTH = 8;
+
+export function generateCoopRoomCode(): string {
+  const out: string[] = [];
+  if (typeof crypto !== 'undefined' && crypto.getRandomValues) {
+    const buf = new Uint32Array(COOP_ROOM_CODE_LENGTH);
+    crypto.getRandomValues(buf);
+    for (let i = 0; i < COOP_ROOM_CODE_LENGTH; i += 1) {
+      out.push(
+        COOP_ROOM_CODE_ALPHABET[buf[i] % COOP_ROOM_CODE_ALPHABET.length],
+      );
+    }
+    return out.join('');
+  }
+  for (let i = 0; i < COOP_ROOM_CODE_LENGTH; i += 1) {
+    const idx = Math.floor(Math.random() * COOP_ROOM_CODE_ALPHABET.length);
+    out.push(COOP_ROOM_CODE_ALPHABET[idx]);
+  }
+  return out.join('');
+}
 
 function toHashParams(hash: string): URLSearchParams {
   const raw = hash.startsWith('#') ? hash.slice(1) : hash;

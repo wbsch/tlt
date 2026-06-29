@@ -3,32 +3,21 @@ import { computed } from 'vue';
 import { storeToRefs } from 'pinia';
 import { useOoTMMSessionStore } from '../stores/ootmmSession';
 
-const ROOM_CODE_ALPHABET =
-  'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-const ROOM_CODE_LENGTH = 8;
-
-function generateRoomCode(): string {
-  const out: string[] = [];
-  if (typeof crypto !== 'undefined' && crypto.getRandomValues) {
-    const buf = new Uint32Array(ROOM_CODE_LENGTH);
-    crypto.getRandomValues(buf);
-    for (let i = 0; i < ROOM_CODE_LENGTH; i += 1) {
-      out.push(ROOM_CODE_ALPHABET[buf[i] % ROOM_CODE_ALPHABET.length]);
-    }
-    return out.join('');
-  }
-  for (let i = 0; i < ROOM_CODE_LENGTH; i += 1) {
-    const idx = Math.floor(Math.random() * ROOM_CODE_ALPHABET.length);
-    out.push(ROOM_CODE_ALPHABET[idx]);
-  }
-  return out.join('');
-}
-
 // Coop and autotracking are mutually exclusive (see docs/coop-sync.md §7).
 // Autotracker state lives in OoTMMTracker, not the store, so it's passed in.
 const props = defineProps<{
   autotrackerActive?: boolean;
 }>();
+
+// Starting and leaving a room are both confirmed via modals owned by the parent
+// (mirrors the AUTO button's overwrite confirmation). The panel only requests
+// the action; it never mutates the room itself.
+const emit = defineEmits<{
+  'request-start': [];
+  'request-leave': [];
+}>();
+
+const COOP_BLOCKED_TITLE = 'Coop is unavailable while autotracking is active';
 
 const sessionStore = useOoTMMSessionStore();
 const { coopRoomCode, coopPeerCount, coopConnectionState } =
@@ -36,6 +25,12 @@ const { coopRoomCode, coopPeerCount, coopConnectionState } =
 
 const isConnected = computed(() => coopConnectionState.value === 'connected');
 const isJoined = computed(() => coopRoomCode.value !== null);
+
+// Block *starting* a room while autotracking; never block leaving (so a stray
+// both-active state stays recoverable from the UI). Mirrors AutotrackerToggle.
+const isStartBlocked = computed(
+  () => Boolean(props.autotrackerActive) && !isJoined.value,
+);
 
 const statusLabel = computed(() => {
   switch (coopConnectionState.value) {
@@ -51,68 +46,71 @@ const statusLabel = computed(() => {
   }
 });
 
-function handleStart() {
-  if (props.autotrackerActive) return;
-  sessionStore.startRoomSync({ roomCode: generateRoomCode() });
-}
+// Dot color mirrors the AUTO button's palette so the two controls read alike.
+const statusColor = computed(() => {
+  if (isConnected.value) return '#4caf50';
+  if (
+    coopConnectionState.value === 'connecting' ||
+    coopConnectionState.value === 'disconnected'
+  ) {
+    return '#ff9800';
+  }
+  return '#888';
+});
 
-function handleLeave() {
-  sessionStore.leaveRoom();
+const buttonStateClasses = computed(() => ({
+  'coop-button--active': isConnected.value,
+  'coop-button--warning':
+    coopConnectionState.value === 'connecting' ||
+    coopConnectionState.value === 'disconnected',
+}));
+
+const buttonTitle = computed(() => {
+  if (isStartBlocked.value) return COOP_BLOCKED_TITLE;
+  if (isJoined.value) {
+    if (!isConnected.value) {
+      return `Coop: ${statusLabel.value} - share the room code; state syncs once both are connected. Click to leave.`;
+    }
+    return `Coop: ${statusLabel.value} - click to leave the room`;
+  }
+  return 'Coop: Not connected - click to start a shared room';
+});
+
+function handleClick() {
+  if (isStartBlocked.value) return;
+  if (isJoined.value) {
+    emit('request-leave');
+    return;
+  }
+  emit('request-start');
 }
 </script>
 
 <template>
   <div class="coop-panel" data-testid="coop-panel">
-    <span class="coop-panel-label">Coop</span>
-    <span
-      class="coop-panel-status"
-      :class="`coop-status-${coopConnectionState}`"
-      data-testid="coop-status"
-      :title="
-        isJoined && !isConnected
-          ? 'Share the room code with another player. State syncs once both are connected.'
-          : undefined
-      "
+    <button
+      type="button"
+      class="coop-button"
+      :class="buttonStateClasses"
+      :title="buttonTitle"
+      :disabled="isStartBlocked"
+      data-testid="coop-button"
+      @click="handleClick"
     >
-      <span class="coop-panel-dot" aria-hidden="true"></span>
-      {{ statusLabel }}
-    </span>
-
-    <template v-if="!isJoined">
-      <button
-        type="button"
-        class="coop-panel-button"
-        :disabled="autotrackerActive"
-        :title="
-          autotrackerActive ? 'Stop autotracking to use coop' : undefined
-        "
-        data-testid="coop-start-button"
-        @click="handleStart"
-      >
-        Start coop
-      </button>
       <span
-        v-if="autotrackerActive"
-        class="coop-panel-hint"
-        data-testid="coop-autotracker-blocked-hint"
-      >
-        Stop autotracking to use coop.
-      </span>
-    </template>
-
-    <template v-else>
-      <code class="coop-panel-code" data-testid="coop-room-code">{{
-        coopRoomCode
-      }}</code>
-      <button
-        type="button"
-        class="coop-panel-button coop-panel-button-danger"
-        data-testid="coop-leave-button"
-        @click="handleLeave"
-      >
-        Leave
-      </button>
-    </template>
+        class="coop-indicator"
+        :style="{ backgroundColor: statusColor }"
+        aria-hidden="true"
+      />
+      <span class="coop-label">COOP</span>
+    </button>
+    <span
+      v-if="isStartBlocked"
+      class="coop-hint"
+      data-testid="coop-autotracker-blocked-hint"
+    >
+      Stop autotracking to use coop.
+    </span>
   </div>
 </template>
 
@@ -126,81 +124,57 @@ function handleLeave() {
   white-space: nowrap;
 }
 
-.coop-panel-label {
-  font-weight: 700;
-  letter-spacing: 0.05em;
-  text-transform: uppercase;
-  color: #9ca3af;
-}
-
-.coop-panel-status {
+.coop-button {
   display: inline-flex;
   align-items: center;
-  gap: 0.3rem;
-  font-size: 0.75rem;
-  opacity: 0.85;
-}
-
-.coop-panel-dot {
-  width: 0.5rem;
-  height: 0.5rem;
-  border-radius: 50%;
-  background: currentColor;
-  flex: 0 0 auto;
-}
-
-.coop-status-connected {
-  color: #5fdc7a;
-}
-
-.coop-status-connecting,
-.coop-status-disconnected {
-  color: #ffc857;
-}
-
-.coop-status-idle {
-  opacity: 0.6;
-}
-
-.coop-panel-button {
-  padding: 0.4rem 0.6rem;
-  border-radius: 0.25rem;
-  border: 1px solid #67e8f9;
-  background: #155e75;
-  color: #fff;
-  cursor: pointer;
-  font-size: 0.75rem;
-  font-weight: 700;
-}
-
-.coop-panel-button:hover:not(:disabled) {
-  background: #0e7490;
-}
-
-.coop-panel-button:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
-}
-
-.coop-panel-button-danger {
-  border-color: #fca5a5;
-  background: #7f1d1d;
-}
-
-.coop-panel-button-danger:hover:not(:disabled) {
-  background: #991b1b;
-}
-
-.coop-panel-code {
-  padding: 0.35rem 0.5rem;
-  border-radius: 0.25rem;
-  border: 1px solid #404040;
+  gap: 5px;
+  padding: 4px 10px;
+  border: 1px solid #555;
+  border-radius: 4px;
   background: #2a2a2a;
-  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
-  letter-spacing: 0.03em;
+  color: #ccc;
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition:
+    background 0.15s,
+    border-color 0.15s;
+  white-space: nowrap;
 }
 
-.coop-panel-hint {
+.coop-button:hover:not(:disabled) {
+  background: #3a3a3a;
+  border-color: #777;
+}
+
+.coop-button:disabled {
+  cursor: default;
+  opacity: 0.65;
+}
+
+.coop-button--active {
+  border-color: #4caf50;
+  color: #fff;
+}
+
+.coop-button--warning {
+  border-color: #ff9800;
+  color: #fff;
+}
+
+.coop-indicator {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.coop-label {
+  letter-spacing: 0.05em;
+}
+
+.coop-hint {
   margin: 0;
   font-size: 0.75rem;
   opacity: 0.7;
