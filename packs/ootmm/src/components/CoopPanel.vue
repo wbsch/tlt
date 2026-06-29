@@ -27,6 +27,12 @@ const { coopRoomCode, coopPeerCount, coopConnectionState } =
 const isConnected = computed(() => coopConnectionState.value === 'connected');
 const isJoined = computed(() => coopRoomCode.value !== null);
 
+// Suffix shown next to the COOP label, e.g. "COOP (1)". Hidden when no peers
+// are connected (the count is reset to 0 whenever the room is left/disconnected).
+const peerCountSuffix = computed(() =>
+  coopPeerCount.value > 0 ? ` (${coopPeerCount.value})` : '',
+);
+
 // Block *starting* a room while autotracking; never block leaving (so a stray
 // both-active state stays recoverable from the UI). Mirrors AutotrackerToggle.
 const isStartBlocked = computed(
@@ -193,7 +199,7 @@ onBeforeUnmount(() => {
           :style="{ backgroundColor: statusColor }"
           aria-hidden="true"
         />
-        <span class="coop-label">COOP</span>
+        <span class="coop-label">COOP{{ peerCountSuffix }}</span>
       </button>
       <button
         type="button"

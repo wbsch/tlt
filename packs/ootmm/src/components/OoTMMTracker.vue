@@ -4050,15 +4050,17 @@ onBeforeUnmount(() => {
             >
               Redo ↷
             </button>
-            <AutotrackerToggle
-              :status="autotracker.status.value"
-              :enabled="autotracker.enabled.value"
-              :last-error="autotracker.lastError.value"
-              :warning-message="autotracker.versionWarning.value"
-              :coop-active="isCoopActive"
-              @update:enabled="handleAutotrackerEnabledUpdate"
-              @start-overwrite="startAutotrackerOverwriteMode"
-            />
+            <Teleport to="#auto-header-slot">
+              <AutotrackerToggle
+                :status="autotracker.status.value"
+                :enabled="autotracker.enabled.value"
+                :last-error="autotracker.lastError.value"
+                :warning-message="autotracker.versionWarning.value"
+                :coop-active="isCoopActive"
+                @update:enabled="handleAutotrackerEnabledUpdate"
+                @start-overwrite="startAutotrackerOverwriteMode"
+              />
+            </Teleport>
             <Teleport to="#coop-header-slot">
               <CoopPanel
                 v-if="isCoopVisible"

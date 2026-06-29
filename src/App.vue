@@ -415,6 +415,14 @@ onBeforeUnmount(() => {
         </div>
       </div>
 
+      <!-- Teleport targets for the active pack's AUTO + COOP toggles (see
+           AutotrackerToggle / CoopPanel in OoTMMTracker). They sit just to the
+           right of the brand; empty until a pack renders into them. -->
+      <div class="header-toggles">
+        <div id="auto-header-slot" class="auto-header-slot"></div>
+        <div id="coop-header-slot" class="coop-header-slot"></div>
+      </div>
+
       <div class="header-actions">
         <div class="pack-selector">
           <label for="pack-select">Tracker Pack:</label>
@@ -434,9 +442,6 @@ onBeforeUnmount(() => {
             </option>
           </select>
         </div>
-        <!-- Teleport target for the active pack's coop interface (see
-             CoopPanel in OoTMMTracker). Empty until a pack renders into it. -->
-        <div id="coop-header-slot" class="coop-header-slot"></div>
         <div
           v-if="hasOtherTabsOpen"
           class="sync-status-badge"
@@ -849,6 +854,17 @@ onBeforeUnmount(() => {
   flex-wrap: wrap;
 }
 
+/* AUTO + COOP toggles sit just to the right of the brand. margin-right: auto
+   absorbs the free space so the rest of the header actions stay on the far
+   edge (the header itself uses justify-content: space-between). */
+.header-toggles {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-right: auto;
+}
+
+.auto-header-slot,
 .coop-header-slot {
   display: contents;
 }
