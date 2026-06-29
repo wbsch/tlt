@@ -430,13 +430,37 @@ const {
   coopConnectionState,
 } = storeToRefs(sessionStore);
 
-const pendingCoopRoomCode = coopFlagEnabled
-  ? (getCoopAutoJoinCode() ?? coopRoomCode.value)
-  : coopRoomCode.value;
-const isJoiningCoopRoom = ref(pendingCoopRoomCode !== null);
+// A link join (`#coop-room=CODE`) adopts the room's shared state and replaces
+// local progress, so it must be explicitly confirmed before we connect.
+// Auto-rejoin of a persisted room is a non-destructive reconnect to a room you
+// were already in, so it is NOT gated by the prompt.
+const linkJoinCode = coopFlagEnabled ? getCoopAutoJoinCode() : null;
+const pendingLinkJoinCode = ref<string | null>(linkJoinCode);
+const isCoopJoinConfirmOpen = ref(linkJoinCode !== null);
+// Defer initializing the tracker from local state while we await the link-join
+// decision or rejoin a persisted room — the modal/overlay covers the screen,
+// and on confirm we adopt the room snapshot instead of the local state.
+const isJoiningCoopRoom = ref(
+  linkJoinCode !== null || coopRoomCode.value !== null,
+);
+
+function confirmCoopJoin() {
+  const code = pendingLinkJoinCode.value;
+  isCoopJoinConfirmOpen.value = false;
+  pendingLinkJoinCode.value = null;
+  if (!code) {
+    isJoiningCoopRoom.value = false;
+    return;
+  }
+  // isJoiningCoopRoom stays true so the "Joining…" overlay shows until the
+  // room snapshot arrives and replaces local state.
+  sessionStore.startRoomSync({ roomCode: code });
+}
 
 function cancelCoopJoin() {
-  if (!isJoiningCoopRoom.value) return;
+  if (!isJoiningCoopRoom.value && !isCoopJoinConfirmOpen.value) return;
+  isCoopJoinConfirmOpen.value = false;
+  pendingLinkJoinCode.value = null;
   sessionStore.leaveRoom();
   // Hydrate the tracker from persisted local state so it's usable without coop.
   void sessionStore.attachTracker(props.tracker);
@@ -3284,16 +3308,14 @@ function handleMobileTrackerLayoutChange(event: MediaQueryListEvent) {
 
 onMounted(() => {
   sessionStore.startLocalSessionSync();
-  if (coopFlagEnabled || sessionStore.coopRoomCode) {
-    const autoJoinCode = coopFlagEnabled ? getCoopAutoJoinCode() : null;
-    const persistedRoomCode = sessionStore.coopRoomCode;
-    const roomCodeToJoin = autoJoinCode ?? persistedRoomCode;
-    if (roomCodeToJoin) {
-      sessionStore.startRoomSync({ roomCode: roomCodeToJoin });
-    }
-    if (autoJoinCode) {
-      clearCoopAutoJoinCodeFromUrl();
-    }
+  // A link join awaits explicit confirmation (the modal is already open) and is
+  // not auto-connected here. Drop the code from the URL so a reload doesn't
+  // silently re-trigger the prompt.
+  if (pendingLinkJoinCode.value) {
+    clearCoopAutoJoinCodeFromUrl();
+  } else if (sessionStore.coopRoomCode) {
+    // Reconnect to a room we were already in (non-destructive).
+    sessionStore.startRoomSync({ roomCode: sessionStore.coopRoomCode });
   }
   const windowWithHandlers = window as Window & {
     __TLT_DEBUG_ACTIVATE_ALL__?: () => void;
@@ -3399,7 +3421,44 @@ onBeforeUnmount(() => {
       </div>
     </div>
     <div
-      v-if="isJoiningCoopRoom"
+      v-if="isCoopJoinConfirmOpen"
+      class="spoiler-player-dialog-overlay"
+      data-testid="coop-join-confirm-overlay"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="coop-join-confirm-title"
+      aria-describedby="coop-join-confirm-description"
+    >
+      <div class="spoiler-player-dialog" data-testid="coop-join-confirm-modal">
+        <h2 id="coop-join-confirm-title" class="spoiler-player-dialog-title">
+          Join co-op room?
+        </h2>
+        <p id="coop-join-confirm-description" class="spoiler-player-dialog-text">
+          Joining this room replaces your current tracker state with the room's
+          shared state. This can't be undone.
+        </p>
+        <div class="spoiler-player-dialog-actions">
+          <button
+            type="button"
+            class="history-button"
+            data-testid="coop-join-confirm-cancel-button"
+            @click="cancelCoopJoin"
+          >
+            Cancel
+          </button>
+          <button
+            type="button"
+            class="history-button"
+            data-testid="coop-join-confirm-apply-button"
+            @click="confirmCoopJoin"
+          >
+            Join &amp; Replace
+          </button>
+        </div>
+      </div>
+    </div>
+    <div
+      v-if="isJoiningCoopRoom && !isCoopJoinConfirmOpen"
       class="applying-overlay"
       data-testid="joining-coop-overlay"
       role="status"
@@ -3735,10 +3794,12 @@ onBeforeUnmount(() => {
               @update:enabled="handleAutotrackerEnabledUpdate"
               @start-overwrite="startAutotrackerOverwriteMode"
             />
-            <CoopPanel
-              v-if="isCoopVisible"
-              :autotracker-active="autotracker.enabled.value"
-            />
+            <Teleport to="#coop-header-slot">
+              <CoopPanel
+                v-if="isCoopVisible"
+                :autotracker-active="autotracker.enabled.value"
+              />
+            </Teleport>
           </div>
           <label
             v-if="autotracker.enabled.value"

@@ -124,13 +124,28 @@ async function setRoomSyncUrl(page: Page): Promise<void> {
   }, `ws://${RELAY_HOST}:${RELAY_PORT}/`);
 }
 
+// The room creator uses "Start coop", which generates a random code. We read
+// that code back so a peer can join via its link.
+async function createRoom(page: Page): Promise<string> {
+  await page.goto('/?debug=1&coop=true');
+  await waitForBoot(page);
+  await page.getByTestId('coop-start-button').click();
+  await expect(page.getByTestId('coop-status')).toContainText(/Connected/i, {
+    timeout: 15_000,
+  });
+  const code = (await page.getByTestId('coop-room-code').textContent())?.trim();
+  if (!code) throw new Error('Expected a room code after starting coop');
+  return code;
+}
+
+// Joining is link-only: opening a coop URL with the room code in the hash
+// prompts for confirmation (joining replaces local state) before connecting and
+// adopting the room's shared state. The modal appears before the tracker
+// initializes, so confirm first, then wait for boot.
 async function joinRoom(page: Page, code: string): Promise<void> {
-  const input = page.getByTestId('coop-room-code-input');
-  await expect(input).toBeVisible();
-  await input.fill(code);
-  await input.press('Enter');
-  // Joining is destructive (adopts the room's state), so it now prompts first.
+  await page.goto(`/?debug=1&coop=true#coop-room=${code}`);
   await page.getByTestId('coop-join-confirm-apply-button').click();
+  await waitForBoot(page);
   await expect(page.getByTestId('coop-status')).toContainText(/Connected/i, {
     timeout: 15_000,
   });
@@ -151,7 +166,6 @@ test.describe('coop room share', () => {
     browser,
   }) => {
     test.setTimeout(120_000);
-    const roomCode = `COOPE2E${Date.now()}`;
 
     const contextA = await browser.newContext();
     const contextB = await browser.newContext();
@@ -162,12 +176,8 @@ test.describe('coop room share', () => {
       await setRoomSyncUrl(pageA);
       await setRoomSyncUrl(pageB);
 
-      await pageA.goto('/?debug=1&coop=true');
-      await waitForBoot(pageA);
-      await pageB.goto('/?debug=1&coop=true');
-      await waitForBoot(pageB);
-
-      await joinRoom(pageA, roomCode);
+      // pageA creates the room; pageB joins it via the shared link.
+      const roomCode = await createRoom(pageA);
       await joinRoom(pageB, roomCode);
 
       await pageA.getByTestId('tab-inventory').click();
@@ -201,14 +211,11 @@ test.describe('coop room share', () => {
     browser,
   }) => {
     test.setTimeout(120_000);
-    const roomCode = `COOPRESET${Date.now()}`;
     const context = await browser.newContext();
     try {
       const page = await context.newPage();
       await setRoomSyncUrl(page);
-      await page.goto('/?debug=1&coop=true');
-      await waitForBoot(page);
-      await joinRoom(page, roomCode);
+      await createRoom(page);
 
       // Reset must prompt with a coop-aware modal — never silently leave.
       await page.getByTestId('reset-tracker-state-button').click();
@@ -233,6 +240,34 @@ test.describe('coop room share', () => {
       await expect(page.getByTestId('coop-start-button')).toBeVisible({
         timeout: TEST_TIMEOUTS.SYNC_POLL,
       });
+    } finally {
+      await context.close();
+    }
+  });
+
+  test('opening a coop link prompts before joining; cancel does not join', async ({
+    browser,
+  }) => {
+    test.setTimeout(120_000);
+    const context = await browser.newContext();
+    try {
+      const page = await context.newPage();
+      await setRoomSyncUrl(page);
+      // Opening a link must prompt before replacing local state — never join
+      // silently. Cancelling leaves us unconnected with a usable tracker.
+      await page.goto('/?debug=1&coop=true#coop-room=COOPLINK1');
+      const modal = page.getByTestId('coop-join-confirm-modal');
+      await expect(modal).toBeVisible();
+      await expect(modal).toContainText(/replaces your current tracker state/i);
+
+      await page.getByTestId('coop-join-confirm-cancel-button').click();
+      await expect(modal).toBeHidden();
+      await expect(page.getByTestId('joining-coop-overlay')).toBeHidden();
+      await waitForBoot(page);
+      await expect(page.getByTestId('coop-start-button')).toBeVisible();
+      await expect(page.getByTestId('coop-status')).toContainText(
+        /Not connected/i,
+      );
     } finally {
       await context.close();
     }

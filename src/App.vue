@@ -475,6 +475,9 @@ onBeforeUnmount(() => {
             </option>
           </select>
         </div>
+        <!-- Teleport target for the active pack's coop interface (see
+             CoopPanel in OoTMMTracker). Empty until a pack renders into it. -->
+        <div id="coop-header-slot" class="coop-header-slot"></div>
         <div
           v-if="hasOtherTabsOpen"
           class="sync-status-badge"
@@ -933,6 +936,10 @@ onBeforeUnmount(() => {
   align-items: center;
   gap: 0.75rem;
   flex-wrap: wrap;
+}
+
+.coop-header-slot {
+  display: contents;
 }
 
 .pack-selector label {
