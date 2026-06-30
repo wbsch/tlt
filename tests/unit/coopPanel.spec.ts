@@ -21,9 +21,11 @@ function mountPanel(props: { autotrackerActive?: boolean } = {}) {
   const container = document.createElement('div');
   document.body.append(container);
   const requestStart = vi.fn();
+  const blocked = vi.fn();
   const app = createApp(CoopPanel, {
     ...props,
     onRequestStart: requestStart,
+    onBlocked: blocked,
   });
   app.use(pinia);
   app.mount(container);
@@ -35,6 +37,7 @@ function mountPanel(props: { autotrackerActive?: boolean } = {}) {
     sessionStore,
     leaveRoom,
     requestStart,
+    blocked,
     $,
     cleanup: () => {
       app.unmount();
@@ -58,20 +61,23 @@ describe('CoopPanel × autotracker mutual exclusion (G5)', () => {
       await flushUi();
       const button = panel.$('coop-button') as HTMLButtonElement;
 
-      expect(button.disabled).toBe(true);
+      // Disabled-looking via aria-disabled (not native disabled) so the click
+      // still reaches the handler and can open the explainer.
+      expect(button.getAttribute('aria-disabled')).toBe('true');
       expect(panel.$('coop-autotracker-blocked-hint')).not.toBeNull();
     } finally {
       panel.cleanup();
     }
   });
 
-  it('does not request a start when the COOP button is clicked while autotracking', async () => {
+  it('reports blocked (no start) when the COOP button is clicked while autotracking', async () => {
     const panel = mountPanel({ autotrackerActive: true });
     try {
       await flushUi();
       panel.$('coop-button')!.click();
       await flushUi();
       expect(panel.requestStart).not.toHaveBeenCalled();
+      expect(panel.blocked).toHaveBeenCalledTimes(1);
     } finally {
       panel.cleanup();
     }
@@ -82,9 +88,11 @@ describe('CoopPanel × autotracker mutual exclusion (G5)', () => {
     try {
       await flushUi();
       expect(panel.$('coop-autotracker-blocked-hint')).toBeNull();
-      expect((panel.$('coop-button') as HTMLButtonElement).disabled).toBe(
-        false,
-      );
+      expect(
+        (panel.$('coop-button') as HTMLButtonElement).getAttribute(
+          'aria-disabled',
+        ),
+      ).toBe('false');
 
       panel.$('coop-button')!.click();
       await flushUi();

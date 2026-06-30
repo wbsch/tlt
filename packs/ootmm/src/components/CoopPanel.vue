@@ -16,6 +16,9 @@ const props = defineProps<{
 const emit = defineEmits<{
   'request-start': [];
   'request-leave': [];
+  // The button stays disabled-looking while autotracking blocks it, but a click
+  // still fires this so the parent can explain why (instead of doing nothing).
+  blocked: [];
 }>();
 
 const COOP_BLOCKED_TITLE = 'Coop is unavailable while autotracking is active';
@@ -74,6 +77,7 @@ const isWarning = computed(
 const buttonStateClasses = computed(() => ({
   'coop-button--active': isConnected.value,
   'coop-button--warning': isWarning.value,
+  'coop-button--blocked': isStartBlocked.value,
 }));
 
 const dropdownStateClasses = computed(() => ({
@@ -93,7 +97,10 @@ const buttonTitle = computed(() => {
 });
 
 function handleClick() {
-  if (isStartBlocked.value) return;
+  if (isStartBlocked.value) {
+    emit('blocked');
+    return;
+  }
   if (isJoined.value) {
     emit('request-leave');
     return;
@@ -190,7 +197,7 @@ onBeforeUnmount(() => {
         class="coop-button"
         :class="buttonStateClasses"
         :title="buttonTitle"
-        :disabled="isStartBlocked"
+        :aria-disabled="isStartBlocked"
         data-testid="coop-button"
         @click="handleClick"
       >
@@ -276,12 +283,13 @@ onBeforeUnmount(() => {
   white-space: nowrap;
 }
 
-.coop-button:hover:not(:disabled) {
+.coop-button:hover:not(:disabled):not(.coop-button--blocked) {
   background: #3a3a3a;
   border-color: #777;
 }
 
-.coop-button:disabled {
+.coop-button:disabled,
+.coop-button--blocked {
   cursor: default;
   opacity: 0.65;
 }

@@ -11,6 +11,7 @@ type ToggleMountProps = {
   coopActive?: boolean;
   'onUpdate:enabled'?: (value: boolean) => void;
   onStartOverwrite?: () => void;
+  onBlocked?: () => void;
 };
 
 async function flushUi(): Promise<void> {
@@ -199,11 +200,13 @@ describe('AutotrackerToggle', () => {
   it('blocks turning autotracking on while coop is active', async () => {
     const updateEnabled = vi.fn();
     const startOverwrite = vi.fn();
+    const blocked = vi.fn();
     const view = mountToggle({
       coopActive: true,
       enabled: false,
       'onUpdate:enabled': updateEnabled,
       onStartOverwrite: startOverwrite,
+      onBlocked: blocked,
     });
 
     try {
@@ -216,19 +219,22 @@ describe('AutotrackerToggle', () => {
         '[data-testid="autotracker-dropdown-toggle"]',
       ) as HTMLButtonElement;
 
-      expect(button.disabled).toBe(true);
+      // The button stays disabled-looking (aria-disabled) rather than natively
+      // disabled, so a click still reaches the handler and reports `blocked`.
+      expect(button.getAttribute('aria-disabled')).toBe('true');
       expect(toggle.disabled).toBe(true);
       expect(button.title).toBe(
         'Autotracking is unavailable while coop is active',
       );
 
-      // Clicking the (disabled) controls must not start autotracking.
+      // Clicking must not start autotracking; it explains why via `blocked`.
       button.click();
       toggle.click();
       await flushUi();
 
       expect(updateEnabled).not.toHaveBeenCalled();
       expect(startOverwrite).not.toHaveBeenCalled();
+      expect(blocked).toHaveBeenCalledTimes(1);
       // The overflow menu never opens while blocked.
       expect(
         view.container.querySelector(

@@ -566,6 +566,38 @@ function confirmCoopLeave() {
   isCoopLeaveConfirmOpen.value = false;
   leaveCoopRoom();
 }
+
+// Auto and co-op are mutually exclusive (docs/coop-sync.md §7). The blocked
+// button stays visually disabled, but clicking it anyway shouldn't be a silent
+// dead-end: it opens a short ELI5 explainer instead. The reason picks which
+// "turn the other one off first" line to show.
+const mutexNoticeReason = ref<'coop-blocks-auto' | 'auto-blocks-coop' | null>(
+  null,
+);
+
+const mutexNoticeMessage = computed(() => {
+  switch (mutexNoticeReason.value) {
+    case 'coop-blocks-auto':
+      return "You're in a co-op room right now. Leave it first, then you can switch on autotracking.";
+    case 'auto-blocks-coop':
+      return 'Autotracking is on right now. Turn it off first, then you can start co-op.';
+    default:
+      return '';
+  }
+});
+
+function showAutotrackerBlockedNotice() {
+  mutexNoticeReason.value = 'coop-blocks-auto';
+}
+
+function showCoopBlockedNotice() {
+  mutexNoticeReason.value = 'auto-blocks-coop';
+}
+
+function closeMutexNotice() {
+  mutexNoticeReason.value = null;
+}
+
 const canUndoWithCoop = computed(() => canUndo.value && !isCoopActive.value);
 const canRedoWithCoop = computed(() => canRedo.value && !isCoopActive.value);
 
@@ -3723,6 +3755,34 @@ onBeforeUnmount(() => {
       </div>
     </div>
     <div
+      v-if="mutexNoticeReason !== null"
+      class="spoiler-player-dialog-overlay"
+      data-testid="coop-auto-mutex-overlay"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="coop-auto-mutex-title"
+      aria-describedby="coop-auto-mutex-description"
+    >
+      <div class="spoiler-player-dialog" data-testid="coop-auto-mutex-modal">
+        <h2 id="coop-auto-mutex-title" class="spoiler-player-dialog-title">
+          Auto and co-op can't both be on
+        </h2>
+        <p id="coop-auto-mutex-description" class="spoiler-player-dialog-text">
+          {{ mutexNoticeMessage }}
+        </p>
+        <div class="spoiler-player-dialog-actions">
+          <button
+            type="button"
+            class="history-button"
+            data-testid="coop-auto-mutex-dismiss-button"
+            @click="closeMutexNotice"
+          >
+            Got it
+          </button>
+        </div>
+      </div>
+    </div>
+    <div
       v-if="isJoiningCoopRoom && !isCoopJoinConfirmOpen"
       class="applying-overlay"
       data-testid="joining-coop-overlay"
@@ -4059,6 +4119,7 @@ onBeforeUnmount(() => {
                 :coop-active="isCoopActive"
                 @update:enabled="handleAutotrackerEnabledUpdate"
                 @start-overwrite="startAutotrackerOverwriteMode"
+                @blocked="showAutotrackerBlockedNotice"
               />
             </Teleport>
             <Teleport to="#coop-header-slot">
@@ -4067,6 +4128,7 @@ onBeforeUnmount(() => {
                 :autotracker-active="autotracker.enabled.value"
                 @request-start="requestCoopStart"
                 @request-leave="requestCoopLeave"
+                @blocked="showCoopBlockedNotice"
               />
             </Teleport>
           </div>

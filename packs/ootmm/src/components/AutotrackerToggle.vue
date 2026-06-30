@@ -25,6 +25,9 @@ const isCoopBlocked = computed(
 const emit = defineEmits<{
   'update:enabled': [value: boolean];
   'start-overwrite': [];
+  // The button stays disabled-looking while coop blocks it, but a click still
+  // fires this so the parent can explain why (instead of doing nothing).
+  blocked: [];
 }>();
 
 const rootRef = ref<HTMLElement | null>(null);
@@ -80,6 +83,7 @@ const buttonStateClasses = computed(() => ({
   'autotracker-button--active': isConnected.value,
   'autotracker-button--warning': isConnectionPending.value,
   'autotracker-button--error': isError.value,
+  'autotracker-button--blocked': isCoopBlocked.value,
 }));
 
 const dropdownStateClasses = computed(() => ({
@@ -131,6 +135,7 @@ function handleWindowKeydown(event: KeyboardEvent) {
 
 function toggle() {
   if (isCoopBlocked.value) {
+    emit('blocked');
     return;
   }
   closeMenu();
@@ -174,7 +179,7 @@ onBeforeUnmount(() => {
       class="autotracker-button"
       :class="buttonStateClasses"
       :title="buttonTitle"
-      :disabled="isCoopBlocked"
+      :aria-disabled="isCoopBlocked"
       data-testid="autotracker-button"
       @click="toggle"
     >
@@ -243,12 +248,13 @@ onBeforeUnmount(() => {
   white-space: nowrap;
 }
 
-.autotracker-button:hover:not(:disabled) {
+.autotracker-button:hover:not(:disabled):not(.autotracker-button--blocked) {
   background: #3a3a3a;
   border-color: #777;
 }
 
-.autotracker-button:disabled {
+.autotracker-button:disabled,
+.autotracker-button--blocked {
   cursor: default;
   opacity: 0.65;
 }
