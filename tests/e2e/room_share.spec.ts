@@ -393,4 +393,45 @@ test.describe('coop room share', () => {
       await context.close();
     }
   });
+
+  test('pasting a new coop link while already loaded prompts to join (hash-only change)', async ({
+    browser,
+  }) => {
+    test.setTimeout(120_000);
+    const context = await browser.newContext();
+    try {
+      const page = await context.newPage();
+      await setRoomSyncUrl(page);
+
+      // Already on the site with coop enabled but no room joined yet — so no
+      // prompt initially.
+      await page.goto('/?debug=1&coop=true');
+      await waitForBoot(page);
+      await expect(page.getByTestId('coop-join-confirm-modal')).toBeHidden();
+
+      // Simulate pasting a fresh invite link into the address bar. After a join
+      // the room code is stripped from the URL, so a new link only changes the
+      // hash: the browser fires hashchange instead of reloading. This used to be
+      // silently ignored; the tracker must now re-read the code and prompt to
+      // join (regression guard for the hash-only path).
+      await page.evaluate(() => {
+        window.location.hash = '#coop-room=COOPLINK2';
+      });
+
+      const modal = page.getByTestId('coop-join-confirm-modal');
+      await expect(modal).toBeVisible({ timeout: 15_000 });
+      await expect(modal).toContainText(/replaces your current tracker state/i);
+
+      // Cancel leaves us unconnected with a usable tracker.
+      await page.getByTestId('coop-join-confirm-cancel-button').click();
+      await expect(modal).toBeHidden();
+      await waitForBoot(page);
+      await expect(page.getByTestId('coop-button')).toHaveAttribute(
+        'title',
+        /Not connected/i,
+      );
+    } finally {
+      await context.close();
+    }
+  });
 });

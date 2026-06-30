@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import asyncio
 import json
+import sqlite3
 import tempfile
 import unittest
 from pathlib import Path
@@ -291,6 +292,76 @@ class RelayIntegrationTests(unittest.IsolatedAsyncioTestCase):
             ).fetchone()["snapshot_json"]
         )
         self.assertEqual(snapshot["state"]["inventoryById"], {})
+
+    async def test_room_is_evicted_from_memory_when_last_client_leaves(self) -> None:
+        # A room is held in memory only while it has clients. When the last one
+        # disconnects it is dropped from self.rooms (so memory tracks active
+        # rooms, not every room touched since startup), but it stays durable in
+        # SQLite — a later join reloads it with state intact, no loss, no split.
+        websocket, _, _ = await self.connect()
+        room = self.relay.rooms[self.room_id]
+        await self.relay.handle_operation(
+            room,
+            websocket,
+            {
+                "protocolSchema": 1,
+                "sessionId": self.room_id,
+                "opId": "op-1",
+                "actorId": "actor-a",
+                "clientClock": 1,
+                "ts": 1000,
+                "op": {"type": "inventory.set_count", "itemId": "OOT_BOW", "count": 3},
+            },
+        )
+        self.assertIn(self.room_id, self.relay.rooms)
+
+        await self.relay.disconnect(self.relay.rooms.get(self.room_id), websocket)
+
+        # Evicted from memory, but the row survives in the database.
+        self.assertNotIn(self.room_id, self.relay.rooms)
+        row = self.relay.db.execute(
+            "SELECT 1 FROM rooms WHERE room_id = ?",
+            (self.room_id,),
+        ).fetchone()
+        self.assertIsNotNone(row)
+
+        # A later join reloads the room from SQLite with its committed state.
+        _, joined, snapshot = await self.connect(actor_id="actor-b")
+        self.assertIn(self.room_id, self.relay.rooms)
+        self.assertEqual(joined["baselineSeq"], 1)
+        self.assertEqual(
+            snapshot["snapshotEnvelope"]["state"]["inventoryById"],
+            {"OOT_BOW": 3},
+        )
+
+    async def test_join_cleans_up_client_when_activity_write_fails(self) -> None:
+        # If a DB error strikes after the client is registered (realistically the
+        # _touch_room_activity write), join must undo the registration. Otherwise
+        # handler's `room` stays None, its finally-disconnect no-ops, and a
+        # phantom client keeps the room unprunable and inflates peerCount forever.
+        websocket = FakeWebSocket()
+        join_message = {
+            "type": "join",
+            "roomId": self.room_id,
+            "roomKey": self.room_key,
+            "actorId": "doomed",
+        }
+        with patch.object(
+            self.relay,
+            "_touch_room_activity",
+            side_effect=sqlite3.OperationalError("disk I/O error"),
+        ):
+            with self.assertRaises(sqlite3.OperationalError):
+                await self.relay.join(websocket, join_message)
+
+        room = self.relay.rooms[self.room_id]
+        # No phantom client left behind, so the room stays prunable.
+        self.assertEqual(len(room.clients), 0)
+        self.assertNotIn(websocket, room.clients)
+
+        # A later healthy join sees a clean room: peerCount 1, not 2.
+        _, joined, _ = await self.connect(actor_id="actor-b")
+        self.assertEqual(joined["peerCount"], 1)
 
     async def test_op_exceeding_snapshot_cap_is_rejected(self) -> None:
         websocket, _, _ = await self.connect()

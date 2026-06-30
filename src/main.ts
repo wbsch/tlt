@@ -6,6 +6,10 @@ import {
   handlePresetImportFromUrl,
   handleShareStateImportFromCurrentUrl,
 } from './utils/shareState';
+import {
+  getCoopAutoJoinCode,
+  isCoopFeatureEnabled,
+} from '@packs/ootmm/utils/coopFlag';
 import './style.css';
 
 async function initializeApp(): Promise<void> {
@@ -21,6 +25,17 @@ async function initializeApp(): Promise<void> {
     // When a user navigates to a share URL while the app is already loaded,
     // the browser only fires a hashchange event instead of reloading.
     window.addEventListener('hashchange', () => {
+      // A coop invite link is `?coop=true#coop-room=CODE`. Once a room has been
+      // joined the code is stripped from the URL (leaving `?coop=true`), so
+      // pasting a *new* invite while the app is open changes only the hash and
+      // the browser fires hashchange instead of reloading. Reload so the tracker
+      // re-reads the new code and shows its join-confirm prompt. (The code is
+      // cleared from the URL on mount, so this can't loop.)
+      if (isCoopFeatureEnabled() && getCoopAutoJoinCode() !== null) {
+        window.location.reload();
+        return;
+      }
+
       const result = handleShareStateImportFromCurrentUrl();
       if (result === 'imported' || result === 'partial') {
         // Reload so pinia stores re-hydrate from the updated localStorage.

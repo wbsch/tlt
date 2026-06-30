@@ -1,4 +1,9 @@
-import { expect, test as base, type Page } from '@playwright/test';
+import {
+  expect,
+  test as base,
+  type Locator,
+  type Page,
+} from '@playwright/test';
 import {
   captureTrackerStorageState,
   gotoTracker,
@@ -125,60 +130,71 @@ async function openMapSubmenuForEntranceLabel(
   );
 }
 
+// Push an entrance combobox to the very bottom of the viewport (its scroll
+// container is inside the map) so opening it has to flip its dropdown upward to
+// stay on screen. Returns the input's space below the fold afterwards.
+async function pinFirstEntranceInputToViewportBottom(
+  page: Page,
+): Promise<{ input: Locator; spaceBelow: number } | null> {
+  const inputs = mapSubmenuEntranceInputs(page);
+  if ((await inputs.count()) === 0) return null;
+
+  const input = inputs.first();
+  await input.evaluate((el) =>
+    el.scrollIntoView({ block: 'end', inline: 'nearest' }),
+  );
+  const box = await input.boundingBox();
+  if (!box) return null;
+
+  const viewportHeight = page.viewportSize()?.height ?? 0;
+  return { input, spaceBelow: viewportHeight - (box.y + box.height) };
+}
+
 async function openLowestEntranceSubmenuInput(page: Page) {
   const submenuMarkers = page.locator(
     '.ootmm-map .map-marker[aria-label^="Submenu marker:"]',
   );
   const submenuPanel = page.locator('.map-submenu-panel');
-  const viewportWidth = page.viewportSize()?.width ?? 0;
-  const viewportHeight = page.viewportSize()?.height ?? 0;
   const count = await submenuMarkers.count();
 
+  // On mobile the map is a large, scrollable region that starts below the fold,
+  // so we can't assume any marker is already on screen. Scroll each submenu
+  // marker into view before opening it (mirroring how the force-clicks in
+  // openMapSubmenuForEntranceLabel bring markers on screen) and keep the one
+  // whose entrance combobox can be pushed lowest in the viewport.
   let bestMarkerIndex = -1;
-  let bestInputIndex = -1;
   let smallestSpaceBelow = Number.POSITIVE_INFINITY;
 
   for (let markerIndex = 0; markerIndex < count; markerIndex += 1) {
     const marker = submenuMarkers.nth(markerIndex);
-    const markerBox = await marker.boundingBox();
-    if (
-      !markerBox ||
-      markerBox.x + markerBox.width <= 0 ||
-      markerBox.x >= viewportWidth ||
-      markerBox.y + markerBox.height <= 0 ||
-      markerBox.y >= viewportHeight
-    ) {
+    await marker.scrollIntoViewIfNeeded().catch(() => {});
+    try {
+      await marker.click({ force: true, timeout: 2000 });
+    } catch {
+      // Some markers sit outside the horizontal scroll extent and can't be
+      // brought on screen; skip them.
       continue;
     }
-
-    await marker.click({ force: true });
     await expect(submenuPanel).toBeVisible();
 
-    const inputs = mapSubmenuEntranceInputs(page);
-    const inputCount = await inputs.count();
-
-    for (let inputIndex = 0; inputIndex < inputCount; inputIndex += 1) {
-      const inputBox = await inputs.nth(inputIndex).boundingBox();
-      if (!inputBox) continue;
-
-      const spaceBelow = viewportHeight - (inputBox.y + inputBox.height);
-      if (spaceBelow < smallestSpaceBelow) {
-        smallestSpaceBelow = spaceBelow;
-        bestMarkerIndex = markerIndex;
-        bestInputIndex = inputIndex;
-      }
+    const pinned = await pinFirstEntranceInputToViewportBottom(page);
+    if (pinned && pinned.spaceBelow < smallestSpaceBelow) {
+      smallestSpaceBelow = pinned.spaceBelow;
+      bestMarkerIndex = markerIndex;
     }
   }
 
   expect(bestMarkerIndex).toBeGreaterThanOrEqual(0);
-  expect(bestInputIndex).toBeGreaterThanOrEqual(0);
 
-  await submenuMarkers.nth(bestMarkerIndex).click({ force: true });
+  const bestMarker = submenuMarkers.nth(bestMarkerIndex);
+  await bestMarker.scrollIntoViewIfNeeded();
+  await bestMarker.click({ force: true });
   await expect(submenuPanel).toBeVisible();
 
-  const targetInput = mapSubmenuEntranceInputs(page).nth(bestInputIndex);
-  await expect(targetInput).toBeVisible();
-  return targetInput;
+  const pinned = await pinFirstEntranceInputToViewportBottom(page);
+  expect(pinned).not.toBeNull();
+  await expect(pinned!.input).toBeVisible();
+  return pinned!.input;
 }
 
 const MOBILE_CONTEXT_OPTIONS = {

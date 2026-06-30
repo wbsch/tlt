@@ -695,123 +695,155 @@ class RelayServer:
         self, room_id: str, room_key: str, *, seed_snapshot: Any = None
     ) -> RoomState:
         async with self.rooms_lock:
-            cached = self.rooms.get(room_id)
-            if cached is not None:
-                if not hmac.compare_digest(cached.room_key, room_key):
-                    raise ProtocolError("invalid roomKey")
-                return cached
+            return self._get_or_create_room_locked(
+                room_id, room_key, seed_snapshot=seed_snapshot
+            )
 
-            row = self.db.execute(
-                """
-                SELECT room_key, latest_seq, snapshot_json
-                FROM rooms
-                WHERE room_id = ?
-                """,
-                (room_id,),
-            ).fetchone()
+    def _get_or_create_room_locked(
+        self, room_id: str, room_key: str, *, seed_snapshot: Any = None
+    ) -> RoomState:
+        """Look up (or create) a room. Caller must hold ``rooms_lock``.
 
-            if row is None:
-                # Brand-new room: gate creation on the rate/storage ceilings
-                # (joins to existing rooms above never reach here), then seed it
-                # from the joining client's snapshot if one was supplied, so
-                # "Start coop" uploads the host's current state instead of
-                # handing back an empty document.
-                self._enforce_room_creation_limits()
-                snapshot = (
-                    build_seed_snapshot_envelope(room_id, seed_snapshot)
-                    if seed_snapshot is not None
-                    else default_snapshot_envelope(room_id)
-                )
-                self.db.execute(
-                    """
-                    INSERT INTO rooms (
-                      room_id,
-                      room_key,
-                      protocol_schema,
-                      state_schema,
-                      state_type,
-                      latest_seq,
-                      snapshot_json,
-                      updated_at_ms
-                    )
-                    VALUES (?, ?, ?, ?, ?, ?, ?, ?)
-                    """,
-                    (
-                        room_id,
-                        room_key,
-                        PROTOCOL_SCHEMA,
-                        STATE_SCHEMA,
-                        STATE_TYPE,
-                        0,
-                        json.dumps(snapshot, separators=(",", ":"), sort_keys=True),
-                        now_ms(),
-                    ),
-                )
-                self.db.commit()
-                self._record_room_creation()
-                room = RoomState(
-                    room_id=room_id,
-                    room_key=room_key,
-                    latest_seq=0,
-                    snapshot_envelope=snapshot,
-                )
-                self.rooms[room_id] = room
-                return room
-
-            stored_key = str(row["room_key"])
-            if not hmac.compare_digest(stored_key, room_key):
+        This is kept lock-free so ``join`` can hold ``rooms_lock`` across both the
+        lookup/creation here and the first-client registration. That single
+        critical section is what stops a concurrent last-client ``disconnect``
+        (which evicts an empty room under the same lock) from interleaving and
+        leaving us with two in-memory ``RoomState`` objects for one room.
+        """
+        cached = self.rooms.get(room_id)
+        if cached is not None:
+            if not hmac.compare_digest(cached.room_key, room_key):
                 raise ProtocolError("invalid roomKey")
+            return cached
 
-            try:
-                snapshot = json.loads(row["snapshot_json"])
-            except json.JSONDecodeError as exc:
-                raise RuntimeError(f"Stored snapshot for room {room_id!r} is invalid JSON") from exc
+        row = self.db.execute(
+            """
+            SELECT room_key, latest_seq, snapshot_json
+            FROM rooms
+            WHERE room_id = ?
+            """,
+            (room_id,),
+        ).fetchone()
 
+        if row is None:
+            # Brand-new room: gate creation on the rate/storage ceilings
+            # (joins to existing rooms above never reach here), then seed it
+            # from the joining client's snapshot if one was supplied, so
+            # "Start coop" uploads the host's current state instead of
+            # handing back an empty document.
+            self._enforce_room_creation_limits()
+            snapshot = (
+                build_seed_snapshot_envelope(room_id, seed_snapshot)
+                if seed_snapshot is not None
+                else default_snapshot_envelope(room_id)
+            )
+            self.db.execute(
+                """
+                INSERT INTO rooms (
+                  room_id,
+                  room_key,
+                  protocol_schema,
+                  state_schema,
+                  state_type,
+                  latest_seq,
+                  snapshot_json,
+                  updated_at_ms
+                )
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+                """,
+                (
+                    room_id,
+                    room_key,
+                    PROTOCOL_SCHEMA,
+                    STATE_SCHEMA,
+                    STATE_TYPE,
+                    0,
+                    json.dumps(snapshot, separators=(",", ":"), sort_keys=True),
+                    now_ms(),
+                ),
+            )
+            self.db.commit()
+            self._record_room_creation()
             room = RoomState(
                 room_id=room_id,
-                room_key=stored_key,
-                latest_seq=int(row["latest_seq"]),
+                room_key=room_key,
+                latest_seq=0,
                 snapshot_envelope=snapshot,
             )
             self.rooms[room_id] = room
             return room
 
-    async def join(self, websocket: Any, join_message: dict[str, Any]) -> RoomState:
-        room = await self.get_room(
-            join_message["roomId"],
-            join_message["roomKey"],
-            seed_snapshot=join_message.get("seedSnapshot"),
+        stored_key = str(row["room_key"])
+        if not hmac.compare_digest(stored_key, room_key):
+            raise ProtocolError("invalid roomKey")
+
+        try:
+            snapshot = json.loads(row["snapshot_json"])
+        except json.JSONDecodeError as exc:
+            raise RuntimeError(f"Stored snapshot for room {room_id!r} is invalid JSON") from exc
+
+        room = RoomState(
+            room_id=room_id,
+            room_key=stored_key,
+            latest_seq=int(row["latest_seq"]),
+            snapshot_envelope=snapshot,
         )
-        async with room.lock:
-            if len(room.clients) >= self.max_clients_per_room:
-                raise ProtocolError("room is full")
-            client = ClientConnection(actor_id=join_message["actorId"])
-            room.clients[websocket] = client
-            client.sender_task = asyncio.create_task(
-                self._client_sender(websocket, client.outbox)
+        self.rooms[room_id] = room
+        return room
+
+    async def join(self, websocket: Any, join_message: dict[str, Any]) -> RoomState:
+        # Hold rooms_lock across both materializing the room and registering this
+        # first client (rooms_lock -> room.lock, the same order disconnect uses).
+        # A concurrent last-client disconnect evicts an empty room from
+        # self.rooms under rooms_lock; doing the lookup and the registration in
+        # one critical section stops that eviction from slipping in between and
+        # leaving us adding a client to a room that's no longer canonical.
+        async with self.rooms_lock:
+            room = self._get_or_create_room_locked(
+                join_message["roomId"],
+                join_message["roomKey"],
+                seed_snapshot=join_message.get("seedSnapshot"),
             )
-            self._touch_room_activity(room.room_id, now_ms())
-            joined_payload = json.dumps(
-                {
-                    "type": "joined",
-                    "roomId": room.room_id,
-                    "baselineSeq": room.latest_seq,
-                    "peerCount": len(room.clients),
-                },
-                separators=(",", ":"),
-                sort_keys=True,
-            )
-            snapshot_payload = json.dumps(
-                {
-                    "type": "snapshot",
-                    "snapshotEnvelope": room.snapshot_envelope,
-                },
-                separators=(",", ":"),
-                sort_keys=True,
-            )
-            client.outbox.put_nowait(joined_payload)
-            client.outbox.put_nowait(snapshot_payload)
-            self._broadcast_peer_count(room, exclude=websocket)
+            async with room.lock:
+                if len(room.clients) >= self.max_clients_per_room:
+                    raise ProtocolError("room is full")
+                client = ClientConnection(actor_id=join_message["actorId"])
+                room.clients[websocket] = client
+                client.sender_task = asyncio.create_task(
+                    self._client_sender(websocket, client.outbox)
+                )
+                # Anything after registration that raises (realistically the
+                # _touch_room_activity DB write) must undo the registration:
+                # handler binds `room` from our return value, so a throw here
+                # leaves it None and its finally-disconnect can't clean up,
+                # stranding a phantom client that keeps the room unprunable.
+                try:
+                    self._touch_room_activity(room.room_id, now_ms())
+                    joined_payload = json.dumps(
+                        {
+                            "type": "joined",
+                            "roomId": room.room_id,
+                            "baselineSeq": room.latest_seq,
+                            "peerCount": len(room.clients),
+                        },
+                        separators=(",", ":"),
+                        sort_keys=True,
+                    )
+                    snapshot_payload = json.dumps(
+                        {
+                            "type": "snapshot",
+                            "snapshotEnvelope": room.snapshot_envelope,
+                        },
+                        separators=(",", ":"),
+                        sort_keys=True,
+                    )
+                    client.outbox.put_nowait(joined_payload)
+                    client.outbox.put_nowait(snapshot_payload)
+                    self._broadcast_peer_count(room, exclude=websocket)
+                except BaseException:
+                    room.clients.pop(websocket, None)
+                    client.sender_task.cancel()
+                    raise
         LOG.info(
             "joined room_id=%s actor_id=%s peers=%s",
             room.room_id,
@@ -951,15 +983,27 @@ class RelayServer:
     async def disconnect(self, room: RoomState | None, websocket: Any) -> None:
         if room is None:
             return
-        async with room.lock:
-            removed = room.clients.pop(websocket, None)
-            if removed is not None:
-                if (
-                    removed.sender_task is not None
-                    and not removed.sender_task.done()
-                ):
-                    removed.sender_task.cancel()
-                self._broadcast_peer_count(room)
+        # rooms_lock -> room.lock matches the order join uses, so evicting an
+        # empty room here can never race a concurrent join into a split room.
+        async with self.rooms_lock:
+            async with room.lock:
+                removed = room.clients.pop(websocket, None)
+                if removed is not None:
+                    if (
+                        removed.sender_task is not None
+                        and not removed.sender_task.done()
+                    ):
+                        removed.sender_task.cancel()
+                    self._broadcast_peer_count(room)
+                # Drop the room from memory once its last client leaves. It stays
+                # durable in SQLite and reloads lazily via get_room on the next
+                # join, so nothing is lost. Without this, self.rooms retains every
+                # room touched since startup until the 7-day idle prune, making
+                # memory track total rooms rather than concurrently active ones.
+                # The `is room` guard avoids evicting a different object a
+                # concurrent join may already have installed in this slot.
+                if not room.clients and self.rooms.get(room.room_id) is room:
+                    self.rooms.pop(room.room_id, None)
 
     async def prune_idle_rooms(self, *, now: int | None = None) -> int:
         if self.idle_prune_ms <= 0:
