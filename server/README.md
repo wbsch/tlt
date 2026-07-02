@@ -33,6 +33,16 @@ Flags:
   relay refuses to start without at least one origin.
 - `--idle-prune-days N` — delete rooms with no activity for N days (default 7,
   set to `0` to disable). Pruning runs every 6 hours while the relay is up.
+- `--soft-max-rss-mb N` — **soft tier**: stop creating or reloading rooms once
+  the process resident memory reaches N MB, while rooms already in memory keep
+  working (default `0` = disabled; Linux only). The gentle first step — the relay
+  stops taking on new groups but doesn't drop anyone mid-session. Set it below
+  `--max-rss-mb`.
+- `--max-rss-mb N` — **hard tier**: refuse **all** new connections once the
+  process resident memory reaches N MB (default `0` = disabled; Linux only).
+  Existing rooms keep working; refused clients reconnect with backoff once memory
+  recovers. A graceful in-process complement to a hard cgroup `MemoryMax` (see
+  systemd example below).
 - `--log-level` — `DEBUG`/`INFO`/`WARNING`/`ERROR`
 
 The relay serves one plain HTTP endpoint:
@@ -124,6 +134,20 @@ dedup has to come back.)
   or the relay drops it, so anonymous sockets can't be held open for free.
 - Room codes must be alphanumeric and at least `ROOM_CODE_MIN_LENGTH` (8)
   characters.
+- A room is held in memory only while it has at least one connected client. When
+  the last client leaves it is evicted from the in-memory map (but kept in
+  SQLite and reloaded on the next join), so RAM tracks _concurrently active_
+  rooms rather than every room touched since startup.
+- The RSS gates degrade in two tiers as memory climbs. With `--soft-max-rss-mb`
+  set, once RSS reaches that ceiling the relay stops materializing rooms that
+  aren't already in memory — new rooms and reloads of evicted ones are refused
+  (a `ProtocolError` on the join), but sockets can still join rooms that are
+  resident, so active groups keep playing. With `--max-rss-mb` set (higher), once
+  RSS reaches it every new connection is refused (HTTP 503 at the upgrade, before
+  any room/client is allocated). Existing connections are untouched in both
+  cases. Because CPython/glibc may not return freed memory to the OS, a gate can
+  stay tripped after a spike until the process recycles — so treat these as
+  graceful backstops, not a substitute for `MemoryMax`.
 
 ## Security model
 
@@ -174,15 +198,24 @@ ExecStart=/srv/tlt/.venv/bin/python /srv/tlt/server/relay.py \
   --host 127.0.0.1 --port 8765 \
   --db /srv/tlt/data/sync.db \
   --allow-origin https://www.thelasttracker.org \
-  --idle-prune-days 7
+  --idle-prune-days 7 \
+  --soft-max-rss-mb 150 \
+  --max-rss-mb 180
 Restart=on-failure
 User=tlt
 
-# Cap RAM via the systemd cgroup (relay.py has no memory flag of its own).
-# MemoryHigh is a soft cap: the kernel reclaims/throttles past it. MemoryMax is
-# the hard cap: exceed it and the process is OOM-killed, then Restart=on-failure
-# brings it back. RAM scales with concurrent active rooms (~120 KiB worst-case
-# per room) plus per-connection WebSocket buffers, so this is generous headroom.
+# Three layers of memory protection, tripping in order as RAM climbs:
+#   1. --soft-max-rss-mb 150 (above) makes the relay stop taking on *new rooms*
+#      first, while groups already in memory keep playing. The gentlest step.
+#   2. --max-rss-mb 180 (above) makes the relay stop *accepting new connections*
+#      entirely, so existing rooms drain gracefully instead of being OOM-killed.
+#      Keep it above the soft ceiling and below MemoryMax.
+#   3. The systemd cgroup caps below are the hard backstop. MemoryHigh is a soft
+#      cap: the kernel reclaims/throttles past it. MemoryMax is the hard cap:
+#      exceed it and the process is OOM-killed, then Restart=on-failure brings it
+#      back — which also clears any RSS latched high by the in-process gates.
+# RAM scales with concurrent active rooms (~120 KiB worst-case per room) plus
+# per-connection WebSocket buffers, so this is generous headroom.
 MemoryHigh=200M
 MemoryMax=256M
 

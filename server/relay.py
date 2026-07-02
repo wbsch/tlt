@@ -8,6 +8,7 @@ import http
 import json
 import logging
 import math
+import os
 import re
 import signal
 import sqlite3
@@ -47,6 +48,27 @@ MAX_CLIENTS_PER_ROOM = 16
 # A connection must send its join frame within this many seconds of opening or
 # the relay drops it, so an anonymous socket can't be held open for free.
 JOIN_TIMEOUT_SEC = 10
+# Two-tier resident-memory ceilings, both opt-in, Linux-only, and disabled at 0
+# (the default). RSS is sampled from /proc; a bad value would throttle real
+# clients, so they stay off unless configured. Together they let the relay shed
+# load gracefully before a cgroup MemoryMax OOM-kills it:
+#
+#   * DEFAULT_SOFT_MAX_RSS_BYTES -- the gentle tier. Once RSS reaches it,
+#     materializing a not-yet-resident room (a brand-new room or one reloaded
+#     from SQLite) is refused in _get_or_create_room_locked. A room's snapshot is
+#     the dominant per-unit RSS cost, so this stops the relay taking on new
+#     groups while groups already in memory keep playing.
+#   * DEFAULT_MAX_RSS_BYTES -- the hard backstop. Once RSS reaches it,
+#     process_request returns 503 for every new socket, before anything is
+#     allocated (including sockets that only wanted to rejoin a resident room).
+#
+# Set soft below hard: the hard gate refuses sockets before they can send a join
+# frame, so a soft ceiling at or above the hard one never fires. Empty-room
+# eviction and idle pruning pull RSS back down, but CPython/glibc may not return
+# freed memory to the OS, so a gate can stay tripped after a spike until the
+# process is recycled.
+DEFAULT_SOFT_MAX_RSS_BYTES = 0
+DEFAULT_MAX_RSS_BYTES = 0
 MAX_ID_LENGTH = 256
 # Shortest room code the relay will accept. The browser generates 8-char codes;
 # rejecting anything shorter keeps a trivially brute-forceable room off the wire.
@@ -106,6 +128,23 @@ class ClientConnection:
 
 def now_ms() -> int:
     return int(time.time() * 1000)
+
+
+_PAGE_SIZE = os.sysconf("SC_PAGE_SIZE") if hasattr(os, "sysconf") else 4096
+
+
+def current_rss_bytes() -> int:
+    """Current resident set size in bytes via Linux /proc; 0 if unavailable.
+
+    Returning 0 on non-Linux platforms means the RSS gate is a no-op there
+    rather than erroring, which is fine: it is documented as Linux-only.
+    """
+    try:
+        with open("/proc/self/statm", "r", encoding="ascii") as handle:
+            resident_pages = int(handle.read().split()[1])
+    except (OSError, ValueError, IndexError):
+        return 0
+    return resident_pages * _PAGE_SIZE
 
 
 def is_object(value: Any) -> bool:
@@ -619,6 +658,8 @@ class RelayServer:
         max_db_bytes: int = MAX_DB_BYTES,
         max_new_rooms_per_minute: int = MAX_NEW_ROOMS_PER_MINUTE,
         max_clients_per_room: int = MAX_CLIENTS_PER_ROOM,
+        max_rss_bytes: int = DEFAULT_MAX_RSS_BYTES,
+        soft_max_rss_bytes: int = DEFAULT_SOFT_MAX_RSS_BYTES,
     ):
         self.db = sqlite3.connect(db_path, check_same_thread=False)
         self.db.row_factory = sqlite3.Row
@@ -639,6 +680,22 @@ class RelayServer:
         self.max_db_bytes = max_db_bytes
         self.max_new_rooms_per_minute = max_new_rooms_per_minute
         self.max_clients_per_room = max_clients_per_room
+        self.max_rss_bytes = max(0, max_rss_bytes)
+        self.soft_max_rss_bytes = max(0, soft_max_rss_bytes)
+        if (
+            self.soft_max_rss_bytes > 0
+            and self.max_rss_bytes > 0
+            and self.soft_max_rss_bytes >= self.max_rss_bytes
+        ):
+            # The hard gate refuses sockets before they can send a join frame, so
+            # a soft ceiling at or above it can never fire. Warn rather than fail:
+            # a running relay is preferable to a startup crash over a config typo.
+            LOG.warning(
+                "soft RSS limit (%s) >= hard RSS limit (%s); the hard gate "
+                "refuses connections first, so the soft new-room gate never fires",
+                self.soft_max_rss_bytes,
+                self.max_rss_bytes,
+            )
         # Timestamps (ms) of recent room creations, oldest first. Guarded by
         # rooms_lock, same as every other room-creation path.
         self._recent_room_creations: deque[int] = deque()
@@ -691,6 +748,26 @@ class RelayServer:
     def _record_room_creation(self) -> None:
         self._recent_room_creations.append(now_ms())
 
+    def _enforce_soft_rss_limit(self) -> None:
+        """Reject materializing a not-yet-resident room over the soft RSS ceiling.
+
+        Caller must hold ``rooms_lock``. No-op when unset (the default) or on
+        platforms where ``current_rss_bytes`` returns 0. Only room materialization
+        is gated; joins to a room already in ``self.rooms`` never reach here, so
+        active sessions keep working. Raises ``ProtocolError`` so the join handler
+        reports it to the client like the other room-creation ceilings.
+        """
+        if self.soft_max_rss_bytes <= 0:
+            return
+        rss = current_rss_bytes()
+        if rss >= self.soft_max_rss_bytes:
+            LOG.warning(
+                "refusing new room: rss %s over soft limit %s",
+                rss,
+                self.soft_max_rss_bytes,
+            )
+            raise ProtocolError("server is busy; no new rooms right now")
+
     async def get_room(
         self, room_id: str, room_key: str, *, seed_snapshot: Any = None
     ) -> RoomState:
@@ -715,6 +792,14 @@ class RelayServer:
             if not hmac.compare_digest(cached.room_key, room_key):
                 raise ProtocolError("invalid roomKey")
             return cached
+
+        # Not resident: whether this is a brand-new room or a reload from SQLite,
+        # materializing it allocates a fresh in-memory snapshot -- the dominant
+        # per-unit RSS cost. The soft ceiling refuses that step (before the DB
+        # read) so groups already in memory keep working while the relay stops
+        # admitting new ones. This is the gentle tier below the hard
+        # process_request gate that refuses every socket.
+        self._enforce_soft_rss_limit()
 
         row = self.db.execute(
             """
@@ -1100,10 +1185,48 @@ class RelayServer:
         finally:
             await self.disconnect(room, websocket)
 
-    async def process_request(self, connection: Any, request: Any) -> Any:
-        path = getattr(request, "path", None)
+    async def process_request(self, arg1: Any, arg2: Any) -> Any:
+        # Support both websockets calling conventions so healthz and the RSS gate
+        # work regardless of the installed version:
+        #   * >= 14 (new asyncio API): (connection, request); path is
+        #     request.path and a response is built via connection.respond(...).
+        #   * legacy 10.x (shipped as some distros' system package): (path,
+        #     request_headers); a response is a (status, headers, body) tuple.
+        # Returning None from either lets the WebSocket handshake proceed.
+        if isinstance(arg1, str):
+            path = arg1
+
+            def deny(status: http.HTTPStatus, body: str) -> Any:
+                return (status, [], body.encode("utf-8"))
+        else:
+            connection = arg1
+            path = getattr(arg2, "path", None)
+
+            def deny(status: http.HTTPStatus, body: str) -> Any:
+                return connection.respond(status, body)
+
         if path == "/healthz":
-            return connection.respond(http.HTTPStatus.OK, "ok\n")
+            return deny(http.HTTPStatus.OK, "ok\n")
+        # Hard tier: refuse the WebSocket upgrade for every new socket before any
+        # room or client is allocated once RSS hits the hard ceiling. This is the
+        # backstop just below a cgroup OOM-kill; the soft tier in
+        # _get_or_create_room_locked stops *new rooms* earlier and more gently
+        # while letting sockets rejoin resident rooms. Already-connected sockets
+        # are untouched; refused clients hit their normal reconnect backoff and
+        # return once memory recovers (as empty rooms are evicted and idle rooms
+        # pruned).
+        if self.max_rss_bytes > 0:
+            rss = current_rss_bytes()
+            if rss >= self.max_rss_bytes:
+                LOG.warning(
+                    "refusing connection: rss %s over limit %s (path=%s)",
+                    rss,
+                    self.max_rss_bytes,
+                    path,
+                )
+                return deny(
+                    http.HTTPStatus.SERVICE_UNAVAILABLE, "server at capacity\n"
+                )
         return None
 
     async def run(self, host: str, port: int, allowed_origins: list[str]) -> None:
@@ -1170,6 +1293,27 @@ def parse_args() -> argparse.Namespace:
         help="Delete rooms idle for this many days (default: 7; set to 0 to disable).",
     )
     parser.add_argument(
+        "--max-rss-mb",
+        type=float,
+        default=0.0,
+        help=(
+            "Hard tier: refuse all new connections once process RSS reaches this "
+            "many MB (default: 0 = disabled; Linux only). Existing rooms keep "
+            "working."
+        ),
+    )
+    parser.add_argument(
+        "--soft-max-rss-mb",
+        type=float,
+        default=0.0,
+        help=(
+            "Soft tier: stop creating or reloading rooms once process RSS reaches "
+            "this many MB, while rooms already in memory keep working (default: "
+            "0 = disabled; Linux only). Set below --max-rss-mb as a gentler first "
+            "step before the hard gate."
+        ),
+    )
+    parser.add_argument(
         "--log-level",
         default="INFO",
         choices=["DEBUG", "INFO", "WARNING", "ERROR"],
@@ -1187,7 +1331,12 @@ async def amain() -> None:
         level=getattr(logging, args.log_level),
         format="%(asctime)s %(levelname)s %(name)s %(message)s",
     )
-    relay = RelayServer(args.db, idle_prune_days=args.idle_prune_days)
+    relay = RelayServer(
+        args.db,
+        idle_prune_days=args.idle_prune_days,
+        max_rss_bytes=int(args.max_rss_mb * 1024 * 1024),
+        soft_max_rss_bytes=int(args.soft_max_rss_mb * 1024 * 1024),
+    )
     await relay.run(args.host, args.port, args.allow_origin)
 
 

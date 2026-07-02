@@ -1,1 +1,5 @@
-websockets>=14,<16
+# relay.py's process_request is dual-API compatible, so both the legacy 10.x
+# line (e.g. the distro python3-websockets system package) and the new >=14
+# asyncio API work. Lower bound tracks what's actually deployed; <16 guards
+# against the next unverified major.
+websockets>=10.4,<16

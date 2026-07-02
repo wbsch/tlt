@@ -13,6 +13,7 @@ from server.relay import (
     ProtocolError,
     RelayServer,
     ROOM_CREATION_WINDOW_MS,
+    current_rss_bytes,
     normalize_join_message,
 )
 
@@ -848,6 +849,20 @@ class HealthzTests(unittest.IsolatedAsyncioTestCase):
         self.assertIsNone(result)
         connection.respond.assert_not_called()
 
+    async def test_legacy_api_healthz_returns_tuple(self) -> None:
+        # websockets 10.x calls process_request(path, request_headers) and wants
+        # a (status, headers, body) tuple back.
+        result = await self.relay.process_request("/healthz", MagicMock())
+
+        self.assertIsInstance(result, tuple)
+        status, _headers, body = result
+        self.assertEqual(int(status), 200)
+        self.assertEqual(body, b"ok\n")
+
+    async def test_legacy_api_non_healthz_falls_through(self) -> None:
+        result = await self.relay.process_request("/coop/ws", MagicMock())
+        self.assertIsNone(result)
+
     async def test_rooms_new_endpoint_is_gone(self) -> None:
         connection = MagicMock()
         request = MagicMock()
@@ -857,6 +872,203 @@ class HealthzTests(unittest.IsolatedAsyncioTestCase):
 
         self.assertIsNone(result)
         connection.respond.assert_not_called()
+
+
+class RssGateTests(unittest.IsolatedAsyncioTestCase):
+    async def asyncSetUp(self) -> None:
+        self.tmpdir = tempfile.TemporaryDirectory()
+        self.db_path = str(Path(self.tmpdir.name) / "test-sync.db")
+
+    async def asyncTearDown(self) -> None:
+        self.tmpdir.cleanup()
+
+    def _fake_request(self, path: str = "/coop/ws"):
+        connection = MagicMock()
+        connection.respond = MagicMock(return_value="sentinel")
+        request = MagicMock()
+        request.path = path
+        return connection, request
+
+    async def test_gate_disabled_by_default(self) -> None:
+        relay = RelayServer(self.db_path)
+        try:
+            connection, request = self._fake_request()
+            with patch("server.relay.current_rss_bytes", return_value=10**12):
+                result = await relay.process_request(connection, request)
+            self.assertIsNone(result)
+            connection.respond.assert_not_called()
+        finally:
+            relay.db.close()
+
+    async def test_refuses_new_connection_when_over_limit(self) -> None:
+        relay = RelayServer(self.db_path, max_rss_bytes=100)
+        try:
+            connection, request = self._fake_request()
+            with patch("server.relay.current_rss_bytes", return_value=200):
+                result = await relay.process_request(connection, request)
+            self.assertEqual(result, "sentinel")
+            connection.respond.assert_called_once()
+            status_arg = connection.respond.call_args.args[0]
+            self.assertEqual(int(status_arg), 503)
+        finally:
+            relay.db.close()
+
+    async def test_allows_new_connection_when_under_limit(self) -> None:
+        relay = RelayServer(self.db_path, max_rss_bytes=1000)
+        try:
+            connection, request = self._fake_request()
+            with patch("server.relay.current_rss_bytes", return_value=200):
+                result = await relay.process_request(connection, request)
+            self.assertIsNone(result)
+            connection.respond.assert_not_called()
+        finally:
+            relay.db.close()
+
+    async def test_healthz_served_even_when_over_limit(self) -> None:
+        relay = RelayServer(self.db_path, max_rss_bytes=100)
+        try:
+            connection, request = self._fake_request(path="/healthz")
+            with patch("server.relay.current_rss_bytes", return_value=10**9):
+                result = await relay.process_request(connection, request)
+            self.assertEqual(result, "sentinel")
+            status_arg = connection.respond.call_args.args[0]
+            self.assertEqual(int(status_arg), 200)
+        finally:
+            relay.db.close()
+
+    async def test_negative_limit_is_treated_as_disabled(self) -> None:
+        relay = RelayServer(self.db_path, max_rss_bytes=-1)
+        self.assertEqual(relay.max_rss_bytes, 0)
+        try:
+            connection, request = self._fake_request()
+            with patch("server.relay.current_rss_bytes", return_value=10**12):
+                result = await relay.process_request(connection, request)
+            self.assertIsNone(result)
+        finally:
+            relay.db.close()
+
+    async def test_legacy_api_refuses_when_over_limit(self) -> None:
+        # websockets 10.x: (path, request_headers) in, (status, headers, body) out.
+        relay = RelayServer(self.db_path, max_rss_bytes=100)
+        try:
+            with patch("server.relay.current_rss_bytes", return_value=200):
+                result = await relay.process_request("/coop/ws", MagicMock())
+            self.assertIsInstance(result, tuple)
+            status, _headers, body = result
+            self.assertEqual(int(status), 503)
+            self.assertEqual(body, b"server at capacity\n")
+        finally:
+            relay.db.close()
+
+    async def test_legacy_api_allows_when_under_limit(self) -> None:
+        relay = RelayServer(self.db_path, max_rss_bytes=1000)
+        try:
+            with patch("server.relay.current_rss_bytes", return_value=200):
+                result = await relay.process_request("/coop/ws", MagicMock())
+            self.assertIsNone(result)
+        finally:
+            relay.db.close()
+
+    def test_current_rss_bytes_is_nonnegative_int(self) -> None:
+        value = current_rss_bytes()
+        self.assertIsInstance(value, int)
+        self.assertGreaterEqual(value, 0)
+
+
+class SoftRssGateTests(unittest.IsolatedAsyncioTestCase):
+    async def asyncSetUp(self) -> None:
+        self.tmpdir = tempfile.TemporaryDirectory()
+        self.db_path = str(Path(self.tmpdir.name) / "test-sync.db")
+        self.room_id = "softgateroom01"
+        self.room_key = "softgatekey001"
+
+    async def asyncTearDown(self) -> None:
+        self.tmpdir.cleanup()
+
+    async def test_soft_gate_disabled_by_default(self) -> None:
+        relay = RelayServer(self.db_path)
+        try:
+            with patch("server.relay.current_rss_bytes", return_value=10**12):
+                room = await relay.get_room(self.room_id, self.room_key)
+            self.assertEqual(room.room_id, self.room_id)
+        finally:
+            relay.db.close()
+
+    async def test_refuses_new_room_when_over_soft_limit(self) -> None:
+        relay = RelayServer(self.db_path, soft_max_rss_bytes=100)
+        try:
+            with patch("server.relay.current_rss_bytes", return_value=200):
+                with self.assertRaises(ProtocolError) as cm:
+                    await relay.get_room(self.room_id, self.room_key)
+            self.assertIn("no new rooms", str(cm.exception))
+            # Nothing was materialized or persisted.
+            self.assertNotIn(self.room_id, relay.rooms)
+            row = relay.db.execute(
+                "SELECT 1 FROM rooms WHERE room_id = ?", (self.room_id,)
+            ).fetchone()
+            self.assertIsNone(row)
+        finally:
+            relay.db.close()
+
+    async def test_allows_new_room_when_under_soft_limit(self) -> None:
+        relay = RelayServer(self.db_path, soft_max_rss_bytes=1000)
+        try:
+            with patch("server.relay.current_rss_bytes", return_value=200):
+                room = await relay.get_room(self.room_id, self.room_key)
+            self.assertEqual(room.room_id, self.room_id)
+        finally:
+            relay.db.close()
+
+    async def test_allows_join_to_resident_room_when_over_soft_limit(self) -> None:
+        relay = RelayServer(self.db_path, soft_max_rss_bytes=100)
+        try:
+            # Materialize the room while memory is low, then cross the ceiling.
+            with patch("server.relay.current_rss_bytes", return_value=50):
+                first = await relay.get_room(self.room_id, self.room_key)
+            with patch("server.relay.current_rss_bytes", return_value=200):
+                again = await relay.get_room(self.room_id, self.room_key)
+            # A join to the already-resident room is served, not refused.
+            self.assertIs(again, first)
+        finally:
+            relay.db.close()
+
+    async def test_refuses_reload_of_evicted_room_when_over_soft_limit(self) -> None:
+        relay = RelayServer(self.db_path, soft_max_rss_bytes=100)
+        try:
+            with patch("server.relay.current_rss_bytes", return_value=50):
+                await relay.get_room(self.room_id, self.room_key)
+            # Simulate empty-room eviction: the row stays in SQLite, so the next
+            # join would reload it -- which the soft gate must also refuse.
+            relay.rooms.pop(self.room_id)
+            with patch("server.relay.current_rss_bytes", return_value=200):
+                with self.assertRaises(ProtocolError) as cm:
+                    await relay.get_room(self.room_id, self.room_key)
+            self.assertIn("no new rooms", str(cm.exception))
+        finally:
+            relay.db.close()
+
+    async def test_negative_soft_limit_is_treated_as_disabled(self) -> None:
+        relay = RelayServer(self.db_path, soft_max_rss_bytes=-1)
+        self.assertEqual(relay.soft_max_rss_bytes, 0)
+        try:
+            with patch("server.relay.current_rss_bytes", return_value=10**12):
+                room = await relay.get_room(self.room_id, self.room_key)
+            self.assertEqual(room.room_id, self.room_id)
+        finally:
+            relay.db.close()
+
+    async def test_warns_when_soft_limit_not_below_hard(self) -> None:
+        # A soft ceiling >= the hard one can never fire (the hard gate refuses the
+        # socket first), so construction warns about the dead configuration.
+        with self.assertLogs("tlt.sync_relay", level="WARNING") as logs:
+            relay = RelayServer(
+                self.db_path, max_rss_bytes=100, soft_max_rss_bytes=100
+            )
+        relay.db.close()
+        self.assertTrue(
+            any("never fires" in message for message in logs.output),
+            logs.output,
+        )
 
 
 class RoomCreationLimitTests(unittest.IsolatedAsyncioTestCase):
