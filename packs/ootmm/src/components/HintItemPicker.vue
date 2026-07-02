@@ -3,6 +3,8 @@ import { computed, ref } from 'vue';
 import { ITEM_DATABASE } from '../data/items';
 import { GI_ITEM_LIST } from '../data/giItems';
 import { getItemIcon } from '../data/itemIcons';
+import itemGrids from '../data/itemGrids.json';
+import { collectAllGridItemIds } from '../utils/itemGridRef';
 
 const props = withDefaults(
   defineProps<{
@@ -21,15 +23,19 @@ const emit = defineEmits<{
 const searchQuery = ref('');
 const isOpen = ref(false);
 
+/** Set of all item IDs referenced in the item grid layouts. */
+const allGridItemIds = computed(() => collectAllGridItemIds(itemGrids));
+
 /** Items that appear in the Item Grid (deduplicated, first appearance only for progressive) */
 const gridItems = computed(() => {
+  const gridIds = allGridItemIds.value;
   const seenIds = new Set<string>();
   const items: Array<{ id: string; name: string; iconPath: string | null }> =
     [];
 
   // First pass: GI_ITEM_LIST for the ordering
   for (const gi of GI_ITEM_LIST) {
-    if (seenIds.has(gi.id)) continue;
+    if (seenIds.has(gi.id) || !gridIds.has(gi.id)) continue;
     seenIds.add(gi.id);
     const iconPath = getItemIcon(gi.id);
     items.push({ id: gi.id, name: gi.name, iconPath });
@@ -37,7 +43,7 @@ const gridItems = computed(() => {
 
   // Add any ITEM_DATABASE items not in GI_ITEM_LIST
   for (const item of ITEM_DATABASE) {
-    if (seenIds.has(item.id)) continue;
+    if (seenIds.has(item.id) || !gridIds.has(item.id)) continue;
     seenIds.add(item.id);
     const iconPath = getItemIcon(item.id);
     items.push({ id: item.id, name: item.name, iconPath });

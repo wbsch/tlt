@@ -126,3 +126,77 @@ export function resolveItemGridRef(
   }
   return null;
 }
+
+/**
+ * Collect all distinct item IDs referenced in an item grid JSON data structure.
+ * Handles: plain strings, `{or:[...]}`, alias refs (`{ref,item}`),
+ * submenu refs (`{ref,item,submenu}`), multi-activate refs (`{item,activateAlso}`),
+ * and `{empty:true}` (skipped).
+ */
+export function collectAllGridItemIds(root: unknown): Set<string> {
+  const ids = new Set<string>();
+
+  function walkRef(ref: unknown) {
+    if (typeof ref === 'string') {
+      ids.add(ref);
+    } else if (ref && typeof ref === 'object') {
+      const obj = ref as Record<string, unknown>;
+      // or-ref
+      if ('or' in obj && Array.isArray(obj.or)) {
+        for (const candidate of obj.or) {
+          walkRef(candidate);
+        }
+      }
+      // alias / submenu ref (has 'item' but not 'activateAlso')
+      if ('item' in obj && typeof obj.item === 'string') {
+        ids.add(obj.item);
+      }
+      // multi-activate (activateAlso)
+      if ('activateAlso' in obj && Array.isArray(obj.activateAlso)) {
+        for (const also of obj.activateAlso) {
+          if (typeof also === 'string') ids.add(also);
+        }
+      }
+      // submenu: walk its content too
+      if ('submenu' in obj && obj.submenu) {
+        walkNode(obj.submenu);
+      }
+    }
+    // {empty:true} — intentionally ignored
+  }
+
+  function walkNode(node: unknown) {
+    if (!node || typeof node !== 'object') return;
+    const obj = node as Record<string, unknown>;
+    const type = obj.type;
+
+    if (type === 'array' || type === 'section') {
+      const content = obj.content;
+      if (Array.isArray(content)) {
+        for (const child of content) {
+          walkNode(child);
+        }
+      }
+    } else if (type === 'itemgrid') {
+      const rows = obj.rows;
+      if (Array.isArray(rows)) {
+        for (const row of rows) {
+          if (Array.isArray(row)) {
+            for (const slot of row) {
+              walkRef(slot);
+            }
+          }
+        }
+      }
+    }
+  }
+
+  if (root && typeof root === 'object') {
+    const obj = root as Record<string, unknown>;
+    for (const key of Object.keys(obj)) {
+      walkNode(obj[key]);
+    }
+  }
+
+  return ids;
+}

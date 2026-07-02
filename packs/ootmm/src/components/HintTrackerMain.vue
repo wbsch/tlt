@@ -1012,7 +1012,7 @@ function removeMoonHint(index: number) {
   margin-bottom: 4px;
   border: 1px solid #3a3a3a;
   border-radius: 4px;
-  overflow: hidden;
+  overflow: visible;
 }
 
 .hint-category__header {
