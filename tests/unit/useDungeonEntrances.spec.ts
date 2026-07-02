@@ -837,4 +837,253 @@ describe('useDungeonEntrances', () => {
 
     expect(fieldValues).toEqual(forestValues);
   });
+
+  it('includes overworld-type entrances in spawn destination options when erOverworld is enabled', () => {
+    const sessionStore = useOoTMMSessionStore();
+    useOoTMMUiStore();
+
+    // This replicates the ERtest preset: erOverworld is 'full' and erSpawns is 'both'.
+    sessionStore.trackerSettings = {
+      games: 'ootmm',
+      erSpawns: 'both',
+      erOverworld: 'full',
+      erDungeons: 'full',
+      erIndoors: 'full',
+      erGrottos: 'full',
+      erRegions: 'none',
+      erWarps: 'none',
+    };
+
+    const entrances = useDungeonEntrances();
+    const adultSpawn = entrances.activeEntrances.value.find(
+      (entry) => entry.key === 'OOT_SPAWN_ADULT',
+    );
+    expect(adultSpawn).toBeTruthy();
+
+    const options = entrances.destinationOptionsForEntrance(adultSpawn!);
+
+    // Overworld entrances from the ERtest preset should now be available.
+    expect(
+      options.some(
+        (option) =>
+          option.value === 'OOT_DEATH_MOUNTAIN_FROM_GORON_CITY' &&
+          option.label === 'Death Mountain from Goron City',
+      ),
+    ).toBe(true);
+
+    // Also check the reverse direction is available.
+    expect(
+      options.some(
+        (option) =>
+          option.value === 'OOT_GORON_CITY' &&
+          option.label === 'Goron City from Death Mountain',
+      ),
+    ).toBe(true);
+
+    // Other overworld-type entrances that should be present.
+    expect(options.some((option) => option.value === 'OOT_FOUNTAIN_ZORA')).toBe(
+      true,
+    );
+    expect(
+      options.some((option) => option.value === 'OOT_DOMAIN_FROM_FOUNTAIN'),
+    ).toBe(true);
+    expect(
+      options.some((option) => option.value === 'OOT_CRATER_FROM_GORON_CITY'),
+    ).toBe(true);
+    expect(
+      options.some((option) => option.value === 'OOT_GORON_CITY_FROM_CRATER'),
+    ).toBe(true);
+    expect(
+      options.some((option) => option.value === 'OOT_SACRED_FOREST_MEADOW'),
+    ).toBe(true);
+    expect(
+      options.some((option) => option.value === 'OOT_LOST_WOODS_FROM_MEADOW'),
+    ).toBe(true);
+  });
+
+  it('includes one-way-type entrances in spawn destinations when erOneWays is enabled without erOneWaysAnywhere', () => {
+    const sessionStore = useOoTMMSessionStore();
+    useOoTMMUiStore();
+
+    sessionStore.trackerSettings = {
+      games: 'ootmm',
+      erSpawns: 'both',
+      erOneWays: 'full',
+      erOneWaysMajor: true,
+      erOneWaysOwls: true,
+      erOneWaysWoods: true,
+      erOneWaysWaterVoids: true,
+    };
+
+    const entrances = useDungeonEntrances();
+    const adultSpawn = entrances.activeEntrances.value.find(
+      (entry) => entry.key === 'OOT_SPAWN_ADULT',
+    );
+    expect(adultSpawn).toBeTruthy();
+
+    const options = entrances.destinationOptionsForEntrance(adultSpawn!);
+
+    // One-way overworld transition
+    expect(
+      options.some((option) => option.value === 'OOT_LAKE_HYLIA_FROM_VALLEY'),
+    ).toBe(true);
+
+    // Owl statue (OoT owls have type 'one-way-owl')
+    expect(options.some((option) => option.value === 'OOT_VILLAGE_OWL')).toBe(
+      true,
+    );
+
+    // Woods exit
+    expect(
+      options.some(
+        (option) => option.value === 'OOT_LOST_WOODS_FROM_LOST_WOODS_NORTH',
+      ),
+    ).toBe(true);
+
+    // One-way types should also offer their reverse if one exists
+    // (the solver includes reverses via entrancesForTypes)
+  });
+
+  it('excludes one-way-type entrances from spawn destinations when erOneWaysAnywhere is true', () => {
+    const sessionStore = useOoTMMSessionStore();
+    useOoTMMUiStore();
+
+    sessionStore.trackerSettings = {
+      games: 'ootmm',
+      erSpawns: 'both',
+      erOneWays: 'full',
+      erOneWaysAnywhere: true,
+      erOneWaysMajor: true,
+    };
+
+    const entrances = useDungeonEntrances();
+    const adultSpawn = entrances.activeEntrances.value.find(
+      (entry) => entry.key === 'OOT_SPAWN_ADULT',
+    );
+    expect(adultSpawn).toBeTruthy();
+
+    const options = entrances.destinationOptionsForEntrance(adultSpawn!);
+
+    // When erOneWaysAnywhere is true, one-way types should NOT be in spawn destinations
+    // (matching the solver's makePoolsSimple exclusion)
+    expect(
+      options.some((option) => option.value === 'OOT_LAKE_HYLIA_FROM_VALLEY'),
+    ).toBe(false);
+
+    // But one-way-song is always included unconditionally
+    expect(
+      options.some((option) => option.value === 'OOT_WARP_SONG_LAKE'),
+    ).toBe(true);
+  });
+
+  it('respects one-way sub-settings for spawn destinations', () => {
+    const sessionStore = useOoTMMSessionStore();
+    useOoTMMUiStore();
+
+    sessionStore.trackerSettings = {
+      games: 'ootmm',
+      erSpawns: 'both',
+      erOneWays: 'full',
+      erOneWaysMajor: true,
+      erOneWaysOwls: false, // Owls disabled
+      erOneWaysWoods: true,
+    };
+
+    const entrances = useDungeonEntrances();
+    const adultSpawn = entrances.activeEntrances.value.find(
+      (entry) => entry.key === 'OOT_SPAWN_ADULT',
+    );
+    expect(adultSpawn).toBeTruthy();
+
+    const options = entrances.destinationOptionsForEntrance(adultSpawn!);
+
+    // Major one-way should be present (sub-setting is true)
+    expect(
+      options.some((option) => option.value === 'OOT_LAKE_HYLIA_FROM_VALLEY'),
+    ).toBe(true);
+
+    // Woods exit should be present (sub-setting is true)
+    expect(
+      options.some(
+        (option) => option.value === 'OOT_LOST_WOODS_FROM_LOST_WOODS_NORTH',
+      ),
+    ).toBe(true);
+
+    // Owl statues should NOT be present (sub-setting is false)
+    expect(options.some((option) => option.value === 'OOT_VILLAGE_OWL')).toBe(
+      false,
+    );
+
+    // But one-way-song is still present (always unconditionally added)
+    expect(
+      options.some((option) => option.value === 'OOT_WARP_SONG_LAKE'),
+    ).toBe(true);
+  });
+
+  it('does not include one-way types in spawn destinations when erOneWays is none', () => {
+    const sessionStore = useOoTMMSessionStore();
+    useOoTMMUiStore();
+
+    sessionStore.trackerSettings = {
+      games: 'ootmm',
+      erSpawns: 'both',
+      erOneWays: 'none',
+      erOneWaysMajor: true,
+    };
+
+    const entrances = useDungeonEntrances();
+    const adultSpawn = entrances.activeEntrances.value.find(
+      (entry) => entry.key === 'OOT_SPAWN_ADULT',
+    );
+    expect(adultSpawn).toBeTruthy();
+
+    const options = entrances.destinationOptionsForEntrance(adultSpawn!);
+
+    // One-way major should NOT be present when erOneWays is 'none'
+    expect(
+      options.some((option) => option.value === 'OOT_LAKE_HYLIA_FROM_VALLEY'),
+    ).toBe(false);
+
+    // But one-way-song is still present (always unconditionally added)
+    expect(
+      options.some((option) => option.value === 'OOT_WARP_SONG_LAKE'),
+    ).toBe(true);
+  });
+
+  it('includes region, indoors, and one-way-song unconditionally in spawn destinations', () => {
+    const sessionStore = useOoTMMSessionStore();
+    useOoTMMUiStore();
+
+    // Minimal settings: only spawns enabled, everything else off.
+    sessionStore.trackerSettings = {
+      games: 'ootmm',
+      erSpawns: 'both',
+    };
+
+    const entrances = useDungeonEntrances();
+    const adultSpawn = entrances.activeEntrances.value.find(
+      (entry) => entry.key === 'OOT_SPAWN_ADULT',
+    );
+    expect(adultSpawn).toBeTruthy();
+
+    const options = entrances.destinationOptionsForEntrance(adultSpawn!);
+
+    // Region types are unconditionally included
+    expect(
+      options.some((option) => option.value === 'OOT_KAKARIKO_FROM_FIELD'),
+    ).toBe(true);
+    expect(
+      options.some((option) => option.value === 'OOT_FIELD_FROM_KAKARIKO'),
+    ).toBe(true);
+
+    // Indoor types are unconditionally included (basic 'indoors' type)
+    expect(options.some((option) => option.value === 'OOT_KOKIRI_SHOP')).toBe(
+      true,
+    );
+
+    // One-way-song types are unconditionally included
+    expect(
+      options.some((option) => option.value === 'OOT_WARP_SONG_LAKE'),
+    ).toBe(true);
+  });
 });

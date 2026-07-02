@@ -296,6 +296,20 @@ function getEnabledSpawnSourceTypes(
   return types;
 }
 
+function getEnabledOneWaySourceTypes(
+  settings: Record<string, unknown>,
+): Set<string> {
+  const types = new Set<string>();
+  for (const [type, settingKey] of Object.entries(
+    ONE_WAY_SUB_SETTING_BY_TYPE,
+  )) {
+    if (settings?.[settingKey]) {
+      types.add(type);
+    }
+  }
+  return types;
+}
+
 function getSpawnDestinationTypes(
   settings: Record<string, unknown>,
 ): Set<string> {
@@ -328,6 +342,23 @@ function getSpawnDestinationTypes(
 
   if (settings?.erWarps && settings?.erWarps !== 'none') {
     for (const type of getEnabledWarpSources(settings)) {
+      types.add(type);
+    }
+  }
+
+  if (settings?.erOverworld && settings?.erOverworld !== 'none') {
+    for (const type of getEnabledOverworldSources(settings)) {
+      types.add(type);
+    }
+  }
+
+  // OoTMM's spawn pool includes one-way types (from poolOneWays) when
+  // erOneWays is enabled but NOT erOneWaysAnywhere (matching the solver's
+  // makePoolsSimple exclusion when erOneWaysAnywhere is true).
+  const erOneWays = settings?.erOneWays;
+  const erOneWaysAnywhere = settings?.erOneWaysAnywhere;
+  if (erOneWays && erOneWays !== 'none' && !erOneWaysAnywhere) {
+    for (const type of getEnabledOneWaySourceTypes(settings)) {
       types.add(type);
     }
   }
