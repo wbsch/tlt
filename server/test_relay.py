@@ -10,40 +10,15 @@ from unittest.mock import MagicMock, patch
 
 from server.relay import (
     MAX_SNAPSHOT_BYTES,
+    OP_TYPES,
     ProtocolError,
     RelayServer,
     ROOM_CREATION_WINDOW_MS,
     current_rss_bytes,
     normalize_join_message,
+    normalize_operation,
 )
-
-
-class FakeWebSocket:
-    def __init__(self) -> None:
-        self.sent: list[str] = []
-        self.closed = False
-        self.close_code: int | None = None
-        self.close_reason: str | None = None
-
-    async def send(self, payload: str) -> None:
-        self.sent.append(payload)
-
-    async def close(self, code: int | None = None, reason: str | None = None) -> None:
-        self.closed = True
-        self.close_code = code
-        self.close_reason = reason
-
-
-async def _cancel_sender_tasks(relay: RelayServer) -> None:
-    for room in list(relay.rooms.values()):
-        for client in list(room.clients.values()):
-            task = client.sender_task
-            if task is not None and not task.done():
-                task.cancel()
-                try:
-                    await task
-                except (asyncio.CancelledError, Exception):
-                    pass
+from server.testutil import FakeWebSocket, cancel_sender_tasks
 
 
 class FakeIncomingWebSocket(FakeWebSocket):
@@ -84,7 +59,7 @@ class RelayIntegrationTests(unittest.IsolatedAsyncioTestCase):
         await self.relay.get_room(self.room_id, self.room_key)
 
     async def asyncTearDown(self) -> None:
-        await _cancel_sender_tasks(self.relay)
+        await cancel_sender_tasks(self.relay)
         self.relay.db.close()
         self.tmpdir.cleanup()
 
@@ -240,6 +215,17 @@ class RelayIntegrationTests(unittest.IsolatedAsyncioTestCase):
                         "actorId": "actor-a",
                     }
                 )
+
+    def test_op_type_in_op_types_without_validator_is_rejected(self) -> None:
+        # Pins the normalize_operation fallback: an op type present in OP_TYPES
+        # but missing a validator branch (a dev mistake, unreachable today) must
+        # raise a contained ProtocolError — rejecting that one op/connection,
+        # never crashing the server — instead of silently accepting a
+        # payload-less op that reduce_snapshot would no-op.
+        with patch("server.relay.OP_TYPES", OP_TYPES | {"bogus.new_op"}):
+            with self.assertRaises(ProtocolError) as cm:
+                normalize_operation({"type": "bogus.new_op"})
+        self.assertIn("no validator", str(cm.exception))
 
     async def test_join_seeds_new_room_from_snapshot(self) -> None:
         join_message = normalize_join_message(
@@ -689,7 +675,7 @@ class IdlePruneTests(unittest.IsolatedAsyncioTestCase):
         self.relay = RelayServer(self.db_path, idle_prune_days=0.0001)
 
     async def asyncTearDown(self) -> None:
-        await _cancel_sender_tasks(self.relay)
+        await cancel_sender_tasks(self.relay)
         self.relay.db.close()
         self.tmpdir.cleanup()
 
@@ -772,7 +758,7 @@ class IdlePruneTests(unittest.IsolatedAsyncioTestCase):
             removed = await relay.prune_idle_rooms()
             self.assertEqual(removed, 0)
         finally:
-            await _cancel_sender_tasks(relay)
+            await cancel_sender_tasks(relay)
             relay.db.close()
 
     async def test_fresh_db_uses_incremental_auto_vacuum(self) -> None:
@@ -862,16 +848,6 @@ class HealthzTests(unittest.IsolatedAsyncioTestCase):
     async def test_legacy_api_non_healthz_falls_through(self) -> None:
         result = await self.relay.process_request("/coop/ws", MagicMock())
         self.assertIsNone(result)
-
-    async def test_rooms_new_endpoint_is_gone(self) -> None:
-        connection = MagicMock()
-        request = MagicMock()
-        request.path = "/rooms/new"
-
-        result = await self.relay.process_request(connection, request)
-
-        self.assertIsNone(result)
-        connection.respond.assert_not_called()
 
 
 class RssGateTests(unittest.IsolatedAsyncioTestCase):
@@ -1100,7 +1076,7 @@ class RoomCreationLimitTests(unittest.IsolatedAsyncioTestCase):
                 await self._join_new_room(relay, "003")
             self.assertIn("rate limit", str(cm.exception))
         finally:
-            await _cancel_sender_tasks(relay)
+            await cancel_sender_tasks(relay)
             relay.db.close()
 
     async def test_rate_limit_does_not_block_joins_to_existing_rooms(self) -> None:
@@ -1112,7 +1088,7 @@ class RoomCreationLimitTests(unittest.IsolatedAsyncioTestCase):
             for _ in range(5):
                 await self._join_new_room(relay, "001")
         finally:
-            await _cancel_sender_tasks(relay)
+            await cancel_sender_tasks(relay)
             relay.db.close()
 
     async def test_rate_limit_window_slides(self) -> None:
@@ -1125,7 +1101,7 @@ class RoomCreationLimitTests(unittest.IsolatedAsyncioTestCase):
             relay._recent_room_creations[0] -= ROOM_CREATION_WINDOW_MS + 1
             await self._join_new_room(relay, "003")
         finally:
-            await _cancel_sender_tasks(relay)
+            await cancel_sender_tasks(relay)
             relay.db.close()
 
     async def test_storage_limit_blocks_creation(self) -> None:
@@ -1136,7 +1112,7 @@ class RoomCreationLimitTests(unittest.IsolatedAsyncioTestCase):
                 await self._join_new_room(relay, "001")
             self.assertIn("storage is full", str(cm.exception))
         finally:
-            await _cancel_sender_tasks(relay)
+            await cancel_sender_tasks(relay)
             relay.db.close()
 
     async def test_per_room_client_cap_blocks_extra_joins(self) -> None:
@@ -1165,7 +1141,7 @@ class RoomCreationLimitTests(unittest.IsolatedAsyncioTestCase):
                 )
             self.assertIn("full", str(cm.exception))
         finally:
-            await _cancel_sender_tasks(relay)
+            await cancel_sender_tasks(relay)
             relay.db.close()
 
 

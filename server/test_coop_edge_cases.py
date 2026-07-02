@@ -14,29 +14,13 @@ Run: python3 -m unittest server.test_coop_edge_cases
 
 from __future__ import annotations
 
-import asyncio
 import json
 import tempfile
 import unittest
 from pathlib import Path
 
 from server.relay import RelayServer
-
-
-class FakeWebSocket:
-    def __init__(self) -> None:
-        self.sent: list[str] = []
-        self.closed = False
-        self.close_code: int | None = None
-        self.close_reason: str | None = None
-
-    async def send(self, payload: str) -> None:
-        self.sent.append(payload)
-
-    async def close(self, code: int | None = None, reason: str | None = None) -> None:
-        self.closed = True
-        self.close_code = code
-        self.close_reason = reason
+from server.testutil import FakeWebSocket, cancel_sender_tasks
 
 
 class CoopLostUpdateTests(unittest.IsolatedAsyncioTestCase):
@@ -50,15 +34,7 @@ class CoopLostUpdateTests(unittest.IsolatedAsyncioTestCase):
         await self.relay.get_room(self.room_id, self.room_key)
 
     async def asyncTearDown(self) -> None:
-        for room in list(self.relay.rooms.values()):
-            for client in list(room.clients.values()):
-                task = client.sender_task
-                if task is not None and not task.done():
-                    task.cancel()
-                    try:
-                        await task
-                    except (asyncio.CancelledError, Exception):
-                        pass
+        await cancel_sender_tasks(self.relay)
         self.relay.db.close()
         self.tmpdir.cleanup()
 

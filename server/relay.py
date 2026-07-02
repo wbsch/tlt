@@ -574,8 +574,13 @@ def normalize_operation(operation: dict[str, Any]) -> dict[str, Any]:
             "imported": operation["imported"],
             "ootmmVersion": normalized_version,
         }
-    require_exact_keys(operation, {"type"}, op_type)
-    return {"type": op_type}
+    # Unreachable while every OP_TYPES entry has a branch above. If a new type
+    # is ever added to OP_TYPES without one, fail the op loudly here — as a
+    # ProtocolError this stays a contained per-connection rejection (the
+    # handler catches it, tells the client, closes that socket), never a
+    # server crash — instead of silently accepting a payload-less op that
+    # reduce_snapshot would no-op.
+    raise ProtocolError(f"op type {op_type!r} has no validator")
 
 
 def reduce_snapshot(snapshot_envelope: dict[str, Any], envelope: dict[str, Any], *, captured_at: int) -> dict[str, Any]:
