@@ -102,27 +102,9 @@ const ENTRANCES_DATA =
   >(DataMod, 'ENTRANCES') ?? {};
 
 const SPAWN_SOURCE_TYPES = new Set(['spawn-child', 'spawn-adult']);
-const WALLMASTER_SOURCE_TYPES = new Set(['wallmaster']);
-const ONE_WAY_SOURCE_TYPES = new Set([
-  'one-way',
-  'one-way-ikana',
-  'one-way-song',
-  'one-way-statue',
-  'one-way-owl',
-  'one-way-woods',
-  'one-way-water-void',
-]);
 
 function isSpawnEntranceSourceKey(key: string): boolean {
   return SPAWN_SOURCE_TYPES.has(ENTRANCES_DATA[key]?.type ?? '');
-}
-
-function isWallmasterEntranceSourceKey(key: string): boolean {
-  return WALLMASTER_SOURCE_TYPES.has(ENTRANCES_DATA[key]?.type ?? '');
-}
-
-function isOneWayEntranceSourceKey(key: string): boolean {
-  return ONE_WAY_SOURCE_TYPES.has(ENTRANCES_DATA[key]?.type ?? '');
 }
 
 import type { World } from '@ootmm/core/logic/world';
@@ -502,16 +484,6 @@ export class OoTMMTracker implements TrackerPack {
           } else {
             unmappedEntrances.push(key);
           }
-          continue;
-        }
-
-        if (isWallmasterEntranceSourceKey(key)) {
-          unmappedEntrances.push(key);
-          continue;
-        }
-
-        if (isOneWayEntranceSourceKey(key)) {
-          unmappedEntrances.push(key);
           continue;
         }
 
