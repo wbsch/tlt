@@ -1,6 +1,5 @@
 import { isSafeKey, safeJsonParse } from '@/utils/safeJson';
 import type {
-  OoTMMSessionSyncConnection,
   OoTMMSyncOperation,
   OoTMMSyncOperationEnvelope,
 } from './ootmmSessionSync';
@@ -43,11 +42,23 @@ export type OoTMMRoomSyncCallbacks = {
   onSnapshot: (
     snapshotEnvelope: OoTMMRoomSnapshotEnvelope,
   ) => Promise<void> | void;
+  // Fired when the relay echoes back one of our own ops. The relay persists an
+  // op before broadcasting it, so the echo doubles as a durable ack: an op
+  // whose echo arrived can never be lost to a server crash or socket death.
+  onOperationAck?: (opId: string) => void;
   onPresenceChange?: (peerCount: number) => void;
   onRemoteActivity?: () => void;
   onConnectionChange?: (
     state: 'connecting' | 'connected' | 'disconnected',
   ) => void;
+};
+
+export type OoTMMRoomSyncConnection = {
+  // Returns the wire opId when the op was actually handed to an open socket,
+  // or null when it wasn't sent. "Sent" is not "delivered": the caller must
+  // keep the op queued until onOperationAck reports the relay echoed it back.
+  publish: (op: OoTMMSyncOperation) => string | null;
+  disconnect: () => void;
 };
 
 export type OoTMMRoomSyncOptions = {
@@ -246,7 +257,7 @@ function normalizeSnapshotEnvelope(
 
 export function createOoTMMRoomSessionSync(
   options: OoTMMRoomSyncOptions,
-): OoTMMSessionSyncConnection {
+): OoTMMRoomSyncConnection {
   const { url, roomId, roomKey, captureSeedSnapshot, actorId, callbacks } =
     options;
   let socket: WebSocket | null = null;
@@ -311,7 +322,10 @@ export function createOoTMMRoomSessionSync(
   }
 
   function handleServerEvent(message: RoomEventMessage) {
-    if (message.envelope.actorId === actorId) return;
+    if (message.envelope.actorId === actorId) {
+      callbacks.onOperationAck?.(message.envelope.opId);
+      return;
+    }
     if (seenOpIds.has(message.envelope.opId)) return;
 
     clientClock = Math.max(clientClock, message.envelope.clientClock) + 1;
@@ -460,13 +474,13 @@ export function createOoTMMRoomSessionSync(
 
   return {
     publish(op) {
-      // Return whether the op was actually put on the wire. The caller queues
-      // anything that wasn't sent (incl. the window where the socket is already
-      // CLOSING but the connection state ref still says 'connected'), so a
-      // mid-disconnect edit isn't silently dropped and reverted by the
-      // reconnect snapshot.
+      // Return the wire opId only when the op was actually put on the wire
+      // (null covers the window where the socket is already CLOSING but the
+      // connection state ref still says 'connected'). The caller keeps the op
+      // queued until the relay's echo acks that opId, so an op that dies in
+      // flight is replayed after the reconnect snapshot.
       if (!ready || !socket || socket.readyState !== WebSocket.OPEN) {
-        return false;
+        return null;
       }
       clientClock += 1;
       const opId = randomId();
@@ -485,7 +499,7 @@ export function createOoTMMRoomSessionSync(
           },
         }),
       );
-      return true;
+      return opId;
     },
     disconnect() {
       disposed = true;

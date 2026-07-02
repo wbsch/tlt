@@ -284,6 +284,186 @@ describe('ootmm room sync', () => {
     });
   });
 
+  it('re-sends a sent-but-unacked op after reconnect (echo ack)', async () => {
+    const { sessionStore, socket } = await joinRoom('ROOMA');
+    // The op goes out on a live socket, but the server dies before persisting
+    // it — no echo ever comes back. Pre-ack this op was considered delivered
+    // the moment send() succeeded and was silently lost.
+    sessionStore.toggleCollectedLocation('CHECK_INFLIGHT');
+    const sentOp = socket.sent
+      .map((raw) => JSON.parse(raw))
+      .find((message) => message.type === 'op');
+    expect(sentOp).toBeDefined();
+
+    socket.close();
+    await delay(650);
+    await flushMicrotasks();
+    const reconnectSocket = MockWebSocket.instances[1];
+    expect(reconnectSocket).toBeDefined();
+    reconnectSocket.emitMessage({
+      type: 'joined',
+      roomId: 'ROOMA',
+      baselineSeq: 0,
+      peerCount: 1,
+    });
+    reconnectSocket.emitMessage({
+      type: 'snapshot',
+      snapshotEnvelope: {
+        protocolSchema: 1,
+        stateSchema: 1,
+        stateType: 'ootmm-session',
+        sessionId: 'ROOMA',
+        baselineSeq: 0,
+        capturedAt: 0,
+        state: {
+          inventoryById: {},
+          collectedLocationIds: [],
+          preCompletedDungeons: [],
+          songEvents: {},
+          shopPrices: {},
+          trackerSettings: {},
+          entranceOverrides: {},
+          hasImportedSpoilerLog: false,
+          importedSpoilerLogVersion: null,
+        },
+      },
+    });
+    await flushMicrotasks();
+
+    expect(sessionStore.collectedLocationIds).toContain('CHECK_INFLIGHT');
+    const replayed = reconnectSocket.sent
+      .slice(1)
+      .map((raw) => JSON.parse(raw))
+      .find((message) => message.type === 'op');
+    expect(replayed?.envelope.op).toEqual({
+      type: 'locations.set_collected',
+      locationId: 'CHECK_INFLIGHT',
+      collected: true,
+    });
+    // The replay is a new wire op, not a byte-for-byte resend.
+    expect(replayed?.envelope.opId).not.toBe(sentOp.envelope.opId);
+  });
+
+  it('does not replay an op once the relay echo acks it', async () => {
+    const { sessionStore, socket } = await joinRoom('ROOMB');
+    sessionStore.toggleCollectedLocation('CHECK_ACKED');
+    const sentOp = socket.sent
+      .map((raw) => JSON.parse(raw))
+      .find((message) => message.type === 'op');
+    expect(sentOp).toBeDefined();
+
+    // The relay persists the op and echoes it back to the sender — that echo
+    // is the durable ack that releases it from the pending queue.
+    socket.emitMessage({ type: 'op', serverSeq: 1, envelope: sentOp.envelope });
+    await flushMicrotasks();
+
+    socket.close();
+    await delay(650);
+    await flushMicrotasks();
+    const reconnectSocket = MockWebSocket.instances[1];
+    expect(reconnectSocket).toBeDefined();
+    reconnectSocket.emitMessage({
+      type: 'joined',
+      roomId: 'ROOMB',
+      baselineSeq: 1,
+      peerCount: 1,
+    });
+    reconnectSocket.emitMessage({
+      type: 'snapshot',
+      snapshotEnvelope: {
+        protocolSchema: 1,
+        stateSchema: 1,
+        stateType: 'ootmm-session',
+        sessionId: 'ROOMB',
+        baselineSeq: 1,
+        capturedAt: 0,
+        state: {
+          inventoryById: {},
+          // The server folded the acked op into its snapshot before dying.
+          collectedLocationIds: ['CHECK_ACKED'],
+          preCompletedDungeons: [],
+          songEvents: {},
+          shopPrices: {},
+          trackerSettings: {},
+          entranceOverrides: {},
+          hasImportedSpoilerLog: false,
+          importedSpoilerLogVersion: null,
+        },
+      },
+    });
+    await flushMicrotasks();
+
+    expect(sessionStore.collectedLocationIds).toContain('CHECK_ACKED');
+    const replayed = reconnectSocket.sent
+      .slice(1)
+      .map((raw) => JSON.parse(raw))
+      .find((message) => message.type === 'op');
+    expect(replayed).toBeUndefined();
+  });
+
+  it('compacts queued ops so only the newest same-field edit replays', async () => {
+    const { sessionStore, socket } = await joinRoom('ROOMC');
+    socket.close();
+    await flushMicrotasks();
+
+    sessionStore.toggleCollectedLocation('CHECK_TWICE'); // -> collected
+    sessionStore.toggleCollectedLocation('CHECK_TWICE'); // -> uncollected again
+    sessionStore.toggleCollectedLocation('CHECK_ONCE');
+
+    await delay(650);
+    await flushMicrotasks();
+    const reconnectSocket = MockWebSocket.instances[1];
+    expect(reconnectSocket).toBeDefined();
+    reconnectSocket.emitMessage({
+      type: 'joined',
+      roomId: 'ROOMC',
+      baselineSeq: 0,
+      peerCount: 1,
+    });
+    reconnectSocket.emitMessage({
+      type: 'snapshot',
+      snapshotEnvelope: {
+        protocolSchema: 1,
+        stateSchema: 1,
+        stateType: 'ootmm-session',
+        sessionId: 'ROOMC',
+        baselineSeq: 0,
+        capturedAt: 0,
+        state: {
+          inventoryById: {},
+          collectedLocationIds: [],
+          preCompletedDungeons: [],
+          songEvents: {},
+          shopPrices: {},
+          trackerSettings: {},
+          entranceOverrides: {},
+          hasImportedSpoilerLog: false,
+          importedSpoilerLogVersion: null,
+        },
+      },
+    });
+    await flushMicrotasks();
+
+    const collectedOps = reconnectSocket.sent
+      .slice(1)
+      .map((raw) => JSON.parse(raw))
+      .filter(
+        (message) =>
+          message.type === 'op' &&
+          message.envelope.op.type === 'locations.set_collected',
+      );
+    const twiceOps = collectedOps.filter(
+      (message) => message.envelope.op.locationId === 'CHECK_TWICE',
+    );
+    expect(twiceOps).toHaveLength(1);
+    expect(twiceOps[0].envelope.op.collected).toBe(false);
+    expect(
+      collectedOps.filter(
+        (message) => message.envelope.op.locationId === 'CHECK_ONCE',
+      ),
+    ).toHaveLength(1);
+  });
+
   it('publishes junk location ids to the room socket and applies remote ones', async () => {
     const { sessionStore, socket } = await joinRoom('ROOMJ');
     const before = socket.sent.length;

@@ -26,6 +26,7 @@ import {
   createOoTMMRoomSessionSync,
   defaultRoomSyncUrl,
   type OoTMMRoomSnapshotEnvelope,
+  type OoTMMRoomSyncConnection,
 } from './ootmmRoomSync';
 import {
   cleanupEntranceOverridesForSettings,
@@ -196,6 +197,39 @@ function cloneSettingsRecord(
 
 function cloneSyncOperation(operation: OoTMMSyncOperation): OoTMMSyncOperation {
   return deepCloneValue(operation) as OoTMMSyncOperation;
+}
+
+// A room op stays queued from the moment it's published until the relay's
+// echo acks its wire opId (see OoTMMRoomSyncConnection). wireOpId is null when
+// the op hasn't been put on an open socket yet — or when the socket it was
+// sent on died before the echo, in which case the next flush re-sends it
+// under a fresh wire opId.
+type PendingRoomOperation = {
+  wireOpId: string | null;
+  op: OoTMMSyncOperation;
+};
+
+// Two queued ops with the same key set the same piece of state, and every op
+// is an absolute replace, so the newer one supersedes the older. Compacting
+// keeps the queue bounded by the number of distinct fields touched while
+// disconnected, and stops a replayed stale op from clobbering a newer edit.
+function pendingRoomOpCompactionKey(op: OoTMMSyncOperation): string | null {
+  switch (op.type) {
+    case 'inventory.set_count':
+      return `${op.type}:${op.itemId}`;
+    case 'locations.set_collected':
+      return `${op.type}:${op.locationId}`;
+    case 'world.set_shop_price':
+      return `${op.type}:${op.locationId}`;
+    case 'world.set_entrance_override':
+      return `${op.type}:${op.src}`;
+    // A merge-patch, not an absolute replace: a newer patch doesn't carry the
+    // older patch's keys, so earlier ones must survive and replay in order.
+    case 'settings.patch_special_conds':
+      return null;
+    default:
+      return op.type;
+  }
 }
 
 function stripPlandoEntrances(
@@ -373,9 +407,9 @@ export const useOoTMMSessionStore = defineStore('ootmm-session', () => {
   const redoHistory = ref<SessionSnapshot[]>([]);
   const isNavigatingHistory = ref(false);
   let syncConnection: OoTMMSessionSyncConnection | null = null;
-  let roomConnection: OoTMMSessionSyncConnection | null = null;
+  let roomConnection: OoTMMRoomSyncConnection | null = null;
   let remoteOperationQueue: Promise<void> = Promise.resolve();
-  let pendingRoomOperations: OoTMMSyncOperation[] = [];
+  let pendingRoomOperations: PendingRoomOperation[] = [];
   let pendingRoomReplayQueue: Promise<void> = Promise.resolve();
   let roomSyncGeneration = 0;
   const coopRoomCode = ref<string | null>(null);
@@ -463,8 +497,27 @@ export const useOoTMMSessionStore = defineStore('ootmm-session', () => {
     recordHistoryEntry(snapshot);
   }
 
-  function queuePendingRoomOperation(operation: OoTMMSyncOperation): void {
-    pendingRoomOperations.push(cloneSyncOperation(operation));
+  function trackPendingRoomOperation(
+    operation: OoTMMSyncOperation,
+  ): PendingRoomOperation {
+    const key = pendingRoomOpCompactionKey(operation);
+    if (key !== null) {
+      pendingRoomOperations = pendingRoomOperations.filter(
+        (entry) => pendingRoomOpCompactionKey(entry.op) !== key,
+      );
+    }
+    const entry: PendingRoomOperation = {
+      wireOpId: null,
+      op: cloneSyncOperation(operation),
+    };
+    pendingRoomOperations.push(entry);
+    return entry;
+  }
+
+  function handleRoomOperationAck(wireOpId: string): void {
+    pendingRoomOperations = pendingRoomOperations.filter(
+      (entry) => entry.wireOpId !== wireOpId,
+    );
   }
 
   function flushPendingRoomOperations(): void {
@@ -479,28 +532,28 @@ export const useOoTMMSessionStore = defineStore('ootmm-session', () => {
     const activeConnection = roomConnection;
     const activeRoomCode = coopRoomCode.value;
     const activeGeneration = roomSyncGeneration;
-    const operations = pendingRoomOperations;
-    let replayIndex = 0;
-    pendingRoomOperations = [];
+    // Entries stay in pendingRoomOperations until their echo acks them, so an
+    // aborted or failed replay needs no re-queue bookkeeping — whatever wasn't
+    // acked is still there for the next flush.
+    const entries = [...pendingRoomOperations];
 
     pendingRoomReplayQueue = pendingRoomReplayQueue
       .then(async () => {
-        for (; replayIndex < operations.length; replayIndex += 1) {
-          const operation = operations[replayIndex];
+        for (const [replayIndex, entry] of entries.entries()) {
           if (roomSyncGeneration !== activeGeneration) return;
           if (
             roomConnection !== activeConnection ||
             coopConnectionState.value !== 'connected'
           ) {
-            pendingRoomOperations = [
-              ...operations
-                .slice(replayIndex)
-                .map((op) => cloneSyncOperation(op)),
-              ...pendingRoomOperations,
-            ];
             return;
           }
+          // Acked or superseded (compacted away by a newer same-field edit)
+          // while earlier entries were replaying.
+          if (!pendingRoomOperations.includes(entry)) continue;
 
+          // Re-apply locally first: the reconnect snapshot may have reverted
+          // this edit. Ops are idempotent, so re-applying one the room already
+          // folded in is harmless.
           await applyRemoteOperation({
             schema: 1,
             sessionId: activeRoomCode ?? '',
@@ -508,17 +561,14 @@ export const useOoTMMSessionStore = defineStore('ootmm-session', () => {
             actorId: getLocalSyncActorId(),
             lamport: 0,
             ts: Date.now(),
-            op: operation,
+            op: entry.op,
           });
-          activeConnection.publish(operation);
+          if (roomSyncGeneration !== activeGeneration) return;
+          if (roomConnection !== activeConnection) return;
+          entry.wireOpId = activeConnection.publish(entry.op);
         }
       })
       .catch((error) => {
-        if (roomSyncGeneration !== activeGeneration) return;
-        pendingRoomOperations = [
-          ...operations.slice(replayIndex).map((op) => cloneSyncOperation(op)),
-          ...pendingRoomOperations,
-        ];
         console.error('[OoTMM Sync] Failed to replay queued room ops:', error);
       });
   }
@@ -533,14 +583,12 @@ export const useOoTMMSessionStore = defineStore('ootmm-session', () => {
     // no reset op (it would drop the connection), and resetting exits coop only
     // through the UI's confirmation modal — never silently from the store.
     if (operation.type === 'session.reset_defaults' || !roomConnection) return;
-    // Queue anything publish() couldn't actually send. Branching on
-    // coopConnectionState alone dropped ops written in the window where the
-    // socket is already CLOSING but the state ref hasn't flipped to
-    // 'disconnected' yet; publish() reports the real socket readiness, so those
-    // ops now get queued and replayed after the reconnect snapshot.
-    if (!roomConnection.publish(operation)) {
-      queuePendingRoomOperation(operation);
-    }
+    // Track before sending, and keep the entry queued until the relay's echo
+    // acks it. A send onto a CLOSING socket, a socket that dies with the op in
+    // flight, and a server killed before persisting the op all leave the entry
+    // unacked, so the reconnect flush replays it on top of the room snapshot.
+    const entry = trackPendingRoomOperation(operation);
+    entry.wireOpId = roomConnection.publish(operation);
   }
 
   function publishSnapshotAsOps(snapshot: SessionSnapshot): void {
@@ -901,6 +949,7 @@ export const useOoTMMSessionStore = defineStore('ootmm-session', () => {
       callbacks: {
         onRemoteOperation: enqueueRemoteOperation,
         onSnapshot: enqueueRoomSnapshot,
+        onOperationAck: handleRoomOperationAck,
         onPresenceChange: (peerCount) => {
           coopPeerCount.value = peerCount;
           syncStatusStore.setCoopPeerCount(peerCount);

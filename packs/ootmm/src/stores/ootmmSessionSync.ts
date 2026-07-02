@@ -120,8 +120,8 @@ export type OoTMMSessionSyncCallbacks = {
 
 export type OoTMMSessionSyncConnection = {
   // Returns whether the op was actually sent. The local cross-tab transport is
-  // best-effort and always reports true; the room transport reports false when
-  // the socket isn't open so the caller can queue and replay it.
+  // best-effort and always reports true. (The room transport has its own
+  // richer contract — see OoTMMRoomSyncConnection in ootmmRoomSync.ts.)
   publish: (op: OoTMMSyncOperation) => boolean;
   disconnect: () => void;
 };
