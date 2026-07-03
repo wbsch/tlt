@@ -66,6 +66,13 @@ test.describe('Special condition refresh persistence', () => {
   }) => {
     await page.getByTestId('tab-settings').click();
 
+    // Since v31, the Moon Access special condition is only shown when the
+    // moon setting is set to 'custom'.
+    const search = page.getByTestId('settings-search-input');
+    await expect(search).toBeVisible();
+    await search.fill('moon');
+    await page.getByTestId('setting-input-moon').selectOption('custom');
+
     const moonCard = moonAccessCard(page);
     await expect(moonCard).toBeVisible();
     await expandSpecialConditionCard(moonCard);
@@ -77,15 +84,17 @@ test.describe('Special condition refresh persistence', () => {
     );
     const countInput = moonCard.locator('.special-count-input');
 
-    await expect(remainsToggle).toBeChecked();
+    // v31 default for the MOON special condition is all-off / count 0 (the
+    // vanilla "4 remains" behavior lives in moon = 'vanilla' instead).
+    await expect(remainsToggle).not.toBeChecked();
     await stonesToggle.setChecked(true);
-    await remainsToggle.setChecked(false);
+    await remainsToggle.setChecked(true);
     await countInput.fill('1');
 
     await applySettingsAndWait(page);
 
     await expect(stonesToggle).toBeChecked();
-    await expect(remainsToggle).not.toBeChecked();
+    await expect(remainsToggle).toBeChecked();
     await expect(countInput).toHaveValue('1');
 
     await expect
@@ -94,7 +103,7 @@ test.describe('Special condition refresh persistence', () => {
       })
       .toMatchObject({
         stones: true,
-        remains: false,
+        remains: true,
         count: 1,
       });
 
@@ -119,13 +128,13 @@ test.describe('Special condition refresh persistence', () => {
     );
 
     await expect(stonesToggleAfterReload).toBeChecked();
-    await expect(remainsToggleAfterReload).not.toBeChecked();
+    await expect(remainsToggleAfterReload).toBeChecked();
     await expect(countInputAfterReload).toHaveValue('1');
 
     await expect(await readMoonSpecialCondFromLocalStorage(page)).toMatchObject(
       {
         stones: true,
-        remains: false,
+        remains: true,
         count: 1,
       },
     );

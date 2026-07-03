@@ -44,18 +44,29 @@ async function applyInteriorErWithGameLinks(page: Page): Promise<void> {
 }
 
 /**
- * Additionally enable Cross-Games MM Song of Soaring = Child & Adult.
+ * Additionally enable the OoT Song of Soaring for both ages
+ * (songSoaringOot + agelessSoaring, the v31 replacement for
+ * crossWarpMm = full).
  */
-async function enableCrossWarpMm(page: Page): Promise<void> {
+async function enableOotSoaring(page: Page): Promise<void> {
   await page.getByTestId('tab-settings').click();
 
   const search = page.getByTestId('settings-search-input');
   await expect(search).toBeVisible();
 
-  await search.fill('crossWarpMm');
-  const crossWarpMmSelect = page.getByTestId('setting-input-crossWarpMm');
-  await expect(crossWarpMmSelect).toBeVisible();
-  await crossWarpMmSelect.selectOption('full');
+  await search.fill('songSoaringOot');
+  const songSoaringOotCheckbox = page.getByTestId(
+    'setting-input-songSoaringOot',
+  );
+  await expect(songSoaringOotCheckbox).toBeVisible();
+  await songSoaringOotCheckbox.check();
+
+  await search.fill('agelessSoaring');
+  const agelessSoaringCheckbox = page.getByTestId(
+    'setting-input-agelessSoaring',
+  );
+  await expect(agelessSoaringCheckbox).toBeVisible();
+  await agelessSoaringCheckbox.check();
 
   await search.fill('mmPreActivatedOwls');
   const owlsInput = page.getByTestId('setting-input-mmPreActivatedOwls');
@@ -118,12 +129,20 @@ async function queryLocations(
 }
 
 /**
- * Click an item in the item grid by its image alt text.
+ * Grant items via the inventory tab (the item grid does not contain the
+ * v31 OoT song extension items such as OOT_SONG_SOARING).
  */
-async function clickItem(page: Page, itemId: string): Promise<void> {
-  const img = page.locator(`img[alt="${itemId}"]`);
-  await expect(img).toBeVisible({ timeout: TEST_TIMEOUTS.ELEMENT_VISIBLE });
-  await img.locator('..').click();
+async function grantInventoryItems(
+  page: Page,
+  itemIds: string[],
+): Promise<void> {
+  await page.getByTestId('tab-inventory').click();
+  for (const itemId of itemIds) {
+    const card = page.getByTestId(`inventory-item-card-${itemId}`);
+    await expect(card).toBeVisible({ timeout: TEST_TIMEOUTS.ELEMENT_VISIBLE });
+    await card.click();
+    await expect(card).toHaveClass(/owned/);
+  }
 }
 
 test.describe('Clock Town Platform HP with interior ER game links', () => {
@@ -133,7 +152,7 @@ test.describe('Clock Town Platform HP with interior ER game links', () => {
     await gotoTracker(page);
   });
 
-  test('unreachable without items, reachable with soaring + crossWarpMm', async ({
+  test('unreachable without items, reachable with OoT Song of Soaring', async ({
     page,
   }) => {
     // Step 1: Apply interior ER with game links
@@ -151,16 +170,17 @@ test.describe('Clock Town Platform HP with interior ER game links', () => {
       '"Clock Town Platform HP" must NOT be reachable without items',
     ).toBe(0);
 
-    // Step 3: Enable Cross-Games MM Song of Soaring = Child & Adult
-    await enableCrossWarpMm(page);
+    // Step 3: Enable the OoT Song of Soaring for both ages
+    await enableOotSoaring(page);
     await waitForReachableFraction(page, TEST_TIMEOUTS.BOOT_REACHABLE);
 
-    // Step 4: Add items: OOT_OCARINA, MM_OCARINA, MM_SONG_SOARING, MM_SONG_TIME
-    await page.getByTestId('tab-items').click();
-    await clickItem(page, 'OOT_OCARINA');
-    await clickItem(page, 'MM_OCARINA');
-    await clickItem(page, 'MM_SONG_SOARING');
-    await clickItem(page, 'MM_SONG_TIME');
+    // Step 4: Add items: OOT_OCARINA, OOT_SONG_SOARING, MM_OCARINA, MM_SONG_TIME
+    await grantInventoryItems(page, [
+      'OOT_OCARINA',
+      'OOT_SONG_SOARING',
+      'MM_OCARINA',
+      'MM_SONG_TIME',
+    ]);
 
     // Step 5: Wait and verify Clock Town Platform HP IS reachable
     await expect
@@ -171,7 +191,7 @@ test.describe('Clock Town Platform HP with interior ER game links', () => {
         },
         {
           message:
-            '"Clock Town Platform HP" must be reachable with OOT_OCARINA + MM_OCARINA + MM_SONG_SOARING + MM_SONG_TIME + crossWarpMm=full',
+            '"Clock Town Platform HP" must be reachable with OOT_OCARINA + OOT_SONG_SOARING + MM_OCARINA + MM_SONG_TIME + songSoaringOot + agelessSoaring',
           timeout: TEST_TIMEOUTS.SETTINGS_APPLY,
         },
       )

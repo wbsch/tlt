@@ -4,6 +4,7 @@ import { entranceCombobox, selectEntranceByLabel } from './helpers/entrance';
 
 const REQUIRED_ITEMS: Record<string, number> = {
   OOT_OCARINA: 1,
+  OOT_SONG_SOARING: 1,
   OOT_SWORD_MASTER: 1,
   MM_OCARINA: 1,
   MM_SONG_TIME: 1,
@@ -22,8 +23,11 @@ async function applySettings(page: Page): Promise<void> {
   await search.fill('doorOfTime');
   await page.getByTestId('setting-input-doorOfTime').selectOption('open');
 
-  await search.fill('crossWarpMm');
-  await page.getByTestId('setting-input-crossWarpMm').selectOption('full');
+  await search.fill('songSoaringOot');
+  await page.getByTestId('setting-input-songSoaringOot').check();
+
+  await search.fill('agelessSoaring');
+  await page.getByTestId('setting-input-agelessSoaring').check();
 
   await search.fill('crossAge');
   await page.getByTestId('setting-input-crossAge').check();
