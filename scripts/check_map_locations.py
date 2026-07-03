@@ -48,8 +48,25 @@ def collect_world_location_names(world: dict[str, Any]) -> set[str]:
     return names
 
 
-def collect_hint_location_names(hints: dict[str, Any]) -> set[str]:
+def collect_hint_location_names(hints: Any) -> set[str]:
     names: set[str] = set()
+
+    # data-gossips.json (OoTMM v31+) is a flat list of records whose
+    # location names already carry the game prefix ("OOT ..."/"MM ...").
+    if isinstance(hints, list):
+        for record in hints:
+            if not isinstance(record, dict):
+                continue
+            location = record.get("location")
+            game = record.get("game")
+            if not isinstance(location, str) or game not in GAMES:
+                continue
+            prefix = f"{game.upper()} "
+            if location.startswith(prefix):
+                names.add(location)
+            else:
+                names.add(to_location_name(game, location))
+        return names
 
     for game in GAMES:
         records = hints.get(game, []) if isinstance(hints, dict) else []
@@ -65,9 +82,7 @@ def collect_hint_location_names(hints: dict[str, Any]) -> set[str]:
     return names
 
 
-def build_reference_location_names(
-    world: dict[str, Any], hints: dict[str, Any]
-) -> set[str]:
+def build_reference_location_names(world: dict[str, Any], hints: Any) -> set[str]:
     # Keep this aligned with map-schema/devtool code sourcing:
     # the reference universe is the union of world + hints locations.
     return collect_world_location_names(world) | collect_hint_location_names(hints)
@@ -124,14 +139,14 @@ def main() -> int:
     parser.add_argument(
         "--world-file",
         type=Path,
-        default=Path("OoTMM/packages/data/dist/data-world.json"),
+        default=Path("OoTMM/packages/core/dist/data-world.json"),
         help="Path to data-world.json",
     )
     parser.add_argument(
         "--hints-file",
         type=Path,
-        default=Path("OoTMM/packages/data/dist/data-hints-raw.json"),
-        help="Path to data-hints-raw.json",
+        default=Path("OoTMM/packages/core/dist/data-gossips.json"),
+        help="Path to data-gossips.json",
     )
     parser.add_argument(
         "--include-todo",

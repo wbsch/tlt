@@ -13,7 +13,7 @@ import {
 import { selectSearchInputText } from '../utils/input';
 import { stripGamePrefix } from '../composables/useLocationCodeLookup';
 // Import pool data to get scene information
-import poolData from '../../../../OoTMM/packages/data/dist/data-pool.json';
+import poolData from '../../../../OoTMM/packages/core/dist/data-pool.json';
 
 const props = defineProps<{
   locations: LocationInfo[];

@@ -3396,28 +3396,33 @@
     },
     {
       "block": "npcOot",
-      "bit": 19,
+      "bit": 18,
       "name": "Skulltula House 10 Tokens"
     },
     {
       "block": "npcOot",
-      "bit": 20,
+      "bit": 19,
       "name": "Skulltula House 20 Tokens"
     },
     {
       "block": "npcOot",
-      "bit": 21,
+      "bit": 20,
       "name": "Skulltula House 30 Tokens"
     },
     {
       "block": "npcOot",
-      "bit": 22,
+      "bit": 21,
       "name": "Skulltula House 40 Tokens"
     },
     {
       "block": "npcOot",
-      "bit": 23,
+      "bit": 22,
       "name": "Skulltula House 50 Tokens"
+    },
+    {
+      "block": "npcOot",
+      "bit": 23,
+      "name": "Skulltula House 100 Tokens"
     },
     {
       "block": "npcOot",
@@ -15487,17 +15492,17 @@
     {
       "block": "xflagsMm",
       "bit": 6105,
-      "name": "Secret Shrine Pot 1"
+      "name": "Secret Shrine Pot Entrance 1"
     },
     {
       "block": "xflagsMm",
       "bit": 6106,
-      "name": "Secret Shrine Pot 2"
+      "name": "Secret Shrine Pot Entrance 2"
     },
     {
       "block": "xflagsMm",
       "bit": 6107,
-      "name": "Secret Shrine Pot 3"
+      "name": "Secret Shrine Pot Entrance 3"
     },
     {
       "block": "xflagsMm",
@@ -15542,32 +15547,32 @@
     {
       "block": "xflagsMm",
       "bit": 6116,
-      "name": "Secret Shrine Pot 4"
+      "name": "Secret Shrine Pot Underwater 1"
     },
     {
       "block": "xflagsMm",
       "bit": 6117,
-      "name": "Secret Shrine Pot 5"
+      "name": "Secret Shrine Pot Underwater 2"
     },
     {
       "block": "xflagsMm",
       "bit": 6118,
-      "name": "Secret Shrine Pot 6"
+      "name": "Secret Shrine Pot Underwater 3"
     },
     {
       "block": "xflagsMm",
       "bit": 6119,
-      "name": "Secret Shrine Pot 7"
+      "name": "Secret Shrine Pot Underwater 4"
     },
     {
       "block": "xflagsMm",
       "bit": 6120,
-      "name": "Secret Shrine Pot 8"
+      "name": "Secret Shrine Pot Underwater 5"
     },
     {
       "block": "xflagsMm",
       "bit": 6121,
-      "name": "Secret Shrine Pot 9"
+      "name": "Secret Shrine Pot Underwater 6"
     },
     {
       "block": "xflagsMm",
@@ -28005,6 +28010,11 @@
       "game": "OOT",
       "symbol": "GS_10",
       "name": "Skulltula House 10 Tokens"
+    },
+    {
+      "game": "OOT",
+      "symbol": "GS_100",
+      "name": "Skulltula House 100 Tokens"
     },
     {
       "game": "OOT",

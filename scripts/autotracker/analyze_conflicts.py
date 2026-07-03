@@ -51,7 +51,7 @@ def parse_args() -> argparse.Namespace:
 def main() -> None:
     args = parse_args()
     repo_root = pathlib.Path(args.ootmm_repo).resolve()
-    data_root = repo_root / 'packages/data/src'
+    data_root = repo_root / 'data'
     defs_root = data_root / 'defs'
     pool_root = data_root / 'pool'
     xflags_header = repo_root / 'packages/generator/include/combo/xflags_data.h'

@@ -14,13 +14,13 @@ import type {
 const TYPES_FILE = path.resolve('packs/ootmm/src/data/maps/types.ts');
 const MAP_IMAGES_DIR = path.resolve('public/images/maps');
 const WORLD_DATA_FILE = path.resolve(
-  'OoTMM/packages/data/dist/data-world.json',
+  'OoTMM/packages/core/dist/data-world.json',
 );
-const HINTS_RAW_FILE = path.resolve(
-  'OoTMM/packages/data/dist/data-hints-raw.json',
+const GOSSIPS_DATA_FILE = path.resolve(
+  'OoTMM/packages/core/dist/data-gossips.json',
 );
 const ENTRANCES_DATA_FILE = path.resolve(
-  'OoTMM/packages/data/dist/data-entrances.json',
+  'OoTMM/packages/core/dist/data-entrances.json',
 );
 const OUTPUT_FILE = path.resolve(
   'packs/ootmm/src/data/schemas/ootmm-map.schema.json',
@@ -96,8 +96,22 @@ async function loadOverlayNames(): Promise<string[]> {
 async function loadReferenceLocationCodes(): Promise<string[]> {
   const worldRaw = await readFile(WORLD_DATA_FILE, 'utf8');
   const world = JSON.parse(worldRaw) as WorldLikeData;
-  const hintsRaw = await readFile(HINTS_RAW_FILE, 'utf8');
-  const hints = JSON.parse(hintsRaw) as HintsLikeData;
+  const gossipsRaw = await readFile(GOSSIPS_DATA_FILE, 'utf8');
+  // data-gossips.json (OoTMM v31+) is a flat list with game-prefixed
+  // location names; rebuild the per-game, unprefixed hints shape.
+  const gossips = JSON.parse(gossipsRaw) as {
+    game: 'oot' | 'mm';
+    location: string;
+  }[];
+  const hints: HintsLikeData = { oot: [], mm: [] };
+  for (const gossip of gossips) {
+    const prefix = `${gossip.game.toUpperCase()} `;
+    hints[gossip.game].push({
+      location: gossip.location.startsWith(prefix)
+        ? gossip.location.slice(prefix.length)
+        : gossip.location,
+    });
+  }
   return buildLocationCodeSet(world, hints);
 }
 

@@ -14,7 +14,7 @@ import * as ItemsMod from '@ootmm/core/items/index';
 import * as MonitorMod from '@ootmm/core/monitor';
 import * as SettingsMod from '@ootmm/core/settings/index';
 import * as TricksMod from '@ootmm/core/settings/tricks';
-import * as DataMod from '../../OoTMM/packages/data/src/index';
+import * as DataMod from '../ootmm_data_bridge';
 import type { PlayerItem, PlayerItems } from '@ootmm/core/items/index';
 import type { World } from '@ootmm/core/logic/world';
 
@@ -65,9 +65,9 @@ const _unusedDefaultTricks = DEFAULT_TRICKS;
 const ENTRANCES =
   resolveExport<Record<string, unknown>>(DataMod, 'ENTRANCES') ?? {};
 const POOL = resolveExport<Record<string, unknown>>(DataMod, 'POOL') ?? {};
-const LogicPassEntrances = resolveExport<typeof EntranceMod.LogicPassEntrances>(
+const logicPassEntrances = resolveExport<typeof EntranceMod.logicPassEntrances>(
   EntranceMod,
-  'LogicPassEntrances',
+  'logicPassEntrances',
 );
 
 type WorldContext = {
@@ -484,10 +484,9 @@ const getContext = async (
     ? { ...worldData, settings: { ...settings, logic: 'none' } }
     : worldData;
   const entranceStart = nowMs();
-  const entrancePass = new LogicPassEntrances(
+  const entranceResult = logicPassEntrances(
     entranceInput as Record<string, unknown>,
   );
-  const entranceResult = entrancePass.run();
   logTiming('getContext entrance pass', entranceStart);
   const worlds = entranceResult.worlds;
   const pathfinderStart = nowMs();

@@ -10,7 +10,7 @@ import textwrap
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
-GI_PATH = ROOT / 'OoTMM' / 'packages' / 'data' / 'src' / 'defs' / 'gi.yml'
+GI_PATH = ROOT / 'OoTMM' / 'data' / 'defs' / 'gi.yml'
 NAMES_PATH = ROOT / 'OoTMM' / 'packages' / 'generator' / 'lib' / 'combo' / 'names.ts'
 ITEMS_PATH = ROOT / 'packs' / 'ootmm' / 'src' / 'data' / 'items.ts'
 GI_ITEMS_TS = ROOT / 'packs' / 'ootmm' / 'src' / 'data' / 'giItems.ts'
@@ -361,7 +361,7 @@ def get_max_count(item_id: str) -> int | None:
 
 def write_gi_items_ts(gi_items: list[dict[str, str]]):
     lines = []
-    lines.append('// Auto-generated from OoTMM/packages/data/src/defs/gi.yml')
+    lines.append('// Auto-generated from OoTMM/data/defs/gi.yml')
     lines.append('// and OoTMM/packages/generator/lib/combo/names.ts')
     lines.append('export const GI_ITEM_LIST = [')
     for item in gi_items:

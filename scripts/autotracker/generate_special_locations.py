@@ -720,7 +720,7 @@ def discover_mm_dungeon_clear_symbols(
     repo_root: pathlib.Path,
     week_events: dict[str, tuple[int, int]],
 ) -> dict[str, dict[str, Any]]:
-    boss_metadata_path = repo_root / "packages/generator/lib/combo/logic/boss.ts"
+    boss_metadata_path = repo_root / "packages/logic/src/data/boss.ts"
     if not boss_metadata_path.is_file():
         return {}
 
@@ -752,7 +752,7 @@ def discover_mm_dungeon_clear_symbols(
 
 
 def build_entries(repo_root: pathlib.Path, hints: dict[str, dict[str, Any]]) -> tuple[list[dict[str, Any]], list[str]]:
-    data_root = repo_root / "packages/data/src"
+    data_root = repo_root / "data"
     npc_ids = load_npc_ids(data_root / "defs/npc.yml")
     pool_names = load_pool_names(data_root / "pool/pool_mm.csv")
     mm_save_header = repo_root / "packages/generator/include/combo/mm/save.h"

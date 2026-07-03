@@ -517,7 +517,7 @@ def main() -> int:
     args = parse_args()
     repo_root = pathlib.Path(args.ootmm_repo).resolve()
     items_header = repo_root / "packages/generator/include/combo/data/items.h"
-    gi_defs = repo_root / "packages/data/src/defs/gi.yml"
+    gi_defs = repo_root / "data/defs/gi.yml"
     notes_header = repo_root / "packages/generator/include/combo/notes.h"
     item_add_source = repo_root / "packages/generator/src/common/item/item_add.c"
     output_path = pathlib.Path(args.output).resolve()

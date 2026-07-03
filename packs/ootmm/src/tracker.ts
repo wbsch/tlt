@@ -78,9 +78,9 @@ const mergeSettings = resolveExport<typeof SettingsMod.mergeSettings>(
   SettingsMod,
   'mergeSettings',
 );
-const LogicPassEntrances = resolveExport<typeof EntranceMod.LogicPassEntrances>(
+const logicPassEntrances = resolveExport<typeof EntranceMod.logicPassEntrances>(
   EntranceMod,
-  'LogicPassEntrances',
+  'logicPassEntrances',
 );
 const isShuffled = resolveExport<typeof IsShuffledMod.isShuffled>(
   IsShuffledMod,
@@ -604,10 +604,6 @@ export class OoTMMTracker implements TrackerPack {
       settings: entranceSettings,
     };
 
-    const entrancePass = new LogicPassEntrances(
-      entranceInput as Record<string, unknown>,
-    );
-
     // Save the original source-side exit expressions for all tracked ER
     // entrances before the entrance pass rewires exits to their mapped
     // destinations. Reachability in the UI should answer "can I stand at
@@ -655,7 +651,9 @@ export class OoTMMTracker implements TrackerPack {
       }
     }
 
-    const entranceResult = entrancePass.run();
+    const entranceResult = logicPassEntrances(
+      entranceInput as Record<string, unknown>,
+    );
     this.worlds = entranceResult.worlds;
     this.patchCrossGameGlobalAccess(this.worlds);
 

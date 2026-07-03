@@ -17,7 +17,7 @@ type EntranceMenuRef = {
 
 const ENTRANCES = JSON.parse(
   readFileSync(
-    path.resolve('OoTMM/packages/data/dist/data-entrances.json'),
+    path.resolve('OoTMM/packages/core/dist/data-entrances.json'),
     'utf8',
   ),
 ) as Record<string, EntranceData>;

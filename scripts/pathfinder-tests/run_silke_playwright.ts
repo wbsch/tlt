@@ -13,7 +13,7 @@ import {
   type Page,
 } from 'playwright';
 import * as SettingsMod from '@ootmm/core/settings/index';
-import * as DataMod from '../../OoTMM/packages/data/src/index';
+import * as DataMod from '../ootmm_data_bridge';
 import { DEFAULT_OOTMM_SETTINGS } from '../../packs/ootmm/src/types/settings';
 import { PATHFINDER_TEST_TIMEOUTS } from './timeouts';
 

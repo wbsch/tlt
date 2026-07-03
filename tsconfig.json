@@ -5,21 +5,21 @@
       "@/*": ["./src/*"],
       "@packs/ootmm": ["./src/shims/ootmm-pack.d.ts"],
       "@packs/ootmm/*": ["./packs/ootmm/src/*"],
-      "@ootmm/data": ["./OoTMM/packages/data/src/index.ts"],
-      "@ootmm/data/*": ["./OoTMM/packages/data/src/*"],
+      "@ootmm/data": ["./scripts/ootmm_data_bridge.ts"],
+      "@ootmm/data/*": ["./OoTMM/packages/core/src/data/*"],
       "@ootmm/core/settings": ["./OoTMM/packages/core/src/settings/index.ts"],
       "@ootmm/core/settings/*": ["./OoTMM/packages/core/src/settings/*"],
-      "@ootmm/core/items": [
-        "./OoTMM/packages/generator/lib/combo/items/index.ts"
+      "@ootmm/core/items": ["./OoTMM/packages/core/src/items/index.ts"],
+      "@ootmm/core/items/*": ["./OoTMM/packages/core/src/items/*"],
+      "@ootmm/core/logic": ["./OoTMM/packages/logic/src/index.ts"],
+      "@ootmm/core/logic/entrance": [
+        "./OoTMM/packages/logic/src/solver/entrances.ts"
       ],
-      "@ootmm/core/items/*": ["./OoTMM/packages/generator/lib/combo/items/*"],
-      "@ootmm/core/logic": [
-        "./OoTMM/packages/generator/lib/combo/logic/index.ts"
+      "@ootmm/core/logic/is-shuffled": [
+        "./OoTMM/packages/logic/src/helpers.ts"
       ],
-      "@ootmm/core/logic/*": ["./OoTMM/packages/generator/lib/combo/logic/*"],
-      "@ootmm/core/monitor": [
-        "./OoTMM/packages/generator/lib/combo/monitor.ts"
-      ],
+      "@ootmm/core/logic/*": ["./OoTMM/packages/logic/src/*"],
+      "@ootmm/core/monitor": ["./OoTMM/packages/core/src/monitor.ts"],
       "@ootmm/core/names": ["./OoTMM/packages/generator/lib/combo/names.ts"],
       "@ootmm/core": ["./OoTMM/packages/core/src/index.ts"],
       "@ootmm/core/*": ["./OoTMM/packages/core/src/*"]

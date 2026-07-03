@@ -54,10 +54,7 @@ declare module '@ootmm/core/logic/expr' {
 
 declare module '@ootmm/core/logic/entrance' {
   import type { World } from '@ootmm/core/logic/world';
-  export class LogicPassEntrances {
-    constructor(worldData: unknown);
-    run(): { worlds: World[] };
-  }
+  export function logicPassEntrances(worldData: unknown): { worlds: World[] };
   export const DUNGEON_ENTRANCES: readonly string[];
 }
 

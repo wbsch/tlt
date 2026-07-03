@@ -191,7 +191,7 @@ def finalize_mapping(table: dict[object, str], conflicts: set[object]) -> dict[o
 
 
 def build_location_mapping(repo_root: pathlib.Path) -> dict[str, object]:
-    data_root = repo_root / "packages/data/src"
+    data_root = repo_root / "data"
     defs_root = data_root / "defs"
     pool_root = data_root / "pool"
     xflags_header = repo_root / "packages/generator/include/combo/xflags_data.h"

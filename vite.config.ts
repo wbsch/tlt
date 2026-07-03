@@ -200,22 +200,28 @@ export default defineConfig({
         new URL('./packs/ootmm/src', import.meta.url),
       ),
       '@ootmm/data': fileURLToPath(
-        new URL('./OoTMM/packages/data/src/index.ts', import.meta.url),
+        new URL('./scripts/ootmm_data_bridge.ts', import.meta.url),
       ),
       '@ootmm/core/settings': fileURLToPath(
         new URL('./OoTMM/packages/core/src/settings', import.meta.url),
       ),
       '@ootmm/core/items': fileURLToPath(
-        new URL('./OoTMM/packages/generator/lib/combo/items', import.meta.url),
+        new URL('./OoTMM/packages/core/src/items', import.meta.url),
       ),
-      '@ootmm/core/logic': fileURLToPath(
-        new URL('./OoTMM/packages/generator/lib/combo/logic', import.meta.url),
-      ),
-      '@ootmm/core/monitor': fileURLToPath(
+      '@ootmm/core/logic/entrance': fileURLToPath(
         new URL(
-          './OoTMM/packages/generator/lib/combo/monitor.ts',
+          './OoTMM/packages/logic/src/solver/entrances.ts',
           import.meta.url,
         ),
+      ),
+      '@ootmm/core/logic/is-shuffled': fileURLToPath(
+        new URL('./OoTMM/packages/logic/src/helpers.ts', import.meta.url),
+      ),
+      '@ootmm/core/logic': fileURLToPath(
+        new URL('./OoTMM/packages/logic/src', import.meta.url),
+      ),
+      '@ootmm/core/monitor': fileURLToPath(
+        new URL('./OoTMM/packages/core/src/monitor.ts', import.meta.url),
       ),
       '@ootmm/core/names': fileURLToPath(
         new URL(

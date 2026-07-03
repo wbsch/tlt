@@ -2327,36 +2327,44 @@
         "itemId": "OOT_SONG_NOTE_EMPTINESS",
         "source": {
           "kind": "shared-song-note",
-          "index": 12,
+          "index": 17,
           "max": 7
         }
       },
       {
-        "itemId": "MM_SONG_NOTE_AWAKENING",
+        "itemId": "OOT_SONG_NOTE_HEALING",
+        "source": {
+          "kind": "shared-song-note",
+          "index": 12,
+          "max": 6
+        }
+      },
+      {
+        "itemId": "OOT_SONG_NOTE_SOARING",
         "source": {
           "kind": "shared-song-note",
           "index": 13,
+          "max": 6
+        }
+      },
+      {
+        "itemId": "OOT_SONG_NOTE_AWAKENING",
+        "source": {
+          "kind": "shared-song-note",
+          "index": 14,
           "max": 7
         }
       },
       {
-        "itemId": "MM_SONG_NOTE_GORON",
+        "itemId": "OOT_SONG_NOTE_GORON",
         "source": {
           "kind": "shared-song-note",
-          "index": 14,
+          "index": 15,
           "max": 8
         }
       },
       {
-        "itemId": "MM_SONG_NOTE_ZORA",
-        "source": {
-          "kind": "shared-song-note",
-          "index": 15,
-          "max": 7
-        }
-      },
-      {
-        "itemId": "MM_SONG_NOTE_EMPTINESS",
+        "itemId": "OOT_SONG_NOTE_ZORA",
         "source": {
           "kind": "shared-song-note",
           "index": 16,
@@ -2364,15 +2372,7 @@
         }
       },
       {
-        "itemId": "MM_SONG_NOTE_ORDER",
-        "source": {
-          "kind": "shared-song-note",
-          "index": 17,
-          "max": 6
-        }
-      },
-      {
-        "itemId": "MM_SONG_NOTE_TIME",
+        "itemId": "OOT_SONG_NOTE_ORDER",
         "source": {
           "kind": "shared-song-note",
           "index": 18,
@@ -2380,10 +2380,58 @@
         }
       },
       {
-        "itemId": "MM_SONG_NOTE_HEALING",
+        "itemId": "MM_SONG_NOTE_AWAKENING",
         "source": {
           "kind": "shared-song-note",
           "index": 19,
+          "max": 7
+        }
+      },
+      {
+        "itemId": "MM_SONG_NOTE_GORON",
+        "source": {
+          "kind": "shared-song-note",
+          "index": 20,
+          "max": 8
+        }
+      },
+      {
+        "itemId": "MM_SONG_NOTE_ZORA",
+        "source": {
+          "kind": "shared-song-note",
+          "index": 21,
+          "max": 7
+        }
+      },
+      {
+        "itemId": "MM_SONG_NOTE_EMPTINESS",
+        "source": {
+          "kind": "shared-song-note",
+          "index": 22,
+          "max": 7
+        }
+      },
+      {
+        "itemId": "MM_SONG_NOTE_ORDER",
+        "source": {
+          "kind": "shared-song-note",
+          "index": 23,
+          "max": 6
+        }
+      },
+      {
+        "itemId": "MM_SONG_NOTE_TIME",
+        "source": {
+          "kind": "shared-song-note",
+          "index": 24,
+          "max": 6
+        }
+      },
+      {
+        "itemId": "MM_SONG_NOTE_HEALING",
+        "source": {
+          "kind": "shared-song-note",
+          "index": 25,
           "max": 6
         }
       },
@@ -2391,7 +2439,7 @@
         "itemId": "MM_SONG_NOTE_EPONA",
         "source": {
           "kind": "shared-song-note",
-          "index": 20,
+          "index": 26,
           "max": 6
         }
       },
@@ -2399,7 +2447,7 @@
         "itemId": "MM_SONG_NOTE_SOARING",
         "source": {
           "kind": "shared-song-note",
-          "index": 21,
+          "index": 27,
           "max": 6
         }
       },
@@ -2407,7 +2455,7 @@
         "itemId": "MM_SONG_NOTE_STORMS",
         "source": {
           "kind": "shared-song-note",
-          "index": 22,
+          "index": 28,
           "max": 6
         }
       },
@@ -2415,7 +2463,71 @@
         "itemId": "MM_SONG_NOTE_SUN",
         "source": {
           "kind": "shared-song-note",
-          "index": 23,
+          "index": 37,
+          "max": 6
+        }
+      },
+      {
+        "itemId": "MM_SONG_NOTE_TP_FOREST",
+        "source": {
+          "kind": "shared-song-note",
+          "index": 29,
+          "max": 6
+        }
+      },
+      {
+        "itemId": "MM_SONG_NOTE_TP_FIRE",
+        "source": {
+          "kind": "shared-song-note",
+          "index": 30,
+          "max": 8
+        }
+      },
+      {
+        "itemId": "MM_SONG_NOTE_TP_WATER",
+        "source": {
+          "kind": "shared-song-note",
+          "index": 31,
+          "max": 5
+        }
+      },
+      {
+        "itemId": "MM_SONG_NOTE_TP_SPIRIT",
+        "source": {
+          "kind": "shared-song-note",
+          "index": 32,
+          "max": 6
+        }
+      },
+      {
+        "itemId": "MM_SONG_NOTE_TP_SHADOW",
+        "source": {
+          "kind": "shared-song-note",
+          "index": 33,
+          "max": 7
+        }
+      },
+      {
+        "itemId": "MM_SONG_NOTE_TP_LIGHT",
+        "source": {
+          "kind": "shared-song-note",
+          "index": 34,
+          "max": 6
+        }
+      },
+      {
+        "itemId": "MM_SONG_NOTE_ZELDA",
+        "source": {
+          "kind": "shared-song-note",
+          "index": 35,
+          "max": 6
+        }
+      },
+      {
+        "itemId": "MM_SONG_NOTE_SARIA",
+        "source": {
+          "kind": "shared-song-note",
+          "index": 36,
           "max": 6
         }
       },
