@@ -506,6 +506,10 @@
         {
           "image": "npc",
           "codes": "OOT Skulltula House 50 Tokens"
+        },
+        {
+          "image": "npc",
+          "codes": "OOT Skulltula House 100 Tokens"
         }
       ],
       "entranceMenu": {
