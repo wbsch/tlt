@@ -6,7 +6,10 @@ import type {
 } from '@/types/tracker';
 import type { OoTMMSettings } from './types/settings';
 import { DEFAULT_OOTMM_SETTINGS } from './types/settings';
-import { VANILLA_SONG_EVENTS } from './data/song-events';
+import {
+  VANILLA_SONG_EVENTS,
+  VANILLA_SONG_EVENTS_MM,
+} from './data/song-events';
 
 // Import from OoTMM submodule - using default imports for CJS/TS interop
 import * as LogicMod from '@ootmm/core/logic/index';
@@ -1389,22 +1392,29 @@ export class OoTMMTracker implements TrackerPack {
   setSongEvents(events: Record<string, number>): void {
     if (!this.worlds || !this.settings) return;
 
+    const MM_OFFSET = 18;
+    const MM_EVENT_COUNT = VANILLA_SONG_EVENTS_MM.length;
+
     for (const world of this.worlds) {
       // Start with vanilla defaults from OoTMM core
-      world.songEvents = [...VANILLA_SONG_EVENTS];
+      world.songEventsOot = [...VANILLA_SONG_EVENTS];
+      world.songEventsMm = [...VANILLA_SONG_EVENTS_MM];
 
       // If Song Events Shuffle is enabled, apply user selections
       if (Object.keys(events).length > 0) {
         for (const [eventKey, songId] of Object.entries(events)) {
           const eventId = parseInt(eventKey, 10);
-          if (
-            !isNaN(eventId) &&
-            songId >= 0 &&
-            songId <= 5 &&
-            eventId >= 0 &&
-            eventId < world.songEvents.length
+          if (isNaN(eventId) || songId < 0 || songId > 19) continue;
+
+          if (eventId >= 0 && eventId < VANILLA_SONG_EVENTS.length) {
+            // OoT song event
+            world.songEventsOot[eventId] = songId;
+          } else if (
+            eventId >= MM_OFFSET &&
+            eventId < MM_OFFSET + MM_EVENT_COUNT
           ) {
-            world.songEvents[eventId] = songId;
+            // MM song event
+            world.songEventsMm[eventId - MM_OFFSET] = songId;
           }
         }
       }

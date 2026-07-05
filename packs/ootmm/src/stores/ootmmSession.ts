@@ -14,7 +14,10 @@ import {
   ALL_SETTINGS_DEFINITIONS,
   TRACKER_DEFAULT_SETTINGS,
 } from '../data/settings';
-import { VANILLA_SONG_EVENTS } from '../data/song-events';
+import {
+  VANILLA_SONG_EVENTS,
+  VANILLA_SONG_EVENTS_MM,
+} from '../data/song-events';
 import {
   createOoTMMLocalSessionSync,
   OOTMM_LOCAL_SESSION_ID,
@@ -892,9 +895,12 @@ export const useOoTMMSessionStore = defineStore('ootmm-session', () => {
     snapshot: OoTMMRoomSnapshotEnvelope,
   ): Promise<void> {
     const state = snapshot.state;
-    if (state.trackerSettings && typeof state.trackerSettings === 'object') {
-      await applySettings(state.trackerSettings, REMOTE_MUTATION_OPTIONS);
-    }
+    // Restore state BEFORE applySettings so the settings-init path can
+    // properly merge defaults for both games.  If we restore after,
+    // applySettings's applySongEvents(true) sets correct defaults, then
+    // setSongEvents(state.songEvents) overwrites with a stale saved state
+    // that may lack MM entries (saved before MM support existed).
+    setSongEvents(state.songEvents ?? {}, REMOTE_MUTATION_OPTIONS);
     setEntranceOverrides(
       state.entranceOverrides ?? {},
       REMOTE_MUTATION_OPTIONS,
@@ -903,7 +909,6 @@ export const useOoTMMSessionStore = defineStore('ootmm-session', () => {
       state.preCompletedDungeons ?? [],
       REMOTE_MUTATION_OPTIONS,
     );
-    setSongEvents(state.songEvents ?? {}, REMOTE_MUTATION_OPTIONS);
     setShopPrices(state.shopPrices ?? {}, REMOTE_MUTATION_OPTIONS);
     setInventoryFromMap(
       new Map(Object.entries(state.inventoryById ?? {})),
@@ -919,6 +924,10 @@ export const useOoTMMSessionStore = defineStore('ootmm-session', () => {
       state.importedSpoilerLogVersion ?? null,
       REMOTE_MUTATION_OPTIONS,
     );
+
+    if (state.trackerSettings && typeof state.trackerSettings === 'object') {
+      await applySettings(state.trackerSettings, REMOTE_MUTATION_OPTIONS);
+    }
   }
 
   function startRoomSync(options: { roomCode: string; url?: string }): void {
@@ -1791,17 +1800,45 @@ export const useOoTMMSessionStore = defineStore('ootmm-session', () => {
     const songEventsShuffleOot = Boolean(
       trackerSettings.value?.songEventsShuffleOot,
     );
+    const songEventsShuffleMm = Boolean(
+      trackerSettings.value?.songEventsShuffleMm,
+    );
 
-    if (songEventsShuffleOot && Object.keys(songEvents.value).length === 0) {
-      // Initialize with vanilla defaults from OoTMM core
-      const vanillaDefaults: Record<string, number> = {};
-      VANILLA_SONG_EVENTS.forEach((songId, eventId) => {
-        vanillaDefaults[eventId] = songId;
-      });
-      songEvents.value = vanillaDefaults;
+    // Fill in missing defaults for every enabled game's events.
+    // When called from initialization or settings-change paths, the
+    // saved-state entries have already been restored (see applyRoomSnapshot
+    // ordering fix), so this only adds entries for games that were not
+    // yet present when the state was saved.
+    if (songEventsShuffleOot || songEventsShuffleMm) {
+      const merged = { ...songEvents.value };
+      let changed = false;
+
+      if (songEventsShuffleOot) {
+        VANILLA_SONG_EVENTS.forEach((songId, eventId) => {
+          if (!(eventId in merged)) {
+            merged[eventId] = songId;
+            changed = true;
+          }
+        });
+      }
+
+      if (songEventsShuffleMm) {
+        VANILLA_SONG_EVENTS_MM.forEach((songId, mmEventId) => {
+          const key = 18 + mmEventId;
+          if (!(key in merged)) {
+            merged[key] = songId;
+            changed = true;
+          }
+        });
+      }
+
+      if (changed) {
+        songEvents.value = merged;
+      }
     }
 
-    const events = songEventsShuffleOot ? songEvents.value : {};
+    const events =
+      songEventsShuffleOot || songEventsShuffleMm ? songEvents.value : {};
     currentTracker.setSongEvents(events);
     recomputeReachability();
   }

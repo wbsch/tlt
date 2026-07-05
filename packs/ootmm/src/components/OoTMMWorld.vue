@@ -2,8 +2,9 @@
 import { computed, ref } from 'vue';
 import {
   SONG_EVENTS,
-  SONG_CHOICES,
-  type SongChoice,
+  SONG_EVENTS_MM,
+  getOotSongChoices,
+  getMmSongChoices,
 } from '../data/song-events';
 
 type DungeonRow = {
@@ -32,19 +33,31 @@ const showPreCompleted = computed(() => props.enabled);
 const songEventsEnabled = computed(() =>
   Boolean(props.settings?.songEventsShuffleOot),
 );
+const songEventsMmEnabled = computed(() =>
+  Boolean(props.settings?.songEventsShuffleMm),
+);
 const showEmptyState = computed(
-  () => !showPreCompleted.value && !songEventsEnabled.value,
+  () =>
+    !showPreCompleted.value &&
+    !songEventsEnabled.value &&
+    !songEventsMmEnabled.value,
 );
 const activeSongDropdownEventId = ref<number | null>(null);
+
+const ootSongChoices = computed(() => getOotSongChoices(props.settings));
+const mmSongChoices = computed(() => getMmSongChoices(props.settings));
 
 function getSongEventSelection(eventId: number): number | undefined {
   return props.songEvents?.[eventId];
 }
 
-function getSelectedSongChoice(eventId: number): SongChoice {
+function getSelectedSongChoice(
+  eventId: number,
+  gameChoices: SongChoice[],
+): SongChoice {
   const selectedValue = getSongEventSelection(eventId);
   return (
-    SONG_CHOICES.find((song) => song.value === selectedValue) ?? SONG_CHOICES[0]
+    gameChoices.find((song) => song.value === selectedValue) ?? gameChoices[0]
   );
 }
 
@@ -103,8 +116,8 @@ function toggleDungeon(id: string) {
     <div class="world-body">
       <div v-if="showEmptyState" class="world-empty">
         <p>
-          This tab is empty. Enable settings like Pre-Completed Dungeons to see
-          world options here.
+          This tab is empty. Enable settings like Pre-Completed Dungeons or Song
+          Events Shuffle to see world options here.
         </p>
       </div>
 
@@ -146,7 +159,7 @@ function toggleDungeon(id: string) {
 
       <section v-if="songEventsEnabled" class="world-section">
         <div class="world-header">
-          <h3>Song Events</h3>
+          <h3>Song Events (Ocarina of Time)</h3>
           <p class="world-description">
             Choose which song is required to trigger each event. These events
             will require playing the selected song to proceed.
@@ -176,12 +189,12 @@ function toggleDungeon(id: string) {
                 @click="toggleSongDropdown(event.id)"
               >
                 <img
-                  :src="getSelectedSongChoice(event.id).image"
+                  :src="getSelectedSongChoice(event.id, ootSongChoices).image"
                   alt=""
                   class="song-select-icon"
                 />
                 <span class="song-select-text">{{
-                  getSelectedSongChoice(event.id).label
+                  getSelectedSongChoice(event.id, ootSongChoices).label
                 }}</span>
                 <span class="song-select-caret" aria-hidden="true">▾</span>
               </button>
@@ -194,7 +207,7 @@ function toggleDungeon(id: string) {
                 :aria-labelledby="getSongDropdownTriggerId(event.id)"
               >
                 <li
-                  v-for="song in SONG_CHOICES"
+                  v-for="song in ootSongChoices"
                   :id="getSongOptionId(event.id, song.value)"
                   :key="song.value"
                   class="song-select-option-item"
@@ -205,11 +218,94 @@ function toggleDungeon(id: string) {
                     class="song-select-option"
                     role="option"
                     :aria-selected="
-                      getSelectedSongChoice(event.id).value === song.value
+                      getSelectedSongChoice(event.id, ootSongChoices).value ===
+                      song.value
                     "
                     :class="{
                       'is-selected':
-                        getSelectedSongChoice(event.id).value === song.value,
+                        getSelectedSongChoice(event.id, ootSongChoices)
+                          .value === song.value,
+                    }"
+                    @click="updateSongEvent(event.id, song.value)"
+                  >
+                    <img :src="song.image" alt="" class="song-select-icon" />
+                    <span class="song-select-text">{{ song.label }}</span>
+                  </button>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section v-if="songEventsMmEnabled" class="world-section">
+        <div class="world-header">
+          <h3>Song Events (Majora's Mask)</h3>
+          <p class="world-description">
+            Choose which song is required to trigger each event. These events
+            will require playing the selected song to proceed.
+          </p>
+        </div>
+
+        <div class="world-list">
+          <div
+            v-for="event in SONG_EVENTS_MM"
+            :key="event.id"
+            class="world-row song-event-row"
+          >
+            <div class="row-info">
+              <span class="row-label">{{ event.label }}</span>
+            </div>
+            <div
+              class="song-select-wrap"
+              @focusout="handleSongDropdownFocusOut"
+            >
+              <button
+                :id="getSongDropdownTriggerId(event.id)"
+                type="button"
+                class="song-select-trigger"
+                aria-haspopup="listbox"
+                :aria-controls="getSongDropdownId(event.id)"
+                :aria-expanded="isSongDropdownOpen(event.id)"
+                @click="toggleSongDropdown(event.id)"
+              >
+                <img
+                  :src="getSelectedSongChoice(event.id, mmSongChoices).image"
+                  alt=""
+                  class="song-select-icon"
+                />
+                <span class="song-select-text">{{
+                  getSelectedSongChoice(event.id, mmSongChoices).label
+                }}</span>
+                <span class="song-select-caret" aria-hidden="true">▾</span>
+              </button>
+
+              <ul
+                v-if="isSongDropdownOpen(event.id)"
+                :id="getSongDropdownId(event.id)"
+                class="song-select-options"
+                role="listbox"
+                :aria-labelledby="getSongDropdownTriggerId(event.id)"
+              >
+                <li
+                  v-for="song in mmSongChoices"
+                  :id="getSongOptionId(event.id, song.value)"
+                  :key="song.value"
+                  class="song-select-option-item"
+                  role="presentation"
+                >
+                  <button
+                    type="button"
+                    class="song-select-option"
+                    role="option"
+                    :aria-selected="
+                      getSelectedSongChoice(event.id, mmSongChoices).value ===
+                      song.value
+                    "
+                    :class="{
+                      'is-selected':
+                        getSelectedSongChoice(event.id, mmSongChoices).value ===
+                        song.value,
                     }"
                     @click="updateSongEvent(event.id, song.value)"
                   >

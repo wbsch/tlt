@@ -1878,6 +1878,14 @@ watch(
 );
 
 watch(
+  () => trackerSettings.value?.songEventsShuffleMm,
+  () => {
+    sessionStore.applySongEvents();
+  },
+  { immediate: true },
+);
+
+watch(
   () => [
     trackerSettings.value?.priceOotShops,
     trackerSettings.value?.priceMmShops,
