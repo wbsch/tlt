@@ -38,8 +38,11 @@ const CROSS_WARP_MM_TO_OOT: Record<string, [string, string]> = {
  * DEV builds with a mix of old and new keys work correctly.
  */
 export function normalizeSpoilerSettings(
-  rawSettings: Record<string, string | number | boolean>,
-): Record<string, string | number | boolean> {
+  rawSettings: Record<
+    string,
+    string | number | boolean | Record<string, unknown>
+  >,
+): Record<string, string | number | boolean | Record<string, unknown>> {
   const result = { ...rawSettings };
 
   // ── crossWarpOot → individual song*Mm extensions ──
@@ -81,6 +84,18 @@ export function normalizeSpoilerSettings(
     delete result.sunSongMm;
   }
 
+  // ── clearStateDungeonsMm (v30.1 enum) → set format (v31.0) ──
+  if ('clearStateDungeonsMm' in result) {
+    const value = String(result.clearStateDungeonsMm ?? 'none');
+    delete result.clearStateDungeonsMm;
+    if (value === 'both') {
+      result.clearStateDungeonsMm = { type: 'specific', values: ['WF', 'GB'] };
+    } else if (value === 'WF' || value === 'GB') {
+      result.clearStateDungeonsMm = { type: 'specific', values: [value] };
+    }
+    // 'none' → omit (equivalent to { type: 'none' }, which is the default)
+  }
+
   return result;
 }
 
@@ -93,7 +108,8 @@ export function hasLegacyKeys(rawSettings: Record<string, unknown>): boolean {
     'crossWarpOot' in rawSettings ||
     'crossWarpMm' in rawSettings ||
     'progressiveGoronLullaby' in rawSettings ||
-    'sunSongMm' in rawSettings
+    'sunSongMm' in rawSettings ||
+    'clearStateDungeonsMm' in rawSettings
   );
 }
 
