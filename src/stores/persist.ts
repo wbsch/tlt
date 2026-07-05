@@ -8,6 +8,10 @@ import {
   DEFAULT_RIGHT_SIDEBAR_WIDTH,
 } from '@packs/ootmm/stores/ootmmUi';
 import { migrateEntranceOverrides } from '@/utils/entranceMigration';
+import {
+  normalizeSpoilerSettings,
+  synthesizeCrossWarpItemsForInventory,
+} from '@packs/ootmm/utils/spoilerSettingsMigration';
 
 export type PersistConfig = {
   key: string;
@@ -116,8 +120,12 @@ function deepSanitizeJsonValue(value: unknown): unknown {
 function sanitizeSettingsObject(
   raw: Record<string, unknown>,
 ): Record<string, unknown> {
+  // Normalize old keys (v30.1) to v31.0 before filtering against known keys
+  const normalized = normalizeSpoilerSettings(
+    raw as Record<string, string | number | boolean>,
+  ) as Record<string, unknown>;
   const safe: Record<string, unknown> = {};
-  for (const [key, value] of Object.entries(raw)) {
+  for (const [key, value] of Object.entries(normalized)) {
     if (!isSafeKey(key)) continue;
     if (!KNOWN_SETTINGS_KEYS.has(key)) continue;
     safe[key] = deepSanitizeJsonValue(value);
@@ -354,73 +362,93 @@ export const PERSIST_CONFIGS: Record<PersistStoreId, PersistConfig> = {
       'importedSpoilerLogVersion',
       'coopRoomCode',
     ],
-    hydrate: (raw) => ({
-      ...(isPlainObject(raw.inventoryById)
-        ? { inventoryById: numberRecord(raw.inventoryById) }
-        : {}),
-      ...(Array.isArray(raw.collectedLocationIds)
-        ? { collectedLocationIds: stringArray(raw.collectedLocationIds) }
-        : {}),
-      ...(Array.isArray(raw.preCompletedDungeons)
-        ? { preCompletedDungeons: stringArray(raw.preCompletedDungeons) }
-        : {}),
-      ...(Array.isArray(raw.junkLocationIds)
-        ? { junkLocationIds: stringArray(raw.junkLocationIds) }
-        : {}),
-      ...(isPlainObject(raw.songEvents)
-        ? { songEvents: nonNegativeNumberRecord(raw.songEvents) }
-        : {}),
-      ...(isPlainObject(raw.shopPrices)
-        ? { shopPrices: nonNegativeNumberRecord(raw.shopPrices) }
-        : {}),
-      ...(isPlainObject(raw.entranceOverrides)
-        ? (() => {
-            const overrides = stringRecord(raw.entranceOverrides);
-            try {
-              // Only migrate (add missing reverse entries) when NOT decoupled.
-              // In decoupled mode, missing reverse entries are intentional.
-              const decoupled = Boolean(
-                (raw.trackerSettings as Record<string, unknown> | undefined)
-                  ?.erDecoupled,
-              );
-              return {
-                entranceOverrides: decoupled
-                  ? overrides
-                  : migrateEntranceOverrides(overrides),
-              };
-            } catch {
-              // Migration failed silently — keep the original (un-migrated)
-              // overrides. This prevents a migration bug from breaking the
-              // entire session hydration.
-              return { entranceOverrides: overrides };
+    hydrate: (raw) => {
+      const inventory: Record<string, number> = isPlainObject(raw.inventoryById)
+        ? numberRecord(raw.inventoryById)
+        : {};
+
+      const trackerSettings = isPlainObject(raw.trackerSettings)
+        ? stripPlandoEntrancesFromSettings(
+            sanitizeSettingsObject(raw.trackerSettings),
+          )
+        : {};
+
+      // Synthesize cross-game counterpart items for CrossWarp (OoT↔MM songs)
+      // based on normalized settings. This ensures that e.g. MM_SONG_TP_FOREST
+      // is present when OOT_SONG_TP_FOREST was collected and songMinuetMm is
+      // enabled (either natively or via legacy crossWarpOot normalization).
+      if (
+        Object.keys(inventory).length > 0 &&
+        Object.keys(trackerSettings).length > 0
+      ) {
+        synthesizeCrossWarpItemsForInventory(
+          inventory,
+          trackerSettings as Record<string, unknown>,
+        );
+      }
+
+      return {
+        ...(Object.keys(inventory).length > 0
+          ? { inventoryById: inventory }
+          : {}),
+        ...(Array.isArray(raw.collectedLocationIds)
+          ? { collectedLocationIds: stringArray(raw.collectedLocationIds) }
+          : {}),
+        ...(Array.isArray(raw.preCompletedDungeons)
+          ? { preCompletedDungeons: stringArray(raw.preCompletedDungeons) }
+          : {}),
+        ...(Array.isArray(raw.junkLocationIds)
+          ? { junkLocationIds: stringArray(raw.junkLocationIds) }
+          : {}),
+        ...(isPlainObject(raw.songEvents)
+          ? { songEvents: nonNegativeNumberRecord(raw.songEvents) }
+          : {}),
+        ...(isPlainObject(raw.shopPrices)
+          ? { shopPrices: nonNegativeNumberRecord(raw.shopPrices) }
+          : {}),
+        ...(isPlainObject(raw.entranceOverrides)
+          ? (() => {
+              const overrides = stringRecord(raw.entranceOverrides);
+              try {
+                // Only migrate (add missing reverse entries) when NOT decoupled.
+                // In decoupled mode, missing reverse entries are intentional.
+                const decoupled = Boolean(
+                  (raw.trackerSettings as Record<string, unknown> | undefined)
+                    ?.erDecoupled,
+                );
+                return {
+                  entranceOverrides: decoupled
+                    ? overrides
+                    : migrateEntranceOverrides(overrides),
+                };
+              } catch {
+                // Migration failed silently — keep the original (un-migrated)
+                // overrides. This prevents a migration bug from breaking the
+                // entire session hydration.
+                return { entranceOverrides: overrides };
+              }
+            })()
+          : {}),
+        ...(Object.keys(trackerSettings).length > 0 ? { trackerSettings } : {}),
+        ...(typeof raw.hasImportedSpoilerLog === 'boolean'
+          ? { hasImportedSpoilerLog: raw.hasImportedSpoilerLog }
+          : {}),
+        ...(safeOptionalString(raw.importedSpoilerLogVersion) !== undefined
+          ? {
+              importedSpoilerLogVersion: safeOptionalString(
+                raw.importedSpoilerLogVersion,
+              ),
             }
-          })()
-        : {}),
-      ...(isPlainObject(raw.trackerSettings)
-        ? {
-            trackerSettings: stripPlandoEntrancesFromSettings(
-              sanitizeSettingsObject(raw.trackerSettings),
-            ),
-          }
-        : {}),
-      ...(typeof raw.hasImportedSpoilerLog === 'boolean'
-        ? { hasImportedSpoilerLog: raw.hasImportedSpoilerLog }
-        : {}),
-      ...(safeOptionalString(raw.importedSpoilerLogVersion) !== undefined
-        ? {
-            importedSpoilerLogVersion: safeOptionalString(
-              raw.importedSpoilerLogVersion,
-            ),
-          }
-        : {}),
-      ...(() => {
-        const coopRoomCode = safeOptionalString(raw.coopRoomCode);
-        return typeof coopRoomCode === 'string' &&
-          isValidCoopRoomCode(coopRoomCode)
-          ? { coopRoomCode }
-          : {};
-      })(),
-    }),
+          : {}),
+        ...(() => {
+          const coopRoomCode = safeOptionalString(raw.coopRoomCode);
+          return typeof coopRoomCode === 'string' &&
+            isValidCoopRoomCode(coopRoomCode)
+            ? { coopRoomCode }
+            : {};
+        })(),
+      };
+    },
     serialize: (picked) => {
       if (!isPlainObject(picked.trackerSettings)) return picked;
       return {

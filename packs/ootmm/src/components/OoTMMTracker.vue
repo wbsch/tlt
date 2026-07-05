@@ -35,6 +35,11 @@ import {
   type SpoilerLocationPlacement,
   type SpoilerLogData,
 } from '../utils/spoiler';
+import {
+  hasLegacyKeys,
+  normalizeSpoilerSettings,
+  synthesizeCrossWarpItemsForInventory,
+} from '../utils/spoilerSettingsMigration';
 import { useDungeonEntrances } from '../composables/useDungeonEntrances';
 import { useLocationCodeLookup } from '../composables/useLocationCodeLookup';
 import {
@@ -678,6 +683,7 @@ const isSpoilerSettingsWarningDialogOpen = ref(false);
 const spoilerSettingsWarnings = ref<SpoilerSettingWarning[]>([]);
 const spoilerUnknownSettings = ref<SpoilerUnknownSetting[]>([]);
 const spoilerAutotrackerWarningMessage = ref<string | null>(null);
+const spoilerLegacyWarningMessage = ref<string | null>(null);
 const autotrackerSpoilerVersionWarningMessage = ref<string | null>(null);
 const deferredAutotrackerSpoilerWarnings =
   ref<DeferredAutotrackerSpoilerWarnings | null>(null);
@@ -2931,6 +2937,7 @@ function closeSpoilerSettingsWarningDialog() {
   spoilerSettingsWarnings.value = [];
   spoilerUnknownSettings.value = [];
   spoilerAutotrackerWarningMessage.value = null;
+  spoilerLegacyWarningMessage.value = null;
 }
 
 function cancelAutotrackerSpoilerRequiredDialog() {
@@ -3188,9 +3195,14 @@ function cancelSpoilerStartingItemsPlayer() {
 async function applySpoilerLog(text: string, selectedPlayer?: number) {
   if (isApplyingSettings.value) return false;
   const parsed = parseSpoilerLog(text, { player: selectedPlayer });
+
+  // Normalize legacy settings keys (v30.1 → v31.0) before applying.
+  // (Legacy detection / warning message is handled in handleSpoilerFile.)
+  const normalizedSettings = normalizeSpoilerSettings(parsed.settings);
+
   const settingsPatch: Record<string, unknown> = {};
 
-  for (const [key, value] of Object.entries(parsed.settings)) {
+  for (const [key, value] of Object.entries(normalizedSettings)) {
     if (!supportedSettingKeys.has(key)) continue;
     const def = settingsByKey.get(key);
     settingsPatch[key] = coerceSettingValue(value, def);
@@ -3274,6 +3286,15 @@ async function applySpoilerLog(text: string, selectedPlayer?: number) {
 
   applySpoilerRewardAssignments(parsed, nextSettings, selectedPlayer);
 
+  // Synthesize cross-game counterpart items for CrossWarp (OoT↔MM songs)
+  // based on normalized settings. This ensures that e.g. MM_SONG_TP_FOREST
+  // is present when OOT_SONG_TP_FOREST is a starting item and songMinuetMm
+  // is enabled (either natively or via legacy crossWarpOot normalization).
+  const currentInventory = { ...sessionStore.inventoryById };
+  if (synthesizeCrossWarpItemsForInventory(currentInventory, nextSettings)) {
+    sessionStore.setInventoryFromMap(new Map(Object.entries(currentInventory)));
+  }
+
   if (parsed.junkLocations.length > 0) {
     applyJunkLocations(parsed.junkLocations);
   }
@@ -3291,8 +3312,21 @@ async function handleSpoilerFile(file: File) {
     const parsed = parseSpoilerLog(text);
     const playerOptions = getSpoilerLogPlayerOptions(parsed);
     closeSpoilerSettingsWarningDialog();
-    const warnings = collectSpoilerSettingsWarnings(parsed.settings);
-    const unknownSettings = collectSpoilerUnknownSettings(parsed.settings);
+
+    // Normalize legacy settings (v30.1 keys → v31.0) before checking
+    // for unknown settings, so old keys like crossWarpOot, sunSongMm etc.
+    // are translated to their v31.0 equivalents and don't appear as
+    // "unknown" in the warning dialog.
+    const hasLegacy = hasLegacyKeys(parsed.settings);
+    const normalizedSettings = normalizeSpoilerSettings(parsed.settings);
+    if (hasLegacy) {
+      spoilerLegacyWarningMessage.value =
+        'This spoiler log contains settings from an older or mixed OoTMM version. ' +
+        'The settings have been converted to v31.0 equivalents as best as possible.';
+    }
+
+    const warnings = collectSpoilerSettingsWarnings(normalizedSettings);
+    const unknownSettings = collectSpoilerUnknownSettings(normalizedSettings);
     let selectedPlayer: number | undefined;
 
     if (playerOptions.length > 1) {
@@ -3332,6 +3366,7 @@ async function handleSpoilerFile(file: File) {
 
     if (
       spoilerAutotrackerWarningMessage.value ||
+      spoilerLegacyWarningMessage.value ||
       warnings.length > 0 ||
       unknownSettings.length > 0
     ) {
@@ -3960,6 +3995,12 @@ onBeforeUnmount(() => {
           class="spoiler-player-dialog-text"
         >
           {{ spoilerAutotrackerWarningMessage }}
+        </p>
+        <p
+          v-if="spoilerLegacyWarningMessage"
+          class="spoiler-player-dialog-text spoiler-legacy-warning"
+        >
+          {{ spoilerLegacyWarningMessage }}
         </p>
         <p
           v-if="spoilerUnknownSettings.length > 0"

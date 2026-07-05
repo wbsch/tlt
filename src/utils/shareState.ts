@@ -14,6 +14,7 @@ import {
 } from '@packs/ootmm/data/settings';
 import * as TricksMod from '@ootmm/core/settings/tricks';
 import { ENTRANCES } from '@ootmm/data';
+import { normalizeSpoilerSettings } from '@packs/ootmm/utils/spoilerSettingsMigration';
 
 const SHARE_HASH_PARAM = 's';
 const SHARE_PAYLOAD_PREFIX = 'v1.';
@@ -270,14 +271,20 @@ function diffSettingsFromDefaults(
 function mergeSettingsWithDefaults(
   diff: Record<string, unknown>,
 ): Record<string, unknown> {
+  // Normalize old keys (v30.1) to v31.0 before merging with defaults,
+  // so e.g. crossWarpOot: true becomes songMinuetMm: true etc.
+  const normalizedDiff = normalizeSpoilerSettings(
+    diff as Record<string, string | number | boolean>,
+  ) as Record<string, unknown>;
+
   const merged: Record<string, unknown> = {};
   for (const [key, value] of Object.entries(TRACKER_DEFAULT_SETTINGS)) {
-    merged[key] = Object.prototype.hasOwnProperty.call(diff, key)
-      ? diff[key]
+    merged[key] = Object.prototype.hasOwnProperty.call(normalizedDiff, key)
+      ? normalizedDiff[key]
       : structuredClone(value);
   }
 
-  for (const [key, value] of Object.entries(diff)) {
+  for (const [key, value] of Object.entries(normalizedDiff)) {
     if (Object.prototype.hasOwnProperty.call(merged, key)) continue;
     if (!TRACKER_EXTRA_SETTINGS_KEYS.has(key)) continue;
     merged[key] = structuredClone(value);

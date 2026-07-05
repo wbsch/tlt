@@ -39,6 +39,7 @@ import {
 } from '../utils/entranceRandomization';
 import { getGridItemDefinedMaxCount } from '../data/itemIcons';
 import { isValidCoopRoomCode } from '../utils/coopFlag';
+import { getCrossWarpCounterpart } from '../utils/spoilerSettingsMigration';
 
 const HISTORY_LIMIT = 200;
 const VANILLA_SILVER_RUPEE_PREFIX = 'OOT_RUPEE_SILVER_';
@@ -1280,6 +1281,16 @@ export const useOoTMMSessionStore = defineStore('ootmm-session', () => {
     const safeCount = Math.max(0, Math.floor(count));
     if (safeCount > 0) {
       next[itemId] = safeCount;
+
+      // Synthesize cross-game counterpart item if applicable
+      // (OoT↔MM CrossWarp songs)
+      const counterpart = getCrossWarpCounterpart(
+        itemId,
+        trackerSettings.value as Record<string, unknown>,
+      );
+      if (counterpart && !next[counterpart]) {
+        next[counterpart] = 1;
+      }
     } else {
       delete next[itemId];
     }

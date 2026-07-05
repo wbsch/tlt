@@ -1,0 +1,164 @@
+/**
+ * Per-key normalization for OoTMM spoiler settings across versions.
+ *
+ * Scans raw settings for known old keys (v30.1) and translates them
+ * one-by-one into their v31.0 equivalents. No version detection — each
+ * old key is handled independently so DEV builds with mixed keys work.
+ *
+ * Also provides cross-game (CrossWarp) item synthesis: when an OoT warp
+ * song is collected and the corresponding extension setting is enabled,
+ * the MM counterpart is automatically added to the inventory, and vice
+ * versa.
+ */
+
+// ── CrossWarp mapping tables ────────────────────────────────────────────────
+
+/** OoT warp song → [MM counterpart item, MM extension setting key] */
+const CROSS_WARP_OOT_TO_MM: Record<string, [string, string]> = {
+  OOT_SONG_TP_FOREST: ['MM_SONG_TP_FOREST', 'songMinuetMm'],
+  OOT_SONG_TP_FIRE: ['MM_SONG_TP_FIRE', 'songBoleroMm'],
+  OOT_SONG_TP_WATER: ['MM_SONG_TP_WATER', 'songSerenadeMm'],
+  OOT_SONG_TP_SHADOW: ['MM_SONG_TP_SHADOW', 'songRequiemMm'],
+  OOT_SONG_TP_SPIRIT: ['MM_SONG_TP_SPIRIT', 'songNocturneMm'],
+  OOT_SONG_TP_LIGHT: ['MM_SONG_TP_LIGHT', 'songPreludeMm'],
+};
+
+/** MM item → [OoT counterpart item, OoT extension setting key] */
+const CROSS_WARP_MM_TO_OOT: Record<string, [string, string]> = {
+  MM_SONG_SOARING: ['OOT_SONG_SOARING', 'songSoaringOot'],
+};
+
+// ── Normalization ───────────────────────────────────────────────────────────
+
+/**
+ * Per-key normalization: scans raw settings for known old keys and
+ * translates them one-by-one into their v31.0 equivalents.
+ *
+ * No version detection — each old key is handled independently.
+ * DEV builds with a mix of old and new keys work correctly.
+ */
+export function normalizeSpoilerSettings(
+  rawSettings: Record<string, string | number | boolean>,
+): Record<string, string | number | boolean> {
+  const result = { ...rawSettings };
+
+  // ── crossWarpOot → individual song*Mm extensions ──
+  if ('crossWarpOot' in result) {
+    if (result.crossWarpOot === true) {
+      result.songMinuetMm = true;
+      result.songBoleroMm = true;
+      result.songSerenadeMm = true;
+      result.songRequiemMm = true;
+      result.songNocturneMm = true;
+      result.songPreludeMm = true;
+    }
+    delete result.crossWarpOot;
+  }
+
+  // ── crossWarpMm → songSoaringOot + agelessSoaring ──
+  if ('crossWarpMm' in result) {
+    const value = String(result.crossWarpMm ?? 'none');
+    delete result.crossWarpMm;
+    if (value === 'childOnly') {
+      result.songSoaringOot = true;
+      result.agelessSoaring = false;
+    } else if (value === 'full') {
+      result.songSoaringOot = true;
+      result.agelessSoaring = true;
+    }
+    // 'none': both stay at their current value (or false if absent)
+  }
+
+  // ── progressiveGoronLullaby → progressiveGoronLullabyMm ──
+  if ('progressiveGoronLullaby' in result) {
+    result.progressiveGoronLullabyMm = result.progressiveGoronLullaby;
+    delete result.progressiveGoronLullaby;
+  }
+
+  // ── sunSongMm → songSunMm ──
+  if ('sunSongMm' in result) {
+    result.songSunMm = result.sunSongMm;
+    delete result.sunSongMm;
+  }
+
+  return result;
+}
+
+/**
+ * Returns true if the raw settings contain at least one known legacy key
+ * that `normalizeSpoilerSettings` would translate.
+ */
+export function hasLegacyKeys(rawSettings: Record<string, unknown>): boolean {
+  return (
+    'crossWarpOot' in rawSettings ||
+    'crossWarpMm' in rawSettings ||
+    'progressiveGoronLullaby' in rawSettings ||
+    'sunSongMm' in rawSettings
+  );
+}
+
+// ── CrossWarp item synthesis ────────────────────────────────────────────────
+
+/**
+ * If `itemId` has a cross-game counterpart that is enabled in settings,
+ * return the counterpart item ID. Otherwise return null.
+ *
+ * Uses NORMALIZED settings (songMinuetMm, songSoaringOot, etc.),
+ * which works for both migrated v30.1 sessions and native v31.0 sessions.
+ */
+export function getCrossWarpCounterpart(
+  itemId: string,
+  settings: Record<string, unknown>,
+): string | null {
+  const ootToMm = CROSS_WARP_OOT_TO_MM[itemId];
+  if (ootToMm) {
+    const [mmItem, mmSetting] = ootToMm;
+    if (settings[mmSetting] === true) return mmItem;
+    return null;
+  }
+  const mmToOot = CROSS_WARP_MM_TO_OOT[itemId];
+  if (mmToOot) {
+    const [ootItem, ootSetting] = mmToOot;
+    if (settings[ootSetting] === true) return ootItem;
+    return null;
+  }
+  return null;
+}
+
+/**
+ * Scans the entire inventory and adds missing cross-game counterparts
+ * for CrossWarp items enabled in settings.
+ *
+ * Returns `true` if at least one item was added.
+ */
+export function synthesizeCrossWarpItemsForInventory(
+  inventory: Record<string, number>,
+  settings: Record<string, unknown>,
+): boolean {
+  let changed = false;
+  for (const [ootItem, [mmItem, mmSetting]] of Object.entries(
+    CROSS_WARP_OOT_TO_MM,
+  )) {
+    if (
+      inventory[ootItem] &&
+      !inventory[mmItem] &&
+      settings[mmSetting] === true
+    ) {
+      inventory[mmItem] = 1;
+      changed = true;
+    }
+  }
+  for (const [mmItem, [ootItem, ootSetting]] of Object.entries(
+    CROSS_WARP_MM_TO_OOT,
+  )) {
+    if (
+      inventory[mmItem] &&
+      !inventory[ootItem] &&
+      settings[ootSetting] === true
+    ) {
+      inventory[ootItem] = 1;
+      changed = true;
+    }
+  }
+  return changed;
+}

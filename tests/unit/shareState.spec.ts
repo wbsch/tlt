@@ -539,4 +539,89 @@ describe('shareState', () => {
       existingSnapshot,
     );
   });
+
+  it('normalizes legacy keys in mergeSettingsWithDefaults via shared state import', () => {
+    const payload = makeCompressedPayload({
+      v: 1,
+      stores: {
+        app: {
+          selectedPackId: 'ootmm',
+        },
+        'ootmm-session': {
+          trackerSettings: {
+            progressiveGoronLullaby: 'single',
+          },
+        },
+      },
+    });
+
+    window.localStorage.clear();
+    window.history.replaceState(null, '', `/#s=${payload}`);
+
+    shareState.importShareStateFromCurrentUrl();
+
+    expect(readPersistedStore(STORAGE_KEYS.session)).toMatchObject({
+      trackerSettings: expect.objectContaining({
+        progressiveGoronLullabyMm: 'single',
+      }),
+    });
+    // The old key should not appear in the persisted settings
+    expect(
+      (
+        readPersistedStore(STORAGE_KEYS.session)?.trackerSettings as Record<
+          string,
+          unknown
+        >
+      )?.progressiveGoronLullaby,
+    ).toBeUndefined();
+  });
+
+  it('normalizes crossWarpOot and synthesizes items via shared state import', () => {
+    const payload = makeCompressedPayload({
+      v: 1,
+      stores: {
+        app: {
+          selectedPackId: 'ootmm',
+        },
+        'ootmm-session': {
+          trackerSettings: {
+            crossWarpOot: true,
+          },
+          inventoryById: {
+            OOT_SONG_TP_FOREST: 1,
+          },
+        },
+      },
+    });
+
+    window.localStorage.clear();
+    window.history.replaceState(null, '', `/#s=${payload}`);
+
+    shareState.importShareStateFromCurrentUrl();
+
+    expect(readPersistedStore(STORAGE_KEYS.session)).toMatchObject({
+      trackerSettings: expect.objectContaining({
+        songMinuetMm: true,
+        songBoleroMm: true,
+      }),
+    });
+    // The crosswarp counterpart should be synthesized in the inventory
+    expect(
+      (
+        readPersistedStore(STORAGE_KEYS.session)?.inventoryById as Record<
+          string,
+          unknown
+        >
+      )?.MM_SONG_TP_FOREST,
+    ).toBe(1);
+    // The old key should not appear
+    expect(
+      (
+        readPersistedStore(STORAGE_KEYS.session)?.trackerSettings as Record<
+          string,
+          unknown
+        >
+      )?.crossWarpOot,
+    ).toBeUndefined();
+  });
 });
