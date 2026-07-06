@@ -67,5 +67,8 @@
   "triforcePieces",
   "triforceSharedMulti",
   "voidWarpMm",
-  "noDuplicatePlaythroughHints"
+  "noDuplicatePlaythroughHints",
+  "mmStyleAirMovementOot",
+  "ootHyperEnemies",
+  "mmHyperEnemies"
 ]
