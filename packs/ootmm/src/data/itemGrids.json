@@ -404,20 +404,13 @@
                     "scale": 1.05,
                     "rows": [
                       [
-                        "OOT_MASK_BLAST",
-                        "OOT_MASK_STONE",
-                        "OOT_SONG_EMPTINESS",
-                        "OOT_SONG_NOTE_EMPTINESS",
-                        "OOT_BUTTON_A"
-                      ],
-                      [
                         "OOT_BUTTON_C_DOWN",
                         "OOT_BUTTON_C_LEFT",
                         "OOT_BUTTON_C_RIGHT",
                         "OOT_BUTTON_C_UP"
                       ],
                       [
-                        "OOT_SPIN_UPGRADE",
+                        "OOT_BUTTON_A",
                         "OOT_SKELETON_KEY",
                         "OOT_PLATINUM_TOKEN",
                         "OOT_RUPEE_MAGICAL"
@@ -535,6 +528,29 @@
                   }
                 ]
               }
+            ]
+          }
+        ]
+      },
+      {
+        "type": "section",
+        "title": "MM Item Extensions",
+        "padding": "5,10",
+        "margin": "0,8",
+        "content": [
+          {
+            "type": "itemgrid",
+            "h_alignment": "left",
+            "item_margin": "1,1",
+            "scale": 1.05,
+            "rows": [
+              [
+                "OOT_MASK_BLAST",
+                "OOT_MASK_STONE",
+                "OOT_SONG_EMPTINESS",
+                "OOT_SONG_NOTE_EMPTINESS"
+              ],
+              ["OOT_SPIN_UPGRADE", "OOT_GREAT_FAIRY_SWORD"]
             ]
           }
         ]
@@ -1049,14 +1065,19 @@
                     "MM_SPELL_LOVE",
                     "MM_STONE_OF_AGONY"
                   ],
-                  ["MM_HAMMER", "MM_STRENGTH", "MM_SCALE", "MM_SHIELD_DEKU"],
+                  ["MM_HAMMER", "MM_STRENGTH", "MM_SLINGSHOT", "MM_BOOMERANG"],
                   [
                     "MM_BOOTS_IRON",
                     "MM_BOOTS_HOVER",
                     "MM_TUNIC_GORON",
                     "MM_TUNIC_ZORA"
                   ],
-                  ["MM_SONG_SUN", "MM_SONG_NOTE_SUN"]
+                  [
+                    "MM_SONG_SUN",
+                    "MM_SONG_NOTE_SUN",
+                    "MM_SCALE",
+                    "MM_SHIELD_DEKU"
+                  ]
                 ]
               }
             ]

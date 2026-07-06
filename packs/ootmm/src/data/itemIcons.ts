@@ -51,6 +51,7 @@ const RAW_ITEM_ICONS: Record<string, string> = {
   OOT_SWORD_BIGGORON: 'images/sword3.png',
   OOT_SWORD_KNIFE: 'images/sword_giants_knife.png',
   OOT_SPIN_UPGRADE: 'images/great_spin_attack.png',
+  OOT_GREAT_FAIRY_SWORD: 'images/items/mm_fairysword.png',
 
   // Shields
   OOT_SHIELD_DEKU: 'images/shield1.png',
@@ -280,6 +281,8 @@ const RAW_ITEM_ICONS: Record<string, string> = {
   // Tunics
   MM_TUNIC_GORON: 'images/redtunic.png',
   MM_TUNIC_ZORA: 'images/bluetunic.png',
+
+  MM_BOOMERANG: 'images/boomerang.png',
 
   // Songs
   MM_SONG_TIME: 'images/items/mm_songoftime.png',
@@ -982,6 +985,18 @@ const RAW_GRID_ICON_VARIANTS: Record<string, GridIconVariantConfig> = {
       overlays: BOW_OVERLAY_VALUES,
       startUndimmed: false,
       autoSelectItemId: 'OOT_SEEDS_30',
+    },
+  },
+  MM_SLINGSHOT: {
+    default: {
+      icons: [
+        'images/slingshot.png',
+        'images/slingshot.png',
+        'images/slingshot.png',
+      ],
+      overlays: BOW_OVERLAY_VALUES,
+      startUndimmed: false,
+      autoSelectItemId: 'MM_SEEDS_30',
     },
   },
   'OOT_HOOKSHOT|SHARED_HOOKSHOT': {
