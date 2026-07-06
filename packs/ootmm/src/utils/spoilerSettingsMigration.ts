@@ -96,6 +96,11 @@ export function normalizeSpoilerSettings(
     // 'none' → omit (equivalent to { type: 'none' }, which is the default)
   }
 
+  // ── moon (wasn't in older versions; default to 'custom' to reproduce old behavior) ──
+  if (!('moon' in result)) {
+    result.moon = 'custom';
+  }
+
   return result;
 }
 

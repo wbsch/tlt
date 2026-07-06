@@ -9,13 +9,13 @@ import {
 describe('normalizeSpoilerSettings', () => {
   it('translates sunSongMm to songSunMm', () => {
     const result = normalizeSpoilerSettings({ sunSongMm: true });
-    expect(result).toEqual({ songSunMm: true });
+    expect(result).toEqual({ songSunMm: true, moon: 'custom' });
     expect('sunSongMm' in result).toBe(false);
   });
 
   it('translates sunSongMm with a value other than true', () => {
     const result = normalizeSpoilerSettings({ sunSongMm: false });
-    expect(result).toEqual({ songSunMm: false });
+    expect(result).toEqual({ songSunMm: false, moon: 'custom' });
     expect('sunSongMm' in result).toBe(false);
   });
 
@@ -23,7 +23,10 @@ describe('normalizeSpoilerSettings', () => {
     const result = normalizeSpoilerSettings({
       progressiveGoronLullaby: 'progressive',
     });
-    expect(result).toEqual({ progressiveGoronLullabyMm: 'progressive' });
+    expect(result).toEqual({
+      progressiveGoronLullabyMm: 'progressive',
+      moon: 'custom',
+    });
     expect('progressiveGoronLullaby' in result).toBe(false);
   });
 
@@ -31,7 +34,10 @@ describe('normalizeSpoilerSettings', () => {
     const result = normalizeSpoilerSettings({
       progressiveGoronLullaby: 'single',
     });
-    expect(result).toEqual({ progressiveGoronLullabyMm: 'single' });
+    expect(result).toEqual({
+      progressiveGoronLullabyMm: 'single',
+      moon: 'custom',
+    });
   });
 
   it('translates crossWarpOot true to six song*Mm settings', () => {
@@ -84,6 +90,7 @@ describe('normalizeSpoilerSettings', () => {
       songSoaringOot: true,
       agelessSoaring: false,
       mode: 'single',
+      moon: 'custom',
     });
   });
 
@@ -103,6 +110,26 @@ describe('normalizeSpoilerSettings', () => {
     expect('sunSongMm' in result).toBe(false);
     // Unrelated keys preserved
     expect(result.mode).toBe('open');
+    // Missing moon defaults to 'custom'
+    expect(result.moon).toBe('custom');
+  });
+
+  it('defaults missing moon to custom', () => {
+    const result = normalizeSpoilerSettings({ mode: 'single' });
+    expect(result.moon).toBe('custom');
+  });
+
+  it('preserves existing moon setting', () => {
+    const result = normalizeSpoilerSettings({ moon: 'open', mode: 'single' });
+    expect(result.moon).toBe('open');
+  });
+
+  it('preserves existing moon vanilla setting', () => {
+    const result = normalizeSpoilerSettings({
+      moon: 'vanilla',
+      mode: 'single',
+    });
+    expect(result.moon).toBe('vanilla');
   });
 });
 
