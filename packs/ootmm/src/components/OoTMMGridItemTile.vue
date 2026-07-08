@@ -168,7 +168,10 @@ onBeforeUnmount(() => {
       @error="context.handleImageError"
     />
     <span
-      v-if="context.getGridIconBadge(props.itemId)"
+      v-if="
+        context.getGridIconBadge(props.itemId) &&
+        !context.isSubmenuItem(props.itemId)
+      "
       class="item-icon-badge"
       :class="{ disabled: context.isItemIconDisabled(props.itemId) }"
     >
