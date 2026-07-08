@@ -146,6 +146,7 @@ export const PUBLIC_IMAGE_ASSET_VERSIONS = {
   'images/items/mm_woodfall_stray_fairy.png': 'd88c88e1c03d',
   'images/items/mm_zora.png': '85d49ffb1184',
   'images/keaton.png': '652484eb83a1',
+  'images/key_rusty.png': 'bd72363d71a9',
   'images/key_skeleton.png': '67d30403197f',
   'images/label_master_quest.png': '3adaf27cfe21',
   'images/lens.png': '0d5d3d019ce8',

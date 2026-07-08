@@ -413,7 +413,57 @@
                         "OOT_BUTTON_A",
                         "OOT_SKELETON_KEY",
                         "OOT_PLATINUM_TOKEN",
-                        "OOT_RUPEE_MAGICAL"
+                        "OOT_RUPEE_MAGICAL",
+                        {
+                          "ref": "oot_rusty_keys_submenu",
+                          "item": "OOT_RUSTY_KEY_TREASURE_CHEST_GAME",
+                          "title": "Rusty Keys",
+                          "submenu": {
+                            "type": "itemgrid",
+                            "h_alignment": "left",
+                            "item_margin": "1,1",
+                            "scale": 1.05,
+                            "rows": [
+                              [
+                                "oot_rusty_market_label",
+                                "OOT_RUSTY_KEY_TREASURE_CHEST_GAME",
+                                "OOT_RUSTY_KEY_GUARD_HOUSE",
+                                "OOT_RUSTY_KEY_DOG_LADY_HOUSE",
+                                "OOT_RUSTY_KEY_BACK_ALLEY_HOUSE",
+                                "OOT_RUSTY_KEY_BOMBCHU_SHOP",
+                                "OOT_RUSTY_KEY_MASK_SHOP",
+                                "OOT_RUSTY_KEY_CHILD_BAZAAR",
+                                "OOT_RUSTY_KEY_CHILD_POTION_SHOP",
+                                "OOT_RUSTY_KEY_CHILD_SHOOTING_GALLERY",
+                                "OOT_RUSTY_KEY_BOMBCHU_BOWLING"
+                              ],
+                              [
+                                "oot_rusty_ranch_label",
+                                "OOT_RUSTY_KEY_RANCH_STABLE",
+                                "OOT_RUSTY_KEY_RANCH_HOUSE",
+                                "OOT_RUSTY_KEY_RANCH_HOUSE_ROOM",
+                                "OOT_RUSTY_KEY_SILO",
+                                "oot_rusty_outside_label",
+                                "OOT_RUSTY_KEY_LABORATORY",
+                                "OOT_RUSTY_KEY_FISHING_POND",
+                                "OOT_RUSTY_KEY_HYRULE_CASTLE"
+                              ],
+                              [
+                                "oot_rusty_kakariko_label",
+                                "OOT_RUSTY_KEY_GRAVEYARD",
+                                "OOT_RUSTY_KEY_WINDMILL",
+                                "OOT_RUSTY_KEY_IMPA_HOUSE",
+                                "OOT_RUSTY_KEY_CARPENTER_HOUSE",
+                                "OOT_RUSTY_KEY_GRANNY_POTION_SHOP",
+                                "OOT_RUSTY_KEY_ADULT_SHOOTING_GALLERY",
+                                "OOT_RUSTY_KEY_SKULLTULA_HOUSE",
+                                "OOT_RUSTY_KEY_ADULT_BAZAAR",
+                                "OOT_RUSTY_KEY_ADULT_POTION_SHOP",
+                                "OOT_RUSTY_KEY_ADULT_POTION_SHOP_BACK"
+                              ]
+                            ]
+                          }
+                        }
                       ]
                     ]
                   }
@@ -1168,6 +1218,77 @@
                     "MM_CLOCK4",
                     "MM_CLOCK5",
                     "MM_CLOCK6"
+                  ],
+                  [
+                    {
+                      "ref": "mm_rusty_keys_submenu_tall",
+                      "item": "MM_RUSTY_KEY_TOURIST_INFORMATION",
+                      "title": "Rusty Keys",
+                      "submenu": {
+                        "type": "itemgrid",
+                        "h_alignment": "left",
+                        "item_margin": "1,1",
+                        "scale": 1.05,
+                        "rows": [
+                          [
+                            "mm_rusty_town_label",
+                            "MM_RUSTY_KEY_POST_OFFICE",
+                            "MM_RUSTY_KEY_SWORDSMAN_SCHOOL",
+                            "MM_RUSTY_KEY_LOTTERY",
+                            "MM_RUSTY_KEY_BOMB_SHOP",
+                            "MM_RUSTY_KEY_TRADING_POST",
+                            "MM_RUSTY_KEY_CURIOSITY_SHOP",
+                            "MM_RUSTY_KEY_KAFEI_HIDEOUT",
+                            "MM_RUSTY_KEY_TOWN_ARCHERY",
+                            "MM_RUSTY_KEY_TREASURE_CHEST_GAME",
+                            "MM_RUSTY_KEY_HONEY_DARLING"
+                          ],
+                          [
+                            "MM_RUSTY_KEY_MILK_BAR",
+                            "MM_RUSTY_KEY_OBSERVATORY",
+                            "MM_RUSTY_KEY_MAYOR_RESIDENCE",
+                            "MM_RUSTY_KEY_MAYOR_RESIDENCE_OFFICE",
+                            "MM_RUSTY_KEY_MAYOR_RESIDENCE_SALON",
+                            "MM_RUSTY_KEY_MAYOR_RESIDENCE_KAFEI",
+                            "mm_rusty_swamp_label",
+                            "MM_RUSTY_KEY_POTION_SHOP",
+                            "MM_RUSTY_KEY_TOURIST_INFORMATION",
+                            "MM_RUSTY_KEY_SWAMP_ARCHERY"
+                          ],
+                          [
+                            "mm_rusty_inn_label",
+                            "MM_RUSTY_KEY_STOCK_POT_INN",
+                            "MM_RUSTY_KEY_STOCK_POT_INN_ROOF",
+                            "MM_RUSTY_KEY_GRANDMA_ROOM",
+                            "MM_RUSTY_KEY_STOCK_POT_INN_STAFF_ROOM",
+                            "MM_RUSTY_KEY_STOCK_POT_INN_DORMITORY",
+                            "mm_rusty_ikana_label",
+                            "MM_RUSTY_KEY_MUSIC_HOUSE",
+                            "MM_RUSTY_KEY_BENEATH_GRAVEYARD",
+                            "MM_RUSTY_KEY_DAMPE_HOUSE"
+                          ],
+                          [
+                            "mm_rusty_mtn_label",
+                            "MM_RUSTY_KEY_BLACKSMITH",
+                            "mm_rusty_bay_label",
+                            "MM_RUSTY_KEY_LABORATORY",
+                            "MM_RUSTY_KEY_ZORA_SHOP",
+                            "MM_RUSTY_KEY_ZORA_JAPAS_ROOM",
+                            "MM_RUSTY_KEY_ZORA_TIJO_ROOM",
+                            "MM_RUSTY_KEY_ZORA_LULU_ROOM",
+                            "MM_RUSTY_KEY_ZORA_EVAN_ROOM"
+                          ],
+                          [
+                            "mm_rusty_ranch_label",
+                            "MM_RUSTY_KEY_RANCH_HOUSE",
+                            "MM_RUSTY_KEY_RANCH_BARN",
+                            "MM_RUSTY_KEY_RANCH_HOUSE_ROOM",
+                            "MM_RUSTY_KEY_DOG_RACETRACK",
+                            "MM_RUSTY_KEY_CUCCO_SHACK"
+                          ]
+                        ]
+                      }
+                    }
                   ]
                 ]
               }

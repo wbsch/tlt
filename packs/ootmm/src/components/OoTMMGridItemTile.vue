@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { inject, onBeforeUnmount } from 'vue';
+import { inject, onBeforeUnmount, ref, computed } from 'vue';
 import type { StyleValue } from 'vue';
 import { itemGridRenderContextKey } from './itemGridSchema';
 import OoTMMGridNode from './OoTMMGridNode.vue';
@@ -28,6 +28,30 @@ if (!injectedContext) {
 }
 
 const context = injectedContext;
+
+const gridItemRef = ref<HTMLElement | null>(null);
+
+const submenuPanelStyle = computed(() => {
+  if (!context.isSubmenuOpen(props.itemId) || !gridItemRef.value) {
+    return undefined;
+  }
+  const rect = gridItemRef.value.getBoundingClientRect();
+  const spaceBelow = window.innerHeight - rect.bottom;
+  // Estimate ~350px for the panel (header + padding + ~6 rows × ~40px)
+  const fitsBelow = spaceBelow >= 300;
+  const style: Record<string, string> = {
+    position: 'fixed',
+    left: '16px',
+    right: 'auto',
+    zIndex: '9999',
+  };
+  if (fitsBelow) {
+    style.top = `${rect.bottom + 8}px`;
+  } else {
+    style.bottom = `${window.innerHeight - rect.top + 8}px`;
+  }
+  return style;
+});
 
 function clearLongPressState(): void {
   if (longPressTimer !== null) {
@@ -128,6 +152,7 @@ onBeforeUnmount(() => {
 
 <template>
   <div
+    ref="gridItemRef"
     class="grid-item"
     :class="[
       context.getGridItemClasses(props.itemId),
@@ -323,32 +348,35 @@ onBeforeUnmount(() => {
         </button>
       </div>
     </div>
-    <div
-      v-if="
-        context.isSubmenuItem(props.itemId) &&
-        context.isSubmenuOpen(props.itemId)
-      "
-      class="submenu-panel"
-      @click.stop
-      @mousedown.stop
-      @contextmenu.stop.prevent
-      @wheel.stop
-    >
-      <div class="submenu-panel__header">
-        <span class="submenu-panel__title">{{
-          context.getGridItemTitle(props.itemId)
-        }}</span>
-      </div>
-      <OoTMMGridNode
-        v-if="context.getSubmenuNode(props.itemId)"
-        :node="
-          context.getSubmenuNode(props.itemId) as NonNullable<
-            ReturnType<typeof context.getSubmenuNode>
-          >
+    <Teleport to="body">
+      <div
+        v-if="
+          context.isSubmenuItem(props.itemId) &&
+          context.isSubmenuOpen(props.itemId)
         "
-        :parent-scale="1"
-      />
-    </div>
+        class="submenu-panel"
+        :style="submenuPanelStyle"
+        @click.stop
+        @mousedown.stop
+        @contextmenu.stop.prevent
+        @wheel.stop
+      >
+        <div class="submenu-panel__header">
+          <span class="submenu-panel__title">{{
+            context.getGridItemTitle(props.itemId)
+          }}</span>
+        </div>
+        <OoTMMGridNode
+          v-if="context.getSubmenuNode(props.itemId)"
+          :node="
+            context.getSubmenuNode(props.itemId) as NonNullable<
+              ReturnType<typeof context.getSubmenuNode>
+            >
+          "
+          :parent-scale="1"
+        />
+      </div>
+    </Teleport>
   </div>
 </template>
 
@@ -632,11 +660,9 @@ onBeforeUnmount(() => {
 }
 
 .submenu-panel {
-  position: absolute;
-  top: calc(100% + 8px);
-  right: 0;
   min-width: 360px;
   max-width: min(420px, calc(100vw - 32px));
+  max-height: min(480px, calc(100vh - 100px));
   padding: 10px;
   border-radius: 10px;
   border: 1px solid rgba(244, 214, 89, 0.35);
@@ -644,9 +670,8 @@ onBeforeUnmount(() => {
   box-shadow:
     0 16px 40px rgba(0, 0, 0, 0.4),
     inset 0 1px 0 rgba(255, 255, 255, 0.06);
-  z-index: 40;
   cursor: default;
-  overflow: hidden;
+  overflow-y: auto;
   isolation: isolate;
 }
 
