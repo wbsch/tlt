@@ -422,6 +422,47 @@
             ]
           },
           {
+            "type": "section",
+            "title": "MM Item Extensions",
+            "padding": "5,10",
+            "margin": "0,8",
+            "content": [
+              {
+                "type": "itemgrid",
+                "h_alignment": "left",
+                "item_margin": "1,1",
+                "scale": 1.05,
+                "rows": [
+                  [
+                    "OOT_MASK_BLAST",
+                    "OOT_MASK_STONE",
+                    "OOT_MASK_KAMARO",
+                    "OOT_SONG_EMPTINESS",
+                    "OOT_SONG_NOTE_EMPTINESS",
+                    "OOT_SONG_HEALING",
+                    "OOT_SONG_NOTE_HEALING",
+                    "OOT_SONG_ZORA",
+                    "OOT_SONG_NOTE_ZORA",
+                    "OOT_POWDER_KEG"
+                  ],
+                  [
+                    "OOT_SPIN_UPGRADE",
+                    "OOT_GREAT_FAIRY_SWORD",
+                    "OOT_SONG_GORON_HALF",
+                    "OOT_SONG_GORON",
+                    "OOT_SONG_NOTE_GORON",
+                    "OOT_SONG_SOARING",
+                    "OOT_SONG_NOTE_SOARING",
+                    "OOT_SONG_AWAKENING",
+                    "OOT_SONG_NOTE_AWAKENING",
+                    "OOT_SONG_ORDER",
+                    "OOT_SONG_NOTE_ORDER"
+                  ]
+                ]
+              }
+            ]
+          },
+          {
             "type": "array",
             "orientation": "horizontal",
             "content": [
@@ -528,29 +569,6 @@
                   }
                 ]
               }
-            ]
-          }
-        ]
-      },
-      {
-        "type": "section",
-        "title": "MM Item Extensions",
-        "padding": "5,10",
-        "margin": "0,8",
-        "content": [
-          {
-            "type": "itemgrid",
-            "h_alignment": "left",
-            "item_margin": "1,1",
-            "scale": 1.05,
-            "rows": [
-              [
-                "OOT_MASK_BLAST",
-                "OOT_MASK_STONE",
-                "OOT_SONG_EMPTINESS",
-                "OOT_SONG_NOTE_EMPTINESS"
-              ],
-              ["OOT_SPIN_UPGRADE", "OOT_GREAT_FAIRY_SWORD"]
             ]
           }
         ]
@@ -1063,7 +1081,7 @@
                     "MM_SPELL_FIRE",
                     "MM_SPELL_WIND",
                     "MM_SPELL_LOVE",
-                    "MM_STONE_OF_AGONY"
+                    "MM_SCALE"
                   ],
                   ["MM_HAMMER", "MM_STRENGTH", "MM_SLINGSHOT", "MM_BOOMERANG"],
                   [
@@ -1075,8 +1093,33 @@
                   [
                     "MM_SONG_SUN",
                     "MM_SONG_NOTE_SUN",
-                    "MM_SCALE",
-                    "MM_SHIELD_DEKU"
+                    "MM_STONE_OF_AGONY",
+                    "MM_SHIELD_DEKU",
+                    "MM_MASK_GERUDO"
+                  ],
+                  [
+                    "MM_MASK_SKULL",
+                    "MM_MASK_SPOOKY",
+                    "MM_SONG_ZELDA",
+                    "MM_SONG_NOTE_ZELDA",
+                    "MM_SONG_SARIA",
+                    "MM_SONG_NOTE_SARIA"
+                  ],
+                  [
+                    "MM_SONG_TP_FOREST",
+                    "MM_SONG_NOTE_TP_FOREST",
+                    "MM_SONG_TP_FIRE",
+                    "MM_SONG_NOTE_TP_FIRE",
+                    "MM_SONG_TP_WATER",
+                    "MM_SONG_NOTE_TP_WATER",
+                    "MM_SONG_TP_SPIRIT",
+                    "MM_SONG_NOTE_TP_SPIRIT"
+                  ],
+                  [
+                    "MM_SONG_TP_SHADOW",
+                    "MM_SONG_NOTE_TP_SHADOW",
+                    "MM_SONG_TP_LIGHT",
+                    "MM_SONG_NOTE_TP_LIGHT"
                   ]
                 ]
               }

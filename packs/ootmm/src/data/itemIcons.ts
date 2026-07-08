@@ -34,6 +34,7 @@ const RAW_ITEM_ICONS: Record<string, string> = {
   OOT_LENS: 'images/lens.png',
   OOT_HAMMER: 'images/hammer.png',
   OOT_MAGIC_BEAN: 'images/bean.png',
+  OOT_POWDER_KEG: 'images/items/mm_keg.png',
 
   // Arrows
   OOT_ARROW_FIRE: 'images/arrow_fire.png',
@@ -80,6 +81,12 @@ const RAW_ITEM_ICONS: Record<string, string> = {
   OOT_SONG_TP_SHADOW: 'images/song_shadow.png',
   OOT_SONG_TP_LIGHT: 'images/song_light.png',
   OOT_SONG_EMPTINESS: 'images/song_elegy.png',
+  OOT_SONG_SOARING: 'images/song_soaring.png',
+  OOT_SONG_HEALING: 'images/song_healing.png',
+  OOT_SONG_AWAKENING: 'images/song_sonata.png',
+  OOT_SONG_GORON: 'images/song_lullaby.png',
+  OOT_SONG_ZORA: 'images/song_bossa_nova.png',
+  OOT_SONG_ORDER: 'images/song_oath.png',
   OOT_SONG_NOTE_ZELDA: 'images/song_zelda.png',
   OOT_SONG_NOTE_EPONA: 'images/song_epona.png',
   OOT_SONG_NOTE_SARIA: 'images/song_saria.png',
@@ -93,6 +100,12 @@ const RAW_ITEM_ICONS: Record<string, string> = {
   OOT_SONG_NOTE_TP_SHADOW: 'images/song_shadow.png',
   OOT_SONG_NOTE_TP_LIGHT: 'images/song_light.png',
   OOT_SONG_NOTE_EMPTINESS: 'images/song_elegy.png',
+  OOT_SONG_NOTE_SOARING: 'images/song_soaring.png',
+  OOT_SONG_NOTE_HEALING: 'images/song_healing.png',
+  OOT_SONG_NOTE_AWAKENING: 'images/song_sonata.png',
+  OOT_SONG_NOTE_GORON: 'images/song_lullaby.png',
+  OOT_SONG_NOTE_ZORA: 'images/song_bossa_nova.png',
+  OOT_SONG_NOTE_ORDER: 'images/song_oath.png',
 
   // Bottles
   OOT_BOTTLE_RUTO_LETTER: 'images/bottle_letter.png',
@@ -183,6 +196,7 @@ const RAW_ITEM_ICONS: Record<string, string> = {
   OOT_MASK_GERUDO: 'images/gerudo.png',
   OOT_MASK_BLAST: 'images/items/mm_blast.png',
   OOT_MASK_STONE: 'images/items/mm_stone.png',
+  OOT_MASK_KAMARO: 'images/items/mm_kamaro.png',
 
   // Trade sequence
   OOT_CHICKEN: 'images/cucco.png',
@@ -296,6 +310,14 @@ const RAW_ITEM_ICONS: Record<string, string> = {
   MM_SONG_ZORA: 'images/song_bossa_nova.png',
   MM_SONG_EMPTINESS: 'images/song_elegy.png',
   MM_SONG_ORDER: 'images/song_oath.png',
+  MM_SONG_ZELDA: 'images/song_zelda.png',
+  MM_SONG_SARIA: 'images/song_saria.png',
+  MM_SONG_TP_FOREST: 'images/song_forest.png',
+  MM_SONG_TP_FIRE: 'images/song_fire.png',
+  MM_SONG_TP_WATER: 'images/song_water.png',
+  MM_SONG_TP_SPIRIT: 'images/song_spirit.png',
+  MM_SONG_TP_SHADOW: 'images/song_shadow.png',
+  MM_SONG_TP_LIGHT: 'images/song_light.png',
   MM_SONG_NOTE_AWAKENING: 'images/song_sonata.png',
   MM_SONG_NOTE_EMPTINESS: 'images/song_elegy.png',
   MM_SONG_NOTE_EPONA: 'images/song_epona.png',
@@ -307,6 +329,14 @@ const RAW_ITEM_ICONS: Record<string, string> = {
   MM_SONG_NOTE_SUN: 'images/song_sun.png',
   MM_SONG_NOTE_TIME: 'images/song_time.png',
   MM_SONG_NOTE_ZORA: 'images/song_bossa_nova.png',
+  MM_SONG_NOTE_ZELDA: 'images/song_zelda.png',
+  MM_SONG_NOTE_SARIA: 'images/song_saria.png',
+  MM_SONG_NOTE_TP_FOREST: 'images/song_forest.png',
+  MM_SONG_NOTE_TP_FIRE: 'images/song_fire.png',
+  MM_SONG_NOTE_TP_WATER: 'images/song_water.png',
+  MM_SONG_NOTE_TP_SPIRIT: 'images/song_spirit.png',
+  MM_SONG_NOTE_TP_SHADOW: 'images/song_shadow.png',
+  MM_SONG_NOTE_TP_LIGHT: 'images/song_light.png',
 
   // Swords
   MM_SPIN_UPGRADE: 'images/great_spin_attack.png',
@@ -377,6 +407,9 @@ const RAW_ITEM_ICONS: Record<string, string> = {
   MM_MASK_GIBDO: 'images/items/mm_gibdo.png',
   MM_MASK_GARO: 'images/items/mm_garo.png',
   MM_MASK_CAPTAIN: 'images/items/mm_captain.png',
+  MM_MASK_GERUDO: 'images/gerudo.png',
+  MM_MASK_SKULL: 'images/skull.png',
+  MM_MASK_SPOOKY: 'images/spooky.png',
 
   // Boss remains
   MM_REMAINS_ODOLWA: 'images/items/mm_odolwa.png',
@@ -1098,6 +1131,12 @@ const RAW_GRID_ICON_VARIANTS: Record<string, GridIconVariantConfig> = {
     },
   },
   MM_SONG_GORON_HALF: {
+    default: {
+      icons: ['images/song_intro.png', 'images/song_lullaby.png'],
+      startUndimmed: false,
+    },
+  },
+  OOT_SONG_GORON_HALF: {
     default: {
       icons: ['images/song_intro.png', 'images/song_lullaby.png'],
       startUndimmed: false,
