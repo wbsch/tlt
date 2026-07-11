@@ -439,8 +439,8 @@ function toggleDungeon(id: string) {
 
 .song-select-wrap {
   position: relative;
-  width: 160px;
-  min-width: 160px;
+  width: 190px;
+  min-width: 190px;
 }
 
 .song-select-trigger {
@@ -526,6 +526,8 @@ function toggleDungeon(id: string) {
 .song-select-text {
   flex: 0 1 auto;
   white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .song-select-caret {
