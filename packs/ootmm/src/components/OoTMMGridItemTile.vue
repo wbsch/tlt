@@ -358,6 +358,7 @@ onBeforeUnmount(() => {
         :style="submenuPanelStyle"
         @click.stop
         @mousedown.stop
+        @pointerdown.stop
         @contextmenu.stop.prevent
         @wheel.stop
       >
