@@ -349,11 +349,41 @@ export function getMmSongChoices(
     SONG_CHOICES[14], // Sonata of Awakening
     SONG_CHOICES[15], // Goron Lullaby
     SONG_CHOICES[17], // New Wave Bossa Nova
+    SONG_CHOICES[18], // Elegy of Emptiness
     SONG_CHOICES[19], // Oath to Order
   ];
 
   if (settings.progressiveGoronLullabyMm === 'progressive') {
     allowed.push(SONG_CHOICES[16]); // Goron Lullaby (Intro)
+  }
+
+  // OoT songs that can be added to MM
+  if (settings.songSunMm) {
+    allowed.push(SONG_CHOICES[4]); // Sun's Song
+  }
+  if (settings.songZeldaLullabyMm) {
+    allowed.push(SONG_CHOICES[0]); // Zelda's Lullaby
+  }
+  if (settings.songSariasMm) {
+    allowed.push(SONG_CHOICES[2]); // Saria's Song
+  }
+  if (settings.songMinuetMm) {
+    allowed.push(SONG_CHOICES[6]); // Minuet of Forest
+  }
+  if (settings.songBoleroMm) {
+    allowed.push(SONG_CHOICES[7]); // Bolero of Fire
+  }
+  if (settings.songSerenadeMm) {
+    allowed.push(SONG_CHOICES[8]); // Serenade of Water
+  }
+  if (settings.songRequiemMm) {
+    allowed.push(SONG_CHOICES[9]); // Requiem of Spirit
+  }
+  if (settings.songNocturneMm) {
+    allowed.push(SONG_CHOICES[10]); // Nocturne of Shadow
+  }
+  if (settings.songPreludeMm) {
+    allowed.push(SONG_CHOICES[11]); // Prelude of Light
   }
 
   return allowed;
