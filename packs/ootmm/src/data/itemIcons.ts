@@ -541,6 +541,7 @@ const RAW_ITEM_ICONS: Record<string, string> = {
   SHARED_MASK_TRUTH: 'images/truth.png',
   SHARED_MASK_BLAST: 'images/items/mm_blast.png',
   SHARED_MASK_STONE: 'images/items/mm_stone.png',
+  SHARED_MASK_KAMARO: 'images/items/mm_kamaro.png',
   SHARED_SPIN_UPGRADE: 'images/great_spin_attack.png',
   SHARED_GREAT_FAIRY_SWORD: 'images/items/mm_fairysword.png',
   SHARED_STONE_OF_AGONY: 'images/agony.png',

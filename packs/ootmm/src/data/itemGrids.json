@@ -200,7 +200,11 @@
                     "SHARED_MASK_SPOOKY",
                     "SHARED_MASK_BUNNY"
                   ],
-                  ["SHARED_MASK_TRUTH", "SHARED_MASK_GERUDO"]
+                  [
+                    "SHARED_MASK_TRUTH",
+                    "SHARED_MASK_GERUDO",
+                    "SHARED_MASK_KAMARO"
+                  ]
                 ]
               }
             ]
