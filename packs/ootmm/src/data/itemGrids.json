@@ -234,9 +234,9 @@
                     "SHARED_PLATINUM_TOKEN"
                   ],
                   [
-                    "SHARED_SKELETON_KEY",
                     "SHARED_BUTTON_C_RIGHT",
-                    "SHARED_BUTTON_C_UP"
+                    "SHARED_BUTTON_C_UP",
+                    "SHARED_SKELETON_KEY"
                   ]
                 ]
               }
@@ -528,26 +528,26 @@
                     "OOT_MASK_BLAST",
                     "OOT_MASK_STONE",
                     "OOT_MASK_KAMARO",
-                    "OOT_SONG_EMPTINESS",
-                    "OOT_SONG_NOTE_EMPTINESS",
                     "OOT_SONG_HEALING",
                     "OOT_SONG_NOTE_HEALING",
-                    "OOT_SONG_ZORA",
-                    "OOT_SONG_NOTE_ZORA",
-                    "OOT_POWDER_KEG"
+                    "OOT_SONG_SOARING",
+                    "OOT_SONG_NOTE_SOARING",
+                    "OOT_SONG_ORDER",
+                    "OOT_SONG_NOTE_ORDER"
                   ],
                   [
                     "OOT_SPIN_UPGRADE",
                     "OOT_GREAT_FAIRY_SWORD",
+                    "OOT_POWDER_KEG",
+                    "OOT_SONG_AWAKENING",
+                    "OOT_SONG_NOTE_AWAKENING",
                     "OOT_SONG_GORON_HALF",
                     "OOT_SONG_GORON",
                     "OOT_SONG_NOTE_GORON",
-                    "OOT_SONG_SOARING",
-                    "OOT_SONG_NOTE_SOARING",
-                    "OOT_SONG_AWAKENING",
-                    "OOT_SONG_NOTE_AWAKENING",
-                    "OOT_SONG_ORDER",
-                    "OOT_SONG_NOTE_ORDER"
+                    "OOT_SONG_ZORA",
+                    "OOT_SONG_NOTE_ZORA",
+                    "OOT_SONG_EMPTINESS",
+                    "OOT_SONG_NOTE_EMPTINESS"
                   ]
                 ]
               }
@@ -1154,68 +1154,8 @@
       },
       {
         "type": "array",
-        "orientation": "horizontal",
+        "orientation": "vertical",
         "content": [
-          {
-            "type": "section",
-            "title": "OOT Extensions",
-            "padding": "5,10",
-            "margin": "0,8",
-            "content": [
-              {
-                "type": "itemgrid",
-                "h_alignment": "left",
-                "item_margin": "1,1",
-                "scale": 1.05,
-                "rows": [
-                  [
-                    "MM_SPELL_FIRE",
-                    "MM_SPELL_WIND",
-                    "MM_SPELL_LOVE",
-                    "MM_SCALE"
-                  ],
-                  ["MM_HAMMER", "MM_STRENGTH", "MM_SLINGSHOT", "MM_BOOMERANG"],
-                  [
-                    "MM_BOOTS_IRON",
-                    "MM_BOOTS_HOVER",
-                    "MM_TUNIC_GORON",
-                    "MM_TUNIC_ZORA"
-                  ],
-                  [
-                    "MM_SONG_SUN",
-                    "MM_SONG_NOTE_SUN",
-                    "MM_STONE_OF_AGONY",
-                    "MM_SHIELD_DEKU",
-                    "MM_MASK_GERUDO"
-                  ],
-                  [
-                    "MM_MASK_SKULL",
-                    "MM_MASK_SPOOKY",
-                    "MM_SONG_ZELDA",
-                    "MM_SONG_NOTE_ZELDA",
-                    "MM_SONG_SARIA",
-                    "MM_SONG_NOTE_SARIA"
-                  ],
-                  [
-                    "MM_SONG_TP_FOREST",
-                    "MM_SONG_NOTE_TP_FOREST",
-                    "MM_SONG_TP_FIRE",
-                    "MM_SONG_NOTE_TP_FIRE",
-                    "MM_SONG_TP_WATER",
-                    "MM_SONG_NOTE_TP_WATER",
-                    "MM_SONG_TP_SPIRIT",
-                    "MM_SONG_NOTE_TP_SPIRIT"
-                  ],
-                  [
-                    "MM_SONG_TP_SHADOW",
-                    "MM_SONG_NOTE_TP_SHADOW",
-                    "MM_SONG_TP_LIGHT",
-                    "MM_SONG_NOTE_TP_LIGHT"
-                  ]
-                ]
-              }
-            ]
-          },
           {
             "type": "section",
             "title": "Item Extensions",
@@ -1229,38 +1169,12 @@
                 "scale": 1.05,
                 "rows": [
                   [
-                    "MM_BUTTON_A",
-                    "MM_BUTTON_C_DOWN",
-                    "MM_BUTTON_C_LEFT",
-                    "MM_BUTTON_C_RIGHT",
-                    "MM_BUTTON_C_UP",
-                    "MM_PLATINUM_TOKEN"
-                  ],
-                  [
-                    "MM_OWL_CLOCK_TOWN",
-                    "MM_OWL_SOUTHERN_SWAMP",
-                    "MM_OWL_WOODFALL",
-                    "MM_OWL_MILK_ROAD",
-                    "MM_OWL_MOUNTAIN_VILLAGE",
-                    "MM_SKELETON_KEY"
-                  ],
-                  [
-                    "MM_OWL_SNOWHEAD",
-                    "MM_OWL_GREAT_BAY",
-                    "MM_OWL_ZORA_CAPE",
-                    "MM_OWL_IKANA_CANYON",
-                    "MM_OWL_STONE_TOWER",
-                    "MM_TRANSCENDENT_FAIRY"
-                  ],
-                  [
                     "MM_CLOCK1",
                     "MM_CLOCK2",
                     "MM_CLOCK3",
                     "MM_CLOCK4",
                     "MM_CLOCK5",
-                    "MM_CLOCK6"
-                  ],
-                  [
+                    "MM_CLOCK6",
                     {
                       "ref": "mm_rusty_keys_submenu_tall",
                       "item": "MM_RUSTY_KEY_TOURIST_INFORMATION",
@@ -1330,6 +1244,87 @@
                         ]
                       }
                     }
+                  ],
+                  [
+                    "MM_BUTTON_A",
+                    "MM_BUTTON_C_DOWN",
+                    "MM_BUTTON_C_LEFT",
+                    "MM_BUTTON_C_RIGHT",
+                    "MM_BUTTON_C_UP",
+                    "MM_PLATINUM_TOKEN"
+                  ],
+                  [
+                    "MM_OWL_CLOCK_TOWN",
+                    "MM_OWL_SOUTHERN_SWAMP",
+                    "MM_OWL_WOODFALL",
+                    "MM_OWL_MILK_ROAD",
+                    "MM_OWL_MOUNTAIN_VILLAGE",
+                    "MM_SKELETON_KEY"
+                  ],
+                  [
+                    "MM_OWL_SNOWHEAD",
+                    "MM_OWL_GREAT_BAY",
+                    "MM_OWL_ZORA_CAPE",
+                    "MM_OWL_IKANA_CANYON",
+                    "MM_OWL_STONE_TOWER",
+                    "MM_TRANSCENDENT_FAIRY"
+                  ]
+                ]
+              }
+            ]
+          },
+          {
+            "type": "section",
+            "title": "OOT Extensions",
+            "padding": "5,10",
+            "margin": "0,8",
+            "content": [
+              {
+                "type": "itemgrid",
+                "h_alignment": "left",
+                "item_margin": "1,1",
+                "scale": 1.05,
+                "rows": [
+                  [
+                    "MM_HAMMER",
+                    "MM_SLINGSHOT",
+                    "MM_BOOMERANG",
+                    "MM_SPELL_FIRE",
+                    "MM_SPELL_WIND",
+                    "MM_SPELL_LOVE",
+                    "MM_MASK_GERUDO",
+                    "MM_MASK_SKULL",
+                    "MM_MASK_SPOOKY"
+                  ],
+                  [
+                    "MM_BOOTS_IRON",
+                    "MM_BOOTS_HOVER",
+                    "MM_TUNIC_GORON",
+                    "MM_TUNIC_ZORA",
+                    "MM_STRENGTH",
+                    "MM_SCALE",
+                    "MM_STONE_OF_AGONY",
+                    "MM_SHIELD_DEKU"
+                  ],
+                  [
+                    "MM_SONG_ZELDA",
+                    "MM_SONG_NOTE_ZELDA",
+                    "MM_SONG_SARIA",
+                    "MM_SONG_NOTE_SARIA",
+                    "MM_SONG_SUN",
+                    "MM_SONG_NOTE_SUN",
+                    "MM_SONG_TP_FOREST",
+                    "MM_SONG_NOTE_TP_FOREST",
+                    "MM_SONG_TP_FIRE",
+                    "MM_SONG_NOTE_TP_FIRE",
+                    "MM_SONG_TP_WATER",
+                    "MM_SONG_NOTE_TP_WATER",
+                    "MM_SONG_TP_SPIRIT",
+                    "MM_SONG_NOTE_TP_SPIRIT",
+                    "MM_SONG_TP_SHADOW",
+                    "MM_SONG_NOTE_TP_SHADOW",
+                    "MM_SONG_TP_LIGHT",
+                    "MM_SONG_NOTE_TP_LIGHT"
                   ]
                 ]
               }
