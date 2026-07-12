@@ -363,6 +363,21 @@ const LABEL_VISIBLE_ITEM_MAP: Record<string, string[]> = {
     'MM_BOSS_KEY_ST',
     'MM_STRAY_FAIRY_ST',
   ],
+
+  // Rusty Keys – OoT section labels
+  oot_rusty_market_label: ['OOT_RUSTY_KEY_TREASURE_CHEST_GAME'],
+  oot_rusty_ranch_label: ['OOT_RUSTY_KEY_RANCH_STABLE'],
+  oot_rusty_outside_label: ['OOT_RUSTY_KEY_LABORATORY'],
+  oot_rusty_kakariko_label: ['OOT_RUSTY_KEY_GRAVEYARD'],
+
+  // Rusty Keys – MM section labels
+  mm_rusty_town_label: ['MM_RUSTY_KEY_TOURIST_INFORMATION'],
+  mm_rusty_swamp_label: ['MM_RUSTY_KEY_TOURIST_INFORMATION'],
+  mm_rusty_inn_label: ['MM_RUSTY_KEY_TOURIST_INFORMATION'],
+  mm_rusty_ikana_label: ['MM_RUSTY_KEY_TOURIST_INFORMATION'],
+  mm_rusty_mtn_label: ['MM_RUSTY_KEY_TOURIST_INFORMATION'],
+  mm_rusty_bay_label: ['MM_RUSTY_KEY_TOURIST_INFORMATION'],
+  mm_rusty_ranch_label: ['MM_RUSTY_KEY_TOURIST_INFORMATION'],
 };
 
 const labelItemIds = Object.keys(LABEL_VISIBLE_ITEM_MAP);

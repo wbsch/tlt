@@ -259,6 +259,8 @@ const BOTTLE_CONTENT_BASE_ITEM_IDS: Record<string, string> = {
 const VANILLA_SILVER_RUPEE_PREFIX = 'OOT_RUPEE_SILVER_';
 const GRID_WHEEL_OVERLAY_STATE_PREFIX = '__grid_wheel_overlay_state__:';
 const OWL_STATUE_PREFIX = 'MM_OWL_';
+const OOT_RUSTY_KEY_PREFIX = 'OOT_RUSTY_KEY_';
+const MM_RUSTY_KEY_PREFIX = 'MM_RUSTY_KEY_';
 
 const PRICE_COUNT_OOT_SHOPS = 64;
 const PRICE_COUNT_OOT_SCRUBS = 38;
@@ -1829,6 +1831,12 @@ export class OoTMMTracker implements TrackerPack {
     const hideOwlStatues =
       String((this.settings as { owlShuffle?: unknown })?.owlShuffle ?? '') ===
       'none';
+    const hideRustyKeysOot = !Boolean(
+      (this.settings as { rustyKeysOot?: unknown })?.rustyKeysOot,
+    );
+    const hideRustyKeysMm = !Boolean(
+      (this.settings as { rustyKeysMm?: unknown })?.rustyKeysMm,
+    );
     for (const [playerItem, count] of allItems) {
       if (!count || count <= 0) continue;
       const itemId = (playerItem as { item?: { id?: string } })?.item?.id;
@@ -1838,6 +1846,9 @@ export class OoTMMTracker implements TrackerPack {
         if (itemId === 'OOT_SMALL_KEY_TCG' && chestGameShuffle === 'vanilla')
           continue;
         if (hideOwlStatues && this.isOwlStatueItemId(itemId)) continue;
+        if (hideRustyKeysOot && itemId.startsWith(OOT_RUSTY_KEY_PREFIX))
+          continue;
+        if (hideRustyKeysMm && itemId.startsWith(MM_RUSTY_KEY_PREFIX)) continue;
         available.add(itemId);
       }
     }
