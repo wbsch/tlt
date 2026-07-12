@@ -37,7 +37,12 @@ const BOSS_TYPES = new Set(['boss']);
 const GROTTO_TYPES = new Set(['grotto', 'grave']);
 const REGION_TYPES = new Set(['region', 'region-extra', 'region-shortcut']);
 const OVERWORLD_TYPES = new Set(['overworld', 'overworld-pf']);
-const INTERIOR_TYPES = new Set(['indoors', 'indoors-extra', 'indoors-pf']);
+const INTERIOR_TYPES = new Set([
+  'indoors',
+  'indoors-extra',
+  'indoors-pf',
+  'indoors-telescope',
+]);
 const SPAWN_TYPES = new Set(['spawn-child', 'spawn-adult']);
 const WARP_TYPES = new Set(['one-way-song', 'one-way-statue']);
 const WALLMASTER_TYPES = new Set(['wallmaster']);
@@ -139,6 +144,7 @@ const POLARITY_IN = new Set<string>([
   'indoors',
   'indoors-pf',
   'indoors-extra',
+  'indoors-telescope',
   'indoors-special',
   'grotto',
   'grave',
@@ -270,6 +276,9 @@ function getEnabledInteriorSources(settings: Record<string, unknown>): {
     if (settings?.erPiratesWorld) {
       types.add('indoors-pf');
     }
+  }
+  if (settings?.erIndoorsTelescopes) {
+    types.add('indoors-telescope');
   }
   if (settings?.erIndoorsGameLinks) {
     for (const key of getActiveGameLinkKeys(settings)) {

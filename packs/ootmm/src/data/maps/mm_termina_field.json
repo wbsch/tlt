@@ -1949,6 +1949,22 @@
       ]
     },
     {
+      "coords": [964, 204],
+      "image": "telescope_entrance",
+      "type": "submenu",
+      "entranceMenu": {
+        "entranceIds": ["MM_TERMINA_FIELD_TELESCOPE"]
+      }
+    },
+    {
+      "coords": [30, 271],
+      "image": "telescope_entrance",
+      "type": "submenu",
+      "entranceMenu": {
+        "entranceIds": ["MM_CURIOSITY_SHOP_TELESCOPE"]
+      }
+    },
+    {
       "coords": [764, 156],
       "image": "boulder_grotto",
       "type": "submenu",

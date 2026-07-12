@@ -293,6 +293,14 @@
       }
     },
     {
+      "coords": [807, 377],
+      "image": "telescope_entrance",
+      "type": "submenu",
+      "entranceMenu": {
+        "entranceIds": ["MM_PIRATE_FORTRESS_TELESCOPE"]
+      }
+    },
+    {
       "coords": [589, 290],
       "image": "overworld_entrance",
       "type": "submenu",

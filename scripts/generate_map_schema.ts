@@ -48,6 +48,7 @@ const TRACKER_ENTRANCE_TYPES = new Set([
   'indoors',
   'indoors-extra',
   'indoors-pf',
+  'indoors-telescope',
   'spawn-child',
   'spawn-adult',
   'one-way',

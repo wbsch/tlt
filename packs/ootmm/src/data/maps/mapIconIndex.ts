@@ -69,6 +69,7 @@ export const MAP_ICON_INDEX = [
   'spawn',
   'spirit_medallion',
   'stray_fairy',
+  'telescope_entrance',
   'tree',
   'twinmolds_remain',
   'wallmaster',
