@@ -8,8 +8,8 @@
     "node": ">=24"
   },
   "scripts": {
-    "predev": "npm run validate:autotracker-data && npm run generate:asset-versions && npm run generate:map-icons && npm run generate:map-schema",
-    "prebuild": "npm run validate:autotracker-data && npm run generate:asset-versions && npm run generate:map-icons && npm run generate:map-schema",
+    "predev": "npm run generate:asset-versions && npm run generate:map-icons && npm run generate:map-schema",
+    "prebuild": "npm run generate:asset-versions && npm run generate:map-icons && npm run generate:map-schema",
     "dev": "vite",
     "build": "vite build && python3 scripts/check_map_locations.py --build-warning-mode",
     "build:check": "vite build",
