@@ -42,7 +42,7 @@ import {
 } from '../utils/entranceRandomization';
 import { getGridItemDefinedMaxCount } from '../data/itemIcons';
 import { isValidCoopRoomCode } from '../utils/coopFlag';
-import { getCrossWarpCounterpart } from '../utils/spoilerSettingsMigration';
+import { synthesizeCrossWarpItemsForInventory } from '../utils/spoilerSettingsMigration';
 
 const HISTORY_LIMIT = 200;
 const VANILLA_SILVER_RUPEE_PREFIX = 'OOT_RUPEE_SILVER_';
@@ -1268,7 +1268,17 @@ export const useOoTMMSessionStore = defineStore('ootmm-session', () => {
     options?: MutationOptions,
   ) {
     const previousSnapshot = captureSnapshotForMutation(options);
-    inventoryById.value = sanitizeInventoryRecord(mapToRecord(newInventory));
+    const next = mapToRecord(newInventory);
+
+    // Synthesize cross-game counterpart items for CrossWarp (OoT↔MM songs)
+    // so the MM counterpart is automatically added when the OoT warp song
+    // is tracked, and vice versa.
+    synthesizeCrossWarpItemsForInventory(
+      next,
+      trackerSettings.value as Record<string, unknown>,
+    );
+
+    inventoryById.value = sanitizeInventoryRecord(next);
     recomputeReachability();
     recordHistoryFromSnapshot(previousSnapshot);
     publishSyncOperation(
@@ -1290,19 +1300,18 @@ export const useOoTMMSessionStore = defineStore('ootmm-session', () => {
     const safeCount = Math.max(0, Math.floor(count));
     if (safeCount > 0) {
       next[itemId] = safeCount;
-
-      // Synthesize cross-game counterpart item if applicable
-      // (OoT↔MM CrossWarp songs)
-      const counterpart = getCrossWarpCounterpart(
-        itemId,
-        trackerSettings.value as Record<string, unknown>,
-      );
-      if (counterpart && !next[counterpart]) {
-        next[counterpart] = 1;
-      }
     } else {
       delete next[itemId];
     }
+
+    // Synchronize cross-game counterpart items (OoT↔MM CrossWarp songs):
+    // adds counterpart when source is present & setting enabled, removes
+    // when source is absent.
+    synthesizeCrossWarpItemsForInventory(
+      next,
+      trackerSettings.value as Record<string, unknown>,
+    );
+
     inventoryById.value = sanitizeInventoryRecord(next);
     recomputeReachability();
     recordHistoryFromSnapshot(previousSnapshot);
@@ -1367,6 +1376,15 @@ export const useOoTMMSessionStore = defineStore('ootmm-session', () => {
     const nextInventoryById = sanitizeInventoryRecord(
       mapToRecord(newInventory),
     );
+
+    // Synthesize cross-game counterpart items for CrossWarp (OoT↔MM songs)
+    // because the autotracker reads raw game memory which only contains
+    // the originally collected items, not the synthesized counterparts.
+    synthesizeCrossWarpItemsForInventory(
+      nextInventoryById,
+      trackerSettings.value as Record<string, unknown>,
+    );
+
     const nextCollectedLocationIds = uniqueStrings(ids);
     const inventoryChanged = !areSettingsEqual(
       inventoryById.value,

@@ -204,22 +204,49 @@ describe('getCrossWarpCounterpart', () => {
 });
 
 describe('synthesizeCrossWarpItemsForInventory', () => {
-  it('adds MM_SONG_TP_FOREST when OOT_SONG_TP_FOREST is present and songMinuetMm is true', () => {
-    const inventory: Record<string, number> = { OOT_SONG_TP_FOREST: 1 };
-    const changed = synthesizeCrossWarpItemsForInventory(inventory, {
-      songMinuetMm: true,
-    });
-    expect(changed).toBe(true);
-    expect(inventory.MM_SONG_TP_FOREST).toBe(1);
-  });
-
-  it('does nothing when OOT_SONG_TP_FOREST is present but songMinuetMm is false', () => {
+  it('does not add counterpart when OOT_SONG_TP_FOREST is present but songMinuetMm is false', () => {
     const inventory: Record<string, number> = { OOT_SONG_TP_FOREST: 1 };
     const changed = synthesizeCrossWarpItemsForInventory(inventory, {
       songMinuetMm: false,
     });
     expect(changed).toBe(false);
     expect(inventory.MM_SONG_TP_FOREST).toBeUndefined();
+  });
+
+  it('removes counterpart when source is absent', () => {
+    const inventory: Record<string, number> = {
+      MM_SONG_TP_FOREST: 1,
+    };
+    const changed = synthesizeCrossWarpItemsForInventory(inventory, {
+      songMinuetMm: true,
+    });
+    expect(changed).toBe(true);
+    expect(inventory.MM_SONG_TP_FOREST).toBeUndefined();
+  });
+
+  it('removes counterpart when setting is disabled even if source is present', () => {
+    const inventory: Record<string, number> = {
+      OOT_SONG_TP_FOREST: 1,
+      MM_SONG_TP_FOREST: 1,
+    };
+    const changed = synthesizeCrossWarpItemsForInventory(inventory, {
+      songMinuetMm: false,
+    });
+    expect(changed).toBe(true);
+    expect(inventory.MM_SONG_TP_FOREST).toBeUndefined();
+    // Source item should remain
+    expect(inventory.OOT_SONG_TP_FOREST).toBe(1);
+  });
+
+  it('removes OOT_SONG_SOARING when MM_SONG_SOARING is absent', () => {
+    const inventory: Record<string, number> = {
+      OOT_SONG_SOARING: 1,
+    };
+    const changed = synthesizeCrossWarpItemsForInventory(inventory, {
+      songSoaringOot: true,
+    });
+    expect(changed).toBe(true);
+    expect(inventory.OOT_SONG_SOARING).toBeUndefined();
   });
 
   it('does nothing when inventory is empty', () => {
@@ -263,5 +290,17 @@ describe('synthesizeCrossWarpItemsForInventory', () => {
     });
     expect(changed).toBe(false); // nothing changed
     expect(inventory.MM_SONG_TP_FOREST).toBe(2); // unchanged
+  });
+
+  it('does not touch counterpart that has a present source', () => {
+    const inventory: Record<string, number> = {
+      OOT_SONG_TP_FOREST: 1,
+      MM_SONG_TP_FOREST: 2,
+    };
+    const changed = synthesizeCrossWarpItemsForInventory(inventory, {
+      songMinuetMm: true,
+    });
+    expect(changed).toBe(false);
+    expect(inventory.MM_SONG_TP_FOREST).toBe(2);
   });
 });

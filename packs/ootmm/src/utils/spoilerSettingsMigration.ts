@@ -147,10 +147,14 @@ export function getCrossWarpCounterpart(
 }
 
 /**
- * Scans the entire inventory and adds missing cross-game counterparts
- * for CrossWarp items enabled in settings.
+ * Synchronizes cross-game counterpart items for CrossWarp (OoT↔MM songs):
+ * - Adds the counterpart when the source item is present and the setting is
+ *   enabled.
+ * - Removes the counterpart when the source item is absent (or the setting
+ *   is disabled), so untracking a source item also cleans up the synthesized
+ *   counterpart.
  *
- * Returns `true` if at least one item was added.
+ * Returns `true` if at least one item was added or removed.
  */
 export function synthesizeCrossWarpItemsForInventory(
   inventory: Record<string, number>,
@@ -160,24 +164,26 @@ export function synthesizeCrossWarpItemsForInventory(
   for (const [ootItem, [mmItem, mmSetting]] of Object.entries(
     CROSS_WARP_OOT_TO_MM,
   )) {
-    if (
-      inventory[ootItem] &&
-      !inventory[mmItem] &&
-      settings[mmSetting] === true
-    ) {
-      inventory[mmItem] = 1;
+    if (inventory[ootItem] && settings[mmSetting] === true) {
+      if (!inventory[mmItem]) {
+        inventory[mmItem] = 1;
+        changed = true;
+      }
+    } else if (inventory[mmItem]) {
+      delete inventory[mmItem];
       changed = true;
     }
   }
   for (const [mmItem, [ootItem, ootSetting]] of Object.entries(
     CROSS_WARP_MM_TO_OOT,
   )) {
-    if (
-      inventory[mmItem] &&
-      !inventory[ootItem] &&
-      settings[ootSetting] === true
-    ) {
-      inventory[ootItem] = 1;
+    if (inventory[mmItem] && settings[ootSetting] === true) {
+      if (!inventory[ootItem]) {
+        inventory[ootItem] = 1;
+        changed = true;
+      }
+    } else if (inventory[ootItem]) {
+      delete inventory[ootItem];
       changed = true;
     }
   }
