@@ -1,9 +1,13 @@
 import { describe, expect, it } from 'vitest';
 import {
   getCrossWarpCounterpart,
+  hasLegacyCrossWarpOot,
+  hasLegacyCrossWarpMm,
   hasLegacyKeys,
   normalizeSpoilerSettings,
   synthesizeCrossWarpItemsForInventory,
+  synthesizeOotToMmItemsForInventory,
+  synthesizeMmToOotItemsForInventory,
 } from '../../packs/ootmm/src/utils/spoilerSettingsMigration';
 
 describe('normalizeSpoilerSettings', () => {
@@ -302,5 +306,121 @@ describe('synthesizeCrossWarpItemsForInventory', () => {
     });
     expect(changed).toBe(false);
     expect(inventory.MM_SONG_TP_FOREST).toBe(2);
+  });
+});
+
+describe('hasLegacyCrossWarpOot', () => {
+  it('returns true when crossWarpOot is present', () => {
+    expect(hasLegacyCrossWarpOot({ crossWarpOot: true })).toBe(true);
+  });
+
+  it('returns false when only crossWarpMm is present', () => {
+    expect(hasLegacyCrossWarpOot({ crossWarpMm: 'full' })).toBe(false);
+  });
+
+  it('returns false for v31.0-only settings', () => {
+    expect(hasLegacyCrossWarpOot({ songMinuetMm: true })).toBe(false);
+  });
+});
+
+describe('hasLegacyCrossWarpMm', () => {
+  it('returns true when crossWarpMm is present', () => {
+    expect(hasLegacyCrossWarpMm({ crossWarpMm: 'full' })).toBe(true);
+  });
+
+  it('returns false when only crossWarpOot is present', () => {
+    expect(hasLegacyCrossWarpMm({ crossWarpOot: true })).toBe(false);
+  });
+
+  it('returns false for v31.0-only settings', () => {
+    expect(hasLegacyCrossWarpMm({ songSoaringOot: true })).toBe(false);
+  });
+});
+
+describe('synthesizeOotToMmItemsForInventory', () => {
+  it('adds MM counterpart when OoT warp song is present and setting enabled', () => {
+    const inventory: Record<string, number> = { OOT_SONG_TP_FOREST: 1 };
+    const changed = synthesizeOotToMmItemsForInventory(inventory, {
+      songMinuetMm: true,
+    });
+    expect(changed).toBe(true);
+    expect(inventory.MM_SONG_TP_FOREST).toBe(1);
+  });
+
+  it('does not add counterpart when setting is disabled', () => {
+    const inventory: Record<string, number> = { OOT_SONG_TP_FOREST: 1 };
+    const changed = synthesizeOotToMmItemsForInventory(inventory, {
+      songMinuetMm: false,
+    });
+    expect(changed).toBe(false);
+    expect(inventory.MM_SONG_TP_FOREST).toBeUndefined();
+  });
+
+  it('removes counterpart when source is absent', () => {
+    const inventory: Record<string, number> = {
+      MM_SONG_TP_FOREST: 1,
+    };
+    const changed = synthesizeOotToMmItemsForInventory(inventory, {
+      songMinuetMm: true,
+    });
+    expect(changed).toBe(true);
+    expect(inventory.MM_SONG_TP_FOREST).toBeUndefined();
+  });
+
+  it('does NOT touch MM_SONG_SOARING or OOT_SONG_SOARING', () => {
+    const inventory: Record<string, number> = {
+      OOT_SONG_SOARING: 1,
+      MM_SONG_SOARING: 1,
+    };
+    const changed = synthesizeOotToMmItemsForInventory(inventory, {
+      songSoaringOot: true,
+    });
+    expect(changed).toBe(false);
+    expect(inventory.OOT_SONG_SOARING).toBe(1);
+    expect(inventory.MM_SONG_SOARING).toBe(1);
+  });
+});
+
+describe('synthesizeMmToOotItemsForInventory', () => {
+  it('adds OoT counterpart when MM_SONG_SOARING is present and setting enabled', () => {
+    const inventory: Record<string, number> = { MM_SONG_SOARING: 1 };
+    const changed = synthesizeMmToOotItemsForInventory(inventory, {
+      songSoaringOot: true,
+    });
+    expect(changed).toBe(true);
+    expect(inventory.OOT_SONG_SOARING).toBe(1);
+  });
+
+  it('does not add counterpart when setting is disabled', () => {
+    const inventory: Record<string, number> = { MM_SONG_SOARING: 1 };
+    const changed = synthesizeMmToOotItemsForInventory(inventory, {
+      songSoaringOot: false,
+    });
+    expect(changed).toBe(false);
+    expect(inventory.OOT_SONG_SOARING).toBeUndefined();
+  });
+
+  it('removes OOT_SONG_SOARING when source is absent', () => {
+    const inventory: Record<string, number> = {
+      OOT_SONG_SOARING: 1,
+    };
+    const changed = synthesizeMmToOotItemsForInventory(inventory, {
+      songSoaringOot: true,
+    });
+    expect(changed).toBe(true);
+    expect(inventory.OOT_SONG_SOARING).toBeUndefined();
+  });
+
+  it('does NOT touch OoT warp songs or MM counterparts', () => {
+    const inventory: Record<string, number> = {
+      OOT_SONG_TP_FOREST: 1,
+      MM_SONG_TP_FOREST: 1,
+    };
+    const changed = synthesizeMmToOotItemsForInventory(inventory, {
+      songMinuetMm: true,
+    });
+    expect(changed).toBe(false);
+    expect(inventory.OOT_SONG_TP_FOREST).toBe(1);
+    expect(inventory.MM_SONG_TP_FOREST).toBe(1);
   });
 });

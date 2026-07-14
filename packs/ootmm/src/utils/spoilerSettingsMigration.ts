@@ -118,6 +118,32 @@ export function hasLegacyKeys(rawSettings: Record<string, unknown>): boolean {
   );
 }
 
+/**
+ * Returns true if the raw settings contain the legacy `crossWarpOot` setting
+ * that requires OoT→MM cross-warp item synthesis.
+ *
+ * Only old spoiler logs with this key need the MM counterpart items to be
+ * synthesized when an OoT warp song is collected.
+ */
+export function hasLegacyCrossWarpOot(
+  rawSettings: Record<string, unknown>,
+): boolean {
+  return 'crossWarpOot' in rawSettings;
+}
+
+/**
+ * Returns true if the raw settings contain the legacy `crossWarpMm` setting
+ * that requires MM→OoT cross-warp item synthesis.
+ *
+ * Only old spoiler logs with this key need the OoT counterpart (Song of
+ * Soaring) to be synthesized when MM_SONG_SOARING is collected.
+ */
+export function hasLegacyCrossWarpMm(
+  rawSettings: Record<string, unknown>,
+): boolean {
+  return 'crossWarpMm' in rawSettings;
+}
+
 // ── CrossWarp item synthesis ────────────────────────────────────────────────
 
 /**
@@ -147,16 +173,17 @@ export function getCrossWarpCounterpart(
 }
 
 /**
- * Synchronizes cross-game counterpart items for CrossWarp (OoT↔MM songs):
- * - Adds the counterpart when the source item is present and the setting is
- *   enabled.
- * - Removes the counterpart when the source item is absent (or the setting
- *   is disabled), so untracking a source item also cleans up the synthesized
- *   counterpart.
+ * Synthesizes MM counterpart items for OoT warp songs (OoT→MM direction).
+ *
+ * Only called when the legacy `crossWarpOot` setting was in the spoiler log.
+ * - Adds the MM counterpart when the OoT warp song is present and the
+ *   corresponding MM extension setting is enabled.
+ * - Removes the MM counterpart when the OoT warp song is absent, so
+ *   untracking the source cleans up the synthesized counterpart.
  *
  * Returns `true` if at least one item was added or removed.
  */
-export function synthesizeCrossWarpItemsForInventory(
+export function synthesizeOotToMmItemsForInventory(
   inventory: Record<string, number>,
   settings: Record<string, unknown>,
 ): boolean {
@@ -174,6 +201,26 @@ export function synthesizeCrossWarpItemsForInventory(
       changed = true;
     }
   }
+  return changed;
+}
+
+/**
+ * Synthesizes the OoT counterpart item for MM Song of Soaring (MM→OoT
+ * direction).
+ *
+ * Only called when the legacy `crossWarpMm` setting was in the spoiler log.
+ * - Adds OOT_SONG_SOARING when MM_SONG_SOARING is present and
+ *   `songSoaringOot` is enabled.
+ * - Removes OOT_SONG_SOARING when MM_SONG_SOARING is absent, so
+ *   untracking the source cleans up the synthesized counterpart.
+ *
+ * Returns `true` if at least one item was added or removed.
+ */
+export function synthesizeMmToOotItemsForInventory(
+  inventory: Record<string, number>,
+  settings: Record<string, unknown>,
+): boolean {
+  let changed = false;
   for (const [mmItem, [ootItem, ootSetting]] of Object.entries(
     CROSS_WARP_MM_TO_OOT,
   )) {
@@ -188,4 +235,20 @@ export function synthesizeCrossWarpItemsForInventory(
     }
   }
   return changed;
+}
+
+/**
+ * Convenience function that runs both OoT→MM and MM→OoT synthesis.
+ * Equivalent to calling `synthesizeOotToMmItemsForInventory` and
+ * `synthesizeMmToOotItemsForInventory` in sequence.
+ *
+ * Returns `true` if at least one item was added or removed.
+ */
+export function synthesizeCrossWarpItemsForInventory(
+  inventory: Record<string, number>,
+  settings: Record<string, unknown>,
+): boolean {
+  const changedOot = synthesizeOotToMmItemsForInventory(inventory, settings);
+  const changedMm = synthesizeMmToOotItemsForInventory(inventory, settings);
+  return changedOot || changedMm;
 }

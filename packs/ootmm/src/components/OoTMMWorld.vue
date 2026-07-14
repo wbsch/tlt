@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue';
 import {
+  type SongChoice,
   SONG_EVENTS,
   SONG_EVENTS_MM,
   getOotSongChoices,

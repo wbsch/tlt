@@ -1831,12 +1831,10 @@ export class OoTMMTracker implements TrackerPack {
     const hideOwlStatues =
       String((this.settings as { owlShuffle?: unknown })?.owlShuffle ?? '') ===
       'none';
-    const hideRustyKeysOot = !Boolean(
-      (this.settings as { rustyKeysOot?: unknown })?.rustyKeysOot,
-    );
-    const hideRustyKeysMm = !Boolean(
-      (this.settings as { rustyKeysMm?: unknown })?.rustyKeysMm,
-    );
+    const hideRustyKeysOot = !(this.settings as { rustyKeysOot?: unknown })
+      ?.rustyKeysOot;
+    const hideRustyKeysMm = !(this.settings as { rustyKeysMm?: unknown })
+      ?.rustyKeysMm;
     for (const [playerItem, count] of allItems) {
       if (!count || count <= 0) continue;
       const itemId = (playerItem as { item?: { id?: string } })?.item?.id;

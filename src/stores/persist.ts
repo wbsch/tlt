@@ -10,7 +10,10 @@ import {
 import { migrateEntranceOverrides } from '@/utils/entranceMigration';
 import {
   normalizeSpoilerSettings,
-  synthesizeCrossWarpItemsForInventory,
+  hasLegacyCrossWarpOot,
+  hasLegacyCrossWarpMm,
+  synthesizeOotToMmItemsForInventory,
+  synthesizeMmToOotItemsForInventory,
 } from '@packs/ootmm/utils/spoilerSettingsMigration';
 
 export type PersistConfig = {
@@ -360,6 +363,8 @@ export const PERSIST_CONFIGS: Record<PersistStoreId, PersistConfig> = {
       'trackerSettings',
       'hasImportedSpoilerLog',
       'importedSpoilerLogVersion',
+      'needsLegacyCrossWarpOotSynthesis',
+      'needsLegacyCrossWarpMmSynthesis',
       'coopRoomCode',
     ],
     hydrate: (raw) => {
@@ -377,14 +382,39 @@ export const PERSIST_CONFIGS: Record<PersistStoreId, PersistConfig> = {
       // based on normalized settings. This ensures that e.g. MM_SONG_TP_FOREST
       // is present when OOT_SONG_TP_FOREST was collected and songMinuetMm is
       // enabled (either natively or via legacy crossWarpOot normalization).
+      // Only performed when the session was originally imported from a spoiler
+      // log with legacy crossWarpMm / crossWarpOot settings.
+      //
+      // The flags may come from the stored session state or be detected from
+      // legacy keys in the raw trackerSettings (backward compat).
+      const rawSettingsForDetection = isPlainObject(raw.trackerSettings)
+        ? (raw.trackerSettings as Record<string, unknown>)
+        : null;
+      const needsOotSynthesis =
+        raw.needsLegacyCrossWarpOotSynthesis === true ||
+        (rawSettingsForDetection !== null &&
+          hasLegacyCrossWarpOot(rawSettingsForDetection));
+      const needsMmSynthesis =
+        raw.needsLegacyCrossWarpMmSynthesis === true ||
+        (rawSettingsForDetection !== null &&
+          hasLegacyCrossWarpMm(rawSettingsForDetection));
+
       if (
         Object.keys(inventory).length > 0 &&
         Object.keys(trackerSettings).length > 0
       ) {
-        synthesizeCrossWarpItemsForInventory(
-          inventory,
-          trackerSettings as Record<string, unknown>,
-        );
+        if (needsOotSynthesis) {
+          synthesizeOotToMmItemsForInventory(
+            inventory,
+            trackerSettings as Record<string, unknown>,
+          );
+        }
+        if (needsMmSynthesis) {
+          synthesizeMmToOotItemsForInventory(
+            inventory,
+            trackerSettings as Record<string, unknown>,
+          );
+        }
       }
 
       return {
@@ -432,6 +462,18 @@ export const PERSIST_CONFIGS: Record<PersistStoreId, PersistConfig> = {
         ...(Object.keys(trackerSettings).length > 0 ? { trackerSettings } : {}),
         ...(typeof raw.hasImportedSpoilerLog === 'boolean'
           ? { hasImportedSpoilerLog: raw.hasImportedSpoilerLog }
+          : {}),
+        ...(typeof raw.needsLegacyCrossWarpOotSynthesis === 'boolean'
+          ? {
+              needsLegacyCrossWarpOotSynthesis:
+                raw.needsLegacyCrossWarpOotSynthesis,
+            }
+          : {}),
+        ...(typeof raw.needsLegacyCrossWarpMmSynthesis === 'boolean'
+          ? {
+              needsLegacyCrossWarpMmSynthesis:
+                raw.needsLegacyCrossWarpMmSynthesis,
+            }
           : {}),
         ...(safeOptionalString(raw.importedSpoilerLogVersion) !== undefined
           ? {

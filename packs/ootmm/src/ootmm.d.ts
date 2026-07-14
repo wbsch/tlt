@@ -144,7 +144,8 @@ declare module '@ootmm/core/logic/world' {
     songLocations?: Set<string>;
     warpLocations?: Set<string>;
     prices: number[];
-    songEvents: number[];
+    songEventsOot: number[];
+    songEventsMm: number[];
     bossIds?: number[];
     entranceOverrides?: Map<string, string>;
     preCompleted: Set<string>;

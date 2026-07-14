@@ -42,7 +42,10 @@ import {
 } from '../utils/entranceRandomization';
 import { getGridItemDefinedMaxCount } from '../data/itemIcons';
 import { isValidCoopRoomCode } from '../utils/coopFlag';
-import { synthesizeCrossWarpItemsForInventory } from '../utils/spoilerSettingsMigration';
+import {
+  synthesizeOotToMmItemsForInventory,
+  synthesizeMmToOotItemsForInventory,
+} from '../utils/spoilerSettingsMigration';
 
 const HISTORY_LIMIT = 200;
 const VANILLA_SILVER_RUPEE_PREFIX = 'OOT_RUPEE_SILVER_';
@@ -65,6 +68,8 @@ type SessionSnapshot = {
   hasImportedSpoilerLog: boolean;
   importedSpoilerLogVersion: string | null;
   junkLocationIds: string[];
+  needsLegacyCrossWarpOotSynthesis: boolean;
+  needsLegacyCrossWarpMmSynthesis: boolean;
 };
 
 type MutationOptions = {
@@ -398,6 +403,8 @@ export const useOoTMMSessionStore = defineStore('ootmm-session', () => {
 
   const hasImportedSpoilerLog = ref(false);
   const importedSpoilerLogVersion = ref<string | null>(null);
+  const needsLegacyCrossWarpOotSynthesis = ref(false);
+  const needsLegacyCrossWarpMmSynthesis = ref(false);
   const availableItemIds = ref<string[]>([]);
   const itemMaxCountsById = ref<Record<string, number>>({});
 
@@ -653,6 +660,8 @@ export const useOoTMMSessionStore = defineStore('ootmm-session', () => {
       entranceOverrides: { ...entranceOverrides.value },
       hasImportedSpoilerLog: hasImportedSpoilerLog.value,
       importedSpoilerLogVersion: importedSpoilerLogVersion.value,
+      needsLegacyCrossWarpOotSynthesis: needsLegacyCrossWarpOotSynthesis.value,
+      needsLegacyCrossWarpMmSynthesis: needsLegacyCrossWarpMmSynthesis.value,
     };
   }
 
@@ -1046,6 +1055,12 @@ export const useOoTMMSessionStore = defineStore('ootmm-session', () => {
     const targetImportedSpoilerLogVersion = targetHasImportedSpoilerLog
       ? normalizeSpoilerLogVersion(snapshot.importedSpoilerLogVersion)
       : null;
+    const targetNeedsLegacyCrossWarpOotSynthesis = Boolean(
+      snapshot.needsLegacyCrossWarpOotSynthesis,
+    );
+    const targetNeedsLegacyCrossWarpMmSynthesis = Boolean(
+      snapshot.needsLegacyCrossWarpMmSynthesis,
+    );
 
     isNavigatingHistory.value = true;
     try {
@@ -1063,6 +1078,10 @@ export const useOoTMMSessionStore = defineStore('ootmm-session', () => {
         entranceOverrides.value = targetEntranceOverrides;
         hasImportedSpoilerLog.value = targetHasImportedSpoilerLog;
         importedSpoilerLogVersion.value = targetImportedSpoilerLogVersion;
+        needsLegacyCrossWarpOotSynthesis.value =
+          targetNeedsLegacyCrossWarpOotSynthesis;
+        needsLegacyCrossWarpMmSynthesis.value =
+          targetNeedsLegacyCrossWarpMmSynthesis;
         reachableLocationIds.value = [];
         reachableEntranceIds.value = [];
         canComplete.value = false;
@@ -1114,6 +1133,10 @@ export const useOoTMMSessionStore = defineStore('ootmm-session', () => {
       entranceOverrides.value = targetEntranceOverrides;
       hasImportedSpoilerLog.value = targetHasImportedSpoilerLog;
       importedSpoilerLogVersion.value = targetImportedSpoilerLogVersion;
+      needsLegacyCrossWarpOotSynthesis.value =
+        targetNeedsLegacyCrossWarpOotSynthesis;
+      needsLegacyCrossWarpMmSynthesis.value =
+        targetNeedsLegacyCrossWarpMmSynthesis;
       applyPreCompletedDungeons();
       applySongEvents();
       applyShopPrices();
@@ -1272,11 +1295,19 @@ export const useOoTMMSessionStore = defineStore('ootmm-session', () => {
 
     // Synthesize cross-game counterpart items for CrossWarp (OoT↔MM songs)
     // so the MM counterpart is automatically added when the OoT warp song
-    // is tracked, and vice versa.
-    synthesizeCrossWarpItemsForInventory(
-      next,
-      trackerSettings.value as Record<string, unknown>,
-    );
+    // is tracked, and vice versa. Only done for legacy crossWarp settings.
+    if (needsLegacyCrossWarpOotSynthesis.value) {
+      synthesizeOotToMmItemsForInventory(
+        next,
+        trackerSettings.value as Record<string, unknown>,
+      );
+    }
+    if (needsLegacyCrossWarpMmSynthesis.value) {
+      synthesizeMmToOotItemsForInventory(
+        next,
+        trackerSettings.value as Record<string, unknown>,
+      );
+    }
 
     inventoryById.value = sanitizeInventoryRecord(next);
     recomputeReachability();
@@ -1306,11 +1337,19 @@ export const useOoTMMSessionStore = defineStore('ootmm-session', () => {
 
     // Synchronize cross-game counterpart items (OoT↔MM CrossWarp songs):
     // adds counterpart when source is present & setting enabled, removes
-    // when source is absent.
-    synthesizeCrossWarpItemsForInventory(
-      next,
-      trackerSettings.value as Record<string, unknown>,
-    );
+    // when source is absent. Only done for legacy crossWarp settings.
+    if (needsLegacyCrossWarpOotSynthesis.value) {
+      synthesizeOotToMmItemsForInventory(
+        next,
+        trackerSettings.value as Record<string, unknown>,
+      );
+    }
+    if (needsLegacyCrossWarpMmSynthesis.value) {
+      synthesizeMmToOotItemsForInventory(
+        next,
+        trackerSettings.value as Record<string, unknown>,
+      );
+    }
 
     inventoryById.value = sanitizeInventoryRecord(next);
     recomputeReachability();
@@ -1380,10 +1419,18 @@ export const useOoTMMSessionStore = defineStore('ootmm-session', () => {
     // Synthesize cross-game counterpart items for CrossWarp (OoT↔MM songs)
     // because the autotracker reads raw game memory which only contains
     // the originally collected items, not the synthesized counterparts.
-    synthesizeCrossWarpItemsForInventory(
-      nextInventoryById,
-      trackerSettings.value as Record<string, unknown>,
-    );
+    if (needsLegacyCrossWarpOotSynthesis.value) {
+      synthesizeOotToMmItemsForInventory(
+        nextInventoryById,
+        trackerSettings.value as Record<string, unknown>,
+      );
+    }
+    if (needsLegacyCrossWarpMmSynthesis.value) {
+      synthesizeMmToOotItemsForInventory(
+        nextInventoryById,
+        trackerSettings.value as Record<string, unknown>,
+      );
+    }
 
     const nextCollectedLocationIds = uniqueStrings(ids);
     const inventoryChanged = !areSettingsEqual(
@@ -1726,6 +1773,14 @@ export const useOoTMMSessionStore = defineStore('ootmm-session', () => {
     );
   }
 
+  function setNeedsLegacyCrossWarpOotSynthesis(needed: boolean) {
+    needsLegacyCrossWarpOotSynthesis.value = needed;
+  }
+
+  function setNeedsLegacyCrossWarpMmSynthesis(needed: boolean) {
+    needsLegacyCrossWarpMmSynthesis.value = needed;
+  }
+
   let reinitEntrancesTimer: ReturnType<typeof setTimeout> | null = null;
 
   function scheduleReinitializeForEntrances() {
@@ -2063,6 +2118,8 @@ export const useOoTMMSessionStore = defineStore('ootmm-session', () => {
     entranceOverrides.value = {};
     hasImportedSpoilerLog.value = false;
     importedSpoilerLogVersion.value = null;
+    needsLegacyCrossWarpOotSynthesis.value = false;
+    needsLegacyCrossWarpMmSynthesis.value = false;
 
     if (!currentTracker) {
       trackerSettings.value = {};
@@ -2173,6 +2230,8 @@ export const useOoTMMSessionStore = defineStore('ootmm-session', () => {
     trackerSettings,
     hasImportedSpoilerLog,
     importedSpoilerLogVersion,
+    needsLegacyCrossWarpOotSynthesis,
+    needsLegacyCrossWarpMmSynthesis,
     availableItemIds,
     itemMaxCountsById,
     reachableLocationIds,
@@ -2219,6 +2278,8 @@ export const useOoTMMSessionStore = defineStore('ootmm-session', () => {
     setEntranceOverride,
     setEntranceOverrides,
     setSpoilerLogImportState,
+    setNeedsLegacyCrossWarpOotSynthesis,
+    setNeedsLegacyCrossWarpMmSynthesis,
     applyPreCompletedDungeons,
     applySongEvents,
     applyShopPrices,

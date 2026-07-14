@@ -14,7 +14,11 @@ import {
 } from '@packs/ootmm/data/settings';
 import * as TricksMod from '@ootmm/core/settings/tricks';
 import { ENTRANCES } from '@ootmm/data';
-import { normalizeSpoilerSettings } from '@packs/ootmm/utils/spoilerSettingsMigration';
+import {
+  normalizeSpoilerSettings,
+  hasLegacyCrossWarpOot,
+  hasLegacyCrossWarpMm,
+} from '@packs/ootmm/utils/spoilerSettingsMigration';
 
 const SHARE_HASH_PARAM = 's';
 const SHARE_PAYLOAD_PREFIX = 'v1.';
@@ -570,6 +574,16 @@ function normalizeImportedSnapshot(
       : null;
 
     if (rawSettings) {
+      // Detect legacy cross-warp settings from older exports that lack the
+      // per-direction synthesis flags. Mark them so the persist hydrate still
+      // synthesizes counterpart items.
+      if (hasLegacyCrossWarpOot(rawSettings)) {
+        normalizedSession.needsLegacyCrossWarpOotSynthesis = true;
+      }
+      if (hasLegacyCrossWarpMm(rawSettings)) {
+        normalizedSession.needsLegacyCrossWarpMmSynthesis = true;
+      }
+
       const normalizedSettings = normalizeImportedTrackerSettings(rawSettings);
       if (!deepEqual(rawSettings, normalizedSettings)) {
         partial = true;

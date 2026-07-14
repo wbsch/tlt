@@ -62,6 +62,7 @@ describe('persist sanitizeSettingsObject via hydrate', () => {
       trackerSettings: {
         crossWarpOot: true,
       },
+      needsLegacyCrossWarpOotSynthesis: true,
       inventoryById: {
         OOT_SONG_TP_FOREST: 1,
         OOT_SONG_TP_FIRE: 1,
@@ -81,6 +82,7 @@ describe('persist sanitizeSettingsObject via hydrate', () => {
       trackerSettings: {
         songSoaringOot: true,
       },
+      needsLegacyCrossWarpMmSynthesis: true,
       inventoryById: {
         MM_SONG_SOARING: 1,
       },

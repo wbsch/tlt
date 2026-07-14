@@ -37,8 +37,11 @@ import {
 } from '../utils/spoiler';
 import {
   hasLegacyKeys,
+  hasLegacyCrossWarpOot,
+  hasLegacyCrossWarpMm,
   normalizeSpoilerSettings,
-  synthesizeCrossWarpItemsForInventory,
+  synthesizeOotToMmItemsForInventory,
+  synthesizeMmToOotItemsForInventory,
 } from '../utils/spoilerSettingsMigration';
 import { useDungeonEntrances } from '../composables/useDungeonEntrances';
 import { useLocationCodeLookup } from '../composables/useLocationCodeLookup';
@@ -2897,7 +2900,7 @@ function formatSpoilerSettingValue(value: unknown): string {
 }
 
 function collectSpoilerSettingsWarnings(
-  settings: Record<string, string | number | boolean>,
+  settings: Record<string, string | number | boolean | Record<string, unknown>>,
 ): SpoilerSettingWarning[] {
   const warnings: SpoilerSettingWarning[] = [];
 
@@ -2924,7 +2927,7 @@ function collectSpoilerSettingsWarnings(
 }
 
 function collectSpoilerUnknownSettings(
-  settings: Record<string, string | number | boolean>,
+  settings: Record<string, string | number | boolean | Record<string, unknown>>,
 ): SpoilerUnknownSetting[] {
   const unknown: SpoilerUnknownSetting[] = [];
 
@@ -3299,7 +3302,18 @@ async function applySpoilerLog(text: string, selectedPlayer?: number) {
   // is present when OOT_SONG_TP_FOREST is a starting item and songMinuetMm
   // is enabled (either natively or via legacy crossWarpOot normalization).
   const currentInventory = { ...sessionStore.inventoryById };
-  if (synthesizeCrossWarpItemsForInventory(currentInventory, nextSettings)) {
+  let inventoryChanged = false;
+  if (sessionStore.needsLegacyCrossWarpOotSynthesis) {
+    inventoryChanged =
+      synthesizeOotToMmItemsForInventory(currentInventory, nextSettings) ||
+      inventoryChanged;
+  }
+  if (sessionStore.needsLegacyCrossWarpMmSynthesis) {
+    inventoryChanged =
+      synthesizeMmToOotItemsForInventory(currentInventory, nextSettings) ||
+      inventoryChanged;
+  }
+  if (inventoryChanged) {
     sessionStore.setInventoryFromMap(new Map(Object.entries(currentInventory)));
   }
 
@@ -3332,6 +3346,17 @@ async function handleSpoilerFile(file: File) {
         'This spoiler log contains settings from an older or mixed OoTMM version. ' +
         'The settings have been converted to v31.0 equivalents as best as possible.';
     }
+
+    // Legacy crossWarp settings require cross-game item synthesis:
+    // - crossWarpOot: OoT warp songs → MM counterparts
+    // - crossWarpMm: MM Song of Soaring → OoT counterpart
+    // Native v31.0 sessions do not need this.
+    sessionStore.setNeedsLegacyCrossWarpOotSynthesis(
+      hasLegacyCrossWarpOot(parsed.settings),
+    );
+    sessionStore.setNeedsLegacyCrossWarpMmSynthesis(
+      hasLegacyCrossWarpMm(parsed.settings),
+    );
 
     const warnings = collectSpoilerSettingsWarnings(normalizedSettings);
     const unknownSettings = collectSpoilerUnknownSettings(normalizedSettings);
