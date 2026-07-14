@@ -28,12 +28,7 @@ It:
 
 ## Unsupported Settings
 
-All settings that were available in the randomizer's code on March 15, 2026 (Version 30.1) are supported by this tracker. Excluded from this are:
-
-- No Entrance Polarity
-- Decoupled Entrances
-- Wallmaster Shuffle
-- One-Ways Shuffle
+All settings that were available in the randomizer's code on Juliy 04, 2026 (Version 31.1) are supported by this tracker.
 
 There are a few settings the tracker does not represent because they are not relevant for tracking (e.g., OoT Shields). Nevertheless, The Last Tracker can be used for all options within those settings -
 you will still see what's available for you.

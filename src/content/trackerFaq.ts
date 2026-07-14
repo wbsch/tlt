@@ -465,16 +465,7 @@ export const TRACKER_FAQ_SECTIONS: TrackerFaqSection[] = [
         blocks: [
           {
             type: 'paragraph',
-            text: 'The tracker supports most options from the current Stable Randomizer version. However, the following settings are not supported and may not be reflected in reachability or mapping:',
-          },
-          {
-            type: 'list',
-            items: [
-              'No Entrance Polarity',
-              'Decoupled Entrances',
-              'Wallmaster Shuffle',
-              'One-Ways Shuffle',
-            ],
+            text: 'The tracker supports all options from the current Stable Randomizer version v31.1.',
           },
         ],
       },
