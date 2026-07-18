@@ -459,6 +459,21 @@ export const TRACKER_FAQ_SECTIONS: TrackerFaqSection[] = [
         ],
       },
       {
+        id: 'older-spoiler-log',
+        question:
+          'What happens if I upload a spoiler log from an older version?',
+        blocks: [
+          {
+            type: 'paragraph',
+            text: 'If you upload a spoiler log from an older version that includes settings which no longer exist (e.g. Cross-Games MM Song of Soaring), the tracker converts those settings to their closest modern equivalents. Sometimes it also adds new items (e.g. OoT Song of Soaring, formerly part of Cross-Games) to accurately represent the older setup.',
+          },
+          {
+            type: 'paragraph',
+            text: 'You do not need to track those automatically-added items. In fact, the tracker prevents you from doing so. It handles everything behind the scenes. Simply continue tracking your items as you normally would.',
+          },
+        ],
+      },
+      {
         id: 'unsupported-randomizer-settings',
         question:
           'Which randomizer settings are not supported by thelasttracker.org?',
