@@ -35,7 +35,9 @@
     "test:e2e:headed": "playwright test --headed",
     "test:e2e:ui": "playwright test --ui",
     "test:e2e:install": "playwright install chromium",
-    "check-most": "npm run format && npm run lint:fix && npm run type-check && npm run build:check",
+    "check-most:verify": "npm run type-check && npm run build:check",
+    "check-most:ci": "npm run format:check && npm run lint && npm run check-most:verify",
+    "check-most": "npm run format && npm run lint:fix && npm run check-most:verify",
     "check-all": "npm run check-most && npm run test:unit && npm run test:server && npm run test:pathfinder && npm run test:e2e"
   },
   "dependencies": {

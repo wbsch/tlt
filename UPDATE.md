@@ -54,11 +54,18 @@ npx pnpm --filter @ootmm/core build
 
 cd ..
 
-# 3. If the release changed the autotracker-relevant data, regenerate it
+# 3. Update the CI OoTMM pin in `.github/workflows/check-most.yml`.
+# Resolve the release tag to the commit it points at:
+git ls-remote --tags https://github.com/OoTMM/OoTMM.git refs/tags/v31.1 refs/tags/v31.1^{}
+
+# Use the commit from the upstream OoTMM repository for `OOTMM_COMMIT`.
+# Do not use a local-only performance/test commit from your `OoTMM/` checkout.
+
+# 4. If the release changed the autotracker-relevant data, regenerate it
 # (validate:autotracker-data will fail during check-all/build otherwise):
 npm run generate:autotracker-data
 
-# 4. Everything should now be ready for our main pipeline checks
+# 5. Everything should now be ready for our main pipeline checks
 npm run check-all
 ```
 
