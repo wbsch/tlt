@@ -9,6 +9,7 @@ import {
   type ParsedRawAutotrackerSnapshot,
   type RawAutotrackerGame,
   type RawAutotrackerMessage,
+  type RawAutotrackerParser,
 } from './rawFrameParser';
 
 export type AutotrackerStatus =
@@ -443,8 +444,12 @@ export function useAutotracker(options: AutotrackerOptions) {
     }
   }
 
-  const rawParser = createRawAutotrackerParser({
+  const rawParserPromise = createRawAutotrackerParser({
     ootmmVersion: options.ootmmVersion?.value,
+  });
+  let rawParser: RawAutotrackerParser | null = null;
+  rawParserPromise.then((p) => {
+    rawParser = p;
   });
 
   function childWalletsEnabled(): boolean {
@@ -560,6 +565,9 @@ export function useAutotracker(options: AutotrackerOptions) {
 
     lastRawMessage = msg;
 
+    if (!rawParser) {
+      return;
+    }
     const parsed = rawParser.parse(msg);
     if (!parsed) {
       // Frame was deferred (scene transition in progress). Start a timer so
@@ -611,7 +619,7 @@ export function useAutotracker(options: AutotrackerOptions) {
    * transition that has been stable for ≥ 1 s.
    */
   function tryIdleAccept() {
-    if (!lastRawMessage) {
+    if (!lastRawMessage || !rawParser) {
       return;
     }
     const parsed = rawParser.parse(lastRawMessage);
@@ -686,7 +694,7 @@ export function useAutotracker(options: AutotrackerOptions) {
     }
     hasReceivedRawSnapshot = false;
     wasEverOpened = false;
-    rawParser.reset();
+    rawParser?.reset();
     lastRawMessage = null;
     lastTrackedSceneKey = '';
   }

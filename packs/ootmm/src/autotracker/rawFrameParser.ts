@@ -1,10 +1,181 @@
-import autotrackerDataManifest from './data/v30_1/manifest.json';
-import inventorySlotsData from './data/v30_1/inventory_slots.json';
-import liveAddrsData from './data/v30_1/live_addrs.json';
-import locationsData from './data/v30_1/locations.json';
-import specialLocationsMmData from './data/v30_1/special_locations_mm.json';
-import specialLocationsOotData from './data/v30_1/special_locations_oot.json';
-import { hasAutotrackerDataForVersion } from './data/versions';
+import autotrackerDataManifest from './data/v31_0/manifest.json';
+import inventorySlotsData from './data/v31_0/inventory_slots.json';
+import liveAddrsData from './data/v31_0/live_addrs.json';
+import locationsData from './data/v31_0/locations.json';
+import specialLocationsMmData from './data/v31_0/special_locations_mm.json';
+import specialLocationsOotData from './data/v31_0/special_locations_oot.json';
+import {
+  hasAutotrackerDataForVersion,
+  resolveAutotrackerDataVersion,
+  getSupportedVersionLabels,
+} from './data/versions';
+import { getVersionedDataFile } from './data/registry';
+
+// ---------------------------------------------------------------------------
+// Version-data loading (uses the eager registry, all files resolved at build time)
+// ---------------------------------------------------------------------------
+
+type AutotrackerDataBundle = {
+  manifest: AutotrackerDataManifest;
+  inventorySlots: InventorySlotFile;
+  liveAddrs: LiveAddrFile;
+  locations: LocationFile;
+  specialLocationsMm: MmSpecialLocationEntry[];
+  specialLocationsOot: OotSpecialLocationEntry[];
+};
+
+function loadAutotrackerDataSync(dirName: string): AutotrackerDataBundle {
+  return {
+    manifest: getVersionedDataFile(
+      dirName,
+      'manifest.json',
+    ) as AutotrackerDataManifest,
+    inventorySlots: getVersionedDataFile(
+      dirName,
+      'inventory_slots.json',
+    ) as InventorySlotFile,
+    liveAddrs: getVersionedDataFile(dirName, 'live_addrs.json') as LiveAddrFile,
+    locations: getVersionedDataFile(dirName, 'locations.json') as LocationFile,
+    specialLocationsMm: getVersionedDataFile(
+      dirName,
+      'special_locations_mm.json',
+    ) as MmSpecialLocationEntry[],
+    specialLocationsOot: getVersionedDataFile(
+      dirName,
+      'special_locations_oot.json',
+    ) as OotSpecialLocationEntry[],
+  };
+}
+
+async function loadAutotrackerData(
+  dirName: string,
+): Promise<AutotrackerDataBundle> {
+  // The registry is eager, so this is effectively sync, but we keep the async
+  // signature because the public factory is async.
+  return loadAutotrackerDataSync(dirName);
+}
+
+// ---------------------------------------------------------------------------
+// Mutable module-level tables – initialized from the default (v31_0) data
+// and swapped out when a version-specific spoiler log is loaded.
+// ---------------------------------------------------------------------------
+
+/** All version-dependent derived tables bundled together. */
+interface ParserTables {
+  liveAddrs: LiveAddrFile;
+  inventorySlotFile: InventorySlotFile;
+  sharedStateReadSize: number;
+  addrOotSaveCtx: number;
+  addrMmSaveCtx: number;
+  addrOotForeignMmSaveLive: number;
+  addrOotSharedCustomSaveLive: number;
+  addrMmForeignOotSaveLive: number;
+  addrMmSharedCustomSaveLive: number;
+  addrOotRuntimeMaxKeysLive: number;
+  addrOotRuntimeOotComboConfigLive: number;
+  addrOotRuntimeSilverRupeeDataLive: number;
+  addrMmRuntimeOotComboConfigLive: number;
+  ootInventoryEntries: InventorySlotEntry[];
+  mmInventoryEntries: InventorySlotEntry[];
+  sharedStorage: SharedStorageLayout;
+  sharedBitmaps: Map<string, SharedBitmapInfo>;
+  trackedCatalogItems: CatalogItemEntry[];
+  catalogItemSources: Map<string, CatalogItemSource>;
+  sharedBitmapUsedBits: Map<string, number>;
+  checkNameTable: Map<string, string>;
+  ootSceneConflictTable: Map<string, SceneConflictEntry>;
+  fishCheckTables: Map<string, Map<number, string>>;
+  npcCheckTables: Map<string, Map<number, string>>;
+  gsCheckTables: Map<string, Map<number, string>>;
+  xflagCheckTables: Map<string, Map<number, string>>;
+  ootBitmapConflictTable: Map<string, Map<number, BitmapConflictEntry>>;
+  shopCheckTables: Map<string, Map<number, string>>;
+  scrubCheckTables: Map<string, Map<number, string>>;
+  silverRupeeCheckTables: Map<string, Map<number, string>>;
+  npcSymbolTables: Map<string, Map<string, string>>;
+  mmSpecialLocationEntries: MmSpecialLocationEntry[];
+  ootSpecialLocationEntries: OotSpecialLocationEntry[];
+  mmSymbolChecks: MmSymbolCheck[];
+  ootSymbolChecks: OotSymbolCheck[];
+  sceneCheckFallbacks: Map<string, string>;
+}
+
+function buildParserTables(bundle: AutotrackerDataBundle): ParserTables {
+  const sharedBitmaps = buildSharedBitmapTable(
+    bundle.inventorySlots.catalog.shared,
+  );
+  const { trackedCatalogItems, catalogItemSources, sharedBitmapUsedBits } =
+    buildCatalogTables(bundle.inventorySlots.catalog.items, sharedBitmaps);
+  markSharedCheckBitmapsUsed(sharedBitmapUsedBits, sharedBitmaps);
+
+  const locTables = buildLocationTables(bundle.locations);
+
+  return {
+    liveAddrs: bundle.liveAddrs,
+    inventorySlotFile: bundle.inventorySlots,
+    sharedStateReadSize: Math.max(
+      SHARED_CUSTOM_SAVE_SIZE,
+      bundle.inventorySlots.catalog.shared.trackedSize,
+      SHARED_SONG_NOTES_OFFSET + SHARED_SONG_NOTE_COUNT,
+      SHARED_BOMBCHU_BAG_FLAGS_OFFSET + 1,
+    ),
+    addrOotSaveCtx: parseHexAddress(
+      bundle.liveAddrs.oot.saveCtx,
+      'oot.saveCtx',
+    ),
+    addrMmSaveCtx: parseHexAddress(bundle.liveAddrs.mm.saveCtx, 'mm.saveCtx'),
+    addrOotForeignMmSaveLive: parseHexAddressWithFallback(
+      bundle.liveAddrs.oot.foreignSaveLive,
+      DEFAULT_ADDR_OOT_FOREIGN_MM_SAVE_LIVE,
+    ),
+    addrOotSharedCustomSaveLive: parseHexAddressWithFallback(
+      bundle.liveAddrs.oot.sharedCustomSaveLive,
+      DEFAULT_ADDR_OOT_SHARED_CUSTOM_SAVE_LIVE,
+    ),
+    addrMmForeignOotSaveLive: parseHexAddressWithFallback(
+      bundle.liveAddrs.mm.foreignSaveLive,
+      DEFAULT_ADDR_MM_FOREIGN_OOT_SAVE_LIVE,
+    ),
+    addrMmSharedCustomSaveLive: parseHexAddressWithFallback(
+      bundle.liveAddrs.mm.sharedCustomSaveLive,
+      DEFAULT_ADDR_MM_SHARED_CUSTOM_SAVE_LIVE,
+    ),
+    addrOotRuntimeMaxKeysLive: parseHexAddressWithFallback(
+      bundle.liveAddrs.oot.runtimeMaxKeysLive,
+      DEFAULT_ADDR_OOT_RUNTIME_MAX_KEYS_LIVE,
+    ),
+    addrOotRuntimeOotComboConfigLive: parseHexAddressWithFallback(
+      bundle.liveAddrs.oot.comboConfigLive,
+      DEFAULT_ADDR_OOT_RUNTIME_OOT_COMBO_CONFIG_LIVE,
+    ),
+    addrOotRuntimeSilverRupeeDataLive: parseHexAddressWithFallback(
+      bundle.liveAddrs.oot.runtimeSilverRupeeDataLive,
+      DEFAULT_ADDR_OOT_RUNTIME_SILVER_RUPEE_DATA_LIVE,
+    ),
+    addrMmRuntimeOotComboConfigLive: parseHexAddressWithFallback(
+      bundle.liveAddrs.mm.comboConfigLive,
+      DEFAULT_ADDR_MM_RUNTIME_OOT_COMBO_CONFIG_LIVE,
+    ),
+    ootInventoryEntries: buildInventorySlotTable(bundle.inventorySlots.oot),
+    mmInventoryEntries: buildInventorySlotTable(bundle.inventorySlots.mm),
+    sharedStorage: bundle.inventorySlots.catalog.shared,
+    sharedBitmaps,
+    trackedCatalogItems,
+    catalogItemSources,
+    sharedBitmapUsedBits,
+    ...locTables,
+    mmSpecialLocationEntries: bundle.specialLocationsMm,
+    ootSpecialLocationEntries: bundle.specialLocationsOot,
+    mmSymbolChecks: buildMmSymbolChecks(bundle.specialLocationsMm),
+    ootSymbolChecks: buildOotSymbolChecks(bundle.specialLocationsOot),
+    sceneCheckFallbacks: new Map<string, string>([
+      [
+        sceneCheckKey('OOT', 1, 'collect', 24),
+        'Dodongo Cavern Heart Miniboss Lava',
+      ],
+    ]),
+  };
+}
 
 const AUTOTRACKER_DATA_SCHEMA_VERSION = 1;
 
@@ -37,11 +208,54 @@ if (autotrackerManifest.schemaVersion !== AUTOTRACKER_DATA_SCHEMA_VERSION) {
   );
 }
 
-const liveAddrs = liveAddrsData as LiveAddrFile;
+let liveAddrs = liveAddrsData as LiveAddrFile;
 if (liveAddrs.schemaVersion !== 1) {
   throw new Error(
     `Unsupported live_addrs schema version: ${liveAddrs.schemaVersion}`,
   );
+}
+
+// ---------------------------------------------------------------------------
+// Helper: swap all module-level data-dependent tables to a new version.
+// ---------------------------------------------------------------------------
+function applyVersionData(tables: ParserTables): void {
+  liveAddrs = tables.liveAddrs;
+  addrOotSaveCtx = tables.addrOotSaveCtx;
+  addrMmSaveCtx = tables.addrMmSaveCtx;
+  addrOotForeignMmSaveLive = tables.addrOotForeignMmSaveLive;
+  addrOotSharedCustomSaveLive = tables.addrOotSharedCustomSaveLive;
+  addrMmForeignOotSaveLive = tables.addrMmForeignOotSaveLive;
+  addrMmSharedCustomSaveLive = tables.addrMmSharedCustomSaveLive;
+  addrOotRuntimeMaxKeysLive = tables.addrOotRuntimeMaxKeysLive;
+  addrOotRuntimeOotComboConfigLive = tables.addrOotRuntimeOotComboConfigLive;
+  addrOotRuntimeSilverRupeeDataLive = tables.addrOotRuntimeSilverRupeeDataLive;
+  addrMmRuntimeOotComboConfigLive = tables.addrMmRuntimeOotComboConfigLive;
+  inventorySlotFile = tables.inventorySlotFile;
+  sharedStateReadSize = tables.sharedStateReadSize;
+  ootInventoryEntries = tables.ootInventoryEntries;
+  mmInventoryEntries = tables.mmInventoryEntries;
+  sharedStorage = tables.sharedStorage;
+  sharedBitmaps = tables.sharedBitmaps;
+  trackedCatalogItems = tables.trackedCatalogItems;
+  catalogItemSources = tables.catalogItemSources;
+  sharedBitmapUsedBits = tables.sharedBitmapUsedBits;
+  checkNameTable = tables.checkNameTable;
+  ootSceneConflictTable = tables.ootSceneConflictTable;
+  fishCheckTables = tables.fishCheckTables;
+  npcCheckTables = tables.npcCheckTables;
+  gsCheckTables = tables.gsCheckTables;
+  xflagCheckTables = tables.xflagCheckTables;
+  ootBitmapConflictTable = tables.ootBitmapConflictTable;
+  shopCheckTables = tables.shopCheckTables;
+  scrubCheckTables = tables.scrubCheckTables;
+  silverRupeeCheckTables = tables.silverRupeeCheckTables;
+  npcSymbolTables = tables.npcSymbolTables;
+  mmSpecialLocationEntries = tables.mmSpecialLocationEntries;
+  ootSpecialLocationEntries = tables.ootSpecialLocationEntries;
+  mmSymbolChecks = tables.mmSymbolChecks;
+  ootSymbolChecks = tables.ootSymbolChecks;
+  sceneCheckFallbacks = tables.sceneCheckFallbacks;
+  rebuildChunkSpecs();
 }
 
 export type RawAutotrackerGame = 'OoT' | 'MM';
@@ -421,37 +635,37 @@ const DEFAULT_ADDR_OOT_RUNTIME_OOT_COMBO_CONFIG_LIVE = 0x804416c8;
 const DEFAULT_ADDR_OOT_RUNTIME_SILVER_RUPEE_DATA_LIVE = 0x8042ec10;
 const DEFAULT_ADDR_MM_RUNTIME_OOT_COMBO_CONFIG_LIVE = 0x80770b18;
 
-const ADDR_OOT_SAVE_CTX = parseHexAddress(liveAddrs.oot.saveCtx, 'oot.saveCtx');
-const ADDR_MM_SAVE_CTX = parseHexAddress(liveAddrs.mm.saveCtx, 'mm.saveCtx');
-const ADDR_OOT_FOREIGN_MM_SAVE_LIVE = parseHexAddressWithFallback(
+let addrOotSaveCtx = parseHexAddress(liveAddrs.oot.saveCtx, 'oot.saveCtx');
+let addrMmSaveCtx = parseHexAddress(liveAddrs.mm.saveCtx, 'mm.saveCtx');
+let addrOotForeignMmSaveLive = parseHexAddressWithFallback(
   liveAddrs.oot.foreignSaveLive,
   DEFAULT_ADDR_OOT_FOREIGN_MM_SAVE_LIVE,
 );
-const ADDR_OOT_SHARED_CUSTOM_SAVE_LIVE = parseHexAddressWithFallback(
+let addrOotSharedCustomSaveLive = parseHexAddressWithFallback(
   liveAddrs.oot.sharedCustomSaveLive,
   DEFAULT_ADDR_OOT_SHARED_CUSTOM_SAVE_LIVE,
 );
-const ADDR_MM_FOREIGN_OOT_SAVE_LIVE = parseHexAddressWithFallback(
+let addrMmForeignOotSaveLive = parseHexAddressWithFallback(
   liveAddrs.mm.foreignSaveLive,
   DEFAULT_ADDR_MM_FOREIGN_OOT_SAVE_LIVE,
 );
-const ADDR_MM_SHARED_CUSTOM_SAVE_LIVE = parseHexAddressWithFallback(
+let addrMmSharedCustomSaveLive = parseHexAddressWithFallback(
   liveAddrs.mm.sharedCustomSaveLive,
   DEFAULT_ADDR_MM_SHARED_CUSTOM_SAVE_LIVE,
 );
-const ADDR_OOT_RUNTIME_MAX_KEYS_LIVE = parseHexAddressWithFallback(
+let addrOotRuntimeMaxKeysLive = parseHexAddressWithFallback(
   liveAddrs.oot.runtimeMaxKeysLive,
   DEFAULT_ADDR_OOT_RUNTIME_MAX_KEYS_LIVE,
 );
-const ADDR_OOT_RUNTIME_OOT_COMBO_CONFIG_LIVE = parseHexAddressWithFallback(
+let addrOotRuntimeOotComboConfigLive = parseHexAddressWithFallback(
   liveAddrs.oot.comboConfigLive,
   DEFAULT_ADDR_OOT_RUNTIME_OOT_COMBO_CONFIG_LIVE,
 );
-const ADDR_OOT_RUNTIME_SILVER_RUPEE_DATA_LIVE = parseHexAddressWithFallback(
+let addrOotRuntimeSilverRupeeDataLive = parseHexAddressWithFallback(
   liveAddrs.oot.runtimeSilverRupeeDataLive,
   DEFAULT_ADDR_OOT_RUNTIME_SILVER_RUPEE_DATA_LIVE,
 );
-const ADDR_MM_RUNTIME_OOT_COMBO_CONFIG_LIVE = parseHexAddressWithFallback(
+let addrMmRuntimeOotComboConfigLive = parseHexAddressWithFallback(
   liveAddrs.mm.comboConfigLive,
   DEFAULT_ADDR_MM_RUNTIME_OOT_COMBO_CONFIG_LIVE,
 );
@@ -875,10 +1089,10 @@ const MM_SAVE_CTX_USED_SIZE = Math.max(
   MM_CTX_OFF_GAME_MODE + 4,
   MM_CTX_OFF_CYCLE_FLAGS + MM_PERM_COUNT * 0x14,
 );
-const INVENTORY_SLOT_FILE = inventorySlotsData as InventorySlotFile;
-const SHARED_STATE_READ_SIZE = Math.max(
+let inventorySlotFile = inventorySlotsData as InventorySlotFile;
+let sharedStateReadSize = Math.max(
   SHARED_CUSTOM_SAVE_SIZE,
-  INVENTORY_SLOT_FILE.catalog.shared.trackedSize,
+  inventorySlotFile.catalog.shared.trackedSize,
   SHARED_SONG_NOTES_OFFSET + SHARED_SONG_NOTE_COUNT,
   SHARED_BOMBCHU_BAG_FLAGS_OFFSET + 1,
 );
@@ -935,343 +1149,378 @@ const buildSharedStateChunkSpecs = (
   return specs;
 };
 
-const ACTIVE_OOT_SAVE_CHUNK_SPECS: RawAutotrackerChunkSpec[] = [
-  {
-    name: 'oot_save_state_age',
-    address: ADDR_OOT_SAVE_CTX + OOT_OFF_AGE,
-    length: 4,
-  },
-  {
-    name: 'oot_save_state_magic',
-    address: ADDR_OOT_SAVE_CTX + OOT_OFF_MAGIC_ACQUIRED,
-    length: OOT_OFF_OCARINA_GAME_ROUND + 1 - OOT_OFF_MAGIC_ACQUIRED,
-  },
-  {
-    name: 'oot_save_state_scene',
-    address: ADDR_OOT_SAVE_CTX + OOT_OFF_SCENE_ID,
-    length: 2,
-  },
-  {
-    name: 'oot_save_state_inventory',
-    address: ADDR_OOT_SAVE_CTX + OOT_OFF_INV_ITEMS,
-    length: OOT_OFF_GOLD_TOKENS + 2 - OOT_OFF_INV_ITEMS,
-  },
-  {
-    name: 'oot_save_state_scene_flags',
-    address: ADDR_OOT_SAVE_CTX + OOT_OFF_PERM,
-    length: OOT_PERM_COUNT * OOT_PERM_ENTRY_SIZE,
-  },
-  {
-    name: 'oot_save_state_gs_flags',
-    address: ADDR_OOT_SAVE_CTX + OOT_OFF_GS_FLAGS,
-    length: 6 * 4,
-  },
-  {
-    name: 'oot_save_state_events',
-    address: ADDR_OOT_SAVE_CTX + OOT_OFF_EVENTS_CHK,
-    length: OOT_ACTIVE_SAVE_END - OOT_OFF_EVENTS_CHK,
-  },
-];
-
-const ACTIVE_MM_SAVE_CHUNK_SPECS: RawAutotrackerChunkSpec[] = [
-  {
-    name: 'mm_save_state_day',
-    address: ADDR_MM_SAVE_CTX + MM_OFF_DAY,
-    length: 4,
-  },
-  {
-    name: 'mm_save_state_player_form',
-    address: ADDR_MM_SAVE_CTX + MM_OFF_PLAYER_FORM,
-    length: 1,
-  },
-  {
-    name: 'mm_save_state_magic',
-    address: ADDR_MM_SAVE_CTX + MM_ACTIVE_SAVE_START,
-    length: MM_OFF_DOUBLE_MAGIC + 1 - MM_ACTIVE_SAVE_START,
-  },
-  {
-    name: 'mm_save_state_owl_flags',
-    address: ADDR_MM_SAVE_CTX + MM_OFF_OWL_ACTIVATION_FLAGS,
-    length: 2,
-  },
-  {
-    name: 'mm_save_state_inventory',
-    address: ADDR_MM_SAVE_CTX + MM_OFF_EQUIPMENT,
-    length: MM_OFF_STRAY_FAIRIES + 10 - MM_OFF_EQUIPMENT,
-  },
-  {
-    name: 'mm_save_state_scene_flags',
-    address: ADDR_MM_SAVE_CTX + MM_OFF_PERM_SCENES,
-    length: MM_PERM_COUNT * MM_PERM_ENTRY_SIZE,
-  },
-  {
-    name: 'mm_save_state_skull_tokens',
-    address: ADDR_MM_SAVE_CTX + MM_OFF_SKULL_SWAMP,
-    length: MM_OFF_SKULL_OCEAN + 2 - MM_OFF_SKULL_SWAMP,
-  },
-  {
-    name: 'mm_save_state_week_events',
-    address: ADDR_MM_SAVE_CTX + MM_OFF_WEEK_EVENT_REG,
-    length: MM_ACTIVE_SAVE_END - MM_OFF_WEEK_EVENT_REG,
-  },
-  {
-    name: MM_CYCLE_FLAGS_CHUNK,
-    address: ADDR_MM_SAVE_CTX + MM_CTX_OFF_CYCLE_FLAGS,
-    length: MM_CYCLE_FLAGS_SIZE,
-  },
-];
-
-const FOREIGN_OOT_SAVE_CHUNK_SPECS: RawAutotrackerChunkSpec[] = [
-  {
-    name: 'mm_foreign_oot_save_age',
-    address: ADDR_MM_FOREIGN_OOT_SAVE_LIVE + OOT_OFF_AGE,
-    length: 4,
-  },
-  {
-    name: 'mm_foreign_oot_save_magic',
-    address: ADDR_MM_FOREIGN_OOT_SAVE_LIVE + OOT_OFF_MAGIC_ACQUIRED,
-    length: OOT_OFF_OCARINA_GAME_ROUND + 1 - OOT_OFF_MAGIC_ACQUIRED,
-  },
-  {
-    name: 'mm_foreign_oot_save_scene',
-    address: ADDR_MM_FOREIGN_OOT_SAVE_LIVE + OOT_OFF_SCENE_ID,
-    length: 2,
-  },
-  {
-    name: 'mm_foreign_oot_save_inventory',
-    address: ADDR_MM_FOREIGN_OOT_SAVE_LIVE + OOT_OFF_INV_ITEMS,
-    length: OOT_OFF_GOLD_TOKENS + 2 - OOT_OFF_INV_ITEMS,
-  },
-  {
-    name: 'mm_foreign_oot_save_scene_flags',
-    address: ADDR_MM_FOREIGN_OOT_SAVE_LIVE + OOT_OFF_PERM,
-    length: OOT_PERM_COUNT * OOT_PERM_ENTRY_SIZE,
-  },
-  {
-    name: 'mm_foreign_oot_save_gs_flags',
-    address: ADDR_MM_FOREIGN_OOT_SAVE_LIVE + OOT_OFF_GS_FLAGS,
-    length: 6 * 4,
-  },
-  {
-    name: 'mm_foreign_oot_save_events',
-    address: ADDR_MM_FOREIGN_OOT_SAVE_LIVE + OOT_OFF_EVENTS_CHK,
-    length: OOT_ACTIVE_SAVE_END - OOT_OFF_EVENTS_CHK,
-  },
-];
-
-const FOREIGN_MM_SAVE_CHUNK_SPECS: RawAutotrackerChunkSpec[] = [
-  {
-    name: 'oot_foreign_mm_save_day',
-    address: ADDR_OOT_FOREIGN_MM_SAVE_LIVE + MM_OFF_DAY,
-    length: 4,
-  },
-  {
-    name: 'oot_foreign_mm_save_player_form',
-    address: ADDR_OOT_FOREIGN_MM_SAVE_LIVE + MM_OFF_PLAYER_FORM,
-    length: 1,
-  },
-  {
-    name: 'oot_foreign_mm_save_magic',
-    address: ADDR_OOT_FOREIGN_MM_SAVE_LIVE + MM_ACTIVE_SAVE_START,
-    length: MM_OFF_DOUBLE_MAGIC + 1 - MM_ACTIVE_SAVE_START,
-  },
-  {
-    name: 'oot_foreign_mm_save_owl_flags',
-    address: ADDR_OOT_FOREIGN_MM_SAVE_LIVE + MM_OFF_OWL_ACTIVATION_FLAGS,
-    length: 2,
-  },
-  {
-    name: 'oot_foreign_mm_save_inventory',
-    address: ADDR_OOT_FOREIGN_MM_SAVE_LIVE + MM_OFF_EQUIPMENT,
-    length: MM_OFF_STRAY_FAIRIES + 10 - MM_OFF_EQUIPMENT,
-  },
-  {
-    name: 'oot_foreign_mm_save_scene_flags',
-    address: ADDR_OOT_FOREIGN_MM_SAVE_LIVE + MM_OFF_PERM_SCENES,
-    length: MM_PERM_COUNT * MM_PERM_ENTRY_SIZE,
-  },
-  {
-    name: 'oot_foreign_mm_save_skull_tokens',
-    address: ADDR_OOT_FOREIGN_MM_SAVE_LIVE + MM_OFF_SKULL_SWAMP,
-    length: MM_OFF_SKULL_OCEAN + 2 - MM_OFF_SKULL_SWAMP,
-  },
-  {
-    name: 'oot_foreign_mm_save_week_events',
-    address: ADDR_OOT_FOREIGN_MM_SAVE_LIVE + MM_OFF_WEEK_EVENT_REG,
-    length: MM_ACTIVE_SAVE_END - MM_OFF_WEEK_EVENT_REG,
-  },
-  {
-    name: 'oot_foreign_mm_cycle_flags',
-    address: ADDR_OOT_FOREIGN_MM_SAVE_LIVE + MM_CTX_OFF_CYCLE_FLAGS,
-    length: MM_CYCLE_FLAGS_SIZE,
-  },
-];
-
-const OOT_SHARED_STATE_CHUNK_SPECS = buildSharedStateChunkSpecs(
-  'oot',
-  ADDR_OOT_SHARED_CUSTOM_SAVE_LIVE,
-  INVENTORY_SLOT_FILE.catalog.shared,
-);
-
-const MM_SHARED_STATE_CHUNK_SPECS = buildSharedStateChunkSpecs(
-  'mm',
-  ADDR_MM_SHARED_CUSTOM_SAVE_LIVE,
-  INVENTORY_SLOT_FILE.catalog.shared,
-);
-
-export const RAW_CHUNK_SPECS_BY_GAME: RawAutotrackerChunkSpecsByGame = {
-  oot: [
-    ...ACTIVE_OOT_SAVE_CHUNK_SPECS,
-    ...FOREIGN_MM_SAVE_CHUNK_SPECS,
-    ...OOT_SHARED_STATE_CHUNK_SPECS,
-    {
-      name: OOT_RUNTIME_COMBO_CONFIG_CHUNK,
-      address: ADDR_OOT_RUNTIME_OOT_COMBO_CONFIG_LIVE,
-      length: OOT_COMBO_CONFIG_SIZE,
-    },
-    {
-      name: OOT_RUNTIME_SILVER_RUPEE_DATA_CHUNK,
-      address: ADDR_OOT_RUNTIME_SILVER_RUPEE_DATA_LIVE,
-      length: OOT_SILVER_RUPEE_DATA_SIZE,
-    },
-    {
-      name: OOT_RUNTIME_MAX_KEYS_CHUNK,
-      address: ADDR_OOT_RUNTIME_MAX_KEYS_LIVE,
-      length: OOT_MAX_KEYS_BLOCK_SIZE,
-    },
-    {
-      name: OOT_PLAYSTATE_SCENE_CHUNK,
-      address: ADDR_OOT_PLAYSTATE_NTSC_10 + OOT_PLAY_OFF_SCENE_ID,
-      length: 2,
-    },
-    {
-      name: OOT_PLAYSTATE_ROOM_CHUNK,
-      address: ADDR_OOT_PLAYSTATE_NTSC_10 + OOT_PLAY_OFF_CURRENT_ROOM,
-      length: 1,
-    },
-    {
-      name: OOT_PLAYSTATE_LINK_AGE_CHUNK,
-      address: ADDR_OOT_PLAYSTATE_NTSC_10 + OOT_PLAY_OFF_LINK_AGE_ON_LOAD,
-      length: 1,
-    },
-    {
-      name: OOT_PLAYSTATE_FLAGS_CHUNK,
-      address: ADDR_OOT_PLAYSTATE_NTSC_10 + OOT_PLAY_OFF_CHEST_FLAGS,
-      length: OOT_PLAYSTATE_FLAGS_SIZE,
-    },
-  ],
-  mm: [
-    ...ACTIVE_MM_SAVE_CHUNK_SPECS,
-    ...FOREIGN_OOT_SAVE_CHUNK_SPECS,
-    ...MM_SHARED_STATE_CHUNK_SPECS,
-    {
-      name: MM_RUNTIME_COMBO_CONFIG_CHUNK,
-      address: ADDR_MM_RUNTIME_OOT_COMBO_CONFIG_LIVE,
-      length: OOT_COMBO_CONFIG_SIZE,
-    },
-    {
-      name: MM_PLAYSTATE_SCENE_CHUNK,
-      address: ADDR_MM_PLAYSTATE_1 + MM_PLAY_OFF_SCENE_ID,
-      length: 2,
-    },
-    {
-      name: MM_PLAYSTATE_ROOM_CHUNK,
-      address: ADDR_MM_PLAYSTATE_1 + MM_PLAY_OFF_CURRENT_ROOM,
-      length: 1,
-    },
-    {
-      name: MM_PLAYSTATE_FLAGS_CHUNK,
-      address: ADDR_MM_PLAYSTATE_1 + MM_PLAY_OFF_SWITCH0_FLAGS,
-      length: MM_PLAYSTATE_FLAGS_SIZE,
-    },
-  ],
-};
-
-const LEGACY_RAW_CHUNK_SPECS: RawAutotrackerChunkSpec[] = [
-  {
-    name: OOT_SAVE_CTX_CHUNK,
-    address: ADDR_OOT_SAVE_CTX + OOT_OFF_AGE,
-    length: OOT_ACTIVE_SAVE_END - OOT_OFF_AGE,
-  },
-  {
-    name: MM_SAVE_CTX_CHUNK,
-    address: ADDR_MM_SAVE_CTX + MM_ACTIVE_SAVE_START,
-    length: MM_ACTIVE_SAVE_END - MM_ACTIVE_SAVE_START,
-  },
-  {
-    name: OOT_FOREIGN_MM_SAVE_CHUNK,
-    address: ADDR_OOT_FOREIGN_MM_SAVE_LIVE,
-    length: MM_SAVE_SIZE,
-  },
-  {
-    name: MM_FOREIGN_OOT_SAVE_CHUNK,
-    address: ADDR_MM_FOREIGN_OOT_SAVE_LIVE,
-    length: OOT_SAVE_SIZE,
-  },
-  {
-    name: OOT_SHARED_CUSTOM_SAVE_CHUNK,
-    address: ADDR_OOT_SHARED_CUSTOM_SAVE_LIVE,
-    length: SHARED_STATE_READ_SIZE,
-  },
-  {
-    name: MM_SHARED_CUSTOM_SAVE_CHUNK,
-    address: ADDR_MM_SHARED_CUSTOM_SAVE_LIVE,
-    length: SHARED_STATE_READ_SIZE,
-  },
-];
-
-export const RAW_CHUNK_SPECS: RawAutotrackerChunkSpec[] = [
-  ...RAW_CHUNK_SPECS_BY_GAME.oot,
-  ...RAW_CHUNK_SPECS_BY_GAME.mm,
-  ...LEGACY_RAW_CHUNK_SPECS,
-];
-
 export interface RawAutotrackerMemoryAreas {
   oot: string[];
   mm: string[];
 }
 
-export const RAW_MEMORY_AREAS_BY_GAME: RawAutotrackerMemoryAreas = {
-  oot: RAW_CHUNK_SPECS_BY_GAME.oot.map((spec) => spec.name),
-  mm: RAW_CHUNK_SPECS_BY_GAME.mm.map((spec) => spec.name),
-};
+export let RAW_CHUNK_SPECS_BY_GAME: RawAutotrackerChunkSpecsByGame;
+export let RAW_CHUNK_SPECS: RawAutotrackerChunkSpec[];
+export let RAW_MEMORY_AREAS_BY_GAME: RawAutotrackerMemoryAreas;
 
-const LOCATION_FILE = locationsData as LocationFile;
-const MM_SPECIAL_LOCATION_ENTRIES =
+function rebuildChunkSpecs(): void {
+  const activeOot = buildActiveOotSaveChunkSpecs();
+  const activeMm = buildActiveMmSaveChunkSpecs();
+  const foreignOot = buildForeignOotSaveChunkSpecs();
+  const foreignMm = buildForeignMmSaveChunkSpecs();
+  const ootShared = buildSharedStateChunkSpecs(
+    'oot',
+    addrOotSharedCustomSaveLive,
+    inventorySlotFile.catalog.shared,
+  );
+  const mmShared = buildSharedStateChunkSpecs(
+    'mm',
+    addrMmSharedCustomSaveLive,
+    inventorySlotFile.catalog.shared,
+  );
+
+  const byGame: RawAutotrackerChunkSpecsByGame = {
+    oot: [
+      ...activeOot,
+      ...foreignMm,
+      ...ootShared,
+      {
+        name: OOT_RUNTIME_COMBO_CONFIG_CHUNK,
+        address: addrOotRuntimeOotComboConfigLive,
+        length: OOT_COMBO_CONFIG_SIZE,
+      },
+      {
+        name: OOT_RUNTIME_SILVER_RUPEE_DATA_CHUNK,
+        address: addrOotRuntimeSilverRupeeDataLive,
+        length: OOT_SILVER_RUPEE_DATA_SIZE,
+      },
+      {
+        name: OOT_RUNTIME_MAX_KEYS_CHUNK,
+        address: addrOotRuntimeMaxKeysLive,
+        length: OOT_MAX_KEYS_BLOCK_SIZE,
+      },
+      {
+        name: OOT_PLAYSTATE_SCENE_CHUNK,
+        address: ADDR_OOT_PLAYSTATE_NTSC_10 + OOT_PLAY_OFF_SCENE_ID,
+        length: 2,
+      },
+      {
+        name: OOT_PLAYSTATE_ROOM_CHUNK,
+        address: ADDR_OOT_PLAYSTATE_NTSC_10 + OOT_PLAY_OFF_CURRENT_ROOM,
+        length: 1,
+      },
+      {
+        name: OOT_PLAYSTATE_LINK_AGE_CHUNK,
+        address: ADDR_OOT_PLAYSTATE_NTSC_10 + OOT_PLAY_OFF_LINK_AGE_ON_LOAD,
+        length: 1,
+      },
+      {
+        name: OOT_PLAYSTATE_FLAGS_CHUNK,
+        address: ADDR_OOT_PLAYSTATE_NTSC_10 + OOT_PLAY_OFF_CHEST_FLAGS,
+        length: OOT_PLAYSTATE_FLAGS_SIZE,
+      },
+    ],
+    mm: [
+      ...activeMm,
+      ...foreignOot,
+      ...mmShared,
+      {
+        name: MM_RUNTIME_COMBO_CONFIG_CHUNK,
+        address: addrMmRuntimeOotComboConfigLive,
+        length: OOT_COMBO_CONFIG_SIZE,
+      },
+      {
+        name: MM_PLAYSTATE_SCENE_CHUNK,
+        address: ADDR_MM_PLAYSTATE_1 + MM_PLAY_OFF_SCENE_ID,
+        length: 2,
+      },
+      {
+        name: MM_PLAYSTATE_ROOM_CHUNK,
+        address: ADDR_MM_PLAYSTATE_1 + MM_PLAY_OFF_CURRENT_ROOM,
+        length: 1,
+      },
+      {
+        name: MM_PLAYSTATE_FLAGS_CHUNK,
+        address: ADDR_MM_PLAYSTATE_1 + MM_PLAY_OFF_SWITCH0_FLAGS,
+        length: MM_PLAYSTATE_FLAGS_SIZE,
+      },
+    ],
+  };
+
+  const legacySpecs: RawAutotrackerChunkSpec[] = [
+    {
+      name: OOT_SAVE_CTX_CHUNK,
+      address: addrOotSaveCtx + OOT_OFF_AGE,
+      length: OOT_ACTIVE_SAVE_END - OOT_OFF_AGE,
+    },
+    {
+      name: MM_SAVE_CTX_CHUNK,
+      address: addrMmSaveCtx + MM_ACTIVE_SAVE_START,
+      length: MM_ACTIVE_SAVE_END - MM_ACTIVE_SAVE_START,
+    },
+    {
+      name: OOT_FOREIGN_MM_SAVE_CHUNK,
+      address: addrOotForeignMmSaveLive,
+      length: MM_SAVE_SIZE,
+    },
+    {
+      name: MM_FOREIGN_OOT_SAVE_CHUNK,
+      address: addrMmForeignOotSaveLive,
+      length: OOT_SAVE_SIZE,
+    },
+    {
+      name: OOT_SHARED_CUSTOM_SAVE_CHUNK,
+      address: addrOotSharedCustomSaveLive,
+      length: sharedStateReadSize,
+    },
+    {
+      name: MM_SHARED_CUSTOM_SAVE_CHUNK,
+      address: addrMmSharedCustomSaveLive,
+      length: sharedStateReadSize,
+    },
+  ];
+
+  RAW_CHUNK_SPECS_BY_GAME = byGame;
+  RAW_CHUNK_SPECS = [...byGame.oot, ...byGame.mm, ...legacySpecs];
+  RAW_MEMORY_AREAS_BY_GAME = {
+    oot: byGame.oot.map((spec) => spec.name),
+    mm: byGame.mm.map((spec) => spec.name),
+  };
+}
+
+function buildActiveOotSaveChunkSpecs(): RawAutotrackerChunkSpec[] {
+  return [
+    {
+      name: 'oot_save_state_age',
+      address: addrOotSaveCtx + OOT_OFF_AGE,
+      length: 4,
+    },
+    {
+      name: 'oot_save_state_magic',
+      address: addrOotSaveCtx + OOT_OFF_MAGIC_ACQUIRED,
+      length: OOT_OFF_OCARINA_GAME_ROUND + 1 - OOT_OFF_MAGIC_ACQUIRED,
+    },
+    {
+      name: 'oot_save_state_scene',
+      address: addrOotSaveCtx + OOT_OFF_SCENE_ID,
+      length: 2,
+    },
+    {
+      name: 'oot_save_state_inventory',
+      address: addrOotSaveCtx + OOT_OFF_INV_ITEMS,
+      length: OOT_OFF_GOLD_TOKENS + 2 - OOT_OFF_INV_ITEMS,
+    },
+    {
+      name: 'oot_save_state_scene_flags',
+      address: addrOotSaveCtx + OOT_OFF_PERM,
+      length: OOT_PERM_COUNT * OOT_PERM_ENTRY_SIZE,
+    },
+    {
+      name: 'oot_save_state_gs_flags',
+      address: addrOotSaveCtx + OOT_OFF_GS_FLAGS,
+      length: 6 * 4,
+    },
+    {
+      name: 'oot_save_state_events',
+      address: addrOotSaveCtx + OOT_OFF_EVENTS_CHK,
+      length: OOT_ACTIVE_SAVE_END - OOT_OFF_EVENTS_CHK,
+    },
+  ];
+}
+
+function buildActiveMmSaveChunkSpecs(): RawAutotrackerChunkSpec[] {
+  return [
+    {
+      name: 'mm_save_state_day',
+      address: addrMmSaveCtx + MM_OFF_DAY,
+      length: 4,
+    },
+    {
+      name: 'mm_save_state_player_form',
+      address: addrMmSaveCtx + MM_OFF_PLAYER_FORM,
+      length: 1,
+    },
+    {
+      name: 'mm_save_state_magic',
+      address: addrMmSaveCtx + MM_ACTIVE_SAVE_START,
+      length: MM_OFF_DOUBLE_MAGIC + 1 - MM_ACTIVE_SAVE_START,
+    },
+    {
+      name: 'mm_save_state_owl_flags',
+      address: addrMmSaveCtx + MM_OFF_OWL_ACTIVATION_FLAGS,
+      length: 2,
+    },
+    {
+      name: 'mm_save_state_inventory',
+      address: addrMmSaveCtx + MM_OFF_EQUIPMENT,
+      length: MM_OFF_STRAY_FAIRIES + 10 - MM_OFF_EQUIPMENT,
+    },
+    {
+      name: 'mm_save_state_scene_flags',
+      address: addrMmSaveCtx + MM_OFF_PERM_SCENES,
+      length: MM_PERM_COUNT * MM_PERM_ENTRY_SIZE,
+    },
+    {
+      name: 'mm_save_state_skull_tokens',
+      address: addrMmSaveCtx + MM_OFF_SKULL_SWAMP,
+      length: MM_OFF_SKULL_OCEAN + 2 - MM_OFF_SKULL_SWAMP,
+    },
+    {
+      name: 'mm_save_state_week_events',
+      address: addrMmSaveCtx + MM_OFF_WEEK_EVENT_REG,
+      length: MM_ACTIVE_SAVE_END - MM_OFF_WEEK_EVENT_REG,
+    },
+    {
+      name: MM_CYCLE_FLAGS_CHUNK,
+      address: addrMmSaveCtx + MM_CTX_OFF_CYCLE_FLAGS,
+      length: MM_CYCLE_FLAGS_SIZE,
+    },
+  ];
+}
+
+function buildForeignOotSaveChunkSpecs(): RawAutotrackerChunkSpec[] {
+  return [
+    {
+      name: 'mm_foreign_oot_save_age',
+      address: addrMmForeignOotSaveLive + OOT_OFF_AGE,
+      length: 4,
+    },
+    {
+      name: 'mm_foreign_oot_save_magic',
+      address: addrMmForeignOotSaveLive + OOT_OFF_MAGIC_ACQUIRED,
+      length: OOT_OFF_OCARINA_GAME_ROUND + 1 - OOT_OFF_MAGIC_ACQUIRED,
+    },
+    {
+      name: 'mm_foreign_oot_save_scene',
+      address: addrMmForeignOotSaveLive + OOT_OFF_SCENE_ID,
+      length: 2,
+    },
+    {
+      name: 'mm_foreign_oot_save_inventory',
+      address: addrMmForeignOotSaveLive + OOT_OFF_INV_ITEMS,
+      length: OOT_OFF_GOLD_TOKENS + 2 - OOT_OFF_INV_ITEMS,
+    },
+    {
+      name: 'mm_foreign_oot_save_scene_flags',
+      address: addrMmForeignOotSaveLive + OOT_OFF_PERM,
+      length: OOT_PERM_COUNT * OOT_PERM_ENTRY_SIZE,
+    },
+    {
+      name: 'mm_foreign_oot_save_gs_flags',
+      address: addrMmForeignOotSaveLive + OOT_OFF_GS_FLAGS,
+      length: 6 * 4,
+    },
+    {
+      name: 'mm_foreign_oot_save_events',
+      address: addrMmForeignOotSaveLive + OOT_OFF_EVENTS_CHK,
+      length: OOT_ACTIVE_SAVE_END - OOT_OFF_EVENTS_CHK,
+    },
+  ];
+}
+
+function buildForeignMmSaveChunkSpecs(): RawAutotrackerChunkSpec[] {
+  return [
+    {
+      name: 'oot_foreign_mm_save_day',
+      address: addrOotForeignMmSaveLive + MM_OFF_DAY,
+      length: 4,
+    },
+    {
+      name: 'oot_foreign_mm_save_player_form',
+      address: addrOotForeignMmSaveLive + MM_OFF_PLAYER_FORM,
+      length: 1,
+    },
+    {
+      name: 'oot_foreign_mm_save_magic',
+      address: addrOotForeignMmSaveLive + MM_ACTIVE_SAVE_START,
+      length: MM_OFF_DOUBLE_MAGIC + 1 - MM_ACTIVE_SAVE_START,
+    },
+    {
+      name: 'oot_foreign_mm_save_owl_flags',
+      address: addrOotForeignMmSaveLive + MM_OFF_OWL_ACTIVATION_FLAGS,
+      length: 2,
+    },
+    {
+      name: 'oot_foreign_mm_save_inventory',
+      address: addrOotForeignMmSaveLive + MM_OFF_EQUIPMENT,
+      length: MM_OFF_STRAY_FAIRIES + 10 - MM_OFF_EQUIPMENT,
+    },
+    {
+      name: 'oot_foreign_mm_save_scene_flags',
+      address: addrOotForeignMmSaveLive + MM_OFF_PERM_SCENES,
+      length: MM_PERM_COUNT * MM_PERM_ENTRY_SIZE,
+    },
+    {
+      name: 'oot_foreign_mm_save_skull_tokens',
+      address: addrOotForeignMmSaveLive + MM_OFF_SKULL_SWAMP,
+      length: MM_OFF_SKULL_OCEAN + 2 - MM_OFF_SKULL_SWAMP,
+    },
+    {
+      name: 'oot_foreign_mm_save_week_events',
+      address: addrOotForeignMmSaveLive + MM_OFF_WEEK_EVENT_REG,
+      length: MM_ACTIVE_SAVE_END - MM_OFF_WEEK_EVENT_REG,
+    },
+    {
+      name: 'oot_foreign_mm_cycle_flags',
+      address: addrOotForeignMmSaveLive + MM_CTX_OFF_CYCLE_FLAGS,
+      length: MM_CYCLE_FLAGS_SIZE,
+    },
+  ];
+}
+
+// Initialize at module load time from the default data.
+rebuildChunkSpecs();
+
+let locationFile = locationsData as LocationFile;
+let mmSpecialLocationEntries =
   specialLocationsMmData as MmSpecialLocationEntry[];
-const OOT_SPECIAL_LOCATION_ENTRIES =
+let ootSpecialLocationEntries =
   specialLocationsOotData as OotSpecialLocationEntry[];
 
-const OOT_INVENTORY_ENTRIES = buildInventorySlotTable(INVENTORY_SLOT_FILE.oot);
-const MM_INVENTORY_ENTRIES = buildInventorySlotTable(INVENTORY_SLOT_FILE.mm);
-const SHARED_STORAGE = INVENTORY_SLOT_FILE.catalog.shared;
-const SHARED_BITMAPS = buildSharedBitmapTable(SHARED_STORAGE);
-const {
-  trackedCatalogItems: TRACKED_CATALOG_ITEMS,
-  catalogItemSources: CATALOG_ITEM_SOURCES,
-  sharedBitmapUsedBits: SHARED_BITMAP_USED_BITS,
-} = buildCatalogTables(INVENTORY_SLOT_FILE.catalog.items, SHARED_BITMAPS);
+let ootInventoryEntries = buildInventorySlotTable(inventorySlotFile.oot);
+let mmInventoryEntries = buildInventorySlotTable(inventorySlotFile.mm);
+let sharedStorage = inventorySlotFile.catalog.shared;
+let sharedBitmaps = buildSharedBitmapTable(sharedStorage);
+let trackedCatalogItems: CatalogItemEntry[];
+let catalogItemSources: Map<string, CatalogItemSource>;
+let sharedBitmapUsedBits: Map<string, number>;
+{
+  const built = buildCatalogTables(
+    inventorySlotFile.catalog.items,
+    sharedBitmaps,
+  );
+  trackedCatalogItems = built.trackedCatalogItems;
+  catalogItemSources = built.catalogItemSources;
+  sharedBitmapUsedBits = built.sharedBitmapUsedBits;
+}
 
-markSharedCheckBitmapsUsed(SHARED_BITMAP_USED_BITS, SHARED_BITMAPS);
+markSharedCheckBitmapsUsed(sharedBitmapUsedBits, sharedBitmaps);
 
-const {
-  checkNameTable,
-  ootSceneConflictTable,
-  fishCheckTables,
-  npcCheckTables,
-  gsCheckTables,
-  xflagCheckTables,
-  ootBitmapConflictTable,
-  shopCheckTables,
-  scrubCheckTables,
-  silverRupeeCheckTables,
-  npcSymbolTables,
-} = buildLocationTables(LOCATION_FILE);
+let checkNameTable: Map<string, string>;
+let ootSceneConflictTable: Map<string, SceneConflictEntry>;
+let fishCheckTables: Map<string, Map<number, string>>;
+let npcCheckTables: Map<string, Map<number, string>>;
+let gsCheckTables: Map<string, Map<number, string>>;
+let xflagCheckTables: Map<string, Map<number, string>>;
+let ootBitmapConflictTable: Map<string, Map<number, BitmapConflictEntry>>;
+let shopCheckTables: Map<string, Map<number, string>>;
+let scrubCheckTables: Map<string, Map<number, string>>;
+let silverRupeeCheckTables: Map<string, Map<number, string>>;
+let npcSymbolTables: Map<string, Map<string, string>>;
+{
+  const built = buildLocationTables(locationFile);
+  checkNameTable = built.checkNameTable;
+  ootSceneConflictTable = built.ootSceneConflictTable;
+  fishCheckTables = built.fishCheckTables;
+  npcCheckTables = built.npcCheckTables;
+  gsCheckTables = built.gsCheckTables;
+  xflagCheckTables = built.xflagCheckTables;
+  ootBitmapConflictTable = built.ootBitmapConflictTable;
+  shopCheckTables = built.shopCheckTables;
+  scrubCheckTables = built.scrubCheckTables;
+  silverRupeeCheckTables = built.silverRupeeCheckTables;
+  npcSymbolTables = built.npcSymbolTables;
+}
 
-const OOT_SYMBOL_CHECKS = buildOotSymbolChecks(OOT_SPECIAL_LOCATION_ENTRIES);
-const MM_SYMBOL_CHECKS = buildMmSymbolChecks(MM_SPECIAL_LOCATION_ENTRIES);
+let ootSymbolChecks = buildOotSymbolChecks(ootSpecialLocationEntries);
+let mmSymbolChecks = buildMmSymbolChecks(mmSpecialLocationEntries);
 
-const SCENE_CHECK_FALLBACKS = new Map<string, string>([
+let sceneCheckFallbacks = new Map<string, string>([
   [
     sceneCheckKey('OOT', 1, 'collect', 24),
     'Dodongo Cavern Heart Miniboss Lava',
@@ -1365,9 +1614,9 @@ class RawAutotrackerParserImpl implements RawAutotrackerParser {
     if (activeGame === 'OoT') {
       const ootSaveData = buildChunkedData(
         memory,
-        ADDR_OOT_SAVE_CTX,
+        addrOotSaveCtx,
         OOT_SAVE_CTX_USED_SIZE,
-        ACTIVE_OOT_SAVE_CHUNK_SPECS,
+        buildActiveOotSaveChunkSpecs(),
         OOT_SAVE_CTX_CHUNK,
       );
       if (!ootSaveData) {
@@ -1404,9 +1653,9 @@ class RawAutotrackerParserImpl implements RawAutotrackerParser {
     } else {
       const mmSaveData = buildChunkedData(
         memory,
-        ADDR_MM_SAVE_CTX,
+        addrMmSaveCtx,
         MM_SAVE_CTX_USED_SIZE,
-        ACTIVE_MM_SAVE_CHUNK_SPECS,
+        buildActiveMmSaveChunkSpecs(),
         MM_SAVE_CTX_CHUNK,
       );
       if (!mmSaveData) {
@@ -1451,9 +1700,9 @@ class RawAutotrackerParserImpl implements RawAutotrackerParser {
   private readForeignOotState(memory: RawFrameMemory, oot: OotState): void {
     const direct = buildChunkedData(
       memory,
-      ADDR_MM_FOREIGN_OOT_SAVE_LIVE,
+      addrMmForeignOotSaveLive,
       OOT_SAVE_CTX_USED_SIZE,
-      FOREIGN_OOT_SAVE_CHUNK_SPECS,
+      buildForeignOotSaveChunkSpecs(),
       MM_FOREIGN_OOT_SAVE_CHUNK,
     );
     if (direct && validateForeignOotSave(direct)) {
@@ -1463,11 +1712,7 @@ class RawAutotrackerParserImpl implements RawAutotrackerParser {
 
     const payload = memory.get('mm_payload');
     const data = payload
-      ? sliceAbsoluteChunk(
-          payload,
-          ADDR_MM_FOREIGN_OOT_SAVE_LIVE,
-          OOT_SAVE_SIZE,
-        )
+      ? sliceAbsoluteChunk(payload, addrMmForeignOotSaveLive, OOT_SAVE_SIZE)
       : null;
     if (data && validateForeignOotSave(data)) {
       parseOotSave(oot, data);
@@ -1485,9 +1730,9 @@ class RawAutotrackerParserImpl implements RawAutotrackerParser {
   private readForeignMmState(memory: RawFrameMemory, mm: MmState): void {
     const direct = buildChunkedData(
       memory,
-      ADDR_OOT_FOREIGN_MM_SAVE_LIVE,
+      addrOotForeignMmSaveLive,
       MM_SAVE_CTX_USED_SIZE,
-      FOREIGN_MM_SAVE_CHUNK_SPECS,
+      buildForeignMmSaveChunkSpecs(),
       OOT_FOREIGN_MM_SAVE_CHUNK,
     );
     if (
@@ -1503,7 +1748,7 @@ class RawAutotrackerParserImpl implements RawAutotrackerParser {
 
     const payload = memory.get('oot_payload');
     const data = payload
-      ? sliceAbsoluteChunk(payload, ADDR_OOT_FOREIGN_MM_SAVE_LIVE, MM_SAVE_SIZE)
+      ? sliceAbsoluteChunk(payload, addrOotForeignMmSaveLive, MM_SAVE_SIZE)
       : null;
     if (data && validateForeignMmSave(data, this.hasEverSeenNonZeroMmRegions)) {
       if (!mmSaveRegionsAreAllZero(data)) {
@@ -1529,12 +1774,20 @@ class RawAutotrackerParserImpl implements RawAutotrackerParser {
     const direct = buildChunkedData(
       memory,
       activeGame === 'OoT'
-        ? ADDR_OOT_SHARED_CUSTOM_SAVE_LIVE
-        : ADDR_MM_SHARED_CUSTOM_SAVE_LIVE,
-      sharedStateReadSize(),
+        ? addrOotSharedCustomSaveLive
+        : addrMmSharedCustomSaveLive,
+      sharedStateReadSize,
       activeGame === 'OoT'
-        ? OOT_SHARED_STATE_CHUNK_SPECS
-        : MM_SHARED_STATE_CHUNK_SPECS,
+        ? buildSharedStateChunkSpecs(
+            'oot',
+            addrOotSharedCustomSaveLive,
+            inventorySlotFile.catalog.shared,
+          )
+        : buildSharedStateChunkSpecs(
+            'mm',
+            addrMmSharedCustomSaveLive,
+            inventorySlotFile.catalog.shared,
+          ),
       activeGame === 'OoT'
         ? OOT_SHARED_CUSTOM_SAVE_CHUNK
         : MM_SHARED_CUSTOM_SAVE_CHUNK,
@@ -1555,10 +1808,10 @@ class RawAutotrackerParserImpl implements RawAutotrackerParser {
     );
     const sharedAddress =
       activeGame === 'OoT'
-        ? ADDR_OOT_SHARED_CUSTOM_SAVE_LIVE
-        : ADDR_MM_SHARED_CUSTOM_SAVE_LIVE;
+        ? addrOotSharedCustomSaveLive
+        : addrMmSharedCustomSaveLive;
     const data = payload
-      ? sliceAbsoluteChunk(payload, sharedAddress, sharedStateReadSize())
+      ? sliceAbsoluteChunk(payload, sharedAddress, sharedStateReadSize)
       : null;
     if (data) {
       const parsed = parseSharedState(data);
@@ -1813,21 +2066,46 @@ export interface CreateRawAutotrackerParserOptions {
   ootmmVersion?: string | null;
 }
 
-export function createRawAutotrackerParser(
+export async function createRawAutotrackerParser(
   options?: CreateRawAutotrackerParserOptions,
-): RawAutotrackerParser {
-  // Version validation – when a spoiler log has been imported we verify
-  // that the corresponding autotracker data directory exists.  This is a
-  // forward-looking guard; today only v30_1 data is bundled.
+): Promise<RawAutotrackerParser> {
   if (options?.ootmmVersion) {
     if (!hasAutotrackerDataForVersion(options.ootmmVersion)) {
       throw new Error(
         `No autotracker data available for spoiler-log version "${options.ootmmVersion}". ` +
-          `Supported versions: v30_1.`,
+          `Supported versions: ${getSupportedVersionLabels()}.`,
       );
     }
+
+    const { dirName } = resolveAutotrackerDataVersion(options.ootmmVersion);
+    const bundle = await loadAutotrackerData(dirName);
+    applyVersionData(buildParserTables(bundle));
   }
 
+  return new RawAutotrackerParserImpl();
+}
+
+/**
+ * Synchronous test-only factory.  Accepts a pre-built data bundle directly
+ * instead of loading from disk.
+ */
+export function createRawAutotrackerParserForTest(
+  bundle: AutotrackerDataBundle,
+): RawAutotrackerParser {
+  applyVersionData(buildParserTables(bundle));
+  return new RawAutotrackerParserImpl();
+}
+
+/**
+ * Synchronous factory that loads data for a specific version directory
+ * (e.g. `'v30_1'`, `'v31_0'`, `'v31_1'`) and returns a parser.
+ * Uses the eager registry so no async imports are needed.
+ */
+export function createRawAutotrackerParserSync(
+  dirName = 'v31_0',
+): RawAutotrackerParser {
+  const bundle = loadAutotrackerDataSync(dirName);
+  applyVersionData(buildParserTables(bundle));
   return new RawAutotrackerParserImpl();
 }
 
@@ -2979,7 +3257,7 @@ function parseSharedState(data: Uint8Array): SharedCustomState | null {
 
 function parseSharedStateUnchecked(data: Uint8Array): SharedCustomState | null {
   const parsed = createEmptySharedState();
-  for (const bitmap of SHARED_STORAGE.bitmaps) {
+  for (const bitmap of sharedStorage.bitmaps) {
     const end = bitmap.offset + bitmap.size;
     if (bitmap.offset < 0 || end > data.length) {
       return null;
@@ -3040,14 +3318,14 @@ function parseSharedStateUnchecked(data: Uint8Array): SharedCustomState | null {
 }
 
 function isPlausibleSharedState(shared: SharedCustomState): boolean {
-  for (const [name, bitmapInfo] of SHARED_BITMAPS) {
+  for (const [name, bitmapInfo] of sharedBitmaps) {
     if (isSoulBitmap(name)) {
       continue;
     }
     if (
       !sharedBitmapHasNoUnusedBits(
         shared.bitmaps.get(name),
-        SHARED_BITMAP_USED_BITS.get(name) ?? 0,
+        sharedBitmapUsedBits.get(name) ?? 0,
         bitmapInfo.size,
       )
     ) {
@@ -3583,7 +3861,7 @@ function extractItems(state: GameState): RawAutotrackerItem[] {
 
   for (let index = 0; index < oot.items.length; index++) {
     const itemId = oot.items[index];
-    const entry = OOT_INVENTORY_ENTRIES[index];
+    const entry = ootInventoryEntries[index];
     if (!entry?.itemId) {
       continue;
     }
@@ -3733,7 +4011,7 @@ function extractItems(state: GameState): RawAutotrackerItem[] {
 
   for (let index = 0; index < mm.items.length; index++) {
     const itemId = mm.items[index];
-    const entry = MM_INVENTORY_ENTRIES[index];
+    const entry = mmInventoryEntries[index];
     if (!entry?.itemId) {
       continue;
     }
@@ -3994,9 +4272,9 @@ function extractChecks(state: GameState): RawAutotrackerCheck[] {
     state.oot.extraRecords[EXTRA_IDX_COW_FLAGS] ?? 0,
     appendCheck,
   );
-  appendOotSymbolChecks(state, OOT_SYMBOL_CHECKS, appendCheck);
+  appendOotSymbolChecks(state, ootSymbolChecks, appendCheck);
   appendOotAdultTradeConsumptionFallbacks(state, appendCheck);
-  appendMmSymbolChecks(state, MM_SYMBOL_CHECKS, appendCheck);
+  appendMmSymbolChecks(state, mmSymbolChecks, appendCheck);
   appendOotAmbiguousEventItemChecks(state, appendCheck);
 
   return checks;
@@ -4309,7 +4587,7 @@ function ootScaleLevel(state: GameState): number {
   if (!state.oot.bronzeScaleEnabled) {
     return level;
   }
-  const bronze = CATALOG_ITEM_SOURCES.get('OOT_SCALE_BRONZE');
+  const bronze = catalogItemSources.get('OOT_SCALE_BRONZE');
   if (
     bronze?.block &&
     bitmapHasBit(state.shared.bitmaps.get(bronze.block), bronze.bit ?? 0)
@@ -4324,7 +4602,7 @@ function mmScaleLevel(state: GameState): number {
   if (!state.oot.bronzeScaleEnabled) {
     return level;
   }
-  const bronze = CATALOG_ITEM_SOURCES.get('MM_SCALE_BRONZE');
+  const bronze = catalogItemSources.get('MM_SCALE_BRONZE');
   if (
     bronze?.block &&
     bitmapHasBit(state.shared.bitmaps.get(bronze.block), bronze.bit ?? 0)
@@ -4473,7 +4751,7 @@ function appendCatalogItems(
   items: RawAutotrackerItem[],
   state: GameState,
 ): void {
-  for (const entry of TRACKED_CATALOG_ITEMS) {
+  for (const entry of trackedCatalogItems) {
     let qty = 0;
     switch (entry.source.kind) {
       case 'oot-derived-key-ring':
@@ -4954,11 +5232,11 @@ function isOotBottleItem(itemId: number): boolean {
 }
 
 function countOotBottleItem(items: number[], target: number): number {
-  return countBottleItem(items, target, OOT_INVENTORY_ENTRIES, 'OOT_BOTTLE_');
+  return countBottleItem(items, target, ootInventoryEntries, 'OOT_BOTTLE_');
 }
 
 function countMmBottleItem(items: number[], target: number): number {
-  return countBottleItem(items, target, MM_INVENTORY_ENTRIES, 'MM_BOTTLE_');
+  return countBottleItem(items, target, mmInventoryEntries, 'MM_BOTTLE_');
 }
 
 function countBottleItem(
@@ -5015,7 +5293,7 @@ function lookupSceneCheckName(
   bit: number,
 ): string | null {
   const key = sceneCheckKey(game, scene, kind, bit);
-  return checkNameTable.get(key) ?? SCENE_CHECK_FALLBACKS.get(key) ?? null;
+  return checkNameTable.get(key) ?? sceneCheckFallbacks.get(key) ?? null;
 }
 
 function ootSceneCheckNameForState(
@@ -5028,7 +5306,7 @@ function ootSceneCheckNameForState(
   return (
     checkNameTable.get(key) ??
     ootConflictingSceneCheckName(oot, key) ??
-    SCENE_CHECK_FALLBACKS.get(key) ??
+    sceneCheckFallbacks.get(key) ??
     null
   );
 }
@@ -5148,10 +5426,6 @@ function toSignedByte(value: number): number {
 
 function trailingZeros(value: number): number {
   return 31 - Math.clz32(value & -value);
-}
-
-function sharedStateReadSize(): number {
-  return SHARED_STATE_READ_SIZE;
 }
 
 function sliceAbsoluteChunk(

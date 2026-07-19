@@ -35,10 +35,11 @@ vi.mock('@/../packs/ootmm/src/autotracker/rawFrameParser', () => ({
       { name: 'mm_playstate_flags', address: 0x803e8978, length: 32 },
     ],
   },
-  createRawAutotrackerParser: () => ({
-    parse: parseRawMessageMock,
-    reset: resetRawParserMock,
-  }),
+  createRawAutotrackerParser: () =>
+    Promise.resolve({
+      parse: parseRawMessageMock,
+      reset: resetRawParserMock,
+    }),
 }));
 
 import {

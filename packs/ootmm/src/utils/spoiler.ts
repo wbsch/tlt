@@ -1,3 +1,5 @@
+import { hasAutotrackerDataForVersion } from '../autotracker/data/versions';
+
 export type SpoilerLogData = {
   ootmmVersion?: string;
   settings: Record<string, string | number | boolean>;
@@ -23,12 +25,10 @@ export type SpoilerLocationPlacement = {
 export function isAutotrackingSupportedSpoilerVersion(
   ootmmVersion: string | null | undefined,
 ): boolean {
-  const normalizedVersion = ootmmVersion?.trim().toLowerCase();
-  if (!normalizedVersion) {
+  if (!ootmmVersion || !ootmmVersion.trim()) {
     return false;
   }
-
-  return /^v?30\.1(?:$|[.\-+ ].*)/.test(normalizedVersion);
+  return hasAutotrackerDataForVersion(ootmmVersion);
 }
 
 export function getSpoilerLogPlayerOptions(parsed: SpoilerLogData): number[] {

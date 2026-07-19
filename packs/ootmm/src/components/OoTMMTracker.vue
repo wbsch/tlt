@@ -35,6 +35,7 @@ import {
   type SpoilerLocationPlacement,
   type SpoilerLogData,
 } from '../utils/spoiler';
+import { getSupportedVersionLabels } from '../autotracker/data/versions';
 import {
   hasLegacyKeys,
   hasLegacyCrossWarpOot,
@@ -1566,7 +1567,8 @@ function getUnsupportedSpoilerAutotrackerMessage(
     normalizedVersion && normalizedVersion.length > 0
       ? normalizedVersion
       : 'an unknown version';
-  return `An active autotracker was detected, but autotracking is only supported for OoTMM spoiler logs from version 30.1. This spoiler log reports ${versionLabel}.`;
+  const supported = getSupportedVersionLabels();
+  return `An active autotracker was detected, but autotracking is only supported for OoTMM spoiler logs from version ${supported}. This spoiler log reports ${versionLabel}.`;
 }
 
 function getUnsupportedSpoilerVersionMessage(
@@ -1577,7 +1579,8 @@ function getUnsupportedSpoilerVersionMessage(
     normalizedVersion && normalizedVersion.length > 0
       ? normalizedVersion
       : 'an unknown version';
-  return `Autotracking is only supported for OoTMM spoiler logs from version 30.1. This spoiler log reports ${versionLabel}.`;
+  const supported = getSupportedVersionLabels();
+  return `Autotracking is only supported for OoTMM spoiler logs from version ${supported}. This spoiler log reports ${versionLabel}.`;
 }
 
 async function maybeStartAutotrackerFromSpoiler(
@@ -2461,10 +2464,10 @@ function buildFallbackRemoteLocationIds(
   );
 }
 
-function buildAutotrackerDumpSummary(
+async function buildAutotrackerDumpSummary(
   rawSnapshot: RawAutotrackerMessage,
-): AutotrackerDumpSummary | null {
-  const parser = createRawAutotrackerParser({
+): Promise<AutotrackerDumpSummary | null> {
+  const parser = await createRawAutotrackerParser({
     ootmmVersion: importedSpoilerLogVersion.value,
   });
   const parsed = parser.parse(rawSnapshot);
@@ -2593,7 +2596,7 @@ async function exportAutotrackerDump(): Promise<boolean> {
   const rawSnapshot = await requestAutotrackerRawSnapshot(
     autotracker.url.value,
   );
-  const summary = buildAutotrackerDumpSummary(rawSnapshot);
+  const summary = await buildAutotrackerDumpSummary(rawSnapshot);
   if (!summary) {
     return false;
   }

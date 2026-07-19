@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 
 import {
-  createRawAutotrackerParser,
+  createRawAutotrackerParserSync as createRawAutotrackerParser,
   isPlausibleMmSave,
   RAW_CHUNK_SPECS,
   RAW_CHUNK_SPECS_BY_GAME,
@@ -156,7 +156,7 @@ describe('raw frame parser', () => {
   it.each(listRawFixtureNames())(
     'parses %s as a raw snapshot',
     (fixtureName) => {
-      const parser = createRawAutotrackerParser();
+      const parser = createRawAutotrackerParser('v30_1');
       const { parsed } = parseFixture(parser, fixtureName);
 
       expect(parsed).not.toBeNull();
@@ -167,7 +167,7 @@ describe('raw frame parser', () => {
     'test-20260501-125454.json',
     'before-madame-aroma-20260501-170327.json',
   ])('parses %s with only sparse live chunks present', (fixtureName) => {
-    const parser = createRawAutotrackerParser();
+    const parser = createRawAutotrackerParser('v30_1');
     const { message } = buildRawMessage(fixtureName, 1);
     const parsed = parser.parse({
       ...message,
@@ -186,7 +186,7 @@ describe('raw frame parser', () => {
   });
 
   it('emits the known tracker-native extras that legacy summaries omit', () => {
-    const parser = createRawAutotrackerParser();
+    const parser = createRawAutotrackerParser('v30_1');
     const { parsed } = parseFixture(
       parser,
       'before-madame-aroma-20260501-170327.json',
@@ -203,7 +203,7 @@ describe('raw frame parser', () => {
   });
 
   it('reuses the last-known MM state across subsequent OoT snapshots', () => {
-    const parser = createRawAutotrackerParser();
+    const parser = createRawAutotrackerParser('v30_1');
     const { message: beforeMessage } = buildRawMessage(
       'before-madame-aroma-20260501-170327.json',
       1,
@@ -224,7 +224,7 @@ describe('raw frame parser', () => {
   });
 
   it('keeps consumed adult trade items owned after the next trade step is reached', () => {
-    const parser = createRawAutotrackerParser();
+    const parser = createRawAutotrackerParser('v30_1');
     const parsed = parser.parse(
       buildMinimalOotMessage({
         [EXTRA_IDX_OOT_TRADE]: 1 << 4,

@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 
 import {
   RAW_CHUNK_SPECS,
-  createRawAutotrackerParser,
+  createRawAutotrackerParserSync as createRawAutotrackerParser,
 } from '@/../packs/ootmm/src/autotracker/rawFrameParser';
 import {
   buildRawMessage,
@@ -209,7 +209,7 @@ function buildMmLiveSceneMessage(
 function getChecks(
   fixtureName: string,
   sequence = 1,
-  parser = createRawAutotrackerParser(),
+  parser = createRawAutotrackerParser('v30_1'),
 ): Set<string> {
   return parsedCheckSet(
     parseFixture(parser, fixtureName, sequence).parsed.checks,
@@ -243,7 +243,7 @@ function expectChecksAbsent(checks: Set<string>, names: string[]) {
 describe('raw frame snapshot transitions', () => {
   it('applies OoT live scene flags even when live and saved scenes disagree', () => {
     const fixtureName = 'after-bombchu-2-20260501-202008.json';
-    const parser = createRawAutotrackerParser();
+    const parser = createRawAutotrackerParser('v30_1');
 
     const mixedScene = parser.parse(
       buildOotLiveSceneMessage(fixtureName, 1, {
@@ -276,7 +276,7 @@ describe('raw frame snapshot transitions', () => {
 
   it('ignores the first OoT live-scene sample after a scene change', () => {
     const fixtureName = 'after-bombchu-2-20260501-202008.json';
-    const parser = createRawAutotrackerParser();
+    const parser = createRawAutotrackerParser('v30_1');
 
     const previousScene = parser.parse(
       buildOotLiveSceneMessage(fixtureName, 1, {
@@ -329,7 +329,7 @@ describe('raw frame snapshot transitions', () => {
   it('ignores the first MM live-scene sample after a scene change', () => {
     const fixtureName =
       'mm-without-initial-song-of-healing-20260501-143756.json';
-    const parser = createRawAutotrackerParser();
+    const parser = createRawAutotrackerParser('v30_1');
 
     const previousScene = parser.parse(
       buildMmLiveSceneMessage(fixtureName, 1, {
@@ -365,7 +365,7 @@ describe('raw frame snapshot transitions', () => {
   it('ignores the first MM frame after switching from OoT', () => {
     const ootFixture = 'after-bombchu-2-20260501-202008.json';
     const mmFixture = 'mm-without-initial-song-of-healing-20260501-143756.json';
-    const parser = createRawAutotrackerParser();
+    const parser = createRawAutotrackerParser('v30_1');
 
     const ootScene = parser.parse(
       buildOotLiveSceneMessage(ootFixture, 1, {
@@ -396,7 +396,7 @@ describe('raw frame snapshot transitions', () => {
   });
 
   it('tracks the Initial Song of Healing extra-flag transition', () => {
-    const parser = createRawAutotrackerParser();
+    const parser = createRawAutotrackerParser('v30_1');
     const withoutChecks = getChecks(
       'mm-without-initial-song-of-healing-20260501-143756.json',
       1,
@@ -423,7 +423,7 @@ describe('raw frame snapshot transitions', () => {
   });
 
   it('tracks the Tingle map fallback pair without leaking extra map checks', () => {
-    const parser = createRawAutotrackerParser();
+    const parser = createRawAutotrackerParser('v30_1');
     const beforeChecks = getChecks(
       'before-tingle-20260501-170052.json',
       1,
@@ -448,7 +448,7 @@ describe('raw frame snapshot transitions', () => {
   });
 
   it('tracks the Madame Aroma fallback pair without removing prior checks', () => {
-    const parser = createRawAutotrackerParser();
+    const parser = createRawAutotrackerParser('v30_1');
     const beforeChecks = getChecks(
       'before-madame-aroma-20260501-170327.json',
       1,
@@ -466,7 +466,7 @@ describe('raw frame snapshot transitions', () => {
   });
 
   it('tracks the Stock Pot Inn room key fallback pair', () => {
-    const parser = createRawAutotrackerParser();
+    const parser = createRawAutotrackerParser('v30_1');
     const beforeChecks = getChecks(
       'before-anju-key-20260501-170709.json',
       1,
@@ -484,7 +484,7 @@ describe('raw frame snapshot transitions', () => {
   });
 
   it('tracks the Town Archery fallback pair', () => {
-    const parser = createRawAutotrackerParser();
+    const parser = createRawAutotrackerParser('v30_1');
     const beforeChecks = getChecks(
       'before-archery-20260501-170932.json',
       1,
@@ -505,7 +505,7 @@ describe('raw frame snapshot transitions', () => {
   });
 
   it('tracks Bombchu Bowling reward progression across the snapshot trio', () => {
-    const parser = createRawAutotrackerParser();
+    const parser = createRawAutotrackerParser('v30_1');
     const beforeChecks = getChecks(
       'before-bombchu-bowling-20260501-201613.json',
       1,
@@ -531,7 +531,7 @@ describe('raw frame snapshot transitions', () => {
   });
 
   it('tracks the Zora Diving Game fallback pair', () => {
-    const parser = createRawAutotrackerParser();
+    const parser = createRawAutotrackerParser('v30_1');
     const beforeChecks = getChecks(
       'before-diving-game-20260501-205252.json',
       1,
@@ -549,7 +549,7 @@ describe('raw frame snapshot transitions', () => {
   });
 
   it('tracks the Goron Tunic fallback pair without leaking unrelated extra flags', () => {
-    const parser = createRawAutotrackerParser();
+    const parser = createRawAutotrackerParser('v30_1');
     const beforeChecks = getChecks(
       'before-goron-20260501-185643.json',
       1,

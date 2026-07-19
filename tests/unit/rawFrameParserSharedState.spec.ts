@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 
 import {
-  createRawAutotrackerParser,
+  createRawAutotrackerParserSync as createRawAutotrackerParser,
   type RawAutotrackerMessage,
 } from '../../packs/ootmm/src/autotracker/rawFrameParser';
 import { buildRawMessage } from '../helpers/autotrackerFixtures';
@@ -88,7 +88,7 @@ function zeroTransitionAuxiliaryChunks(
 
 describe('rawFrameParser shared state fallback', () => {
   it('keeps the last known shared and runtime state when a later frame zeroes transition chunks during the same save state', () => {
-    const parser = createRawAutotrackerParser();
+    const parser = createRawAutotrackerParser('v30_1');
     const { message } = buildRawMessage('after-bomchu-1-20260501-201847.json');
     const bronzeMessage = withSyntheticBronzeScaleData(message);
 
@@ -106,7 +106,7 @@ describe('rawFrameParser shared state fallback', () => {
   });
 
   it('does not invent shared or runtime state before any valid snapshot was seen', () => {
-    const parser = createRawAutotrackerParser();
+    const parser = createRawAutotrackerParser('v30_1');
     const { message } = buildRawMessage('after-bomchu-1-20260501-201847.json');
     const bronzeMessage = withSyntheticBronzeScaleData(message);
 

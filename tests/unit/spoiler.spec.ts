@@ -18,10 +18,13 @@ Settings
     expect(parsed.ootmmVersion).toBe('9.9.9-test');
   });
 
-  it('accepts v30.1 spoiler versions for autotracking', () => {
+  it('accepts supported spoiler versions for autotracking', () => {
     expect(isAutotrackingSupportedSpoilerVersion('v30.1')).toBe(true);
-    expect(isAutotrackingSupportedSpoilerVersion('30.1.2')).toBe(true);
-    expect(isAutotrackingSupportedSpoilerVersion(' v30.1-beta ')).toBe(true);
+    expect(isAutotrackingSupportedSpoilerVersion('30.1')).toBe(true);
+    expect(isAutotrackingSupportedSpoilerVersion('v31.0')).toBe(true);
+    expect(isAutotrackingSupportedSpoilerVersion('31.0')).toBe(true);
+    expect(isAutotrackingSupportedSpoilerVersion('v31.1')).toBe(true);
+    expect(isAutotrackingSupportedSpoilerVersion('31.1')).toBe(true);
   });
 
   it('rejects unsupported spoiler versions for autotracking', () => {
@@ -30,6 +33,8 @@ Settings
     expect(isAutotrackingSupportedSpoilerVersion('v30.0')).toBe(false);
     expect(isAutotrackingSupportedSpoilerVersion('30.2')).toBe(false);
     expect(isAutotrackingSupportedSpoilerVersion('30.10')).toBe(false);
+    expect(isAutotrackingSupportedSpoilerVersion('30.1.2')).toBe(false);
+    expect(isAutotrackingSupportedSpoilerVersion('v30.1-beta')).toBe(false);
   });
 
   it('detects multiworld players from mode and player count', () => {

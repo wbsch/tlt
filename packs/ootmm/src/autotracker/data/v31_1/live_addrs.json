@@ -22,10 +22,7 @@
       "runtimeSilverRupeeDataLive": "patchfile-payload-scan",
       "runtimeMaxKeysLive": "patchfile-code-scan+offset"
     },
-    "missingPatchfileSymbols": [
-      "gMmSave",
-      "gSharedCustomSave"
-    ]
+    "missingPatchfileSymbols": ["gMmSave", "gSharedCustomSave"]
   },
   "mm": {
     "comboCtx": "0x80098280",
@@ -38,19 +35,10 @@
       "payload": "patchfile-vram",
       "comboConfigLive": "patchfile-code-scan"
     },
-    "missingPatchfileSymbols": [
-      "gOotSave",
-      "gSharedCustomSave"
-    ]
+    "missingPatchfileSymbols": ["gOotSave", "gSharedCustomSave"]
   },
   "notDerivableWithoutLinking": {
-    "oot": [
-      "foreignSaveLive",
-      "sharedCustomSaveLive"
-    ],
-    "mm": [
-      "foreignSaveLive",
-      "sharedCustomSaveLive"
-    ]
+    "oot": ["foreignSaveLive", "sharedCustomSaveLive"],
+    "mm": ["foreignSaveLive", "sharedCustomSaveLive"]
   }
 }
