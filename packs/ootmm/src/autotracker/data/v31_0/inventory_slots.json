@@ -1,0 +1,2940 @@
+{
+  "oot": [
+    {
+      "index": 0,
+      "slot": "ITS_OOT_STICKS",
+      "itemId": "OOT_STICK"
+    },
+    {
+      "index": 1,
+      "slot": "ITS_OOT_NUTS",
+      "itemId": "OOT_DEKU_NUTS"
+    },
+    {
+      "index": 2,
+      "slot": "ITS_OOT_BOMBS",
+      "itemId": "OOT_BOMBS"
+    },
+    {
+      "index": 3,
+      "slot": "ITS_OOT_BOW",
+      "itemId": "OOT_BOW"
+    },
+    {
+      "index": 4,
+      "slot": "ITS_OOT_ARROW_FIRE",
+      "itemId": "OOT_ARROW_FIRE"
+    },
+    {
+      "index": 5,
+      "slot": "ITS_OOT_SPELL_FIRE",
+      "itemId": "OOT_SPELL_FIRE"
+    },
+    {
+      "index": 6,
+      "slot": "ITS_OOT_SLINGSHOT",
+      "itemId": "OOT_SLINGSHOT"
+    },
+    {
+      "index": 7,
+      "slot": "ITS_OOT_OCARINA",
+      "itemId": "OOT_OCARINA",
+      "quantity": {
+        "stages": [7, 8]
+      }
+    },
+    {
+      "index": 8,
+      "slot": "ITS_OOT_BOMBCHU",
+      "itemId": "OOT_BOMBCHUS"
+    },
+    {
+      "index": 9,
+      "slot": "ITS_OOT_HOOKSHOT",
+      "itemId": "OOT_HOOKSHOT",
+      "quantity": {
+        "stages": [10, 11]
+      }
+    },
+    {
+      "index": 10,
+      "slot": "ITS_OOT_ARROW_ICE",
+      "itemId": "OOT_ARROW_ICE"
+    },
+    {
+      "index": 11,
+      "slot": "ITS_OOT_SPELL_WIND",
+      "itemId": "OOT_SPELL_WIND"
+    },
+    {
+      "index": 12,
+      "slot": "ITS_OOT_BOOMERANG",
+      "itemId": "OOT_BOOMERANG"
+    },
+    {
+      "index": 13,
+      "slot": "ITS_OOT_LENS",
+      "itemId": "OOT_LENS"
+    },
+    {
+      "index": 14,
+      "slot": "ITS_OOT_MAGIC_BEAN",
+      "itemId": "OOT_MAGIC_BEAN",
+      "quantity": {
+        "useBeansCount": true
+      }
+    },
+    {
+      "index": 15,
+      "slot": "ITS_OOT_HAMMER",
+      "itemId": "OOT_HAMMER"
+    },
+    {
+      "index": 16,
+      "slot": "ITS_OOT_ARROW_LIGHT",
+      "itemId": "OOT_ARROW_LIGHT"
+    },
+    {
+      "index": 17,
+      "slot": "ITS_OOT_SPELL_LOVE",
+      "itemId": "OOT_SPELL_LOVE"
+    },
+    {
+      "index": 18,
+      "slot": "ITS_OOT_BOTTLE",
+      "itemId": "OOT_BOTTLE_1"
+    },
+    {
+      "index": 19,
+      "slot": "ITS_OOT_BOTTLE2",
+      "itemId": "OOT_BOTTLE_2"
+    },
+    {
+      "index": 20,
+      "slot": "ITS_OOT_BOTTLE3",
+      "itemId": "OOT_BOTTLE_3"
+    },
+    {
+      "index": 21,
+      "slot": "ITS_OOT_BOTTLE4",
+      "itemId": "OOT_BOTTLE_4"
+    },
+    {
+      "index": 22,
+      "slot": "ITS_OOT_TRADE_ADULT",
+      "itemId": "OOT_ADULT_TRADE",
+      "quantity": {
+        "stages": [45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 20],
+        "maxWithBottle": true
+      }
+    },
+    {
+      "index": 23,
+      "slot": "ITS_OOT_TRADE_CHILD",
+      "itemId": "OOT_CHILD_TRADE",
+      "quantity": {
+        "stages": [33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 156, 157, 20],
+        "maxWithBottle": true
+      }
+    }
+  ],
+  "mm": [
+    {
+      "index": 0,
+      "slot": "ITS_MM_OCARINA",
+      "itemId": "MM_OCARINA",
+      "quantity": {
+        "stages": [5, 0]
+      }
+    },
+    {
+      "index": 1,
+      "slot": "ITS_MM_BOW",
+      "itemId": "MM_BOW"
+    },
+    {
+      "index": 2,
+      "slot": "ITS_MM_ARROW_FIRE",
+      "itemId": "MM_ARROW_FIRE"
+    },
+    {
+      "index": 3,
+      "slot": "ITS_MM_ARROW_ICE",
+      "itemId": "MM_ARROW_ICE"
+    },
+    {
+      "index": 4,
+      "slot": "ITS_MM_ARROW_LIGHT",
+      "itemId": "MM_ARROW_LIGHT"
+    },
+    {
+      "index": 5,
+      "slot": "ITS_MM_TRADE1",
+      "itemId": "MM_TRADE_1",
+      "quantity": {
+        "stages": [176, 40, 41, 42, 43, 44]
+      }
+    },
+    {
+      "index": 6,
+      "slot": "ITS_MM_BOMBS",
+      "itemId": "MM_BOMBS"
+    },
+    {
+      "index": 7,
+      "slot": "ITS_MM_BOMBCHU",
+      "itemId": "MM_BOMBCHU"
+    },
+    {
+      "index": 8,
+      "slot": "ITS_MM_STICKS",
+      "itemId": "MM_STICK"
+    },
+    {
+      "index": 9,
+      "slot": "ITS_MM_NUTS",
+      "itemId": "MM_NUT"
+    },
+    {
+      "index": 10,
+      "slot": "ITS_MM_BEANS",
+      "itemId": "MM_MAGIC_BEAN"
+    },
+    {
+      "index": 11,
+      "slot": "ITS_MM_TRADE2",
+      "itemId": "MM_TRADE_2",
+      "quantity": {
+        "stages": [174, 177, 179, 45, 46]
+      }
+    },
+    {
+      "index": 12,
+      "slot": "ITS_MM_KEG",
+      "itemId": "MM_POWDER_KEG"
+    },
+    {
+      "index": 13,
+      "slot": "ITS_MM_PICTOBOX",
+      "itemId": "MM_PICTOGRAPH_BOX"
+    },
+    {
+      "index": 14,
+      "slot": "ITS_MM_LENS",
+      "itemId": "MM_LENS"
+    },
+    {
+      "index": 15,
+      "slot": "ITS_MM_HOOKSHOT",
+      "itemId": "MM_HOOKSHOT",
+      "quantity": {
+        "stages": [17, 15]
+      }
+    },
+    {
+      "index": 16,
+      "slot": "ITS_MM_GREAT_FAIRY_SWORD",
+      "itemId": "MM_GREAT_FAIRY_SWORD",
+      "quantity": {
+        "stages": [16]
+      }
+    },
+    {
+      "index": 17,
+      "slot": "ITS_MM_TRADE3",
+      "itemId": "MM_TRADE_3",
+      "quantity": {
+        "stages": [175, 178, 180, 47, 48]
+      }
+    },
+    {
+      "index": 18,
+      "slot": "ITS_MM_BOTTLE",
+      "itemId": "MM_BOTTLE_1"
+    },
+    {
+      "index": 19,
+      "slot": "ITS_MM_BOTTLE2",
+      "itemId": "MM_BOTTLE_2"
+    },
+    {
+      "index": 20,
+      "slot": "ITS_MM_BOTTLE3",
+      "itemId": "MM_BOTTLE_3"
+    },
+    {
+      "index": 21,
+      "slot": "ITS_MM_BOTTLE4",
+      "itemId": "MM_BOTTLE_4"
+    },
+    {
+      "index": 22,
+      "slot": "ITS_MM_BOTTLE5",
+      "itemId": "MM_BOTTLE_5"
+    },
+    {
+      "index": 23,
+      "slot": "ITS_MM_BOTTLE6",
+      "itemId": "MM_BOTTLE_6"
+    },
+    {
+      "index": 24,
+      "slot": "ITS_MM_MASK_POSTMAN",
+      "itemId": "MM_MASK_POSTMAN"
+    },
+    {
+      "index": 25,
+      "slot": "ITS_MM_MASK_ALL_NIGHT",
+      "itemId": "MM_MASK_ALL_NIGHT"
+    },
+    {
+      "index": 26,
+      "slot": "ITS_MM_MASK_BLAST",
+      "itemId": "MM_MASK_BLAST"
+    },
+    {
+      "index": 27,
+      "slot": "ITS_MM_MASK_STONE",
+      "itemId": "MM_MASK_STONE"
+    },
+    {
+      "index": 28,
+      "slot": "ITS_MM_MASK_GREAT_FAIRY",
+      "itemId": "MM_MASK_GREAT_FAIRY"
+    },
+    {
+      "index": 29,
+      "slot": "ITS_MM_MASK_DEKU",
+      "itemId": "MM_MASK_DEKU"
+    },
+    {
+      "index": 30,
+      "slot": "ITS_MM_MASK_KEATON",
+      "itemId": "MM_MASK_KEATON"
+    },
+    {
+      "index": 31,
+      "slot": "ITS_MM_MASK_BREMEN",
+      "itemId": "MM_MASK_BREMEN"
+    },
+    {
+      "index": 32,
+      "slot": "ITS_MM_MASK_BUNNY",
+      "itemId": "MM_MASK_BUNNY"
+    },
+    {
+      "index": 33,
+      "slot": "ITS_MM_MASK_DON_GERO",
+      "itemId": "MM_MASK_DON_GERO"
+    },
+    {
+      "index": 34,
+      "slot": "ITS_MM_MASK_SCENTS",
+      "itemId": "MM_MASK_SCENTS"
+    },
+    {
+      "index": 35,
+      "slot": "ITS_MM_MASK_GORON",
+      "itemId": "MM_MASK_GORON"
+    },
+    {
+      "index": 36,
+      "slot": "ITS_MM_MASK_ROMANI",
+      "itemId": "MM_MASK_ROMANI"
+    },
+    {
+      "index": 37,
+      "slot": "ITS_MM_MASK_TROUPE_LEADER",
+      "itemId": "MM_MASK_TROUPE_LEADER"
+    },
+    {
+      "index": 38,
+      "slot": "ITS_MM_MASK_KAFEI",
+      "itemId": "MM_MASK_KAFEI"
+    },
+    {
+      "index": 39,
+      "slot": "ITS_MM_MASK_COUPLE",
+      "itemId": "MM_MASK_COUPLE"
+    },
+    {
+      "index": 40,
+      "slot": "ITS_MM_MASK_TRUTH",
+      "itemId": "MM_MASK_TRUTH"
+    },
+    {
+      "index": 41,
+      "slot": "ITS_MM_MASK_ZORA",
+      "itemId": "MM_MASK_ZORA"
+    },
+    {
+      "index": 42,
+      "slot": "ITS_MM_MASK_KAMARO",
+      "itemId": "MM_MASK_KAMARO"
+    },
+    {
+      "index": 43,
+      "slot": "ITS_MM_MASK_GIBDO",
+      "itemId": "MM_MASK_GIBDO"
+    },
+    {
+      "index": 44,
+      "slot": "ITS_MM_MASK_GARO",
+      "itemId": "MM_MASK_GARO"
+    },
+    {
+      "index": 45,
+      "slot": "ITS_MM_MASK_CAPTAIN",
+      "itemId": "MM_MASK_CAPTAIN"
+    },
+    {
+      "index": 46,
+      "slot": "ITS_MM_MASK_GIANT",
+      "itemId": "MM_MASK_GIANT"
+    },
+    {
+      "index": 47,
+      "slot": "ITS_MM_MASK_FIERCE_DEITY",
+      "itemId": "MM_MASK_FIERCE_DEITY"
+    }
+  ],
+  "catalog": {
+    "shared": {
+      "baseOffset": 98304,
+      "stride": 16384,
+      "trackedSize": 2118,
+      "bitmaps": [
+        {
+          "name": "xflagsOot",
+          "offset": 0,
+          "size": 744
+        },
+        {
+          "name": "npcOot",
+          "offset": 744,
+          "size": 32
+        },
+        {
+          "name": "shopsOot",
+          "offset": 776,
+          "size": 8
+        },
+        {
+          "name": "scrubsOot",
+          "offset": 784,
+          "size": 8
+        },
+        {
+          "name": "srOot",
+          "offset": 792,
+          "size": 16
+        },
+        {
+          "name": "xflagsMm",
+          "offset": 880,
+          "size": 842
+        },
+        {
+          "name": "npcMm",
+          "offset": 1722,
+          "size": 32
+        },
+        {
+          "name": "shopsMm",
+          "offset": 1754,
+          "size": 4
+        },
+        {
+          "name": "soulsEnemyOot",
+          "offset": 1996,
+          "size": 8
+        },
+        {
+          "name": "soulsEnemyMm",
+          "offset": 2004,
+          "size": 8
+        },
+        {
+          "name": "soulsBossOot",
+          "offset": 2012,
+          "size": 2
+        },
+        {
+          "name": "soulsBossMm",
+          "offset": 2014,
+          "size": 1
+        },
+        {
+          "name": "soulsNpcOot",
+          "offset": 2015,
+          "size": 8
+        },
+        {
+          "name": "soulsNpcMm",
+          "offset": 2023,
+          "size": 8
+        },
+        {
+          "name": "soulsAnimalOot",
+          "offset": 2031,
+          "size": 2
+        },
+        {
+          "name": "soulsAnimalMm",
+          "offset": 2033,
+          "size": 2
+        },
+        {
+          "name": "soulsMiscOot",
+          "offset": 2035,
+          "size": 1
+        },
+        {
+          "name": "soulsMiscMm",
+          "offset": 2036,
+          "size": 1
+        },
+        {
+          "name": "caughtFishFlags",
+          "offset": 2077,
+          "size": 5
+        },
+        {
+          "name": "progressiveFlags",
+          "offset": 2117,
+          "size": 1
+        }
+      ]
+    },
+    "items": [
+      {
+        "itemId": "OOT_SOUL_ENEMY_STALFOS",
+        "source": {
+          "kind": "shared-bitmap-bit",
+          "block": "soulsEnemyOot",
+          "bit": 0
+        }
+      },
+      {
+        "itemId": "OOT_SOUL_ENEMY_OCTOROK",
+        "source": {
+          "kind": "shared-bitmap-bit",
+          "block": "soulsEnemyOot",
+          "bit": 1
+        }
+      },
+      {
+        "itemId": "OOT_SOUL_ENEMY_WALLMASTER",
+        "source": {
+          "kind": "shared-bitmap-bit",
+          "block": "soulsEnemyOot",
+          "bit": 2
+        }
+      },
+      {
+        "itemId": "OOT_SOUL_ENEMY_DODONGO",
+        "source": {
+          "kind": "shared-bitmap-bit",
+          "block": "soulsEnemyOot",
+          "bit": 3
+        }
+      },
+      {
+        "itemId": "OOT_SOUL_ENEMY_KEESE",
+        "source": {
+          "kind": "shared-bitmap-bit",
+          "block": "soulsEnemyOot",
+          "bit": 4
+        }
+      },
+      {
+        "itemId": "OOT_SOUL_ENEMY_TEKTITE",
+        "source": {
+          "kind": "shared-bitmap-bit",
+          "block": "soulsEnemyOot",
+          "bit": 5
+        }
+      },
+      {
+        "itemId": "OOT_SOUL_ENEMY_LEEVER",
+        "source": {
+          "kind": "shared-bitmap-bit",
+          "block": "soulsEnemyOot",
+          "bit": 6
+        }
+      },
+      {
+        "itemId": "OOT_SOUL_ENEMY_PEAHAT",
+        "source": {
+          "kind": "shared-bitmap-bit",
+          "block": "soulsEnemyOot",
+          "bit": 7
+        }
+      },
+      {
+        "itemId": "OOT_SOUL_ENEMY_LIZALFOS_DINOLFOS",
+        "source": {
+          "kind": "shared-bitmap-bit",
+          "block": "soulsEnemyOot",
+          "bit": 8
+        }
+      },
+      {
+        "itemId": "OOT_SOUL_ENEMY_GOHMA_LARVA",
+        "source": {
+          "kind": "shared-bitmap-bit",
+          "block": "soulsEnemyOot",
+          "bit": 9
+        }
+      },
+      {
+        "itemId": "OOT_SOUL_ENEMY_SHABOM",
+        "source": {
+          "kind": "shared-bitmap-bit",
+          "block": "soulsEnemyOot",
+          "bit": 10
+        }
+      },
+      {
+        "itemId": "OOT_SOUL_ENEMY_BABY_DODONGO",
+        "source": {
+          "kind": "shared-bitmap-bit",
+          "block": "soulsEnemyOot",
+          "bit": 11
+        }
+      },
+      {
+        "itemId": "OOT_SOUL_ENEMY_DARK_LINK",
+        "source": {
+          "kind": "shared-bitmap-bit",
+          "block": "soulsEnemyOot",
+          "bit": 12
+        }
+      },
+      {
+        "itemId": "OOT_SOUL_ENEMY_BIRI_BARI",
+        "source": {
+          "kind": "shared-bitmap-bit",
+          "block": "soulsEnemyOot",
+          "bit": 13
+        }
+      },
+      {
+        "itemId": "OOT_SOUL_ENEMY_TAILPASARN",
+        "source": {
+          "kind": "shared-bitmap-bit",
+          "block": "soulsEnemyOot",
+          "bit": 14
+        }
+      },
+      {
+        "itemId": "OOT_SOUL_ENEMY_PARASITE",
+        "source": {
+          "kind": "shared-bitmap-bit",
+          "block": "soulsEnemyOot",
+          "bit": 15
+        }
+      },
+      {
+        "itemId": "OOT_SOUL_ENEMY_SKULLTULA",
+        "source": {
+          "kind": "shared-bitmap-bit",
+          "block": "soulsEnemyOot",
+          "bit": 16
+        }
+      },
+      {
+        "itemId": "OOT_SOUL_ENEMY_TORCH_SLUG",
+        "source": {
+          "kind": "shared-bitmap-bit",
+          "block": "soulsEnemyOot",
+          "bit": 17
+        }
+      },
+      {
+        "itemId": "OOT_SOUL_ENEMY_MOBLIN",
+        "source": {
+          "kind": "shared-bitmap-bit",
+          "block": "soulsEnemyOot",
+          "bit": 18
+        }
+      },
+      {
+        "itemId": "OOT_SOUL_ENEMY_ARMOS",
+        "source": {
+          "kind": "shared-bitmap-bit",
+          "block": "soulsEnemyOot",
+          "bit": 19
+        }
+      },
+      {
+        "itemId": "OOT_SOUL_ENEMY_DEKU_BABA",
+        "source": {
+          "kind": "shared-bitmap-bit",
+          "block": "soulsEnemyOot",
+          "bit": 20
+        }
+      },
+      {
+        "itemId": "OOT_SOUL_ENEMY_DEKU_SCRUB",
+        "source": {
+          "kind": "shared-bitmap-bit",
+          "block": "soulsEnemyOot",
+          "bit": 21
+        }
+      },
+      {
+        "itemId": "OOT_SOUL_ENEMY_BUBBLE",
+        "source": {
+          "kind": "shared-bitmap-bit",
+          "block": "soulsEnemyOot",
+          "bit": 22
+        }
+      },
+      {
+        "itemId": "OOT_SOUL_ENEMY_BEAMOS",
+        "source": {
+          "kind": "shared-bitmap-bit",
+          "block": "soulsEnemyOot",
+          "bit": 23
+        }
+      },
+      {
+        "itemId": "OOT_SOUL_ENEMY_FLOORMASTER",
+        "source": {
+          "kind": "shared-bitmap-bit",
+          "block": "soulsEnemyOot",
+          "bit": 24
+        }
+      },
+      {
+        "itemId": "OOT_SOUL_ENEMY_REDEAD_GIBDO",
+        "source": {
+          "kind": "shared-bitmap-bit",
+          "block": "soulsEnemyOot",
+          "bit": 25
+        }
+      },
+      {
+        "itemId": "OOT_SOUL_ENEMY_SKULLWALLTULA",
+        "source": {
+          "kind": "shared-bitmap-bit",
+          "block": "soulsEnemyOot",
+          "bit": 26
+        }
+      },
+      {
+        "itemId": "OOT_SOUL_ENEMY_FLARE_DANCER",
+        "source": {
+          "kind": "shared-bitmap-bit",
+          "block": "soulsEnemyOot",
+          "bit": 27
+        }
+      },
+      {
+        "itemId": "OOT_SOUL_ENEMY_DEAD_HAND",
+        "source": {
+          "kind": "shared-bitmap-bit",
+          "block": "soulsEnemyOot",
+          "bit": 28
+        }
+      },
+      {
+        "itemId": "OOT_SOUL_ENEMY_SHELL_BLADE",
+        "source": {
+          "kind": "shared-bitmap-bit",
+          "block": "soulsEnemyOot",
+          "bit": 29
+        }
+      },
+      {
+        "itemId": "OOT_SOUL_ENEMY_LIKE_LIKE",
+        "source": {
+          "kind": "shared-bitmap-bit",
+          "block": "soulsEnemyOot",
+          "bit": 30
+        }
+      },
+      {
+        "itemId": "OOT_SOUL_ENEMY_SPIKE",
+        "source": {
+          "kind": "shared-bitmap-bit",
+          "block": "soulsEnemyOot",
+          "bit": 31
+        }
+      },
+      {
+        "itemId": "OOT_SOUL_ENEMY_ANUBIS",
+        "source": {
+          "kind": "shared-bitmap-bit",
+          "block": "soulsEnemyOot",
+          "bit": 32
+        }
+      },
+      {
+        "itemId": "OOT_SOUL_ENEMY_IRON_KNUCKLE",
+        "source": {
+          "kind": "shared-bitmap-bit",
+          "block": "soulsEnemyOot",
+          "bit": 33
+        }
+      },
+      {
+        "itemId": "OOT_SOUL_ENEMY_SKULL_KID",
+        "source": {
+          "kind": "shared-bitmap-bit",
+          "block": "soulsEnemyOot",
+          "bit": 34
+        }
+      },
+      {
+        "itemId": "OOT_SOUL_ENEMY_FLYING_POT",
+        "source": {
+          "kind": "shared-bitmap-bit",
+          "block": "soulsEnemyOot",
+          "bit": 35
+        }
+      },
+      {
+        "itemId": "OOT_SOUL_ENEMY_FREEZARD",
+        "source": {
+          "kind": "shared-bitmap-bit",
+          "block": "soulsEnemyOot",
+          "bit": 36
+        }
+      },
+      {
+        "itemId": "OOT_SOUL_ENEMY_STINGER",
+        "source": {
+          "kind": "shared-bitmap-bit",
+          "block": "soulsEnemyOot",
+          "bit": 37
+        }
+      },
+      {
+        "itemId": "OOT_SOUL_ENEMY_WOLFOS",
+        "source": {
+          "kind": "shared-bitmap-bit",
+          "block": "soulsEnemyOot",
+          "bit": 38
+        }
+      },
+      {
+        "itemId": "OOT_SOUL_ENEMY_STALCHILD",
+        "source": {
+          "kind": "shared-bitmap-bit",
+          "block": "soulsEnemyOot",
+          "bit": 39
+        }
+      },
+      {
+        "itemId": "OOT_SOUL_ENEMY_GUAY",
+        "source": {
+          "kind": "shared-bitmap-bit",
+          "block": "soulsEnemyOot",
+          "bit": 40
+        }
+      },
+      {
+        "itemId": "OOT_SOUL_ENEMY_THIEVES",
+        "source": {
+          "kind": "shared-bitmap-bit",
+          "block": "soulsEnemyOot",
+          "bit": 41
+        }
+      },
+      {
+        "itemId": "OOT_SOUL_ENEMY_POE",
+        "source": {
+          "kind": "shared-bitmap-bit",
+          "block": "soulsEnemyOot",
+          "bit": 42
+        }
+      },
+      {
+        "itemId": "OOT_SOUL_BOSS_QUEEN_GOHMA",
+        "source": {
+          "kind": "shared-bitmap-bit",
+          "block": "soulsBossOot",
+          "bit": 0
+        }
+      },
+      {
+        "itemId": "OOT_SOUL_BOSS_KING_DODONGO",
+        "source": {
+          "kind": "shared-bitmap-bit",
+          "block": "soulsBossOot",
+          "bit": 1
+        }
+      },
+      {
+        "itemId": "OOT_SOUL_BOSS_BARINADE",
+        "source": {
+          "kind": "shared-bitmap-bit",
+          "block": "soulsBossOot",
+          "bit": 2
+        }
+      },
+      {
+        "itemId": "OOT_SOUL_BOSS_PHANTOM_GANON",
+        "source": {
+          "kind": "shared-bitmap-bit",
+          "block": "soulsBossOot",
+          "bit": 3
+        }
+      },
+      {
+        "itemId": "OOT_SOUL_BOSS_VOLVAGIA",
+        "source": {
+          "kind": "shared-bitmap-bit",
+          "block": "soulsBossOot",
+          "bit": 4
+        }
+      },
+      {
+        "itemId": "OOT_SOUL_BOSS_MORPHA",
+        "source": {
+          "kind": "shared-bitmap-bit",
+          "block": "soulsBossOot",
+          "bit": 5
+        }
+      },
+      {
+        "itemId": "OOT_SOUL_BOSS_BONGO_BONGO",
+        "source": {
+          "kind": "shared-bitmap-bit",
+          "block": "soulsBossOot",
+          "bit": 6
+        }
+      },
+      {
+        "itemId": "OOT_SOUL_BOSS_TWINROVA",
+        "source": {
+          "kind": "shared-bitmap-bit",
+          "block": "soulsBossOot",
+          "bit": 7
+        }
+      },
+      {
+        "itemId": "OOT_SOUL_NPC_SARIA",
+        "source": {
+          "kind": "shared-bitmap-bit",
+          "block": "soulsNpcOot",
+          "bit": 0
+        }
+      },
+      {
+        "itemId": "OOT_SOUL_NPC_DARUNIA",
+        "source": {
+          "kind": "shared-bitmap-bit",
+          "block": "soulsNpcOot",
+          "bit": 1
+        }
+      },
+      {
+        "itemId": "OOT_SOUL_NPC_RUTO",
+        "source": {
+          "kind": "shared-bitmap-bit",
+          "block": "soulsNpcOot",
+          "bit": 2
+        }
+      },
+      {
+        "itemId": "OOT_SOUL_NPC_KING_ZORA",
+        "source": {
+          "kind": "shared-bitmap-bit",
+          "block": "soulsNpcOot",
+          "bit": 3
+        }
+      },
+      {
+        "itemId": "OOT_SOUL_NPC_ZELDA",
+        "source": {
+          "kind": "shared-bitmap-bit",
+          "block": "soulsNpcOot",
+          "bit": 4
+        }
+      },
+      {
+        "itemId": "OOT_SOUL_NPC_SHEIK",
+        "source": {
+          "kind": "shared-bitmap-bit",
+          "block": "soulsNpcOot",
+          "bit": 5
+        }
+      },
+      {
+        "itemId": "OOT_SOUL_NPC_ANJU",
+        "source": {
+          "kind": "shared-bitmap-bit",
+          "block": "soulsNpcOot",
+          "bit": 6
+        }
+      },
+      {
+        "itemId": "OOT_SOUL_NPC_CARPENTERS",
+        "source": {
+          "kind": "shared-bitmap-bit",
+          "block": "soulsNpcOot",
+          "bit": 7
+        }
+      },
+      {
+        "itemId": "OOT_SOUL_NPC_GURU_GURU",
+        "source": {
+          "kind": "shared-bitmap-bit",
+          "block": "soulsNpcOot",
+          "bit": 8
+        }
+      },
+      {
+        "itemId": "OOT_SOUL_NPC_MIDO",
+        "source": {
+          "kind": "shared-bitmap-bit",
+          "block": "soulsNpcOot",
+          "bit": 9
+        }
+      },
+      {
+        "itemId": "OOT_SOUL_NPC_KOKIRI",
+        "source": {
+          "kind": "shared-bitmap-bit",
+          "block": "soulsNpcOot",
+          "bit": 10
+        }
+      },
+      {
+        "itemId": "OOT_SOUL_NPC_KOKIRI_SHOPKEEPER",
+        "source": {
+          "kind": "shared-bitmap-bit",
+          "block": "soulsNpcOot",
+          "bit": 11
+        }
+      },
+      {
+        "itemId": "OOT_SOUL_NPC_HYLIAN_GUARD",
+        "source": {
+          "kind": "shared-bitmap-bit",
+          "block": "soulsNpcOot",
+          "bit": 12
+        }
+      },
+      {
+        "itemId": "OOT_SOUL_NPC_CITIZEN",
+        "source": {
+          "kind": "shared-bitmap-bit",
+          "block": "soulsNpcOot",
+          "bit": 13
+        }
+      },
+      {
+        "itemId": "OOT_SOUL_NPC_MALON",
+        "source": {
+          "kind": "shared-bitmap-bit",
+          "block": "soulsNpcOot",
+          "bit": 14
+        }
+      },
+      {
+        "itemId": "OOT_SOUL_NPC_TALON",
+        "source": {
+          "kind": "shared-bitmap-bit",
+          "block": "soulsNpcOot",
+          "bit": 15
+        }
+      },
+      {
+        "itemId": "OOT_SOUL_NPC_FISHING_POND_OWNER",
+        "source": {
+          "kind": "shared-bitmap-bit",
+          "block": "soulsNpcOot",
+          "bit": 16
+        }
+      },
+      {
+        "itemId": "OOT_SOUL_NPC_GORON",
+        "source": {
+          "kind": "shared-bitmap-bit",
+          "block": "soulsNpcOot",
+          "bit": 17
+        }
+      },
+      {
+        "itemId": "OOT_SOUL_NPC_MEDIGORON",
+        "source": {
+          "kind": "shared-bitmap-bit",
+          "block": "soulsNpcOot",
+          "bit": 18
+        }
+      },
+      {
+        "itemId": "OOT_SOUL_NPC_BIGGORON",
+        "source": {
+          "kind": "shared-bitmap-bit",
+          "block": "soulsNpcOot",
+          "bit": 19
+        }
+      },
+      {
+        "itemId": "OOT_SOUL_NPC_GORON_CHILD",
+        "source": {
+          "kind": "shared-bitmap-bit",
+          "block": "soulsNpcOot",
+          "bit": 20
+        }
+      },
+      {
+        "itemId": "OOT_SOUL_NPC_GORON_SHOPKEEPER",
+        "source": {
+          "kind": "shared-bitmap-bit",
+          "block": "soulsNpcOot",
+          "bit": 21
+        }
+      },
+      {
+        "itemId": "OOT_SOUL_NPC_ZORA",
+        "source": {
+          "kind": "shared-bitmap-bit",
+          "block": "soulsNpcOot",
+          "bit": 22
+        }
+      },
+      {
+        "itemId": "OOT_SOUL_NPC_ZORA_SHOPKEEPER",
+        "source": {
+          "kind": "shared-bitmap-bit",
+          "block": "soulsNpcOot",
+          "bit": 23
+        }
+      },
+      {
+        "itemId": "OOT_SOUL_NPC_BAZAAR_SHOPKEEPER",
+        "source": {
+          "kind": "shared-bitmap-bit",
+          "block": "soulsNpcOot",
+          "bit": 24
+        }
+      },
+      {
+        "itemId": "OOT_SOUL_NPC_BOMBCHU_SHOPKEEPER",
+        "source": {
+          "kind": "shared-bitmap-bit",
+          "block": "soulsNpcOot",
+          "bit": 25
+        }
+      },
+      {
+        "itemId": "OOT_SOUL_NPC_POTION_SHOPKEEPER",
+        "source": {
+          "kind": "shared-bitmap-bit",
+          "block": "soulsNpcOot",
+          "bit": 26
+        }
+      },
+      {
+        "itemId": "OOT_SOUL_NPC_BOMBCHU_BOWLING_LADY",
+        "source": {
+          "kind": "shared-bitmap-bit",
+          "block": "soulsNpcOot",
+          "bit": 27
+        }
+      },
+      {
+        "itemId": "OOT_SOUL_NPC_CHEST_GAME_OWNER",
+        "source": {
+          "kind": "shared-bitmap-bit",
+          "block": "soulsNpcOot",
+          "bit": 28
+        }
+      },
+      {
+        "itemId": "OOT_SOUL_NPC_SHOOTING_GALLERY_OWNER",
+        "source": {
+          "kind": "shared-bitmap-bit",
+          "block": "soulsNpcOot",
+          "bit": 29
+        }
+      },
+      {
+        "itemId": "OOT_SOUL_NPC_DAMPE",
+        "source": {
+          "kind": "shared-bitmap-bit",
+          "block": "soulsNpcOot",
+          "bit": 31
+        }
+      },
+      {
+        "itemId": "OOT_SOUL_NPC_BOMBERS",
+        "source": {
+          "kind": "shared-bitmap-bit",
+          "block": "soulsNpcOot",
+          "bit": 32
+        }
+      },
+      {
+        "itemId": "OOT_SOUL_NPC_POE_COLLECTOR",
+        "source": {
+          "kind": "shared-bitmap-bit",
+          "block": "soulsNpcOot",
+          "bit": 33
+        }
+      },
+      {
+        "itemId": "OOT_SOUL_NPC_COMPOSER_BROS",
+        "source": {
+          "kind": "shared-bitmap-bit",
+          "block": "soulsNpcOot",
+          "bit": 34
+        }
+      },
+      {
+        "itemId": "OOT_SOUL_NPC_HONEY_DARLING",
+        "source": {
+          "kind": "shared-bitmap-bit",
+          "block": "soulsNpcOot",
+          "bit": 35
+        }
+      },
+      {
+        "itemId": "OOT_SOUL_NPC_ASTRONOMER",
+        "source": {
+          "kind": "shared-bitmap-bit",
+          "block": "soulsNpcOot",
+          "bit": 36
+        }
+      },
+      {
+        "itemId": "OOT_SOUL_NPC_ROOFTOP_MAN",
+        "source": {
+          "kind": "shared-bitmap-bit",
+          "block": "soulsNpcOot",
+          "bit": 37
+        }
+      },
+      {
+        "itemId": "OOT_SOUL_NPC_BEAN_SALESMAN",
+        "source": {
+          "kind": "shared-bitmap-bit",
+          "block": "soulsNpcOot",
+          "bit": 38
+        }
+      },
+      {
+        "itemId": "OOT_SOUL_NPC_SCIENTIST",
+        "source": {
+          "kind": "shared-bitmap-bit",
+          "block": "soulsNpcOot",
+          "bit": 39
+        }
+      },
+      {
+        "itemId": "OOT_SOUL_NPC_GORMAN",
+        "source": {
+          "kind": "shared-bitmap-bit",
+          "block": "soulsNpcOot",
+          "bit": 40
+        }
+      },
+      {
+        "itemId": "OOT_SOUL_NPC_GROG",
+        "source": {
+          "kind": "shared-bitmap-bit",
+          "block": "soulsNpcOot",
+          "bit": 41
+        }
+      },
+      {
+        "itemId": "OOT_SOUL_NPC_DOG_LADY",
+        "source": {
+          "kind": "shared-bitmap-bit",
+          "block": "soulsNpcOot",
+          "bit": 42
+        }
+      },
+      {
+        "itemId": "OOT_SOUL_NPC_CARPET_MAN",
+        "source": {
+          "kind": "shared-bitmap-bit",
+          "block": "soulsNpcOot",
+          "bit": 43
+        }
+      },
+      {
+        "itemId": "OOT_SOUL_NPC_OLD_HAG",
+        "source": {
+          "kind": "shared-bitmap-bit",
+          "block": "soulsNpcOot",
+          "bit": 44
+        }
+      },
+      {
+        "itemId": "OOT_SOUL_NPC_BANKER",
+        "source": {
+          "kind": "shared-bitmap-bit",
+          "block": "soulsNpcOot",
+          "bit": 45
+        }
+      },
+      {
+        "itemId": "OOT_SOUL_NPC_THIEVES",
+        "source": {
+          "kind": "shared-bitmap-bit",
+          "block": "soulsNpcOot",
+          "bit": 46
+        }
+      },
+      {
+        "itemId": "OOT_SOUL_ANIMAL_CUCCO",
+        "source": {
+          "kind": "shared-bitmap-bit",
+          "block": "soulsAnimalOot",
+          "bit": 0
+        }
+      },
+      {
+        "itemId": "OOT_SOUL_ANIMAL_COW",
+        "source": {
+          "kind": "shared-bitmap-bit",
+          "block": "soulsAnimalOot",
+          "bit": 1
+        }
+      },
+      {
+        "itemId": "OOT_SOUL_ANIMAL_DOG",
+        "source": {
+          "kind": "shared-bitmap-bit",
+          "block": "soulsAnimalOot",
+          "bit": 2
+        }
+      },
+      {
+        "itemId": "OOT_SOUL_ANIMAL_BUTTERFLY",
+        "source": {
+          "kind": "shared-bitmap-bit",
+          "block": "soulsAnimalOot",
+          "bit": 3
+        }
+      },
+      {
+        "itemId": "OOT_SOUL_MISC_GS",
+        "source": {
+          "kind": "shared-bitmap-bit",
+          "block": "soulsMiscOot",
+          "bit": 0
+        }
+      },
+      {
+        "itemId": "OOT_SOUL_MISC_BUSINESS_SCRUB",
+        "source": {
+          "kind": "shared-bitmap-bit",
+          "block": "soulsMiscOot",
+          "bit": 1
+        }
+      },
+      {
+        "itemId": "MM_SOUL_ENEMY_OCTOROK",
+        "source": {
+          "kind": "shared-bitmap-bit",
+          "block": "soulsEnemyMm",
+          "bit": 0
+        }
+      },
+      {
+        "itemId": "MM_SOUL_ENEMY_WALLMASTER",
+        "source": {
+          "kind": "shared-bitmap-bit",
+          "block": "soulsEnemyMm",
+          "bit": 1
+        }
+      },
+      {
+        "itemId": "MM_SOUL_ENEMY_DODONGO",
+        "source": {
+          "kind": "shared-bitmap-bit",
+          "block": "soulsEnemyMm",
+          "bit": 2
+        }
+      },
+      {
+        "itemId": "MM_SOUL_ENEMY_KEESE",
+        "source": {
+          "kind": "shared-bitmap-bit",
+          "block": "soulsEnemyMm",
+          "bit": 3
+        }
+      },
+      {
+        "itemId": "MM_SOUL_ENEMY_TEKTITE",
+        "source": {
+          "kind": "shared-bitmap-bit",
+          "block": "soulsEnemyMm",
+          "bit": 4
+        }
+      },
+      {
+        "itemId": "MM_SOUL_ENEMY_PEAHAT",
+        "source": {
+          "kind": "shared-bitmap-bit",
+          "block": "soulsEnemyMm",
+          "bit": 5
+        }
+      },
+      {
+        "itemId": "MM_SOUL_ENEMY_LIZALFOS_DINOLFOS",
+        "source": {
+          "kind": "shared-bitmap-bit",
+          "block": "soulsEnemyMm",
+          "bit": 6
+        }
+      },
+      {
+        "itemId": "MM_SOUL_ENEMY_SKULLTULA",
+        "source": {
+          "kind": "shared-bitmap-bit",
+          "block": "soulsEnemyMm",
+          "bit": 7
+        }
+      },
+      {
+        "itemId": "MM_SOUL_ENEMY_ARMOS",
+        "source": {
+          "kind": "shared-bitmap-bit",
+          "block": "soulsEnemyMm",
+          "bit": 8
+        }
+      },
+      {
+        "itemId": "MM_SOUL_ENEMY_DEKU_BABA",
+        "source": {
+          "kind": "shared-bitmap-bit",
+          "block": "soulsEnemyMm",
+          "bit": 9
+        }
+      },
+      {
+        "itemId": "MM_SOUL_ENEMY_DEKU_SCRUB",
+        "source": {
+          "kind": "shared-bitmap-bit",
+          "block": "soulsEnemyMm",
+          "bit": 10
+        }
+      },
+      {
+        "itemId": "MM_SOUL_ENEMY_BUBBLE",
+        "source": {
+          "kind": "shared-bitmap-bit",
+          "block": "soulsEnemyMm",
+          "bit": 11
+        }
+      },
+      {
+        "itemId": "MM_SOUL_ENEMY_BEAMOS",
+        "source": {
+          "kind": "shared-bitmap-bit",
+          "block": "soulsEnemyMm",
+          "bit": 12
+        }
+      },
+      {
+        "itemId": "MM_SOUL_ENEMY_REDEAD_GIBDO",
+        "source": {
+          "kind": "shared-bitmap-bit",
+          "block": "soulsEnemyMm",
+          "bit": 13
+        }
+      },
+      {
+        "itemId": "MM_SOUL_ENEMY_SKULLWALLTULA",
+        "source": {
+          "kind": "shared-bitmap-bit",
+          "block": "soulsEnemyMm",
+          "bit": 14
+        }
+      },
+      {
+        "itemId": "MM_SOUL_ENEMY_SHELL_BLADE",
+        "source": {
+          "kind": "shared-bitmap-bit",
+          "block": "soulsEnemyMm",
+          "bit": 15
+        }
+      },
+      {
+        "itemId": "MM_SOUL_ENEMY_LIKE_LIKE",
+        "source": {
+          "kind": "shared-bitmap-bit",
+          "block": "soulsEnemyMm",
+          "bit": 16
+        }
+      },
+      {
+        "itemId": "MM_SOUL_ENEMY_IRON_KNUCKLE",
+        "source": {
+          "kind": "shared-bitmap-bit",
+          "block": "soulsEnemyMm",
+          "bit": 17
+        }
+      },
+      {
+        "itemId": "MM_SOUL_ENEMY_FREEZARD",
+        "source": {
+          "kind": "shared-bitmap-bit",
+          "block": "soulsEnemyMm",
+          "bit": 18
+        }
+      },
+      {
+        "itemId": "MM_SOUL_ENEMY_WOLFOS",
+        "source": {
+          "kind": "shared-bitmap-bit",
+          "block": "soulsEnemyMm",
+          "bit": 19
+        }
+      },
+      {
+        "itemId": "MM_SOUL_ENEMY_GUAY",
+        "source": {
+          "kind": "shared-bitmap-bit",
+          "block": "soulsEnemyMm",
+          "bit": 20
+        }
+      },
+      {
+        "itemId": "MM_SOUL_ENEMY_FLYING_POT",
+        "source": {
+          "kind": "shared-bitmap-bit",
+          "block": "soulsEnemyMm",
+          "bit": 21
+        }
+      },
+      {
+        "itemId": "MM_SOUL_ENEMY_FLOORMASTER",
+        "source": {
+          "kind": "shared-bitmap-bit",
+          "block": "soulsEnemyMm",
+          "bit": 22
+        }
+      },
+      {
+        "itemId": "MM_SOUL_ENEMY_CHUCHU",
+        "source": {
+          "kind": "shared-bitmap-bit",
+          "block": "soulsEnemyMm",
+          "bit": 23
+        }
+      },
+      {
+        "itemId": "MM_SOUL_ENEMY_DEEP_PYTHON",
+        "source": {
+          "kind": "shared-bitmap-bit",
+          "block": "soulsEnemyMm",
+          "bit": 24
+        }
+      },
+      {
+        "itemId": "MM_SOUL_ENEMY_STALCHILD",
+        "source": {
+          "kind": "shared-bitmap-bit",
+          "block": "soulsEnemyMm",
+          "bit": 25
+        }
+      },
+      {
+        "itemId": "MM_SOUL_ENEMY_LEEVER",
+        "source": {
+          "kind": "shared-bitmap-bit",
+          "block": "soulsEnemyMm",
+          "bit": 26
+        }
+      },
+      {
+        "itemId": "MM_SOUL_ENEMY_SKULLFISH",
+        "source": {
+          "kind": "shared-bitmap-bit",
+          "block": "soulsEnemyMm",
+          "bit": 27
+        }
+      },
+      {
+        "itemId": "MM_SOUL_ENEMY_DEXIHAND",
+        "source": {
+          "kind": "shared-bitmap-bit",
+          "block": "soulsEnemyMm",
+          "bit": 28
+        }
+      },
+      {
+        "itemId": "MM_SOUL_ENEMY_DRAGONFLY",
+        "source": {
+          "kind": "shared-bitmap-bit",
+          "block": "soulsEnemyMm",
+          "bit": 29
+        }
+      },
+      {
+        "itemId": "MM_SOUL_ENEMY_EENO",
+        "source": {
+          "kind": "shared-bitmap-bit",
+          "block": "soulsEnemyMm",
+          "bit": 30
+        }
+      },
+      {
+        "itemId": "MM_SOUL_ENEMY_EYEGORE",
+        "source": {
+          "kind": "shared-bitmap-bit",
+          "block": "soulsEnemyMm",
+          "bit": 31
+        }
+      },
+      {
+        "itemId": "MM_SOUL_ENEMY_HIPLOOP",
+        "source": {
+          "kind": "shared-bitmap-bit",
+          "block": "soulsEnemyMm",
+          "bit": 32
+        }
+      },
+      {
+        "itemId": "MM_SOUL_ENEMY_REAL_BOMBCHU",
+        "source": {
+          "kind": "shared-bitmap-bit",
+          "block": "soulsEnemyMm",
+          "bit": 33
+        }
+      },
+      {
+        "itemId": "MM_SOUL_ENEMY_TAKKURI",
+        "source": {
+          "kind": "shared-bitmap-bit",
+          "block": "soulsEnemyMm",
+          "bit": 34
+        }
+      },
+      {
+        "itemId": "MM_SOUL_ENEMY_BOE",
+        "source": {
+          "kind": "shared-bitmap-bit",
+          "block": "soulsEnemyMm",
+          "bit": 35
+        }
+      },
+      {
+        "itemId": "MM_SOUL_ENEMY_NEJIRON",
+        "source": {
+          "kind": "shared-bitmap-bit",
+          "block": "soulsEnemyMm",
+          "bit": 36
+        }
+      },
+      {
+        "itemId": "MM_SOUL_ENEMY_BIO_BABA",
+        "source": {
+          "kind": "shared-bitmap-bit",
+          "block": "soulsEnemyMm",
+          "bit": 37
+        }
+      },
+      {
+        "itemId": "MM_SOUL_ENEMY_GARO",
+        "source": {
+          "kind": "shared-bitmap-bit",
+          "block": "soulsEnemyMm",
+          "bit": 38
+        }
+      },
+      {
+        "itemId": "MM_SOUL_ENEMY_WIZZROBE",
+        "source": {
+          "kind": "shared-bitmap-bit",
+          "block": "soulsEnemyMm",
+          "bit": 39
+        }
+      },
+      {
+        "itemId": "MM_SOUL_ENEMY_GOMESS",
+        "source": {
+          "kind": "shared-bitmap-bit",
+          "block": "soulsEnemyMm",
+          "bit": 40
+        }
+      },
+      {
+        "itemId": "MM_SOUL_ENEMY_GEKKO",
+        "source": {
+          "kind": "shared-bitmap-bit",
+          "block": "soulsEnemyMm",
+          "bit": 41
+        }
+      },
+      {
+        "itemId": "MM_SOUL_ENEMY_BAD_BAT",
+        "source": {
+          "kind": "shared-bitmap-bit",
+          "block": "soulsEnemyMm",
+          "bit": 42
+        }
+      },
+      {
+        "itemId": "MM_SOUL_ENEMY_SNAPPER",
+        "source": {
+          "kind": "shared-bitmap-bit",
+          "block": "soulsEnemyMm",
+          "bit": 43
+        }
+      },
+      {
+        "itemId": "MM_SOUL_ENEMY_WART",
+        "source": {
+          "kind": "shared-bitmap-bit",
+          "block": "soulsEnemyMm",
+          "bit": 44
+        }
+      },
+      {
+        "itemId": "MM_SOUL_ENEMY_CAPTAIN_KEETA",
+        "source": {
+          "kind": "shared-bitmap-bit",
+          "block": "soulsEnemyMm",
+          "bit": 45
+        }
+      },
+      {
+        "itemId": "MM_SOUL_ENEMY_THIEVES",
+        "source": {
+          "kind": "shared-bitmap-bit",
+          "block": "soulsEnemyMm",
+          "bit": 46
+        }
+      },
+      {
+        "itemId": "MM_SOUL_ENEMY_POE",
+        "source": {
+          "kind": "shared-bitmap-bit",
+          "block": "soulsEnemyMm",
+          "bit": 47
+        }
+      },
+      {
+        "itemId": "MM_SOUL_BOSS_ODOLWA",
+        "source": {
+          "kind": "shared-bitmap-bit",
+          "block": "soulsBossMm",
+          "bit": 0
+        }
+      },
+      {
+        "itemId": "MM_SOUL_BOSS_GOHT",
+        "source": {
+          "kind": "shared-bitmap-bit",
+          "block": "soulsBossMm",
+          "bit": 1
+        }
+      },
+      {
+        "itemId": "MM_SOUL_BOSS_GYORG",
+        "source": {
+          "kind": "shared-bitmap-bit",
+          "block": "soulsBossMm",
+          "bit": 2
+        }
+      },
+      {
+        "itemId": "MM_SOUL_BOSS_TWINMOLD",
+        "source": {
+          "kind": "shared-bitmap-bit",
+          "block": "soulsBossMm",
+          "bit": 3
+        }
+      },
+      {
+        "itemId": "MM_SOUL_BOSS_IGOS",
+        "source": {
+          "kind": "shared-bitmap-bit",
+          "block": "soulsBossMm",
+          "bit": 4
+        }
+      },
+      {
+        "itemId": "MM_SOUL_NPC_AROMA",
+        "source": {
+          "kind": "shared-bitmap-bit",
+          "block": "soulsNpcMm",
+          "bit": 0
+        }
+      },
+      {
+        "itemId": "MM_SOUL_NPC_SHOOTING_GALLERY_OWNER",
+        "source": {
+          "kind": "shared-bitmap-bit",
+          "block": "soulsNpcMm",
+          "bit": 1
+        }
+      },
+      {
+        "itemId": "MM_SOUL_NPC_BAZAAR_SHOPKEEPER",
+        "source": {
+          "kind": "shared-bitmap-bit",
+          "block": "soulsNpcMm",
+          "bit": 2
+        }
+      },
+      {
+        "itemId": "MM_SOUL_NPC_GORON",
+        "source": {
+          "kind": "shared-bitmap-bit",
+          "block": "soulsNpcMm",
+          "bit": 3
+        }
+      },
+      {
+        "itemId": "MM_SOUL_NPC_GORON_CHILD",
+        "source": {
+          "kind": "shared-bitmap-bit",
+          "block": "soulsNpcMm",
+          "bit": 4
+        }
+      },
+      {
+        "itemId": "MM_SOUL_NPC_BOMBCHU_SHOPKEEPER",
+        "source": {
+          "kind": "shared-bitmap-bit",
+          "block": "soulsNpcMm",
+          "bit": 5
+        }
+      },
+      {
+        "itemId": "MM_SOUL_NPC_BOMBERS",
+        "source": {
+          "kind": "shared-bitmap-bit",
+          "block": "soulsNpcMm",
+          "bit": 6
+        }
+      },
+      {
+        "itemId": "MM_SOUL_NPC_BUTLER_DEKU",
+        "source": {
+          "kind": "shared-bitmap-bit",
+          "block": "soulsNpcMm",
+          "bit": 7
+        }
+      },
+      {
+        "itemId": "MM_SOUL_NPC_CITIZEN",
+        "source": {
+          "kind": "shared-bitmap-bit",
+          "block": "soulsNpcMm",
+          "bit": 8
+        }
+      },
+      {
+        "itemId": "MM_SOUL_NPC_COMPOSER_BROS",
+        "source": {
+          "kind": "shared-bitmap-bit",
+          "block": "soulsNpcMm",
+          "bit": 9
+        }
+      },
+      {
+        "itemId": "MM_SOUL_NPC_DAMPE",
+        "source": {
+          "kind": "shared-bitmap-bit",
+          "block": "soulsNpcMm",
+          "bit": 10
+        }
+      },
+      {
+        "itemId": "MM_SOUL_NPC_DEKU_KING",
+        "source": {
+          "kind": "shared-bitmap-bit",
+          "block": "soulsNpcMm",
+          "bit": 11
+        }
+      },
+      {
+        "itemId": "MM_SOUL_NPC_DEKU_PRINCESS",
+        "source": {
+          "kind": "shared-bitmap-bit",
+          "block": "soulsNpcMm",
+          "bit": 12
+        }
+      },
+      {
+        "itemId": "MM_SOUL_NPC_PLAYGROUND_SCRUBS",
+        "source": {
+          "kind": "shared-bitmap-bit",
+          "block": "soulsNpcMm",
+          "bit": 13
+        }
+      },
+      {
+        "itemId": "MM_SOUL_NPC_GORON_ELDER",
+        "source": {
+          "kind": "shared-bitmap-bit",
+          "block": "soulsNpcMm",
+          "bit": 14
+        }
+      },
+      {
+        "itemId": "MM_SOUL_NPC_CHEST_GAME_OWNER",
+        "source": {
+          "kind": "shared-bitmap-bit",
+          "block": "soulsNpcMm",
+          "bit": 15
+        }
+      },
+      {
+        "itemId": "MM_SOUL_NPC_GORON_SHOPKEEPER",
+        "source": {
+          "kind": "shared-bitmap-bit",
+          "block": "soulsNpcMm",
+          "bit": 16
+        }
+      },
+      {
+        "itemId": "MM_SOUL_NPC_HONEY_DARLING",
+        "source": {
+          "kind": "shared-bitmap-bit",
+          "block": "soulsNpcMm",
+          "bit": 17
+        }
+      },
+      {
+        "itemId": "MM_SOUL_NPC_TOTO",
+        "source": {
+          "kind": "shared-bitmap-bit",
+          "block": "soulsNpcMm",
+          "bit": 18
+        }
+      },
+      {
+        "itemId": "MM_SOUL_NPC_RUTO",
+        "source": {
+          "kind": "shared-bitmap-bit",
+          "block": "soulsNpcMm",
+          "bit": 19
+        }
+      },
+      {
+        "itemId": "MM_SOUL_NPC_ZORA_MUSICIANS",
+        "source": {
+          "kind": "shared-bitmap-bit",
+          "block": "soulsNpcMm",
+          "bit": 20
+        }
+      },
+      {
+        "itemId": "MM_SOUL_NPC_KAFEI",
+        "source": {
+          "kind": "shared-bitmap-bit",
+          "block": "soulsNpcMm",
+          "bit": 21
+        }
+      },
+      {
+        "itemId": "MM_SOUL_NPC_KEATON",
+        "source": {
+          "kind": "shared-bitmap-bit",
+          "block": "soulsNpcMm",
+          "bit": 22
+        }
+      },
+      {
+        "itemId": "MM_SOUL_NPC_KOUME_KOTAKE",
+        "source": {
+          "kind": "shared-bitmap-bit",
+          "block": "soulsNpcMm",
+          "bit": 23
+        }
+      },
+      {
+        "itemId": "MM_SOUL_NPC_MAYOR_DOTOUR",
+        "source": {
+          "kind": "shared-bitmap-bit",
+          "block": "soulsNpcMm",
+          "bit": 24
+        }
+      },
+      {
+        "itemId": "MM_SOUL_NPC_MEDIGORON",
+        "source": {
+          "kind": "shared-bitmap-bit",
+          "block": "soulsNpcMm",
+          "bit": 25
+        }
+      },
+      {
+        "itemId": "MM_SOUL_NPC_BIGGORON",
+        "source": {
+          "kind": "shared-bitmap-bit",
+          "block": "soulsNpcMm",
+          "bit": 26
+        }
+      },
+      {
+        "itemId": "MM_SOUL_NPC_TALON",
+        "source": {
+          "kind": "shared-bitmap-bit",
+          "block": "soulsNpcMm",
+          "bit": 27
+        }
+      },
+      {
+        "itemId": "MM_SOUL_NPC_ASTRONOMER",
+        "source": {
+          "kind": "shared-bitmap-bit",
+          "block": "soulsNpcMm",
+          "bit": 28
+        }
+      },
+      {
+        "itemId": "MM_SOUL_NPC_POE_COLLECTOR",
+        "source": {
+          "kind": "shared-bitmap-bit",
+          "block": "soulsNpcMm",
+          "bit": 29
+        }
+      },
+      {
+        "itemId": "MM_SOUL_NPC_BLACKSMITHS",
+        "source": {
+          "kind": "shared-bitmap-bit",
+          "block": "soulsNpcMm",
+          "bit": 30
+        }
+      },
+      {
+        "itemId": "MM_SOUL_NPC_BOMBCHU_BOWLING_LADY",
+        "source": {
+          "kind": "shared-bitmap-bit",
+          "block": "soulsNpcMm",
+          "bit": 31
+        }
+      },
+      {
+        "itemId": "MM_SOUL_NPC_TINGLE",
+        "source": {
+          "kind": "shared-bitmap-bit",
+          "block": "soulsNpcMm",
+          "bit": 32
+        }
+      },
+      {
+        "itemId": "MM_SOUL_NPC_TOILET_HAND",
+        "source": {
+          "kind": "shared-bitmap-bit",
+          "block": "soulsNpcMm",
+          "bit": 33
+        }
+      },
+      {
+        "itemId": "MM_SOUL_NPC_FISHING_POND_OWNER",
+        "source": {
+          "kind": "shared-bitmap-bit",
+          "block": "soulsNpcMm",
+          "bit": 34
+        }
+      },
+      {
+        "itemId": "MM_SOUL_NPC_ROOFTOP_MAN",
+        "source": {
+          "kind": "shared-bitmap-bit",
+          "block": "soulsNpcMm",
+          "bit": 35
+        }
+      },
+      {
+        "itemId": "MM_SOUL_NPC_ZORA",
+        "source": {
+          "kind": "shared-bitmap-bit",
+          "block": "soulsNpcMm",
+          "bit": 36
+        }
+      },
+      {
+        "itemId": "MM_SOUL_NPC_ZORA_SHOPKEEPER",
+        "source": {
+          "kind": "shared-bitmap-bit",
+          "block": "soulsNpcMm",
+          "bit": 37
+        }
+      },
+      {
+        "itemId": "MM_SOUL_NPC_MALON",
+        "source": {
+          "kind": "shared-bitmap-bit",
+          "block": "soulsNpcMm",
+          "bit": 38
+        }
+      },
+      {
+        "itemId": "MM_SOUL_NPC_BEAN_SALESMAN",
+        "source": {
+          "kind": "shared-bitmap-bit",
+          "block": "soulsNpcMm",
+          "bit": 39
+        }
+      },
+      {
+        "itemId": "MM_SOUL_NPC_CARPENTERS",
+        "source": {
+          "kind": "shared-bitmap-bit",
+          "block": "soulsNpcMm",
+          "bit": 40
+        }
+      },
+      {
+        "itemId": "MM_SOUL_NPC_ANJU",
+        "source": {
+          "kind": "shared-bitmap-bit",
+          "block": "soulsNpcMm",
+          "bit": 41
+        }
+      },
+      {
+        "itemId": "MM_SOUL_NPC_GURU_GURU",
+        "source": {
+          "kind": "shared-bitmap-bit",
+          "block": "soulsNpcMm",
+          "bit": 42
+        }
+      },
+      {
+        "itemId": "MM_SOUL_NPC_SCIENTIST",
+        "source": {
+          "kind": "shared-bitmap-bit",
+          "block": "soulsNpcMm",
+          "bit": 43
+        }
+      },
+      {
+        "itemId": "MM_SOUL_NPC_GORMAN",
+        "source": {
+          "kind": "shared-bitmap-bit",
+          "block": "soulsNpcMm",
+          "bit": 44
+        }
+      },
+      {
+        "itemId": "MM_SOUL_NPC_GROG",
+        "source": {
+          "kind": "shared-bitmap-bit",
+          "block": "soulsNpcMm",
+          "bit": 45
+        }
+      },
+      {
+        "itemId": "MM_SOUL_NPC_DOG_LADY",
+        "source": {
+          "kind": "shared-bitmap-bit",
+          "block": "soulsNpcMm",
+          "bit": 46
+        }
+      },
+      {
+        "itemId": "MM_SOUL_NPC_CARPET_MAN",
+        "source": {
+          "kind": "shared-bitmap-bit",
+          "block": "soulsNpcMm",
+          "bit": 47
+        }
+      },
+      {
+        "itemId": "MM_SOUL_NPC_OLD_HAG",
+        "source": {
+          "kind": "shared-bitmap-bit",
+          "block": "soulsNpcMm",
+          "bit": 48
+        }
+      },
+      {
+        "itemId": "MM_SOUL_NPC_TOURIST_CENTER",
+        "source": {
+          "kind": "shared-bitmap-bit",
+          "block": "soulsNpcMm",
+          "bit": 49
+        }
+      },
+      {
+        "itemId": "MM_SOUL_NPC_BANKER",
+        "source": {
+          "kind": "shared-bitmap-bit",
+          "block": "soulsNpcMm",
+          "bit": 50
+        }
+      },
+      {
+        "itemId": "MM_SOUL_NPC_MOON_CHILDREN",
+        "source": {
+          "kind": "shared-bitmap-bit",
+          "block": "soulsNpcMm",
+          "bit": 51
+        }
+      },
+      {
+        "itemId": "MM_SOUL_NPC_THIEVES",
+        "source": {
+          "kind": "shared-bitmap-bit",
+          "block": "soulsNpcMm",
+          "bit": 52
+        }
+      },
+      {
+        "itemId": "MM_SOUL_ANIMAL_CUCCO",
+        "source": {
+          "kind": "shared-bitmap-bit",
+          "block": "soulsAnimalMm",
+          "bit": 0
+        }
+      },
+      {
+        "itemId": "MM_SOUL_ANIMAL_COW",
+        "source": {
+          "kind": "shared-bitmap-bit",
+          "block": "soulsAnimalMm",
+          "bit": 1
+        }
+      },
+      {
+        "itemId": "MM_SOUL_ANIMAL_DOG",
+        "source": {
+          "kind": "shared-bitmap-bit",
+          "block": "soulsAnimalMm",
+          "bit": 2
+        }
+      },
+      {
+        "itemId": "MM_SOUL_ANIMAL_BUTTERFLY",
+        "source": {
+          "kind": "shared-bitmap-bit",
+          "block": "soulsAnimalMm",
+          "bit": 3
+        }
+      },
+      {
+        "itemId": "MM_SOUL_MISC_GS",
+        "source": {
+          "kind": "shared-bitmap-bit",
+          "block": "soulsMiscMm",
+          "bit": 0
+        }
+      },
+      {
+        "itemId": "MM_SOUL_MISC_BUSINESS_SCRUB",
+        "source": {
+          "kind": "shared-bitmap-bit",
+          "block": "soulsMiscMm",
+          "bit": 1
+        }
+      },
+      {
+        "itemId": "OOT_SONG_NOTE_TP_FOREST",
+        "source": {
+          "kind": "shared-song-note",
+          "index": 0,
+          "max": 6
+        }
+      },
+      {
+        "itemId": "OOT_SONG_NOTE_TP_FIRE",
+        "source": {
+          "kind": "shared-song-note",
+          "index": 1,
+          "max": 8
+        }
+      },
+      {
+        "itemId": "OOT_SONG_NOTE_TP_WATER",
+        "source": {
+          "kind": "shared-song-note",
+          "index": 2,
+          "max": 5
+        }
+      },
+      {
+        "itemId": "OOT_SONG_NOTE_TP_SPIRIT",
+        "source": {
+          "kind": "shared-song-note",
+          "index": 3,
+          "max": 6
+        }
+      },
+      {
+        "itemId": "OOT_SONG_NOTE_TP_SHADOW",
+        "source": {
+          "kind": "shared-song-note",
+          "index": 4,
+          "max": 7
+        }
+      },
+      {
+        "itemId": "OOT_SONG_NOTE_TP_LIGHT",
+        "source": {
+          "kind": "shared-song-note",
+          "index": 5,
+          "max": 6
+        }
+      },
+      {
+        "itemId": "OOT_SONG_NOTE_ZELDA",
+        "source": {
+          "kind": "shared-song-note",
+          "index": 6,
+          "max": 6
+        }
+      },
+      {
+        "itemId": "OOT_SONG_NOTE_EPONA",
+        "source": {
+          "kind": "shared-song-note",
+          "index": 7,
+          "max": 6
+        }
+      },
+      {
+        "itemId": "OOT_SONG_NOTE_SARIA",
+        "source": {
+          "kind": "shared-song-note",
+          "index": 8,
+          "max": 6
+        }
+      },
+      {
+        "itemId": "OOT_SONG_NOTE_SUN",
+        "source": {
+          "kind": "shared-song-note",
+          "index": 9,
+          "max": 6
+        }
+      },
+      {
+        "itemId": "OOT_SONG_NOTE_TIME",
+        "source": {
+          "kind": "shared-song-note",
+          "index": 10,
+          "max": 6
+        }
+      },
+      {
+        "itemId": "OOT_SONG_NOTE_STORMS",
+        "source": {
+          "kind": "shared-song-note",
+          "index": 11,
+          "max": 6
+        }
+      },
+      {
+        "itemId": "OOT_SONG_NOTE_EMPTINESS",
+        "source": {
+          "kind": "shared-song-note",
+          "index": 17,
+          "max": 7
+        }
+      },
+      {
+        "itemId": "OOT_SONG_NOTE_HEALING",
+        "source": {
+          "kind": "shared-song-note",
+          "index": 12,
+          "max": 6
+        }
+      },
+      {
+        "itemId": "OOT_SONG_NOTE_SOARING",
+        "source": {
+          "kind": "shared-song-note",
+          "index": 13,
+          "max": 6
+        }
+      },
+      {
+        "itemId": "OOT_SONG_NOTE_AWAKENING",
+        "source": {
+          "kind": "shared-song-note",
+          "index": 14,
+          "max": 7
+        }
+      },
+      {
+        "itemId": "OOT_SONG_NOTE_GORON",
+        "source": {
+          "kind": "shared-song-note",
+          "index": 15,
+          "max": 8
+        }
+      },
+      {
+        "itemId": "OOT_SONG_NOTE_ZORA",
+        "source": {
+          "kind": "shared-song-note",
+          "index": 16,
+          "max": 7
+        }
+      },
+      {
+        "itemId": "OOT_SONG_NOTE_ORDER",
+        "source": {
+          "kind": "shared-song-note",
+          "index": 18,
+          "max": 6
+        }
+      },
+      {
+        "itemId": "MM_SONG_NOTE_AWAKENING",
+        "source": {
+          "kind": "shared-song-note",
+          "index": 19,
+          "max": 7
+        }
+      },
+      {
+        "itemId": "MM_SONG_NOTE_GORON",
+        "source": {
+          "kind": "shared-song-note",
+          "index": 20,
+          "max": 8
+        }
+      },
+      {
+        "itemId": "MM_SONG_NOTE_ZORA",
+        "source": {
+          "kind": "shared-song-note",
+          "index": 21,
+          "max": 7
+        }
+      },
+      {
+        "itemId": "MM_SONG_NOTE_EMPTINESS",
+        "source": {
+          "kind": "shared-song-note",
+          "index": 22,
+          "max": 7
+        }
+      },
+      {
+        "itemId": "MM_SONG_NOTE_ORDER",
+        "source": {
+          "kind": "shared-song-note",
+          "index": 23,
+          "max": 6
+        }
+      },
+      {
+        "itemId": "MM_SONG_NOTE_TIME",
+        "source": {
+          "kind": "shared-song-note",
+          "index": 24,
+          "max": 6
+        }
+      },
+      {
+        "itemId": "MM_SONG_NOTE_HEALING",
+        "source": {
+          "kind": "shared-song-note",
+          "index": 25,
+          "max": 6
+        }
+      },
+      {
+        "itemId": "MM_SONG_NOTE_EPONA",
+        "source": {
+          "kind": "shared-song-note",
+          "index": 26,
+          "max": 6
+        }
+      },
+      {
+        "itemId": "MM_SONG_NOTE_SOARING",
+        "source": {
+          "kind": "shared-song-note",
+          "index": 27,
+          "max": 6
+        }
+      },
+      {
+        "itemId": "MM_SONG_NOTE_STORMS",
+        "source": {
+          "kind": "shared-song-note",
+          "index": 28,
+          "max": 6
+        }
+      },
+      {
+        "itemId": "MM_SONG_NOTE_SUN",
+        "source": {
+          "kind": "shared-song-note",
+          "index": 37,
+          "max": 6
+        }
+      },
+      {
+        "itemId": "MM_SONG_NOTE_TP_FOREST",
+        "source": {
+          "kind": "shared-song-note",
+          "index": 29,
+          "max": 6
+        }
+      },
+      {
+        "itemId": "MM_SONG_NOTE_TP_FIRE",
+        "source": {
+          "kind": "shared-song-note",
+          "index": 30,
+          "max": 8
+        }
+      },
+      {
+        "itemId": "MM_SONG_NOTE_TP_WATER",
+        "source": {
+          "kind": "shared-song-note",
+          "index": 31,
+          "max": 5
+        }
+      },
+      {
+        "itemId": "MM_SONG_NOTE_TP_SPIRIT",
+        "source": {
+          "kind": "shared-song-note",
+          "index": 32,
+          "max": 6
+        }
+      },
+      {
+        "itemId": "MM_SONG_NOTE_TP_SHADOW",
+        "source": {
+          "kind": "shared-song-note",
+          "index": 33,
+          "max": 7
+        }
+      },
+      {
+        "itemId": "MM_SONG_NOTE_TP_LIGHT",
+        "source": {
+          "kind": "shared-song-note",
+          "index": 34,
+          "max": 6
+        }
+      },
+      {
+        "itemId": "MM_SONG_NOTE_ZELDA",
+        "source": {
+          "kind": "shared-song-note",
+          "index": 35,
+          "max": 6
+        }
+      },
+      {
+        "itemId": "MM_SONG_NOTE_SARIA",
+        "source": {
+          "kind": "shared-song-note",
+          "index": 36,
+          "max": 6
+        }
+      },
+      {
+        "itemId": "OOT_COIN_RED",
+        "source": {
+          "kind": "shared-coin-count",
+          "index": 0
+        }
+      },
+      {
+        "itemId": "OOT_COIN_GREEN",
+        "source": {
+          "kind": "shared-coin-count",
+          "index": 1
+        }
+      },
+      {
+        "itemId": "OOT_COIN_BLUE",
+        "source": {
+          "kind": "shared-coin-count",
+          "index": 2
+        }
+      },
+      {
+        "itemId": "OOT_COIN_YELLOW",
+        "source": {
+          "kind": "shared-coin-count",
+          "index": 3
+        }
+      },
+      {
+        "itemId": "MM_CLOCK1",
+        "source": {
+          "kind": "shared-half-day-bit",
+          "bit": 0
+        }
+      },
+      {
+        "itemId": "MM_CLOCK2",
+        "source": {
+          "kind": "shared-half-day-bit",
+          "bit": 1
+        }
+      },
+      {
+        "itemId": "MM_CLOCK3",
+        "source": {
+          "kind": "shared-half-day-bit",
+          "bit": 2
+        }
+      },
+      {
+        "itemId": "MM_CLOCK4",
+        "source": {
+          "kind": "shared-half-day-bit",
+          "bit": 3
+        }
+      },
+      {
+        "itemId": "MM_CLOCK5",
+        "source": {
+          "kind": "shared-half-day-bit",
+          "bit": 4
+        }
+      },
+      {
+        "itemId": "MM_CLOCK6",
+        "source": {
+          "kind": "shared-half-day-bit",
+          "bit": 5
+        }
+      },
+      {
+        "itemId": "OOT_KEY_RING_FOREST",
+        "source": {
+          "kind": "oot-derived-key-ring",
+          "record": 3
+        }
+      },
+      {
+        "itemId": "OOT_KEY_RING_FIRE",
+        "source": {
+          "kind": "oot-derived-key-ring",
+          "record": 4
+        }
+      },
+      {
+        "itemId": "OOT_KEY_RING_WATER",
+        "source": {
+          "kind": "oot-derived-key-ring",
+          "record": 5
+        }
+      },
+      {
+        "itemId": "OOT_KEY_RING_SPIRIT",
+        "source": {
+          "kind": "oot-derived-key-ring",
+          "record": 6
+        }
+      },
+      {
+        "itemId": "OOT_KEY_RING_SHADOW",
+        "source": {
+          "kind": "oot-derived-key-ring",
+          "record": 7
+        }
+      },
+      {
+        "itemId": "OOT_KEY_RING_BOTW",
+        "source": {
+          "kind": "oot-derived-key-ring",
+          "record": 8
+        }
+      },
+      {
+        "itemId": "OOT_KEY_RING_GTG",
+        "source": {
+          "kind": "oot-derived-key-ring",
+          "record": 11
+        }
+      },
+      {
+        "itemId": "OOT_KEY_RING_GF",
+        "source": {
+          "kind": "oot-derived-key-ring",
+          "record": 12
+        }
+      },
+      {
+        "itemId": "OOT_KEY_RING_GANON",
+        "source": {
+          "kind": "oot-derived-key-ring",
+          "record": 13
+        }
+      },
+      {
+        "itemId": "OOT_KEY_RING_TCG",
+        "source": {
+          "kind": "oot-derived-key-ring",
+          "record": 16
+        }
+      },
+      {
+        "itemId": "OOT_SKELETON_KEY",
+        "source": {
+          "kind": "oot-derived-skeleton-key"
+        }
+      },
+      {
+        "itemId": "MM_KEY_RING_WF",
+        "source": {
+          "kind": "mm-derived-key-ring",
+          "record": 0
+        }
+      },
+      {
+        "itemId": "MM_KEY_RING_SH",
+        "source": {
+          "kind": "mm-derived-key-ring",
+          "record": 1
+        }
+      },
+      {
+        "itemId": "MM_KEY_RING_GB",
+        "source": {
+          "kind": "mm-derived-key-ring",
+          "record": 2
+        }
+      },
+      {
+        "itemId": "MM_KEY_RING_ST",
+        "source": {
+          "kind": "mm-derived-key-ring",
+          "record": 3
+        }
+      },
+      {
+        "itemId": "OOT_PLATINUM_TOKEN",
+        "source": {
+          "kind": "oot-derived-platinum-token"
+        }
+      },
+      {
+        "itemId": "MM_PLATINUM_TOKEN",
+        "source": {
+          "kind": "mm-derived-platinum-token"
+        }
+      },
+      {
+        "itemId": "OOT_RUPEE_MAGICAL",
+        "source": {
+          "kind": "oot-derived-magical-rupee"
+        }
+      },
+      {
+        "itemId": "MM_SKELETON_KEY",
+        "source": {
+          "kind": "mm-derived-skeleton-key"
+        }
+      },
+      {
+        "itemId": "MM_TRANSCENDENT_FAIRY",
+        "source": {
+          "kind": "mm-derived-transcendent-fairy"
+        }
+      },
+      {
+        "itemId": "OOT_SCALE_BRONZE",
+        "source": {
+          "kind": "shared-bitmap-bit",
+          "block": "progressiveFlags",
+          "bit": 4
+        }
+      },
+      {
+        "itemId": "MM_SCALE_BRONZE",
+        "source": {
+          "kind": "shared-bitmap-bit",
+          "block": "progressiveFlags",
+          "bit": 3
+        }
+      },
+      {
+        "itemId": "MM_GREAT_FAIRY_SWORD",
+        "source": {
+          "kind": "oot-extra-bit",
+          "record": 4,
+          "bit": 25
+        }
+      },
+      {
+        "itemId": "MM_HAMMER",
+        "source": {
+          "kind": "oot-extra-bit",
+          "record": 4,
+          "bit": 26
+        }
+      },
+      {
+        "itemId": "MM_SPELL_FIRE",
+        "source": {
+          "kind": "oot-extra-bit",
+          "record": 5,
+          "bit": 10
+        }
+      },
+      {
+        "itemId": "MM_MOON_TEAR",
+        "source": {
+          "kind": "oot-extra-bit",
+          "record": 5,
+          "bit": 11
+        }
+      },
+      {
+        "itemId": "MM_DEED_LAND",
+        "source": {
+          "kind": "oot-extra-bit",
+          "record": 5,
+          "bit": 12
+        }
+      },
+      {
+        "itemId": "MM_DEED_SWAMP",
+        "source": {
+          "kind": "oot-extra-bit",
+          "record": 5,
+          "bit": 13
+        }
+      },
+      {
+        "itemId": "MM_DEED_MOUNTAIN",
+        "source": {
+          "kind": "oot-extra-bit",
+          "record": 5,
+          "bit": 14
+        }
+      },
+      {
+        "itemId": "MM_DEED_OCEAN",
+        "source": {
+          "kind": "oot-extra-bit",
+          "record": 5,
+          "bit": 15
+        }
+      },
+      {
+        "itemId": "MM_SPELL_WIND",
+        "source": {
+          "kind": "oot-extra-bit",
+          "record": 5,
+          "bit": 5
+        }
+      },
+      {
+        "itemId": "MM_BOOTS_IRON",
+        "source": {
+          "kind": "oot-extra-bit",
+          "record": 5,
+          "bit": 6
+        }
+      },
+      {
+        "itemId": "MM_TUNIC_GORON",
+        "source": {
+          "kind": "oot-extra-bit",
+          "record": 5,
+          "bit": 7
+        }
+      },
+      {
+        "itemId": "MM_ROOM_KEY",
+        "source": {
+          "kind": "oot-extra-bit",
+          "record": 5,
+          "bit": 8
+        }
+      },
+      {
+        "itemId": "MM_LETTER_TO_MAMA",
+        "source": {
+          "kind": "oot-extra-bit",
+          "record": 5,
+          "bit": 9
+        }
+      },
+      {
+        "itemId": "MM_SPELL_LOVE",
+        "source": {
+          "kind": "oot-extra-bit",
+          "record": 5,
+          "bit": 0
+        }
+      },
+      {
+        "itemId": "MM_BOOTS_HOVER",
+        "source": {
+          "kind": "oot-extra-bit",
+          "record": 5,
+          "bit": 1
+        }
+      },
+      {
+        "itemId": "MM_TUNIC_ZORA",
+        "source": {
+          "kind": "oot-extra-bit",
+          "record": 5,
+          "bit": 2
+        }
+      },
+      {
+        "itemId": "MM_LETTER_TO_KAFEI",
+        "source": {
+          "kind": "oot-extra-bit",
+          "record": 5,
+          "bit": 3
+        }
+      },
+      {
+        "itemId": "MM_PENDANT_OF_MEMORIES",
+        "source": {
+          "kind": "oot-extra-bit",
+          "record": 5,
+          "bit": 4
+        }
+      },
+      {
+        "itemId": "OOT_WALLET5",
+        "source": {
+          "kind": "oot-extra-bit",
+          "record": 2,
+          "bit": 7
+        }
+      },
+      {
+        "itemId": "MM_WALLET5",
+        "source": {
+          "kind": "oot-extra-bit",
+          "record": 13,
+          "bit": 31
+        }
+      },
+      {
+        "itemId": "MM_STONE_OF_AGONY",
+        "source": {
+          "kind": "oot-extra-bit",
+          "record": 13,
+          "bit": 1
+        }
+      },
+      {
+        "itemId": "OOT_SPIN_UPGRADE",
+        "source": {
+          "kind": "oot-extra-bit",
+          "record": 2,
+          "bit": 26
+        }
+      },
+      {
+        "itemId": "MM_SPIN_UPGRADE",
+        "source": {
+          "kind": "mm-week-event-bit",
+          "byte": 23,
+          "bit": 1
+        }
+      }
+    ]
+  }
+}

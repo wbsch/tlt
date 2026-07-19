@@ -90,8 +90,8 @@ def main() -> int:
 		print("Either --patchfile or --ootmm-repo is required", file=sys.stderr)
 		return 1
 	if patchfile is not None and not patchfile.is_file():
-		print(f"Patchfile not found: {patchfile}", file=sys.stderr)
-		return 1
+		print(f"Warning: patchfile not found ({patchfile}) — live address data will not be updated from the patchfile.", file=sys.stderr)
+		patchfile = None
 	if repo is not None and not repo.is_dir():
 		print(f"OOTMM repository not found: {repo}", file=sys.stderr)
 		return 1

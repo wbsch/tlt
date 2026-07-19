@@ -1,0 +1,56 @@
+{
+  "schemaVersion": 1,
+  "generatedFrom": {
+    "patchfile": "/home/silke/Downloads/OoTMM-kpUP8JrL_v31.1/OoTMM-Patch-kpUP8JrL.ootmm",
+    "ootmmRepo": "/home/silke/stuff/repos/tlt/OoTMM",
+    "defs": "/home/silke/stuff/repos/tlt/OoTMM/packages/generator/include/combo/defs.h",
+    "ootLinker": "/home/silke/stuff/repos/tlt/OoTMM/packages/generator/src/link_oot.in",
+    "mmLinker": "/home/silke/stuff/repos/tlt/OoTMM/packages/generator/src/link_mm.in"
+  },
+  "oot": {
+    "comboCtx": "0x80006584",
+    "saveCtx": "0x8011a5d0",
+    "payload": "0x80400000",
+    "comboConfigLive": "0x80449ad8",
+    "runtimeSilverRupeeDataLive": "0x80434c0c",
+    "runtimeMaxKeysLive": "0x8044a098",
+    "derivation": {
+      "comboCtx": "source-define",
+      "saveCtx": "source-linker",
+      "payload": "patchfile-vram",
+      "comboConfigLive": "patchfile-code-scan",
+      "runtimeSilverRupeeDataLive": "patchfile-payload-scan",
+      "runtimeMaxKeysLive": "patchfile-code-scan+offset"
+    },
+    "missingPatchfileSymbols": [
+      "gMmSave",
+      "gSharedCustomSave"
+    ]
+  },
+  "mm": {
+    "comboCtx": "0x80098280",
+    "saveCtx": "0x801ef670",
+    "payload": "0x80720000",
+    "comboConfigLive": "0x8076a5c8",
+    "derivation": {
+      "comboCtx": "source-define",
+      "saveCtx": "source-linker",
+      "payload": "patchfile-vram",
+      "comboConfigLive": "patchfile-code-scan"
+    },
+    "missingPatchfileSymbols": [
+      "gOotSave",
+      "gSharedCustomSave"
+    ]
+  },
+  "notDerivableWithoutLinking": {
+    "oot": [
+      "foreignSaveLive",
+      "sharedCustomSaveLive"
+    ],
+    "mm": [
+      "foreignSaveLive",
+      "sharedCustomSaveLive"
+    ]
+  }
+}

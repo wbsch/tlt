@@ -185,6 +185,21 @@ function main(): void {
   if (options.updateFallbackBaselines) {
     specialLocationsArgs.push('--update-fallback-baseline');
   }
+  // Seed special_locations files from the base data directory into the
+  // version directory when they don't exist there yet.
+  for (const fileName of [
+    'special_locations_mm.json',
+    'special_locations_oot.json',
+  ]) {
+    const versionedPath = path.join(DATA_DIR, fileName);
+    if (!existsSync(versionedPath)) {
+      const basePath = path.join(AUTOTRACKER_DATA_BASE, fileName);
+      if (existsSync(basePath)) {
+        copyFileSync(basePath, versionedPath);
+      }
+    }
+  }
+
   runPython('generate_special_locations.py', specialLocationsArgs);
 
   // Write the data manifest.
@@ -229,6 +244,18 @@ function main(): void {
       path.join(DATA_DIR, 'live_addrs.json'),
     );
     formatGeneratedFiles(REPO_ROOT, generatedFiles);
+
+    // Publish the generated special_locations files back to the base
+    // data directory so it stays up-to-date.
+    for (const fileName of [
+      'special_locations_mm.json',
+      'special_locations_oot.json',
+    ]) {
+      copyFileSync(
+        path.join(DATA_DIR, fileName),
+        path.join(AUTOTRACKER_DATA_BASE, fileName),
+      );
+    }
     return;
   }
 
@@ -244,6 +271,18 @@ function main(): void {
   }
   runPython('export_live_addrs.py', liveAddrsArgs);
   formatGeneratedFiles(REPO_ROOT, generatedFiles);
+
+  // Publish the generated special_locations files back to the base
+  // data directory so it stays up-to-date.
+  for (const fileName of [
+    'special_locations_mm.json',
+    'special_locations_oot.json',
+  ]) {
+    copyFileSync(
+      path.join(DATA_DIR, fileName),
+      path.join(AUTOTRACKER_DATA_BASE, fileName),
+    );
+  }
 }
 
 main();
