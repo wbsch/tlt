@@ -8,11 +8,53 @@ import { formatGeneratedFiles } from './format_generated_files.ts';
 const SCRIPT_DIR = path.dirname(fileURLToPath(import.meta.url));
 const REPO_ROOT = path.resolve(SCRIPT_DIR, '../..');
 const OOTMM_REPO = path.join(REPO_ROOT, 'OoTMM');
-const DATA_DIR = path.join(REPO_ROOT, 'packs/ootmm/src/autotracker/data');
+const AUTOTRACKER_DATA_BASE = path.join(
+  REPO_ROOT,
+  'packs/ootmm/src/autotracker/data',
+);
 const LEGACY_DATA_DIR = path.join(
   REPO_ROOT,
   'tlt_autotracker/ootmm-autotracker/ootmm',
 );
+
+/**
+ * Detect the OoTMM version from the git tag and return the corresponding
+ * directory name (e.g. "v31_1" for tag "v31.1").
+ *
+ * Throws if no git tag can be resolved.
+ */
+function detectOotmmVersionDir(): string {
+  const gitResult = spawnSync('git', ['describe', '--tags', '--abbrev=0'], {
+    cwd: OOTMM_REPO,
+    encoding: 'utf-8',
+    stdio: ['ignore', 'pipe', 'pipe'],
+  });
+
+  if (gitResult.status !== 0) {
+    throw new Error(
+      `Failed to detect OoTMM version via git tag in ${OOTMM_REPO}. ` +
+        `Ensure the OoTMM repository is at a tagged commit.`,
+    );
+  }
+
+  const tag = gitResult.stdout?.trim();
+  if (!tag) {
+    throw new Error(
+      `No git tag found in OoTMM repository at ${OOTMM_REPO}. ` +
+        `Check out a tagged commit (e.g. v31.1) before generating data.`,
+    );
+  }
+
+  return tagToDirName(tag);
+}
+
+/** Convert a version tag like "v31.1" or "31.1" to a dir name like "v31_1". */
+function tagToDirName(tag: string): string {
+  const cleaned = tag.trim().replace(/^v/i, '');
+  return `v${cleaned.replace(/\./g, '_')}`;
+}
+
+const DATA_DIR = path.join(AUTOTRACKER_DATA_BASE, detectOotmmVersionDir());
 const MANIFEST_PATH = path.join(DATA_DIR, 'manifest.json');
 
 const EXACT_FILES = [
@@ -48,14 +90,30 @@ function selectSeedFile(fileName: string): string {
     return ownedPath;
   }
 
+  const parentPath = path.join(AUTOTRACKER_DATA_BASE, fileName);
+  if (existsSync(parentPath)) {
+    return parentPath;
+  }
+
   return path.join(LEGACY_DATA_DIR, fileName);
+}
+
+/**
+ * Determine the "actual" path for a file being validated.
+ * Lock files live in the base data directory; all other files are versioned.
+ */
+function actualPathFor(fileName: string): string {
+  if (fileName.endsWith('.lock.json')) {
+    return path.join(AUTOTRACKER_DATA_BASE, fileName);
+  }
+  return path.join(DATA_DIR, fileName);
 }
 
 function assertExactMatch(
   fileName: (typeof EXACT_FILES)[number],
   tempDir: string,
 ): void {
-  const actualPath = path.join(DATA_DIR, fileName);
+  const actualPath = actualPathFor(fileName);
   const expectedPath = path.join(tempDir, fileName);
   const actual = readUtf8(actualPath);
   const expected = readUtf8(expectedPath);

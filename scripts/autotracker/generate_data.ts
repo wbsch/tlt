@@ -1,4 +1,4 @@
-import { copyFileSync, existsSync, mkdirSync } from 'node:fs';
+import { copyFileSync, existsSync, mkdirSync, writeFileSync } from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { spawnSync } from 'node:child_process';
@@ -139,6 +139,7 @@ function main(): void {
       'special_locations_fallbacks_oot.lock.json',
     ),
     path.join(DATA_DIR, 'live_addrs.json'),
+    path.join(DATA_DIR, 'manifest.json'),
   ];
 
   runPython('generate_inventory_slots.py', [
@@ -185,6 +186,25 @@ function main(): void {
     specialLocationsArgs.push('--update-fallback-baseline');
   }
   runPython('generate_special_locations.py', specialLocationsArgs);
+
+  // Write the data manifest.
+  const manifest = {
+    schemaVersion: 1,
+    files: {
+      'inventory_slots.json': 1,
+      'locations.json': 1,
+      'special_locations_mm.json': 1,
+      'special_locations_oot.json': 1,
+      'special_locations_fallbacks_mm.lock.json': 1,
+      'special_locations_fallbacks_oot.lock.json': 1,
+      'live_addrs.json': 1,
+    },
+  };
+  writeFileSync(
+    path.join(DATA_DIR, 'manifest.json'),
+    JSON.stringify(manifest, null, 2) + '\n',
+    'utf8',
+  );
 
   if (!options.updateFallbackBaselines) {
     copyFileSync(
