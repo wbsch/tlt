@@ -1,9 +1,10 @@
-import autotrackerDataManifest from './data/manifest.json';
-import inventorySlotsData from './data/inventory_slots.json';
-import liveAddrsData from './data/live_addrs.json';
-import locationsData from './data/locations.json';
-import specialLocationsMmData from './data/special_locations_mm.json';
-import specialLocationsOotData from './data/special_locations_oot.json';
+import autotrackerDataManifest from './data/v30_1/manifest.json';
+import inventorySlotsData from './data/v30_1/inventory_slots.json';
+import liveAddrsData from './data/v30_1/live_addrs.json';
+import locationsData from './data/v30_1/locations.json';
+import specialLocationsMmData from './data/v30_1/special_locations_mm.json';
+import specialLocationsOotData from './data/v30_1/special_locations_oot.json';
+import { hasAutotrackerDataForVersion } from './data/versions';
 
 const AUTOTRACKER_DATA_SCHEMA_VERSION = 1;
 
@@ -1803,7 +1804,30 @@ class RawAutotrackerParserImpl implements RawAutotrackerParser {
   }
 }
 
-export function createRawAutotrackerParser(): RawAutotrackerParser {
+export interface CreateRawAutotrackerParserOptions {
+  /**
+   * OoTMM spoiler-log version string (e.g. "v30.1" or "30.1").
+   * When provided, the parser validates that autotracker data exists
+   * for this version.  If omitted, the default data version is used.
+   */
+  ootmmVersion?: string | null;
+}
+
+export function createRawAutotrackerParser(
+  options?: CreateRawAutotrackerParserOptions,
+): RawAutotrackerParser {
+  // Version validation – when a spoiler log has been imported we verify
+  // that the corresponding autotracker data directory exists.  This is a
+  // forward-looking guard; today only v30_1 data is bundled.
+  if (options?.ootmmVersion) {
+    if (!hasAutotrackerDataForVersion(options.ootmmVersion)) {
+      throw new Error(
+        `No autotracker data available for spoiler-log version "${options.ootmmVersion}". ` +
+          `Supported versions: v30_1.`,
+      );
+    }
+  }
+
   return new RawAutotrackerParserImpl();
 }
 

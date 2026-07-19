@@ -949,6 +949,7 @@ const autotracker = useAutotracker({
   childWalletsEnabled: computed(() =>
     Boolean(trackerSettings.value?.childWallets),
   ),
+  ootmmVersion: importedSpoilerLogVersion,
   onInventoryUpdate: (inventory, meta) => {
     pendingAutotrackerInventoryUpdate = {
       inventory: { ...inventory },
@@ -2463,7 +2464,9 @@ function buildFallbackRemoteLocationIds(
 function buildAutotrackerDumpSummary(
   rawSnapshot: RawAutotrackerMessage,
 ): AutotrackerDumpSummary | null {
-  const parser = createRawAutotrackerParser();
+  const parser = createRawAutotrackerParser({
+    ootmmVersion: importedSpoilerLogVersion.value,
+  });
   const parsed = parser.parse(rawSnapshot);
   if (!parsed) {
     return null;

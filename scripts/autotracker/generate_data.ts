@@ -7,11 +7,53 @@ import { formatGeneratedFiles } from './format_generated_files.ts';
 const SCRIPT_DIR = path.dirname(fileURLToPath(import.meta.url));
 const REPO_ROOT = path.resolve(SCRIPT_DIR, '../..');
 const OOTMM_REPO = path.join(REPO_ROOT, 'OoTMM');
-const DATA_DIR = path.join(REPO_ROOT, 'packs/ootmm/src/autotracker/data');
+const AUTOTRACKER_DATA_BASE = path.join(
+  REPO_ROOT,
+  'packs/ootmm/src/autotracker/data',
+);
 const LEGACY_DATA_DIR = path.join(
   REPO_ROOT,
   'tlt_autotracker/ootmm-autotracker/ootmm',
 );
+
+/**
+ * Detect the OoTMM version from the git tag and return the corresponding
+ * directory name (e.g. "v31_1" for tag "v31.1").
+ *
+ * Throws if no git tag can be resolved.
+ */
+function detectOotmmVersionDir(): string {
+  const gitResult = spawnSync('git', ['describe', '--tags', '--abbrev=0'], {
+    cwd: OOTMM_REPO,
+    encoding: 'utf-8',
+    stdio: ['ignore', 'pipe', 'pipe'],
+  });
+
+  if (gitResult.status !== 0) {
+    throw new Error(
+      `Failed to detect OoTMM version via git tag in ${OOTMM_REPO}. ` +
+        `Ensure the OoTMM repository is at a tagged commit.`,
+    );
+  }
+
+  const tag = gitResult.stdout?.trim();
+  if (!tag) {
+    throw new Error(
+      `No git tag found in OoTMM repository at ${OOTMM_REPO}. ` +
+        `Check out a tagged commit (e.g. v31.1) before generating data.`,
+    );
+  }
+
+  return tagToDirName(tag);
+}
+
+/** Convert a version tag like "v31.1" or "31.1" to a dir name like "v31_1". */
+function tagToDirName(tag: string): string {
+  const cleaned = tag.trim().replace(/^v/i, '');
+  return `v${cleaned.replace(/\./g, '_')}`;
+}
+
+const DATA_DIR = path.join(AUTOTRACKER_DATA_BASE, detectOotmmVersionDir());
 
 interface GenerateOptions {
   includeLiveAddrs: boolean;
@@ -34,9 +76,23 @@ function runPython(scriptName: string, args: string[]): void {
 }
 
 function selectSeedFile(fileName: string): string {
-  const ownedPath = path.join(DATA_DIR, fileName);
-  if (existsSync(ownedPath)) {
-    return ownedPath;
+  const versionedPath = path.join(DATA_DIR, fileName);
+  if (existsSync(versionedPath)) {
+    return versionedPath;
+  }
+
+  const parentPath = path.join(AUTOTRACKER_DATA_BASE, fileName);
+  if (existsSync(parentPath)) {
+    return parentPath;
+  }
+
+  return path.join(LEGACY_DATA_DIR, fileName);
+}
+
+function selectFallbackSeedFile(fileName: string): string {
+  const parentPath = path.join(AUTOTRACKER_DATA_BASE, fileName);
+  if (existsSync(parentPath)) {
+    return parentPath;
   }
 
   return path.join(LEGACY_DATA_DIR, fileName);
@@ -68,13 +124,20 @@ function parseArgs(argv: string[]): GenerateOptions {
 function main(): void {
   const options = parseArgs(process.argv.slice(2));
   mkdirSync(DATA_DIR, { recursive: true });
+  mkdirSync(AUTOTRACKER_DATA_BASE, { recursive: true });
   const generatedFiles = [
     path.join(DATA_DIR, 'inventory_slots.json'),
     path.join(DATA_DIR, 'locations.json'),
     path.join(DATA_DIR, 'special_locations_mm.json'),
     path.join(DATA_DIR, 'special_locations_oot.json'),
-    path.join(DATA_DIR, 'special_locations_fallbacks_mm.lock.json'),
-    path.join(DATA_DIR, 'special_locations_fallbacks_oot.lock.json'),
+    path.join(
+      AUTOTRACKER_DATA_BASE,
+      'special_locations_fallbacks_mm.lock.json',
+    ),
+    path.join(
+      AUTOTRACKER_DATA_BASE,
+      'special_locations_fallbacks_oot.lock.json',
+    ),
     path.join(DATA_DIR, 'live_addrs.json'),
   ];
 
@@ -105,12 +168,18 @@ function main(): void {
     selectSeedFile('special_locations_oot.json'),
     '--fallback-baseline',
     options.updateFallbackBaselines
-      ? path.join(DATA_DIR, 'special_locations_fallbacks_mm.lock.json')
-      : selectSeedFile('special_locations_fallbacks_mm.lock.json'),
+      ? path.join(
+          AUTOTRACKER_DATA_BASE,
+          'special_locations_fallbacks_mm.lock.json',
+        )
+      : selectFallbackSeedFile('special_locations_fallbacks_mm.lock.json'),
     '--oot-fallback-baseline',
     options.updateFallbackBaselines
-      ? path.join(DATA_DIR, 'special_locations_fallbacks_oot.lock.json')
-      : selectSeedFile('special_locations_fallbacks_oot.lock.json'),
+      ? path.join(
+          AUTOTRACKER_DATA_BASE,
+          'special_locations_fallbacks_oot.lock.json',
+        )
+      : selectFallbackSeedFile('special_locations_fallbacks_oot.lock.json'),
   ];
   if (options.updateFallbackBaselines) {
     specialLocationsArgs.push('--update-fallback-baseline');
@@ -119,12 +188,18 @@ function main(): void {
 
   if (!options.updateFallbackBaselines) {
     copyFileSync(
-      selectSeedFile('special_locations_fallbacks_mm.lock.json'),
-      path.join(DATA_DIR, 'special_locations_fallbacks_mm.lock.json'),
+      selectFallbackSeedFile('special_locations_fallbacks_mm.lock.json'),
+      path.join(
+        AUTOTRACKER_DATA_BASE,
+        'special_locations_fallbacks_mm.lock.json',
+      ),
     );
     copyFileSync(
-      selectSeedFile('special_locations_fallbacks_oot.lock.json'),
-      path.join(DATA_DIR, 'special_locations_fallbacks_oot.lock.json'),
+      selectFallbackSeedFile('special_locations_fallbacks_oot.lock.json'),
+      path.join(
+        AUTOTRACKER_DATA_BASE,
+        'special_locations_fallbacks_oot.lock.json',
+      ),
     );
   }
 

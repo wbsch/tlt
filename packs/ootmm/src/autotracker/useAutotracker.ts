@@ -30,6 +30,11 @@ interface AutotrackerOptions {
   itemMaxCounts: Ref<Map<string, number>>;
   /** Whether child wallets are enabled in the current tracker settings. */
   childWalletsEnabled?: Ref<boolean>;
+  /**
+   * OoTMM spoiler-log version string (e.g. "v30.1").
+   * Used to select the correct autotracker data directory.
+   */
+  ootmmVersion?: Ref<string | null>;
   /** Called when the autotracker has new inventory to apply. */
   onInventoryUpdate: (
     inventory: Record<string, number>,
@@ -438,7 +443,9 @@ export function useAutotracker(options: AutotrackerOptions) {
     }
   }
 
-  const rawParser = createRawAutotrackerParser();
+  const rawParser = createRawAutotrackerParser({
+    ootmmVersion: options.ootmmVersion?.value,
+  });
 
   function childWalletsEnabled(): boolean {
     return options.childWalletsEnabled?.value ?? false;
