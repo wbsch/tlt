@@ -149,8 +149,15 @@ SPECIAL_ITEM_SOURCES = [
     {"itemId": "MM_TRANSCENDENT_FAIRY", "source": {"kind": "mm-derived-transcendent-fairy"}},
     {"itemId": "OOT_SCALE_BRONZE", "source": {"kind": "shared-bitmap-bit", "block": "progressiveFlags", "bit": 4}},
     {"itemId": "MM_SCALE_BRONZE", "source": {"kind": "shared-bitmap-bit", "block": "progressiveFlags", "bit": 3}},
-    {"itemId": "MM_GREAT_FAIRY_SWORD", "source": {"kind": "oot-extra-bit", "record": 4, "bit": 25}},
-    {"itemId": "MM_HAMMER", "source": {"kind": "oot-extra-bit", "record": 4, "bit": 26}},
+    {"itemId": "MM_HAMMER", "source": {"kind": "oot-extra-bit", "record": 4, "bit": 5}},
+    {"itemId": "MM_GREAT_FAIRY_SWORD", "source": {"kind": "oot-extra-bit", "record": 4, "bit": 6}},
+    {"itemId": "MM_BOOMERANG", "source": {"kind": "oot-extra-bit", "record": 4, "bit": 7}},
+    {"itemId": "MM_SLINGSHOT", "source": {"kind": "oot-extra-bit", "record": 4, "bit": 9}},
+    {"itemId": "MM_MASK_GERUDO", "source": {"kind": "oot-extra-bit", "record": 4, "bit": 12}},
+    {"itemId": "MM_MASK_SKULL", "source": {"kind": "oot-extra-bit", "record": 4, "bit": 13}},
+    {"itemId": "MM_MASK_SPOOKY", "source": {"kind": "oot-extra-bit", "record": 4, "bit": 15}},
+    {"itemId": "OOT_GREAT_FAIRY_SWORD", "source": {"kind": "oot-extra-bit", "record": 1, "bit": 10}},
+    {"itemId": "OOT_POWDER_KEG", "source": {"kind": "oot-extra-byte-nonzero", "record": 20, "byte": 0}},
     {"itemId": "MM_SPELL_FIRE", "source": {"kind": "oot-extra-bit", "record": 5, "bit": 10}},
     {"itemId": "MM_MOON_TEAR", "source": {"kind": "oot-extra-bit", "record": 5, "bit": 11}},
     {"itemId": "MM_DEED_LAND", "source": {"kind": "oot-extra-bit", "record": 5, "bit": 12}},
@@ -466,6 +473,7 @@ def build_catalog(
     gi_defs: pathlib.Path,
     notes_header: pathlib.Path,
     item_add_source: pathlib.Path,
+    doors_header: pathlib.Path,
 ) -> dict[str, object]:
     gi_ids = extract_gi_ids(gi_defs)
     soul_entries = extract_soul_entries(gi_defs)
@@ -507,10 +515,64 @@ def build_catalog(
     ensure_ids_exist(gi_ids, [entry["itemId"] for entry in SPECIAL_ITEM_SOURCES], "special item")
     items.extend(SPECIAL_ITEM_SOURCES)
 
+    rusty_key_entries = generate_rusty_key_sources(doors_header, gi_ids)
+    items.extend(rusty_key_entries)
+
     return {
         "shared": SHARED_STORAGE,
         "items": items,
     }
+
+
+DOOR_ENUM_RE = re.compile(r"^\s*DOORID_(OOT|MM)_([A-Z0-9_]+),?\s*$")
+
+
+def generate_rusty_key_sources(doors_header: pathlib.Path, gi_ids: list[str]) -> list[dict[str, object]]:
+    """Generate shared-rusty-key catalog entries for every door defined in doors.h."""
+
+    entries: list[dict[str, object]] = []
+    game: str | None = None
+    index = 0
+
+    for line in doors_header.read_text(encoding="utf-8").splitlines():
+        line = line.strip()
+        if not line or line.startswith("//") or line == "};":
+            if line == "};":
+                game = None
+                index = 0
+            continue
+        if line.startswith("enum"):
+            continue
+
+        match = DOOR_ENUM_RE.match(line)
+        if not match:
+            continue
+
+        game_abbr, door_name = match.groups()
+        if door_name == "MAX":
+            continue
+
+        game = "oot" if game_abbr == "OOT" else "mm"
+        item_id = f"{game_abbr}_RUSTY_KEY_{door_name}"
+        byte = index // 8
+        bit = index % 8
+
+        entries.append({
+            "itemId": item_id,
+            "source": {
+                "kind": "shared-rusty-key",
+                "game": game,
+                "byte": byte,
+                "bit": bit,
+            },
+        })
+        index += 1
+
+    if not entries:
+        raise ValueError(f"no door entries found in {doors_header}")
+
+    ensure_ids_exist(gi_ids, [entry["itemId"] for entry in entries], "rusty key")
+    return entries
 
 
 def main() -> int:
@@ -536,7 +598,12 @@ def main() -> int:
         return 1
 
     mapping = extract_slots(items_header)
-    mapping["catalog"] = build_catalog(gi_defs, notes_header, item_add_source)
+    doors_header = repo_root / "packages/generator/include/combo/doors.h"
+    if not doors_header.is_file():
+        print(f"doors header not found: {doors_header}", file=sys.stderr)
+        return 1
+
+    mapping["catalog"] = build_catalog(gi_defs, notes_header, item_add_source, doors_header)
     output_path.parent.mkdir(parents=True, exist_ok=True)
     output_path.write_text(json.dumps(mapping, indent=2) + "\n", encoding="utf-8")
     return 0

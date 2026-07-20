@@ -199,6 +199,9 @@ const OOT_CHILD_TRADE_ITEMS: string[] = [
   'OOT_MASK_ZORA', // bit 8
   'OOT_MASK_GERUDO', // bit 9
   'OOT_MASK_TRUTH', // bit 10
+  'OOT_MASK_BLAST', // bit 11
+  'OOT_MASK_STONE', // bit 12
+  'OOT_MASK_KAMARO', // bit 13
 ];
 
 // MM_TRADE_1: 6-bit bitmask

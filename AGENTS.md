@@ -22,3 +22,9 @@ Before returning control to the user, also make sure that when clicking on "Debu
 ### Timeouts
 
 When trying to change settings, the "Apply Settings" operation will take 3-6 seconds. be sure to run it with a timeout of at least 10s.
+
+### Internal tools and gitignore
+
+Some tools like the vscode grep tool ignore gitignored files and folder. If you want to grep stuff in e.g. `OoTMM`, use regular `grep`.
+
+In general, if specialized tools are failing, try to fall back to command line tools like grep, find, awk, whatever.

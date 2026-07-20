@@ -118,6 +118,7 @@ function buildParserTables(bundle: AutotrackerDataBundle): ParserTables {
       bundle.inventorySlots.catalog.shared.trackedSize,
       SHARED_SONG_NOTES_OFFSET + SHARED_SONG_NOTE_COUNT,
       SHARED_BOMBCHU_BAG_FLAGS_OFFSET + 1,
+      SHARED_RUSTY_KEYS_OFFSET + SHARED_RUSTY_KEYS_SIZE,
     ),
     addrOotSaveCtx: parseHexAddress(
       bundle.liveAddrs.oot.saveCtx,
@@ -390,6 +391,7 @@ type CatalogItemSource = {
   max?: number;
   record?: number;
   bit?: number;
+  game?: string;
 };
 
 type LocationFile = {
@@ -560,6 +562,8 @@ type SharedCustomState = {
   songNotes: number[];
   caughtChildFishWeights: number[];
   caughtAdultFishWeights: number[];
+  rustyKeysOot: number[];
+  rustyKeysMm: number[];
 };
 
 type GameState = {
@@ -670,7 +674,7 @@ let addrMmRuntimeOotComboConfigLive = parseHexAddressWithFallback(
   DEFAULT_ADDR_MM_RUNTIME_OOT_COMBO_CONFIG_LIVE,
 );
 
-const SHARED_CUSTOM_SAVE_SIZE = 0x870;
+const SHARED_CUSTOM_SAVE_SIZE = 0x880;
 
 const OOT_RUNTIME_SCENE_COUNT = 17;
 const OOT_SILVER_RUPEE_SET_COUNT = 18;
@@ -904,6 +908,11 @@ const SHARED_CAUGHT_ADULT_FISH_WEIGHT_OFFSET = 2057;
 const SHARED_CAUGHT_FISH_WEIGHT_COUNT = 20;
 const SHARED_SONG_NOTES_OFFSET = 2125;
 const SHARED_SONG_NOTE_COUNT = 24;
+const SHARED_RUSTY_KEYS_OFFSET = 2163;
+const SHARED_RUSTY_KEYS_OOT_SIZE = 4;
+const SHARED_RUSTY_KEYS_MM_SIZE = 5;
+const SHARED_RUSTY_KEYS_SIZE =
+  SHARED_RUSTY_KEYS_OOT_SIZE + SHARED_RUSTY_KEYS_MM_SIZE;
 const SHARED_BOMBCHU_BAG_FLAGS_OFFSET = 2114;
 const SHARED_BOMBCHU_BAG_OOT_SHIFT = 4;
 const SHARED_BOMBCHU_BAG_MM_SHIFT = 6;
@@ -1095,6 +1104,7 @@ let sharedStateReadSize = Math.max(
   inventorySlotFile.catalog.shared.trackedSize,
   SHARED_SONG_NOTES_OFFSET + SHARED_SONG_NOTE_COUNT,
   SHARED_BOMBCHU_BAG_FLAGS_OFFSET + 1,
+  SHARED_RUSTY_KEYS_OFFSET + SHARED_RUSTY_KEYS_SIZE,
 );
 
 const buildSharedStateChunkSpecs = (
@@ -1136,6 +1146,11 @@ const buildSharedStateChunkSpecs = (
       name: `${prefix}_shared_custom_save_song_notes`,
       address: baseAddress + SHARED_SONG_NOTES_OFFSET,
       length: SHARED_SONG_NOTE_COUNT,
+    },
+    {
+      name: `${prefix}_shared_custom_save_rusty_keys`,
+      address: baseAddress + SHARED_RUSTY_KEYS_OFFSET,
+      length: SHARED_RUSTY_KEYS_SIZE,
     },
   );
 
@@ -3150,7 +3165,7 @@ function parseOotSave(oot: OotState, data: Uint8Array): void {
     };
   }
 
-  for (let index = 0; index < 20; index++) {
+  for (let index = 0; index < 22; index++) {
     const offset =
       OOT_OFF_PERM + index * OOT_PERM_ENTRY_SIZE + OOT_PERM_EXTRA_OFF;
     oot.extraRecords[index] = readU32BE(data, offset);
@@ -3311,6 +3326,16 @@ function parseSharedStateUnchecked(data: Uint8Array): SharedCustomState | null {
   if (data.length >= SHARED_SONG_NOTES_OFFSET + SHARED_SONG_NOTE_COUNT) {
     for (let index = 0; index < SHARED_SONG_NOTE_COUNT; index++) {
       parsed.songNotes[index] = data[SHARED_SONG_NOTES_OFFSET + index] ?? 0;
+    }
+  }
+  if (data.length >= SHARED_RUSTY_KEYS_OFFSET + SHARED_RUSTY_KEYS_SIZE) {
+    for (let index = 0; index < SHARED_RUSTY_KEYS_OOT_SIZE; index++) {
+      parsed.rustyKeysOot[index] = data[SHARED_RUSTY_KEYS_OFFSET + index] ?? 0;
+    }
+    for (let index = 0; index < SHARED_RUSTY_KEYS_MM_SIZE; index++) {
+      parsed.rustyKeysMm[index] =
+        data[SHARED_RUSTY_KEYS_OFFSET + SHARED_RUSTY_KEYS_OOT_SIZE + index] ??
+        0;
     }
   }
 
@@ -4798,6 +4823,27 @@ function appendCatalogItems(
             0,
         );
         break;
+      case 'oot-extra-byte-nonzero':
+        qty = boolToInt(
+          (((state.oot.extraRecords[entry.source.record ?? -1] ?? 0) >>>
+            ((entry.source.byte ?? 0) * 8)) &
+            0xff) !==
+            0,
+        );
+        break;
+      case 'shared-rusty-key': {
+        const rustyGame = entry.source.game as 'oot' | 'mm';
+        const rustyBytes =
+          rustyGame === 'oot'
+            ? state.shared.rustyKeysOot
+            : state.shared.rustyKeysMm;
+        qty = boolToInt(
+          ((rustyBytes[entry.source.byte ?? -1] ?? 0) &
+            (1 << (entry.source.bit ?? 0))) !==
+            0,
+        );
+        break;
+      }
       case 'mm-week-event-bit':
         qty = boolToInt(
           ((state.mm.weekEventReg[entry.source.byte ?? -1] ?? 0) &
@@ -5539,7 +5585,7 @@ function createEmptyOotState(): OotState {
     hasRuntimeSilverRupeeCounts: false,
     bronzeScaleEnabled: false,
     sceneFlags: Array.from({ length: OOT_PERM_COUNT }, createEmptySceneFlags),
-    extraRecords: Array.from({ length: 20 }, () => 0),
+    extraRecords: Array.from({ length: 22 }, () => 0),
     eventsChk: Array.from({ length: 14 }, () => 0),
     eventsItem: Array.from({ length: 4 }, () => 0),
     eventsMisc: Array.from({ length: 30 }, () => 0),
@@ -5601,6 +5647,8 @@ function createEmptySharedState(): SharedCustomState {
       { length: SHARED_CAUGHT_FISH_WEIGHT_COUNT },
       () => 0,
     ),
+    rustyKeysOot: Array.from({ length: SHARED_RUSTY_KEYS_OOT_SIZE }, () => 0),
+    rustyKeysMm: Array.from({ length: SHARED_RUSTY_KEYS_MM_SIZE }, () => 0),
   };
 }
 
@@ -5672,6 +5720,8 @@ function cloneSharedState(source: SharedCustomState): SharedCustomState {
     songNotes: [...source.songNotes],
     caughtChildFishWeights: [...source.caughtChildFishWeights],
     caughtAdultFishWeights: [...source.caughtAdultFishWeights],
+    rustyKeysOot: [...source.rustyKeysOot],
+    rustyKeysMm: [...source.rustyKeysMm],
   };
 }
 
