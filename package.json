@@ -8,8 +8,8 @@
     "node": ">=24"
   },
   "scripts": {
-    "predev": "npm run generate:asset-versions && npm run generate:map-icons && npm run generate:map-schema",
-    "prebuild": "npm run generate:asset-versions && npm run generate:map-icons && npm run generate:map-schema",
+    "predev": "npm run generate:asset-versions && npm run generate:map-icons && npm run generate:map-schema && npm run generate:fallback-check",
+    "prebuild": "npm run generate:asset-versions && npm run generate:map-icons && npm run generate:map-schema && npm run generate:fallback-check",
     "dev": "vite",
     "build": "vite build && python3 scripts/check_map_locations.py --build-warning-mode",
     "build:check": "vite build",
@@ -18,6 +18,7 @@
     "generate:asset-versions": "node scripts/generate_public_image_asset_versions.ts",
     "generate:map-icons": "node scripts/generate_map_icon_index.ts",
     "generate:map-schema": "node scripts/generate_map_schema.ts",
+    "generate:fallback-check": "node scripts/check_fallback_assets.ts",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "format": "prettier . --write --cache",
@@ -35,7 +36,7 @@
     "test:e2e:headed": "playwright test --headed",
     "test:e2e:ui": "playwright test --ui",
     "test:e2e:install": "playwright install chromium",
-    "check-most:verify": "npm run type-check && npm run build:check",
+    "check-most:verify": "npm run generate:fallback-check && npm run type-check && npm run build:check",
     "check-most:ci": "npm run format:check && npm run lint && npm run check-most:verify",
     "check-most": "npm run format && npm run lint:fix && npm run check-most:verify",
     "check-all": "npm run check-most && npm run test:unit && npm run test:server && npm run test:pathfinder && npm run test:e2e"

@@ -1,6 +1,9 @@
 import { describe, expect, it } from 'vitest';
 
-import { resolveMarkerImage } from '@/../packs/ootmm/src/data/maps/assets';
+import {
+  MAP_ICON_DIR,
+  resolveMarkerImage,
+} from '@/../packs/ootmm/src/data/maps/assets';
 import { PUBLIC_IMAGE_ASSET_VERSIONS } from '@/../packs/ootmm/src/generated/publicImageAssetVersions';
 import { withBasePath } from '@/../packs/ootmm/src/utils/assetPath';
 
@@ -34,11 +37,16 @@ describe('asset paths', () => {
     expect(withBasePath('images/map_icons')).toBe('./images/map_icons');
   });
 
-  it('versions map marker image URLs using the full file path', () => {
-    const version = PUBLIC_IMAGE_ASSET_VERSIONS['images/map_icons/chest.png'];
+  it('versions map marker image URLs using the active map-icon set', () => {
+    const relativePath = `images/${MAP_ICON_DIR}/chest.png`;
+    const version =
+      PUBLIC_IMAGE_ASSET_VERSIONS[
+        relativePath as keyof typeof PUBLIC_IMAGE_ASSET_VERSIONS
+      ];
+    const expected = version
+      ? `./${relativePath}?v=${version}`
+      : `./${relativePath}`;
 
-    expect(resolveMarkerImage('chest')).toBe(
-      `./images/map_icons/chest.png?v=${version}`,
-    );
+    expect(resolveMarkerImage('chest')).toBe(expected);
   });
 });

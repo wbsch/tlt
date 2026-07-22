@@ -55,6 +55,23 @@ Production build:
 npm run build
 ```
 
+### Map-icon & song-event assets (restricted vs. fallback)
+
+The map marker icons (`public/images/map_icons/`) and song-event icons
+(`public/images/song_events/`) are Copyright (c) BusinessAlex and are **opt-in**. By default,
+`npm run build` and `npm run dev` use the MIT-licensed placeholder set from
+`public/images/fallback/`. To build with BusinessAlex's original assets — only if you have
+permission — set the flag:
+
+```bash
+I_HAVE_ASKED_BUSINESSALEX_FOR_PERMISSION_FOR_THE_IMAGE_FILES=TRUE npm run build
+```
+
+For local development you can instead drop
+`I_HAVE_ASKED_BUSINESSALEX_FOR_PERMISSION_FOR_THE_IMAGE_FILES=TRUE` into a gitignored
+`.env.local`. The build logs which set is active and prunes the inactive set from `dist/`. See
+[LICENSE_ASSETS.md](./LICENSE_ASSETS.md) and `public/images/fallback/README.md`.
+
 ## Useful Commands
 
 - `npm run format`

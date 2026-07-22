@@ -8,8 +8,15 @@ export function resolveMapImage(image: string): string {
   return withBasePath(`images/maps/${image}.png`);
 }
 
+// BusinessAlex's map marker icons are opt-in: the default build substitutes the
+// MIT-licensed fallback set. See LICENSE_ASSETS.md and the
+// I_HAVE_ASKED_BUSINESSALEX_FOR_PERMISSION_FOR_THE_IMAGE_FILES build flag.
+export const MAP_ICON_DIR = __TLT_USE_RESTRICTED_ASSETS__
+  ? 'map_icons'
+  : 'fallback/map_icons';
+
 export function resolveMarkerImage(image: string): string {
-  return withBasePath(`images/map_icons/${image}.png`);
+  return withBasePath(`images/${MAP_ICON_DIR}/${image}.png`);
 }
 
 export function resolveOverlayImage(overlay: MapMarkerOverlay): string {

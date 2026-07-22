@@ -1,9 +1,9 @@
-import { defineConfig } from 'vite';
+import { defineConfig, loadEnv } from 'vite';
 import vue from '@vitejs/plugin-vue';
 import { fileURLToPath, URL } from 'url';
 import { createHash } from 'crypto';
 import { execSync } from 'child_process';
-import { existsSync, readFileSync, writeFileSync } from 'fs';
+import { existsSync, readFileSync, rmSync, writeFileSync } from 'fs';
 import path from 'path';
 
 const projectRoot = fileURLToPath(new URL('.', import.meta.url));
@@ -146,6 +146,30 @@ function publicImageAssetVersionPlugin() {
   };
 }
 
+// BusinessAlex's map-icon and song-event assets are opt-in. Both the restricted
+// and the MIT fallback sets are committed under public/images/ and copied into
+// dist/ by Vite. After a build we prune whichever set is NOT active so the built
+// output only serves the assets it is licensed to serve. (Dev `vite serve` reads
+// public/ directly and never copies it, so nothing to prune there.)
+function assetSetPruningPlugin(useRestrictedAssets: boolean) {
+  const inactiveDirs = useRestrictedAssets
+    ? ['images/fallback']
+    : ['images/map_icons', 'images/song_events'];
+  return {
+    name: 'tlt-asset-set-pruning',
+    apply: 'build' as const,
+    writeBundle(options: { dir?: string }) {
+      const outputDirectory = path.resolve(projectRoot, options.dir ?? 'dist');
+      for (const relativeDir of inactiveDirs) {
+        const target = path.join(outputDirectory, relativeDir);
+        if (existsSync(target)) {
+          rmSync(target, { recursive: true, force: true });
+        }
+      }
+    },
+  };
+}
+
 function readGitMetadata(
   command: string,
   fallback: string,
@@ -188,71 +212,92 @@ const ootmmVersionTag =
     .map((tag) => tag.trim())
     .find((tag) => tag.length > 0) ?? 'unknown';
 
-export default defineConfig({
-  // Use relative asset paths so built files work from any subfolder.
-  base: './',
-  plugins: [publicImageAssetVersionPlugin(), vue()],
-  resolve: {
-    extensions: ['.ts', '.tsx', '.mjs', '.js', '.jsx', '.json'],
-    alias: {
-      '@': fileURLToPath(new URL('./src', import.meta.url)),
-      '@packs/ootmm': fileURLToPath(
-        new URL('./packs/ootmm/src', import.meta.url),
-      ),
-      '@ootmm/data': fileURLToPath(
-        new URL('./scripts/ootmm_data_bridge.ts', import.meta.url),
-      ),
-      '@ootmm/core/settings': fileURLToPath(
-        new URL('./OoTMM/packages/core/src/settings', import.meta.url),
-      ),
-      '@ootmm/core/items': fileURLToPath(
-        new URL('./OoTMM/packages/core/src/items', import.meta.url),
-      ),
-      '@ootmm/core/logic/entrance': fileURLToPath(
-        new URL(
-          './OoTMM/packages/logic/src/solver/entrances.ts',
-          import.meta.url,
+export default defineConfig(({ mode }) => {
+  // Reads shell env (process.env, e.g. `FLAG=TRUE npm run build`) and .env files
+  // (loadEnv with an empty prefix also picks up non-VITE_ vars, e.g. a gitignored
+  // .env.local). Only the exact value TRUE opts into the restricted assets.
+  const env = loadEnv(mode, projectRoot, '');
+  const useRestrictedAssets =
+    (process.env.I_HAVE_ASKED_BUSINESSALEX_FOR_PERMISSION_FOR_THE_IMAGE_FILES ??
+      env.I_HAVE_ASKED_BUSINESSALEX_FOR_PERMISSION_FOR_THE_IMAGE_FILES) ===
+    'TRUE';
+  console.log(
+    useRestrictedAssets
+      ? '[tlt] Map-icon/song-event assets: RESTRICTED set (BusinessAlex; permission asserted via I_HAVE_ASKED_BUSINESSALEX_FOR_PERMISSION_FOR_THE_IMAGE_FILES=TRUE).'
+      : '[tlt] Map-icon/song-event assets: MIT fallback set (default). Set I_HAVE_ASKED_BUSINESSALEX_FOR_PERMISSION_FOR_THE_IMAGE_FILES=TRUE only if you have permission to use the restricted assets.',
+  );
+
+  return {
+    // Use relative asset paths so built files work from any subfolder.
+    base: './',
+    plugins: [
+      publicImageAssetVersionPlugin(),
+      assetSetPruningPlugin(useRestrictedAssets),
+      vue(),
+    ],
+    resolve: {
+      extensions: ['.ts', '.tsx', '.mjs', '.js', '.jsx', '.json'],
+      alias: {
+        '@': fileURLToPath(new URL('./src', import.meta.url)),
+        '@packs/ootmm': fileURLToPath(
+          new URL('./packs/ootmm/src', import.meta.url),
         ),
-      ),
-      '@ootmm/core/logic/is-shuffled': fileURLToPath(
-        new URL('./OoTMM/packages/logic/src/helpers.ts', import.meta.url),
-      ),
-      '@ootmm/core/logic': fileURLToPath(
-        new URL('./OoTMM/packages/logic/src', import.meta.url),
-      ),
-      '@ootmm/core/monitor': fileURLToPath(
-        new URL('./OoTMM/packages/core/src/monitor.ts', import.meta.url),
-      ),
-      '@ootmm/core/names': fileURLToPath(
-        new URL(
-          './OoTMM/packages/generator/lib/combo/names.ts',
-          import.meta.url,
+        '@ootmm/data': fileURLToPath(
+          new URL('./scripts/ootmm_data_bridge.ts', import.meta.url),
         ),
-      ),
-      '@ootmm/core': ootmmCoreRoot,
-    },
-  },
-  define: {
-    'process.env.VERSION': JSON.stringify('dev'),
-    'process.env.__IS_BROWSER__': JSON.stringify(true),
-    __TLT_BUILD_COMMIT_DATE__: JSON.stringify(buildCommitDate),
-    __TLT_BUILD_COMMIT_HASH__: JSON.stringify(buildCommitHash),
-    __TLT_OOTMM_VERSION_TAG__: JSON.stringify(ootmmVersionTag),
-  },
-  optimizeDeps: {
-    include: ootmmCjsDeps,
-  },
-  server: {
-    proxy: {
-      '/coop/ws': {
-        target: 'ws://127.0.0.1:8765',
-        ws: true,
-        rewrite: () => '/',
-      },
-      '/coop/healthz': {
-        target: 'http://127.0.0.1:8765',
-        rewrite: () => '/healthz',
+        '@ootmm/core/settings': fileURLToPath(
+          new URL('./OoTMM/packages/core/src/settings', import.meta.url),
+        ),
+        '@ootmm/core/items': fileURLToPath(
+          new URL('./OoTMM/packages/core/src/items', import.meta.url),
+        ),
+        '@ootmm/core/logic/entrance': fileURLToPath(
+          new URL(
+            './OoTMM/packages/logic/src/solver/entrances.ts',
+            import.meta.url,
+          ),
+        ),
+        '@ootmm/core/logic/is-shuffled': fileURLToPath(
+          new URL('./OoTMM/packages/logic/src/helpers.ts', import.meta.url),
+        ),
+        '@ootmm/core/logic': fileURLToPath(
+          new URL('./OoTMM/packages/logic/src', import.meta.url),
+        ),
+        '@ootmm/core/monitor': fileURLToPath(
+          new URL('./OoTMM/packages/core/src/monitor.ts', import.meta.url),
+        ),
+        '@ootmm/core/names': fileURLToPath(
+          new URL(
+            './OoTMM/packages/generator/lib/combo/names.ts',
+            import.meta.url,
+          ),
+        ),
+        '@ootmm/core': ootmmCoreRoot,
       },
     },
-  },
+    define: {
+      'process.env.VERSION': JSON.stringify('dev'),
+      'process.env.__IS_BROWSER__': JSON.stringify(true),
+      __TLT_BUILD_COMMIT_DATE__: JSON.stringify(buildCommitDate),
+      __TLT_BUILD_COMMIT_HASH__: JSON.stringify(buildCommitHash),
+      __TLT_OOTMM_VERSION_TAG__: JSON.stringify(ootmmVersionTag),
+      __TLT_USE_RESTRICTED_ASSETS__: JSON.stringify(useRestrictedAssets),
+    },
+    optimizeDeps: {
+      include: ootmmCjsDeps,
+    },
+    server: {
+      proxy: {
+        '/coop/ws': {
+          target: 'ws://127.0.0.1:8765',
+          ws: true,
+          rewrite: () => '/',
+        },
+        '/coop/healthz': {
+          target: 'http://127.0.0.1:8765',
+          rewrite: () => '/healthz',
+        },
+      },
+    },
+  };
 });

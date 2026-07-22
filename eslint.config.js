@@ -20,6 +20,7 @@ export default [
         __TLT_BUILD_COMMIT_DATE__: 'readonly',
         __TLT_BUILD_COMMIT_HASH__: 'readonly',
         __TLT_OOTMM_VERSION_TAG__: 'readonly',
+        __TLT_USE_RESTRICTED_ASSETS__: 'readonly',
       },
     },
   },

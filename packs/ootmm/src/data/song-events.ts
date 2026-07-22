@@ -4,6 +4,15 @@
  */
 import { withBasePath } from '../utils/assetPath';
 
+// BusinessAlex's song-event icons are opt-in: the default build substitutes the
+// MIT-licensed fallback set. See LICENSE_ASSETS.md and the
+// I_HAVE_ASKED_BUSINESSALEX_FOR_PERMISSION_FOR_THE_IMAGE_FILES build flag.
+const SONG_EVENTS_DIR = __TLT_USE_RESTRICTED_ASSETS__
+  ? 'song_events'
+  : 'fallback/song_events';
+const songEventImage = (file: string): string =>
+  withBasePath(`images/${SONG_EVENTS_DIR}/${file}`);
+
 // Song Event IDs (matching OoTMM core definitions)
 export const SONG_EVENT_TEMPLE_OF_TIME = 0x00;
 export const SONG_EVENT_WINDMILL = 0x01;
@@ -182,102 +191,102 @@ export const SONG_CHOICES: SongChoice[] = [
   {
     value: SONG_ZELDA,
     label: "Zelda's Lullaby",
-    image: withBasePath('images/song_events/zeldas_lullaby.png'),
+    image: songEventImage('zeldas_lullaby.png'),
   },
   {
     value: SONG_EPONA,
     label: "Epona's Song",
-    image: withBasePath('images/song_events/eponas_song_oot.png'),
+    image: songEventImage('eponas_song_oot.png'),
   },
   {
     value: SONG_SARIA,
     label: "Saria's Song",
-    image: withBasePath('images/song_events/sarias_song.png'),
+    image: songEventImage('sarias_song.png'),
   },
   {
     value: SONG_STORMS,
     label: 'Song of Storms',
-    image: withBasePath('images/song_events/song_of_storms_oot.png'),
+    image: songEventImage('song_of_storms_oot.png'),
   },
   {
     value: SONG_SUN,
     label: "Sun's Song",
-    image: withBasePath('images/song_events/suns_song.png'),
+    image: songEventImage('suns_song.png'),
   },
   {
     value: SONG_TIME,
     label: 'Song of Time',
-    image: withBasePath('images/song_events/song_of_time_oot.png'),
+    image: songEventImage('song_of_time_oot.png'),
   },
   {
     value: SONG_MINUET,
     label: 'Minuet of Forest',
-    image: withBasePath('images/song_events/minuet_of_forest.png'),
+    image: songEventImage('minuet_of_forest.png'),
   },
   {
     value: SONG_BOLERO,
     label: 'Bolero of Fire',
-    image: withBasePath('images/song_events/bolero_of_fire.png'),
+    image: songEventImage('bolero_of_fire.png'),
   },
   {
     value: SONG_SERENADE,
     label: 'Serenade of Water',
-    image: withBasePath('images/song_events/serenade_of_water.png'),
+    image: songEventImage('serenade_of_water.png'),
   },
   {
     value: SONG_REQUIEM,
     label: 'Requiem of Spirit',
-    image: withBasePath('images/song_events/requiem_of_spirit.png'),
+    image: songEventImage('requiem_of_spirit.png'),
   },
   {
     value: SONG_NOCTURNE,
     label: 'Nocturne of Shadow',
-    image: withBasePath('images/song_events/nocturne_of_shadow.png'),
+    image: songEventImage('nocturne_of_shadow.png'),
   },
   {
     value: SONG_PRELUDE,
     label: 'Prelude of Light',
-    image: withBasePath('images/song_events/prelude_of_light.png'),
+    image: songEventImage('prelude_of_light.png'),
   },
   {
     value: SONG_HEALING,
     label: 'Song of Healing',
-    image: withBasePath('images/song_events/song_of_healing.png'),
+    image: songEventImage('song_of_healing.png'),
   },
   {
     value: SONG_SOARING,
     label: 'Song of Soaring',
-    image: withBasePath('images/song_events/song_of_soaring.png'),
+    image: songEventImage('song_of_soaring.png'),
   },
   {
     value: SONG_SONATA,
     label: 'Sonata of Awakening',
-    image: withBasePath('images/song_events/sonata_of_awakening.png'),
+    image: songEventImage('sonata_of_awakening.png'),
   },
   {
     value: SONG_GORON_LULLABY,
     label: 'Goron Lullaby',
-    image: withBasePath('images/song_events/goron_lullaby.png'),
+    image: songEventImage('goron_lullaby.png'),
   },
   {
     value: SONG_GORON_LULLABY_INTRO,
     label: 'Goron Lullaby (Intro)',
-    image: withBasePath('images/song_events/goron_lullaby.png'),
+    image: songEventImage('goron_lullaby.png'),
   },
   {
     value: SONG_NEW_WAVE,
     label: 'New Wave Bossa Nova',
-    image: withBasePath('images/song_events/new_wave_bossa_nova.png'),
+    image: songEventImage('new_wave_bossa_nova.png'),
   },
   {
     value: SONG_ELEGY,
     label: 'Elegy of Emptiness',
-    image: withBasePath('images/song_events/elegy_of_emptiness.png'),
+    image: songEventImage('elegy_of_emptiness.png'),
   },
   {
     value: SONG_OATH,
     label: 'Oath to Order',
-    image: withBasePath('images/song_events/oath_to_order.png'),
+    image: songEventImage('oath_to_order.png'),
   },
 ];
 
