@@ -1,15 +1,17 @@
 #!/usr/bin/env python3
 """
-Request a complete save dump from the active autotracker WebSocket server
-and save it to a file.
+Request a complete save RAM dump from the active autotracker WebSocket server.
 
-Usage: python3 scripts/autotracker/request_full_save_dump.py [output.json]
+Usage: python3 scripts/autotracker/request_full_save_dump.py [output.json] [--live-addrs PATH]
 
-Connects to the autotracker at ws://127.0.0.1:17026/, requests ALL save
-context chunks (OoT + MM full save contexts, combo config, shared saves,
-playstate data), and writes whatever the server sends into a JSON file.
+Dumps the full save context, combo context, entire payload region, and
+playstate for both OoT and MM in one shot. Only three version-dependent
+base addresses are needed: saveCtx, comboCtx, and payload. All three come
+from live_addrs.json (auto-discovered). Sizes use the generous upper bounds
+from ootmm/addrs.go so the dump always covers the complete region.
 """
 
+import argparse
 import asyncio
 import json
 import os
@@ -23,148 +25,188 @@ except ImportError:
     sys.exit(1)
 
 
-# ── Addresses from live_addrs.json (generated at patch time) ─────────
-ADDR_OOT_SAVE_CTX = 0x8011A5D0
-ADDR_MM_SAVE_CTX = 0x801EF670
-ADDR_OOT_COMBO_CTX = 0x80006584
-ADDR_MM_COMBO_CTX = 0x80098280
-ADDR_OOT_COMBO_CONFIG_LIVE = 0x804416C8
-ADDR_MM_COMBO_CONFIG_LIVE = 0x80770B18
-ADDR_OOT_SILVER_RUPEE_LIVE = 0x8042EC10
-ADDR_OOT_MAX_KEYS_LIVE = 0x80441C78
+# ═══════════════════════════════════════════════════════════════════════
+#  Fixed sizes (from ootmm/addrs.go – not version-dependent)
+# ═══════════════════════════════════════════════════════════════════════
 
-# Fallback addresses for dynamically-discovered areas
-ADDR_OOT_FOREIGN_MM_SAVE_LIVE = 0x80443970
-ADDR_OOT_SHARED_CUSTOM_SAVE_LIVE = 0x80443100
-ADDR_MM_FOREIGN_OOT_SAVE_LIVE = 0x807729F0
-ADDR_MM_SHARED_CUSTOM_SAVE_LIVE = 0x80772180
+OOT_SAVE_CTX_SIZE  = 0x1450
+MM_SAVE_CTX_SIZE   = 0x48D0
+COMBO_CTX_SIZE     = 0x20
+OOT_PAYLOAD_SIZE   = 0x80000   # generous upper bound
+MM_PAYLOAD_SIZE    = 0x50000   # generous upper bound
 
-# ── Save area sizes from ootmm/addrs.go and rawFrameParser.ts ────────
-OOT_SAVE_CTX_SIZE = 0x1450       # gSaveContext full size
-OOT_SAVE_USED_SIZE = 0x1354      # Save portion
-MM_SAVE_CTX_SIZE = 0x48D0        # gMmSave full size
-MM_SAVE_USED_SIZE = 0x3CA0       # Save portion
-COMBO_CTX_SIZE = 0x20
-COMBO_CONFIG_LIVE_SIZE = 0x2DC
-SILVER_RUPEE_DATA_SIZE = 18 * 4  # 18 sets × uint32
-MAX_KEYS_BLOCK_SIZE = 17 + 4     # 17 scenes + header
-SHARED_CUSTOM_SAVE_SIZE = 0x870
-
-# Playstate sizes from raw_frame.go
-OOT_PLAYSTATE_CORE_SIZE = 0x1CA8
-OOT_PLAYSTATE_TAIL_SIZE = 0x12D
-MM_PLAYSTATE_CORE_SIZE = 0x1DD4
-MM_PLAYSTATE_TAIL_SIZE = 0x164
-
-# MM cycle flags: 120 scenes × 0x14 stride
-MM_CYCLE_FLAGS_OFFSET = 0x3F68
-MM_CYCLE_FLAGS_SIZE = 120 * 0x14
-
-# Playstate base addresses
-ADDR_OOT_PLAYSTATE = 0x801C84A0
-ADDR_MM_PLAYSTATE = 0x803E6B20
-
-# ── Chunk specs ──────────────────────────────────────────────────────
-OOT_CHUNKS = [
-    {"name": "oot_save_ctx", "address": ADDR_OOT_SAVE_CTX, "length": OOT_SAVE_CTX_SIZE},
-    {"name": "oot_combo_ctx", "address": ADDR_OOT_COMBO_CTX, "length": COMBO_CTX_SIZE},
-    {"name": "oot_foreign_mm_save", "address": ADDR_OOT_FOREIGN_MM_SAVE_LIVE, "length": MM_SAVE_CTX_SIZE},
-    {"name": "oot_shared_custom_save", "address": ADDR_OOT_SHARED_CUSTOM_SAVE_LIVE, "length": SHARED_CUSTOM_SAVE_SIZE},
-    {"name": "oot_runtime_combo_config", "address": ADDR_OOT_COMBO_CONFIG_LIVE, "length": COMBO_CONFIG_LIVE_SIZE},
-    {"name": "oot_runtime_silver_rupee_data", "address": ADDR_OOT_SILVER_RUPEE_LIVE, "length": SILVER_RUPEE_DATA_SIZE},
-    {"name": "oot_runtime_max_keys", "address": ADDR_OOT_MAX_KEYS_LIVE, "length": MAX_KEYS_BLOCK_SIZE},
-    {"name": "oot_playstate_core", "address": ADDR_OOT_PLAYSTATE, "length": OOT_PLAYSTATE_CORE_SIZE},
-    {"name": "oot_playstate_tail", "address": ADDR_OOT_PLAYSTATE + OOT_PLAYSTATE_CORE_SIZE, "length": OOT_PLAYSTATE_TAIL_SIZE},
-]
-
-MM_CHUNKS = [
-    {"name": "mm_save_ctx", "address": ADDR_MM_SAVE_CTX, "length": MM_SAVE_CTX_SIZE},
-    {"name": "mm_combo_ctx", "address": ADDR_MM_COMBO_CTX, "length": COMBO_CTX_SIZE},
-    {"name": "mm_foreign_oot_save", "address": ADDR_MM_FOREIGN_OOT_SAVE_LIVE, "length": OOT_SAVE_CTX_SIZE},
-    {"name": "mm_shared_custom_save", "address": ADDR_MM_SHARED_CUSTOM_SAVE_LIVE, "length": SHARED_CUSTOM_SAVE_SIZE},
-    {"name": "mm_runtime_combo_config", "address": ADDR_MM_COMBO_CONFIG_LIVE, "length": COMBO_CONFIG_LIVE_SIZE},
-    {"name": "mm_cycle_flags", "address": ADDR_MM_SAVE_CTX + MM_CYCLE_FLAGS_OFFSET, "length": MM_CYCLE_FLAGS_SIZE},
-    {"name": "mm_playstate_core", "address": ADDR_MM_PLAYSTATE, "length": MM_PLAYSTATE_CORE_SIZE},
-    {"name": "mm_playstate_tail", "address": ADDR_MM_PLAYSTATE + MM_PLAYSTATE_CORE_SIZE, "length": MM_PLAYSTATE_TAIL_SIZE},
-]
+# Playstate (fixed ROM addresses, not version-dependent)
+OOT_PLAYSTATE_ADDR = 0x801C84A0
+OOT_PLAYSTATE_SIZE = 0x1CA8 + 0x12D   # core + tail
+MM_PLAYSTATE_ADDR  = 0x803E6B20
+MM_PLAYSTATE_SIZE  = 0x1DD4 + 0x164   # core + tail
 
 
-def build_handshake():
-    return {
-        "type": "handshake",
-        "features": ["raw"],
-        "memoryAreas": {
-            "oot": OOT_CHUNKS,
-            "mm": MM_CHUNKS,
-        },
-    }
+# ═══════════════════════════════════════════════════════════════════════
+#  live_addrs.json discovery & parsing
+# ═══════════════════════════════════════════════════════════════════════
 
+def find_live_addrs_json(explicit_path: str | None = None) -> str:
+    if explicit_path:
+        if not os.path.isfile(explicit_path):
+            print(f"Error: --live-addrs file not found: {explicit_path}")
+            sys.exit(1)
+        return os.path.abspath(explicit_path)
+
+    script_dir = os.path.dirname(os.path.abspath(__file__))
+    repo_root = os.path.normpath(os.path.join(script_dir, "..", ".."))
+    data_dir = os.path.join(repo_root, "packs", "ootmm", "src", "autotracker", "data")
+
+    if not os.path.isdir(data_dir):
+        print(f"Error: autotracker data directory not found at {data_dir}")
+        print("Specify path manually with --live-addrs")
+        sys.exit(1)
+
+    candidates = []
+    for entry in os.listdir(data_dir):
+        candidate = os.path.join(data_dir, entry, "live_addrs.json")
+        if os.path.isfile(candidate):
+            candidates.append((entry, candidate))
+
+    if not candidates:
+        print(f"Error: no live_addrs.json found under {data_dir}")
+        sys.exit(1)
+
+    candidates.sort(key=lambda x: x[0])
+    version, path = candidates[-1]
+    print(f"Auto-discovered live_addrs.json: {version} ({path})")
+    return path
+
+
+def parse_hex_addr(raw, label: str) -> int:
+    if not raw or not isinstance(raw, str):
+        print(f"Error: {label} is missing in live_addrs.json")
+        sys.exit(1)
+    raw = raw.strip()
+    try:
+        return int(raw, 16)
+    except ValueError:
+        print(f"Error: invalid hex in {label}: {raw!r}")
+        sys.exit(1)
+
+
+def load_base_addrs(path: str) -> dict:
+    """Extract only the three essential base addresses per game."""
+    with open(path) as f:
+        data = json.load(f)
+
+    addrs = {}
+    for game in ("oot", "mm"):
+        g = data[game]
+        addrs[f"{game}_saveCtx"] = parse_hex_addr(g["saveCtx"], f"{game}.saveCtx")
+        addrs[f"{game}_comboCtx"] = parse_hex_addr(g["comboCtx"], f"{game}.comboCtx")
+        addrs[f"{game}_payload"] = parse_hex_addr(g["payload"], f"{game}.payload")
+    return addrs
+
+
+# ═══════════════════════════════════════════════════════════════════════
+#  Chunk builder – just four big blocks per game
+# ═══════════════════════════════════════════════════════════════════════
+
+def build_chunks(addrs: dict) -> tuple[list[dict], list[dict]]:
+    oot = [
+        {"name": "oot_save_ctx",    "address": addrs["oot_saveCtx"],  "length": OOT_SAVE_CTX_SIZE},
+        {"name": "oot_combo_ctx",   "address": addrs["oot_comboCtx"], "length": COMBO_CTX_SIZE},
+        {"name": "oot_payload",     "address": addrs["oot_payload"],  "length": OOT_PAYLOAD_SIZE},
+        {"name": "oot_playstate",   "address": OOT_PLAYSTATE_ADDR,    "length": OOT_PLAYSTATE_SIZE},
+    ]
+    mm = [
+        {"name": "mm_save_ctx",     "address": addrs["mm_saveCtx"],   "length": MM_SAVE_CTX_SIZE},
+        {"name": "mm_combo_ctx",    "address": addrs["mm_comboCtx"],  "length": COMBO_CTX_SIZE},
+        {"name": "mm_payload",      "address": addrs["mm_payload"],   "length": MM_PAYLOAD_SIZE},
+        {"name": "mm_playstate",    "address": MM_PLAYSTATE_ADDR,     "length": MM_PLAYSTATE_SIZE},
+    ]
+    return oot, mm
+
+
+# ═══════════════════════════════════════════════════════════════════════
+#  Main
+# ═══════════════════════════════════════════════════════════════════════
 
 async def main():
-    output_path = sys.argv[1] if len(sys.argv) > 1 else "full-save-dump.json"
-    output_path = os.path.abspath(output_path)
+    parser = argparse.ArgumentParser(
+        description="Dump complete save RAM from the autotracker WebSocket server."
+    )
+    parser.add_argument(
+        "output", nargs="?", default="full-save-dump.json",
+        help="Output JSON file path (default: full-save-dump.json)",
+    )
+    parser.add_argument(
+        "--live-addrs", default=None,
+        help="Path to live_addrs.json (auto-discovered if omitted)",
+    )
+    parser.add_argument(
+        "--duration", type=float, default=5.0,
+        help="Capture window in seconds (default: 5.0)",
+    )
+    args = parser.parse_args()
 
-    print(f"Connecting to autotracker at ws://127.0.0.1:17026/ ...")
+    output_path = os.path.abspath(args.output)
+    live_addrs_path = find_live_addrs_json(args.live_addrs)
+    print(f"Loading addresses from: {live_addrs_path}")
+    addrs = load_base_addrs(live_addrs_path)
+    oot_chunks, mm_chunks = build_chunks(addrs)
 
+    print("\nChunks to request:")
+    for label, chunks in [("OoT", oot_chunks), ("MM", mm_chunks)]:
+        for c in chunks:
+            print(f"  {c['name']:20s}  0x{c['address']:08X}  ({c['length']:#x} bytes = {c['length']:,} bytes)")
+
+    print(f"\nConnecting to ws://127.0.0.1:17026/ ...")
     messages = []
-    capture_duration = 5.0  # collect messages for this many seconds
 
     try:
         async with websockets.connect(
             "ws://127.0.0.1:17026/",
             extra_headers={"Origin": "http://localhost:5173"},
-            max_size=50 * 1024 * 1024,  # 50 MB max message size
+            max_size=50 * 1024 * 1024,
         ) as ws:
-            print("WebSocket connected, sending handshake ...")
-
-            handshake = build_handshake()
+            handshake = {
+                "type": "handshake",
+                "features": ["raw"],
+                "memoryAreas": {"oot": oot_chunks, "mm": mm_chunks},
+            }
             await ws.send(json.dumps(handshake))
+            print("Handshake sent, waiting for data ...")
 
-            deadline = time.monotonic() + capture_duration
-
+            deadline = time.monotonic() + args.duration
             while True:
                 remaining = deadline - time.monotonic()
                 if remaining <= 0:
-                    print(f"\nCapture window ({capture_duration}s) elapsed.")
+                    print(f"\nCapture window ({args.duration}s) elapsed.")
                     break
 
                 try:
                     raw = await asyncio.wait_for(ws.recv(), timeout=remaining)
                 except asyncio.TimeoutError:
-                    print("\nTimeout reached.")
                     break
 
                 try:
                     data = json.loads(raw)
-                except json.JSONDecodeError as e:
-                    print(f"Failed to parse message: {e}")
+                except json.JSONDecodeError:
                     continue
 
-                msg_type = data.get("type")
-
-                if msg_type == "handshAck":
+                t = data.get("type")
+                if t == "handshAck":
                     print(f"Handshake acknowledged: v{data.get('version')} ({data.get('name')})")
-                    continue
-
-                if msg_type == "raw":
+                elif t == "raw":
                     n = data.get("sequence", "?")
                     game = data.get("game", "?")
                     si = data.get("saveIndex", "?")
                     nc = len(data.get("chunks", []))
-                    print(f"  raw[{n}]: game={game}, saveIndex={si}, chunks={nc}")
+                    total = sum(c.get("length", 0) for c in data.get("chunks", []))
+                    print(f"  raw[{n}]: game={game}, saveIndex={si}, chunks={nc}, total={total:,} bytes")
                     messages.append(data)
-                    continue
-
-                if msg_type == "error":
+                elif t == "error":
                     print(f"Server error: {data.get('message')}")
-                    continue
-
-                print(f"Unknown message type: {msg_type}")
 
     except websockets.exceptions.ConnectionClosed as e:
-        if messages:
-            print(f"WebSocket closed after receiving {len(messages)} message(s)")
-        else:
+        if not messages:
             print(f"WebSocket closed unexpectedly: {e}")
             sys.exit(1)
     except (OSError, websockets.exceptions.InvalidURI) as e:
@@ -176,27 +218,25 @@ async def main():
         print("No raw messages received.")
         sys.exit(1)
 
-    # Keep only the last message per game (most recent full snapshot)
-    latest_by_game = {}
+    # Keep only the last message per game
+    latest = {}
     for msg in messages:
-        latest_by_game[msg["game"]] = msg
+        latest[msg["game"]] = msg
 
     dump = {
         "capturedAt": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
         "totalMessagesCaptured": len(messages),
-        "messages": list(latest_by_game.values()),
+        "messages": list(latest.values()),
     }
 
     with open(output_path, "w") as f:
         json.dump(dump, f, indent=2)
 
-    print(f"\nSaved {len(latest_by_game)} snapshot(s) ({len(messages)} total messages) to {output_path}")
-
-    # Print summary
-    for msg in latest_by_game.values():
-        print(f"\nGame: {msg['game']} (saveIndex={msg.get('saveIndex')})")
-        for chunk in msg.get("chunks", []):
-            print(f"  {chunk['name']}: {chunk['length']} bytes at 0x{chunk['address']:08X}")
+    print(f"\nSaved {len(latest)} snapshot(s) ({len(messages)} total messages) to {output_path}")
+    for msg in latest.values():
+        print(f"  {msg['game']}: saveIndex={msg.get('saveIndex')}")
+        for c in msg.get("chunks", []):
+            print(f"    {c['name']:20s}  {c['length']:,} bytes at 0x{c['address']:08X}")
 
 
 if __name__ == "__main__":
