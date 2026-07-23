@@ -14,13 +14,17 @@
     "comboConfigLive": "0x80449ad8",
     "runtimeSilverRupeeDataLive": "0x80434c0c",
     "runtimeMaxKeysLive": "0x8044a098",
+    "sharedCustomSaveLive": "0x8044b520",
+    "foreignSaveLive": "0x8044bdb0",
     "derivation": {
       "comboCtx": "source-define",
       "saveCtx": "source-linker",
       "payload": "patchfile-vram",
       "comboConfigLive": "patchfile-code-scan",
       "runtimeSilverRupeeDataLive": "patchfile-payload-scan",
-      "runtimeMaxKeysLive": "patchfile-code-scan+offset"
+      "runtimeMaxKeysLive": "patchfile-code-scan+offset",
+      "sharedCustomSaveLive": "web-payload-code-scan",
+      "foreignSaveLive": "web-payload-code-scan"
     },
     "missingPatchfileSymbols": ["gMmSave", "gSharedCustomSave"]
   },
@@ -29,16 +33,27 @@
     "saveCtx": "0x801ef670",
     "payload": "0x80720000",
     "comboConfigLive": "0x8076a5c8",
+    "sharedCustomSaveLive": "0x8076bc40",
+    "foreignSaveLive": "0x8076c4d0",
     "derivation": {
       "comboCtx": "source-define",
       "saveCtx": "source-linker",
       "payload": "patchfile-vram",
-      "comboConfigLive": "patchfile-code-scan"
+      "comboConfigLive": "patchfile-code-scan",
+      "sharedCustomSaveLive": "web-payload-code-scan",
+      "foreignSaveLive": "web-payload-code-scan"
     },
     "missingPatchfileSymbols": ["gOotSave", "gSharedCustomSave"]
   },
   "notDerivableWithoutLinking": {
-    "oot": ["foreignSaveLive", "sharedCustomSaveLive"],
-    "mm": ["foreignSaveLive", "sharedCustomSaveLive"]
+    "oot": [],
+    "mm": []
+  },
+  "savesDerivedFrom": {
+    "method": "web-payload-code-scan",
+    "source": "https://static.ootmm.com/assets/data-n-2aKpeS.zip (v31.1)",
+    "tool": "scripts/autotracker/derive_web_symbols.py",
+    "doc": "scripts/autotracker/DERIVING_SAVE_SYMBOLS.md",
+    "note": "gMmSave/gOotSave/gSharedCustomSave are absent from the patchfile and from the site's cosmetic symbol table; addresses were recovered by scanning the stripped payload code for the bzero/memcpy save-size signatures. Cross-checked: foreign == shared + detected shared size, and zero-filled .bss."
   }
 }
