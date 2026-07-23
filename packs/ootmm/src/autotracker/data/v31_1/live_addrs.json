@@ -26,7 +26,7 @@
       "sharedCustomSaveLive": "web-payload-code-scan",
       "foreignSaveLive": "web-payload-code-scan"
     },
-    "missingPatchfileSymbols": ["gMmSave", "gSharedCustomSave"]
+    "missingPatchfileSymbols": []
   },
   "mm": {
     "comboCtx": "0x80098280",
