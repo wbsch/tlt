@@ -63,4 +63,34 @@ describe('autotracker merge state', () => {
       UNKNOWN_ITEM: 4,
     });
   });
+
+  it('does not decrement derived items when they disappear from the remote snapshot', () => {
+    // Simulates a derived item (e.g. SHARED_BOMBCHU_BAG) that transiently
+    // disappears from the next remote state due to a signal-item glitch.
+    const merged = mergeAutotrackerInventoryUpdate({
+      currentInventory: new Map([['SHARED_BOMBCHU_BAG', 1]]),
+      previousRemoteInventory: { SHARED_BOMBCHU_BAG: 1 },
+      nextRemoteInventory: {
+        /* bombchu bag glitched out */
+      },
+      itemMaxCounts: new Map(),
+      derivedItemIds: new Set(['SHARED_BOMBCHU_BAG']),
+    });
+
+    // The derived item must NOT be removed from the tracker.
+    expect(Object.fromEntries(merged)).toEqual({ SHARED_BOMBCHU_BAG: 1 });
+  });
+
+  it('still applies positive deltas for derived items present in both snapshots', () => {
+    const merged = mergeAutotrackerInventoryUpdate({
+      currentInventory: new Map([['SHARED_BOMBCHU_BAG', 1]]),
+      previousRemoteInventory: { SHARED_BOMBCHU_BAG: 0 },
+      nextRemoteInventory: { SHARED_BOMBCHU_BAG: 1 },
+      itemMaxCounts: new Map([['SHARED_BOMBCHU_BAG', 1]]),
+      derivedItemIds: new Set(['SHARED_BOMBCHU_BAG']),
+    });
+
+    // Derived item should be added (delta +1, clamped to max 1).
+    expect(Object.fromEntries(merged)).toEqual({ SHARED_BOMBCHU_BAG: 1 });
+  });
 });

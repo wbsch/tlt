@@ -105,6 +105,7 @@ import {
   mergeAutotrackerCollectedLocationsUpdate,
   mergeAutotrackerInventoryUpdate,
 } from '../autotracker/mergeState';
+import { DERIVED_AUTOTRACKER_ITEM_IDS } from '../autotracker/autotrackerMapping';
 
 const props = defineProps<{
   tracker: TrackerPack;
@@ -1398,6 +1399,21 @@ function resolveAutotrackerInventoryUpdate(
 ): Map<string, number> | null {
   const previousRemoteInventory = autotrackerLastRemoteInventory;
   const nextRemoteInventory = { ...remoteInventory };
+
+  // Heal: derived items (bombchu bags, key rings, skeleton keys, etc.)
+  // represent permanent unlocks.  When one is present in the tracker but
+  // glitched out of the current remote snapshot (e.g. due to a transient
+  // shared-save parse failure), carry it forward into the stored snapshot
+  // so the next frame doesn't compute a spurious +1 delta.
+  if (previousRemoteInventory) {
+    const currentInv = inventory.value;
+    for (const itemId of DERIVED_AUTOTRACKER_ITEM_IDS) {
+      if (currentInv.get(itemId) && !(itemId in nextRemoteInventory)) {
+        nextRemoteInventory[itemId] = currentInv.get(itemId)!;
+      }
+    }
+  }
+
   autotrackerLastRemoteInventory = nextRemoteInventory;
 
   if (!previousRemoteInventory) {
@@ -1421,6 +1437,7 @@ function resolveAutotrackerInventoryUpdate(
       nextRemoteInventory,
       itemMaxCounts: itemMaxCounts.value,
       excludedItemIds: DUNGEON_REWARD_STATE_ITEM_IDS,
+      derivedItemIds: DERIVED_AUTOTRACKER_ITEM_IDS,
     }),
   );
 }

@@ -540,6 +540,31 @@ const MM_BOMBCHU_BAG_IDS = [
 
 const SHARED_BOMBCHU_BAG_IDS = ['SHARED_BOMBCHU_BAG'];
 
+/**
+ * Set of all item IDs that are derived/synthesized from other items rather
+ * than read directly from game memory.  These represent permanent unlocks
+ * that only ever increase — they should never be decremented by a
+ * delta-based merge, because signal-item glitches can cause them to
+ * transiently disappear from a single frame's remote snapshot.
+ */
+export const DERIVED_AUTOTRACKER_ITEM_IDS: ReadonlySet<string> = new Set([
+  ...OOT_KEY_GROUPS.map((g) => g.keyRingId),
+  ...MM_KEY_GROUPS.map((g) => g.keyRingId),
+  'OOT_KEY_RING',
+  'MM_KEY_RING',
+  'OOT_SKELETON_KEY',
+  'MM_SKELETON_KEY',
+  'SHARED_SKELETON_KEY',
+  'OOT_PLATINUM_TOKEN',
+  'MM_PLATINUM_TOKEN',
+  'SHARED_PLATINUM_TOKEN',
+  'OOT_RUPEE_MAGICAL',
+  'MM_TRANSCENDENT_FAIRY',
+  ...OOT_BOMBCHU_BAG_IDS,
+  ...MM_BOMBCHU_BAG_IDS,
+  ...SHARED_BOMBCHU_BAG_IDS,
+]);
+
 function deriveAutotrackerOnlyItems(
   state: Record<string, number>,
   availableItemIds: Set<string>,

@@ -50,6 +50,13 @@ interface MergeAutotrackerInventoryUpdateOptions {
   nextRemoteInventory: Record<string, number>;
   itemMaxCounts: ReadonlyMap<string, number>;
   excludedItemIds?: ReadonlySet<string>;
+  /**
+   * Items that represent permanent unlocks synthesized from volatile signal
+   * items (e.g. bombchu bags, key rings).  When one of these items is absent
+   * from `nextRemoteInventory` it is treated as a transient glitch rather than
+   * a genuine loss — no negative delta is applied.
+   */
+  derivedItemIds?: ReadonlySet<string>;
 }
 
 export function mergeAutotrackerInventoryUpdate({
@@ -58,6 +65,7 @@ export function mergeAutotrackerInventoryUpdate({
   nextRemoteInventory,
   itemMaxCounts,
   excludedItemIds,
+  derivedItemIds,
 }: MergeAutotrackerInventoryUpdateOptions): Map<string, number> {
   const nextInventory = new Map<string, number>();
   for (const [itemId, count] of currentInventory) {
@@ -75,6 +83,17 @@ export function mergeAutotrackerInventoryUpdate({
 
   for (const itemId of itemIds) {
     if (excludedItemIds?.has(itemId)) {
+      continue;
+    }
+
+    // Derived items (bombchu bags, key rings, skeleton keys, etc.) are
+    // synthesized from volatile signal items.  When a signal item
+    // transiently reads as 0 (shared-save parse failure, scene transition),
+    // the derived item disappears from the remote snapshot.  Treating that
+    // as a genuine loss would incorrectly un-mark the item in the tracker.
+    // Skip the delta entirely when a derived item is absent from the
+    // incoming snapshot — permanent unlocks should never be decremented.
+    if (derivedItemIds?.has(itemId) && !(itemId in nextRemoteInventory)) {
       continue;
     }
 
