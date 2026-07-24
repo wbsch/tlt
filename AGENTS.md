@@ -6,6 +6,8 @@ Try to find problems, fix them, then make sure they are actually fixed in the br
 
 The root "OoTMM" folder is the OoTMM randomizer. NEVER change code in there. Treat it like an external library. It is its own external git repository.
 
+NEVER build OoTMM — no ROM build, no payload/CMake build, no toolchain setup. The published web build on ootmm.com ships everything we need. If a task looks like it needs a local OoTMM build, it doesn't: find the web-artifact route or stop and ask.
+
 ### Common operations
 
 If you changed code that pertains to the core map tracker logic or its usage of the OoTMM randomizer's logic, test reachability of checks: `node --import tsx scripts/pathfinder-tests/reachability_full_inventory.ts`
@@ -13,7 +15,7 @@ If you changed code that pertains to the core map tracker logic or its usage of 
 
 Feel free to temporarily edit `scripts/pathfinder-tests/reachability_full_inventory.ts` in order to test other things, or use it as a blueprint for a similar file.
 
-When bumping the tracked OoTMM version (adding `packs/ootmm/src/autotracker/data/vXX_Y/`), some addresses in `live_addrs.json` — `foreignSaveLive` / `sharedCustomSaveLive` — are NOT in the patchfile and must be derived from the payload. Follow `scripts/autotracker/DERIVING_SAVE_SYMBOLS.md` (it drives `scripts/autotracker/derive_web_symbols.py`, which needs no OoTMM build).
+When bumping the tracked OoTMM version (adding `packs/ootmm/src/autotracker/data/vXX_Y/`), some addresses in `live_addrs.json` — `foreignSaveLive` / `sharedCustomSaveLive` — are NOT in the patchfile and must be derived from the payload. Follow `scripts/autotracker/DERIVING_SAVE_SYMBOLS.md` (it drives `scripts/autotracker/derive_web_symbols.py`, which works off the ootmm.com web build — no OoTMM build, ever).
 
 If you have changed relevant files, make sure the build still runs successfully before you're done: Run `npm run build`
 

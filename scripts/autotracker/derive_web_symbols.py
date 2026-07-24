@@ -9,9 +9,10 @@ in `DERIVING_SAVE_SYMBOLS.md` -- read that first if you're bumping a version.
 
 WHY THIS EXISTS
 ---------------
-`find_missing_symbols.py` (its sibling) reads the UNSTRIPPED payload ELFs from a
-local CMake build and pulls the symbol addresses out of the ELF symbol table.
-That is the gold-standard path, but it needs you to build OoTMM.
+This is THE supported way to get these four addresses. We do not build OoTMM --
+no ROM, no payloads, no CMake targets -- so the sibling `find_missing_symbols.py`
+(which parses UNSTRIPPED payload ELFs from a local build) is not part of the
+workflow; it only helps if such ELFs happen to already exist.
 
 The public website does NOT publish those ELFs. What it *does* publish is enough
 to recover the same four addresses:

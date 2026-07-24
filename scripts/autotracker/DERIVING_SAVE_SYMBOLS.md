@@ -15,20 +15,26 @@ the OoTMM `.ootmm` patchfile does **not** contain:
 they lag several versions). Wrong addresses = the tracker silently reads garbage
 for foreign-game/shared state, so get these right on every OoTMM version bump.
 
+## Ground rule: never build OoTMM
+
+**Do not build OoTMM to get these addresses — not the ROM, not the payloads, not
+the CMake targets. The published web build is enough.** Everything below works
+off the artifacts `ootmm.com` already ships. If a step seems to call for a local
+build, that step is wrong; stop and say so rather than kicking off a toolchain.
+
 ## Why they're "missing"
 
 They live in `.bss` (zero-initialised), so they have no data signature, and they
 are **not** exported by the patchfile nor by the website's cosmetic symbol table.
-Two ways to recover them:
 
-1. **Gold standard — local build.** `find_missing_symbols.py` reads the
-   UNSTRIPPED payload ELFs (`oot`/`mm` CMake targets, built with
-   `-Wl,--emit-relocs`) and pulls the addresses straight from the ELF symbol
-   table. Needs a full OoTMM build (`./OoTMM` at the right tag + toolchain).
+So we recover them from the live website: `derive_web_symbols.py` (this dir)
+pulls the _stripped_ payload the web generator ships and scans the payload code
+for the addresses. This is **the** method — see the workflow below.
 
-2. **No build — from the live website.** `derive_web_symbols.py` (this dir).
-   Pulls the _stripped_ payload the web generator ships and recovers the
-   addresses by scanning the payload code. Use this when you don't want to build.
+> Sibling script `find_missing_symbols.py` parses the UNSTRIPPED payload ELFs
+> (`oot`/`mm` CMake targets built with `-Wl,--emit-relocs`) instead. It is kept
+> only for the case where such ELFs already exist on disk — it is **not** a
+> reason to produce them. Building OoTMM to feed it is out of scope.
 
 ## How the website ships the data
 
@@ -99,8 +105,17 @@ python3 scripts/autotracker/derive_web_symbols.py --oot a.bin --mm b.bin
 ```
 
 **Always confirm before trusting the output:** all `check:`/`anchor:` lines must
-be `True`/`OK`. If a check fails, do **not** `--write` (the tool refuses anyway)
-— fall back to the gold-standard local ELF build.
+be `True`/`OK`. If a check fails, do **not** `--write` (the tool refuses anyway).
+When that happens, in order:
+
+1. Confirm you got the right zip for the right version (auto-discovery can grab a
+   stale cache — delete the cached zip and retry, or pull the zip yourself from
+   the browser Network tab and pass `--zip`).
+2. Read which check failed. A broken `anchor:` means the disassembly/version is
+   off; a broken adjacency `check:` means OoTMM likely moved the save layout, and
+   the scan heuristics in `derive_web_symbols.py` need updating.
+3. Leave `live_addrs.json` alone and report the failure. Do **not** fall back to
+   building OoTMM — hand-verifying the payload beats a local build.
 
 ## Known limitations
 

@@ -4,13 +4,14 @@ Extract the OoTMM payload symbol addresses the autotracker needs but which the
 patchfile does NOT export (the `missingPatchfileSymbols`), by reading the
 UNSTRIPPED payload ELFs produced by the generator build.
 
-Run this on the machine where you built OoTMM v31.1. It only needs Python 3 and
-the two linked payload ELFs (CMake targets `oot` and `mm`) -- no toolchain, no
-binutils; the ELF symbol table is parsed directly.
+NOT THE NORMAL PATH. Use the sibling `derive_web_symbols.py`, which recovers the
+same addresses from the STRIPPED payloads the website already ships. Full
+write-up and the version-bump workflow: see `DERIVING_SAVE_SYMBOLS.md` here.
 
-No local build? Use the sibling `derive_web_symbols.py`, which recovers the same
-addresses from the STRIPPED payloads the website ships. Full write-up and the
-version-bump workflow: see `DERIVING_SAVE_SYMBOLS.md` in this directory.
+This script only helps if UNSTRIPPED payload ELFs (CMake targets `oot` and `mm`)
+already exist on disk from some earlier build. Building OoTMM just to run this is
+explicitly out of scope -- don't. Given the ELFs, it needs nothing but Python 3:
+no toolchain, no binutils; the ELF symbol table is parsed directly.
 
 Usage:
     python3 find_autotracker_symbols.py [PATH ...]
