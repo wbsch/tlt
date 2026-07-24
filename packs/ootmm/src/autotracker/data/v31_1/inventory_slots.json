@@ -402,7 +402,7 @@
     "shared": {
       "baseOffset": 98304,
       "stride": 16384,
-      "trackedSize": 2118,
+      "trackedSize": 2188,
       "bitmaps": [
         {
           "name": "xflagsOot",
@@ -446,62 +446,62 @@
         },
         {
           "name": "soulsEnemyOot",
-          "offset": 1996,
+          "offset": 2012,
           "size": 8
         },
         {
           "name": "soulsEnemyMm",
-          "offset": 2004,
+          "offset": 2020,
           "size": 8
         },
         {
           "name": "soulsBossOot",
-          "offset": 2012,
+          "offset": 2028,
           "size": 2
         },
         {
           "name": "soulsBossMm",
-          "offset": 2014,
+          "offset": 2030,
           "size": 1
         },
         {
           "name": "soulsNpcOot",
-          "offset": 2015,
+          "offset": 2031,
           "size": 8
         },
         {
           "name": "soulsNpcMm",
-          "offset": 2023,
+          "offset": 2039,
           "size": 8
         },
         {
           "name": "soulsAnimalOot",
-          "offset": 2031,
+          "offset": 2047,
           "size": 2
         },
         {
           "name": "soulsAnimalMm",
-          "offset": 2033,
+          "offset": 2049,
           "size": 2
         },
         {
           "name": "soulsMiscOot",
-          "offset": 2035,
+          "offset": 2051,
           "size": 1
         },
         {
           "name": "soulsMiscMm",
-          "offset": 2036,
+          "offset": 2052,
           "size": 1
         },
         {
           "name": "caughtFishFlags",
-          "offset": 2077,
+          "offset": 2093,
           "size": 5
         },
         {
           "name": "progressiveFlags",
-          "offset": 2117,
+          "offset": 2133,
           "size": 1
         }
       ]

@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+#this script uses hard coded offsets, is shit and should be rewritten
 
 import argparse
 import json
@@ -18,6 +19,116 @@ NOTES_MAX_RE = re.compile(r"^#define\s+NOTES_MAX\s+0x([0-9a-fA-F]+)\s*$")
 MAX_SONG_NOTE_RE = re.compile(r"^\s*(\d+),\s*//\s*(NOTES_SONG_[A-Z0-9_]+)\s*$")
 
 SHARED_COIN_COUNT = 4
+
+# ── Struct layout constants (from OoTMM headers) ──────────────────────────
+
+XFLAGS_COUNT_OOT = 0x2E8  # from xflags_data.h
+XFLAGS_COUNT_MM  = 0x34A  # from xflags_data.h
+RESPAWN_SIZE     = 0x20   # RespawnData (mm/save.h)
+TRAP_MAX         = 7
+NOTES_MAX        = 0x26
+RUSTY_KEYS_OOT_SIZE = 4
+RUSTY_KEYS_MM_SIZE  = 5
+
+def build_shared_storage(mm_custom_save_size: int) -> dict:
+    """Build shared storage layout and fixed offsets from MmCustomSave size."""
+    oot_size = 0x370  # sizeof(OotCustomSave) = xflagsMm offset
+    mm_size = mm_custom_save_size
+    pre_soul = 0x20 + 8 + 2 + 2  # netGiSkip[16] + coins[4] + ocarinaMasks[4] = 0x2C
+
+    # Bitmap offsets (all within gSharedCustomSave)
+    xflagsOot      = 0x000
+    npcOot         = 0x2E8
+    shopsOot       = 0x308
+    scrubsOot      = 0x310
+    srOot          = 0x318
+    xflagsMm       = oot_size  # 0x370
+    npcMm          = oot_size + XFLAGS_COUNT_MM  # xflagsMm + XFLAGS_COUNT_MM
+    shopsMm        = npcMm + 32
+    souls_enemy_oot = oot_size + mm_size + pre_soul
+    souls_enemy_mm  = souls_enemy_oot + 8
+    souls_boss_oot  = souls_enemy_mm + 8
+    souls_boss_mm   = souls_boss_oot + 2
+    souls_npc_oot   = souls_boss_mm + 1
+    souls_npc_mm    = souls_npc_oot + 8
+    souls_animal_oot = souls_npc_mm + 8
+    souls_animal_mm  = souls_animal_oot + 2
+    souls_misc_oot  = souls_animal_mm + 2
+    souls_misc_mm   = souls_misc_oot + 1
+
+    # Fixed (non-bitmap) fields
+    half_days       = shopsMm + 4
+    coins           = oot_size + mm_size + 0x20  # after netGiSkip[16]
+    mask_oot        = coins + 8
+    mask_mm         = mask_oot + 2
+    child_fish      = souls_misc_mm + 1
+    adult_fish      = child_fish + 20
+    fish_flags      = adult_fish + 20
+
+    # After fish_flags[5]: align to 4 (RespawnData has Vec3f), then respawn[0x20]
+    respawn = (fish_flags + 5 + 3) & ~3
+    bitfields = respawn + RESPAWN_SIZE
+    # progressiveFlags is the second byte of the bitfield block
+    progressive_flags = bitfields + 1
+    traps = bitfields + 2
+    notes = traps + TRAP_MAX
+    rusty_keys = notes + NOTES_MAX
+
+    tracked_size = max(
+        progressive_flags + 1,       # cover all bitmaps
+        notes + NOTES_MAX,
+        rusty_keys + RUSTY_KEYS_OOT_SIZE + RUSTY_KEYS_MM_SIZE,
+    )
+
+    bitmaps = [
+        {"name": "xflagsOot",         "offset": xflagsOot,       "size": XFLAGS_COUNT_OOT},
+        {"name": "npcOot",            "offset": npcOot,          "size": 32},
+        {"name": "shopsOot",          "offset": shopsOot,        "size": 8},
+        {"name": "scrubsOot",         "offset": scrubsOot,       "size": 8},
+        {"name": "srOot",             "offset": srOot,           "size": 16},
+        {"name": "xflagsMm",          "offset": xflagsMm,        "size": XFLAGS_COUNT_MM},
+        {"name": "npcMm",             "offset": npcMm,           "size": 32},
+        {"name": "shopsMm",           "offset": shopsMm,         "size": 4},
+        {"name": "soulsEnemyOot",     "offset": souls_enemy_oot, "size": 8},
+        {"name": "soulsEnemyMm",      "offset": souls_enemy_mm,  "size": 8},
+        {"name": "soulsBossOot",      "offset": souls_boss_oot,  "size": 2},
+        {"name": "soulsBossMm",       "offset": souls_boss_mm,   "size": 1},
+        {"name": "soulsNpcOot",       "offset": souls_npc_oot,   "size": 8},
+        {"name": "soulsNpcMm",        "offset": souls_npc_mm,    "size": 8},
+        {"name": "soulsAnimalOot",    "offset": souls_animal_oot,"size": 2},
+        {"name": "soulsAnimalMm",     "offset": souls_animal_mm, "size": 2},
+        {"name": "soulsMiscOot",      "offset": souls_misc_oot,  "size": 1},
+        {"name": "soulsMiscMm",       "offset": souls_misc_mm,   "size": 1},
+        {"name": "caughtFishFlags",   "offset": fish_flags,      "size": 5},
+        {"name": "progressiveFlags",  "offset": progressive_flags,"size": 1},
+    ]
+
+    shared = {
+        "baseOffset": 0x18000,
+        "stride": 0x4000,
+        "trackedSize": tracked_size,
+        "bitmaps": bitmaps,
+    }
+
+    fixed_offsets = {
+        "sharedCustomSaveSize": tracked_size,
+        "halfDaysOffset": half_days,
+        "coinsOffset": coins,
+        "ocarinaButtonMaskOotOffset": mask_oot,
+        "ocarinaButtonMaskMmOffset": mask_mm,
+        "caughtChildFishWeightOffset": child_fish,
+        "caughtAdultFishWeightOffset": adult_fish,
+        "caughtFishWeightCount": 20,
+        "songNotesOffset": notes,
+        "songNoteCount": NOTES_MAX,
+        "rustyKeysOffset": rusty_keys,
+        "rustyKeysOotSize": RUSTY_KEYS_OOT_SIZE,
+        "rustyKeysMmSize": RUSTY_KEYS_MM_SIZE,
+        "bombchuBagFlagsOffset": bitfields,
+    }
+
+    return {"shared": shared, "fixedOffsets": fixed_offsets}
+
 
 OOT_OVERRIDES = {
     "STICKS": "STICK",
@@ -85,33 +196,7 @@ SLOT_QUANTITY_RULES = {
     "ITS_MM_TRADE3": {"stages": [0xAF, 0xB2, 0xB4, 0x2F, 0x30]},
 }
 
-SHARED_STORAGE = {
-    "baseOffset": 0x18000,
-    "stride": 0x4000,
-    "trackedSize": 0x846,
-    "bitmaps": [
-        {"name": "xflagsOot", "offset": 0x000, "size": 0x2E8},
-        {"name": "npcOot", "offset": 0x2E8, "size": 0x20},
-        {"name": "shopsOot", "offset": 0x308, "size": 0x08},
-        {"name": "scrubsOot", "offset": 0x310, "size": 0x08},
-        {"name": "srOot", "offset": 0x318, "size": 0x10},
-        {"name": "xflagsMm", "offset": 0x370, "size": 0x34A},
-        {"name": "npcMm", "offset": 0x6BA, "size": 0x20},
-        {"name": "shopsMm", "offset": 0x6DA, "size": 0x04},
-        {"name": "soulsEnemyOot", "offset": 0x7CC, "size": 8},
-        {"name": "soulsEnemyMm", "offset": 0x7D4, "size": 8},
-        {"name": "soulsBossOot", "offset": 0x7DC, "size": 2},
-        {"name": "soulsBossMm", "offset": 0x7DE, "size": 1},
-        {"name": "soulsNpcOot", "offset": 0x7DF, "size": 8},
-        {"name": "soulsNpcMm", "offset": 0x7E7, "size": 8},
-        {"name": "soulsAnimalOot", "offset": 0x7EF, "size": 2},
-        {"name": "soulsAnimalMm", "offset": 0x7F1, "size": 2},
-        {"name": "soulsMiscOot", "offset": 0x7F3, "size": 1},
-        {"name": "soulsMiscMm", "offset": 0x7F4, "size": 1},
-        {"name": "caughtFishFlags", "offset": 0x81D, "size": 5},
-        {"name": "progressiveFlags", "offset": 0x845, "size": 1},
-    ],
-}
+
 
 SOUL_SOURCE_SPECS = [
     {"prefix": "OOT_SOUL_ENEMY_", "block": "soulsEnemyOot"},
@@ -194,7 +279,17 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument(
         "--output",
         required=True,
-        help="Path to the output JSON file.",
+        help="Path to the output inventory_slots.json file.",
+    )
+    parser.add_argument(
+        "--mm-custom-save-size",
+        type=lambda x: int(x, 0),
+        default=0x440,
+        help="sizeof(MmCustomSave) in hex (default: 0x440 for v31.1). Use 0x430 for v30.1.",
+    )
+    parser.add_argument(
+        "--shared-save-offsets-output",
+        help="Optional path to also write the fixed offsets as shared_save_offsets.json.",
     )
     return parser.parse_args()
 
@@ -474,13 +569,14 @@ def build_catalog(
     notes_header: pathlib.Path,
     item_add_source: pathlib.Path,
     doors_header: pathlib.Path,
+    shared_storage: dict[str, object],
 ) -> dict[str, object]:
     gi_ids = extract_gi_ids(gi_defs)
     soul_entries = extract_soul_entries(gi_defs)
     coin_entries = extract_coin_entries(gi_defs)
     clock_entries = extract_clock_entries(gi_defs)
     song_note_entries = extract_song_note_entries(gi_defs, notes_header, item_add_source)
-    bitmap_sizes = {bitmap["name"]: bitmap["size"] for bitmap in SHARED_STORAGE["bitmaps"]}
+    bitmap_sizes = {bitmap["name"]: bitmap["size"] for bitmap in shared_storage["bitmaps"]}
 
     items: list[dict[str, object]] = []
     for spec in SOUL_SOURCE_SPECS:
@@ -519,7 +615,7 @@ def build_catalog(
     items.extend(rusty_key_entries)
 
     return {
-        "shared": SHARED_STORAGE,
+        "shared": shared_storage,
         "items": items,
     }
 
@@ -603,9 +699,25 @@ def main() -> int:
         print(f"doors header not found: {doors_header}", file=sys.stderr)
         return 1
 
-    mapping["catalog"] = build_catalog(gi_defs, notes_header, item_add_source, doors_header)
+    layout = build_shared_storage(args.mm_custom_save_size)
+    mapping["catalog"] = build_catalog(
+        gi_defs, notes_header, item_add_source, doors_header, layout["shared"]
+    )
     output_path.parent.mkdir(parents=True, exist_ok=True)
     output_path.write_text(json.dumps(mapping, indent=2) + "\n", encoding="utf-8")
+
+    if args.shared_save_offsets_output:
+        offsets_path = pathlib.Path(args.shared_save_offsets_output).resolve()
+        offsets_path.parent.mkdir(parents=True, exist_ok=True)
+        offsets_path.write_text(
+            json.dumps(layout["fixedOffsets"], indent=2) + "\n", encoding="utf-8"
+        )
+        print(f"Fixed offsets written to {offsets_path}")
+
+    print(
+        f"MmCustomSave size: 0x{args.mm_custom_save_size:03X}  "
+        f"trackedSize: 0x{layout['shared']['trackedSize']:04X}"
+    )
     return 0
 
 

@@ -22,6 +22,7 @@ type AutotrackerDataBundle = {
   locations: LocationFile;
   specialLocationsMm: MmSpecialLocationEntry[];
   specialLocationsOot: OotSpecialLocationEntry[];
+  sharedSaveOffsets: SharedFixedOffsets;
 };
 
 function loadAutotrackerDataSync(dirName: string): AutotrackerDataBundle {
@@ -44,6 +45,10 @@ function loadAutotrackerDataSync(dirName: string): AutotrackerDataBundle {
       dirName,
       'special_locations_oot.json',
     ) as OotSpecialLocationEntry[],
+    sharedSaveOffsets: getVersionedDataFile(
+      dirName,
+      'shared_save_offsets.json',
+    ) as SharedFixedOffsets,
   };
 }
 
@@ -65,6 +70,7 @@ interface ParserTables {
   liveAddrs: LiveAddrFile;
   inventorySlotFile: InventorySlotFile;
   sharedStateReadSize: number;
+  sharedFixedOffsets: SharedFixedOffsets;
   addrOotSaveCtx: number;
   addrMmSaveCtx: number;
   addrOotForeignMmSaveLive: number;
@@ -110,16 +116,19 @@ function buildParserTables(bundle: AutotrackerDataBundle): ParserTables {
 
   const locTables = buildLocationTables(bundle.locations);
 
+  const fo: SharedFixedOffsets = bundle.sharedSaveOffsets;
+
   return {
     liveAddrs: bundle.liveAddrs,
     inventorySlotFile: bundle.inventorySlots,
     sharedStateReadSize: Math.max(
-      SHARED_CUSTOM_SAVE_SIZE,
+      fo.sharedCustomSaveSize,
       bundle.inventorySlots.catalog.shared.trackedSize,
-      SHARED_SONG_NOTES_OFFSET + SHARED_SONG_NOTE_COUNT,
-      SHARED_BOMBCHU_BAG_FLAGS_OFFSET + 1,
-      SHARED_RUSTY_KEYS_OFFSET + SHARED_RUSTY_KEYS_SIZE,
+      fo.songNotesOffset + fo.songNoteCount,
+      fo.bombchuBagFlagsOffset + 1,
+      fo.rustyKeysOffset + fo.rustyKeysOotSize + fo.rustyKeysMmSize,
     ),
+    sharedFixedOffsets: fo,
     addrOotSaveCtx: parseHexAddress(
       bundle.liveAddrs.oot.saveCtx,
       'oot.saveCtx',
@@ -233,6 +242,7 @@ function applyVersionData(tables: ParserTables): void {
   addrMmRuntimeOotComboConfigLive = tables.addrMmRuntimeOotComboConfigLive;
   inventorySlotFile = tables.inventorySlotFile;
   sharedStateReadSize = tables.sharedStateReadSize;
+  sharedFixedOffsets = tables.sharedFixedOffsets;
   ootInventoryEntries = tables.ootInventoryEntries;
   mmInventoryEntries = tables.mmInventoryEntries;
   sharedStorage = tables.sharedStorage;
@@ -370,6 +380,23 @@ type SharedStorageLayout = {
   stride: number;
   trackedSize: number;
   bitmaps: SharedBitmapInfo[];
+};
+
+type SharedFixedOffsets = {
+  sharedCustomSaveSize: number;
+  halfDaysOffset: number;
+  coinsOffset: number;
+  ocarinaButtonMaskOotOffset: number;
+  ocarinaButtonMaskMmOffset: number;
+  caughtChildFishWeightOffset: number;
+  caughtAdultFishWeightOffset: number;
+  caughtFishWeightCount: number;
+  songNotesOffset: number;
+  songNoteCount: number;
+  rustyKeysOffset: number;
+  rustyKeysOotSize: number;
+  rustyKeysMmSize: number;
+  bombchuBagFlagsOffset: number;
 };
 
 type SharedBitmapInfo = {
@@ -1099,12 +1126,34 @@ const MM_SAVE_CTX_USED_SIZE = Math.max(
   MM_CTX_OFF_CYCLE_FLAGS + MM_PERM_COUNT * 0x14,
 );
 let inventorySlotFile = inventorySlotsData as InventorySlotFile;
+
+const DEFAULT_FIXED_OFFSETS: SharedFixedOffsets = {
+  sharedCustomSaveSize: 0x880,
+  halfDaysOffset: 0x6de,
+  coinsOffset: 0x7c0,
+  ocarinaButtonMaskOotOffset: 0x7c8,
+  ocarinaButtonMaskMmOffset: 0x7ca,
+  caughtChildFishWeightOffset: 2037,
+  caughtAdultFishWeightOffset: 2057,
+  caughtFishWeightCount: 20,
+  songNotesOffset: 2125,
+  songNoteCount: 38,
+  rustyKeysOffset: 2163,
+  rustyKeysOotSize: 4,
+  rustyKeysMmSize: 5,
+  bombchuBagFlagsOffset: 2114,
+};
+
+let sharedFixedOffsets: SharedFixedOffsets = { ...DEFAULT_FIXED_OFFSETS };
+
 let sharedStateReadSize = Math.max(
-  SHARED_CUSTOM_SAVE_SIZE,
+  sharedFixedOffsets.sharedCustomSaveSize,
   inventorySlotFile.catalog.shared.trackedSize,
-  SHARED_SONG_NOTES_OFFSET + SHARED_SONG_NOTE_COUNT,
-  SHARED_BOMBCHU_BAG_FLAGS_OFFSET + 1,
-  SHARED_RUSTY_KEYS_OFFSET + SHARED_RUSTY_KEYS_SIZE,
+  sharedFixedOffsets.songNotesOffset + sharedFixedOffsets.songNoteCount,
+  sharedFixedOffsets.bombchuBagFlagsOffset + 1,
+  sharedFixedOffsets.rustyKeysOffset +
+    sharedFixedOffsets.rustyKeysOotSize +
+    sharedFixedOffsets.rustyKeysMmSize,
 );
 
 const buildSharedStateChunkSpecs = (
@@ -1118,39 +1167,41 @@ const buildSharedStateChunkSpecs = (
     length: bitmap.size,
   }));
 
+  const fo = sharedFixedOffsets;
+
   specs.push(
     {
       name: `${prefix}_shared_custom_save_half_days`,
-      address: baseAddress + SHARED_HALF_DAYS_OFFSET,
+      address: baseAddress + fo.halfDaysOffset,
       length: 1,
     },
     {
       name: `${prefix}_shared_custom_save_fish_weights`,
-      address: baseAddress + SHARED_CAUGHT_CHILD_FISH_WEIGHT_OFFSET,
+      address: baseAddress + fo.caughtChildFishWeightOffset,
       length:
-        SHARED_CAUGHT_ADULT_FISH_WEIGHT_OFFSET +
-        SHARED_CAUGHT_FISH_WEIGHT_COUNT -
-        SHARED_CAUGHT_CHILD_FISH_WEIGHT_OFFSET,
+        fo.caughtAdultFishWeightOffset +
+        fo.caughtFishWeightCount -
+        fo.caughtChildFishWeightOffset,
     },
     {
       name: `${prefix}_shared_custom_save_coins_and_masks`,
-      address: baseAddress + SHARED_COINS_OFFSET,
-      length: SHARED_OCARINA_BUTTON_MASK_MM_OFFSET + 2 - SHARED_COINS_OFFSET,
+      address: baseAddress + fo.coinsOffset,
+      length: fo.ocarinaButtonMaskMmOffset + 2 - fo.coinsOffset,
     },
     {
       name: `${prefix}_shared_custom_save_bombchu_bag_flags`,
-      address: baseAddress + SHARED_BOMBCHU_BAG_FLAGS_OFFSET,
+      address: baseAddress + fo.bombchuBagFlagsOffset,
       length: 1,
     },
     {
       name: `${prefix}_shared_custom_save_song_notes`,
-      address: baseAddress + SHARED_SONG_NOTES_OFFSET,
-      length: SHARED_SONG_NOTE_COUNT,
+      address: baseAddress + fo.songNotesOffset,
+      length: fo.songNoteCount,
     },
     {
       name: `${prefix}_shared_custom_save_rusty_keys`,
-      address: baseAddress + SHARED_RUSTY_KEYS_OFFSET,
-      length: SHARED_RUSTY_KEYS_SIZE,
+      address: baseAddress + fo.rustyKeysOffset,
+      length: fo.rustyKeysOotSize + fo.rustyKeysMmSize,
     },
   );
 
@@ -3280,62 +3331,63 @@ function parseSharedStateUnchecked(data: Uint8Array): SharedCustomState | null {
     parsed.bitmaps.set(bitmap.name, data.slice(bitmap.offset, end));
   }
 
-  if (data.length >= SHARED_COINS_OFFSET + SHARED_COIN_COUNT * 2) {
+  const fo = sharedFixedOffsets;
+
+  if (data.length >= fo.coinsOffset + SHARED_COIN_COUNT * 2) {
     for (let index = 0; index < parsed.coins.length; index++) {
-      parsed.coins[index] = readU16BE(data, SHARED_COINS_OFFSET + index * 2);
+      parsed.coins[index] = readU16BE(data, fo.coinsOffset + index * 2);
     }
   }
-  if (data.length >= SHARED_OCARINA_BUTTON_MASK_MM_OFFSET + 2) {
+  if (data.length >= fo.ocarinaButtonMaskMmOffset + 2) {
     parsed.ocarinaButtonMaskOot = readU16BE(
       data,
-      SHARED_OCARINA_BUTTON_MASK_OOT_OFFSET,
+      fo.ocarinaButtonMaskOotOffset,
     );
-    parsed.ocarinaButtonMaskMm = readU16BE(
-      data,
-      SHARED_OCARINA_BUTTON_MASK_MM_OFFSET,
-    );
+    parsed.ocarinaButtonMaskMm = readU16BE(data, fo.ocarinaButtonMaskMmOffset);
   }
-  if (data.length > SHARED_HALF_DAYS_OFFSET) {
-    parsed.halfDays = data[SHARED_HALF_DAYS_OFFSET] ?? 0;
+  if (data.length > fo.halfDaysOffset) {
+    parsed.halfDays = data[fo.halfDaysOffset] ?? 0;
   }
   if (
     data.length >=
-    SHARED_CAUGHT_CHILD_FISH_WEIGHT_OFFSET + SHARED_CAUGHT_FISH_WEIGHT_COUNT
+    fo.caughtChildFishWeightOffset + fo.caughtFishWeightCount
   ) {
-    for (let index = 0; index < SHARED_CAUGHT_FISH_WEIGHT_COUNT; index++) {
+    for (let index = 0; index < fo.caughtFishWeightCount; index++) {
       parsed.caughtChildFishWeights[index] =
-        data[SHARED_CAUGHT_CHILD_FISH_WEIGHT_OFFSET + index] ?? 0;
+        data[fo.caughtChildFishWeightOffset + index] ?? 0;
     }
   }
   if (
     data.length >=
-    SHARED_CAUGHT_ADULT_FISH_WEIGHT_OFFSET + SHARED_CAUGHT_FISH_WEIGHT_COUNT
+    fo.caughtAdultFishWeightOffset + fo.caughtFishWeightCount
   ) {
-    for (let index = 0; index < SHARED_CAUGHT_FISH_WEIGHT_COUNT; index++) {
+    for (let index = 0; index < fo.caughtFishWeightCount; index++) {
       parsed.caughtAdultFishWeights[index] =
-        data[SHARED_CAUGHT_ADULT_FISH_WEIGHT_OFFSET + index] ?? 0;
+        data[fo.caughtAdultFishWeightOffset + index] ?? 0;
     }
   }
-  if (data.length > SHARED_BOMBCHU_BAG_FLAGS_OFFSET) {
-    const flags = data[SHARED_BOMBCHU_BAG_FLAGS_OFFSET] ?? 0;
+  if (data.length > fo.bombchuBagFlagsOffset) {
+    const flags = data[fo.bombchuBagFlagsOffset] ?? 0;
     parsed.bombchuBagOot =
       (flags >> SHARED_BOMBCHU_BAG_OOT_SHIFT) & SHARED_BOMBCHU_BAG_MASK;
     parsed.bombchuBagMm =
       (flags >> SHARED_BOMBCHU_BAG_MM_SHIFT) & SHARED_BOMBCHU_BAG_MASK;
   }
-  if (data.length >= SHARED_SONG_NOTES_OFFSET + SHARED_SONG_NOTE_COUNT) {
-    for (let index = 0; index < SHARED_SONG_NOTE_COUNT; index++) {
-      parsed.songNotes[index] = data[SHARED_SONG_NOTES_OFFSET + index] ?? 0;
+  if (data.length >= fo.songNotesOffset + fo.songNoteCount) {
+    for (let index = 0; index < fo.songNoteCount; index++) {
+      parsed.songNotes[index] = data[fo.songNotesOffset + index] ?? 0;
     }
   }
-  if (data.length >= SHARED_RUSTY_KEYS_OFFSET + SHARED_RUSTY_KEYS_SIZE) {
-    for (let index = 0; index < SHARED_RUSTY_KEYS_OOT_SIZE; index++) {
-      parsed.rustyKeysOot[index] = data[SHARED_RUSTY_KEYS_OFFSET + index] ?? 0;
+  if (
+    data.length >=
+    fo.rustyKeysOffset + fo.rustyKeysOotSize + fo.rustyKeysMmSize
+  ) {
+    for (let index = 0; index < fo.rustyKeysOotSize; index++) {
+      parsed.rustyKeysOot[index] = data[fo.rustyKeysOffset + index] ?? 0;
     }
-    for (let index = 0; index < SHARED_RUSTY_KEYS_MM_SIZE; index++) {
+    for (let index = 0; index < fo.rustyKeysMmSize; index++) {
       parsed.rustyKeysMm[index] =
-        data[SHARED_RUSTY_KEYS_OFFSET + SHARED_RUSTY_KEYS_OOT_SIZE + index] ??
-        0;
+        data[fo.rustyKeysOffset + fo.rustyKeysOotSize + index] ?? 0;
     }
   }
 
@@ -5630,6 +5682,7 @@ function createEmptyMmState(): MmState {
 }
 
 function createEmptySharedState(): SharedCustomState {
+  const fo = sharedFixedOffsets;
   return {
     bitmaps: new Map(),
     halfDays: 0,
@@ -5638,17 +5691,17 @@ function createEmptySharedState(): SharedCustomState {
     ocarinaButtonMaskMm: 0,
     bombchuBagOot: 0,
     bombchuBagMm: 0,
-    songNotes: Array.from({ length: SHARED_SONG_NOTE_COUNT }, () => 0),
+    songNotes: Array.from({ length: fo.songNoteCount }, () => 0),
     caughtChildFishWeights: Array.from(
-      { length: SHARED_CAUGHT_FISH_WEIGHT_COUNT },
+      { length: fo.caughtFishWeightCount },
       () => 0,
     ),
     caughtAdultFishWeights: Array.from(
-      { length: SHARED_CAUGHT_FISH_WEIGHT_COUNT },
+      { length: fo.caughtFishWeightCount },
       () => 0,
     ),
-    rustyKeysOot: Array.from({ length: SHARED_RUSTY_KEYS_OOT_SIZE }, () => 0),
-    rustyKeysMm: Array.from({ length: SHARED_RUSTY_KEYS_MM_SIZE }, () => 0),
+    rustyKeysOot: Array.from({ length: fo.rustyKeysOotSize }, () => 0),
+    rustyKeysMm: Array.from({ length: fo.rustyKeysMmSize }, () => 0),
   };
 }
 

@@ -147,6 +147,8 @@ function main(): void {
     OOTMM_REPO,
     '--output',
     path.join(DATA_DIR, 'inventory_slots.json'),
+    '--shared-save-offsets-output',
+    path.join(DATA_DIR, 'shared_save_offsets.json'),
   ]);
 
   runPython('generate_locations.py', [
