@@ -852,7 +852,20 @@ export function getActiveEntranceKeys(
       continue;
     }
 
-    if (erDungeons && erDungeons !== 'none' && DUNGEON_TYPES.has(data.type)) {
+    // When erPiratesWorld is active and overworld ER is enabled, the main
+    // Pirate Fortress entrance (type dungeon-pf) belongs in the overworld
+    // pool.  Skip the dungeon check so it falls through to overlay below.
+    if (
+      erDungeons &&
+      erDungeons !== 'none' &&
+      DUNGEON_TYPES.has(data.type) &&
+      !(
+        data.type === 'dungeon-pf' &&
+        settings?.erPiratesWorld &&
+        erOverworld &&
+        erOverworld !== 'none'
+      )
+    ) {
       if (!enabledDungeonTypes.has(data.type)) continue;
       keys.add(key);
       continue;
