@@ -77,6 +77,7 @@ def extract_anchors(slots: dict) -> dict:
     shared = slots["catalog"]["shared"]
     bitmaps = {bm["name"]: bm for bm in shared["bitmaps"]}
     return {
+        "xflagsOotSize": bitmaps["xflagsOot"]["size"],
         "xflagsMm": bitmaps["xflagsMm"]["offset"],
         "soulsEnemyOot": bitmaps["soulsEnemyOot"]["offset"],
         "soulsMiscMm": bitmaps["soulsMiscMm"]["offset"],
@@ -86,6 +87,7 @@ def extract_anchors(slots: dict) -> dict:
 
 def compute_offsets(anchors: dict) -> dict:
     """Compute all fixed offsets from bitmap anchors + struct layout."""
+    xflags_oot_size = anchors["xflagsOotSize"]
     oot_size = anchors["xflagsMm"]          # sizeof(OotCustomSave)
     mm_size = (anchors["soulsEnemyOot"]      # soulsEnemyOot
                - oot_size - PRESOULS_SIZE)    # minus OotCustomSave minus pre-soul fields
@@ -100,8 +102,9 @@ def compute_offsets(anchors: dict) -> dict:
     adult_fish = child_fish + 20
     fish_flags = adult_fish + 20
 
-    # RespawnData starts after fish_flags[5]; no padding in SharedCustomSave
+    # RespawnData starts after fish_flags[5]; needs 4-byte alignment on MIPS
     respawn = fish_flags + 5
+    respawn = (respawn + 3) & ~3  # align to 4-byte boundary
     bitfields = respawn + RESPAWN_SIZE
     traps = bitfields + BITFIELD_SIZE
     notes = traps + TRAPS_SIZE
@@ -113,6 +116,14 @@ def compute_offsets(anchors: dict) -> dict:
         notes + NOTES_SIZE,
         bitfields + BITFIELD_SIZE + 1,  # bombchuBagFlagsOffset + 1
     )
+
+    # song flag offsets within each custom save
+    # OotCustomSave: xflags[n] + npc[32] + shops[8] + scrubs[8] + sr[16]
+    #   + fwRespawnDungeonEntrance[2] (28 each) + powderKegTimer(2) → bitfields
+    song_flags_oot = xflags_oot_size + 32 + 8 + 8 + 16 + 2 * 28 + 2
+    # MmCustomSave: halfDays(1) + padding(1 for 4-byte align) + 3*RespawnData arrays(3*64)
+    song_flags_mm = (half_days + 1 + 3) & ~3  # round past halfDays to 4-byte boundary
+    song_flags_mm += 3 * 64  # fw[2] + fwRespawnTop[2] + fwRespawnDungeonEntrance[2]
 
     return {
         "sharedCustomSaveSize": shared_size,
@@ -128,6 +139,8 @@ def compute_offsets(anchors: dict) -> dict:
         "rustyKeysOffset": rusty_keys,
         "rustyKeysOotSize": RUSTY_KEYS_OOT_SIZE,
         "rustyKeysMmSize": RUSTY_KEYS_MM_SIZE,
+        "songFlagsOotOffset": song_flags_oot,
+        "songFlagsMmOffset": song_flags_mm,
         "bombchuBagFlagsOffset": bitfields,
     }
 
@@ -226,6 +239,7 @@ def main():
     offsets = compute_offsets(anchors)
 
     print("Anchor values:")
+    print(f"  xflagsOot    = {anchors['xflagsOotSize']} bytes")
     print(f"  xflagsMm     = 0x{anchors['xflagsMm']:04X}  (sizeof OotCustomSave)")
     print(f"  soulsEnemyOot = 0x{anchors['soulsEnemyOot']:04X}")
     print(f"  soulsMiscMm  = 0x{anchors['soulsMiscMm']:04X}")

@@ -398,6 +398,7 @@ type SharedFixedOffsets = {
   rustyKeysMmSize: number;
   bombchuBagFlagsOffset: number;
   songFlagsOotOffset: number;
+  songFlagsMmOffset: number;
 };
 
 type SharedBitmapInfo = {
@@ -593,6 +594,7 @@ type SharedCustomState = {
   rustyKeysOot: number[];
   rustyKeysMm: number[];
   songFlagsOot: number;
+  songFlagsMm: number;
 };
 
 type GameState = {
@@ -1129,6 +1131,7 @@ const DEFAULT_FIXED_OFFSETS: SharedFixedOffsets = {
   rustyKeysMmSize: 5,
   bombchuBagFlagsOffset: 2114,
   songFlagsOotOffset: 0x362,
+  songFlagsMmOffset: 0x7a0,
 };
 
 let sharedFixedOffsets: SharedFixedOffsets = { ...DEFAULT_FIXED_OFFSETS };
@@ -1189,6 +1192,11 @@ const buildSharedStateChunkSpecs = (
       name: `${prefix}_shared_custom_save_song_flags_oot`,
       address: baseAddress + fo.songFlagsOotOffset,
       length: 2,
+    },
+    {
+      name: `${prefix}_shared_custom_save_song_flags_mm`,
+      address: baseAddress + fo.songFlagsMmOffset,
+      length: 1,
     },
     {
       name: `${prefix}_shared_custom_save_rusty_keys`,
@@ -3375,6 +3383,9 @@ function parseSharedStateUnchecked(data: Uint8Array): SharedCustomState | null {
       (data[fo.songFlagsOotOffset] ?? 0) |
       ((data[fo.songFlagsOotOffset + 1] ?? 0) << 8);
   }
+  if (data.length > fo.songFlagsMmOffset) {
+    parsed.songFlagsMm = data[fo.songFlagsMmOffset] ?? 0;
+  }
   if (
     data.length >=
     fo.rustyKeysOffset + fo.rustyKeysOotSize + fo.rustyKeysMmSize
@@ -3622,6 +3633,10 @@ function sharedStateDegradedFrom(
     return true;
   }
 
+  if (previous.songFlagsMm > 0 && current.songFlagsMm === 0) {
+    return true;
+  }
+
   return false;
 }
 
@@ -3643,7 +3658,8 @@ function sharedStateHasMeaningfulData(shared: SharedCustomState): boolean {
     shared.songNotes.some((value) => value > 0) ||
     shared.caughtChildFishWeights.some((value) => value > 0) ||
     shared.caughtAdultFishWeights.some((value) => value > 0) ||
-    shared.songFlagsOot > 0
+    shared.songFlagsOot > 0 ||
+    shared.songFlagsMm > 0
   );
 }
 
@@ -4102,6 +4118,20 @@ function extractItems(state: GameState): RawAutotrackerItem[] {
   );
   appendQuestBit(items, mm.questItems, QUEST_MM_SONG_STORMS, 'MM_SONG_STORMS');
   appendQuestBit(items, mm.questItems, QUEST_MM_SONG_SUN, 'MM_SONG_SUN');
+  // MM-side cross-game songs (OOT->MM songs stored as bitfields in
+  // SharedCustomSave.mm.ootSongs, NOT in MM quest items).
+  // N64 big-endian: GCC packs bitfields MSB-first within each byte.
+  // songSaria(7) songZelda(6) songTpLight(5) songTpShadow(4)
+  // songTpSpirit(3) songTpWater(2) songTpFire(1) songTpForest(0)
+  const sm = state.shared.songFlagsMm;
+  appendPositiveItem(items, 'MM_SONG_SARIA', (sm >> 7) & 1);
+  appendPositiveItem(items, 'MM_SONG_ZELDA', (sm >> 6) & 1);
+  appendPositiveItem(items, 'MM_SONG_TP_LIGHT', (sm >> 5) & 1);
+  appendPositiveItem(items, 'MM_SONG_TP_SHADOW', (sm >> 4) & 1);
+  appendPositiveItem(items, 'MM_SONG_TP_SPIRIT', (sm >> 3) & 1);
+  appendPositiveItem(items, 'MM_SONG_TP_WATER', (sm >> 2) & 1);
+  appendPositiveItem(items, 'MM_SONG_TP_FIRE', (sm >> 1) & 1);
+  appendPositiveItem(items, 'MM_SONG_TP_FOREST', sm & 1);
   appendQuestBit(items, mm.questItems, QUEST_MM_NOTEBOOK, 'MM_NOTEBOOK');
 
   appendPositiveItem(items, 'MM_HEART_PIECES', mm.heartPieces);
@@ -5725,6 +5755,7 @@ function createEmptySharedState(): SharedCustomState {
     rustyKeysOot: Array.from({ length: fo.rustyKeysOotSize }, () => 0),
     rustyKeysMm: Array.from({ length: fo.rustyKeysMmSize }, () => 0),
     songFlagsOot: 0,
+    songFlagsMm: 0,
   };
 }
 
@@ -5799,6 +5830,7 @@ function cloneSharedState(source: SharedCustomState): SharedCustomState {
     rustyKeysOot: [...source.rustyKeysOot],
     rustyKeysMm: [...source.rustyKeysMm],
     songFlagsOot: source.songFlagsOot,
+    songFlagsMm: source.songFlagsMm,
   };
 }
 
