@@ -12,6 +12,7 @@ test.describe('tracker FAQ', () => {
     await page.getByTestId('faq-open-button').click();
     await expect(page.getByTestId('faq-modal')).toBeVisible();
     await expect(page.getByTestId('faq-section-basics')).toBeVisible();
+    await expect(page.getByTestId('faq-section-autotracking')).toBeVisible();
     await expect(page.getByTestId('faq-section-advanced')).toBeVisible();
 
     const project64AutotrackingItem = page

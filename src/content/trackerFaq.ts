@@ -92,6 +92,77 @@ export const TRACKER_FAQ_SECTIONS: TrackerFaqSection[] = [
           },
         ],
       },
+
+      {
+        id: 'stats-meaning',
+        question: 'What do reachable, checked and remaining mean?',
+        blocks: [
+          {
+            type: 'list',
+            items: [
+              'Reachable shows how many checks the logic says you can access with your selected settings and items.',
+              'Checked shows how many locations you have already marked as collected or cleared.',
+              'Remaining shows how many trackable locations are still open overall.',
+            ],
+          },
+        ],
+      },
+      {
+        id: 'find-checks',
+        question: 'Where can I find checks quickly?',
+        blocks: [
+          {
+            type: 'paragraph',
+            text: 'You can work from either the map or the sidebars. The map is best for area-based routing, while the sidebars are better for searching and filtering.',
+          },
+          {
+            type: 'list',
+            items: [
+              'Locations lets you search by name and narrow the list by reachability, collection state, or category.',
+              'Entrances helps you track shuffled connections when entrance randomizer options are active.',
+            ],
+          },
+        ],
+      },
+      {
+        id: 'auto-save',
+        question: 'Is my progress saved automatically?',
+        blocks: [
+          {
+            type: 'paragraph',
+            text: 'Yes. Tracker progress and most UI state are persisted in the browser automatically, so a reload or restart normally keeps your session intact.',
+          },
+          {
+            type: 'paragraph',
+            text: 'Use Export State if you want to move the tracker to another browser or share the current state with someone else.',
+          },
+        ],
+      },
+      {
+        id: 'entrance-randomizer',
+        question: 'How do I track entrances?',
+        blocks: [
+          {
+            type: 'paragraph',
+            text: 'When entrance randomizer options are active, you can track which entrance leads where via the map or the Entrances sidebar. Filters for mapped/unmapped and reachable/unreachable entrances are available.',
+          },
+          {
+            type: 'paragraph',
+            text: 'Similar to the items filter reachable shows which entrances can be accessed with your current settings and other discovered entrances. Unmapped entrances are those for which you have not yet entered a discovered connection, while mapped entrances already have a known destination.',
+          },
+          {
+            type: 'paragraph',
+            text: 'If an Entrance Randomizer option is selected, the number next to the check count in the map dropdown reflects the number of entrances based on your items, settings, and filters.',
+          },
+        ],
+      },
+    ],
+  },
+  {
+    id: 'autotracking',
+    title: 'Autotracking',
+    description: 'Setup guides and known limitations for the autotracker.',
+    items: [
       {
         id: 'autotracking',
         question: 'How do I set up autotracking for Project64-EM?',
@@ -297,69 +368,6 @@ export const TRACKER_FAQ_SECTIONS: TrackerFaqSection[] = [
               'In Triforce Hunt mode, the autotracker cannot distinguish between the different Triforce Pieces.',
               'The last two limitations exist because the tracker sees the same information that the user sees in the in-game Inventory/Equipment screen.',
             ],
-          },
-        ],
-      },
-      {
-        id: 'stats-meaning',
-        question: 'What do reachable, checked and remaining mean?',
-        blocks: [
-          {
-            type: 'list',
-            items: [
-              'Reachable shows how many checks the logic says you can access with your selected settings and items.',
-              'Checked shows how many locations you have already marked as collected or cleared.',
-              'Remaining shows how many trackable locations are still open overall.',
-            ],
-          },
-        ],
-      },
-      {
-        id: 'find-checks',
-        question: 'Where can I find checks quickly?',
-        blocks: [
-          {
-            type: 'paragraph',
-            text: 'You can work from either the map or the sidebars. The map is best for area-based routing, while the sidebars are better for searching and filtering.',
-          },
-          {
-            type: 'list',
-            items: [
-              'Locations lets you search by name and narrow the list by reachability, collection state, or category.',
-              'Entrances helps you track shuffled connections when entrance randomizer options are active.',
-            ],
-          },
-        ],
-      },
-      {
-        id: 'auto-save',
-        question: 'Is my progress saved automatically?',
-        blocks: [
-          {
-            type: 'paragraph',
-            text: 'Yes. Tracker progress and most UI state are persisted in the browser automatically, so a reload or restart normally keeps your session intact.',
-          },
-          {
-            type: 'paragraph',
-            text: 'Use Export State if you want to move the tracker to another browser or share the current state with someone else.',
-          },
-        ],
-      },
-      {
-        id: 'entrance-randomizer',
-        question: 'How do I track entrances?',
-        blocks: [
-          {
-            type: 'paragraph',
-            text: 'When entrance randomizer options are active, you can track which entrance leads where via the map or the Entrances sidebar. Filters for mapped/unmapped and reachable/unreachable entrances are available.',
-          },
-          {
-            type: 'paragraph',
-            text: 'Similar to the items filter reachable shows which entrances can be accessed with your current settings and other discovered entrances. Unmapped entrances are those for which you have not yet entered a discovered connection, while mapped entrances already have a known destination.',
-          },
-          {
-            type: 'paragraph',
-            text: 'If an Entrance Randomizer option is selected, the number next to the check count in the map dropdown reflects the number of entrances based on your items, settings, and filters.',
           },
         ],
       },
