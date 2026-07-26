@@ -845,6 +845,7 @@ const QUEST_MM_REMAINS_GYORG = 2;
 const QUEST_MM_REMAINS_TWINMOLD = 3;
 const QUEST_MM_SONG_AWAKENING = 6;
 const QUEST_MM_SONG_GORON = 7;
+const QUEST_MM_SONG_GORON_HALF = 24;
 const QUEST_MM_SONG_ZORA = 8;
 const QUEST_MM_SONG_EMPTINESS = 9;
 const QUEST_MM_SONG_ORDER = 10;
@@ -4070,6 +4071,12 @@ function extractItems(state: GameState): RawAutotrackerItem[] {
     'MM_SONG_AWAKENING',
   );
   appendQuestBit(items, mm.questItems, QUEST_MM_SONG_GORON, 'MM_SONG_GORON');
+  appendQuestBit(
+    items,
+    mm.questItems,
+    QUEST_MM_SONG_GORON_HALF,
+    'MM_SONG_GORON_HALF',
+  );
   appendQuestBit(items, mm.questItems, QUEST_MM_SONG_ZORA, 'MM_SONG_ZORA');
   appendQuestBit(
     items,
