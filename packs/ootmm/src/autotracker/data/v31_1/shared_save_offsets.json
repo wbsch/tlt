@@ -12,5 +12,6 @@
   "rustyKeysOffset": 2179,
   "rustyKeysOotSize": 4,
   "rustyKeysMmSize": 5,
-  "bombchuBagFlagsOffset": 2132
+  "bombchuBagFlagsOffset": 2132,
+  "songFlagsOotOffset": 866
 }

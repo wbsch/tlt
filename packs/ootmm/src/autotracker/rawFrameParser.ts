@@ -397,6 +397,7 @@ type SharedFixedOffsets = {
   rustyKeysOotSize: number;
   rustyKeysMmSize: number;
   bombchuBagFlagsOffset: number;
+  songFlagsOotOffset: number;
 };
 
 type SharedBitmapInfo = {
@@ -591,6 +592,7 @@ type SharedCustomState = {
   caughtAdultFishWeights: number[];
   rustyKeysOot: number[];
   rustyKeysMm: number[];
+  songFlagsOot: number;
 };
 
 type GameState = {
@@ -1125,6 +1127,7 @@ const DEFAULT_FIXED_OFFSETS: SharedFixedOffsets = {
   rustyKeysOotSize: 4,
   rustyKeysMmSize: 5,
   bombchuBagFlagsOffset: 2114,
+  songFlagsOotOffset: 0x362,
 };
 
 let sharedFixedOffsets: SharedFixedOffsets = { ...DEFAULT_FIXED_OFFSETS };
@@ -1180,6 +1183,11 @@ const buildSharedStateChunkSpecs = (
       name: `${prefix}_shared_custom_save_song_notes`,
       address: baseAddress + fo.songNotesOffset,
       length: fo.songNoteCount,
+    },
+    {
+      name: `${prefix}_shared_custom_save_song_flags_oot`,
+      address: baseAddress + fo.songFlagsOotOffset,
+      length: 2,
     },
     {
       name: `${prefix}_shared_custom_save_rusty_keys`,
@@ -3361,6 +3369,11 @@ function parseSharedStateUnchecked(data: Uint8Array): SharedCustomState | null {
       parsed.songNotes[index] = data[fo.songNotesOffset + index] ?? 0;
     }
   }
+  if (data.length > fo.songFlagsOotOffset + 1) {
+    parsed.songFlagsOot =
+      (data[fo.songFlagsOotOffset] ?? 0) |
+      ((data[fo.songFlagsOotOffset + 1] ?? 0) << 8);
+  }
   if (
     data.length >=
     fo.rustyKeysOffset + fo.rustyKeysOotSize + fo.rustyKeysMmSize
@@ -3604,6 +3617,10 @@ function sharedStateDegradedFrom(
     return true;
   }
 
+  if (previous.songFlagsOot > 0 && current.songFlagsOot === 0) {
+    return true;
+  }
+
   return false;
 }
 
@@ -3624,7 +3641,8 @@ function sharedStateHasMeaningfulData(shared: SharedCustomState): boolean {
     shared.bombchuBagMm > 0 ||
     shared.songNotes.some((value) => value > 0) ||
     shared.caughtChildFishWeights.some((value) => value > 0) ||
-    shared.caughtAdultFishWeights.some((value) => value > 0)
+    shared.caughtAdultFishWeights.some((value) => value > 0) ||
+    shared.songFlagsOot > 0
   );
 }
 
@@ -3832,6 +3850,20 @@ function extractItems(state: GameState): RawAutotrackerItem[] {
     QUEST_OOT_SONG_STORMS,
     'OOT_SONG_STORMS',
   );
+  // Cross-game songs stored as bitfields in SharedCustomSave.oot, not quest items.
+  // N64 is big-endian: GCC packs bitfields MSB-first within each byte.
+  // Byte 0: hasElegy(7) chateauActive(6) hasSongHealing(5) hasSongSoaring(4)
+  //          hasSongAwakening(3) hasSongGoronHalf(2) hasSongGoron(1) hasSongZora(0)
+  // Byte 1: hasSongOrder(15)
+  const sf = state.shared.songFlagsOot;
+  appendPositiveItem(items, 'OOT_SONG_EMPTINESS', (sf >> 7) & 1);
+  appendPositiveItem(items, 'OOT_SONG_HEALING', (sf >> 5) & 1);
+  appendPositiveItem(items, 'OOT_SONG_SOARING', (sf >> 4) & 1);
+  appendPositiveItem(items, 'OOT_SONG_AWAKENING', (sf >> 3) & 1);
+  appendPositiveItem(items, 'OOT_SONG_GORON_HALF', (sf >> 2) & 1);
+  appendPositiveItem(items, 'OOT_SONG_GORON', (sf >> 1) & 1);
+  appendPositiveItem(items, 'OOT_SONG_ZORA', sf & 1);
+  appendPositiveItem(items, 'OOT_SONG_ORDER', (sf >> 15) & 1);
   appendQuestBit(items, oot.questItems, QUEST_OOT_AGONY, 'OOT_STONE_OF_AGONY');
   appendQuestBit(
     items,
@@ -5685,6 +5717,7 @@ function createEmptySharedState(): SharedCustomState {
     ),
     rustyKeysOot: Array.from({ length: fo.rustyKeysOotSize }, () => 0),
     rustyKeysMm: Array.from({ length: fo.rustyKeysMmSize }, () => 0),
+    songFlagsOot: 0,
   };
 }
 
@@ -5758,6 +5791,7 @@ function cloneSharedState(source: SharedCustomState): SharedCustomState {
     caughtAdultFishWeights: [...source.caughtAdultFishWeights],
     rustyKeysOot: [...source.rustyKeysOot],
     rustyKeysMm: [...source.rustyKeysMm],
+    songFlagsOot: source.songFlagsOot,
   };
 }
 

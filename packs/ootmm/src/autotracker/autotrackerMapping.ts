@@ -540,6 +540,210 @@ const MM_BOMBCHU_BAG_IDS = [
 
 const SHARED_BOMBCHU_BAG_IDS = ['SHARED_BOMBCHU_BAG'];
 
+// ---------------------------------------------------------------------------
+// 6. Song note → song synthesis
+// ---------------------------------------------------------------------------
+//
+// Cross-game songs (MM songs given to the OOT player, or OOT songs given
+// to the MM player) have no quest bit in the receiving game's save.
+// Instead they are stored as note counts in the shared custom save.
+// When enough notes have been collected the song is considered learned.
+
+interface SongNoteMapping {
+  noteId: string;
+  songId: string;
+  requiredNotes: number;
+}
+
+/** MM-origin songs learned by the OOT player via song notes. */
+const OOT_CROSS_SONG_MAPPINGS: SongNoteMapping[] = [
+  { noteId: 'OOT_SONG_NOTE_ZORA', songId: 'OOT_SONG_ZORA', requiredNotes: 7 },
+  { noteId: 'OOT_SONG_NOTE_GORON', songId: 'OOT_SONG_GORON', requiredNotes: 8 },
+  {
+    noteId: 'OOT_SONG_NOTE_GORON',
+    songId: 'OOT_SONG_GORON_HALF',
+    requiredNotes: 8,
+  },
+  {
+    noteId: 'OOT_SONG_NOTE_HEALING',
+    songId: 'OOT_SONG_HEALING',
+    requiredNotes: 6,
+  },
+  {
+    noteId: 'OOT_SONG_NOTE_SOARING',
+    songId: 'OOT_SONG_SOARING',
+    requiredNotes: 6,
+  },
+  {
+    noteId: 'OOT_SONG_NOTE_AWAKENING',
+    songId: 'OOT_SONG_AWAKENING',
+    requiredNotes: 7,
+  },
+  {
+    noteId: 'OOT_SONG_NOTE_EMPTINESS',
+    songId: 'OOT_SONG_EMPTINESS',
+    requiredNotes: 7,
+  },
+  { noteId: 'OOT_SONG_NOTE_ORDER', songId: 'OOT_SONG_ORDER', requiredNotes: 6 },
+];
+
+/** OOT-origin songs learned by the MM player via song notes. */
+const MM_CROSS_SONG_MAPPINGS: SongNoteMapping[] = [
+  { noteId: 'MM_SONG_NOTE_ZELDA', songId: 'MM_SONG_ZELDA', requiredNotes: 6 },
+  { noteId: 'MM_SONG_NOTE_SARIA', songId: 'MM_SONG_SARIA', requiredNotes: 6 },
+  { noteId: 'MM_SONG_NOTE_SUN', songId: 'MM_SONG_SUN', requiredNotes: 6 },
+  {
+    noteId: 'MM_SONG_NOTE_TP_FOREST',
+    songId: 'MM_SONG_TP_FOREST',
+    requiredNotes: 6,
+  },
+  {
+    noteId: 'MM_SONG_NOTE_TP_FIRE',
+    songId: 'MM_SONG_TP_FIRE',
+    requiredNotes: 8,
+  },
+  {
+    noteId: 'MM_SONG_NOTE_TP_WATER',
+    songId: 'MM_SONG_TP_WATER',
+    requiredNotes: 5,
+  },
+  {
+    noteId: 'MM_SONG_NOTE_TP_SPIRIT',
+    songId: 'MM_SONG_TP_SPIRIT',
+    requiredNotes: 6,
+  },
+  {
+    noteId: 'MM_SONG_NOTE_TP_SHADOW',
+    songId: 'MM_SONG_TP_SHADOW',
+    requiredNotes: 7,
+  },
+  {
+    noteId: 'MM_SONG_NOTE_TP_LIGHT',
+    songId: 'MM_SONG_TP_LIGHT',
+    requiredNotes: 6,
+  },
+];
+
+/** All SHARED_ song variants, synthesized from OOT or MM note counts. */
+interface SharedSongMapping {
+  sharedSongId: string;
+  ootNoteId: string;
+  mmNoteId: string;
+  requiredNotes: number;
+}
+
+const SHARED_CROSS_SONG_MAPPINGS: SharedSongMapping[] = [
+  {
+    sharedSongId: 'SHARED_SONG_ZORA',
+    ootNoteId: 'OOT_SONG_NOTE_ZORA',
+    mmNoteId: 'MM_SONG_NOTE_ZORA',
+    requiredNotes: 7,
+  },
+  {
+    sharedSongId: 'SHARED_SONG_GORON',
+    ootNoteId: 'OOT_SONG_NOTE_GORON',
+    mmNoteId: 'MM_SONG_NOTE_GORON',
+    requiredNotes: 8,
+  },
+  {
+    sharedSongId: 'SHARED_SONG_GORON_HALF',
+    ootNoteId: 'OOT_SONG_NOTE_GORON',
+    mmNoteId: 'MM_SONG_NOTE_GORON',
+    requiredNotes: 8,
+  },
+  {
+    sharedSongId: 'SHARED_SONG_HEALING',
+    ootNoteId: 'OOT_SONG_NOTE_HEALING',
+    mmNoteId: 'MM_SONG_NOTE_HEALING',
+    requiredNotes: 6,
+  },
+  {
+    sharedSongId: 'SHARED_SONG_SOARING',
+    ootNoteId: 'OOT_SONG_NOTE_SOARING',
+    mmNoteId: 'MM_SONG_NOTE_SOARING',
+    requiredNotes: 6,
+  },
+  {
+    sharedSongId: 'SHARED_SONG_AWAKENING',
+    ootNoteId: 'OOT_SONG_NOTE_AWAKENING',
+    mmNoteId: 'MM_SONG_NOTE_AWAKENING',
+    requiredNotes: 7,
+  },
+  {
+    sharedSongId: 'SHARED_SONG_EMPTINESS',
+    ootNoteId: 'OOT_SONG_NOTE_EMPTINESS',
+    mmNoteId: 'MM_SONG_NOTE_EMPTINESS',
+    requiredNotes: 7,
+  },
+  {
+    sharedSongId: 'SHARED_SONG_ORDER',
+    ootNoteId: 'OOT_SONG_NOTE_ORDER',
+    mmNoteId: 'MM_SONG_NOTE_ORDER',
+    requiredNotes: 6,
+  },
+  {
+    sharedSongId: 'SHARED_SONG_ZELDA',
+    ootNoteId: '',
+    mmNoteId: 'MM_SONG_NOTE_ZELDA',
+    requiredNotes: 6,
+  },
+  {
+    sharedSongId: 'SHARED_SONG_SARIA',
+    ootNoteId: '',
+    mmNoteId: 'MM_SONG_NOTE_SARIA',
+    requiredNotes: 6,
+  },
+  {
+    sharedSongId: 'SHARED_SONG_SUN',
+    ootNoteId: '',
+    mmNoteId: 'MM_SONG_NOTE_SUN',
+    requiredNotes: 6,
+  },
+  {
+    sharedSongId: 'SHARED_SONG_TP_FOREST',
+    ootNoteId: '',
+    mmNoteId: 'MM_SONG_NOTE_TP_FOREST',
+    requiredNotes: 6,
+  },
+  {
+    sharedSongId: 'SHARED_SONG_TP_FIRE',
+    ootNoteId: '',
+    mmNoteId: 'MM_SONG_NOTE_TP_FIRE',
+    requiredNotes: 8,
+  },
+  {
+    sharedSongId: 'SHARED_SONG_TP_WATER',
+    ootNoteId: '',
+    mmNoteId: 'MM_SONG_NOTE_TP_WATER',
+    requiredNotes: 5,
+  },
+  {
+    sharedSongId: 'SHARED_SONG_TP_SPIRIT',
+    ootNoteId: '',
+    mmNoteId: 'MM_SONG_NOTE_TP_SPIRIT',
+    requiredNotes: 6,
+  },
+  {
+    sharedSongId: 'SHARED_SONG_TP_SHADOW',
+    ootNoteId: '',
+    mmNoteId: 'MM_SONG_NOTE_TP_SHADOW',
+    requiredNotes: 7,
+  },
+  {
+    sharedSongId: 'SHARED_SONG_TP_LIGHT',
+    ootNoteId: '',
+    mmNoteId: 'MM_SONG_NOTE_TP_LIGHT',
+    requiredNotes: 6,
+  },
+];
+
+/** Collect all derived song IDs for the DERIVED_AUTOTRACKER_ITEM_IDS set. */
+const ALL_DERIVED_SONG_IDS: string[] = [
+  ...OOT_CROSS_SONG_MAPPINGS.map((m) => m.songId),
+  ...MM_CROSS_SONG_MAPPINGS.map((m) => m.songId),
+  ...SHARED_CROSS_SONG_MAPPINGS.map((m) => m.sharedSongId),
+];
+
 /**
  * Set of all item IDs that are derived/synthesized from other items rather
  * than read directly from game memory.  These represent permanent unlocks
@@ -563,6 +767,7 @@ export const DERIVED_AUTOTRACKER_ITEM_IDS: ReadonlySet<string> = new Set([
   ...OOT_BOMBCHU_BAG_IDS,
   ...MM_BOMBCHU_BAG_IDS,
   ...SHARED_BOMBCHU_BAG_IDS,
+  ...ALL_DERIVED_SONG_IDS,
 ]);
 
 function deriveAutotrackerOnlyItems(
@@ -682,6 +887,42 @@ function deriveAutotrackerOnlyItems(
     SHARED_BOMBCHU_BAG_IDS,
     ootBombchuObtained || mmBombchuObtained || sharedBombchuObtained,
   );
+
+  // Cross-game song synthesis: songs that have no quest bit in the
+  // receiving game's save are detected via song note counts (as a
+  // fallback when the direct song-learned flag from shared custom save
+  // isn't set yet).  The direct flag is authoritative and read by
+  // rawFrameParser; note synthesis only fills in songs not yet flagged.
+  for (const { noteId, songId, requiredNotes } of OOT_CROSS_SONG_MAPPINGS) {
+    if (!availableItemIds.has(songId)) continue;
+    if ((state[songId] ?? 0) > 0) continue; // already flagged, skip
+    if ((state[noteId] ?? 0) >= requiredNotes) {
+      state[songId] = 1;
+    }
+  }
+  for (const { noteId, songId, requiredNotes } of MM_CROSS_SONG_MAPPINGS) {
+    if (!availableItemIds.has(songId)) continue;
+    if ((state[songId] ?? 0) > 0) continue; // already flagged, skip
+    if ((state[noteId] ?? 0) >= requiredNotes) {
+      state[songId] = 1;
+    }
+  }
+  for (const {
+    sharedSongId,
+    ootNoteId,
+    mmNoteId,
+    requiredNotes,
+  } of SHARED_CROSS_SONG_MAPPINGS) {
+    if (!availableItemIds.has(sharedSongId)) continue;
+    if ((state[sharedSongId] ?? 0) > 0) continue; // already flagged, skip
+    const ootDone = ootNoteId
+      ? (state[ootNoteId] ?? 0) >= requiredNotes
+      : false;
+    const mmDone = mmNoteId ? (state[mmNoteId] ?? 0) >= requiredNotes : false;
+    if (ootDone || mmDone) {
+      state[sharedSongId] = 1;
+    }
+  }
 }
 
 function resolveTrackerId(
