@@ -26,6 +26,7 @@ type SyncOperationBase = {
     | 'settings.apply'
     | 'settings.patch_special_conds'
     | 'session.set_spoiler_log_state'
+    | 'session.set_spoiler_fish_ids'
     | 'session.reset_defaults';
 };
 
