@@ -3282,6 +3282,22 @@ async function applySpoilerLog(text: string, selectedPlayer?: number) {
     await handleSettingsChange(nextSettings);
   }
 
+  // Extract fish item IDs from spoiler log location placements.
+  // The tracker uses a hardcoded seed ('TRACKER_SEED') that produces
+  // different random fish weights than the real seed, so we must
+  // override the fish items with the real ones from the spoiler log.
+  {
+    const fishIds = new Set<string>();
+    const FISH_ITEM_ID_PREFIX = 'OOT_FISHING_POND_';
+    for (const placement of parsed.locationPlacements) {
+      const itemId = itemNameToId.get(normalizeName(placement.item));
+      if (itemId && itemId.startsWith(FISH_ITEM_ID_PREFIX)) {
+        fishIds.add(itemId);
+      }
+    }
+    sessionStore.setSpoilerFishItemIds(fishIds);
+  }
+
   if (parsed.preCompletedDungeons.length > 0) {
     sessionStore.setPreCompletedDungeons(
       Array.from(new Set(parsed.preCompletedDungeons)),

@@ -24,6 +24,7 @@ export type OoTMMRoomSessionSnapshot = {
   entranceOverrides: Record<string, string>;
   hasImportedSpoilerLog: boolean;
   importedSpoilerLogVersion: string | null;
+  spoilerFishItemIds: string[];
 };
 
 export type OoTMMRoomSnapshotEnvelope = {

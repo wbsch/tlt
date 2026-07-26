@@ -70,6 +70,7 @@ type SessionSnapshot = {
   junkLocationIds: string[];
   needsLegacyCrossWarpOotSynthesis: boolean;
   needsLegacyCrossWarpMmSynthesis: boolean;
+  spoilerFishItemIds: string[];
 };
 
 type MutationOptions = {
@@ -406,6 +407,7 @@ export const useOoTMMSessionStore = defineStore('ootmm-session', () => {
   const needsLegacyCrossWarpOotSynthesis = ref(false);
   const needsLegacyCrossWarpMmSynthesis = ref(false);
   const availableItemIds = ref<string[]>([]);
+  const spoilerFishItemIds = ref<string[]>([]);
   const itemMaxCountsById = ref<Record<string, number>>({});
 
   const reachableLocationIds = ref<string[]>([]);
@@ -430,7 +432,13 @@ export const useOoTMMSessionStore = defineStore('ootmm-session', () => {
   >('idle');
 
   const inventoryMap = computed(() => recordToMap(inventoryById.value));
-  const availableItemIdSet = computed(() => new Set(availableItemIds.value));
+  const availableItemIdSet = computed(() => {
+    const result = new Set(availableItemIds.value);
+    for (const id of spoilerFishItemIds.value) {
+      result.add(id);
+    }
+    return result;
+  });
   function getEffectiveItemMaxCount(itemId: string, fallbackMax = 1): number {
     const definedMaxCount =
       getGridItemDefinedMaxCount(itemId, {
@@ -646,6 +654,10 @@ export const useOoTMMSessionStore = defineStore('ootmm-session', () => {
       imported: snapshot.hasImportedSpoilerLog,
       ootmmVersion: snapshot.importedSpoilerLogVersion,
     });
+    publishSyncOperation({
+      type: 'session.set_spoiler_fish_ids',
+      ids: [...snapshot.spoilerFishItemIds],
+    });
   }
 
   function captureSessionSnapshot(): SessionSnapshot {
@@ -662,6 +674,7 @@ export const useOoTMMSessionStore = defineStore('ootmm-session', () => {
       importedSpoilerLogVersion: importedSpoilerLogVersion.value,
       needsLegacyCrossWarpOotSynthesis: needsLegacyCrossWarpOotSynthesis.value,
       needsLegacyCrossWarpMmSynthesis: needsLegacyCrossWarpMmSynthesis.value,
+      spoilerFishItemIds: [...spoilerFishItemIds.value],
     };
   }
 
@@ -821,6 +834,10 @@ export const useOoTMMSessionStore = defineStore('ootmm-session', () => {
         );
         return;
       }
+      case 'session.set_spoiler_fish_ids': {
+        spoilerFishItemIds.value = uniqueStrings(envelope.op.ids ?? []);
+        return;
+      }
       case 'session.reset_defaults': {
         await resetSessionStateToDefaults(REMOTE_MUTATION_OPTIONS);
       }
@@ -896,6 +913,7 @@ export const useOoTMMSessionStore = defineStore('ootmm-session', () => {
         entranceOverrides: { ...entranceOverrides.value },
         hasImportedSpoilerLog: hasImportedSpoilerLog.value,
         importedSpoilerLogVersion: importedSpoilerLogVersion.value,
+        spoilerFishItemIds: [...spoilerFishItemIds.value],
       },
     };
   }
@@ -933,6 +951,7 @@ export const useOoTMMSessionStore = defineStore('ootmm-session', () => {
       state.importedSpoilerLogVersion ?? null,
       REMOTE_MUTATION_OPTIONS,
     );
+    spoilerFishItemIds.value = uniqueStrings(state.spoilerFishItemIds ?? []);
 
     if (state.trackerSettings && typeof state.trackerSettings === 'object') {
       await applySettings(state.trackerSettings, REMOTE_MUTATION_OPTIONS);
@@ -1082,6 +1101,9 @@ export const useOoTMMSessionStore = defineStore('ootmm-session', () => {
           targetNeedsLegacyCrossWarpOotSynthesis;
         needsLegacyCrossWarpMmSynthesis.value =
           targetNeedsLegacyCrossWarpMmSynthesis;
+        spoilerFishItemIds.value = uniqueStrings(
+          snapshot.spoilerFishItemIds ?? [],
+        );
         reachableLocationIds.value = [];
         reachableEntranceIds.value = [];
         canComplete.value = false;
@@ -1137,6 +1159,9 @@ export const useOoTMMSessionStore = defineStore('ootmm-session', () => {
         targetNeedsLegacyCrossWarpOotSynthesis;
       needsLegacyCrossWarpMmSynthesis.value =
         targetNeedsLegacyCrossWarpMmSynthesis;
+      spoilerFishItemIds.value = uniqueStrings(
+        snapshot.spoilerFishItemIds ?? [],
+      );
       applyPreCompletedDungeons();
       applySongEvents();
       applyShopPrices();
@@ -1781,6 +1806,10 @@ export const useOoTMMSessionStore = defineStore('ootmm-session', () => {
     needsLegacyCrossWarpMmSynthesis.value = needed;
   }
 
+  function setSpoilerFishItemIds(ids: Set<string>) {
+    spoilerFishItemIds.value = Array.from(ids);
+  }
+
   let reinitEntrancesTimer: ReturnType<typeof setTimeout> | null = null;
 
   function scheduleReinitializeForEntrances() {
@@ -2120,6 +2149,7 @@ export const useOoTMMSessionStore = defineStore('ootmm-session', () => {
     importedSpoilerLogVersion.value = null;
     needsLegacyCrossWarpOotSynthesis.value = false;
     needsLegacyCrossWarpMmSynthesis.value = false;
+    spoilerFishItemIds.value = [];
 
     if (!currentTracker) {
       trackerSettings.value = {};
@@ -2171,8 +2201,9 @@ export const useOoTMMSessionStore = defineStore('ootmm-session', () => {
 
   function fillInventoryForDebugActivateAll(options?: MutationOptions) {
     const nextInventory: Record<string, number> = {};
-    if (availableItemIds.value.length > 0) {
-      for (const itemId of availableItemIds.value) {
+    const allIds = availableItemIdSet.value;
+    if (allIds.size > 0) {
+      for (const itemId of allIds) {
         const maxCount = getEffectiveItemMaxCount(itemId);
         nextInventory[itemId] = Math.max(1, maxCount);
       }
@@ -2233,6 +2264,7 @@ export const useOoTMMSessionStore = defineStore('ootmm-session', () => {
     needsLegacyCrossWarpOotSynthesis,
     needsLegacyCrossWarpMmSynthesis,
     availableItemIds,
+    spoilerFishItemIds,
     itemMaxCountsById,
     reachableLocationIds,
     canComplete,
@@ -2280,6 +2312,7 @@ export const useOoTMMSessionStore = defineStore('ootmm-session', () => {
     setSpoilerLogImportState,
     setNeedsLegacyCrossWarpOotSynthesis,
     setNeedsLegacyCrossWarpMmSynthesis,
+    setSpoilerFishItemIds,
     applyPreCompletedDungeons,
     applySongEvents,
     applyShopPrices,

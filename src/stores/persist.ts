@@ -365,6 +365,7 @@ export const PERSIST_CONFIGS: Record<PersistStoreId, PersistConfig> = {
       'importedSpoilerLogVersion',
       'needsLegacyCrossWarpOotSynthesis',
       'needsLegacyCrossWarpMmSynthesis',
+      'spoilerFishItemIds',
       'coopRoomCode',
     ],
     hydrate: (raw) => {
@@ -474,6 +475,9 @@ export const PERSIST_CONFIGS: Record<PersistStoreId, PersistConfig> = {
               needsLegacyCrossWarpMmSynthesis:
                 raw.needsLegacyCrossWarpMmSynthesis,
             }
+          : {}),
+        ...(Array.isArray(raw.spoilerFishItemIds)
+          ? { spoilerFishItemIds: stringArray(raw.spoilerFishItemIds) }
           : {}),
         ...(safeOptionalString(raw.importedSpoilerLogVersion) !== undefined
           ? {

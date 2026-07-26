@@ -92,6 +92,10 @@ export type OoTMMSyncOperation =
       ootmmVersion: string | null;
     })
   | (SyncOperationBase & {
+      type: 'session.set_spoiler_fish_ids';
+      ids: string[];
+    })
+  | (SyncOperationBase & {
       type: 'session.reset_defaults';
     });
 
