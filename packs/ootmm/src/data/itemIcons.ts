@@ -1249,12 +1249,21 @@ const RAW_GRID_ICON_VARIANTS: Record<string, GridIconVariantConfig> = {
   MM_SONG_GORON_HALF: {
     default: {
       icons: ['images/song_intro.png', 'images/song_lullaby.png'],
+      linkedItemIds: ['MM_SONG_GORON_HALF', 'MM_SONG_GORON'],
       startUndimmed: false,
     },
   },
   OOT_SONG_GORON_HALF: {
     default: {
       icons: ['images/song_intro.png', 'images/song_lullaby.png'],
+      linkedItemIds: ['OOT_SONG_GORON_HALF', 'OOT_SONG_GORON'],
+      startUndimmed: false,
+    },
+  },
+  SHARED_SONG_GORON_HALF: {
+    default: {
+      icons: ['images/song_intro.png', 'images/song_lullaby.png'],
+      linkedItemIds: ['SHARED_SONG_GORON_HALF', 'SHARED_SONG_GORON'],
       startUndimmed: false,
     },
   },

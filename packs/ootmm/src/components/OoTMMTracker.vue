@@ -25,6 +25,7 @@ import {
   DUNGEON_REWARD_ITEM_IDS,
   DUNGEON_REWARD_REGION_LABELS,
   FREE_REWARD_LABEL_ITEM_ID,
+  getGridItemLinkedItemIds,
   getGridWheelOverlayStageForValue,
   getGridWheelOverlayStateItemId,
 } from '../data/itemIcons';
@@ -1148,6 +1149,29 @@ function enqueueAutotrackerToast(kind: AutotrackerToastKind, message: string) {
   autotrackerToastTimeouts.set(toast.id, timeoutId);
 }
 
+const toastableAutotrackerItemIds = computed(() => {
+  const result = new Set(availableItemIds.value);
+  // Include linked item IDs from grid icon configurations.
+  // Some items (e.g. MM_SONG_GORON for progressive Goron Lullaby) are
+  // sent by the autotracker via quest bits but are not directly in the
+  // item pool when progressive mode replaces them (e.g. MM_SONG_GORON
+  // replaced by MM_SONG_GORON_HALF).  We add linked item IDs here so
+  // toast notifications can still fire for these items.
+  for (const itemId of availableItemIds.value) {
+    const linkedIds = getGridItemLinkedItemIds(itemId, {
+      availableItemIds: availableItemIds.value,
+      inventory: inventory.value,
+      settings: trackerSettings.value,
+    });
+    if (linkedIds) {
+      for (const linkedId of linkedIds) {
+        result.add(linkedId);
+      }
+    }
+  }
+  return result;
+});
+
 function shouldShowAutotrackerItemToast(itemId: string): boolean {
   if (itemId.startsWith(GRID_REF_ALIAS_PREFIX)) {
     return false;
@@ -1161,7 +1185,7 @@ function shouldShowAutotrackerItemToast(itemId: string): boolean {
     return false;
   }
 
-  return availableItemIds.value.has(itemId);
+  return toastableAutotrackerItemIds.value.has(itemId);
 }
 
 function getAutotrackerItemToastMessage(itemId: string, gainedCount: number) {

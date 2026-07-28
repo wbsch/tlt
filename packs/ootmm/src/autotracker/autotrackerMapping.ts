@@ -10,6 +10,7 @@
  */
 
 import { ITEM_DATABASE } from '../data/items';
+import { getGridItemLinkedItemIds } from '../data/itemIcons';
 
 // ---------------------------------------------------------------------------
 // 1. Simple 1:1 renames
@@ -925,21 +926,40 @@ function deriveAutotrackerOnlyItems(
   }
 }
 
+/**
+ * Build a set of all canonical item IDs, including items that are only
+ * reachable as linked progression stages of other items (e.g.
+ * SHARED_SONG_GORON is a linked stage of SHARED_SONG_GORON_HALF but may
+ * not be directly in the item pool when progressive mode replaces it).
+ */
+function buildCanonicalItemIdSet(availableItemIds: Set<string>): Set<string> {
+  const result = new Set(availableItemIds);
+  for (const itemId of availableItemIds) {
+    const linkedIds = getGridItemLinkedItemIds(itemId, {});
+    if (linkedIds) {
+      for (const linkedId of linkedIds) {
+        result.add(linkedId);
+      }
+    }
+  }
+  return result;
+}
+
 function resolveTrackerId(
   gameSpecificId: string,
-  availableItemIds: Set<string>,
+  canonicalItemIds: Set<string>,
 ): string {
-  if (availableItemIds.has(gameSpecificId)) return gameSpecificId;
+  if (canonicalItemIds.has(gameSpecificId)) return gameSpecificId;
 
   // Try SHARED_ variant
   const match = gameSpecificId.match(/^(OOT|MM)_(.+)$/);
   if (match) {
     const suffix = match[2];
     const sharedId = `SHARED_${suffix}`;
-    if (availableItemIds.has(sharedId)) return sharedId;
+    if (canonicalItemIds.has(sharedId)) return sharedId;
   }
 
-  // Return original even if not in available set — the store will accept it
+  // Return original even if not in canonical set — the store will accept it
   return gameSpecificId;
 }
 
@@ -1057,9 +1077,10 @@ export function translateAutotrackerItems(
   options: AutotrackerTranslationOptions = {},
 ): Record<string, number> {
   const result: Record<string, number> = {};
+  const canonicalItemIds = buildCanonicalItemIdSet(availableItemIds);
 
   function set(trackerId: string, qty: number) {
-    const resolvedId = resolveTrackerId(trackerId, availableItemIds);
+    const resolvedId = resolveTrackerId(trackerId, canonicalItemIds);
     result[resolvedId] = Math.max(result[resolvedId] ?? 0, qty);
   }
 
