@@ -1,16 +1,18 @@
 {
-  "sharedCustomSaveSize": 2188,
-  "halfDaysOffset": 1758,
-  "coinsOffset": 2000,
-  "ocarinaButtonMaskOotOffset": 2008,
-  "ocarinaButtonMaskMmOffset": 2010,
-  "caughtChildFishWeightOffset": 2053,
-  "caughtAdultFishWeightOffset": 2073,
+  "sharedCustomSaveSize": 2204,
+  "halfDaysOffset": 1780,
+  "coinsOffset": 2016,
+  "ocarinaButtonMaskOotOffset": 2024,
+  "ocarinaButtonMaskMmOffset": 2026,
+  "caughtChildFishWeightOffset": 2069,
+  "caughtAdultFishWeightOffset": 2089,
   "caughtFishWeightCount": 20,
-  "songNotesOffset": 2141,
+  "songNotesOffset": 2157,
   "songNoteCount": 38,
-  "rustyKeysOffset": 2179,
+  "rustyKeysOffset": 2195,
   "rustyKeysOotSize": 4,
   "rustyKeysMmSize": 5,
-  "bombchuBagFlagsOffset": 2132
+  "songFlagsOotOffset": 884,
+  "songFlagsMmOffset": 1976,
+  "bombchuBagFlagsOffset": 2148
 }

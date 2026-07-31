@@ -402,106 +402,106 @@
     "shared": {
       "baseOffset": 98304,
       "stride": 16384,
-      "trackedSize": 2188,
+      "trackedSize": 2204,
       "bitmaps": [
         {
           "name": "xflagsOot",
           "offset": 0,
-          "size": 744
+          "size": 762
         },
         {
           "name": "npcOot",
-          "offset": 744,
+          "offset": 762,
           "size": 32
         },
         {
           "name": "shopsOot",
-          "offset": 776,
+          "offset": 794,
           "size": 8
         },
         {
           "name": "scrubsOot",
-          "offset": 784,
+          "offset": 802,
           "size": 8
         },
         {
           "name": "srOot",
-          "offset": 792,
+          "offset": 810,
           "size": 16
         },
         {
           "name": "xflagsMm",
-          "offset": 880,
-          "size": 842
+          "offset": 896,
+          "size": 848
         },
         {
           "name": "npcMm",
-          "offset": 1722,
+          "offset": 1744,
           "size": 32
         },
         {
           "name": "shopsMm",
-          "offset": 1754,
+          "offset": 1776,
           "size": 4
         },
         {
           "name": "soulsEnemyOot",
-          "offset": 2012,
+          "offset": 2028,
           "size": 8
         },
         {
           "name": "soulsEnemyMm",
-          "offset": 2020,
+          "offset": 2036,
           "size": 8
         },
         {
           "name": "soulsBossOot",
-          "offset": 2028,
+          "offset": 2044,
           "size": 2
         },
         {
           "name": "soulsBossMm",
-          "offset": 2030,
+          "offset": 2046,
           "size": 1
         },
         {
           "name": "soulsNpcOot",
-          "offset": 2031,
+          "offset": 2047,
           "size": 8
         },
         {
           "name": "soulsNpcMm",
-          "offset": 2039,
+          "offset": 2055,
           "size": 8
         },
         {
           "name": "soulsAnimalOot",
-          "offset": 2047,
+          "offset": 2063,
           "size": 2
         },
         {
           "name": "soulsAnimalMm",
-          "offset": 2049,
+          "offset": 2065,
           "size": 2
         },
         {
           "name": "soulsMiscOot",
-          "offset": 2051,
+          "offset": 2067,
           "size": 1
         },
         {
           "name": "soulsMiscMm",
-          "offset": 2052,
+          "offset": 2068,
           "size": 1
         },
         {
           "name": "caughtFishFlags",
-          "offset": 2093,
+          "offset": 2109,
           "size": 5
         },
         {
           "name": "progressiveFlags",
-          "offset": 2133,
+          "offset": 2149,
           "size": 1
         }
       ]

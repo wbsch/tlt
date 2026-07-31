@@ -1,9 +1,9 @@
-import autotrackerDataManifest from './data/v31_0/manifest.json';
-import inventorySlotsData from './data/v31_0/inventory_slots.json';
-import liveAddrsData from './data/v31_0/live_addrs.json';
-import locationsData from './data/v31_0/locations.json';
-import specialLocationsMmData from './data/v31_0/special_locations_mm.json';
-import specialLocationsOotData from './data/v31_0/special_locations_oot.json';
+import autotrackerDataManifest from './data/v32_0/manifest.json';
+import inventorySlotsData from './data/v32_0/inventory_slots.json';
+import liveAddrsData from './data/v32_0/live_addrs.json';
+import locationsData from './data/v32_0/locations.json';
+import specialLocationsMmData from './data/v32_0/special_locations_mm.json';
+import specialLocationsOotData from './data/v32_0/special_locations_oot.json';
 import {
   DEFAULT_DATA_VERSION,
   hasAutotrackerDataForVersion,
@@ -62,7 +62,7 @@ async function loadAutotrackerData(
 }
 
 // ---------------------------------------------------------------------------
-// Mutable module-level tables – initialized from the default (v31_0) data
+// Mutable module-level tables – initialized from the default (v32_0) data
 // and swapped out when a version-specific spoiler log is loaded.
 // ---------------------------------------------------------------------------
 
@@ -1117,22 +1117,22 @@ const MM_SAVE_CTX_USED_SIZE = Math.max(
 let inventorySlotFile = inventorySlotsData as InventorySlotFile;
 
 const DEFAULT_FIXED_OFFSETS: SharedFixedOffsets = {
-  sharedCustomSaveSize: 0x880,
-  halfDaysOffset: 0x6de,
-  coinsOffset: 0x7c0,
-  ocarinaButtonMaskOotOffset: 0x7c8,
-  ocarinaButtonMaskMmOffset: 0x7ca,
-  caughtChildFishWeightOffset: 2037,
-  caughtAdultFishWeightOffset: 2057,
+  sharedCustomSaveSize: 0x89c,
+  halfDaysOffset: 0x6f4,
+  coinsOffset: 0x7e0,
+  ocarinaButtonMaskOotOffset: 0x7e8,
+  ocarinaButtonMaskMmOffset: 0x7ea,
+  caughtChildFishWeightOffset: 2069,
+  caughtAdultFishWeightOffset: 2089,
   caughtFishWeightCount: 20,
-  songNotesOffset: 2125,
+  songNotesOffset: 2157,
   songNoteCount: 38,
-  rustyKeysOffset: 2163,
+  rustyKeysOffset: 2195,
   rustyKeysOotSize: 4,
   rustyKeysMmSize: 5,
-  bombchuBagFlagsOffset: 2114,
-  songFlagsOotOffset: 0x362,
-  songFlagsMmOffset: 0x7a0,
+  bombchuBagFlagsOffset: 2148,
+  songFlagsOotOffset: 0x374,
+  songFlagsMmOffset: 0x7b8,
 };
 
 let sharedFixedOffsets: SharedFixedOffsets = { ...DEFAULT_FIXED_OFFSETS };
@@ -2174,11 +2174,11 @@ export function createRawAutotrackerParserForTest(
 
 /**
  * Synchronous factory that loads data for a specific version directory
- * (e.g. `'v30_1'`, `'v31_0'`, `'v31_1'`) and returns a parser.
+ * (e.g. `'v30_1'`, `'v31_0'`, `'v31_1'`, `'v32_0'`) and returns a parser.
  * Uses the eager registry so no async imports are needed.
  */
 export function createRawAutotrackerParserSync(
-  dirName = 'v31_0',
+  dirName = 'v32_0',
 ): RawAutotrackerParser {
   const bundle = loadAutotrackerDataSync(dirName);
   applyVersionData(buildParserTables(bundle));

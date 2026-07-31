@@ -28,7 +28,7 @@ It:
 
 ## Unsupported Settings
 
-All settings that were available in the randomizer's code on Juliy 04, 2026 (Version 31.1) are supported by this tracker.
+All settings that were available in the randomizer's code on July 19, 2026 (Version 32.0) are supported by this tracker.
 
 There are a few settings the tracker does not represent because they are not relevant for tracking (e.g., OoT Shields). Nevertheless, The Last Tracker can be used for all options within those settings -
 you will still see what's available for you.

@@ -28,7 +28,7 @@ import sys
 # ── Struct layout constants (from OoTMM C headers) ──────────────────────
 
 # XFLAGS_COUNT_MM from OoTMM/packages/generator/include/combo/xflags_data.h
-XFLAGS_COUNT_MM = 0x34A
+XFLAGS_COUNT_MM = 0x350
 
 # SharedCustomSave layout (from save.h):
 #

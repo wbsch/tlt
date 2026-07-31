@@ -21,6 +21,7 @@ const AUTOTRACKER_DATA_VERSIONS: AutotrackerDataVersion[] = [
   { dirName: 'v30_1', label: '30.1' },
   { dirName: 'v31_0', label: '31.0' },
   { dirName: 'v31_1', label: '31.1' },
+  { dirName: 'v32_0', label: '32.0' },
 ];
 
 /** Default version used when no spoiler log has been imported. */
@@ -77,7 +78,7 @@ export function getDefaultDataVersionDirName(): string {
 
 /**
  * Return a human-readable sorted list of supported version labels,
- * e.g. "30.1, 31.0, 31.1".
+ * e.g. "30.1, 31.0, 31.1, 32.0".
  */
 export function getSupportedVersionLabels(): string {
   return AUTOTRACKER_DATA_VERSIONS.map((v) => v.label).join(', ');

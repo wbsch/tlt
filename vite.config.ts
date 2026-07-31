@@ -22,18 +22,14 @@ const publicImageExtensions = new Set([
   '.svg',
   '.webp',
 ]);
-const ootmmCjsDeps = [
-  '@ootmm/core/logic/index',
-  '@ootmm/core/logic/pathfind',
-  '@ootmm/core/logic/locations',
-  '@ootmm/core/logic/entrance',
-  '@ootmm/core/logic/is-shuffled',
-  '@ootmm/core/items/index',
-  '@ootmm/core/names',
-  '@ootmm/core/monitor',
-  '@ootmm/core/settings/index',
-  '@ootmm/core/settings/data',
-];
+// NOTE: @ootmm/core/* modules are intentionally NOT listed in
+// `optimizeDeps.include`. They are resolved by the aliases below to plain
+// TypeScript sources inside ./OoTMM, so pre-bundling them would freeze a
+// snapshot of the OoTMM sources in node_modules/.vite that is never
+// invalidated when the OoTMM checkout changes (the OoTMM settings, items and
+// logic data change on every OoTMM version bump, e.g. new shuffle settings).
+// Importing them as regular source keeps dev and build always in sync with
+// the checked-out OoTMM revision.
 
 function isPublicImagePath(filePath: string): boolean {
   return (
@@ -282,9 +278,6 @@ export default defineConfig(({ mode }) => {
       __TLT_BUILD_COMMIT_HASH__: JSON.stringify(buildCommitHash),
       __TLT_OOTMM_VERSION_TAG__: JSON.stringify(ootmmVersionTag),
       __TLT_USE_RESTRICTED_ASSETS__: JSON.stringify(useRestrictedAssets),
-    },
-    optimizeDeps: {
-      include: ootmmCjsDeps,
     },
     server: {
       proxy: {

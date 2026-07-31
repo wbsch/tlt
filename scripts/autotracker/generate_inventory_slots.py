@@ -22,8 +22,8 @@ SHARED_COIN_COUNT = 4
 
 # ── Struct layout constants (from OoTMM headers) ──────────────────────────
 
-XFLAGS_COUNT_OOT = 0x2E8  # from xflags_data.h
-XFLAGS_COUNT_MM  = 0x34A  # from xflags_data.h
+XFLAGS_COUNT_OOT = 0x2FA  # from xflags_data.h (v32.0)
+XFLAGS_COUNT_MM  = 0x350  # from xflags_data.h (v32.0)
 RESPAWN_SIZE     = 0x20   # RespawnData (mm/save.h)
 TRAP_MAX         = 7
 NOTES_MAX        = 0x26
@@ -32,17 +32,17 @@ RUSTY_KEYS_MM_SIZE  = 5
 
 def build_shared_storage(mm_custom_save_size: int) -> dict:
     """Build shared storage layout and fixed offsets from MmCustomSave size."""
-    oot_size = 0x370  # sizeof(OotCustomSave) = xflagsMm offset
+    oot_size = 0x380  # sizeof(OotCustomSave) = xflagsMm offset (v32.0)
     mm_size = mm_custom_save_size
     pre_soul = 0x20 + 8 + 2 + 2  # netGiSkip[16] + coins[4] + ocarinaMasks[4] = 0x2C
 
     # Bitmap offsets (all within gSharedCustomSave)
     xflagsOot      = 0x000
-    npcOot         = 0x2E8
-    shopsOot       = 0x308
-    scrubsOot      = 0x310
-    srOot          = 0x318
-    xflagsMm       = oot_size  # 0x370
+    npcOot         = XFLAGS_COUNT_OOT
+    shopsOot       = npcOot + 32
+    scrubsOot      = shopsOot + 8
+    srOot          = scrubsOot + 8
+    xflagsMm       = oot_size  # 0x380
     npcMm          = oot_size + XFLAGS_COUNT_MM  # xflagsMm + XFLAGS_COUNT_MM
     shopsMm        = npcMm + 32
     souls_enemy_oot = oot_size + mm_size + pre_soul
@@ -73,6 +73,10 @@ def build_shared_storage(mm_custom_save_size: int) -> dict:
     traps = bitfields + 2
     notes = traps + TRAP_MAX
     rusty_keys = notes + NOTES_MAX
+
+    # Song flag offsets within each custom save (byte holding the song bitfields)
+    song_flags_oot = XFLAGS_COUNT_OOT + 32 + 8 + 8 + 16 + 2 * 28 + 2
+    song_flags_mm = ((half_days + 1 + 3) & ~3) + 3 * 64
 
     tracked_size = max(
         progressive_flags + 1,       # cover all bitmaps
@@ -124,6 +128,8 @@ def build_shared_storage(mm_custom_save_size: int) -> dict:
         "rustyKeysOffset": rusty_keys,
         "rustyKeysOotSize": RUSTY_KEYS_OOT_SIZE,
         "rustyKeysMmSize": RUSTY_KEYS_MM_SIZE,
+        "songFlagsOotOffset": song_flags_oot,
+        "songFlagsMmOffset": song_flags_mm,
         "bombchuBagFlagsOffset": bitfields,
     }
 
@@ -285,7 +291,7 @@ def parse_args() -> argparse.Namespace:
         "--mm-custom-save-size",
         type=lambda x: int(x, 0),
         default=0x440,
-        help="sizeof(MmCustomSave) in hex (default: 0x440 for v31.1). Use 0x430 for v30.1.",
+        help="sizeof(MmCustomSave) in hex (default: 0x440 for v31.1/v32.0). Use 0x430 for v30.1.",
     )
     parser.add_argument(
         "--shared-save-offsets-output",
