@@ -43,10 +43,18 @@ When a new version of the OoTMM randomizer is checked out in the `OoTMM/` folder
 ```bash
 cd OoTMM
 
-# 1. Install workspace dependencies without triggering native compilation scripts
+# 1. Install workspace dependencies, but ONLY if they actually changed.
+# Most releases touch no dependency manifest, and reinstalling a working
+# workspace is slow for no benefit. Check first (substitute the real tags):
+git diff --name-only v31.1 v32.0 | grep -E 'package\.json|pnpm-lock\.yaml'
+#
+# Run the install if that prints something, or if `node_modules/` is absent
+# (always the case on a fresh clone and in CI). Otherwise skip to step 2.
+# `--ignore-scripts` avoids triggering native compilation.
 npx pnpm install --ignore-scripts
 
-# 2. Build just the @ootmm/core package
+# 2. Build just the @ootmm/core package (ALWAYS required — this is what
+# actually picks up the new release's data)
 # This generates `packages/core/dist/data-*.json` (data-world.json,
 # data-entrances.json, data-gossips.json, ...), which our
 # `generate:map-schema` script and the '@ootmm/data' bridge expect to read.
@@ -56,18 +64,52 @@ cd ..
 
 # 3. Update the CI OoTMM pin in `.github/workflows/check-most.yml`.
 # Resolve the release tag to the commit it points at:
-git ls-remote --tags https://github.com/OoTMM/OoTMM.git refs/tags/v31.1 refs/tags/v31.1^{}
+git ls-remote --tags https://github.com/OoTMM/OoTMM.git refs/tags/v32.0 refs/tags/v32.0^{}
 
 # Use the commit from the upstream OoTMM repository for `OOTMM_COMMIT`.
 # Do not use a local-only performance/test commit from your `OoTMM/` checkout.
 
 # 4. If the release changed the autotracker-relevant data, regenerate it
-# (validate:autotracker-data will fail during check-all/build otherwise):
-npm run generate:autotracker-data
+# (validate:autotracker-data will fail during check-all/build otherwise).
+# Pass a patchfile from a seed generated with THIS release -- see the
+# "live_addrs.json" warning below for why this matters:
+OOTMM_PATCHFILE=/path/to/OoTMM-Patch-XXXX.ootmm npm run generate:autotracker-data
 
 # 5. Everything should now be ready for our main pipeline checks
 npm run check-all
 ```
+
+### Warning: `live_addrs.json` fails silently
+
+`generate:autotracker-data` writes a per-version data directory
+(`packs/ootmm/src/autotracker/data/v32_0/` and friends). Every file in there is
+derived from the checked-out release **except `live_addrs.json`**, which can only
+be produced from a real patchfile. Without `OOTMM_PATCHFILE` set, the generator
+falls back to `selectSeedFile()` and copies whatever it finds — and because the
+base data directory holds no `live_addrs.json`, the fallback lands on the legacy
+`tlt_autotracker/ootmm-autotracker/ootmm/live_addrs.json`, which is old and comes
+from an unrelated checkout. It does **not** fall back to the previous version's
+directory, which is what you would probably expect.
+
+This is easy to miss because nothing complains:
+
+- `validate:autotracker-data` does not check `live_addrs.json` (it is absent from
+  that script's `EXACT_FILES`), so `check-all` and CI stay green.
+- The file is structurally valid, so nothing fails at runtime either. Autotracking
+  simply reads the wrong memory addresses and reports nonsense.
+
+So after regenerating, confirm the file really came from this release:
+
+```bash
+python3 -c "import json;print(json.load(open('packs/ootmm/src/autotracker/data/v32_0/live_addrs.json'))['generatedFrom'])"
+```
+
+If `patchfile` points at someone else's home directory or an old seed, it is
+stale — regenerate with `OOTMM_PATCHFILE` set to a seed built from this release.
+
+Related: `packs/ootmm/src/autotracker/data/versions.ts` deliberately gates which
+versions are enabled for autotracking. Leave a new version out of that list until
+its `live_addrs.json` is confirmed good; adding the data directory alone is safe.
 
 ### Dealing with Upstream Restructuring
 

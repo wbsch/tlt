@@ -33,7 +33,9 @@ XFLAG_TYPES = {
     "fairy_spot",
     "wonder",
     "butterfly",
-    "redboulder",
+    "boulder",
+    "boulder-red",
+    "boulder-silver",
     "icicle",
     "redice",
 }

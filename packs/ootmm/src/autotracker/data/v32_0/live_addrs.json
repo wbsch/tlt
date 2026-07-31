@@ -1,0 +1,44 @@
+{
+  "schemaVersion": 1,
+  "generatedFrom": {
+    "patchfile": "/mnt/goroncity/roms/Multiworld/justme/OoTMM-XCPsnJLZ/OoTMM-Patch-XCPsnJLZ.ootmm",
+    "ootmmRepo": "/home/silke/stuff/repos/tlt_autotracker/OoTMM",
+    "defs": "/home/silke/stuff/repos/tlt_autotracker/OoTMM/packages/generator/include/combo/defs.h",
+    "ootLinker": "/home/silke/stuff/repos/tlt_autotracker/OoTMM/packages/generator/src/link_oot.in",
+    "mmLinker": "/home/silke/stuff/repos/tlt_autotracker/OoTMM/packages/generator/src/link_mm.in"
+  },
+  "oot": {
+    "comboCtx": "0x80006584",
+    "saveCtx": "0x8011a5d0",
+    "payload": "0x80400000",
+    "comboConfigLive": "0x804416c8",
+    "runtimeSilverRupeeDataLive": "0x8042ec10",
+    "runtimeMaxKeysLive": "0x80441c78",
+    "derivation": {
+      "comboCtx": "source-define",
+      "saveCtx": "source-linker",
+      "payload": "patchfile-vram",
+      "comboConfigLive": "patchfile-code-scan",
+      "runtimeSilverRupeeDataLive": "patchfile-payload-scan",
+      "runtimeMaxKeysLive": "patchfile-code-scan+offset"
+    },
+    "missingPatchfileSymbols": ["gMmSave", "gSharedCustomSave"]
+  },
+  "mm": {
+    "comboCtx": "0x80098280",
+    "saveCtx": "0x801ef670",
+    "payload": "0x80730000",
+    "comboConfigLive": "0x80770b18",
+    "derivation": {
+      "comboCtx": "source-define",
+      "saveCtx": "source-linker",
+      "payload": "patchfile-vram",
+      "comboConfigLive": "patchfile-code-scan"
+    },
+    "missingPatchfileSymbols": ["gOotSave", "gSharedCustomSave"]
+  },
+  "notDerivableWithoutLinking": {
+    "oot": ["foreignSaveLive", "sharedCustomSaveLive"],
+    "mm": ["foreignSaveLive", "sharedCustomSaveLive"]
+  }
+}
