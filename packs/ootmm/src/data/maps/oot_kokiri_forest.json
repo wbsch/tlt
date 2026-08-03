@@ -300,6 +300,11 @@
       "codes": "OOT Lost Woods Rupee Boulder"
     },
     {
+      "coords": [182, 232],
+      "image": "boulder",
+      "codes": "OOT Lost Woods Boulder Deep 1"
+    },
+    {
       "coords": [159, 362],
       "image": "wonder_item_blue_rupee",
       "overlays": ["child"],
@@ -853,6 +858,10 @@
         {
           "image": "big_fairy_spot",
           "codes": "OOT Lost Woods Grotto Scrub Big Fairy"
+        },
+        {
+          "image": "boulder",
+          "codes": "OOT Lost Woods Boulder Deep 2"
         }
       ],
       "entranceMenu": {
@@ -915,6 +924,10 @@
             "OOT Lost Woods Grotto Generic Butterfly 2",
             "OOT Lost Woods Grotto Generic Butterfly 3"
           ]
+        },
+        {
+          "image": "boulder",
+          "codes": "OOT Lost Woods Boulder Early"
         }
       ],
       "entranceMenu": {

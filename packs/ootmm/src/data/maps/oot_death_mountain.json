@@ -249,10 +249,24 @@
       "codes": ["OOT Death Mountain Trail Rupee Lower"]
     },
     {
+      "coords": [84, 358],
+      "image": "boulder",
+      "overlays": ["child"],
+      "codes": ["OOT Death Mountain Trail Boulder Child"]
+    },
+    {
       "coords": [104, 358],
       "image": "red_rupee",
       "overlays": ["child"],
       "codes": ["OOT Death Mountain Trail Rupee Upper"]
+    },
+    {
+      "coords": [104, 358],
+      "image": "boulder",
+      "codes": [
+        "OOT Death Mountain Trail Boulder Lower",
+        "OOT Death Mountain Trail Boulder Middle"
+      ]
     },
     {
       "coords": [880, 132],
@@ -368,6 +382,75 @@
       "image": "red_boulder",
       "overlays": ["adult"],
       "codes": ["OOT Death Mountain Trail Red Boulder Near Upper GS"]
+    },
+    {
+      "coords": [470, 543],
+      "image": "boulder",
+      "codes": [
+        "OOT Goron City Boulder Shortcut 1",
+        "OOT Goron City Boulder Shortcut 2",
+        "OOT Goron City Boulder Shortcut 3"
+      ]
+    },
+    {
+      "coords": [327, 449],
+      "image": "boulder",
+      "codes": [
+        "OOT Goron City Boulder Upper 1",
+        "OOT Goron City Boulder Upper 2",
+        "OOT Goron City Boulder Upper 3"
+      ]
+    },
+    {
+      "coords": [260, 277],
+      "image": "boulder",
+      "codes": [
+        "OOT Goron City Maze Boulder 01",
+        "OOT Goron City Maze Boulder 02",
+        "OOT Goron City Maze Boulder 03",
+        "OOT Goron City Maze Boulder 04",
+        "OOT Goron City Maze Boulder 05",
+        "OOT Goron City Maze Boulder 06",
+        "OOT Goron City Maze Boulder 07",
+        "OOT Goron City Maze Boulder 08",
+        "OOT Goron City Maze Boulder 09",
+        "OOT Goron City Maze Boulder 10"
+      ]
+    },
+    {
+      "coords": [238, 292],
+      "image": "silver_boulder",
+      "codes": [
+        "OOT Goron City Silver Boulder 01",
+        "OOT Goron City Silver Boulder 02",
+        "OOT Goron City Silver Boulder 03",
+        "OOT Goron City Silver Boulder 04",
+        "OOT Goron City Silver Boulder 05",
+        "OOT Goron City Silver Boulder 06",
+        "OOT Goron City Silver Boulder 07",
+        "OOT Goron City Silver Boulder 08",
+        "OOT Goron City Silver Boulder 09",
+        "OOT Goron City Silver Boulder 10",
+        "OOT Goron City Silver Boulder 11",
+        "OOT Goron City Silver Boulder 12",
+        "OOT Goron City Silver Boulder 13",
+        "OOT Goron City Silver Boulder 14",
+        "OOT Goron City Silver Boulder 15",
+        "OOT Goron City Silver Boulder 16",
+        "OOT Goron City Silver Boulder 17",
+        "OOT Goron City Silver Boulder 18",
+        "OOT Goron City Silver Boulder 19",
+        "OOT Goron City Silver Boulder 20",
+        "OOT Goron City Silver Boulder 21",
+        "OOT Goron City Silver Boulder 22",
+        "OOT Goron City Silver Boulder 23",
+        "OOT Goron City Silver Boulder 24",
+        "OOT Goron City Silver Boulder 25",
+        "OOT Goron City Silver Boulder 26",
+        "OOT Goron City Silver Boulder 27",
+        "OOT Goron City Silver Boulder 28",
+        "OOT Goron City Silver Boulder 29"
+      ]
     },
     {
       "coords": [238, 262],
@@ -752,6 +835,10 @@
         {
           "image": "cow",
           "codes": ["OOT Death Mountain Trail Cow"]
+        },
+        {
+          "image": "boulder",
+          "codes": ["OOT Death Mountain Trail Boulder Upper"]
         }
       ]
     },

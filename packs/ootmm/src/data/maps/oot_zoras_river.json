@@ -918,7 +918,22 @@
             "OOT Zora River Fairy Fountain Fairy 7",
             "OOT Zora River Fairy Fountain Fairy 8"
           ]
+        },
+        {
+          "image": "boulder",
+          "codes": "OOT Zora River Boulder Upper"
         }
+      ]
+    },
+    {
+      "coords": [390, 219],
+      "image": "boulder",
+      "overlays": ["child"],
+      "codes": [
+        "OOT Zora River Boulder Lower 1",
+        "OOT Zora River Boulder Lower 2",
+        "OOT Zora River Boulder Lower 3",
+        "OOT Zora River Boulder Lower 4"
       ]
     },
     {
@@ -976,7 +991,7 @@
       }
     },
     {
-      "coords": [932, 475],
+      "coords": [920, 475],
       "image": "boulder_entrance",
       "type": "submenu",
       "entranceMenu": {
@@ -986,8 +1001,17 @@
         {
           "image": "npc",
           "codes": "OOT Great Fairy Farore's Wind"
+        },
+        {
+          "image": "boulder",
+          "codes": "OOT Zora Fountain Boulder Exposed"
         }
       ]
+    },
+    {
+      "coords": [935, 475],
+      "image": "silver_boulder",
+      "codes": "OOT Zora Fountain Silver Boulder"
     },
     {
       "coords": [797, 396],
