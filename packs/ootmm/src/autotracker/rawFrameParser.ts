@@ -5,6 +5,7 @@ import locationsData from './data/v31_0/locations.json';
 import specialLocationsMmData from './data/v31_0/special_locations_mm.json';
 import specialLocationsOotData from './data/v31_0/special_locations_oot.json';
 import {
+  DEFAULT_DATA_VERSION,
   hasAutotrackerDataForVersion,
   resolveAutotrackerDataVersion,
   getSupportedVersionLabels,
@@ -2126,8 +2127,11 @@ class RawAutotrackerParserImpl implements RawAutotrackerParser {
 export interface CreateRawAutotrackerParserOptions {
   /**
    * OoTMM spoiler-log version string (e.g. "v30.1" or "30.1").
-   * When provided, the parser validates that autotracker data exists
-   * for this version.  If omitted, the default data version is used.
+   * When provided, the parser swaps in the version-specific data tables.
+   * Unsupported versions fall back to the default data vresion with a
+   * console warning (starting the autotracker is blocked seperately by the
+   * UI guard, so the fallback parser is never fed frames in that case).
+   * If omitted, the default data version is used.
    */
   ootmmVersion?: string | null;
 }
@@ -2137,15 +2141,21 @@ export async function createRawAutotrackerParser(
 ): Promise<RawAutotrackerParser> {
   if (options?.ootmmVersion) {
     if (!hasAutotrackerDataForVersion(options.ootmmVersion)) {
-      throw new Error(
+      // Do NOT throw: this factory runs eagerly during component setup even
+      // when autotracking is disabled, so a rejection here would crash the
+      // whole app via the global unhandled-rejection handler. Fall back to
+      // the default tables instead; autotracking start is already blocked
+      // for unsupported versions by the UI guards.
+      console.warn(
         `No autotracker data available for spoiler-log version "${options.ootmmVersion}". ` +
+          `Falling back to the default data version (${DEFAULT_DATA_VERSION.label}).` +
           `Supported versions: ${getSupportedVersionLabels()}.`,
       );
+    } else {
+      const { dirName } = resolveAutotrackerDataVersion(options.ootmmVersion);
+      const bundle = await loadAutotrackerData(dirName);
+      applyVersionData(buildParserTables(bundle));
     }
-
-    const { dirName } = resolveAutotrackerDataVersion(options.ootmmVersion);
-    const bundle = await loadAutotrackerData(dirName);
-    applyVersionData(buildParserTables(bundle));
   }
 
   return new RawAutotrackerParserImpl();
