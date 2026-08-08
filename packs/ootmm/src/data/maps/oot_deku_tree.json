@@ -278,6 +278,15 @@
       "codes": "OOT MQ Deku Tree GS Compass Room"
     },
     {
+      "coords": [506, 291],
+      "image": "boulder",
+      "codes": [
+        "OOT MQ Deku Tree Boulder 1",
+        "OOT MQ Deku Tree Boulder 2",
+        "OOT MQ Deku Tree Boulder 3"
+      ]
+    },
+    {
       "coords": [600, 229],
       "image": "gold_skulltula",
       "codes": "OOT MQ Deku Tree GS Lobby Crate"

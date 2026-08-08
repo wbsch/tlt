@@ -1014,6 +1014,11 @@
       "codes": "OOT Zora Fountain Silver Boulder"
     },
     {
+      "coords": [927, 475],
+      "image": "boulder",
+      "codes": "OOT Zora Fountain Boulder Underground"
+    },
+    {
       "coords": [797, 396],
       "image": "overworld_entrance",
       "type": "submenu",

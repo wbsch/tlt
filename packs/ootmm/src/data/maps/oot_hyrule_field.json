@@ -370,6 +370,11 @@
       "codes": "OOT Hyrule Field Red Boulder 1"
     },
     {
+      "coords": [852, 236],
+      "image": "silver_boulder",
+      "codes": "OOT Hyrule Field Silver Boulder"
+    },
+    {
       "coords": [647, 210],
       "image": "bomb_grotto",
       "type": "submenu",
@@ -1359,6 +1364,10 @@
         {
           "image": "gossip_stone",
           "codes": "OOT Hyrule Field Gossip Southeast Grotto"
+        },
+        {
+          "image": "boulder",
+          "codes": "OOT Hyrule Field Boulder Near Lake"
         }
       ],
       "entranceMenu": {
@@ -1396,6 +1405,10 @@
             "OOT Hyrule Field Fairy Fountain Fairy 7",
             "OOT Hyrule Field Fairy Fountain Fairy 8"
           ]
+        },
+        {
+          "image": "boulder",
+          "codes": "OOT Hyrule Field Boulder Island"
         }
       ],
       "entranceMenu": {
@@ -1438,6 +1451,10 @@
         {
           "image": "gossip_stone",
           "codes": "OOT Hyrule Field Gossip Near Castle Town"
+        },
+        {
+          "image": "boulder",
+          "codes": "OOT Hyrule Field Boulder Near Market"
         }
       ],
       "entranceMenu": {

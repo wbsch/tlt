@@ -243,10 +243,30 @@
       ]
     },
     {
+      "coords": [820, 151],
+      "image": "silver_boulder",
+      "overlays": ["child"],
+      "codes": [
+        "OOT Death Mountain Crater Silver Boulder 1",
+        "OOT Death Mountain Crater Silver Boulder 2",
+        "OOT Death Mountain Crater Silver Boulder 3"
+      ]
+    },
+    {
       "coords": [84, 358],
       "image": "blue_rupee",
       "overlays": ["child"],
       "codes": ["OOT Death Mountain Trail Rupee Lower"]
+    },
+    {
+      "coords": [836, 325],
+      "image": "boulder",
+      "codes": ["OOT Death Mountain Crater Boulder 2"]
+    },
+    {
+      "coords": [770, 305],
+      "image": "boulder",
+      "codes": ["OOT Death Mountain Crater Boulder 3"]
     },
     {
       "coords": [84, 358],
@@ -681,6 +701,10 @@
         {
           "image": "gossip_stone",
           "codes": "OOT Death Mountain Crater Gossip Grotto"
+        },
+        {
+          "image": "boulder",
+          "codes": "OOT Death Mountain Crater Boulder 1"
         }
       ]
     },

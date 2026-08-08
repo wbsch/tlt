@@ -285,6 +285,19 @@
       "codes": ["OOT MQ Bottom of the Well Lens Chest"]
     },
     {
+      "coords": [795, 276],
+      "image": "boulder",
+      "codes": "OOT MQ Bottom of the Well Boulder Alcove Solo"
+    },
+    {
+      "coords": [791, 260],
+      "image": "boulder",
+      "codes": [
+        "OOT MQ Bottom of the Well Boulder Alcove 1",
+        "OOT MQ Bottom of the Well Boulder Alcove 2"
+      ]
+    },
+    {
       "coords": [928, 294],
       "image": "collectible",
       "codes": ["OOT MQ Bottom of the Well Dead Hand Key"]

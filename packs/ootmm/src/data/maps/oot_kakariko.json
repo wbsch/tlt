@@ -30,6 +30,11 @@
       "codes": "OOT Kakariko Anju Cojiro"
     },
     {
+      "coords": [378, 369],
+      "image": "silver_boulder",
+      "codes": "OOT Kakariko Silver Boulder"
+    },
+    {
       "coords": [609, 464],
       "image": "heart_piece",
       "codes": "OOT Graveyard Crate HP"

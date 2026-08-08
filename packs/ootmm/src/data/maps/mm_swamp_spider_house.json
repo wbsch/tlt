@@ -362,6 +362,11 @@
       ]
     },
     {
+      "coords": [427, 380],
+      "image": "boulder",
+      "codes": "MM Swamp Spider House Boulder"
+    },
+    {
       "coords": [470, 251],
       "image": "soft_soil",
       "codes": ["MM Swamp Spider House Soil Gold"]

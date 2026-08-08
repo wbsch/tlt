@@ -311,6 +311,58 @@
       "codes": "OOT MQ Dodongo Cavern Chest Under Grave"
     },
     {
+      "coords": [291, 304],
+      "image": "boulder",
+      "codes": "OOT MQ Dodongo Cavern Boulder Entrance Back 2"
+    },
+    {
+      "coords": [330, 304],
+      "image": "boulder",
+      "codes": "OOT MQ Dodongo Cavern Boulder Entrance Back 1"
+    },
+    {
+      "coords": [381, 359],
+      "image": "boulder",
+      "codes": "OOT MQ Dodongo Cavern Boulder Right Corridor Ground"
+    },
+    {
+      "coords": [424, 359],
+      "image": "boulder",
+      "codes": "OOT MQ Dodongo Cavern Boulder Right Corridor Wall"
+    },
+    {
+      "coords": [641, 334],
+      "image": "boulder",
+      "codes": [
+        "OOT MQ Dodongo Cavern Boulder Entrance Upper 1",
+        "OOT MQ Dodongo Cavern Boulder Entrance Upper 2",
+        "OOT MQ Dodongo Cavern Boulder Entrance Upper 3"
+      ]
+    },
+    {
+      "coords": [700, 330],
+      "image": "boulder",
+      "codes": "OOT MQ Dodongo Cavern Boulder Deep"
+    },
+    {
+      "coords": [734, 287],
+      "image": "boulder",
+      "codes": [
+        "OOT MQ Dodongo Cavern Boulder Lizalfos 01",
+        "OOT MQ Dodongo Cavern Boulder Lizalfos 02",
+        "OOT MQ Dodongo Cavern Boulder Lizalfos 03",
+        "OOT MQ Dodongo Cavern Boulder Lizalfos 04",
+        "OOT MQ Dodongo Cavern Boulder Lizalfos 05",
+        "OOT MQ Dodongo Cavern Boulder Lizalfos 06",
+        "OOT MQ Dodongo Cavern Boulder Lizalfos 07",
+        "OOT MQ Dodongo Cavern Boulder Lizalfos 08",
+        "OOT MQ Dodongo Cavern Boulder Lizalfos 09",
+        "OOT MQ Dodongo Cavern Boulder Lizalfos 10",
+        "OOT MQ Dodongo Cavern Boulder Lizalfos 11",
+        "OOT MQ Dodongo Cavern Boulder Lizalfos 12"
+      ]
+    },
+    {
       "coords": [543, 374],
       "image": "chest",
       "codes": "OOT MQ Dodongo Cavern Compass Chest"

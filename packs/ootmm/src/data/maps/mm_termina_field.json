@@ -1990,6 +1990,10 @@
         {
           "image": "rock",
           "codes": "MM Bio Baba Grotto Rock"
+        },
+        {
+          "image": "boulder",
+          "codes": "MM Termina Field Boulder Bio Baba"
         }
       ]
     },
@@ -2034,6 +2038,10 @@
             "MM Ocean Gossip Grotto Butterfly 1",
             "MM Ocean Gossip Grotto Butterfly 2"
           ]
+        },
+        {
+          "image": "boulder",
+          "codes": "MM Termina Field Boulder West Gossip"
         }
       ]
     },

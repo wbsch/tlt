@@ -21,6 +21,16 @@
       "codes": ["MM Southern Swamp HP"]
     },
     {
+      "coords": [490, 522],
+      "image": "boulder",
+      "codes": ["MM Deku Palace Boulder 2"]
+    },
+    {
+      "coords": [538, 522],
+      "image": "boulder",
+      "codes": ["MM Deku Palace Boulder 1"]
+    },
+    {
       "coords": [490, 116],
       "image": "npc",
       "codes": ["MM Southern Swamp Scrub Deed"]

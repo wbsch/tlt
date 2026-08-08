@@ -335,9 +335,19 @@
     },
     {
       "coords": [900, 484],
+      "image": "boulder",
+      "codes": ["OOT Gerudo Valley Boulder Before Bridge 2"]
+    },
+    {
+      "coords": [905, 470],
       "image": "red_boulder",
       "overlays": ["adult"],
       "codes": ["OOT Gerudo Valley Red Boulder Before Bridge 2"]
+    },
+    {
+      "coords": [900, 434],
+      "image": "boulder",
+      "codes": ["OOT Gerudo Valley Boulder Before Bridge 1"]
     },
     {
       "coords": [904, 424],
@@ -346,10 +356,15 @@
       "codes": ["OOT Gerudo Valley Red Boulder Before Bridge 1"]
     },
     {
-      "coords": [853, 472],
+      "coords": [855, 475],
       "image": "red_boulder",
       "overlays": ["adult"],
       "codes": ["OOT Gerudo Valley Red Boulder After Bridge 2"]
+    },
+    {
+      "coords": [851, 469],
+      "image": "boulder",
+      "codes": ["OOT Gerudo Valley Boulder After Bridge"]
     },
     {
       "coords": [840, 484],
@@ -488,6 +503,10 @@
         {
           "image": "red_rupee",
           "codes": ["OOT Gerudo Valley Octorok Grotto Rupee 8"]
+        },
+        {
+          "image": "silver_boulder",
+          "codes": ["OOT Gerudo Valley Silver Boulder"]
         }
       ]
     },
@@ -1076,6 +1095,10 @@
         {
           "image": "beehive",
           "codes": ["OOT Desert Colossus Grotto Hive"]
+        },
+        {
+          "image": "silver_boulder",
+          "codes": ["OOT Desert Colossus Silver Boulder"]
         }
       ]
     },

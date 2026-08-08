@@ -310,6 +310,51 @@
       "codes": "OOT MQ Spirit Temple Silver Block Room Target Chest"
     },
     {
+      "coords": [330, 504],
+      "image": "boulder",
+      "codes": "OOT MQ Spirit Temple Boulder Entrance Left"
+    },
+    {
+      "coords": [355, 504],
+      "image": "boulder",
+      "codes": "OOT MQ Spirit Temple Boulder Entrance Right"
+    },
+    {
+      "coords": [355, 496],
+      "image": "boulder",
+      "codes": "OOT MQ Spirit Temple Boulder Entrance Cobra"
+    },
+    {
+      "coords": [343, 478],
+      "image": "boulder",
+      "codes": "OOT MQ Spirit Temple Boulder Entrance Upper"
+    },
+    {
+      "coords": [318, 427],
+      "image": "boulder",
+      "codes": "OOT MQ Spirit Temple Boulder Child Bridge Wall Front"
+    },
+    {
+      "coords": [301, 427],
+      "image": "boulder",
+      "codes": "OOT MQ Spirit Temple Boulder Child Bridge Wall Left"
+    },
+    {
+      "coords": [309, 406],
+      "image": "boulder",
+      "codes": "OOT MQ Spirit Temple Boulder Child Bridge Ground"
+    },
+    {
+      "coords": [282, 442],
+      "image": "boulder",
+      "codes": "OOT MQ Spirit Temple Boulder Child Crawl"
+    },
+    {
+      "coords": [405, 467],
+      "image": "boulder",
+      "codes": "OOT MQ Spirit Temple Boulder Entrance Side"
+    },
+    {
       "coords": [578, 445],
       "image": "chest",
       "codes": "OOT MQ Spirit Temple Child Upper Ledge Chest"

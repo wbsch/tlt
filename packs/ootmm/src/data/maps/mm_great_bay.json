@@ -893,6 +893,10 @@
             "MM Zora Cape Grotto Grass 13",
             "MM Zora Cape Grotto Grass 14"
           ]
+        },
+        {
+          "image": "boulder",
+          "codes": "MM Zora Cape Boulder"
         }
       ]
     },
@@ -907,6 +911,13 @@
         {
           "image": "npc",
           "codes": "MM Great Bay Great Fairy"
+        },
+        {
+          "image": "boulder",
+          "codes": [
+            "MM Zora Cape Large Boulder 1",
+            "MM Zora Cape Large Boulder 2"
+          ]
         }
       ]
     },

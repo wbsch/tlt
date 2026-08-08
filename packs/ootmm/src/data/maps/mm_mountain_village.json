@@ -1042,6 +1042,16 @@
         {
           "image": "chest",
           "codes": "MM Twin Islands Frozen Grotto Chest"
+        },
+        {
+          "image": "boulder",
+          "codes": [
+            "MM Twin Islands Frozen Grotto Large Boulder 1",
+            "MM Twin Islands Frozen Grotto Large Boulder 2",
+            "MM Twin Islands Frozen Grotto Large Boulder 3",
+            "MM Twin Islands Frozen Grotto Large Boulder 4",
+            "MM Twin Islands Frozen Grotto Large Boulder 5"
+          ]
         }
       ]
     },
@@ -1384,6 +1394,14 @@
             "MM Lone Peak Shrine Grass Pack 2 Grass 10",
             "MM Lone Peak Shrine Grass Pack 2 Grass 11",
             "MM Lone Peak Shrine Grass Pack 2 Grass 12"
+          ]
+        },
+        {
+          "image": "boulder",
+          "codes": [
+            "MM Lone Peak Shrine Large Boulder 1",
+            "MM Lone Peak Shrine Large Boulder 2",
+            "MM Lone Peak Shrine Large Boulder 3"
           ]
         }
       ]

@@ -85,6 +85,46 @@
       "codes": ["OOT MQ Jabu-Jabu Back Chest"]
     },
     {
+      "coords": [349, 386],
+      "image": "boulder",
+      "codes": "OOT MQ Jabu-Jabu Room Boulder Entrance"
+    },
+    {
+      "coords": [318, 194],
+      "image": "boulder",
+      "codes": [
+        "OOT MQ Jabu-Jabu Room Boulder Side Room Ground",
+        "OOT MQ Jabu-Jabu Room Boulder Side Room Wall"
+      ]
+    },
+    {
+      "coords": [339, 285],
+      "image": "boulder",
+      "codes": "OOT MQ Jabu-Jabu Room Boulder Holes Room Ground 2"
+    },
+    {
+      "coords": [357, 271],
+      "image": "boulder",
+      "codes": "OOT MQ Jabu-Jabu Room Boulder Holes Room Ground 1"
+    },
+    {
+      "coords": [357, 297],
+      "image": "boulder",
+      "codes": [
+        "OOT MQ Jabu-Jabu Room Boulder Holes Room Wall 1",
+        "OOT MQ Jabu-Jabu Room Boulder Holes Room Wall 2",
+        "OOT MQ Jabu-Jabu Room Boulder Holes Room Wall 3"
+      ]
+    },
+    {
+      "coords": [349, 212],
+      "image": "boulder",
+      "codes": [
+        "OOT MQ Jabu-Jabu Room Boulder Fork Room 1",
+        "OOT MQ Jabu-Jabu Room Boulder Fork Room 2"
+      ]
+    },
+    {
       "coords": [399, 319],
       "image": "boss_entrance",
       "type": "submenu",
