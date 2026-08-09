@@ -1,4 +1,5 @@
 import autotrackerDataManifest from './data/v32_0/manifest.json';
+import comboConfigLayoutData from './data/v32_0/combo_config_layout.json';
 import inventorySlotsData from './data/v32_0/inventory_slots.json';
 import liveAddrsData from './data/v32_0/live_addrs.json';
 import locationsData from './data/v32_0/locations.json';
@@ -24,6 +25,7 @@ type AutotrackerDataBundle = {
   specialLocationsMm: MmSpecialLocationEntry[];
   specialLocationsOot: OotSpecialLocationEntry[];
   sharedSaveOffsets: SharedFixedOffsets;
+  comboConfigLayout: ComboConfigLayout;
 };
 
 function loadAutotrackerDataSync(dirName: string): AutotrackerDataBundle {
@@ -50,6 +52,10 @@ function loadAutotrackerDataSync(dirName: string): AutotrackerDataBundle {
       dirName,
       'shared_save_offsets.json',
     ) as SharedFixedOffsets,
+    comboConfigLayout: getVersionedDataFile(
+      dirName,
+      'combo_config_layout.json',
+    ) as ComboConfigLayout,
   };
 }
 
@@ -105,6 +111,7 @@ interface ParserTables {
   mmSymbolChecks: MmSymbolCheck[];
   ootSymbolChecks: OotSymbolCheck[];
   sceneCheckFallbacks: Map<string, string>;
+  comboConfigLayout: ComboConfigLayout;
 }
 
 function buildParserTables(bundle: AutotrackerDataBundle): ParserTables {
@@ -185,6 +192,7 @@ function buildParserTables(bundle: AutotrackerDataBundle): ParserTables {
         'Dodongo Cavern Heart Miniboss Lava',
       ],
     ]),
+    comboConfigLayout: bundle.comboConfigLayout,
   };
 }
 
@@ -267,6 +275,7 @@ function applyVersionData(tables: ParserTables): void {
   mmSymbolChecks = tables.mmSymbolChecks;
   ootSymbolChecks = tables.ootSymbolChecks;
   sceneCheckFallbacks = tables.sceneCheckFallbacks;
+  comboConfigLayout = tables.comboConfigLayout;
   rebuildChunkSpecs();
 }
 
@@ -710,7 +719,33 @@ const OOT_RUNTIME_SCENE_COUNT = 17;
 const OOT_SILVER_RUPEE_SET_COUNT = 18;
 const OOT_SILVER_RUPEE_DATA_SIZE = OOT_SILVER_RUPEE_SET_COUNT * 4;
 const OOT_MAX_KEYS_BLOCK_SIZE = OOT_RUNTIME_SCENE_COUNT + 4;
-const OOT_COMBO_CONFIG_SIZE = 0x2dc;
+
+// The OoTMM ComboConfig struct (generator include/combo/config.h) changed its
+// tail layout between v30.1 and v31.0:
+//   v30.1 and earlier:  staticHintsImportance[20] BEFORE giZoraSapphire,
+//                       no songEventsMm -> staticHints @0x2A4, boss @0x2BA,
+//                       strayFairy @0x2C6, bombchuOot/Mm @0x2C7/0x2C8,
+//                       songEventsOot[18] @0x2C9, size 0x2DC.
+//   v31.0 and later:   giZoraSapphire BEFORE staticHintsImportance[21],
+//                       songEventsMm[13] appended -> staticHints @0x2A6,
+//                       boss @0x2BB, strayFairy @0x2C7, bombchuOot/Mm
+//                       @0x2C8/0x2C9, songEventsOot[18] @0x2CA, size 0x2E9.
+// The fields before the hints (mq @0x9C, config[0x40] @0xEC, special @0x12C,
+// prices[141] @0x15C, triforce @0x276/0x278, hints @0x27A) are identical in
+// both layouts.
+//
+// The layout is version-specific data: every autotracker data directory
+// (v30_1, v31_0, v31_1, v32_0, ...) ships its own combo_config_layout.json.
+type ComboConfigLayout = {
+  size: number;
+  staticHintsOffset: number;
+  staticHintCount: number;
+  bossOffset: number;
+  strayFairyRewardCountOffset: number;
+  bombchuBehaviorOotOffset: number;
+  bombchuBehaviorMmOffset: number;
+  songEventsOffset: number;
+};
 
 const OOT_COMBO_CONFIG_FLAGS_OFFSET = 0x0ec;
 const OOT_COMBO_CONFIG_FLAGS_COUNT = 0x40;
@@ -723,16 +758,13 @@ const OOT_COMBO_CONFIG_SPECIAL_SIZE = 8;
 const OOT_COMBO_CONFIG_PRICES_OFFSET = 0x15c;
 const OOT_COMBO_CONFIG_PRICE_COUNT = 141;
 const OOT_COMBO_CONFIG_PRICE_MAX = 4995;
-const OOT_COMBO_CONFIG_STATIC_HINTS_OFFSET = 0x2a4;
-const OOT_COMBO_CONFIG_STATIC_HINT_COUNT = 20;
-const OOT_COMBO_CONFIG_BOSS_OFFSET = 0x2ba;
 const OOT_COMBO_CONFIG_BOSS_COUNT = 12;
-const OOT_COMBO_CONFIG_STRAY_FAIRY_REWARD_COUNT_OFFSET = 0x2c6;
-const OOT_COMBO_CONFIG_BOMBCHU_BEHAVIOR_OOT_OFFSET = 0x2c7;
-const OOT_COMBO_CONFIG_BOMBCHU_BEHAVIOR_MM_OFFSET = 0x2c8;
-const OOT_COMBO_CONFIG_SONG_EVENTS_OFFSET = 0x2c9;
 const OOT_COMBO_CONFIG_SONG_EVENT_COUNT = 18;
 const OOT_COMBO_CONFIG_FLAG_BRONZE_SCALE = 192;
+
+/** Combo config tail layout for the currently active data version. */
+let comboConfigLayout: ComboConfigLayout =
+  comboConfigLayoutData as ComboConfigLayout;
 
 const OOT_PLAY_OFF_SCENE_ID = 0x00a4;
 const OOT_PLAY_OFF_CHEST_FLAGS = 0x1d38;
@@ -1249,7 +1281,7 @@ function rebuildChunkSpecs(): void {
       {
         name: OOT_RUNTIME_COMBO_CONFIG_CHUNK,
         address: addrOotRuntimeOotComboConfigLive,
-        length: OOT_COMBO_CONFIG_SIZE,
+        length: comboConfigLayout.size,
       },
       {
         name: OOT_RUNTIME_SILVER_RUPEE_DATA_CHUNK,
@@ -1289,7 +1321,7 @@ function rebuildChunkSpecs(): void {
       {
         name: MM_RUNTIME_COMBO_CONFIG_CHUNK,
         address: addrMmRuntimeOotComboConfigLive,
-        length: OOT_COMBO_CONFIG_SIZE,
+        length: comboConfigLayout.size,
       },
       {
         name: MM_PLAYSTATE_SCENE_CHUNK,
@@ -2790,7 +2822,7 @@ function readOotRuntimeConfig(
   if (comboConfigOffset >= 0) {
     const comboConfig = payload.subarray(
       comboConfigOffset,
-      comboConfigOffset + OOT_COMBO_CONFIG_SIZE,
+      comboConfigOffset + comboConfigLayout.size,
     );
     oot.runtimeMqBits = readU32BE(comboConfig, OOT_COMBO_CONFIG_MQ_OFFSET);
     oot.hasRuntimeMqBits = true;
@@ -3012,10 +3044,10 @@ function locateOotComboConfig(payload: Uint8Array): number {
   let bestScore = -1;
   for (
     let offset = 0;
-    offset + OOT_COMBO_CONFIG_SIZE <= payload.length;
+    offset + comboConfigLayout.size <= payload.length;
     offset += 4
   ) {
-    const block = payload.subarray(offset, offset + OOT_COMBO_CONFIG_SIZE);
+    const block = payload.subarray(offset, offset + comboConfigLayout.size);
     if (!validateOotComboConfig(block)) {
       continue;
     }
@@ -3029,7 +3061,7 @@ function locateOotComboConfig(payload: Uint8Array): number {
 }
 
 function validateOotComboConfig(data: Uint8Array): boolean {
-  if (data.length < OOT_COMBO_CONFIG_SIZE) {
+  if (data.length < comboConfigLayout.size) {
     return false;
   }
   if (data[0] === 0 || data[1] !== 0 || data[2] !== 0 || data[3] !== 0) {
@@ -3068,9 +3100,9 @@ function validateOotComboConfig(data: Uint8Array): boolean {
     }
   }
 
-  for (let index = 0; index < OOT_COMBO_CONFIG_STATIC_HINT_COUNT; index++) {
+  for (let index = 0; index < comboConfigLayout.staticHintCount; index++) {
     const value = toSignedByte(
-      data[OOT_COMBO_CONFIG_STATIC_HINTS_OFFSET + index] ?? 0,
+      data[comboConfigLayout.staticHintsOffset + index] ?? 0,
     );
     if (value < -1 || value > 3) {
       return false;
@@ -3079,24 +3111,24 @@ function validateOotComboConfig(data: Uint8Array): boolean {
 
   const seenBosses = new Set<number>();
   for (let index = 0; index < OOT_COMBO_CONFIG_BOSS_COUNT; index++) {
-    const bossId = data[OOT_COMBO_CONFIG_BOSS_OFFSET + index] ?? 0;
+    const bossId = data[comboConfigLayout.bossOffset + index] ?? 0;
     if (bossId >= OOT_COMBO_CONFIG_BOSS_COUNT || seenBosses.has(bossId)) {
       return false;
     }
     seenBosses.add(bossId);
   }
 
-  if ((data[OOT_COMBO_CONFIG_STRAY_FAIRY_REWARD_COUNT_OFFSET] ?? 0) > 15) {
+  if ((data[comboConfigLayout.strayFairyRewardCountOffset] ?? 0) > 15) {
     return false;
   }
   if (
-    (data[OOT_COMBO_CONFIG_BOMBCHU_BEHAVIOR_OOT_OFFSET] ?? 0) > 3 ||
-    (data[OOT_COMBO_CONFIG_BOMBCHU_BEHAVIOR_MM_OFFSET] ?? 0) > 3
+    (data[comboConfigLayout.bombchuBehaviorOotOffset] ?? 0) > 3 ||
+    (data[comboConfigLayout.bombchuBehaviorMmOffset] ?? 0) > 3
   ) {
     return false;
   }
   for (let index = 0; index < OOT_COMBO_CONFIG_SONG_EVENT_COUNT; index++) {
-    if ((data[OOT_COMBO_CONFIG_SONG_EVENTS_OFFSET + index] ?? 0) > 5) {
+    if ((data[comboConfigLayout.songEventsOffset + index] ?? 0) > 5) {
       return false;
     }
   }
