@@ -17,12 +17,11 @@ const LEGACY_DATA_DIR = path.join(
 );
 
 /**
- * Detect the OoTMM version from the git tag and return the corresponding
- * directory name (e.g. "v31_1" for tag "v31.1").
+ * Detect the OoTMM version tag from the git tag (e.g. "v31.1").
  *
  * Throws if no git tag can be resolved.
  */
-function detectOotmmVersionDir(): string {
+function detectOotmmVersionTag(): string {
   const gitResult = spawnSync('git', ['describe', '--tags', '--abbrev=0'], {
     cwd: OOTMM_REPO,
     encoding: 'utf-8',
@@ -44,7 +43,12 @@ function detectOotmmVersionDir(): string {
     );
   }
 
-  return tagToDirName(tag);
+  return tag;
+}
+
+/** Detect the OoTMM version and return the data directory name (e.g. "v31_1"). */
+function detectOotmmVersionDir(): string {
+  return tagToDirName(detectOotmmVersionTag());
 }
 
 /** Convert a version tag like "v31.1" or "31.1" to a dir name like "v31_1". */
@@ -139,6 +143,7 @@ function main(): void {
       'special_locations_fallbacks_oot.lock.json',
     ),
     path.join(DATA_DIR, 'live_addrs.json'),
+    path.join(DATA_DIR, 'combo_config_layout.json'),
     path.join(DATA_DIR, 'manifest.json'),
   ];
 
@@ -204,6 +209,17 @@ function main(): void {
 
   runPython('generate_special_locations.py', specialLocationsArgs);
 
+  // Regenerate the ComboConfig tail layout from the OoTMM repo header at the
+  // current tag (fails loudly if the struct's fixed offsets changed).
+  runPython('derive_combo_config_layout.py', [
+    '--ootmm-repo',
+    OOTMM_REPO,
+    '--version',
+    detectOotmmVersionTag(),
+    '--write',
+    path.join(DATA_DIR, 'combo_config_layout.json'),
+  ]);
+
   // Write the data manifest.
   const manifest = {
     schemaVersion: 1,
@@ -215,6 +231,7 @@ function main(): void {
       'special_locations_fallbacks_mm.lock.json': 1,
       'special_locations_fallbacks_oot.lock.json': 1,
       'live_addrs.json': 1,
+      'combo_config_layout.json': 1,
     },
   };
   writeFileSync(

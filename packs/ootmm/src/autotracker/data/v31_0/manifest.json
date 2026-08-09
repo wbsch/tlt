@@ -7,6 +7,7 @@
     "special_locations_oot.json": 1,
     "special_locations_fallbacks_mm.lock.json": 1,
     "special_locations_fallbacks_oot.lock.json": 1,
-    "live_addrs.json": 1
+    "live_addrs.json": 1,
+    "combo_config_layout.json": 1
   }
 }

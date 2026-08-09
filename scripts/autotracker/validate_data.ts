@@ -18,12 +18,11 @@ const LEGACY_DATA_DIR = path.join(
 );
 
 /**
- * Detect the OoTMM version from the git tag and return the corresponding
- * directory name (e.g. "v31_1" for tag "v31.1").
+ * Detect the OoTMM version tag from the git tag (e.g. "v31.1").
  *
  * Throws if no git tag can be resolved.
  */
-function detectOotmmVersionDir(): string {
+function detectOotmmVersionTag(): string {
   const gitResult = spawnSync('git', ['describe', '--tags', '--abbrev=0'], {
     cwd: OOTMM_REPO,
     encoding: 'utf-8',
@@ -45,7 +44,12 @@ function detectOotmmVersionDir(): string {
     );
   }
 
-  return tagToDirName(tag);
+  return tag;
+}
+
+/** Detect the OoTMM version and return the data directory name (e.g. "v31_1"). */
+function detectOotmmVersionDir(): string {
+  return tagToDirName(detectOotmmVersionTag());
 }
 
 /** Convert a version tag like "v31.1" or "31.1" to a dir name like "v31_1". */
@@ -64,6 +68,7 @@ const EXACT_FILES = [
   'special_locations_oot.json',
   'special_locations_fallbacks_mm.lock.json',
   'special_locations_fallbacks_oot.lock.json',
+  'combo_config_layout.json',
 ] as const;
 
 function runPython(scriptName: string, args: string[]): void {
@@ -240,6 +245,19 @@ function main(): void {
       '--oot-fallback-baseline',
       path.join(tempDir, 'special_locations_fallbacks_oot.lock.json'),
       '--update-fallback-baseline',
+    ]);
+
+    // The ComboConfig tail layout is derived from the OoTMM repo header at the
+    // current tag. If the struct changed, derive_combo_config_layout.py fails
+    // its anchor checks (fixed parser offsets must be updated first) and the
+    // exact-match below blocks the version bump until the JSON is regenerated.
+    runPython('derive_combo_config_layout.py', [
+      '--ootmm-repo',
+      OOTMM_REPO,
+      '--version',
+      detectOotmmVersionTag(),
+      '--write',
+      path.join(tempDir, 'combo_config_layout.json'),
     ]);
 
     formatGeneratedFiles(REPO_ROOT, generatedExactFiles);

@@ -136,3 +136,123 @@ oot.foreignSaveLive      = 0x8044bdb0   (gMmSave,  size 0x3ca0)
 mm.sharedCustomSaveLive  = 0x8076bc40   (gSharedCustomSave)
 mm.foreignSaveLive       = 0x8076c4d0   (gOotSave, size 0x1354)
 ```
+
+---
+
+# Deriving the ComboConfig tail layout (`combo_config_layout.json`)
+
+Sibling task on every OoTMM version bump: each autotracker data directory
+(`v30_1`, `v31_0`, `v31_1`, `v32_0`, …) ships its own
+`combo_config_layout.json` — the tail offsets of the `ComboConfig` struct
+(`OoTMM/packages/generator/include/combo/config.h`), which the parser
+(`rawFrameParser.ts`) uses to validate/locate the combo config in the save
+dump. The struct is DMA-loaded wholesale, so its field offsets are
+**compile-time constants** baked into the payload. They changed between v30.1
+and v31.0 (hints 20→21, `giZoraSapphire` moved, `songEventsMm[13]` appended) —
+never assume they stay the same.
+
+## The two sources
+
+- **Quelle A (primary, ground truth):** the repo header at the release tag.
+  Offsets are computed with C alignment rules (`u8/s8`=1, `u16/s16`=2,
+  `u32/s32`=4; struct alignment = largest member). `PRICES_MAX` (= 141) is not
+  in any checked-in header — it's derived from
+  `packages/logic/src/price.ts` (sum of the `PRICE_COUNTS` ranges). Only reads
+  the OoTMM checkout (`git show <tag>:…`), no build.
+- **Quelle B (verification):** a scan of the _shipped_ payload code from the
+  ootmm.com data zip (same zip fetch/cache and MIPS register simulation as
+  `derive_web_symbols.py`). Finds the offsets the compiled code actually
+  accesses, proving the JSON matches what players run. OoT and MM payloads
+  must yield identical offsets (one layout serves both games).
+
+Stable anchors that must never move (the parser reads them without going
+through the JSON): `mq@0x9C`, `config@0xEC`, `special@0x12C`, `prices@0x15C`,
+`triforce@0x276/0x278`, `hints@0x27A`. The script refuses to write if any of
+them (or the parser's hardcoded `special`/`prices`/`boss`/`songEvents` counts)
+changed — update `rawFrameParser.ts` and the script's `ANCHORS`/
+`PARSER_CONSTANTS` first.
+
+## Version-bump workflow
+
+```bash
+# 1. make sure the OoTMM checkout has the new tag
+git -C OoTMM fetch --tags
+git -C OoTMM show vX.Y:packages/generator/include/combo/config.h > /dev/null
+
+# 2. address order matters: refresh live_addrs.json FIRST (a stale
+#    comboConfigLive shifts every scan hit and fails the verification)
+python3 scripts/autotracker/derive_web_symbols.py vX.Y --write \
+    packs/ootmm/src/autotracker/data/vX_Y/live_addrs.json
+
+# 3. derive the layout from the repo header and verify it against the
+#    version's web zip; writes only when the scan confirms every tail offset
+python3 scripts/autotracker/derive_combo_config_layout.py \
+    --ootmm-repo OoTMM --version vX.Y \
+    --verify-zip <aktueller data-*.zip> \
+    --write packs/ootmm/src/autotracker/data/vX_Y/combo_config_layout.json
+
+# 4. eyeball: anchors OK, size sane (0x2E9 for v31.0+), then gate with the
+#    repo validator (also blocks stale layouts on future bumps)
+npm run validate:autotracker-data
+```
+
+Other handy modes:
+
+```bash
+# Quelle A only (no zip needed — what `npm run validate:autotracker-data`
+# and `generate:autotracker-data` invoke)
+python3 scripts/autotracker/derive_combo_config_layout.py \
+    --ootmm-repo OoTMM --version vX.Y
+
+# Quelle B only, from a local zip (auto-reads comboConfigLive from
+# live_addrs.json; or pass --combo-base-oot/--combo-base-mm explicitly)
+python3 scripts/autotracker/derive_combo_config_layout.py \
+    --zip /tmp/data-xxxx.zip
+python3 scripts/autotracker/derive_combo_config_layout.py \
+    --zip /tmp/data-xxxx.zip --combo-base-oot 0x80449b28 --combo-base-mm 0x8076a5d8
+
+# Quelle B with auto-fetch (like derive_web_symbols.py)
+python3 scripts/autotracker/derive_combo_config_layout.py \
+    --version vX.Y --combo-base-oot 0x80449b28 --combo-base-mm 0x8076a5d8
+```
+
+## How the scan finds the tail
+
+For every `lb/lh/lwl/lw/lbu/lhu/lwr`/`sb/sh/swl/sw/swr` whose effective
+address lands in `[comboConfigLive, +0x300)`, the offset is recorded with its
+access kind. The tail fields then read as:
+
+- `boss` = first `lbu` access **after** the staticHints `lb` accesses
+  (staticHints is `s8[]` → read signed; `boss[12]` onward are `u8` → `lbu`).
+  The plan's naive "smallest `lbu` ≥ 0x2A0" is NOT enough: the OoT payload
+  also reads `ganonBossKey` (`lbu @0x2A2/0x2A3`, inside hints) — the
+  `lb`-run discriminator excludes it.
+- `strayFairyRewardCount` = `boss+12`, `bombchuBehaviorOot` = `boss+13`,
+  `bombchuBehaviorMm` = `boss+14`, `songEvents` = `boss+15` (the u8 chain is
+  contiguous). `size` = `songEvents + 0x12`, plus `0xd` if `songEventsMm`
+  exists — which the scan cannot see directly (loop-indexed accesses), so it
+  comes from Quelle A and is confirmed by the `size`/verify comparison.
+- `songEventsOot/Mm` themselves are loop-indexed (no static offset in code) —
+  they are not directly hit; `verify` checks them via the chain and the
+  struct-derived offsets.
+- A wrong/stale `comboConfigLive` shifts every hit by exactly the delta and
+  fails the verification — that mismatch is itself the error indicator.
+
+## Fallstricke / notes
+
+- **`giZoraSapphire`** is only statically accessed by the OoT payload (MM
+  never reads it) — its `verify` line is informational, not blocking.
+- **`staticHintCount`** (20 vs 21) cannot be derived from the scan (only hit
+  indices 6/7 or 9-20 appear); it comes from Quelle A and is validated by the
+  parser's `validateOotComboConfig` loop bound.
+- **size semantics:** the JSON stores the end of the last _used_ field (745 =
+  `0x2E9` for v31.0+), not C `sizeof` (which pads to the struct alignment,
+  748). The parser only reads `size` bytes, so this is the usable size. The
+  v30.1 JSON predates this and stores the padded 732 — historical quirk, not
+  worth changing.
+- **`validate_data.ts`** regenerates the layout from the repo header on every
+  run and requires an exact match — a struct change in a bump blocks the build
+  until the JSON (and, if anchors moved, the parser) is updated.
+- Auto-fetch/discovery for the zip only works for **v31.0+** (same limitation
+  as `derive_web_symbols.py`); older bundles need a manually downloaded zip
+  via `--zip`.
