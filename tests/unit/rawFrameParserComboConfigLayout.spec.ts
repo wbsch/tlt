@@ -57,16 +57,6 @@ const LAYOUT_V31_PLUS: ComboConfigLayoutFixture = {
   songEventsOffset: 714,
 };
 
-const OOT_SAVE_CHUNK_NAMES = [
-  'oot_save_state_age',
-  'oot_save_state_magic',
-  'oot_save_state_scene',
-  'oot_save_state_inventory',
-  'oot_save_state_scene_flags',
-  'oot_save_state_gs_flags',
-  'oot_save_state_events',
-];
-
 function writeU32BE(data: Uint8Array, offset: number, value: number): void {
   data[offset] = (value >>> 24) & 0xff;
   data[offset + 1] = (value >>> 16) & 0xff;

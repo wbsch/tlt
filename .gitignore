@@ -51,3 +51,5 @@ dist-ssr
 /server/sync.db-wal
 /server/__pycache__/
 /server/.venv/
+
+scripts/autotracker/__pycache__/
