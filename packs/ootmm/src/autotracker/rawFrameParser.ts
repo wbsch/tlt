@@ -2187,9 +2187,17 @@ export async function createRawAutotrackerParser(
       const { dirName } = resolveAutotrackerDataVersion(options.ootmmVersion);
       const bundle = await loadAutotrackerData(dirName);
       applyVersionData(buildParserTables(bundle));
+      return new RawAutotrackerParserImpl();
     }
   }
 
+  // No spoiler-log version (or an unsupported one): explicitly re-apply the
+  // default data tables. The version tables are module-global, so a parser
+  // created without a version must not inherit tables that a previously
+  // created parser applied (e.g. after "Reset Tracker State" cleared the
+  // imported spoiler log while a non-default version was loaded).
+  const defaultBundle = loadAutotrackerDataSync(DEFAULT_DATA_VERSION.dirName);
+  applyVersionData(buildParserTables(defaultBundle));
   return new RawAutotrackerParserImpl();
 }
 

@@ -1,9 +1,14 @@
 import { nextTick, ref } from 'vue';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
-const { parseRawMessageMock, resetRawParserMock } = vi.hoisted(() => ({
+const {
+  parseRawMessageMock,
+  resetRawParserMock,
+  createRawAutotrackerParserMock,
+} = vi.hoisted(() => ({
   parseRawMessageMock: vi.fn(),
   resetRawParserMock: vi.fn(),
+  createRawAutotrackerParserMock: vi.fn(),
 }));
 
 vi.mock('@/../packs/ootmm/src/autotracker/rawFrameParser', () => ({
@@ -35,11 +40,13 @@ vi.mock('@/../packs/ootmm/src/autotracker/rawFrameParser', () => ({
       { name: 'mm_playstate_flags', address: 0x803e8978, length: 32 },
     ],
   },
-  createRawAutotrackerParser: () =>
-    Promise.resolve({
+  createRawAutotrackerParser: (options: unknown) => {
+    createRawAutotrackerParserMock(options);
+    return Promise.resolve({
       parse: parseRawMessageMock,
       reset: resetRawParserMock,
-    }),
+    });
+  },
 }));
 
 import {
@@ -98,6 +105,7 @@ describe('useAutotracker checks', () => {
     vi.stubGlobal('WebSocket', FakeWebSocket);
     parseRawMessageMock.mockReset();
     resetRawParserMock.mockReset();
+    createRawAutotrackerParserMock.mockReset();
   });
 
   afterEach(() => {
@@ -901,5 +909,109 @@ describe('useAutotracker checks', () => {
 
     await expect(availabilityPromise).resolves.toBe(false);
     expect(autotracker.enabled.value).toBe(false);
+  });
+
+  it('recreates the raw parser when the spoiler-log version changes', async () => {
+    const availableItemIds = ref(new Set<string>());
+    const itemMaxCounts = ref(new Map<string, number>());
+    const ootmmVersion = ref<string | null>('v31.1');
+
+    const autotracker = useAutotracker({
+      availableItemIds,
+      itemMaxCounts,
+      ootmmVersion,
+      onInventoryUpdate: () => {},
+    });
+
+    // Parser is created once at setup with the initially loaded version.
+    expect(createRawAutotrackerParserMock).toHaveBeenCalledTimes(1);
+    expect(createRawAutotrackerParserMock).toHaveBeenLastCalledWith({
+      ootmmVersion: 'v31.1',
+    });
+
+    // A version change (e.g. importing a v32.0 spoiler log after a reset)
+    // recreates the parser with the new version instead of keeping the
+    // previously loaded tables until a page reload.
+    ootmmVersion.value = 'v32.0';
+    await nextTick();
+    expect(createRawAutotrackerParserMock).toHaveBeenCalledTimes(2);
+    expect(createRawAutotrackerParserMock).toHaveBeenLastCalledWith({
+      ootmmVersion: 'v32.0',
+    });
+
+    // Assigning the same version does not recreate the parser.
+    ootmmVersion.value = 'v32.0';
+    await nextTick();
+    expect(createRawAutotrackerParserMock).toHaveBeenCalledTimes(2);
+
+    // Clearing the spoiler log (Reset Tracker State) recreates without a
+    // version, so the parser falls back to the default data tables.
+    ootmmVersion.value = null;
+    await nextTick();
+    expect(createRawAutotrackerParserMock).toHaveBeenCalledTimes(3);
+    expect(createRawAutotrackerParserMock).toHaveBeenLastCalledWith({
+      ootmmVersion: null,
+    });
+
+    autotracker.destroy();
+  });
+
+  it('uses the recreated parser for frames arriving after a version change', async () => {
+    const availableItemIds = ref(
+      new Set<string>(['OOT_BOW', 'OOT_SWORD_KOKIRI']),
+    );
+    const itemMaxCounts = ref(new Map<string, number>());
+    const ootmmVersion = ref<string | null>('v31.1');
+
+    const inventoryUpdates: Array<Record<string, number>> = [];
+    const autotracker = useAutotracker({
+      availableItemIds,
+      itemMaxCounts,
+      ootmmVersion,
+      onInventoryUpdate: (inventory) => {
+        inventoryUpdates.push(inventory);
+      },
+    });
+
+    autotracker.enabled.value = true;
+    await nextTick();
+    const socket = FakeWebSocket.instances[0];
+    expect(socket).toBeDefined();
+    socket.emitOpen();
+    socket.emitMessage({
+      type: 'handshAck',
+      version: CURRENT_AUTOTRACKER_VERSION,
+      name: 'ootmm-autotracker',
+      refresh: true,
+    });
+
+    // Change the version while autotracking is active, then feed a frame.
+    ootmmVersion.value = 'v32.0';
+    await nextTick();
+    await nextTick();
+
+    parseRawMessageMock.mockReturnValueOnce({
+      items: [{ id: 'OOT_BOW', qty: 1 }],
+      checks: [],
+    });
+    socket.emitMessage({
+      type: 'raw',
+      schemaVersion: '1',
+      diff: false,
+      refresh: true,
+      sequence: 1,
+      game: 'OoT',
+      saveIndex: 0,
+      chunks: [],
+    });
+
+    expect(createRawAutotrackerParserMock).toHaveBeenCalledTimes(2);
+    expect(createRawAutotrackerParserMock).toHaveBeenLastCalledWith({
+      ootmmVersion: 'v32.0',
+    });
+    // The frame is parsed and pushed as a fresh 'initial' sync.
+    expect(inventoryUpdates).toEqual([{ OOT_BOW: 1 }]);
+
+    autotracker.destroy();
   });
 });

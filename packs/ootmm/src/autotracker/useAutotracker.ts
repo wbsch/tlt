@@ -444,14 +444,6 @@ export function useAutotracker(options: AutotrackerOptions) {
     }
   }
 
-  const rawParserPromise = createRawAutotrackerParser({
-    ootmmVersion: options.ootmmVersion?.value,
-  });
-  let rawParser: RawAutotrackerParser | null = null;
-  rawParserPromise.then((p) => {
-    rawParser = p;
-  });
-
   function childWalletsEnabled(): boolean {
     return options.childWalletsEnabled?.value ?? false;
   }
@@ -469,6 +461,54 @@ export function useAutotracker(options: AutotrackerOptions) {
   let liveRawState = new Map<string, number>();
   let liveState = new Map<string, number>();
   let liveChecks = new Map<string, AutotrackerCheck>();
+
+  // The raw parser holds the version-specific data tables (addresses,
+  // layouts, check tables), which are only applied at parser creation time.
+  // The parser must therefore be recreated whenever the spoiler-log version
+  // changes — otherwise frames from a newly imported spoiler log would keep
+  // being decoded with the previously loaded version's tables until a full
+  // page reload. RawAutotrackerParserImpl keeps only transient frame-decoding
+  // state per instance, so a fresh instance for the new version is safe.
+  let rawParser: RawAutotrackerParser | null = null;
+  let rawParserDataVersion: string | null | undefined = undefined;
+  let rawParserGeneration = 0;
+  let hasInitializedRawParser = false;
+
+  function invalidateAutotrackerLiveState(): void {
+    // The translated live state was derived using the previous version's
+    // tables; drop it so the next frame is pushed as a fresh 'initial' sync
+    // instead of being layered onto stale data.
+    hasReceivedRawSnapshot = false;
+    liveRawState = new Map();
+    liveState = new Map();
+    liveChecks = new Map();
+  }
+
+  function refreshRawParser(version: string | null | undefined): void {
+    if (hasInitializedRawParser && version === rawParserDataVersion) {
+      return;
+    }
+    hasInitializedRawParser = true;
+    rawParserDataVersion = version;
+    const generation = ++rawParserGeneration;
+    invalidateAutotrackerLiveState();
+    void createRawAutotrackerParser({ ootmmVersion: version }).then(
+      (parser) => {
+        if (generation !== rawParserGeneration) {
+          // A newer version change superseded this creation; discard it.
+          return;
+        }
+        rawParser = parser;
+      },
+    );
+  }
+
+  refreshRawParser(options.ootmmVersion?.value);
+  if (options.ootmmVersion) {
+    watch(options.ootmmVersion, (version) => {
+      refreshRawParser(version);
+    });
+  }
 
   function connect() {
     cleanup();
