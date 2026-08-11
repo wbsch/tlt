@@ -119,8 +119,13 @@ def compute_offsets(anchors: dict) -> dict:
 
     # song flag offsets within each custom save
     # OotCustomSave: xflags[n] + npc[32] + shops[8] + scrubs[8] + sr[16]
-    #   + fwRespawnDungeonEntrance[2] (28 each) + powderKegTimer(2) → bitfields
-    song_flags_oot = xflags_oot_size + 32 + 8 + 8 + 16 + 2 * 28 + 2
+    #   + fwRespawnDungeonEntrance[2] (28 each) + powderKegTimer(2) -> bitfields
+    # fwRespawnDungeonEntrance has u32 members => 4-byte alignment on N64.
+    # Account for alignment padding before the array.
+    fw_respawn_offset = xflags_oot_size + 32 + 8 + 8 + 16
+    if fw_respawn_offset % 4:
+        fw_respawn_offset += 4 - (fw_respawn_offset % 4)
+    song_flags_oot = fw_respawn_offset + 2 * 28 + 2
     # MmCustomSave: halfDays(1) + padding(1 for 4-byte align) + 3*RespawnData arrays(3*64)
     song_flags_mm = (half_days + 1 + 3) & ~3  # round past halfDays to 4-byte boundary
     song_flags_mm += 3 * 64  # fw[2] + fwRespawnTop[2] + fwRespawnDungeonEntrance[2]
@@ -160,8 +165,23 @@ def validate_with_dump(offsets: dict, dump_path: str, game: str = "OoT") -> bool
 
         payload = base64.b64decode(chunks["oot_payload"]["data"])
 
-        # gSharedCustomSave is at VRAM 0x8044B520 (payload starts at 0x80400000)
-        gSharedCustomSave = 0x8044B520
+        # gSharedCustomSave address is version-dependent – auto-discover from live_addrs.json
+        import os as _os2
+        script_dir = _os2.path.dirname(_os2.path.abspath(__file__))
+        repo_root = _os2.path.normpath(_os2.path.join(script_dir, "..", ".."))
+        data_dir = _os2.path.join(repo_root, "packs", "ootmm", "src", "autotracker", "data")
+        candidates = sorted(
+            (entry, _os2.path.join(data_dir, entry, "live_addrs.json"))
+            for entry in _os2.listdir(data_dir)
+            if _os2.path.isfile(_os2.path.join(data_dir, entry, "live_addrs.json"))
+        )
+        if not candidates:
+            print("Warning: no live_addrs.json found, falling back to hardcoded address")
+            gSharedCustomSave = 0x8044B520
+        else:
+            with open(candidates[-1][1]) as _f2:
+                _la = json.load(_f2)
+            gSharedCustomSave = int(_la["oot"]["sharedCustomSaveLive"], 16)
         payload_base = 0x80400000
         shared_off = gSharedCustomSave - payload_base
         shared = payload[shared_off:shared_off + offsets["sharedCustomSaveSize"]]

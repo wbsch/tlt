@@ -4,11 +4,20 @@ Request a complete save RAM dump from the active autotracker WebSocket server.
 
 Usage: python3 scripts/autotracker/request_full_save_dump.py [output.json] [--live-addrs PATH]
 
-Dumps the full save context, combo context, entire payload region, and
-playstate for both OoT and MM in one shot. Only three version-dependent
-base addresses are needed: saveCtx, comboCtx, and payload. All three come
-from live_addrs.json (auto-discovered). Sizes use the generous upper bounds
-from ootmm/addrs.go so the dump always covers the complete region.
+This is a one-shot request: the script connects like the first tracker
+connection after an autotracker restart, sends the handshake with the
+requested memory areas, and takes the very first full snapshot the
+autotracker sends. It does not subscribe to the normal change-driven raw
+stream (watch the addresses, send a state only when something changes).
+
+The autotracker broadcasts one frame per poll cycle for the currently active
+game, so the dump covers that game. To capture the other game, re-run the
+script while playing it.
+
+Only three version-dependent base addresses are needed: saveCtx, comboCtx,
+and payload. All three come from live_addrs.json (auto-discovered). Sizes use
+the generous upper bounds from ootmm/addrs.go so the dump always covers the
+complete region.
 """
 
 import argparse
@@ -130,7 +139,7 @@ def build_chunks(addrs: dict) -> tuple[list[dict], list[dict]]:
 
 async def main():
     parser = argparse.ArgumentParser(
-        description="Dump complete save RAM from the autotracker WebSocket server."
+        description="Request a one-shot full save RAM dump from the autotracker WebSocket server."
     )
     parser.add_argument(
         "output", nargs="?", default="full-save-dump.json",
@@ -141,8 +150,8 @@ async def main():
         help="Path to live_addrs.json (auto-discovered if omitted)",
     )
     parser.add_argument(
-        "--duration", type=float, default=5.0,
-        help="Capture window in seconds (default: 5.0)",
+        "--timeout", type=float, default=5.0,
+        help="Max seconds to wait for the initial snapshot (default: 5.0)",
     )
     args = parser.parse_args()
 
@@ -172,15 +181,16 @@ async def main():
                 "memoryAreas": {"oot": oot_chunks, "mm": mm_chunks},
             }
             await ws.send(json.dumps(handshake))
-            print("Handshake sent, waiting for data ...")
+            print("Handshake sent, waiting for the initial snapshot ...")
 
-            deadline = time.monotonic() + args.duration
-            while True:
+            # One-shot: take the very first raw snapshot the autotracker sends
+            # and then close. A freshly connected client is immediately marked
+            # for a full sync, so the first broadcast already contains all
+            # requested chunks for the active game - no need to stay subscribed
+            # and wait for change-driven updates like a normal tracker run.
+            deadline = time.monotonic() + args.timeout
+            while time.monotonic() < deadline and not messages:
                 remaining = deadline - time.monotonic()
-                if remaining <= 0:
-                    print(f"\nCapture window ({args.duration}s) elapsed.")
-                    break
-
                 try:
                     raw = await asyncio.wait_for(ws.recv(), timeout=remaining)
                 except asyncio.TimeoutError:
@@ -215,28 +225,26 @@ async def main():
         sys.exit(1)
 
     if not messages:
-        print("No raw messages received.")
+        print("No raw snapshot received within the timeout.")
+        print("Make sure the game is running with a valid save (e.g. in-game, paused after saving).")
         sys.exit(1)
-
-    # Keep only the last message per game
-    latest = {}
-    for msg in messages:
-        latest[msg["game"]] = msg
 
     dump = {
         "capturedAt": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
         "totalMessagesCaptured": len(messages),
-        "messages": list(latest.values()),
+        "messages": messages,
     }
 
     with open(output_path, "w") as f:
         json.dump(dump, f, indent=2)
 
-    print(f"\nSaved {len(latest)} snapshot(s) ({len(messages)} total messages) to {output_path}")
-    for msg in latest.values():
+    print(f"\nSaved {len(messages)} snapshot(s) to {output_path}")
+    for msg in messages:
         print(f"  {msg['game']}: saveIndex={msg.get('saveIndex')}")
         for c in msg.get("chunks", []):
             print(f"    {c['name']:20s}  {c['length']:,} bytes at 0x{c['address']:08X}")
+    print("\nNote: a snapshot covers the currently active game only; to capture the")
+    print("other game, run this script again while playing it.")
 
 
 if __name__ == "__main__":

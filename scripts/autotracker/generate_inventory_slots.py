@@ -75,7 +75,12 @@ def build_shared_storage(mm_custom_save_size: int) -> dict:
     rusty_keys = notes + NOTES_MAX
 
     # Song flag offsets within each custom save (byte holding the song bitfields)
-    song_flags_oot = XFLAGS_COUNT_OOT + 32 + 8 + 8 + 16 + 2 * 28 + 2
+    # fwRespawnDungeonEntrance has u32 members => 4-byte alignment on N64.
+    # Account for alignment padding before the array.
+    fw_respawn_offset = XFLAGS_COUNT_OOT + 32 + 8 + 8 + 16
+    if fw_respawn_offset % 4:
+        fw_respawn_offset += 4 - (fw_respawn_offset % 4)
+    song_flags_oot = fw_respawn_offset + 2 * 28 + 2
     song_flags_mm = ((half_days + 1 + 3) & ~3) + 3 * 64
 
     tracked_size = max(

@@ -60,16 +60,28 @@ def analyze_dump(dump_path: str):
         if game == "OoT" and "oot_payload" in chunks:
             payload = decode_b64(chunks["oot_payload"]["data"])
 
-            # gSharedCustomSave is at 0x8044b520 in VRAM
-            # Payload starts at 0x80400000
-            # So offset in payload = 0x8044b520 - 0x80400000 = 0x4b520
-            gSharedCustomSave_addr = 0x8044b520
+            # gSharedCustomSave and gMmSave addresses are version-dependent.
+            # Auto-discover from live_addrs.json like request_full_save_dump.py does.
+            import os as _os
+            script_dir = _os.path.dirname(_os.path.abspath(__file__))
+            repo_root = _os.path.normpath(_os.path.join(script_dir, "..", ".."))
+            data_dir = _os.path.join(repo_root, "packs", "ootmm", "src", "autotracker", "data")
+            # Pick the latest version directory with a live_addrs.json
+            candidates = sorted(
+                (entry, _os.path.join(data_dir, entry, "live_addrs.json"))
+                for entry in _os.listdir(data_dir)
+                if _os.path.isfile(_os.path.join(data_dir, entry, "live_addrs.json"))
+            )
+            if not candidates:
+                print("Error: no live_addrs.json found")
+                return
+            with open(candidates[-1][1]) as _f:
+                _live_addrs = json.load(_f)
+            gSharedCustomSave_addr = int(_live_addrs["oot"]["sharedCustomSaveLive"], 16)
+            gMmSave_addr = int(_live_addrs["oot"]["foreignSaveLive"], 16)
             payload_base = 0x80400000
-            shared_offset = gSharedCustomSave_addr - payload_base  # 0x4b520
-
-            # gMmSave (foreign save) is at 0x8044bdb0
-            gMmSave_addr = 0x8044bdb0
-            foreign_offset = gMmSave_addr - payload_base  # 0x4bdb0
+            shared_offset = gSharedCustomSave_addr - payload_base
+            foreign_offset = gMmSave_addr - payload_base
 
             shared_size = foreign_offset - shared_offset  # Should be 0x890
 
