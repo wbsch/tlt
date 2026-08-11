@@ -959,6 +959,9 @@ const OOT_ITEM_RUTO_LETTER = 0x1b;
 const MM_ITEM_GOLD_DUST = 0x22;
 const MM_ITEM_RUTO_LETTER = 0xb6;
 
+// Event check flag for detecting traded-away bottle contents
+const EV_OOT_CHK_KING_ZORA_MOVED = 0x33; // Set when Ruto's Letter is delivered to King Zora
+
 const EMPTY_INVENTORY_ITEM = 0xff;
 
 const SHARED_COIN_COUNT = 4;
@@ -4040,10 +4043,18 @@ function extractItems(state: GameState): RawAutotrackerItem[] {
     }
     appendPositiveItem(items, entry.itemId, qty);
   }
+  const rutoLetterBottleCount = countOotBottleItem(
+    oot.items,
+    OOT_ITEM_RUTO_LETTER,
+  );
+  const rutoLetterDelivered = hasOotEventBitmapFlag(
+    oot.eventsChk,
+    EV_OOT_CHK_KING_ZORA_MOVED,
+  );
   appendPositiveItem(
     items,
     'OOT_BOTTLE_RUTO_LETTER',
-    countOotBottleItem(oot.items, OOT_ITEM_RUTO_LETTER),
+    rutoLetterBottleCount > 0 || rutoLetterDelivered ? 1 : 0,
   );
 
   const ootTradeRecord = oot.extraRecords[EXTRA_IDX_OOT_TRADE] ?? 0;
