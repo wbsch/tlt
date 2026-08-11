@@ -355,6 +355,8 @@ const supportedSettingKeys = new Set(
   SETTINGS_DEFINITIONS.map((setting) => setting.key),
 );
 const itemNameToId = new Map<string, string>();
+/** Maps a normalized display name to ALL matching item IDs (all-wins). */
+const itemNameToAllIds = new Map<string, string[]>();
 const ALL_TRICKS = TRICKS as Record<string, { name?: string }>;
 const trickNameToKey = new Map<string, string>();
 const trackerDefaultSettingsByKey = TRACKER_DEFAULT_SETTINGS as Record<
@@ -404,7 +406,18 @@ if (Items) {
     const id = (item as { id?: string })?.id;
     if (!id) continue;
     const name = itemName ? itemName(id) : id;
-    itemNameToId.set(normalizeName(name), id);
+    const key = normalizeName(name);
+    itemNameToId.set(key, id);
+    // All-wins: map the name to every matching ID so that starting
+    // items are applied to all variants (OoT, MM, SHARED).  Only the
+    // variant that actually exists in the current game config will
+    // take effect; the others are harmless no-ops.
+    const ids = itemNameToAllIds.get(key);
+    if (ids) {
+      ids.push(id);
+    } else {
+      itemNameToAllIds.set(key, [id]);
+    }
   }
 }
 
@@ -3028,12 +3041,14 @@ function applyStartingItems(startingItems: Record<string, number>) {
   const nextById: Record<string, number> = {};
   for (const [name, count] of Object.entries(startingItems)) {
     if (!count || count <= 0) continue;
-    const itemId = itemNameToId.get(normalizeName(name));
-    if (!itemId) {
+    const ids = itemNameToAllIds.get(normalizeName(name));
+    if (!ids || ids.length === 0) {
       console.warn('[OoTMM Tracker] Unknown starting item:', name);
       continue;
     }
-    nextById[itemId] = Math.max(nextById[itemId] ?? 0, count);
+    for (const itemId of ids) {
+      nextById[itemId] = Math.max(nextById[itemId] ?? 0, count);
+    }
   }
   sessionStore.mergeInventoryCounts(nextById);
 }
