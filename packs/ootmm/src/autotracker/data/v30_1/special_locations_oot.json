@@ -165,17 +165,6 @@
     "note": "Gerudo Card quest item"
   },
   {
-    "symbol": "WEIRD_EGG",
-    "sources": [
-      {
-        "group": "gOotTradeSave",
-        "field": "gOotTradeSave.child",
-        "mask": "0x1FFE"
-      }
-    ],
-    "note": "Weird Egg child trade progression"
-  },
-  {
     "symbol": "ZELDA_LETTER",
     "sources": [
       {

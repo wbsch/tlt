@@ -592,14 +592,6 @@
     }
   },
   {
-    "symbol": "WEIRD_EGG",
-    "source": {
-      "group": "gOotTradeSave",
-      "field": "gOotTradeSave.child",
-      "mask": "0x1FFE"
-    }
-  },
-  {
     "symbol": "ZELDA_LETTER",
     "source": {
       "group": "eventsChk",
