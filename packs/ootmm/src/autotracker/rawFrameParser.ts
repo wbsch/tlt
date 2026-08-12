@@ -2038,7 +2038,7 @@ class RawAutotrackerParserImpl implements RawAutotrackerParser {
 
     const signatureKey = livePlayStateSignatureKey(signature);
 
-    // Timeout-based acceptance: if a transition has been pending for 1 s
+    // Timeout-based acceptance: if a transition has been pending for 2 s
     // without new data, the autotracker is idle → state is stable.
     if (
       this.pendingLiveTransitionGame === activeGame &&
@@ -2046,7 +2046,7 @@ class RawAutotrackerParserImpl implements RawAutotrackerParser {
       this.pendingLiveTransitionTimestamp !== null
     ) {
       const elapsed = Date.now() - this.pendingLiveTransitionTimestamp;
-      if (elapsed >= 1000) {
+      if (elapsed >= 2000) {
         this.pendingLiveTransitionDiscardCount = 0;
         this.markStableActiveGameFrame(activeGame, signatureKey);
         return false;

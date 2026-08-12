@@ -611,12 +611,12 @@ export function useAutotracker(options: AutotrackerOptions) {
     const parsed = rawParser.parse(msg);
     if (!parsed) {
       // Frame was deferred (scene transition in progress). Start a timer so
-      // that after 1 s of silence the pending transition is accepted.
+      // that after 2 s of silence the pending transition is accepted.
       if (!idleAcceptTimer) {
         idleAcceptTimer = setTimeout(() => {
           idleAcceptTimer = null;
           tryIdleAccept();
-        }, 1000);
+        }, 2000);
       }
       return;
     }
@@ -654,9 +654,9 @@ export function useAutotracker(options: AutotrackerOptions) {
   }
 
   /**
-   * After 1 s of silence from the autotracker, re-parse the last message.
+   * After 2 s of silence from the autotracker, re-parse the last message.
    * The parser's timeout-based acceptance will then accept any pending
-   * transition that has been stable for ≥ 1 s.
+   * transition that has been stable for ≥ 2 s.
    */
   function tryIdleAccept() {
     if (!lastRawMessage || !rawParser) {
