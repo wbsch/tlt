@@ -256,6 +256,28 @@ const BOTTLE_CONTENT_BASE_ITEM_IDS: Record<string, string> = {
   SHARED_BOTTLE_BLUE_FIRE: 'SHARED_BOTTLE_EMPTY',
 };
 
+// Bottle contents whose logic counterpart is a *bare* pool item (e.g. the
+// `renewable(OOT_BLUE_FIRE)` branch of `has_blue_fire`). The world optimizer
+// removes `renewable(<BOTTLE_CONTENT>)` branches for these because the bottle
+// content items are not part of the item pool, so owning a filled bottle only
+// helps the logic if the bare item is also registered. Mirror the grid's
+// `AUTO_SELECT_ON_OWNED_ITEM_IDS` behavior here so this holds for any state
+// source (presets, imports, undo/redo), not just grid interaction.
+const BOTTLE_CONTENT_BARE_ITEM_IDS: Record<string, string> = {
+  OOT_BOTTLE_POTION_RED: 'OOT_POTION_RED',
+  OOT_BOTTLE_POTION_GREEN: 'OOT_POTION_GREEN',
+  OOT_BOTTLE_POTION_BLUE: 'OOT_POTION_BLUE',
+  OOT_BOTTLE_BLUE_FIRE: 'OOT_BLUE_FIRE',
+  MM_BOTTLE_POTION_RED: 'MM_POTION_RED',
+  MM_BOTTLE_POTION_GREEN: 'MM_POTION_GREEN',
+  MM_BOTTLE_POTION_BLUE: 'MM_POTION_BLUE',
+  MM_BOTTLE_BLUE_FIRE: 'MM_BLUE_FIRE',
+  SHARED_BOTTLE_POTION_RED: 'SHARED_POTION_RED',
+  SHARED_BOTTLE_POTION_GREEN: 'SHARED_POTION_GREEN',
+  SHARED_BOTTLE_POTION_BLUE: 'SHARED_POTION_BLUE',
+  SHARED_BOTTLE_BLUE_FIRE: 'SHARED_BLUE_FIRE',
+};
+
 const VANILLA_SILVER_RUPEE_PREFIX = 'OOT_RUPEE_SILVER_';
 const GRID_WHEEL_OVERLAY_STATE_PREFIX = '__grid_wheel_overlay_state__:';
 const OWL_STATUE_PREFIX = 'MM_OWL_';
@@ -2654,6 +2676,18 @@ export class OoTMMTracker implements TrackerPack {
         baseItemId,
         (expandedInventory.get(baseItemId) || 0) + count,
       );
+    }
+
+    // Bridge bottle contents to their bare pool-item counterparts so the
+    // pathfinder's `renewable(<bare item>)` checks (e.g. `has_blue_fire`)
+    // are satisfied by filled bottles regardless of how the state was
+    // loaded (presets, imports, undo/redo, or grid interaction).
+    for (const [itemId, count] of inventory) {
+      if (count <= 0) continue;
+      const bareItemId = BOTTLE_CONTENT_BARE_ITEM_IDS[itemId];
+      if (!bareItemId) continue;
+      if ((expandedInventory.get(bareItemId) || 0) > 0) continue;
+      expandedInventory.set(bareItemId, 1);
     }
 
     this.expandInventoryWithAutoSelectedItems(expandedInventory);
