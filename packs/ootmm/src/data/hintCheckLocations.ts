@@ -1,58 +1,59 @@
 // ── Always and Sometimes Hint Check Locations ──
 // Based on defs/hints.yml in the OoTMM data package
-// Gossip Stone display names extracted from OoTMM hint formatting code
+// Display names match the ROM: OoTMM packages/generator/src/common/text/text.c
+// (kCheckNamesOot / kCheckNamesMm, indexed by the check IDs from hints.yml)
 
 import type { HintCheckDef } from './hintTypes';
 
 export const ALWAYS_HINT_CHECKS: HintCheckDef[] = [
   {
     id: 'OOT_FROGS_FINAL',
-    locationName: 'the frog reward',
+    locationName: 'the Frogs Ocarina Game',
     locationCodes: [],
   },
   {
     id: 'MM_RANCH_DEFENSE',
-    locationName: 'the ranch defense',
+    locationName: 'the Ranch Defense',
     locationCodes: [],
   },
   {
     id: 'MM_BUTLER_RACE',
-    locationName: 'the butler race',
+    locationName: 'the Butler Race',
     locationCodes: [],
   },
   {
     id: 'MM_COUPLE_MASK',
-    locationName: "the Couple's Mask",
+    locationName: 'Anju and Kafei',
     locationCodes: [],
   },
   {
     id: 'MM_DON_GERO_CHOIR',
-    locationName: 'the Don Gero choir',
+    locationName: "Don Gero's Choir",
     locationCodes: [],
   },
   {
     id: 'MM_GORON_RACE',
-    locationName: 'the Goron race',
+    locationName: 'the Goron Race',
     locationCodes: [],
   },
   {
     id: 'MM_GRAVEYARD_NIGHT3',
-    locationName: 'the third-night graveyard',
+    locationName: 'the Beneath the Graveyard Night 3 Chest',
     locationCodes: [],
   },
   {
     id: 'MM_SONGS_GOSSIPS',
-    locationName: 'the gossip stones',
+    locationName: 'the Termina Field Musical Stones',
     locationCodes: [],
   },
   {
     id: 'OOT_COW_LINK',
-    locationName: 'the cow',
+    locationName: "the Cow in Link's house",
     locationCodes: [],
   },
   {
     id: 'MM_LOTTERY',
-    locationName: 'the lottery',
+    locationName: 'winning the Lottery',
     locationCodes: [],
   },
 ];
@@ -60,47 +61,47 @@ export const ALWAYS_HINT_CHECKS: HintCheckDef[] = [
 export const SOMETIMES_HINT_CHECKS: HintCheckDef[] = [
   {
     id: 'OOT_FISHING',
-    locationName: 'the fishing pond',
+    locationName: 'Fishing',
     locationCodes: [],
   },
   {
     id: 'OOT_RAVAGED_VILLAGE',
-    locationName: 'the ravaged village',
+    locationName: 'a Ravaged Village',
     locationCodes: [],
   },
   {
     id: 'OOT_ZORA_KING',
-    locationName: 'the Zora king',
+    locationName: 'King Zora',
     locationCodes: [],
   },
   {
     id: 'OOT_GANON_FAIRY',
-    locationName: 'the fairy',
+    locationName: "the Great Fairy outside of Ganon's Castle",
     locationCodes: [],
   },
   {
     id: 'OOT_TEMPLE_FIRE_HAMMER',
-    locationName: 'the Fire Temple hammer',
+    locationName: 'the Fire Temple Hammer Chest',
     locationCodes: [],
   },
   {
     id: 'OOT_TEMPLE_FIRE_SCARECROW',
-    locationName: 'the Scarecrow',
+    locationName: 'the Fire Temple Scarecrow Chest',
     locationCodes: [],
   },
   {
     id: 'OOT_GTG_WATER',
-    locationName: 'the Gerudo Training Grounds water',
+    locationName: 'the Gerudo Training Grounds Water Room',
     locationCodes: [],
   },
   {
     id: 'OOT_HAUNTED_WASTELAND',
-    locationName: 'the Haunted Wasteland',
+    locationName: 'the Haunted Wastelands Chest',
     locationCodes: [],
   },
   {
     id: 'OOT_GERUDO_ARCHERY',
-    locationName: 'the Gerudo archery',
+    locationName: 'the Gerudo Archery',
     locationCodes: [],
   },
   {
@@ -110,157 +111,157 @@ export const SOMETIMES_HINT_CHECKS: HintCheckDef[] = [
   },
   {
     id: 'OOT_ICE_CAVERN_CHEST',
-    locationName: 'the Ice Cavern chest',
+    locationName: 'the Ice Cavern Final Chest',
     locationCodes: [],
   },
   {
     id: 'OOT_TREASURE_GAME',
-    locationName: 'the treasure game',
+    locationName: 'the Market Treasure Game',
     locationCodes: [],
   },
   {
     id: 'OOT_SHOOT_SUN',
-    locationName: 'shooting the sun',
+    locationName: 'Shooting at the Sun',
     locationCodes: [],
   },
   {
     id: 'OOT_FOREST_FLOORMASTER',
-    locationName: 'the Floormaster',
+    locationName: 'the Floormaster in the Forest Temple',
     locationCodes: [],
   },
   {
     id: 'OOT_SHADOW_SKULL_POT',
-    locationName: 'the Skull pot',
+    locationName: 'bombing a fiery skull pot',
     locationCodes: [],
   },
   {
     id: 'OOT_MQ_SHADOW_STALFOS',
-    locationName: 'the Stalfos',
+    locationName: 'a Stalfos duel near spikes',
     locationCodes: [],
   },
   {
     id: 'OOT_WATER_RIVER',
-    locationName: 'the river',
+    locationName: 'the Water Temple River chest',
     locationCodes: [],
   },
   {
     id: 'OOT_LOST_WOODS_TRADE',
-    locationName: 'the trade',
+    locationName: 'trading a bird and a mixture in the Lost Woods',
     locationCodes: [],
   },
   {
-    id: 'OOT_JABU_RANG',
-    locationName: 'the Boomerang',
+    id: 'OOT_JABU_BOOMERANG',
+    locationName: "Stingers in Jabu-Jabu's Belly",
     locationCodes: [],
   },
   {
     id: 'OOT_MQ_SPIRIT_SYMPHONY',
-    locationName: 'the symphony',
+    locationName: 'playing a symphony in Spirit Temple',
     locationCodes: [],
   },
   {
     id: 'OOT_MQ_DEKU_TIME_BLOCK',
-    locationName: 'the time block',
+    locationName: 'a chest hidden by a time block in Deku Tree',
     locationCodes: [],
   },
   {
     id: 'MM_BANK_3',
-    locationName: 'the third bank reward',
+    locationName: "the Bank's Final Reward",
     locationCodes: [],
   },
   {
     id: 'MM_SOUND_CHECK',
-    locationName: 'the sound check',
+    locationName: 'the Milk Bar Performance',
     locationCodes: [],
   },
   {
     id: 'MM_BOAT_ARCHERY',
-    locationName: 'the boat archery',
+    locationName: 'the Boat Archery',
     locationCodes: [],
   },
   {
     id: 'MM_OSH_CHEST',
-    locationName: 'the Ocean Spider House chest',
+    locationName: 'the Ocean Spider House Chest',
     locationCodes: [],
   },
   {
     id: 'MM_PINNACLE_ROCK_HP',
-    locationName: 'Pinnacle Rock',
+    locationName: 'the Pinnacle Rock Seahorses',
     locationCodes: [],
   },
   {
     id: 'MM_FISHERMAN_GAME',
-    locationName: 'the fisherman game',
+    locationName: "the Fisherman's Game",
     locationCodes: [],
   },
   {
     id: 'MM_SONG_ELEGY',
-    locationName: 'Elegy of Emptiness',
+    locationName: 'Igos du Ikana',
     locationCodes: [],
   },
   {
     id: 'MM_SECRET_SHRINE_WART_HP',
-    locationName: 'the Secret Shrine Wart',
+    locationName: 'the Secret Shrine Wart and Final Chest',
     locationCodes: [],
   },
   {
     id: 'MM_BLACKSMITH',
-    locationName: 'the blacksmith',
+    locationName: 'the Blacksmith',
     locationCodes: [],
   },
   {
     id: 'MM_MIDNIGHT_MEETING',
-    locationName: 'the midnight meeting',
+    locationName: 'the Midnight Meeting',
     locationCodes: [],
   },
   {
     id: 'MM_MADAME_AROMA_BAR',
-    locationName: "Madame Aroma's bar",
+    locationName: 'Madame Aroma in the Bar',
     locationCodes: [],
   },
   {
     id: 'MM_CUCCOS',
-    locationName: 'the Cuccos',
+    locationName: 'Marching for Cuccos',
     locationCodes: [],
   },
   {
     id: 'MM_KAFEI',
-    locationName: 'Kafei',
+    locationName: 'Finding Kafei',
     locationCodes: [],
   },
   {
     id: 'MM_INVISIBLE_SOLDIER',
-    locationName: 'the invisible soldier',
+    locationName: 'an Invisible Soldier',
     locationCodes: [],
   },
   {
     id: 'MM_GBT_ICE_ARROW',
-    locationName: 'the Ice Arrow',
+    locationName: 'the Great Bay Temple Wart',
     locationCodes: [],
   },
   {
     id: 'MM_SHT_BOSS_KEY',
-    locationName: 'the Snowhead boss key',
+    locationName: 'the second Snowhead Wizzrobe',
     locationCodes: [],
   },
   {
     id: 'MM_WFT_BOSS_KEY',
-    locationName: 'the Woodfall boss key',
+    locationName: 'the Woodfall Temple Gekko',
     locationCodes: [],
   },
   {
     id: 'MM_ISTT_BOSS_KEY',
-    locationName: 'the Stone Tower boss key',
+    locationName: 'defeating Gomess',
     locationCodes: [],
   },
   {
     id: 'MM_HUNGRY_GORON',
-    locationName: 'the hungry Goron',
+    locationName: 'feeding a freezing Goron',
     locationCodes: [],
   },
   {
     id: 'MM_KAMARO',
-    locationName: 'Kamaro',
+    locationName: 'healing Kamaro',
     locationCodes: [],
   },
   // Conditional:
