@@ -22,8 +22,10 @@ import {
   type ParsedHintsData,
 } from '../utils/hintSpoilerAnalysis';
 import { getItemIcon } from '../data/itemIcons';
-import { GI_ITEM_LIST } from '../data/giItems';
-import { ITEM_DATABASE } from '../data/items';
+import {
+  createItemDisplayNameResolver,
+  getHintItemEntries,
+} from '../utils/hintItemNames';
 
 const sessionStore = useOoTMMSessionStore();
 const {
@@ -34,6 +36,7 @@ const {
   hasImportedSpoilerLog,
   inventoryById,
   hintsText,
+  availableItemIdSet,
 } = storeToRefs(sessionStore);
 
 // ── Collapsible sections ──
@@ -317,18 +320,18 @@ function getItemsInRegion(regionId: string): Array<{
 
 // ── Actions ──
 
-// ── Item name lookup ──
-const itemNameById = computed(() => {
-  const map = new Map<string, string>();
-  for (const item of GI_ITEM_LIST) map.set(item.id, item.name);
-  for (const item of ITEM_DATABASE) {
-    if (!map.has(item.id)) map.set(item.id, item.name);
-  }
-  return map;
-});
+// ── Item name lookup (pool-aware, with game prefixes for ambiguous names) ──
+const hintItemEntries = computed(() =>
+  getHintItemEntries(
+    availableItemIdSet.value.size > 0 ? availableItemIdSet.value : null,
+  ),
+);
+const hintItemNameResolver = computed(() =>
+  createItemDisplayNameResolver(hintItemEntries.value.map((item) => item.id)),
+);
 
 function resolveItemName(itemId: string): string {
-  return itemNameById.value.get(itemId) ?? itemId;
+  return hintItemNameResolver.value(itemId);
 }
 
 function addPathHint() {

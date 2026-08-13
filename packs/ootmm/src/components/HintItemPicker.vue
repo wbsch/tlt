@@ -1,10 +1,12 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue';
-import { ITEM_DATABASE } from '../data/items';
-import { GI_ITEM_LIST } from '../data/giItems';
+import { storeToRefs } from 'pinia';
 import { getItemIcon } from '../data/itemIcons';
-import itemGrids from '../data/itemGrids.json';
-import { collectAllGridItemIds } from '../utils/itemGridRef';
+import { useOoTMMSessionStore } from '../stores/ootmmSession';
+import {
+  createItemDisplayNameResolver,
+  getHintItemEntries,
+} from '../utils/hintItemNames';
 
 const props = withDefaults(
   defineProps<{
@@ -20,44 +22,38 @@ const emit = defineEmits<{
   (e: 'update:modelValue', value: string): void;
 }>();
 
+const sessionStore = useOoTMMSessionStore();
+const { availableItemIdSet } = storeToRefs(sessionStore);
+
 const searchQuery = ref('');
 const isOpen = ref(false);
 
-/** Set of all item IDs referenced in the item grid layouts. */
-const allGridItemIds = computed(() => collectAllGridItemIds(itemGrids));
+/**
+ * Items shown in the dropdown: item-grid items, restricted to the current
+ * seed's item pool when one exists (falls back to all grid items otherwise).
+ */
+const items = computed(() =>
+  getHintItemEntries(
+    availableItemIdSet.value.size > 0 ? availableItemIdSet.value : null,
+  ),
+);
 
-/** Items that appear in the Item Grid (deduplicated, first appearance only for progressive) */
-const gridItems = computed(() => {
-  const gridIds = allGridItemIds.value;
-  const seenIds = new Set<string>();
-  const items: Array<{ id: string; name: string; iconPath: string | null }> =
-    [];
+/** Resolves display names, prefixing game variants that would be ambiguous. */
+const displayNameResolver = computed(() =>
+  createItemDisplayNameResolver(items.value.map((item) => item.id)),
+);
 
-  // First pass: GI_ITEM_LIST for the ordering
-  for (const gi of GI_ITEM_LIST) {
-    if (seenIds.has(gi.id) || !gridIds.has(gi.id)) continue;
-    seenIds.add(gi.id);
-    const iconPath = getItemIcon(gi.id);
-    items.push({ id: gi.id, name: gi.name, iconPath });
-  }
-
-  // Add any ITEM_DATABASE items not in GI_ITEM_LIST
-  for (const item of ITEM_DATABASE) {
-    if (seenIds.has(item.id) || !gridIds.has(item.id)) continue;
-    seenIds.add(item.id);
-    const iconPath = getItemIcon(item.id);
-    items.push({ id: item.id, name: item.name, iconPath });
-  }
-
-  return items.sort((a, b) => a.name.localeCompare(b.name));
-});
+function displayName(itemId: string): string {
+  return displayNameResolver.value(itemId);
+}
 
 const filteredItems = computed(() => {
-  if (!searchQuery.value.trim()) return gridItems.value;
+  if (!searchQuery.value.trim()) return items.value;
   const q = searchQuery.value.toLowerCase();
-  return gridItems.value.filter(
+  return items.value.filter(
     (item) =>
-      item.name.toLowerCase().includes(q) || item.id.toLowerCase().includes(q),
+      displayName(item.id).toLowerCase().includes(q) ||
+      item.id.toLowerCase().includes(q),
   );
 });
 
@@ -95,9 +91,7 @@ function handleClear() {
           class="hint-item-picker__icon"
           alt=""
         />
-        <span class="hint-item-picker__name">{{
-          gridItems.find((i) => i.id === modelValue)?.name ?? modelValue
-        }}</span>
+        <span class="hint-item-picker__name">{{ displayName(modelValue) }}</span>
       </template>
       <template v-else-if="modelValue === 'JUNK'">
         <img
@@ -161,7 +155,9 @@ function handleClear() {
             class="hint-item-picker__icon hint-item-picker__icon--fallback"
             >?</span
           >
-          <span class="hint-item-picker__grid-label">{{ item.name }}</span>
+          <span class="hint-item-picker__grid-label">{{
+            displayName(item.id)
+          }}</span>
         </button>
       </div>
     </div>
