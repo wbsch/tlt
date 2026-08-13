@@ -61,6 +61,9 @@ const alwaysSometimesFormLocation = ref('');
 const alwaysSometimesFormItems = ref<string[]>(['']);
 const isAlwaysSometimesFormOpen = ref(false);
 
+/** Index of the Always/Sometimes hint awaiting removal confirmation, or null. */
+const pendingAlwaysSometimesRemoval = ref<number | null>(null);
+
 /** Check definition for the currently selected Always/Sometimes location */
 const alwaysSometimesSelectedCheck = computed(() => {
   if (!alwaysSometimesFormLocation.value) return undefined;
@@ -460,25 +463,40 @@ function removeAlwaysSometimesHint(index: number) {
   if (!hint) return;
 
   // If the hint had Junk items that marked locations collected, ask the user
+  // how to handle them via an in-tracker modal instead of a browser confirm.
   const junkLocationIds = resolveJunkLocationIds(hint);
   if (junkLocationIds.length > 0) {
-    const keepCollected = window.confirm(
-      'This hint has locations set to collected. Keep them collected? ' +
-        'Click "OK" to keep them collected, or "Cancel" to revert them to uncollected.',
-    );
-    if (!keepCollected) {
-      // Revert: remove both protection and collected state
-      sessionStore.removeHintProtectedLocationIds(junkLocationIds);
-      const nextCollected = new Set(collectedLocationIds.value);
-      for (const id of junkLocationIds) {
-        nextCollected.delete(id);
-      }
-      sessionStore.setCollectedLocationIds(Array.from(nextCollected));
-    }
-    // If keepCollected, the location IDs stay in hintProtectedLocationIds
+    pendingAlwaysSometimesRemoval.value = index;
+    return;
   }
 
   sessionStore.removeAlwaysSometimesHint(index);
+}
+
+function confirmAlwaysSometimesRemoval(keepCollected: boolean) {
+  const index = pendingAlwaysSometimesRemoval.value;
+  if (index === null) return;
+  const hint = hintTracker.value.alwaysSometimesHints[index];
+  pendingAlwaysSometimesRemoval.value = null;
+  if (!hint) return;
+
+  const junkLocationIds = resolveJunkLocationIds(hint);
+  if (junkLocationIds.length > 0 && !keepCollected) {
+    // Revert: remove both protection and collected state
+    sessionStore.removeHintProtectedLocationIds(junkLocationIds);
+    const nextCollected = new Set(collectedLocationIds.value);
+    for (const id of junkLocationIds) {
+      nextCollected.delete(id);
+    }
+    sessionStore.setCollectedLocationIds(Array.from(nextCollected));
+  }
+  // If keepCollected, the location IDs stay in hintProtectedLocationIds
+
+  sessionStore.removeAlwaysSometimesHint(index);
+}
+
+function cancelAlwaysSometimesRemoval() {
+  pendingAlwaysSometimesRemoval.value = null;
 }
 
 function addRegionHint() {
@@ -1092,6 +1110,45 @@ function removeMoonHint(index: number) {
         </button>
       </div>
     </div>
+
+    <!-- Confirmation modal for removing an Always/Sometimes hint with collected junk locations -->
+    <div
+      v-if="pendingAlwaysSometimesRemoval !== null"
+      class="hint-modal-overlay"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="hint-remove-confirm-title"
+    >
+      <div class="hint-modal">
+        <h2 id="hint-remove-confirm-title" class="hint-modal__title">
+          Remove hint?
+        </h2>
+        <p class="hint-modal__text">
+          This hint has locations set to collected because they were junked.
+          What should happen to those locations?
+        </p>
+        <div class="hint-modal__actions">
+          <button
+            class="hint-btn hint-btn--primary"
+            @click="confirmAlwaysSometimesRemoval(true)"
+          >
+            Keep collected
+          </button>
+          <button
+            class="hint-btn hint-btn--secondary"
+            @click="confirmAlwaysSometimesRemoval(false)"
+          >
+            Revert to uncollected
+          </button>
+          <button
+            class="hint-btn hint-btn--secondary"
+            @click="cancelAlwaysSometimesRemoval"
+          >
+            Cancel
+          </button>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -1337,5 +1394,46 @@ function removeMoonHint(index: number) {
   color: #666;
   font-style: italic;
   font-size: 0.7rem;
+}
+
+/* ── Confirmation modal ── */
+.hint-modal-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.6);
+}
+
+.hint-modal {
+  min-width: 320px;
+  max-width: 420px;
+  padding: 16px;
+  background: #2a2a2a;
+  border: 1px solid #555;
+  border-radius: 6px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+}
+
+.hint-modal__title {
+  margin: 0 0 8px;
+  font-size: 1rem;
+  color: #eee;
+}
+
+.hint-modal__text {
+  margin: 0 0 14px;
+  font-size: 0.85rem;
+  color: #bbb;
+  line-height: 1.4;
+}
+
+.hint-modal__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  justify-content: flex-end;
 }
 </style>
