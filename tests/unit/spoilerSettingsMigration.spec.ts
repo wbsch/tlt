@@ -82,6 +82,48 @@ describe('normalizeSpoilerSettings', () => {
     expect(result.agelessSoaring).toBeUndefined();
   });
 
+  it('translates clearStateDungeonsMm legacy enum values to the set format', () => {
+    expect(normalizeSpoilerSettings({ clearStateDungeonsMm: 'both' })).toEqual({
+      clearStateDungeonsMm: { type: 'specific', values: ['WF', 'GB'] },
+      moon: 'custom',
+    });
+    expect(normalizeSpoilerSettings({ clearStateDungeonsMm: 'WF' })).toEqual({
+      clearStateDungeonsMm: { type: 'specific', values: ['WF'] },
+      moon: 'custom',
+    });
+    expect(normalizeSpoilerSettings({ clearStateDungeonsMm: 'GB' })).toEqual({
+      clearStateDungeonsMm: { type: 'specific', values: ['GB'] },
+      moon: 'custom',
+    });
+  });
+
+  it('omits legacy clearStateDungeonsMm none (equivalent to the default)', () => {
+    const result = normalizeSpoilerSettings({ clearStateDungeonsMm: 'none' });
+    expect('clearStateDungeonsMm' in result).toBe(false);
+    expect(result.moon).toBe('custom');
+  });
+
+  it('preserves the new v31.0 clearStateDungeonsMm set format unchanged', () => {
+    expect(
+      normalizeSpoilerSettings({
+        clearStateDungeonsMm: { type: 'none' },
+      }),
+    ).toEqual({ clearStateDungeonsMm: { type: 'none' }, moon: 'custom' });
+    expect(
+      normalizeSpoilerSettings({
+        clearStateDungeonsMm: { type: 'specific', values: ['GB'] },
+      }),
+    ).toEqual({
+      clearStateDungeonsMm: { type: 'specific', values: ['GB'] },
+      moon: 'custom',
+    });
+    expect(
+      normalizeSpoilerSettings({
+        clearStateDungeonsMm: { type: 'all' },
+      }),
+    ).toEqual({ clearStateDungeonsMm: { type: 'all' }, moon: 'custom' });
+  });
+
   it('preserves new v31.0 keys unchanged', () => {
     const result = normalizeSpoilerSettings({
       songMinuetMm: true,

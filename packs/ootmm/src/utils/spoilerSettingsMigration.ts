@@ -86,14 +86,24 @@ export function normalizeSpoilerSettings(
 
   // ── clearStateDungeonsMm (v30.1 enum) → set format (v31.0) ──
   if ('clearStateDungeonsMm' in result) {
-    const value = String(result.clearStateDungeonsMm ?? 'none');
-    delete result.clearStateDungeonsMm;
-    if (value === 'both') {
-      result.clearStateDungeonsMm = { type: 'specific', values: ['WF', 'GB'] };
-    } else if (value === 'WF' || value === 'GB') {
-      result.clearStateDungeonsMm = { type: 'specific', values: [value] };
+    const current = result.clearStateDungeonsMm;
+    // Only legacy enum strings need migration. The v31.0 set format
+    // ({ type: 'none' } / { type: 'all' } / { type: 'specific', values: [...] })
+    // is already canonical and must pass through unchanged — otherwise a
+    // default-valued { type: 'none' } gets stringified to "[object Object]"
+    // and is wrongly dropped.
+    if (typeof current === 'string') {
+      delete result.clearStateDungeonsMm;
+      if (current === 'both') {
+        result.clearStateDungeonsMm = {
+          type: 'specific',
+          values: ['WF', 'GB'],
+        };
+      } else if (current === 'WF' || current === 'GB') {
+        result.clearStateDungeonsMm = { type: 'specific', values: [current] };
+      }
+      // 'none' → omit (equivalent to { type: 'none' }, which is the default)
     }
-    // 'none' → omit (equivalent to { type: 'none' }, which is the default)
   }
 
   // ── moon (wasn't in older versions; default to 'custom' to reproduce old behavior) ──
