@@ -16,7 +16,9 @@ export interface RecordedPathHint {
 
 export interface RecordedItemExactHint {
   location: string; // Check location hint ID (e.g. "OOT_FROGS_FINAL")
-  itemId: string; // Item ID (or "JUNK")
+  itemId: string; // First item ID (or "JUNK")
+  /** Additional item IDs for checks that yield multiple items (dual hints) */
+  extraItemIds?: string[];
 }
 
 export interface RecordedItemRegionHint {
@@ -93,4 +95,9 @@ export interface HintCheckDef {
   id: string; // Check hint ID (e.g. "OOT_FROGS_FINAL")
   locationName: string; // Name as shown on the Gossip Stone
   locationCodes: string[]; // Location codes in the tracker's location system
+  /**
+   * How many items this check yields. Checks with more than one item are
+   * "dual hints" (e.g. the Ranch Defense gives two items). Defaults to 1.
+   */
+  itemCount?: number;
 }

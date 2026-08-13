@@ -6,6 +6,7 @@ import { getRegionOptions, getRegionDisplayName } from '../data/regionNames';
 import {
   ALWAYS_HINT_CHECKS,
   SOMETIMES_HINT_CHECKS,
+  findHintCheckById,
 } from '../data/hintCheckLocations';
 import type {
   PathSubType,
@@ -55,8 +56,43 @@ const isPathFormOpen = ref(false);
 
 // Always/Sometimes (merged)
 const alwaysSometimesFormLocation = ref('');
-const alwaysSometimesFormItem = ref('');
+const alwaysSometimesFormItems = ref<string[]>(['']);
 const isAlwaysSometimesFormOpen = ref(false);
+
+/** Check definition for the currently selected Always/Sometimes location */
+const alwaysSometimesSelectedCheck = computed(() => {
+  if (!alwaysSometimesFormLocation.value) return undefined;
+  return findHintCheckById(alwaysSometimesFormLocation.value);
+});
+
+/** Number of items the selected check yields (at least 1) */
+const alwaysSometimesSelectedItemCount = computed(() =>
+  Math.max(1, alwaysSometimesSelectedCheck.value?.itemCount ?? 1),
+);
+
+// Keep the item slot array sized to the selected check's item count
+watch(alwaysSometimesFormLocation, () => {
+  const count = alwaysSometimesSelectedItemCount.value;
+  const next = [...alwaysSometimesFormItems.value];
+  while (next.length < count) next.push('');
+  alwaysSometimesFormItems.value = next.slice(0, count);
+});
+
+function setAlwaysSometimesFormItem(index: number, value: string) {
+  const next = [...alwaysSometimesFormItems.value];
+  next[index] = value;
+  alwaysSometimesFormItems.value = next;
+}
+
+/** All item IDs recorded on an Always/Sometimes hint */
+function getHintItems(hint: RecordedItemExactHint): string[] {
+  return [hint.itemId, ...(hint.extraItemIds ?? [])];
+}
+
+/** Whether every recorded item of a hint is JUNK */
+function isAlwaysSometimesHintJunk(hint: RecordedItemExactHint): boolean {
+  return getHintItems(hint).every((id) => id === 'JUNK');
+}
 
 // Region
 const regionFormRegion = ref('');
@@ -354,16 +390,21 @@ function removePathHint(index: number) {
 }
 
 function addAlwaysSometimesHint() {
-  if (!alwaysSometimesFormLocation.value || !alwaysSometimesFormItem.value)
-    return;
+  if (!alwaysSometimesFormLocation.value) return;
+  const items = alwaysSometimesFormItems.value.filter(Boolean);
+  if (items.length === 0) return;
   const hint: RecordedItemExactHint = {
     location: alwaysSometimesFormLocation.value,
-    itemId: alwaysSometimesFormItem.value,
+    itemId: items[0],
   };
+  if (items.length > 1) {
+    hint.extraItemIds = items.slice(1);
+  }
   sessionStore.addAlwaysSometimesHint(hint);
 
-  // If Junk, set the associated locations to collected and protect them
-  if (alwaysSometimesFormItem.value === 'JUNK') {
+  // If the whole hint is junk, set the associated locations to collected
+  // and protect them
+  if (isAlwaysSometimesHintJunk(hint)) {
     const allChecks = [...ALWAYS_HINT_CHECKS, ...SOMETIMES_HINT_CHECKS];
     const checkDef = allChecks.find(
       (c) => c.id === alwaysSometimesFormLocation.value,
@@ -379,7 +420,7 @@ function addAlwaysSometimesHint() {
   }
 
   alwaysSometimesFormLocation.value = '';
-  alwaysSometimesFormItem.value = '';
+  alwaysSometimesFormItems.value = [''];
   isAlwaysSometimesFormOpen.value = false;
 }
 
@@ -388,7 +429,7 @@ function removeAlwaysSometimesHint(index: number) {
   if (!hint) return;
 
   // If it was a Junk hint with protected locations, ask the user
-  if (hint.itemId === 'JUNK') {
+  if (isAlwaysSometimesHintJunk(hint)) {
     const allChecks = [...ALWAYS_HINT_CHECKS, ...SOMETIMES_HINT_CHECKS];
     const checkDef = allChecks.find((c) => c.id === hint.location);
     if (checkDef && checkDef.locationCodes.length > 0) {
@@ -676,16 +717,29 @@ function removeMoonHint(index: number) {
               </option>
             </select>
           </div>
-          <div class="hint-add-form__field">
-            <label>Item</label>
-            <HintItemPicker v-model="alwaysSometimesFormItem" />
+          <div
+            v-for="slot in alwaysSometimesSelectedItemCount"
+            :key="slot"
+            class="hint-add-form__field"
+          >
+            <label>{{
+              alwaysSometimesSelectedItemCount > 1 ? `Item ${slot}` : 'Item'
+            }}</label>
+            <HintItemPicker
+              :model-value="alwaysSometimesFormItems[slot - 1] ?? ''"
+              @update:model-value="
+                (v) => setAlwaysSometimesFormItem(slot - 1, v)
+              "
+            />
           </div>
           <div class="hint-add-form__actions">
             <button
               class="hint-btn hint-btn--primary"
               @click="addAlwaysSometimesHint"
               :disabled="
-                !alwaysSometimesFormLocation || !alwaysSometimesFormItem
+                !alwaysSometimesFormLocation ||
+                alwaysSometimesFormItems.length === 0 ||
+                !alwaysSometimesFormItems.every(Boolean)
               "
             >
               Save
@@ -710,20 +764,28 @@ function removeMoonHint(index: number) {
                 (c) => c.value === hint.location,
               )?.label ?? hint.location
             }}</strong>
-            <span v-if="hint.itemId === 'JUNK'" class="hint-row__junk"
-              >Junk</span
-            >
-            <template v-else>
-              <img
-                v-if="getItemIcon(hint.itemId)"
-                :src="getItemIcon(hint.itemId)"
-                class="hint-item-icon"
-                :alt="hint.itemId"
-              />
-              <span class="hint-row__item-name">{{
-                resolveItemName(hint.itemId)
-              }}</span>
-            </template>
+            <div class="hint-row__hint-items">
+              <span
+                v-for="(itemId, iidx) in getHintItems(hint)"
+                :key="iidx"
+                class="hint-row__hint-item"
+              >
+                <span v-if="itemId === 'JUNK'" class="hint-row__junk"
+                  >Junk</span
+                >
+                <template v-else>
+                  <img
+                    v-if="getItemIcon(itemId)"
+                    :src="getItemIcon(itemId)"
+                    class="hint-item-icon"
+                    :alt="itemId"
+                  />
+                  <span class="hint-row__item-name">{{
+                    resolveItemName(itemId)
+                  }}</span>
+                </template>
+              </span>
+            </div>
           </div>
           <button
             class="hint-row__delete"
@@ -1180,6 +1242,21 @@ function removeMoonHint(index: number) {
   color: #a66;
   font-weight: 600;
   font-size: 0.75rem;
+}
+
+/* Multi-item hints: items flow side by side, wrap when space runs out */
+.hint-row__hint-items {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px 12px;
+  margin-top: 2px;
+}
+
+.hint-row__hint-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
 }
 
 .hint-row__item-name {

@@ -15,6 +15,7 @@ export const ALWAYS_HINT_CHECKS: HintCheckDef[] = [
     id: 'MM_RANCH_DEFENSE',
     locationName: 'the Ranch Defense',
     locationCodes: [],
+    itemCount: 2, // Romani Ranch Aliens + Romani Ranch Cremia Escort
   },
   {
     id: 'MM_BUTLER_RACE',
@@ -55,6 +56,7 @@ export const ALWAYS_HINT_CHECKS: HintCheckDef[] = [
     id: 'MM_LOTTERY',
     locationName: 'winning the Lottery',
     locationCodes: [],
+    itemCount: 3, // Prize Night 1 / 2 / 3
   },
 ];
 
@@ -63,6 +65,7 @@ export const SOMETIMES_HINT_CHECKS: HintCheckDef[] = [
     id: 'OOT_FISHING',
     locationName: 'Fishing',
     locationCodes: [],
+    itemCount: 2, // Fishing Pond Child + Adult
   },
   {
     id: 'OOT_RAVAGED_VILLAGE',
@@ -73,6 +76,7 @@ export const SOMETIMES_HINT_CHECKS: HintCheckDef[] = [
     id: 'OOT_ZORA_KING',
     locationName: 'King Zora',
     locationCodes: [],
+    itemCount: 2, // Zora Domain Tunic + Eyeball Frog
   },
   {
     id: 'OOT_GANON_FAIRY',
@@ -103,16 +107,19 @@ export const SOMETIMES_HINT_CHECKS: HintCheckDef[] = [
     id: 'OOT_GERUDO_ARCHERY',
     locationName: 'the Gerudo Archery',
     locationCodes: [],
+    itemCount: 2, // Archery Reward 1 + 2
   },
   {
     id: 'OOT_BIGGORON',
     locationName: 'Biggoron',
     locationCodes: [],
+    itemCount: 3, // Prescription + Claim Check + Biggoron Sword
   },
   {
     id: 'OOT_ICE_CAVERN_CHEST',
     locationName: 'the Ice Cavern Final Chest',
     locationCodes: [],
+    itemCount: 2, // Iron Boots + Sheik Song (normal or MQ version per seed)
   },
   {
     id: 'OOT_TREASURE_GAME',
@@ -148,6 +155,7 @@ export const SOMETIMES_HINT_CHECKS: HintCheckDef[] = [
     id: 'OOT_LOST_WOODS_TRADE',
     locationName: 'trading a bird and a mixture in the Lost Woods',
     locationCodes: [],
+    itemCount: 2, // Odd Mushroom + Poacher's Saw
   },
   {
     id: 'OOT_JABU_BOOMERANG',
@@ -203,11 +211,13 @@ export const SOMETIMES_HINT_CHECKS: HintCheckDef[] = [
     id: 'MM_SECRET_SHRINE_WART_HP',
     locationName: 'the Secret Shrine Wart and Final Chest',
     locationCodes: [],
+    itemCount: 2, // Wart Chest + HP Chest
   },
   {
     id: 'MM_BLACKSMITH',
     locationName: 'the Blacksmith',
     locationCodes: [],
+    itemCount: 2, // Razor Blade + Gilded Sword
   },
   {
     id: 'MM_MIDNIGHT_MEETING',
@@ -228,6 +238,7 @@ export const SOMETIMES_HINT_CHECKS: HintCheckDef[] = [
     id: 'MM_KAFEI',
     locationName: 'Finding Kafei',
     locationCodes: [],
+    itemCount: 3, // Pendant of Memories + Owner Reward 1 + Owner Reward 2
   },
   {
     id: 'MM_INVISIBLE_SOLDIER',

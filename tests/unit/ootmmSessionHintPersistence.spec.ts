@@ -105,6 +105,70 @@ describe('ootmm session hint persistence', () => {
     });
   });
 
+  it('hydrates alwaysSometimesHints with extraItemIds (dual hints)', () => {
+    expect(
+      sanitizePersistedStateForStore('ootmm-session', {
+        hintTracker: {
+          alwaysSometimesHints: [
+            {
+              location: 'MM_RANCH_DEFENSE',
+              itemId: 'OOT_BOMB_BAG',
+              extraItemIds: ['OOT_BOMBCHU'],
+            },
+            { location: 'OOT_FROGS_FINAL', itemId: 'OOT_BOW' },
+          ],
+        },
+      }),
+    ).toEqual({
+      hintTracker: {
+        alwaysSometimesHints: [
+          {
+            location: 'MM_RANCH_DEFENSE',
+            itemId: 'OOT_BOMB_BAG',
+            extraItemIds: ['OOT_BOMBCHU'],
+          },
+          { location: 'OOT_FROGS_FINAL', itemId: 'OOT_BOW' },
+        ],
+        pathHints: [],
+        regionHints: [],
+        foolishHints: [],
+        moonHints: [],
+      },
+    });
+  });
+
+  it('drops alwaysSometimesHints with invalid extraItemIds', () => {
+    expect(
+      sanitizePersistedStateForStore('ootmm-session', {
+        hintTracker: {
+          alwaysSometimesHints: [
+            {
+              location: 'MM_RANCH_DEFENSE',
+              itemId: 'OOT_BOMB_BAG',
+              extraItemIds: 'not-an-array', // invalid type
+            },
+            {
+              location: 'MM_KAFEI',
+              itemId: 'OOT_HOOKSHOT',
+              extraItemIds: ['OOT_BOOMERANG', 42], // non-string entry
+            },
+            { location: 'OOT_FROGS_FINAL', itemId: 'OOT_BOW' },
+          ],
+        },
+      }),
+    ).toEqual({
+      hintTracker: {
+        alwaysSometimesHints: [
+          { location: 'OOT_FROGS_FINAL', itemId: 'OOT_BOW' },
+        ],
+        pathHints: [],
+        regionHints: [],
+        foolishHints: [],
+        moonHints: [],
+      },
+    });
+  });
+
   it('sanitizes invalid entries in hintTracker', () => {
     expect(
       sanitizePersistedStateForStore('ootmm-session', {
@@ -267,6 +331,44 @@ describe('ootmm session hint persistence', () => {
 
     await sessionStore.redo();
     expect(sessionStore.hintTracker.pathHints).toHaveLength(2);
+  });
+
+  it('stores dual hints with extraItemIds through the store', async () => {
+    const sessionStore = useOoTMMSessionStore();
+
+    sessionStore.addAlwaysSometimesHint({
+      location: 'MM_RANCH_DEFENSE',
+      itemId: 'OOT_BOMB_BAG',
+      extraItemIds: ['OOT_BOMBCHU'],
+    });
+    sessionStore.addAlwaysSometimesHint({
+      location: 'MM_LOTTERY',
+      itemId: 'OOT_BOMBS',
+      extraItemIds: ['OOT_BOMBS_10', 'OOT_BOMBS_20'],
+    });
+
+    expect(sessionStore.hintTracker.alwaysSometimesHints).toEqual([
+      {
+        location: 'MM_RANCH_DEFENSE',
+        itemId: 'OOT_BOMB_BAG',
+        extraItemIds: ['OOT_BOMBCHU'],
+      },
+      {
+        location: 'MM_LOTTERY',
+        itemId: 'OOT_BOMBS',
+        extraItemIds: ['OOT_BOMBS_10', 'OOT_BOMBS_20'],
+      },
+    ]);
+
+    // Undo removes the whole dual hint as a single entry
+    await sessionStore.undo();
+    expect(sessionStore.hintTracker.alwaysSometimesHints).toEqual([
+      {
+        location: 'MM_RANCH_DEFENSE',
+        itemId: 'OOT_BOMB_BAG',
+        extraItemIds: ['OOT_BOMBCHU'],
+      },
+    ]);
   });
 
   it('simulates page-reload round-trip via persist config', () => {

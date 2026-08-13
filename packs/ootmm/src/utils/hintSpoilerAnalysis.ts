@@ -125,6 +125,13 @@ export function parseSpoilerHints(hintsText: string): ParsedHintsData {
   let currentPathLabel: string | null = null;
   /** Carry-over gossip stone name for multi-line entries in specific/regional sections */
   let lastGossipStone: string | undefined = undefined;
+  /**
+   * Last gossip stone seen in the current "Specific Hints:" section.
+   * A check with multiple items (dual hint, e.g. the Ranch Defense) spans
+   * several lines under the same stone, so only the first line of each stone
+   * counts as a distinct hint.
+   */
+  let lastSpecificStone: string | undefined = undefined;
 
   // Known path subtype labels
   const PATH_SUBTYPE_LABELS: Record<string, PathSubType> = {
@@ -167,6 +174,7 @@ export function parseSpoilerHints(hintsText: string): ParsedHintsData {
     // Specific Hints (Always/Sometimes) section
     if (trimmed === 'Specific Hints:') {
       currentSection = 'specific';
+      lastSpecificStone = undefined;
       continue;
     }
 
@@ -306,6 +314,10 @@ export function parseSpoilerHints(hintsText: string): ParsedHintsData {
       case 'specific': {
         // Format: "GossipStoneName (2+ spaces) CheckLocation (2+ spaces) ItemName (note)"
         // Example: "MM Great Bay Coast Gossip    MM Road to Ikana Stone Mask    Mask of Scents (not required)"
+        // Checks with multiple items (dual hints) span several lines under the
+        // same gossip stone:
+        // "                                Romani Ranch Aliens    Item1 (sometimes required)"
+        // "                                Romani Ranch Cremia Escort    Item2 (sometimes required)"
         // Continuation lines (no gossip stone):
         // "                                CheckLocation (2+ spaces) ItemName (note)"
         const spaceParts = splitByDoubleSpaces(trimmed);
@@ -313,11 +325,16 @@ export function parseSpoilerHints(hintsText: string): ParsedHintsData {
         let gossipStone: string | undefined;
         let checkLocation: string;
         let itemField: string;
+        let isNewHint = false;
 
         if (spaceParts.length >= 3) {
           // Full line: gossip stone + check location + item
           gossipStone = spaceParts[0];
           lastGossipStone = gossipStone;
+          // A stone's hint may continue on the next lines (dual hints), so
+          // only the first line of each stone starts a new hint.
+          isNewHint = gossipStone !== lastSpecificStone;
+          lastSpecificStone = gossipStone;
           checkLocation = spaceParts[1];
           itemField = spaceParts[spaceParts.length - 1];
         } else if (spaceParts.length === 2 && lastGossipStone) {
@@ -337,10 +354,12 @@ export function parseSpoilerHints(hintsText: string): ParsedHintsData {
             itemName,
           });
 
-          const dedupKey = `${checkLocation}:${itemName}`;
-          if (!byCategory['item-exact'].has(dedupKey)) {
-            byCategory['item-exact'].add(dedupKey);
-            availableCheckLocations.add(checkLocation);
+          if (isNewHint) {
+            const dedupKey = `${checkLocation}:${itemName}`;
+            if (!byCategory['item-exact'].has(dedupKey)) {
+              byCategory['item-exact'].add(dedupKey);
+              availableCheckLocations.add(checkLocation);
+            }
           }
         }
         break;

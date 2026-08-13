@@ -230,15 +230,37 @@ function sanitizeRecordedPathHintArray(
 
 function sanitizeRecordedItemExactHintArray(
   value: unknown,
-): { location: string; itemId: string }[] {
+): { location: string; itemId: string; extraItemIds?: string[] }[] {
   if (!Array.isArray(value)) return [];
   return value.filter(
-    (entry): entry is { location: string; itemId: string } =>
-      isPlainObject(entry) &&
-      typeof entry.location === 'string' &&
-      isSafeKey(entry.location) &&
-      typeof entry.itemId === 'string' &&
-      isSafeKey(entry.itemId),
+    (
+      entry,
+    ): entry is {
+      location: string;
+      itemId: string;
+      extraItemIds?: string[];
+    } => {
+      if (
+        !isPlainObject(entry) ||
+        typeof entry.location !== 'string' ||
+        !isSafeKey(entry.location) ||
+        typeof entry.itemId !== 'string' ||
+        !isSafeKey(entry.itemId)
+      ) {
+        return false;
+      }
+      // Optional extra item IDs (dual hints) must be arrays of safe keys
+      if (
+        entry.extraItemIds !== undefined &&
+        (!Array.isArray(entry.extraItemIds) ||
+          !entry.extraItemIds.every(
+            (id) => typeof id === 'string' && isSafeKey(id),
+          ))
+      ) {
+        return false;
+      }
+      return true;
+    },
   );
 }
 
