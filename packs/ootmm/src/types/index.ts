@@ -45,7 +45,6 @@ export interface ResolvedSpoilerPlacement {
   itemName: string;
   locationId: string;
   locationName: string;
-  region?: string;
   world?: number;
   itemPlayer?: number;
 }

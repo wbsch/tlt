@@ -129,19 +129,11 @@ export type OoTMMSyncOperation =
       index: number;
     })
   | (SyncOperationBase & {
-      type: 'hints.always.add';
+      type: 'hints.always-sometimes.add';
       hint: import('../data/hintTypes').RecordedItemExactHint;
     })
   | (SyncOperationBase & {
-      type: 'hints.always.remove';
-      index: number;
-    })
-  | (SyncOperationBase & {
-      type: 'hints.sometimes.add';
-      hint: import('../data/hintTypes').RecordedItemExactHint;
-    })
-  | (SyncOperationBase & {
-      type: 'hints.sometimes.remove';
+      type: 'hints.always-sometimes.remove';
       index: number;
     })
   | (SyncOperationBase & {
@@ -158,6 +150,14 @@ export type OoTMMSyncOperation =
     })
   | (SyncOperationBase & {
       type: 'hints.foolish.remove';
+      index: number;
+    })
+  | (SyncOperationBase & {
+      type: 'hints.moon.add';
+      hint: import('../data/hintTypes').RecordedMoonHint;
+    })
+  | (SyncOperationBase & {
+      type: 'hints.moon.remove';
       index: number;
     })
   | (SyncOperationBase & {

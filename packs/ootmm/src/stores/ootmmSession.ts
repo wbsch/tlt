@@ -38,7 +38,7 @@ import type {
   RecordedItemExactHint,
   RecordedItemRegionHint,
   RecordedFoolishHint,
-  HintSyncOperation,
+  RecordedMoonHint,
 } from '../data/hintTypes';
 import { createEmptyHintTrackerState } from '../data/hintTypes';
 import {
@@ -52,6 +52,7 @@ import {
 } from '../utils/entranceRandomization';
 import { getGridItemDefinedMaxCount } from '../data/itemIcons';
 import { isValidCoopRoomCode } from '../utils/coopFlag';
+import { useRegionLocationMap } from '../composables/useRegionLocationMap';
 import {
   synthesizeOotToMmItemsForInventory,
   synthesizeMmToOotItemsForInventory,
@@ -510,6 +511,11 @@ export const useOoTMMSessionStore = defineStore('ootmm-session', () => {
     return tracker.value?.getAllLocations() ?? [];
   });
 
+  // Location ↔ hint-region mapping (post entrance pass). Reacts to
+  // locationsVersion, which is bumped after every tracker (re-)initialization.
+  const { locationIdToRegion: regionLocationMap, regionToLocationIds } =
+    useRegionLocationMap(tracker, locationsVersion);
+
   // Derived spoiler placement lookup maps
   const spoilerItemToLocationIds = computed<Record<string, string[]>>(() => {
     const map: Record<string, string[]> = {};
@@ -532,32 +538,6 @@ export const useOoTMMSessionStore = defineStore('ootmm-session', () => {
       // Only set if not already set — first placement wins
       if (!(p.locationId in map)) {
         map[p.locationId] = p.itemId;
-      }
-    }
-    return map;
-  });
-
-  const spoilerItemToRegion = computed<Record<string, string>>(() => {
-    const map: Record<string, string> = {};
-    for (const p of spoilerPlacements.value) {
-      if (p.region && !(p.itemId in map)) {
-        map[p.itemId] = p.region;
-      }
-    }
-    return map;
-  });
-
-  const spoilerRegionToItemIds = computed<Record<string, string[]>>(() => {
-    const map: Record<string, string[]> = {};
-    for (const p of spoilerPlacements.value) {
-      if (!p.region) continue;
-      const existing = map[p.region];
-      if (existing) {
-        if (!existing.includes(p.itemId)) {
-          existing.push(p.itemId);
-        }
-      } else {
-        map[p.region] = [p.itemId];
       }
     }
     return map;
@@ -724,6 +704,7 @@ export const useOoTMMSessionStore = defineStore('ootmm-session', () => {
       type: 'session.set_spoiler_log_state',
       imported: snapshot.hasImportedSpoilerLog,
       ootmmVersion: snapshot.importedSpoilerLogVersion,
+      hintsText: snapshot.hintsText,
     });
     publishSyncOperation({
       type: 'session.set_spoiler_fish_ids',
@@ -1971,7 +1952,7 @@ export const useOoTMMSessionStore = defineStore('ootmm-session', () => {
     spoilerFishItemIds.value = Array.from(ids);
   }
 
-  function setHintsText(text: string | null, options?: MutationOptions) {
+  function setHintsText(text: string | null) {
     hintsText.value = text;
     // hintsText alone isn't directly synced; it's included in
     // set_spoiler_log_state when the spoiler log is imported.
@@ -2626,8 +2607,6 @@ export const useOoTMMSessionStore = defineStore('ootmm-session', () => {
     hintsText,
     spoilerItemToLocationIds,
     spoilerLocationToItemId,
-    spoilerItemToRegion,
-    spoilerRegionToItemIds,
     availableItemIds,
     spoilerFishItemIds,
     itemMaxCountsById,
@@ -2647,6 +2626,8 @@ export const useOoTMMSessionStore = defineStore('ootmm-session', () => {
     reachableEntranceIdSet,
     preCompletedEnabled,
     allLocations,
+    regionLocationMap,
+    regionToLocationIds,
     startLocalSessionSync,
     stopLocalSessionSync,
     startRoomSync,
@@ -2691,9 +2672,6 @@ export const useOoTMMSessionStore = defineStore('ootmm-session', () => {
     recomputeReachability,
     resetSessionStateToDefaults,
     fillInventoryForDebugActivateAll,
-    // Hint tracker state
-    hintTracker,
-    hintProtectedLocationIds,
     // Hint tracker mutations
     addPathHint,
     removePathHint,

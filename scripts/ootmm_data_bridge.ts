@@ -8,6 +8,7 @@
 // game-prefixed location names, so RAW_HINTS_DATA is rebuilt here in the old
 // per-game, unprefixed shape.
 import * as CoreDataMod from '../OoTMM/packages/core/src/data/data';
+import * as ComboRegionsMod from '../OoTMM/packages/generator/lib/combo/regions';
 import GOSSIPS from '../OoTMM/packages/core/dist/data-gossips.json';
 
 // tsx loads the OoTMM sources as CommonJS (upstream has no "type": "module"),
@@ -19,6 +20,7 @@ const unwrapNamespace = <T>(mod: T): T =>
   (mod as { default?: T }).default ?? mod;
 
 const coreData = unwrapNamespace(CoreDataMod);
+const comboRegions = unwrapNamespace(ComboRegionsMod);
 
 export const WORLD = coreData.WORLD;
 export const SCENES = coreData.SCENES;
@@ -35,6 +37,9 @@ export type {
   Entrance,
   EntranceData,
 } from '../OoTMM/packages/core/src/data/data';
+
+export const regionName = (region: string): string =>
+  comboRegions.regionName(region);
 
 type GossipRecord = { game: 'oot' | 'mm'; location: string };
 

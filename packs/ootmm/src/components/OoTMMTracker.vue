@@ -10,7 +10,6 @@ import { requestTrackerFaqOpen } from '@/utils/trackerFaq';
 import OoTMMInventory from './OoTMMInventory.vue';
 import OoTMMLocations from './OoTMMLocations.vue';
 import OoTMMEntrances from './OoTMMEntrances.vue';
-import OoTMMSpoilerLookup from './OoTMMSpoilerLookup.vue';
 import HintTrackerPanel from './HintTrackerPanel.vue';
 import OoTMMSettings from './OoTMMSettings.vue';
 import OoTMMItemGrid from './OoTMMItemGrid.vue';
@@ -925,9 +924,7 @@ const activeVisibleRightSidebarTab = computed<RightSidebarTab>(() =>
   activeRightSidebarTab.value === 'entrances' &&
   !hasAvailableEntranceSections.value
     ? 'locations'
-    : activeRightSidebarTab.value === 'spoiler'
-      ? 'hints'
-      : activeRightSidebarTab.value,
+    : activeRightSidebarTab.value,
 );
 const collectedLocationIdSet = computed(
   () => new Set(collectedLocationIds.value),
@@ -3844,7 +3841,6 @@ function resolveSpoilerPlacements(
         itemName: placement.item,
         locationId,
         locationName: placement.location,
-        region: placement.region,
         world: placement.world,
         itemPlayer: placement.itemPlayer,
       });

@@ -32,14 +32,14 @@ import {
 const sessionStore = useOoTMMSessionStore();
 const {
   hintTracker,
-  hintProtectedLocationIds,
   spoilerPlacements,
   collectedLocationIds,
   hasImportedSpoilerLog,
-  inventoryById,
   hintsText,
   availableItemIdSet,
   allLocations,
+  regionLocationMap,
+  regionToLocationIds,
 } = storeToRefs(sessionStore);
 
 // ── Collapsible sections ──
@@ -167,20 +167,6 @@ function buildRegionNameToIdMap(): Map<string, string> {
     map.set(opt.label, opt.value);
   }
   return map;
-}
-
-/** Filter region options to only those present in the spoiler log for the given category. */
-function filterRegionsBySpoiler(
-  availableNames: Set<string> | undefined,
-): boolean {
-  if (
-    !hasImportedSpoilerLog.value ||
-    !availableNames ||
-    availableNames.size === 0
-  ) {
-    return false;
-  }
-  return true;
 }
 
 /** Resolve spoiler region display names to region IDs. */
@@ -340,6 +326,10 @@ const alwaysSometimesLocationOptions = computed(() =>
 );
 
 // ── Items in region (for path hints) ──
+// The tracker's world graph tells us which location belongs to which hint
+// region; the spoiler log tells us which item sits at each location. Combining
+// the two yields region → items without relying on the spoiler log's own region
+// names.
 const regionToItemsMap = computed(() => {
   const map = new Map<
     string,
@@ -348,23 +338,26 @@ const regionToItemsMap = computed(() => {
       itemName: string;
       iconPath: string;
       locationName: string;
+      locationId: string;
     }>
   >();
   if (!spoilerPlacements.value || !hasImportedSpoilerLog.value) return map;
 
   for (const p of spoilerPlacements.value) {
-    if (!p.region) continue;
-    const entry = map.get(p.region);
+    const region = regionLocationMap.value.get(p.locationId);
+    if (!region) continue;
     const itemEntry = {
       itemId: p.itemId,
       itemName: p.itemName,
       iconPath: getItemIcon(p.itemId),
       locationName: p.locationName,
+      locationId: p.locationId,
     };
+    const entry = map.get(region);
     if (entry) {
       entry.push(itemEntry);
     } else {
-      map.set(p.region, [itemEntry]);
+      map.set(region, [itemEntry]);
     }
   }
   return map;
@@ -379,18 +372,13 @@ function getItemsInRegion(regionId: string): Array<{
   itemName: string;
   iconPath: string;
   locationName: string;
+  locationId: string;
 }> {
   const all = regionToItemsMap.value.get(regionId) ?? [];
-  // Filter to only items that have been collected
-  return all.filter((item) => {
-    // Check if any placement with this item and region is collected
-    return spoilerPlacements.value.some(
-      (p) =>
-        p.region === regionId &&
-        p.itemId === item.itemId &&
-        collectedLocationIdSet.value.has(p.locationId),
-    );
-  });
+  // Filter to only items whose location has been collected.
+  return all.filter((item) =>
+    collectedLocationIdSet.value.has(item.locationId),
+  );
 }
 
 // ── Actions ──
@@ -518,27 +506,26 @@ function removeRegionHint(index: number) {
 
 function addFoolishHint() {
   if (!foolishFormRegion.value) return;
+  const region = foolishFormRegion.value;
   const hint: RecordedFoolishHint = {
-    region: foolishFormRegion.value,
+    region,
   };
   sessionStore.addFoolishHint(hint);
 
-  // Set all locations in this region to collected
-  // We use spoiler placements to find locations in this region
-  if (hasImportedSpoilerLog.value && spoilerPlacements.value.length > 0) {
-    const regionLocationIds = spoilerPlacements.value
-      .filter((p) => p.region === foolishFormRegion.value)
-      .map((p) => p.locationId)
-      .filter((id) => id);
+  // Set all locations in this hint region to collected. The region → locations
+  // mapping comes from the tracker's own post-entrance-pass world graph, so it
+  // works with or without an imported spoiler log.
+  const regionLocationIds = Array.from(
+    regionToLocationIds.value.get(region) ?? [],
+  );
 
-    if (regionLocationIds.length > 0) {
-      const nextCollected = new Set(collectedLocationIds.value);
-      for (const id of regionLocationIds) {
-        nextCollected.add(id);
-      }
-      sessionStore.setCollectedLocationIds(Array.from(nextCollected));
-      sessionStore.addHintProtectedLocationIds(regionLocationIds);
+  if (regionLocationIds.length > 0) {
+    const nextCollected = new Set(collectedLocationIds.value);
+    for (const id of regionLocationIds) {
+      nextCollected.add(id);
     }
+    sessionStore.setCollectedLocationIds(Array.from(nextCollected));
+    sessionStore.addHintProtectedLocationIds(regionLocationIds);
   }
 
   foolishFormRegion.value = '';
@@ -549,11 +536,10 @@ function removeFoolishHint(index: number) {
   const hint = hintTracker.value.foolishHints[index];
   if (!hint) return;
 
-  // Find location IDs for this region
-  const regionLocationIds = spoilerPlacements.value
-    .filter((p) => p.region === hint.region)
-    .map((p) => p.locationId)
-    .filter((id) => id);
+  // Find location IDs for this region from the tracker's own mapping.
+  const regionLocationIds = Array.from(
+    regionToLocationIds.value.get(hint.region) ?? [],
+  );
 
   if (regionLocationIds.length > 0) {
     const keepCollected = window.confirm(
@@ -660,8 +646,8 @@ function removeMoonHint(index: number) {
           <div class="hint-add-form__actions">
             <button
               class="hint-btn hint-btn--primary"
-              @click="addPathHint"
               :disabled="!pathFormRegion"
+              @click="addPathHint"
             >
               Save
             </button>
@@ -716,8 +702,8 @@ function removeMoonHint(index: number) {
           </div>
           <button
             class="hint-row__delete"
-            @click="removePathHint(idx)"
             title="Delete hint"
+            @click="removePathHint(idx)"
           >
             🗑
           </button>
@@ -781,12 +767,12 @@ function removeMoonHint(index: number) {
           <div class="hint-add-form__actions">
             <button
               class="hint-btn hint-btn--primary"
-              @click="addAlwaysSometimesHint"
               :disabled="
                 !alwaysSometimesFormLocation ||
                 alwaysSometimesFormItems.length === 0 ||
                 !alwaysSometimesFormItems.every(Boolean)
               "
+              @click="addAlwaysSometimesHint"
             >
               Save
             </button>
@@ -835,8 +821,8 @@ function removeMoonHint(index: number) {
           </div>
           <button
             class="hint-row__delete"
-            @click="removeAlwaysSometimesHint(idx)"
             title="Delete hint"
+            @click="removeAlwaysSometimesHint(idx)"
           >
             🗑
           </button>
@@ -889,8 +875,8 @@ function removeMoonHint(index: number) {
           <div class="hint-add-form__actions">
             <button
               class="hint-btn hint-btn--primary"
-              @click="addRegionHint"
               :disabled="!regionFormRegion || !regionFormItem"
+              @click="addRegionHint"
             >
               Save
             </button>
@@ -927,8 +913,8 @@ function removeMoonHint(index: number) {
           </div>
           <button
             class="hint-row__delete"
-            @click="removeRegionHint(idx)"
             title="Delete hint"
+            @click="removeRegionHint(idx)"
           >
             🗑
           </button>
@@ -977,8 +963,8 @@ function removeMoonHint(index: number) {
           <div class="hint-add-form__actions">
             <button
               class="hint-btn hint-btn--primary"
-              @click="addFoolishHint"
               :disabled="!foolishFormRegion"
+              @click="addFoolishHint"
             >
               Save
             </button>
@@ -1002,8 +988,8 @@ function removeMoonHint(index: number) {
           </div>
           <button
             class="hint-row__delete"
-            @click="removeFoolishHint(idx)"
             title="Delete hint"
+            @click="removeFoolishHint(idx)"
           >
             🗑
           </button>
@@ -1056,8 +1042,8 @@ function removeMoonHint(index: number) {
           <div class="hint-add-form__actions">
             <button
               class="hint-btn hint-btn--primary"
-              @click="addMoonHint"
               :disabled="!moonFormRegion || !moonFormItem"
+              @click="addMoonHint"
             >
               Save
             </button>
@@ -1094,8 +1080,8 @@ function removeMoonHint(index: number) {
           </div>
           <button
             class="hint-row__delete"
-            @click="removeMoonHint(idx)"
             title="Delete hint"
+            @click="removeMoonHint(idx)"
           >
             🗑
           </button>

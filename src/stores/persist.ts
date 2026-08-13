@@ -560,7 +560,6 @@ export const PERSIST_CONFIGS: Record<PersistStoreId, PersistConfig> = {
                     typeof p.locationId === 'string' ? p.locationId : '',
                   locationName:
                     typeof p.locationName === 'string' ? p.locationName : '',
-                  region: typeof p.region === 'string' ? p.region : undefined,
                   world: typeof p.world === 'number' ? p.world : undefined,
                   itemPlayer:
                     typeof p.itemPlayer === 'number' ? p.itemPlayer : undefined,

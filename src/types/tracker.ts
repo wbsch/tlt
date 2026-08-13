@@ -56,6 +56,12 @@ export interface TrackerPack {
   /** Optional: Override per-location shop prices used in logic */
   setShopPrices?(prices: Record<string, number>): void;
 
+  /**
+   * Optional: Map from location full ID (`<rawId>@<worldId>`) to its hint
+   * region ID, after entrance-randomizer region propagation.
+   */
+  getLocationRegionMap?(): Map<string, string>;
+
   /** Optional: Patch special conditions used in logic */
   setSpecialConds?(patch: Record<string, unknown>): void;
 

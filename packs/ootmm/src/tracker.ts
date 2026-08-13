@@ -26,6 +26,7 @@ import * as DataMod from '@ootmm/data';
 import { ITEM_DATABASE } from './data/items';
 import { getGridItemAutoSelectItemIds } from './data/itemIcons';
 import { LOCATION_CODE_CATALOG } from './data/locationCatalog';
+import { isValidHintRegion } from './data/regionNames';
 import {
   computeEffectiveTrackedEntranceOverrides,
   getActiveEntranceKeys,
@@ -360,6 +361,8 @@ export class OoTMMTracker implements TrackerPack {
   private shopPriceSlotsByLocationId: Map<string, ShopPriceSlot> = new Map();
   private baseShopPricesByLocationId: Map<string, number[]> = new Map();
   private devLocationCatalog: LocationInfo[] = [];
+  /** Cached location full ID → hint region map (post entrance pass). */
+  private locationRegionMap: Map<string, string> = new Map();
   /** Saved exit expressions for all ER entrances, keyed by entrance key. */
   private savedEntranceExitExprs: Map<string, { from: string; expr: unknown }> =
     new Map();
@@ -943,6 +946,7 @@ export class OoTMMTracker implements TrackerPack {
     this.shopPriceSlotsByLocationId = shopPriceIndex.slotsByLocationId;
     this.baseShopPricesByLocationId = shopPriceIndex.basePricesByLocationId;
     this.devLocationCatalog = this.buildCodeSearchLocationCatalog();
+    this.locationRegionMap = this.buildLocationRegionMap();
 
     this.debugLog(
       `[OoTMM Tracker] Initialized with ${this.allLocationIds.length} locations`,
@@ -1134,6 +1138,10 @@ export class OoTMMTracker implements TrackerPack {
       }
     });
     return Array.from(byId.values()).sort((a, b) => a.id.localeCompare(b.id));
+  }
+
+  getLocationRegionMap(): Map<string, string> {
+    return this.locationRegionMap;
   }
 
   private computeStableReachabilityState(
@@ -1803,6 +1811,28 @@ export class OoTMMTracker implements TrackerPack {
       fixed.add(String(loc));
     }
     return fixed;
+  }
+
+  /**
+   * Build the location full ID → hint region map from the post-entrance-pass
+   * worlds (`this.worlds`), whose `regions` map has been fully propagated by
+   * `logicPassEntrances`. Locations with placeholder/marker regions (e.g.
+   * NAMELESS, POCKET, ENTRANCE, BUFFER) are excluded.
+   */
+  private buildLocationRegionMap(): Map<string, string> {
+    const map = new Map<string, string>();
+    if (!this.worlds || this.worlds.length === 0) return map;
+    for (let worldId = 0; worldId < this.worlds.length; worldId += 1) {
+      const world = this.worlds[worldId];
+      const regions = world.regions;
+      if (!regions) continue;
+      for (const locId of Object.keys(world.checks)) {
+        const region = regions[locId];
+        if (!isValidHintRegion(region)) continue;
+        map.set(makeLocation(locId, worldId), region);
+      }
+    }
+    return map;
   }
 
   private buildDungeonLocationIds(world: World): Set<string> {

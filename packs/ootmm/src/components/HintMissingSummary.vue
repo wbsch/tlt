@@ -9,8 +9,7 @@ import {
 } from '../utils/hintSpoilerAnalysis';
 
 const sessionStore = useOoTMMSessionStore();
-const { spoilerPlacements, hintTracker, hasImportedSpoilerLog, hintsText } =
-  storeToRefs(sessionStore);
+const { hintTracker, hintsText } = storeToRefs(sessionStore);
 
 const CATEGORY_LABELS: Record<HintCategory, string> = {
   path: 'Path',

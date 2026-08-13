@@ -8,7 +8,7 @@ import {
   getHintItemEntries,
 } from '../utils/hintItemNames';
 
-const props = withDefaults(
+withDefaults(
   defineProps<{
     modelValue: string;
     includeJunk?: boolean;
@@ -91,7 +91,9 @@ function handleClear() {
           class="hint-item-picker__icon"
           alt=""
         />
-        <span class="hint-item-picker__name">{{ displayName(modelValue) }}</span>
+        <span class="hint-item-picker__name">{{
+          displayName(modelValue)
+        }}</span>
       </template>
       <template v-else-if="modelValue === 'JUNK'">
         <img
@@ -125,8 +127,8 @@ function handleClear() {
           v-if="includeJunk"
           class="hint-item-picker__grid-item"
           :class="{ selected: modelValue === 'JUNK' }"
-          @click="selectJunk"
           title="Junk"
+          @click="selectJunk"
         >
           <img
             src="/images/crossed_out.png"
@@ -141,8 +143,8 @@ function handleClear() {
           :key="item.id"
           class="hint-item-picker__grid-item"
           :class="{ selected: modelValue === item.id }"
-          @click="selectItem(item.id)"
           :title="item.name"
+          @click="selectItem(item.id)"
         >
           <img
             v-if="item.iconPath"

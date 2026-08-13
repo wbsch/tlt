@@ -156,6 +156,8 @@ declare module '@ootmm/core/logic/world' {
 declare module '@ootmm/data' {
   export const POOL: unknown;
   export const WORLD: unknown;
+  export const REGIONS: Record<string, number>;
+  export function regionName(region: string): string;
   export const ENTRANCES: Record<
     string,
     {

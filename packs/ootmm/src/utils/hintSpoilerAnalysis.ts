@@ -133,16 +133,6 @@ export function parseSpoilerHints(hintsText: string): ParsedHintsData {
    */
   let lastSpecificStone: string | undefined = undefined;
 
-  // Known path subtype labels
-  const PATH_SUBTYPE_LABELS: Record<string, PathSubType> = {
-    woth: 'woth',
-    triforce: 'triforce',
-    dungeon: 'dungeon',
-    boss: 'boss',
-    'end-boss': 'end-boss',
-    event: 'event',
-  };
-
   for (const rawLine of lines) {
     const trimmed = rawLine.trim();
     if (!trimmed) continue;
@@ -252,7 +242,6 @@ export function parseSpoilerHints(hintsText: string): ParsedHintsData {
         const colonIdx = trimmed.indexOf(':');
         let checkLocationName: string;
         let itemName: string;
-        let gossipStoneName: string | undefined;
 
         if (colonIdx > 0) {
           // Colon-separated: "LocationName: ItemName (note)"
@@ -265,7 +254,6 @@ export function parseSpoilerHints(hintsText: string): ParsedHintsData {
           const spaceParts = trimmed.split(/\s{2,}/);
           if (spaceParts.length < 2) break;
 
-          gossipStoneName = spaceParts[0].trim();
           if (spaceParts.length >= 3) {
             checkLocationName = spaceParts[1].trim();
             itemName = spaceParts[spaceParts.length - 1]

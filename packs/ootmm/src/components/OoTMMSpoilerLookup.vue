@@ -3,6 +3,7 @@ import { useOoTMMSessionStore } from '../stores/ootmmSession';
 import { computed, ref } from 'vue';
 import { ITEM_DATABASE } from '../data/items';
 import { GI_ITEM_LIST } from '../data/giItems';
+import { getRegionDisplayName } from '../data/regionNames';
 import SpoilerSearchCombobox from './SpoilerSearchCombobox.vue';
 import type { ResolvedSpoilerPlacement } from '../types';
 
@@ -85,13 +86,14 @@ const locationOptions = computed(() =>
 
 const foundLocations = computed(() => {
   if (!selectedItemId.value) return [];
-  const locationIds = sessionStore.spoilerItemToLocationIds[selectedItemId.value] ?? [];
+  const locationIds =
+    sessionStore.spoilerItemToLocationIds[selectedItemId.value] ?? [];
   return locationIds.map((locId) => {
     const placement = placementByLocationId.value.get(locId);
     return {
       id: locId,
       name: placement?.locationName ?? locId,
-      region: placement?.region,
+      region: regionDisplayFor(locId),
     };
   });
 });
@@ -123,13 +125,22 @@ const selectedItemIcon = computed(() => {
 
 const selectedLocationName = computed(() => {
   if (!selectedLocationId.value) return null;
-  return placementByLocationId.value.get(selectedLocationId.value)?.locationName ?? selectedLocationId.value;
+  return (
+    placementByLocationId.value.get(selectedLocationId.value)?.locationName ??
+    selectedLocationId.value
+  );
 });
 
 const totalPlacements = computed(() => sessionStore.spoilerPlacements.length);
 const hasDebug = computed(() =>
   new URLSearchParams(window.location.search).has('debug'),
 );
+
+/** Display name for the tracker-derived hint region of a location, if any. */
+function regionDisplayFor(locationId: string): string | undefined {
+  const region = sessionStore.regionLocationMap.get(locationId);
+  return region ? getRegionDisplayName(region) : undefined;
+}
 
 // ── Actions ──
 
@@ -143,64 +154,75 @@ function switchMode(newMode: LookupMode) {
 <template>
   <div class="spoiler-lookup">
     <!-- Placements-count summary (preserved from stub) -->
-    <p class="spoiler-summary" v-if="totalPlacements > 0">
+    <p v-if="totalPlacements > 0" class="spoiler-summary">
       {{ totalPlacements }} item placements loaded.
     </p>
 
     <!-- Mode toggle -->
     <div class="spoiler-lookup__mode-toggle">
-      <button
-        :class="{ active: mode === 'item' }"
-        @click="switchMode('item')"
-      >Look up Item</button>
+      <button :class="{ active: mode === 'item' }" @click="switchMode('item')">
+        Look up Item
+      </button>
       <button
         :class="{ active: mode === 'location' }"
         @click="switchMode('location')"
-      >Look up Location</button>
+      >
+        Look up Location
+      </button>
     </div>
 
     <!-- Combobox -->
     <SpoilerSearchCombobox
       v-if="mode === 'item'"
       key="item-combobox"
-      :options="itemOptions"
       v-model="selectedItemId"
+      :options="itemOptions"
       placeholder="Search items..."
     />
     <SpoilerSearchCombobox
       v-else
       key="location-combobox"
-      :options="locationOptions"
       v-model="selectedLocationId"
+      :options="locationOptions"
       placeholder="Search locations..."
     />
 
     <!-- Results: Item mode -->
     <div v-if="mode === 'item' && selectedItemId" class="spoiler-result">
       <div class="spoiler-result__header">
-        <span class="spoiler-result__item-icon" v-if="selectedItemIcon">{{ selectedItemIcon }}</span>
+        <span v-if="selectedItemIcon" class="spoiler-result__item-icon">{{
+          selectedItemIcon
+        }}</span>
         <strong>{{ selectedItemName }}</strong>
       </div>
       <p class="spoiler-result__label">Found at:</p>
       <ul class="spoiler-result__locations">
         <li v-for="loc in foundLocations" :key="loc.id">
           {{ loc.name }}
-          <span class="spoiler-result__region" v-if="loc.region">({{ loc.region }})</span>
+          <span v-if="loc.region" class="spoiler-result__region"
+            >({{ loc.region }})</span
+          >
         </li>
       </ul>
       <p v-if="foundLocations.length === 0" class="spoiler-result__empty">
-        This item is not placed at any known location (check may be starting inventory or junk).
+        This item is not placed at any known location (check may be starting
+        inventory or junk).
       </p>
     </div>
 
     <!-- Results: Location mode -->
-    <div v-if="mode === 'location' && selectedLocationId" class="spoiler-result">
+    <div
+      v-if="mode === 'location' && selectedLocationId"
+      class="spoiler-result"
+    >
       <div class="spoiler-result__header">
         <strong>{{ selectedLocationName }}</strong>
       </div>
       <p class="spoiler-result__label">Contains:</p>
       <p v-if="foundItemName" class="spoiler-result__item">
-        <span class="spoiler-result__item-icon" v-if="foundItemIcon">{{ foundItemIcon }}</span>
+        <span v-if="foundItemIcon" class="spoiler-result__item-icon">{{
+          foundItemIcon
+        }}</span>
         {{ foundItemName }}
       </p>
       <p v-else class="spoiler-result__empty">
@@ -221,7 +243,7 @@ function switchMode(newMode: LookupMode) {
         <tr v-for="(p, i) in sessionStore.spoilerPlacements" :key="i">
           <td>{{ p.locationName }} ({{ p.locationId }})</td>
           <td>{{ p.itemName }} ({{ p.itemId }})</td>
-          <td>{{ p.region ?? '—' }}</td>
+          <td>{{ regionDisplayFor(p.locationId) ?? '—' }}</td>
         </tr>
       </tbody>
     </table>
@@ -256,7 +278,9 @@ function switchMode(newMode: LookupMode) {
   background: transparent;
   color: #9ca3af;
   cursor: pointer;
-  transition: background 0.15s, color 0.15s;
+  transition:
+    background 0.15s,
+    color 0.15s;
 }
 
 .spoiler-lookup__mode-toggle button:not(:last-child) {
