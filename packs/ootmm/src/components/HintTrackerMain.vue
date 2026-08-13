@@ -7,6 +7,7 @@ import {
   ALWAYS_HINT_CHECKS,
   SOMETIMES_HINT_CHECKS,
   findHintCheckById,
+  resolveCheckSlotLocationCodes,
 } from '../data/hintCheckLocations';
 import type {
   PathSubType,
@@ -38,6 +39,7 @@ const {
   inventoryById,
   hintsText,
   availableItemIdSet,
+  allLocations,
 } = storeToRefs(sessionStore);
 
 // ── Collapsible sections ──
@@ -89,9 +91,43 @@ function getHintItems(hint: RecordedItemExactHint): string[] {
   return [hint.itemId, ...(hint.extraItemIds ?? [])];
 }
 
-/** Whether every recorded item of a hint is JUNK */
-function isAlwaysSometimesHintJunk(hint: RecordedItemExactHint): boolean {
-  return getHintItems(hint).every((id) => id === 'JUNK');
+function normalizeLocationName(value: string): string {
+  return value.toLowerCase().replace(/\s+/g, ' ').trim();
+}
+
+/** Build a lookup from normalized location name → runtime location IDs. */
+function buildLocationNameMap(): Map<string, string[]> {
+  const byName = new Map<string, string[]>();
+  for (const loc of allLocations.value) {
+    const key = normalizeLocationName(loc.name);
+    const existing = byName.get(key) ?? [];
+    existing.push(loc.id);
+    byName.set(key, existing);
+  }
+  return byName;
+}
+
+/**
+ * Resolve the runtime location IDs to mark collected for a hint, based on
+ * which of its item slots are Junk. Each Junk slot maps to its own location(s)
+ * (including alternate variants such as MQ), so partially-junk multi-item hints
+ * only collect the locations belonging to the junked items.
+ */
+function resolveJunkLocationIds(hint: RecordedItemExactHint): string[] {
+  const checkDef = findHintCheckById(hint.location);
+  if (!checkDef || checkDef.locationCodes.length === 0) return [];
+
+  const items = getHintItems(hint);
+  const byName = buildLocationNameMap();
+  const resolved = new Set<string>();
+  for (let i = 0; i < items.length; i++) {
+    if (items[i] !== 'JUNK') continue;
+    for (const name of resolveCheckSlotLocationCodes(checkDef, i)) {
+      const ids = byName.get(normalizeLocationName(name));
+      if (ids) for (const id of ids) resolved.add(id);
+    }
+  }
+  return Array.from(resolved);
 }
 
 // Region
@@ -402,21 +438,16 @@ function addAlwaysSometimesHint() {
   }
   sessionStore.addAlwaysSometimesHint(hint);
 
-  // If the whole hint is junk, set the associated locations to collected
-  // and protect them
-  if (isAlwaysSometimesHintJunk(hint)) {
-    const allChecks = [...ALWAYS_HINT_CHECKS, ...SOMETIMES_HINT_CHECKS];
-    const checkDef = allChecks.find(
-      (c) => c.id === alwaysSometimesFormLocation.value,
-    );
-    if (checkDef && checkDef.locationCodes.length > 0) {
-      const nextCollected = new Set(collectedLocationIds.value);
-      for (const code of checkDef.locationCodes) {
-        nextCollected.add(code);
-      }
-      sessionStore.setCollectedLocationIds(Array.from(nextCollected));
-      sessionStore.addHintProtectedLocationIds(checkDef.locationCodes);
+  // For each Junk item slot, mark its associated location(s) as collected
+  // and protect them from autotracker uncollection.
+  const junkLocationIds = resolveJunkLocationIds(hint);
+  if (junkLocationIds.length > 0) {
+    const nextCollected = new Set(collectedLocationIds.value);
+    for (const id of junkLocationIds) {
+      nextCollected.add(id);
     }
+    sessionStore.setCollectedLocationIds(Array.from(nextCollected));
+    sessionStore.addHintProtectedLocationIds(junkLocationIds);
   }
 
   alwaysSometimesFormLocation.value = '';
@@ -428,26 +459,23 @@ function removeAlwaysSometimesHint(index: number) {
   const hint = hintTracker.value.alwaysSometimesHints[index];
   if (!hint) return;
 
-  // If it was a Junk hint with protected locations, ask the user
-  if (isAlwaysSometimesHintJunk(hint)) {
-    const allChecks = [...ALWAYS_HINT_CHECKS, ...SOMETIMES_HINT_CHECKS];
-    const checkDef = allChecks.find((c) => c.id === hint.location);
-    if (checkDef && checkDef.locationCodes.length > 0) {
-      const keepCollected = window.confirm(
-        'This hint has locations set to collected. Keep them collected? ' +
-          'Click "OK" to keep them collected, or "Cancel" to revert them to uncollected.',
-      );
-      if (!keepCollected) {
-        // Revert: remove both protection and collected state
-        sessionStore.removeHintProtectedLocationIds(checkDef.locationCodes);
-        const nextCollected = new Set(collectedLocationIds.value);
-        for (const code of checkDef.locationCodes) {
-          nextCollected.delete(code);
-        }
-        sessionStore.setCollectedLocationIds(Array.from(nextCollected));
+  // If the hint had Junk items that marked locations collected, ask the user
+  const junkLocationIds = resolveJunkLocationIds(hint);
+  if (junkLocationIds.length > 0) {
+    const keepCollected = window.confirm(
+      'This hint has locations set to collected. Keep them collected? ' +
+        'Click "OK" to keep them collected, or "Cancel" to revert them to uncollected.',
+    );
+    if (!keepCollected) {
+      // Revert: remove both protection and collected state
+      sessionStore.removeHintProtectedLocationIds(junkLocationIds);
+      const nextCollected = new Set(collectedLocationIds.value);
+      for (const id of junkLocationIds) {
+        nextCollected.delete(id);
       }
-      // If keepCollected, the location IDs stay in hintProtectedLocationIds
+      sessionStore.setCollectedLocationIds(Array.from(nextCollected));
     }
+    // If keepCollected, the location IDs stay in hintProtectedLocationIds
   }
 
   sessionStore.removeAlwaysSometimesHint(index);
