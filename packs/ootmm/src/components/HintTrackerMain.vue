@@ -62,6 +62,9 @@ const isAlwaysSometimesFormOpen = ref(false);
 /** Index of the Always/Sometimes hint awaiting removal confirmation, or null. */
 const pendingAlwaysSometimesRemoval = ref<number | null>(null);
 
+/** Index of the Foolish hint awaiting removal confirmation, or null. */
+const pendingFoolishRemoval = ref<number | null>(null);
+
 /** Check definition for the currently selected Always/Sometimes location */
 const alwaysSometimesSelectedCheck = computed(() => {
   if (!alwaysSometimesFormLocation.value) return undefined;
@@ -545,18 +548,33 @@ function removeFoolishHint(index: number) {
     return;
   }
 
-  // Find location IDs for this region from the tracker's own mapping.
+  // If the hint marked locations collected, ask the user how to handle them
+  // via an in-tracker modal instead of a browser confirm.
   const regionLocationIds = Array.from(
     regionToLocationIds.value.get(hint.region) ?? [],
   );
-
   if (regionLocationIds.length > 0) {
-    const keepCollected = window.confirm(
-      'This Foolish hint marked all locations in this region as collected. ' +
-        'Keep them collected? ' +
-        'Click "OK" to keep them collected, or "Cancel" to revert them to uncollected.',
+    pendingFoolishRemoval.value = index;
+    return;
+  }
+
+  sessionStore.removeFoolishHint(index);
+}
+
+function confirmFoolishRemoval(keepCollected: boolean) {
+  const index = pendingFoolishRemoval.value;
+  if (index === null) return;
+  const hint = hintTracker.value.foolishHints[index];
+  pendingFoolishRemoval.value = null;
+  if (!hint) return;
+
+  // Blue-warp dungeon regions were never auto-collected, so there is nothing
+  // to revert; just remove the hint.
+  if (!isCriticalFoolishRegion(hint.region)) {
+    const regionLocationIds = Array.from(
+      regionToLocationIds.value.get(hint.region) ?? [],
     );
-    if (!keepCollected) {
+    if (regionLocationIds.length > 0 && !keepCollected) {
       // Revert: remove both protection and collected state
       sessionStore.removeHintProtectedLocationIds(regionLocationIds);
       const nextCollected = new Set(collectedLocationIds.value);
@@ -569,6 +587,10 @@ function removeFoolishHint(index: number) {
   }
 
   sessionStore.removeFoolishHint(index);
+}
+
+function cancelFoolishRemoval() {
+  pendingFoolishRemoval.value = null;
 }
 
 function addMoonHint() {
@@ -1165,6 +1187,45 @@ function removeMoonHint(index: number) {
           <button
             class="hint-btn hint-btn--secondary"
             @click="cancelAlwaysSometimesRemoval"
+          >
+            Cancel
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Confirmation modal for removing a Foolish hint that marked locations collected -->
+    <div
+      v-if="pendingFoolishRemoval !== null"
+      class="hint-modal-overlay"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="hint-foolish-remove-confirm-title"
+    >
+      <div class="hint-modal">
+        <h2 id="hint-foolish-remove-confirm-title" class="hint-modal__title">
+          Remove Foolish hint?
+        </h2>
+        <p class="hint-modal__text">
+          This Foolish hint marked all locations in this region as collected.
+          What should happen to those locations?
+        </p>
+        <div class="hint-modal__actions">
+          <button
+            class="hint-btn hint-btn--primary"
+            @click="confirmFoolishRemoval(true)"
+          >
+            Keep collected
+          </button>
+          <button
+            class="hint-btn hint-btn--secondary"
+            @click="confirmFoolishRemoval(false)"
+          >
+            Revert to uncollected
+          </button>
+          <button
+            class="hint-btn hint-btn--secondary"
+            @click="cancelFoolishRemoval"
           >
             Cancel
           </button>
