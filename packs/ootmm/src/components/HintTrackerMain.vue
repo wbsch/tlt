@@ -386,6 +386,24 @@ function resolveItemName(itemId: string): string {
   return hintItemNameResolver.value(itemId);
 }
 
+/**
+ * True for dungeon keys (small keys, boss keys, key rings, incl. the Gerudo
+ * Hideout / Chest Game variants). Mirrors OoTMM's `ItemHelpers.isKey()` used to
+ * exclude items from Way of the Hero path hints (`isLocationHintable` with
+ * klass 'path'). Rusty keys and skeleton keys are NOT covered (OoTMM doesn't
+ * treat them as keys) and stay valid WotH targets.
+ */
+function isDungeonKeyItemId(itemId: string): boolean {
+  return (
+    itemId.startsWith('OOT_SMALL_KEY') ||
+    itemId.startsWith('MM_SMALL_KEY') ||
+    itemId.startsWith('OOT_BOSS_KEY') ||
+    itemId.startsWith('MM_BOSS_KEY') ||
+    itemId.startsWith('OOT_KEY_RING') ||
+    itemId.startsWith('MM_KEY_RING')
+  );
+}
+
 function getItemsInRegion(regionId: string): Array<{
   itemId: string;
   itemName: string;
@@ -396,11 +414,14 @@ function getItemsInRegion(regionId: string): Array<{
   const all = regionToItemsMap.value.get(regionId) ?? [];
   // Filter to only items whose location has been collected AND that exist in
   // the item grid (same set as the hint item dropdown), so Path hints don't
-  // surface items the tracker cannot represent (maps, compasses, keys, junk...).
+  // surface items the tracker cannot represent (maps, compasses, junk...).
+  // Dungeon keys are excluded too, mirroring OoTMM's WotH hint logic: they can
+  // never be Way of the Hero targets.
   return all.filter(
     (item) =>
       collectedLocationIdSet.value.has(item.locationId) &&
-      hintGridItemIdSet.value.has(item.itemId),
+      hintGridItemIdSet.value.has(item.itemId) &&
+      !isDungeonKeyItemId(item.itemId),
   );
 }
 
