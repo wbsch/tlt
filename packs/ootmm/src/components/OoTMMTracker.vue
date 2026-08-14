@@ -530,6 +530,9 @@ const {
   importedSpoilerLogVersion,
   coopRoomCode,
   coopConnectionState,
+  hintTracker,
+  regionLocationMap,
+  dungeonRewardRegionIds,
 } = storeToRefs(sessionStore);
 
 // A link join (`#coop-room=CODE`) adopts the room's shared state and replaces
@@ -1922,6 +1925,52 @@ const mapSelectorVisibleCountByMap = computed(() => {
   }
   return byMap;
 });
+
+// Map: mapDef.id → hint regions present on that map (via check codes).
+const mapSelectorRegionsByMap = computed(() => {
+  const byMap = new Map<string, Set<string>>();
+  for (const [mapId, checkIds] of mapSelectorCheckIdsByMap.value) {
+    const regions = new Set<string>();
+    for (const checkId of checkIds) {
+      const region = regionLocationMap.value.get(checkId);
+      if (region) regions.add(region);
+    }
+    byMap.set(mapId, regions);
+  }
+  return byMap;
+});
+
+/**
+ * Hint regions that have a recorded Foolish hint AND hold a dungeon reward on
+ * their blue warp. Only meaningful when dungeonRewardShuffle is
+ * 'dungeonBlueWarps'; the map dropdown tags these dungeons with "Foolish".
+ */
+const foolishBlueWarpDungeonRegionIds = computed(() => {
+  if (
+    String(trackerSettings.value?.dungeonRewardShuffle ?? '') !==
+    'dungeonBlueWarps'
+  ) {
+    return new Set<string>();
+  }
+  const foolish = new Set<string>(
+    hintTracker.value.foolishHints.map((h) => h.region),
+  );
+  const result = new Set<string>();
+  for (const region of dungeonRewardRegionIds.value) {
+    if (foolish.has(region)) result.add(region);
+  }
+  return result;
+});
+
+/** Whether the map dropdown should show a "Foolish" tag for this map. */
+function isMapFoolishDungeon(mapDef: MapDef): boolean {
+  const regions = mapSelectorRegionsByMap.value.get(mapDef.id);
+  if (!regions) return false;
+  for (const region of regions) {
+    if (foolishBlueWarpDungeonRegionIds.value.has(region)) return true;
+  }
+  return false;
+}
 
 // Build map: mapId → Set of active entrance keys present on that map's markers
 const mapSelectorEntranceIdsByMap = computed(() => {
@@ -5161,9 +5210,16 @@ onBeforeUnmount(() => {
                       @mousedown.prevent
                       @click="handleMapSelectorOptionClick(mapDef)"
                     >
-                      <span class="map-selector-option-title">{{
-                        mapDef.title
-                      }}</span>
+                      <span class="map-selector-option-title">
+                        {{ mapDef.title }}
+                        <span
+                          v-if="isMapFoolishDungeon(mapDef)"
+                          class="map-selector-option-tag"
+                          title="Foolish hint recorded — reward sits on the dungeon blue warp, the dungeon may still be required"
+                        >
+                          Foolish
+                        </span>
+                      </span>
                       <span class="map-selector-option-count">
                         <template v-if="hasAnyActiveEntrances">
                           ({{ getMapSelectorVisibleCount(mapDef) }} /
@@ -6184,6 +6240,21 @@ onBeforeUnmount(() => {
   color: #e5e7eb;
   font-size: 0.8rem;
   min-width: 0;
+}
+
+.map-selector-option-tag {
+  display: inline-block;
+  margin-left: 0.4rem;
+  padding: 0.05rem 0.35rem;
+  border-radius: 0.25rem;
+  border: 1px solid rgba(218, 170, 85, 0.5);
+  background: rgba(218, 170, 85, 0.12);
+  color: #daa555;
+  font-size: 0.65rem;
+  font-weight: 600;
+  line-height: 1.3;
+  vertical-align: middle;
+  white-space: nowrap;
 }
 
 .map-selector-option-count {

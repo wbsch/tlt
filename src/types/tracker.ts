@@ -62,6 +62,14 @@ export interface TrackerPack {
    */
   getLocationRegionMap?(): Map<string, string>;
 
+  /**
+   * Optional: Hint-region IDs that contain a blue-warp dungeon-reward check.
+   * Only relevant when `dungeonRewardShuffle` is 'dungeonBlueWarps' — a
+   * Foolish hint for such a region must not mark the whole dungeon as
+   * collected, because the reward (and possibly keys) may still be required.
+   */
+  getDungeonRewardRegionIds?(): Set<string>;
+
   /** Optional: Patch special conditions used in logic */
   setSpecialConds?(patch: Record<string, unknown>): void;
 

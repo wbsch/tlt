@@ -40,6 +40,8 @@ const {
   allLocations,
   regionLocationMap,
   regionToLocationIds,
+  dungeonRewardRegionIds,
+  trackerSettings,
 } = storeToRefs(sessionStore);
 
 // ── Collapsible sections ──
@@ -534,6 +536,26 @@ function removeRegionHint(index: number) {
   sessionStore.removeRegionHint(index);
 }
 
+/**
+ * True when dungeon rewards sit on the blue warps, i.e. the reward checks of
+ * the major dungeons are not hintable and a region can be Foolish even though
+ * the player may still need the reward (and possibly keys) from the dungeon.
+ */
+const isBlueWarpRewardMode = computed(
+  () =>
+    String(trackerSettings.value?.dungeonRewardShuffle ?? '') ===
+    'dungeonBlueWarps',
+);
+
+/**
+ * True when a Foolish hint for `region` must NOT mark the region's locations
+ * as collected: in Dungeon Blue Warps mode the reward sits on the dungeon's
+ * blue warp, so the player may still need to clear the dungeon.
+ */
+function isCriticalFoolishRegion(region: string): boolean {
+  return isBlueWarpRewardMode.value && dungeonRewardRegionIds.value.has(region);
+}
+
 function addFoolishHint() {
   if (!foolishFormRegion.value) return;
   const region = foolishFormRegion.value;
@@ -541,6 +563,16 @@ function addFoolishHint() {
     region,
   };
   sessionStore.addFoolishHint(hint);
+
+  // Blue-warp dungeon regions are not auto-collected: the reward on the blue
+  // warp (and potentially keys required to reach it) can still be needed, so
+  // the dungeon must stay visible. The map dropdown shows a "Foolish" tag
+  // for these regions instead.
+  if (isCriticalFoolishRegion(region)) {
+    foolishFormRegion.value = '';
+    isFoolishFormOpen.value = false;
+    return;
+  }
 
   // Set all locations in this hint region to collected. The region → locations
   // mapping comes from the tracker's own post-entrance-pass world graph, so it
@@ -565,6 +597,13 @@ function addFoolishHint() {
 function removeFoolishHint(index: number) {
   const hint = hintTracker.value.foolishHints[index];
   if (!hint) return;
+
+  // Blue-warp dungeon regions were never auto-collected, so there is nothing
+  // to revert; just remove the hint.
+  if (isCriticalFoolishRegion(hint.region)) {
+    sessionStore.removeFoolishHint(index);
+    return;
+  }
 
   // Find location IDs for this region from the tracker's own mapping.
   const regionLocationIds = Array.from(
@@ -976,6 +1015,10 @@ function removeMoonHint(index: number) {
       </button>
 
       <div v-if="!isFoolishCollapsed" class="hint-category__body">
+        <div v-if="isBlueWarpRewardMode" class="hint-category__note">
+          Dungeons with a Reward on the Blue Warp location are not
+          auto-collected. The Dungeon Reward might still be required.
+        </div>
         <div v-if="isFoolishFormOpen" class="hint-add-form">
           <div class="hint-add-form__field">
             <label>Region</label>
@@ -1011,10 +1054,19 @@ function removeMoonHint(index: number) {
           v-for="(hint, idx) in hintTracker.foolishHints"
           :key="idx"
           class="hint-row"
+          :class="{
+            'hint-row--critical': isCriticalFoolishRegion(hint.region),
+          }"
         >
           <div class="hint-row__info">
             <strong>{{ getRegionDisplayName(hint.region) }}</strong>
-            <span class="hint-row__subtype">Foolish</span>
+            <span
+              v-if="isCriticalFoolishRegion(hint.region)"
+              class="hint-row__subtype"
+            >
+              ⚠ Reward might be required
+            </span>
+            <span v-else class="hint-row__subtype">Foolish</span>
           </div>
           <button
             class="hint-row__delete"
@@ -1312,6 +1364,21 @@ function removeMoonHint(index: number) {
 
 .hint-row:last-child {
   border-bottom: none;
+}
+
+.hint-row--critical .hint-row__subtype {
+  color: #da5;
+}
+
+.hint-category__note {
+  color: #b98;
+  font-size: 0.75rem;
+  line-height: 1.35;
+  padding: 6px 8px;
+  margin-bottom: 8px;
+  background: rgba(187, 136, 88, 0.08);
+  border: 1px solid rgba(187, 136, 88, 0.25);
+  border-radius: 4px;
 }
 
 .hint-row__info {

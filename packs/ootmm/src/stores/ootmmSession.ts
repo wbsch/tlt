@@ -516,6 +516,15 @@ export const useOoTMMSessionStore = defineStore('ootmm-session', () => {
   const { locationIdToRegion: regionLocationMap, regionToLocationIds } =
     useRegionLocationMap(tracker, locationsVersion);
 
+  // Hint-region IDs that contain a blue-warp dungeon-reward check. Only
+  // relevant when dungeonRewardShuffle is 'dungeonBlueWarps'; see
+  // TrackerPack.getDungeonRewardRegionIds. Reacts to locationsVersion like
+  // the region maps above.
+  const dungeonRewardRegionIds = computed<Set<string>>(() => {
+    void locationsVersion.value;
+    return tracker.value?.getDungeonRewardRegionIds?.() ?? new Set<string>();
+  });
+
   // Derived spoiler placement lookup maps
   const spoilerItemToLocationIds = computed<Record<string, string[]>>(() => {
     const map: Record<string, string[]> = {};
@@ -2628,6 +2637,7 @@ export const useOoTMMSessionStore = defineStore('ootmm-session', () => {
     allLocations,
     regionLocationMap,
     regionToLocationIds,
+    dungeonRewardRegionIds,
     startLocalSessionSync,
     stopLocalSessionSync,
     startRoomSync,

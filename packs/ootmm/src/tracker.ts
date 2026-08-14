@@ -1144,6 +1144,31 @@ export class OoTMMTracker implements TrackerPack {
     return this.locationRegionMap;
   }
 
+  /**
+   * Hint-region IDs that contain a blue-warp dungeon-reward check (e.g.
+   * "OOT_DEKU_TREE" for the "Deku Tree Boss" reward slot). Derived from the
+   * world graph's `warpLocations` so it stays in sync with the randomizer.
+   *
+   * Only relevant when `dungeonRewardShuffle` is 'dungeonBlueWarps': in that
+   * mode the reward checks are not hintable, so a region can be classified as
+   * Foolish even though the player still needs the reward (and possibly keys)
+   * from the dungeon. A Foolish hint for such a region must therefore not
+   * mark the whole dungeon as collected.
+   */
+  getDungeonRewardRegionIds(): Set<string> {
+    const regionIds = new Set<string>();
+    if (!this.worlds) return regionIds;
+    for (const world of this.worlds) {
+      for (const locId of world.warpLocations ?? []) {
+        const region = world.regions?.[locId];
+        if (isValidHintRegion(region)) {
+          regionIds.add(region);
+        }
+      }
+    }
+    return regionIds;
+  }
+
   private computeStableReachabilityState(
     inventory: Map<string, number>,
   ): StableReachabilityState {

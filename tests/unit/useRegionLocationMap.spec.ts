@@ -69,4 +69,40 @@ describe('useRegionLocationMap / region mapping', () => {
     expect(regions.has('OOT_KOKIRI_FOREST')).toBe(true);
     expect(regions.has('OOT_GORON_CITY')).toBe(true);
   }, 30000);
+
+  it('reports the hint regions that hold a dungeon reward on a blue warp', async () => {
+    const tracker = new OoTMMTracker();
+    await tracker.initialize({ games: 'ootmm' });
+
+    const rewardRegionIds = tracker.getDungeonRewardRegionIds();
+    // The 8 OoT + 4 MM major dungeons whose reward sits on the boss blue warp,
+    // plus the Temple of Time Medallion slot (also a warp-location reward).
+    expect(rewardRegionIds).toEqual(
+      new Set([
+        'OOT_DEKU_TREE',
+        'OOT_DODONGO_CAVERN',
+        'OOT_JABU_JABU',
+        'OOT_TEMPLE_FOREST',
+        'OOT_TEMPLE_FIRE',
+        'OOT_TEMPLE_WATER',
+        'OOT_TEMPLE_SPIRIT',
+        'OOT_TEMPLE_SHADOW',
+        'OOT_SACRED_REALM',
+        'MM_TEMPLE_WOODFALL',
+        'MM_TEMPLE_SNOWHEAD',
+        'MM_TEMPLE_GREAT_BAY',
+        'MM_TEMPLE_STONE_TOWER',
+      ]),
+    );
+
+    // Every reported region must be a valid, selectable hint region and every
+    // reward-region location must exist in the location → region map.
+    for (const region of rewardRegionIds) {
+      expect(isValidHintRegion(region)).toBe(true);
+    }
+    const mappedRegions = new Set(tracker.getLocationRegionMap().values());
+    for (const region of rewardRegionIds) {
+      expect(mappedRegions.has(region)).toBe(true);
+    }
+  }, 30000);
 });
