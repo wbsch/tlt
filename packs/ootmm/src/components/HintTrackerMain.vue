@@ -19,10 +19,6 @@ import type {
 } from '../data/hintTypes';
 import HintItemPicker from './HintItemPicker.vue';
 import HintMissingSummary from './HintMissingSummary.vue';
-import {
-  parseSpoilerHints,
-  type ParsedHintsData,
-} from '../utils/hintSpoilerAnalysis';
 import { getItemIcon } from '../data/itemIcons';
 import {
   createItemDisplayNameResolver,
@@ -35,7 +31,6 @@ const {
   spoilerPlacements,
   collectedLocationIds,
   hasImportedSpoilerLog,
-  hintsText,
   availableItemIdSet,
   allLocations,
   regionLocationMap,
@@ -153,81 +148,6 @@ const isMoonFormOpen = ref(false);
 // ── Region options ──
 const regionOptions = computed(() => getRegionOptions());
 
-// ── Spoiler log hint data (for filtering combo options) ──
-const parsedSpoilerHints = computed<ParsedHintsData | null>(() => {
-  if (!hintsText.value) return null;
-  try {
-    return parseSpoilerHints(hintsText.value);
-  } catch {
-    return null;
-  }
-});
-
-// Build map: region display name → region ID for reverse lookup
-function buildRegionNameToIdMap(): Map<string, string> {
-  const map = new Map<string, string>();
-  for (const opt of getRegionOptions()) {
-    map.set(opt.label, opt.value);
-  }
-  return map;
-}
-
-/** Resolve spoiler region display names to region IDs. */
-function getRegionIdsFromDisplayNames(names: Set<string>): Set<string> {
-  const nameToId = buildRegionNameToIdMap();
-  const ids = new Set<string>();
-  for (const name of names) {
-    const id = nameToId.get(name);
-    if (id) ids.add(id);
-  }
-  return ids;
-}
-
-// ── Filtered options (when spoiler log is loaded) ──
-const regionOptionsForPath = computed(() => {
-  if (!parsedSpoilerHints.value?.availableRegionsForPath?.size) {
-    return regionOptions.value;
-  }
-  const availableIds = getRegionIdsFromDisplayNames(
-    parsedSpoilerHints.value.availableRegionsForPath,
-  );
-  if (availableIds.size === 0) return regionOptions.value;
-  return regionOptions.value.filter((opt) => availableIds.has(opt.value));
-});
-
-const regionOptionsForRegion = computed(() => {
-  if (!parsedSpoilerHints.value?.availableRegionsForRegion?.size) {
-    return regionOptions.value;
-  }
-  const availableIds = getRegionIdsFromDisplayNames(
-    parsedSpoilerHints.value.availableRegionsForRegion,
-  );
-  if (availableIds.size === 0) return regionOptions.value;
-  return regionOptions.value.filter((opt) => availableIds.has(opt.value));
-});
-
-const regionOptionsForFoolish = computed(() => {
-  if (!parsedSpoilerHints.value?.availableRegionsForFoolish?.size) {
-    return regionOptions.value;
-  }
-  const availableIds = getRegionIdsFromDisplayNames(
-    parsedSpoilerHints.value.availableRegionsForFoolish,
-  );
-  if (availableIds.size === 0) return regionOptions.value;
-  return regionOptions.value.filter((opt) => availableIds.has(opt.value));
-});
-
-const regionOptionsForMoon = computed(() => {
-  if (!parsedSpoilerHints.value?.availableRegionsForMoon?.size) {
-    return regionOptions.value;
-  }
-  const availableIds = getRegionIdsFromDisplayNames(
-    parsedSpoilerHints.value.availableRegionsForMoon,
-  );
-  if (availableIds.size === 0) return regionOptions.value;
-  return regionOptions.value.filter((opt) => availableIds.has(opt.value));
-});
-
 // ── Path subtype options ──
 interface SubTypeOption {
   value: PathSubType;
@@ -311,13 +231,6 @@ watch(pathFormSubType, () => {
   } else {
     pathFormSubId.value = 0;
   }
-});
-
-// ── Path subtype options (filtered by spoiler log) ──
-const pathSubTypeOptions = computed(() => {
-  const available = parsedSpoilerHints.value?.availablePathSubTypes;
-  if (!available || available.size === 0) return PATH_SUBTYPE_OPTIONS;
-  return PATH_SUBTYPE_OPTIONS.filter((opt) => available.has(opt.value));
 });
 
 // ── Always/Sometimes location options (merged) ──
@@ -678,7 +591,7 @@ function removeMoonHint(index: number) {
             <select v-model="pathFormRegion" class="hint-combobox">
               <option value="" disabled>Select region...</option>
               <option
-                v-for="opt in regionOptionsForPath"
+                v-for="opt in regionOptions"
                 :key="opt.value"
                 :value="opt.value"
               >
@@ -690,7 +603,7 @@ function removeMoonHint(index: number) {
             <label>Subtype</label>
             <select v-model="pathFormSubType" class="hint-combobox">
               <option
-                v-for="opt in pathSubTypeOptions"
+                v-for="opt in PATH_SUBTYPE_OPTIONS"
                 :key="opt.value"
                 :value="opt.value"
               >
@@ -739,8 +652,8 @@ function removeMoonHint(index: number) {
           <div class="hint-row__info">
             <strong>{{ getRegionDisplayName(hint.region) }}</strong>
             <span class="hint-row__subtype">{{
-              pathSubTypeOptions.find((s) => s.value === hint.subType)?.label ??
-              hint.subType
+              PATH_SUBTYPE_OPTIONS.find((s) => s.value === hint.subType)
+                ?.label ?? hint.subType
             }}</span>
             <span v-if="hint.subId !== undefined" class="hint-row__subid">{{
               PATH_SUBID_OPTIONS[hint.subType]?.find(
@@ -930,7 +843,7 @@ function removeMoonHint(index: number) {
             <select v-model="regionFormRegion" class="hint-combobox">
               <option value="" disabled>Select region...</option>
               <option
-                v-for="opt in regionOptionsForRegion"
+                v-for="opt in regionOptions"
                 :key="opt.value"
                 :value="opt.value"
               >
@@ -1040,7 +953,7 @@ function removeMoonHint(index: number) {
             <select v-model="foolishFormRegion" class="hint-combobox">
               <option value="" disabled>Select region...</option>
               <option
-                v-for="opt in regionOptionsForFoolish"
+                v-for="opt in regionOptions"
                 :key="opt.value"
                 :value="opt.value"
               >
@@ -1124,7 +1037,7 @@ function removeMoonHint(index: number) {
             <select v-model="moonFormRegion" class="hint-combobox">
               <option value="" disabled>Select region...</option>
               <option
-                v-for="opt in regionOptionsForMoon"
+                v-for="opt in regionOptions"
                 :key="opt.value"
                 :value="opt.value"
               >

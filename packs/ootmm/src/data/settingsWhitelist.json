@@ -331,5 +331,10 @@
   "triforcePieces",
   "tunicGoronMm",
   "tunicZoraMm",
-  "zoraKing"
+  "zoraKing",
+  "extraHintRegions",
+  "hintPathDungeons",
+  "hintPathBoss",
+  "hintPathEndBoss",
+  "hintPathEvents"
 ]
