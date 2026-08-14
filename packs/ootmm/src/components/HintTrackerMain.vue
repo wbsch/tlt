@@ -367,22 +367,6 @@ const collectedLocationIdSet = computed(
   () => new Set(collectedLocationIds.value),
 );
 
-function getItemsInRegion(regionId: string): Array<{
-  itemId: string;
-  itemName: string;
-  iconPath: string;
-  locationName: string;
-  locationId: string;
-}> {
-  const all = regionToItemsMap.value.get(regionId) ?? [];
-  // Filter to only items whose location has been collected.
-  return all.filter((item) =>
-    collectedLocationIdSet.value.has(item.locationId),
-  );
-}
-
-// ── Actions ──
-
 // ── Item name lookup (pool-aware, with game prefixes for ambiguous names) ──
 const hintItemEntries = computed(() =>
   getHintItemEntries(
@@ -393,9 +377,34 @@ const hintItemNameResolver = computed(() =>
   createItemDisplayNameResolver(hintItemEntries.value.map((item) => item.id)),
 );
 
+/** Item IDs shown in the hint item dropdown (item-grid items ∩ current pool). */
+const hintGridItemIdSet = computed(
+  () => new Set(hintItemEntries.value.map((item) => item.id)),
+);
+
 function resolveItemName(itemId: string): string {
   return hintItemNameResolver.value(itemId);
 }
+
+function getItemsInRegion(regionId: string): Array<{
+  itemId: string;
+  itemName: string;
+  iconPath: string;
+  locationName: string;
+  locationId: string;
+}> {
+  const all = regionToItemsMap.value.get(regionId) ?? [];
+  // Filter to only items whose location has been collected AND that exist in
+  // the item grid (same set as the hint item dropdown), so Path hints don't
+  // surface items the tracker cannot represent (maps, compasses, keys, junk...).
+  return all.filter(
+    (item) =>
+      collectedLocationIdSet.value.has(item.locationId) &&
+      hintGridItemIdSet.value.has(item.itemId),
+  );
+}
+
+// ── Actions ──
 
 function addPathHint() {
   if (!pathFormRegion.value) return;
