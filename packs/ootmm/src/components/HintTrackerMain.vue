@@ -19,6 +19,7 @@ import type {
 } from '../data/hintTypes';
 import HintItemPicker from './HintItemPicker.vue';
 import HintMissingSummary from './HintMissingSummary.vue';
+import SpoilerSearchCombobox from './SpoilerSearchCombobox.vue';
 import { getItemIcon } from '../data/itemIcons';
 import {
   createItemDisplayNameResolver,
@@ -250,6 +251,41 @@ const PATH_SUBID_OPTIONS: Record<PathSubType, SubIdOption[]> = {
 
 const currentSubIdOptions = computed(() => {
   return PATH_SUBID_OPTIONS[pathFormSubType.value] ?? [];
+});
+
+/**
+ * String-bridged options for the searchable Detail combobox. The underlying
+ * subId values are numbers (they're persisted on RecordedPathHint.subId), but
+ * SpoilerSearchCombobox works with string values.
+ */
+const currentSubIdStringOptions = computed(() =>
+  currentSubIdOptions.value.map((opt) => ({
+    value: String(opt.value),
+    label: opt.label,
+  })),
+);
+
+/** String bridge so the numeric subId ref can drive a string-valued combobox. */
+const pathFormSubIdModel = computed({
+  get: () => String(pathFormSubId.value),
+  set: (value: string) => {
+    const num = Number(value);
+    pathFormSubId.value = Number.isFinite(num) ? num : 0;
+  },
+});
+
+/**
+ * Subtype bridge for the searchable combobox that never clears: empty values
+ * (e.g. via the combobox's backspace-clear affordance) are ignored so the form
+ * always holds a valid subtype.
+ */
+const pathFormSubTypeModel = computed({
+  get: () => pathFormSubType.value,
+  set: (value: string) => {
+    if (PATH_SUBTYPE_OPTIONS.some((o) => o.value === value)) {
+      pathFormSubType.value = value as PathSubType;
+    }
+  },
 });
 
 // Reset subId when subtype changes
@@ -636,43 +672,30 @@ function removeMoonHint(index: number) {
         <div v-if="isPathFormOpen" class="hint-add-form">
           <div class="hint-add-form__field">
             <label>Region</label>
-            <select v-model="pathFormRegion" class="hint-combobox">
-              <option value="" disabled>Select region...</option>
-              <option
-                v-for="opt in regionOptions"
-                :key="opt.value"
-                :value="opt.value"
-              >
-                {{ opt.label }}
-              </option>
-            </select>
+            <SpoilerSearchCombobox
+              v-model="pathFormRegion"
+              :options="regionOptions"
+              placeholder="Search regions..."
+            />
           </div>
           <div class="hint-add-form__field">
             <label>Subtype</label>
-            <select v-model="pathFormSubType" class="hint-combobox">
-              <option
-                v-for="opt in pathSubTypeOptions"
-                :key="opt.value"
-                :value="opt.value"
-              >
-                {{ opt.label }}
-              </option>
-            </select>
+            <SpoilerSearchCombobox
+              v-model="pathFormSubTypeModel"
+              :options="pathSubTypeOptions"
+              placeholder="Search subtypes..."
+            />
           </div>
           <div
             v-if="currentSubIdOptions.length > 0"
             class="hint-add-form__field"
           >
             <label>Detail</label>
-            <select v-model="pathFormSubId" class="hint-combobox">
-              <option
-                v-for="opt in currentSubIdOptions"
-                :key="opt.value"
-                :value="opt.value"
-              >
-                {{ opt.label }}
-              </option>
-            </select>
+            <SpoilerSearchCombobox
+              v-model="pathFormSubIdModel"
+              :options="currentSubIdStringOptions"
+              placeholder="Search details..."
+            />
           </div>
           <div class="hint-add-form__actions">
             <button
@@ -769,16 +792,11 @@ function removeMoonHint(index: number) {
         <div v-if="isAlwaysSometimesFormOpen" class="hint-add-form">
           <div class="hint-add-form__field">
             <label>Check Location</label>
-            <select v-model="alwaysSometimesFormLocation" class="hint-combobox">
-              <option value="" disabled>Select location...</option>
-              <option
-                v-for="opt in alwaysSometimesLocationOptions"
-                :key="opt.value"
-                :value="opt.value"
-              >
-                {{ opt.label }}
-              </option>
-            </select>
+            <SpoilerSearchCombobox
+              v-model="alwaysSometimesFormLocation"
+              :options="alwaysSometimesLocationOptions"
+              placeholder="Search locations..."
+            />
           </div>
           <div
             v-for="slot in alwaysSometimesSelectedItemCount"
@@ -888,16 +906,11 @@ function removeMoonHint(index: number) {
         <div v-if="isRegionFormOpen" class="hint-add-form">
           <div class="hint-add-form__field">
             <label>Region</label>
-            <select v-model="regionFormRegion" class="hint-combobox">
-              <option value="" disabled>Select region...</option>
-              <option
-                v-for="opt in regionOptions"
-                :key="opt.value"
-                :value="opt.value"
-              >
-                {{ opt.label }}
-              </option>
-            </select>
+            <SpoilerSearchCombobox
+              v-model="regionFormRegion"
+              :options="regionOptions"
+              placeholder="Search regions..."
+            />
           </div>
           <div class="hint-add-form__field">
             <label>Item</label>
@@ -998,16 +1011,11 @@ function removeMoonHint(index: number) {
         <div v-if="isFoolishFormOpen" class="hint-add-form">
           <div class="hint-add-form__field">
             <label>Region</label>
-            <select v-model="foolishFormRegion" class="hint-combobox">
-              <option value="" disabled>Select region...</option>
-              <option
-                v-for="opt in regionOptions"
-                :key="opt.value"
-                :value="opt.value"
-              >
-                {{ opt.label }}
-              </option>
-            </select>
+            <SpoilerSearchCombobox
+              v-model="foolishFormRegion"
+              :options="regionOptions"
+              placeholder="Search regions..."
+            />
           </div>
           <div class="hint-add-form__actions">
             <button
@@ -1082,16 +1090,11 @@ function removeMoonHint(index: number) {
         <div v-if="isMoonFormOpen" class="hint-add-form">
           <div class="hint-add-form__field">
             <label>Region</label>
-            <select v-model="moonFormRegion" class="hint-combobox">
-              <option value="" disabled>Select region...</option>
-              <option
-                v-for="opt in regionOptions"
-                :key="opt.value"
-                :value="opt.value"
-              >
-                {{ opt.label }}
-              </option>
-            </select>
+            <SpoilerSearchCombobox
+              v-model="moonFormRegion"
+              :options="regionOptions"
+              placeholder="Search regions..."
+            />
           </div>
           <div class="hint-add-form__field">
             <label>Item</label>
@@ -1312,22 +1315,6 @@ function removeMoonHint(index: number) {
   display: flex;
   gap: 6px;
   margin-top: 4px;
-}
-
-/* ── Combobox / select ── */
-.hint-combobox {
-  width: 100%;
-  padding: 4px 6px;
-  border: 1px solid #555;
-  border-radius: 3px;
-  background: #333;
-  color: #ddd;
-  font-size: 0.8rem;
-  outline: none;
-}
-
-.hint-combobox:focus {
-  border-color: #4a8ac0;
 }
 
 /* ── Buttons ── */

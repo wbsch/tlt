@@ -94,7 +94,7 @@ function scheduleDropdownLayoutUpdate(): void {
 const filteredOptions = computed(() => {
   if (!query.value.trim()) return [...props.options];
   return props.options.filter((option) =>
-    matchesSearchTerms([option.label], query.value),
+    matchesSearchTerms([option.label, String(option.value)], query.value),
   );
 });
 
