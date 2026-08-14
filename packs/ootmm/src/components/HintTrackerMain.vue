@@ -42,6 +42,7 @@ const {
   regionToLocationIds,
   dungeonRewardRegionIds,
   trackerSettings,
+  foolishBlueWarpNoteDismissed,
 } = storeToRefs(sessionStore);
 
 // ── Collapsible sections ──
@@ -1015,9 +1016,23 @@ function removeMoonHint(index: number) {
       </button>
 
       <div v-if="!isFoolishCollapsed" class="hint-category__body">
-        <div v-if="isBlueWarpRewardMode" class="hint-category__note">
-          Dungeons with a Reward on the Blue Warp location are not
-          auto-collected. The Dungeon Reward might still be required.
+        <div
+          v-if="isBlueWarpRewardMode && !foolishBlueWarpNoteDismissed"
+          class="hint-category__note"
+        >
+          <span class="hint-category__note-text">
+            Dungeons with a Reward on the Blue Warp location are not
+            auto-collected. The Dungeon Reward might still be required.
+          </span>
+          <button
+            type="button"
+            class="hint-category__note-dismiss"
+            aria-label="Dismiss note"
+            title="Dismiss note"
+            @click="sessionStore.dismissFoolishBlueWarpNote()"
+          >
+            ×
+          </button>
         </div>
         <div v-if="isFoolishFormOpen" class="hint-add-form">
           <div class="hint-add-form__field">
@@ -1371,6 +1386,9 @@ function removeMoonHint(index: number) {
 }
 
 .hint-category__note {
+  display: flex;
+  align-items: flex-start;
+  gap: 6px;
   color: #b98;
   font-size: 0.75rem;
   line-height: 1.35;
@@ -1379,6 +1397,29 @@ function removeMoonHint(index: number) {
   background: rgba(187, 136, 88, 0.08);
   border: 1px solid rgba(187, 136, 88, 0.25);
   border-radius: 4px;
+}
+
+.hint-category__note-text {
+  flex: 1;
+}
+
+.hint-category__note-dismiss {
+  flex: none;
+  width: 18px;
+  height: 18px;
+  padding: 0;
+  border: none;
+  background: transparent;
+  color: #b98;
+  font-size: 0.95rem;
+  line-height: 1;
+  cursor: pointer;
+  border-radius: 3px;
+}
+
+.hint-category__note-dismiss:hover {
+  color: #fff;
+  background: rgba(187, 136, 88, 0.25);
 }
 
 .hint-row__info {

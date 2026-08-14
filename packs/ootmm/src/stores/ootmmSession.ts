@@ -384,6 +384,10 @@ export const useOoTMMSessionStore = defineStore('ootmm-session', () => {
   const junkLocationIds = ref<string[]>([]);
   const hintProtectedLocationIds = ref<string[]>([]);
   const hintTracker = ref<HintTrackerState>(createEmptyHintTrackerState());
+  // Dismissal state for the "Reward on the Blue Warp" note in the Foolish
+  // section of the hint tracker. Cleared again when the tracker state is
+  // reset, so the note only reappears after a reset.
+  const foolishBlueWarpNoteDismissed = ref(false);
   const autoCollectedPreCompletedLocationIds = ref<string[]>([]);
   const songEvents = ref<Record<string, number>>({});
   const shopPrices = ref<Record<string, number>>({});
@@ -2324,6 +2328,7 @@ export const useOoTMMSessionStore = defineStore('ootmm-session', () => {
     hintsText.value = null;
     hintTracker.value = createEmptyHintTrackerState();
     hintProtectedLocationIds.value = [];
+    foolishBlueWarpNoteDismissed.value = false;
 
     if (!currentTracker) {
       trackerSettings.value = {};
@@ -2520,6 +2525,15 @@ export const useOoTMMSessionStore = defineStore('ootmm-session', () => {
     publishSyncOperation({ type: 'hints.foolish.remove', index }, options);
   }
 
+  /**
+   * Remember that the "Reward on the Blue Warp" note in the Foolish section
+   * has been dismissed. The note only reappears after the tracker state is
+   * reset (resetSessionStateToDefaults clears this flag).
+   */
+  function dismissFoolishBlueWarpNote() {
+    foolishBlueWarpNoteDismissed.value = true;
+  }
+
   function addMoonHint(hint: RecordedMoonHint, options?: MutationOptions) {
     const previousSnapshot = captureSnapshotForMutation(options);
     hintTracker.value = {
@@ -2604,6 +2618,7 @@ export const useOoTMMSessionStore = defineStore('ootmm-session', () => {
     junkLocationIds,
     hintTracker,
     hintProtectedLocationIds,
+    foolishBlueWarpNoteDismissed,
     songEvents,
     shopPrices,
     entranceOverrides,
@@ -2691,6 +2706,7 @@ export const useOoTMMSessionStore = defineStore('ootmm-session', () => {
     removeRegionHint,
     addFoolishHint,
     removeFoolishHint,
+    dismissFoolishBlueWarpNote,
     addMoonHint,
     removeMoonHint,
     setHintTrackerState,

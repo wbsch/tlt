@@ -466,6 +466,7 @@ export const PERSIST_CONFIGS: Record<PersistStoreId, PersistConfig> = {
       'hintsText',
       'hintTracker',
       'hintProtectedLocationIds',
+      'foolishBlueWarpNoteDismissed',
     ],
     hydrate: (raw) => {
       const inventory: Record<string, number> = isPlainObject(raw.inventoryById)
@@ -579,6 +580,11 @@ export const PERSIST_CONFIGS: Record<PersistStoreId, PersistConfig> = {
               hintProtectedLocationIds: stringArray(
                 raw.hintProtectedLocationIds,
               ),
+            }
+          : {}),
+        ...(typeof raw.foolishBlueWarpNoteDismissed === 'boolean'
+          ? {
+              foolishBlueWarpNoteDismissed: raw.foolishBlueWarpNoteDismissed,
             }
           : {}),
         ...(() => {
