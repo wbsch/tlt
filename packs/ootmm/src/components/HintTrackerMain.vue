@@ -155,12 +155,38 @@ interface SubTypeOption {
 }
 const PATH_SUBTYPE_OPTIONS: SubTypeOption[] = [
   { value: 'woth', label: 'Way of the Hero' },
-  { value: 'triforce', label: 'Triforce' },
-  { value: 'dungeon', label: 'Dungeon' },
-  { value: 'boss', label: 'Boss' },
-  { value: 'end-boss', label: 'End Boss' },
-  { value: 'event', label: 'Event' },
+  { value: 'triforce', label: 'Path to Triforce' },
+  { value: 'dungeon', label: 'Path to Dungeons' },
+  { value: 'boss', label: 'Path to Boss' },
+  { value: 'end-boss', label: 'Path to End Boss' },
+  { value: 'event', label: 'Path to Events' },
 ];
+
+// ── Path subtype options (filtered by tracker settings) ──
+// Which path hint types can actually occur in the seed depends on the
+// settings: Triforce paths only exist in Triforce Quest mode, and the
+// "Path to X" hints only when the corresponding hint setting is enabled.
+// Mirrors OoTMM's analysis-path.ts makePaths().
+const pathSubTypeOptions = computed<SubTypeOption[]>(() => {
+  const settings = trackerSettings.value ?? {};
+  const goal = String(settings.goal ?? '').toLowerCase();
+  return PATH_SUBTYPE_OPTIONS.filter((opt) => {
+    switch (opt.value) {
+      case 'woth':
+        return true;
+      case 'triforce':
+        return goal === 'triforce3';
+      case 'dungeon':
+        return Boolean(settings.hintPathDungeons);
+      case 'boss':
+        return Boolean(settings.hintPathBoss);
+      case 'end-boss':
+        return Boolean(settings.hintPathEndBoss);
+      case 'event':
+        return Boolean(settings.hintPathEvents);
+    }
+  });
+});
 
 // ── Path subId options per subtype ──
 interface SubIdOption {
@@ -603,7 +629,7 @@ function removeMoonHint(index: number) {
             <label>Subtype</label>
             <select v-model="pathFormSubType" class="hint-combobox">
               <option
-                v-for="opt in PATH_SUBTYPE_OPTIONS"
+                v-for="opt in pathSubTypeOptions"
                 :key="opt.value"
                 :value="opt.value"
               >
@@ -711,7 +737,7 @@ function removeMoonHint(index: number) {
         <span class="hint-category__toggle">{{
           isAlwaysSometimesCollapsed ? '▸' : '▾'
         }}</span>
-        <span class="hint-category__title">Always/Sometimes</span>
+        <span class="hint-category__title">Always / Sometimes</span>
         <span class="hint-category__count"
           >({{ hintTracker.alwaysSometimesHints.length }})</span
         >
