@@ -25,7 +25,11 @@ const OOT_PERM_ENTRY_SIZE = 0x1c;
 const OOT_PERM_EXTRA_OFF = 0x10;
 const EXTRA_IDX_OOT_TRADE = 0;
 const EXTRA_IDX_OOT_TRADE_SAVE = 10;
+const EXTRA_IDX_OOT_ITEMS = 1;
+const EXTRA_IDX_MM_ITEMS = 4;
 const OOT_ITEM_SLOT_COUNT = 24;
+const OOT_ITEM_HAMMER = 0x11;
+const OOT_ITEM_GREAT_FAIRY_SWORD = 0xa8;
 
 function writeU32BE(data: Uint8Array, offset: number, value: number): void {
   data[offset] = (value >>> 24) & 0xff;
@@ -78,6 +82,20 @@ function buildMinimalOotMessage(
       },
     ],
   };
+}
+
+/**
+ * Builds a minimal OoT message whose hammer slot (index 15) holds `slotValue`
+ * (0x11 = hammer, 0xa8 = Great Fairy's Sword) with the given extra records set.
+ */
+function buildOotMessageWithHammerSlot(
+  slotValue: number,
+  extraRecords: Record<number, number>,
+): RawAutotrackerMessage {
+  const message = buildMinimalOotMessage(extraRecords);
+  const data = message.chunks[0].data as Uint8Array;
+  data[OOT_OFF_INV_ITEMS - OOT_OFF_AGE + 15] = slotValue;
+  return message;
 }
 
 describe('raw frame parser', () => {
@@ -245,6 +263,66 @@ describe('raw frame parser', () => {
 
     expect(translated.OOT_ODD_MUSHROOM).toBe(1);
     expect(translated.OOT_ODD_POTION).toBe(1);
+  });
+
+  it('tracks the OOT Great Fairy Sword separately from the OOT hammer', () => {
+    const parser = createRawAutotrackerParser('v32_0');
+    // OOT Great Fairy Sword occupies the hammer slot (0xa8) and sets the
+    // gfsHammer "GFS" bit (record 1, bit 22). It must NOT be reported as the
+    // hammer.
+    const parsed = parser.parse(
+      buildOotMessageWithHammerSlot(OOT_ITEM_GREAT_FAIRY_SWORD, {
+        [EXTRA_IDX_OOT_ITEMS]: 1 << 22,
+      }),
+    );
+    expect(parsed).not.toBeNull();
+
+    const items = parsedItemMap(parsed!.items);
+    expect(items.get('OOT_HAMMER')).toBeUndefined();
+    expect(items.get('OOT_GREAT_FAIRY_SWORD')).toBe(1);
+  });
+
+  it('still tracks the OOT hammer when it occupies the hammer slot', () => {
+    const parser = createRawAutotrackerParser('v32_0');
+    const parsed = parser.parse(
+      buildOotMessageWithHammerSlot(OOT_ITEM_HAMMER, {
+        [EXTRA_IDX_OOT_ITEMS]: 1 << 21,
+      }),
+    );
+    expect(parsed).not.toBeNull();
+
+    const items = parsedItemMap(parsed!.items);
+    expect(items.get('OOT_HAMMER')).toBe(1);
+    expect(items.get('OOT_GREAT_FAIRY_SWORD')).toBeUndefined();
+  });
+
+  it('tracks both OOT hammer and GFS when both gfsHammer bits are set', () => {
+    const parser = createRawAutotrackerParser('v32_0');
+    // GFS was obtained first (hammer slot holds 0xa8), then the hammer was
+    // obtained (gfsHammer bit 0). Both bits are set, so both items must show.
+    const parsed = parser.parse(
+      buildOotMessageWithHammerSlot(OOT_ITEM_GREAT_FAIRY_SWORD, {
+        [EXTRA_IDX_OOT_ITEMS]: (1 << 21) | (1 << 22),
+      }),
+    );
+    expect(parsed).not.toBeNull();
+
+    const items = parsedItemMap(parsed!.items);
+    expect(items.get('OOT_HAMMER')).toBe(1);
+    expect(items.get('OOT_GREAT_FAIRY_SWORD')).toBe(1);
+  });
+
+  it('tracks the MM hammer via the MmExtraItems.hammerGFS bit', () => {
+    const parser = createRawAutotrackerParser('v32_0');
+    // MmExtraItems.hammerGFS is record 4; param 1 (hammer) is bit 26.
+    const parsed = parser.parse(
+      buildMinimalOotMessage({ [EXTRA_IDX_MM_ITEMS]: 1 << 26 }),
+    );
+    expect(parsed).not.toBeNull();
+
+    const items = parsedItemMap(parsed!.items);
+    expect(items.get('MM_HAMMER')).toBe(1);
+    expect(items.get('MM_GREAT_FAIRY_SWORD')).toBeUndefined();
   });
 });
 
