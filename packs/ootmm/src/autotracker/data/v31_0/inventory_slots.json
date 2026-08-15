@@ -2991,7 +2991,7 @@
         "source": {
           "kind": "oot-extra-bit",
           "record": 2,
-          "bit": 26
+          "bit": 5
         }
       },
       {

@@ -26,6 +26,7 @@ const OOT_PERM_EXTRA_OFF = 0x10;
 const EXTRA_IDX_OOT_TRADE = 0;
 const EXTRA_IDX_OOT_TRADE_SAVE = 10;
 const EXTRA_IDX_OOT_ITEMS = 1;
+const EXTRA_IDX_OOT_FLAGS = 2;
 const EXTRA_IDX_MM_ITEMS = 4;
 const OOT_ITEM_SLOT_COUNT = 24;
 const OOT_ITEM_HAMMER = 0x11;
@@ -323,6 +324,31 @@ describe('raw frame parser', () => {
     const items = parsedItemMap(parsed!.items);
     expect(items.get('MM_HAMMER')).toBe(1);
     expect(items.get('MM_GREAT_FAIRY_SWORD')).toBeUndefined();
+  });
+
+  it('tracks the OOT spin attack upgrade via OotExtraFlags.spinUpgrade', () => {
+    const parser = createRawAutotrackerParser('v32_0');
+    // OotExtraFlags.spinUpgrade is record 2, bit 5 (MSB-first layout). Bit 26
+    // is greatFairies bit 1 (FAIRY_MAGIC_UPGRADE2) and must NOT report the
+    // spin upgrade.
+    const parsed = parser.parse(
+      buildMinimalOotMessage({ [EXTRA_IDX_OOT_FLAGS]: 1 << 5 }),
+    );
+    expect(parsed).not.toBeNull();
+
+    const items = parsedItemMap(parsed!.items);
+    expect(items.get('OOT_SPIN_UPGRADE')).toBe(1);
+  });
+
+  it('does not report the OOT spin upgrade from the greatFairies bits', () => {
+    const parser = createRawAutotrackerParser('v32_0');
+    const parsed = parser.parse(
+      buildMinimalOotMessage({ [EXTRA_IDX_OOT_FLAGS]: 1 << 26 }),
+    );
+    expect(parsed).not.toBeNull();
+
+    const items = parsedItemMap(parsed!.items);
+    expect(items.get('OOT_SPIN_UPGRADE')).toBeUndefined();
   });
 });
 

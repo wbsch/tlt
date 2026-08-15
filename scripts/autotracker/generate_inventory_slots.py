@@ -275,7 +275,7 @@ SPECIAL_ITEM_SOURCES = [
     {"itemId": "OOT_WALLET5", "source": {"kind": "oot-extra-bit", "record": 2, "bit": 7}},
     {"itemId": "MM_WALLET5", "source": {"kind": "oot-extra-bit", "record": 13, "bit": 31}},
     {"itemId": "MM_STONE_OF_AGONY", "source": {"kind": "oot-extra-bit", "record": 13, "bit": 1}},
-    {"itemId": "OOT_SPIN_UPGRADE", "source": {"kind": "oot-extra-bit", "record": 2, "bit": 26}},
+    {"itemId": "OOT_SPIN_UPGRADE", "source": {"kind": "oot-extra-bit", "record": 2, "bit": 5}},
     {"itemId": "MM_SPIN_UPGRADE", "source": {"kind": "mm-week-event-bit", "byte": 23, "bit": 1}},
 ]
 
