@@ -13,7 +13,10 @@
     {
       "index": 2,
       "slot": "ITS_OOT_BOMBS",
-      "itemId": "OOT_BOMBS"
+      "itemId": "OOT_BOMBS",
+      "quantity": {
+        "stages": [2]
+      }
     },
     {
       "index": 3,
@@ -2829,9 +2832,9 @@
       {
         "itemId": "OOT_POWDER_KEG",
         "source": {
-          "kind": "oot-extra-byte-nonzero",
-          "record": 20,
-          "byte": 0
+          "kind": "oot-extra-bit",
+          "record": 1,
+          "bit": 24
         }
       },
       {

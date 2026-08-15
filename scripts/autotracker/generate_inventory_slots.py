@@ -190,6 +190,7 @@ EXPECTED_SLOT_COUNTS = {
 SLOT_QUANTITY_RULES = {
     "ITS_OOT_OCARINA": {"stages": [0x07, 0x08]},
     "ITS_OOT_HOOKSHOT": {"stages": [0x0A, 0x0B]},
+    "ITS_OOT_BOMBS": {"stages": [0x02]},
     "ITS_OOT_HAMMER": {"stages": [0x11]},
     "ITS_OOT_MAGIC_BEAN": {"useBeansCount": True},
     "ITS_OOT_TRADE_ADULT": {
@@ -255,7 +256,7 @@ SPECIAL_ITEM_SOURCES = [
     {"itemId": "MM_MASK_GERUDO", "source": {"kind": "oot-extra-bit", "record": 4, "bit": 19}},
     {"itemId": "MM_MASK_SKULL", "source": {"kind": "oot-extra-bit", "record": 4, "bit": 20}},
     {"itemId": "MM_MASK_SPOOKY", "source": {"kind": "oot-extra-bit", "record": 4, "bit": 17}},
-    {"itemId": "OOT_POWDER_KEG", "source": {"kind": "oot-extra-byte-nonzero", "record": 20, "byte": 0}},
+    {"itemId": "OOT_POWDER_KEG", "source": {"kind": "oot-extra-bit", "record": 1, "bit": 24}},
     {"itemId": "MM_SPELL_FIRE", "source": {"kind": "oot-extra-bit", "record": 5, "bit": 10}},
     {"itemId": "MM_MOON_TEAR", "source": {"kind": "oot-extra-bit", "record": 5, "bit": 11}},
     {"itemId": "MM_DEED_LAND", "source": {"kind": "oot-extra-bit", "record": 5, "bit": 12}},

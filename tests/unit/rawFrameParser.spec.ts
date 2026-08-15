@@ -31,6 +31,8 @@ const EXTRA_IDX_MM_ITEMS = 4;
 const OOT_ITEM_SLOT_COUNT = 24;
 const OOT_ITEM_HAMMER = 0x11;
 const OOT_ITEM_GREAT_FAIRY_SWORD = 0xa8;
+const OOT_ITEM_BOMB = 0x02;
+const OOT_ITEM_POWDER_KEG = 0xa7;
 
 function writeU32BE(data: Uint8Array, offset: number, value: number): void {
   data[offset] = (value >>> 24) & 0xff;
@@ -96,6 +98,20 @@ function buildOotMessageWithHammerSlot(
   const message = buildMinimalOotMessage(extraRecords);
   const data = message.chunks[0].data as Uint8Array;
   data[OOT_OFF_INV_ITEMS - OOT_OFF_AGE + 15] = slotValue;
+  return message;
+}
+
+/**
+ * Builds a minimal OoT message whose bombs slot (index 2) holds `slotValue`
+ * (0x02 = bombs, 0xa7 = powder keg) with the given extra records set.
+ */
+function buildOotMessageWithBombSlot(
+  slotValue: number,
+  extraRecords: Record<number, number>,
+): RawAutotrackerMessage {
+  const message = buildMinimalOotMessage(extraRecords);
+  const data = message.chunks[0].data as Uint8Array;
+  data[OOT_OFF_INV_ITEMS - OOT_OFF_AGE + 2] = slotValue;
   return message;
 }
 
@@ -364,6 +380,53 @@ describe('raw frame parser', () => {
     const items = parsedItemMap(parsed!.items);
     expect(items.get('MM_HAMMER')).toBe(1);
     expect(items.get('MM_GREAT_FAIRY_SWORD')).toBeUndefined();
+  });
+
+  it('tracks the OOT powder keg separately from OOT bombs', () => {
+    const parser = createRawAutotrackerParser('v32_0');
+    // The powder keg occupies the bombs slot (0xa7) and sets the bombSlot
+    // "powder keg" bit (record 1, bit 24). It must NOT be reported as bombs.
+    const parsed = parser.parse(
+      buildOotMessageWithBombSlot(OOT_ITEM_POWDER_KEG, {
+        [EXTRA_IDX_OOT_ITEMS]: 1 << 24,
+      }),
+    );
+    expect(parsed).not.toBeNull();
+
+    const items = parsedItemMap(parsed!.items);
+    expect(items.get('OOT_BOMBS')).toBeUndefined();
+    expect(items.get('OOT_POWDER_KEG')).toBe(1);
+  });
+
+  it('still tracks OOT bombs when the bombs slot holds the bomb item', () => {
+    const parser = createRawAutotrackerParser('v32_0');
+    const parsed = parser.parse(
+      buildOotMessageWithBombSlot(OOT_ITEM_BOMB, {
+        [EXTRA_IDX_OOT_ITEMS]: 1 << 23,
+      }),
+    );
+    expect(parsed).not.toBeNull();
+
+    const items = parsedItemMap(parsed!.items);
+    expect(items.get('OOT_BOMBS')).toBe(1);
+    expect(items.get('OOT_POWDER_KEG')).toBeUndefined();
+  });
+
+  it('tracks the OOT powder keg even when the bombs bit is also set', () => {
+    const parser = createRawAutotrackerParser('v32_0');
+    // The powder keg overwrites the bombs slot (0xa7). The slot value alone can
+    // only represent one item, so the keg must still be read from its own
+    // bombSlot bit (24), matching the game's file-select logic.
+    const parsed = parser.parse(
+      buildOotMessageWithBombSlot(OOT_ITEM_POWDER_KEG, {
+        [EXTRA_IDX_OOT_ITEMS]: (1 << 23) | (1 << 24),
+      }),
+    );
+    expect(parsed).not.toBeNull();
+
+    const items = parsedItemMap(parsed!.items);
+    expect(items.get('OOT_POWDER_KEG')).toBe(1);
+    expect(items.get('OOT_BOMBS')).toBeUndefined();
   });
 
   it('tracks the OOT spin attack upgrade via OotExtraFlags.spinUpgrade', () => {
