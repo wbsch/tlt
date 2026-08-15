@@ -596,6 +596,7 @@ type SharedCustomState = {
   coins: number[];
   ocarinaButtonMaskOot: number;
   ocarinaButtonMaskMm: number;
+  extraSwordsOot: number;
   bombchuBagOot: number;
   bombchuBagMm: number;
   songNotes: number[];
@@ -969,9 +970,20 @@ const EV_OOT_CHK_KING_ZORA_MOVED = 0x33; // Set when Ruto's Letter is delivered 
 const EMPTY_INVENTORY_ITEM = 0xff;
 
 const SHARED_COIN_COUNT = 4;
-const SHARED_BOMBCHU_BAG_OOT_SHIFT = 4;
-const SHARED_BOMBCHU_BAG_MM_SHIFT = 6;
+// The shared custom save packs a group of small bitfields MSB-first into a
+// single byte at bombchuBagFlagsOffset (SharedCustomSave bitfields, see
+// OoTMM combo/save.h):
+//   bit 7        → foundMasterSword (unused by the tracker)
+//   bit 6        → storedSirloin (unused by the tracker)
+//   bits 5-4     → extraSwordsOot (extra child swords: 0 = none, 1 = Razor,
+//                  2 = Gilded)
+//   bits 3-2     → bombchuBagOot
+//   bits 1-0     → bombchuBagMm
+const SHARED_BOMBCHU_BAG_OOT_SHIFT = 2;
+const SHARED_BOMBCHU_BAG_MM_SHIFT = 0;
 const SHARED_BOMBCHU_BAG_MASK = 0x3;
+const SHARED_EXTRA_SWORDS_OOT_SHIFT = 4;
+const SHARED_EXTRA_SWORDS_OOT_MASK = 0x3;
 
 const OOT_SCENE_TEMPLE_FOREST = 3;
 const OOT_SCENE_TEMPLE_FIRE = 4;
@@ -3425,6 +3437,8 @@ function parseSharedStateUnchecked(data: Uint8Array): SharedCustomState | null {
   }
   if (data.length > fo.bombchuBagFlagsOffset) {
     const flags = data[fo.bombchuBagFlagsOffset] ?? 0;
+    parsed.extraSwordsOot =
+      (flags >> SHARED_EXTRA_SWORDS_OOT_SHIFT) & SHARED_EXTRA_SWORDS_OOT_MASK;
     parsed.bombchuBagOot =
       (flags >> SHARED_BOMBCHU_BAG_OOT_SHIFT) & SHARED_BOMBCHU_BAG_MASK;
     parsed.bombchuBagMm =
@@ -3672,9 +3686,12 @@ function sharedStateDegradedFrom(
   }
 
   if (
-    (previous.bombchuBagOot > 0 || previous.bombchuBagMm > 0) &&
+    (previous.bombchuBagOot > 0 ||
+      previous.bombchuBagMm > 0 ||
+      previous.extraSwordsOot > 0) &&
     current.bombchuBagOot === 0 &&
-    current.bombchuBagMm === 0
+    current.bombchuBagMm === 0 &&
+    current.extraSwordsOot === 0
   ) {
     return true;
   }
@@ -3712,6 +3729,7 @@ function sharedStateHasMeaningfulData(shared: SharedCustomState): boolean {
       shared.ocarinaButtonMaskMm !== SHARED_OCARINA_BUTTON_MASK_DISABLED) ||
     shared.bombchuBagOot > 0 ||
     shared.bombchuBagMm > 0 ||
+    shared.extraSwordsOot > 0 ||
     shared.songNotes.some((value) => value > 0) ||
     shared.caughtChildFishWeights.some((value) => value > 0) ||
     shared.caughtAdultFishWeights.some((value) => value > 0) ||
@@ -3968,6 +3986,10 @@ function extractItems(state: GameState): RawAutotrackerItem[] {
     }
     appendPositiveItem(items, 'OOT_SWORD', swordBits);
   }
+  // Extra child swords (Razor/Gilded) live in the shared custom save, not in
+  // the OOT equipment bitmask.  Emit the level (0 = none, 1 = Razor,
+  // 2 = Gilded) so the mapping can synthesize the progressive stage.
+  appendPositiveItem(items, 'OOT_EXTRA_SWORDS', state.shared.extraSwordsOot);
   appendPositiveItem(items, 'OOT_SHIELD', (oot.equipment >> 4) & 0x0f);
   appendPositiveItem(items, 'OOT_TUNIC', ootEquipmentLevel(ootTunics));
   appendPositiveItem(
@@ -5806,6 +5828,7 @@ function createEmptySharedState(): SharedCustomState {
     coins: Array.from({ length: SHARED_COIN_COUNT }, () => 0),
     ocarinaButtonMaskOot: 0,
     ocarinaButtonMaskMm: 0,
+    extraSwordsOot: 0,
     bombchuBagOot: 0,
     bombchuBagMm: 0,
     songNotes: Array.from({ length: fo.songNoteCount }, () => 0),
@@ -5887,6 +5910,7 @@ function cloneSharedState(source: SharedCustomState): SharedCustomState {
     coins: [...source.coins],
     ocarinaButtonMaskOot: source.ocarinaButtonMaskOot,
     ocarinaButtonMaskMm: source.ocarinaButtonMaskMm,
+    extraSwordsOot: source.extraSwordsOot,
     bombchuBagOot: source.bombchuBagOot,
     bombchuBagMm: source.bombchuBagMm,
     songNotes: [...source.songNotes],

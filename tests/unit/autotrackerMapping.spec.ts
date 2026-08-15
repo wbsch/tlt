@@ -236,6 +236,66 @@ describe('autotracker composite item inference', () => {
     expect(translated.SHARED_BOMBCHU_BAG).toBe(1);
   });
 
+  it('maps the OOT progressive sword stage from the Kokiri bit and extra-sword level', () => {
+    const availableItemIds = makeAvailableItemIds([
+      'OOT_SWORD',
+      'OOT_SWORD_MASTER',
+    ]);
+
+    // Stage 1: Kokiri bit set, no extra swords.
+    const stage1 = translateAutotrackerItems(
+      [{ id: 'OOT_SWORD', qty: 0x01 }],
+      availableItemIds,
+      makeItemMaxCounts({}),
+    );
+    expect(stage1.OOT_SWORD).toBe(1);
+    expect(stage1.OOT_SWORD_KOKIRI).toBeUndefined();
+
+    // Stage 2: Kokiri + Razor (extraSwordsOot = 1).
+    const stage2 = translateAutotrackerItems(
+      [
+        { id: 'OOT_SWORD', qty: 0x01 },
+        { id: 'OOT_EXTRA_SWORDS', qty: 1 },
+      ],
+      availableItemIds,
+      makeItemMaxCounts({}),
+    );
+    expect(stage2.OOT_SWORD).toBe(2);
+
+    // Stage 3: Kokiri + Gilded (extraSwordsOot = 2).
+    const stage3 = translateAutotrackerItems(
+      [
+        { id: 'OOT_EXTRA_SWORDS', qty: 2 },
+        { id: 'OOT_SWORD', qty: 0x01 },
+      ],
+      availableItemIds,
+      makeItemMaxCounts({}),
+    );
+    expect(stage3.OOT_SWORD).toBe(3);
+  });
+
+  it('keeps individual OOT swords when extra child swords are disabled', () => {
+    const availableItemIds = makeAvailableItemIds([
+      'OOT_SWORD_KOKIRI',
+      'OOT_SWORD_MASTER',
+      'OOT_SWORD_KNIFE',
+      'OOT_SWORD_BIGGORON',
+    ]);
+
+    const translated = translateAutotrackerItems(
+      // bit 0 = Kokiri, bit 1 = Master, bit 4 = Biggoron's Sword.
+      [{ id: 'OOT_SWORD', qty: 0x13 }],
+      availableItemIds,
+      makeItemMaxCounts({}),
+    );
+
+    expect(translated.OOT_SWORD_KOKIRI).toBe(1);
+    expect(translated.OOT_SWORD_MASTER).toBe(1);
+    expect(translated.OOT_SWORD_BIGGORON).toBe(1);
+    expect(translated.OOT_SWORD_KNIFE).toBe(0);
+    expect(translated.OOT_SWORD).toBeUndefined();
+  });
+
   it('ignores the legacy OOT tunic bitmask and keeps direct tunic ids', () => {
     const translated = translateAutotrackerItems(
       [

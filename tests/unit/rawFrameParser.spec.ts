@@ -99,6 +99,46 @@ function buildOotMessageWithHammerSlot(
   return message;
 }
 
+const SHARED_SAVE_CHUNK_NAME = 'oot_shared_custom_save';
+// Byte offset of the packed bitfield byte within the shared custom save
+// (v32_0 shared_save_offsets.json `bombchuBagFlagsOffset`).  It packs:
+//   bits 5-4 = extraSwordsOot, bits 3-2 = bombchuBagOot, bits 1-0 = bombchuBagMm
+const SHARED_BOMBCHU_BAG_FLAGS_OFFSET = 2148;
+
+/**
+ * Builds a minimal OoT message plus a monolithic shared custom save chunk
+ * whose packed bitfield byte is set to `flags`.
+ */
+function buildOotMessageWithSharedSaveBitfield(
+  flags: number,
+): RawAutotrackerMessage {
+  // A non-zero extra record keeps the permanent scene-flags region non-zero so
+  // isPlausibleOotSave accepts the save (an all-zero region is rejected).
+  const message = buildMinimalOotMessage({ [EXTRA_IDX_OOT_TRADE]: 1 });
+  const sharedSpec = RAW_CHUNK_SPECS.find(
+    (spec) => spec.name === SHARED_SAVE_CHUNK_NAME,
+  );
+  if (!sharedSpec) {
+    throw new Error(`Missing chunk spec ${SHARED_SAVE_CHUNK_NAME}`);
+  }
+
+  const sharedData = new Uint8Array(sharedSpec.length);
+  sharedData[SHARED_BOMBCHU_BAG_FLAGS_OFFSET] = flags;
+
+  return {
+    ...message,
+    chunks: [
+      ...message.chunks,
+      {
+        name: sharedSpec.name,
+        address: sharedSpec.address,
+        length: sharedSpec.length,
+        data: Buffer.from(sharedData).toString('base64'),
+      },
+    ],
+  };
+}
+
 describe('raw frame parser', () => {
   it('exposes sparse live chunk requests without legacy monolithic save or shared chunks', () => {
     expect(
@@ -349,6 +389,28 @@ describe('raw frame parser', () => {
 
     const items = parsedItemMap(parsed!.items);
     expect(items.get('OOT_SPIN_UPGRADE')).toBeUndefined();
+  });
+
+  it('reads the extra child sword level without emitting the bombchu bag', () => {
+    const parser = createRawAutotrackerParser('v32_0');
+    // bits 5-4 = extraSwordsOot = 1 (Razor).  Must NOT read as bombchuBagOot.
+    const parsed = parser.parse(buildOotMessageWithSharedSaveBitfield(0x10));
+    expect(parsed).not.toBeNull();
+
+    const items = parsedItemMap(parsed!.items);
+    expect(items.get('OOT_EXTRA_SWORDS')).toBe(1);
+    expect(items.get('OOT_BOMBCHUS')).toBeUndefined();
+  });
+
+  it('reads the OOT bombchu bag from the shared bitfield', () => {
+    const parser = createRawAutotrackerParser('v32_0');
+    // bits 3-2 = bombchuBagOot = 1.
+    const parsed = parser.parse(buildOotMessageWithSharedSaveBitfield(0x04));
+    expect(parsed).not.toBeNull();
+
+    const items = parsedItemMap(parsed!.items);
+    expect(items.get('OOT_BOMBCHUS')).toBe(1);
+    expect(items.get('OOT_EXTRA_SWORDS')).toBeUndefined();
   });
 });
 

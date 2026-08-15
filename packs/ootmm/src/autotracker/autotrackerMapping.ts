@@ -4,7 +4,8 @@
  * The autotracker sends raw save-data IDs that differ from the tracker's
  * canonical IDs in several ways:
  *   - Song teleport names (MINUET → TP_FOREST)
- *   - Equipment bitmasks (OOT_SWORD, OOT_SHIELD as bitmask → individual items)
+ *   - Equipment bitmasks (OOT_SHIELD as bitmask → individual items;
+ *     OOT_SWORD as bitmask → individual items or progressive stage)
  *   - Dungeon item naming (FIRE_TEMPLE_KEYS → SMALL_KEY_FIRE)
  *   - Inventory slot raw values (OOT_ADULT_TRADE → individual trade items)
  */
@@ -50,13 +51,10 @@ interface BitmaskEntry {
   trackerId: string;
 }
 
+// OOT_SWORD is handled separately (see translateAutotrackerItems) because in
+// "extra child swords" mode it represents a progressive item whose stage is
+// derived from the Kokiri equipment bit plus the shared extraSwordsOot level.
 const OOT_EQUIPMENT_BITMASKS: Record<string, BitmaskEntry[]> = {
-  OOT_SWORD: [
-    { bit: 0, trackerId: 'OOT_SWORD_KOKIRI' },
-    { bit: 1, trackerId: 'OOT_SWORD_MASTER' },
-    { bit: 2, trackerId: 'OOT_SWORD_KNIFE' },
-    { bit: 4, trackerId: 'OOT_SWORD_BIGGORON' },
-  ],
   OOT_SHIELD: [
     { bit: 0, trackerId: 'OOT_SHIELD_DEKU' },
     { bit: 1, trackerId: 'OOT_SHIELD_HYLIAN' },
@@ -254,6 +252,7 @@ const SKIP_IDS = new Set([
   'OOT_STICK', // presence flag; tracker uses OOT_STICK_UPGRADE
   'MM_STICK', // presence flag; tracker uses MM_STICK_UPGRADE
   // MM_TRADE_1/2/3 are now handled as bitmasks below
+  'OOT_EXTRA_SWORDS', // raw signal; feeds the OOT_SWORD progressive stage
 ]);
 
 const DEFAULT_ITEM_MAX_COUNTS = new Map(
@@ -989,6 +988,12 @@ function requiresRawStateRebuildForDelta(
   rawId: string,
   availableItemIds: Set<string>,
 ): boolean {
+  // OOT_SWORD is a bitmask that also carries the progressive extra-child-sword
+  // stage; its translation is non-additive, so deltas must trigger a rebuild.
+  if (rawId === 'OOT_SWORD' || rawId === 'OOT_EXTRA_SWORDS') {
+    return true;
+  }
+
   if (rawId in OOT_EQUIPMENT_BITMASKS) {
     return true;
   }
@@ -1084,6 +1089,15 @@ export function translateAutotrackerItems(
     result[resolvedId] = Math.max(result[resolvedId] ?? 0, qty);
   }
 
+  // The OOT_EXTRA_SWORDS raw signal may appear before or after OOT_SWORD, so
+  // capture it up front.
+  let extraSwordsOot = 0;
+  for (const item of items) {
+    if (item.id === 'OOT_EXTRA_SWORDS') {
+      extraSwordsOot = Math.max(extraSwordsOot, item.qty);
+    }
+  }
+
   for (const { id, qty } of items) {
     if (SKIP_IDS.has(id)) continue;
 
@@ -1099,6 +1113,26 @@ export function translateAutotrackerItems(
       set('SHARED_TRIFORCE_COURAGE', qty >= 1 ? 1 : 0);
       set('SHARED_TRIFORCE_POWER', qty >= 2 ? 1 : 0);
       set('SHARED_TRIFORCE_WISDOM', qty >= 3 ? 1 : 0);
+      continue;
+    }
+
+    // OOT sword bitmask.  Raw bits: 0 = Kokiri, 1 = Master, 2 = Knife,
+    // 4 = Biggoron's Sword.  In "extra child swords" mode the Kokiri bit plus
+    // the shared extraSwordsOot level form a progressive stage
+    // (1 = Kokiri, 2 = Razor, 3 = Gilded); otherwise each bit is individual.
+    if (id === 'OOT_SWORD') {
+      const kokiri = qty & 0x01;
+      if (availableItemIds.has('OOT_SWORD')) {
+        const stage = Math.min(3, kokiri + Math.min(extraSwordsOot, 2));
+        if (stage > 0) {
+          set('OOT_SWORD', stage);
+        }
+      } else {
+        set('OOT_SWORD_KOKIRI', kokiri);
+      }
+      set('OOT_SWORD_MASTER', (qty >> 1) & 1);
+      set('OOT_SWORD_KNIFE', (qty >> 2) & 1);
+      set('OOT_SWORD_BIGGORON', (qty >> 4) & 1);
       continue;
     }
 
