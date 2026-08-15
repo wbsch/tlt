@@ -119,13 +119,15 @@ const MM_FOREIGN_SAVE_CHUNK_NAME = 'oot_foreign_mm_save';
 const MM_OFF_INV_ITEMS = 0x70;
 const MM_ITEM_BOW = 0x01;
 const MM_ITEM_SLINGSHOT = 0xb7;
+const MM_ITEM_PICTOGRAPH_BOX = 0x0d;
+const MM_ITEM_BOOMERANG = 0xb6;
 
 /**
- * Builds a minimal OoT message whose foreign-MM bow slot (index 1) holds
- * `slotValue` (0x01 = Hero's Bow, 0xb7 = Fairy Slingshot) with the given extra
- * records set. In OoTMM the MM bow and slingshot share inventory slot 1.
+ * Builds a minimal OoT message whose foreign-MM inventory slot `slotIndex`
+ * holds `slotValue` with the given extra records set.
  */
-function buildOotMessageWithForeignMmBowSlot(
+function buildOotMessageWithForeignMmSlot(
+  slotIndex: number,
   slotValue: number,
   extraRecords: Record<number, number>,
 ): RawAutotrackerMessage {
@@ -139,7 +141,7 @@ function buildOotMessageWithForeignMmBowSlot(
 
   const data = new Uint8Array(mmSaveSpec.length);
   data.fill(EMPTY_INVENTORY_ITEM, MM_OFF_INV_ITEMS, MM_OFF_INV_ITEMS + 24);
-  data[MM_OFF_INV_ITEMS + 1] = slotValue;
+  data[MM_OFF_INV_ITEMS + slotIndex] = slotValue;
 
   return {
     ...message,
@@ -468,7 +470,7 @@ describe('raw frame parser', () => {
     // stores ITEM_MM_SLINGSHOT (0xb7) in that slot and sets only the
     // slingshot bit (22). The tracker must NOT report the bow.
     const parsed = parser.parse(
-      buildOotMessageWithForeignMmBowSlot(MM_ITEM_SLINGSHOT, {
+      buildOotMessageWithForeignMmSlot(1, MM_ITEM_SLINGSHOT, {
         [EXTRA_IDX_MM_ITEMS]: 1 << 22,
       }),
     );
@@ -482,7 +484,7 @@ describe('raw frame parser', () => {
   it('still reports MM bow when the shared MM bow slot holds the bow', () => {
     const parser = createRawAutotrackerParser('v32_0');
     const parsed = parser.parse(
-      buildOotMessageWithForeignMmBowSlot(MM_ITEM_BOW, {
+      buildOotMessageWithForeignMmSlot(1, MM_ITEM_BOW, {
         [EXTRA_IDX_MM_ITEMS]: 1 << 21,
       }),
     );
@@ -491,6 +493,63 @@ describe('raw frame parser', () => {
     const items = parsedItemMap(parsed!.items);
     expect(items.get('MM_BOW')).toBe(1);
     expect(items.get('MM_SLINGSHOT')).toBeUndefined();
+  });
+
+  it('tracks the MM boomerang via the MmExtraItems.boomPicto boomerang bit', () => {
+    const parser = createRawAutotrackerParser('v32_0');
+    // MmExtraItems.boomPicto is record 4; the boomerang is bit 24.
+    const parsed = parser.parse(
+      buildMinimalOotMessage({ [EXTRA_IDX_MM_ITEMS]: 1 << 24 }),
+    );
+    expect(parsed).not.toBeNull();
+
+    const items = parsedItemMap(parsed!.items);
+    expect(items.get('MM_BOOMERANG')).toBe(1);
+    expect(items.get('MM_PICTOGRAPH_BOX')).toBeUndefined();
+  });
+
+  it('tracks the MM pictograph box via the MmExtraItems.boomPicto pictograph bit', () => {
+    const parser = createRawAutotrackerParser('v32_0');
+    // MmExtraItems.boomPicto is record 4; the pictograph box is bit 23.
+    const parsed = parser.parse(
+      buildMinimalOotMessage({ [EXTRA_IDX_MM_ITEMS]: 1 << 23 }),
+    );
+    expect(parsed).not.toBeNull();
+
+    const items = parsedItemMap(parsed!.items);
+    expect(items.get('MM_PICTOGRAPH_BOX')).toBe(1);
+    expect(items.get('MM_BOOMERANG')).toBeUndefined();
+  });
+
+  it('does not report the MM pictograph box when the shared slot holds the boomerang', () => {
+    const parser = createRawAutotrackerParser('v32_0');
+    // The MM boomerang and pictograph box share inventory slot 13. Getting the
+    // boomerang stores ITEM_MM_BOOMERANG (0xb6) in that slot and sets only the
+    // boomerang bit (24). The tracker must NOT report the pictograph box.
+    const parsed = parser.parse(
+      buildOotMessageWithForeignMmSlot(13, MM_ITEM_BOOMERANG, {
+        [EXTRA_IDX_MM_ITEMS]: 1 << 24,
+      }),
+    );
+    expect(parsed).not.toBeNull();
+
+    const items = parsedItemMap(parsed!.items);
+    expect(items.get('MM_BOOMERANG')).toBe(1);
+    expect(items.get('MM_PICTOGRAPH_BOX')).toBeUndefined();
+  });
+
+  it('still reports the MM pictograph box when the shared slot holds the pictograph box', () => {
+    const parser = createRawAutotrackerParser('v32_0');
+    const parsed = parser.parse(
+      buildOotMessageWithForeignMmSlot(13, MM_ITEM_PICTOGRAPH_BOX, {
+        [EXTRA_IDX_MM_ITEMS]: 1 << 23,
+      }),
+    );
+    expect(parsed).not.toBeNull();
+
+    const items = parsedItemMap(parsed!.items);
+    expect(items.get('MM_PICTOGRAPH_BOX')).toBe(1);
+    expect(items.get('MM_BOOMERANG')).toBeUndefined();
   });
 
   it('tracks the OOT powder keg separately from OOT bombs', () => {

@@ -219,7 +219,10 @@
     {
       "index": 13,
       "slot": "ITS_MM_PICTOBOX",
-      "itemId": "MM_PICTOGRAPH_BOX"
+      "itemId": "MM_PICTOGRAPH_BOX",
+      "quantity": {
+        "stages": [13]
+      }
     },
     {
       "index": 14,
