@@ -301,7 +301,10 @@
     {
       "index": 27,
       "slot": "ITS_MM_MASK_STONE",
-      "itemId": "MM_MASK_STONE"
+      "itemId": "MM_MASK_STONE",
+      "quantity": {
+        "stages": [69]
+      }
     },
     {
       "index": 28,
@@ -381,7 +384,10 @@
     {
       "index": 43,
       "slot": "ITS_MM_MASK_GIBDO",
-      "itemId": "MM_MASK_GIBDO"
+      "itemId": "MM_MASK_GIBDO",
+      "quantity": {
+        "stages": [65]
+      }
     },
     {
       "index": 44,

@@ -307,7 +307,10 @@
     {
       "index": 27,
       "slot": "ITS_MM_MASK_STONE",
-      "itemId": "MM_MASK_STONE"
+      "itemId": "MM_MASK_STONE",
+      "quantity": {
+        "stages": [69]
+      }
     },
     {
       "index": 28,
@@ -387,7 +390,10 @@
     {
       "index": 43,
       "slot": "ITS_MM_MASK_GIBDO",
-      "itemId": "MM_MASK_GIBDO"
+      "itemId": "MM_MASK_GIBDO",
+      "quantity": {
+        "stages": [65]
+      }
     },
     {
       "index": 44,
@@ -2828,6 +2834,14 @@
         }
       },
       {
+        "itemId": "MM_MASK_STONE",
+        "source": {
+          "kind": "oot-extra-bit",
+          "record": 4,
+          "bit": 18
+        }
+      },
+      {
         "itemId": "MM_MASK_GERUDO",
         "source": {
           "kind": "oot-extra-bit",
@@ -2841,6 +2855,14 @@
           "kind": "oot-extra-bit",
           "record": 4,
           "bit": 20
+        }
+      },
+      {
+        "itemId": "MM_MASK_GIBDO",
+        "source": {
+          "kind": "oot-extra-bit",
+          "record": 4,
+          "bit": 16
         }
       },
       {

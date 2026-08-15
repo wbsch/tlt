@@ -121,6 +121,11 @@ const MM_ITEM_BOW = 0x01;
 const MM_ITEM_SLINGSHOT = 0xb7;
 const MM_ITEM_PICTOGRAPH_BOX = 0x0d;
 const MM_ITEM_BOOMERANG = 0xb6;
+const MM_ITEM_MASK_STONE = 0x45;
+const MM_ITEM_MASK_GERUDO = 0xb9;
+const MM_ITEM_MASK_SKULL = 0xba;
+const MM_ITEM_MASK_GIBDO = 0x41;
+const MM_ITEM_MASK_SPOOKY = 0xbb;
 
 /**
  * Builds a minimal OoT message whose foreign-MM inventory slot `slotIndex`
@@ -140,7 +145,7 @@ function buildOotMessageWithForeignMmSlot(
   }
 
   const data = new Uint8Array(mmSaveSpec.length);
-  data.fill(EMPTY_INVENTORY_ITEM, MM_OFF_INV_ITEMS, MM_OFF_INV_ITEMS + 24);
+  data.fill(EMPTY_INVENTORY_ITEM, MM_OFF_INV_ITEMS, MM_OFF_INV_ITEMS + 48);
   data[MM_OFF_INV_ITEMS + slotIndex] = slotValue;
 
   return {
@@ -550,6 +555,153 @@ describe('raw frame parser', () => {
     const items = parsedItemMap(parsed!.items);
     expect(items.get('MM_PICTOGRAPH_BOX')).toBe(1);
     expect(items.get('MM_BOOMERANG')).toBeUndefined();
+  });
+
+  it('tracks the MM stone mask via the MmExtraItems.stoneGerudoSkull stone bit', () => {
+    const parser = createRawAutotrackerParser('v32_0');
+    // MmExtraItems.stoneGerudoSkull is record 4; the stone mask is bit 18.
+    const parsed = parser.parse(
+      buildMinimalOotMessage({ [EXTRA_IDX_MM_ITEMS]: 1 << 18 }),
+    );
+    expect(parsed).not.toBeNull();
+
+    const items = parsedItemMap(parsed!.items);
+    expect(items.get('MM_MASK_STONE')).toBe(1);
+    expect(items.get('MM_MASK_GERUDO')).toBeUndefined();
+    expect(items.get('MM_MASK_SKULL')).toBeUndefined();
+  });
+
+  it('tracks the MM gerudo mask via the MmExtraItems.stoneGerudoSkull gerudo bit', () => {
+    const parser = createRawAutotrackerParser('v32_0');
+    // MmExtraItems.stoneGerudoSkull is record 4; the gerudo mask is bit 19.
+    const parsed = parser.parse(
+      buildMinimalOotMessage({ [EXTRA_IDX_MM_ITEMS]: 1 << 19 }),
+    );
+    expect(parsed).not.toBeNull();
+
+    const items = parsedItemMap(parsed!.items);
+    expect(items.get('MM_MASK_GERUDO')).toBe(1);
+    expect(items.get('MM_MASK_STONE')).toBeUndefined();
+    expect(items.get('MM_MASK_SKULL')).toBeUndefined();
+  });
+
+  it('tracks the MM skull mask via the MmExtraItems.stoneGerudoSkull skull bit', () => {
+    const parser = createRawAutotrackerParser('v32_0');
+    // MmExtraItems.stoneGerudoSkull is record 4; the skull mask is bit 20.
+    const parsed = parser.parse(
+      buildMinimalOotMessage({ [EXTRA_IDX_MM_ITEMS]: 1 << 20 }),
+    );
+    expect(parsed).not.toBeNull();
+
+    const items = parsedItemMap(parsed!.items);
+    expect(items.get('MM_MASK_SKULL')).toBe(1);
+    expect(items.get('MM_MASK_STONE')).toBeUndefined();
+    expect(items.get('MM_MASK_GERUDO')).toBeUndefined();
+  });
+
+  it('tracks the MM gibdo mask via the MmExtraItems.gibdoSpooky gibdo bit', () => {
+    const parser = createRawAutotrackerParser('v32_0');
+    // MmExtraItems.gibdoSpooky is record 4; the gibdo mask is bit 16.
+    const parsed = parser.parse(
+      buildMinimalOotMessage({ [EXTRA_IDX_MM_ITEMS]: 1 << 16 }),
+    );
+    expect(parsed).not.toBeNull();
+
+    const items = parsedItemMap(parsed!.items);
+    expect(items.get('MM_MASK_GIBDO')).toBe(1);
+    expect(items.get('MM_MASK_SPOOKY')).toBeUndefined();
+  });
+
+  it('tracks the MM spooky mask via the MmExtraItems.gibdoSpooky spooky bit', () => {
+    const parser = createRawAutotrackerParser('v32_0');
+    // MmExtraItems.gibdoSpooky is record 4; the spooky mask is bit 17.
+    const parsed = parser.parse(
+      buildMinimalOotMessage({ [EXTRA_IDX_MM_ITEMS]: 1 << 17 }),
+    );
+    expect(parsed).not.toBeNull();
+
+    const items = parsedItemMap(parsed!.items);
+    expect(items.get('MM_MASK_SPOOKY')).toBe(1);
+    expect(items.get('MM_MASK_GIBDO')).toBeUndefined();
+  });
+
+  it('does not report the MM stone mask when the shared slot holds the gerudo mask', () => {
+    const parser = createRawAutotrackerParser('v32_0');
+    // The stone/gerudo/skull masks share inventory slot 27. Getting the gerudo
+    // mask stores ITEM_MM_MASK_GERUDO (0xb9) there and sets only the gerudo bit
+    // (19). The tracker must NOT report the stone mask.
+    const parsed = parser.parse(
+      buildOotMessageWithForeignMmSlot(27, MM_ITEM_MASK_GERUDO, {
+        [EXTRA_IDX_MM_ITEMS]: 1 << 19,
+      }),
+    );
+    expect(parsed).not.toBeNull();
+
+    const items = parsedItemMap(parsed!.items);
+    expect(items.get('MM_MASK_GERUDO')).toBe(1);
+    expect(items.get('MM_MASK_STONE')).toBeUndefined();
+  });
+
+  it('does not report the MM stone mask when the shared slot holds the skull mask', () => {
+    const parser = createRawAutotrackerParser('v32_0');
+    // Getting the skull mask stores ITEM_MM_MASK_SKULL (0xba) in slot 27 and
+    // sets only the skull bit (20). The tracker must NOT report the stone mask.
+    const parsed = parser.parse(
+      buildOotMessageWithForeignMmSlot(27, MM_ITEM_MASK_SKULL, {
+        [EXTRA_IDX_MM_ITEMS]: 1 << 20,
+      }),
+    );
+    expect(parsed).not.toBeNull();
+
+    const items = parsedItemMap(parsed!.items);
+    expect(items.get('MM_MASK_SKULL')).toBe(1);
+    expect(items.get('MM_MASK_STONE')).toBeUndefined();
+  });
+
+  it('still reports the MM stone mask when the shared slot holds the stone mask', () => {
+    const parser = createRawAutotrackerParser('v32_0');
+    const parsed = parser.parse(
+      buildOotMessageWithForeignMmSlot(27, MM_ITEM_MASK_STONE, {
+        [EXTRA_IDX_MM_ITEMS]: 1 << 18,
+      }),
+    );
+    expect(parsed).not.toBeNull();
+
+    const items = parsedItemMap(parsed!.items);
+    expect(items.get('MM_MASK_STONE')).toBe(1);
+    expect(items.get('MM_MASK_GERUDO')).toBeUndefined();
+    expect(items.get('MM_MASK_SKULL')).toBeUndefined();
+  });
+
+  it('does not report the MM gibdo mask when the shared slot holds the spooky mask', () => {
+    const parser = createRawAutotrackerParser('v32_0');
+    // The gibdo/spooky masks share inventory slot 43. Getting the spooky mask
+    // stores ITEM_MM_MASK_SPOOKY (0xbb) there and sets only the spooky bit
+    // (17). The tracker must NOT report the gibdo mask.
+    const parsed = parser.parse(
+      buildOotMessageWithForeignMmSlot(43, MM_ITEM_MASK_SPOOKY, {
+        [EXTRA_IDX_MM_ITEMS]: 1 << 17,
+      }),
+    );
+    expect(parsed).not.toBeNull();
+
+    const items = parsedItemMap(parsed!.items);
+    expect(items.get('MM_MASK_SPOOKY')).toBe(1);
+    expect(items.get('MM_MASK_GIBDO')).toBeUndefined();
+  });
+
+  it('still reports the MM gibdo mask when the shared slot holds the gibdo mask', () => {
+    const parser = createRawAutotrackerParser('v32_0');
+    const parsed = parser.parse(
+      buildOotMessageWithForeignMmSlot(43, MM_ITEM_MASK_GIBDO, {
+        [EXTRA_IDX_MM_ITEMS]: 1 << 16,
+      }),
+    );
+    expect(parsed).not.toBeNull();
+
+    const items = parsedItemMap(parsed!.items);
+    expect(items.get('MM_MASK_GIBDO')).toBe(1);
+    expect(items.get('MM_MASK_SPOOKY')).toBeUndefined();
   });
 
   it('tracks the OOT powder keg separately from OOT bombs', () => {
