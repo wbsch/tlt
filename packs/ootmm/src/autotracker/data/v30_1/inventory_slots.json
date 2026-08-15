@@ -150,7 +150,10 @@
     {
       "index": 1,
       "slot": "ITS_MM_BOW",
-      "itemId": "MM_BOW"
+      "itemId": "MM_BOW",
+      "quantity": {
+        "stages": [1]
+      }
     },
     {
       "index": 2,

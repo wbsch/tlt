@@ -156,7 +156,10 @@
     {
       "index": 1,
       "slot": "ITS_MM_BOW",
-      "itemId": "MM_BOW"
+      "itemId": "MM_BOW",
+      "quantity": {
+        "stages": [1]
+      }
     },
     {
       "index": 2,
@@ -2795,6 +2798,14 @@
           "kind": "oot-extra-bit",
           "record": 4,
           "bit": 24
+        }
+      },
+      {
+        "itemId": "MM_BOW",
+        "source": {
+          "kind": "oot-extra-bit",
+          "record": 4,
+          "bit": 21
         }
       },
       {
