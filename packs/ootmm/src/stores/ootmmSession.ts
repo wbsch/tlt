@@ -529,6 +529,42 @@ export const useOoTMMSessionStore = defineStore('ootmm-session', () => {
     return tracker.value?.getDungeonRewardRegionIds?.() ?? new Set<string>();
   });
 
+  // Hint-region IDs where a recorded Foolish hint must NOT auto-collect: in
+  // Dungeon Blue Warps mode the reward sits on the dungeon's blue warp, so the
+  // player may still need the dungeon. Mirrors `isCriticalFoolishRegion` in
+  // HintTrackerMain.vue.
+  const foolishCriticalRegionIds = computed<Set<string>>(() => {
+    if (
+      String(trackerSettings.value?.dungeonRewardShuffle ?? '') !==
+      'dungeonBlueWarps'
+    ) {
+      return new Set<string>();
+    }
+    return dungeonRewardRegionIds.value;
+  });
+
+  // Re-collect Foolish hint locations whenever the region map changes (e.g. an
+  // ER entrance override re-maps a location into a hinted region). Grow-only:
+  // newly-added locations are collected and protected, but locations that leave
+  // a region are never un-collected here (removing the hint is what reverts).
+  // Uses remote options so this derived re-sync neither creates an undo step
+  // nor a redundant sync op — every client re-derives the same result from its
+  // own hint + region state.
+  watch(regionToLocationIds, () => {
+    const foolish = hintTracker.value.foolishHints;
+    if (foolish.length === 0) return;
+    const critical = foolishCriticalRegionIds.value;
+    const newIds: string[] = [];
+    for (const hint of foolish) {
+      if (critical.has(hint.region)) continue;
+      const regionIds = regionToLocationIds.value.get(hint.region);
+      if (regionIds) newIds.push(...regionIds);
+    }
+    if (newIds.length === 0) return;
+    collectLocationIds(newIds, REMOTE_MUTATION_OPTIONS);
+    addHintProtectedLocationIds(newIds, REMOTE_MUTATION_OPTIONS);
+  });
+
   // Derived spoiler placement lookup maps
   const spoilerItemToLocationIds = computed<Record<string, string[]>>(() => {
     const map: Record<string, string[]> = {};
