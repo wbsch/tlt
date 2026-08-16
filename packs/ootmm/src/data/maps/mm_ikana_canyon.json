@@ -25,19 +25,6 @@
       "codes": ["MM Ikana Valley Scrub HP"]
     },
     {
-      "coords": [535, 545],
-      "image": "boulder",
-      "codes": [
-        "MM Road to Ikana Large Boulder 1",
-        "MM Road to Ikana Large Boulder 2",
-        "MM Road to Ikana Large Boulder 3",
-        "MM Road to Ikana Large Boulder 4",
-        "MM Road to Ikana Large Boulder 5",
-        "MM Road to Ikana Large Boulder 6",
-        "MM Road to Ikana Large Boulder 7"
-      ]
-    },
-    {
       "coords": [592, 503],
       "image": "gossip_stone",
       "codes": ["MM Ikana Valley Gossip Scrub"]
