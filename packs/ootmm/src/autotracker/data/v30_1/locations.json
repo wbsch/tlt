@@ -26415,6 +26415,62 @@
       "mq": ["MQ Ice Cavern GS Clear Blocks"]
     },
     {
+      "block": "scrubsOot",
+      "bit": 28,
+      "dungeonMq": 1,
+      "vanilla": ["Dodongo Cavern Bomb Bag Side Room Right Scrub"],
+      "mq": ["MQ Dodongo Cavern Lobby Scrub Front"]
+    },
+    {
+      "block": "scrubsOot",
+      "bit": 29,
+      "dungeonMq": 1,
+      "vanilla": ["Dodongo Cavern Green Side Room Scrub"],
+      "mq": ["MQ Dodongo Cavern Lobby Scrub Back"]
+    },
+    {
+      "block": "scrubsOot",
+      "bit": 30,
+      "dungeonMq": 1,
+      "vanilla": ["Dodongo Cavern Bomb Bag Side Room Left Scrub"],
+      "mq": ["MQ Dodongo Cavern Tunnel Side Scrub"]
+    },
+    {
+      "block": "scrubsOot",
+      "bit": 31,
+      "dungeonMq": 1,
+      "vanilla": ["Dodongo Cavern Lobby Scrub"],
+      "mq": ["MQ Dodongo Cavern Staircase Scrub"]
+    },
+    {
+      "block": "scrubsOot",
+      "bit": 33,
+      "dungeonMq": 11,
+      "vanilla": ["Ganon Castle Leftmost Scrub"],
+      "mq": ["MQ Ganon Castle Leftmost Scrub"]
+    },
+    {
+      "block": "scrubsOot",
+      "bit": 34,
+      "dungeonMq": 11,
+      "vanilla": ["Ganon Castle Left-Center Scrub"],
+      "mq": ["MQ Ganon Castle Left-Center Scrub"]
+    },
+    {
+      "block": "scrubsOot",
+      "bit": 35,
+      "dungeonMq": 11,
+      "vanilla": ["Ganon Castle Right-Center Scrub"],
+      "mq": ["MQ Ganon Castle Center Scrub"]
+    },
+    {
+      "block": "scrubsOot",
+      "bit": 36,
+      "dungeonMq": 11,
+      "vanilla": ["Ganon Castle Rightmost Scrub"],
+      "mq": ["MQ Ganon Castle Right-Center Scrub"]
+    },
+    {
       "block": "srOot",
       "bit": 10,
       "dungeonMq": 6,

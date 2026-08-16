@@ -2433,6 +2433,7 @@ function buildLocationTables(locationFile: LocationFile): {
     ['gsOot', new Map()],
     ['xflagsOot', new Map()],
     ['srOot', new Map()],
+    ['scrubsOot', new Map()],
   ]);
   const shopCheckTables = new Map<string, Map<number, string>>([
     ['OOT', new Map()],
@@ -4472,10 +4473,9 @@ function extractChecks(state: GameState): RawAutotrackerCheck[] {
     shopCheckName,
     appendCheck,
   );
-  appendBitmapChecks(
+  appendOotScrubChecks(
     state.shared.bitmaps.get('scrubsOot'),
-    'OOT',
-    scrubCheckName,
+    state.oot,
     appendCheck,
   );
   appendOotSilverRupeeChecks(
@@ -4511,6 +4511,33 @@ function appendBitmapChecks(
         continue;
       }
       appendCheck(lookup(game, byteIndex * 8 + bit));
+    }
+  }
+}
+
+function appendOotScrubChecks(
+  bitmap: Uint8Array | undefined,
+  oot: OotState,
+  appendCheck: (name: string | null | undefined) => void,
+): void {
+  if (!bitmap) {
+    return;
+  }
+  for (let byteIndex = 0; byteIndex < bitmap.length; byteIndex++) {
+    const value = bitmap[byteIndex] ?? 0;
+    for (let bit = 0; bit < 8; bit++) {
+      if ((value & (1 << bit)) === 0) {
+        continue;
+      }
+      const index = byteIndex * 8 + bit;
+      const direct = scrubCheckName('OOT', index);
+      if (direct) {
+        appendCheck(direct);
+        continue;
+      }
+      for (const name of ootConflictingScrubCheckNames(oot, index)) {
+        appendCheck(name);
+      }
     }
   }
 }
@@ -5617,6 +5644,13 @@ function ootConflictingSilverRupeeCheckNames(
   bitPosition: number,
 ): string[] {
   return ootConflictingBitmapCheckNames(oot, 'srOot', bitPosition);
+}
+
+function ootConflictingScrubCheckNames(
+  oot: OotState,
+  bitPosition: number,
+): string[] {
+  return ootConflictingBitmapCheckNames(oot, 'scrubsOot', bitPosition);
 }
 
 function ootConflictingSceneCheckName(
