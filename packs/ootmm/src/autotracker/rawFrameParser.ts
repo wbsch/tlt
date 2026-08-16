@@ -4381,7 +4381,6 @@ function extractChecks(state: GameState): RawAutotrackerCheck[] {
     if (state.oot.hasLiveSceneFlags && sceneIndex === state.oot.liveSceneId) {
       chests |= state.oot.liveChestFlags;
       collectibles |= state.oot.liveCollectFlags;
-      collectibles |= state.oot.liveTempCollectFlag;
     }
     for (let bit = 0; bit < 32; bit++) {
       if ((chests & (1 << bit)) !== 0) {
