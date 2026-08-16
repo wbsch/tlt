@@ -555,7 +555,7 @@ const RAW_ITEM_ICONS: Record<string, string> = {
   SHARED_SONG_HEALING: 'images/song_healing.png',
   SHARED_SONG_ORDER: 'images/song_oath.png',
   SHARED_SONG_SARIA: 'images/song_saria.png',
-  SHARED_SoNG_SOARING: 'images/song_soaring.png',
+  SHARED_SONG_SOARING: 'images/song_soaring.png',
   SHARED_SONG_STORMS: 'images/song_storm.png',
   SHARED_SONG_SUN: 'images/song_sun.png',
   SHARED_SONG_TIME: 'images/song_time.png',
