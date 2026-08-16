@@ -43,13 +43,11 @@ export const SONG_EVENT_TEMPLE_GANON = 0x11;
 export const MM_SONG_EVENT_TEMPLE_WOODFALL = 18 + 0;
 export const MM_SONG_EVENT_TEMPLE_SNOWHEAD = 18 + 1;
 export const MM_SONG_EVENT_TEMPLE_GREATBAY = 18 + 2;
-export const MM_SONG_EVENT_HEALING_POEHUT = 18 + 3;
 export const MM_SONG_EVENT_HEALING_DARMANI = 18 + 4;
 export const MM_SONG_EVENT_HEALING_PAMELA_FATHER = 18 + 5;
 export const MM_SONG_EVENT_HEALING_KAMARO = 18 + 6;
 export const MM_SONG_EVENT_HEALING_MIKAU = 18 + 7;
 export const MM_SONG_EVENT_AWAKENING_KEETA = 18 + 8;
-export const MM_SONG_EVENT_AWAKENING_SCRUB = 18 + 9;
 export const MM_SONG_EVENT_LULLABY_KID = 18 + 10;
 export const MM_SONG_EVENT_STORMS_COMPOSER = 18 + 11;
 export const MM_SONG_EVENT_CLOCK_TOWER_ROOF = 18 + 12;
@@ -111,13 +109,17 @@ export const VANILLA_SONG_EVENTS_MM = [
   SONG_SONATA, // 0: Woodfall Temple
   SONG_GORON_LULLABY, // 1: Snowhead Temple
   SONG_NEW_WAVE, // 2: Great Bay Temple
-  SONG_HEALING, // 3: Song of Healing - Poe Hut
+  // 3: Song of Healing - Poe Hut (not gated by any location, but kept
+  // for positional alignment with OoTMM core's 13-entry MM song event list)
+  SONG_HEALING,
   SONG_HEALING, // 4: Song of Healing - Darmani
   SONG_HEALING, // 5: Song of Healing - Pamela's Father
   SONG_HEALING, // 6: Song of Healing - Kamaro
   SONG_HEALING, // 7: Song of Healing - Mikau
   SONG_SONATA, // 8: Sonata of Awakening - Keeta
-  SONG_SONATA, // 9: Sonata of Awakening - Deku Scrub
+  // 9: Sonata of Awakening - Deku Scrub (not gated by any location, but kept
+  // for positional alignment with OoTMM core's 13-entry MM song event list)
+  SONG_SONATA,
   SONG_GORON_LULLABY_INTRO, // 10: Goron Lullaby - Elder's Son
   SONG_STORMS, // 11: Song of Storms - Composer
   SONG_OATH, // 12: Clock Tower Roof
@@ -165,12 +167,10 @@ export const SONG_EVENTS: SongEventData[] = [
  */
 export const SONG_EVENTS_MM: SongEventData[] = [
   { id: MM_SONG_EVENT_CLOCK_TOWER_ROOF, label: 'Clock Tower Roof' },
-  { id: MM_SONG_EVENT_AWAKENING_SCRUB, label: 'Deku Scrub Playground' },
   { id: MM_SONG_EVENT_LULLABY_KID, label: "Goron Lullaby - Elder's Son" },
   { id: MM_SONG_EVENT_TEMPLE_GREATBAY, label: 'Great Bay Temple' },
   { id: MM_SONG_EVENT_AWAKENING_KEETA, label: 'Ikana Graveyard Keeta' },
   { id: MM_SONG_EVENT_HEALING_PAMELA_FATHER, label: "Pamela's Father" },
-  { id: MM_SONG_EVENT_HEALING_POEHUT, label: 'Poe Hut' },
   { id: MM_SONG_EVENT_HEALING_DARMANI, label: 'Song of Healing - Darmani' },
   { id: MM_SONG_EVENT_HEALING_KAMARO, label: 'Song of Healing - Kamaro' },
   { id: MM_SONG_EVENT_HEALING_MIKAU, label: 'Song of Healing - Mikau' },
