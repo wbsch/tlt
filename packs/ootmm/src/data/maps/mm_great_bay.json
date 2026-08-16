@@ -896,7 +896,8 @@
         },
         {
           "image": "boulder",
-          "codes": "MM Zora Cape Boulder"
+          "codes": "MM Zora Cape Boulder",
+          "anchored": true
         }
       ]
     },
@@ -917,7 +918,8 @@
           "codes": [
             "MM Zora Cape Large Boulder 1",
             "MM Zora Cape Large Boulder 2"
-          ]
+          ],
+          "anchored": true
         }
       ]
     },

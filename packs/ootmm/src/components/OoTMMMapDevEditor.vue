@@ -112,6 +112,7 @@ function cloneSubmenuEntry(entry: MapSubmenuEntryDef): MapSubmenuEntryDef {
     overlays: entry.overlays ? [...entry.overlays] : undefined,
     codes: Array.isArray(entry.codes) ? [...entry.codes] : entry.codes,
     visibleWhen: cloneVisibleWhen(entry.visibleWhen),
+    anchored: entry.anchored,
   };
 }
 
@@ -771,6 +772,9 @@ function buildDraftExportMap(): MapDef | null {
               exportSubmenuMarker.visibleWhen = cloneVisibleWhen(
                 submenuMarker.visibleWhen,
               );
+            }
+            if (submenuMarker.anchored) {
+              exportSubmenuMarker.anchored = true;
             }
             return exportSubmenuMarker;
           },

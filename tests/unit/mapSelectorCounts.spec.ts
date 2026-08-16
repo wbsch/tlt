@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest';
 import {
   resolveEntranceBoundCodes,
   ENTRANCE_CHECK_CODES_BY_ID,
+  normalizeMapCodeList,
 } from '../../packs/ootmm/src/utils/mapSelectorCounts';
 
 describe('resolveEntranceBoundCodes', () => {
@@ -142,6 +143,25 @@ describe('resolveEntranceBoundCodes', () => {
     );
     const expected = [...MIDO_CODES, ...SARIA_CODES].sort();
     expect(codes.sort()).toEqual(expected);
+  });
+});
+
+describe('anchored submenu entries (overworld boulders)', () => {
+  it('excludes anchored overworld boulder codes from entrance-bound lookups', () => {
+    const codes = resolveEntranceBoundCodes(
+      ['OOT_GROTTO_GENERIC_HF_SOUTHEAST'],
+      {},
+    );
+    expect(codes).not.toContain('OOT Hyrule Field Boulder Near Lake');
+    // interior checks still follow the entrance
+    expect(codes).toContain('OOT Hyrule Field Grotto Southeast');
+  });
+
+  it('ENTRANCE_CHECK_CODES_BY_ID does not contain anchored entries', () => {
+    const entries =
+      ENTRANCE_CHECK_CODES_BY_ID.get('OOT_GROTTO_GENERIC_HF_SOUTHEAST') ?? [];
+    const codes = entries.flatMap((entry) => normalizeMapCodeList(entry.codes));
+    expect(codes).not.toContain('OOT Hyrule Field Boulder Near Lake');
   });
 });
 

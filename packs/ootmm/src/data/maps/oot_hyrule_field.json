@@ -1367,7 +1367,8 @@
         },
         {
           "image": "boulder",
-          "codes": "OOT Hyrule Field Boulder Near Lake"
+          "codes": "OOT Hyrule Field Boulder Near Lake",
+          "anchored": true
         }
       ],
       "entranceMenu": {
@@ -1408,7 +1409,8 @@
         },
         {
           "image": "boulder",
-          "codes": "OOT Hyrule Field Boulder Island"
+          "codes": "OOT Hyrule Field Boulder Island",
+          "anchored": true
         }
       ],
       "entranceMenu": {
@@ -1454,7 +1456,8 @@
         },
         {
           "image": "boulder",
-          "codes": "OOT Hyrule Field Boulder Near Market"
+          "codes": "OOT Hyrule Field Boulder Near Market",
+          "anchored": true
         }
       ],
       "entranceMenu": {
@@ -1486,7 +1489,8 @@
         },
         {
           "image": "boulder",
-          "codes": ["OOT Hyrule Castle Boulder"]
+          "codes": ["OOT Hyrule Castle Boulder"],
+          "anchored": true
         }
       ],
       "entranceMenu": {

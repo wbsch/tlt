@@ -1692,6 +1692,14 @@ const mapSelectorCheckIdsByMap = computed(() => {
           )) {
             addResolvedMapSelectorCode(checkIds, code);
           }
+          // Anchored entries (e.g. boulders covering a grotto) never follow
+          // the entrance under ER — always count them toward their home map.
+          for (const submenuEntry of marker.markers ?? []) {
+            if (submenuEntry.anchored !== true) continue;
+            for (const code of normalizeMapCodeList(submenuEntry.codes)) {
+              addResolvedMapSelectorCode(checkIds, code);
+            }
+          }
         } else {
           // No ER or no entrance binding – use static codes
           for (const submenuEntry of marker.markers ?? []) {

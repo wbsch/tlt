@@ -861,7 +861,8 @@
         },
         {
           "image": "boulder",
-          "codes": "OOT Lost Woods Boulder Deep 2"
+          "codes": "OOT Lost Woods Boulder Deep 2",
+          "anchored": true
         }
       ],
       "entranceMenu": {
@@ -927,7 +928,8 @@
         },
         {
           "image": "boulder",
-          "codes": "OOT Lost Woods Boulder Early"
+          "codes": "OOT Lost Woods Boulder Early",
+          "anchored": true
         }
       ],
       "entranceMenu": {

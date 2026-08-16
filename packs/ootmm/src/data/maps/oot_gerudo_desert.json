@@ -506,7 +506,8 @@
         },
         {
           "image": "silver_boulder",
-          "codes": ["OOT Gerudo Valley Silver Boulder"]
+          "codes": ["OOT Gerudo Valley Silver Boulder"],
+          "anchored": true
         }
       ]
     },
@@ -1098,7 +1099,8 @@
         },
         {
           "image": "silver_boulder",
-          "codes": ["OOT Desert Colossus Silver Boulder"]
+          "codes": ["OOT Desert Colossus Silver Boulder"],
+          "anchored": true
         }
       ]
     },

@@ -921,7 +921,8 @@
         },
         {
           "image": "boulder",
-          "codes": "OOT Zora River Boulder Upper"
+          "codes": "OOT Zora River Boulder Upper",
+          "anchored": true
         }
       ]
     },
@@ -1004,7 +1005,8 @@
         },
         {
           "image": "boulder",
-          "codes": "OOT Zora Fountain Boulder Exposed"
+          "codes": "OOT Zora Fountain Boulder Exposed",
+          "anchored": true
         }
       ]
     },

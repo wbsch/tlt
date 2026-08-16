@@ -822,7 +822,8 @@
       "markers": [
         {
           "image": "red_boulder",
-          "codes": "MM Road to Ikana Red Boulder"
+          "codes": "MM Road to Ikana Red Boulder",
+          "anchored": true
         },
         {
           "image": "chest",
@@ -2006,7 +2007,8 @@
         },
         {
           "image": "boulder",
-          "codes": "MM Termina Field Boulder Bio Baba"
+          "codes": "MM Termina Field Boulder Bio Baba",
+          "anchored": true
         }
       ]
     },
@@ -2054,7 +2056,8 @@
         },
         {
           "image": "boulder",
-          "codes": "MM Termina Field Boulder West Gossip"
+          "codes": "MM Termina Field Boulder West Gossip",
+          "anchored": true
         }
       ]
     },

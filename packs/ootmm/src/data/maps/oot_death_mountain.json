@@ -493,7 +493,8 @@
       "markers": [
         {
           "image": "red_boulder",
-          "codes": "OOT Death Mountain Crater Red Boulder Grotto"
+          "codes": "OOT Death Mountain Crater Red Boulder Grotto",
+          "anchored": true
         },
         {
           "image": "business_scrub_oot",
@@ -526,7 +527,8 @@
           "codes": [
             "OOT Death Mountain Crater Red Boulder Great Fairy 1",
             "OOT Death Mountain Crater Red Boulder Great Fairy 2"
-          ]
+          ],
+          "anchored": true
         }
       ]
     },
@@ -704,7 +706,8 @@
         },
         {
           "image": "boulder",
-          "codes": "OOT Death Mountain Crater Boulder 1"
+          "codes": "OOT Death Mountain Crater Boulder 1",
+          "anchored": true
         }
       ]
     },
@@ -862,7 +865,8 @@
         },
         {
           "image": "boulder",
-          "codes": ["OOT Death Mountain Trail Boulder Upper"]
+          "codes": ["OOT Death Mountain Trail Boulder Upper"],
+          "anchored": true
         }
       ]
     },

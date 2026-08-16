@@ -13,6 +13,9 @@ type MapSchema = {
         };
       };
     };
+    submenuEntry?: {
+      properties?: Record<string, unknown>;
+    };
   };
 };
 
@@ -31,5 +34,18 @@ describe('ootmm map schema', () => {
 
     expect(entranceIds).toContain('OOT_BOSS_TEMPLE_FOREST');
     expect(entranceIds).toContain('MM_BOSS_TEMPLE_WOODFALL');
+  });
+
+  it('accepts the anchored flag on submenu entries', () => {
+    const schema = JSON.parse(
+      readFileSync(
+        path.resolve('packs/ootmm/src/data/schemas/ootmm-map.schema.json'),
+        'utf8',
+      ),
+    ) as MapSchema;
+
+    const submenuEntryProps = schema.$defs?.submenuEntry?.properties ?? {};
+    expect(submenuEntryProps).toHaveProperty('anchored');
+    expect(submenuEntryProps.anchored).toEqual({ type: 'boolean' });
   });
 });

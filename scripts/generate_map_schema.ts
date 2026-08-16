@@ -307,6 +307,7 @@ async function generateMapSchema(): Promise<void> {
           overlays: { $ref: '#/$defs/overlays' },
           codes: { $ref: '#/$defs/codes' },
           visibleWhen: { $ref: '#/$defs/settingsVisibility' },
+          anchored: { type: 'boolean' },
         },
       },
       checkMarker: {

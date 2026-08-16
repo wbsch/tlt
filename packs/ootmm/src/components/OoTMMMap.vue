@@ -409,6 +409,7 @@ function cloneSubmenuEntry(entry: MapSubmenuEntryDef): MapSubmenuEntryDef {
     overlays: entry.overlays ? [...entry.overlays] : undefined,
     codes: Array.isArray(entry.codes) ? [...entry.codes] : entry.codes,
     visibleWhen: entry.visibleWhen,
+    anchored: entry.anchored,
   };
 }
 
@@ -429,10 +430,15 @@ const ENTRANCE_SUBMENU_ENTRIES_BY_ID = (() => {
       );
       if (entranceIds.length === 0) continue;
 
-      const normalizedEntries = markerDef.markers.map((entry) => ({
-        ...cloneSubmenuEntry(entry),
-        visibleWhen: mergeVisibleWhen(markerDef.visibleWhen, entry.visibleWhen),
-      }));
+      const normalizedEntries = markerDef.markers
+        .filter((entry) => entry.anchored !== true)
+        .map((entry) => ({
+          ...cloneSubmenuEntry(entry),
+          visibleWhen: mergeVisibleWhen(
+            markerDef.visibleWhen,
+            entry.visibleWhen,
+          ),
+        }));
 
       for (const entranceId of entranceIds) {
         const existing = byId.get(entranceId);
@@ -1087,6 +1093,9 @@ const markerViewModels = computed<MarkerRuntime[]>(() => {
             .filter((e): e is ExitEntry => e !== null)
         : [];
       const staticSubmenuMarkersRaw = markerDef.markers ?? [];
+      const staticAnchoredMarkersRaw = staticSubmenuMarkersRaw.filter(
+        (entry) => entry.anchored === true,
+      );
       // Determine which entrance IDs to use for check resolution based on display mode.
       // Mirrors the UI dropdown row logic below.
       const resolveEntranceIds = (() => {
@@ -1124,7 +1133,7 @@ const markerViewModels = computed<MarkerRuntime[]>(() => {
         : hasEntranceBinding &&
             (anySourceEntranceActive || activeHostedEntranceIds.length > 0)
           ? anySourceEntranceActive
-            ? boundSubmenuMarkersRaw
+            ? [...boundSubmenuMarkersRaw, ...staticAnchoredMarkersRaw]
             : staticSubmenuMarkersRaw
           : staticSubmenuMarkersRaw;
       const submenuMarkers = buildSubmenuRuntimeEntries(

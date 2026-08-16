@@ -6469,6 +6469,9 @@
         },
         "visibleWhen": {
           "$ref": "#/$defs/settingsVisibility"
+        },
+        "anchored": {
+          "type": "boolean"
         }
       }
     },

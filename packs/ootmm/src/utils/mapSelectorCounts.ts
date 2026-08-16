@@ -32,12 +32,15 @@ export const ENTRANCE_CHECK_CODES_BY_ID: ReadonlyMap<
         .map((id) => id.trim())
         .filter((id) => id.length > 0);
       if (entranceIds.length === 0) continue;
-      const entries: MapSubmenuEntryDef[] = markerDef.markers.map((e) => ({
-        image: e.image,
-        overlays: e.overlays,
-        codes: e.codes,
-        visibleWhen: e.visibleWhen,
-      }));
+      const entries: MapSubmenuEntryDef[] = markerDef.markers
+        .filter((e) => e.anchored !== true)
+        .map((e) => ({
+          image: e.image,
+          overlays: e.overlays,
+          codes: e.codes,
+          visibleWhen: e.visibleWhen,
+          anchored: e.anchored,
+        }));
       for (const entranceId of entranceIds) {
         const existing = byId.get(entranceId);
         if (existing) {

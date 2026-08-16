@@ -31,6 +31,9 @@ export type MapSubmenuEntryDef = {
   overlays?: MapMarkerOverlay[];
   codes: string | string[];
   visibleWhen?: MapMarkerSettingsVisibility;
+  /** When true, this entry's checks stay on the map it is defined on and do
+   *  NOT follow their entrance under entrance randomization. */
+  anchored?: boolean;
 };
 
 export type MapDungeonEntranceMenuDef = {
