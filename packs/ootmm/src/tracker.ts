@@ -946,6 +946,16 @@ export class OoTMMTracker implements TrackerPack {
     this.shopPriceSlotsByLocationId = shopPriceIndex.slotsByLocationId;
     this.baseShopPricesByLocationId = shopPriceIndex.basePricesByLocationId;
     this.devLocationCatalog = this.buildCodeSearchLocationCatalog();
+
+    // The disconnect/spawn steps above remove exit edges AFTER
+    // `logicPassEntrances` already computed `world.regions`. Re-propagate the
+    // hint regions from the final exit graph so shuffled grottos/graves/houses
+    // that were still wired to their vanilla overworld region during the
+    // entrance pass don't keep a stale region.
+    if (unmappedEntrances.length > 0 || activeSpawnEntrances.size > 0) {
+      this.repropagateHintRegionsAfterDisconnect();
+    }
+
     this.locationRegionMap = this.buildLocationRegionMap();
 
     this.debugLog(
@@ -1858,6 +1868,140 @@ export class OoTMMTracker implements TrackerPack {
       }
     }
     return map;
+  }
+
+  /**
+   * Recompute propagated hint regions after the tracker has removed exit edges
+   * for unmapped entrances (the "disconnect" step) and applied spawn mappings.
+   * `logicPassEntrances` computes `world.regions` before those post-pass edge
+   * edits, so interior areas that were still wired to their vanilla overworld
+   * region at propagation time can keep a stale region (e.g. a shuffled grotto
+   * keeps its vanilla region instead of the region of the entrance that now
+   * leads to it).
+   *
+   * This mirrors OoTMM's `processRegions()` minus `simplifyRegions` and
+   * `propagateDungeons` (already reflected in the non-placeholder regions): it
+   * resets only the ENTRANCE / BUFFER / BUFFER_DELAYED placeholder areas back
+   * to their base values and re-flood-fills them from the final exit graph.
+   */
+  private repropagateHintRegionsAfterDisconnect(): void {
+    if (!this.worlds || !this.baseWorlds) return;
+    for (let worldId = 0; worldId < this.worlds.length; worldId += 1) {
+      const world = this.worlds[worldId];
+      const baseWorld = this.baseWorlds[worldId];
+      if (!world || !baseWorld) continue;
+
+      const areas = world.areas as Record<
+        string,
+        {
+          region?: string;
+          locations?: Record<string, unknown>;
+          exits?: Record<string, unknown>;
+        }
+      >;
+      const baseAreas = baseWorld.areas as Record<
+        string,
+        { region?: string }
+      >;
+      const regions = world.regions as Record<string, string>;
+      if (!regions) continue;
+
+      // Reset only the propagation placeholders. Valid regions (dungeons,
+      // overworld, boss-shuffled areas, simplified regions) are untouched.
+      for (const [areaName, area] of Object.entries(areas)) {
+        const baseRegion = baseAreas[areaName]?.region;
+        if (
+          baseRegion !== 'ENTRANCE' &&
+          baseRegion !== 'BUFFER' &&
+          baseRegion !== 'BUFFER_DELAYED'
+        ) {
+          continue;
+        }
+        area.region = baseRegion;
+        for (const locId of Object.keys(area.locations ?? {})) {
+          regions[locId] = baseRegion;
+        }
+      }
+
+      this.propagateHintRegionsInWorld(areas, regions);
+    }
+  }
+
+  private propagateHintRegionsInWorld(
+    areas: Record<
+      string,
+      {
+        region?: string;
+        locations?: Record<string, unknown>;
+        exits?: Record<string, unknown>;
+      }
+    >,
+    regions: Record<string, string>,
+  ): void {
+    const changeRegion = (
+      areaName: string,
+      newRegion: string,
+      force: boolean,
+    ): void => {
+      const area = areas[areaName];
+      if (!area) return;
+      area.region = newRegion;
+      for (const locId of Object.keys(area.locations ?? {})) {
+        if (regions[locId] === 'ENTRANCE' || force) {
+          regions[locId] = newRegion;
+        }
+      }
+    };
+
+    const propagateStep = (): boolean => {
+      let changed = false;
+      for (const area of Object.values(areas)) {
+        const region = area.region;
+        if (
+          region === undefined ||
+          region === 'NONE' ||
+          region === 'ENTRANCE' ||
+          region === 'BUFFER' ||
+          region === 'BUFFER_DELAYED'
+        ) {
+          continue;
+        }
+        for (const exitName of Object.keys(area.exits ?? {})) {
+          const exitArea = areas[exitName];
+          if (!exitArea || exitArea.region !== 'ENTRANCE') continue;
+          changeRegion(exitName, region, false);
+          changed = true;
+        }
+      }
+      return changed;
+    };
+
+    const replaceAllRegions = (
+      oldRegion: string,
+      newRegion: string,
+    ): void => {
+      for (const [areaName, area] of Object.entries(areas)) {
+        if (area.region === oldRegion) {
+          changeRegion(areaName, newRegion, true);
+        }
+      }
+    };
+
+    // Mirror OoTMM's processRegions(): fill ENTRANCE areas, then BUFFER and
+    // BUFFER_DELAYED (converted in stages so they fill last), then leftover
+    // ENTRANCE areas become NAMELESS.
+    for (;;) {
+      if (!propagateStep()) break;
+    }
+    replaceAllRegions('BUFFER', 'ENTRANCE');
+    for (;;) {
+      if (!propagateStep()) break;
+    }
+    replaceAllRegions('BUFFER_DELAYED', 'ENTRANCE');
+    for (;;) {
+      if (!propagateStep()) break;
+    }
+    replaceAllRegions('ENTRANCE', 'NAMELESS');
   }
 
   private buildDungeonLocationIds(world: World): Set<string> {
