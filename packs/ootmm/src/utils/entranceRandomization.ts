@@ -644,7 +644,7 @@ export function isTrackedDestinationAllowedForSource(
   if (sourcePool === 'wallmaster') {
     const dstData = ENTRANCES_RAW[destinationKey];
     if (!dstData) return false;
-    return isTrackedWallmasterDestination(dstData.type);
+    return isTrackedWallmasterDestination(dstData.type, settings);
   }
 
   if (sourcePool === 'one-way') {
@@ -698,9 +698,64 @@ function hasSetSettingValue(setting: unknown, value: string): boolean {
   return Array.isArray(values) && values.includes(value);
 }
 
-export function isTrackedWallmasterDestination(type: string): boolean {
+export function isTrackedWallmasterDestination(
+  type: string,
+  settings?: Record<string, unknown>,
+): boolean {
+  // Dungeon types are ALWAYS included in Wallmaster destinations
+  // (matching OoTMM's poolWallmasters() unconditional addition)
   if (DUNGEON_TYPES.has(type)) return true;
-  if (BOSS_TYPES.has(type)) return true;
+
+  // Without settings (e.g., during plando import), allow all major types
+  if (!settings) {
+    if (BOSS_TYPES.has(type)) return true;
+    if (REGION_TYPES.has(type) || type === 'region-exit') return true;
+    if (GROTTO_TYPES.has(type)) return true;
+    if (INTERIOR_TYPES.has(type)) return true;
+    if (OVERWORLD_TYPES.has(type)) return true;
+    if (isOneWayTypeEnabled(type, settings)) return true;
+    return false;
+  }
+
+  // With settings, Wallmaster destinations match poolsTypesDst()
+  // (all enabled ER pool destination types), plus unconditional boss check
+  if (settings?.erBoss && settings?.erBoss !== 'none' && BOSS_TYPES.has(type))
+    return true;
+
+  if (
+    settings?.erRegions &&
+    settings?.erRegions !== 'none' &&
+    (REGION_TYPES.has(type) || type === 'region-exit')
+  )
+    return true;
+
+  if (
+    settings?.erGrottos &&
+    settings?.erGrottos !== 'none' &&
+    GROTTO_TYPES.has(type)
+  )
+    return true;
+
+  if (
+    settings?.erIndoors &&
+    settings?.erIndoors !== 'none' &&
+    INTERIOR_TYPES.has(type)
+  )
+    return true;
+
+  if (settings?.erOverworld && settings?.erOverworld !== 'none') {
+    // OoTMM's poolOverworld() dst includes the major-region edges as well,
+    // so overworld shuffle also makes them valid wallmaster destinations.
+    if (getEnabledOverworldSources(settings).has(type)) return true;
+  }
+
+  if (
+    settings?.erOneWays &&
+    settings?.erOneWays !== 'none' &&
+    isOneWayTypeEnabled(type, settings)
+  )
+    return true;
+
   return false;
 }
 
@@ -754,12 +809,11 @@ export function isTrackedOneWayDestination(
     INTERIOR_TYPES.has(type)
   )
     return true;
-  if (
-    settings?.erOverworld &&
-    settings?.erOverworld !== 'none' &&
-    OVERWORLD_TYPES.has(type)
-  )
-    return true;
+  if (settings?.erOverworld && settings?.erOverworld !== 'none') {
+    // OoTMM's poolOneWaysAnywhere() dst comes from poolsTypesDst(), which
+    // includes the overworld pool's major-region edges when erOverworld is on.
+    if (getEnabledOverworldSources(settings).has(type)) return true;
+  }
   return false;
 }
 

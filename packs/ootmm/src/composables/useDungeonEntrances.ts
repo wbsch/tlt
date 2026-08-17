@@ -508,6 +508,7 @@ export function useDungeonEntrances() {
   });
 
   const wallmasterDestinationOptions = computed(() => {
+    const settings = trackerSettings.value ?? {};
     const opts: Array<{
       value: string;
       label: string;
@@ -528,7 +529,7 @@ export function useDungeonEntrances() {
     };
 
     for (const entry of allDungeonEntrances.value) {
-      if (!isTrackedWallmasterDestination(entry.type)) {
+      if (!isTrackedWallmasterDestination(entry.type, settings)) {
         continue;
       }
 

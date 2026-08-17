@@ -901,6 +901,86 @@ describe('useDungeonEntrances', () => {
     ).toBe(true);
   });
 
+  it('includes major-region edges in wallmaster destination options when erOverworld is enabled', () => {
+    const sessionStore = useOoTMMSessionStore();
+    useOoTMMUiStore();
+
+    // erRegions and erOverworld are mutually exclusive; overworld shuffle
+    // subsumes the major-region edges (OoTMM's poolOverworld dst).
+    sessionStore.trackerSettings = {
+      games: 'ootmm',
+      erWallmasters: 'full',
+      erOverworld: 'full',
+      erRegions: 'none',
+    };
+
+    const entrances = useDungeonEntrances();
+    const wallmaster = entrances.activeEntrances.value.find(
+      (entry) => entry.pool === 'wallmaster',
+    );
+    expect(wallmaster).toBeTruthy();
+
+    const options = entrances.destinationOptionsForEntrance(wallmaster!);
+
+    // Major-region edges (types region / region-extra / region-shortcut)
+    expect(
+      options.some((option) => option.value === 'OOT_KAKARIKO_FROM_FIELD'),
+    ).toBe(true);
+    expect(
+      options.some(
+        (option) => option.value === 'OOT_MARKET_ENTRANCE_FROM_FIELD',
+      ),
+    ).toBe(true);
+    expect(
+      options.some(
+        (option) => option.value === 'OOT_GORON_CITY_FROM_LOST_WOODS',
+      ),
+    ).toBe(true);
+
+    // Their reverse (region-exit) aliases as well.
+    expect(
+      options.some((option) => option.value === 'OOT_FIELD_FROM_KAKARIKO'),
+    ).toBe(true);
+
+    // Pure overworld-type edges keep working too.
+    expect(
+      options.some(
+        (option) => option.value === 'OOT_DEATH_MOUNTAIN_FROM_GORON_CITY',
+      ),
+    ).toBe(true);
+  });
+
+  it('includes major-region edges in one-way destination options when erOneWaysAnywhere and erOverworld are enabled', () => {
+    const sessionStore = useOoTMMSessionStore();
+    useOoTMMUiStore();
+
+    sessionStore.trackerSettings = {
+      games: 'ootmm',
+      erOneWays: 'full',
+      erOneWaysAnywhere: true,
+      erOneWaysMajor: true,
+      erOverworld: 'full',
+      erRegions: 'none',
+    };
+
+    const entrances = useDungeonEntrances();
+    const oneWay = entrances.activeEntrances.value.find(
+      (entry) => entry.pool === 'one-way',
+    );
+    expect(oneWay).toBeTruthy();
+
+    const options = entrances.destinationOptionsForEntrance(oneWay!);
+
+    expect(
+      options.some((option) => option.value === 'OOT_KAKARIKO_FROM_FIELD'),
+    ).toBe(true);
+    expect(
+      options.some(
+        (option) => option.value === 'OOT_DEATH_MOUNTAIN_FROM_GORON_CITY',
+      ),
+    ).toBe(true);
+  });
+
   it('includes one-way-type entrances in spawn destinations when erOneWays is enabled without erOneWaysAnywhere', () => {
     const sessionStore = useOoTMMSessionStore();
     useOoTMMUiStore();
