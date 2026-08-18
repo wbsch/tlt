@@ -22,28 +22,59 @@ SHARED_COIN_COUNT = 4
 
 # ── Struct layout constants (from OoTMM headers) ──────────────────────────
 
-XFLAGS_COUNT_OOT = 0x2FA  # from xflags_data.h (v32.0)
-XFLAGS_COUNT_MM  = 0x350  # from xflags_data.h (v32.0)
+# XFLAGS_COUNT_OOT / XFLAGS_COUNT_MM vary per OoTMM version and must be read
+# from the checked-out xflags_data.h (v30.x-v31.x: 0x2e8/0x34a, v32.0: 0x2fa/0x350).
+XFLAGS_COUNT_RE = re.compile(
+    r"^#define\s+(XFLAGS_COUNT_(OOT|MM))\s+0x([0-9a-fA-F]+)\s*$"
+)
+OOT_RESPAWN_DATA_SIZE = 28  # OotRespawnData (oot/save.h): Vec3f(12)+s16*3(6)+u8*2(2)+u32*2(8)
 RESPAWN_SIZE     = 0x20   # RespawnData (mm/save.h)
 TRAP_MAX         = 7
 NOTES_MAX        = 0x26
 RUSTY_KEYS_OOT_SIZE = 4
 RUSTY_KEYS_MM_SIZE  = 5
 
-def build_shared_storage(mm_custom_save_size: int) -> dict:
+
+def read_xflags_counts(repo_root: pathlib.Path) -> tuple[int, int]:
+    """Read XFLAGS_COUNT_OOT / XFLAGS_COUNT_MM from the checked-out xflags_data.h."""
+    xflags_header = repo_root / "packages/generator/include/combo/xflags_data.h"
+    if not xflags_header.is_file():
+        raise ValueError(f"xflags header not found: {xflags_header}")
+
+    counts: dict[str, int] = {}
+    for line in xflags_header.read_text(encoding="utf-8").splitlines():
+        match = XFLAGS_COUNT_RE.match(line)
+        if match:
+            counts[match.group(1)] = int(match.group(3), 16)
+
+    if "XFLAGS_COUNT_OOT" not in counts or "XFLAGS_COUNT_MM" not in counts:
+        raise ValueError(f"missing XFLAGS_COUNT_OOT/MM in {xflags_header}")
+
+    return counts["XFLAGS_COUNT_OOT"], counts["XFLAGS_COUNT_MM"]
+
+
+def build_shared_storage(
+    mm_custom_save_size: int,
+    xflags_count_oot: int,
+    xflags_count_mm: int,
+) -> dict:
     """Build shared storage layout and fixed offsets from MmCustomSave size."""
-    oot_size = 0x380  # sizeof(OotCustomSave) = xflagsMm offset (v32.0)
+    # sizeof(OotCustomSave) = xflags[n] + npc[32] + shops[8] + scrubs[8] + sr[16]
+    #   + fwRespawnDungeonEntrance[2]*28 + powderKegTimer(2) + bitfields(2), ALIGNED(16)
+    oot_size = (
+        xflags_count_oot + 32 + 8 + 8 + 16 + 2 * OOT_RESPAWN_DATA_SIZE + 2 + 2 + 15
+    ) & ~15
     mm_size = mm_custom_save_size
     pre_soul = 0x20 + 8 + 2 + 2  # netGiSkip[16] + coins[4] + ocarinaMasks[4] = 0x2C
 
     # Bitmap offsets (all within gSharedCustomSave)
     xflagsOot      = 0x000
-    npcOot         = XFLAGS_COUNT_OOT
+    npcOot         = xflags_count_oot
     shopsOot       = npcOot + 32
     scrubsOot      = shopsOot + 8
     srOot          = scrubsOot + 8
-    xflagsMm       = oot_size  # 0x380
-    npcMm          = oot_size + XFLAGS_COUNT_MM  # xflagsMm + XFLAGS_COUNT_MM
+    xflagsMm       = oot_size
+    npcMm          = oot_size + xflags_count_mm
     shopsMm        = npcMm + 32
     souls_enemy_oot = oot_size + mm_size + pre_soul
     souls_enemy_mm  = souls_enemy_oot + 8
@@ -77,10 +108,10 @@ def build_shared_storage(mm_custom_save_size: int) -> dict:
     # Song flag offsets within each custom save (byte holding the song bitfields)
     # fwRespawnDungeonEntrance has u32 members => 4-byte alignment on N64.
     # Account for alignment padding before the array.
-    fw_respawn_offset = XFLAGS_COUNT_OOT + 32 + 8 + 8 + 16
+    fw_respawn_offset = xflags_count_oot + 32 + 8 + 8 + 16
     if fw_respawn_offset % 4:
         fw_respawn_offset += 4 - (fw_respawn_offset % 4)
-    song_flags_oot = fw_respawn_offset + 2 * 28 + 2
+    song_flags_oot = fw_respawn_offset + 2 * OOT_RESPAWN_DATA_SIZE + 2
     song_flags_mm = ((half_days + 1 + 3) & ~3) + 3 * 64
 
     tracked_size = max(
@@ -90,12 +121,12 @@ def build_shared_storage(mm_custom_save_size: int) -> dict:
     )
 
     bitmaps = [
-        {"name": "xflagsOot",         "offset": xflagsOot,       "size": XFLAGS_COUNT_OOT},
+        {"name": "xflagsOot",         "offset": xflagsOot,       "size": xflags_count_oot},
         {"name": "npcOot",            "offset": npcOot,          "size": 32},
         {"name": "shopsOot",          "offset": shopsOot,        "size": 8},
         {"name": "scrubsOot",         "offset": scrubsOot,       "size": 8},
         {"name": "srOot",             "offset": srOot,           "size": 16},
-        {"name": "xflagsMm",          "offset": xflagsMm,        "size": XFLAGS_COUNT_MM},
+        {"name": "xflagsMm",          "offset": xflagsMm,        "size": xflags_count_mm},
         {"name": "npcMm",             "offset": npcMm,           "size": 32},
         {"name": "shopsMm",           "offset": shopsMm,         "size": 4},
         {"name": "soulsEnemyOot",     "offset": souls_enemy_oot, "size": 8},
@@ -721,7 +752,10 @@ def main() -> int:
         print(f"doors header not found: {doors_header}", file=sys.stderr)
         return 1
 
-    layout = build_shared_storage(args.mm_custom_save_size)
+    layout = build_shared_storage(
+        args.mm_custom_save_size,
+        *read_xflags_counts(repo_root),
+    )
     mapping["catalog"] = build_catalog(
         gi_defs, notes_header, item_add_source, doors_header, layout["shared"]
     )

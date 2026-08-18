@@ -27,8 +27,8 @@ import sys
 
 # ── Struct layout constants (from OoTMM C headers) ──────────────────────
 
-# XFLAGS_COUNT_MM from OoTMM/packages/generator/include/combo/xflags_data.h
-XFLAGS_COUNT_MM = 0x350
+# XFLAGS_COUNT_MM varies per version; it is read from the inventory_slots.json
+# xflagsMm bitmap size (see extract_anchors) instead of being hardcoded.
 
 # SharedCustomSave layout (from save.h):
 #
@@ -79,6 +79,7 @@ def extract_anchors(slots: dict) -> dict:
     return {
         "xflagsOotSize": bitmaps["xflagsOot"]["size"],
         "xflagsMm": bitmaps["xflagsMm"]["offset"],
+        "xflagsMmSize": bitmaps["xflagsMm"]["size"],
         "soulsEnemyOot": bitmaps["soulsEnemyOot"]["offset"],
         "soulsMiscMm": bitmaps["soulsMiscMm"]["offset"],
         "trackedSize": shared["trackedSize"],
@@ -91,7 +92,7 @@ def compute_offsets(anchors: dict) -> dict:
     oot_size = anchors["xflagsMm"]          # sizeof(OotCustomSave)
     mm_size = (anchors["soulsEnemyOot"]      # soulsEnemyOot
                - oot_size - PRESOULS_SIZE)    # minus OotCustomSave minus pre-soul fields
-    half_days = oot_size + XFLAGS_COUNT_MM + 32 + 4  # xflagsMm + npcMm[32] + shopsMm[4]
+    half_days = oot_size + anchors["xflagsMmSize"] + 32 + 4  # xflagsMm + npcMm[32] + shopsMm[4]
 
     coins = oot_size + mm_size + 0x20       # after both custom saves + netGiSkip[16]
     mask_oot = coins + 8                     # after coins[4]
