@@ -1,4 +1,4 @@
-import { describe, expect, it } from 'vitest';
+import { afterEach, describe, expect, it, vi } from 'vitest';
 
 import {
   RAW_CHUNK_SPECS,
@@ -241,6 +241,10 @@ function expectChecksAbsent(checks: Set<string>, names: string[]) {
 }
 
 describe('raw frame snapshot transitions', () => {
+  afterEach(() => {
+    vi.useRealTimers();
+  });
+
   it('applies OoT live scene flags even when live and saved scenes disagree', () => {
     const fixtureName = 'after-bombchu-2-20260501-202008.json';
     const parser = createRawAutotrackerParser('v30_1');
@@ -274,7 +278,8 @@ describe('raw frame snapshot transitions', () => {
     expect(stableChecks.has('Kokiri Forest Kokiri Sword Chest')).toBe(true);
   });
 
-  it('ignores the first OoT live-scene sample after a scene change', () => {
+  it('withholds live flags during the settle window after an OoT scene change', () => {
+    vi.useFakeTimers();
     const fixtureName = 'after-bombchu-2-20260501-202008.json';
     const parser = createRawAutotrackerParser('v30_1');
 
@@ -299,6 +304,32 @@ describe('raw frame snapshot transitions', () => {
         chestFlags: 0x0000000f,
       }).message,
     );
+
+    if (!previousScene || !firstNewScene || !secondNewScene) {
+      throw new Error('Failed to parse synthetic OoT transition frames');
+    }
+
+    const previousChecks = parsedCheckSet(previousScene.checks);
+    const firstNewChecks = parsedCheckSet(firstNewScene.checks);
+    const secondNewChecks = parsedCheckSet(secondNewScene.checks);
+
+    // The previous scene's live flags were applied on first observation.
+    expect(previousChecks.has("Mido's House Top Left")).toBe(true);
+    expect(previousChecks.has("Mido's House Top Right")).toBe(true);
+    expect(previousChecks.has("Mido's House Bottom Left")).toBe(true);
+    expect(previousChecks.has("Mido's House Bottom Right")).toBe(true);
+    expect(previousChecks.has('Kokiri Forest Kokiri Sword Chest')).toBe(false);
+
+    // The scene ID has changed (40 -> 85) but the stale flag word
+    // (0x0000000f) is still broadcast.  The frame is still parsed (the map
+    // can switch), but the live flags are withheld so the previous scene's
+    // chests are not attributed to Kokiri Forest.
+    expect(firstNewScene.ootSceneId).toBe(85);
+    expect(firstNewChecks.has('Kokiri Forest Kokiri Sword Chest')).toBe(false);
+    expect(secondNewChecks.has('Kokiri Forest Kokiri Sword Chest')).toBe(false);
+
+    // After the settle window elapses the live flags for the new scene apply.
+    vi.advanceTimersByTime(2000);
     const stableScene = parser.parse(
       buildOotLiveSceneMessage(fixtureName, 4, {
         liveSceneId: 85,
@@ -307,26 +338,16 @@ describe('raw frame snapshot transitions', () => {
       }).message,
     );
 
-    if (!previousScene || !stableScene) {
-      throw new Error('Failed to parse synthetic OoT transition frames');
-    }
-
-    const previousChecks = parsedCheckSet(previousScene.checks);
-    const stableChecks = parsedCheckSet(stableScene.checks);
-
-    expect(previousChecks.has("Mido's House Top Left")).toBe(true);
-    expect(previousChecks.has("Mido's House Top Right")).toBe(true);
-    expect(previousChecks.has("Mido's House Bottom Left")).toBe(true);
-    expect(previousChecks.has("Mido's House Bottom Right")).toBe(true);
-    expect(previousChecks.has('Kokiri Forest Kokiri Sword Chest')).toBe(false);
-
-    expect(firstNewScene).toBeNull();
-    expect(secondNewScene).toBeNull();
-
-    expect(stableChecks.has('Kokiri Forest Kokiri Sword Chest')).toBe(true);
+    expect(stableScene).not.toBeNull();
+    expect(
+      parsedCheckSet(stableScene!.checks).has(
+        'Kokiri Forest Kokiri Sword Chest',
+      ),
+    ).toBe(true);
   });
 
-  it('ignores the first MM live-scene sample after a scene change', () => {
+  it('withholds live flags during the settle window after an MM scene change', () => {
+    vi.useFakeTimers();
     const fixtureName =
       'mm-without-initial-song-of-healing-20260501-143756.json';
     const parser = createRawAutotrackerParser('v30_1');
@@ -349,23 +370,28 @@ describe('raw frame snapshot transitions', () => {
         chestFlags: 0x00000001,
       }).message,
     );
+
+    expect(previousScene).not.toBeNull();
+    expect(firstNewScene).not.toBeNull();
+    expect(secondNewScene).not.toBeNull();
+
+    vi.advanceTimersByTime(2000);
     const stableScene = parser.parse(
       buildMmLiveSceneMessage(fixtureName, 4, {
         liveSceneId: 6,
         chestFlags: 0x00000001,
       }).message,
     );
-
-    expect(previousScene).not.toBeNull();
-    expect(firstNewScene).toBeNull();
-    expect(secondNewScene).toBeNull();
     expect(stableScene).not.toBeNull();
   });
 
-  it('ignores the first MM frame after switching from OoT', () => {
+  it('drops frames during the game-switch settle window after switching from OoT to MM', () => {
+    vi.useFakeTimers();
     const ootFixture = 'after-bombchu-2-20260501-202008.json';
     const mmFixture = 'mm-without-initial-song-of-healing-20260501-143756.json';
-    const parser = createRawAutotrackerParser('v30_1');
+    const parser = createRawAutotrackerParser('v30_1', {
+      gameTransitionSettleMs: 1500,
+    });
 
     const ootScene = parser.parse(
       buildOotLiveSceneMessage(ootFixture, 1, {
@@ -375,24 +401,38 @@ describe('raw frame snapshot transitions', () => {
     );
     const firstMmScene = parser.parse(
       buildMmLiveSceneMessage(mmFixture, 2, {
-        liveSceneId: 6,
+        liveSceneId: 20,
+        chestFlags: 0x00000001,
       }).message,
     );
     const secondMmScene = parser.parse(
       buildMmLiveSceneMessage(mmFixture, 3, {
-        liveSceneId: 6,
-      }).message,
-    );
-    const stableMmScene = parser.parse(
-      buildMmLiveSceneMessage(mmFixture, 4, {
-        liveSceneId: 6,
+        liveSceneId: 20,
+        chestFlags: 0x00000001,
       }).message,
     );
 
+    // During the game-switch settle window the backend broadcasts garbage save
+    // data, so the MM frames are dropped entirely.
     expect(ootScene).not.toBeNull();
     expect(firstMmScene).toBeNull();
     expect(secondMmScene).toBeNull();
+
+    // After the settle window elapses, MM frames are processed normally.
+    vi.advanceTimersByTime(2000);
+    const stableMmScene = parser.parse(
+      buildMmLiveSceneMessage(mmFixture, 4, {
+        liveSceneId: 20,
+        chestFlags: 0x00000001,
+      }).message,
+    );
+
     expect(stableMmScene).not.toBeNull();
+    expect(
+      parsedCheckSet(stableMmScene!.checks).has(
+        'Pirate Fortress Interior Lower Chest',
+      ),
+    ).toBe(true);
   });
 
   it('tracks the Initial Song of Healing extra-flag transition', () => {

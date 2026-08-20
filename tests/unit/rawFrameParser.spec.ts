@@ -1,4 +1,4 @@
-import { describe, expect, it } from 'vitest';
+import { afterEach, describe, expect, it, vi } from 'vitest';
 
 import {
   createRawAutotrackerParserSync as createRawAutotrackerParser,
@@ -203,6 +203,10 @@ function buildOotMessageWithSharedSaveBitfield(
 }
 
 describe('raw frame parser', () => {
+  afterEach(() => {
+    vi.useRealTimers();
+  });
+
   it('exposes sparse live chunk requests without legacy monolithic save or shared chunks', () => {
     expect(
       RAW_CHUNK_SPECS_BY_GAME.oot.some(
@@ -325,7 +329,10 @@ describe('raw frame parser', () => {
   });
 
   it('reuses the last-known MM state across subsequent OoT snapshots', () => {
-    const parser = createRawAutotrackerParser('v30_1');
+    vi.useFakeTimers();
+    const parser = createRawAutotrackerParser('v30_1', {
+      gameTransitionSettleMs: 1500,
+    });
     const { message: beforeMessage } = buildRawMessage(
       'before-madame-aroma-20260501-170327.json',
       1,
@@ -336,6 +343,13 @@ describe('raw frame parser', () => {
     );
 
     parser.parse(beforeMessage);
+    // The first OoT snapshot after the MM snapshot arrives within the
+    // game-switch settle window and is dropped.
+    expect(parser.parse(afterMessage)).toBeNull();
+
+    // After the settle window elapses, the OoT snapshot is processed and
+    // carries over the last-known MM state.
+    vi.advanceTimersByTime(2000);
     const parsed = parser.parse(afterMessage);
 
     expect(parsed).not.toBeNull();

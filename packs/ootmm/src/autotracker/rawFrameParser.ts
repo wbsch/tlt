@@ -616,9 +616,22 @@ type GameState = {
   shared: SharedCustomState;
 };
 
-type LivePlayStateSignature = {
+type OotPlayStateSample = {
   sceneId: number;
   currentRoom: number;
+  linkAgeOnLoad: number;
+  chestFlags: number;
+  collectFlags: number;
+  tempCollect: number;
+};
+
+type MmPlayStateSample = {
+  sceneId: number;
+  currentRoom: number;
+  switch0Flags: number;
+  switch1Flags: number;
+  chestFlags: number;
+  collectFlags: number;
 };
 
 type OotSymbolCheckSource =
@@ -785,6 +798,20 @@ const OOT_PLAYSTATE_FLAGS_SIZE =
   OOT_PLAY_OFF_TEMP_COLLECT + 4 - OOT_PLAY_OFF_CHEST_FLAGS;
 const MM_PLAYSTATE_FLAGS_SIZE =
   MM_PLAY_OFF_COLLECT_FLAGS + 4 - MM_PLAY_OFF_SWITCH0_FLAGS;
+
+// Settle window length (ms) applied after a live scene-ID change.  On a scene
+// change the scene ID updates before the flag words do (measured worst-case
+// lag ~1.1 s with the default 500 ms backend broadcast throttle), so the live
+// flag words are withheld while the save-context permanent flags (always
+// correctly attributed) stand in.
+const DEFAULT_SCENE_SETTLE_MS = 1500;
+
+// Settle window length (ms) applied after an OoT <-> MM game switch.  On a
+// game switch the backend broadcasts garbage save data, so whole frames are
+// dropped for this long instead.  Currently 0 because raw-capture analysis
+// showed the received data stays stable across transitions; kept as a
+// separate knob so a defer window can be re-enabled later if needed.
+const DEFAULT_GAME_TRANSITION_SETTLE_MS = 0;
 
 const OOT_OFF_SCENE_ID = 0x66;
 const OOT_OFF_MAGIC_ACQUIRED = 0x3a;
@@ -1650,14 +1677,23 @@ class RawAutotrackerParserImpl implements RawAutotrackerParser {
   private lastKnownMm: MmState | null = null;
   private lastKnownMmSaveIndex: number | null = null;
   private lastKnownShared: SharedCustomState | null = null;
-  private lastStableActiveGame: RawAutotrackerGame | null = null;
-  private lastStableOotLiveSignature: string | null = null;
-  private lastStableMmLiveSignature: string | null = null;
-  private pendingLiveTransitionGame: RawAutotrackerGame | null = null;
-  private pendingLiveTransitionSignature: string | null = null;
-  private pendingLiveTransitionTimestamp: number | null = null;
-  private pendingLiveTransitionDiscardCount = 0;
+  private lastActiveGame: RawAutotrackerGame | null = null;
+  private activeGameChangedAt: number | null = null;
+  private lastOotLiveSceneId: number | null = null;
+  private lastMmLiveSceneId: number | null = null;
+  private ootLiveSceneChangedAt = 0;
+  private mmLiveSceneChangedAt = 0;
+  private sceneSettleMs: number;
+  private gameTransitionSettleMs: number;
   private hasEverSeenNonZeroMmRegions = false;
+
+  constructor(
+    sceneSettleMs = DEFAULT_SCENE_SETTLE_MS,
+    gameTransitionSettleMs = DEFAULT_GAME_TRANSITION_SETTLE_MS,
+  ) {
+    this.sceneSettleMs = sceneSettleMs;
+    this.gameTransitionSettleMs = gameTransitionSettleMs;
+  }
 
   parse(message: RawAutotrackerMessage): ParsedRawAutotrackerSnapshot | null {
     if (message.schemaVersion !== '1' || message.diff) {
@@ -1706,13 +1742,12 @@ class RawAutotrackerParserImpl implements RawAutotrackerParser {
     this.lastKnownMm = null;
     this.lastKnownMmSaveIndex = null;
     this.lastKnownShared = null;
-    this.lastStableActiveGame = null;
-    this.lastStableOotLiveSignature = null;
-    this.lastStableMmLiveSignature = null;
-    this.pendingLiveTransitionGame = null;
-    this.pendingLiveTransitionSignature = null;
-    this.pendingLiveTransitionTimestamp = null;
-    this.pendingLiveTransitionDiscardCount = 0;
+    this.lastActiveGame = null;
+    this.activeGameChangedAt = null;
+    this.lastOotLiveSceneId = null;
+    this.lastMmLiveSceneId = null;
+    this.ootLiveSceneChangedAt = 0;
+    this.mmLiveSceneChangedAt = 0;
     this.hasEverSeenNonZeroMmRegions = false;
   }
 
@@ -1721,6 +1756,14 @@ class RawAutotrackerParserImpl implements RawAutotrackerParser {
     activeGame: RawAutotrackerGame,
     saveIndex: number,
   ): GameState | null {
+    // Detect OoT <-> MM game switches before decoding any save data: during
+    // the settle window the backend broadcasts garbage (inconsistent) save
+    // data, so the whole frame must be dropped rather than parsed.
+    this.trackActiveGame(activeGame);
+    if (this.isWithinGameSettleWindow()) {
+      return null;
+    }
+
     const state: GameState = {
       activeGame,
       saveIndex,
@@ -1744,23 +1787,9 @@ class RawAutotrackerParserImpl implements RawAutotrackerParser {
         return null;
       }
       parseOotSave(state.oot, ootSaveData);
-      const ootLiveSignature = readOotPlayStateSignature(memory);
       const ootLiveSample = readOotPlayStateSample(memory);
-      if (
-        this.shouldDeferActiveGameFrame(
-          'OoT',
-          ootLiveSignature,
-          ootLiveSample != null,
-        )
-      ) {
-        return null;
-      }
       if (ootLiveSample) {
-        state.oot.liveSceneId = ootLiveSample.sceneId;
-        state.oot.liveChestFlags = ootLiveSample.chestFlags;
-        state.oot.liveCollectFlags = ootLiveSample.collectFlags;
-        state.oot.liveTempCollectFlag = ootLiveSample.tempCollect;
-        state.oot.hasLiveSceneFlags = true;
+        this.applyOotLiveSceneSample(state.oot, ootLiveSample);
       }
       this.readForeignMmState(memory, state.mm);
       this.overlayLastKnownMm(saveIndex, state.mm);
@@ -1786,24 +1815,9 @@ class RawAutotrackerParserImpl implements RawAutotrackerParser {
         this.hasEverSeenNonZeroMmRegions = true;
       }
       parseMmSave(state.mm, mmSaveData);
-      const mmLiveSignature = readMmPlayStateSignature(memory);
       const mmLiveSample = readMmPlayStateSample(memory);
-      if (
-        this.shouldDeferActiveGameFrame(
-          'MM',
-          mmLiveSignature,
-          mmLiveSample != null,
-        )
-      ) {
-        return null;
-      }
       if (mmLiveSample) {
-        state.mm.liveSceneId = mmLiveSample.sceneId;
-        state.mm.liveChestFlags = mmLiveSample.chestFlags;
-        state.mm.liveSwitch0Flags = mmLiveSample.switch0Flags;
-        state.mm.liveSwitch1Flags = mmLiveSample.switch1Flags;
-        state.mm.liveCollectFlags = mmLiveSample.collectFlags;
-        state.mm.hasLiveSceneFlags = true;
+        this.applyMmLiveSceneSample(state.mm, mmLiveSample);
       }
       this.readForeignOotState(memory, state.oot);
       state.mm.extraFlags2 = state.oot.extraRecords[EXTRA_IDX_MM_FLAGS2] ?? 0;
@@ -2039,115 +2053,99 @@ class RawAutotrackerParserImpl implements RawAutotrackerParser {
     mm.extraFlags2 |= this.lastKnownMm.extraFlags2;
   }
 
-  private shouldDeferActiveGameFrame(
-    activeGame: RawAutotrackerGame,
-    signature: LivePlayStateSignature | null,
-    canAccept: boolean,
-  ): boolean {
-    if (!signature) {
-      return false;
+  /**
+   * Records the active game and detects OoT <-> MM game switches.  A game
+   * switch starts the settle window (see `isWithinGameSettleWindow`), during
+   * which the backend broadcasts garbage save data and frames are dropped.
+   */
+  private trackActiveGame(activeGame: RawAutotrackerGame): void {
+    if (this.lastActiveGame !== null && this.lastActiveGame !== activeGame) {
+      this.activeGameChangedAt = Date.now();
     }
-
-    const signatureKey = livePlayStateSignatureKey(signature);
-
-    // Timeout-based acceptance: if a transition has been pending for 2 s
-    // without new data, the autotracker is idle → state is stable.
-    if (
-      this.pendingLiveTransitionGame === activeGame &&
-      this.pendingLiveTransitionSignature === signatureKey &&
-      this.pendingLiveTransitionTimestamp !== null
-    ) {
-      const elapsed = Date.now() - this.pendingLiveTransitionTimestamp;
-      if (elapsed >= 2000) {
-        this.pendingLiveTransitionDiscardCount = 0;
-        this.markStableActiveGameFrame(activeGame, signatureKey);
-        return false;
-      }
-    }
-
-    if (!canAccept) {
-      // Don't let an invalid playstate sample overwrite an existing
-      // pending transition for the same game.  The pending state retains
-      // the last valid signature, its discard count, and its timestamp,
-      // so the next valid frame can make progress through the gate or
-      // eventually be accepted via timeout.
-      if (this.pendingLiveTransitionGame === activeGame) {
-        return true;
-      }
-
-      this.pendingLiveTransitionGame = activeGame;
-      this.pendingLiveTransitionSignature = signatureKey;
-      // Don't record a timestamp for implausible samples – we never want
-      // to accept nonsense data via timeout.
-      this.pendingLiveTransitionTimestamp = null;
-      return true;
-    }
-
-    const stableSignature =
-      activeGame === 'OoT'
-        ? this.lastStableOotLiveSignature
-        : this.lastStableMmLiveSignature;
-
-    if (this.lastStableActiveGame === null) {
-      this.markStableActiveGameFrame(activeGame, signatureKey);
-      return false;
-    }
-
-    if (
-      this.lastStableActiveGame === activeGame &&
-      stableSignature === signatureKey
-    ) {
-      this.pendingLiveTransitionGame = null;
-      this.pendingLiveTransitionSignature = null;
-      this.pendingLiveTransitionTimestamp = null;
-      this.pendingLiveTransitionDiscardCount = 0;
-      return false;
-    }
-
-    // If only the room changed (scene is the same), accept immediately.
-    // Room transitions within a scene are legitimate player movement,
-    // and implausible room values are already rejected by canAccept=false.
-    if (this.lastStableActiveGame === activeGame && stableSignature !== null) {
-      const stableSceneId = Number(stableSignature.split(':')[0]);
-      if (stableSceneId === signature.sceneId) {
-        this.markStableActiveGameFrame(activeGame, signatureKey);
-        return false;
-      }
-    }
-
-    if (
-      this.pendingLiveTransitionGame === activeGame &&
-      this.pendingLiveTransitionSignature === signatureKey
-    ) {
-      if (this.pendingLiveTransitionDiscardCount > 0) {
-        this.pendingLiveTransitionDiscardCount--;
-        return true;
-      }
-      this.markStableActiveGameFrame(activeGame, signatureKey);
-      return false;
-    }
-
-    this.pendingLiveTransitionGame = activeGame;
-    this.pendingLiveTransitionSignature = signatureKey;
-    this.pendingLiveTransitionTimestamp = Date.now();
-    this.pendingLiveTransitionDiscardCount = 1;
-    return true;
+    this.lastActiveGame = activeGame;
   }
 
-  private markStableActiveGameFrame(
-    activeGame: RawAutotrackerGame,
-    signatureKey: string,
+  /**
+   * True when the active game switched (OoT <-> MM) within the last
+   * `gameTransitionSettleMs`.  During this window the save context contains
+   * garbage, so `parseGameState` drops the whole frame rather than processing
+   * it.  Defaults to 0 (no defer window) since received data stays stable
+   * across transitions; kept as a separate knob for future use.
+   */
+  private isWithinGameSettleWindow(): boolean {
+    return (
+      this.activeGameChangedAt !== null &&
+      Date.now() - this.activeGameChangedAt < this.gameTransitionSettleMs
+    );
+  }
+
+  /**
+   * Applies the live OoT play-state sample to `oot`, withholding the live flag
+   * words (chest/collect/temp-collect) for `sceneSettleMs` after a live
+   * scene-ID change.  The scene ID itself is always applied so the map can
+   * switch immediately; only flag attribution is deferred, falling back to the
+   * (correctly attributed) save-context permanent flags during the window.
+   */
+  private applyOotLiveSceneSample(
+    oot: OotState,
+    sample: OotPlayStateSample,
   ): void {
-    this.lastStableActiveGame = activeGame;
-    if (activeGame === 'OoT') {
-      this.lastStableOotLiveSignature = signatureKey;
-    } else {
-      this.lastStableMmLiveSignature = signatureKey;
+    oot.liveSceneId = sample.sceneId;
+
+    if (this.lastOotLiveSceneId === null) {
+      // First observation of the active game's play-state: there is no
+      // previous scene to be inconsistent with, so apply immediately.
+      this.lastOotLiveSceneId = sample.sceneId;
+      this.applyOotLiveFlags(oot, sample);
+      return;
     }
-    this.pendingLiveTransitionGame = null;
-    this.pendingLiveTransitionSignature = null;
-    this.pendingLiveTransitionTimestamp = null;
-    this.pendingLiveTransitionDiscardCount = 0;
+
+    if (this.lastOotLiveSceneId !== sample.sceneId) {
+      this.lastOotLiveSceneId = sample.sceneId;
+      this.ootLiveSceneChangedAt = Date.now();
+    }
+
+    if (Date.now() - this.ootLiveSceneChangedAt < this.sceneSettleMs) {
+      return;
+    }
+
+    this.applyOotLiveFlags(oot, sample);
+  }
+
+  private applyMmLiveSceneSample(mm: MmState, sample: MmPlayStateSample): void {
+    mm.liveSceneId = sample.sceneId;
+
+    if (this.lastMmLiveSceneId === null) {
+      this.lastMmLiveSceneId = sample.sceneId;
+      this.applyMmLiveFlags(mm, sample);
+      return;
+    }
+
+    if (this.lastMmLiveSceneId !== sample.sceneId) {
+      this.lastMmLiveSceneId = sample.sceneId;
+      this.mmLiveSceneChangedAt = Date.now();
+    }
+
+    if (Date.now() - this.mmLiveSceneChangedAt < this.sceneSettleMs) {
+      return;
+    }
+
+    this.applyMmLiveFlags(mm, sample);
+  }
+
+  private applyOotLiveFlags(oot: OotState, sample: OotPlayStateSample): void {
+    oot.liveChestFlags = sample.chestFlags;
+    oot.liveCollectFlags = sample.collectFlags;
+    oot.liveTempCollectFlag = sample.tempCollect;
+    oot.hasLiveSceneFlags = true;
+  }
+
+  private applyMmLiveFlags(mm: MmState, sample: MmPlayStateSample): void {
+    mm.liveChestFlags = sample.chestFlags;
+    mm.liveSwitch0Flags = sample.switch0Flags;
+    mm.liveSwitch1Flags = sample.switch1Flags;
+    mm.liveCollectFlags = sample.collectFlags;
+    mm.hasLiveSceneFlags = true;
   }
 
   private rememberOotState(oot: OotState): void {
@@ -2185,6 +2183,22 @@ export interface CreateRawAutotrackerParserOptions {
    * If omitted, the default data version is used.
    */
   ootmmVersion?: string | null;
+
+  /**
+   * How long (ms) to withhold live scene flag words after a live scene-ID
+   * change.  Used to bridge the scene-transition race where the scene ID
+   * updates before the flag words do.  Defaults to
+   * {@link DEFAULT_SCENE_SETTLE_MS}.
+   */
+  sceneSettleMs?: number;
+
+  /**
+   * How long (ms) to drop whole frames after an OoT <-> MM game switch.
+   * Defaults to {@link DEFAULT_GAME_TRANSITION_SETTLE_MS} (currently 0, since
+   * received data stays stable across transitions).  Kept as a separate knob
+   * so a game-transition defer window can be re-enabled later if needed.
+   */
+  gameTransitionSettleMs?: number;
 }
 
 export async function createRawAutotrackerParser(
@@ -2206,7 +2220,10 @@ export async function createRawAutotrackerParser(
       const { dirName } = resolveAutotrackerDataVersion(options.ootmmVersion);
       const bundle = await loadAutotrackerData(dirName);
       applyVersionData(buildParserTables(bundle));
-      return new RawAutotrackerParserImpl();
+      return new RawAutotrackerParserImpl(
+        options.sceneSettleMs,
+        options.gameTransitionSettleMs,
+      );
     }
   }
 
@@ -2217,7 +2234,10 @@ export async function createRawAutotrackerParser(
   // imported spoiler log while a non-default version was loaded).
   const defaultBundle = loadAutotrackerDataSync(DEFAULT_DATA_VERSION.dirName);
   applyVersionData(buildParserTables(defaultBundle));
-  return new RawAutotrackerParserImpl();
+  return new RawAutotrackerParserImpl(
+    options?.sceneSettleMs,
+    options?.gameTransitionSettleMs,
+  );
 }
 
 /**
@@ -2226,9 +2246,11 @@ export async function createRawAutotrackerParser(
  */
 export function createRawAutotrackerParserForTest(
   bundle: AutotrackerDataBundle,
+  sceneSettleMs?: number,
+  gameTransitionSettleMs?: number,
 ): RawAutotrackerParser {
   applyVersionData(buildParserTables(bundle));
-  return new RawAutotrackerParserImpl();
+  return new RawAutotrackerParserImpl(sceneSettleMs, gameTransitionSettleMs);
 }
 
 /**
@@ -2238,10 +2260,17 @@ export function createRawAutotrackerParserForTest(
  */
 export function createRawAutotrackerParserSync(
   dirName = 'v32_0',
+  options?: Pick<
+    CreateRawAutotrackerParserOptions,
+    'sceneSettleMs' | 'gameTransitionSettleMs'
+  >,
 ): RawAutotrackerParser {
   const bundle = loadAutotrackerDataSync(dirName);
   applyVersionData(buildParserTables(bundle));
-  return new RawAutotrackerParserImpl();
+  return new RawAutotrackerParserImpl(
+    options?.sceneSettleMs,
+    options?.gameTransitionSettleMs,
+  );
 }
 
 function normalizeRawGame(game: string): RawAutotrackerGame | null {
@@ -2713,14 +2742,9 @@ function getOotSourceInfo(
   }
 }
 
-function readOotPlayStateSample(memory: RawFrameMemory): {
-  sceneId: number;
-  currentRoom: number;
-  linkAgeOnLoad: number;
-  chestFlags: number;
-  collectFlags: number;
-  tempCollect: number;
-} | null {
+function readOotPlayStateSample(
+  memory: RawFrameMemory,
+): OotPlayStateSample | null {
   const directScene = memory.get(OOT_PLAYSTATE_SCENE_CHUNK);
   const directRoom = memory.get(OOT_PLAYSTATE_ROOM_CHUNK);
   const directLinkAge = memory.get(OOT_PLAYSTATE_LINK_AGE_CHUNK);
@@ -2748,21 +2772,6 @@ function readOotPlayStateSample(memory: RawFrameMemory): {
   return null;
 }
 
-function readOotPlayStateSignature(
-  memory: RawFrameMemory,
-): LivePlayStateSignature | null {
-  const directScene = memory.get(OOT_PLAYSTATE_SCENE_CHUNK);
-  const directRoom = memory.get(OOT_PLAYSTATE_ROOM_CHUNK);
-  if (!directScene || !directRoom) {
-    return null;
-  }
-
-  return {
-    sceneId: readU16BE(directScene.data, 0),
-    currentRoom: readU8(directRoom.data, 0),
-  };
-}
-
 function isPlausibleOotPlayStateSample(sample: {
   sceneId: number;
   currentRoom: number;
@@ -2775,14 +2784,9 @@ function isPlausibleOotPlayStateSample(sample: {
   );
 }
 
-function readMmPlayStateSample(memory: RawFrameMemory): {
-  sceneId: number;
-  currentRoom: number;
-  switch0Flags: number;
-  switch1Flags: number;
-  chestFlags: number;
-  collectFlags: number;
-} | null {
+function readMmPlayStateSample(
+  memory: RawFrameMemory,
+): MmPlayStateSample | null {
   const directScene = memory.get(MM_PLAYSTATE_SCENE_CHUNK);
   const directRoom = memory.get(MM_PLAYSTATE_ROOM_CHUNK);
   const directFlags = memory.get(MM_PLAYSTATE_FLAGS_CHUNK);
@@ -2812,30 +2816,11 @@ function readMmPlayStateSample(memory: RawFrameMemory): {
   return null;
 }
 
-function readMmPlayStateSignature(
-  memory: RawFrameMemory,
-): LivePlayStateSignature | null {
-  const directScene = memory.get(MM_PLAYSTATE_SCENE_CHUNK);
-  const directRoom = memory.get(MM_PLAYSTATE_ROOM_CHUNK);
-  if (!directScene || !directRoom) {
-    return null;
-  }
-
-  return {
-    sceneId: readU16BE(directScene.data, 0),
-    currentRoom: readU8(directRoom.data, 0),
-  };
-}
-
 function isPlausibleMmPlayStateSample(sample: {
   sceneId: number;
   currentRoom: number;
 }): boolean {
   return sample.sceneId < MM_PERM_COUNT && sample.currentRoom < 0x40;
-}
-
-function livePlayStateSignatureKey(signature: LivePlayStateSignature): string {
-  return `${signature.sceneId}:${signature.currentRoom}`;
 }
 
 function readOotRuntimeConfig(

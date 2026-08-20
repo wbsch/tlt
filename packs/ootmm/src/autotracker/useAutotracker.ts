@@ -50,8 +50,8 @@ interface AutotrackerOptions {
   ) => void;
   /**
    * Called when the autotracker detects a scene or game change.
-   * Fires synchronously in processRawMessage/tryIdleAccept, not via a Vue
-   * watcher, so it is guaranteed to run as soon as a new scene is accepted.
+   * Fires synchronously in processRawMessage, not via a Vue watcher, so it is
+   * guaranteed to run as soon as a new scene is accepted.
    */
   onSceneChange?: (activeGame: RawAutotrackerGame, sceneId: number) => void;
 }
@@ -427,9 +427,8 @@ export function useAutotracker(options: AutotrackerOptions) {
   let lastTrackedSceneKey = '';
 
   /**
-   * Called from processRawMessage and tryIdleAccept to fire the
-   * onSceneChange callback synchronously when the active game or scene
-   * ID changes.
+   * Called from processRawMessage to fire the onSceneChange callback
+   * synchronously when the active game or scene ID changes.
    */
   function notifySceneChange(parsed: ParsedRawAutotrackerSnapshot): void {
     const sceneKey =
@@ -453,8 +452,6 @@ export function useAutotracker(options: AutotrackerOptions) {
   let reconnectAttempts = 0;
   let hasReceivedRawSnapshot = false;
   let preserveVersionWarningOnDisable = false;
-  let lastRawMessage: RawAutotrackerMessage | null = null;
-  let idleAcceptTimer: ReturnType<typeof setTimeout> | null = null;
   let wasEverOpened = false;
 
   // Canonical autotracker state (translated to tracker IDs)
@@ -603,28 +600,13 @@ export function useAutotracker(options: AutotrackerOptions) {
       return;
     }
 
-    lastRawMessage = msg;
-
     if (!rawParser) {
       return;
     }
     const parsed = rawParser.parse(msg);
     if (!parsed) {
-      // Frame was deferred (scene transition in progress). Start a timer so
-      // that after 2 s of silence the pending transition is accepted.
-      if (!idleAcceptTimer) {
-        idleAcceptTimer = setTimeout(() => {
-          idleAcceptTimer = null;
-          tryIdleAccept();
-        }, 2000);
-      }
+      // Frame rejected (e.g. implausible or missing save data) – ignore it.
       return;
-    }
-
-    // Frame was accepted – cancel any pending idle-accept timer.
-    if (idleAcceptTimer) {
-      clearTimeout(idleAcceptTimer);
-      idleAcceptTimer = null;
     }
 
     activeGame.value = parsed.activeGame;
@@ -651,39 +633,6 @@ export function useAutotracker(options: AutotrackerOptions) {
     if (msg.refresh) {
       pushToTracker(phase);
     }
-  }
-
-  /**
-   * After 2 s of silence from the autotracker, re-parse the last message.
-   * The parser's timeout-based acceptance will then accept any pending
-   * transition that has been stable for ≥ 2 s.
-   */
-  function tryIdleAccept() {
-    if (!lastRawMessage || !rawParser) {
-      return;
-    }
-    const parsed = rawParser.parse(lastRawMessage);
-    if (!parsed) {
-      return;
-    }
-
-    activeGame.value = parsed.activeGame;
-    ootSceneId.value = parsed.ootSceneId;
-    mmSceneId.value = parsed.mmSceneId;
-
-    // Synchronous scene-change notification (not reliant on Vue watchers).
-    notifySceneChange(parsed);
-
-    liveRawState = applyRawAutotrackerItems(new Map(), parsed.items, false);
-    liveState = buildTranslatedAutotrackerState(
-      liveRawState,
-      options.availableItemIds.value,
-      options.itemMaxCounts.value,
-      childWalletsEnabled(),
-    );
-    replaceLiveChecks(parsed.checks);
-
-    pushToTracker('live');
   }
 
   function getCollectedLocationIds(): string[] {
@@ -720,10 +669,6 @@ export function useAutotracker(options: AutotrackerOptions) {
       clearTimeout(reconnectTimer);
       reconnectTimer = null;
     }
-    if (idleAcceptTimer) {
-      clearTimeout(idleAcceptTimer);
-      idleAcceptTimer = null;
-    }
     if (ws) {
       ws.onopen = null;
       ws.onmessage = null;
@@ -735,7 +680,6 @@ export function useAutotracker(options: AutotrackerOptions) {
     hasReceivedRawSnapshot = false;
     wasEverOpened = false;
     rawParser?.reset();
-    lastRawMessage = null;
     lastTrackedSceneKey = '';
   }
 
