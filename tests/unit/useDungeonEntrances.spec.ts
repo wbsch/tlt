@@ -950,6 +950,70 @@ describe('useDungeonEntrances', () => {
     ).toBe(true);
   });
 
+  it('includes warp songs and soaring spots in wallmaster destination options when erWarps is enabled', () => {
+    const sessionStore = useOoTMMSessionStore();
+    useOoTMMUiStore();
+
+    // OoTMM's poolWallmasters() dst comes from poolsTypesDst(), which
+    // includes the WARPS pool (one-way-song / one-way-statue) whenever
+    // erWarps is active.
+    sessionStore.trackerSettings = {
+      games: 'ootmm',
+      erWallmasters: 'full',
+      erWarps: 'full',
+    };
+
+    const entrances = useDungeonEntrances();
+    const wallmaster = entrances.activeEntrances.value.find(
+      (entry) => entry.pool === 'wallmaster',
+    );
+    expect(wallmaster).toBeTruthy();
+
+    const options = entrances.destinationOptionsForEntrance(wallmaster!);
+
+    // OoT warp songs
+    expect(
+      options.some((option) => option.value === 'OOT_WARP_SONG_LAKE'),
+    ).toBe(true);
+    expect(
+      options.some((option) => option.value === 'OOT_WARP_SONG_MEADOW'),
+    ).toBe(true);
+
+    // MM soaring spots
+    expect(
+      options.some((option) => option.value === 'MM_WARP_OWL_CLOCK_TOWN'),
+    ).toBe(true);
+    expect(
+      options.some((option) => option.value === 'MM_WARP_OWL_STONE_TOWER'),
+    ).toBe(true);
+  });
+
+  it('excludes warp songs and soaring spots from wallmaster destinations when erWarps is disabled', () => {
+    const sessionStore = useOoTMMSessionStore();
+    useOoTMMUiStore();
+
+    sessionStore.trackerSettings = {
+      games: 'ootmm',
+      erWallmasters: 'full',
+      erWarps: 'none',
+    };
+
+    const entrances = useDungeonEntrances();
+    const wallmaster = entrances.activeEntrances.value.find(
+      (entry) => entry.pool === 'wallmaster',
+    );
+    expect(wallmaster).toBeTruthy();
+
+    const options = entrances.destinationOptionsForEntrance(wallmaster!);
+
+    expect(
+      options.some((option) => option.value === 'OOT_WARP_SONG_LAKE'),
+    ).toBe(false);
+    expect(
+      options.some((option) => option.value === 'MM_WARP_OWL_CLOCK_TOWN'),
+    ).toBe(false);
+  });
+
   it('includes major-region edges in one-way destination options when erOneWaysAnywhere and erOverworld are enabled', () => {
     const sessionStore = useOoTMMSessionStore();
     useOoTMMUiStore();

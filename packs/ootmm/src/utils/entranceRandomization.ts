@@ -750,6 +750,13 @@ export function isTrackedWallmasterDestination(
   }
 
   if (
+    settings?.erWarps &&
+    settings?.erWarps !== 'none' &&
+    getEnabledWarpSources(settings).has(type)
+  )
+    return true;
+
+  if (
     settings?.erOneWays &&
     settings?.erOneWays !== 'none' &&
     isOneWayTypeEnabled(type, settings)
