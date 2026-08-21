@@ -1,0 +1,18 @@
+{
+  "sharedCustomSaveSize": 2204,
+  "halfDaysOffset": 1780,
+  "coinsOffset": 2016,
+  "ocarinaButtonMaskOotOffset": 2024,
+  "ocarinaButtonMaskMmOffset": 2026,
+  "caughtChildFishWeightOffset": 2069,
+  "caughtAdultFishWeightOffset": 2089,
+  "caughtFishWeightCount": 20,
+  "songNotesOffset": 2157,
+  "songNoteCount": 38,
+  "rustyKeysOffset": 2195,
+  "rustyKeysOotSize": 4,
+  "rustyKeysMmSize": 5,
+  "songFlagsOotOffset": 886,
+  "songFlagsMmOffset": 1976,
+  "bombchuBagFlagsOffset": 2148
+}

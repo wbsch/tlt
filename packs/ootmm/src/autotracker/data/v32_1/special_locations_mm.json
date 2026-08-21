@@ -1,0 +1,1892 @@
+[
+  {
+    "code": "0x00",
+    "symbol": "MM_KOTAKE_RED_POTION",
+    "sources": [
+      {
+        "group": "weekEventReg",
+        "field": "gMmSave.info.weekEventReg[84]",
+        "mask": "0x40"
+      }
+    ],
+    "note": "received red potion for Koume",
+    "name": "Swamp Potion Shop Kotake",
+    "bits": [678],
+    "byteIndex": 84,
+    "mask": 64
+  },
+  {
+    "code": "0x01",
+    "symbol": "MM_KOUME_PICTOGRAPH_BOX",
+    "sources": [
+      {
+        "group": "gMmExtraFlags",
+        "field": "gMmExtraFlags.pictobox",
+        "mask": "0x00000001"
+      }
+    ],
+    "note": "pictograph box check",
+    "name": "Tourist Information Pictobox",
+    "bits": [31]
+  },
+  {
+    "code": "0x02",
+    "symbol": "MM_SONG_AWAKENING",
+    "sources": [
+      {
+        "group": "weekEventReg",
+        "field": "gMmSave.info.weekEventReg[9]",
+        "mask": "0x80"
+      }
+    ],
+    "note": "monkey reward cutscene week event set before the randomizer item is granted",
+    "name": "Deku Palace Sonata of Awakening",
+    "bits": [79],
+    "byteIndex": 9,
+    "mask": 128
+  },
+  {
+    "code": "0x03",
+    "symbol": "MM_MASK_GORON",
+    "sources": [
+      {
+        "group": "gMmExtraFlags",
+        "field": "gMmExtraFlags.maskGoron",
+        "mask": "0x00000400"
+      }
+    ],
+    "note": "Goron Mask check",
+    "name": "Goron Graveyard Mask",
+    "bits": [21]
+  },
+  {
+    "code": "0x04",
+    "symbol": "MM_GORON_ELDER",
+    "sources": [
+      {
+        "group": "gMmExtraFlags",
+        "field": "gMmExtraFlags.songGoronIntro",
+        "mask": "0x00040000"
+      }
+    ],
+    "note": "Goron Lullaby Intro / half-lullaby check",
+    "name": "Goron Elder",
+    "bits": [13]
+  },
+  {
+    "code": "0x05",
+    "symbol": "MM_GORON_BABY",
+    "sources": [
+      {
+        "group": "gMmExtraFlags",
+        "field": "gMmExtraFlags.songGoron",
+        "mask": "0x00080000"
+      }
+    ],
+    "note": "full Goron Lullaby check",
+    "name": "Goron Baby",
+    "bits": [12]
+  },
+  {
+    "code": "0x06",
+    "symbol": "MM_GORON_KEG",
+    "sources": [
+      {
+        "group": "gMmExtraFlags",
+        "field": "gMmExtraFlags.powderKeg",
+        "mask": "0x00100000"
+      }
+    ],
+    "note": "Powder Keg check",
+    "name": "Goron Powder Keg",
+    "bits": [11]
+  },
+  {
+    "code": "0x07",
+    "symbol": "MM_SONG_EPONA",
+    "sources": [
+      {
+        "group": "gMmExtraFlags",
+        "field": "gMmExtraFlags.songEpona",
+        "mask": "0x00000008"
+      }
+    ],
+    "note": "location gate; song also exists in quest bits",
+    "name": "Romani Ranch Epona Song",
+    "bits": [28]
+  },
+  {
+    "code": "0x08",
+    "symbol": "MM_MASK_ZORA",
+    "sources": [
+      {
+        "group": "gMmExtraFlags",
+        "field": "gMmExtraFlags.maskZora",
+        "mask": "0x00000040"
+      }
+    ],
+    "note": "Zora Mask check",
+    "name": "Great Bay Coast Zora Mask",
+    "bits": [25]
+  },
+  {
+    "code": "0x09",
+    "symbol": "MM_SEAHORSE_HEART_PIECE",
+    "sources": [
+      {
+        "group": "weekEventReg",
+        "field": "gMmSave.info.weekEventReg[32]",
+        "mask": "0x01"
+      }
+    ],
+    "note": "seahorse heart piece",
+    "name": "Pinnacle Rock HP",
+    "bits": [256],
+    "byteIndex": 32,
+    "mask": 1
+  },
+  {
+    "code": "0x0a",
+    "symbol": "MM_SONG_ZORA",
+    "sources": [
+      {
+        "group": "inventoryQuest",
+        "field": "gMmSave.info.inventory.quest.value",
+        "mask": "0x00800000"
+      }
+    ],
+    "note": "owned song bit; no separate local extra flag",
+    "name": "Laboratory Zora Song"
+  },
+  {
+    "code": "0x0b",
+    "symbol": "MM_MASK_STONE",
+    "sources": [
+      {
+        "group": "gMmExtraFlags",
+        "field": "gMmExtraFlags.maskStone",
+        "mask": "0x00200000"
+      }
+    ],
+    "note": "Stone Mask check",
+    "name": "Road to Ikana Stone Mask",
+    "bits": [10]
+  },
+  {
+    "code": "0x0c",
+    "symbol": "MM_MASK_GARO",
+    "sources": [
+      {
+        "group": "gMmExtraFlags",
+        "field": "gMmExtraFlags.maskGaro",
+        "mask": "0x00000020"
+      }
+    ],
+    "note": "Garo Mask check",
+    "name": "Gorman Track Garo Mask",
+    "bits": [26]
+  },
+  {
+    "code": "0x0d",
+    "symbol": "MM_SONG_STORMS",
+    "sources": [
+      {
+        "group": "gMmExtraFlags",
+        "field": "gMmExtraFlags.songStorms",
+        "mask": "0x00400000"
+      }
+    ],
+    "note": "location gate; song also exists in quest bits",
+    "name": "Beneath The Graveyard Song of Storms",
+    "bits": [9]
+  },
+  {
+    "code": "0x0e",
+    "symbol": "MM_MASK_GIBDO",
+    "sources": [
+      {
+        "group": "gMmExtraFlags",
+        "field": "gMmExtraFlags.maskGibdo",
+        "mask": "0x01000000"
+      }
+    ],
+    "note": "Gibdo Mask check",
+    "name": "Music Box House Gibdo Mask",
+    "bits": [7]
+  },
+  {
+    "code": "0x0f",
+    "symbol": "MM_MASK_SCENTS",
+    "sources": [
+      {
+        "group": "gMmExtraFlags2",
+        "field": "gMmExtraFlags2.maskScents",
+        "mask": "0x00400000"
+      }
+    ],
+    "note": "Mask of Scents check",
+    "name": "Deku Shrine Mask of Scents",
+    "bits": [9]
+  },
+  {
+    "code": "0x10",
+    "symbol": "MM_SONG_EMPTINESS",
+    "sources": [
+      {
+        "group": "gMmExtraFlags",
+        "field": "gMmExtraFlags.songEmptiness",
+        "mask": "0x00800000"
+      }
+    ],
+    "note": "location gate; song also exists in quest bits",
+    "name": "Ancient Castle of Ikana Song Emptiness",
+    "bits": [8]
+  },
+  {
+    "code": "0x11",
+    "symbol": "MM_SONG_ORDER",
+    "sources": [
+      {
+        "group": "gMmExtraFlags2",
+        "field": "gMmExtraFlags2.songOath",
+        "mask": "0x00040000"
+      }
+    ],
+    "note": "Song of Order check; owned song also lands in quest bits",
+    "name": "Oath to Order",
+    "bits": [13]
+  },
+  {
+    "code": "0x12",
+    "symbol": "MM_MOON_TEAR",
+    "sources": [
+      {
+        "group": "gMmExtraFlags2",
+        "field": "gMmExtraFlags2.moonTear",
+        "mask": "0x02000000"
+      }
+    ],
+    "note": "Moon's Tear check",
+    "name": "Astral Observatory Moon Tear",
+    "bits": [6]
+  },
+  {
+    "code": "0x13",
+    "symbol": "MM_MASK_KAMARO",
+    "sources": [
+      {
+        "group": "gMmExtraFlags2",
+        "field": "gMmExtraFlags2.maskKamaro",
+        "mask": "0x00800000"
+      }
+    ],
+    "note": "Kamaro's Mask check",
+    "name": "Termina Field Kamaro Mask",
+    "bits": [8]
+  },
+  {
+    "code": "0x14",
+    "symbol": "MM_SCRUB_LAND",
+    "sources": [
+      {
+        "group": "gMmExtraFlags",
+        "field": "gMmExtraFlags.scrubTown",
+        "mask": "0x00000800"
+      }
+    ],
+    "note": "land deed scrub",
+    "name": "Clock Town Business Scrub",
+    "bits": [20]
+  },
+  {
+    "code": "0x15",
+    "symbol": "MM_SCRUB_SWAMP",
+    "sources": [
+      {
+        "group": "gMmExtraFlags",
+        "field": "gMmExtraFlags.scrubSwamp",
+        "mask": "0x00001000"
+      }
+    ],
+    "note": "swamp deed scrub",
+    "name": "Southern Swamp Scrub Deed",
+    "bits": [19]
+  },
+  {
+    "code": "0x16",
+    "symbol": "MM_SCRUB_MOUNTAIN",
+    "sources": [
+      {
+        "group": "gMmExtraFlags",
+        "field": "gMmExtraFlags.scrubMountain",
+        "mask": "0x00002000"
+      }
+    ],
+    "note": "mountain deed scrub",
+    "name": "Goron Village Scrub Deed",
+    "bits": [18]
+  },
+  {
+    "code": "0x17",
+    "symbol": "MM_SCRUB_OCEAN",
+    "sources": [
+      {
+        "group": "gMmExtraFlags",
+        "field": "gMmExtraFlags.scrubOcean",
+        "mask": "0x00004000"
+      }
+    ],
+    "note": "ocean deed scrub",
+    "name": "Zora Hall Scrub Deed",
+    "bits": [17]
+  },
+  {
+    "code": "0x18",
+    "symbol": "MM_SCRUB_VALLEY",
+    "sources": [
+      {
+        "group": "gMmExtraFlags",
+        "field": "gMmExtraFlags.scrubValley",
+        "mask": "0x00008000"
+      }
+    ],
+    "note": "valley deed scrub",
+    "name": "Ikana Valley Scrub Rupee",
+    "bits": [16]
+  },
+  {
+    "code": "0x19",
+    "symbol": "MM_SHOOTING_GAME_TOWN_1",
+    "sources": [
+      {
+        "group": "weekEventReg",
+        "field": "gMmSave.info.weekEventReg[59]",
+        "mask": "0x20"
+      }
+    ],
+    "note": "town shooting gallery quiver reward",
+    "name": "Town Archery Reward 1",
+    "bits": [477],
+    "byteIndex": 59,
+    "mask": 32
+  },
+  {
+    "code": "0x1a",
+    "symbol": "MM_SHOOTING_GAME_TOWN_2",
+    "sources": [
+      {
+        "group": "weekEventReg",
+        "field": "gMmSave.info.weekEventReg[32]",
+        "mask": "0x04"
+      }
+    ],
+    "note": "town shooting gallery heart piece",
+    "name": "Town Archery Reward 2",
+    "bits": [258],
+    "byteIndex": 32,
+    "mask": 4
+  },
+  {
+    "code": "0x1b",
+    "symbol": "MM_SHOOTING_GAME_SWAMP_1",
+    "sources": [
+      {
+        "group": "weekEventReg",
+        "field": "gMmSave.info.weekEventReg[59]",
+        "mask": "0x10"
+      }
+    ],
+    "note": "swamp shooting gallery quiver reward",
+    "name": "Swamp Archery Reward 1",
+    "bits": [476],
+    "byteIndex": 59,
+    "mask": 16
+  },
+  {
+    "code": "0x1c",
+    "symbol": "MM_SHOOTING_GAME_SWAMP_2",
+    "sources": [
+      {
+        "group": "weekEventReg",
+        "field": "gMmSave.info.weekEventReg[32]",
+        "mask": "0x02"
+      }
+    ],
+    "note": "swamp shooting gallery heart piece",
+    "name": "Swamp Archery Reward 2",
+    "bits": [257],
+    "byteIndex": 32,
+    "mask": 2
+  },
+  {
+    "code": "0x1d",
+    "symbol": "MM_KOUME_HEART_PIECE",
+    "sources": [
+      {
+        "group": "weekEventReg",
+        "field": "gMmSave.info.weekEventReg[26]",
+        "mask": "0x40"
+      }
+    ],
+    "note": "boat house heart piece",
+    "name": "Tourist Information Boat Archery",
+    "bits": [214],
+    "byteIndex": 26,
+    "mask": 64
+  },
+  {
+    "code": "0x1e",
+    "symbol": "MM_TOUR_GUIDE_HEART_PIECE",
+    "sources": [
+      {
+        "group": "weekEventReg",
+        "field": "gMmSave.info.weekEventReg[87]",
+        "mask": "0x04"
+      },
+      {
+        "group": "weekEventReg",
+        "field": "gMmSave.info.weekEventReg[87]",
+        "mask": "0x08"
+      }
+    ],
+    "note": "OoTMM collapses two En_Shn heart-piece branches into one NPC code",
+    "name": "Tourist Information Tingle Picture",
+    "bits": [698, 699],
+    "byteIndex": 87,
+    "mask": 4
+  },
+  {
+    "code": "0x1f",
+    "symbol": "MM_SPIDER_HOUSE_SWAMP",
+    "sources": [
+      {
+        "group": "gMmExtraFlags2",
+        "field": "gMmExtraFlags2.maskTruth",
+        "mask": "0x01000000"
+      }
+    ],
+    "note": "Mask of Truth reward",
+    "name": "Swamp Spider House Mask of Truth",
+    "bits": [7]
+  },
+  {
+    "code": "0x20",
+    "symbol": "MM_SPIDER_HOUSE_OCEAN",
+    "sources": [
+      {
+        "group": "weekEventReg",
+        "field": "gMmSave.info.weekEventReg[13]",
+        "mask": "0x80"
+      }
+    ],
+    "note": "Oceanside Spider House reward flag",
+    "name": "Ocean Spider House Wallet",
+    "bits": [111],
+    "byteIndex": 13,
+    "mask": 128
+  },
+  {
+    "code": "0x21",
+    "symbol": "MM_SONG_SOARING",
+    "sources": [
+      {
+        "group": "gMmExtraFlags",
+        "field": "gMmExtraFlags.songSoaring",
+        "mask": "0x00000002"
+      }
+    ],
+    "note": "location gate; song also exists in quest bits",
+    "name": "Southern Swamp Song of Soaring",
+    "bits": [30]
+  },
+  {
+    "code": "0x22",
+    "symbol": "MM_MASK_BREMEN",
+    "sources": [
+      {
+        "group": "gMmExtraFlags2",
+        "field": "gMmExtraFlags2.maskBremen",
+        "mask": "0x00200000"
+      }
+    ],
+    "note": "Bremen Mask check",
+    "name": "Clock Town Guru Guru Mask Bremen",
+    "bits": [10]
+  },
+  {
+    "code": "0x23",
+    "symbol": "MM_MASK_BUNNY",
+    "sources": [
+      {
+        "group": "gMmExtraFlags",
+        "field": "gMmExtraFlags.maskBunny",
+        "mask": "0x00000004"
+      }
+    ],
+    "note": "Bunny Hood check",
+    "name": "Cucco Shack Bunny Mask",
+    "bits": [29]
+  },
+  {
+    "code": "0x24",
+    "symbol": "MM_DOG_LADY_HEART_PIECE",
+    "sources": [
+      {
+        "group": "weekEventReg",
+        "field": "gMmSave.info.weekEventReg[8]",
+        "mask": "0x20"
+      }
+    ],
+    "note": "dog race heart piece",
+    "name": "Doggy Racetrack HP",
+    "bits": [69],
+    "byteIndex": 8,
+    "mask": 32
+  },
+  {
+    "code": "0x25",
+    "symbol": "MM_ROMANI_BOTTLE",
+    "sources": [
+      {
+        "group": "weekEventReg",
+        "field": "gMmSave.info.weekEventReg[22]",
+        "mask": "0x02"
+      }
+    ],
+    "note": "aliens bottle reward",
+    "name": "Romani Ranch Aliens",
+    "bits": [177],
+    "byteIndex": 22,
+    "mask": 2
+  },
+  {
+    "code": "0x26",
+    "symbol": "MM_CREMIA_ESCORT",
+    "sources": [
+      {
+        "group": "gMmExtraFlags",
+        "field": "gMmExtraFlags.maskRomani",
+        "mask": "0x00000010"
+      }
+    ],
+    "note": "Cremia escort reward state; shared underlying Romani's Mask reward flag",
+    "name": "Romani Ranch Cremia Escort",
+    "bits": [27]
+  },
+  {
+    "code": "0x27",
+    "symbol": "MM_FISHERMAN_HEART_PIECE",
+    "sources": [
+      {
+        "group": "weekEventReg",
+        "field": "gMmSave.info.weekEventReg[82]",
+        "mask": "0x10"
+      }
+    ],
+    "note": "fisherman jumping game heart piece",
+    "name": "Great Bay Coast Fisherman HP",
+    "bits": [660],
+    "byteIndex": 82,
+    "mask": 16
+  },
+  {
+    "code": "0x28",
+    "symbol": "MM_BEAVER_1",
+    "sources": [
+      {
+        "group": "weekEventReg",
+        "field": "gMmSave.info.weekEventReg[23]",
+        "mask": "0x80"
+      }
+    ],
+    "note": "first beaver reward, bottle",
+    "name": "Waterfall Rapids Beaver Race 1",
+    "bits": [191],
+    "byteIndex": 23,
+    "mask": 128
+  },
+  {
+    "code": "0x29",
+    "symbol": "MM_BEAVER_2",
+    "sources": [
+      {
+        "group": "weekEventReg",
+        "field": "gMmSave.info.weekEventReg[25]",
+        "mask": "0x01"
+      }
+    ],
+    "note": "second beaver reward, heart piece",
+    "name": "Waterfall Rapids Beaver Race 2",
+    "bits": [200],
+    "byteIndex": 25,
+    "mask": 1
+  },
+  {
+    "code": "0x2a",
+    "symbol": "MM_LAB_FISH_HEART_PIECE",
+    "sources": [
+      {
+        "group": "weekEventReg",
+        "field": "gMmSave.info.weekEventReg[56]",
+        "mask": "0x02"
+      }
+    ],
+    "note": "marine lab fish heart piece",
+    "name": "Laboratory Fish HP",
+    "bits": [449],
+    "byteIndex": 56,
+    "mask": 2
+  },
+  {
+    "code": "0x2b",
+    "symbol": "MM_GORON_RACE",
+    "sources": [
+      {
+        "group": "weekEventReg",
+        "field": "gMmSave.info.weekEventReg[41]",
+        "mask": "0x08"
+      }
+    ],
+    "note": "Goron Race bottle / gold dust reward",
+    "name": "Goron Race Reward",
+    "bits": [331],
+    "byteIndex": 41,
+    "mask": 8
+  },
+  {
+    "code": "0x2c",
+    "symbol": "MM_MASK_DON_GERO",
+    "sources": [
+      {
+        "group": "gMmExtraFlags",
+        "field": "gMmExtraFlags.maskDonGero",
+        "mask": "0x00000080"
+      }
+    ],
+    "note": "Don Gero's Mask check",
+    "name": "Mountain Village Don Gero Mask",
+    "bits": [24]
+  },
+  {
+    "code": "0x2d",
+    "symbol": "MM_SWORD_RAZOR",
+    "sources": [
+      {
+        "group": "gMmExtraFlags",
+        "field": "gMmExtraFlags.swordRazor",
+        "mask": "0x00000100"
+      }
+    ],
+    "note": "Razor Sword check",
+    "name": "Blacksmith Razor Blade",
+    "bits": [23]
+  },
+  {
+    "code": "0x2e",
+    "symbol": "MM_SWORD_GILDED",
+    "sources": [
+      {
+        "group": "gMmExtraFlags",
+        "field": "gMmExtraFlags.swordGilded",
+        "mask": "0x00000200"
+      }
+    ],
+    "note": "Gilded Sword check",
+    "name": "Blacksmith Gilded Sword",
+    "bits": [22]
+  },
+  {
+    "code": "0x2f",
+    "symbol": "MM_FROG_HEART_PIECE",
+    "sources": [
+      {
+        "group": "weekEventReg",
+        "field": "gMmSave.info.weekEventReg[35]",
+        "mask": "0x80"
+      }
+    ],
+    "note": "frog choir heart piece",
+    "name": "Mountain Village Frog Choir HP",
+    "bits": [287],
+    "byteIndex": 35,
+    "mask": 128
+  },
+  {
+    "code": "0x30",
+    "symbol": "MM_SCRUB_BOMB_BAG",
+    "sources": [
+      {
+        "group": "gMmExtraFlags",
+        "field": "gMmExtraFlags.scrubBombBag",
+        "mask": "0x00010000"
+      }
+    ],
+    "note": "bomb bag scrub",
+    "name": "Goron Village Scrub Bomb Bag",
+    "bits": [15]
+  },
+  {
+    "code": "0x31",
+    "symbol": "MM_ZORA_EVAN",
+    "sources": [
+      {
+        "group": "weekEventReg",
+        "field": "gMmSave.info.weekEventReg[39]",
+        "mask": "0x20"
+      }
+    ],
+    "note": "Evan heart piece",
+    "name": "Zora Hall Evan HP",
+    "bits": [317],
+    "byteIndex": 39,
+    "mask": 32
+  },
+  {
+    "code": "0x32",
+    "symbol": "MM_ZORA_HALL_LIGHTS",
+    "sources": [
+      {
+        "group": "gMmExtraFlags",
+        "field": "gMmExtraFlags.zoraHallLights",
+        "mask": "0x00020000"
+      }
+    ],
+    "note": "Zora Hall lights check",
+    "name": "Zora Hall Scene Lights",
+    "bits": [14]
+  },
+  {
+    "code": "0x33",
+    "symbol": "MM_GHOST_HUT_HEART_PIECE",
+    "sources": [
+      {
+        "group": "weekEventReg",
+        "field": "gMmSave.info.weekEventReg[54]",
+        "mask": "0x40"
+      }
+    ],
+    "note": "Ghost Hut / Spirit House heart piece",
+    "name": "Ghost Hut HP",
+    "bits": [438],
+    "byteIndex": 54,
+    "mask": 64
+  },
+  {
+    "code": "0x34",
+    "symbol": "MM_GREAT_FAIRY_TOWN",
+    "sources": [
+      {
+        "group": "gMmExtraFlags",
+        "field": "gMmExtraFlags.greatFairies",
+        "mask": "0x02000000"
+      }
+    ],
+    "note": "greatFairies bit 0",
+    "name": "Clock Town Great Fairy",
+    "bits": [1]
+  },
+  {
+    "code": "0x35",
+    "symbol": "MM_GREAT_FAIRY_TOWN_ALT",
+    "sources": [
+      {
+        "group": "gMmExtraFlags",
+        "field": "gMmExtraFlags.greatFairies",
+        "mask": "0x04000000"
+      }
+    ],
+    "note": "greatFairies bit 1",
+    "name": "Clock Town Great Fairy Alt",
+    "bits": [2]
+  },
+  {
+    "code": "0x36",
+    "symbol": "MM_GREAT_FAIRY_SWAMP",
+    "sources": [
+      {
+        "group": "gMmExtraFlags",
+        "field": "gMmExtraFlags.greatFairies",
+        "mask": "0x08000000"
+      }
+    ],
+    "note": "greatFairies bit 2",
+    "name": "Woodfall Great Fairy",
+    "bits": [3]
+  },
+  {
+    "code": "0x37",
+    "symbol": "MM_GREAT_FAIRY_MOUNTAIN",
+    "sources": [
+      {
+        "group": "gMmExtraFlags",
+        "field": "gMmExtraFlags.greatFairies",
+        "mask": "0x10000000"
+      }
+    ],
+    "note": "greatFairies bit 3",
+    "name": "Snowhead Great Fairy",
+    "bits": [4]
+  },
+  {
+    "code": "0x38",
+    "symbol": "MM_GREAT_FAIRY_OCEAN",
+    "sources": [
+      {
+        "group": "gMmExtraFlags",
+        "field": "gMmExtraFlags.greatFairies",
+        "mask": "0x20000000"
+      }
+    ],
+    "note": "greatFairies bit 4",
+    "name": "Great Bay Great Fairy",
+    "bits": [5]
+  },
+  {
+    "code": "0x39",
+    "symbol": "MM_GREAT_FAIRY_VALLEY",
+    "sources": [
+      {
+        "group": "gMmExtraFlags",
+        "field": "gMmExtraFlags.greatFairies",
+        "mask": "0x40000000"
+      }
+    ],
+    "note": "greatFairies bit 5",
+    "name": "Ikana Great Fairy",
+    "bits": [6]
+  },
+  {
+    "code": "0x3a",
+    "symbol": "MM_BANK_1",
+    "sources": [
+      {
+        "group": "sharedNpcBitmap",
+        "field": "gSharedCustomSave.mm.npc[7]",
+        "mask": "0x04"
+      }
+    ],
+    "note": "bank threshold 200",
+    "name": "Clock Town Bank Reward 1",
+    "bits": [2]
+  },
+  {
+    "code": "0x3b",
+    "symbol": "MM_BANK_2",
+    "sources": [
+      {
+        "group": "sharedNpcBitmap",
+        "field": "gSharedCustomSave.mm.npc[7]",
+        "mask": "0x08"
+      }
+    ],
+    "note": "bank threshold 500",
+    "name": "Clock Town Bank Reward 2",
+    "bits": [3]
+  },
+  {
+    "code": "0x3c",
+    "symbol": "MM_BANK_3",
+    "sources": [
+      {
+        "group": "sharedNpcBitmap",
+        "field": "gSharedCustomSave.mm.npc[7]",
+        "mask": "0x10"
+      }
+    ],
+    "note": "bank threshold 1000",
+    "name": "Clock Town Bank Reward 3",
+    "bits": [4]
+  },
+  {
+    "code": "0x3d",
+    "symbol": "MM_POSTMAN_HEART_PIECE",
+    "sources": [
+      {
+        "group": "weekEventReg",
+        "field": "gMmSave.info.weekEventReg[71]",
+        "mask": "0x08"
+      }
+    ],
+    "note": "postman heart piece",
+    "name": "Post Office HP",
+    "bits": [571],
+    "byteIndex": 71,
+    "mask": 8
+  },
+  {
+    "code": "0x3e",
+    "symbol": "MM_ROSA_HEART_PIECE",
+    "sources": [
+      {
+        "group": "weekEventReg",
+        "field": "gMmSave.info.weekEventReg[75]",
+        "mask": "0x80"
+      }
+    ],
+    "note": "Rosa Sisters heart piece",
+    "name": "Clock Town Rosa Sisters HP",
+    "bits": [607],
+    "byteIndex": 75,
+    "mask": 128
+  },
+  {
+    "code": "0x3f",
+    "symbol": "MM_SWORDSMAN_HEART_PIECE",
+    "sources": [
+      {
+        "group": "weekEventReg",
+        "field": "gMmSave.info.weekEventReg[63]",
+        "mask": "0x20"
+      }
+    ],
+    "note": "swordsman heart piece",
+    "name": "Swordsman School HP",
+    "bits": [509],
+    "byteIndex": 63,
+    "mask": 32
+  },
+  {
+    "code": "0x40",
+    "symbol": "MM_MASK_KAFEI",
+    "sources": [
+      {
+        "group": "gMmExtraFlags2",
+        "field": "gMmExtraFlags2.maskKafei",
+        "mask": "0x00000008"
+      }
+    ],
+    "note": "Kafei's Mask check",
+    "name": "Mayor's Office Kafei's Mask",
+    "bits": [28]
+  },
+  {
+    "code": "0x41",
+    "symbol": "MM_CHEST_GAME",
+    "sources": [
+      {
+        "group": "weekEventReg",
+        "field": "gMmSave.info.weekEventReg[15]",
+        "mask": "0x20"
+      }
+    ],
+    "note": "treasure chest shop heart piece",
+    "name": "Chest Game HP",
+    "bits": [125],
+    "byteIndex": 15,
+    "mask": 32
+  },
+  {
+    "code": "0x42",
+    "symbol": "MM_HONEY_DARLING_1",
+    "sources": [
+      {
+        "group": "gMmExtraFlags2",
+        "field": "gMmExtraFlags2.honeyDarling",
+        "mask": "0x00000010"
+      }
+    ],
+    "note": "first Honey and Darling reward",
+    "name": "Honey & Darling Reward Any Day",
+    "bits": [27]
+  },
+  {
+    "code": "0x43",
+    "symbol": "MM_HONEY_DARLING_2",
+    "sources": [
+      {
+        "group": "weekEventReg",
+        "field": "gMmSave.info.weekEventReg[22]",
+        "mask": "0x80"
+      }
+    ],
+    "note": "Honey and Darling heart piece",
+    "name": "Honey & Darling Reward All Days",
+    "bits": [183],
+    "byteIndex": 22,
+    "mask": 128
+  },
+  {
+    "code": "0x44",
+    "symbol": "MM_ROOM_KEY",
+    "sources": [
+      {
+        "group": "gMmExtraFlags2",
+        "field": "gMmExtraFlags2.roomKey",
+        "mask": "0x00000020"
+      }
+    ],
+    "note": "Room Key check",
+    "name": "Stock Pot Inn Room Key",
+    "bits": [26]
+  },
+  {
+    "code": "0x45",
+    "symbol": "MM_LETTER_TO_KAFEI",
+    "sources": [
+      {
+        "group": "gMmExtraFlags2",
+        "field": "gMmExtraFlags2.letterKafei",
+        "mask": "0x00000040"
+      }
+    ],
+    "note": "Letter to Kafei check",
+    "name": "Stock Pot Inn Letter to Kafei",
+    "bits": [25]
+  },
+  {
+    "code": "0x46",
+    "symbol": "MM_PENDANT_OF_MEMORIES",
+    "sources": [
+      {
+        "group": "gMmExtraFlags2",
+        "field": "gMmExtraFlags2.pendant",
+        "mask": "0x00000080"
+      }
+    ],
+    "note": "Pendant of Memories check",
+    "name": "Kafei Hideout Pendant of Memories",
+    "bits": [24]
+  },
+  {
+    "code": "0x47",
+    "symbol": "MM_MASK_KEATON",
+    "sources": [
+      {
+        "group": "gMmExtraFlags2",
+        "field": "gMmExtraFlags2.letterMama",
+        "mask": "0x00000100"
+      }
+    ],
+    "note": "Curiosity Shop first reward",
+    "name": "Kafei Hideout Owner Reward 1",
+    "bits": [23]
+  },
+  {
+    "code": "0x48",
+    "symbol": "MM_LETTER_TO_MAMA",
+    "sources": [
+      {
+        "group": "gMmExtraFlags2",
+        "field": "gMmExtraFlags2.letterMama",
+        "mask": "0x00000100"
+      }
+    ],
+    "note": "second Curiosity Shop reward",
+    "name": "Kafei Hideout Owner Reward 2",
+    "bits": [23]
+  },
+  {
+    "code": "0x49",
+    "symbol": "MM_BOMBER_NOTEBOOK",
+    "sources": [
+      {
+        "group": "gMmExtraFlags2",
+        "field": "gMmExtraFlags2.notebook",
+        "mask": "0x00000200"
+      }
+    ],
+    "note": "Bombers' Notebook check; item also exists in quest bits",
+    "name": "Clock Town Bomber Notebook",
+    "bits": [22]
+  },
+  {
+    "code": "0x4a",
+    "symbol": "MM_MASK_BLAST",
+    "sources": [
+      {
+        "group": "gMmExtraFlags2",
+        "field": "gMmExtraFlags2.maskBlast",
+        "mask": "0x00000400"
+      }
+    ],
+    "note": "Blast Mask check",
+    "name": "Clock Town Blast Mask",
+    "bits": [21]
+  },
+  {
+    "code": "0x4b",
+    "symbol": "MM_KEATON_HEART_PIECE",
+    "sources": [
+      {
+        "group": "weekEventReg",
+        "field": "gMmSave.info.weekEventReg[79]",
+        "mask": "0x80"
+      }
+    ],
+    "note": "Keaton quiz heart piece",
+    "name": "Clock Town Keaton HP",
+    "bits": [639],
+    "byteIndex": 79,
+    "mask": 128
+  },
+  {
+    "code": "0x4c",
+    "symbol": "MM_DEKU_PLAYGROUND_1",
+    "sources": [
+      {
+        "group": "gMmExtraFlags2",
+        "field": "gMmExtraFlags2.dekuPlayground",
+        "mask": "0x00000800"
+      }
+    ],
+    "note": "first Deku Playground reward",
+    "name": "Deku Playground Reward Any Day",
+    "bits": [20]
+  },
+  {
+    "code": "0x4d",
+    "symbol": "MM_DEKU_PLAYGROUND_2",
+    "sources": [
+      {
+        "group": "weekEventReg",
+        "field": "gMmSave.info.weekEventReg[14]",
+        "mask": "0x80"
+      }
+    ],
+    "note": "Deku Playground heart piece",
+    "name": "Deku Playground Reward All Days",
+    "bits": [119],
+    "byteIndex": 14,
+    "mask": 128
+  },
+  {
+    "code": "0x4e",
+    "symbol": "MM_MASK_COUPLE",
+    "sources": [
+      {
+        "group": "gMmExtraFlags2",
+        "field": "gMmExtraFlags2.maskCouple",
+        "mask": "0x00001000"
+      }
+    ],
+    "note": "Couple's Mask check",
+    "name": "Stock Pot Inn Couple's Mask",
+    "bits": [19]
+  },
+  {
+    "code": "0x4f",
+    "symbol": "MM_GRANDMA_HEART_PIECE_1",
+    "sources": [
+      {
+        "group": "weekEventReg",
+        "field": "gMmSave.info.weekEventReg[71]",
+        "mask": "0x02"
+      }
+    ],
+    "note": "grandma short story heart piece",
+    "name": "Stock Pot Inn Grandma HP 1",
+    "bits": [569],
+    "byteIndex": 71,
+    "mask": 2
+  },
+  {
+    "code": "0x50",
+    "symbol": "MM_GRANDMA_HEART_PIECE_2",
+    "sources": [
+      {
+        "group": "weekEventReg",
+        "field": "gMmSave.info.weekEventReg[71]",
+        "mask": "0x04"
+      }
+    ],
+    "note": "grandma long story heart piece",
+    "name": "Stock Pot Inn Grandma HP 2",
+    "bits": [570],
+    "byteIndex": 71,
+    "mask": 4
+  },
+  {
+    "code": "0x51",
+    "symbol": "MM_TOILET_HEART_PIECE",
+    "sources": [
+      {
+        "group": "weekEventReg",
+        "field": "gMmSave.info.weekEventReg[71]",
+        "mask": "0x01"
+      }
+    ],
+    "note": "toilet hand heart piece",
+    "name": "Stock Pot Inn ??? HP",
+    "bits": [568],
+    "byteIndex": 71,
+    "mask": 1
+  },
+  {
+    "code": "0x52",
+    "symbol": "MM_MASK_POSTMAN",
+    "sources": [
+      {
+        "group": "gMmExtraFlags2",
+        "field": "gMmExtraFlags2.maskPostman",
+        "mask": "0x00004000"
+      }
+    ],
+    "note": "Postman's Hat check",
+    "name": "Clock Town Postman Hat",
+    "bits": [17]
+  },
+  {
+    "code": "0x53",
+    "symbol": "MM_MASK_TROUPE_LEADER",
+    "sources": [
+      {
+        "group": "gMmExtraFlags2",
+        "field": "gMmExtraFlags2.maskTroupeLeader",
+        "mask": "0x00008000"
+      }
+    ],
+    "note": "Circus Leader's Mask check",
+    "name": "Milk Bar Troupe Leader Mask",
+    "bits": [16]
+  },
+  {
+    "code": "0x54",
+    "symbol": "MM_MASK_FIERCE_DEITY",
+    "sources": [
+      {
+        "group": "gMmExtraFlags2",
+        "field": "gMmExtraFlags2.maskFierceDeity",
+        "mask": "0x00010000"
+      }
+    ],
+    "note": "Fierce Deity Mask check",
+    "name": "Moon Fierce Deity Mask",
+    "bits": [15]
+  },
+  {
+    "code": "0x55",
+    "symbol": "MM_CHATEAU_ROMANI",
+    "sources": [
+      {
+        "group": "weekEventReg",
+        "field": "gMmSave.info.weekEventReg[57]",
+        "mask": "0x08"
+      }
+    ],
+    "note": "Madame Aroma bottle reward, not the Milk Bar sale",
+    "name": "Milk Bar Madame Aroma Bottle",
+    "bits": [459],
+    "byteIndex": 57,
+    "mask": 8
+  },
+  {
+    "code": "0x56",
+    "symbol": "MM_MAYOR_HEART_PIECE",
+    "sources": [
+      {
+        "group": "weekEventReg",
+        "field": "gMmSave.info.weekEventReg[60]",
+        "mask": "0x10"
+      }
+    ],
+    "note": "mayor heart piece",
+    "name": "Mayor's Office HP",
+    "bits": [484],
+    "byteIndex": 60,
+    "mask": 16
+  },
+  {
+    "code": "0x57",
+    "symbol": "MM_POSTBOX",
+    "sources": [
+      {
+        "group": "weekEventReg",
+        "field": "gMmSave.info.weekEventReg[81]",
+        "mask": "0x08"
+      }
+    ],
+    "note": "postbox heart piece",
+    "name": "Clock Town Post Box",
+    "bits": [651],
+    "byteIndex": 81,
+    "mask": 8
+  },
+  {
+    "code": "0x58",
+    "symbol": "MM_SCRUB_TELESCOPE",
+    "sources": [
+      {
+        "group": "weekEventReg",
+        "field": "gMmSave.info.weekEventReg[53]",
+        "mask": "0x02"
+      }
+    ],
+    "note": "observatory business scrub heart piece",
+    "name": "Termina Field Scrub",
+    "bits": [425],
+    "byteIndex": 53,
+    "mask": 2
+  },
+  {
+    "code": "0x59",
+    "symbol": "MM_GOSSIP_HEART_PIECE",
+    "sources": [
+      {
+        "group": "weekEventReg",
+        "field": "gMmSave.info.weekEventReg[90]",
+        "mask": "0x10"
+      }
+    ],
+    "note": "gossip stone grotto heart piece",
+    "name": "Termina Field Gossip Stones HP",
+    "bits": [724],
+    "byteIndex": 90,
+    "mask": 16
+  },
+  {
+    "code": "0x5a",
+    "symbol": "MM_SKULL_KID_OCARINA",
+    "sources": [
+      {
+        "group": "gMmExtraFlags2",
+        "field": "gMmExtraFlags2.ocarina",
+        "mask": "0x00020000"
+      }
+    ],
+    "note": "first Skull Kid reward",
+    "name": "Clock Tower Roof Skull Kid Ocarina",
+    "bits": [14]
+  },
+  {
+    "code": "0x5b",
+    "symbol": "MM_SKULL_KID_SONG",
+    "sources": [
+      {
+        "group": "gMmExtraFlags2",
+        "field": "gMmExtraFlags2.ocarina",
+        "mask": "0x00020000"
+      }
+    ],
+    "note": "second Skull Kid reward; mirrored to ocarina flag",
+    "name": "Clock Tower Roof Skull Kid Song of Time",
+    "bits": [14]
+  },
+  {
+    "code": "0x5c",
+    "symbol": "MM_REMAINS_ODOLWA",
+    "sources": [
+      {
+        "group": "gMmExtraBoss",
+        "field": "gMmExtraBoss.items",
+        "mask": "0x01"
+      }
+    ],
+    "note": "Odolwa remains check",
+    "name": "Woodfall Temple Boss"
+  },
+  {
+    "code": "0x5d",
+    "symbol": "MM_REMAINS_GOHT",
+    "sources": [
+      {
+        "group": "gMmExtraBoss",
+        "field": "gMmExtraBoss.items",
+        "mask": "0x02"
+      }
+    ],
+    "note": "Goht remains check",
+    "name": "Snowhead Temple Boss"
+  },
+  {
+    "code": "0x5e",
+    "symbol": "MM_REMAINS_GYORG",
+    "sources": [
+      {
+        "group": "gMmExtraBoss",
+        "field": "gMmExtraBoss.items",
+        "mask": "0x04"
+      }
+    ],
+    "note": "Gyorg remains check",
+    "name": "Great Bay Temple Boss"
+  },
+  {
+    "code": "0x5f",
+    "symbol": "MM_REMAINS_TWINMOLD",
+    "sources": [
+      {
+        "group": "gMmExtraBoss",
+        "field": "gMmExtraBoss.items",
+        "mask": "0x08"
+      }
+    ],
+    "note": "Twinmold remains check",
+    "name": "Stone Tower Temple Inverted Boss"
+  },
+  {
+    "code": "0x60",
+    "symbol": "MM_SONG_HEALING",
+    "sources": [
+      {
+        "group": "gMmExtraFlags2",
+        "field": "gMmExtraFlags2.songHealing",
+        "mask": "0x04000000"
+      }
+    ],
+    "note": "location gate; owned song also exists in quest bits",
+    "name": "Initial Song of Healing",
+    "bits": [5]
+  },
+  {
+    "code": "0x61",
+    "symbol": "MM_STRAY_FAIRY_TOWN",
+    "sources": [
+      {
+        "group": "gMmExtraFlags2",
+        "field": "gMmExtraFlags2.townStrayFairy",
+        "mask": "0x08000000"
+      }
+    ],
+    "note": "Clock Town stray fairy",
+    "name": "Clock Town Stray Fairy",
+    "bits": [4]
+  },
+  {
+    "code": "0x62",
+    "symbol": "MM_TINGLE_MAP_CLOCK_TOWN",
+    "sources": [
+      {
+        "group": "weekEventReg",
+        "field": "gMmSave.info.weekEventReg[35]",
+        "mask": "0x01"
+      }
+    ],
+    "note": "Tingle map",
+    "name": "Tingle Map Clock Town",
+    "bits": [280],
+    "byteIndex": 35,
+    "mask": 1
+  },
+  {
+    "code": "0x63",
+    "symbol": "MM_TINGLE_MAP_WOODFALL",
+    "sources": [
+      {
+        "group": "weekEventReg",
+        "field": "gMmSave.info.weekEventReg[35]",
+        "mask": "0x02"
+      }
+    ],
+    "note": "Tingle map",
+    "name": "Tingle Map Woodfall",
+    "bits": [281],
+    "byteIndex": 35,
+    "mask": 2
+  },
+  {
+    "code": "0x64",
+    "symbol": "MM_TINGLE_MAP_SNOWHEAD",
+    "sources": [
+      {
+        "group": "weekEventReg",
+        "field": "gMmSave.info.weekEventReg[35]",
+        "mask": "0x04"
+      }
+    ],
+    "note": "Tingle map",
+    "name": "Tingle Map Snowhead",
+    "bits": [282],
+    "byteIndex": 35,
+    "mask": 4
+  },
+  {
+    "code": "0x65",
+    "symbol": "MM_TINGLE_MAP_ROMANI_RANCH",
+    "sources": [
+      {
+        "group": "weekEventReg",
+        "field": "gMmSave.info.weekEventReg[35]",
+        "mask": "0x08"
+      }
+    ],
+    "note": "Tingle map",
+    "name": "Tingle Map Ranch",
+    "bits": [283],
+    "byteIndex": 35,
+    "mask": 8
+  },
+  {
+    "code": "0x66",
+    "symbol": "MM_TINGLE_MAP_GREAT_BAY",
+    "sources": [
+      {
+        "group": "weekEventReg",
+        "field": "gMmSave.info.weekEventReg[35]",
+        "mask": "0x10"
+      }
+    ],
+    "note": "Tingle map",
+    "name": "Tingle Map Great Bay",
+    "bits": [284],
+    "byteIndex": 35,
+    "mask": 16
+  },
+  {
+    "code": "0x67",
+    "symbol": "MM_TINGLE_MAP_STONE_TOWER",
+    "sources": [
+      {
+        "group": "weekEventReg",
+        "field": "gMmSave.info.weekEventReg[35]",
+        "mask": "0x20"
+      }
+    ],
+    "note": "Tingle map",
+    "name": "Tingle Map Ikana",
+    "bits": [285],
+    "byteIndex": 35,
+    "mask": 32
+  },
+  {
+    "code": "0x68",
+    "symbol": "MM_OWL_GREAT_BAY",
+    "sources": [
+      {
+        "group": "gMmOwlFlags",
+        "field": "gMmOwlFlags",
+        "mask": "0x0001"
+      }
+    ],
+    "note": "owl id 0",
+    "name": "Great Bay Coast Owl Statue",
+    "bits": [0]
+  },
+  {
+    "code": "0x69",
+    "symbol": "MM_OWL_ZORA_CAPE",
+    "sources": [
+      {
+        "group": "gMmOwlFlags",
+        "field": "gMmOwlFlags",
+        "mask": "0x0002"
+      }
+    ],
+    "note": "owl id 1",
+    "name": "Zora Cape Owl Statue",
+    "bits": [1]
+  },
+  {
+    "code": "0x6a",
+    "symbol": "MM_OWL_SNOWHEAD",
+    "sources": [
+      {
+        "group": "gMmOwlFlags",
+        "field": "gMmOwlFlags",
+        "mask": "0x0004"
+      }
+    ],
+    "note": "owl id 2",
+    "name": "Snowhead Owl Statue",
+    "bits": [2]
+  },
+  {
+    "code": "0x6b",
+    "symbol": "MM_OWL_MOUNTAIN_VILLAGE",
+    "sources": [
+      {
+        "group": "gMmOwlFlags",
+        "field": "gMmOwlFlags",
+        "mask": "0x0008"
+      }
+    ],
+    "note": "owl id 3",
+    "name": "Mountain Village Owl Statue",
+    "bits": [3]
+  },
+  {
+    "code": "0x6c",
+    "symbol": "MM_OWL_CLOCK_TOWN",
+    "sources": [
+      {
+        "group": "gMmOwlFlags",
+        "field": "gMmOwlFlags",
+        "mask": "0x0010"
+      }
+    ],
+    "note": "owl id 4",
+    "name": "Clock Town Owl Statue",
+    "bits": [4]
+  },
+  {
+    "code": "0x6d",
+    "symbol": "MM_OWL_MILK_ROAD",
+    "sources": [
+      {
+        "group": "gMmOwlFlags",
+        "field": "gMmOwlFlags",
+        "mask": "0x0020"
+      }
+    ],
+    "note": "owl id 5",
+    "name": "Milk Road Owl Statue",
+    "bits": [5]
+  },
+  {
+    "code": "0x6e",
+    "symbol": "MM_OWL_WOODFALL",
+    "sources": [
+      {
+        "group": "gMmOwlFlags",
+        "field": "gMmOwlFlags",
+        "mask": "0x0040"
+      }
+    ],
+    "note": "owl id 6",
+    "name": "Woodfall Owl Statue",
+    "bits": [6]
+  },
+  {
+    "code": "0x6f",
+    "symbol": "MM_OWL_SOUTHERN_SWAMP",
+    "sources": [
+      {
+        "group": "gMmOwlFlags",
+        "field": "gMmOwlFlags",
+        "mask": "0x0080"
+      }
+    ],
+    "note": "owl id 7",
+    "name": "Southern Swamp Owl Statue",
+    "bits": [7]
+  },
+  {
+    "code": "0x70",
+    "symbol": "MM_OWL_IKANA_CANYON",
+    "sources": [
+      {
+        "group": "gMmOwlFlags",
+        "field": "gMmOwlFlags",
+        "mask": "0x0100"
+      }
+    ],
+    "note": "owl id 8",
+    "name": "Ikana Canyon Owl Statue",
+    "bits": [8]
+  },
+  {
+    "code": "0x71",
+    "symbol": "MM_OWL_STONE_TOWER",
+    "sources": [
+      {
+        "group": "gMmOwlFlags",
+        "field": "gMmOwlFlags",
+        "mask": "0x0200"
+      }
+    ],
+    "note": "owl id 9",
+    "name": "Stone Tower Owl Statue",
+    "bits": [9]
+  },
+  {
+    "code": "0x72",
+    "symbol": "MM_SCRUB_SHOP_BEANS",
+    "sources": [
+      {
+        "group": "gMmExtraFlags2",
+        "field": "gMmExtraFlags2.scrubBeans",
+        "mask": "0x00000002"
+      }
+    ],
+    "note": "scrub shop beans",
+    "name": "Southern Swamp Scrub Shop",
+    "bits": [30]
+  },
+  {
+    "code": "0x73",
+    "symbol": "MM_SCRUB_SHOP_POTION_GREEN",
+    "sources": [
+      {
+        "group": "gMmExtraFlags2",
+        "field": "gMmExtraFlags2.scrubPotionGreen",
+        "mask": "0x00000004"
+      }
+    ],
+    "note": "scrub shop green potion",
+    "name": "Zora Hall Scrub Shop",
+    "bits": [29]
+  },
+  {
+    "code": "0x74",
+    "symbol": "MM_SCRUB_SHOP_POTION_BLUE",
+    "sources": [
+      {
+        "group": "gMmExtraFlags2",
+        "field": "gMmExtraFlags2.scrubPotionBlue",
+        "mask": "0x10000000"
+      }
+    ],
+    "note": "scrub shop blue potion",
+    "name": "Ikana Valley Scrub Shop",
+    "bits": [3]
+  },
+  {
+    "code": "0x75",
+    "symbol": "MM_GORMAN_MILK",
+    "sources": [
+      {
+        "group": "gMmExtraFlags2",
+        "field": "gMmExtraFlags2.gormanMilk",
+        "mask": "0x20000000"
+      }
+    ],
+    "note": "Gorman Bros milk sale",
+    "name": "Gorman Track Milk Purchase",
+    "bits": [2]
+  },
+  {
+    "code": "0x76",
+    "symbol": "MM_MILK_BAR_MILK",
+    "sources": [
+      {
+        "group": "gMmExtraFlags2",
+        "field": "gMmExtraFlags2.milkBarMilk",
+        "mask": "0x40000000"
+      }
+    ],
+    "note": "Milk Bar milk sale",
+    "name": "Milk Bar Purchase Milk",
+    "bits": [1]
+  },
+  {
+    "code": "0x77",
+    "symbol": "MM_MILK_BAR_CHATEAU",
+    "sources": [
+      {
+        "group": "gMmExtraFlags2",
+        "field": "gMmExtraFlags2.milkBarChateau",
+        "mask": "0x80000000"
+      }
+    ],
+    "note": "Milk Bar Chateau sale",
+    "name": "Milk Bar Purchase Chateau",
+    "bits": [0]
+  },
+  {
+    "code": "0x78",
+    "symbol": "MM_OWL_HIDDEN",
+    "sources": [
+      {
+        "group": "gMmOwlFlags",
+        "field": "gMmOwlFlags",
+        "mask": "0x8000"
+      }
+    ],
+    "note": "hidden owl, owl id 15",
+    "bits": [15]
+  },
+  {
+    "code": "0x79",
+    "symbol": "MM_MAJORA",
+    "sources": [
+      {
+        "group": "gMmExtraFlags2",
+        "field": "gMmExtraFlags2.majora",
+        "mask": "0x00100000"
+      }
+    ],
+    "note": "custom Majora clear / reward flag",
+    "bits": [11]
+  },
+  {
+    "code": "0x7a",
+    "symbol": "MM_LOTTERY_NIGHT_1",
+    "sources": [
+      {
+        "group": "gMmExtraFlags3",
+        "field": "gMmExtraFlags3.lottery1",
+        "mask": "0x00000004"
+      }
+    ],
+    "note": "day 1 lottery reward",
+    "name": "Lottery Prize Night 1",
+    "bits": [29]
+  },
+  {
+    "code": "0x7b",
+    "symbol": "MM_LOTTERY_NIGHT_2",
+    "sources": [
+      {
+        "group": "gMmExtraFlags3",
+        "field": "gMmExtraFlags3.lottery2",
+        "mask": "0x00000008"
+      }
+    ],
+    "note": "day 2 lottery reward",
+    "name": "Lottery Prize Night 2",
+    "bits": [28]
+  },
+  {
+    "code": "0x7c",
+    "symbol": "MM_LOTTERY_NIGHT_3",
+    "sources": [
+      {
+        "group": "gMmExtraFlags3",
+        "field": "gMmExtraFlags3.lottery3",
+        "mask": "0x00000010"
+      }
+    ],
+    "note": "day 3 lottery reward",
+    "name": "Lottery Prize Night 3",
+    "bits": [27]
+  },
+  {
+    "symbol": "MM_CLEAR_STATE_GREAT_BAY",
+    "sources": [
+      {
+        "group": "weekEventReg",
+        "field": "gMmSave.info.weekEventReg[55]",
+        "mask": "0x80"
+      }
+    ],
+    "note": "Great Bay Temple Boss dungeon clear state",
+    "name": "Great Bay Temple Boss",
+    "bits": [447],
+    "byteIndex": 55,
+    "mask": 128
+  },
+  {
+    "symbol": "MM_CLEAR_STATE_IKANA",
+    "sources": [
+      {
+        "group": "weekEventReg",
+        "field": "gMmSave.info.weekEventReg[52]",
+        "mask": "0x20"
+      }
+    ],
+    "note": "Stone Tower Temple Inverted Boss dungeon clear state",
+    "name": "Stone Tower Temple Inverted Boss",
+    "bits": [421],
+    "byteIndex": 52,
+    "mask": 32
+  },
+  {
+    "symbol": "MM_CLEAR_STATE_SNOWHEAD",
+    "sources": [
+      {
+        "group": "weekEventReg",
+        "field": "gMmSave.info.weekEventReg[33]",
+        "mask": "0x80"
+      }
+    ],
+    "note": "Snowhead Temple Boss dungeon clear state",
+    "name": "Snowhead Temple Boss",
+    "bits": [271],
+    "byteIndex": 33,
+    "mask": 128
+  },
+  {
+    "symbol": "MM_CLEAR_STATE_WOODFALL",
+    "sources": [
+      {
+        "group": "weekEventReg",
+        "field": "gMmSave.info.weekEventReg[20]",
+        "mask": "0x02"
+      }
+    ],
+    "note": "Woodfall Temple Boss dungeon clear state",
+    "name": "Woodfall Temple Boss",
+    "bits": [161],
+    "byteIndex": 20,
+    "mask": 2
+  }
+]

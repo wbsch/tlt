@@ -93,8 +93,10 @@ directory, which is what you would probably expect.
 
 This is easy to miss because nothing complains:
 
-- `validate:autotracker-data` does not check `live_addrs.json` (it is absent from
-  that script's `EXACT_FILES`), so `check-all` and CI stay green.
+- `validate:autotracker-data` checks only that `live_addrs.json` exists and has
+  the right shape (`schemaVersion`, plus `comboCtx`/`saveCtx`/`payload` per game).
+  Its *contents* are compared against a fresh derivation only when
+  `OOTMM_PATCHFILE` is set, so without one `check-all` and CI stay green.
 - The file is structurally valid, so nothing fails at runtime either. Autotracking
   simply reads the wrong memory addresses and reports nonsense.
 
@@ -106,6 +108,30 @@ python3 -c "import json;print(json.load(open('packs/ootmm/src/autotracker/data/v
 
 If `patchfile` points at someone else's home directory or an old seed, it is
 stale — regenerate with `OOTMM_PATCHFILE` set to a seed built from this release.
+
+### If you have no patchfile for the new release
+
+You can still produce a *partial* `live_addrs.json` without one — but never let
+the silent fallback above write it. Delete whatever the generator copied, then:
+
+```bash
+# 1. Base file from the checked-out release's headers + linker scripts.
+#    Yields comboCtx / saveCtx / payload (enough to pass validation).
+python3 scripts/autotracker/export_live_addrs.py --ootmm-repo OoTMM \
+    --output packs/ootmm/src/autotracker/data/v32_1/live_addrs.json
+
+# 2. Layer in the two save globals from the published web build.
+#    See scripts/autotracker/DERIVING_SAVE_SYMBOLS.md; all check:/anchor:
+#    lines must read True/OK before you --write.
+python3 scripts/autotracker/derive_web_symbols.py v32.1 --write \
+    packs/ootmm/src/autotracker/data/v32_1/live_addrs.json
+```
+
+That still leaves `comboConfigLive` (both games) and `runtimeMaxKeysLive` /
+`runtimeSilverRupeeDataLive` (OoT) unset — those come only from patchfile code
+scans. They are optional fields in `rawFrameParser.ts`, so the build passes, but
+the version is **not** ready to enable in `versions.ts` until a real patchfile
+fills them in.
 
 Related: `packs/ootmm/src/autotracker/data/versions.ts` deliberately gates which
 versions are enabled for autotracking. Leave a new version out of that list until
