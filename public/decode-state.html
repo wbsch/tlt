@@ -1,0 +1,235 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Tracker State Decoder</title>
+    <style>
+      body {
+        font-family: monospace;
+        background: #1e1e1e;
+        color: #d4d4d4;
+        margin: 0;
+        padding: 16px;
+      }
+      h1 {
+        font-size: 1.1em;
+        color: #9cdcfe;
+        margin-bottom: 12px;
+      }
+      label {
+        display: block;
+        margin-bottom: 4px;
+        color: #888;
+        font-size: 0.85em;
+      }
+      textarea,
+      input {
+        width: 100%;
+        box-sizing: border-box;
+        background: #252526;
+        color: #d4d4d4;
+        border: 1px solid #444;
+        padding: 8px;
+        font-family: monospace;
+        font-size: 0.85em;
+        border-radius: 3px;
+      }
+      textarea {
+        resize: vertical;
+      }
+      button {
+        margin-top: 8px;
+        padding: 6px 16px;
+        background: #0e639c;
+        color: #fff;
+        border: none;
+        border-radius: 3px;
+        cursor: pointer;
+        font-size: 0.9em;
+      }
+      button:hover {
+        background: #1177bb;
+      }
+      #error {
+        color: #f48771;
+        margin-top: 8px;
+        font-size: 0.85em;
+      }
+      #output {
+        margin-top: 12px;
+      }
+      #stats {
+        color: #888;
+        font-size: 0.8em;
+        margin-bottom: 6px;
+      }
+      #json {
+        white-space: pre;
+        overflow: auto;
+        max-height: 70vh;
+        background: #252526;
+        padding: 12px;
+        border: 1px solid #444;
+        border-radius: 3px;
+        font-size: 0.8em;
+      }
+      .key {
+        color: #9cdcfe;
+      }
+      .string {
+        color: #ce9178;
+      }
+      .number {
+        color: #b5cea8;
+      }
+      .bool {
+        color: #569cd6;
+      }
+      .null {
+        color: #569cd6;
+      }
+      .section {
+        margin-bottom: 12px;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Tracker State Decoder</h1>
+
+    <div class="section">
+      <label>Paste encoded payload (v1.XXX… or full URL with #s=v1.XXX…)</label>
+      <textarea
+        id="input"
+        rows="4"
+        placeholder="v1.AAAA... or http://localhost:5173/#s=v1.AAAA..."
+      ></textarea>
+      <button onclick="decode()">Decode</button>
+      <button onclick="decodeFromCurrentUrl()">Load from current URL</button>
+    </div>
+
+    <div id="error"></div>
+
+    <div id="output" hidden>
+      <div id="stats"></div>
+      <div id="json"></div>
+    </div>
+
+    <script>
+      function decompressDeflateRaw(bytes) {
+        const ds = new DecompressionStream('deflate-raw');
+        const w = ds.writable.getWriter();
+        w.write(bytes).then(() => w.close());
+        return new Response(ds.readable).arrayBuffer();
+      }
+
+      function base64UrlToBytes(b64url) {
+        const b64 = b64url.replace(/-/g, '+').replace(/_/g, '/');
+        const padded = b64 + '='.repeat((4 - (b64.length % 4)) % 4);
+        return Uint8Array.from(atob(padded), (c) => c.charCodeAt(0));
+      }
+
+      async function decodePayload(raw) {
+        raw = raw.trim();
+        // Accept full URL
+        try {
+          const url = new URL(raw);
+          const hash = url.hash.slice(1);
+          const p = new URLSearchParams(hash).get('s');
+          if (p) raw = p;
+        } catch (_) {}
+        // Strip prefix
+        if (raw.startsWith('v1.')) raw = raw.slice(3);
+        const bytes = base64UrlToBytes(raw);
+        const buf = await decompressDeflateRaw(bytes);
+        return JSON.parse(new TextDecoder().decode(buf));
+      }
+
+      function syntaxHighlight(json) {
+        return json.replace(
+          /("(\\u[a-fA-F0-9]{4}|\\[^u]|[^\\"])*"(\s*:)?|\b(true|false|null)\b|-?\d+(?:\.\d*)?(?:[eE][+-]?\d+)?)/g,
+          (match) => {
+            if (/^"/.test(match)) {
+              return /:$/.test(match)
+                ? `<span class="key">${match}</span>`
+                : `<span class="string">${match}</span>`;
+            }
+            if (/true|false/.test(match))
+              return `<span class="bool">${match}</span>`;
+            if (/null/.test(match)) return `<span class="null">${match}</span>`;
+            return `<span class="number">${match}</span>`;
+          },
+        );
+      }
+
+      function computeSizes(obj, path = '') {
+        const rows = [];
+        if (obj && typeof obj === 'object' && !Array.isArray(obj)) {
+          for (const [k, v] of Object.entries(obj)) {
+            const json = JSON.stringify(v);
+            rows.push({
+              path: path ? `${path}.${k}` : k,
+              bytes: new TextEncoder().encode(json).length,
+            });
+            if (v && typeof v === 'object' && !Array.isArray(v)) {
+              rows.push(...computeSizes(v, path ? `${path}.${k}` : k));
+            }
+          }
+        }
+        return rows;
+      }
+
+      async function decode() {
+        const input = document.getElementById('input').value;
+        if (!input.trim()) return showError('No input provided.');
+        await run(input.trim());
+      }
+
+      async function decodeFromCurrentUrl() {
+        const hash = window.location.hash.slice(1);
+        const p = new URLSearchParams(hash).get('s');
+        if (!p) return showError('No #s= payload found in current URL.');
+        document.getElementById('input').value = p;
+        await run(p);
+      }
+
+      function showError(msg) {
+        document.getElementById('error').textContent = msg;
+        document.getElementById('output').hidden = true;
+      }
+
+      async function run(raw) {
+        document.getElementById('error').textContent = '';
+        try {
+          const data = await decodePayload(raw);
+          const jsonStr = JSON.stringify(data, null, 2);
+          const totalBytes = new TextEncoder().encode(jsonStr).length;
+
+          // Top-level size breakdown
+          const sizes = computeSizes(data);
+          const top = sizes
+            .filter((r) => r.path.split('.').length <= 3)
+            .sort((a, b) => b.bytes - a.bytes)
+            .slice(0, 20)
+            .map((r) => `${r.bytes.toLocaleString().padStart(8)} B  ${r.path}`)
+            .join('\n');
+
+          document.getElementById('stats').textContent =
+            `Decompressed JSON: ${(totalBytes / 1024).toFixed(1)} KB\n\nTop keys by size:\n${top}`;
+          document.getElementById('json').innerHTML = syntaxHighlight(
+            escapeHtml(jsonStr),
+          );
+          document.getElementById('output').hidden = false;
+        } catch (e) {
+          showError(`Failed to decode: ${e.message}`);
+        }
+      }
+
+      function escapeHtml(s) {
+        return s
+          .replace(/&/g, '&amp;')
+          .replace(/</g, '&lt;')
+          .replace(/>/g, '&gt;');
+      }
+    </script>
+  </body>
+</html>

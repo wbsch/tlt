@@ -14,6 +14,7 @@ import {
   hasLegacyCrossWarpMm,
   synthesizeOotToMmItemsForInventory,
   synthesizeMmToOotItemsForInventory,
+  foldGoronLullabyForInventory,
 } from '@packs/ootmm/utils/spoilerSettingsMigration';
 
 export type PersistConfig = {
@@ -416,6 +417,17 @@ export const PERSIST_CONFIGS: Record<PersistStoreId, PersistConfig> = {
             trackerSettings as Record<string, unknown>,
           );
         }
+
+        // Fold a persisted completed Goron Lullaby (written before the
+        // progressive-folding fix) into stage 2 of the progressive half
+        // item. Without this, an old session's full-song ID
+        // (MM_SONG_GORON / OOT_SONG_GORON / SHARED_SONG_GORON) would be
+        // sent to the pathfinder as an out-of-pool ID and the second half
+        // would never register.
+        foldGoronLullabyForInventory(
+          inventory,
+          trackerSettings as Record<string, unknown>,
+        );
       }
 
       return {

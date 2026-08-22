@@ -262,3 +262,90 @@ export function synthesizeCrossWarpItemsForInventory(
   const changedMm = synthesizeMmToOotItemsForInventory(inventory, settings);
   return changedOot || changedMm;
 }
+
+// ── Goron Lullaby progressive folding ───────────────────────────────────────
+
+/**
+ * Fold a completed Goron Lullaby full-song ID into stage 2 of the
+ * progressive half item.
+ *
+ * The autotracker reports the completed lullaby via the MM quest bit
+ * (`MM_SONG_GORON`) and the OoT shared custom save (`OOT_SONG_GORON`), but
+ * in "progressive" mode the item pool holds two copies of the half item
+ * (the full lullaby is stage 2) and no full-song ID. If a saved session
+ * (localStorage / shared state) was created before this folding existed, it
+ * may carry the full-song ID with qty 1 instead of the half item at qty 2.
+ *
+ * This mirrors the live translation in `translateAutotrackerItems` so the
+ * pathfinder doesn't receive an out-of-pool full-song ID. The target half
+ * item is chosen from the settings, which deterministically drives the pool:
+ *   - shared songs enabled (`sharedSongGoron`) → `SHARED_SONG_GORON_HALF`
+ *   - otherwise game-specific (`MM_SONG_GORON_HALF` / `OOT_SONG_GORON_HALF`)
+ *
+ * Only folds a full-song ID when the corresponding progressive setting is
+ * active; otherwise the full-song ID legitimately exists in the pool and is
+ * left untouched. Returns `true` if at least one item was folded.
+ */
+export function foldGoronLullabyForInventory(
+  inventory: Record<string, number>,
+  settings: Record<string, unknown>,
+): boolean {
+  let changed = false;
+
+  // If shared songs are enabled and progressive, the pool holds only
+  // SHARED_SONG_GORON_HALF. Fold every Goron full-song signal into it.
+  if (settings.sharedSongGoron === true) {
+    const progressiveMm = settings.progressiveGoronLullabyMm === 'progressive';
+    const progressiveOot =
+      settings.progressiveGoronLullabyOot === 'progressive';
+    const anySignal =
+      (inventory['SHARED_SONG_GORON'] ?? 0) > 0 ||
+      (inventory['MM_SONG_GORON'] ?? 0) > 0 ||
+      (inventory['OOT_SONG_GORON'] ?? 0) > 0;
+    if ((progressiveMm || progressiveOot) && anySignal) {
+      // Only fold when at least one full-song signal is present; the half
+      // item gets stage 2.
+      const folded = Math.max(inventory['SHARED_SONG_GORON_HALF'] ?? 0, 2);
+      if (folded !== (inventory['SHARED_SONG_GORON_HALF'] ?? 0)) {
+        inventory['SHARED_SONG_GORON_HALF'] = folded;
+        changed = true;
+      }
+      delete inventory['SHARED_SONG_GORON'];
+      delete inventory['MM_SONG_GORON'];
+      delete inventory['OOT_SONG_GORON'];
+      changed = true;
+    }
+    return changed;
+  }
+
+  // Non-shared path: fold the game-specific full-song signal into the
+  // corresponding half item when that game's setting is progressive.
+  const foldMm =
+    settings.progressiveGoronLullabyMm === 'progressive' &&
+    (inventory['MM_SONG_GORON'] ?? 0) > 0;
+  const foldOot =
+    settings.progressiveGoronLullabyOot === 'progressive' &&
+    (inventory['OOT_SONG_GORON'] ?? 0) > 0;
+
+  if (foldMm) {
+    const folded = Math.max(inventory['MM_SONG_GORON_HALF'] ?? 0, 2);
+    if (folded !== (inventory['MM_SONG_GORON_HALF'] ?? 0)) {
+      inventory['MM_SONG_GORON_HALF'] = folded;
+      changed = true;
+    }
+    delete inventory['MM_SONG_GORON'];
+    changed = true;
+  }
+
+  if (foldOot) {
+    const folded = Math.max(inventory['OOT_SONG_GORON_HALF'] ?? 0, 2);
+    if (folded !== (inventory['OOT_SONG_GORON_HALF'] ?? 0)) {
+      inventory['OOT_SONG_GORON_HALF'] = folded;
+      changed = true;
+    }
+    delete inventory['OOT_SONG_GORON'];
+    changed = true;
+  }
+
+  return changed;
+}

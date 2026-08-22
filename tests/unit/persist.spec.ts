@@ -120,4 +120,68 @@ describe('persist sanitizeSettingsObject via hydrate', () => {
     expect(settings.agelessSoaring).toBe(false);
     expect(settings.mode).toBe('open');
   });
+
+  it('folds a persisted full MM Goron Lullaby into the half stage 2', () => {
+    // Old session: progressive MM lullaby, full-song ID persisted before the
+    // folding fix. Must be folded to MM_SONG_GORON_HALF at stage 2.
+    const result = sanitizePersistedStateForStore('ootmm-session', {
+      trackerSettings: {
+        progressiveGoronLullabyMm: 'progressive',
+      },
+      inventoryById: {
+        MM_SONG_GORON: 1,
+      },
+    });
+    const inventory = result.inventoryById as Record<string, number>;
+    expect(inventory.MM_SONG_GORON_HALF).toBe(2);
+    expect(inventory.MM_SONG_GORON).toBeUndefined();
+  });
+
+  it('folds a persisted full OOT Goron Lullaby into the half stage 2', () => {
+    const result = sanitizePersistedStateForStore('ootmm-session', {
+      trackerSettings: {
+        progressiveGoronLullabyOot: 'progressive',
+      },
+      inventoryById: {
+        OOT_SONG_GORON: 1,
+      },
+    });
+    const inventory = result.inventoryById as Record<string, number>;
+    expect(inventory.OOT_SONG_GORON_HALF).toBe(2);
+    expect(inventory.OOT_SONG_GORON).toBeUndefined();
+  });
+
+  it('folds all shared Goron Lullaby signals into the shared half stage 2', () => {
+    const result = sanitizePersistedStateForStore('ootmm-session', {
+      trackerSettings: {
+        sharedSongGoron: true,
+        progressiveGoronLullabyMm: 'progressive',
+        progressiveGoronLullabyOot: 'progressive',
+      },
+      inventoryById: {
+        SHARED_SONG_GORON: 1,
+        MM_SONG_GORON: 1,
+        OOT_SONG_GORON: 1,
+      },
+    });
+    const inventory = result.inventoryById as Record<string, number>;
+    expect(inventory.SHARED_SONG_GORON_HALF).toBe(2);
+    expect(inventory.SHARED_SONG_GORON).toBeUndefined();
+    expect(inventory.MM_SONG_GORON).toBeUndefined();
+    expect(inventory.OOT_SONG_GORON).toBeUndefined();
+  });
+
+  it('keeps the full song id when not in progressive mode', () => {
+    const result = sanitizePersistedStateForStore('ootmm-session', {
+      trackerSettings: {
+        progressiveGoronLullabyMm: 'single',
+      },
+      inventoryById: {
+        MM_SONG_GORON: 1,
+      },
+    });
+    const inventory = result.inventoryById as Record<string, number>;
+    expect(inventory.MM_SONG_GORON).toBe(1);
+    expect(inventory.MM_SONG_GORON_HALF).toBeUndefined();
+  });
 });
