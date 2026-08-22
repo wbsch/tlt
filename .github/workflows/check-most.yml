@@ -14,7 +14,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 20
     env:
-      OOTMM_COMMIT: deba791777df1347781d20d1d299926ee14d3e7a
+      OOTMM_COMMIT: 4f79debce328c6d2a78c9e66d64448e2298baa7f
 
     steps:
       - name: Checkout

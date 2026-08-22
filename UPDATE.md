@@ -95,7 +95,7 @@ This is easy to miss because nothing complains:
 
 - `validate:autotracker-data` checks only that `live_addrs.json` exists and has
   the right shape (`schemaVersion`, plus `comboCtx`/`saveCtx`/`payload` per game).
-  Its *contents* are compared against a fresh derivation only when
+  Its _contents_ are compared against a fresh derivation only when
   `OOTMM_PATCHFILE` is set, so without one `check-all` and CI stay green.
 - The file is structurally valid, so nothing fails at runtime either. Autotracking
   simply reads the wrong memory addresses and reports nonsense.
@@ -111,7 +111,7 @@ stale — regenerate with `OOTMM_PATCHFILE` set to a seed built from this releas
 
 ### If you have no patchfile for the new release
 
-You can still produce a *partial* `live_addrs.json` without one — but never let
+You can still produce a _partial_ `live_addrs.json` without one — but never let
 the silent fallback above write it. Delete whatever the generator copied, then:
 
 ```bash
@@ -136,6 +136,41 @@ fills them in.
 Related: `packs/ootmm/src/autotracker/data/versions.ts` deliberately gates which
 versions are enabled for autotracking. Leave a new version out of that list until
 its `live_addrs.json` is confirmed good; adding the data directory alone is safe.
+
+### Warning: the shared-save layout is mirrored in Python
+
+`generate_inventory_slots.py` and `derive_shared_save_offsets.py` do **not** parse
+`SharedCustomSave` — they re-implement its layout as offset arithmetic (both files
+open with "this script uses hard coded offsets, is shit and should be rewritten").
+Only a few version-varying pieces are read from the headers (`XFLAGS_COUNT_*`,
+`SR_MAX`, `sizeof(MmCustomSave)`).
+
+So whenever `packages/generator/include/combo/save.h` changes, diff it by hand:
+
+```bash
+git -C OoTMM diff v32.1 v32.2 -- packages/generator/include/combo/save.h
+```
+
+A field inserted into the middle of that struct shifts every later offset, and
+**both** scripts will happily keep emitting the old ones. Because they share the
+same stale assumption, `shared_save_offsets.json` comes out byte-identical to the
+previous version and `validate:autotracker-data` passes — an unchanged file is
+_not_ evidence the layout is unchanged.
+
+Two independent cross-checks catch this:
+
+- `derive_shared_save_offsets.py` recomputes `sizeof(MmCustomSave)` from the
+  bitmap anchors. It must match the `MmCustomSave size:` line the generator
+  prints (derived separately from the MM headers).
+- `derive_web_symbols.py` reports a `detected size` for `gSharedCustomSave` read
+  out of the real payload. `sharedCustomSaveSize` rounded up to 16 (the struct is
+  `ALIGNED(16)`) must equal it — e.g. v32.2's 2212 → `0x8b0`.
+
+Worked example: v32.2 inserted `u8 silverRupees[(SR_MAX + 1) / 2]` between
+`coins[4]` and `ocarinaButtonMaskOot`. That is 9 bytes plus 1 byte of realignment
+for the `u16` masks, so fields after it moved by 10 — except those past
+`respawn[]`, which moved by only 8, because the 4-byte alignment padding in front
+of `RespawnData` absorbed the other 2. Do not assume a single uniform delta.
 
 ### Dealing with Upstream Restructuring
 

@@ -22,7 +22,10 @@ USAGE:
 import argparse
 import base64
 import json
+import pathlib
 import sys
+
+from generate_inventory_slots import read_silver_rupees_size
 
 
 # ── Struct layout constants (from OoTMM C headers) ──────────────────────
@@ -36,6 +39,7 @@ import sys
 #   MmCustomSave mm;                // sizeof = soulsEnemyOot - ootSize - 0x2C
 #   s16 netGiSkip[16];              // 32 = 0x20
 #   u16 coins[4];                   // 8
+#   u8  silverRupees[(SR_MAX+1)/2]; // 9 from v32.2 on, absent before (+1 pad)
 #   u16 ocarinaButtonMaskOot;       // 2
 #   u16 ocarinaButtonMaskMm;        // 2
 #   u8  soulsEnemyOot[8];           // 8   ← anchor
@@ -58,7 +62,15 @@ import sys
 #   u8  rustyKeysOot[...];         // 4
 #   u8  rustyKeysMm[...];          // 5
 
-PRESOULS_SIZE = 0x2C  # netGiSkip[16] + coins[4] + masks[2] + masks[2]
+def presouls_size(silver_rupees_size: int = 0) -> int:
+    """netGiSkip[16] + coins[4] + silverRupees[] + ocarinaMasks[4].
+
+    0x2C up to v32.1; v32.2 inserted the packed silver rupee array before the
+    u16 masks, which realign to 2 bytes after it.
+    """
+    size = 0x20 + 8 + silver_rupees_size
+    return ((size + 1) & ~1) + 2 + 2
+
 RESPAWN_SIZE = 0x20    # RespawnData (mm/save.h)
 BITFIELD_SIZE = 2      # 13 bits packed in 2 bytes
 TRAPS_SIZE = 7         # TRAP_MAX = 0x07
@@ -86,16 +98,18 @@ def extract_anchors(slots: dict) -> dict:
     }
 
 
-def compute_offsets(anchors: dict) -> dict:
+def compute_offsets(anchors: dict, silver_rupees_size: int = 0) -> dict:
     """Compute all fixed offsets from bitmap anchors + struct layout."""
     xflags_oot_size = anchors["xflagsOotSize"]
     oot_size = anchors["xflagsMm"]          # sizeof(OotCustomSave)
     mm_size = (anchors["soulsEnemyOot"]      # soulsEnemyOot
-               - oot_size - PRESOULS_SIZE)    # minus OotCustomSave minus pre-soul fields
+               - oot_size                     # minus OotCustomSave
+               - presouls_size(silver_rupees_size))  # minus pre-soul fields
     half_days = oot_size + anchors["xflagsMmSize"] + 32 + 4  # xflagsMm + npcMm[32] + shopsMm[4]
 
     coins = oot_size + mm_size + 0x20       # after both custom saves + netGiSkip[16]
-    mask_oot = coins + 8                     # after coins[4]
+    # after coins[4] + silverRupees[], realigned for the u16 masks
+    mask_oot = (coins + 8 + silver_rupees_size + 1) & ~1
     mask_mm = mask_oot + 2                   # after mask_oot
 
     souls_misc_mm = anchors["soulsMiscMm"]
@@ -253,11 +267,19 @@ def main():
         default="OoT",
         help="Which game's payload to use for dump validation (default: OoT).",
     )
+    parser.add_argument(
+        "--ootmm-repo",
+        default="OoTMM",
+        help="Path to the OoTMM checkout, used to size SharedCustomSave.silverRupees "
+             "(v32.2+). Default: OoTMM",
+    )
     args = parser.parse_args()
+
+    silver_rupees_size = read_silver_rupees_size(pathlib.Path(args.ootmm_repo))
 
     slots = load_inventory_slots(args.inventory_slots)
     anchors = extract_anchors(slots)
-    offsets = compute_offsets(anchors)
+    offsets = compute_offsets(anchors, silver_rupees_size)
 
     print("Anchor values:")
     print(f"  xflagsOot    = {anchors['xflagsOotSize']} bytes")
@@ -265,7 +287,7 @@ def main():
     print(f"  soulsEnemyOot = 0x{anchors['soulsEnemyOot']:04X}")
     print(f"  soulsMiscMm  = 0x{anchors['soulsMiscMm']:04X}")
     oot_size = anchors["xflagsMm"]
-    mm_size = anchors["soulsEnemyOot"] - oot_size - PRESOULS_SIZE
+    mm_size = anchors["soulsEnemyOot"] - oot_size - presouls_size(silver_rupees_size)
     print(f"  → sizeof(MmCustomSave) = 0x{mm_size:X} ({mm_size})")
     print()
 

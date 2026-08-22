@@ -27,6 +27,9 @@ SHARED_COIN_COUNT = 4
 XFLAGS_COUNT_RE = re.compile(
     r"^#define\s+(XFLAGS_COUNT_(OOT|MM))\s+0x([0-9a-fA-F]+)\s*$"
 )
+# SharedCustomSave.silverRupees exists from v32.2 on; absent before that.
+SILVER_RUPEES_FIELD_RE = re.compile(r"^\s*u8\s+silverRupees\[([^\]]+)\];", re.MULTILINE)
+SR_MAX_RE = re.compile(r"^#define\s+SR_MAX\s+0x([0-9a-fA-F]+)\s*$", re.MULTILINE)
 OOT_RESPAWN_DATA_SIZE = 28  # OotRespawnData (oot/save.h): Vec3f(12)+s16*3(6)+u8*2(2)+u32*2(8)
 RESPAWN_SIZE     = 0x20   # RespawnData (mm/save.h)
 TRAP_MAX         = 7
@@ -53,10 +56,43 @@ def read_xflags_counts(repo_root: pathlib.Path) -> tuple[int, int]:
     return counts["XFLAGS_COUNT_OOT"], counts["XFLAGS_COUNT_MM"]
 
 
+def read_silver_rupees_size(repo_root: pathlib.Path) -> int:
+    """Size of SharedCustomSave.silverRupees in bytes (0 before OoTMM v32.2).
+
+    v32.2 moved the OoT silver rupee counts out of the save-extra ledger into a
+    packed nibble array that sits between coins[4] and the ocarina button masks,
+    shifting every shared-save field after it.
+    """
+    save_header = repo_root / "packages/generator/include/combo/save.h"
+    if not save_header.is_file():
+        raise ValueError(f"save header not found: {save_header}")
+
+    match = SILVER_RUPEES_FIELD_RE.search(save_header.read_text(encoding="utf-8"))
+    if not match:
+        return 0
+
+    expr = "".join(match.group(1).split())
+    if expr != "(SR_MAX+1)/2":
+        raise ValueError(
+            f"unrecognized silverRupees array size {match.group(1)!r} in {save_header}"
+        )
+
+    sr_header = repo_root / "packages/generator/include/combo/sr.h"
+    if not sr_header.is_file():
+        raise ValueError(f"silver rupee header not found: {sr_header}")
+
+    sr_match = SR_MAX_RE.search(sr_header.read_text(encoding="utf-8"))
+    if not sr_match:
+        raise ValueError(f"missing SR_MAX in {sr_header}")
+
+    return (int(sr_match.group(1), 16) + 1) // 2
+
+
 def build_shared_storage(
     mm_custom_save_size: int,
     xflags_count_oot: int,
     xflags_count_mm: int,
+    silver_rupees_size: int = 0,
 ) -> dict:
     """Build shared storage layout and fixed offsets from MmCustomSave size."""
     # sizeof(OotCustomSave) = xflags[n] + npc[32] + shops[8] + scrubs[8] + sr[16]
@@ -65,7 +101,11 @@ def build_shared_storage(
         xflags_count_oot + 32 + 8 + 8 + 16 + 2 * OOT_RESPAWN_DATA_SIZE + 2 + 2 + 15
     ) & ~15
     mm_size = mm_custom_save_size
-    pre_soul = 0x20 + 8 + 2 + 2  # netGiSkip[16] + coins[4] + ocarinaMasks[4] = 0x2C
+    # netGiSkip[16] + coins[4] + silverRupees[] (v32.2+) + ocarinaMasks[4].
+    # The u16 masks realign to 2 bytes after the packed u8 silver rupee array.
+    pre_soul = 0x20 + 8 + silver_rupees_size
+    pre_soul = (pre_soul + 1) & ~1
+    pre_soul += 2 + 2
 
     # Bitmap offsets (all within gSharedCustomSave)
     xflagsOot      = 0x000
@@ -90,7 +130,7 @@ def build_shared_storage(
     # Fixed (non-bitmap) fields
     half_days       = shopsMm + 4
     coins           = oot_size + mm_size + 0x20  # after netGiSkip[16]
-    mask_oot        = coins + 8
+    mask_oot        = (coins + 8 + silver_rupees_size + 1) & ~1  # after coins[4] + silverRupees[]
     mask_mm         = mask_oot + 2
     child_fish      = souls_misc_mm + 1
     adult_fish      = child_fish + 20
@@ -755,6 +795,7 @@ def main() -> int:
     layout = build_shared_storage(
         args.mm_custom_save_size,
         *read_xflags_counts(repo_root),
+        silver_rupees_size=read_silver_rupees_size(repo_root),
     )
     mapping["catalog"] = build_catalog(
         gi_defs, notes_header, item_add_source, doors_header, layout["shared"]
