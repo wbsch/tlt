@@ -279,6 +279,25 @@ describe('raw frame parser', () => {
     ).toBe(true);
   });
 
+  it('does not request MM cycle flags from the OoT foreign MM save', () => {
+    // The foreign MM save (gMmSave) embedded in the OoT payload is only
+    // sizeof(MmSave) = 0x3ca0 bytes.  MM cycle scene flags live at 0x3f68 inside
+    // the full MmSaveContext, which only exists in the MM payload — requesting
+    // them from OoT reads past gMmSave into unrelated payload memory and marks
+    // spurious MM grotto chests as collected.
+    expect(
+      RAW_CHUNK_SPECS_BY_GAME.oot.some(
+        (spec) => spec.name === 'oot_foreign_mm_cycle_flags',
+      ),
+    ).toBe(false);
+
+    // The active MM save (playing MM) still reads cycle flags from the full
+    // MmSaveContext, where they are valid.
+    expect(
+      RAW_CHUNK_SPECS_BY_GAME.mm.some((spec) => spec.name === 'mm_cycle_flags'),
+    ).toBe(true);
+  });
+
   it.each(listRawFixtureNames())(
     'parses %s as a raw snapshot',
     (fixtureName) => {

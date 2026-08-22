@@ -1600,11 +1600,12 @@ function buildForeignMmSaveChunkSpecs(): RawAutotrackerChunkSpec[] {
       address: addrOotForeignMmSaveLive + MM_OFF_WEEK_EVENT_REG,
       length: MM_ACTIVE_SAVE_END - MM_OFF_WEEK_EVENT_REG,
     },
-    {
-      name: 'oot_foreign_mm_cycle_flags',
-      address: addrOotForeignMmSaveLive + MM_CTX_OFF_CYCLE_FLAGS,
-      length: MM_CYCLE_FLAGS_SIZE,
-    },
+    // NOTE: the foreign MM save (gMmSave) embedded in the OoT payload is only
+    // `sizeof(MmSave)` = MM_SAVE_SIZE (0x3ca0) bytes.  MM cycle scene flags live
+    // at MM_CTX_OFF_CYCLE_FLAGS (0x3f68) inside the full `MmSaveContext`, which
+    // only exists in the MM payload — reading them here would run past gMmSave
+    // into unrelated payload memory.  So the foreign save deliberately has no
+    // cycle-flags chunk; cycle checks resolve from permanent scene flags only.
   ];
 }
 
@@ -1863,7 +1864,7 @@ class RawAutotrackerParserImpl implements RawAutotrackerParser {
     const direct = buildChunkedData(
       memory,
       addrOotForeignMmSaveLive,
-      MM_SAVE_CTX_USED_SIZE,
+      MM_SAVE_SIZE,
       buildForeignMmSaveChunkSpecs(),
       OOT_FOREIGN_MM_SAVE_CHUNK,
     );
