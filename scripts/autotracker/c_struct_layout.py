@@ -407,8 +407,8 @@ class Layouter:
 
     @staticmethod
     def _emit(fields, name, offset, sub_fields, **extra):
-        entry = {"name": name, "offset": offset, **extra}
-        fields.append(entry)
+        if name:
+            fields.append({"name": name, "offset": offset, **extra})
         for sub in sub_fields:
             child = dict(sub)
             child["offset"] = sub["offset"] + offset
@@ -456,6 +456,7 @@ class Layouter:
                     sub_fields if count == 1 else [],
                     size=size * count, count=count,
                     type=member.get("type", member.get("aggregate")),
+                    array=member.get("array") is not None,
                 )
             else:  # anonymous struct/union: members promote into the parent
                 self._emit(fields, "", offset, sub_fields)
@@ -477,6 +478,7 @@ class Layouter:
                     sub_fields if count == 1 else [],
                     size=msize * count, count=count,
                     type=member.get("type", member.get("aggregate")),
+                    array=member.get("array") is not None,
                 )
             else:
                 self._emit(fields, "", 0, sub_fields)

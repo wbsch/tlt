@@ -209,10 +209,13 @@ class CheckedOutHeadersTests(unittest.TestCase):
 
         import subprocess
 
-        tag = subprocess.run(
-            ["git", "-C", str(ootmm), "describe", "--tags", "--abbrev=0"],
-            capture_output=True, text=True,
-        )
+        try:
+            tag = subprocess.run(
+                ["git", "-C", str(ootmm), "describe", "--tags", "--abbrev=0"],
+                capture_output=True, text=True,
+            )
+        except OSError:
+            self.skipTest("git is unavailable")
         if tag.returncode != 0:
             self.skipTest("OoTMM checkout is not on a tag")
         dirname = "v" + tag.stdout.strip().lstrip("v").replace(".", "_")
@@ -224,6 +227,54 @@ class CheckedOutHeadersTests(unittest.TestCase):
         _, shared_layout = load_save_layout(ootmm)
         derived = build_shared_storage(shared_layout)["fixedOffsets"]
         self.assertEqual(derived, json.loads(committed.read_text()))
+
+
+class CompilerCrossCheckTests(unittest.TestCase):
+    """Check the Python ABI model against a real C compiler.
+
+    Strictly optional: no compiler, or a probe that will not build, skips. Only
+    an actual disagreement fails, because that means the engine or the compiler
+    is wrong about a real offset -- which is the whole point of the check.
+    """
+
+    def test_layout_agrees_with_c_compiler(self):
+        import c_probe
+        from generate_inventory_slots import load_save_layout
+
+        ootmm = REPO_ROOT / "OoTMM"
+        if not (ootmm / "packages/generator/include/combo/save.h").is_file():
+            self.skipTest("no OoTMM checkout")
+
+        layouter, layout = load_save_layout(ootmm)
+        try:
+            mismatches = c_probe.compare(layouter, layout)
+        except c_probe.ProbeUnavailable as exc:
+            self.skipTest(str(exc).splitlines()[0])
+
+        self.assertEqual(
+            mismatches, [],
+            "the C compiler disagrees with c_struct_layout: "
+            + "; ".join(f"{n}: engine {e}, compiler {c}" for n, e, c in mismatches),
+        )
+
+    def test_probe_reports_unavailable_without_a_compiler(self):
+        import shutil
+
+        import c_probe
+        from generate_inventory_slots import load_save_layout
+
+        ootmm = REPO_ROOT / "OoTMM"
+        if not (ootmm / "packages/generator/include/combo/save.h").is_file():
+            self.skipTest("no OoTMM checkout")
+
+        layouter, layout = load_save_layout(ootmm)
+        original = shutil.which
+        shutil.which = lambda *a, **k: None
+        try:
+            with self.assertRaises(c_probe.ProbeUnavailable):
+                c_probe.compare(layouter, layout)
+        finally:
+            shutil.which = original
 
 
 if __name__ == "__main__":

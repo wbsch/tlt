@@ -165,10 +165,30 @@ What this means for a version bump:
   the checked-out `SharedCustomSave` and compares it to the committed
   `shared_save_offsets.json`.
 
+The layout model is cross-checked against a real C compiler by
+`scripts/autotracker/c_probe.py`, which re-emits the parsed typedefs as a
+self-contained C file, compiles it, and reads the offsets back via
+`__builtin_offsetof`. Run it directly to see the comparison:
+
+```bash
+python3 scripts/autotracker/c_probe.py
+```
+
+It is deliberately optional and cannot break a build: with no compiler on PATH,
+or if the emitted probe will not compile, it skips. Only an actual disagreement
+between the compiler and the engine fails, because that means one of them is
+wrong about a real offset. `npm run test:scripts` runs it that way.
+
+The probe declares its own fixed-width typedefs instead of including OoTMM's
+`types.h` -- whose `u32` is `unsigned long`, 4 bytes on N64 but 8 on a 64-bit
+host. For the primitives these structs use, x86-64 and MIPS o32 agree on size,
+alignment and packing, and byte offsets of byte-aligned bitfields coincide too
+(only the bit position within a byte flips with endianness).
+
 Two independent cross-checks remain worth running after a bump:
 
 - `python3 scripts/autotracker/derive_shared_save_offsets.py --inventory-slots
-  packs/ootmm/src/autotracker/data/<version>/inventory_slots.json` confirms the
+packs/ootmm/src/autotracker/data/<version>/inventory_slots.json` confirms the
   two generated files agree, and `--dump <full-save-dump.json>` checks the
   offsets against real hardware memory.
 - `derive_web_symbols.py` reports a `detected size` for `gSharedCustomSave` read
