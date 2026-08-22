@@ -1,38 +1,49 @@
 {
   "schemaVersion": 1,
   "generatedFrom": {
-    "ootmmRepo": "/home/bf/stuff/repos/tlt/OoTMM",
-    "defs": "/home/bf/stuff/repos/tlt/OoTMM/packages/generator/include/combo/defs.h",
-    "ootLinker": "/home/bf/stuff/repos/tlt/OoTMM/packages/generator/src/link_oot.in",
-    "mmLinker": "/home/bf/stuff/repos/tlt/OoTMM/packages/generator/src/link_mm.in"
+    "patchfile": "/home/silke/stuff/repos/tlt/OoTMM-Patch-6LzbXDy2.ootmm",
+    "ootmmRepo": "/home/silke/stuff/repos/tlt/OoTMM",
+    "defs": "/home/silke/stuff/repos/tlt/OoTMM/packages/generator/include/combo/defs.h",
+    "ootLinker": "/home/silke/stuff/repos/tlt/OoTMM/packages/generator/src/link_oot.in",
+    "mmLinker": "/home/silke/stuff/repos/tlt/OoTMM/packages/generator/src/link_mm.in"
   },
   "oot": {
     "comboCtx": "0x80006584",
     "saveCtx": "0x8011a5d0",
     "payload": "0x80400000",
+    "comboConfigLive": "0x80449cf8",
+    "runtimeSilverRupeeDataLive": "0x80434cec",
+    "runtimeMaxKeysLive": "0x8044a2b8",
     "sharedCustomSaveLive": "0x8044b740",
     "foreignSaveLive": "0x8044bfe0",
     "derivation": {
       "comboCtx": "source-define",
       "saveCtx": "source-linker",
-      "payload": "source-define",
+      "payload": "patchfile-vram",
+      "comboConfigLive": "patchfile-code-scan",
+      "runtimeSilverRupeeDataLive": "patchfile-payload-scan",
+      "runtimeMaxKeysLive": "patchfile-code-scan+offset",
       "sharedCustomSaveLive": "web-payload-code-scan",
       "foreignSaveLive": "web-payload-code-scan"
-    }
+    },
+    "missingPatchfileSymbols": ["gMmSave", "gSharedCustomSave"]
   },
   "mm": {
     "comboCtx": "0x80098280",
     "saveCtx": "0x801ef670",
     "payload": "0x80720000",
+    "comboConfigLive": "0x8076a638",
     "sharedCustomSaveLive": "0x8076bcb0",
     "foreignSaveLive": "0x8076c550",
     "derivation": {
       "comboCtx": "source-define",
       "saveCtx": "source-linker",
-      "payload": "source-define",
+      "payload": "patchfile-vram",
+      "comboConfigLive": "patchfile-code-scan",
       "sharedCustomSaveLive": "web-payload-code-scan",
       "foreignSaveLive": "web-payload-code-scan"
-    }
+    },
+    "missingPatchfileSymbols": ["gOotSave", "gSharedCustomSave"]
   },
   "notDerivableWithoutLinking": {
     "oot": [],
