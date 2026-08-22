@@ -274,6 +274,104 @@ describe('autotracker composite item inference', () => {
     expect(stage3.OOT_SWORD).toBe(3);
   });
 
+  it('folds the completed MM Goron Lullaby into the progressive half stage', () => {
+    // Progressive mode: pool holds two copies of MM_SONG_GORON_HALF and no
+    // MM_SONG_GORON. The autotracker still reports the full lullaby via its
+    // own quest bit as MM_SONG_GORON, which must map to stage 2 of the
+    // progressive item rather than leaking an out-of-pool ID to the pathfinder.
+    const availableItemIds = makeAvailableItemIds(['MM_SONG_GORON_HALF']);
+
+    const translated = translateAutotrackerItems(
+      [
+        { id: 'MM_SONG_GORON_HALF', qty: 1 },
+        { id: 'MM_SONG_GORON', qty: 1 },
+      ],
+      availableItemIds,
+      makeItemMaxCounts({}),
+    );
+
+    expect(translated.MM_SONG_GORON_HALF).toBe(2);
+    expect(translated.MM_SONG_GORON).toBeUndefined();
+  });
+
+  it('folds the completed OOT Goron Lullaby into the progressive half stage', () => {
+    // Progressive mode: pool holds two copies of OOT_SONG_GORON_HALF and no
+    // OOT_SONG_GORON. The autotracker still reports the full lullaby via the
+    // shared custom save as OOT_SONG_GORON, which must map to stage 2 of the
+    // progressive item rather than leaking an out-of-pool ID to the pathfinder.
+    const availableItemIds = makeAvailableItemIds(['OOT_SONG_GORON_HALF']);
+
+    const translated = translateAutotrackerItems(
+      [
+        { id: 'OOT_SONG_GORON_HALF', qty: 1 },
+        { id: 'OOT_SONG_GORON', qty: 1 },
+      ],
+      availableItemIds,
+      makeItemMaxCounts({}),
+    );
+
+    expect(translated.OOT_SONG_GORON_HALF).toBe(2);
+    expect(translated.OOT_SONG_GORON).toBeUndefined();
+  });
+
+  it('folds both completed Goron Lullaby signals into the shared progressive half stage', () => {
+    // Shared progressive mode: pool holds two copies of SHARED_SONG_GORON_HALF
+    // and no full-song ID. The autotracker reports the completed lullaby via
+    // the MM quest bit (MM_SONG_GORON) and the OOT shared custom save
+    // (OOT_SONG_GORON); both must map to stage 2 of the shared progressive
+    // item rather than leaking out-of-pool IDs to the pathfinder.
+    const availableItemIds = makeAvailableItemIds(['SHARED_SONG_GORON_HALF']);
+
+    const translated = translateAutotrackerItems(
+      [
+        { id: 'SHARED_SONG_GORON_HALF', qty: 1 },
+        { id: 'MM_SONG_GORON', qty: 1 },
+        { id: 'OOT_SONG_GORON', qty: 1 },
+      ],
+      availableItemIds,
+      makeItemMaxCounts({}),
+    );
+
+    expect(translated.SHARED_SONG_GORON_HALF).toBe(2);
+    expect(translated.MM_SONG_GORON).toBeUndefined();
+    expect(translated.OOT_SONG_GORON).toBeUndefined();
+  });
+
+  it('keeps the full MM Goron Lullaby id when not progressive', () => {
+    // Full-lullaby mode: pool holds a single MM_SONG_GORON and no half. The
+    // autotracker's MM_SONG_GORON signal passes through unchanged.
+    const availableItemIds = makeAvailableItemIds(['MM_SONG_GORON']);
+
+    const translated = translateAutotrackerItems(
+      [{ id: 'MM_SONG_GORON', qty: 1 }],
+      availableItemIds,
+      makeItemMaxCounts({}),
+    );
+
+    expect(translated.MM_SONG_GORON).toBe(1);
+    expect(translated.MM_SONG_GORON_HALF).toBeUndefined();
+  });
+
+  it('keeps the full shared Goron Lullaby id when not progressive', () => {
+    // Shared full-lullaby mode: pool holds a single SHARED_SONG_GORON and no
+    // half. The autotracker's MM_SONG_GORON / OOT_SONG_GORON signals resolve
+    // to the shared full-song ID via resolveTrackerId and pass through.
+    const availableItemIds = makeAvailableItemIds(['SHARED_SONG_GORON']);
+
+    const translated = translateAutotrackerItems(
+      [
+        { id: 'MM_SONG_GORON', qty: 1 },
+        { id: 'OOT_SONG_GORON', qty: 1 },
+      ],
+      availableItemIds,
+      makeItemMaxCounts({}),
+    );
+
+    expect(translated.SHARED_SONG_GORON).toBe(1);
+    expect(translated.MM_SONG_GORON).toBeUndefined();
+    expect(translated.OOT_SONG_GORON).toBeUndefined();
+  });
+
   it('keeps individual OOT swords when extra child swords are disabled', () => {
     const availableItemIds = makeAvailableItemIds([
       'OOT_SWORD_KOKIRI',

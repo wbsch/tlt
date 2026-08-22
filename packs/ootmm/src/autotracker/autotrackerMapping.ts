@@ -11,7 +11,6 @@
  */
 
 import { ITEM_DATABASE } from '../data/items';
-import { getGridItemLinkedItemIds } from '../data/itemIcons';
 
 // ---------------------------------------------------------------------------
 // 1. Simple 1:1 renames
@@ -925,40 +924,21 @@ function deriveAutotrackerOnlyItems(
   }
 }
 
-/**
- * Build a set of all canonical item IDs, including items that are only
- * reachable as linked progression stages of other items (e.g.
- * SHARED_SONG_GORON is a linked stage of SHARED_SONG_GORON_HALF but may
- * not be directly in the item pool when progressive mode replaces it).
- */
-function buildCanonicalItemIdSet(availableItemIds: Set<string>): Set<string> {
-  const result = new Set(availableItemIds);
-  for (const itemId of availableItemIds) {
-    const linkedIds = getGridItemLinkedItemIds(itemId, {});
-    if (linkedIds) {
-      for (const linkedId of linkedIds) {
-        result.add(linkedId);
-      }
-    }
-  }
-  return result;
-}
-
 function resolveTrackerId(
   gameSpecificId: string,
-  canonicalItemIds: Set<string>,
+  availableItemIds: Set<string>,
 ): string {
-  if (canonicalItemIds.has(gameSpecificId)) return gameSpecificId;
+  if (availableItemIds.has(gameSpecificId)) return gameSpecificId;
 
   // Try SHARED_ variant
   const match = gameSpecificId.match(/^(OOT|MM)_(.+)$/);
   if (match) {
     const suffix = match[2];
     const sharedId = `SHARED_${suffix}`;
-    if (canonicalItemIds.has(sharedId)) return sharedId;
+    if (availableItemIds.has(sharedId)) return sharedId;
   }
 
-  // Return original even if not in canonical set — the store will accept it
+  // Return original even if not in available set — the store will accept it
   return gameSpecificId;
 }
 
@@ -1082,10 +1062,9 @@ export function translateAutotrackerItems(
   options: AutotrackerTranslationOptions = {},
 ): Record<string, number> {
   const result: Record<string, number> = {};
-  const canonicalItemIds = buildCanonicalItemIdSet(availableItemIds);
 
   function set(trackerId: string, qty: number) {
-    const resolvedId = resolveTrackerId(trackerId, canonicalItemIds);
+    const resolvedId = resolveTrackerId(trackerId, availableItemIds);
     result[resolvedId] = Math.max(result[resolvedId] ?? 0, qty);
   }
 
@@ -1133,6 +1112,40 @@ export function translateAutotrackerItems(
       set('OOT_SWORD_MASTER', (qty >> 1) & 1);
       set('OOT_SWORD_KNIFE', (qty >> 2) & 1);
       set('OOT_SWORD_BIGGORON', (qty >> 4) & 1);
+      continue;
+    }
+
+    // Goron Lullaby. The autotracker reports the completed lullaby via its
+    // own quest bit as MM_SONG_GORON (and via the shared custom save as
+    // OOT_SONG_GORON), but in "progressive" mode the pool holds two copies of
+    // the half item (the full lullaby is stage 2) and no full-song ID.
+    // Without this, the completed-lullaby signal would be sent to the
+    // pathfinder as MM_SONG_GORON / OOT_SONG_GORON — IDs that aren't in the
+    // pool — and the second half would never register. Fold it into stage 2
+    // of the progressive item instead. The half item may be the game-specific
+    // one (MM_SONG_GORON_HALF / OOT_SONG_GORON_HALF) or the shared one
+    // (SHARED_SONG_GORON_HALF) when shared songs are enabled. In "full
+    // lullaby" mode the full-song ID is in the pool, so it falls through to
+    // the direct pass-through below.
+    if (id === 'MM_SONG_GORON') {
+      if (availableItemIds.has('MM_SONG_GORON_HALF')) {
+        set('MM_SONG_GORON_HALF', qty > 0 ? 2 : 0);
+      } else if (availableItemIds.has('SHARED_SONG_GORON_HALF')) {
+        set('SHARED_SONG_GORON_HALF', qty > 0 ? 2 : 0);
+      } else {
+        set(id, qty);
+      }
+      continue;
+    }
+
+    if (id === 'OOT_SONG_GORON') {
+      if (availableItemIds.has('OOT_SONG_GORON_HALF')) {
+        set('OOT_SONG_GORON_HALF', qty > 0 ? 2 : 0);
+      } else if (availableItemIds.has('SHARED_SONG_GORON_HALF')) {
+        set('SHARED_SONG_GORON_HALF', qty > 0 ? 2 : 0);
+      } else {
+        set(id, qty);
+      }
       continue;
     }
 

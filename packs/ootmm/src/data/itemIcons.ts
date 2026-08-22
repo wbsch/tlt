@@ -552,6 +552,7 @@ const RAW_ITEM_ICONS: Record<string, string> = {
   SHARED_SONG_EMPTINESS: 'images/song_elegy.png',
   SHARED_SONG_EPONA: 'images/song_epona.png',
   SHARED_SONG_GORON: 'images/song_lullaby.png',
+  SHARED_SONG_GORON_HALF: 'images/song_lullaby.png',
   SHARED_SONG_HEALING: 'images/song_healing.png',
   SHARED_SONG_ORDER: 'images/song_oath.png',
   SHARED_SONG_SARIA: 'images/song_saria.png',
@@ -1250,21 +1251,18 @@ const RAW_GRID_ICON_VARIANTS: Record<string, GridIconVariantConfig> = {
   MM_SONG_GORON_HALF: {
     default: {
       icons: ['images/song_intro.png', 'images/song_lullaby.png'],
-      linkedItemIds: ['MM_SONG_GORON_HALF', 'MM_SONG_GORON'],
       startUndimmed: false,
     },
   },
   OOT_SONG_GORON_HALF: {
     default: {
       icons: ['images/song_intro.png', 'images/song_lullaby.png'],
-      linkedItemIds: ['OOT_SONG_GORON_HALF', 'OOT_SONG_GORON'],
       startUndimmed: false,
     },
   },
   SHARED_SONG_GORON_HALF: {
     default: {
       icons: ['images/song_intro.png', 'images/song_lullaby.png'],
-      linkedItemIds: ['SHARED_SONG_GORON_HALF', 'SHARED_SONG_GORON'],
       startUndimmed: false,
     },
   },
