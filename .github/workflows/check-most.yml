@@ -63,3 +63,6 @@ jobs:
 
       - name: Server tests
         run: npm run test:server
+
+      - name: Script tests
+        run: npm run test:scripts

@@ -1,22 +1,23 @@
 #!/usr/bin/env python3
-#this script uses hard coded offsets, is shit and should be rewritten
-"""
-Derive shared_save_offsets.json from OoTMM struct layout or from a full save dump.
+"""Derive shared_save_offsets.json from the OoTMM headers, optionally checking a save dump.
+
+The offsets themselves come from `c_struct_layout`, which lays out
+`SharedCustomSave` straight from the checked-out headers -- the same code path
+the generator pipeline uses, so this tool can no longer drift from it. What it
+adds over the pipeline is `--dump`: cross-checking the derived offsets against a
+real full-save dump.
 
 USAGE:
-  # Derive from inventory_slots.json (bitmap offsets as anchors) + struct layout:
-  python3 scripts/autotracker/derive_shared_save_offsets.py \\
-      packs/ootmm/src/autotracker/data/v31_1/inventory_slots.json
+  # Derive from the checked-out OoTMM headers:
+  python3 scripts/autotracker/derive_shared_save_offsets.py
 
   # Derive and validate against a full save dump:
-  python3 scripts/autotracker/derive_shared_save_offsets.py \\
-      packs/ootmm/src/autotracker/data/v31_1/inventory_slots.json \\
-      --dump /tmp/full-save-dump.json
+  python3 scripts/autotracker/derive_shared_save_offsets.py --dump /tmp/full-save-dump.json
 
-  # Write output to file:
+  # Cross-check against an existing inventory_slots.json and write the result:
   python3 scripts/autotracker/derive_shared_save_offsets.py \\
-      packs/ootmm/src/autotracker/data/v31_1/inventory_slots.json \\
-      --write packs/ootmm/src/autotracker/data/v31_1/shared_save_offsets.json
+      --inventory-slots packs/ootmm/src/autotracker/data/v32_2/inventory_slots.json \\
+      --write packs/ootmm/src/autotracker/data/v32_2/shared_save_offsets.json
 """
 
 import argparse
@@ -25,144 +26,32 @@ import json
 import pathlib
 import sys
 
-from generate_inventory_slots import read_silver_rupees_size
+from generate_inventory_slots import build_shared_storage, load_save_layout
 
 
-# ── Struct layout constants (from OoTMM C headers) ──────────────────────
-
-# XFLAGS_COUNT_MM varies per version; it is read from the inventory_slots.json
-# xflagsMm bitmap size (see extract_anchors) instead of being hardcoded.
-
-# SharedCustomSave layout (from save.h):
-#
-#   OotCustomSave oot;              // sizeof(OotCustomSave) = xflagsMm offset
-#   MmCustomSave mm;                // sizeof = soulsEnemyOot - ootSize - 0x2C
-#   s16 netGiSkip[16];              // 32 = 0x20
-#   u16 coins[4];                   // 8
-#   u8  silverRupees[(SR_MAX+1)/2]; // 9 from v32.2 on, absent before (+1 pad)
-#   u16 ocarinaButtonMaskOot;       // 2
-#   u16 ocarinaButtonMaskMm;        // 2
-#   u8  soulsEnemyOot[8];           // 8   ← anchor
-#   u8  soulsEnemyMm[8];            // 8
-#   u8  soulsBossOot[2];            // 2
-#   u8  soulsBossMm[1];             // 1
-#   u8  soulsNpcOot[8];             // 8
-#   u8  soulsNpcMm[8];              // 8
-#   u8  soulsAnimalsOot[2];         // 2
-#   u8  soulsAnimalsMm[2];          // 2
-#   u8  soulsMiscOot[1];            // 1
-#   u8  soulsMiscMm[1];             // 1   ← anchor
-#   u8  caughtChildFishWeight[20];  // 20
-#   u8  caughtAdultFishWeight[20];  // 20
-#   u8  caughtFishFlags[5];         // 5
-#   RespawnData respawn[1];         // 32 (= 0x20, from mm/save.h)
-#   u8  bitfields[2];              // 2  (13 bits of u8 bitfields)
-#   u8  traps[7];                  // 7  (TRAP_MAX = 0x07)
-#   u8  notes[38];                 // 38 (NOTES_MAX = 0x26)
-#   u8  rustyKeysOot[...];         // 4
-#   u8  rustyKeysMm[...];          // 5
-
-def presouls_size(silver_rupees_size: int = 0) -> int:
-    """netGiSkip[16] + coins[4] + silverRupees[] + ocarinaMasks[4].
-
-    0x2C up to v32.1; v32.2 inserted the packed silver rupee array before the
-    u16 masks, which realign to 2 bytes after it.
-    """
-    size = 0x20 + 8 + silver_rupees_size
-    return ((size + 1) & ~1) + 2 + 2
-
-RESPAWN_SIZE = 0x20    # RespawnData (mm/save.h)
-BITFIELD_SIZE = 2      # 13 bits packed in 2 bytes
-TRAPS_SIZE = 7         # TRAP_MAX = 0x07
-NOTES_SIZE = 38        # NOTES_MAX = 0x26
-RUSTY_KEYS_OOT_SIZE = 4
-RUSTY_KEYS_MM_SIZE = 5
-
-
-def load_inventory_slots(path: str) -> dict:
+def cross_check_inventory_slots(layout: dict, path: str) -> bool:
+    """Verify a previously generated inventory_slots.json against this layout."""
     with open(path) as f:
-        return json.load(f)
+        shared = json.load(f)["catalog"]["shared"]
 
-
-def extract_anchors(slots: dict) -> dict:
-    """Extract key bitmap offsets from inventory_slots.json."""
-    shared = slots["catalog"]["shared"]
-    bitmaps = {bm["name"]: bm for bm in shared["bitmaps"]}
-    return {
-        "xflagsOotSize": bitmaps["xflagsOot"]["size"],
-        "xflagsMm": bitmaps["xflagsMm"]["offset"],
-        "xflagsMmSize": bitmaps["xflagsMm"]["size"],
-        "soulsEnemyOot": bitmaps["soulsEnemyOot"]["offset"],
-        "soulsMiscMm": bitmaps["soulsMiscMm"]["offset"],
-        "trackedSize": shared["trackedSize"],
-    }
-
-
-def compute_offsets(anchors: dict, silver_rupees_size: int = 0) -> dict:
-    """Compute all fixed offsets from bitmap anchors + struct layout."""
-    xflags_oot_size = anchors["xflagsOotSize"]
-    oot_size = anchors["xflagsMm"]          # sizeof(OotCustomSave)
-    mm_size = (anchors["soulsEnemyOot"]      # soulsEnemyOot
-               - oot_size                     # minus OotCustomSave
-               - presouls_size(silver_rupees_size))  # minus pre-soul fields
-    half_days = oot_size + anchors["xflagsMmSize"] + 32 + 4  # xflagsMm + npcMm[32] + shopsMm[4]
-
-    coins = oot_size + mm_size + 0x20       # after both custom saves + netGiSkip[16]
-    # after coins[4] + silverRupees[], realigned for the u16 masks
-    mask_oot = (coins + 8 + silver_rupees_size + 1) & ~1
-    mask_mm = mask_oot + 2                   # after mask_oot
-
-    souls_misc_mm = anchors["soulsMiscMm"]
-    child_fish = souls_misc_mm + 1
-    adult_fish = child_fish + 20
-    fish_flags = adult_fish + 20
-
-    # RespawnData starts after fish_flags[5]; needs 4-byte alignment on MIPS
-    respawn = fish_flags + 5
-    respawn = (respawn + 3) & ~3  # align to 4-byte boundary
-    bitfields = respawn + RESPAWN_SIZE
-    traps = bitfields + BITFIELD_SIZE
-    notes = traps + TRAPS_SIZE
-    rusty_keys = notes + NOTES_SIZE
-
-    shared_size = max(
-        anchors["trackedSize"],
-        rusty_keys + RUSTY_KEYS_OOT_SIZE + RUSTY_KEYS_MM_SIZE,
-        notes + NOTES_SIZE,
-        bitfields + BITFIELD_SIZE + 1,  # bombchuBagFlagsOffset + 1
-    )
-
-    # song flag offsets within each custom save
-    # OotCustomSave: xflags[n] + npc[32] + shops[8] + scrubs[8] + sr[16]
-    #   + fwRespawnDungeonEntrance[2] (28 each) + powderKegTimer(2) -> bitfields
-    # fwRespawnDungeonEntrance has u32 members => 4-byte alignment on N64.
-    # Account for alignment padding before the array.
-    fw_respawn_offset = xflags_oot_size + 32 + 8 + 8 + 16
-    if fw_respawn_offset % 4:
-        fw_respawn_offset += 4 - (fw_respawn_offset % 4)
-    song_flags_oot = fw_respawn_offset + 2 * 28 + 2
-    # MmCustomSave: halfDays(1) + padding(1 for 4-byte align) + 3*RespawnData arrays(3*64)
-    song_flags_mm = (half_days + 1 + 3) & ~3  # round past halfDays to 4-byte boundary
-    song_flags_mm += 3 * 64  # fw[2] + fwRespawnTop[2] + fwRespawnDungeonEntrance[2]
-
-    return {
-        "sharedCustomSaveSize": shared_size,
-        "halfDaysOffset": half_days,
-        "coinsOffset": coins,
-        "ocarinaButtonMaskOotOffset": mask_oot,
-        "ocarinaButtonMaskMmOffset": mask_mm,
-        "caughtChildFishWeightOffset": child_fish,
-        "caughtAdultFishWeightOffset": adult_fish,
-        "caughtFishWeightCount": 20,
-        "songNotesOffset": notes,
-        "songNoteCount": NOTES_SIZE,
-        "rustyKeysOffset": rusty_keys,
-        "rustyKeysOotSize": RUSTY_KEYS_OOT_SIZE,
-        "rustyKeysMmSize": RUSTY_KEYS_MM_SIZE,
-        "songFlagsOotOffset": song_flags_oot,
-        "songFlagsMmOffset": song_flags_mm,
-        "bombchuBagFlagsOffset": bitfields,
-    }
+    derived = {b["name"]: b for b in layout["shared"]["bitmaps"]}
+    ok = True
+    if shared["trackedSize"] != layout["shared"]["trackedSize"]:
+        print(f"  trackedSize: file {shared['trackedSize']} != "
+              f"derived {layout['shared']['trackedSize']}  X")
+        ok = False
+    for bitmap in shared["bitmaps"]:
+        name = bitmap["name"]
+        if name not in derived:
+            print(f"  {name}: present in file, absent from the headers  X")
+            ok = False
+        elif derived[name]["offset"] != bitmap["offset"]:
+            print(f"  {name}: file {bitmap['offset']} != "
+                  f"derived {derived[name]['offset']}  X")
+            ok = False
+    print("  inventory_slots.json agrees with the headers" if ok
+          else "  inventory_slots.json DISAGREES with the headers")
+    return ok
 
 
 def validate_with_dump(offsets: dict, dump_path: str, game: str = "OoT") -> bool:
@@ -246,11 +135,18 @@ def validate_with_dump(offsets: dict, dump_path: str, game: str = "OoT") -> bool
 
 def main():
     parser = argparse.ArgumentParser(
-        description="Derive shared_save_offsets.json from bitmap offsets and struct layout."
+        description="Derive shared_save_offsets.json by laying out SharedCustomSave "
+                    "from the checked-out OoTMM headers."
     )
     parser.add_argument(
-        "inventory_slots",
-        help="Path to inventory_slots.json (provides bitmap offsets as anchors).",
+        "--ootmm-repo",
+        default="OoTMM",
+        help="Path to the OoTMM checkout to read the save headers from (default: OoTMM).",
+    )
+    parser.add_argument(
+        "--inventory-slots",
+        default=None,
+        help="Optional inventory_slots.json to cross-check against the derived layout.",
     )
     parser.add_argument(
         "--dump",
@@ -267,28 +163,18 @@ def main():
         default="OoT",
         help="Which game's payload to use for dump validation (default: OoT).",
     )
-    parser.add_argument(
-        "--ootmm-repo",
-        default="OoTMM",
-        help="Path to the OoTMM checkout, used to size SharedCustomSave.silverRupees "
-             "(v32.2+). Default: OoTMM",
-    )
     args = parser.parse_args()
 
-    silver_rupees_size = read_silver_rupees_size(pathlib.Path(args.ootmm_repo))
+    repo_root = pathlib.Path(args.ootmm_repo).resolve()
+    layouter, shared_layout = load_save_layout(repo_root)
+    layout = build_shared_storage(shared_layout)
+    offsets = layout["fixedOffsets"]
 
-    slots = load_inventory_slots(args.inventory_slots)
-    anchors = extract_anchors(slots)
-    offsets = compute_offsets(anchors, silver_rupees_size)
-
-    print("Anchor values:")
-    print(f"  xflagsOot    = {anchors['xflagsOotSize']} bytes")
-    print(f"  xflagsMm     = 0x{anchors['xflagsMm']:04X}  (sizeof OotCustomSave)")
-    print(f"  soulsEnemyOot = 0x{anchors['soulsEnemyOot']:04X}")
-    print(f"  soulsMiscMm  = 0x{anchors['soulsMiscMm']:04X}")
-    oot_size = anchors["xflagsMm"]
-    mm_size = anchors["soulsEnemyOot"] - oot_size - presouls_size(silver_rupees_size)
-    print(f"  → sizeof(MmCustomSave) = 0x{mm_size:X} ({mm_size})")
+    print(f"Laid out from {repo_root}:")
+    print(f"  sizeof(OotCustomSave)    = 0x{layouter.sizeof('OotCustomSave'):X}")
+    print(f"  sizeof(MmCustomSave)     = 0x{layouter.sizeof('MmCustomSave'):X}")
+    print(f"  sizeof(SharedCustomSave) = 0x{shared_layout['size']:X} "
+          f"(0x{shared_layout['raw_size']:X} before ALIGNED padding)")
     print()
 
     print("Derived offsets:")
@@ -299,24 +185,27 @@ def main():
             print(f"  {key:30s} = {val}")
     print()
 
+    ok = True
+    if args.inventory_slots:
+        print("Cross-checking inventory_slots.json ...")
+        ok = cross_check_inventory_slots(layout, args.inventory_slots) and ok
+        print()
+
     if args.dump:
         print("Validating against dump ...")
-        validate_with_dump(offsets, args.dump, args.game)
+        ok = validate_with_dump(offsets, args.dump, args.game) and ok
+        print()
 
     if args.write:
-        output = {
-            "schemaVersion": 1,
-            "derivedFrom": {
-                "method": "struct-layout-from-bitmap-anchors",
-                "source": args.inventory_slots,
-            },
-            **offsets,
-        }
+        # Same shape the generator pipeline writes, so this tool can never
+        # produce a file that disagrees with the shipped one.
         with open(args.write, "w") as f:
-            json.dump(output, f, indent=2)
+            json.dump(offsets, f, indent=2)
             f.write("\n")
         print(f"\nWritten to {args.write}")
 
+    return 0 if ok else 1
+
 
 if __name__ == "__main__":
-    main()
+    sys.exit(main())

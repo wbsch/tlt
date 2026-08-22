@@ -1,11 +1,15 @@
 #!/usr/bin/env python3
-#this script uses hard coded offsets, is shit and should be rewritten
+# SharedCustomSave offsets are laid out from the OoTMM headers by
+# c_struct_layout -- they are no longer hardcoded here. The item/slot
+# catalog below is still driven by name mappings against gi.yml.
 
 import argparse
 import json
 import pathlib
 import re
 import sys
+
+from c_struct_layout import build_layouter
 
 
 SLOT_DEFINE_RE = re.compile(r"^#define\s+(ITS_(OOT|MM)_[A-Z0-9_]+)\s+0x([0-9a-fA-F]+)\s*$")
@@ -22,167 +26,88 @@ SHARED_COIN_COUNT = 4
 
 # ── Struct layout constants (from OoTMM headers) ──────────────────────────
 
-# XFLAGS_COUNT_OOT / XFLAGS_COUNT_MM vary per OoTMM version and must be read
-# from the checked-out xflags_data.h (v30.x-v31.x: 0x2e8/0x34a, v32.0: 0x2fa/0x350).
-XFLAGS_COUNT_RE = re.compile(
-    r"^#define\s+(XFLAGS_COUNT_(OOT|MM))\s+0x([0-9a-fA-F]+)\s*$"
+# Every SharedCustomSave offset below is laid out from the checked-out headers by
+# c_struct_layout, not mirrored here. Mirroring is what let v32.2's mid-struct
+# `silverRupees[]` insert go unnoticed: the arithmetic simply kept emitting the
+# previous version's offsets. See UPDATE.md.
+SAVE_LAYOUT_HEADERS = (
+    "packages/generator/include/combo/save.h",
+    "packages/generator/include/combo/oot/save.h",
+    "packages/generator/include/combo/mm/save.h",
+    "packages/generator/include/combo/math/vec.h",
+    "packages/generator/include/combo/xflags_data.h",
+    "packages/generator/include/combo/traps.h",
+    "packages/generator/include/combo/notes.h",
+    "packages/generator/include/combo/doors.h",
+    "packages/generator/include/combo/sr.h",
 )
-# SharedCustomSave.silverRupees exists from v32.2 on; absent before that.
-SILVER_RUPEES_FIELD_RE = re.compile(r"^\s*u8\s+silverRupees\[([^\]]+)\];", re.MULTILINE)
-SR_MAX_RE = re.compile(r"^#define\s+SR_MAX\s+0x([0-9a-fA-F]+)\s*$", re.MULTILINE)
-OOT_RESPAWN_DATA_SIZE = 28  # OotRespawnData (oot/save.h): Vec3f(12)+s16*3(6)+u8*2(2)+u32*2(8)
-RESPAWN_SIZE     = 0x20   # RespawnData (mm/save.h)
-TRAP_MAX         = 7
-NOTES_MAX        = 0x26
-RUSTY_KEYS_OOT_SIZE = 4
-RUSTY_KEYS_MM_SIZE  = 5
+
+# gSharedCustomSave bitmap name -> field path in SharedCustomSave.
+SHARED_BITMAP_FIELDS = (
+    ("xflagsOot", "oot.xflags"),
+    ("npcOot", "oot.npc"),
+    ("shopsOot", "oot.shops"),
+    ("scrubsOot", "oot.scrubs"),
+    ("srOot", "oot.sr"),
+    ("xflagsMm", "mm.xflags"),
+    ("npcMm", "mm.npc"),
+    ("shopsMm", "mm.shops"),
+    ("soulsEnemyOot", "soulsEnemyOot"),
+    ("soulsEnemyMm", "soulsEnemyMm"),
+    ("soulsBossOot", "soulsBossOot"),
+    ("soulsBossMm", "soulsBossMm"),
+    ("soulsNpcOot", "soulsNpcOot"),
+    ("soulsNpcMm", "soulsNpcMm"),
+    ("soulsAnimalOot", "soulsAnimalsOot"),
+    ("soulsAnimalMm", "soulsAnimalsMm"),
+    ("soulsMiscOot", "soulsMiscOot"),
+    ("soulsMiscMm", "soulsMiscMm"),
+    ("caughtFishFlags", "caughtFishFlags"),
+)
 
 
-def read_xflags_counts(repo_root: pathlib.Path) -> tuple[int, int]:
-    """Read XFLAGS_COUNT_OOT / XFLAGS_COUNT_MM from the checked-out xflags_data.h."""
-    xflags_header = repo_root / "packages/generator/include/combo/xflags_data.h"
-    if not xflags_header.is_file():
-        raise ValueError(f"xflags header not found: {xflags_header}")
-
-    counts: dict[str, int] = {}
-    for line in xflags_header.read_text(encoding="utf-8").splitlines():
-        match = XFLAGS_COUNT_RE.match(line)
-        if match:
-            counts[match.group(1)] = int(match.group(3), 16)
-
-    if "XFLAGS_COUNT_OOT" not in counts or "XFLAGS_COUNT_MM" not in counts:
-        raise ValueError(f"missing XFLAGS_COUNT_OOT/MM in {xflags_header}")
-
-    return counts["XFLAGS_COUNT_OOT"], counts["XFLAGS_COUNT_MM"]
+def load_save_layout(repo_root: pathlib.Path):
+    """Lay out SharedCustomSave from the checked-out OoTMM headers."""
+    headers = {}
+    for rel in SAVE_LAYOUT_HEADERS:
+        path = repo_root / rel
+        if not path.is_file():
+            raise ValueError(f"save layout header not found: {path}")
+        headers[rel] = path.read_text(encoding="utf-8")
+    layouter = build_layouter(headers)
+    return layouter, layouter.layout("SharedCustomSave")
 
 
-def read_silver_rupees_size(repo_root: pathlib.Path) -> int:
-    """Size of SharedCustomSave.silverRupees in bytes (0 before OoTMM v32.2).
+def build_shared_storage(shared_layout: dict) -> dict:
+    """Build shared storage layout and fixed offsets from the parsed struct."""
+    fields = {f["name"]: f for f in shared_layout["fields"]}
 
-    v32.2 moved the OoT silver rupee counts out of the save-extra ledger into a
-    packed nibble array that sits between coins[4] and the ocarina button masks,
-    shifting every shared-save field after it.
-    """
-    save_header = repo_root / "packages/generator/include/combo/save.h"
-    if not save_header.is_file():
-        raise ValueError(f"save header not found: {save_header}")
+    def field(path: str) -> dict:
+        if path not in fields:
+            raise ValueError(
+                f"SharedCustomSave has no field {path!r} in this OoTMM release. "
+                f"The struct changed shape -- update the mapping rather than "
+                f"guessing an offset."
+            )
+        return fields[path]
 
-    match = SILVER_RUPEES_FIELD_RE.search(save_header.read_text(encoding="utf-8"))
-    if not match:
-        return 0
+    def offset(path: str) -> int:
+        return field(path)["offset"]
 
-    expr = "".join(match.group(1).split())
-    if expr != "(SR_MAX+1)/2":
-        raise ValueError(
-            f"unrecognized silverRupees array size {match.group(1)!r} in {save_header}"
-        )
-
-    sr_header = repo_root / "packages/generator/include/combo/sr.h"
-    if not sr_header.is_file():
-        raise ValueError(f"silver rupee header not found: {sr_header}")
-
-    sr_match = SR_MAX_RE.search(sr_header.read_text(encoding="utf-8"))
-    if not sr_match:
-        raise ValueError(f"missing SR_MAX in {sr_header}")
-
-    return (int(sr_match.group(1), 16) + 1) // 2
-
-
-def build_shared_storage(
-    mm_custom_save_size: int,
-    xflags_count_oot: int,
-    xflags_count_mm: int,
-    silver_rupees_size: int = 0,
-) -> dict:
-    """Build shared storage layout and fixed offsets from MmCustomSave size."""
-    # sizeof(OotCustomSave) = xflags[n] + npc[32] + shops[8] + scrubs[8] + sr[16]
-    #   + fwRespawnDungeonEntrance[2]*28 + powderKegTimer(2) + bitfields(2), ALIGNED(16)
-    oot_size = (
-        xflags_count_oot + 32 + 8 + 8 + 16 + 2 * OOT_RESPAWN_DATA_SIZE + 2 + 2 + 15
-    ) & ~15
-    mm_size = mm_custom_save_size
-    # netGiSkip[16] + coins[4] + silverRupees[] (v32.2+) + ocarinaMasks[4].
-    # The u16 masks realign to 2 bytes after the packed u8 silver rupee array.
-    pre_soul = 0x20 + 8 + silver_rupees_size
-    pre_soul = (pre_soul + 1) & ~1
-    pre_soul += 2 + 2
-
-    # Bitmap offsets (all within gSharedCustomSave)
-    xflagsOot      = 0x000
-    npcOot         = xflags_count_oot
-    shopsOot       = npcOot + 32
-    scrubsOot      = shopsOot + 8
-    srOot          = scrubsOot + 8
-    xflagsMm       = oot_size
-    npcMm          = oot_size + xflags_count_mm
-    shopsMm        = npcMm + 32
-    souls_enemy_oot = oot_size + mm_size + pre_soul
-    souls_enemy_mm  = souls_enemy_oot + 8
-    souls_boss_oot  = souls_enemy_mm + 8
-    souls_boss_mm   = souls_boss_oot + 2
-    souls_npc_oot   = souls_boss_mm + 1
-    souls_npc_mm    = souls_npc_oot + 8
-    souls_animal_oot = souls_npc_mm + 8
-    souls_animal_mm  = souls_animal_oot + 2
-    souls_misc_oot  = souls_animal_mm + 2
-    souls_misc_mm   = souls_misc_oot + 1
-
-    # Fixed (non-bitmap) fields
-    half_days       = shopsMm + 4
-    coins           = oot_size + mm_size + 0x20  # after netGiSkip[16]
-    mask_oot        = (coins + 8 + silver_rupees_size + 1) & ~1  # after coins[4] + silverRupees[]
-    mask_mm         = mask_oot + 2
-    child_fish      = souls_misc_mm + 1
-    adult_fish      = child_fish + 20
-    fish_flags      = adult_fish + 20
-
-    # After fish_flags[5]: align to 4 (RespawnData has Vec3f), then respawn[0x20]
-    respawn = (fish_flags + 5 + 3) & ~3
-    bitfields = respawn + RESPAWN_SIZE
-    # progressiveFlags is the second byte of the bitfield block
-    progressive_flags = bitfields + 1
-    traps = bitfields + 2
-    notes = traps + TRAP_MAX
-    rusty_keys = notes + NOTES_MAX
-
-    # Song flag offsets within each custom save (byte holding the song bitfields)
-    # fwRespawnDungeonEntrance has u32 members => 4-byte alignment on N64.
-    # Account for alignment padding before the array.
-    fw_respawn_offset = xflags_count_oot + 32 + 8 + 8 + 16
-    if fw_respawn_offset % 4:
-        fw_respawn_offset += 4 - (fw_respawn_offset % 4)
-    song_flags_oot = fw_respawn_offset + 2 * OOT_RESPAWN_DATA_SIZE + 2
-    song_flags_mm = ((half_days + 1 + 3) & ~3) + 3 * 64
-
-    tracked_size = max(
-        progressive_flags + 1,       # cover all bitmaps
-        notes + NOTES_MAX,
-        rusty_keys + RUSTY_KEYS_OOT_SIZE + RUSTY_KEYS_MM_SIZE,
-    )
+    def count(path: str) -> int:
+        return field(path)["count"]
 
     bitmaps = [
-        {"name": "xflagsOot",         "offset": xflagsOot,       "size": xflags_count_oot},
-        {"name": "npcOot",            "offset": npcOot,          "size": 32},
-        {"name": "shopsOot",          "offset": shopsOot,        "size": 8},
-        {"name": "scrubsOot",         "offset": scrubsOot,       "size": 8},
-        {"name": "srOot",             "offset": srOot,           "size": 16},
-        {"name": "xflagsMm",          "offset": xflagsMm,        "size": xflags_count_mm},
-        {"name": "npcMm",             "offset": npcMm,           "size": 32},
-        {"name": "shopsMm",           "offset": shopsMm,         "size": 4},
-        {"name": "soulsEnemyOot",     "offset": souls_enemy_oot, "size": 8},
-        {"name": "soulsEnemyMm",      "offset": souls_enemy_mm,  "size": 8},
-        {"name": "soulsBossOot",      "offset": souls_boss_oot,  "size": 2},
-        {"name": "soulsBossMm",       "offset": souls_boss_mm,   "size": 1},
-        {"name": "soulsNpcOot",       "offset": souls_npc_oot,   "size": 8},
-        {"name": "soulsNpcMm",        "offset": souls_npc_mm,    "size": 8},
-        {"name": "soulsAnimalOot",    "offset": souls_animal_oot,"size": 2},
-        {"name": "soulsAnimalMm",     "offset": souls_animal_mm, "size": 2},
-        {"name": "soulsMiscOot",      "offset": souls_misc_oot,  "size": 1},
-        {"name": "soulsMiscMm",       "offset": souls_misc_mm,   "size": 1},
-        {"name": "caughtFishFlags",   "offset": fish_flags,      "size": 5},
-        {"name": "progressiveFlags",  "offset": progressive_flags,"size": 1},
+        {"name": name, "offset": offset(path), "size": count(path)}
+        for name, path in SHARED_BITMAP_FIELDS
     ]
+    # progressiveFlags is the second byte of the trailing bitfield block; the
+    # first (bombchuBagFlags) holds foundMasterSword..bombchuBagMm.
+    bitmaps.append(
+        {"name": "progressiveFlags", "offset": offset("mmShieldIsDeku"), "size": 1}
+    )
 
+    tracked_size = shared_layout["raw_size"]
     shared = {
         "baseOffset": 0x18000,
         "stride": 0x4000,
@@ -192,21 +117,21 @@ def build_shared_storage(
 
     fixed_offsets = {
         "sharedCustomSaveSize": tracked_size,
-        "halfDaysOffset": half_days,
-        "coinsOffset": coins,
-        "ocarinaButtonMaskOotOffset": mask_oot,
-        "ocarinaButtonMaskMmOffset": mask_mm,
-        "caughtChildFishWeightOffset": child_fish,
-        "caughtAdultFishWeightOffset": adult_fish,
-        "caughtFishWeightCount": 20,
-        "songNotesOffset": notes,
-        "songNoteCount": NOTES_MAX,
-        "rustyKeysOffset": rusty_keys,
-        "rustyKeysOotSize": RUSTY_KEYS_OOT_SIZE,
-        "rustyKeysMmSize": RUSTY_KEYS_MM_SIZE,
-        "songFlagsOotOffset": song_flags_oot,
-        "songFlagsMmOffset": song_flags_mm,
-        "bombchuBagFlagsOffset": bitfields,
+        "halfDaysOffset": offset("mm.halfDays"),
+        "coinsOffset": offset("coins"),
+        "ocarinaButtonMaskOotOffset": offset("ocarinaButtonMaskOot"),
+        "ocarinaButtonMaskMmOffset": offset("ocarinaButtonMaskMm"),
+        "caughtChildFishWeightOffset": offset("caughtChildFishWeight"),
+        "caughtAdultFishWeightOffset": offset("caughtAdultFishWeight"),
+        "caughtFishWeightCount": count("caughtChildFishWeight"),
+        "songNotesOffset": offset("notes"),
+        "songNoteCount": count("notes"),
+        "rustyKeysOffset": offset("rustyKeysOot"),
+        "rustyKeysOotSize": count("rustyKeysOot"),
+        "rustyKeysMmSize": count("rustyKeysMm"),
+        "songFlagsOotOffset": offset("oot.hasElegy"),
+        "songFlagsMmOffset": offset("mm.ootSongs"),
+        "bombchuBagFlagsOffset": offset("foundMasterSword"),
     }
 
     return {"shared": shared, "fixedOffsets": fixed_offsets}
@@ -377,8 +302,9 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument(
         "--mm-custom-save-size",
         type=lambda x: int(x, 0),
-        default=0x440,
-        help="sizeof(MmCustomSave) in hex (default: 0x440 for v31.1/v32.0). Use 0x430 for v30.1.",
+        default=None,
+        help="Optional cross-check: fail if sizeof(MmCustomSave) laid out from the "
+             "headers differs from this value. The headers are the source of truth.",
     )
     parser.add_argument(
         "--shared-save-offsets-output",
@@ -792,11 +718,16 @@ def main() -> int:
         print(f"doors header not found: {doors_header}", file=sys.stderr)
         return 1
 
-    layout = build_shared_storage(
-        args.mm_custom_save_size,
-        *read_xflags_counts(repo_root),
-        silver_rupees_size=read_silver_rupees_size(repo_root),
-    )
+    layouter, shared_layout = load_save_layout(repo_root)
+    mm_size = layouter.sizeof("MmCustomSave")
+    if args.mm_custom_save_size is not None and args.mm_custom_save_size != mm_size:
+        print(
+            f"--mm-custom-save-size 0x{args.mm_custom_save_size:X} disagrees with the "
+            f"headers (0x{mm_size:X}); the headers win, drop the flag.",
+            file=sys.stderr,
+        )
+        return 1
+    layout = build_shared_storage(shared_layout)
     mapping["catalog"] = build_catalog(
         gi_defs, notes_header, item_add_source, doors_header, layout["shared"]
     )
@@ -812,7 +743,7 @@ def main() -> int:
         print(f"Fixed offsets written to {offsets_path}")
 
     print(
-        f"MmCustomSave size: 0x{args.mm_custom_save_size:03X}  "
+        f"MmCustomSave size: 0x{mm_size:03X}  "
         f"trackedSize: 0x{layout['shared']['trackedSize']:04X}"
     )
     return 0
