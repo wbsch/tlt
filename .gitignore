@@ -44,6 +44,7 @@ dist-ssr
 /local
 /plans
 /public/shared-states.json
+/public/test-dumps
 
 # Coop sync relay
 /server/sync.db

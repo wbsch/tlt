@@ -4,6 +4,8 @@ import path from 'node:path';
 import {
   RAW_CHUNK_SPECS,
   type ParsedRawAutotrackerSnapshot,
+  type RawAutotrackerChunk,
+  type RawAutotrackerChunkSpec,
   type RawAutotrackerMessage,
   type RawAutotrackerParser,
 } from '../../packs/ootmm/src/autotracker/rawFrameParser';
@@ -24,7 +26,7 @@ export type FixtureFile = {
   regions: FixtureRegion[];
 };
 
-type LoadedRegion = {
+export type LoadedRegion = {
   name: string;
   address: number;
   data: Uint8Array;
@@ -50,8 +52,13 @@ function decodeBase64(data: string): Uint8Array {
   return Uint8Array.from(Buffer.from(data, 'base64'));
 }
 
-function loadRegions(fixture: FixtureFile): LoadedRegion[] {
-  return fixture.regions
+/**
+ * Decode a list of base64-encoded memory regions into addressable byte ranges.
+ * Used both by the raw fixture path (`buildRawMessage`) and the test-dump
+ * verifier (`autotrackerTestDumpVerifier.ts`).
+ */
+export function decodeRegions(regions: FixtureRegion[]): LoadedRegion[] {
+  return regions
     .filter((region) => region.encoding === 'base64' && region.data)
     .map((region) => ({
       name: region.name,
@@ -60,7 +67,11 @@ function loadRegions(fixture: FixtureFile): LoadedRegion[] {
     }));
 }
 
-function sliceRegions(
+/**
+ * Slice `size` bytes at `address` out of the first region that fully covers
+ * `[address, address + size)`. Returns `null` if no region covers the range.
+ */
+export function sliceRegions(
   regions: LoadedRegion[],
   address: number,
   size: number,
@@ -79,28 +90,43 @@ function sliceRegions(
   return null;
 }
 
+/**
+ * Slice a list of chunk specs out of `regions` by address coverage and return
+ * the resulting raw chunks plus the specs that no region fully covered.
+ */
+export function buildChunksFromSpecs(
+  regions: LoadedRegion[],
+  specs: RawAutotrackerChunkSpec[],
+): { chunks: RawAutotrackerChunk[]; uncovered: RawAutotrackerChunkSpec[] } {
+  const chunks: RawAutotrackerChunk[] = [];
+  const uncovered: RawAutotrackerChunkSpec[] = [];
+
+  for (const spec of specs) {
+    const data = sliceRegions(regions, spec.address, spec.length);
+    if (!data) {
+      uncovered.push(spec);
+      continue;
+    }
+
+    chunks.push({
+      name: spec.name,
+      address: spec.address,
+      length: spec.length,
+      data: Buffer.from(data).toString('base64'),
+    });
+  }
+
+  return { chunks, uncovered };
+}
+
 export function buildRawMessage(
   fixtureName: string,
   sequence = 1,
 ): { fixture: FixtureFile; message: RawAutotrackerMessage } {
   const fixture = loadRawFixture(fixtureName);
-  const regions = loadRegions(fixture);
+  const regions = decodeRegions(fixture.regions);
 
-  const chunks = RAW_CHUNK_SPECS.flatMap((spec) => {
-    const data = sliceRegions(regions, spec.address, spec.length);
-    if (!data) {
-      return [];
-    }
-
-    return [
-      {
-        name: spec.name,
-        address: spec.address,
-        length: spec.length,
-        data: Buffer.from(data).toString('base64'),
-      },
-    ];
-  });
+  const { chunks } = buildChunksFromSpecs(regions, RAW_CHUNK_SPECS);
 
   return {
     fixture,

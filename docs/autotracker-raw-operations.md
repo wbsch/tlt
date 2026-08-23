@@ -141,6 +141,51 @@ Run the raw fixture smoke and transition coverage:
 npm run test:unit -- tests/unit/rawFrameParser.spec.ts tests/unit/rawFrameSnapshotTransitions.spec.ts
 ```
 
+## Version Regression Test Dumps
+
+The full-dump path (see `plans/autotracking_test_implementation_plan.md`) proves
+two properties at once: that the parser finds data at the right offset inside a
+memory range, and that the autotracker requests the _correct_ version-dependent
+memory ranges. It works by capturing a dump with **version-independent fixed
+addresses** (`buildFullDumpChunkSpecs()` in `rawFrameParser.ts`) and later
+re-slicing the version-specific `RAW_CHUNK_SPECS_BY_GAME` ranges out of that
+dump to confirm they decode to the recorded state.
+
+### Dump format
+
+A full dump is a JSON file with these fields:
+
+- `schemaVersion` — always `1`.
+- `memoryLayoutVersion` — version of the fixed chunk layout (bumped whenever
+  `buildFullDumpChunkSpecs()` changes). Diagnostic metadata only; the reader
+  never branches on it.
+- `dumpKind` — `"sparse"` or `"full"`.
+- `ootmmVersion` — spoiler-log version at capture time (e.g. `"v32.1"`).
+- `expected` — the raw `parse()` ground truth (`activeGame`, `saveIndex`,
+  `items`, `locations`), normalized (qty > 0, sorted).
+- `regions` — the authoritative, self-describing memory spec: one entry per
+  fixed chunk actually returned (`name`, `address`, `size`, base64 `data`).
+- `requestedMemoryAreas` — diagnostic only; the verifier never reads it.
+
+### Capture
+
+With the autotracker and emulator running at `http://localhost:5173/?debug=1`,
+open the debug `⋮` menu and choose **Debug: Dump Autotracker (Full)**. The dump
+downloads and should be placed in `public/test-dumps/` (gitignored) for the
+regression check, or committed under `tests/fixtures/autotracker/test-dumps/`
+as a stable unit-test fixture.
+
+### Verification
+
+```bash
+npm run verify:test-dumps
+```
+
+This scans `public/test-dumps/*.json` and re-slices each dump's
+version-specific specs out of its self-describing `regions`, re-parses, and
+compares the derived items/locations against `expected`. A missing or empty
+folder is a warning (exit 0). It is wired into `check-most:verify`.
+
 ## Performance Budgets
 
 Budgets are based on current fixture-driven baseline measurements.
