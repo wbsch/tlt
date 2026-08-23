@@ -43,6 +43,7 @@ const shareStatusMessage = ref('');
 const shareImportConfirmMessage = ref('');
 const shareImportIssues = ref<ShareImportIssue[]>([]);
 const isShareMenuOpen = ref(false);
+const isDebugDumpMenuOpen = ref(false);
 let shareStatusTimeoutId: number | null = null;
 const buildCommitDate = __TLT_BUILD_COMMIT_DATE__;
 const buildCommitHash = __TLT_BUILD_COMMIT_HASH__;
@@ -182,6 +183,11 @@ function handleWindowKeydown(event: KeyboardEvent) {
     return;
   }
 
+  if (isDebugDumpMenuOpen.value) {
+    isDebugDumpMenuOpen.value = false;
+    return;
+  }
+
   if (isInfoModalOpen.value) {
     event.preventDefault();
     closeInfoModal();
@@ -223,13 +229,10 @@ function debugActivateAll() {
   }
 }
 
-async function debugDumpAutotracker() {
-  const dumpFn = (
-    window as Window & {
-      __TLT_DEBUG_DUMP_AUTOTRACKER__?: () => boolean | Promise<boolean>;
-    }
-  ).__TLT_DEBUG_DUMP_AUTOTRACKER__;
-
+async function runAutotrackerDump(
+  dumpFn: (() => boolean | Promise<boolean>) | undefined,
+  successMessage: string,
+): Promise<void> {
   if (typeof dumpFn !== 'function') {
     setShareStatus('Autotracker dump unavailable');
     return;
@@ -237,13 +240,34 @@ async function debugDumpAutotracker() {
 
   try {
     const didDump = await Promise.resolve(dumpFn());
-    setShareStatus(
-      didDump ? 'Autotracker dump downloaded' : 'Autotracker dump unavailable',
-    );
+    setShareStatus(didDump ? successMessage : 'Autotracker dump unavailable');
   } catch (error) {
     console.error('Failed to dump autotracker state:', error);
     setShareStatus('Failed to dump autotracker');
   }
+}
+
+function debugDumpAutotracker() {
+  const dumpFn = (
+    window as Window & {
+      __TLT_DEBUG_DUMP_AUTOTRACKER__?: () => boolean | Promise<boolean>;
+    }
+  ).__TLT_DEBUG_DUMP_AUTOTRACKER__;
+  void runAutotrackerDump(dumpFn, 'Autotracker dump downloaded');
+}
+
+function debugDumpAutotrackerFull() {
+  isDebugDumpMenuOpen.value = false;
+  const dumpFn = (
+    window as Window & {
+      __TLT_DEBUG_DUMP_AUTOTRACKER_FULL__?: () => boolean | Promise<boolean>;
+    }
+  ).__TLT_DEBUG_DUMP_AUTOTRACKER_FULL__;
+  void runAutotrackerDump(dumpFn, 'Autotracker full dump downloaded');
+}
+
+function toggleDebugDumpMenu() {
+  isDebugDumpMenuOpen.value = !isDebugDumpMenuOpen.value;
 }
 
 function clearShareStatusTimeout() {
@@ -338,10 +362,16 @@ function toggleShareMenu() {
 }
 
 function handleDocumentClick(event: MouseEvent) {
-  if (!isShareMenuOpen.value) return;
+  if (!isShareMenuOpen.value && !isDebugDumpMenuOpen.value) return;
   const target = event.target as HTMLElement;
-  if (target.closest('.export-button-group')) return;
+  if (isShareMenuOpen.value && target.closest('.export-button-group')) {
+    return;
+  }
+  if (isDebugDumpMenuOpen.value && target.closest('.debug-dump-button-group')) {
+    return;
+  }
   isShareMenuOpen.value = false;
+  isDebugDumpMenuOpen.value = false;
 }
 
 function initializeDebugMode() {
@@ -467,15 +497,38 @@ onBeforeUnmount(() => {
         >
           Debug: Activate All
         </button>
-        <button
-          v-if="isDebugMode"
-          type="button"
-          class="debug-activate-all-button"
-          data-testid="debug-autotracker-dump-button"
-          @click="debugDumpAutotracker"
-        >
-          Debug: Dump Autotracker
-        </button>
+        <div v-if="isDebugMode" class="debug-dump-button-group">
+          <button
+            type="button"
+            class="debug-activate-all-button"
+            data-testid="debug-autotracker-dump-button"
+            @click="debugDumpAutotracker"
+          >
+            Debug: Dump Autotracker
+          </button>
+          <button
+            type="button"
+            class="debug-dump-dropdown-toggle"
+            data-testid="debug-autotracker-dump-toggle"
+            aria-label="Autotracker dump options"
+            @click="toggleDebugDumpMenu"
+          >
+            ⋮
+          </button>
+          <div
+            v-if="isDebugDumpMenuOpen"
+            class="debug-dump-dropdown-menu"
+            data-testid="debug-autotracker-dump-menu"
+          >
+            <button
+              type="button"
+              class="debug-dump-dropdown-item"
+              @click="debugDumpAutotrackerFull"
+            >
+              Debug: Dump Autotracker (Full)
+            </button>
+          </div>
+        </div>
         <div class="export-button-group">
           <button
             type="button"
@@ -904,6 +957,63 @@ onBeforeUnmount(() => {
 }
 
 .debug-activate-all-button:hover {
+  background: #555;
+}
+
+.debug-dump-button-group {
+  position: relative;
+  display: inline-flex;
+}
+
+.debug-dump-button-group .debug-activate-all-button {
+  border-right: none;
+  border-radius: 0.25rem 0 0 0.25rem;
+}
+
+.debug-dump-dropdown-toggle {
+  background: #444;
+  border: 1px solid #666;
+  border-left: none;
+  border-radius: 0 0.25rem 0.25rem 0;
+  font-size: 0.75rem;
+  font-weight: 700;
+  padding: 0.25rem 0.35rem;
+  cursor: pointer;
+  color: inherit;
+  line-height: 1;
+}
+
+.debug-dump-dropdown-toggle:hover {
+  background: #555;
+}
+
+.debug-dump-dropdown-menu {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  margin-top: 0.25rem;
+  background: #1f1f1f;
+  border: 1px solid #666;
+  border-radius: 0.25rem;
+  box-shadow: 0 4px 12px rgb(0 0 0 / 40%);
+  z-index: 100;
+  min-width: max-content;
+}
+
+.debug-dump-dropdown-item {
+  display: block;
+  width: 100%;
+  background: none;
+  border: none;
+  color: #e5e7eb;
+  font-size: 0.75rem;
+  padding: 0.5rem 0.75rem;
+  cursor: pointer;
+  text-align: left;
+  white-space: nowrap;
+}
+
+.debug-dump-dropdown-item:hover {
   background: #555;
 }
 

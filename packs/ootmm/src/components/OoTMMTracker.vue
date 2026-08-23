@@ -35,7 +35,10 @@ import {
   type SpoilerLocationPlacement,
   type SpoilerLogData,
 } from '../utils/spoiler';
-import { getSupportedVersionLabels } from '../autotracker/data/versions';
+import {
+  getSupportedVersionLabels,
+  resolveAutotrackerDataVersion,
+} from '../autotracker/data/versions';
 import {
   hasLegacyKeys,
   hasLegacyCrossWarpOot,
@@ -90,13 +93,13 @@ import {
   type AutotrackerSyncPhase,
 } from '../autotracker/useAutotracker';
 import { resolveAutotrackerCheckToLocationIds } from '../autotracker/checkMapping';
-import { translateAutotrackerItems } from '../autotracker/autotrackerMapping';
 import {
   RAW_CHUNK_SPECS_BY_GAME,
+  buildFullDumpChunkSpecs,
   createRawAutotrackerParser,
-  type RawAutotrackerCheck,
+  FULL_DUMP_MEMORY_LAYOUT_VERSION,
+  type RawAutotrackerChunkSpecsByGame,
   type RawAutotrackerGame,
-  type RawAutotrackerItem,
   type RawAutotrackerMessage,
 } from '../autotracker/rawFrameParser';
 import { OOT_SCENE_TO_MAP, MM_SCENE_TO_MAP } from '../autotracker/sceneToMap';
@@ -193,23 +196,28 @@ type AutotrackerDumpRegion = {
   data: string;
 };
 
-type AutotrackerDumpSummaryItem = {
-  id: string;
-  qty: number;
-};
+type AutotrackerDumpKind = 'sparse' | 'full';
 
-type AutotrackerDumpSummary = {
-  valid: boolean;
+type AutotrackerDumpExpected = {
+  // Raw autotracker space (what parser.parse() returns), normalized at capture
+  // time: qty > 0, sorted. Locations = collected check keys (name ?? id).
+  //
+  // This is the single ground-truth payload the regression test compares
+  // against (a pure, deterministic raw-space round-trip); it also carries the
+  // capture context (activeGame/saveIndex) so no separate `summary` is needed.
   activeGame: string;
   saveIndex: number;
-  items: AutotrackerDumpSummaryItem[];
+  items: { id: string; qty: number }[];
   locations: string[];
 };
 
 type AutotrackerDumpFile = {
   schemaVersion: number;
+  memoryLayoutVersion: number;
+  dumpKind: AutotrackerDumpKind;
   createdAt: string;
-  summary: AutotrackerDumpSummary;
+  ootmmVersion: string | null;
+  expected: AutotrackerDumpExpected;
   rawFrame: {
     schemaVersion: string;
     sequence: number;
@@ -222,107 +230,14 @@ type AutotrackerDumpFile = {
 
 const AUTOTRACKER_DUMP_SCHEMA_VERSION = 1;
 const AUTOTRACKER_DUMP_TIMEOUT_MS = 5000;
+// Full dumps read the large fixed payload window (~0.5 MB) from the emulator,
+// which the Go autotracker emits only after a slow read/re-detection pass; the
+// first matching frame can take well over the sparse timeout.
+const AUTOTRACKER_DUMP_FULL_TIMEOUT_MS = 30000;
 const AUTOTRACKER_TOAST_DURATION_MS = 5000;
 const MAX_AUTOTRACKER_TOASTS = 10;
 const GRID_REF_ALIAS_PREFIX = '__grid_ref__:';
 const GRID_REF_STATE_PREFIX = '__grid_ref_state__:';
-
-type AutotrackerBottleSlotMapping = {
-  autotrackerId: string;
-  trackerItemId: string;
-  gridRef: string;
-  sharedGridRef?: string;
-};
-
-const SEPARATELY_TRACKED_BOTTLE_CONTENT_BASE_IDS: Record<string, string> = {
-  OOT_BOTTLE_RUTO_LETTER: 'OOT_BOTTLE_EMPTY',
-  MM_BOTTLE_RUTO_LETTER: 'MM_BOTTLE_EMPTY',
-  SHARED_BOTTLE_RUTO_LETTER: 'SHARED_BOTTLE_EMPTY',
-  OOT_BOTTLED_GOLD_DUST: 'OOT_BOTTLE_EMPTY',
-  MM_BOTTLED_GOLD_DUST: 'MM_BOTTLE_EMPTY',
-  SHARED_BOTTLED_GOLD_DUST: 'SHARED_BOTTLE_EMPTY',
-};
-
-const AUTOTRACKER_BOTTLE_SLOT_MAPPINGS: AutotrackerBottleSlotMapping[] = [
-  {
-    autotrackerId: 'OOT_BOTTLE_1',
-    trackerItemId: 'OOT_BOTTLE_EMPTY',
-    gridRef: 'Bottle1',
-    sharedGridRef: 'Shared_Bottle1',
-  },
-  {
-    autotrackerId: 'OOT_BOTTLE_2',
-    trackerItemId: 'OOT_BOTTLE_EMPTY',
-    gridRef: 'Bottle2',
-    sharedGridRef: 'Shared_Bottle2',
-  },
-  {
-    autotrackerId: 'OOT_BOTTLE_3',
-    trackerItemId: 'OOT_BOTTLE_EMPTY',
-    gridRef: 'Bottle3',
-    sharedGridRef: 'Shared_Bottle3',
-  },
-  {
-    autotrackerId: 'MM_BOTTLE_1',
-    trackerItemId: 'MM_BOTTLE_EMPTY',
-    gridRef: 'MM_Bottle1',
-    sharedGridRef: 'Shared_Bottle1',
-  },
-  {
-    autotrackerId: 'MM_BOTTLE_2',
-    trackerItemId: 'MM_BOTTLE_EMPTY',
-    gridRef: 'MM_Bottle2',
-    sharedGridRef: 'Shared_Bottle2',
-  },
-  {
-    autotrackerId: 'MM_BOTTLE_3',
-    trackerItemId: 'MM_BOTTLE_EMPTY',
-    gridRef: 'MM_Bottle3',
-    sharedGridRef: 'Shared_Bottle3',
-  },
-  {
-    autotrackerId: 'MM_BOTTLE_4',
-    trackerItemId: 'MM_BOTTLE_EMPTY',
-    gridRef: 'MM_Bottle4',
-    sharedGridRef: 'Shared_Bottle4',
-  },
-  {
-    autotrackerId: 'MM_BOTTLE_5',
-    trackerItemId: 'MM_BOTTLE_EMPTY',
-    gridRef: 'MM_Bottle5',
-  },
-  {
-    autotrackerId: 'SHARED_BOTTLE_1',
-    trackerItemId: 'SHARED_BOTTLE_EMPTY',
-    gridRef: 'Shared_Bottle1',
-    sharedGridRef: 'Shared_Bottle1',
-  },
-  {
-    autotrackerId: 'SHARED_BOTTLE_2',
-    trackerItemId: 'SHARED_BOTTLE_EMPTY',
-    gridRef: 'Shared_Bottle2',
-    sharedGridRef: 'Shared_Bottle2',
-  },
-  {
-    autotrackerId: 'SHARED_BOTTLE_3',
-    trackerItemId: 'SHARED_BOTTLE_EMPTY',
-    gridRef: 'Shared_Bottle3',
-    sharedGridRef: 'Shared_Bottle3',
-  },
-  {
-    autotrackerId: 'SHARED_BOTTLE_4',
-    trackerItemId: 'SHARED_BOTTLE_EMPTY',
-    gridRef: 'Shared_Bottle4',
-    sharedGridRef: 'Shared_Bottle4',
-  },
-];
-
-const AUTOTRACKER_BOTTLE_SLOT_MAPPING_BY_ID = new Map(
-  AUTOTRACKER_BOTTLE_SLOT_MAPPINGS.map((mapping) => [
-    mapping.autotrackerId,
-    mapping,
-  ]),
-);
 
 const resolveExport = <T,>(mod: unknown, key: string): T => {
   const modObj = mod as { default?: Record<string, T>; [k: string]: unknown };
@@ -2295,142 +2210,6 @@ function formatHexAddress(address: number): string {
   return `0x${(address >>> 0).toString(16).padStart(8, '0')}`;
 }
 
-function makeGridRefStateKey(mapping: AutotrackerBottleSlotMapping): string {
-  return `${GRID_REF_STATE_PREFIX}${GRID_REF_ALIAS_PREFIX}${mapping.gridRef}:${mapping.trackerItemId}`;
-}
-
-function isSharedBottleMode(availableIds: Set<string>): boolean {
-  return (
-    availableIds.has('SHARED_BOTTLE_EMPTY') &&
-    !availableIds.has('OOT_BOTTLE_EMPTY') &&
-    !availableIds.has('MM_BOTTLE_EMPTY')
-  );
-}
-
-function makeSharedGridRefStateKey(
-  mapping: AutotrackerBottleSlotMapping,
-): string | null {
-  if (!mapping.sharedGridRef) {
-    return null;
-  }
-
-  return `${GRID_REF_STATE_PREFIX}${GRID_REF_ALIAS_PREFIX}${mapping.sharedGridRef}:SHARED_BOTTLE_EMPTY`;
-}
-
-function buildTrackerInventoryRecord(
-  liveState: Map<string, number>,
-  availableIds: Set<string>,
-): Record<string, number> {
-  const record: Record<string, number> = {};
-  const sharedBottleMode = isSharedBottleMode(availableIds);
-  const bottleCounts = new Map<string, number>();
-  const sharedBottleGridRefStates = new Set<string>();
-  const separatelyTrackedBottleContentCounts = new Map<string, number>();
-
-  for (const [id, qty] of liveState) {
-    if (qty <= 0) {
-      continue;
-    }
-
-    const separateBottleContentBaseItemId =
-      SEPARATELY_TRACKED_BOTTLE_CONTENT_BASE_IDS[id];
-    if (separateBottleContentBaseItemId) {
-      separatelyTrackedBottleContentCounts.set(
-        separateBottleContentBaseItemId,
-        (separatelyTrackedBottleContentCounts.get(
-          separateBottleContentBaseItemId,
-        ) ?? 0) + qty,
-      );
-    }
-
-    const bottleSlotMapping = AUTOTRACKER_BOTTLE_SLOT_MAPPING_BY_ID.get(id);
-    if (!bottleSlotMapping) {
-      record[id] = qty;
-      continue;
-    }
-
-    if (sharedBottleMode) {
-      const sharedGridRefStateKey =
-        makeSharedGridRefStateKey(bottleSlotMapping);
-      if (sharedGridRefStateKey) {
-        record[sharedGridRefStateKey] = 1;
-        sharedBottleGridRefStates.add(sharedGridRefStateKey);
-      }
-      continue;
-    }
-
-    record[makeGridRefStateKey(bottleSlotMapping)] = 1;
-    bottleCounts.set(
-      bottleSlotMapping.trackerItemId,
-      (bottleCounts.get(bottleSlotMapping.trackerItemId) ?? 0) + 1,
-    );
-  }
-
-  if (sharedBottleGridRefStates.size > 0) {
-    record.SHARED_BOTTLE_EMPTY =
-      (record.SHARED_BOTTLE_EMPTY ?? 0) + sharedBottleGridRefStates.size;
-  }
-
-  for (const [itemId, count] of bottleCounts) {
-    record[itemId] = (record[itemId] ?? 0) + count;
-  }
-
-  for (const [baseItemId, count] of separatelyTrackedBottleContentCounts) {
-    if (count <= 0) {
-      continue;
-    }
-
-    const currentBottleCount = record[baseItemId] ?? 0;
-    const suppressedCount = Math.min(currentBottleCount, count);
-    if (suppressedCount <= 0) {
-      continue;
-    }
-
-    if (currentBottleCount === suppressedCount) {
-      delete record[baseItemId];
-    } else {
-      record[baseItemId] = currentBottleCount - suppressedCount;
-    }
-
-    const matchingGridRefStateKeys = Object.keys(record).filter(
-      (key) =>
-        key.startsWith(GRID_REF_STATE_PREFIX) && key.endsWith(`:${baseItemId}`),
-    );
-
-    for (const key of matchingGridRefStateKeys.slice(-suppressedCount)) {
-      delete record[key];
-    }
-  }
-
-  return record;
-}
-
-function buildLiveInventoryFromRawItems(
-  rawItems: RawAutotrackerItem[],
-): Record<string, number> {
-  const rawState = new Map<string, number>();
-
-  for (const { id, qty } of rawItems) {
-    if (qty > 0) {
-      rawState.set(id, qty);
-    }
-  }
-
-  const translated = translateAutotrackerItems(
-    Array.from(rawState, ([id, qty]) => ({ id, qty })),
-    availableItemIds.value,
-    itemMaxCounts.value,
-    {
-      childWalletsEnabled: Boolean(trackerSettings.value?.childWallets),
-    },
-  );
-
-  return buildTrackerInventoryRecord(
-    new Map(Object.entries(translated).filter(([, qty]) => qty > 0)),
-    availableItemIds.value,
-  );
-}
-
 function formatAutotrackerDumpTimestamp(date: Date): string {
   const pad = (value: number) => value.toString().padStart(2, '0');
 
@@ -2445,9 +2224,11 @@ function formatAutotrackerDumpTimestamp(date: Date): string {
   ].join('');
 }
 
-function buildAutotrackerDumpRequestedAreas(): AutotrackerDumpRequestedAreas {
+function buildAutotrackerDumpRequestedAreas(
+  memoryAreas: RawAutotrackerChunkSpecsByGame,
+): AutotrackerDumpRequestedAreas {
   const mapSpecs = (
-    specs: typeof RAW_CHUNK_SPECS_BY_GAME.oot,
+    specs: RawAutotrackerChunkSpecsByGame['oot'],
   ): AutotrackerDumpRequestedArea[] =>
     specs.map((spec) => ({
       name: spec.name,
@@ -2456,12 +2237,14 @@ function buildAutotrackerDumpRequestedAreas(): AutotrackerDumpRequestedAreas {
     }));
 
   return {
-    oot: mapSpecs(RAW_CHUNK_SPECS_BY_GAME.oot),
-    mm: mapSpecs(RAW_CHUNK_SPECS_BY_GAME.mm),
+    oot: mapSpecs(memoryAreas.oot),
+    mm: mapSpecs(memoryAreas.mm),
   };
 }
 
-function buildAutotrackerDumpHandshake(): string {
+function buildAutotrackerDumpHandshake(
+  memoryAreas: RawAutotrackerChunkSpecsByGame,
+): string {
   return JSON.stringify({
     type: 'handshake',
     features: ['raw'],
@@ -2469,42 +2252,15 @@ function buildAutotrackerDumpHandshake(): string {
       protocol: 'raw',
     },
     memoryAreas: {
-      oot: RAW_CHUNK_SPECS_BY_GAME.oot,
-      mm: RAW_CHUNK_SPECS_BY_GAME.mm,
+      oot: memoryAreas.oot,
+      mm: memoryAreas.mm,
     },
   });
 }
 
-function buildFallbackRemoteLocationIds(
-  checks: RawAutotrackerCheck[],
-): string[] {
-  const locationIds = new Set<string>();
-
-  for (const check of checks) {
-    if (!check.checked) {
-      continue;
-    }
-
-    const resolved = resolveAutotrackerCheckToLocationIds(
-      check,
-      resolveMapSelectorCodeToCheckIds,
-    );
-    for (const locationId of resolved) {
-      if (!locationId) {
-        continue;
-      }
-      locationIds.add(locationId);
-    }
-  }
-
-  return Array.from(locationIds).sort((left, right) =>
-    left.localeCompare(right),
-  );
-}
-
-async function buildAutotrackerDumpSummary(
+async function buildAutotrackerDumpExpected(
   rawSnapshot: RawAutotrackerMessage,
-): Promise<AutotrackerDumpSummary | null> {
+): Promise<AutotrackerDumpExpected | null> {
   const parser = await createRawAutotrackerParser({
     ootmmVersion: importedSpoilerLogVersion.value,
   });
@@ -2513,29 +2269,34 @@ async function buildAutotrackerDumpSummary(
     return null;
   }
 
-  const remoteInventory =
-    autotrackerLastRemoteInventory ??
-    buildLiveInventoryFromRawItems(parsed.items);
-  const locations = autotrackerLastRemoteCollectedLocationIds
-    ? Array.from(autotrackerLastRemoteCollectedLocationIds)
-    : buildFallbackRemoteLocationIds(parsed.checks);
-
+  // Raw parser output, normalized at capture time: the single ground-truth
+  // payload. The test re-derives from the fixed dump in raw autotracker space
+  // (no Vue-dependent translation), so the comparison is a pure, deterministic
+  // round-trip. activeGame/saveIndex are the raw message header values.
   return {
-    valid: true,
     activeGame: rawSnapshot.game,
     saveIndex: rawSnapshot.saveIndex >>> 0,
-    items: Object.entries(remoteInventory)
-      .map(([id, qty]) => ({ id, qty }))
+    items: parsed.items
       .filter(({ qty }) => qty > 0)
+      .map(({ id, qty }) => ({ id, qty }))
       .sort((left, right) => left.id.localeCompare(right.id)),
-    locations: locations.sort((left, right) => left.localeCompare(right)),
+    locations: parsed.checks
+      .filter((check) => check.checked)
+      .map((check) => check.name ?? check.id ?? '')
+      .filter((key) => key.length > 0)
+      .sort((left, right) => left.localeCompare(right)),
   };
 }
 
 function requestAutotrackerRawSnapshot(
   wsUrl: string,
-  timeoutMs = AUTOTRACKER_DUMP_TIMEOUT_MS,
+  memoryAreas: RawAutotrackerChunkSpecsByGame,
+  options: {
+    timeoutMs?: number;
+    acceptFrame?: (message: RawAutotrackerMessage) => boolean;
+  } = {},
 ): Promise<RawAutotrackerMessage> {
+  const { timeoutMs = AUTOTRACKER_DUMP_TIMEOUT_MS, acceptFrame } = options;
   return new Promise((resolve, reject) => {
     let socket: WebSocket | null = null;
     let timeoutId: ReturnType<typeof setTimeout> | null = null;
@@ -2585,7 +2346,7 @@ function requestAutotrackerRawSnapshot(
     }
 
     socket.onopen = () => {
-      socket?.send(buildAutotrackerDumpHandshake());
+      socket?.send(buildAutotrackerDumpHandshake(memoryAreas));
     };
 
     socket.onmessage = (event) => {
@@ -2599,6 +2360,10 @@ function requestAutotrackerRawSnapshot(
         }
 
         const rawPayload = payload as RawAutotrackerMessage;
+
+        if (acceptFrame && !acceptFrame(rawPayload)) {
+          return;
+        }
 
         finish(
           (message) => resolve(message as RawAutotrackerMessage),
@@ -2630,34 +2395,107 @@ function requestAutotrackerRawSnapshot(
   });
 }
 
-async function exportAutotrackerDump(): Promise<boolean> {
-  const rawSnapshot = await requestAutotrackerRawSnapshot(
-    autotracker.url.value,
-  );
-  const summary = await buildAutotrackerDumpSummary(rawSnapshot);
-  if (!summary) {
+function exportAutotrackerDumpFull(): Promise<boolean> {
+  return exportAutotrackerDump('full');
+}
+
+/**
+ * Whether a raw frame contains every fixed full chunk for its active game.
+ *
+ * The Go autotracker merges chunk specs across all clients and emits the first
+ * frame after a handshake from its cached union payload. When the tracker is
+ * already connected (requesting sparse chunks), that first frame can contain
+ * only sparse chunks while the fixed full chunks arrive in a later frame once
+ * the large payload window has been read. We therefore wait for a frame that
+ * actually carries the full chunks instead of taking the first frame blindly.
+ */
+function frameHasFullChunksForGame(
+  message: RawAutotrackerMessage,
+  fullSpecs: RawAutotrackerChunkSpecsByGame,
+): boolean {
+  const specs =
+    message.game === 'OoT'
+      ? fullSpecs.oot
+      : message.game === 'MM'
+        ? fullSpecs.mm
+        : null;
+  if (!specs || specs.length === 0) {
     return false;
   }
+
+  const chunkNames = new Set((message.chunks ?? []).map((chunk) => chunk.name));
+  return specs.every((spec) => chunkNames.has(spec.name));
+}
+
+async function exportAutotrackerDump(
+  kind: AutotrackerDumpKind = 'sparse',
+): Promise<boolean> {
+  const fullSpecs = buildFullDumpChunkSpecs();
+  const sparseSpecs = RAW_CHUNK_SPECS_BY_GAME;
+
+  // The full dump requests BOTH the fixed chunks and the current sparse chunks.
+  // The sparse chunks are used only to build `expected` (reusing the existing
+  // parse logic); the stored `regions` contain only the fixed chunks, so the
+  // resulting dump stays address-stable (see
+  // plans/autotracking_test_implementation_plan.md).
+  const memoryAreas: RawAutotrackerChunkSpecsByGame =
+    kind === 'full'
+      ? {
+          oot: [...fullSpecs.oot, ...sparseSpecs.oot],
+          mm: [...fullSpecs.mm, ...sparseSpecs.mm],
+        }
+      : sparseSpecs;
+
+  const rawSnapshot = await requestAutotrackerRawSnapshot(
+    autotracker.url.value,
+    memoryAreas,
+    kind === 'full'
+      ? {
+          timeoutMs: AUTOTRACKER_DUMP_FULL_TIMEOUT_MS,
+          acceptFrame: (message) =>
+            frameHasFullChunksForGame(message, fullSpecs),
+        }
+      : {},
+  );
+  const expected = await buildAutotrackerDumpExpected(rawSnapshot);
+  if (!expected) {
+    return false;
+  }
+
+  const fullChunkNames =
+    kind === 'full'
+      ? new Set([...fullSpecs.oot, ...fullSpecs.mm].map((spec) => spec.name))
+      : null;
 
   try {
     const snapshot: AutotrackerDumpFile = {
       schemaVersion: AUTOTRACKER_DUMP_SCHEMA_VERSION,
+      memoryLayoutVersion:
+        kind === 'full' ? FULL_DUMP_MEMORY_LAYOUT_VERSION : 0,
+      dumpKind: kind,
       createdAt: new Date().toISOString(),
-      summary,
+      ootmmVersion:
+        importedSpoilerLogVersion.value ??
+        resolveAutotrackerDataVersion(null).label,
+      expected,
       rawFrame: {
         schemaVersion: rawSnapshot.schemaVersion,
         sequence: rawSnapshot.sequence,
         refresh: rawSnapshot.refresh,
         diff: rawSnapshot.diff,
       },
-      requestedMemoryAreas: buildAutotrackerDumpRequestedAreas(),
-      regions: rawSnapshot.chunks.map((chunk) => ({
-        name: chunk.name,
-        address: formatHexAddress(chunk.address),
-        size: chunk.length,
-        encoding: 'base64',
-        data: typeof chunk.data === 'string' ? chunk.data : '',
-      })),
+      requestedMemoryAreas: buildAutotrackerDumpRequestedAreas(memoryAreas),
+      regions: rawSnapshot.chunks
+        .filter(
+          (chunk) => fullChunkNames === null || fullChunkNames.has(chunk.name),
+        )
+        .map((chunk) => ({
+          name: chunk.name,
+          address: formatHexAddress(chunk.address),
+          size: chunk.length,
+          encoding: 'base64',
+          data: typeof chunk.data === 'string' ? chunk.data : '',
+        })),
     };
 
     const json = `${JSON.stringify(snapshot, null, 2)}\n`;
@@ -3582,11 +3420,14 @@ onMounted(() => {
   const windowWithHandlers = window as Window & {
     __TLT_DEBUG_ACTIVATE_ALL__?: () => void;
     __TLT_DEBUG_DUMP_AUTOTRACKER__?: () => boolean | Promise<boolean>;
+    __TLT_DEBUG_DUMP_AUTOTRACKER_FULL__?: () => boolean | Promise<boolean>;
     __TLT_RESET_TRACKER_STATE__?: () => void;
     __TLT_LEAVE_COOP__?: () => void;
   };
   windowWithHandlers.__TLT_DEBUG_ACTIVATE_ALL__ = fillInventory;
   windowWithHandlers.__TLT_DEBUG_DUMP_AUTOTRACKER__ = exportAutotrackerDump;
+  windowWithHandlers.__TLT_DEBUG_DUMP_AUTOTRACKER_FULL__ =
+    exportAutotrackerDumpFull;
   windowWithHandlers.__TLT_RESET_TRACKER_STATE__ = resetTrackerState;
   windowWithHandlers.__TLT_LEAVE_COOP__ = leaveCoopRoom;
   mobileTrackerLayoutQuery = window.matchMedia(MOBILE_TRACKER_LAYOUT_QUERY);
@@ -3609,6 +3450,7 @@ onBeforeUnmount(() => {
   const windowWithHandlers = window as Window & {
     __TLT_DEBUG_ACTIVATE_ALL__?: () => void;
     __TLT_DEBUG_DUMP_AUTOTRACKER__?: () => boolean | Promise<boolean>;
+    __TLT_DEBUG_DUMP_AUTOTRACKER_FULL__?: () => boolean | Promise<boolean>;
     __TLT_RESET_TRACKER_STATE__?: () => void;
     __TLT_LEAVE_COOP__?: () => void;
   };
@@ -3619,6 +3461,12 @@ onBeforeUnmount(() => {
     windowWithHandlers.__TLT_DEBUG_DUMP_AUTOTRACKER__ === exportAutotrackerDump
   ) {
     delete windowWithHandlers.__TLT_DEBUG_DUMP_AUTOTRACKER__;
+  }
+  if (
+    windowWithHandlers.__TLT_DEBUG_DUMP_AUTOTRACKER_FULL__ ===
+    exportAutotrackerDumpFull
+  ) {
+    delete windowWithHandlers.__TLT_DEBUG_DUMP_AUTOTRACKER_FULL__;
   }
   if (windowWithHandlers.__TLT_RESET_TRACKER_STATE__ === resetTrackerState) {
     delete windowWithHandlers.__TLT_RESET_TRACKER_STATE__;

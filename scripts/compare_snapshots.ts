@@ -46,6 +46,9 @@ interface AutotrackerSnapshot {
   createdAt: string;
   rawFrame?: RawFrame;
   summary?: SnapshotSummary;
+  // Newer dumps carry the ground-truth raw parse in `expected` instead of the
+  // tracker-space `summary` (which was removed as redundant).
+  expected?: SnapshotSummary;
   regions: SnapshotRegion[];
 }
 
@@ -100,6 +103,11 @@ function validateSnapshot(s: AutotrackerSnapshot, label: string): boolean {
 }
 if (!validateSnapshot(before, 'Before') || !validateSnapshot(after, 'After')) {
   process.exit(1);
+}
+
+/** Prefer the ground-truth `expected`, fall back to the legacy `summary`. */
+function snapshotState(s: AutotrackerSnapshot): SnapshotSummary | undefined {
+  return s.expected ?? s.summary;
 }
 
 // ── Helpers ──────────────────────────────────────────────────────────────────
@@ -347,11 +355,14 @@ console.log(
   `After:  ${after.createdAt}  (sequence ${after.rawFrame?.sequence ?? '?'})`,
 );
 
-const bGame = before.summary?.activeGame ?? '?';
-const aGame = after.summary?.activeGame ?? '?';
+const beforeState = snapshotState(before);
+const afterState = snapshotState(after);
+
+const bGame = beforeState?.activeGame ?? '?';
+const aGame = afterState?.activeGame ?? '?';
 if (bGame !== aGame)
   console.log(`\x1b[33mGame changed: ${bGame} → ${aGame}\x1b[0m`);
-console.log(`Game: ${aGame},  Save: ${after.summary?.saveIndex ?? '?'}`);
+console.log(`Game: ${aGame},  Save: ${afterState?.saveIndex ?? '?'}`);
 
 // ── Summary changes ─────────────────────────────────────────────────────────
 console.log(
@@ -360,8 +371,8 @@ console.log(
 
 const bItems = new Map<string, number>();
 const aItems = new Map<string, number>();
-for (const i of before.summary?.items ?? []) bItems.set(i.id, i.qty ?? 1);
-for (const i of after.summary?.items ?? []) aItems.set(i.id, i.qty ?? 1);
+for (const i of beforeState?.items ?? []) bItems.set(i.id, i.qty ?? 1);
+for (const i of afterState?.items ?? []) aItems.set(i.id, i.qty ?? 1);
 
 const itemChanges: string[] = [];
 for (const [id, qty] of aItems) {
@@ -392,8 +403,8 @@ if (fairyChanges.length > 0) {
 }
 
 // Location changes
-const bLocs = new Set(before.summary?.locations ?? []);
-const aLocs = new Set(after.summary?.locations ?? []);
+const bLocs = new Set(beforeState?.locations ?? []);
+const aLocs = new Set(afterState?.locations ?? []);
 const added = [...aLocs].filter((l) => !bLocs.has(l));
 const removed = [...bLocs].filter((l) => !aLocs.has(l));
 if (added.length > 0)

@@ -1428,6 +1428,91 @@ function rebuildChunkSpecs(): void {
   };
 }
 
+// ---------------------------------------------------------------------------
+// Version-independent "full" dump chunk specs.
+//
+// These are hardcoded, fixed memory ranges per game, chosen to cover the union
+// of every version-dependent sub-range for all currently supported versions.
+// They intentionally read NO module state (no `applyVersionData` dependency),
+// so the resulting regions are address-stable and reusable by any future test
+// run. See plans/autotracking_test_implementation_plan.md.
+// ---------------------------------------------------------------------------
+
+/**
+ * Bump whenever the fixed chunk set, addresses, or sizes change (e.g. a fixed
+ * chunk is added/removed, or a start/size is moved or widened). This is
+ * metadata for diagnostics only; the dump is self-describing via `regions`.
+ */
+export const FULL_DUMP_MEMORY_LAYOUT_VERSION = 1;
+
+const FULL_DUMP_OOT_COMBO_CTX_ADDRESS = 0x80006584;
+const FULL_DUMP_OOT_SAVE_CTX_ADDRESS = 0x8011a5d0;
+const FULL_DUMP_OOT_SAVE_CTX_SIZE = 0x1450;
+const FULL_DUMP_OOT_PLAYSTATE_ADDRESS = 0x801c84a0;
+const FULL_DUMP_OOT_PLAYSTATE_SIZE = 0x1ca8 + 0x12d;
+const FULL_DUMP_OOT_PAYLOAD_ADDRESS = 0x80400000;
+const FULL_DUMP_OOT_PAYLOAD_SIZE = 0x80000;
+
+const FULL_DUMP_MM_COMBO_CTX_ADDRESS = 0x80098280;
+const FULL_DUMP_MM_SAVE_CTX_ADDRESS = 0x801ef670;
+const FULL_DUMP_MM_SAVE_CTX_SIZE = 0x48d0;
+const FULL_DUMP_MM_PLAYSTATE_ADDRESS = 0x803e6b20;
+const FULL_DUMP_MM_PLAYSTATE_SIZE = 0x1dd4 + 0x164;
+const FULL_DUMP_MM_PAYLOAD_ADDRESS = 0x80720000;
+const FULL_DUMP_MM_PAYLOAD_SIZE = 0x60000;
+
+const FULL_DUMP_COMBO_CTX_SIZE = 0x20;
+
+/** Fixed, version-independent memory ranges per game for the "full" dump. */
+export function buildFullDumpChunkSpecs(): RawAutotrackerChunkSpecsByGame {
+  return {
+    oot: [
+      {
+        name: 'oot_full_combo_ctx',
+        address: FULL_DUMP_OOT_COMBO_CTX_ADDRESS,
+        length: FULL_DUMP_COMBO_CTX_SIZE,
+      },
+      {
+        name: 'oot_full_save_ctx',
+        address: FULL_DUMP_OOT_SAVE_CTX_ADDRESS,
+        length: FULL_DUMP_OOT_SAVE_CTX_SIZE,
+      },
+      {
+        name: 'oot_full_playstate',
+        address: FULL_DUMP_OOT_PLAYSTATE_ADDRESS,
+        length: FULL_DUMP_OOT_PLAYSTATE_SIZE,
+      },
+      {
+        name: 'oot_full_payload',
+        address: FULL_DUMP_OOT_PAYLOAD_ADDRESS,
+        length: FULL_DUMP_OOT_PAYLOAD_SIZE,
+      },
+    ],
+    mm: [
+      {
+        name: 'mm_full_combo_ctx',
+        address: FULL_DUMP_MM_COMBO_CTX_ADDRESS,
+        length: FULL_DUMP_COMBO_CTX_SIZE,
+      },
+      {
+        name: 'mm_full_save_ctx',
+        address: FULL_DUMP_MM_SAVE_CTX_ADDRESS,
+        length: FULL_DUMP_MM_SAVE_CTX_SIZE,
+      },
+      {
+        name: 'mm_full_playstate',
+        address: FULL_DUMP_MM_PLAYSTATE_ADDRESS,
+        length: FULL_DUMP_MM_PLAYSTATE_SIZE,
+      },
+      {
+        name: 'mm_full_payload',
+        address: FULL_DUMP_MM_PAYLOAD_ADDRESS,
+        length: FULL_DUMP_MM_PAYLOAD_SIZE,
+      },
+    ],
+  };
+}
+
 function buildActiveOotSaveChunkSpecs(): RawAutotrackerChunkSpec[] {
   return [
     {
