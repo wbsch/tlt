@@ -99,9 +99,12 @@ import {
   createRawAutotrackerParser,
   FULL_DUMP_MEMORY_LAYOUT_VERSION,
   type RawAutotrackerChunkSpecsByGame,
+  type RawAutotrackerCheck,
   type RawAutotrackerGame,
+  type RawAutotrackerItem,
   type RawAutotrackerMessage,
 } from '../autotracker/rawFrameParser';
+import { translateAutotrackerItems } from '../autotracker/autotrackerMapping';
 import { OOT_SCENE_TO_MAP, MM_SCENE_TO_MAP } from '../autotracker/sceneToMap';
 import {
   buildAutotrackerInventorySnapshot,
@@ -196,6 +199,19 @@ type AutotrackerDumpRegion = {
   data: string;
 };
 
+type AutotrackerDumpSummaryItem = {
+  id: string;
+  qty: number;
+};
+
+type AutotrackerDumpSummary = {
+  valid: boolean;
+  activeGame: string;
+  saveIndex: number;
+  items: AutotrackerDumpSummaryItem[];
+  locations: string[];
+};
+
 type AutotrackerDumpKind = 'sparse' | 'full';
 
 type AutotrackerDumpExpected = {
@@ -218,6 +234,9 @@ type AutotrackerDumpFile = {
   createdAt: string;
   ootmmVersion: string | null;
   expected: AutotrackerDumpExpected;
+  // Tracker-native summary (translated inventory + collected location ids).
+  // Only present on the normal ("sparse") dump; the full dump omits it.
+  summary?: AutotrackerDumpSummary;
   rawFrame: {
     schemaVersion: string;
     sequence: number;
@@ -238,6 +257,103 @@ const AUTOTRACKER_TOAST_DURATION_MS = 5000;
 const MAX_AUTOTRACKER_TOASTS = 10;
 const GRID_REF_ALIAS_PREFIX = '__grid_ref__:';
 const GRID_REF_STATE_PREFIX = '__grid_ref_state__:';
+
+type AutotrackerBottleSlotMapping = {
+  autotrackerId: string;
+  trackerItemId: string;
+  gridRef: string;
+  sharedGridRef?: string;
+};
+
+const SEPARATELY_TRACKED_BOTTLE_CONTENT_BASE_IDS: Record<string, string> = {
+  OOT_BOTTLE_RUTO_LETTER: 'OOT_BOTTLE_EMPTY',
+  MM_BOTTLE_RUTO_LETTER: 'MM_BOTTLE_EMPTY',
+  SHARED_BOTTLE_RUTO_LETTER: 'SHARED_BOTTLE_EMPTY',
+  OOT_BOTTLED_GOLD_DUST: 'OOT_BOTTLE_EMPTY',
+  MM_BOTTLED_GOLD_DUST: 'MM_BOTTLE_EMPTY',
+  SHARED_BOTTLED_GOLD_DUST: 'SHARED_BOTTLE_EMPTY',
+};
+
+const AUTOTRACKER_BOTTLE_SLOT_MAPPINGS: AutotrackerBottleSlotMapping[] = [
+  {
+    autotrackerId: 'OOT_BOTTLE_1',
+    trackerItemId: 'OOT_BOTTLE_EMPTY',
+    gridRef: 'Bottle1',
+    sharedGridRef: 'Shared_Bottle1',
+  },
+  {
+    autotrackerId: 'OOT_BOTTLE_2',
+    trackerItemId: 'OOT_BOTTLE_EMPTY',
+    gridRef: 'Bottle2',
+    sharedGridRef: 'Shared_Bottle2',
+  },
+  {
+    autotrackerId: 'OOT_BOTTLE_3',
+    trackerItemId: 'OOT_BOTTLE_EMPTY',
+    gridRef: 'Bottle3',
+    sharedGridRef: 'Shared_Bottle3',
+  },
+  {
+    autotrackerId: 'MM_BOTTLE_1',
+    trackerItemId: 'MM_BOTTLE_EMPTY',
+    gridRef: 'MM_Bottle1',
+    sharedGridRef: 'Shared_Bottle1',
+  },
+  {
+    autotrackerId: 'MM_BOTTLE_2',
+    trackerItemId: 'MM_BOTTLE_EMPTY',
+    gridRef: 'MM_Bottle2',
+    sharedGridRef: 'Shared_Bottle2',
+  },
+  {
+    autotrackerId: 'MM_BOTTLE_3',
+    trackerItemId: 'MM_BOTTLE_EMPTY',
+    gridRef: 'MM_Bottle3',
+    sharedGridRef: 'Shared_Bottle3',
+  },
+  {
+    autotrackerId: 'MM_BOTTLE_4',
+    trackerItemId: 'MM_BOTTLE_EMPTY',
+    gridRef: 'MM_Bottle4',
+    sharedGridRef: 'Shared_Bottle4',
+  },
+  {
+    autotrackerId: 'MM_BOTTLE_5',
+    trackerItemId: 'MM_BOTTLE_EMPTY',
+    gridRef: 'MM_Bottle5',
+  },
+  {
+    autotrackerId: 'SHARED_BOTTLE_1',
+    trackerItemId: 'SHARED_BOTTLE_EMPTY',
+    gridRef: 'Shared_Bottle1',
+    sharedGridRef: 'Shared_Bottle1',
+  },
+  {
+    autotrackerId: 'SHARED_BOTTLE_2',
+    trackerItemId: 'SHARED_BOTTLE_EMPTY',
+    gridRef: 'Shared_Bottle2',
+    sharedGridRef: 'Shared_Bottle2',
+  },
+  {
+    autotrackerId: 'SHARED_BOTTLE_3',
+    trackerItemId: 'SHARED_BOTTLE_EMPTY',
+    gridRef: 'Shared_Bottle3',
+    sharedGridRef: 'Shared_Bottle3',
+  },
+  {
+    autotrackerId: 'SHARED_BOTTLE_4',
+    trackerItemId: 'SHARED_BOTTLE_EMPTY',
+    gridRef: 'Shared_Bottle4',
+    sharedGridRef: 'Shared_Bottle4',
+  },
+];
+
+const AUTOTRACKER_BOTTLE_SLOT_MAPPING_BY_ID = new Map(
+  AUTOTRACKER_BOTTLE_SLOT_MAPPINGS.map((mapping) => [
+    mapping.autotrackerId,
+    mapping,
+  ]),
+);
 
 const resolveExport = <T,>(mod: unknown, key: string): T => {
   const modObj = mod as { default?: Record<string, T>; [k: string]: unknown };
@@ -2210,6 +2326,142 @@ function formatHexAddress(address: number): string {
   return `0x${(address >>> 0).toString(16).padStart(8, '0')}`;
 }
 
+function makeGridRefStateKey(mapping: AutotrackerBottleSlotMapping): string {
+  return `${GRID_REF_STATE_PREFIX}${GRID_REF_ALIAS_PREFIX}${mapping.gridRef}:${mapping.trackerItemId}`;
+}
+
+function isSharedBottleMode(availableIds: Set<string>): boolean {
+  return (
+    availableIds.has('SHARED_BOTTLE_EMPTY') &&
+    !availableIds.has('OOT_BOTTLE_EMPTY') &&
+    !availableIds.has('MM_BOTTLE_EMPTY')
+  );
+}
+
+function makeSharedGridRefStateKey(
+  mapping: AutotrackerBottleSlotMapping,
+): string | null {
+  if (!mapping.sharedGridRef) {
+    return null;
+  }
+
+  return `${GRID_REF_STATE_PREFIX}${GRID_REF_ALIAS_PREFIX}${mapping.sharedGridRef}:SHARED_BOTTLE_EMPTY`;
+}
+
+function buildTrackerInventoryRecord(
+  liveState: Map<string, number>,
+  availableIds: Set<string>,
+): Record<string, number> {
+  const record: Record<string, number> = {};
+  const sharedBottleMode = isSharedBottleMode(availableIds);
+  const bottleCounts = new Map<string, number>();
+  const sharedBottleGridRefStates = new Set<string>();
+  const separatelyTrackedBottleContentCounts = new Map<string, number>();
+
+  for (const [id, qty] of liveState) {
+    if (qty <= 0) {
+      continue;
+    }
+
+    const separateBottleContentBaseItemId =
+      SEPARATELY_TRACKED_BOTTLE_CONTENT_BASE_IDS[id];
+    if (separateBottleContentBaseItemId) {
+      separatelyTrackedBottleContentCounts.set(
+        separateBottleContentBaseItemId,
+        (separatelyTrackedBottleContentCounts.get(
+          separateBottleContentBaseItemId,
+        ) ?? 0) + qty,
+      );
+    }
+
+    const bottleSlotMapping = AUTOTRACKER_BOTTLE_SLOT_MAPPING_BY_ID.get(id);
+    if (!bottleSlotMapping) {
+      record[id] = qty;
+      continue;
+    }
+
+    if (sharedBottleMode) {
+      const sharedGridRefStateKey =
+        makeSharedGridRefStateKey(bottleSlotMapping);
+      if (sharedGridRefStateKey) {
+        record[sharedGridRefStateKey] = 1;
+        sharedBottleGridRefStates.add(sharedGridRefStateKey);
+      }
+      continue;
+    }
+
+    record[makeGridRefStateKey(bottleSlotMapping)] = 1;
+    bottleCounts.set(
+      bottleSlotMapping.trackerItemId,
+      (bottleCounts.get(bottleSlotMapping.trackerItemId) ?? 0) + 1,
+    );
+  }
+
+  if (sharedBottleGridRefStates.size > 0) {
+    record.SHARED_BOTTLE_EMPTY =
+      (record.SHARED_BOTTLE_EMPTY ?? 0) + sharedBottleGridRefStates.size;
+  }
+
+  for (const [itemId, count] of bottleCounts) {
+    record[itemId] = (record[itemId] ?? 0) + count;
+  }
+
+  for (const [baseItemId, count] of separatelyTrackedBottleContentCounts) {
+    if (count <= 0) {
+      continue;
+    }
+
+    const currentBottleCount = record[baseItemId] ?? 0;
+    const suppressedCount = Math.min(currentBottleCount, count);
+    if (suppressedCount <= 0) {
+      continue;
+    }
+
+    if (currentBottleCount === suppressedCount) {
+      delete record[baseItemId];
+    } else {
+      record[baseItemId] = currentBottleCount - suppressedCount;
+    }
+
+    const matchingGridRefStateKeys = Object.keys(record).filter(
+      (key) =>
+        key.startsWith(GRID_REF_STATE_PREFIX) && key.endsWith(`:${baseItemId}`),
+    );
+
+    for (const key of matchingGridRefStateKeys.slice(-suppressedCount)) {
+      delete record[key];
+    }
+  }
+
+  return record;
+}
+
+function buildLiveInventoryFromRawItems(
+  rawItems: RawAutotrackerItem[],
+): Record<string, number> {
+  const rawState = new Map<string, number>();
+
+  for (const { id, qty } of rawItems) {
+    if (qty > 0) {
+      rawState.set(id, qty);
+    }
+  }
+
+  const translated = translateAutotrackerItems(
+    Array.from(rawState, ([id, qty]) => ({ id, qty })),
+    availableItemIds.value,
+    itemMaxCounts.value,
+    {
+      childWalletsEnabled: Boolean(trackerSettings.value?.childWallets),
+    },
+  );
+
+  return buildTrackerInventoryRecord(
+    new Map(Object.entries(translated).filter(([, qty]) => qty > 0)),
+    availableItemIds.value,
+  );
+}
+
 function formatAutotrackerDumpTimestamp(date: Date): string {
   const pad = (value: number) => value.toString().padStart(2, '0');
 
@@ -2256,6 +2508,63 @@ function buildAutotrackerDumpHandshake(
       mm: memoryAreas.mm,
     },
   });
+}
+
+function buildFallbackRemoteLocationIds(
+  checks: RawAutotrackerCheck[],
+): string[] {
+  const locationIds = new Set<string>();
+
+  for (const check of checks) {
+    if (!check.checked) {
+      continue;
+    }
+
+    const resolved = resolveAutotrackerCheckToLocationIds(
+      check,
+      resolveMapSelectorCodeToCheckIds,
+    );
+    for (const locationId of resolved) {
+      if (!locationId) {
+        continue;
+      }
+      locationIds.add(locationId);
+    }
+  }
+
+  return Array.from(locationIds).sort((left, right) =>
+    left.localeCompare(right),
+  );
+}
+
+async function buildAutotrackerDumpSummary(
+  rawSnapshot: RawAutotrackerMessage,
+): Promise<AutotrackerDumpSummary | null> {
+  const parser = await createRawAutotrackerParser({
+    ootmmVersion: importedSpoilerLogVersion.value,
+  });
+  const parsed = parser.parse(rawSnapshot);
+  if (!parsed) {
+    return null;
+  }
+
+  const remoteInventory =
+    autotrackerLastRemoteInventory ??
+    buildLiveInventoryFromRawItems(parsed.items);
+  const locations = autotrackerLastRemoteCollectedLocationIds
+    ? Array.from(autotrackerLastRemoteCollectedLocationIds)
+    : buildFallbackRemoteLocationIds(parsed.checks);
+
+  return {
+    valid: true,
+    activeGame: rawSnapshot.game,
+    saveIndex: rawSnapshot.saveIndex >>> 0,
+    items: Object.entries(remoteInventory)
+      .map(([id, qty]) => ({ id, qty }))
+      .filter(({ qty }) => qty > 0)
+      .sort((left, right) => left.id.localeCompare(right.id)),
+    locations: locations.sort((left, right) => left.localeCompare(right)),
+  };
 }
 
 async function buildAutotrackerDumpExpected(
@@ -2462,6 +2771,13 @@ async function exportAutotrackerDump(
     return false;
   }
 
+  // The tracker-native summary is only meaningful for the normal ("sparse")
+  // dump: it reflects the live translated inventory and collected location
+  // ids. The full dump intentionally omits it (its `expected` payload is the
+  // raw-space ground truth for the regression test).
+  const summary =
+    kind === 'sparse' ? await buildAutotrackerDumpSummary(rawSnapshot) : null;
+
   const fullChunkNames =
     kind === 'full'
       ? new Set([...fullSpecs.oot, ...fullSpecs.mm].map((spec) => spec.name))
@@ -2478,6 +2794,7 @@ async function exportAutotrackerDump(
         importedSpoilerLogVersion.value ??
         resolveAutotrackerDataVersion(null).label,
       expected,
+      ...(summary ? { summary } : {}),
       rawFrame: {
         schemaVersion: rawSnapshot.schemaVersion,
         sequence: rawSnapshot.sequence,
