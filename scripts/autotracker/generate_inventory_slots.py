@@ -115,6 +115,14 @@ def build_shared_storage(shared_layout: dict) -> dict:
         "bitmaps": bitmaps,
     }
 
+    # v32.2 moved the collected silver-rupee counts out of the OoT save's extra
+    # records (`gOotSilverRupeeCounts1..5`) into a packed `silverRupees[]` array
+    # inside SharedCustomSave. That also shifted every extra record after index
+    # 13 down by five, so `gTriforceCount` moved from 19 to 14. Detect the new
+    # layout from the presence of the field; older versions report the old
+    # values (`None` / 19).
+    has_silver_rupees = "silverRupees" in fields
+
     fixed_offsets = {
         "sharedCustomSaveSize": tracked_size,
         "halfDaysOffset": offset("mm.halfDays"),
@@ -132,6 +140,8 @@ def build_shared_storage(shared_layout: dict) -> dict:
         "songFlagsOotOffset": offset("oot.hasElegy"),
         "songFlagsMmOffset": offset("mm.ootSongs"),
         "bombchuBagFlagsOffset": offset("foundMasterSword"),
+        "silverRupeesOffset": offset("silverRupees") if has_silver_rupees else None,
+        "triforceExtraRecordIndex": 14 if has_silver_rupees else 19,
     }
 
     return {"shared": shared, "fixedOffsets": fixed_offsets}

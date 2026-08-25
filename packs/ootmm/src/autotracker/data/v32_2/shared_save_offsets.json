@@ -14,5 +14,7 @@
   "rustyKeysMmSize": 5,
   "songFlagsOotOffset": 886,
   "songFlagsMmOffset": 1976,
-  "bombchuBagFlagsOffset": 2156
+  "bombchuBagFlagsOffset": 2156,
+  "silverRupeesOffset": 2024,
+  "triforceExtraRecordIndex": 14
 }

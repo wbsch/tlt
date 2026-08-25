@@ -192,9 +192,14 @@ class UnsupportedCTests(unittest.TestCase):
         with self.assertRaises(LayoutError):
             layout_of("typedef struct { Widget a; } S;")
 
-    def test_pointer_member_raises(self):
-        with self.assertRaises(LayoutError):
-            layout_of("typedef struct { u8* p; } S;")
+    def test_pointer_member_layout(self):
+        # MIPS o32 pointers are 32-bit (4 bytes). ComboGlobal carries
+        # `void* customKeep` / `const ComboItemQuery* itemQuery`, so pointers
+        # must lay out as 4-byte members rather than raising.
+        result = layout_of("typedef struct { u8* p; } S;")
+        off = offsets(result)
+        self.assertEqual(off["p"], 0)
+        self.assertEqual(result["raw_size"], 4)
 
 
 class CheckedOutHeadersTests(unittest.TestCase):

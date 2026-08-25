@@ -23,6 +23,7 @@ const AUTOTRACKER_DATA_VERSIONS: AutotrackerDataVersion[] = [
   { dirName: 'v31_1', label: '31.1' },
   { dirName: 'v32_0', label: '32.0' },
   { dirName: 'v32_1', label: '32.1' },
+  { dirName: 'v32_2', label: '32.2' },
 ];
 
 /** Default version used when no spoiler log has been imported. */

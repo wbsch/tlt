@@ -217,7 +217,8 @@ def eval_int_expr(expr, env):
 # Declaration parsing
 # --------------------------------------------------------------------------- #
 _MEMBER_RE = re.compile(
-    r"^([A-Za-z_]\w*)\s+([A-Za-z_]\w*)\s*"
+    r"^(?:(const|volatile)\s+)?([A-Za-z_]\w*)\s*(\*)?\s*"
+    r"([A-Za-z_]\w*)\s*"
     r"(?:\[([^\]]*)\])?\s*"
     r"(?::\s*(\d+))?$"
 )
@@ -291,10 +292,11 @@ def parse_members(body):
             raise LayoutError(f"unsupported member declaration: {decl!r}")
         members.append({
             "kind": "field",
-            "type": m.group(1),
-            "name": m.group(2),
-            "array": m.group(3),
-            "bits": int(m.group(4)) if m.group(4) else None,
+            "type": m.group(2),
+            "name": m.group(4),
+            "array": m.group(5),
+            "bits": int(m.group(6)) if m.group(6) else None,
+            "pointer": bool(m.group(3)),
         })
     return members
 
@@ -390,6 +392,10 @@ class Layouter:
         }
 
     def _member_layout(self, member):
+        # Pointers are 4 bytes on N64 (MIPS o32), aligned to 4, regardless of
+        # the pointee type (which may even be a forward declaration).
+        if member.get("pointer"):
+            return [], 4, 4
         """Return (fields, size, align) for one member's own type."""
         if member["kind"] == "aggregate":
             sub = self._layout_aggregate(member)

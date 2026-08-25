@@ -169,7 +169,7 @@ export const TRACKER_FAQ_SECTIONS: TrackerFaqSection[] = [
         blocks: [
           {
             type: 'paragraph',
-            text: 'Only randomizer versions v30.1 to v32.1 are supported (no dev seeds). Autotracking only works after you import a spoiler log.',
+            text: 'Only randomizer versions v30.1 to v32.2 are supported (no dev seeds). Autotracking only works after you import a spoiler log.',
           },
           {
             type: 'paragraph',
@@ -240,7 +240,7 @@ export const TRACKER_FAQ_SECTIONS: TrackerFaqSection[] = [
         blocks: [
           {
             type: 'paragraph',
-            text: 'Only randomizer versions v30.1 to v32.1 are supported (no dev seeds). Autotracking only works after you import a spoiler log.',
+            text: 'Only randomizer versions v30.1 to v32.2 are supported (no dev seeds). Autotracking only works after you import a spoiler log.',
           },
           {
             type: 'paragraph',
@@ -301,7 +301,7 @@ export const TRACKER_FAQ_SECTIONS: TrackerFaqSection[] = [
         blocks: [
           {
             type: 'paragraph',
-            text: 'Only randomizer versions v30.1 to v32.1 are supported (no dev seeds). Autotracking only works after you import a spoiler log.',
+            text: 'Only randomizer versions v30.1 to v32.2 are supported (no dev seeds). Autotracking only works after you import a spoiler log.',
           },
           {
             type: 'paragraph',
@@ -488,7 +488,7 @@ export const TRACKER_FAQ_SECTIONS: TrackerFaqSection[] = [
         blocks: [
           {
             type: 'paragraph',
-            text: 'The tracker supports all options from the current Stable Randomizer version v32.1.',
+            text: 'The tracker supports all options from the current Stable Randomizer version v32.2.',
           },
         ],
       },

@@ -251,7 +251,10 @@ function applyVersionData(tables: ParserTables): void {
   addrMmRuntimeOotComboConfigLive = tables.addrMmRuntimeOotComboConfigLive;
   inventorySlotFile = tables.inventorySlotFile;
   sharedStateReadSize = tables.sharedStateReadSize;
-  sharedFixedOffsets = tables.sharedFixedOffsets;
+  sharedFixedOffsets = {
+    ...DEFAULT_FIXED_OFFSETS,
+    ...tables.sharedFixedOffsets,
+  };
   ootInventoryEntries = tables.ootInventoryEntries;
   mmInventoryEntries = tables.mmInventoryEntries;
   sharedStorage = tables.sharedStorage;
@@ -409,6 +412,8 @@ type SharedFixedOffsets = {
   bombchuBagFlagsOffset: number;
   songFlagsOotOffset: number;
   songFlagsMmOffset: number;
+  silverRupeesOffset: number | null;
+  triforceExtraRecordIndex: number;
 };
 
 type SharedBitmapInfo = {
@@ -594,6 +599,7 @@ type SharedCustomState = {
   bitmaps: Map<string, Uint8Array>;
   halfDays: number;
   coins: number[];
+  silverRupees: number[];
   ocarinaButtonMaskOot: number;
   ocarinaButtonMaskMm: number;
   extraSwordsOot: number;
@@ -732,6 +738,10 @@ let addrMmRuntimeOotComboConfigLive = parseHexAddressWithFallback(
 const OOT_RUNTIME_SCENE_COUNT = 17;
 const OOT_SILVER_RUPEE_SET_COUNT = 18;
 const OOT_SILVER_RUPEE_DATA_SIZE = OOT_SILVER_RUPEE_SET_COUNT * 4;
+// v32.2 stores the collected silver-rupee counts nibble-packed in
+// `SharedCustomSave.silverRupees[]` (two u8 counts per byte).
+const OOT_SILVER_RUPEE_SHARED_BYTE_COUNT =
+  (OOT_SILVER_RUPEE_SET_COUNT + 1) >> 1;
 const OOT_MAX_KEYS_BLOCK_SIZE = OOT_RUNTIME_SCENE_COUNT + 4;
 
 // The OoTMM ComboConfig struct (generator include/combo/config.h) changed its
@@ -875,6 +885,10 @@ const EXTRA_IDX_COW_FLAGS = 9;
 const EXTRA_IDX_OOT_TRADE_SAVE = 10;
 const EXTRA_IDX_MM_OWL_FLAGS = 11;
 const EXTRA_IDX_MM_FLAGS3 = 13;
+// Legacy (<= v32.1) home of the collected OoT silver-rupee counts: five 32-bit
+// extra records (indices 14..18) each packing four u8 counts. v32.2 moved these
+// into `SharedCustomSave.silverRupees[]` (see silverRupeesOffset), which also
+// shifted the OoT triforce extra-record index down from 19 to 14.
 const EXTRA_IDX_OOT_SILVER_1 = 14;
 const EXTRA_IDX_OOT_TRIFORCE = 19;
 
@@ -1211,6 +1225,8 @@ const DEFAULT_FIXED_OFFSETS: SharedFixedOffsets = {
   bombchuBagFlagsOffset: 2148,
   songFlagsOotOffset: 0x374,
   songFlagsMmOffset: 0x7b8,
+  silverRupeesOffset: null,
+  triforceExtraRecordIndex: EXTRA_IDX_OOT_TRIFORCE,
 };
 
 let sharedFixedOffsets: SharedFixedOffsets = { ...DEFAULT_FIXED_OFFSETS };
@@ -3479,6 +3495,15 @@ function parseSharedStateUnchecked(data: Uint8Array): SharedCustomState | null {
       parsed.coins[index] = readU16BE(data, fo.coinsOffset + index * 2);
     }
   }
+  if (
+    fo.silverRupeesOffset != null &&
+    data.length >= fo.silverRupeesOffset + OOT_SILVER_RUPEE_SHARED_BYTE_COUNT
+  ) {
+    for (let index = 0; index < OOT_SILVER_RUPEE_SET_COUNT; index++) {
+      const byte = data[fo.silverRupeesOffset + (index >> 1)] ?? 0;
+      parsed.silverRupees[index] = (byte >> ((index & 1) * 4)) & 0xf;
+    }
+  }
   if (data.length >= fo.ocarinaButtonMaskMmOffset + 2) {
     parsed.ocarinaButtonMaskOot = readU16BE(
       data,
@@ -4203,7 +4228,7 @@ function extractItems(state: GameState): RawAutotrackerItem[] {
     appendPositiveItem(items, keyId, Math.max(currentKeys, maxKeys));
   }
 
-  appendOotSilverRupeeItems(items, oot);
+  appendOotSilverRupeeItems(items, oot, state.shared);
   appendPositiveItem(
     items,
     'OOT_GANON_BK',
@@ -4212,7 +4237,7 @@ function extractItems(state: GameState): RawAutotrackerItem[] {
   appendPositiveItem(
     items,
     'OOT_TRIFORCE',
-    oot.extraRecords[EXTRA_IDX_OOT_TRIFORCE] ?? 0,
+    oot.extraRecords[sharedFixedOffsets.triforceExtraRecordIndex] ?? 0,
   );
 
   appendQuestBit(
@@ -5083,7 +5108,7 @@ function appendCatalogItems(
         qty = boolToInt(hasMmPlatinumToken(state.mm));
         break;
       case 'oot-derived-magical-rupee':
-        qty = boolToInt(hasOotMagicalRupee(state.oot));
+        qty = boolToInt(hasOotMagicalRupee(state));
         break;
       case 'shared-bitmap-bit':
         qty = boolToInt(
@@ -5319,13 +5344,14 @@ function hasMmPlatinumToken(mm: MmState): boolean {
 function appendOotSilverRupeeItems(
   items: RawAutotrackerItem[],
   oot: OotState,
+  shared: SharedCustomState,
 ): void {
   for (
     let silverRupeeId = 0;
     silverRupeeId < OOT_SILVER_RUPEE_SET_COUNT;
     silverRupeeId++
   ) {
-    const qty = ootSilverRupeeCount(oot, silverRupeeId);
+    const qty = ootSilverRupeeCount(oot, silverRupeeId, shared);
     if (qty <= 0) {
       continue;
     }
@@ -5455,24 +5481,31 @@ function ootIsMqGanonCastle(oot: OotState): boolean {
   return ootMqDungeonState(oot, OOT_MQ_GANON_CASTLE)[0];
 }
 
-function hasOotMagicalRupee(oot: OotState): boolean {
+function hasOotMagicalRupee(state: GameState): boolean {
   for (
     let silverRupeeId = 0;
     silverRupeeId < OOT_SILVER_RUPEE_SET_COUNT;
     silverRupeeId++
   ) {
-    const wanted = ootSilverRupeeLimit(oot, silverRupeeId);
+    const wanted = ootSilverRupeeLimit(state.oot, silverRupeeId);
     if (wanted === 0) {
       continue;
     }
-    if (ootSilverRupeeCount(oot, silverRupeeId) < wanted) {
+    if (ootSilverRupeeCount(state.oot, silverRupeeId, state.shared) < wanted) {
       return false;
     }
   }
   return true;
 }
 
-function ootSilverRupeeCount(oot: OotState, silverRupeeId: number): number {
+function ootSilverRupeeCount(
+  oot: OotState,
+  silverRupeeId: number,
+  shared: SharedCustomState,
+): number {
+  if (sharedFixedOffsets.silverRupeesOffset != null) {
+    return shared.silverRupees[silverRupeeId] ?? 0;
+  }
   const recordIndex = EXTRA_IDX_OOT_SILVER_1 + Math.floor(silverRupeeId / 4);
   const shift = (silverRupeeId % 4) * 8;
   return ((oot.extraRecords[recordIndex] ?? 0) >>> shift) & 0xff;
@@ -5930,6 +5963,7 @@ function createEmptySharedState(): SharedCustomState {
     bitmaps: new Map(),
     halfDays: 0,
     coins: Array.from({ length: SHARED_COIN_COUNT }, () => 0),
+    silverRupees: Array.from({ length: OOT_SILVER_RUPEE_SET_COUNT }, () => 0),
     ocarinaButtonMaskOot: 0,
     ocarinaButtonMaskMm: 0,
     extraSwordsOot: 0,
@@ -6012,6 +6046,7 @@ function cloneSharedState(source: SharedCustomState): SharedCustomState {
     ),
     halfDays: source.halfDays,
     coins: [...source.coins],
+    silverRupees: [...source.silverRupees],
     ocarinaButtonMaskOot: source.ocarinaButtonMaskOot,
     ocarinaButtonMaskMm: source.ocarinaButtonMaskMm,
     extraSwordsOot: source.extraSwordsOot,

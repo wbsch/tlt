@@ -252,6 +252,8 @@ interface SharedFixedOffsets {
   bombchuBagFlagsOffset: number;
   songFlagsOotOffset: number;
   songFlagsMmOffset: number;
+  silverRupeesOffset: number | null;
+  triforceExtraRecordIndex: number;
 }
 
 interface SharedStorageLayout {

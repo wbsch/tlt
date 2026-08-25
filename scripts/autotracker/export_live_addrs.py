@@ -105,12 +105,15 @@ def main() -> int:
 	if source_meta is not None:
 		generated_from.update(source_meta["generatedFrom"])
 
+	max_keys_offset = combo_global_max_keys_oot_offset(repo) if repo is not None else None
+
 	oot_output = build_game_output(
 		"oot",
 		patch_meta,
 		source_meta,
 		link_symbol_name="gSaveContext",
 		combo_define_name="COMBO_CTX_ADDR_OOT",
+		max_keys_offset=max_keys_offset,
 	)
 	mm_output = build_game_output(
 		"mm",
@@ -118,6 +121,7 @@ def main() -> int:
 		source_meta,
 		link_symbol_name="gSaveContext",
 		combo_define_name="COMBO_CTX_ADDR_MM",
+		max_keys_offset=max_keys_offset,
 	)
 
 	output = {
@@ -185,6 +189,7 @@ def build_game_output(
 	source_meta: dict | None,
 	link_symbol_name: str,
 	combo_define_name: str,
+	max_keys_offset: int | None,
 ) -> dict:
 	output: dict = {}
 	derivation: dict = {}
@@ -262,12 +267,13 @@ def build_game_output(
 	if game == "oot":
 		g_symbol = first_patch_symbol(patch_symbols, "g")
 		if g_symbol is not None:
-			output["runtimeMaxKeysLive"] = format_hex(g_symbol + 0x20)
+			offset = max_keys_offset if max_keys_offset is not None else 0x20
+			output["runtimeMaxKeysLive"] = format_hex(g_symbol + offset)
 			derivation["runtimeMaxKeysLive"] = "patchfile-symbol+offset"
 		else:
-			g_value = scan_combo_global_addr(patch_meta, game) if patch_meta is not None else None
+			g_value = scan_combo_global_addr(patch_meta, game, max_keys_offset) if patch_meta is not None and max_keys_offset is not None else None
 			if g_value is not None:
-				output["runtimeMaxKeysLive"] = format_hex(g_value + 0x20)
+				output["runtimeMaxKeysLive"] = format_hex(g_value + max_keys_offset)
 				derivation["runtimeMaxKeysLive"] = "patchfile-code-scan+offset"
 			else:
 				missing_patch_symbols.append("g")
@@ -363,19 +369,55 @@ def scan_combo_config_addr(patch_meta: dict, game: str) -> int | None:
 	return next(iter(candidates))
 
 
-def scan_combo_global_addr(patch_meta: dict, game: str) -> int | None:
+def combo_global_max_keys_oot_offset(repo: pathlib.Path) -> int | None:
+	"""Offset of ComboGlobal.maxKeysOot, laid out from the checked-out headers.
+
+	The offset is version-dependent: v32.2 removed `delayedSwitchFlags[4]` +
+	`delayedSwitchFlagsCount` from ComboGlobal, shifting `maxKeysOot` from 0x20
+	to 0x1b. We lay it out from `global.h` instead of hardcoding it.
+	"""
+	headers = {}
+	for rel in (
+		"packages/generator/include/combo/global.h",
+		"packages/generator/include/combo/xflags.h",
+		"packages/generator/include/combo/types.h",
+	):
+		path = repo / rel
+		if not path.is_file():
+			return None
+		headers[rel] = path.read_text(encoding="utf-8")
+	try:
+		from c_struct_layout import build_layouter
+		layouter = build_layouter(headers, defines=("GAME_OOT",))
+		layout = layouter.layout("ComboGlobal")
+	except Exception:
+		return None
+	for field in layout["fields"]:
+		if field["name"] == "maxKeysOot":
+			return field["offset"]
+	return None
+
+
+def scan_combo_global_addr(patch_meta: dict, game: str, max_keys_offset: int) -> int | None:
+	"""Locate the ComboGlobal `g` base address from its maxKeysOot read site.
+
+	`g` lives in .bss (not exported by the patchfile), but item_add.c reads
+	`g.maxKeysOot[dungeonId]` with a byte load (`lbu $x, <max_keys_offset>($s0)`).
+	The field offset is version-dependent (it moved in v32.2), so it is passed in
+	rather than hardcoded. Returns `g` (the `lui/addiu` target); the caller adds
+	`max_keys_offset` to obtain `runtimeMaxKeysLive`.
+	"""
 	entry = patchfile_new_file(patch_meta["meta"], f"{game}/payload")
 	words = patchfile_words(patch_meta, entry)
 	candidates = set()
-	for index in range(len(words) - 5):
-		seq = words[index:index+6]
-		if (seq[0] >> 16) != 0x3C10 or (seq[1] >> 16) != 0x2610:
+	for index in range(len(words) - 2):
+		if (words[index] >> 16) != 0x3C10 or (words[index + 1] >> 16) != 0x2610:
 			continue
-		if not any(word in MIPS_LOAD_IMM_5 for word in seq[2:5]):
-			continue
-		if not any(((word >> 26) == 0x2B) and (((word >> 21) & 0x1F) == 16) and ((word & 0xFFFF) == 0x20) for word in seq[3:6]):
-			continue
-		candidates.add(mips_symbol_address(seq[0] & 0xFFFF, seq[1] & 0xFFFF))
+		g = mips_symbol_address(words[index] & 0xFFFF, words[index + 1] & 0xFFFF)
+		for j in range(index + 2, min(index + 8, len(words))):
+			word = words[j]
+			if (word >> 26) == 0x24 and ((word >> 21) & 0x1F) == 16 and (word & 0xFFFF) == max_keys_offset:
+				candidates.add(g)
 	if len(candidates) != 1:
 		return None
 	return next(iter(candidates))
