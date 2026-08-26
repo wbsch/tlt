@@ -5,9 +5,9 @@ import { DEFAULT_LEFT_SIDEBAR_WIDTH } from '../../packs/ootmm/src/stores/ootmmUi
 const textEncoder = new TextEncoder();
 
 const STORAGE_KEYS = {
-  app: 'tlt:app:v1',
-  ui: 'tlt:ootmm-ui:v1',
-  session: 'tlt:ootmm-session:v1',
+  app: 'tlt:app',
+  ui: 'tlt:ootmm-ui',
+  session: 'tlt:ootmm-session',
 } as const;
 
 const SHARE_STATUS_SESSION_KEY = 'tlt:share-import-status:v1';
@@ -438,7 +438,7 @@ describe('shareState', () => {
       ]),
     );
     expect(decoded.snapshot).toEqual({
-      v: 1,
+      v: 2,
       stores: {
         'ootmm-ui': {
           inventorySearchQuery: 'a'.repeat(500),
@@ -482,7 +482,12 @@ describe('shareState', () => {
     ],
     [
       'unsupported schema version',
-      makeCompressedPayload({ v: 2, stores: {} }),
+      makeCompressedPayload({ v: 3, stores: {} }),
+      /Unsupported share schema version/,
+    ],
+    [
+      'missing schema version',
+      makeCompressedPayload({ stores: {} }),
       /Unsupported share schema version/,
     ],
     [

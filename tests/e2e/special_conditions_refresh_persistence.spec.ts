@@ -43,7 +43,7 @@ async function readMoonSpecialCondFromLocalStorage(
   page: Page,
 ): Promise<Record<string, unknown>> {
   return page.evaluate(() => {
-    const raw = window.localStorage.getItem('tlt:ootmm-session:v1');
+    const raw = window.localStorage.getItem('tlt:ootmm-session');
     if (!raw) return {};
     const parsed = JSON.parse(raw) as {
       trackerSettings?: {

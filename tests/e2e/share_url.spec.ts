@@ -169,10 +169,10 @@ test.describe('share URL import/export', () => {
     await waitForBoot(page);
     await expect(page.getByTestId('pack-select')).toHaveValue('ootmm');
 
-    const appState = await readPersistedJson(page, 'tlt:app:v1');
+    const appState = await readPersistedJson(page, 'tlt:app');
     expect(appState?.selectedPackId).toBe('ootmm');
 
-    const sessionState = await readPersistedJson(page, 'tlt:ootmm-session:v1');
+    const sessionState = await readPersistedJson(page, 'tlt:ootmm-session');
     const trackerSettings = sessionState?.trackerSettings as
       | Record<string, unknown>
       | undefined;
@@ -227,7 +227,7 @@ test.describe('share URL import/export', () => {
       .toContain('some invalid data was ignored');
     await waitForBoot(page);
 
-    const sessionState = await readPersistedJson(page, 'tlt:ootmm-session:v1');
+    const sessionState = await readPersistedJson(page, 'tlt:ootmm-session');
     const bridgeCond = (
       (sessionState?.trackerSettings as Record<string, unknown> | undefined)
         ?.specialConds as Record<string, Record<string, unknown>> | undefined
@@ -312,7 +312,7 @@ test.describe('share URL import/export', () => {
     const hash = await page.evaluate(() => window.location.hash);
     expect(hash).toBe('');
 
-    const sessionState = await readPersistedJson(page, 'tlt:ootmm-session:v1');
+    const sessionState = await readPersistedJson(page, 'tlt:ootmm-session');
     const trackerSettings = sessionState?.trackerSettings as
       | Record<string, unknown>
       | undefined;
@@ -396,7 +396,7 @@ test.describe('share URL import/export', () => {
     await page.getByTestId('share-import-confirm-apply-button').click();
 
     await waitForBoot(page);
-    const sessionState = await readPersistedJson(page, 'tlt:ootmm-session:v1');
+    const sessionState = await readPersistedJson(page, 'tlt:ootmm-session');
     expect(sessionState?.inventoryById).toMatchObject({
       ITEM_ALPHA: 1,
     });

@@ -3,9 +3,12 @@ import {
   PERSIST_CONFIGS,
   PERSIST_STORE_IDS,
   TRACKER_EXTRA_SETTINGS_KEYS,
+  removePersistedPayload,
+  resolvePersistedPayload,
   sanitizePersistedStateForStore,
   type PersistStoreId,
 } from '@/stores/persist';
+import { LATEST_STATE_VERSION } from '@/utils/migrations';
 import type { SettingDefinition } from '@/types/tracker';
 import { safeJsonParse } from '@/utils/safeJson';
 import {
@@ -22,7 +25,6 @@ import {
 
 const SHARE_HASH_PARAM = 's';
 const SHARE_PAYLOAD_PREFIX = 'v1.';
-const SHARE_SCHEMA_VERSION = 1;
 const SHARE_STATUS_SESSION_KEY = 'tlt:share-import-status:v1';
 const SHARE_STATUS_DETAILS_SESSION_KEY = 'tlt:share-import-details:v1';
 const SHARE_IMPORT_PENDING_SESSION_KEY = 'tlt:share-import-pending:v1';
@@ -383,13 +385,14 @@ function normalizeSnapshot(snapshot: PersistedSnapshot): PersistedSnapshot {
     const sanitized = sanitizePersistedStateForStore(
       storeId,
       snapshot.stores?.[storeId] ?? {},
+      snapshot.v,
     );
     if (Object.keys(sanitized).length > 0) {
       stores[storeId] = sanitized;
     }
   }
   return {
-    v: SHARE_SCHEMA_VERSION,
+    v: LATEST_STATE_VERSION,
     stores,
   };
 }
@@ -801,20 +804,17 @@ export function clearSharePayloadFromCurrentUrl(): void {
 export function collectPersistedStateFromLocalStorage(): PersistedSnapshot {
   if (typeof window === 'undefined') {
     return {
-      v: SHARE_SCHEMA_VERSION,
+      v: LATEST_STATE_VERSION,
       stores: {},
     };
   }
 
   const stores: PersistedStoresSnapshot = {};
   for (const storeId of PERSIST_STORE_IDS) {
-    const storageKey = PERSIST_CONFIGS[storeId].key;
-    const raw = window.localStorage.getItem(storageKey);
-    if (!raw) continue;
-
     try {
-      const parsed = safeJsonParse(raw);
-      const sanitized = sanitizePersistedStateForStore(storeId, parsed);
+      const resolved = resolvePersistedPayload(storeId);
+      if (!resolved) continue;
+      const sanitized = sanitizePersistedStateForStore(storeId, resolved);
       if (Object.keys(sanitized).length > 0) {
         stores[storeId] = sanitized;
       }
@@ -827,7 +827,7 @@ export function collectPersistedStateFromLocalStorage(): PersistedSnapshot {
   }
 
   return {
-    v: SHARE_SCHEMA_VERSION,
+    v: LATEST_STATE_VERSION,
     stores,
   };
 }
@@ -948,12 +948,23 @@ export function decodeHashPayloadToSnapshot(
   if (!isPlainObject(parsed)) {
     throw new Error('Share payload is not an object');
   }
-  if (parsed.v !== SHARE_SCHEMA_VERSION) {
+  // Strict version check: our own format always carries `v`. A future version
+  // is rejected (never destroy data we don't understand); a missing/invalid
+  // version is rejected too.
+  if (typeof parsed.v !== 'number' || !Number.isFinite(parsed.v)) {
+    throw new Error('Unsupported share schema version');
+  }
+  if (parsed.v < 1) {
+    throw new Error('Unsupported share schema version');
+  }
+  if (parsed.v > LATEST_STATE_VERSION) {
     throw new Error('Unsupported share schema version');
   }
   if (!isPlainObject(parsed.stores)) {
     throw new Error('Share payload stores are invalid');
   }
+
+  const fromVersion = parsed.v;
 
   const issues: ShareImportIssue[] = [];
 
@@ -976,7 +987,7 @@ export function decodeHashPayloadToSnapshot(
   }
 
   const snapshot: PersistedSnapshot = {
-    v: SHARE_SCHEMA_VERSION,
+    v: LATEST_STATE_VERSION,
     stores: {},
   };
   for (const storeId of PERSIST_STORE_IDS) {
@@ -990,7 +1001,11 @@ export function decodeHashPayloadToSnapshot(
       continue;
     }
 
-    const sanitized = sanitizePersistedStateForStore(storeId, storeRaw);
+    const sanitized = sanitizePersistedStateForStore(
+      storeId,
+      storeRaw,
+      fromVersion,
+    );
     if (Object.keys(sanitized).length > 0) {
       snapshot.stores[storeId] = sanitized;
     }
@@ -1033,9 +1048,12 @@ export function applySnapshotToLocalStorage(snapshot: PersistedSnapshot): void {
     const key = PERSIST_CONFIGS[storeId].key;
     const value = normalized.stores[storeId];
     if (value && Object.keys(value).length > 0) {
-      window.localStorage.setItem(key, JSON.stringify(value));
+      window.localStorage.setItem(
+        key,
+        JSON.stringify({ v: LATEST_STATE_VERSION, ...value }),
+      );
     } else {
-      window.localStorage.removeItem(key);
+      removePersistedPayload(storeId);
     }
   }
 }
@@ -1043,13 +1061,11 @@ export function applySnapshotToLocalStorage(snapshot: PersistedSnapshot): void {
 export function hasMeaningfulLocalState(): boolean {
   if (typeof window === 'undefined') return false;
   const sessionStoreId: PersistStoreId = 'ootmm-session';
-  const sessionKey = PERSIST_CONFIGS[sessionStoreId].key;
-  const raw = window.localStorage.getItem(sessionKey);
-  if (!raw) return false;
 
   try {
-    const parsed = safeJsonParse(raw);
-    const session = sanitizePersistedStateForStore(sessionStoreId, parsed);
+    const resolved = resolvePersistedPayload(sessionStoreId);
+    if (!resolved) return false;
+    const session = sanitizePersistedStateForStore(sessionStoreId, resolved);
     return (
       hasObjectEntries(session.inventoryById) ||
       hasArrayEntries(session.collectedLocationIds) ||
@@ -1220,9 +1236,8 @@ export async function handlePresetImportFromUrl(): Promise<boolean> {
 
   // Clear any existing local state before applying the preset
   for (const storeId of PERSIST_STORE_IDS) {
-    const key = PERSIST_CONFIGS[storeId].key;
     try {
-      window.localStorage.removeItem(key);
+      removePersistedPayload(storeId);
     } catch {
       // Ignore localStorage errors
     }

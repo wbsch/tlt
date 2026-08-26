@@ -7,15 +7,11 @@ import {
   DEFAULT_LEFT_SIDEBAR_WIDTH,
   DEFAULT_RIGHT_SIDEBAR_WIDTH,
 } from '@packs/ootmm/stores/ootmmUi';
-import { migrateEntranceOverrides } from '@/utils/entranceMigration';
 import {
-  normalizeSpoilerSettings,
-  hasLegacyCrossWarpOot,
-  hasLegacyCrossWarpMm,
   synthesizeOotToMmItemsForInventory,
   synthesizeMmToOotItemsForInventory,
-  foldGoronLullabyForInventory,
 } from '@packs/ootmm/utils/spoilerSettingsMigration';
+import { LATEST_STATE_VERSION, migrateStateToLatest } from '@/utils/migrations';
 
 export type PersistConfig = {
   key: string;
@@ -124,12 +120,11 @@ function deepSanitizeJsonValue(value: unknown): unknown {
 function sanitizeSettingsObject(
   raw: Record<string, unknown>,
 ): Record<string, unknown> {
-  // Normalize old keys (v30.1) to v31.0 before filtering against known keys
-  const normalized = normalizeSpoilerSettings(
-    raw as Record<string, string | number | boolean>,
-  ) as Record<string, unknown>;
+  // Version normalization (v30.1 → v31.0) happens in the migration registry
+  // (`src/utils/migrations/legacy.ts`) before this runs; here we only filter
+  // against known keys and recursively strip dangerous values.
   const safe: Record<string, unknown> = {};
-  for (const [key, value] of Object.entries(normalized)) {
+  for (const [key, value] of Object.entries(raw)) {
     if (!isSafeKey(key)) continue;
     if (!KNOWN_SETTINGS_KEYS.has(key)) continue;
     safe[key] = deepSanitizeJsonValue(value);
@@ -220,7 +215,7 @@ function stringRecord(value: unknown): Record<string, string> {
 
 export const PERSIST_CONFIGS: Record<PersistStoreId, PersistConfig> = {
   app: {
-    key: 'tlt:app:v1',
+    key: 'tlt:app',
     paths: ['selectedPackId'],
     hydrate: (raw) => ({
       ...(typeof raw.selectedPackId === 'string' &&
@@ -230,7 +225,7 @@ export const PERSIST_CONFIGS: Record<PersistStoreId, PersistConfig> = {
     }),
   },
   'ootmm-ui': {
-    key: 'tlt:ootmm-ui:v1',
+    key: 'tlt:ootmm-ui',
     paths: [
       'activeTab',
       'isRightSidebarOpen',
@@ -321,20 +316,11 @@ export const PERSIST_CONFIGS: Record<PersistStoreId, PersistConfig> = {
           : {}),
       };
 
+      // The `isEntrancesSidebarOpen` / `isLocationsSidebarOpen` → `isRightSidebarOpen`
+      // merge runs in the migration registry before hydration; here we only
+      // validate the already-merged fields.
       if (typeof raw.isRightSidebarOpen === 'boolean') {
         next.isRightSidebarOpen = raw.isRightSidebarOpen;
-      } else if (
-        raw.isEntrancesSidebarOpen === false &&
-        raw.isLocationsSidebarOpen === false
-      ) {
-        next.isRightSidebarOpen = false;
-      } else if (
-        typeof raw.isEntrancesSidebarOpen === 'boolean' ||
-        typeof raw.isLocationsSidebarOpen === 'boolean'
-      ) {
-        next.isRightSidebarOpen =
-          raw.isEntrancesSidebarOpen === true ||
-          raw.isLocationsSidebarOpen === true;
       }
 
       if (
@@ -342,17 +328,13 @@ export const PERSIST_CONFIGS: Record<PersistStoreId, PersistConfig> = {
         VALID_RIGHT_SIDEBAR_TABS.has(raw.activeRightSidebarTab)
       ) {
         next.activeRightSidebarTab = raw.activeRightSidebarTab;
-      } else if (raw.isEntrancesSidebarOpen === true) {
-        next.activeRightSidebarTab = 'entrances';
-      } else if (raw.isLocationsSidebarOpen === true) {
-        next.activeRightSidebarTab = 'locations';
       }
 
       return next;
     },
   },
   'ootmm-session': {
-    key: 'tlt:ootmm-session:v1',
+    key: 'tlt:ootmm-session',
     paths: [
       'inventoryById',
       'collectedLocationIds',
@@ -381,53 +363,26 @@ export const PERSIST_CONFIGS: Record<PersistStoreId, PersistConfig> = {
         : {};
 
       // Synthesize cross-game counterpart items for CrossWarp (OoT↔MM songs)
-      // based on normalized settings. This ensures that e.g. MM_SONG_TP_FOREST
-      // is present when OOT_SONG_TP_FOREST was collected and songMinuetMm is
-      // enabled (either natively or via legacy crossWarpOot normalization).
-      // Only performed when the session was originally imported from a spoiler
-      // log with legacy crossWarpMm / crossWarpOot settings.
-      //
-      // The flags may come from the stored session state or be detected from
-      // legacy keys in the raw trackerSettings (backward compat).
-      const rawSettingsForDetection = isPlainObject(raw.trackerSettings)
-        ? (raw.trackerSettings as Record<string, unknown>)
-        : null;
-      const needsOotSynthesis =
-        raw.needsLegacyCrossWarpOotSynthesis === true ||
-        (rawSettingsForDetection !== null &&
-          hasLegacyCrossWarpOot(rawSettingsForDetection));
-      const needsMmSynthesis =
-        raw.needsLegacyCrossWarpMmSynthesis === true ||
-        (rawSettingsForDetection !== null &&
-          hasLegacyCrossWarpMm(rawSettingsForDetection));
-
+      // based on already-normalized (v31.0) settings. The decision whether to
+      // synthesize is captured by the migration registry from the legacy
+      // `crossWarpOot` / `crossWarpMm` keys and carried forward as the
+      // `needsLegacyCrossWarp*Synthesis` flags (see Decision 2).
       if (
         Object.keys(inventory).length > 0 &&
         Object.keys(trackerSettings).length > 0
       ) {
-        if (needsOotSynthesis) {
+        if (raw.needsLegacyCrossWarpOotSynthesis === true) {
           synthesizeOotToMmItemsForInventory(
             inventory,
             trackerSettings as Record<string, unknown>,
           );
         }
-        if (needsMmSynthesis) {
+        if (raw.needsLegacyCrossWarpMmSynthesis === true) {
           synthesizeMmToOotItemsForInventory(
             inventory,
             trackerSettings as Record<string, unknown>,
           );
         }
-
-        // Fold a persisted completed Goron Lullaby (written before the
-        // progressive-folding fix) into stage 2 of the progressive half
-        // item. Without this, an old session's full-song ID
-        // (MM_SONG_GORON / OOT_SONG_GORON / SHARED_SONG_GORON) would be
-        // sent to the pathfinder as an out-of-pool ID and the second half
-        // would never register.
-        foldGoronLullabyForInventory(
-          inventory,
-          trackerSettings as Record<string, unknown>,
-        );
       }
 
       return {
@@ -450,27 +405,7 @@ export const PERSIST_CONFIGS: Record<PersistStoreId, PersistConfig> = {
           ? { shopPrices: nonNegativeNumberRecord(raw.shopPrices) }
           : {}),
         ...(isPlainObject(raw.entranceOverrides)
-          ? (() => {
-              const overrides = stringRecord(raw.entranceOverrides);
-              try {
-                // Only migrate (add missing reverse entries) when NOT decoupled.
-                // In decoupled mode, missing reverse entries are intentional.
-                const decoupled = Boolean(
-                  (raw.trackerSettings as Record<string, unknown> | undefined)
-                    ?.erDecoupled,
-                );
-                return {
-                  entranceOverrides: decoupled
-                    ? overrides
-                    : migrateEntranceOverrides(overrides),
-                };
-              } catch {
-                // Migration failed silently — keep the original (un-migrated)
-                // overrides. This prevents a migration bug from breaking the
-                // entire session hydration.
-                return { entranceOverrides: overrides };
-              }
-            })()
+          ? { entranceOverrides: stringRecord(raw.entranceOverrides) }
           : {}),
         ...(Object.keys(trackerSettings).length > 0 ? { trackerSettings } : {}),
         ...(typeof raw.hasImportedSpoilerLog === 'boolean'
@@ -543,9 +478,95 @@ export function isPersistStoreId(value: string): value is PersistStoreId {
 export function sanitizePersistedStateForStore(
   storeId: PersistStoreId,
   raw: unknown,
+  fromVersion?: number,
 ): Record<string, unknown> {
   if (!isPlainObject(raw)) return {};
-  return PERSIST_CONFIGS[storeId].hydrate(raw);
+  const version =
+    typeof fromVersion === 'number'
+      ? fromVersion
+      : typeof raw.v === 'number' && raw.v >= 1
+        ? raw.v
+        : 1; // legacy payload without a version field
+
+  let migrated = raw;
+  try {
+    migrated = migrateStateToLatest(raw, version);
+  } catch {
+    // Migration failed silently — hydrate the un-migrated payload. This
+    // prevents a migration bug from breaking the entire session hydration.
+    migrated = raw;
+  }
+  return PERSIST_CONFIGS[storeId].hydrate(migrated);
+}
+
+/** Legacy storage key suffix used before the `:v1` key migration. */
+const LEGACY_STORAGE_KEY_SUFFIX = ':v1';
+
+/**
+ * Resolve the persisted payload for a store from localStorage, centralizing
+ * the storage-key lookup so every read path agrees.
+ *
+ * The v1→v2 upgrade dropped the `:v1` suffix from storage keys. Reads resolve
+ * in this order:
+ *   1. versionless key present → use as-is (already migrated);
+ *   2. legacy `:v1` key present → read, run the payload migration, write to the
+ *      versionless key with `v: LATEST_STATE_VERSION`, then remove the legacy key.
+ *
+ * In BOTH branches the legacy `:v1` key is removed once the versionless key is
+ * available, so the one-time key migration is idempotent and self-healing: even
+ * if the versionless key was written first (e.g. by a hot-reload during
+ * development, or by `applySnapshotToLocalStorage`), a subsequent read clears
+ * the stale `:v1` key rather than leaving the store duplicated.
+ *
+ * Returns the resolved payload (possibly migrated) or `null` when nothing is
+ * stored. The returned payload is NOT hydrated — that is the caller's job via
+ * `sanitizePersistedStateForStore`.
+ */
+export function resolvePersistedPayload(
+  storeId: PersistStoreId,
+): Record<string, unknown> | null {
+  if (typeof window === 'undefined') return null;
+  const config = PERSIST_CONFIGS[storeId];
+  const legacyKey = `${config.key}${LEGACY_STORAGE_KEY_SUFFIX}`;
+
+  const raw = window.localStorage.getItem(config.key);
+  if (raw) {
+    const parsed = safeJsonParse(raw);
+    // The versionless key is authoritative; any lingering legacy key is stale
+    // and must be removed so it can never be re-read as "schema version 1".
+    window.localStorage.removeItem(legacyKey);
+    return isPlainObject(parsed) ? parsed : null;
+  }
+
+  const legacyRaw = window.localStorage.getItem(legacyKey);
+  if (legacyRaw) {
+    const parsed = safeJsonParse(legacyRaw);
+    if (!isPlainObject(parsed)) {
+      window.localStorage.removeItem(legacyKey);
+      return null;
+    }
+    const migrated = migrateStateToLatest(parsed, 1);
+    window.localStorage.setItem(
+      config.key,
+      JSON.stringify({ v: LATEST_STATE_VERSION, ...migrated }),
+    );
+    window.localStorage.removeItem(legacyKey);
+    return migrated;
+  }
+
+  return null;
+}
+
+/**
+ * Remove a store's persisted payload from localStorage, covering both the
+ * versionless key and the legacy `:v1` key. Used by share import / preset
+ * flows that clear existing local state before applying a snapshot.
+ */
+export function removePersistedPayload(storeId: PersistStoreId): void {
+  if (typeof window === 'undefined') return;
+  const config = PERSIST_CONFIGS[storeId];
+  window.localStorage.removeItem(config.key);
+  window.localStorage.removeItem(`${config.key}${LEGACY_STORAGE_KEY_SUFFIX}`);
 }
 
 export function piniaLocalStoragePlugin({ store }: PiniaPluginContext) {
@@ -554,16 +575,13 @@ export function piniaLocalStoragePlugin({ store }: PiniaPluginContext) {
   const config = PERSIST_CONFIGS[store.$id];
 
   try {
-    const raw = window.localStorage.getItem(config.key);
-    if (raw) {
-      const parsed = safeJsonParse(raw);
-      if (isPlainObject(parsed)) {
-        // config.hydrate validates and returns a safe partial state update.
-        // TypeScript can't verify this matches the exact store type statically,
-        // but the hydrate function ensures type safety at runtime.
-        // @ts-expect-error - Pinia's $patch typing doesn't allow generic Record<string, unknown>
-        store.$patch(config.hydrate(parsed));
-      }
+    const resolved = resolvePersistedPayload(store.$id);
+    if (resolved) {
+      // config.hydrate validates and returns a safe partial state update.
+      // TypeScript can't verify this matches the exact store type statically,
+      // but the hydrate function ensures type safety at runtime.
+      // @ts-expect-error - Pinia's $patch typing doesn't allow generic Record<string, unknown>
+      store.$patch(sanitizePersistedStateForStore(store.$id, resolved));
     }
   } catch (error) {
     console.warn(`[Persist] Failed to hydrate "${store.$id}":`, error);
@@ -579,7 +597,10 @@ export function piniaLocalStoragePlugin({ store }: PiniaPluginContext) {
         if (config.serialize) {
           next = config.serialize(next);
         }
-        window.localStorage.setItem(config.key, JSON.stringify(next));
+        window.localStorage.setItem(
+          config.key,
+          JSON.stringify({ v: LATEST_STATE_VERSION, ...next }),
+        );
       } catch (error) {
         console.warn(`[Persist] Failed to persist "${store.$id}":`, error);
       }
