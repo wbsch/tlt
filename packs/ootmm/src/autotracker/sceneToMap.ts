@@ -19,15 +19,6 @@ export const OOT_SCENE_TO_MAP: Record<number, string> = {
   13: 'oot_ganons_castle', // OOT_INSIDE_GANON_CASTLE
   14: 'oot_ganons_castle', // OOT_GANON_TOWER_COLLAPSING
   15: 'oot_ganons_castle', // OOT_INSIDE_GANON_CASTLE_COLLAPSING
-  17: 'oot_deku_tree', // OOT_LAIR_GOHMA (Deku Tree)
-  18: 'oot_dodongos_cavern', // OOT_LAIR_KING_DODONGO
-  19: 'oot_jabu_jabu', // OOT_LAIR_BARINADE
-  20: 'oot_forest_temple', // OOT_LAIR_PHANTOM_GANON
-  21: 'oot_fire_temple', // OOT_LAIR_VOLVAGIA
-  22: 'oot_water_temple', // OOT_LAIR_MORPHA
-  23: 'oot_spirit_temple', // OOT_LAIR_TWINROVA
-  24: 'oot_shadow_temple', // OOT_LAIR_BONGO_BONGO
-  25: 'oot_ganons_castle', // OOT_LAIR_GANONDORF
   27: 'oot_hyrule_field', // OOT_MARKET_ENTRANCE_CHILD_DAY
   28: 'oot_hyrule_field', // OOT_MARKET_ENTRANCE_CHILD_NIGHT
   29: 'oot_hyrule_field', // OOT_MARKET_ENTRANCE_ADULT
@@ -39,43 +30,10 @@ export const OOT_SCENE_TO_MAP: Record<number, string> = {
   35: 'oot_hyrule_field', // OOT_TEMPLE_OF_TIME_EXTERIOR_CHILD_DAY
   36: 'oot_hyrule_field', // OOT_TEMPLE_OF_TIME_EXTERIOR_CHILD_NIGHT
   37: 'oot_hyrule_field', // OOT_TEMPLE_OF_TIME_EXTERIOR_ADULT
-  38: 'oot_kokiri_forest', // OOT_KOKIRI_KNOW_IT_ALL
-  39: 'oot_kokiri_forest', // OOT_KOKIRI_TWINS
-  40: 'oot_kokiri_forest', // OOT_KOKIRI_MIDO
-  41: 'oot_kokiri_forest', // OOT_KOKIRI_SARIA
-  42: 'oot_kakariko', // OOT_CARPENTER_BOSS_HOUSE
-  43: 'oot_hyrule_field', // OOT_BACK_ALLEY_HOUSE
-  44: 'oot_hyrule_field', // OOT_BAZAAR
-  45: 'oot_kokiri_forest', // OOT_KOKIRI_SHOP
-  46: 'oot_death_mountain', // OOT_GORON_SHOP
-  47: 'oot_zoras_river', // OOT_ZORA_SHOP
-  48: 'oot_kakariko', // OOT_KAKARIKO_POTION_SHOP
-  49: 'oot_hyrule_field', // OOT_MARKET_POTION_SHOP
-  50: 'oot_hyrule_field', // OOT_BOMBCHU_SHOP
-  51: 'oot_hyrule_field', // OOT_HAPPY_MASK_SHOP
-  52: 'oot_kokiri_forest', // OOT_LINK_HOUSE
-  53: 'oot_hyrule_field', // OOT_BACK_ALLEY_HOUSE2
-  54: 'oot_hyrule_field', // OOT_STABLE
-  55: 'oot_kakariko', // OOT_IMPA_HOUSE
-  56: 'oot_zoras_river', // OOT_LABORATORY
-  57: 'oot_gerudo_desert', // OOT_CARPENTER_TENT
-  58: 'oot_kakariko', // OOT_GRAVEKEEPER_HUT
-  63: 'oot_kakariko', // OOT_TOMB_REDEAD
-  64: 'oot_kakariko', // OOT_TOMB_FAIRY
-  65: 'oot_kakariko', // OOT_TOMB_ROYAL
-  67: 'oot_hyrule_field', // OOT_TEMPLE_OF_TIME
-  68: 'oot_hyrule_field', // OOT_CHAMBER_OF_THE_SAGES
   69: 'oot_hyrule_field', // OOT_CASTLE_MAZE_DAY
   70: 'oot_hyrule_field', // OOT_CASTLE_MAZE_NIGHT
-  72: 'oot_kakariko', // OOT_TOMB_DAMPE_WINDMILL
-  73: 'oot_zoras_river', // OOT_FISHING_POND
   74: 'oot_hyrule_field', // OOT_CASTLE_COURTYARD
-  75: 'oot_hyrule_field', // OOT_BOMBCHU_BOWLING_ALLEY
-  76: 'oot_hyrule_field', // OOT_RANCH_HOUSE_SILO (Lon Lon)
-  77: 'oot_hyrule_field', // OOT_GUARD_HOUSE
-  78: 'oot_kakariko', // OOT_GRANNY_POTION_SHOP
   79: 'oot_ganons_castle', // OOT_GANON_BATTLE_ARENA
-  80: 'oot_kakariko', // OOT_HOUSE_OF_SKULLTULA
   81: 'oot_hyrule_field', // OOT_HYRULE_FIELD
   82: 'oot_kakariko', // OOT_KAKARIKO_VILLAGE
   83: 'oot_kakariko', // OOT_GRAVEYARD
@@ -104,7 +62,6 @@ export const OOT_SCENE_TO_MAP: Record<number, string> = {
  */
 export const MM_SCENE_TO_MAP: Record<number, string> = {
   0: 'mm_southern_swamp', // MM_SOUTHERN_SWAMP_CLEAR
-  12: 'mm_ikana_canyon', // MM_BENEATH_THE_GRAVEYARD
   19: 'mm_ikana_canyon', // MM_IKANA_CANYON
   20: 'mm_pirate_fortress', // MM_PIRATE_FORTRESS_EXTERIOR
   22: 'mm_stone_tower_temple', // MM_TEMPLE_STONE_TOWER
