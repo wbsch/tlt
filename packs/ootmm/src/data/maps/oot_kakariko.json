@@ -583,7 +583,8 @@
       "type": "submenu",
       "overlays": ["child"],
       "entranceMenu": {
-        "entranceIds": ["OOT_BOTTOM_OF_THE_WELL"]
+        "entranceIds": ["OOT_BOTTOM_OF_THE_WELL"],
+        "display": "entrances"
       }
     },
     {
@@ -937,7 +938,8 @@
       "image": "dungeon_entrance",
       "type": "submenu",
       "entranceMenu": {
-        "entranceIds": ["OOT_TEMPLE_SHADOW"]
+        "entranceIds": ["OOT_TEMPLE_SHADOW"],
+        "display": "entrances"
       }
     }
   ]

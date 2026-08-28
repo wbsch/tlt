@@ -6,6 +6,15 @@
   "height": 600,
   "markers": [
     {
+      "coords": [343, 543],
+      "image": "dungeon_entrance",
+      "type": "submenu",
+      "entranceMenu": {
+        "entranceIds": ["OOT_TEMPLE_SPIRIT"],
+        "display": "exits"
+      }
+    },
+    {
       "coords": [719, 429],
       "image": "chest",
       "codes": [

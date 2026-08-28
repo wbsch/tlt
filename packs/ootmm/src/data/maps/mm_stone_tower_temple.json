@@ -6,6 +6,24 @@
   "height": 600,
   "markers": [
     {
+      "coords": [646, 589],
+      "image": "dungeon_entrance",
+      "type": "submenu",
+      "entranceMenu": {
+        "entranceIds": ["MM_TEMPLE_STONE_TOWER_INVERTED"],
+        "display": "exits"
+      }
+    },
+    {
+      "coords": [645, 301],
+      "image": "dungeon_entrance",
+      "type": "submenu",
+      "entranceMenu": {
+        "entranceIds": ["MM_TEMPLE_STONE_TOWER"],
+        "display": "exits"
+      }
+    },
+    {
       "coords": [259, 475],
       "image": "chest",
       "codes": ["MM Stone Tower Temple Inverted Wizzrobe Chest"]

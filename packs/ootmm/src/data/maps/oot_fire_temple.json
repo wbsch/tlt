@@ -6,6 +6,15 @@
   "height": 600,
   "markers": [
     {
+      "coords": [356, 513],
+      "image": "dungeon_entrance",
+      "type": "submenu",
+      "entranceMenu": {
+        "entranceIds": ["OOT_TEMPLE_FIRE"],
+        "display": "exits"
+      }
+    },
+    {
       "coords": [739, 470],
       "image": "chest",
       "codes": "OOT Fire Temple Below Maze Chest"

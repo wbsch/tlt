@@ -6,6 +6,15 @@
   "height": 600,
   "markers": [
     {
+      "coords": [821, 407],
+      "image": "dungeon_entrance",
+      "type": "submenu",
+      "entranceMenu": {
+        "entranceIds": ["OOT_BOTTOM_OF_THE_WELL"],
+        "display": "exits"
+      }
+    },
+    {
       "coords": [269, 290],
       "image": "chest",
       "codes": "OOT Bottom of the Well Map"

@@ -6,6 +6,24 @@
   "height": 600,
   "markers": [
     {
+      "coords": [423, 515],
+      "image": "dungeon_entrance",
+      "type": "submenu",
+      "entranceMenu": {
+        "entranceIds": ["MM_BENEATH_THE_WELL"],
+        "display": "exits"
+      }
+    },
+    {
+      "coords": [600, 133],
+      "image": "dungeon_entrance",
+      "type": "submenu",
+      "entranceMenu": {
+        "entranceIds": ["MM_BENEATH_THE_WELL_BACK"],
+        "display": "exits"
+      }
+    },
+    {
       "coords": [454, 353],
       "image": "chest",
       "codes": ["MM Beneath The Well Skulltulla Chest"]

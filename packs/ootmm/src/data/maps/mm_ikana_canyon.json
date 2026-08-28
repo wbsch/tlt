@@ -321,7 +321,8 @@
       "image": "dungeon_entrance",
       "type": "submenu",
       "entranceMenu": {
-        "entranceIds": ["MM_IKANA_CASTLE"]
+        "entranceIds": ["MM_IKANA_CASTLE"],
+        "display": "entrances"
       }
     },
     {
@@ -406,7 +407,8 @@
       "image": "dungeon_entrance",
       "type": "submenu",
       "entranceMenu": {
-        "entranceIds": ["MM_BENEATH_THE_WELL_BACK"]
+        "entranceIds": ["MM_BENEATH_THE_WELL_BACK"],
+        "display": "entrances"
       }
     },
     {
@@ -414,7 +416,8 @@
       "image": "dungeon_entrance",
       "type": "submenu",
       "entranceMenu": {
-        "entranceIds": ["MM_TEMPLE_STONE_TOWER_INVERTED"]
+        "entranceIds": ["MM_TEMPLE_STONE_TOWER_INVERTED"],
+        "display": "entrances"
       }
     },
     {
@@ -422,7 +425,8 @@
       "image": "dungeon_entrance",
       "type": "submenu",
       "entranceMenu": {
-        "entranceIds": ["MM_TEMPLE_STONE_TOWER"]
+        "entranceIds": ["MM_TEMPLE_STONE_TOWER"],
+        "display": "entrances"
       }
     },
     {
@@ -514,7 +518,8 @@
       "image": "dungeon_entrance",
       "type": "submenu",
       "entranceMenu": {
-        "entranceIds": ["MM_BENEATH_THE_WELL"]
+        "entranceIds": ["MM_BENEATH_THE_WELL"],
+        "display": "entrances"
       }
     },
     {
@@ -555,7 +560,8 @@
       "image": "dungeon_entrance",
       "type": "submenu",
       "entranceMenu": {
-        "entranceIds": ["MM_SECRET_SHRINE"]
+        "entranceIds": ["MM_SECRET_SHRINE"],
+        "display": "entrances"
       }
     },
     {

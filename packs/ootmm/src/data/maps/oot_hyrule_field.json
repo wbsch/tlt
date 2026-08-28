@@ -717,7 +717,8 @@
       "image": "dungeon_entrance",
       "type": "submenu",
       "entranceMenu": {
-        "entranceIds": ["OOT_GANON_CASTLE"]
+        "entranceIds": ["OOT_GANON_CASTLE"],
+        "display": "entrances"
       }
     },
     {

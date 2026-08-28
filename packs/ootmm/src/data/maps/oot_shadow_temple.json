@@ -6,6 +6,15 @@
   "height": 600,
   "markers": [
     {
+      "coords": [645, 202],
+      "image": "dungeon_entrance",
+      "type": "submenu",
+      "entranceMenu": {
+        "entranceIds": ["OOT_TEMPLE_SHADOW"],
+        "display": "exits"
+      }
+    },
+    {
       "coords": [626, 149],
       "image": "chest",
       "codes": "OOT Shadow Temple Map"

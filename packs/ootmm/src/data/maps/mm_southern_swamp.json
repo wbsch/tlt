@@ -558,7 +558,8 @@
       "image": "dungeon_entrance",
       "type": "submenu",
       "entranceMenu": {
-        "entranceIds": ["MM_SPIDER_HOUSE_SWAMP"]
+        "entranceIds": ["MM_SPIDER_HOUSE_SWAMP"],
+        "display": "entrances"
       }
     },
     {
@@ -687,7 +688,8 @@
       "image": "dungeon_entrance",
       "type": "submenu",
       "entranceMenu": {
-        "entranceIds": ["MM_TEMPLE_WOODFALL"]
+        "entranceIds": ["MM_TEMPLE_WOODFALL"],
+        "display": "entrances"
       }
     },
     {

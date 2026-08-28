@@ -6,6 +6,15 @@
   "height": 600,
   "markers": [
     {
+      "coords": [505, 401],
+      "image": "dungeon_entrance",
+      "type": "submenu",
+      "entranceMenu": {
+        "entranceIds": ["OOT_GANON_CASTLE"],
+        "display": "exits"
+      }
+    },
+    {
       "coords": [533, 355],
       "image": "chest",
       "codes": "OOT Ganon Castle Forest Chest"

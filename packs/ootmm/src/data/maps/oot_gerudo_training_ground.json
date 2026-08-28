@@ -6,6 +6,16 @@
   "height": 600,
   "markers": [
     {
+      "coords": [482, 415],
+      "image": "dungeon_entrance",
+      "overlays": ["adult"],
+      "type": "submenu",
+      "entranceMenu": {
+        "entranceIds": ["OOT_GERUDO_TRAINING_GROUNDS"],
+        "display": "exits"
+      }
+    },
+    {
       "coords": [400, 182],
       "image": "chest",
       "codes": [

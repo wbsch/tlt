@@ -6,6 +6,15 @@
   "height": 600,
   "markers": [
     {
+      "coords": [352, 316],
+      "image": "dungeon_entrance",
+      "type": "submenu",
+      "entranceMenu": {
+        "entranceIds": ["OOT_TEMPLE_FOREST"],
+        "display": "exits"
+      }
+    },
+    {
       "coords": [296, 450],
       "image": "chest",
       "codes": "OOT Forest Temple Well"

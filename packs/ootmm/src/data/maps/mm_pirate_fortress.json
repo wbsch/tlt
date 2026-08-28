@@ -6,6 +6,15 @@
   "height": 600,
   "markers": [
     {
+      "coords": [158, 403],
+      "image": "dungeon_entrance",
+      "type": "submenu",
+      "entranceMenu": {
+        "entranceIds": ["MM_PIRATE_FORTRESS"],
+        "display": "exits"
+      }
+    },
+    {
       "coords": [141, 316],
       "image": "chest",
       "codes": ["MM Pirate Fortress Entrance Chest 2"]

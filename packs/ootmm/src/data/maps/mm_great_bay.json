@@ -552,7 +552,8 @@
       "image": "dungeon_entrance",
       "type": "submenu",
       "entranceMenu": {
-        "entranceIds": ["MM_PIRATE_FORTRESS"]
+        "entranceIds": ["MM_PIRATE_FORTRESS"],
+        "display": "entrances"
       }
     },
     {
@@ -684,7 +685,8 @@
       "image": "dungeon_entrance",
       "type": "submenu",
       "entranceMenu": {
-        "entranceIds": ["MM_SPIDER_HOUSE_OCEAN"]
+        "entranceIds": ["MM_SPIDER_HOUSE_OCEAN"],
+        "display": "entrances"
       }
     },
     {
@@ -928,7 +930,8 @@
       "image": "dungeon_entrance",
       "type": "submenu",
       "entranceMenu": {
-        "entranceIds": ["MM_TEMPLE_GREAT_BAY"]
+        "entranceIds": ["MM_TEMPLE_GREAT_BAY"],
+        "display": "entrances"
       }
     },
     {

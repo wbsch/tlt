@@ -544,7 +544,8 @@
       "type": "submenu",
       "overlays": ["child"],
       "entranceMenu": {
-        "entranceIds": ["OOT_DEKU_TREE"]
+        "entranceIds": ["OOT_DEKU_TREE"],
+        "display": "entrances"
       }
     },
     {
@@ -836,7 +837,8 @@
       "image": "dungeon_entrance",
       "type": "submenu",
       "entranceMenu": {
-        "entranceIds": ["OOT_TEMPLE_FOREST"]
+        "entranceIds": ["OOT_TEMPLE_FOREST"],
+        "display": "entrances"
       }
     },
     {

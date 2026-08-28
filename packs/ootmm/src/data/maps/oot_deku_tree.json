@@ -6,6 +6,15 @@
   "height": 600,
   "markers": [
     {
+      "coords": [286, 254],
+      "image": "dungeon_entrance",
+      "type": "submenu",
+      "entranceMenu": {
+        "entranceIds": ["OOT_DEKU_TREE"],
+        "display": "exits"
+      }
+    },
+    {
       "coords": [600, 217],
       "image": "chest",
       "codes": "OOT Deku Tree Map Chest"

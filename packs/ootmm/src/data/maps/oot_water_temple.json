@@ -6,6 +6,15 @@
   "height": 600,
   "markers": [
     {
+      "coords": [692, 318],
+      "image": "dungeon_entrance",
+      "type": "submenu",
+      "entranceMenu": {
+        "entranceIds": ["OOT_TEMPLE_WATER"],
+        "display": "exits"
+      }
+    },
+    {
       "coords": [426, 561],
       "image": "chest",
       "codes": "OOT Water Temple Under Center"

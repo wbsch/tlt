@@ -653,7 +653,8 @@
       "image": "dungeon_entrance",
       "type": "submenu",
       "entranceMenu": {
-        "entranceIds": ["OOT_TEMPLE_FIRE"]
+        "entranceIds": ["OOT_TEMPLE_FIRE"],
+        "display": "entrances"
       }
     },
     {
@@ -875,7 +876,8 @@
       "image": "dungeon_entrance",
       "type": "submenu",
       "entranceMenu": {
-        "entranceIds": ["OOT_DODONGO_CAVERN"]
+        "entranceIds": ["OOT_DODONGO_CAVERN"],
+        "display": "entrances"
       }
     },
     {

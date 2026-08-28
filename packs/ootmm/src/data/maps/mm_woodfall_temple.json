@@ -6,6 +6,15 @@
   "height": 600,
   "markers": [
     {
+      "coords": [335, 435],
+      "image": "dungeon_entrance",
+      "type": "submenu",
+      "entranceMenu": {
+        "entranceIds": ["MM_TEMPLE_WOODFALL"],
+        "display": "exits"
+      }
+    },
+    {
       "coords": [332, 169],
       "image": "boss_entrance",
       "type": "submenu",

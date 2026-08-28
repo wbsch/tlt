@@ -1476,7 +1476,8 @@
       "image": "dungeon_entrance",
       "type": "submenu",
       "entranceMenu": {
-        "entranceIds": ["MM_TEMPLE_SNOWHEAD"]
+        "entranceIds": ["MM_TEMPLE_SNOWHEAD"],
+        "display": "entrances"
       }
     },
     {

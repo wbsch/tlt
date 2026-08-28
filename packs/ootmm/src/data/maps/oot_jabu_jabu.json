@@ -6,6 +6,15 @@
   "height": 600,
   "markers": [
     {
+      "coords": [349, 409],
+      "image": "dungeon_entrance",
+      "type": "submenu",
+      "entranceMenu": {
+        "entranceIds": ["OOT_JABU_JABU"],
+        "display": "exits"
+      }
+    },
+    {
       "coords": [286, 232],
       "image": "chest",
       "codes": "OOT Jabu-Jabu Map Chest"

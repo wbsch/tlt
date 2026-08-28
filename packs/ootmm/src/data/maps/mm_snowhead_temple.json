@@ -6,6 +6,15 @@
   "height": 600,
   "markers": [
     {
+      "coords": [654, 589],
+      "image": "dungeon_entrance",
+      "type": "submenu",
+      "entranceMenu": {
+        "entranceIds": ["MM_TEMPLE_SNOWHEAD"],
+        "display": "exits"
+      }
+    },
+    {
       "coords": [800, 95],
       "image": "boss_entrance",
       "type": "submenu",

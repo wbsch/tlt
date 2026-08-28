@@ -573,7 +573,8 @@
       "overlays": ["adult"],
       "type": "submenu",
       "entranceMenu": {
-        "entranceIds": ["OOT_GERUDO_TRAINING_GROUNDS"]
+        "entranceIds": ["OOT_GERUDO_TRAINING_GROUNDS"],
+        "display": "entrances"
       }
     },
     {
@@ -1117,7 +1118,8 @@
       "image": "dungeon_entrance",
       "type": "submenu",
       "entranceMenu": {
-        "entranceIds": ["OOT_TEMPLE_SPIRIT"]
+        "entranceIds": ["OOT_TEMPLE_SPIRIT"],
+        "display": "entrances"
       }
     }
   ]

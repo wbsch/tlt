@@ -6,6 +6,15 @@
   "height": 600,
   "markers": [
     {
+      "coords": [285, 291],
+      "image": "dungeon_entrance",
+      "type": "submenu",
+      "entranceMenu": {
+        "entranceIds": ["MM_IKANA_CASTLE"],
+        "display": "exits"
+      }
+    },
+    {
       "coords": [522, 294],
       "image": "song",
       "codes": ["MM Ancient Castle of Ikana Song Emptiness"]
