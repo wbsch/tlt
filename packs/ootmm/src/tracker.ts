@@ -30,6 +30,7 @@ import {
   computeEffectiveTrackedEntranceOverrides,
   getActiveEntranceKeys,
   isTrackedEntranceExitType,
+  isAliasedEntranceSource,
   INTERIOR_GAME_LINK_SOURCE_KEYS,
   INTERIOR_GAME_LINK_EXIT_KEYS,
   getGameLinkPartner,
@@ -464,9 +465,20 @@ export class OoTMMTracker implements TrackerPack {
         : {};
     const nonSpawnPlandoEntrances: Record<string, string> = {};
     const configuredSpawnEntrances: Record<string, string> = {};
+    const configuredAliasedEntrances: Record<string, string> = {};
     for (const [sourceKey, destinationKey] of Object.entries(plandoEntrances)) {
       if (isSpawnEntranceSourceKey(sourceKey)) {
         configuredSpawnEntrances[sourceKey] = destinationKey;
+        continue;
+      }
+
+      if (
+        isAliasedEntranceSource(
+          sourceKey,
+          this.settings as Record<string, unknown>,
+        )
+      ) {
+        configuredAliasedEntrances[sourceKey] = destinationKey;
         continue;
       }
 
@@ -490,6 +502,8 @@ export class OoTMMTracker implements TrackerPack {
     };
     const activeSpawnEntrances = new Set<string>();
     const mappedSpawnEntrances: Record<string, string> = {};
+    const activeAliasedEntrances = new Set<string>();
+    const mappedAliasedEntrances: Record<string, string> = {};
     const unmappedEntrances: string[] = [];
     const selfMappedNoGlobalEntrances: string[] = [];
 
@@ -508,6 +522,20 @@ export class OoTMMTracker implements TrackerPack {
           const mappedDestination = configuredSpawnEntrances[key];
           if (mappedDestination) {
             mappedSpawnEntrances[key] = mappedDestination;
+          } else {
+            unmappedEntrances.push(key);
+          }
+          continue;
+        }
+
+        if (
+          isAliasedEntranceSource(key, this.settings as Record<string, unknown>)
+        ) {
+          activeAliasedEntrances.add(key);
+
+          const mappedDestination = configuredAliasedEntrances[key];
+          if (mappedDestination) {
+            mappedAliasedEntrances[key] = mappedDestination;
           } else {
             unmappedEntrances.push(key);
           }
@@ -788,6 +816,53 @@ export class OoTMMTracker implements TrackerPack {
 
         for (const [sourceKey, destinationKey] of Object.entries(
           mappedSpawnEntrances,
+        )) {
+          const sourceData = ENTRANCES_DATA[sourceKey];
+          const destinationData = ENTRANCES_DATA[destinationKey];
+          if (!sourceData || !destinationData) continue;
+          if (sourceData.from === 'NONE' || destinationData.to === 'NONE') {
+            continue;
+          }
+
+          const fromArea = areas[sourceData.from];
+          if (!fromArea) continue;
+
+          const sourceExpr =
+            this.savedEntranceExitExprs.get(sourceKey)?.expr ?? exprTrue();
+
+          if (!fromArea.exits) {
+            fromArea.exits = {};
+          }
+          fromArea.exits[destinationData.to] = sourceExpr;
+        }
+      }
+    }
+
+    if (activeAliasedEntrances.size > 0) {
+      for (const world of this.worlds) {
+        const areas = (world as Record<string, unknown>).areas as Record<
+          string,
+          { exits?: Record<string, unknown> }
+        >;
+
+        for (const sourceKey of activeAliasedEntrances) {
+          const sourceData = ENTRANCES_DATA[sourceKey];
+          if (
+            !sourceData ||
+            sourceData.from === 'NONE' ||
+            sourceData.to === 'NONE'
+          ) {
+            continue;
+          }
+
+          const fromArea = areas[sourceData.from];
+          if (fromArea?.exits && sourceData.to in fromArea.exits) {
+            delete fromArea.exits[sourceData.to];
+          }
+        }
+
+        for (const [sourceKey, destinationKey] of Object.entries(
+          mappedAliasedEntrances,
         )) {
           const sourceData = ENTRANCES_DATA[sourceKey];
           const destinationData = ENTRANCES_DATA[destinationKey];

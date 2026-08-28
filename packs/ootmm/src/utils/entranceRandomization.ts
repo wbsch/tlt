@@ -496,6 +496,32 @@ export function isTrackedEntranceSourceType(
   return getTrackedEntrancePool(type, key, settings) !== null;
 }
 
+/**
+ * Returns true when an entrance source is aliased in OoTMM's shuffler, i.e.
+ * it may legally share a destination with other entrances. This covers the
+ * one-way types under `erOneWaysAnywhere` (their pool is built with
+ * `alias: true`) and wallmasters (always aliased). Spawns are aliased too but
+ * are handled separately via `isSpawnEntranceSourceKey` in the tracker.
+ *
+ * Aliased sources must not be routed through the OoTMM plando entrance pass,
+ * which treats every destination as unique and silently drops the second
+ * source that targets an already-used destination (e.g. a shuffled Child Owl
+ * Flight landing where a grotto already lands).
+ */
+export function isAliasedEntranceSource(
+  key: string,
+  settings: Record<string, unknown>,
+): boolean {
+  const data = ENTRANCES_RAW[key];
+  if (!data) return false;
+  const pool = getTrackedEntrancePool(data.type, key, settings);
+  if (pool === 'wallmaster') return true;
+  if (pool === 'one-way' && Boolean(settings?.erOneWaysAnywhere)) {
+    return true;
+  }
+  return false;
+}
+
 export function isTrackedEntranceExitType(type: string, key?: string): boolean {
   if (TRACKED_EXIT_TYPES.has(type)) return true;
   return Boolean(key && INTERIOR_GAME_LINK_EXIT_KEYS.has(key));
