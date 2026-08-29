@@ -29,6 +29,10 @@ Settings
     expect(isAutotrackingSupportedSpoilerVersion('32.0')).toBe(true);
     expect(isAutotrackingSupportedSpoilerVersion('v32.1')).toBe(true);
     expect(isAutotrackingSupportedSpoilerVersion('32.1')).toBe(true);
+    expect(isAutotrackingSupportedSpoilerVersion('v32.2')).toBe(true);
+    expect(isAutotrackingSupportedSpoilerVersion('32.2')).toBe(true);
+    expect(isAutotrackingSupportedSpoilerVersion('v32.3')).toBe(true);
+    expect(isAutotrackingSupportedSpoilerVersion('32.3')).toBe(true);
   });
 
   it('rejects unsupported spoiler versions for autotracking', () => {
