@@ -33,6 +33,11 @@ const ADAPTER_LUA_URL =
 const GITHUB_REL_LATEST_URL =
   'https://github.com/jupiter0fire/tlt-autotracker/releases/latest';
 
+const PROJECT64_EM_URL =
+  'https://github.com/OoTMM/Project64-EM/releases/tag/v1.1.0';
+
+const ARES_URL = 'https://github.com/ares-emulator/ares/releases/tag/v148';
+
 export type TrackerFaqItem = {
   id: string;
   question: string;
@@ -219,7 +224,21 @@ export const TRACKER_FAQ_SECTIONS: TrackerFaqSection[] = [
           {
             type: 'list',
             items: [
-              'Generate a seed and open it in Project64-EM.',
+              [
+                {
+                  type: 'text',
+                  text: 'Generate a seed and open it in ',
+                },
+                {
+                  type: 'link',
+                  text: 'Project64-EM',
+                  href: PROJECT64_EM_URL,
+                },
+                {
+                  type: 'text',
+                  text: '.',
+                },
+              ],
               'Start the autotracker.',
               'In Project64-EM, open File -> Lua Scripts and double-click tlt_autotracking_v2.lua.',
               'Upload the spoiler log to thelasttracker.org.',
@@ -342,7 +361,21 @@ export const TRACKER_FAQ_SECTIONS: TrackerFaqSection[] = [
           {
             type: 'list',
             items: [
-              'Generate a seed and open it in Ares.',
+              [
+                {
+                  type: 'text',
+                  text: 'Generate a seed and open it in ',
+                },
+                {
+                  type: 'link',
+                  text: 'Ares',
+                  href: ARES_URL,
+                },
+                {
+                  type: 'text',
+                  text: '.',
+                },
+              ],
               'Start the autotracker.',
               'Upload the spoiler log to thelasttracker.org.',
               'If The Last Tracker does not connect automatically, click Auto. Check if the autotracker shows that it is connected to Ares and the tracker.',
