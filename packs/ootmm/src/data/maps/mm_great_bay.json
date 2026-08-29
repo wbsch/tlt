@@ -146,51 +146,57 @@
       "coords": [577, 278],
       "image": "pot",
       "codes": [
-        "MM Great Bay Coast Pot 05",
-        "MM Great Bay Coast Pot 06",
-        "MM Great Bay Coast Pot 07",
-        "MM Great Bay Coast Pot 12"
+        "MM Great Bay Coast Pot Platform 1",
+        "MM Great Bay Coast Pot Platform 3",
+        "MM Great Bay Coast Pot Platform 2",
+        "MM Great Bay Coast Pot Platform 4"
       ]
     },
     {
       "coords": [610, 181],
       "image": "pot",
-      "codes": ["MM Great Bay Coast Pot 02", "MM Great Bay Coast Pot 09"]
+      "codes": ["MM Great Bay Coast Pot 1", "MM Great Bay Coast Pot 2"]
     },
     {
       "coords": [641, 78],
       "image": "pot",
-      "codes": ["MM Great Bay Coast Pot 08", "MM Great Bay Coast Pot 01"]
+      "codes": [
+        "MM Great Bay Coast Pot Ledge 2",
+        "MM Great Bay Coast Pot Ledge 1"
+      ]
     },
     {
       "coords": [729, 116],
       "image": "pot",
-      "codes": ["MM Great Bay Coast Pot 03", "MM Great Bay Coast Pot 10"]
+      "codes": [
+        "MM Great Bay Coast Pot Lower Cliffs 3",
+        "MM Great Bay Coast Pot Lower Cliffs 4"
+      ]
     },
     {
       "coords": [750, 143],
       "image": "pot",
-      "codes": ["MM Great Bay Coast Pot Ledge 3"]
+      "codes": ["MM Great Bay Coast Pot Upper Cliffs 3"]
     },
     {
       "coords": [732, 158],
       "image": "pot",
-      "codes": ["MM Great Bay Coast Pot 04"]
+      "codes": ["MM Great Bay Coast Pot Lower Cliffs 2"]
     },
     {
       "coords": [748, 159],
       "image": "pot",
-      "codes": ["MM Great Bay Coast Pot Ledge 2"]
+      "codes": ["MM Great Bay Coast Pot Upper Cliffs 2"]
     },
     {
       "coords": [738, 181],
       "image": "pot",
-      "codes": ["MM Great Bay Coast Pot 11"]
+      "codes": ["MM Great Bay Coast Pot Lower Cliffs 1"]
     },
     {
       "coords": [752, 175],
       "image": "pot",
-      "codes": ["MM Great Bay Coast Pot Ledge 1"]
+      "codes": ["MM Great Bay Coast Pot Upper Cliffs 1"]
     },
     {
       "coords": [603, 509],
@@ -264,7 +270,7 @@
     {
       "coords": [714, 101],
       "image": "rock",
-      "codes": ["MM Great Bay Coast Rock Ledge 2"]
+      "codes": ["MM Great Bay Coast Rock Cliffs 2"]
     },
     {
       "coords": [685, 127],
@@ -284,12 +290,12 @@
     {
       "coords": [731, 174],
       "image": "rock",
-      "codes": ["MM Great Bay Coast Rock Ledge 1"]
+      "codes": ["MM Great Bay Coast Rock Cliffs 1"]
     },
     {
       "coords": [713, 202],
       "image": "rock",
-      "codes": ["MM Great Bay Coast Rock Ledge 3"]
+      "codes": ["MM Great Bay Coast Rock Cliffs 3"]
     },
     {
       "coords": [677, 206],

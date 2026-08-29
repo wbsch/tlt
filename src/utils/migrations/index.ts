@@ -1,4 +1,5 @@
 import { legacyV1ToV2 } from './legacy';
+import { v2ToV3LocationRenames } from './locationRenames';
 
 /**
  * A single persisted store payload. Store payloads are plain JSON objects:
@@ -24,10 +25,13 @@ export type StateMigration = {
 
 /**
  * Ordered migration steps, ascending by `version`. Every step must be
- * idempotent and field-guarded so the same chain is safe to run against any
- * store (app / ootmm-ui / ootmm-session).
+ * field-guarded so the same chain is safe to run against any store
+ * (app / ootmm-ui / ootmm-session).
  */
-export const STATE_MIGRATIONS: readonly StateMigration[] = [legacyV1ToV2];
+export const STATE_MIGRATIONS: readonly StateMigration[] = [
+  legacyV1ToV2,
+  v2ToV3LocationRenames,
+];
 
 /**
  * The current (latest) schema version for persisted state payloads.

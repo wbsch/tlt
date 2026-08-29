@@ -11797,17 +11797,17 @@
     {
       "block": "xflagsMm",
       "bit": 3444,
-      "name": "Great Bay Coast Pot Ledge 1"
+      "name": "Great Bay Coast Pot Upper Cliffs 1"
     },
     {
       "block": "xflagsMm",
       "bit": 3445,
-      "name": "Great Bay Coast Pot Ledge 2"
+      "name": "Great Bay Coast Pot Upper Cliffs 2"
     },
     {
       "block": "xflagsMm",
       "bit": 3446,
-      "name": "Great Bay Coast Pot Ledge 3"
+      "name": "Great Bay Coast Pot Upper Cliffs 3"
     },
     {
       "block": "xflagsMm",
@@ -11982,17 +11982,17 @@
     {
       "block": "xflagsMm",
       "bit": 3483,
-      "name": "Great Bay Coast Rock Ledge 1"
+      "name": "Great Bay Coast Rock Cliffs 1"
     },
     {
       "block": "xflagsMm",
       "bit": 3484,
-      "name": "Great Bay Coast Rock Ledge 2"
+      "name": "Great Bay Coast Rock Cliffs 2"
     },
     {
       "block": "xflagsMm",
       "bit": 3485,
-      "name": "Great Bay Coast Rock Ledge 3"
+      "name": "Great Bay Coast Rock Cliffs 3"
     },
     {
       "block": "xflagsMm",
@@ -12027,62 +12027,62 @@
     {
       "block": "xflagsMm",
       "bit": 3501,
-      "name": "Great Bay Coast Pot 01"
+      "name": "Great Bay Coast Pot Ledge 1"
     },
     {
       "block": "xflagsMm",
       "bit": 3502,
-      "name": "Great Bay Coast Pot 02"
+      "name": "Great Bay Coast Pot 1"
     },
     {
       "block": "xflagsMm",
       "bit": 3503,
-      "name": "Great Bay Coast Pot 03"
+      "name": "Great Bay Coast Pot Lower Cliffs 3"
     },
     {
       "block": "xflagsMm",
       "bit": 3504,
-      "name": "Great Bay Coast Pot 04"
+      "name": "Great Bay Coast Pot Lower Cliffs 2"
     },
     {
       "block": "xflagsMm",
       "bit": 3506,
-      "name": "Great Bay Coast Pot 05"
+      "name": "Great Bay Coast Pot Platform 1"
     },
     {
       "block": "xflagsMm",
       "bit": 3507,
-      "name": "Great Bay Coast Pot 06"
+      "name": "Great Bay Coast Pot Platform 3"
     },
     {
       "block": "xflagsMm",
       "bit": 3508,
-      "name": "Great Bay Coast Pot 07"
+      "name": "Great Bay Coast Pot Platform 2"
     },
     {
       "block": "xflagsMm",
       "bit": 3511,
-      "name": "Great Bay Coast Pot 08"
+      "name": "Great Bay Coast Pot Ledge 2"
     },
     {
       "block": "xflagsMm",
       "bit": 3512,
-      "name": "Great Bay Coast Pot 09"
+      "name": "Great Bay Coast Pot 2"
     },
     {
       "block": "xflagsMm",
       "bit": 3513,
-      "name": "Great Bay Coast Pot 10"
+      "name": "Great Bay Coast Pot Lower Cliffs 4"
     },
     {
       "block": "xflagsMm",
       "bit": 3514,
-      "name": "Great Bay Coast Pot 11"
+      "name": "Great Bay Coast Pot Lower Cliffs 1"
     },
     {
       "block": "xflagsMm",
       "bit": 3516,
-      "name": "Great Bay Coast Pot 12"
+      "name": "Great Bay Coast Pot Platform 4"
     },
     {
       "block": "xflagsMm",
@@ -15487,17 +15487,17 @@
     {
       "block": "xflagsMm",
       "bit": 6105,
-      "name": "Secret Shrine Pot 1"
+      "name": "Secret Shrine Pot Entrance 1"
     },
     {
       "block": "xflagsMm",
       "bit": 6106,
-      "name": "Secret Shrine Pot 2"
+      "name": "Secret Shrine Pot Entrance 2"
     },
     {
       "block": "xflagsMm",
       "bit": 6107,
-      "name": "Secret Shrine Pot 3"
+      "name": "Secret Shrine Pot Entrance 3"
     },
     {
       "block": "xflagsMm",
@@ -15542,32 +15542,32 @@
     {
       "block": "xflagsMm",
       "bit": 6116,
-      "name": "Secret Shrine Pot 4"
+      "name": "Secret Shrine Pot Underwater 1"
     },
     {
       "block": "xflagsMm",
       "bit": 6117,
-      "name": "Secret Shrine Pot 5"
+      "name": "Secret Shrine Pot Underwater 2"
     },
     {
       "block": "xflagsMm",
       "bit": 6118,
-      "name": "Secret Shrine Pot 6"
+      "name": "Secret Shrine Pot Underwater 3"
     },
     {
       "block": "xflagsMm",
       "bit": 6119,
-      "name": "Secret Shrine Pot 7"
+      "name": "Secret Shrine Pot Underwater 4"
     },
     {
       "block": "xflagsMm",
       "bit": 6120,
-      "name": "Secret Shrine Pot 8"
+      "name": "Secret Shrine Pot Underwater 5"
     },
     {
       "block": "xflagsMm",
       "bit": 6121,
-      "name": "Secret Shrine Pot 9"
+      "name": "Secret Shrine Pot Underwater 6"
     },
     {
       "block": "xflagsMm",

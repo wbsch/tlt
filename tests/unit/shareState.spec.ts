@@ -1,6 +1,7 @@
 import { deflateRaw } from 'pako';
 import { beforeAll, describe, expect, it, vi } from 'vitest';
 import { DEFAULT_LEFT_SIDEBAR_WIDTH } from '../../packs/ootmm/src/stores/ootmmUi';
+import { LATEST_STATE_VERSION } from '../../src/utils/migrations';
 
 const textEncoder = new TextEncoder();
 
@@ -438,7 +439,7 @@ describe('shareState', () => {
       ]),
     );
     expect(decoded.snapshot).toEqual({
-      v: 2,
+      v: LATEST_STATE_VERSION,
       stores: {
         'ootmm-ui': {
           inventorySearchQuery: 'a'.repeat(500),
@@ -482,7 +483,7 @@ describe('shareState', () => {
     ],
     [
       'unsupported schema version',
-      makeCompressedPayload({ v: 3, stores: {} }),
+      makeCompressedPayload({ v: LATEST_STATE_VERSION + 1, stores: {} }),
       /Unsupported share schema version/,
     ],
     [

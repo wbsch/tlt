@@ -5,6 +5,10 @@ import {
   hasLegacyCrossWarpOot,
   normalizeSpoilerSettings,
 } from '@packs/ootmm/utils/spoilerSettingsMigration';
+import {
+  SECRET_SHRINE_RENAME_MAP,
+  renameLocationFields,
+} from './locationRenames';
 import type { PersistedStorePayload, StateMigration } from './index';
 
 function isPlainObject(value: unknown): value is Record<string, unknown> {
@@ -40,6 +44,8 @@ const VALID_RIGHT_SIDEBAR_TABS = new Set(['locations', 'entrances']);
  * - M2 (settings normalization) must run before M3 because
  *   `foldGoronLullabyForInventory` reads the *normalized* progressive keys.
  * - M3 (Goron Lullaby folding) runs last.
+ * - M4 (Secret Shrine pot renames) is independent of M1–M3 and applies to
+ *   different fields, so it can run anywhere; it is placed last for clarity.
  */
 export const legacyV1ToV2: StateMigration = {
   version: 1,
@@ -132,10 +138,13 @@ export const legacyV1ToV2: StateMigration = {
     delete next.isEntrancesSidebarOpen;
     delete next.isLocationsSidebarOpen;
 
+    // M4 — Secret Shrine pot renames (v30.1 → v31.0). Same era as the rest of
+    // this legacy bundle; the rename was simply forgotten when the bundle was
+    // written. The map has no rename chains, so this transform is idempotent.
+    return renameLocationFields(next, SECRET_SHRINE_RENAME_MAP);
+
     // NOTE: the actual cross-warp synthesis (inventory mutation) is NOT part of
     // this step (Decision 2) — only the *flag capture* above. Synthesis stays a
     // post-migration hydrate step, driven by needsLegacyCrossWarp*Synthesis.
-
-    return next;
   },
 };
