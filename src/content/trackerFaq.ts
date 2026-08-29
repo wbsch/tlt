@@ -22,13 +22,13 @@ export type TrackerFaqContentBlock =
     };
 
 const WINDOWS_AUTOTRACKER_URL =
-  'https://github.com/jupiter0fire/tlt-autotracker/releases/latest/download/ootmm-autotracker-v0.2.1-windows-amd64.exe';
+  'https://github.com/jupiter0fire/tlt-autotracker/releases/latest/download/ootmm-autotracker-v0.2.2-windows-amd64.exe';
 
 const LINUX_AUTOTRACKER_URL =
-  'https://github.com/jupiter0fire/tlt-autotracker/releases/latest/download/ootmm-autotracker-v0.2.1-linux-amd64';
+  'https://github.com/jupiter0fire/tlt-autotracker/releases/latest/download/ootmm-autotracker-v0.2.2-linux-amd64';
 
 const ADAPTER_LUA_URL =
-  'https://github.com/jupiter0fire/tlt-autotracker/releases/latest/download/tlt_autotracking_v1.lua';
+  'https://github.com/jupiter0fire/tlt-autotracker/releases/latest/download/tlt_autotracking_v2.lua';
 
 const GITHUB_REL_LATEST_URL =
   'https://github.com/jupiter0fire/tlt-autotracker/releases/latest';
@@ -221,7 +221,7 @@ export const TRACKER_FAQ_SECTIONS: TrackerFaqSection[] = [
             items: [
               'Generate a seed and open it in Project64-EM.',
               'Start the autotracker.',
-              'In Project64-EM, open File -> Lua Scripts and double-click tlt_autotracking_v1.lua.',
+              'In Project64-EM, open File -> Lua Scripts and double-click tlt_autotracking_v2.lua.',
               'Upload the spoiler log to thelasttracker.org.',
               'If The Last Tracker does not connect automatically, click Auto. Check if the autotracker shows that it is connected to Project64 and the tracker.',
               'Potentially, your browser will display a popup regarding access to the autotracker. You need to grant access there once.',

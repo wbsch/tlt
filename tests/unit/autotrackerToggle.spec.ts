@@ -251,7 +251,7 @@ describe('AutotrackerToggle', () => {
       status: 'connected',
       enabled: true,
       warningMessage:
-        'You are using an outdated autotracker version. Please update to version 0.2.1 or newer.',
+        'You are using an outdated autotracker version. Please update to version 0.2.2 or newer.',
     });
 
     try {
