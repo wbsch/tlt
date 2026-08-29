@@ -1,0 +1,59 @@
+{
+  "schemaVersion": 1,
+  "generatedFrom": {
+    "patchfile": "/home/silke/Downloads/OoTMM-agT8ts46/OoTMM-Patch-agT8ts46.ootmm",
+    "ootmmRepo": "/home/silke/stuff/repos/tlt/OoTMM",
+    "defs": "/home/silke/stuff/repos/tlt/OoTMM/packages/generator/include/combo/defs.h",
+    "ootLinker": "/home/silke/stuff/repos/tlt/OoTMM/packages/generator/src/link_oot.in",
+    "mmLinker": "/home/silke/stuff/repos/tlt/OoTMM/packages/generator/src/link_mm.in"
+  },
+  "oot": {
+    "comboCtx": "0x80006584",
+    "saveCtx": "0x8011a5d0",
+    "payload": "0x80400000",
+    "comboConfigLive": "0x80449cc8",
+    "runtimeSilverRupeeDataLive": "0x80434ccc",
+    "runtimeMaxKeysLive": "0x8044a283",
+    "sharedCustomSaveLive": "0x8044b710",
+    "foreignSaveLive": "0x8044bfc0",
+    "derivation": {
+      "comboCtx": "source-define",
+      "saveCtx": "source-linker",
+      "payload": "patchfile-vram",
+      "comboConfigLive": "patchfile-code-scan",
+      "runtimeSilverRupeeDataLive": "patchfile-payload-scan",
+      "runtimeMaxKeysLive": "patchfile-code-scan+offset",
+      "sharedCustomSaveLive": "web-payload-code-scan",
+      "foreignSaveLive": "web-payload-code-scan"
+    },
+    "missingPatchfileSymbols": ["gMmSave", "gSharedCustomSave"]
+  },
+  "mm": {
+    "comboCtx": "0x80098280",
+    "saveCtx": "0x801ef670",
+    "payload": "0x80720000",
+    "comboConfigLive": "0x8076a5e8",
+    "sharedCustomSaveLive": "0x8076bc60",
+    "foreignSaveLive": "0x8076c510",
+    "derivation": {
+      "comboCtx": "source-define",
+      "saveCtx": "source-linker",
+      "payload": "patchfile-vram",
+      "comboConfigLive": "patchfile-code-scan",
+      "sharedCustomSaveLive": "web-payload-code-scan",
+      "foreignSaveLive": "web-payload-code-scan"
+    },
+    "missingPatchfileSymbols": ["gOotSave", "gSharedCustomSave"]
+  },
+  "notDerivableWithoutLinking": {
+    "oot": [],
+    "mm": []
+  },
+  "savesDerivedFrom": {
+    "method": "web-payload-code-scan",
+    "source": "https://static.ootmm.com/assets/data-CZ3Gxbbs.zip (v32.3)",
+    "tool": "scripts/autotracker/derive_web_symbols.py",
+    "doc": "scripts/autotracker/DERIVING_SAVE_SYMBOLS.md",
+    "note": "gMmSave/gOotSave/gSharedCustomSave are absent from the patchfile and from the site's cosmetic symbol table; addresses were recovered by scanning the stripped payload code for the bzero/memcpy save-size signatures. Cross-checked: foreign == shared + detected shared size, and zero-filled .bss."
+  }
+}

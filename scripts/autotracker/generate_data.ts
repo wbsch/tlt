@@ -102,6 +102,61 @@ function selectFallbackSeedFile(fileName: string): string {
   return path.join(LEGACY_DATA_DIR, fileName);
 }
 
+/**
+ * Final step of the data generation: recover `foreignSaveLive` /
+ * `sharedCustomSaveLive` for the current OoTMM version from the published
+ * ootmm.com web build (see `derive_web_symbols.py` and
+ * `DERIVING_SAVE_SYMBOLS.md`). These addresses live in .bss and are not
+ * present in the patchfile or in the OoTMM sources.
+ *
+ * The derivation CHECK is run first; only when it passes are the values
+ * written back into the version's `live_addrs.json` (`--write`). A failing
+ * check (version not published yet, offline, or inconsistent payload scan)
+ * only warns and skips — the generation still succeeds, since the rest of
+ * the data is complete and schema-valid without these four addresses.
+ */
+function maybeDeriveWebSaveSymbols(): void {
+  const versionTag = detectOotmmVersionTag();
+  const liveAddrsPath = path.join(DATA_DIR, 'live_addrs.json');
+  const script = path.join(SCRIPT_DIR, 'derive_web_symbols.py');
+
+  // 1. Check only (no --write). A non-zero exit means the check failed or the
+  //    version is not available on the site → skip the write-back.
+  const check = spawnSync('python3', [script, versionTag], {
+    cwd: REPO_ROOT,
+    env: process.env,
+    stdio: 'inherit',
+  });
+  if (check.status !== 0) {
+    console.warn(
+      `[generate_data] derive_web_symbols.py check failed for ${versionTag} ` +
+        `(exit ${check.status ?? 'unknown'}); skipping web-symbol write-back ` +
+        'into live_addrs.json.',
+    );
+    return;
+  }
+
+  // 2. Check passed → write the values into the version's live_addrs.json.
+  const write = spawnSync(
+    'python3',
+    [script, versionTag, '--write', liveAddrsPath],
+    {
+      cwd: REPO_ROOT,
+      env: process.env,
+      stdio: 'inherit',
+    },
+  );
+  if (write.status !== 0) {
+    throw new Error(
+      `derive_web_symbols.py --write failed with status ${write.status ?? 'unknown'}`,
+    );
+  }
+  console.log(
+    `[generate_data] derived web payload save symbols for ${versionTag} ` +
+      `and wrote them into ${liveAddrsPath}`,
+  );
+}
+
 function parseArgs(argv: string[]): GenerateOptions {
   let includeLiveAddrs = false;
   let updateFallbackBaselines = false;
@@ -258,37 +313,43 @@ function main(): void {
   }
 
   if (!options.includeLiveAddrs) {
-    copyFileSync(
-      selectSeedFile('live_addrs.json'),
-      path.join(DATA_DIR, 'live_addrs.json'),
-    );
-    formatGeneratedFiles(REPO_ROOT, generatedFiles);
-
-    // Publish the generated special_locations files back to the base
-    // data directory so it stays up-to-date.
-    for (const fileName of [
-      'special_locations_mm.json',
-      'special_locations_oot.json',
-    ]) {
-      copyFileSync(
-        path.join(DATA_DIR, fileName),
-        path.join(AUTOTRACKER_DATA_BASE, fileName),
+    // Without a patchfile, seed live_addrs.json from an existing file (the
+    // current version dir, then the shared base data dir). If no seed exists,
+    // derive the addresses that are readable straight from the OoTMM sources
+    // so the run still completes — the patchfile-only fields will be missing
+    // and listed under "notDerivableWithoutLinking".
+    const liveAddrsSeed = selectSeedFile('live_addrs.json');
+    if (existsSync(liveAddrsSeed)) {
+      copyFileSync(liveAddrsSeed, path.join(DATA_DIR, 'live_addrs.json'));
+    } else {
+      console.warn(
+        '[generate_data] No OOTMM_PATCHFILE set and no existing live_addrs.json ' +
+          'seed found; deriving live addresses from OoTMM sources only. ' +
+          'comboConfigLive / runtimeMaxKeysLive / runtimeSilverRupeeDataLive and ' +
+          'the foreign/shared save addresses will be missing ' +
+          '(see "notDerivableWithoutLinking").',
       );
+      runPython('export_live_addrs.py', [
+        '--ootmm-repo',
+        OOTMM_REPO,
+        '--output',
+        path.join(DATA_DIR, 'live_addrs.json'),
+      ]);
     }
-    return;
+  } else {
+    const liveAddrsArgs = [
+      '--ootmm-repo',
+      OOTMM_REPO,
+      '--output',
+      path.join(DATA_DIR, 'live_addrs.json'),
+    ];
+    const patchfile = process.env.OOTMM_PATCHFILE?.trim();
+    if (patchfile) {
+      liveAddrsArgs.push('--patchfile', patchfile);
+    }
+    runPython('export_live_addrs.py', liveAddrsArgs);
   }
 
-  const liveAddrsArgs = [
-    '--ootmm-repo',
-    OOTMM_REPO,
-    '--output',
-    path.join(DATA_DIR, 'live_addrs.json'),
-  ];
-  const patchfile = process.env.OOTMM_PATCHFILE?.trim();
-  if (patchfile) {
-    liveAddrsArgs.push('--patchfile', patchfile);
-  }
-  runPython('export_live_addrs.py', liveAddrsArgs);
   formatGeneratedFiles(REPO_ROOT, generatedFiles);
 
   // Publish the generated special_locations files back to the base
@@ -302,6 +363,12 @@ function main(): void {
       path.join(AUTOTRACKER_DATA_BASE, fileName),
     );
   }
+
+  // Final step: recover the foreign/shared save addresses from the published
+  // ootmm.com web build (they are not derivable from the patchfile/sources)
+  // and write them into this version's live_addrs.json — but only if the
+  // derivation's consistency checks pass.
+  maybeDeriveWebSaveSymbols();
 }
 
 main();
