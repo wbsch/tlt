@@ -1893,7 +1893,9 @@ class RawAutotrackerParserImpl implements RawAutotrackerParser {
       if (ootLiveSample) {
         this.applyOotLiveSceneSample(state.oot, ootLiveSample);
       }
-      this.readForeignMmState(memory, state.mm);
+      if (this.readForeignMmState(memory, state.mm)) {
+        return null;
+      }
       this.overlayLastKnownMm(saveIndex, state.mm);
       state.mm.extraFlags2 = state.oot.extraRecords[EXTRA_IDX_MM_FLAGS2] ?? 0;
       this.readSharedState(memory, activeGame, state);
@@ -1961,7 +1963,13 @@ class RawAutotrackerParserImpl implements RawAutotrackerParser {
     resetEmptyOotState(oot);
   }
 
-  private readForeignMmState(memory: RawFrameMemory, mm: MmState): void {
+  /**
+   * Reads the foreign MM save embedded in the OoT payload.  Returns true when
+   * the foreign save is zeroed transition garbage (inventory item slots read
+   * back 0x00 instead of the 0xff empty sentinel), signalling the caller to
+   * discard the whole frame.
+   */
+  private readForeignMmState(memory: RawFrameMemory, mm: MmState): boolean {
     const direct = buildChunkedData(
       memory,
       addrOotForeignMmSaveLive,
@@ -1969,35 +1977,43 @@ class RawAutotrackerParserImpl implements RawAutotrackerParser {
       buildForeignMmSaveChunkSpecs(),
       OOT_FOREIGN_MM_SAVE_CHUNK,
     );
-    if (
-      direct &&
-      validateForeignMmSave(direct, this.hasEverSeenNonZeroMmRegions)
-    ) {
-      if (!mmSaveRegionsAreAllZero(direct)) {
-        this.hasEverSeenNonZeroMmRegions = true;
+    if (direct) {
+      if (mmSaveInventoryIsZeroed(direct)) {
+        return true;
       }
-      parseMmSave(mm, direct);
-      return;
+      if (validateForeignMmSave(direct, this.hasEverSeenNonZeroMmRegions)) {
+        if (!mmSaveRegionsAreAllZero(direct)) {
+          this.hasEverSeenNonZeroMmRegions = true;
+        }
+        parseMmSave(mm, direct);
+        return false;
+      }
     }
 
     const payload = memory.get('oot_payload');
     const data = payload
       ? sliceAbsoluteChunk(payload, addrOotForeignMmSaveLive, MM_SAVE_SIZE)
       : null;
-    if (data && validateForeignMmSave(data, this.hasEverSeenNonZeroMmRegions)) {
-      if (!mmSaveRegionsAreAllZero(data)) {
-        this.hasEverSeenNonZeroMmRegions = true;
+    if (data) {
+      if (mmSaveInventoryIsZeroed(data)) {
+        return true;
       }
-      parseMmSave(mm, data);
-      return;
+      if (validateForeignMmSave(data, this.hasEverSeenNonZeroMmRegions)) {
+        if (!mmSaveRegionsAreAllZero(data)) {
+          this.hasEverSeenNonZeroMmRegions = true;
+        }
+        parseMmSave(mm, data);
+        return false;
+      }
     }
 
     if (this.lastKnownMm) {
       copyMmState(mm, this.lastKnownMm);
-      return;
+      return false;
     }
 
     resetEmptyMmState(mm);
+    return false;
   }
 
   private readSharedState(
@@ -3694,6 +3710,10 @@ export function isPlausibleMmSave(
     }
   }
 
+  if (mmSaveInventoryIsZeroed(data)) {
+    return false;
+  }
+
   // Reject if none of the key data regions carry any non-zero values —
   // this indicates uninitialised/reset memory (e.g. emulator soft-reset).
   // We check equipment, permanent scene flags AND cycle flags because MM
@@ -3737,6 +3757,23 @@ export function mmSaveRegionsAreAllZero(data: Uint8Array): boolean {
   if (hasCycleFlags) return false;
 
   return true;
+}
+
+/**
+ * Returns true when any MM inventory item slot other than slot 0 holds 0x00.
+ * Empty inventory slots use the 0xff sentinel (EMPTY_INVENTORY_ITEM); 0x00 is
+ * only a valid raw item ID in slot 0 (the Ocarina of Time upgrade stage).  Any
+ * other slot reading back 0x00 is the signature of a zeroed/uninitialised save
+ * buffer — e.g. the transient garbage broadcast during an OoT <-> MM game
+ * switch.
+ */
+function mmSaveInventoryIsZeroed(data: Uint8Array): boolean {
+  for (let index = 1; index < 48; index++) {
+    if ((data[MM_OFF_INV_ITEMS + index] ?? EMPTY_INVENTORY_ITEM) === 0) {
+      return true;
+    }
+  }
+  return false;
 }
 
 /**

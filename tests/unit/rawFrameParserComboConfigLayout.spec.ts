@@ -104,6 +104,11 @@ function buildOotMessageWithComboConfig(
       // Scene 0 (Deku Tree) chest bit 3 → OOT_chest_0_3.
       writeU32BE(data, 0, 0x08);
     }
+    if (spec.name === 'oot_foreign_mm_save_inventory') {
+      // Empty MM inventory slots are 0xff; fill the item region (offset 4) so
+      // the foreign MM save is legitimately empty, not zeroed garbage.
+      data.fill(0xff, 4, 4 + 48);
+    }
     chunks.push({
       name: spec.name,
       address: spec.address,

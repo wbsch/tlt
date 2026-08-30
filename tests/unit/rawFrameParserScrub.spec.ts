@@ -73,6 +73,12 @@ function buildOotMessage(
       // accepts the save.
       writeU32BE(data, 0, 0x08);
     }
+    if (spec.name === 'oot_foreign_mm_save_inventory') {
+      // Empty MM inventory slots are 0xff.  The item array sits at offset 4
+      // within this chunk (past equipment at 0x6c..0x6f); fill it so the
+      // foreign MM save reads as legitimately empty, not zeroed garbage.
+      data.fill(0xff, 4, 4 + 48);
+    }
     chunks.push({
       name: spec.name,
       address: spec.address,

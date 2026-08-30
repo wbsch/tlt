@@ -846,6 +846,9 @@ describe('isPlausibleMmSave conditional all-zero rejection', () => {
   function buildMinimalMmSaveBuffer(strayFairyValue = 1): Uint8Array {
     // Buffer must cover all reads up to the last stray fairy byte (0xd4 + 10 = 0xde).
     const buffer = new Uint8Array(MM_OFF_STRAY_FAIRIES + 10);
+    // Empty inventory slots are 0xff; a zeroed buffer would trip the
+    // zeroed-inventory plausibility check.
+    buffer.fill(EMPTY_INVENTORY_ITEM, MM_OFF_INV_ITEMS, MM_OFF_INV_ITEMS + 48);
     buffer[MM_OFF_PLAYER_FORM] = 0; // valid (≤ 4)
     // readU32BE at MM_OFF_DAY → all zeros → day = 0 (valid, ≤ 4)
     // Dungeon keys at 0xca..0xd2 all zero → toSignedByte(0) = 0 (valid, -1..9)
@@ -864,5 +867,42 @@ describe('isPlausibleMmSave conditional all-zero rejection', () => {
   it('rejects a save with Stray Fairies but all-zero equipment/scene/cycle when rejectAllZero is true', () => {
     const data = buildMinimalMmSaveBuffer(4);
     expect(isPlausibleMmSave(data, true)).toBe(false);
+  });
+
+  it('rejects a save whose inventory slots read back 0x00 (zeroed transition garbage)', () => {
+    const data = buildMinimalMmSaveBuffer(4);
+    data[MM_OFF_INV_ITEMS + 1] = 0; // slot 1 holds 0x00 → zeroed memory
+    expect(isPlausibleMmSave(data, false)).toBe(false);
+  });
+
+  it('accepts a save with the Ocarina of Time (item 0x00) in slot 0', () => {
+    const data = buildMinimalMmSaveBuffer(4);
+    data[MM_OFF_INV_ITEMS + 0] = 0; // slot 0 = Ocarina of Time upgrade stage
+    expect(isPlausibleMmSave(data, false)).toBe(true);
+  });
+
+  it('discards a frame whose foreign MM inventory is zeroed transition garbage', () => {
+    const parser = createRawAutotrackerParser('v32_0');
+    const message = buildOotMessageWithForeignMmSlot(1, MM_ITEM_BOW, {
+      [EXTRA_IDX_MM_ITEMS]: 1 << 21,
+    });
+
+    // Zero the foreign MM inventory item slots: empty slots must read 0xff,
+    // so an all-0x00 item array is uninitialised/zeroed memory.
+    const zeroed = {
+      ...message,
+      chunks: message.chunks.map((chunk) => {
+        if (chunk.name !== MM_FOREIGN_SAVE_CHUNK_NAME) {
+          return chunk;
+        }
+        const data = new Uint8Array(
+          Buffer.from(chunk.data as string, 'base64'),
+        );
+        data.fill(0, MM_OFF_INV_ITEMS, MM_OFF_INV_ITEMS + 48);
+        return { ...chunk, data: Buffer.from(data).toString('base64') };
+      }),
+    };
+
+    expect(parser.parse(zeroed)).toBeNull();
   });
 });
