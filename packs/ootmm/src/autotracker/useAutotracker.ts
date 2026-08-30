@@ -53,7 +53,11 @@ interface AutotrackerOptions {
    * Fires synchronously in processRawMessage, not via a Vue watcher, so it is
    * guaranteed to run as soon as a new scene is accepted.
    */
-  onSceneChange?: (activeGame: RawAutotrackerGame, sceneId: number) => void;
+  onSceneChange?: (
+    activeGame: RawAutotrackerGame,
+    sceneId: number,
+    sceneKnown: boolean,
+  ) => void;
 }
 
 export interface AutotrackerCheck {
@@ -420,8 +424,22 @@ export function useAutotracker(options: AutotrackerOptions) {
   const activeGame = ref<RawAutotrackerGame | null>(null);
   /** Current OoT scene ID (from save context). */
   const ootSceneId = ref(0);
+  /**
+   * Whether a live OoT play-state sample has been observed.  When false,
+   * `ootSceneId` came from the save-context fallback, which can be
+   * stale/garbage right after an MM -> OoT game switch - it must not drive
+   * auto-map-switching.
+   */
+  const ootSceneKnown = ref(false);
   /** Current MM scene ID (from live play state). */
   const mmSceneId = ref(0);
+  /**
+   * Whether a live MM play-state sample has been observed.  When false,
+   * `mmSceneId` is the uninitialized 0 and must not be treated as a real
+   * scene (e.g. during an OoT -> MM game switch before the first MM live
+   * sample arrives).
+   */
+  const mmSceneKnown = ref(false);
 
   /** Tracked scene key for the onSceneChange callback. */
   let lastTrackedSceneKey = '';
@@ -431,15 +449,23 @@ export function useAutotracker(options: AutotrackerOptions) {
    * synchronously when the active game or scene ID changes.
    */
   function notifySceneChange(parsed: ParsedRawAutotrackerSnapshot): void {
+    // MM has no save-context scene ID: when no live play-state sample is
+    // observed, the reported scene is the uninitialized 0.  OoT does have a
+    // save-context fallback, but right after an MM -> OoT game switch that
+    // fallback can be stale/garbage.  Treat both cases as "unknown" (never
+    // fire the callback with them), so the previous map is kept during game
+    // switches instead of jumping to the map of an unobserved scene.
+    const sceneKnown =
+      parsed.activeGame === 'OoT' ? parsed.ootSceneKnown : parsed.mmSceneKnown;
     const sceneKey =
       parsed.activeGame === 'OoT'
-        ? `OoT:${parsed.ootSceneId}`
-        : `MM:${parsed.mmSceneId}`;
+        ? `OoT:${parsed.ootSceneId}:${parsed.ootSceneKnown ? 'known' : 'unknown'}`
+        : `MM:${parsed.mmSceneId}:${parsed.mmSceneKnown ? 'known' : 'unknown'}`;
     if (sceneKey !== lastTrackedSceneKey && options.onSceneChange) {
       lastTrackedSceneKey = sceneKey;
       const sceneId =
         parsed.activeGame === 'OoT' ? parsed.ootSceneId : parsed.mmSceneId;
-      options.onSceneChange(parsed.activeGame, sceneId);
+      options.onSceneChange(parsed.activeGame, sceneId, sceneKnown);
     }
   }
 
@@ -611,7 +637,9 @@ export function useAutotracker(options: AutotrackerOptions) {
 
     activeGame.value = parsed.activeGame;
     ootSceneId.value = parsed.ootSceneId;
+    ootSceneKnown.value = parsed.ootSceneKnown;
     mmSceneId.value = parsed.mmSceneId;
+    mmSceneKnown.value = parsed.mmSceneKnown;
 
     // Synchronous scene-change notification (not reliant on Vue watchers).
     // Only fires when the game or scene ID actually changes.
@@ -690,7 +718,9 @@ export function useAutotracker(options: AutotrackerOptions) {
     liveChecks = new Map();
     activeGame.value = null;
     ootSceneId.value = 0;
+    ootSceneKnown.value = false;
     mmSceneId.value = 0;
+    mmSceneKnown.value = false;
     lastTrackedSceneKey = '';
     status.value = 'disconnected';
     lastError.value = null;
@@ -844,7 +874,9 @@ export function useAutotracker(options: AutotrackerOptions) {
     versionWarning,
     activeGame,
     ootSceneId,
+    ootSceneKnown,
     mmSceneId,
+    mmSceneKnown,
     probeAvailability,
     destroy,
     resetSceneTracking,

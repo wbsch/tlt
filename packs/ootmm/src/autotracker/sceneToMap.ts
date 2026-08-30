@@ -69,7 +69,6 @@ export const MM_SCENE_TO_MAP: Record<number, string> = {
   27: 'mm_woodfall_temple', // MM_TEMPLE_WOODFALL
   28: 'mm_termina_field', // MM_PATH_MOUNTAIN_VILLAGE
   29: 'mm_ikana_castle', // MM_CASTLE_IKANA
-  32: 'mm_termina_field', // MM_TOWN_SHOOTING_GALLERY
   33: 'mm_snowhead_temple', // MM_SNOWHEAD (summit)
   34: 'mm_termina_field', // MM_MILK_ROAD
   42: 'mm_moon', // MM_MOON_DEKU

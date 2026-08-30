@@ -1012,9 +1012,20 @@ const { resolveCodeToCheckIds: resolveMapSelectorCodeToCheckIds } =
   );
 
 /** Synchronous callback for auto-map-switching on scene/game changes. */
-function handleSceneChange(game: RawAutotrackerGame, sceneId: number): void {
+function handleSceneChange(
+  game: RawAutotrackerGame,
+  sceneId: number,
+  sceneKnown = true,
+): void {
   // Respect the auto-map-switch toggle setting.
   if (!trackerSettings.value?.autoMapSwitch) return;
+
+  // A scene that has not actually been observed must not trigger a map
+  // switch - keep showing the previous map, also across OoT <-> MM game
+  // switches.  MM frames without a live play-state sample report the
+  // uninitialized scene 0 (which is a real map); OoT frames fall back to the
+  // save-context scene, which can be stale/garbage right after a switch.
+  if (!sceneKnown) return;
 
   const mapForScene =
     game === 'OoT' ? OOT_SCENE_TO_MAP[sceneId] : MM_SCENE_TO_MAP[sceneId];
@@ -1063,11 +1074,12 @@ if (typeof window !== 'undefined') {
   (window as any).__debugAt = {
     setOotScene: (id: number) => {
       autotracker.ootSceneId.value = id;
-      handleSceneChange('OoT', id);
+      autotracker.ootSceneKnown.value = true;
+      handleSceneChange('OoT', id, true);
     },
     setMmScene: (id: number) => {
       autotracker.mmSceneId.value = id;
-      handleSceneChange('MM', id);
+      handleSceneChange('MM', id, true);
     },
     setActiveGame: (g: 'OoT' | 'MM') => {
       autotracker.activeGame.value = g;
@@ -1084,9 +1096,14 @@ if (typeof window !== 'undefined') {
     }),
     triggerSceneChange: (game: 'OoT' | 'MM', sceneId: number) => {
       autotracker.activeGame.value = game;
-      if (game === 'OoT') autotracker.ootSceneId.value = sceneId;
-      else autotracker.mmSceneId.value = sceneId;
-      handleSceneChange(game, sceneId);
+      if (game === 'OoT') {
+        autotracker.ootSceneId.value = sceneId;
+        autotracker.ootSceneKnown.value = true;
+      } else {
+        autotracker.mmSceneId.value = sceneId;
+        autotracker.mmSceneKnown.value = true;
+      }
+      handleSceneChange(game, sceneId, true);
     },
   };
 }
@@ -1710,7 +1727,13 @@ function updateAutoMapSwitch(enabled: boolean) {
         game === 'OoT'
           ? autotracker.ootSceneId.value
           : autotracker.mmSceneId.value;
-      handleSceneChange(game, sceneId);
+      // OoT/MM scenes are only actionable once a live play-state sample
+      // arrived (otherwise the scene is a fallback/uninitialized value).
+      const sceneKnown =
+        game === 'OoT'
+          ? autotracker.ootSceneKnown.value
+          : autotracker.mmSceneKnown.value;
+      handleSceneChange(game, sceneId, sceneKnown);
     }
   }
 }

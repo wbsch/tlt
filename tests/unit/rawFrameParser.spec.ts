@@ -906,3 +906,148 @@ describe('isPlausibleMmSave conditional all-zero rejection', () => {
     expect(parser.parse(zeroed)).toBeNull();
   });
 });
+
+describe('MM live scene availability (auto-map-switch guard)', () => {
+  const MM_FIXTURE = 'mm-with-initial-song-of-healing-20260501-143938.json';
+
+  it('flags the MM scene as unknown when no live play-state sample is present', () => {
+    const parser = createRawAutotrackerParser('v30_1');
+    const { message } = buildRawMessage(MM_FIXTURE, 1);
+
+    const parsed = parser.parse(message);
+    expect(parsed).not.toBeNull();
+    // The fixture's payload does not cover the play-state addresses, so the
+    // scene is the uninitialized 0 and must not trigger a map switch.
+    expect(parsed!.mmSceneId).toBe(0);
+    expect(parsed!.mmSceneKnown).toBe(false);
+  });
+
+  it('flags the MM scene as known once a live play-state sample arrives', () => {
+    const parser = createRawAutotrackerParser('v30_1');
+    const { message } = buildRawMessage(MM_FIXTURE, 1);
+
+    const sceneSpec = RAW_CHUNK_SPECS_BY_GAME.mm.find(
+      (spec) => spec.name === 'mm_playstate_scene',
+    );
+    const roomSpec = RAW_CHUNK_SPECS_BY_GAME.mm.find(
+      (spec) => spec.name === 'mm_playstate_room',
+    );
+    const flagsSpec = RAW_CHUNK_SPECS_BY_GAME.mm.find(
+      (spec) => spec.name === 'mm_playstate_flags',
+    );
+    expect(sceneSpec).toBeDefined();
+    expect(roomSpec).toBeDefined();
+    expect(flagsSpec).toBeDefined();
+
+    // Grotto: scene 7, room 7 (both plausible), zeroed switch/chest/collect
+    // flags.  Scene is read big-endian.
+    const sceneData = new Uint8Array(sceneSpec!.length);
+    sceneData[0] = 0x00;
+    sceneData[1] = 0x07;
+    const roomData = new Uint8Array(roomSpec!.length);
+    roomData[0] = 0x07;
+    const flagsData = new Uint8Array(flagsSpec!.length);
+
+    const parsed = parser.parse({
+      ...message,
+      chunks: [
+        ...message.chunks,
+        {
+          name: sceneSpec!.name,
+          address: sceneSpec!.address,
+          length: sceneSpec!.length,
+          data: Buffer.from(sceneData).toString('base64'),
+        },
+        {
+          name: roomSpec!.name,
+          address: roomSpec!.address,
+          length: roomSpec!.length,
+          data: Buffer.from(roomData).toString('base64'),
+        },
+        {
+          name: flagsSpec!.name,
+          address: flagsSpec!.address,
+          length: flagsSpec!.length,
+          data: Buffer.from(flagsData).toString('base64'),
+        },
+      ],
+    });
+
+    expect(parsed).not.toBeNull();
+    expect(parsed!.mmSceneId).toBe(7);
+    expect(parsed!.mmSceneKnown).toBe(true);
+  });
+});
+
+describe('OoT live scene availability (auto-map-switch guard)', () => {
+  const OOT_FIXTURE = 'test-20260501-125454.json';
+
+  function ootPlaystateChunks(options: { sceneId: number }): Array<{
+    name: string;
+    address: number;
+    length: number;
+    data: string;
+  }> {
+    const sceneSpec = RAW_CHUNK_SPECS_BY_GAME.oot.find(
+      (spec) => spec.name === 'oot_playstate_scene',
+    );
+    const roomSpec = RAW_CHUNK_SPECS_BY_GAME.oot.find(
+      (spec) => spec.name === 'oot_playstate_room',
+    );
+    const linkAgeSpec = RAW_CHUNK_SPECS_BY_GAME.oot.find(
+      (spec) => spec.name === 'oot_playstate_link_age',
+    );
+    const flagsSpec = RAW_CHUNK_SPECS_BY_GAME.oot.find(
+      (spec) => spec.name === 'oot_playstate_flags',
+    );
+    if (!sceneSpec || !roomSpec || !linkAgeSpec || !flagsSpec) {
+      throw new Error('Missing OoT playstate chunk specs');
+    }
+
+    // Scene is read big-endian.
+    const sceneData = new Uint8Array(sceneSpec.length);
+    sceneData[0] = (options.sceneId >>> 8) & 0xff;
+    sceneData[1] = options.sceneId & 0xff;
+    const roomData = new Uint8Array(roomSpec.length);
+    roomData[0] = 0;
+    const linkAgeData = new Uint8Array(linkAgeSpec.length);
+    linkAgeData[0] = 1;
+    const flagsData = new Uint8Array(flagsSpec.length);
+
+    return [sceneSpec, roomSpec, linkAgeSpec, flagsSpec].map((spec, index) => ({
+      name: spec.name,
+      address: spec.address,
+      length: spec.length,
+      data: Buffer.from(
+        [sceneData, roomData, linkAgeData, flagsData][index],
+      ).toString('base64'),
+    }));
+  }
+
+  it('flags the OoT scene as unknown when no live play-state sample is present', () => {
+    const parser = createRawAutotrackerParser('v30_1');
+    const { message } = buildRawMessage(OOT_FIXTURE, 1);
+
+    // The fixture's payload does not cover the play-state addresses, so the
+    // parser falls back to the save-context scene - exactly the state right
+    // after an MM -> OoT game switch, which must not drive a map switch.
+    const parsed = parser.parse(message);
+    expect(parsed).not.toBeNull();
+    expect(parsed!.ootSceneId).toBeGreaterThan(0);
+    expect(parsed!.ootSceneKnown).toBe(false);
+  });
+
+  it('flags the OoT scene as known once a live play-state sample arrives', () => {
+    const parser = createRawAutotrackerParser('v30_1');
+    const { message } = buildRawMessage(OOT_FIXTURE, 1);
+
+    const parsed = parser.parse({
+      ...message,
+      chunks: [...message.chunks, ...ootPlaystateChunks({ sceneId: 96 })],
+    });
+
+    expect(parsed).not.toBeNull();
+    expect(parsed!.ootSceneId).toBe(96);
+    expect(parsed!.ootSceneKnown).toBe(true);
+  });
+});

@@ -317,7 +317,20 @@ export interface ParsedRawAutotrackerSnapshot {
   activeGame: RawAutotrackerGame;
   saveIndex: number;
   ootSceneId: number;
+  /**
+   * Whether a live OoT play-state sample was observed.  When false, `ootSceneId`
+   * came from the save-context fallback, which can be stale/garbage right after
+   * an MM -> OoT game switch - the scene must NOT drive auto-map-switching.
+   */
+  ootSceneKnown: boolean;
   mmSceneId: number;
+  /**
+   * Whether a live MM play-state sample was observed this frame.  When false,
+   * `mmSceneId` is the uninitialized 0 and must NOT be treated as a real
+   * scene (e.g. for auto-map-switching) - MM has no save-context scene ID to
+   * fall back to like OoT does.
+   */
+  mmSceneKnown: boolean;
   mmDay: number;
   mmPlayerForm: number;
   items: RawAutotrackerItem[];
@@ -528,6 +541,8 @@ type CycleSceneFlags = {
 type OotState = {
   sceneId: number;
   liveSceneId: number;
+  /** Whether a live play-state sample has been observed for this state. */
+  liveSceneSeen: boolean;
   age: number;
   gameMode: number;
   ocarinaGameRound: number;
@@ -571,6 +586,8 @@ type MmState = {
   hasMagic: boolean;
   hasDoubleMagic: boolean;
   liveSceneId: number;
+  /** Whether a live play-state sample has been observed for this state. */
+  liveSceneSeen: boolean;
   liveChestFlags: number;
   liveSwitch0Flags: number;
   liveSwitch1Flags: number;
@@ -1831,7 +1848,9 @@ class RawAutotrackerParserImpl implements RawAutotrackerParser {
       activeGame: state.activeGame,
       saveIndex: state.saveIndex >>> 0,
       ootSceneId: ootSceneId >>> 0,
+      ootSceneKnown: state.oot.liveSceneSeen,
       mmSceneId: state.mm.liveSceneId >>> 0,
+      mmSceneKnown: state.mm.liveSceneSeen,
       mmDay: state.mm.day >>> 0,
       mmPlayerForm: state.mm.playerForm >>> 0,
       items: extractItems(state),
@@ -2209,6 +2228,7 @@ class RawAutotrackerParserImpl implements RawAutotrackerParser {
     sample: OotPlayStateSample,
   ): void {
     oot.liveSceneId = sample.sceneId;
+    oot.liveSceneSeen = true;
 
     if (this.lastOotLiveSceneId === null) {
       // First observation of the active game's play-state: there is no
@@ -2232,6 +2252,7 @@ class RawAutotrackerParserImpl implements RawAutotrackerParser {
 
   private applyMmLiveSceneSample(mm: MmState, sample: MmPlayStateSample): void {
     mm.liveSceneId = sample.sceneId;
+    mm.liveSceneSeen = true;
 
     if (this.lastMmLiveSceneId === null) {
       this.lastMmLiveSceneId = sample.sceneId;
@@ -2269,6 +2290,7 @@ class RawAutotrackerParserImpl implements RawAutotrackerParser {
   private rememberOotState(oot: OotState): void {
     this.lastKnownOot = cloneOotState(oot);
     this.lastKnownOot.liveSceneId = 0;
+    this.lastKnownOot.liveSceneSeen = false;
     this.lastKnownOot.liveChestFlags = 0;
     this.lastKnownOot.liveCollectFlags = 0;
     this.lastKnownOot.liveTempCollectFlag = 0;
@@ -5918,6 +5940,7 @@ function createEmptyOotState(): OotState {
   return {
     sceneId: 0,
     liveSceneId: 0,
+    liveSceneSeen: false,
     age: 0,
     gameMode: 0,
     ocarinaGameRound: 0,
@@ -5966,6 +5989,7 @@ function createEmptyMmState(): MmState {
     hasMagic: false,
     hasDoubleMagic: false,
     liveSceneId: 0,
+    liveSceneSeen: false,
     liveChestFlags: 0,
     liveSwitch0Flags: 0,
     liveSwitch1Flags: 0,
