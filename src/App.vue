@@ -266,6 +266,16 @@ function debugDumpAutotrackerFull() {
   void runAutotrackerDump(dumpFn, 'Autotracker full dump downloaded');
 }
 
+function debugRecordAutotracker() {
+  isDebugDumpMenuOpen.value = false;
+  const recordFn = (
+    window as Window & {
+      __TLT_DEBUG_RECORD_AUTOTRACKER__?: () => boolean | Promise<boolean>;
+    }
+  ).__TLT_DEBUG_RECORD_AUTOTRACKER__;
+  void runAutotrackerDump(recordFn, 'Autotracker recording downloaded');
+}
+
 function toggleDebugDumpMenu() {
   isDebugDumpMenuOpen.value = !isDebugDumpMenuOpen.value;
 }
@@ -526,6 +536,14 @@ onBeforeUnmount(() => {
               @click="debugDumpAutotrackerFull"
             >
               Debug: Dump Autotracker (Full)
+            </button>
+            <button
+              type="button"
+              class="debug-dump-dropdown-item"
+              data-testid="debug-autotracker-record-button"
+              @click="debugRecordAutotracker"
+            >
+              Debug: Record Autotracker (10s)
             </button>
           </div>
         </div>
@@ -973,7 +991,6 @@ onBeforeUnmount(() => {
 .debug-dump-dropdown-toggle {
   background: #444;
   border: 1px solid #666;
-  border-left: none;
   border-radius: 0 0.25rem 0.25rem 0;
   font-size: 0.75rem;
   font-weight: 700;

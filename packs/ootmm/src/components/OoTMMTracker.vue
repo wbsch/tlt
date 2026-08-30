@@ -249,8 +249,50 @@ type AutotrackerDumpFile = {
   regions: AutotrackerDumpRegion[];
 };
 
+type AutotrackerRecordedRawChunk = {
+  name: string;
+  address: string;
+  size: number;
+  encoding: 'base64';
+  data: string;
+};
+
+type AutotrackerRecordedRawFrame = {
+  schemaVersion: string;
+  diff: boolean;
+  refresh: boolean;
+  sequence: number;
+  game: string;
+  saveIndex: number;
+  chunks: AutotrackerRecordedRawChunk[];
+};
+
+type AutotrackerRecordedFrame = {
+  receivedAt: string;
+  accepted: boolean;
+  rejectedReason: string | null;
+  raw: AutotrackerRecordedRawFrame;
+  phase: AutotrackerSyncPhase | null;
+  inventory: Record<string, number> | null;
+  collectedLocationIds: string[] | null;
+};
+
+type AutotrackerRecordingFile = {
+  schemaVersion: number;
+  kind: 'recording';
+  createdAt: string;
+  ootmmVersion: string | null;
+  durationMs: number;
+  frameCount: number;
+  acceptedFrameCount: number;
+  rejectedFrameCount: number;
+  frames: AutotrackerRecordedFrame[];
+};
+
 const AUTOTRACKER_DUMP_SCHEMA_VERSION = 1;
 const AUTOTRACKER_DUMP_TIMEOUT_MS = 5000;
+const AUTOTRACKER_RECORD_SCHEMA_VERSION = 1;
+const AUTOTRACKER_RECORD_DURATION_MS = 10000;
 // Full dumps read the large fixed payload window (~0.5 MB) from the emulator,
 // which the Go autotracker emits only after a slow read/re-detection pass; the
 // first matching frame can take well over the sparse timeout.
@@ -1439,11 +1481,11 @@ function preserveDungeonRewardOverlayStateItems(
   return preserved;
 }
 
-function resolveAutotrackerInventoryUpdate(
+function healAutotrackerDerivedItems(
+  previousRemoteInventory: Record<string, number> | null,
+  currentInventory: ReadonlyMap<string, number>,
   remoteInventory: Record<string, number>,
-  _phase: AutotrackerSyncPhase,
-): Map<string, number> | null {
-  const previousRemoteInventory = autotrackerLastRemoteInventory;
+): Record<string, number> {
   const nextRemoteInventory = { ...remoteInventory };
 
   // Heal: derived items (bombchu bags, key rings, skeleton keys, etc.)
@@ -1452,54 +1494,116 @@ function resolveAutotrackerInventoryUpdate(
   // shared-save parse failure), carry it forward into the stored snapshot
   // so the next frame doesn't compute a spurious +1 delta.
   if (previousRemoteInventory) {
-    const currentInv = inventory.value;
     for (const itemId of DERIVED_AUTOTRACKER_ITEM_IDS) {
-      if (currentInv.get(itemId) && !(itemId in nextRemoteInventory)) {
-        nextRemoteInventory[itemId] = currentInv.get(itemId)!;
+      if (currentInventory.get(itemId) && !(itemId in nextRemoteInventory)) {
+        nextRemoteInventory[itemId] = currentInventory.get(itemId)!;
       }
     }
   }
 
-  autotrackerLastRemoteInventory = nextRemoteInventory;
+  return nextRemoteInventory;
+}
 
+interface AutotrackerInventoryFrameResult {
+  nextRemoteInventory: Record<string, number>;
+  nextInventory: Map<string, number> | null;
+}
+
+/**
+ * Apply one translated autotracker inventory snapshot to an accumulating
+ * tracker inventory using the same baseline/delta rules as live autotracking:
+ * the first snapshot (no previous remote inventory) overwrites in "overwrite"
+ * start mode, subsequent snapshots merge as a delta.  Kept as a pure function
+ * (state passed in/out) so both the live pipeline and the debug recording
+ * feature reuse the exact same code path.
+ */
+function applyAutotrackerInventoryFrame({
+  previousRemoteInventory,
+  currentInventory,
+  remoteInventory,
+  startMode,
+}: {
+  previousRemoteInventory: Record<string, number> | null;
+  currentInventory: ReadonlyMap<string, number>;
+  remoteInventory: Record<string, number>;
+  startMode: AutotrackerStartMode;
+}): AutotrackerInventoryFrameResult {
+  const nextRemoteInventory = healAutotrackerDerivedItems(
+    previousRemoteInventory,
+    currentInventory,
+    remoteInventory,
+  );
+
+  let nextInventory: Map<string, number> | null;
   if (!previousRemoteInventory) {
-    if (autotrackerStartMode !== 'overwrite') {
-      return null;
-    }
-
-    return preserveDungeonRewardOverlayStateItems(
-      buildAutotrackerInventorySnapshot(
+    nextInventory =
+      startMode === 'overwrite'
+        ? preserveDungeonRewardOverlayStateItems(
+            buildAutotrackerInventorySnapshot(
+              nextRemoteInventory,
+              itemMaxCounts.value,
+              DUNGEON_REWARD_STATE_ITEM_IDS,
+            ),
+          )
+        : null;
+  } else {
+    nextInventory = preserveDungeonRewardOverlayStateItems(
+      mergeAutotrackerInventoryUpdate({
+        currentInventory,
+        previousRemoteInventory,
         nextRemoteInventory,
-        itemMaxCounts.value,
-        DUNGEON_REWARD_STATE_ITEM_IDS,
-      ),
+        itemMaxCounts: itemMaxCounts.value,
+        excludedItemIds: DUNGEON_REWARD_STATE_ITEM_IDS,
+        derivedItemIds: DERIVED_AUTOTRACKER_ITEM_IDS,
+      }),
     );
   }
 
-  return preserveDungeonRewardOverlayStateItems(
-    mergeAutotrackerInventoryUpdate({
-      currentInventory: inventory.value,
-      previousRemoteInventory,
-      nextRemoteInventory,
-      itemMaxCounts: itemMaxCounts.value,
-      excludedItemIds: DUNGEON_REWARD_STATE_ITEM_IDS,
-      derivedItemIds: DERIVED_AUTOTRACKER_ITEM_IDS,
-    }),
-  );
+  return { nextRemoteInventory, nextInventory };
 }
 
-function resolveAutotrackerCollectedLocationsUpdate(
-  locationIds: string[],
+function resolveAutotrackerInventoryUpdate(
+  remoteInventory: Record<string, number>,
   _phase: AutotrackerSyncPhase,
-): string[] | null {
-  const previousRemoteCollectedLocationIds =
-    autotrackerLastRemoteCollectedLocationIds;
+): Map<string, number> | null {
+  const previousRemoteInventory = autotrackerLastRemoteInventory;
+  const { nextRemoteInventory, nextInventory } = applyAutotrackerInventoryFrame(
+    {
+      previousRemoteInventory,
+      currentInventory: inventory.value,
+      remoteInventory,
+      startMode: autotrackerStartMode,
+    },
+  );
+  autotrackerLastRemoteInventory = nextRemoteInventory;
+  return nextInventory;
+}
+
+interface AutotrackerLocationsFrameResult {
+  nextRemoteCollectedLocationIds: Set<string>;
+  nextCollectedLocationIds: string[] | null;
+}
+
+/**
+ * Apply one translated autotracker collected-location snapshot using the same
+ * baseline/delta rules as live autotracking (overwrite baseline, then merge).
+ */
+function applyAutotrackerLocationsFrame({
+  previousRemoteCollectedLocationIds,
+  currentCollectedLocationIds,
+  locationIds,
+  startMode,
+}: {
+  previousRemoteCollectedLocationIds: Set<string> | null;
+  currentCollectedLocationIds: Iterable<string>;
+  locationIds: string[];
+  startMode: AutotrackerStartMode;
+}): AutotrackerLocationsFrameResult {
   const nextRemoteCollectedLocationIds = new Set(locationIds);
-  autotrackerLastRemoteCollectedLocationIds = nextRemoteCollectedLocationIds;
 
   if (!previousRemoteCollectedLocationIds) {
-    if (autotrackerStartMode !== 'overwrite') {
-      return null;
+    if (startMode !== 'overwrite') {
+      return { nextRemoteCollectedLocationIds, nextCollectedLocationIds: null };
     }
 
     // Ensure junk locations from the spoiler log are never set to uncollected
@@ -1516,14 +1620,37 @@ function resolveAutotrackerCollectedLocationsUpdate(
       protectedIds.add(id);
     }
 
-    return Array.from(protectedIds);
+    return {
+      nextRemoteCollectedLocationIds,
+      nextCollectedLocationIds: Array.from(protectedIds),
+    };
   }
 
-  return mergeAutotrackerCollectedLocationsUpdate({
-    currentCollectedLocationIds: collectedLocationIds.value,
-    previousRemoteCollectedLocationIds,
+  return {
     nextRemoteCollectedLocationIds,
-  });
+    nextCollectedLocationIds: mergeAutotrackerCollectedLocationsUpdate({
+      currentCollectedLocationIds,
+      previousRemoteCollectedLocationIds,
+      nextRemoteCollectedLocationIds,
+    }),
+  };
+}
+
+function resolveAutotrackerCollectedLocationsUpdate(
+  locationIds: string[],
+  _phase: AutotrackerSyncPhase,
+): string[] | null {
+  const previousRemoteCollectedLocationIds =
+    autotrackerLastRemoteCollectedLocationIds;
+  const { nextRemoteCollectedLocationIds, nextCollectedLocationIds } =
+    applyAutotrackerLocationsFrame({
+      previousRemoteCollectedLocationIds,
+      currentCollectedLocationIds: collectedLocationIds.value,
+      locationIds,
+      startMode: autotrackerStartMode,
+    });
+  autotrackerLastRemoteCollectedLocationIds = nextRemoteCollectedLocationIds;
+  return nextCollectedLocationIds;
 }
 
 function applyPendingAutotrackerDelta(
@@ -2832,6 +2959,238 @@ async function exportAutotrackerDump(
   }
 }
 
+function downloadAutotrackerRecordingFile(
+  recording: AutotrackerRecordingFile,
+): boolean {
+  try {
+    const json = `${JSON.stringify(recording, null, 2)}\n`;
+    const blob = new Blob([json], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = `autotracker-recording-${formatAutotrackerDumpTimestamp(new Date())}.json`;
+    link.click();
+    URL.revokeObjectURL(url);
+    return true;
+  } catch (error) {
+    console.error('Failed to export autotracker recording:', error);
+    return false;
+  }
+}
+
+function serializeAutotrackerRawFrame(
+  raw: RawAutotrackerMessage,
+): AutotrackerRecordedRawFrame {
+  return {
+    schemaVersion: raw.schemaVersion,
+    diff: raw.diff,
+    refresh: raw.refresh,
+    sequence: raw.sequence,
+    game: raw.game,
+    saveIndex: raw.saveIndex >>> 0,
+    chunks: raw.chunks.map((chunk) => ({
+      name: chunk.name,
+      address: formatHexAddress(chunk.address),
+      size: chunk.length,
+      encoding: 'base64',
+      data: typeof chunk.data === 'string' ? chunk.data : '',
+    })),
+  };
+}
+
+/**
+ * Produce a human-readable reason for why a raw frame was rejected by the
+ * parser.  The parser itself only returns null without a reason, so this
+ * mirrors its early-exit conditions to label the most common cases.
+ */
+function classifyAutotrackerFrameRejection(raw: RawAutotrackerMessage): string {
+  if (raw.schemaVersion !== '1') {
+    return `unsupported schema version "${raw.schemaVersion}"`;
+  }
+  if (raw.diff) {
+    return 'diff frame ignored';
+  }
+  const normalizedGame = raw.game.trim().toLowerCase();
+  if (normalizedGame !== 'oot' && normalizedGame !== 'mm') {
+    return `unknown game "${raw.game}"`;
+  }
+  return 'implausible save data';
+}
+
+/**
+ * Record raw autotracker frames for AUTOTRACKER_RECORD_DURATION_MS and process
+ * them through the same baseline/delta pipeline as live autotracking: the first
+ * accepted frame is applied as an "Overwrite Current State" baseline, every
+ * subsequent frame is merged as a delta.  Every raw frame (accepted or
+ * rejected) is written out with its raw payload, and each entry records whether
+ * it was accepted or rejected as implausible.
+ */
+async function recordAutotrackerFrames(): Promise<boolean> {
+  const parser = await createRawAutotrackerParser({
+    ootmmVersion: importedSpoilerLogVersion.value,
+  });
+
+  const startedAt = Date.now();
+  const frames: AutotrackerRecordedFrame[] = [];
+  let previousRemoteInventory: Record<string, number> | null = null;
+  let previousRemoteCollectedLocationIds: Set<string> | null = null;
+  let currentInventory = new Map<string, number>();
+  let currentCollectedLocationIds = new Set<string>();
+
+  const applyFrame = (raw: RawAutotrackerMessage): void => {
+    const receivedAt = new Date().toISOString();
+    const parsed = parser.parse(raw);
+
+    if (!parsed) {
+      frames.push({
+        receivedAt,
+        accepted: false,
+        rejectedReason: classifyAutotrackerFrameRejection(raw),
+        raw: serializeAutotrackerRawFrame(raw),
+        phase: null,
+        inventory: null,
+        collectedLocationIds: null,
+      });
+      return;
+    }
+
+    const remoteInventory = buildLiveInventoryFromRawItems(parsed.items);
+    const locationIds = buildFallbackRemoteLocationIds(parsed.checks);
+
+    const isFirstAcceptedFrame = previousRemoteInventory === null;
+
+    const inventoryResult = applyAutotrackerInventoryFrame({
+      previousRemoteInventory,
+      currentInventory,
+      remoteInventory,
+      startMode: 'overwrite',
+    });
+    previousRemoteInventory = inventoryResult.nextRemoteInventory;
+    if (inventoryResult.nextInventory) {
+      currentInventory = inventoryResult.nextInventory;
+    }
+
+    const locationsResult = applyAutotrackerLocationsFrame({
+      previousRemoteCollectedLocationIds,
+      currentCollectedLocationIds,
+      locationIds,
+      startMode: 'overwrite',
+    });
+    previousRemoteCollectedLocationIds =
+      locationsResult.nextRemoteCollectedLocationIds;
+    if (locationsResult.nextCollectedLocationIds) {
+      currentCollectedLocationIds = new Set(
+        locationsResult.nextCollectedLocationIds,
+      );
+    }
+
+    frames.push({
+      receivedAt,
+      accepted: true,
+      rejectedReason: null,
+      raw: serializeAutotrackerRawFrame(raw),
+      phase: isFirstAcceptedFrame ? 'initial' : 'live',
+      inventory: Object.fromEntries(
+        [...currentInventory.entries()].sort(([left], [right]) =>
+          left.localeCompare(right),
+        ),
+      ),
+      collectedLocationIds: Array.from(currentCollectedLocationIds).sort(
+        (left, right) => left.localeCompare(right),
+      ),
+    });
+  };
+
+  return new Promise((resolve) => {
+    let socket: WebSocket | null = null;
+    let timeoutId: ReturnType<typeof setTimeout> | null = null;
+    let settled = false;
+
+    const finish = (): void => {
+      if (settled) {
+        return;
+      }
+      settled = true;
+
+      if (timeoutId) {
+        clearTimeout(timeoutId);
+        timeoutId = null;
+      }
+
+      if (socket) {
+        socket.onopen = null;
+        socket.onmessage = null;
+        socket.onerror = null;
+        socket.onclose = null;
+        socket.close();
+        socket = null;
+      }
+
+      if (frames.length === 0) {
+        resolve(false);
+        return;
+      }
+
+      const acceptedFrameCount = frames.filter(
+        (frame) => frame.accepted,
+      ).length;
+      const recording: AutotrackerRecordingFile = {
+        schemaVersion: AUTOTRACKER_RECORD_SCHEMA_VERSION,
+        kind: 'recording',
+        createdAt: new Date().toISOString(),
+        ootmmVersion:
+          importedSpoilerLogVersion.value ??
+          resolveAutotrackerDataVersion(null).label,
+        durationMs: Date.now() - startedAt,
+        frameCount: frames.length,
+        acceptedFrameCount,
+        rejectedFrameCount: frames.length - acceptedFrameCount,
+        frames,
+      };
+
+      resolve(downloadAutotrackerRecordingFile(recording));
+    };
+
+    timeoutId = setTimeout(() => {
+      finish();
+    }, AUTOTRACKER_RECORD_DURATION_MS);
+
+    try {
+      socket = new WebSocket(autotracker.url.value);
+    } catch (error) {
+      console.error('Failed to open autotracker recording socket:', error);
+      finish();
+      return;
+    }
+
+    socket.onopen = () => {
+      socket?.send(buildAutotrackerDumpHandshake(RAW_CHUNK_SPECS_BY_GAME));
+    };
+
+    socket.onmessage = (event) => {
+      try {
+        const payload = JSON.parse(event.data as string) as
+          | RawAutotrackerMessage
+          | { type?: string };
+        if (payload.type !== 'raw') {
+          return;
+        }
+        applyFrame(payload as RawAutotrackerMessage);
+      } catch {
+        // Ignore malformed frames during recording.
+      }
+    };
+
+    socket.onerror = () => {
+      finish();
+    };
+
+    socket.onclose = () => {
+      finish();
+    };
+  });
+}
+
 function resetTrackerState() {
   if (isCoopActive.value) {
     sessionStore.leaveRoom();
@@ -3740,6 +4099,7 @@ onMounted(() => {
     __TLT_DEBUG_ACTIVATE_ALL__?: () => void;
     __TLT_DEBUG_DUMP_AUTOTRACKER__?: () => boolean | Promise<boolean>;
     __TLT_DEBUG_DUMP_AUTOTRACKER_FULL__?: () => boolean | Promise<boolean>;
+    __TLT_DEBUG_RECORD_AUTOTRACKER__?: () => boolean | Promise<boolean>;
     __TLT_RESET_TRACKER_STATE__?: () => void;
     __TLT_LEAVE_COOP__?: () => void;
   };
@@ -3747,6 +4107,7 @@ onMounted(() => {
   windowWithHandlers.__TLT_DEBUG_DUMP_AUTOTRACKER__ = exportAutotrackerDump;
   windowWithHandlers.__TLT_DEBUG_DUMP_AUTOTRACKER_FULL__ =
     exportAutotrackerDumpFull;
+  windowWithHandlers.__TLT_DEBUG_RECORD_AUTOTRACKER__ = recordAutotrackerFrames;
   windowWithHandlers.__TLT_RESET_TRACKER_STATE__ = resetTrackerState;
   windowWithHandlers.__TLT_LEAVE_COOP__ = leaveCoopRoom;
   mobileTrackerLayoutQuery = window.matchMedia(MOBILE_TRACKER_LAYOUT_QUERY);
@@ -3770,6 +4131,7 @@ onBeforeUnmount(() => {
     __TLT_DEBUG_ACTIVATE_ALL__?: () => void;
     __TLT_DEBUG_DUMP_AUTOTRACKER__?: () => boolean | Promise<boolean>;
     __TLT_DEBUG_DUMP_AUTOTRACKER_FULL__?: () => boolean | Promise<boolean>;
+    __TLT_DEBUG_RECORD_AUTOTRACKER__?: () => boolean | Promise<boolean>;
     __TLT_RESET_TRACKER_STATE__?: () => void;
     __TLT_LEAVE_COOP__?: () => void;
   };
@@ -3786,6 +4148,12 @@ onBeforeUnmount(() => {
     exportAutotrackerDumpFull
   ) {
     delete windowWithHandlers.__TLT_DEBUG_DUMP_AUTOTRACKER_FULL__;
+  }
+  if (
+    windowWithHandlers.__TLT_DEBUG_RECORD_AUTOTRACKER__ ===
+    recordAutotrackerFrames
+  ) {
+    delete windowWithHandlers.__TLT_DEBUG_RECORD_AUTOTRACKER__;
   }
   if (windowWithHandlers.__TLT_RESET_TRACKER_STATE__ === resetTrackerState) {
     delete windowWithHandlers.__TLT_RESET_TRACKER_STATE__;
