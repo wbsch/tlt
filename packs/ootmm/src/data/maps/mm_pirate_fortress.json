@@ -302,7 +302,7 @@
       }
     },
     {
-      "coords": [807, 377],
+      "coords": [563, 282],
       "image": "telescope_entrance",
       "type": "submenu",
       "entranceMenu": {

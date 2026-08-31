@@ -171,7 +171,7 @@
     {
       "coords": [272, 235],
       "image": "gold_skulltula",
-      "overlays": ["child", "night"],
+      "overlays": ["child"],
       "codes": ["OOT Goron City GS Maze"]
     },
     {
