@@ -1844,12 +1844,23 @@ const mapSelectorCheckIdsByMap = computed(() => {
         const hasEntranceBinding = markerEntranceIds.length > 0;
 
         if (hasEntranceBinding) {
-          for (const code of resolveEntranceBoundCodes(
-            markerEntranceIds,
-            overrides,
-            activeEntranceKeys,
-          )) {
-            addResolvedMapSelectorCode(checkIds, code);
+          // A submenu with entrance binding only hosts check markers when it
+          // actually has (non-anchored) check entries. Pure entrance/exit
+          // connection markers (e.g. `display: "exits"`) have no check
+          // entries and are counted separately as entrances — resolving their
+          // override destination here would import the destination interior's
+          // checks onto the wrong map.
+          const hasNonAnchoredCheckEntries = (marker.markers ?? []).some(
+            (entry) => entry.anchored !== true,
+          );
+          if (hasNonAnchoredCheckEntries) {
+            for (const code of resolveEntranceBoundCodes(
+              markerEntranceIds,
+              overrides,
+              activeEntranceKeys,
+            )) {
+              addResolvedMapSelectorCode(checkIds, code);
+            }
           }
           // Anchored entries (e.g. boulders covering a grotto) never follow
           // the entrance under ER — always count them toward their home map.
