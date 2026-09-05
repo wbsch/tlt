@@ -20,7 +20,7 @@ import type {
 import HintItemPicker from './HintItemPicker.vue';
 import HintMissingSummary from './HintMissingSummary.vue';
 import SpoilerSearchCombobox from './SpoilerSearchCombobox.vue';
-import { getItemIcon } from '../data/itemIcons';
+import { getItemIcon, DUNGEON_REWARD_ITEM_IDS } from '../data/itemIcons';
 import {
   createItemDisplayNameResolver,
   getHintItemEntries,
@@ -367,21 +367,83 @@ function resolveItemName(itemId: string): string {
   return hintItemNameResolver.value(itemId);
 }
 
+const DUNGEON_REWARD_ITEM_ID_SET = new Set<string>(DUNGEON_REWARD_ITEM_IDS);
+
+/** Bombchu "behavior" enum values that put Bombchu Bags into the item pool. */
+function isBombchuBagBehavior(value: unknown): boolean {
+  return value === 'bagFirst' || value === 'bagSeparate';
+}
+
 /**
- * True for dungeon keys (small keys, boss keys, key rings, incl. the Gerudo
- * Hideout / Chest Game variants). Mirrors OoTMM's `ItemHelpers.isKey()` used to
- * exclude items from Way of the Hero path hints (`isLocationHintable` with
- * klass 'path'). Rusty keys and skeleton keys are NOT covered (OoTMM doesn't
- * treat them as keys) and stay valid WotH targets.
+ * True when Bombchu Bags (First Pack or Separate Item) are active for the
+ * given game (`oot`, `mm`) or the shared variant (`shared`). Mirrors OoTMM's
+ * `bombchuBehaviorOot`/`bombchuBehaviorMm` enum and the `sharedBombchu` flag.
  */
-function isDungeonKeyItemId(itemId: string): boolean {
+function isBombchuBagActive(game: 'oot' | 'mm' | 'shared'): boolean {
+  const settings = trackerSettings.value ?? {};
+  if (game === 'shared') {
+    return (
+      Boolean(settings.sharedBombchu) &&
+      isBombchuBagBehavior(settings.bombchuBehaviorOot)
+    );
+  }
+  const key = game === 'oot' ? 'bombchuBehaviorOot' : 'bombchuBehaviorMm';
+  return isBombchuBagBehavior(settings[key]);
+}
+
+/** Which game a Bombchu pack (not bag) item ID belongs to, or null. */
+function bombchuPackGame(itemId: string): 'oot' | 'mm' | 'shared' | null {
+  if (itemId.startsWith('OOT_BOMBCHU')) return 'oot';
+  if (itemId.startsWith('MM_BOMBCHU')) return 'mm';
+  if (itemId.startsWith('SHARED_BOMBCHU')) return 'shared';
+  return null;
+}
+
+/**
+ * True for items OoTMM never uses as Way of the Hero (WotH) path hint targets.
+ * Mirrors the `klass === 'path'` branch of OoTMM's `isLocationHintable`,
+ * specifically `ItemHelpers.isKey()`, `ItemHelpers.isToken()`,
+ * `ItemHelpers.isStrayFairy()`, `ItemHelpers.isSilverRupee()` and
+ * `ItemHelpers.isDungeonReward()`:
+ *   - Dungeon keys (small keys, boss keys, key rings). Rusty keys and skeleton
+ *     keys are NOT covered (OoTMM doesn't treat them as keys) and stay valid
+ *     WotH targets.
+ *   - Skulltula tokens (OoT gold skulltula + MM spider-house tokens).
+ *   - Stray fairies (town and dungeon variants).
+ *   - Silver rupees (vanilla dungeon silver rupee set; the `OOT_POUCH_SILVER_`
+ *     pouch-state variants are covered too for parity with `RUPEES_SILVER`).
+ *   - Dungeon rewards (spiritual stones, medallions, boss remains).
+ *   - Bombchu packs, but only when Bombchu Bags (First Pack or Separate Item)
+ *     are active for the pack's game (or shared variant): Bombchu are then
+ *     considered a junk ammo upgrade and should not be surfaced as WotH
+ *     targets. Bombchu Bags themselves are never excluded.
+ */
+function isWotHExcludedItemId(itemId: string): boolean {
+  // Bombchu packs become non-hintable once Bombchu Bags are in play.
+  const packGame = bombchuPackGame(itemId);
+  if (packGame && !itemId.includes('_BAG') && isBombchuBagActive(packGame)) {
+    return true;
+  }
+
   return (
+    // Dungeon keys
     itemId.startsWith('OOT_SMALL_KEY') ||
     itemId.startsWith('MM_SMALL_KEY') ||
     itemId.startsWith('OOT_BOSS_KEY') ||
     itemId.startsWith('MM_BOSS_KEY') ||
     itemId.startsWith('OOT_KEY_RING') ||
-    itemId.startsWith('MM_KEY_RING')
+    itemId.startsWith('MM_KEY_RING') ||
+    // Skulltula tokens
+    itemId === 'OOT_GS_TOKEN' ||
+    itemId === 'MM_GS_TOKEN_SWAMP' ||
+    itemId === 'MM_GS_TOKEN_OCEAN' ||
+    // Stray fairies
+    itemId.startsWith('MM_STRAY_FAIRY_') ||
+    // Silver rupees
+    itemId.startsWith('OOT_RUPEE_SILVER_') ||
+    itemId.startsWith('OOT_POUCH_SILVER_') ||
+    // Dungeon rewards
+    DUNGEON_REWARD_ITEM_ID_SET.has(itemId)
   );
 }
 
@@ -396,14 +458,14 @@ function getItemsInRegion(regionId: string): Array<{
   // Filter to only items whose location has been collected AND that exist in
   // the item grid (same set as the hint item dropdown), so Path hints don't
   // surface items the tracker cannot represent (maps, compasses, junk...).
-  // Dungeon keys are excluded too, mirroring OoTMM's WotH hint logic: they can
-  // never be Way of the Hero targets.
+  // Items OoTMM can never use as Way of the Hero targets (dungeon keys,
+  // skulltula tokens, stray fairies) are excluded too.
   const seen = new Set<string>();
   return all.filter((item) => {
     if (
       !collectedLocationIdSet.value.has(item.locationId) ||
       !hintGridItemIdSet.value.has(item.itemId) ||
-      isDungeonKeyItemId(item.itemId)
+      isWotHExcludedItemId(item.itemId)
     ) {
       return false;
     }
