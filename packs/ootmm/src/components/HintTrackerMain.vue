@@ -398,12 +398,21 @@ function getItemsInRegion(regionId: string): Array<{
   // surface items the tracker cannot represent (maps, compasses, junk...).
   // Dungeon keys are excluded too, mirroring OoTMM's WotH hint logic: they can
   // never be Way of the Hero targets.
-  return all.filter(
-    (item) =>
-      collectedLocationIdSet.value.has(item.locationId) &&
-      hintGridItemIdSet.value.has(item.itemId) &&
-      !isDungeonKeyItemId(item.itemId),
-  );
+  const seen = new Set<string>();
+  return all.filter((item) => {
+    if (
+      !collectedLocationIdSet.value.has(item.locationId) ||
+      !hintGridItemIdSet.value.has(item.itemId) ||
+      isDungeonKeyItemId(item.itemId)
+    ) {
+      return false;
+    }
+    // The same item can sit at multiple locations in a region (e.g. the Hylian
+    // Shield). Way of the Hero only names the item, so show it once.
+    if (seen.has(item.itemId)) return false;
+    seen.add(item.itemId);
+    return true;
+  });
 }
 
 // ── Actions ──
