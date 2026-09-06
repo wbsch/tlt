@@ -26,6 +26,7 @@ import {
   createItemDisplayNameResolver,
   getHintItemEntries,
   getHintItemIcon,
+  getMoonTrialMaskItemIds,
 } from '../utils/hintItemNames';
 import {
   getWotHCanonicalItemId,
@@ -155,6 +156,17 @@ const isFoolishFormOpen = ref(false);
 const moonFormRegion = ref('');
 const moonFormItem = ref('');
 const isMoonFormOpen = ref(false);
+
+/**
+ * Mask item IDs offered by the Moon Trial item picker. Restricted to the
+ * variant (MM or shared) that is actually in the seed's item pool; falls back
+ * to all variants when the pool is unknown.
+ */
+const moonTrialMaskItemIds = computed(() =>
+  getMoonTrialMaskItemIds(
+    availableItemIdSet.value.size > 0 ? availableItemIdSet.value : null,
+  ),
+);
 
 // ── Region options ──
 const regionOptions = computed(() => getRegionOptions());
@@ -1195,7 +1207,10 @@ function removeMoonHint(index: number) {
           </div>
           <div class="hint-add-form__field">
             <label>Item</label>
-            <HintItemPicker v-model="moonFormItem" />
+            <HintItemPicker
+              v-model="moonFormItem"
+              :pool-item-ids="moonTrialMaskItemIds"
+            />
           </div>
           <div class="hint-add-form__actions">
             <button

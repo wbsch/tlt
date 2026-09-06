@@ -22,6 +22,66 @@ const GAME_PREFIXES: ReadonlyArray<readonly [prefix: string, label: string]> = [
   ['OOT_', 'OoT'],
 ];
 
+/**
+ * The masks a Moon Trial hint can point to. Moon Trial gossip stones only ever
+ * hint at MM masks (and their shared variants) — mirrors OoTMM's
+ * `ItemGroups.MASKS_REGULAR_VANILLA_MM` used by `placeMoonGossip`.
+ *
+ * Masks that exist in both games are represented as an `[mm, shared]` pair so
+ * the picker can surface only the variant that is actually in the seed's item
+ * pool. Masks that only exist in MM are a single ID.
+ */
+export const MOON_TRIAL_MASK_VARIANTS: ReadonlyArray<
+  readonly [mm: string, shared?: string]
+> = [
+  ['MM_MASK_CAPTAIN'],
+  ['MM_MASK_GIANT'],
+  ['MM_MASK_ALL_NIGHT'],
+  ['MM_MASK_BUNNY', 'SHARED_MASK_BUNNY'],
+  ['MM_MASK_KEATON', 'SHARED_MASK_KEATON'],
+  ['MM_MASK_GARO'],
+  ['MM_MASK_ROMANI'],
+  ['MM_MASK_TROUPE_LEADER'],
+  ['MM_MASK_POSTMAN'],
+  ['MM_MASK_COUPLE'],
+  ['MM_MASK_GREAT_FAIRY'],
+  ['MM_MASK_GIBDO'],
+  ['MM_MASK_DON_GERO'],
+  ['MM_MASK_KAMARO', 'SHARED_MASK_KAMARO'],
+  ['MM_MASK_TRUTH', 'SHARED_MASK_TRUTH'],
+  ['MM_MASK_STONE', 'SHARED_MASK_STONE'],
+  ['MM_MASK_BREMEN'],
+  ['MM_MASK_BLAST', 'SHARED_MASK_BLAST'],
+  ['MM_MASK_SCENTS'],
+  ['MM_MASK_KAFEI'],
+];
+
+/**
+ * Resolve the Moon Trial mask item IDs to offer in the picker. When the seed's
+ * item pool is known, each mask contributes only the variant (MM or shared)
+ * that is actually in the pool; when the pool is unknown/empty, all variants
+ * are returned.
+ */
+export function getMoonTrialMaskItemIds(
+  poolItemIds?: Iterable<string> | null,
+): string[] {
+  const pool = poolItemIds ? new Set(poolItemIds) : null;
+  const result: string[] = [];
+  for (const [mm, shared] of MOON_TRIAL_MASK_VARIANTS) {
+    if (!pool) {
+      result.push(mm);
+      if (shared) result.push(shared);
+      continue;
+    }
+    if (shared && pool.has(shared)) {
+      result.push(shared);
+    } else {
+      result.push(mm);
+    }
+  }
+  return result;
+}
+
 /** Map an item ID's game prefix to its display label ("OoT", "MM", "Shared"). */
 export function getItemGamePrefix(itemId: string): string | null {
   for (const [prefix, label] of GAME_PREFIXES) {

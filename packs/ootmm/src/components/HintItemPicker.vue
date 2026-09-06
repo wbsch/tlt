@@ -8,13 +8,16 @@ import {
   getHintItemIcon,
 } from '../utils/hintItemNames';
 
-withDefaults(
+const props = withDefaults(
   defineProps<{
     modelValue: string;
     includeJunk?: boolean;
+    /** Optional explicit item pool; overrides the seed's available items. */
+    poolItemIds?: readonly string[] | null;
   }>(),
   {
     includeJunk: true,
+    poolItemIds: null,
   },
 );
 
@@ -31,10 +34,15 @@ const isOpen = ref(false);
 /**
  * Items shown in the dropdown: item-grid items, restricted to the current
  * seed's item pool when one exists (falls back to all grid items otherwise).
+ * An explicit `poolItemIds` prop overrides the seed pool entirely.
  */
 const items = computed(() =>
   getHintItemEntries(
-    availableItemIdSet.value.size > 0 ? availableItemIdSet.value : null,
+    props.poolItemIds && props.poolItemIds.length > 0
+      ? props.poolItemIds
+      : availableItemIdSet.value.size > 0
+        ? availableItemIdSet.value
+        : null,
     trackerSettings.value,
   ),
 );
