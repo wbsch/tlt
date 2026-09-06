@@ -43,6 +43,9 @@ export const useOoTMMUiStore = defineStore('ootmm-ui', () => {
   const spoilerDragDepth = ref(0);
   const activeMapId = ref('');
 
+  const isSpoilerSectionCollapsed = ref(false);
+  const isHintSectionCollapsed = ref(false);
+
   function setActiveTab(tab: TrackerTab) {
     if (!VALID_TABS.includes(tab)) {
       activeTab.value = 'grid';
@@ -113,6 +116,9 @@ export const useOoTMMUiStore = defineStore('ootmm-ui', () => {
     isSpoilerDragActive.value = false;
     spoilerDragDepth.value = 0;
     activeMapId.value = '';
+
+    isSpoilerSectionCollapsed.value = false;
+    isHintSectionCollapsed.value = false;
   }
 
   return {
@@ -145,5 +151,7 @@ export const useOoTMMUiStore = defineStore('ootmm-ui', () => {
     setRightSidebarWidth,
     resetUiState,
     activeMapId,
+    isSpoilerSectionCollapsed,
+    isHintSectionCollapsed,
   };
 });

@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { ref } from 'vue';
 import { useOoTMMSessionStore } from '../stores/ootmmSession';
+import { useOoTMMUiStore } from '../stores/ootmmUi';
 import { storeToRefs } from 'pinia';
 import OoTMMSpoilerLookup from './OoTMMSpoilerLookup.vue';
 import HintTrackerMain from './HintTrackerMain.vue';
@@ -8,8 +8,9 @@ import HintTrackerMain from './HintTrackerMain.vue';
 const sessionStore = useOoTMMSessionStore();
 const { hasImportedSpoilerLog } = storeToRefs(sessionStore);
 
-const isSpoilerSectionCollapsed = ref(false);
-const isHintSectionCollapsed = ref(false);
+const uiStore = useOoTMMUiStore();
+const { isSpoilerSectionCollapsed, isHintSectionCollapsed } =
+  storeToRefs(uiStore);
 </script>
 
 <template>

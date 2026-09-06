@@ -356,6 +356,8 @@ export const PERSIST_CONFIGS: Record<PersistStoreId, PersistConfig> = {
       'rightSidebarWidth',
       'activeMapId',
       'settingsSearchQuery',
+      'isSpoilerSectionCollapsed',
+      'isHintSectionCollapsed',
     ],
     hydrate: (raw) => {
       const next: Record<string, unknown> = {
@@ -425,6 +427,12 @@ export const PERSIST_CONFIGS: Record<PersistStoreId, PersistConfig> = {
           : {}),
         ...(typeof raw.settingsSearchQuery === 'string'
           ? { settingsSearchQuery: safeUiString(raw.settingsSearchQuery) }
+          : {}),
+        ...(typeof raw.isSpoilerSectionCollapsed === 'boolean'
+          ? { isSpoilerSectionCollapsed: raw.isSpoilerSectionCollapsed }
+          : {}),
+        ...(typeof raw.isHintSectionCollapsed === 'boolean'
+          ? { isHintSectionCollapsed: raw.isHintSectionCollapsed }
           : {}),
       };
 
