@@ -200,12 +200,12 @@
     {
       "coords": [695, 96],
       "image": "chest",
-      "codes": ["MM Stone Tower Temple Wind Room Ledge Chest"]
+      "codes": ["MM Stone Tower Temple Wind Room Jail Chest"]
     },
     {
       "coords": [698, 75],
       "image": "chest",
-      "codes": ["MM Stone Tower Temple Wind Room Jail Chest"]
+      "codes": ["MM Stone Tower Temple Wind Room Ledge Chest"]
     },
     {
       "coords": [266, 516],
