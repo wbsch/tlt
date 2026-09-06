@@ -993,6 +993,7 @@
       "markers": [
         {
           "image": "heart_piece",
+          "overlays": ["cursed_state"],
           "codes": "MM Zora Hall Evan HP"
         }
       ]
