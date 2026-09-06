@@ -21,10 +21,16 @@ import HintItemPicker from './HintItemPicker.vue';
 import HintMissingSummary from './HintMissingSummary.vue';
 import SpoilerSearchCombobox from './SpoilerSearchCombobox.vue';
 import { getItemIcon, DUNGEON_REWARD_ITEM_IDS } from '../data/itemIcons';
+import { getItemName } from '../data/items';
 import {
   createItemDisplayNameResolver,
   getHintItemEntries,
 } from '../utils/hintItemNames';
+import {
+  getWotHCanonicalItemId,
+  isWotHItemInGrid,
+  WOTH_BOTTLE_CONTENT_BASE_ITEM_IDS,
+} from '../utils/wothItems';
 
 const sessionStore = useOoTMMSessionStore();
 const {
@@ -461,20 +467,38 @@ function getItemsInRegion(regionId: string): Array<{
   // Items OoTMM can never use as Way of the Hero targets (dungeon keys,
   // skulltula tokens, stray fairies) are excluded too.
   const seen = new Set<string>();
-  return all.filter((item) => {
-    if (
-      !collectedLocationIdSet.value.has(item.locationId) ||
-      !hintGridItemIdSet.value.has(item.itemId) ||
-      isWotHExcludedItemId(item.itemId)
-    ) {
-      return false;
-    }
-    // The same item can sit at multiple locations in a region (e.g. the Hylian
-    // Shield). Way of the Hero only names the item, so show it once.
-    if (seen.has(item.itemId)) return false;
-    seen.add(item.itemId);
-    return true;
-  });
+  return all
+    .filter((item) => {
+      if (
+        !collectedLocationIdSet.value.has(item.locationId) ||
+        !isWotHItemInGrid(item.itemId, hintGridItemIdSet.value) ||
+        isWotHExcludedItemId(item.itemId)
+      ) {
+        return false;
+      }
+      // The same item can sit at multiple locations in a region (e.g. the
+      // Hylian Shield). Way of the Hero only names the item, so show it once.
+      // Bottle contents collapse to a single "Empty Bottle" entry, and the
+      // phantom cross-game variants of Ruto's Letter / Gold Dust collapse to
+      // their real counterpart.
+      const canonicalId = getWotHCanonicalItemId(item.itemId);
+      if (seen.has(canonicalId)) return false;
+      seen.add(canonicalId);
+      return true;
+    })
+    .map((item) => {
+      const canonicalId = getWotHCanonicalItemId(item.itemId);
+      const isBottleContent =
+        WOTH_BOTTLE_CONTENT_BASE_ITEM_IDS[item.itemId] !== undefined;
+      return {
+        ...item,
+        itemId: canonicalId,
+        // Bottle contents display as "Empty Bottle"; Ruto's Letter and Gold
+        // Dust keep their own names.
+        itemName: isBottleContent ? getItemName(canonicalId) : item.itemName,
+        iconPath: getItemIcon(canonicalId),
+      };
+    });
 }
 
 // ── Actions ──
