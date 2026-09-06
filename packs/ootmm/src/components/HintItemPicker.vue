@@ -94,7 +94,7 @@ function handleClear() {
         <img
           v-if="modelValue && selectedItemIcon(modelValue)"
           :src="selectedItemIcon(modelValue)"
-          class="hint-item-picker__icon"
+          class="hint-item-picker__icon hint-item-picker__icon--selected"
           alt=""
         />
         <span class="hint-item-picker__name">{{
@@ -104,7 +104,7 @@ function handleClear() {
       <template v-else-if="modelValue === 'JUNK'">
         <img
           src="/images/crossed_out.png"
-          class="hint-item-picker__icon"
+          class="hint-item-picker__icon hint-item-picker__icon--selected"
           alt=""
         />
         <span class="hint-item-picker__name">Junk</span>
@@ -182,12 +182,13 @@ function handleClear() {
   display: flex;
   align-items: center;
   gap: 6px;
-  padding: 4px 8px;
+  padding: 0 8px;
   border: 1px solid #555;
   border-radius: 4px;
   cursor: pointer;
   background: #2a2a2a;
-  min-height: 32px;
+  height: 26px;
+  box-sizing: border-box;
 }
 
 .hint-item-picker__selected:hover {
@@ -281,6 +282,13 @@ function handleClear() {
   width: 28px;
   height: 28px;
   object-fit: contain;
+}
+
+.hint-item-picker__icon--selected {
+  width: auto;
+  height: 100%;
+  max-height: 18px;
+  flex-shrink: 0;
 }
 
 .hint-item-picker__icon--fallback {
