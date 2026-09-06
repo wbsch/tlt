@@ -20,11 +20,12 @@ import type {
 import HintItemPicker from './HintItemPicker.vue';
 import HintMissingSummary from './HintMissingSummary.vue';
 import SpoilerSearchCombobox from './SpoilerSearchCombobox.vue';
-import { getItemIcon, DUNGEON_REWARD_ITEM_IDS } from '../data/itemIcons';
+import { DUNGEON_REWARD_ITEM_IDS } from '../data/itemIcons';
 import { getItemName } from '../data/items';
 import {
   createItemDisplayNameResolver,
   getHintItemEntries,
+  getHintItemIcon,
 } from '../utils/hintItemNames';
 import {
   getWotHCanonicalItemId,
@@ -336,7 +337,7 @@ const regionToItemsMap = computed(() => {
     const itemEntry = {
       itemId: p.itemId,
       itemName: p.itemName,
-      iconPath: getItemIcon(p.itemId),
+      iconPath: getHintItemIcon(p.itemId, trackerSettings.value),
       locationName: p.locationName,
       locationId: p.locationId,
     };
@@ -358,6 +359,7 @@ const collectedLocationIdSet = computed(
 const hintItemEntries = computed(() =>
   getHintItemEntries(
     availableItemIdSet.value.size > 0 ? availableItemIdSet.value : null,
+    trackerSettings.value,
   ),
 );
 const hintItemNameResolver = computed(() =>
@@ -496,7 +498,7 @@ function getItemsInRegion(regionId: string): Array<{
         // Bottle contents display as "Empty Bottle"; Ruto's Letter and Gold
         // Dust keep their own names.
         itemName: isBottleContent ? getItemName(canonicalId) : item.itemName,
-        iconPath: getItemIcon(canonicalId),
+        iconPath: getHintItemIcon(canonicalId, trackerSettings.value),
       };
     });
 }
@@ -951,8 +953,8 @@ function removeMoonHint(index: number) {
                 >
                 <template v-else>
                   <img
-                    v-if="getItemIcon(itemId)"
-                    :src="getItemIcon(itemId)"
+                    v-if="getHintItemIcon(itemId, trackerSettings)"
+                    :src="getHintItemIcon(itemId, trackerSettings)"
                     class="hint-item-icon"
                     :alt="itemId"
                   />
@@ -1040,8 +1042,8 @@ function removeMoonHint(index: number) {
             >
             <template v-else>
               <img
-                v-if="getItemIcon(hint.itemId)"
-                :src="getItemIcon(hint.itemId)"
+                v-if="getHintItemIcon(hint.itemId, trackerSettings)"
+                :src="getHintItemIcon(hint.itemId, trackerSettings)"
                 class="hint-item-icon"
                 :alt="hint.itemId"
               />
@@ -1224,8 +1226,8 @@ function removeMoonHint(index: number) {
             >
             <template v-else>
               <img
-                v-if="getItemIcon(hint.itemId)"
-                :src="getItemIcon(hint.itemId)"
+                v-if="getHintItemIcon(hint.itemId, trackerSettings)"
+                :src="getHintItemIcon(hint.itemId, trackerSettings)"
                 class="hint-item-icon"
                 :alt="hint.itemId"
               />

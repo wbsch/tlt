@@ -1,11 +1,11 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue';
 import { storeToRefs } from 'pinia';
-import { getItemIcon } from '../data/itemIcons';
 import { useOoTMMSessionStore } from '../stores/ootmmSession';
 import {
   createItemDisplayNameResolver,
   getHintItemEntries,
+  getHintItemIcon,
 } from '../utils/hintItemNames';
 
 withDefaults(
@@ -23,7 +23,7 @@ const emit = defineEmits<{
 }>();
 
 const sessionStore = useOoTMMSessionStore();
-const { availableItemIdSet } = storeToRefs(sessionStore);
+const { availableItemIdSet, trackerSettings } = storeToRefs(sessionStore);
 
 const searchQuery = ref('');
 const isOpen = ref(false);
@@ -35,8 +35,14 @@ const isOpen = ref(false);
 const items = computed(() =>
   getHintItemEntries(
     availableItemIdSet.value.size > 0 ? availableItemIdSet.value : null,
+    trackerSettings.value,
   ),
 );
+
+/** Resolves the icon for the currently selected item (first-stage grid icon). */
+function selectedItemIcon(itemId: string): string {
+  return getHintItemIcon(itemId, trackerSettings.value);
+}
 
 /** Resolves display names, prefixing game variants that would be ambiguous. */
 const displayNameResolver = computed(() =>
@@ -86,8 +92,8 @@ function handleClear() {
     <div class="hint-item-picker__selected" @click="toggleOpen">
       <template v-if="modelValue && modelValue !== 'JUNK'">
         <img
-          v-if="modelValue && getItemIcon(modelValue)"
-          :src="getItemIcon(modelValue)"
+          v-if="modelValue && selectedItemIcon(modelValue)"
+          :src="selectedItemIcon(modelValue)"
           class="hint-item-picker__icon"
           alt=""
         />

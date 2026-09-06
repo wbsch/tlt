@@ -5,7 +5,7 @@
 //    variants by prefixing their name with the game they belong to.
 
 import { GI_ITEM_LIST } from '../data/giItems';
-import { getItemIcon } from '../data/itemIcons';
+import { getGridItemIcon } from '../data/itemIcons';
 import { getItemName, ITEM_DATABASE } from '../data/items';
 import itemGrids from '../data/itemGrids.json';
 import { collectAllGridItemIds } from './itemGridRef';
@@ -31,13 +31,33 @@ export function getItemGamePrefix(itemId: string): string | null {
 }
 
 /**
+ * Resolve the icon shown for an item in the hint tracker (dropdowns and
+ * recorded hint rows). Uses the item grid's first-stage icon (count 0)
+ * resolved against the current tracker settings, so multi-stage items
+ * (e.g. Hookshot, Ocarina, Bow) show the same image the grid displays for
+ * their first stage. Falls back to the regular item icon for items without
+ * grid variants.
+ */
+export function getHintItemIcon(
+  itemId: string,
+  settings?: Record<string, unknown> | null,
+): string {
+  return getGridItemIcon(itemId, 0, { settings: settings ?? null });
+}
+
+/**
  * The items selectable for hint recording: every item that appears in the item
  * grid (deduplicated, first appearance only for progressive), optionally
  * restricted to the current seed's item pool.
  * When `poolItemIds` is null/empty, all grid items are returned.
+ *
+ * Icons use the item grid's first-stage icon (count 0) resolved against the
+ * current tracker settings, so multi-stage items (e.g. Hookshot, Ocarina)
+ * show the same image the grid displays for their first stage.
  */
 export function getHintItemEntries(
   poolItemIds?: Iterable<string> | null,
+  settings?: Record<string, unknown> | null,
 ): HintItemEntry[] {
   const gridIds = collectAllGridItemIds(itemGrids);
   const pool = poolItemIds ? new Set(poolItemIds) : null;
@@ -48,7 +68,11 @@ export function getHintItemEntries(
     if (seenIds.has(id) || !gridIds.has(id)) return;
     if (pool && !pool.has(id)) return;
     seenIds.add(id);
-    items.push({ id, name, iconPath: getItemIcon(id) });
+    items.push({
+      id,
+      name,
+      iconPath: getHintItemIcon(id, settings),
+    });
   }
 
   // First pass: GI_ITEM_LIST for the ordering
