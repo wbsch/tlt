@@ -1076,3 +1076,90 @@ describe('OoT live scene availability (auto-map-switch guard)', () => {
     expect(parsed!.ootSceneKnown).toBe(true);
   });
 });
+
+describe('MM live scene flag remapping (inverted Stone Tower)', () => {
+  const MM_FIXTURE = 'mm-with-initial-song-of-healing-20260501-143938.json';
+
+  function mmPlaystateChunks(options: {
+    sceneId: number;
+    chestFlags?: number;
+  }): Array<{ name: string; address: number; length: number; data: string }> {
+    const sceneSpec = RAW_CHUNK_SPECS_BY_GAME.mm.find(
+      (spec) => spec.name === 'mm_playstate_scene',
+    );
+    const roomSpec = RAW_CHUNK_SPECS_BY_GAME.mm.find(
+      (spec) => spec.name === 'mm_playstate_room',
+    );
+    const flagsSpec = RAW_CHUNK_SPECS_BY_GAME.mm.find(
+      (spec) => spec.name === 'mm_playstate_flags',
+    );
+    if (!sceneSpec || !roomSpec || !flagsSpec) {
+      throw new Error('Missing MM playstate chunk specs');
+    }
+
+    const sceneData = new Uint8Array(sceneSpec.length);
+    sceneData[0] = (options.sceneId >>> 8) & 0xff;
+    sceneData[1] = options.sceneId & 0xff;
+    const roomData = new Uint8Array(roomSpec.length);
+    roomData[0] = 0;
+    const flagsData = new Uint8Array(flagsSpec.length);
+    if (options.chestFlags !== undefined) {
+      // chest flags live at byte offset 0x10 within the play-state flags chunk
+      // (MM_PLAY_OFF_CHEST_FLAGS - MM_PLAY_OFF_SWITCH0_FLAGS), big-endian.
+      writeU32BE(flagsData, 0x10, options.chestFlags >>> 0);
+    }
+
+    return [sceneSpec, roomSpec, flagsSpec].map((spec, index) => ({
+      name: spec.name,
+      address: spec.address,
+      length: spec.length,
+      data: Buffer.from([sceneData, roomData, flagsData][index]).toString(
+        'base64',
+      ),
+    }));
+  }
+
+  it('attributes a chest collected in the inverted Stone Tower (scene 24) to the normal Stone Tower (scene 22)', () => {
+    const parser = createRawAutotrackerParser('v32_0');
+    const { message } = buildRawMessage(MM_FIXTURE, 1);
+
+    // Stone Tower Temple Inverted Wizzrobe Chest is MM_chest_22_17 (scene 22,
+    // chest bit 17).  The game stores the flag in scene 22's word even though
+    // the player is in scene 24 (inverted), via comboSceneKey/mmSceneId.
+    const parsed = parser.parse({
+      ...message,
+      chunks: [
+        ...message.chunks,
+        ...mmPlaystateChunks({ sceneId: 24, chestFlags: 1 << 17 }),
+      ],
+    });
+
+    expect(parsed).not.toBeNull();
+    const checks = parsedCheckSet(parsed!.checks);
+    expect(checks.has('Stone Tower Temple Inverted Wizzrobe Chest')).toBe(true);
+  });
+
+  it('does not attribute a chest flag to the raw (unremapped) inverted scene index', () => {
+    const parser = createRawAutotrackerParser('v32_0');
+    const { message } = buildRawMessage(MM_FIXTURE, 1);
+
+    // Scene 24 has no chest checks of its own; the flag must be folded into
+    // scene 22.  Assert the remapped check is present and no scene-24 check
+    // name was produced.
+    const parsed = parser.parse({
+      ...message,
+      chunks: [
+        ...message.chunks,
+        ...mmPlaystateChunks({ sceneId: 24, chestFlags: 1 << 17 }),
+      ],
+    });
+
+    expect(parsed).not.toBeNull();
+    const checks = parsedCheckSet(parsed!.checks);
+    expect(checks.has('Stone Tower Temple Inverted Wizzrobe Chest')).toBe(true);
+    // No check should be keyed to the raw scene 24 chest bit 17.
+    expect([...checks].some((name) => name.startsWith('MM_chest_24_'))).toBe(
+      false,
+    );
+  });
+});

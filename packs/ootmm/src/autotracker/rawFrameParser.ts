@@ -898,6 +898,26 @@ const EXTRA_IDX_MM_BOSS = 3;
 const EXTRA_IDX_MM_ITEMS = 4;
 const EXTRA_IDX_MM_TRADE = 5;
 const EXTRA_IDX_MM_FLAGS = 6;
+
+// MM scene IDs that the game folds into a single "canonical" scene for flag
+// storage.  The generator's `comboSceneKey` (item.c) and `mmSceneId` (mark.c)
+// both remap these so that, e.g., a chest collected in the Inverted Stone
+// Tower (scene 0x18) sets the flag in the normal Stone Tower (scene 0x16)
+// word.  The tracker must apply the same remapping when attributing live
+// play-state flag words, otherwise checks collected in the remapped scene are
+// looked up under the wrong scene index and never tracked.
+const MM_SCENE_KEY_REMAP: Record<number, number> = {
+  0x00: 0x45, // MM_SOUTHERN_SWAMP_CLEAR -> MM_SOUTHERN_SWAMP
+  0x18: 0x16, // MM_TEMPLE_STONE_TOWER_INVERTED -> MM_TEMPLE_STONE_TOWER
+  0x48: 0x4d, // MM_GORON_VILLAGE_SPRING -> MM_GORON_VILLAGE_WINTER
+  0x5a: 0x50, // MM_MOUNTAIN_VILLAGE_SPRING -> MM_MOUNTAIN_VILLAGE_WINTER
+  0x5e: 0x5d, // MM_TWIN_ISLANDS_SPRING -> MM_TWIN_ISLANDS_WINTER
+  0x59: 0x58, // MM_STONE_TOWER_INVERTED -> MM_STONE_TOWER
+};
+
+function mmSceneKey(sceneId: number): number {
+  return MM_SCENE_KEY_REMAP[sceneId] ?? sceneId;
+}
 const EXTRA_IDX_MM_FLAGS2 = 7;
 const EXTRA_IDX_COW_FLAGS = 9;
 const EXTRA_IDX_OOT_TRADE_SAVE = 10;
@@ -4576,7 +4596,10 @@ function extractChecks(state: GameState): RawAutotrackerCheck[] {
     switch0 |= cycleFlags.switch0;
     switch1 |= cycleFlags.switch1;
     collectibles |= cycleFlags.collectibles;
-    if (state.mm.hasLiveSceneFlags && sceneIndex === state.mm.liveSceneId) {
+    if (
+      state.mm.hasLiveSceneFlags &&
+      sceneIndex === mmSceneKey(state.mm.liveSceneId)
+    ) {
       chests |= state.mm.liveChestFlags;
       switch0 |= state.mm.liveSwitch0Flags;
       switch1 |= state.mm.liveSwitch1Flags;
