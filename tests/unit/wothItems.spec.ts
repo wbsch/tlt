@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import {
   getWotHCanonicalItemId,
+  isSoulItemId,
   isWotHItemInGrid,
   WOTH_BOTTLE_CONTENT_BASE_ITEM_IDS,
   WOTH_GOLD_DUST_VARIANTS,
@@ -16,15 +17,13 @@ describe('Way of the Hero item normalization', () => {
       expect(getWotHCanonicalItemId('OOT_BOTTLE_MILK')).toBe(
         'OOT_BOTTLE_EMPTY',
       );
-      expect(getWotHCanonicalItemId('MM_BOTTLE_FAIRY')).toBe(
-        'MM_BOTTLE_EMPTY',
-      );
+      expect(getWotHCanonicalItemId('MM_BOTTLE_FAIRY')).toBe('MM_BOTTLE_EMPTY');
       expect(getWotHCanonicalItemId('SHARED_BOTTLE_BLUE_FIRE')).toBe(
         'SHARED_BOTTLE_EMPTY',
       );
     });
 
-    it('normalizes every Ruto\'s Letter variant to the OoT variant', () => {
+    it("normalizes every Ruto's Letter variant to the OoT variant", () => {
       for (const id of WOTH_RUTO_LETTER_VARIANTS) {
         expect(getWotHCanonicalItemId(id)).toBe('OOT_BOTTLE_RUTO_LETTER');
       }
@@ -51,7 +50,7 @@ describe('Way of the Hero item normalization', () => {
       expect(isWotHItemInGrid('MM_BOTTLE_POTION_RED', grid)).toBe(false);
     });
 
-    it('matches Ruto\'s Letter via any variant present in the grid', () => {
+    it("matches Ruto's Letter via any variant present in the grid", () => {
       // Non-shared mode: OoT variant is in the grid.
       expect(
         isWotHItemInGrid(
@@ -91,11 +90,39 @@ describe('Way of the Hero item normalization', () => {
       expect(isWotHItemInGrid('OOT_BOW', grid)).toBe(true);
       expect(isWotHItemInGrid('OOT_BOMB_BAG', grid)).toBe(false);
     });
+
+    it('matches souls even though they are not in the item grid', () => {
+      const emptyGrid = new Set<string>();
+      expect(isWotHItemInGrid('OOT_SOUL_ENEMY_STALFOS', emptyGrid)).toBe(true);
+      expect(isWotHItemInGrid('MM_SOUL_BOSS_GOHT', emptyGrid)).toBe(true);
+      expect(isWotHItemInGrid('OOT_SOUL_NPC_SARIA', emptyGrid)).toBe(true);
+      expect(isWotHItemInGrid('OOT_SOUL_ANIMAL_CUCCO', emptyGrid)).toBe(true);
+      expect(isWotHItemInGrid('SHARED_SOUL_MISC_FAIRY', emptyGrid)).toBe(true);
+    });
+  });
+
+  describe('isSoulItemId', () => {
+    it('recognizes all soul kinds across games', () => {
+      expect(isSoulItemId('OOT_SOUL_ENEMY_STALFOS')).toBe(true);
+      expect(isSoulItemId('MM_SOUL_BOSS_GOHT')).toBe(true);
+      expect(isSoulItemId('OOT_SOUL_NPC_SARIA')).toBe(true);
+      expect(isSoulItemId('OOT_SOUL_ANIMAL_CUCCO')).toBe(true);
+      expect(isSoulItemId('SHARED_SOUL_MISC_FAIRY')).toBe(true);
+    });
+
+    it('does not match non-soul items', () => {
+      expect(isSoulItemId('OOT_BOW')).toBe(false);
+      expect(isSoulItemId('MM_HOOKSHOT')).toBe(false);
+      expect(isSoulItemId('OOT_SOUL')).toBe(false);
+    });
   });
 
   describe('WOTH_BOTTLE_CONTENT_BASE_ITEM_IDS', () => {
-    it('does not map Ruto\'s Letter or Gold Dust to Empty Bottle', () => {
-      for (const id of [...WOTH_RUTO_LETTER_VARIANTS, ...WOTH_GOLD_DUST_VARIANTS]) {
+    it("does not map Ruto's Letter or Gold Dust to Empty Bottle", () => {
+      for (const id of [
+        ...WOTH_RUTO_LETTER_VARIANTS,
+        ...WOTH_GOLD_DUST_VARIANTS,
+      ]) {
         expect(WOTH_BOTTLE_CONTENT_BASE_ITEM_IDS[id]).toBeUndefined();
       }
     });

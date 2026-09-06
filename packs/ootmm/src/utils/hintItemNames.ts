@@ -9,6 +9,7 @@ import { getGridItemIcon } from '../data/itemIcons';
 import { getItemName, ITEM_DATABASE } from '../data/items';
 import itemGrids from '../data/itemGrids.json';
 import { collectAllGridItemIds } from './itemGridRef';
+import { isSoulItemId } from './wothItems';
 
 export interface HintItemEntry {
   id: string;
@@ -125,7 +126,10 @@ export function getHintItemEntries(
   const items: HintItemEntry[] = [];
 
   function addItem(id: string, name: string): void {
-    if (seenIds.has(id) || !gridIds.has(id)) return;
+    // Souls are not in the item grid, but are still selectable for hint
+    // recording (Always/Sometimes and Region hints). They are excluded only
+    // when an explicit pool (e.g. Moon Trial masks) does not contain them.
+    if (seenIds.has(id) || (!gridIds.has(id) && !isSoulItemId(id))) return;
     if (pool && !pool.has(id)) return;
     seenIds.add(id);
     items.push({
