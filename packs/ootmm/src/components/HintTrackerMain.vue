@@ -1052,7 +1052,7 @@ function removeMoonHint(index: number) {
             <span v-if="hint.itemId === 'JUNK'" class="hint-row__junk"
               >Junk</span
             >
-            <template v-else>
+            <span v-else class="hint-row__hint-item">
               <img
                 v-if="getHintItemIcon(hint.itemId, trackerSettings)"
                 :src="getHintItemIcon(hint.itemId, trackerSettings)"
@@ -1062,7 +1062,7 @@ function removeMoonHint(index: number) {
               <span class="hint-row__item-name">{{
                 resolveItemName(hint.itemId)
               }}</span>
-            </template>
+            </span>
           </div>
           <button
             class="hint-row__delete"
@@ -1239,7 +1239,7 @@ function removeMoonHint(index: number) {
             <span v-if="hint.itemId === 'JUNK'" class="hint-row__junk"
               >Junk</span
             >
-            <template v-else>
+            <span v-else class="hint-row__hint-item">
               <img
                 v-if="getHintItemIcon(hint.itemId, trackerSettings)"
                 :src="getHintItemIcon(hint.itemId, trackerSettings)"
@@ -1249,7 +1249,7 @@ function removeMoonHint(index: number) {
               <span class="hint-row__item-name">{{
                 resolveItemName(hint.itemId)
               }}</span>
-            </template>
+            </span>
           </div>
           <button
             class="hint-row__delete"
