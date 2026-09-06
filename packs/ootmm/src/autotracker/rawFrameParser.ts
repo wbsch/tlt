@@ -895,6 +895,7 @@ const MM_CYCLE_FLAGS_SIZE = MM_PERM_COUNT * 0x14;
 const EXTRA_IDX_OOT_TRADE = 0;
 const EXTRA_IDX_OOT_FLAGS = 2;
 const EXTRA_IDX_MM_BOSS = 3;
+const EXTRA_IDX_MM_ITEMS = 4;
 const EXTRA_IDX_MM_TRADE = 5;
 const EXTRA_IDX_MM_FLAGS = 6;
 const EXTRA_IDX_MM_FLAGS2 = 7;
@@ -1024,6 +1025,13 @@ const MM_ITEM_RUTO_LETTER = 0xb6;
 
 // Event check flag for detecting traded-away bottle contents
 const EV_OOT_CHK_KING_ZORA_MOVED = 0x33; // Set when Ruto's Letter is delivered to King Zora
+
+// MmExtraItems bitfield (see OoTMM combo/mm/save.h) is packed MSB-first:
+// hookshot:2 (31-30), ocarina:2 (29-28), goldDust:1 (27), hammerGFS:2 (26-25),
+// boomPicto:2 (24-23), bowSlingshot:2 (22-21), stoneGerudoSkull:3 (20-18),
+// gibdoSpooky:2 (17-16), unused:16. goldDust is latched when Gold Dust is first
+// obtained and persists after the bottle is traded to the Goron blacksmith.
+const MM_EXTRA_ITEMS_GOLD_DUST_BIT = 1 << 27;
 
 const EMPTY_INVENTORY_ITEM = 0xff;
 
@@ -4409,10 +4417,15 @@ function extractItems(state: GameState): RawAutotrackerItem[] {
     'MM_BOTTLE_RUTO_LETTER',
     countMmBottleItem(mm.items, MM_ITEM_RUTO_LETTER),
   );
+  const goldDustBottleCount = countMmBottleItem(mm.items, MM_ITEM_GOLD_DUST);
+  const goldDustObtained =
+    ((oot.extraRecords[EXTRA_IDX_MM_ITEMS] ?? 0) &
+      MM_EXTRA_ITEMS_GOLD_DUST_BIT) !==
+    0;
   appendPositiveItem(
     items,
     'MM_BOTTLED_GOLD_DUST',
-    countMmBottleItem(mm.items, MM_ITEM_GOLD_DUST),
+    goldDustBottleCount > 0 || goldDustObtained ? 1 : 0,
   );
 
   const mmTradeRecord = oot.extraRecords[EXTRA_IDX_MM_TRADE] ?? 0;

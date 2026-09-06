@@ -737,6 +737,31 @@ describe('raw frame parser', () => {
     expect(items.get('MM_MASK_SPOOKY')).toBeUndefined();
   });
 
+  it('keeps Gold Dust owned after the bottle is traded via the MmExtraItems.goldDust bit', () => {
+    const parser = createRawAutotrackerParser('v32_0');
+    // MmExtraItems.goldDust is record 4, bit 27. It is latched when Gold Dust
+    // is first obtained and persists after the bottle is traded away.
+    const parsed = parser.parse(
+      buildMinimalOotMessage({ [EXTRA_IDX_MM_ITEMS]: 1 << 27 }),
+    );
+    expect(parsed).not.toBeNull();
+
+    const items = parsedItemMap(parsed!.items);
+    expect(items.get('MM_BOTTLED_GOLD_DUST')).toBe(1);
+  });
+
+  it('does not report Gold Dust when the goldDust bit is unset', () => {
+    const parser = createRawAutotrackerParser('v32_0');
+    // A non-zero extra record keeps the save plausible without setting goldDust.
+    const parsed = parser.parse(
+      buildMinimalOotMessage({ [EXTRA_IDX_OOT_TRADE]: 1 }),
+    );
+    expect(parsed).not.toBeNull();
+
+    const items = parsedItemMap(parsed!.items);
+    expect(items.get('MM_BOTTLED_GOLD_DUST')).toBeUndefined();
+  });
+
   it('tracks the OOT powder keg separately from OOT bombs', () => {
     const parser = createRawAutotrackerParser('v32_0');
     // The powder keg occupies the bombs slot (0xa7) and sets the bombSlot
