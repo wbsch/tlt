@@ -285,6 +285,26 @@ const OWL_STATUE_PREFIX = 'MM_OWL_';
 const OOT_RUSTY_KEY_PREFIX = 'OOT_RUSTY_KEY_';
 const MM_RUSTY_KEY_PREFIX = 'MM_RUSTY_KEY_';
 
+/**
+ * Maps the `mmPreActivatedOwls` setting values to the corresponding owl statue
+ * location names (as they appear in the world graph, prefixed with "MM ").
+ * These locations are made "starting" by the OoTMM randomizer when an owl is
+ * pre-activated, so the tracker must hide them from the check list and exclude
+ * them from reachability.
+ */
+const PRE_ACTIVATED_OWL_LOCATION_NAMES: Record<string, string> = {
+  clocktown: 'MM Clock Town Owl Statue',
+  milkroad: 'MM Milk Road Owl Statue',
+  swamp: 'MM Southern Swamp Owl Statue',
+  woodfall: 'MM Woodfall Owl Statue',
+  mountain: 'MM Mountain Village Owl Statue',
+  snowhead: 'MM Snowhead Owl Statue',
+  greatbay: 'MM Great Bay Coast Owl Statue',
+  zoracape: 'MM Zora Cape Owl Statue',
+  canyon: 'MM Ikana Canyon Owl Statue',
+  tower: 'MM Stone Tower Owl Statue',
+};
+
 const PRICE_COUNT_OOT_SHOPS = 64;
 const PRICE_COUNT_OOT_SCRUBS = 38;
 const PRICE_COUNT_OOT_MERCHANTS = 4;
@@ -1813,8 +1833,6 @@ export class OoTMMTracker implements TrackerPack {
       wonderItemsSetting !== '' &&
       wonderItemsSetting !== 'none';
 
-    if (!hideZeldaLocations && !hideCourtyardWonderItem) return hidden;
-
     const locationNames: string[] = [];
     if (hideZeldaLocations) {
       locationNames.push("OOT Zelda's Letter", "OOT Zelda's Song");
@@ -1822,6 +1840,9 @@ export class OoTMMTracker implements TrackerPack {
     if (hideCourtyardWonderItem) {
       locationNames.push('OOT Castle Courtyard Wonder Item');
     }
+    locationNames.push(...this.getPreActivatedOwlLocationNames());
+
+    if (locationNames.length === 0) return hidden;
 
     for (let worldId = 0; worldId < this.worlds.length; worldId += 1) {
       for (const locationName of locationNames) {
@@ -1830,6 +1851,40 @@ export class OoTMMTracker implements TrackerPack {
     }
 
     return hidden;
+  }
+
+  /**
+   * Returns the location names of owl statues that are pre-activated via the
+   * `mmPreActivatedOwls` setting. These locations are made "starting" by the
+   * OoTMM randomizer (trivially reachable and already collected), so they must
+   * be hidden from the check list and excluded from reachability.
+   *
+   * This only applies when owl statues are shuffled (`owlShuffle !== 'none'`):
+   * in that case the owl statue item (the ability to soar there) is shuffled
+   * elsewhere, so a pre-activated owl is *not* actually reachable until the
+   * player finds the corresponding `MM_OWL_*` item. In vanilla owl shuffle the
+   * existing auto-tracking logic handles owl statues instead.
+   */
+  private getPreActivatedOwlLocationNames(): string[] {
+    if (this.isVanillaOwlShuffle()) return [];
+
+    const preActivated = (this.settings as { mmPreActivatedOwls?: unknown })
+      ?.mmPreActivatedOwls;
+    if (!preActivated || typeof preActivated !== 'object') return [];
+
+    const { type, values } = preActivated as {
+      type?: unknown;
+      values?: unknown;
+    };
+    if (type !== 'specific' || !Array.isArray(values)) return [];
+
+    const names: string[] = [];
+    for (const value of values) {
+      if (typeof value !== 'string') continue;
+      const name = PRE_ACTIVATED_OWL_LOCATION_NAMES[value];
+      if (name) names.push(name);
+    }
+    return names;
   }
 
   private updatePreCompletedLocations(): void {
