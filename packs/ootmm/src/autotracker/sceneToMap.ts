@@ -92,8 +92,8 @@ export const MM_SCENE_TO_MAP: Record<number, string> = {
   80: 'mm_mountain_village', // MM_MOUNTAIN_VILLAGE_WINTER
   82: 'mm_southern_swamp', // MM_DEKU_SHRINE (in Ikana)
   83: 'mm_termina_field', // MM_ROAD_IKANA
-  88: 'mm_stone_tower_temple', // MM_STONE_TOWER
-  89: 'mm_stone_tower_temple', // MM_STONE_TOWER_INVERTED
+  88: 'mm_ikana_canyon', // MM_STONE_TOWER
+  89: 'mm_ikana_canyon', // MM_STONE_TOWER_INVERTED
   90: 'mm_mountain_village', // MM_MOUNTAIN_VILLAGE_SPRING
   91: 'mm_mountain_village', // MM_PATH_SNOWHEAD
   92: 'mm_mountain_village', // MM_SNOWHEAD (temple exterior)
