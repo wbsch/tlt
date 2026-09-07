@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, ref } from 'vue';
+import { computed, onBeforeUnmount, onMounted, ref } from 'vue';
 import { storeToRefs } from 'pinia';
 import { useOoTMMSessionStore } from '../stores/ootmmSession';
 import {
@@ -90,13 +90,33 @@ function toggleOpen() {
   }
 }
 
+function closeDropdown() {
+  isOpen.value = false;
+}
+
+function handleWindowKeydown(event: KeyboardEvent) {
+  if (event.key !== 'Escape' || !isOpen.value) {
+    return;
+  }
+  event.preventDefault();
+  closeDropdown();
+}
+
+onMounted(() => {
+  window.addEventListener('keydown', handleWindowKeydown);
+});
+
+onBeforeUnmount(() => {
+  window.removeEventListener('keydown', handleWindowKeydown);
+});
+
 function handleClear() {
   emit('update:modelValue', '');
 }
 </script>
 
 <template>
-  <div class="hint-item-picker">
+  <div class="hint-item-picker" @keydown.esc.stop="closeDropdown">
     <div class="hint-item-picker__selected" @click="toggleOpen">
       <template v-if="modelValue && modelValue !== 'JUNK'">
         <img
