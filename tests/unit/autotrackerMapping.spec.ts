@@ -174,6 +174,43 @@ describe('autotracker composite item inference', () => {
     expect(translated.OOT_RUPEE_MAGICAL).toBe(1);
   });
 
+  it('infers a silver rupee pouch from a completed silver rupee count', () => {
+    const availableItemIds = makeAvailableItemIds([
+      'OOT_RUPEE_MAGICAL',
+      'OOT_POUCH_SILVER_DC',
+    ]);
+    const itemMaxCounts = makeItemMaxCounts({
+      OOT_RUPEE_SILVER_DC: 5,
+    });
+
+    const translated = translateAutotrackerItems(
+      [{ id: 'OOT_RUPEE_SILVER_DC', qty: 5 }],
+      availableItemIds,
+      itemMaxCounts,
+    );
+
+    expect(translated.OOT_POUCH_SILVER_DC).toBe(1);
+    expect(translated.OOT_RUPEE_MAGICAL).toBe(1);
+  });
+
+  it('does not infer a silver rupee pouch from an incomplete count', () => {
+    const availableItemIds = makeAvailableItemIds([
+      'OOT_RUPEE_MAGICAL',
+      'OOT_POUCH_SILVER_DC',
+    ]);
+    const itemMaxCounts = makeItemMaxCounts({
+      OOT_RUPEE_SILVER_DC: 5,
+    });
+
+    const translated = translateAutotrackerItems(
+      [{ id: 'OOT_RUPEE_SILVER_DC', qty: 3 }],
+      availableItemIds,
+      itemMaxCounts,
+    );
+
+    expect(translated.OOT_POUCH_SILVER_DC).toBeUndefined();
+  });
+
   it('infers the transcendent fairy from all available fairy groups', () => {
     const availableItemIds = makeAvailableItemIds([
       'MM_TRANSCENDENT_FAIRY',

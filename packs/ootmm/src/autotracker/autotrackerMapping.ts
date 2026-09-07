@@ -762,6 +762,7 @@ export const DERIVED_AUTOTRACKER_ITEM_IDS: ReadonlySet<string> = new Set([
   'MM_PLATINUM_TOKEN',
   'SHARED_PLATINUM_TOKEN',
   'OOT_RUPEE_MAGICAL',
+  ...OOT_SILVER_GROUPS.map((g) => g.pouchId),
   'MM_TRANSCENDENT_FAIRY',
   ...OOT_BOMBCHU_BAG_IDS,
   ...MM_BOMBCHU_BAG_IDS,
@@ -795,6 +796,16 @@ function deriveAutotrackerOnlyItems(
         group.smallKeyId,
         group.keyRingId,
       ]) && isKeyGroupComplete(state, group, itemMaxCounts),
+    );
+  }
+
+  for (const group of OOT_SILVER_GROUPS) {
+    setDerivedExact(
+      state,
+      availableItemIds,
+      group.pouchId,
+      isItemGroupRelevant(availableItemIds, [group.rupeeId, group.pouchId]) &&
+        isSilverGroupComplete(state, group, itemMaxCounts),
     );
   }
 
