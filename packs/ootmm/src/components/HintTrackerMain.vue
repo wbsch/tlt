@@ -367,6 +367,21 @@ const collectedLocationIdSet = computed(
   () => new Set(collectedLocationIds.value),
 );
 
+/**
+ * Location IDs that are shuffled under the current settings. Path/Way of the
+ * Hero hints only name items that can actually be shuffled into a region, so
+ * items sitting at unshuffled (fixed/vanilla) locations — e.g. a Goron Tunic
+ * bought from a shop — must not be surfaced as WotH targets.
+ */
+const shuffledLocationIdSet = computed(
+  () =>
+    new Set(
+      allLocations.value
+        .filter((loc) => loc.isShuffled !== false)
+        .map((loc) => loc.id),
+    ),
+);
+
 // ── Item name lookup (pool-aware, with game prefixes for ambiguous names) ──
 const hintItemEntries = computed(() =>
   getHintItemEntries(
@@ -475,16 +490,19 @@ function getItemsInRegion(regionId: string): Array<{
   locationId: string;
 }> {
   const all = regionToItemsMap.value.get(regionId) ?? [];
-  // Filter to only items whose location has been collected AND that exist in
-  // the item grid (same set as the hint item dropdown), so Path hints don't
-  // surface items the tracker cannot represent (maps, compasses, junk...).
-  // Items OoTMM can never use as Way of the Hero targets (dungeon keys,
-  // skulltula tokens, stray fairies) are excluded too.
+  // Filter to only items whose location has been collected, is shuffled under
+  // the current settings, AND exists in the item grid (same set as the hint
+  // item dropdown), so Path hints don't surface items the tracker cannot
+  // represent (maps, compasses, junk...) or items at fixed/vanilla locations
+  // (e.g. a Goron Tunic bought from a shop). Items OoTMM can never use as Way
+  // of the Hero targets (dungeon keys, skulltula tokens, stray fairies) are
+  // excluded too.
   const seen = new Set<string>();
   return all
     .filter((item) => {
       if (
         !collectedLocationIdSet.value.has(item.locationId) ||
+        !shuffledLocationIdSet.value.has(item.locationId) ||
         !isWotHItemInGrid(item.itemId, hintGridItemIdSet.value) ||
         isWotHExcludedItemId(item.itemId)
       ) {
