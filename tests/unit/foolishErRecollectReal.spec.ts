@@ -1,12 +1,11 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { createPinia, setActivePinia } from 'pinia';
-import { nextTick } from 'vue';
 import { useOoTMMSessionStore } from '../../packs/ootmm/src/stores/ootmmSession';
 import { OoTMMTracker } from '../../packs/ootmm/src/tracker';
 
 function polyfillRaf() {
   if (typeof globalThis.requestAnimationFrame === 'function') return;
-  globalThis.requestAnimationFrame = (cb: FrameRequestCallback) =>
+  globalThis.requestAnimationFrame = (cb: (time: number) => void) =>
     setTimeout(() => cb(performance.now()), 0);
   globalThis.cancelAnimationFrame = (id: number) => clearTimeout(id);
 }

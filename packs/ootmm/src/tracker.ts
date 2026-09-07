@@ -1899,10 +1899,7 @@ export class OoTMMTracker implements TrackerPack {
           exits?: Record<string, unknown>;
         }
       >;
-      const baseAreas = baseWorld.areas as Record<
-        string,
-        { region?: string }
-      >;
+      const baseAreas = baseWorld.areas as Record<string, { region?: string }>;
       const regions = world.regions as Record<string, string>;
       if (!regions) continue;
 
@@ -1976,10 +1973,7 @@ export class OoTMMTracker implements TrackerPack {
       return changed;
     };
 
-    const replaceAllRegions = (
-      oldRegion: string,
-      newRegion: string,
-    ): void => {
+    const replaceAllRegions = (oldRegion: string, newRegion: string): void => {
       for (const [areaName, area] of Object.entries(areas)) {
         if (area.region === oldRegion) {
           changeRegion(areaName, newRegion, true);
