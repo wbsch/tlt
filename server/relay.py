@@ -32,6 +32,12 @@ MAX_MESSAGE_BYTES = 1536 * 1024
 # Hard cap on the stored room document. The server never lets a room grow past
 # this, so a rebroadcast snapshot always fits inside a client's receive cap and
 # a room can never become un-joinable.
+#
+# Sizing: a room that has imported a full spoiler log measures ~863 kB (5008
+# placements ~= 823 kB, ~10 kB of hint text, plus inventory/settings), so this
+# leaves ~185 kB of headroom. Raising it means raising MAX_MESSAGE_BYTES and the
+# client's MAX_MESSAGE_LENGTH with it, and costs the relay that much resident
+# memory per *concurrently active* room.
 MAX_SNAPSHOT_BYTES = 1024 * 1024
 # Hard ceiling on total SQLite storage. Once the database reaches this size the
 # relay refuses to create *new* rooms (existing rooms keep working). This bounds
@@ -82,7 +88,18 @@ MAX_JSON_DEPTH = 16
 # seed while still binding traversal cost well below what MAX_MESSAGE_BYTES
 # alone would allow (~750k items of `[[],[],...]` in a 1536 KiB frame).
 MAX_JSON_ITEMS = 100000
-MAX_JSON_STRING_LENGTH = 4096
+# Generous enough for a whole spoiler-log hint text blob (the raw `hintsText`
+# string alone measures ~10k chars for a full seed), while still far below
+# MAX_MESSAGE_BYTES so a single string can never dominate the frame budget.
+MAX_JSON_STRING_LENGTH = 256 * 1024
+# Room-scoped ring of recently applied mutation ids, used to make op delivery
+# exactly-once. This is required because several ops are order-dependent deltas
+# (the `hints.*.add`/`hints.*.remove` pairs remove by array index), so applying
+# one twice corrupts the room state — unlike the set/replace ops, which are
+# idempotent. A client that reconnects replays its unacked queue under fresh
+# wire opIds, so dedup has to key on a mutation id that survives the replay
+# (see OoTMMRoomSyncConnection.publish).
+MAX_SEEN_MUTATION_IDS = 512
 IDLE_PRUNE_INTERVAL_SEC = 6 * 60 * 60
 OUTBOX_MAX_MESSAGES = 32
 SLOW_PEER_CLOSE_CODE = 1011
@@ -104,6 +121,71 @@ OP_TYPES = {
     "settings.apply",
     "settings.patch_special_conds",
     "session.set_spoiler_log_state",
+    "session.set_spoiler_fish_ids",
+    "session.set_spoiler_placements",
+    # Hint tracker. These mirror OoTMMSyncOperation in
+    # packs/ootmm/src/stores/ootmmSessionSync.ts: the client forwards every op
+    # except `session.reset_defaults` (resetting leaves the room first, so a
+    # reset op never reaches the relay).
+    "hints.path.add",
+    "hints.path.remove",
+    "hints.always-sometimes.add",
+    "hints.always-sometimes.remove",
+    "hints.region.add",
+    "hints.region.remove",
+    "hints.foolish.add",
+    "hints.foolish.remove",
+    "hints.moon.add",
+    "hints.moon.remove",
+    "hints.set_full",
+    "hints.protected_location_ids.set",
+}
+
+# The hint state is five parallel arrays whose *order* is meaningful: the
+# remove ops address entries by index, so the relay must preserve the client's
+# array order (unlike the id lists, which are sorted sets).
+HINT_LIST_FIELDS = (
+    "pathHints",
+    "alwaysSometimesHints",
+    "regionHints",
+    "foolishHints",
+    "moonHints",
+)
+
+# Per-hint validator specs: field name -> (required, optional).
+# `region` is the region id, `itemId` an item id or the literal "JUNK".
+HINT_SHAPES: dict[str, tuple[tuple[str, ...], tuple[str, ...]]] = {
+    "pathHints": (("region", "subType"), ("subId",)),
+    "alwaysSometimesHints": (("location", "itemId"), ("extraItemIds",)),
+    "regionHints": (("region", "itemId"), ()),
+    "foolishHints": (("region",), ()),
+    "moonHints": (("region", "itemId"), ()),
+}
+
+PATH_HINT_SUBTYPES = {
+    "woth",
+    "triforce",
+    "dungeon",
+    "boss",
+    "end-boss",
+    "event",
+}
+
+# `hints.<kind>.add` / `hints.<kind>.remove` -> the hint-tracker list they touch.
+HINT_ADD_OP_TYPES = {
+    "hints.path.add": "pathHints",
+    "hints.always-sometimes.add": "alwaysSometimesHints",
+    "hints.region.add": "regionHints",
+    "hints.foolish.add": "foolishHints",
+    "hints.moon.add": "moonHints",
+}
+
+HINT_REMOVE_OP_TYPES = {
+    "hints.path.remove": "pathHints",
+    "hints.always-sometimes.remove": "alwaysSometimesHints",
+    "hints.region.remove": "regionHints",
+    "hints.foolish.remove": "foolishHints",
+    "hints.moon.remove": "moonHints",
 }
 
 
@@ -119,6 +201,10 @@ class RoomState:
     snapshot_envelope: dict[str, Any]
     lock: asyncio.Lock = field(default_factory=asyncio.Lock)
     clients: dict[Any, "ClientConnection"] = field(default_factory=dict)
+    # Recently applied mutation ids, in application order (oldest first).
+    # Persisted alongside the snapshot so a relay restart doesn't reopen the
+    # duplicate-replay window for a client that is still reconnecting.
+    seen_mutation_ids: list[str] = field(default_factory=list)
 
 
 @dataclass
@@ -217,6 +303,20 @@ def require_exact_keys(value: dict[str, Any], expected: set[str], label: str) ->
         raise ProtocolError(f"{label} has unexpected keys")
 
 
+def require_keys(
+    value: dict[str, Any],
+    required: set[str],
+    optional: set[str],
+    label: str,
+) -> None:
+    """Require ``required`` and allow ``optional``, rejecting anything else."""
+    actual = set(value.keys())
+    if not required.issubset(actual):
+        raise ProtocolError(f"{label} is missing required keys")
+    if not actual.issubset(required | optional):
+        raise ProtocolError(f"{label} has unexpected keys")
+
+
 def require_string(value: Any, label: str, *, min_len: int = 1, max_len: int = MAX_ID_LENGTH) -> str:
     if not isinstance(value, str):
         raise ProtocolError(f"{label} must be a string")
@@ -280,6 +380,132 @@ def normalize_string_map(value: Any, label: str) -> dict[str, str]:
     return dict(items)
 
 
+def require_optional_string(value: Any, label: str) -> str | None:
+    if value is None:
+        return None
+    return require_string(value, label)
+
+
+def require_optional_text(value: Any, label: str) -> str | None:
+    """Like ``require_optional_string`` but for a whole text blob.
+
+    The default ``MAX_ID_LENGTH`` cap is for identifiers; a full spoiler log's
+    hint text measures ~10k chars, so it is bounded by ``MAX_JSON_STRING_LENGTH``
+    instead (still the same bound the JSON tree walk enforces).
+    """
+    if value is None:
+        return None
+    return require_string(value, label, max_len=MAX_JSON_STRING_LENGTH)
+
+
+def normalize_string_list_in_order(value: Any, label: str) -> list[str]:
+    """Validate a string list, preserving order and dropping duplicates.
+
+    Unlike ``normalize_id_list`` this must not sort: the hint tracker addresses
+    entries by array index, so the relay has to keep the client's order.
+    """
+    if not isinstance(value, list):
+        raise ProtocolError(f"{label} must be an array")
+    seen: set[str] = set()
+    ordered: list[str] = []
+    for entry in value:
+        safe_value = require_string(entry, f"{label}[]")
+        if safe_value in seen:
+            continue
+        seen.add(safe_value)
+        ordered.append(safe_value)
+    return ordered
+
+
+def normalize_hint(list_name: str, value: Any, label: str) -> dict[str, Any]:
+    required, optional = HINT_SHAPES[list_name]
+    if not is_object(value):
+        raise ProtocolError(f"{label} must be an object")
+    require_keys(value, set(required), set(optional), label)
+    if list_name == "pathHints":
+        hint: dict[str, Any] = {
+            "region": require_string(value["region"], f"{label}.region"),
+            "subType": require_string(value["subType"], f"{label}.subType"),
+        }
+        if hint["subType"] not in PATH_HINT_SUBTYPES:
+            raise ProtocolError(f"{label}.subType is unknown")
+        if "subId" in value:
+            hint["subId"] = require_nonnegative_int(value["subId"], f"{label}.subId")
+        return hint
+    if list_name == "alwaysSometimesHints":
+        hint = {
+            "location": require_string(value["location"], f"{label}.location"),
+            "itemId": require_string(value["itemId"], f"{label}.itemId"),
+        }
+        if "extraItemIds" in value:
+            hint["extraItemIds"] = normalize_string_list_in_order(
+                value["extraItemIds"], f"{label}.extraItemIds"
+            )
+        return hint
+    if list_name == "foolishHints":
+        return {"region": require_string(value["region"], f"{label}.region")}
+    # regionHints and moonHints share the same shape.
+    return {
+        "region": require_string(value["region"], f"{label}.region"),
+        "itemId": require_string(value["itemId"], f"{label}.itemId"),
+    }
+
+
+def normalize_hint_list(list_name: str, value: Any, label: str) -> list[dict[str, Any]]:
+    if not isinstance(value, list):
+        raise ProtocolError(f"{label} must be an array")
+    return [
+        normalize_hint(list_name, entry, f"{label}[{index}]")
+        for index, entry in enumerate(value)
+    ]
+
+
+def normalize_hint_tracker(value: Any, label: str) -> dict[str, list[dict[str, Any]]]:
+    if not is_object(value):
+        raise ProtocolError(f"{label} must be an object")
+    # All five lists are always present in a client-sent tracker state, so a
+    # missing one means a malformed payload rather than an older client.
+    require_keys(value, set(HINT_LIST_FIELDS), set(), label)
+    return {
+        list_name: normalize_hint_list(list_name, value[list_name], f"{label}.{list_name}")
+        for list_name in HINT_LIST_FIELDS
+    }
+
+
+def normalize_spoiler_placements(value: Any, label: str) -> list[dict[str, Any]]:
+    if not isinstance(value, list):
+        raise ProtocolError(f"{label} must be an array")
+    placements: list[dict[str, Any]] = []
+    for index, entry in enumerate(value):
+        entry_label = f"{label}[{index}]"
+        if not is_object(entry):
+            raise ProtocolError(f"{entry_label} must be an object")
+        require_keys(
+            entry,
+            {"itemId", "itemName", "locationId", "locationName"},
+            {"world", "itemPlayer"},
+            entry_label,
+        )
+        placement: dict[str, Any] = {
+            "itemId": require_string(entry["itemId"], f"{entry_label}.itemId"),
+            "itemName": require_string(entry["itemName"], f"{entry_label}.itemName"),
+            "locationId": require_string(entry["locationId"], f"{entry_label}.locationId"),
+            "locationName": require_string(
+                entry["locationName"], f"{entry_label}.locationName"
+            ),
+        }
+        if "world" in entry:
+            placement["world"] = require_nonnegative_int(
+                entry["world"], f"{entry_label}.world"
+            )
+        if "itemPlayer" in entry:
+            placement["itemPlayer"] = require_nonnegative_int(
+                entry["itemPlayer"], f"{entry_label}.itemPlayer"
+            )
+        placements.append(placement)
+    return placements
+
+
 def canonicalize_json(value: Any) -> Any:
     if value is None or isinstance(value, (bool, int, float, str)):
         return value
@@ -321,7 +547,39 @@ def default_room_document() -> dict[str, Any]:
         "entranceOverrides": {},
         "hasImportedSpoilerLog": False,
         "importedSpoilerLogVersion": None,
+        "spoilerFishItemIds": [],
+        "spoilerPlacements": [],
+        "hintsText": None,
+        "hintTracker": default_hint_tracker(),
+        "hintProtectedLocationIds": [],
     }
+
+
+def default_hint_tracker() -> dict[str, list[dict[str, Any]]]:
+    return {field_name: [] for field_name in HINT_LIST_FIELDS}
+
+
+def _decode_seen_mutation_ids(raw: Any) -> list[str]:
+    """Read the persisted dedup ring, tolerating a corrupt/absent value.
+
+    A bad value only costs duplicate-suppression for that room, so it must never
+    make the room unreadable ("un-joinable") the way a bad snapshot would.
+    """
+    if not isinstance(raw, str):
+        return []
+    try:
+        parsed = json.loads(raw)
+    except json.JSONDecodeError:
+        return []
+    if not isinstance(parsed, list):
+        return []
+    return [entry for entry in parsed if isinstance(entry, str)][
+        -MAX_SEEN_MUTATION_IDS:
+    ]
+
+
+def _encode_seen_mutation_ids(ids: list[str]) -> str:
+    return json.dumps(ids, separators=(",", ":"))
 
 
 def default_snapshot_envelope(room_id: str) -> dict[str, Any]:
@@ -387,8 +645,30 @@ def normalize_room_document(value: Any) -> dict[str, Any]:
         document["importedSpoilerLogVersion"] = (
             None if version is None else require_string(version, "seed.importedSpoilerLogVersion")
         )
+    if "spoilerFishItemIds" in value:
+        document["spoilerFishItemIds"] = normalize_id_list(
+            value["spoilerFishItemIds"], "seed.spoilerFishItemIds"
+        )
+    if "spoilerPlacements" in value:
+        document["spoilerPlacements"] = normalize_spoiler_placements(
+            value["spoilerPlacements"], "seed.spoilerPlacements"
+        )
+    if "hintsText" in value:
+        document["hintsText"] = require_optional_text(
+            value["hintsText"], "seed.hintsText"
+        )
+    if "hintTracker" in value:
+        document["hintTracker"] = normalize_hint_tracker(
+            value["hintTracker"], "seed.hintTracker"
+        )
+    if "hintProtectedLocationIds" in value:
+        document["hintProtectedLocationIds"] = normalize_string_list_in_order(
+            value["hintProtectedLocationIds"], "seed.hintProtectedLocationIds"
+        )
     if not document["hasImportedSpoilerLog"]:
         document["importedSpoilerLogVersion"] = None
+        # Hint text belongs to the imported spoiler log, so it can't outlive it.
+        document["hintsText"] = None
     return document
 
 
@@ -442,9 +722,15 @@ def normalize_op_message(message: dict[str, Any], room_id: str) -> dict[str, Any
 
 
 def normalize_operation_envelope(envelope: dict[str, Any], room_id: str) -> dict[str, Any]:
-    require_exact_keys(
+    # `mutationId` is optional (a pre-existing client omits it, and the local
+    # BroadcastChannel transport never sets it). When present it identifies the
+    # *logical* mutation and is stable across a reconnect replay, which is what
+    # makes exactly-once dedup possible; `opId` is regenerated per send and so
+    # cannot serve that purpose.
+    require_keys(
         envelope,
         {"protocolSchema", "sessionId", "opId", "actorId", "clientClock", "ts", "op"},
+        {"mutationId"},
         "envelope",
     )
     protocol_schema = require_nonnegative_int(envelope["protocolSchema"], "protocolSchema")
@@ -455,7 +741,7 @@ def normalize_operation_envelope(envelope: dict[str, Any], room_id: str) -> dict
         raise ProtocolError("sessionId must match roomId")
     if not is_object(envelope["op"]):
         raise ProtocolError("op must be an object")
-    return {
+    normalized = {
         "protocolSchema": protocol_schema,
         "sessionId": session_id,
         "opId": require_string(envelope["opId"], "opId"),
@@ -464,6 +750,9 @@ def normalize_operation_envelope(envelope: dict[str, Any], room_id: str) -> dict
         "ts": require_nonnegative_int(envelope["ts"], "ts"),
         "op": normalize_operation(envelope["op"]),
     }
+    if "mutationId" in envelope:
+        normalized["mutationId"] = require_string(envelope["mutationId"], "mutationId")
+    return normalized
 
 
 def normalize_operation(operation: dict[str, Any]) -> dict[str, Any]:
@@ -568,15 +857,73 @@ def normalize_operation(operation: dict[str, Any]) -> dict[str, Any]:
             "patch": canonicalize_json(operation["patch"]),
         }
     if op_type == "session.set_spoiler_log_state":
-        require_exact_keys(operation, {"type", "imported", "ootmmVersion"}, op_type)
+        # `hintsText` is optional: older clients omit it entirely, in which case
+        # the relay keeps whatever hint text the room already holds.
+        require_keys(
+            operation,
+            {"type", "imported", "ootmmVersion"},
+            {"hintsText"},
+            op_type,
+        )
         if not isinstance(operation["imported"], bool):
             raise ProtocolError("imported must be a boolean")
         version = operation["ootmmVersion"]
         normalized_version = None if version is None else require_string(version, "ootmmVersion")
-        return {
+        normalized: dict[str, Any] = {
             "type": op_type,
             "imported": operation["imported"],
             "ootmmVersion": normalized_version,
+        }
+        if "hintsText" in operation:
+            normalized["hintsText"] = require_optional_text(
+                operation["hintsText"], "hintsText"
+            )
+        # Hint text belongs to the imported spoiler log, so dropping the import
+        # drops the text with it (mirrors setSpoilerLogImportState on the client).
+        if not operation["imported"]:
+            normalized["hintsText"] = None
+        return normalized
+    if op_type == "session.set_spoiler_fish_ids":
+        require_exact_keys(operation, {"type", "ids"}, op_type)
+        return {
+            "type": op_type,
+            "ids": normalize_id_list(operation["ids"], "ids"),
+        }
+    if op_type == "session.set_spoiler_placements":
+        require_exact_keys(operation, {"type", "placements"}, op_type)
+        # Order is preserved: the spoiler-log table is rendered in log order.
+        return {
+            "type": op_type,
+            "placements": normalize_spoiler_placements(
+                operation["placements"], "placements"
+            ),
+        }
+    if op_type in HINT_ADD_OP_TYPES:
+        list_name = HINT_ADD_OP_TYPES[op_type]
+        require_exact_keys(operation, {"type", "hint"}, op_type)
+        return {
+            "type": op_type,
+            "hint": normalize_hint(list_name, operation["hint"], "hint"),
+        }
+    if op_type in HINT_REMOVE_OP_TYPES:
+        require_exact_keys(operation, {"type", "index"}, op_type)
+        return {
+            "type": op_type,
+            "index": require_nonnegative_int(operation["index"], "index"),
+        }
+    if op_type == "hints.set_full":
+        require_exact_keys(operation, {"type", "state"}, op_type)
+        return {
+            "type": op_type,
+            "state": normalize_hint_tracker(operation["state"], "state"),
+        }
+    if op_type == "hints.protected_location_ids.set":
+        require_exact_keys(operation, {"type", "ids"}, op_type)
+        return {
+            "type": op_type,
+            "ids": normalize_string_list_in_order(
+                operation["ids"], "ids"
+            ),
         }
     # Unreachable while every OP_TYPES entry has a branch above. If a new type
     # is ever added to OP_TYPES without one, fail the op loudly here — as a
@@ -646,6 +993,39 @@ def reduce_snapshot(snapshot_envelope: dict[str, Any], envelope: dict[str, Any],
     elif op_type == "session.set_spoiler_log_state":
         state["hasImportedSpoilerLog"] = bool(op["imported"])
         state["importedSpoilerLogVersion"] = op["ootmmVersion"] if op["imported"] else None
+        if not op["imported"]:
+            # Dropping the import drops the hint text that came with it.
+            state["hintsText"] = None
+        elif "hintsText" in op:
+            state["hintsText"] = op["hintsText"]
+    elif op_type == "session.set_spoiler_fish_ids":
+        state["spoilerFishItemIds"] = list(op["ids"])
+    elif op_type == "session.set_spoiler_placements":
+        state["spoilerPlacements"] = copy.deepcopy(op["placements"])
+    elif op_type in HINT_ADD_OP_TYPES:
+        # Appends are not deduped here: the client appends blindly, and two
+        # identical hints are legitimate distinct entries as far as the
+        # index-addressed remove ops are concerned.
+        list_name = HINT_ADD_OP_TYPES[op_type]
+        state["hintTracker"][list_name] = [
+            *state["hintTracker"][list_name],
+            copy.deepcopy(op["hint"]),
+        ]
+    elif op_type in HINT_REMOVE_OP_TYPES:
+        list_name = HINT_REMOVE_OP_TYPES[op_type]
+        entries = list(state["hintTracker"][list_name])
+        index = op["index"]
+        # Out-of-range removes are ignored rather than rejected: the array is
+        # a shared, concurrently-edited list, so a peer's index can already be
+        # stale. (Exactly-once delivery is what keeps this from being reached
+        # by a replayed op.)
+        if 0 <= index < len(entries):
+            del entries[index]
+        state["hintTracker"][list_name] = entries
+    elif op_type == "hints.set_full":
+        state["hintTracker"] = copy.deepcopy(op["state"])
+    elif op_type == "hints.protected_location_ids.set":
+        state["hintProtectedLocationIds"] = list(op["ids"])
 
     return {
         "protocolSchema": snapshot_envelope["protocolSchema"],
@@ -720,10 +1100,23 @@ class RelayServer:
               state_type TEXT NOT NULL,
               latest_seq INTEGER NOT NULL,
               snapshot_json TEXT NOT NULL,
-              updated_at_ms INTEGER NOT NULL
+              updated_at_ms INTEGER NOT NULL,
+              seen_mutation_ids TEXT NOT NULL DEFAULT '[]'
             );
             """
         )
+        # `seen_mutation_ids` was added after the first release; an existing
+        # sync.db predates it, so add the column when it's missing. Keeping the
+        # column (rather than a side table) means the dedup ring is written in
+        # the same single UPDATE as the snapshot, so the two can never disagree.
+        columns = {
+            str(row["name"])
+            for row in self.db.execute("PRAGMA table_info(rooms)").fetchall()
+        }
+        if "seen_mutation_ids" not in columns:
+            self.db.execute(
+                "ALTER TABLE rooms ADD COLUMN seen_mutation_ids TEXT NOT NULL DEFAULT '[]'"
+            )
         self.db.commit()
 
     def _touch_room_activity(self, room_id: str, ts_ms: int) -> None:
@@ -812,7 +1205,7 @@ class RelayServer:
 
         row = self.db.execute(
             """
-            SELECT room_key, latest_seq, snapshot_json
+            SELECT room_key, latest_seq, snapshot_json, seen_mutation_ids
             FROM rooms
             WHERE room_id = ?
             """,
@@ -881,6 +1274,7 @@ class RelayServer:
             room_key=stored_key,
             latest_seq=int(row["latest_seq"]),
             snapshot_envelope=snapshot,
+            seen_mutation_ids=_decode_seen_mutation_ids(row["seen_mutation_ids"]),
         )
         self.rooms[room_id] = room
         return room
@@ -1017,14 +1411,38 @@ class RelayServer:
         self._broadcast_peer_count(room, exclude=exclude)
 
     async def handle_operation(self, room: RoomState, websocket: Any, envelope: dict[str, Any]) -> None:
+        def build_payload(seq: int) -> str:
+            return json.dumps(
+                {
+                    "type": "op",
+                    "serverSeq": seq,
+                    "envelope": envelope,
+                },
+                separators=(",", ":"),
+                sort_keys=True,
+            )
+
         async with room.lock:
             client = room.clients.get(websocket)
             if client is None:
                 raise ProtocolError("client is not joined")
-            # No server-side opId dedup: every op is an absolute set/replace, so
-            # reduce_snapshot is idempotent and reapplying a duplicate yields the
-            # same snapshot. Clients also dedup by opId. If a non-idempotent
-            # (delta) op is ever added, dedup must come back.
+
+            # Exactly-once: a client replays its unacked queue after a reconnect,
+            # and an op that the relay committed before the socket died is
+            # replayed too — under a fresh `opId`, but the same `mutationId`. Ops
+            # are no longer all idempotent now that the hint tracker appends and
+            # removes by array index, so a duplicate has to be dropped rather
+            # than re-reduced.
+            mutation_id = envelope.get("mutationId")
+            if mutation_id is not None and mutation_id in room.seen_mutation_ids:
+                # Echo only to the sender: that echo is the ack it is waiting on
+                # to drop the op from its replay queue. Rebroadcasting would make
+                # every peer apply the delta a second time (and the sender skips
+                # its own echoes anyway). Nothing was committed, so the seq is
+                # left at its current value.
+                client.outbox.put_nowait(build_payload(room.latest_seq))
+                return
+
             committed_at = now_ms()
             next_seq = room.latest_seq + 1
             next_snapshot = reduce_snapshot(room.snapshot_envelope, envelope, captured_at=committed_at)
@@ -1038,6 +1456,12 @@ class RelayServer:
                 # keeps the room joinable instead of bricking it.
                 raise ProtocolError("room state too large")
 
+            next_seen_mutation_ids = room.seen_mutation_ids
+            if mutation_id is not None:
+                next_seen_mutation_ids = [*room.seen_mutation_ids, mutation_id][
+                    -MAX_SEEN_MUTATION_IDS:
+                ]
+
             # Single statement, so the implicit transaction is enough; the
             # rollback guard keeps a failed write from leaving an open
             # transaction on the shared connection.
@@ -1045,13 +1469,15 @@ class RelayServer:
                 self.db.execute(
                     """
                     UPDATE rooms
-                    SET latest_seq = ?, snapshot_json = ?, updated_at_ms = ?
+                    SET latest_seq = ?, snapshot_json = ?, updated_at_ms = ?,
+                        seen_mutation_ids = ?
                     WHERE room_id = ?
                     """,
                     (
                         next_seq,
                         next_snapshot_json,
                         committed_at,
+                        _encode_seen_mutation_ids(next_seen_mutation_ids),
                         room.room_id,
                     ),
                 )
@@ -1062,17 +1488,9 @@ class RelayServer:
 
             room.latest_seq = next_seq
             room.snapshot_envelope = next_snapshot
+            room.seen_mutation_ids = next_seen_mutation_ids
 
-            payload = json.dumps(
-                {
-                    "type": "op",
-                    "serverSeq": next_seq,
-                    "envelope": envelope,
-                },
-                separators=(",", ":"),
-                sort_keys=True,
-            )
-            self._broadcast(room, payload)
+            self._broadcast(room, build_payload(next_seq))
 
     async def disconnect(self, room: RoomState | None, websocket: Any) -> None:
         if room is None:

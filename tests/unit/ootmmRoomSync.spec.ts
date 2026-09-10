@@ -124,6 +124,39 @@ describe('ootmm room sync', () => {
     expect(join.snapshotEnvelope.state).toBeDefined();
   });
 
+  it('includes hints and the spoiler log in the seed snapshot', async () => {
+    const sessionStore = useOoTMMSessionStore();
+    // Seed from pre-existing local state: a room created from this join must
+    // know about the hints and spoiler log the host already has.
+    sessionStore.setSpoilerLogImportState(true, '32.2');
+    sessionStore.setSpoilerPlacements([
+      {
+        itemId: 'OOT_HOOKSHOT',
+        itemName: 'Hookshot',
+        locationId: 'OOT_DMT_CHEST',
+        locationName: 'DMT Chest',
+      },
+    ]);
+    sessionStore.addRegionHint({
+      region: 'MM_GREAT_BAY',
+      itemId: 'MM_HOOKSHOT',
+    });
+    sessionStore.addHintProtectedLocationIds(['OOT_DMT_CHEST']);
+
+    sessionStore.startRoomSync({ roomCode: 'ROOMSEEDIN', url: 'ws://test/' });
+    await flushMicrotasks();
+    const seedSocket = MockWebSocket.instances[0];
+    const join = JSON.parse(seedSocket.sent[0]);
+    const seedState = join.snapshotEnvelope.state;
+
+    expect(seedState.hasImportedSpoilerLog).toBe(true);
+    expect(seedState.spoilerPlacements).toHaveLength(1);
+    expect(seedState.hintTracker.regionHints).toEqual([
+      { region: 'MM_GREAT_BAY', itemId: 'MM_HOOKSHOT' },
+    ]);
+    expect(seedState.hintProtectedLocationIds).toEqual(['OOT_DMT_CHEST']);
+  });
+
   it('disables undo/redo while in a coop room', async () => {
     const { sessionStore } = await joinRoom('ROOMU');
     sessionStore.toggleCollectedLocation('CHECK_U');
@@ -519,5 +552,192 @@ describe('ootmm room sync', () => {
     const { sessionStore } = await joinRoom('ROOMY');
     sessionStore.stopRoomSync();
     expect(sessionStore.coopRoomCode).toBe('ROOMY');
+  });
+
+  it('publishes spoiler-log and hint state to the room', async () => {
+    const { sessionStore, socket } = await joinRoom('ROOMSP');
+
+    sessionStore.setSpoilerLogImportState(true, '32.2');
+    sessionStore.setSpoilerFishItemIds(new Set(['OOT_FISH', 'MM_FISH']));
+    sessionStore.setSpoilerPlacements([
+      {
+        itemId: 'OOT_HOOKSHOT',
+        itemName: 'Hookshot',
+        locationId: 'OOT_DMT_CHEST',
+        locationName: 'DMT Chest',
+      },
+    ]);
+    sessionStore.addPathHint({ region: 'OOT_KOKIRI_FOREST', subType: 'woth' });
+    sessionStore.addRegionHint({
+      region: 'MM_GREAT_BAY',
+      itemId: 'MM_HOOKSHOT',
+    });
+    sessionStore.addHintProtectedLocationIds(['OOT_DMT_CHEST']);
+
+    const ops = socket.sent
+      .map((raw) => JSON.parse(raw))
+      .filter((message) => message.type === 'op')
+      .map((message) => message.envelope.op);
+    const types = ops.map((op) => op.type);
+
+    expect(types).toContain('session.set_spoiler_log_state');
+    expect(types).toContain('session.set_spoiler_fish_ids');
+    expect(types).toContain('session.set_spoiler_placements');
+    expect(types).toContain('hints.path.add');
+    expect(types).toContain('hints.region.add');
+    expect(types).toContain('hints.protected_location_ids.set');
+
+    const placementsOp = ops.find(
+      (op) => op.type === 'session.set_spoiler_placements',
+    );
+    expect(placementsOp.placements).toHaveLength(1);
+    expect(placementsOp.placements[0].itemName).toBe('Hookshot');
+    expect(ops.find((op) => op.type === 'hints.path.add').hint).toEqual({
+      region: 'OOT_KOKIRI_FOREST',
+      subType: 'woth',
+    });
+  });
+
+  it('sends a stable mutationId so a replay is applied only once', async () => {
+    const { sessionStore, socket } = await joinRoom('ROOMM');
+    const before = socket.sent.length;
+    sessionStore.addPathHint({ region: 'REGION_A', subType: 'woth' });
+
+    const published = socket.sent
+      .slice(before)
+      .map((raw) => JSON.parse(raw))
+      .filter((message) => message.type === 'op');
+    expect(published).toHaveLength(1);
+    expect(typeof published[0].envelope.mutationId).toBe('string');
+    expect(published[0].envelope.mutationId.length).toBeGreaterThan(0);
+    // The wire opId is regenerated per send, so it cannot be the dedup key.
+    expect(published[0].envelope.opId).not.toBe(
+      published[0].envelope.mutationId,
+    );
+  });
+
+  it('does not compact away ordered hint deltas while disconnected', async () => {
+    const { sessionStore, socket } = await joinRoom('ROOMH');
+
+    // Drop the socket so the edits made below queue up instead of going out.
+    socket.close();
+    // The client reconnects on a backoff timer, not a microtask.
+    await delay(800);
+    const reconnected = MockWebSocket.instances[1];
+    expect(reconnected).toBeDefined();
+
+    sessionStore.addFoolishHint({ region: 'REGION_A' });
+    sessionStore.addFoolishHint({ region: 'REGION_B' });
+    // Removes address the list by index, so both adds must survive even though
+    // they share an op type.
+    sessionStore.removeFoolishHint(1);
+
+    // The flush only runs once the reconnect snapshot lands.
+    reconnected.emitMessage({
+      type: 'joined',
+      roomId: 'ROOMH',
+      baselineSeq: 0,
+      peerCount: 1,
+    });
+    reconnected.emitMessage({
+      type: 'snapshot',
+      snapshotEnvelope: {
+        protocolSchema: 1,
+        stateSchema: 1,
+        stateType: 'ootmm-session',
+        sessionId: 'ROOMH',
+        baselineSeq: 0,
+        capturedAt: 0,
+        state: {
+          inventoryById: {},
+          collectedLocationIds: [],
+          junkLocationIds: [],
+          preCompletedDungeons: [],
+          songEvents: {},
+          shopPrices: {},
+          trackerSettings: {},
+          entranceOverrides: {},
+          hasImportedSpoilerLog: false,
+          importedSpoilerLogVersion: null,
+        },
+      },
+    });
+    await flushMicrotasks();
+
+    const hintOps = reconnected.sent
+      .map((raw) => JSON.parse(raw))
+      .filter(
+        (message) =>
+          message.type === 'op' &&
+          message.envelope.op.type.startsWith('hints.foolish.'),
+      )
+      .map((message) => message.envelope.op);
+
+    expect(hintOps.map((op) => op.type)).toEqual([
+      'hints.foolish.add',
+      'hints.foolish.add',
+      'hints.foolish.remove',
+    ]);
+    expect(hintOps[0].hint).toEqual({ region: 'REGION_A' });
+    expect(hintOps[1].hint).toEqual({ region: 'REGION_B' });
+    expect(hintOps[2].index).toBe(1);
+  });
+
+  it('carries spoiler and hint state in the seed snapshot and restores it', async () => {
+    const { sessionStore, socket } = await joinRoom('ROOMSEED');
+    expect(sessionStore.coopRoomCode).toBe('ROOMSEED');
+
+    // A remote peer's snapshot must restore the hint tracker and spoiler log,
+    // which previously were dropped on join.
+    socket.emitMessage({
+      type: 'snapshot',
+      snapshotEnvelope: {
+        protocolSchema: 1,
+        stateSchema: 1,
+        stateType: 'ootmm-session',
+        sessionId: 'ROOMSEED',
+        baselineSeq: 5,
+        capturedAt: 0,
+        state: {
+          inventoryById: {},
+          collectedLocationIds: [],
+          junkLocationIds: [],
+          preCompletedDungeons: [],
+          songEvents: {},
+          shopPrices: {},
+          trackerSettings: {},
+          entranceOverrides: {},
+          hasImportedSpoilerLog: true,
+          importedSpoilerLogVersion: '32.2',
+          spoilerFishItemIds: ['OOT_FISH'],
+          spoilerPlacements: [
+            {
+              itemId: 'OOT_HOOKSHOT',
+              itemName: 'Hookshot',
+              locationId: 'OOT_DMT_CHEST',
+              locationName: 'DMT Chest',
+            },
+          ],
+          hintsText: 'WOTH: Kokiri Forest',
+          hintTracker: {
+            pathHints: [{ region: 'OOT_KOKIRI_FOREST', subType: 'woth' }],
+            alwaysSometimesHints: [],
+            regionHints: [],
+            foolishHints: [],
+            moonHints: [],
+          },
+          hintProtectedLocationIds: ['OOT_DMT_CHEST'],
+        },
+      },
+    });
+    await flushMicrotasks();
+
+    expect(sessionStore.hasImportedSpoilerLog).toBe(true);
+    expect(sessionStore.hintsText).toBe('WOTH: Kokiri Forest');
+    expect(sessionStore.hintTracker.pathHints).toEqual([
+      { region: 'OOT_KOKIRI_FOREST', subType: 'woth' },
+    ]);
+    expect(sessionStore.hintProtectedLocationIds).toEqual(['OOT_DMT_CHEST']);
+    expect(sessionStore.spoilerPlacements).toHaveLength(1);
   });
 });

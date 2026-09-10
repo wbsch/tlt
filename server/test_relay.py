@@ -381,10 +381,10 @@ class RelayIntegrationTests(unittest.IsolatedAsyncioTestCase):
         self.assertEqual(row["latest_seq"], 0)
 
     async def test_duplicate_op_id_is_reapplied_idempotently(self) -> None:
-        # The server no longer dedups by opId; every op is an absolute
-        # set/replace, so reapplying a duplicate must leave the state identical
-        # to applying it once. (That idempotency is what makes dropping the
-        # seen_ops table safe.)
+        # Ops without a `mutationId` are not deduped: they are all absolute
+        # set/replace ops, so reapplying a duplicate must leave the state
+        # identical to applying it once. (That idempotency is what makes it safe
+        # for a pre-mutationId client to have no dedup.)
         websocket, _, _ = await self.connect()
         room = self.relay.rooms[self.room_id]
         envelope = {
@@ -420,6 +420,504 @@ class RelayIntegrationTests(unittest.IsolatedAsyncioTestCase):
         self.assertEqual(snapshot["baselineSeq"], 2)
         # Idempotent: the state is the same as if the op had been applied once.
         self.assertEqual(snapshot["state"]["inventoryById"], {"OOT_BOW": 1})
+
+    def _envelope(
+        self,
+        op: dict,
+        *,
+        op_id: str = "op-1",
+        actor_id: str = "actor-a",
+        mutation_id: str | None = None,
+    ) -> dict:
+        envelope = {
+            "protocolSchema": 1,
+            "sessionId": self.room_id,
+            "opId": op_id,
+            "actorId": actor_id,
+            "clientClock": 1,
+            "ts": 1000,
+            "op": op,
+        }
+        if mutation_id is not None:
+            envelope["mutationId"] = mutation_id
+        return envelope
+
+    async def _apply(self, websocket, op: dict, **kwargs) -> None:
+        room = self.relay.rooms[self.room_id]
+        await self.relay.handle_operation(room, websocket, self._envelope(op, **kwargs))
+
+    async def _stored_state(self) -> dict:
+        row = self.relay.db.execute(
+            "SELECT snapshot_json FROM rooms WHERE room_id = ?",
+            (self.room_id,),
+        ).fetchone()
+        return json.loads(row["snapshot_json"])["state"]
+
+    async def test_spoiler_and_hint_ops_land_in_the_room_snapshot(self) -> None:
+        websocket, _, _ = await self.connect()
+        await self._apply(
+            websocket,
+            {
+                "type": "session.set_spoiler_log_state",
+                "imported": True,
+                "ootmmVersion": "32.2",
+                "hintsText": "WOTH: Kokiri Forest",
+            },
+        )
+        await self._apply(
+            websocket,
+            {"type": "session.set_spoiler_fish_ids", "ids": ["OOT_FISH", "MM_FISH"]},
+        )
+        await self._apply(
+            websocket,
+            {
+                "type": "session.set_spoiler_placements",
+                "placements": [
+                    {
+                        "itemId": "OOT_HOOKSHOT",
+                        "itemName": "Hookshot",
+                        "locationId": "OOT_DMT_CHEST",
+                        "locationName": "DMT Chest",
+                        "world": 0,
+                    }
+                ],
+            },
+        )
+        await self._apply(
+            websocket,
+            {
+                "type": "hints.path.add",
+                "hint": {"region": "OOT_KOKIRI_FOREST", "subType": "woth"},
+            },
+        )
+        await self._apply(
+            websocket,
+            {
+                "type": "hints.region.add",
+                "hint": {"region": "MM_GREAT_BAY", "itemId": "MM_HOOKSHOT"},
+            },
+        )
+        await self._apply(
+            websocket,
+            {"type": "hints.protected_location_ids.set", "ids": ["OOT_DMT_CHEST"]},
+        )
+
+        state = await self._stored_state()
+        self.assertTrue(state["hasImportedSpoilerLog"])
+        self.assertEqual(state["importedSpoilerLogVersion"], "32.2")
+        self.assertEqual(state["hintsText"], "WOTH: Kokiri Forest")
+        # Ids are stored as a sorted set, so transmission order doesn't matter.
+        self.assertEqual(state["spoilerFishItemIds"], ["OOT_FISH", "MM_FISH"])
+        self.assertEqual(len(state["spoilerPlacements"]), 1)
+        self.assertEqual(state["spoilerPlacements"][0]["itemName"], "Hookshot")
+        self.assertEqual(
+            state["hintTracker"]["pathHints"],
+            [{"region": "OOT_KOKIRI_FOREST", "subType": "woth"}],
+        )
+        self.assertEqual(
+            state["hintTracker"]["regionHints"],
+            [{"region": "MM_GREAT_BAY", "itemId": "MM_HOOKSHOT"}],
+        )
+        self.assertEqual(state["hintProtectedLocationIds"], ["OOT_DMT_CHEST"])
+
+        # A peer joining later receives all of it in the seed snapshot.
+        _, _, snapshot = await self.connect(actor_id="actor-b")
+        peer_state = snapshot["snapshotEnvelope"]["state"]
+        self.assertEqual(peer_state["hintsText"], "WOTH: Kokiri Forest")
+        self.assertEqual(len(peer_state["hintTracker"]["pathHints"]), 1)
+        self.assertEqual(len(peer_state["spoilerPlacements"]), 1)
+
+    async def test_hint_removes_are_index_addressed_and_preserve_order(self) -> None:
+        websocket, _, _ = await self.connect()
+        for region in ("REGION_A", "REGION_B", "REGION_C"):
+            await self._apply(
+                websocket,
+                {"type": "hints.foolish.add", "hint": {"region": region}},
+            )
+        # Remove the middle entry: order must be preserved, not sorted.
+        await self._apply(websocket, {"type": "hints.foolish.remove", "index": 1})
+
+        state = await self._stored_state()
+        self.assertEqual(
+            [hint["region"] for hint in state["hintTracker"]["foolishHints"]],
+            ["REGION_A", "REGION_C"],
+        )
+
+        # An out-of-range index is ignored rather than fatal, so a stale peer
+        # index can't brick the room.
+        await self._apply(websocket, {"type": "hints.foolish.remove", "index": 99})
+        state = await self._stored_state()
+        self.assertEqual(len(state["hintTracker"]["foolishHints"]), 2)
+
+    async def test_duplicate_mutation_id_is_applied_exactly_once(self) -> None:
+        websocket, _, _ = await self.connect()
+        room = self.relay.rooms[self.room_id]
+        add_op = {
+            "type": "hints.path.add",
+            "hint": {"region": "REGION_A", "subType": "woth"},
+        }
+        await self.relay.handle_operation(
+            room, websocket, self._envelope(add_op, mutation_id="mutation-1")
+        )
+        # The same logical mutation replayed after a reconnect: new wire opId,
+        # same mutationId.
+        await self.relay.handle_operation(
+            room,
+            websocket,
+            self._envelope(add_op, op_id="op-2", mutation_id="mutation-1"),
+        )
+        await self._drain_room()
+
+        state = await self._stored_state()
+        self.assertEqual(
+            len(state["hintTracker"]["pathHints"]),
+            1,
+            "a replayed mutation must not be applied twice",
+        )
+        row = self.relay.db.execute(
+            "SELECT latest_seq FROM rooms WHERE room_id = ?",
+            (self.room_id,),
+        ).fetchone()
+        self.assertEqual(row["latest_seq"], 1, "the duplicate must not commit")
+        # The duplicate is still echoed back to the sender: that echo is the ack
+        # the client waits on before dropping the op from its replay queue.
+        op_events = [
+            json.loads(msg)
+            for msg in websocket.sent
+            if json.loads(msg).get("type") == "op"
+        ]
+        self.assertEqual([e["envelope"]["opId"] for e in op_events], ["op-1", "op-2"])
+
+    async def test_duplicate_mutation_id_is_acked_but_not_rebroadcast(self) -> None:
+        first, _, _ = await self.connect(actor_id="actor-a")
+        second, _, _ = await self.connect(actor_id="actor-b")
+        room = self.relay.rooms[self.room_id]
+        op = {"type": "hints.moon.add", "hint": {"region": "R", "itemId": "I"}}
+        await self.relay.handle_operation(
+            room, first, self._envelope(op, mutation_id="m1")
+        )
+        # Let the first broadcast reach both peers before clearing, so only the
+        # duplicate's fan-out is under test.
+        await self._drain_room()
+        second.sent.clear()
+        await self.relay.handle_operation(
+            room, first, self._envelope(op, op_id="op-dup", mutation_id="m1")
+        )
+        await self._drain_room()
+
+        # A peer must not receive the duplicate: it would apply the delta again.
+        peer_ops = [
+            json.loads(msg)
+            for msg in second.sent
+            if json.loads(msg).get("type") == "op"
+        ]
+        self.assertEqual(peer_ops, [])
+        state = await self._stored_state()
+        self.assertEqual(len(state["hintTracker"]["moonHints"]), 1)
+
+    async def test_seen_mutation_ids_survive_a_relay_restart(self) -> None:
+        websocket, _, _ = await self.connect()
+        room = self.relay.rooms[self.room_id]
+        op = {"type": "hints.region.add", "hint": {"region": "R", "itemId": "I"}}
+        await self.relay.handle_operation(
+            room, websocket, self._envelope(op, mutation_id="persisted-1")
+        )
+        await self._drain_room()
+        await cancel_sender_tasks(self.relay)
+
+        # A fresh server over the same database must still recognise the
+        # mutation, or a client reconnecting after a relay restart would replay
+        # the op into a room that already has it.
+        restarted = RelayServer(self.db_path, idle_prune_days=7.0)
+        try:
+            room = await restarted.get_room(self.room_id, self.room_key)
+            self.assertEqual(room.seen_mutation_ids, ["persisted-1"])
+            websocket2 = FakeWebSocket()
+            await restarted.join(
+                websocket2,
+                {
+                    "type": "join",
+                    "roomId": self.room_id,
+                    "roomKey": self.room_key,
+                    "actorId": "actor-a",
+                },
+            )
+            await restarted.handle_operation(
+                room,
+                websocket2,
+                self._envelope(op, op_id="op-2", mutation_id="persisted-1"),
+            )
+            row = restarted.db.execute(
+                "SELECT snapshot_json FROM rooms WHERE room_id = ?",
+                (self.room_id,),
+            ).fetchone()
+            state = json.loads(row["snapshot_json"])["state"]
+            self.assertEqual(len(state["hintTracker"]["regionHints"]), 1)
+            await cancel_sender_tasks(restarted)
+        finally:
+            restarted.db.close()
+
+    async def test_dropping_the_spoiler_import_clears_hint_text(self) -> None:
+        websocket, _, _ = await self.connect()
+        await self._apply(
+            websocket,
+            {
+                "type": "session.set_spoiler_log_state",
+                "imported": True,
+                "ootmmVersion": "32.2",
+                "hintsText": "some hints",
+            },
+        )
+        await self._apply(
+            websocket,
+            {
+                "type": "session.set_spoiler_log_state",
+                "imported": False,
+                "ootmmVersion": None,
+            },
+        )
+        state = await self._stored_state()
+        self.assertFalse(state["hasImportedSpoilerLog"])
+        self.assertIsNone(state["hintsText"])
+
+    async def test_spoiler_log_state_without_hints_text_keeps_existing_text(self) -> None:
+        websocket, _, _ = await self.connect()
+        await self._apply(
+            websocket,
+            {
+                "type": "session.set_spoiler_log_state",
+                "imported": True,
+                "ootmmVersion": "32.2",
+                "hintsText": "some hints",
+            },
+        )
+        # A client that predates hintsText omits the key entirely.
+        await self._apply(
+            websocket,
+            {
+                "type": "session.set_spoiler_log_state",
+                "imported": True,
+                "ootmmVersion": "32.2",
+            },
+        )
+        state = await self._stored_state()
+        self.assertEqual(state["hintsText"], "some hints")
+
+    async def test_large_hint_text_is_accepted(self) -> None:
+        # A full spoiler log's `hintsText` is ~10k chars: it must be bounded by
+        # MAX_JSON_STRING_LENGTH, not the MAX_ID_LENGTH identifier cap.
+        websocket, _, _ = await self.connect()
+        hints_text = "WOTH: somewhere\n" * 800
+        self.assertGreater(len(hints_text), 256)
+        await self._apply(
+            websocket,
+            {
+                "type": "session.set_spoiler_log_state",
+                "imported": True,
+                "ootmmVersion": "32.2",
+                "hintsText": hints_text,
+            },
+        )
+        state = await self._stored_state()
+        self.assertEqual(state["hintsText"], hints_text)
+
+    async def test_seed_snapshot_with_large_hint_text_is_accepted(self) -> None:
+        # The join seed carries the host's hint text, so the same cap applies
+        # there. (Found in the browser: the seed was rejected with
+        # "seed.hintsText is too long" and the coop session never connected.)
+        hints_text = "region hint line\n" * 800
+        json_bytes = json.dumps({"hintsText": hints_text})
+        self.assertGreater(len(hints_text), 256)
+        room_id = "seedbigtext"
+        message = normalize_join_message(
+            {
+                "type": "join",
+                "roomId": room_id,
+                "roomKey": self.room_key,
+                "actorId": "actor-a",
+                "snapshotEnvelope": {
+                    "state": {
+                        "hasImportedSpoilerLog": True,
+                        "hintsText": hints_text,
+                    }
+                },
+            }
+        )
+        room = self.relay._get_or_create_room_locked(
+            room_id,
+            self.room_key,
+            seed_snapshot=message["seedSnapshot"],
+        )
+        self.assertEqual(room.snapshot_envelope["state"]["hintsText"], hints_text)
+        # Sanity check that this is not simply an unbounded pass-through.
+        self.assertLess(len(json_bytes), MAX_SNAPSHOT_BYTES)
+
+    async def test_hint_text_beyond_the_json_string_cap_is_rejected(self) -> None:
+        # Something far past a real spoiler log's hint text is still refused.
+        # (Validation lives in normalize_operation, not handle_operation.)
+        oversized = "x" * (256 * 1024 + 1)
+        with self.assertRaises(ProtocolError) as cm:
+            normalize_operation(
+                {
+                    "type": "session.set_spoiler_log_state",
+                    "imported": True,
+                    "ootmmVersion": "32.2",
+                    "hintsText": oversized,
+                }
+            )
+        self.assertIn("too long", str(cm.exception))
+
+    def test_hint_and_spoiler_validators_reject_malformed_payloads(self) -> None:
+        cases = [
+            ({"type": "hints.path.add", "hint": {"region": "R"}}, "missing required keys"),
+            (
+                {"type": "hints.path.add", "hint": {"region": "R", "subType": "nonsense"}},
+                "subType is unknown",
+            ),
+            (
+                {
+                    "type": "hints.path.add",
+                    "hint": {"region": "R", "subType": "woth", "extra": 1},
+                },
+                "unexpected keys",
+            ),
+            ({"type": "hints.region.add", "hint": {"region": "R"}}, "missing required keys"),
+            ({"type": "hints.path.remove", "index": -1}, "non-negative"),
+            ({"type": "hints.set_full", "state": {"pathHints": []}}, "missing required keys"),
+            (
+                {"type": "session.set_spoiler_fish_ids", "ids": ["ok", 5]},
+                "must be a string",
+            ),
+            ({"type": "session.set_spoiler_placements", "placements": {}}, "must be an array"),
+            (
+                {"type": "session.set_spoiler_placements", "placements": [{"itemId": "I"}]},
+                "missing required keys",
+            ),
+            (
+                {
+                    "type": "session.set_spoiler_log_state",
+                    "imported": "yes",
+                    "ootmmVersion": None,
+                },
+                "imported must be a boolean",
+            ),
+        ]
+        for operation, expected in cases:
+            with self.subTest(operation=operation):
+                with self.assertRaises(ProtocolError) as cm:
+                    normalize_operation(operation)
+                self.assertIn(expected, str(cm.exception))
+
+    def test_every_client_op_type_has_a_validator(self) -> None:
+        # Mirrors the op union in packs/ootmm/src/stores/ootmmSessionSync.ts,
+        # minus `session.reset_defaults` (the client leaves the room instead of
+        # sending a reset op). A type listed in OP_TYPES without a validator
+        # branch would be rejected at runtime by normalize_operation.
+        payloads = {
+            "inventory.set_full": {"inventoryById": {}},
+            "inventory.set_count": {"itemId": "I", "count": 1},
+            "locations.set_collected": {"locationId": "L", "collected": True},
+            "locations.set_ids": {"ids": []},
+            "locations.set_junk_ids": {"ids": []},
+            "world.set_precompleted": {"ids": []},
+            "world.set_song_events": {"events": {}},
+            "world.set_shop_prices": {"prices": {}},
+            "world.set_shop_price": {"locationId": "L", "price": 5},
+            "world.set_entrance_override": {"src": "A", "dst": "B"},
+            "world.set_entrance_overrides": {"overrides": {}},
+            "settings.apply": {"settings": {}},
+            "settings.patch_special_conds": {"patch": {}},
+            "session.set_spoiler_log_state": {"imported": True, "ootmmVersion": None},
+            "session.set_spoiler_fish_ids": {"ids": []},
+            "session.set_spoiler_placements": {"placements": []},
+            "hints.path.add": {"hint": {"region": "R", "subType": "woth"}},
+            "hints.path.remove": {"index": 0},
+            "hints.always-sometimes.add": {"hint": {"location": "L", "itemId": "I"}},
+            "hints.always-sometimes.remove": {"index": 0},
+            "hints.region.add": {"hint": {"region": "R", "itemId": "I"}},
+            "hints.region.remove": {"index": 0},
+            "hints.foolish.add": {"hint": {"region": "R"}},
+            "hints.foolish.remove": {"index": 0},
+            "hints.moon.add": {"hint": {"region": "R", "itemId": "I"}},
+            "hints.moon.remove": {"index": 0},
+            "hints.set_full": {
+                "state": {
+                    "pathHints": [],
+                    "alwaysSometimesHints": [],
+                    "regionHints": [],
+                    "foolishHints": [],
+                    "moonHints": [],
+                }
+            },
+            "hints.protected_location_ids.set": {"ids": []},
+        }
+        self.assertEqual(sorted(payloads), sorted(OP_TYPES))
+        for op_type in sorted(OP_TYPES):
+            with self.subTest(op_type=op_type):
+                normalize_operation({"type": op_type, **payloads[op_type]})
+
+    def test_seed_snapshot_carries_spoiler_and_hint_state(self) -> None:
+        # A fresh room id: the room materialized in asyncSetUp already exists and
+        # a seed only applies at creation time.
+        room_id = "seededroom"
+        seed = {
+            "state": {
+                "hasImportedSpoilerLog": True,
+                "importedSpoilerLogVersion": "32.2",
+                "hintsText": "hint text",
+                "spoilerPlacements": [
+                    {
+                        "itemId": "OOT_HOOKSHOT",
+                        "itemName": "Hookshot",
+                        "locationId": "OOT_DMT_CHEST",
+                        "locationName": "DMT Chest",
+                    }
+                ],
+                "hintTracker": {
+                    "pathHints": [{"region": "R", "subType": "woth"}],
+                    "alwaysSometimesHints": [],
+                    "regionHints": [],
+                    "foolishHints": [],
+                    "moonHints": [],
+                },
+                "hintProtectedLocationIds": ["OOT_DMT_CHEST"],
+            }
+        }
+        message = normalize_join_message(
+            {
+                "type": "join",
+                "roomId": room_id,
+                "roomKey": self.room_key,
+                "actorId": "actor-a",
+                "snapshotEnvelope": seed,
+            }
+        )
+        room = self.relay._get_or_create_room_locked(
+            room_id,
+            self.room_key,
+            seed_snapshot=message["seedSnapshot"],
+        )
+        state = room.snapshot_envelope["state"]
+        self.assertEqual(state["hintsText"], "hint text")
+        self.assertEqual(len(state["spoilerPlacements"]), 1)
+        self.assertEqual(len(state["hintTracker"]["pathHints"]), 1)
+        self.assertEqual(state["hintProtectedLocationIds"], ["OOT_DMT_CHEST"])
+
+    async def test_seed_snapshot_without_spoiler_import_drops_hint_text(self) -> None:
+        room_id = "seednospoiler"
+        room = self.relay._get_or_create_room_locked(
+            room_id,
+            self.room_key,
+            seed_snapshot={
+                "state": {
+                    "hasImportedSpoilerLog": False,
+                    "hintsText": "text that has no import to belong to",
+                }
+            },
+        )
+        state = room.snapshot_envelope["state"]
+        self.assertFalse(state["hasImportedSpoilerLog"])
+        self.assertIsNone(state["hintsText"])
 
     async def test_handler_drops_connection_without_timely_join(self) -> None:
         websocket = HangingWebSocket()

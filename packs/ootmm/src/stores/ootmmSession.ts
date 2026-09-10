@@ -229,8 +229,14 @@ function cloneSyncOperation(operation: OoTMMSyncOperation): OoTMMSyncOperation {
 // the op hasn't been put on an open socket yet — or when the socket it was
 // sent on died before the echo, in which case the next flush re-sends it
 // under a fresh wire opId.
+//
+// mutationId is generated once, when the op is first queued, and is reused for
+// every replay. The relay dedups on it, so an op that was committed before the
+// socket died is not applied a second time — which matters because the hint
+// ops are index-addressed deltas that corrupt the list when applied twice.
 type PendingRoomOperation = {
   wireOpId: string | null;
+  mutationId: string;
   op: OoTMMSyncOperation;
 };
 
@@ -239,6 +245,13 @@ type PendingRoomOperation = {
 // keeps the queue bounded by the number of distinct fields touched while
 // disconnected, and stops a replayed stale op from clobbering a newer edit.
 function pendingRoomOpCompactionKey(op: OoTMMSyncOperation): string | null {
+  // Hint-tracker mutations are ordered deltas, not absolute replaces: the
+  // removes address their list by index, so dropping an earlier add/remove of
+  // the same kind would shift every later index and corrupt the list. They must
+  // all survive — and replay in order — even for the two full-state ops, since
+  // superseding an earlier `hints.set_full` would move it after deltas that
+  // were originally applied on top of it.
+  if (op.type.startsWith('hints.')) return null;
   switch (op.type) {
     case 'inventory.set_count':
       return `${op.type}:${op.itemId}`;
@@ -627,6 +640,7 @@ export const useOoTMMSessionStore = defineStore('ootmm-session', () => {
     }
     const entry: PendingRoomOperation = {
       wireOpId: null,
+      mutationId: createRandomSyncId(),
       op: cloneSyncOperation(operation),
     };
     pendingRoomOperations.push(entry);
@@ -684,7 +698,10 @@ export const useOoTMMSessionStore = defineStore('ootmm-session', () => {
           });
           if (roomSyncGeneration !== activeGeneration) return;
           if (roomConnection !== activeConnection) return;
-          entry.wireOpId = activeConnection.publish(entry.op);
+          // Same mutationId as the original send, so the relay can drop this as
+          // a duplicate if the first attempt was actually committed before the
+          // socket died.
+          entry.wireOpId = activeConnection.publish(entry.op, entry.mutationId);
         }
       })
       .catch((error) => {
@@ -707,7 +724,7 @@ export const useOoTMMSessionStore = defineStore('ootmm-session', () => {
     // flight, and a server killed before persisting the op all leave the entry
     // unacked, so the reconnect flush replays it on top of the room snapshot.
     const entry = trackPendingRoomOperation(operation);
-    entry.wireOpId = roomConnection.publish(operation);
+    entry.wireOpId = roomConnection.publish(entry.op, entry.mutationId);
   }
 
   function publishSnapshotAsOps(snapshot: SessionSnapshot): void {
@@ -1084,6 +1101,18 @@ export const useOoTMMSessionStore = defineStore('ootmm-session', () => {
         hasImportedSpoilerLog: hasImportedSpoilerLog.value,
         importedSpoilerLogVersion: importedSpoilerLogVersion.value,
         spoilerFishItemIds: [...spoilerFishItemIds.value],
+        spoilerPlacements: spoilerPlacements.value.map((p) => ({ ...p })),
+        hintsText: hintsText.value,
+        hintTracker: {
+          pathHints: hintTracker.value.pathHints.map((h) => ({ ...h })),
+          alwaysSometimesHints: hintTracker.value.alwaysSometimesHints.map(
+            (h) => ({ ...h }),
+          ),
+          regionHints: hintTracker.value.regionHints.map((h) => ({ ...h })),
+          foolishHints: hintTracker.value.foolishHints.map((h) => ({ ...h })),
+          moonHints: hintTracker.value.moonHints.map((h) => ({ ...h })),
+        },
+        hintProtectedLocationIds: [...hintProtectedLocationIds.value],
       },
     };
   }
@@ -1122,6 +1151,29 @@ export const useOoTMMSessionStore = defineStore('ootmm-session', () => {
       REMOTE_MUTATION_OPTIONS,
     );
     spoilerFishItemIds.value = uniqueStrings(state.spoilerFishItemIds ?? []);
+    // A room created before the spoiler log was imported has no placements in
+    // its document, so fall back to empty rather than leaving stale local data
+    // that the room does not know about.
+    spoilerPlacements.value = Array.isArray(state.spoilerPlacements)
+      ? state.spoilerPlacements.map((p) => ({ ...p }))
+      : [];
+    hintsText.value = state.hintsText ?? null;
+    hintTracker.value = state.hintTracker
+      ? {
+          pathHints: state.hintTracker.pathHints?.map((h) => ({ ...h })) ?? [],
+          alwaysSometimesHints:
+            state.hintTracker.alwaysSometimesHints?.map((h) => ({ ...h })) ??
+            [],
+          regionHints:
+            state.hintTracker.regionHints?.map((h) => ({ ...h })) ?? [],
+          foolishHints:
+            state.hintTracker.foolishHints?.map((h) => ({ ...h })) ?? [],
+          moonHints: state.hintTracker.moonHints?.map((h) => ({ ...h })) ?? [],
+        }
+      : createEmptyHintTrackerState();
+    hintProtectedLocationIds.value = [
+      ...(state.hintProtectedLocationIds ?? []),
+    ];
 
     if (state.trackerSettings && typeof state.trackerSettings === 'object') {
       await applySettings(state.trackerSettings, REMOTE_MUTATION_OPTIONS);
@@ -1997,8 +2049,19 @@ export const useOoTMMSessionStore = defineStore('ootmm-session', () => {
     needsLegacyCrossWarpMmSynthesis.value = needed;
   }
 
-  function setSpoilerFishItemIds(ids: Set<string>) {
-    spoilerFishItemIds.value = Array.from(ids);
+  function setSpoilerFishItemIds(ids: Set<string>, options?: MutationOptions) {
+    const next = Array.from(ids);
+    if (
+      next.length === spoilerFishItemIds.value.length &&
+      next.every((id) => spoilerFishItemIds.value.includes(id))
+    ) {
+      return;
+    }
+    spoilerFishItemIds.value = next;
+    publishSyncOperation(
+      { type: 'session.set_spoiler_fish_ids', ids: [...next] },
+      options,
+    );
   }
 
   function setHintsText(text: string | null) {

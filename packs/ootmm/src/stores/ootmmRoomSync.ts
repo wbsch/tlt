@@ -1,4 +1,6 @@
 import { isSafeKey, safeJsonParse } from '@/utils/safeJson';
+import type { ResolvedSpoilerPlacement } from '../types';
+import type { HintTrackerState } from '../data/hintTypes';
 import type {
   OoTMMSyncOperation,
   OoTMMSyncOperationEnvelope,
@@ -25,6 +27,10 @@ export type OoTMMRoomSessionSnapshot = {
   hasImportedSpoilerLog: boolean;
   importedSpoilerLogVersion: string | null;
   spoilerFishItemIds: string[];
+  spoilerPlacements: ResolvedSpoilerPlacement[];
+  hintsText: string | null;
+  hintTracker: HintTrackerState;
+  hintProtectedLocationIds: string[];
 };
 
 export type OoTMMRoomSnapshotEnvelope = {
@@ -58,7 +64,13 @@ export type OoTMMRoomSyncConnection = {
   // Returns the wire opId when the op was actually handed to an open socket,
   // or null when it wasn't sent. "Sent" is not "delivered": the caller must
   // keep the op queued until onOperationAck reports the relay echoed it back.
-  publish: (op: OoTMMSyncOperation) => string | null;
+  //
+  // `mutationId` identifies the *logical* mutation and must stay the same when
+  // the caller replays an op after a reconnect. The relay uses it to apply each
+  // mutation exactly once — ops are not all idempotent (the hint tracker
+  // appends/removes by array index), and a replay can otherwise re-apply an op
+  // the relay already committed before the socket died.
+  publish: (op: OoTMMSyncOperation, mutationId?: string) => string | null;
   disconnect: () => void;
 };
 
@@ -319,7 +331,10 @@ export function createOoTMMRoomSessionSync(
 
   function closeAndStop(reason: string) {
     allowReconnect = false;
-    socket?.close(1008, reason);
+    // 4000, not the server's 1008: the browser WebSocket API only accepts 1000
+    // or 3000-4999 when the *client* initiates the close, and throws
+    // InvalidAccessError otherwise. The reason string carries the detail.
+    socket?.close(4000, reason.slice(0, 123));
   }
 
   function handleServerEvent(message: RoomEventMessage) {
@@ -474,7 +489,7 @@ export function createOoTMMRoomSessionSync(
   connect();
 
   return {
-    publish(op) {
+    publish(op, mutationId) {
       // Return the wire opId only when the op was actually put on the wire
       // (null covers the window where the socket is already CLOSING but the
       // connection state ref still says 'connected'). The caller keeps the op
@@ -497,6 +512,7 @@ export function createOoTMMRoomSessionSync(
             clientClock,
             ts: Date.now(),
             op,
+            ...(mutationId ? { mutationId } : {}),
           },
         }),
       );

@@ -96,21 +96,40 @@ After join, the client publishes ops:
     "actorId": "client-abc",
     "clientClock": 1,
     "ts": 1700000000000,
+    "mutationId": "64f0…",
     "op": { "type": "inventory.set_count", "itemId": "OOT_BOW", "count": 1 }
   }
 }
 ```
 
 Op types accepted by the server must match `OoTMMSyncOperation` in
-`packs/ootmm/src/stores/ootmmSessionSync.ts`. Unknown op types are rejected
-with a protocol error. Note `session.reset_defaults` is intentionally **not**
-accepted: resetting tracker state exits coop (the client leaves the room before
-resetting), so a reset op never reaches the relay.
+`packs/ootmm/src/stores/ootmmSessionSync.ts` (all 28 of them). Unknown op types
+are rejected with a protocol error. Note `session.reset_defaults` is intentionally
+**not** accepted: resetting tracker state exits coop (the client leaves the room
+before resetting), so a reset op never reaches the relay.
 
-Duplicate `opId`s are **not** deduped server-side: every op is an absolute
-set/replace, so reapplying one yields the same snapshot, and clients dedup by
-`opId` themselves. (If a non-idempotent/delta op is ever added, server-side
-dedup has to come back.)
+The room document also carries the spoiler-log and hint-tracker state
+(`spoilerPlacements`, `spoilerFishItemIds`, `hintsText`, `hintTracker`,
+`hintProtectedLocationIds`), so a peer that joins later receives all of it in the
+seed snapshot.
+
+### Exactly-once op delivery
+
+`mutationId` is optional but always sent by the current client. It identifies the
+_logical_ mutation and is generated once, when the op is first queued; a replay
+after a reconnect reuses it. The relay keeps the last `MAX_SEEN_MUTATION_IDS`
+(512) applied mutation ids per room, persisted in the `rooms` table next to the
+snapshot, and drops a repeat.
+
+This matters because not every op is idempotent. Since the hint tracker appends
+to and removes from five index-addressed arrays, a client replaying an op that
+the relay committed before the socket died would otherwise remove the wrong hint.
+`opId` cannot serve as the dedup key: it is regenerated per send, so a replay
+arrives under a fresh one.
+
+A duplicate is echoed **only to its sender** — that echo is the ack the client
+waits for before dropping the op from its replay queue — and is neither
+re-applied nor rebroadcast, since the peers already applied the original.
 
 ## Limits
 
