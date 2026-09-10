@@ -51,6 +51,7 @@ export const ALWAYS_HINT_CHECKS: HintCheckDef[] = [
     id: 'OOT_COW_LINK',
     locationName: "the Cow in Link's house",
     locationCodes: ['OOT Kokiri Forest Cow'],
+    condition: (s) => Boolean(s.cowShuffleOot),
   },
   {
     id: 'MM_LOTTERY',
@@ -61,6 +62,7 @@ export const ALWAYS_HINT_CHECKS: HintCheckDef[] = [
       'MM Lottery Prize Night 3',
     ],
     itemCount: 3, // Prize Night 1 / 2 / 3
+    condition: (s) => Boolean(s.shuffleLotteryMm),
   },
 ];
 
@@ -192,6 +194,22 @@ export const SOMETIMES_HINT_CHECKS: HintCheckDef[] = [
     locationCodes: ['OOT MQ Deku Tree After Water Platform Chest'],
   },
   {
+    id: 'OOT_DMC_SCRUB',
+    locationName: 'a singular scrub in Death Mountain Crater',
+    locationCodes: ['OOT Death Mountain Crater Scrub Child'],
+    condition: (s) => Boolean(s.scrubShuffleOot),
+  },
+  {
+    id: 'OOT_DEKU_BACK_SKULL',
+    locationName: 'a spider deep within Deku Tree',
+    locationCodes: [
+      'OOT Deku Tree GS Basement Back Room',
+      'OOT MQ Deku Tree GS Back Room',
+    ],
+    condition: (s) =>
+      s.goldSkulltulaTokens === 'dungeons' || s.goldSkulltulaTokens === 'all',
+  },
+  {
     id: 'MM_BANK_3',
     locationName: "the Bank's Final Reward",
     locationCodes: ['MM Clock Town Bank Reward 3'],
@@ -231,6 +249,12 @@ export const SOMETIMES_HINT_CHECKS: HintCheckDef[] = [
     locationName: 'the Secret Shrine Wart and Final Chest',
     locationCodes: ['MM Secret Shrine Wart Chest', 'MM Secret Shrine HP Chest'],
     itemCount: 2, // Wart Chest + HP Chest
+  },
+  {
+    id: 'MM_COW_WELL',
+    locationName: 'the Cow Beneath The Well',
+    locationCodes: ['MM Beneath The Well Cow'],
+    condition: (s) => Boolean(s.cowShuffleMm),
   },
   {
     id: 'MM_BLACKSMITH',
@@ -298,11 +322,14 @@ export const SOMETIMES_HINT_CHECKS: HintCheckDef[] = [
     locationName: 'healing Kamaro',
     locationCodes: ['MM Termina Field Kamaro Mask'],
   },
-  // Conditional:
-  // OOT_DMC_SCRUB (scrubShuffleOot)
-  // OOT_DEKU_BACK_SKULL (goldSkulltulaTokens != none)
-  // MM_COW_WELL (cowShuffleMm)
-  // MM_WFT_DARK (strayFairyChestShuffle != none)
+  {
+    id: 'MM_WFT_DARK',
+    locationName: 'the Woodfall Temple Dark Room',
+    locationCodes: ['MM Woodfall Temple Dark Chest'],
+    condition: (s) =>
+      s.strayFairyChestShuffle === 'starting' ||
+      s.strayFairyChestShuffle === 'anywhere',
+  },
 ];
 
 /** Build a lookup map from hint check ID → HintCheckDef */
@@ -317,6 +344,21 @@ export function findHintCheckById(id: string): HintCheckDef | undefined {
   return (
     ALWAYS_HINT_CHECKS.find((c) => c.id === id) ??
     SOMETIMES_HINT_CHECKS.find((c) => c.id === id)
+  );
+}
+
+/**
+ * Return the Always/Sometimes checks that can occur in a seed with the given
+ * tracker settings. Conditional checks (e.g. "Cow Beneath The Well", which
+ * only exists when MM cow shuffling is on) are filtered out when their
+ * setting is disabled.
+ */
+export function getAvailableHintChecks(
+  settings: Record<string, unknown> | undefined,
+): HintCheckDef[] {
+  const s = settings ?? {};
+  return [...ALWAYS_HINT_CHECKS, ...SOMETIMES_HINT_CHECKS].filter(
+    (c) => !c.condition || c.condition(s),
   );
 }
 

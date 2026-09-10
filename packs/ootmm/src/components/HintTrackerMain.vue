@@ -4,9 +4,8 @@ import { useOoTMMSessionStore } from '../stores/ootmmSession';
 import { storeToRefs } from 'pinia';
 import { getRegionOptions, getRegionDisplayName } from '../data/regionNames';
 import {
-  ALWAYS_HINT_CHECKS,
-  SOMETIMES_HINT_CHECKS,
   findHintCheckById,
+  getAvailableHintChecks,
   resolveCheckSlotLocationCodes,
 } from '../data/hintCheckLocations';
 import type {
@@ -318,12 +317,19 @@ watch(pathFormSubType, () => {
 });
 
 // ── Always/Sometimes location options (merged) ──
+// Conditional checks (e.g. "Cow Beneath The Well") are only offered when their
+// related shuffle setting is enabled in the seed.
 const alwaysSometimesLocationOptions = computed(() =>
-  [...ALWAYS_HINT_CHECKS, ...SOMETIMES_HINT_CHECKS].map((c) => ({
+  getAvailableHintChecks(trackerSettings.value).map((c) => ({
     value: c.id,
     label: c.locationName,
   })),
 );
+
+/** Display label for a recorded Always/Sometimes hint location (by check ID). */
+function getAlwaysSometimesLocationLabel(locationId: string): string {
+  return findHintCheckById(locationId)?.locationName ?? locationId;
+}
 
 // ── Items in region (for path hints) ──
 // The tracker's world graph tells us which location belongs to which hint
@@ -968,9 +974,7 @@ function removeMoonHint(index: number) {
         >
           <div class="hint-row__info">
             <strong>{{
-              alwaysSometimesLocationOptions.find(
-                (c) => c.value === hint.location,
-              )?.label ?? hint.location
+              getAlwaysSometimesLocationLabel(hint.location)
             }}</strong>
             <div class="hint-row__hint-items">
               <span

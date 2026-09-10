@@ -100,4 +100,11 @@ export interface HintCheckDef {
    * "dual hints" (e.g. the Ranch Defense gives two items). Defaults to 1.
    */
   itemCount?: number;
+  /**
+   * Predicate deciding whether this check can appear in the seed for the
+   * given tracker settings. Conditional checks (e.g. "Cow Beneath The Well")
+   * only exist when their related shuffle setting is enabled. When omitted,
+   * the check is always available.
+   */
+  condition?: (settings: Record<string, unknown>) => boolean;
 }

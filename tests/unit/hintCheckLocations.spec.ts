@@ -3,6 +3,7 @@ import {
   ALWAYS_HINT_CHECKS,
   SOMETIMES_HINT_CHECKS,
   findHintCheckById,
+  getAvailableHintChecks,
   resolveCheckSlotLocationCodes,
 } from '../../packs/ootmm/src/data/hintCheckLocations';
 import { LOCATION_CODE_CATALOG } from '../../packs/ootmm/src/data/locationCatalog';
@@ -84,5 +85,44 @@ describe('hint check location codes', () => {
         ).toBeGreaterThan(0);
       }
     }
+  });
+
+  it('includes the conditional sometimes checks', () => {
+    for (const id of [
+      'OOT_DMC_SCRUB',
+      'OOT_DEKU_BACK_SKULL',
+      'MM_COW_WELL',
+      'MM_WFT_DARK',
+    ]) {
+      expect(findHintCheckById(id), id).toBeDefined();
+    }
+  });
+
+  it('filters conditional checks by tracker settings', () => {
+    const allIds = getAvailableHintChecks({}).map((c) => c.id);
+
+    // Disabled by default → absent.
+    expect(allIds).not.toContain('MM_COW_WELL');
+    expect(allIds).not.toContain('OOT_DEKU_BACK_SKULL');
+    expect(allIds).not.toContain('OOT_DMC_SCRUB');
+    expect(allIds).not.toContain('MM_WFT_DARK');
+
+    // Enabled settings → present.
+    const enabledIds = getAvailableHintChecks({
+      cowShuffleMm: true,
+      goldSkulltulaTokens: 'all',
+      scrubShuffleOot: true,
+      strayFairyChestShuffle: 'anywhere',
+    }).map((c) => c.id);
+    expect(enabledIds).toContain('MM_COW_WELL');
+    expect(enabledIds).toContain('OOT_DEKU_BACK_SKULL');
+    expect(enabledIds).toContain('OOT_DMC_SCRUB');
+    expect(enabledIds).toContain('MM_WFT_DARK');
+  });
+
+  it('keeps unconditional checks available regardless of settings', () => {
+    const ids = getAvailableHintChecks({}).map((c) => c.id);
+    expect(ids).toContain('OOT_FROGS_FINAL');
+    expect(ids).toContain('MM_BLACKSMITH');
   });
 });
