@@ -114,12 +114,16 @@ dedup has to come back.)
 
 ## Limits
 
-- Incoming messages are capped at `MAX_MESSAGE_BYTES` (768 KiB), large enough to
+- Incoming messages are capped at `MAX_MESSAGE_BYTES` (1536 KiB), large enough to
   carry a full-state seed snapshot on join.
-- The stored room document is capped at `MAX_SNAPSHOT_BYTES` (512 KiB). Any op
+- The stored room document is capped at `MAX_SNAPSHOT_BYTES` (1024 KiB). Any op
   (or seed) that would push the room past this is rejected, so a rebroadcast
   snapshot always fits in a peer's receive buffer and a room can never grow into
   an un-joinable state.
+- Message bodies are also walked and capped at `MAX_JSON_DEPTH` (16) levels,
+  `MAX_JSON_ITEMS` (100000) total JSON nodes, and `MAX_JSON_STRING_LENGTH` (4096)
+  characters per string/key. `MAX_JSON_ITEMS` has to stay above the item count of
+  a full spoiler log (~5 JSON nodes per placement).
 - Total SQLite storage is capped at `MAX_DB_BYTES` (1 GiB). Past this the relay
   refuses to create **new** rooms; existing rooms keep working. Idle-room
   pruning runs `incremental_vacuum` to return freed pages to the OS, so the cap

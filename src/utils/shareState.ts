@@ -71,16 +71,20 @@ const resolveInteropModule = (mod: unknown): Record<string, unknown> => {
   return modRecord;
 };
 /**
- * Maximum allowed size for decompressed share payloads (512 KiB).
- * A normal full-state export is typically 5-15 KiB; this limit prevents
- * decompression bombs.
+ * Maximum allowed size for decompressed share payloads (1 MiB).
+ * A normal full-state export is typically 5-15 KiB, but full-state exports that
+ * carry a complete spoiler log can reach several hundred KiB; this limit still
+ * prevents decompression bombs.
  */
-const MAX_INFLATED_SIZE = 512 * 1024;
+const MAX_INFLATED_SIZE = 1024 * 1024;
 /**
- * Cheap pre-check before base64 decode/inflate. Legitimate payloads are far
- * smaller than this; oversize hashes are rejected before decompression work.
+ * Cheap pre-check before base64 decode/inflate. Deflate never expands data
+ * meaningfully, so any payload that could inflate to `MAX_INFLATED_SIZE` is
+ * shorter (after base64 expansion) than this bound; the check only rejects
+ * inputs that are already far too large to be legitimate.
  */
-const MAX_ENCODED_PAYLOAD_LENGTH = 128 * 1024;
+const MAX_ENCODED_PAYLOAD_LENGTH =
+  Math.ceil((MAX_INFLATED_SIZE * 4) / 3) + 1024;
 const textEncoder = new TextEncoder();
 const textDecoder = new TextDecoder();
 const tricksModule = resolveInteropModule(TricksMod);

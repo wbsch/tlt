@@ -498,7 +498,7 @@ describe('shareState', () => {
     ],
     [
       'encoded payload length limit',
-      `v1.${'a'.repeat(131073)}`,
+      `v1.${'a'.repeat(1_500_000)}`,
       /Encoded share payload too large/,
     ],
     [
@@ -509,7 +509,7 @@ describe('shareState', () => {
           'ootmm-session': {
             trackerSettings: {
               HUGE: {
-                note: 'x'.repeat(600_000),
+                note: 'x'.repeat(1_100_000),
               },
             },
           },

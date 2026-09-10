@@ -9,7 +9,7 @@ const STATE_SCHEMA = 1;
 const STATE_TYPE = 'ootmm-session';
 // Must be >= the server's MAX_MESSAGE_BYTES so legit full-state snapshots and
 // ops are never rejected at the transport layer.
-const MAX_MESSAGE_LENGTH = 768 * 1024;
+const MAX_MESSAGE_LENGTH = 1536 * 1024;
 const MAX_SEEN_OP_IDS = 2_000;
 const MAX_RECONNECT_DELAY_MS = 10_000;
 

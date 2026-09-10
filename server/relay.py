@@ -28,11 +28,11 @@ STATE_SCHEMA = 1
 STATE_TYPE = "ootmm-session"
 # Incoming frame cap. A join may carry a full-state seed snapshot, so this has
 # to comfortably exceed MAX_SNAPSHOT_BYTES plus envelope overhead.
-MAX_MESSAGE_BYTES = 768 * 1024
+MAX_MESSAGE_BYTES = 1536 * 1024
 # Hard cap on the stored room document. The server never lets a room grow past
 # this, so a rebroadcast snapshot always fits inside a client's receive cap and
 # a room can never become un-joinable.
-MAX_SNAPSHOT_BYTES = 512 * 1024
+MAX_SNAPSHOT_BYTES = 1024 * 1024
 # Hard ceiling on total SQLite storage. Once the database reaches this size the
 # relay refuses to create *new* rooms (existing rooms keep working). This bounds
 # disk use against someone spraying joins at fresh room ids.
@@ -77,7 +77,11 @@ ROOM_CODE_PATTERN = re.compile(r"^[A-Za-z0-9]+$")
 MAX_JSON_DEPTH = 16
 # Generous enough for a fully-completed game's seed snapshot (inventory +
 # every collected location + settings in one message) while staying bounded.
-MAX_JSON_ITEMS = 20000
+# A full spoiler log carries one object per placement (~5 JSON items each), so
+# a partial seed already measures ~25k items; this leaves headroom for a large
+# seed while still binding traversal cost well below what MAX_MESSAGE_BYTES
+# alone would allow (~750k items of `[[],[],...]` in a 1536 KiB frame).
+MAX_JSON_ITEMS = 100000
 MAX_JSON_STRING_LENGTH = 4096
 IDLE_PRUNE_INTERVAL_SEC = 6 * 60 * 60
 OUTBOX_MAX_MESSAGES = 32

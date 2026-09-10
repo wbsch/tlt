@@ -296,7 +296,7 @@ test.describe('share URL import/export', () => {
           trackerSettings: {
             specialConds: {
               HUGE: {
-                note: 'x'.repeat(600_000),
+                note: 'x'.repeat(1_100_000),
               },
             },
           },
