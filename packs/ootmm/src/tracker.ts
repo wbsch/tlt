@@ -910,6 +910,7 @@ export class OoTMMTracker implements TrackerPack {
 
     this.normalizeWorldItems(this.worlds);
     this.applyAlwaysIncludedFishingPondConditions(this.worlds);
+    this.applyReturnToSpawnEdges(this.worlds);
 
     // Mirror configured starting items into pathfinder state.
     this.pathfinder = new Pathfinder(
@@ -2161,6 +2162,48 @@ export class OoTMMTracker implements TrackerPack {
       }
       if (!mmSoaringArea.exits['MM GLOBAL']) {
         mmSoaringArea.exits['MM GLOBAL'] = exprTrue();
+      }
+    }
+  }
+
+  /**
+   * OoTMM's pause-menu save screen offers "Return to Spawn" from anywhere
+   * (`gameSavedMessage()` in `common/kaleido_scope.c` transitions to the
+   * shuffled spawn entrance via `gComboConfig.entrancesSpawns`). Saving keeps
+   * the current time of day, so from any reachable area the player can return
+   * to the spawn *at their current time* and walk back into whatever area the
+   * spawn leads to.
+   *
+   * OoTMM's own logic pass does not model this transition, but the tracker
+   * needs it to answer "can I stand here at night?" correctly: without it,
+   * `is_night` gates inside a "still"-time area that is only reachable through
+   * the spawn (e.g. a shuffled Graveyard child spawn) can never be satisfied,
+   * even though the player can reach a time-flowing area, wait for night,
+   * save, return to spawn and walk back in.
+   */
+  private applyReturnToSpawnEdges(worlds: World[]): void {
+    for (const world of worlds) {
+      const areas = world.areas as
+        | Record<
+            string,
+            { game?: string; exits?: Record<string, unknown> } | undefined
+          >
+        | undefined;
+      const spawnArea = areas?.['OOT SPAWN'];
+      if (!areas || !spawnArea) continue;
+
+      for (const [areaName, area] of Object.entries(areas)) {
+        if (!area || areaName === 'OOT SPAWN') continue;
+        // Only connect areas of the spawn's own game. In a combined OoT/MM
+        // seed the OoT spawn is not a valid return target from MM (MM uses
+        // its own 3-day save/cycle rules), and in MM-only seeds the
+        // builder's `OOT SPAWN` area is the MM spawn.
+        if (area.game !== spawnArea.game) continue;
+        if (!area.exits) {
+          area.exits = {};
+        }
+        if (area.exits['OOT SPAWN']) continue;
+        area.exits['OOT SPAWN'] = exprTrue();
       }
     }
   }
