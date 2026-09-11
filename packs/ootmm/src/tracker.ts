@@ -911,6 +911,7 @@ export class OoTMMTracker implements TrackerPack {
     this.normalizeWorldItems(this.worlds);
     this.applyAlwaysIncludedFishingPondConditions(this.worlds);
     this.applyReturnToSpawnEdges(this.worlds);
+    this.patchOotToMmGlobalAccess(this.worlds);
 
     // Mirror configured starting items into pathfinder state.
     this.pathfinder = new Pathfinder(
@@ -2162,6 +2163,85 @@ export class OoTMMTracker implements TrackerPack {
       }
       if (!mmSoaringArea.exits['MM GLOBAL']) {
         mmSoaringArea.exits['MM GLOBAL'] = exprTrue();
+      }
+    }
+  }
+
+  /**
+   * Remove the MM `ACCESS` gate OoTMM adds to entrances whose destination is
+   * an MM area (`placeSingleExpr()` ANDs `can_reset_time` onto the original
+   * source-side expression). `can_reset_time` is `event(ACCESS)`, which is
+   * granted by the `MM ACCESS` system area that is only reachable once the
+   * player is already inside MM. Used to derive the "can stand at this
+   * entrance" expression when granting cross-game access below.
+   */
+  private dropMmAccessGate(expr: unknown): unknown {
+    const node = expr as
+      | { type?: string; event?: string; exprs?: unknown[] }
+      | undefined;
+    if (!node || typeof node !== 'object') return expr;
+    if (node.type === 'event' && node.event === 'MM_ACCESS') {
+      return exprTrue();
+    }
+    if (node.type === 'and' && Array.isArray(node.exprs)) {
+      return exprAnd(node.exprs.map((child) => this.dropMmAccessGate(child)));
+    }
+    if (node.type === 'or' && Array.isArray(node.exprs)) {
+      return exprOr(node.exprs.map((child) => this.dropMmAccessGate(child)));
+    }
+    return expr;
+  }
+
+  /**
+   * OoTMM only models Termina access through the game link: the `MM GLOBAL`
+   * area is reached from the Clock Tower interior, and `MM GLOBAL` grants the
+   * `ACCESS` event (`can_reset_time_impl`) used as the `can_reset_time` gate
+   * on entrances leading into MM.
+   *
+   * An ER interior entrance that leads from OoT straight into MM therefore
+   * deadlocks in the tracker: entering it requires the MM `ACCESS` event,
+   * which in turn can only be obtained after already being in MM. In the real
+   * game walking through such an entrance simply puts you in Termina, where
+   * `ACCESS` is granted as soon as `can_reset_time_impl` holds (e.g.
+   * `moonCrash: cycle` needs no items at all).
+   *
+   * Model that by giving every OoT area that has an exit into MM a direct edge
+   * to `MM GLOBAL`, gated only by the entrance's source-side requirement
+   * (i.e. without the MM `ACCESS` gate). The pathfinder then reaches
+   * `MM ACCESS`, sets the `ACCESS` event, and re-evaluates the entrance through
+   * the normal event dependency mechanism. When `can_reset_time_impl` does not
+   * hold (e.g. `moonCrash: reset` without the means to reset time) the event
+   * stays unset and the entrance remains unreachable, matching OoTMM's logic.
+   */
+  private patchOotToMmGlobalAccess(worlds: World[]): void {
+    if (!this.isGameEnabled('oot') || !this.isGameEnabled('mm')) {
+      return;
+    }
+
+    for (const world of worlds) {
+      const areas = world.areas as
+        | Record<
+            string,
+            { game?: string; exits?: Record<string, unknown> } | undefined
+          >
+        | undefined;
+      const mmGlobalArea = areas?.['MM GLOBAL'];
+      if (!areas || !mmGlobalArea) continue;
+
+      for (const area of Object.values(areas)) {
+        if (!area || area.game !== 'oot' || !area.exits) continue;
+
+        for (const [destinationName, exitExpr] of Object.entries(area.exits)) {
+          if (destinationName === 'MM GLOBAL') continue;
+          const destination = areas[destinationName];
+          if (!destination || destination.game !== 'mm') continue;
+
+          const sourceExpr = this.dropMmAccessGate(exitExpr);
+          const existing = area.exits['MM GLOBAL'];
+          area.exits['MM GLOBAL'] = existing
+            ? exprOr([existing, sourceExpr])
+            : sourceExpr;
+        }
       }
     }
   }

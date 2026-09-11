@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { OoTMMTracker } from '../../packs/ootmm/src/tracker';
+import type { OoTMMSettings } from '../../packs/ootmm/src/types/settings';
 
 describe('entrance reachability', () => {
   it('keeps mapped reverse exits reachable from their original source side', async () => {
@@ -102,5 +103,65 @@ describe('entrance reachability', () => {
     );
 
     expect(reachableEntranceIds.has('OOT_GRAVE_REDEAD')).toBe(true);
+  }, 30000);
+
+  // An ER interior entrance from OoT straight into MM used to deadlock: using
+  // it requires the MM `ACCESS` event (`can_reset_time`), which OoTMM only
+  // grants once the player is already inside Termina. With `moonCrash: cycle`
+  // the player can always reset time, so walking through the entrance should
+  // put them in Termina and make the reverse exit reachable.
+  const ootToMmEntranceSettings: Partial<OoTMMSettings> = {
+    games: 'ootmm',
+    erIndoors: 'full',
+    erIndoorsMajor: true,
+    erIndoorsExtra: true,
+    erOverworld: 'full',
+    erRegions: 'full',
+    erRegionsExtra: true,
+    erSpawns: 'both',
+    plando: {
+      entrances: {
+        OOT_SPAWN_CHILD: 'OOT_LAKE_HYLIA_FROM_FIELD',
+        OOT_LAKE_HYLIA_FROM_FIELD: 'OOT_TEMPLE_OF_TIME_ENTRYWAY_FROM_MARKET',
+        OOT_TEMPLE_OF_TIME: 'MM_DEKU_SHRINE',
+      },
+    },
+  };
+
+  it('grants Termina access through an ER interior entrance into MM', async () => {
+    const tracker = new OoTMMTracker();
+    await tracker.initialize({
+      ...ootToMmEntranceSettings,
+      moonCrash: 'cycle',
+    });
+
+    const result = tracker.checkReachability(new Map());
+    const reachableEntranceIds = new Set(
+      (result.extra as { reachableEntranceIds?: string[] } | undefined)
+        ?.reachableEntranceIds ?? [],
+    );
+
+    // Reverse exit "Deku Shrine -> Temple of Time Entryway".
+    expect(
+      reachableEntranceIds.has('MM_DEKU_PALACE_EXTERIOR_FROM_SHRINE'),
+    ).toBe(true);
+  }, 30000);
+
+  it('keeps an ER interior entrance into MM unreachable when time cannot be reset', async () => {
+    const tracker = new OoTMMTracker();
+    await tracker.initialize({
+      ...ootToMmEntranceSettings,
+      moonCrash: 'reset',
+    });
+
+    const result = tracker.checkReachability(new Map());
+    const reachableEntranceIds = new Set(
+      (result.extra as { reachableEntranceIds?: string[] } | undefined)
+        ?.reachableEntranceIds ?? [],
+    );
+
+    expect(
+      reachableEntranceIds.has('MM_DEKU_PALACE_EXTERIOR_FROM_SHRINE'),
+    ).toBe(false);
   }, 30000);
 });
