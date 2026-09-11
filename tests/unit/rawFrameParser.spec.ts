@@ -167,6 +167,62 @@ const SHARED_SAVE_CHUNK_NAME = 'oot_shared_custom_save';
 // (v32_0 shared_save_offsets.json `bombchuBagFlagsOffset`).  It packs:
 //   bits 5-4 = extraSwordsOot, bits 3-2 = bombchuBagOot, bits 1-0 = bombchuBagMm
 const SHARED_BOMBCHU_BAG_FLAGS_OFFSET = 2148;
+// The next byte (SharedCustomSave.progressiveFlags) packs:
+//   bit 7 = mmShieldIsDeku, bits 6-5 = mmProgressiveShields
+const SHARED_PROGRESSIVE_FLAGS_OFFSET = SHARED_BOMBCHU_BAG_FLAGS_OFFSET + 1;
+// MM save equipment offset (parser `MM_OFF_EQUIPMENT`).  The MM shield level is
+// `(equipment >> 4) & 0xf`.
+const MM_OFF_EQUIPMENT = 0x6c;
+
+/**
+ * Builds a minimal OoT message with a foreign MM save whose shield equipment
+ * level is `mmShieldLevel`, plus a shared custom save whose progressive flags
+ * byte is `progressiveFlags` (bit 7 = mmShieldIsDeku, bits 6-5 =
+ * mmProgressiveShields).
+ */
+function buildOotMessageWithMmShield(
+  mmShieldLevel: number,
+  progressiveFlags: number,
+): RawAutotrackerMessage {
+  const message = buildMinimalOotMessage({ [EXTRA_IDX_OOT_TRADE]: 1 });
+  const mmSaveSpec = RAW_CHUNK_SPECS.find(
+    (spec) => spec.name === MM_FOREIGN_SAVE_CHUNK_NAME,
+  );
+  const sharedSpec = RAW_CHUNK_SPECS.find(
+    (spec) => spec.name === SHARED_SAVE_CHUNK_NAME,
+  );
+  if (!mmSaveSpec || !sharedSpec) {
+    throw new Error('Missing MM/shared chunk spec');
+  }
+
+  const mmData = new Uint8Array(mmSaveSpec.length);
+  mmData.fill(EMPTY_INVENTORY_ITEM, MM_OFF_INV_ITEMS, MM_OFF_INV_ITEMS + 48);
+  const equipment = (mmShieldLevel & 0xf) << 4;
+  mmData[MM_OFF_EQUIPMENT] = (equipment >> 8) & 0xff;
+  mmData[MM_OFF_EQUIPMENT + 1] = equipment & 0xff;
+
+  const sharedData = new Uint8Array(sharedSpec.length);
+  sharedData[SHARED_PROGRESSIVE_FLAGS_OFFSET] = progressiveFlags;
+
+  return {
+    ...message,
+    chunks: [
+      ...message.chunks,
+      {
+        name: mmSaveSpec.name,
+        address: mmSaveSpec.address,
+        length: mmSaveSpec.length,
+        data: Buffer.from(mmData).toString('base64'),
+      },
+      {
+        name: sharedSpec.name,
+        address: sharedSpec.address,
+        length: sharedSpec.length,
+        data: Buffer.from(sharedData).toString('base64'),
+      },
+    ],
+  };
+}
 
 /**
  * Builds a minimal OoT message plus a monolithic shared custom save chunk
@@ -854,6 +910,60 @@ describe('raw frame parser', () => {
     const items = parsedItemMap(parsed!.items);
     expect(items.get('OOT_BOMBCHUS')).toBe(1);
     expect(items.get('OOT_EXTRA_SWORDS')).toBeUndefined();
+  });
+
+  it('reports MM shield level 1 as the Deku Shield when mmShieldIsDeku is set', () => {
+    const parser = createRawAutotrackerParser('v32_0');
+    const parsed = parser.parse(buildOotMessageWithMmShield(1, 0x80));
+    expect(parsed).not.toBeNull();
+
+    const items = parsedItemMap(parsed!.items);
+    expect(items.get('MM_SHIELD')).toBe(1);
+    expect(items.get('MM_SHIELD_IS_DEKU')).toBe(1);
+  });
+
+  it('reports MM shield level 1 as the Hero Shield when mmShieldIsDeku is clear', () => {
+    const parser = createRawAutotrackerParser('v32_0');
+    const parsed = parser.parse(buildOotMessageWithMmShield(1, 0x00));
+    expect(parsed).not.toBeNull();
+
+    const items = parsedItemMap(parsed!.items);
+    expect(items.get('MM_SHIELD')).toBe(1);
+    expect(items.get('MM_SHIELD_IS_DEKU')).toBeUndefined();
+  });
+
+  it('does not report the Deku signal for the Mirror Shield level', () => {
+    const parser = createRawAutotrackerParser('v32_0');
+    const parsed = parser.parse(buildOotMessageWithMmShield(2, 0x80));
+    expect(parsed).not.toBeNull();
+
+    const items = parsedItemMap(parsed!.items);
+    expect(items.get('MM_SHIELD')).toBe(2);
+    expect(items.get('MM_SHIELD_IS_DEKU')).toBeUndefined();
+  });
+
+  it('reports the progressive shield record of the shared save', () => {
+    const parser = createRawAutotrackerParser('v32_0');
+    // bits 6-5 = mmProgressiveShields = 3 (Deku + Hero obtained, Hero held).
+    const parsed = parser.parse(buildOotMessageWithMmShield(1, 0x60));
+    expect(parsed).not.toBeNull();
+
+    const items = parsedItemMap(parsed!.items);
+    expect(items.get('MM_SHIELD')).toBe(1);
+    expect(items.get('MM_PROGRESSIVE_SHIELDS')).toBe(3);
+    expect(items.get('MM_SHIELD_IS_DEKU')).toBeUndefined();
+  });
+
+  it('reports the progressive shield record even without a held shield', () => {
+    const parser = createRawAutotrackerParser('v32_0');
+    // A burned Deku Shield leaves the equipment level at 0 while the
+    // progressive record keeps the obtained Deku stage.
+    const parsed = parser.parse(buildOotMessageWithMmShield(0, 0xa0));
+    expect(parsed).not.toBeNull();
+
+    const items = parsedItemMap(parsed!.items);
+    expect(items.get('MM_SHIELD')).toBeUndefined();
+    expect(items.get('MM_PROGRESSIVE_SHIELDS')).toBe(1);
   });
 });
 

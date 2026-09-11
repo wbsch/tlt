@@ -556,3 +556,140 @@ describe('autotracker composite item inference', () => {
     expect(nextState.get('OOT_WALLET')).toBe(1);
   });
 });
+
+describe('autotracker MM shield tracking', () => {
+  const dekuPool = makeAvailableItemIds([
+    'MM_SHIELD_DEKU',
+    'MM_SHIELD_HERO',
+    'MM_SHIELD_MIRROR',
+  ]);
+  const noDekuPool = makeAvailableItemIds([
+    'MM_SHIELD_HERO',
+    'MM_SHIELD_MIRROR',
+  ]);
+  const progressivePool = makeAvailableItemIds(['MM_SHIELD', 'MM_SHIELD_HERO']);
+
+  it('marks the Deku Shield when the held level-1 shield is the Deku Shield', () => {
+    const translated = translateAutotrackerItems(
+      [
+        { id: 'MM_SHIELD', qty: 1 },
+        { id: 'MM_SHIELD_IS_DEKU', qty: 1 },
+      ],
+      dekuPool,
+      makeItemMaxCounts({ MM_SHIELD_DEKU: 3 }),
+    );
+
+    expect(translated.MM_SHIELD_DEKU).toBe(1);
+    expect(translated.MM_SHIELD_HERO).toBeUndefined();
+    expect(translated.MM_SHIELD_MIRROR).toBeUndefined();
+    // The raw signals must never leak into the canonical inventory.
+    expect(translated.MM_SHIELD_IS_DEKU).toBeUndefined();
+    expect(translated.MM_PROGRESSIVE_SHIELDS).toBeUndefined();
+  });
+
+  it('keeps the Deku Shield marked after the Hero Shield replaced it', () => {
+    const translated = translateAutotrackerItems(
+      [
+        { id: 'MM_SHIELD', qty: 1 },
+        { id: 'MM_PROGRESSIVE_SHIELDS', qty: 3 },
+      ],
+      dekuPool,
+      makeItemMaxCounts({ MM_SHIELD_DEKU: 3 }),
+    );
+
+    expect(translated.MM_SHIELD_DEKU).toBe(1);
+    expect(translated.MM_SHIELD_HERO).toBe(1);
+    expect(translated.MM_SHIELD_MIRROR).toBeUndefined();
+  });
+
+  it('marks the Hero Shield for level 1 without the Deku signal', () => {
+    const translated = translateAutotrackerItems(
+      [{ id: 'MM_SHIELD', qty: 1 }],
+      dekuPool,
+      makeItemMaxCounts({ MM_SHIELD_DEKU: 3 }),
+    );
+
+    expect(translated.MM_SHIELD_DEKU).toBeUndefined();
+    expect(translated.MM_SHIELD_HERO).toBe(1);
+  });
+
+  it('marks the Hero Shield for level 1 when the Deku Shield setting is off', () => {
+    const translated = translateAutotrackerItems(
+      [
+        { id: 'MM_SHIELD', qty: 1 },
+        { id: 'MM_PROGRESSIVE_SHIELDS', qty: 2 },
+      ],
+      noDekuPool,
+      makeItemMaxCounts({}),
+    );
+
+    expect(translated.MM_SHIELD_DEKU).toBeUndefined();
+    expect(translated.MM_SHIELD_HERO).toBe(1);
+  });
+
+  it('keeps the progressive record without a held shield (burned Deku Shield)', () => {
+    const translated = translateAutotrackerItems(
+      [{ id: 'MM_PROGRESSIVE_SHIELDS', qty: 1 }],
+      dekuPool,
+      makeItemMaxCounts({ MM_SHIELD_DEKU: 3 }),
+    );
+
+    expect(translated.MM_SHIELD_DEKU).toBe(1);
+    expect(translated.MM_SHIELD_HERO).toBeUndefined();
+  });
+
+  it('marks the Mirror Shield for level 2', () => {
+    const translated = translateAutotrackerItems(
+      [
+        { id: 'MM_SHIELD', qty: 2 },
+        { id: 'MM_PROGRESSIVE_SHIELDS', qty: 3 },
+      ],
+      dekuPool,
+      makeItemMaxCounts({ MM_SHIELD_DEKU: 3 }),
+    );
+
+    expect(translated.MM_SHIELD_MIRROR).toBe(1);
+    expect(translated.MM_SHIELD_HERO).toBe(1);
+    expect(translated.MM_SHIELD_DEKU).toBe(1);
+  });
+
+  it('reports the progressive stage count when the pool uses MM_SHIELD', () => {
+    const stageFor = (items: { id: string; qty: number }[]) =>
+      translateAutotrackerItems(
+        items,
+        progressivePool,
+        makeItemMaxCounts({ MM_SHIELD: 3 }),
+      ).MM_SHIELD;
+
+    expect(stageFor([{ id: 'MM_SHIELD', qty: 1 }])).toBe(1);
+    expect(
+      stageFor([
+        { id: 'MM_SHIELD', qty: 1 },
+        { id: 'MM_PROGRESSIVE_SHIELDS', qty: 3 },
+      ]),
+    ).toBe(2);
+    expect(
+      stageFor([
+        { id: 'MM_SHIELD', qty: 2 },
+        { id: 'MM_PROGRESSIVE_SHIELDS', qty: 3 },
+      ]),
+    ).toBe(3);
+    // No shield obtained yet -> no stage.
+    expect(
+      stageFor([{ id: 'MM_PROGRESSIVE_SHIELDS', qty: 0 }]),
+    ).toBeUndefined();
+  });
+
+  it('does not report MM_SHIELD when the pool holds the individual shields', () => {
+    const translated = translateAutotrackerItems(
+      [
+        { id: 'MM_SHIELD', qty: 2 },
+        { id: 'MM_PROGRESSIVE_SHIELDS', qty: 3 },
+      ],
+      dekuPool,
+      makeItemMaxCounts({ MM_SHIELD_DEKU: 3 }),
+    );
+
+    expect(translated.MM_SHIELD).toBeUndefined();
+  });
+});

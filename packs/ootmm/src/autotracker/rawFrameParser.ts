@@ -622,6 +622,13 @@ type SharedCustomState = {
   extraSwordsOot: number;
   bombchuBagOot: number;
   bombchuBagMm: number;
+  // MM shield state (SharedCustomSave flags, packed MSB-first):
+  // mmShieldIsDeku (bit 7) is 1 while the currently held MM shield is the
+  // Deku Shield, and is cleared once a Hero/Mirror Shield is obtained.
+  // mmProgressiveShields (bits 6-5) marks the obtained progressive shields
+  // (bit 0 = Deku, bit 1 = Hero).
+  mmShieldIsDeku: number;
+  mmProgressiveShields: number;
   songNotes: number[];
   caughtChildFishWeights: number[];
   caughtAdultFishWeights: number[];
@@ -641,8 +648,16 @@ type GameState = {
 
 type OotPlayStateSample = {
   sceneId: number;
-  currentRoom: number;
-  linkAgeOnLoad: number;
+  /**
+   * Current room (`roomCtx.curRoom.num`), or `null` when the frame does not
+   * carry the room chunk. Used as a plausibility guard only.
+   */
+  currentRoom: number | null;
+  /**
+   * `linkAgeOnLoad`, or `null` when the frame does not carry the chunk. Used
+   * as a plausibility guard only.
+   */
+  linkAgeOnLoad: number | null;
   chestFlags: number;
   collectFlags: number;
   tempCollect: number;
@@ -650,7 +665,8 @@ type OotPlayStateSample = {
 
 type MmPlayStateSample = {
   sceneId: number;
-  currentRoom: number;
+  /** Current room, or `null` when the frame does not carry the chunk. */
+  currentRoom: number | null;
   switch0Flags: number;
   switch1Flags: number;
   chestFlags: number;
@@ -1070,6 +1086,15 @@ const SHARED_BOMBCHU_BAG_MM_SHIFT = 0;
 const SHARED_BOMBCHU_BAG_MASK = 0x3;
 const SHARED_EXTRA_SWORDS_OOT_SHIFT = 4;
 const SHARED_EXTRA_SWORDS_OOT_MASK = 0x3;
+
+// The next byte of the same bitfield block (SharedCustomSave.progressiveFlags):
+//   bit 7    → mmShieldIsDeku
+//   bits 6-5 → mmProgressiveShields (bit 0 = Deku, bit 1 = Hero)
+//   bit 4    → bronzeScaleOot
+//   bit 3    → bronzeScaleMm
+const SHARED_MM_SHIELD_IS_DEKU_SHIFT = 7;
+const SHARED_MM_PROGRESSIVE_SHIELDS_SHIFT = 5;
+const SHARED_MM_PROGRESSIVE_SHIELDS_MASK = 0x3;
 
 const OOT_SCENE_TEMPLE_FOREST = 3;
 const OOT_SCENE_TEMPLE_FIRE = 4;
@@ -1503,14 +1528,24 @@ function rebuildChunkSpecs(): void {
  * Bump whenever the fixed chunk set, addresses, or sizes change (e.g. a fixed
  * chunk is added/removed, or a start/size is moved or widened). This is
  * metadata for diagnostics only; the dump is self-describing via `regions`.
+ *
+ * v2: the fixed play-state ranges were widened to the full `PlayState` struct.
+ * v1 stopped after the play-state core + flag tail, which left the live
+ * `*_playstate_room` / `oot_playstate_link_age` specs uncovered — those live
+ * deep inside the struct (`roomCtx` at +0x11CBC / +0x186E0, `linkAgeOnLoad` at
+ * +0x11DE8), so v1 captures silently lost the live play-state sample and any
+ * check that depends on it (e.g. the Mido's House chests).
  */
-export const FULL_DUMP_MEMORY_LAYOUT_VERSION = 1;
+export const FULL_DUMP_MEMORY_LAYOUT_VERSION = 2;
 
 const FULL_DUMP_OOT_COMBO_CTX_ADDRESS = 0x80006584;
 const FULL_DUMP_OOT_SAVE_CTX_ADDRESS = 0x8011a5d0;
 const FULL_DUMP_OOT_SAVE_CTX_SIZE = 0x1450;
 const FULL_DUMP_OOT_PLAYSTATE_ADDRESS = 0x801c84a0;
-const FULL_DUMP_OOT_PLAYSTATE_SIZE = 0x1ca8 + 0x12d;
+// sizeof(PlayState) — OoTMM `combo/oot/play.h` (`ASSERT_SIZE(PlayState, 0x12518)`).
+// The whole struct is needed: the live sample also reads `roomCtx` (+0x11CBC)
+// and `linkAgeOnLoad` (+0x11DE8), both far beyond the play-state core.
+const FULL_DUMP_OOT_PLAYSTATE_SIZE = 0x12518;
 const FULL_DUMP_OOT_PAYLOAD_ADDRESS = 0x80400000;
 const FULL_DUMP_OOT_PAYLOAD_SIZE = 0x80000;
 
@@ -1518,7 +1553,10 @@ const FULL_DUMP_MM_COMBO_CTX_ADDRESS = 0x80098280;
 const FULL_DUMP_MM_SAVE_CTX_ADDRESS = 0x801ef670;
 const FULL_DUMP_MM_SAVE_CTX_SIZE = 0x48d0;
 const FULL_DUMP_MM_PLAYSTATE_ADDRESS = 0x803e6b20;
-const FULL_DUMP_MM_PLAYSTATE_SIZE = 0x1dd4 + 0x164;
+// sizeof(PlayState) — OoTMM `combo/mm/play.h`
+// (`_Static_assert(sizeof(PlayState) == 0x19258, ...)`). Same reasoning as OoT:
+// the live sample also reads `roomCtx` (+0x186E0).
+const FULL_DUMP_MM_PLAYSTATE_SIZE = 0x19258;
 const FULL_DUMP_MM_PAYLOAD_ADDRESS = 0x80720000;
 const FULL_DUMP_MM_PAYLOAD_SIZE = 0x60000;
 
@@ -2913,15 +2951,20 @@ function getOotSourceInfo(
 function readOotPlayStateSample(
   memory: RawFrameMemory,
 ): OotPlayStateSample | null {
+  // The scene ID and the flag words are the only values that feed into the
+  // parsed state. The current room and the on-load age are plausibility guards
+  // on the same freshly-read block, not inputs: when a frame does not carry
+  // them (e.g. a capture whose fixed play-state range stops at the PlayState
+  // core), the sample stays usable and those guards are simply skipped.
   const directScene = memory.get(OOT_PLAYSTATE_SCENE_CHUNK);
-  const directRoom = memory.get(OOT_PLAYSTATE_ROOM_CHUNK);
-  const directLinkAge = memory.get(OOT_PLAYSTATE_LINK_AGE_CHUNK);
   const directFlags = memory.get(OOT_PLAYSTATE_FLAGS_CHUNK);
-  if (directScene && directRoom && directLinkAge && directFlags) {
-    const sample = {
+  if (directScene && directFlags) {
+    const directRoom = memory.get(OOT_PLAYSTATE_ROOM_CHUNK);
+    const directLinkAge = memory.get(OOT_PLAYSTATE_LINK_AGE_CHUNK);
+    const sample: OotPlayStateSample = {
       sceneId: readU16BE(directScene.data, 0),
-      currentRoom: readU8(directRoom.data, 0),
-      linkAgeOnLoad: readU8(directLinkAge.data, 0),
+      currentRoom: directRoom ? readU8(directRoom.data, 0) : null,
+      linkAgeOnLoad: directLinkAge ? readU8(directLinkAge.data, 0) : null,
       chestFlags: readU32BE(directFlags.data, 0),
       collectFlags: readU32BE(
         directFlags.data,
@@ -2940,28 +2983,26 @@ function readOotPlayStateSample(
   return null;
 }
 
-function isPlausibleOotPlayStateSample(sample: {
-  sceneId: number;
-  currentRoom: number;
-  linkAgeOnLoad: number;
-}): boolean {
+function isPlausibleOotPlayStateSample(sample: OotPlayStateSample): boolean {
   return (
     sample.sceneId < OOT_PERM_COUNT &&
-    sample.currentRoom < 0x40 &&
-    sample.linkAgeOnLoad <= 1
+    (sample.currentRoom === null || sample.currentRoom < 0x40) &&
+    (sample.linkAgeOnLoad === null || sample.linkAgeOnLoad <= 1)
   );
 }
 
 function readMmPlayStateSample(
   memory: RawFrameMemory,
 ): MmPlayStateSample | null {
+  // See `readOotPlayStateSample`: the room is a plausibility guard, not an
+  // input, and may legitimately be absent from a frame.
   const directScene = memory.get(MM_PLAYSTATE_SCENE_CHUNK);
-  const directRoom = memory.get(MM_PLAYSTATE_ROOM_CHUNK);
   const directFlags = memory.get(MM_PLAYSTATE_FLAGS_CHUNK);
-  if (directScene && directRoom && directFlags) {
-    const sample = {
+  if (directScene && directFlags) {
+    const directRoom = memory.get(MM_PLAYSTATE_ROOM_CHUNK);
+    const sample: MmPlayStateSample = {
       sceneId: readU16BE(directScene.data, 0),
-      currentRoom: readU8(directRoom.data, 0),
+      currentRoom: directRoom ? readU8(directRoom.data, 0) : null,
       switch0Flags: readU32BE(directFlags.data, 0),
       switch1Flags: readU32BE(
         directFlags.data,
@@ -2984,11 +3025,11 @@ function readMmPlayStateSample(
   return null;
 }
 
-function isPlausibleMmPlayStateSample(sample: {
-  sceneId: number;
-  currentRoom: number;
-}): boolean {
-  return sample.sceneId < MM_PERM_COUNT && sample.currentRoom < 0x40;
+function isPlausibleMmPlayStateSample(sample: MmPlayStateSample): boolean {
+  return (
+    sample.sceneId < MM_PERM_COUNT &&
+    (sample.currentRoom === null || sample.currentRoom < 0x40)
+  );
 }
 
 function readOotRuntimeConfig(
@@ -3606,6 +3647,14 @@ function parseSharedStateUnchecked(data: Uint8Array): SharedCustomState | null {
       (flags >> SHARED_BOMBCHU_BAG_OOT_SHIFT) & SHARED_BOMBCHU_BAG_MASK;
     parsed.bombchuBagMm =
       (flags >> SHARED_BOMBCHU_BAG_MM_SHIFT) & SHARED_BOMBCHU_BAG_MASK;
+  }
+  const progressiveFlags = parsed.bitmaps.get('progressiveFlags');
+  if (progressiveFlags && progressiveFlags.length > 0) {
+    const flags = progressiveFlags[0] ?? 0;
+    parsed.mmShieldIsDeku = (flags >> SHARED_MM_SHIELD_IS_DEKU_SHIFT) & 1;
+    parsed.mmProgressiveShields =
+      (flags >> SHARED_MM_PROGRESSIVE_SHIELDS_SHIFT) &
+      SHARED_MM_PROGRESSIVE_SHIELDS_MASK;
   }
   if (data.length >= fo.songNotesOffset + fo.songNoteCount) {
     for (let index = 0; index < fo.songNoteCount; index++) {
@@ -4407,7 +4456,27 @@ function extractItems(state: GameState): RawAutotrackerItem[] {
 
   appendPositiveItem(items, 'MM_HEART_PIECES', mm.heartPieces);
   appendPositiveItem(items, 'MM_SWORD', mm.equipment & 0x0f);
-  appendPositiveItem(items, 'MM_SHIELD', (mm.equipment >> 4) & 0x0f);
+  // MM shield equipment level 1 represents either the Deku Shield or the Hero
+  // Shield, depending on the "Deku Shield (MM)" setting. The shared custom save
+  // flag disambiguates them: it is set while the held shield is the Deku
+  // Shield. Expose it as a raw signal so the mapping can pick the right item.
+  const mmShieldLevel = (mm.equipment >> 4) & 0x0f;
+  appendPositiveItem(items, 'MM_SHIELD', mmShieldLevel);
+  if (mmShieldLevel === 1 && state.shared.mmShieldIsDeku) {
+    appendPositiveItem(items, 'MM_SHIELD_IS_DEKU', 1);
+  }
+  // The equipment level only describes the shield that is held right now: once
+  // the Hero Shield replaced the Deku Shield, both read as level 1 and the
+  // Deku Shield would look lost. The shared save's progressive-shield flags
+  // keep the record of the shields obtained through progressive items, so
+  // expose them as a raw signal and let the mapping keep them marked.
+  if (state.shared.mmProgressiveShields > 0) {
+    appendPositiveItem(
+      items,
+      'MM_PROGRESSIVE_SHIELDS',
+      state.shared.mmProgressiveShields,
+    );
+  }
 
   for (let index = 0; index < mm.items.length; index++) {
     const itemId = mm.items[index];
@@ -6066,6 +6135,8 @@ function createEmptySharedState(): SharedCustomState {
     extraSwordsOot: 0,
     bombchuBagOot: 0,
     bombchuBagMm: 0,
+    mmShieldIsDeku: 0,
+    mmProgressiveShields: 0,
     songNotes: Array.from({ length: fo.songNoteCount }, () => 0),
     caughtChildFishWeights: Array.from(
       { length: fo.caughtFishWeightCount },
@@ -6149,6 +6220,8 @@ function cloneSharedState(source: SharedCustomState): SharedCustomState {
     extraSwordsOot: source.extraSwordsOot,
     bombchuBagOot: source.bombchuBagOot,
     bombchuBagMm: source.bombchuBagMm,
+    mmShieldIsDeku: source.mmShieldIsDeku,
+    mmProgressiveShields: source.mmProgressiveShields,
     songNotes: [...source.songNotes],
     caughtChildFishWeights: [...source.caughtChildFishWeights],
     caughtAdultFishWeights: [...source.caughtAdultFishWeights],

@@ -62,22 +62,25 @@ const OOT_EQUIPMENT_BITMASKS: Record<string, BitmaskEntry[]> = {
 };
 
 // ---------------------------------------------------------------------------
-// 3. MM equipment progressive → individual decomposition
+// 3. MM equipment decomposition
 // ---------------------------------------------------------------------------
 
-interface ProgressiveEntry {
-  minLevel: number;
-  trackerId: string;
-}
-
-const PROGRESSIVE_TO_INDIVIDUAL: Record<string, ProgressiveEntry[]> = {
-  // MM_SHIELD is NOT progressive in the tracker — it uses individual items.
-  // MM_SHIELD: 0=none, 1=Hero, 2=Mirror
-  MM_SHIELD: [
-    { minLevel: 1, trackerId: 'MM_SHIELD_HERO' },
-    { minLevel: 2, trackerId: 'MM_SHIELD_MIRROR' },
-  ],
-};
+// The raw MM shield value is the save's shield equipment level:
+//   0 = none, 1 = Deku or Hero, 2 = Mirror.
+// Level 1 is shared by the Deku and Hero shields, so the level alone cannot
+// tell which shields were obtained: after the Hero Shield replaced the Deku
+// Shield, both read as level 1, and the Deku Shield would look uncollected.
+// Two shared-save signals disambiguate and complete the picture:
+//   MM_SHIELD_IS_DEKU      – the shield held right now is the Deku Shield
+//   MM_PROGRESSIVE_SHIELDS – bit 0: Deku, bit 1: Hero were obtained from a
+//                            progressive shield item (monotonic record, kept
+//                            after a later shield replaced an earlier one)
+// The mirror shield is not part of that record (mmProgressiveShields is only
+// two bits wide), but its equipment level 2 is unambiguous.
+const MM_SHIELD_DEKU_LEVEL = 1;
+const MM_SHIELD_MIRROR_LEVEL = 2;
+const MM_SHIELD_PROGRESSIVE_DEKU_BIT = 0x1;
+const MM_SHIELD_PROGRESSIVE_HERO_BIT = 0x2;
 
 // MM_SWORD IS progressive in the tracker (MM_SWORD levels 1-3).
 // It passes through directly, no decomposition needed.
@@ -252,6 +255,9 @@ const SKIP_IDS = new Set([
   'MM_STICK', // presence flag; tracker uses MM_STICK_UPGRADE
   // MM_TRADE_1/2/3 are now handled as bitmasks below
   'OOT_EXTRA_SWORDS', // raw signal; feeds the OOT_SWORD progressive stage
+  'MM_SHIELD', // raw signal; decomposed into the individual MM shields
+  'MM_SHIELD_IS_DEKU', // raw signal; disambiguates the MM shield level 1
+  'MM_PROGRESSIVE_SHIELDS', // raw signal; records the obtained progressive shields
 ]);
 
 const DEFAULT_ITEM_MAX_COUNTS = new Map(
@@ -989,7 +995,13 @@ function requiresRawStateRebuildForDelta(
     return true;
   }
 
-  if (rawId in PROGRESSIVE_TO_INDIVIDUAL) {
+  // The MM shield signals are non-additive: the translation is derived from
+  // their combination, so deltas must trigger a rebuild.
+  if (
+    rawId === 'MM_SHIELD' ||
+    rawId === 'MM_SHIELD_IS_DEKU' ||
+    rawId === 'MM_PROGRESSIVE_SHIELDS'
+  ) {
     return true;
   }
 
@@ -1088,6 +1100,50 @@ export function translateAutotrackerItems(
     }
   }
 
+  // The MM_SHIELD_IS_DEKU raw signal may appear before or after MM_SHIELD, so
+  // capture it up front.
+  const mmShieldIsDeku = items.some(
+    (item) => item.id === 'MM_SHIELD_IS_DEKU' && item.qty > 0,
+  );
+
+  // Same for the MM shield level and the MM progressive-shield record.
+  let mmShieldLevel = 0;
+  let mmProgressiveShields = 0;
+  for (const { id, qty } of items) {
+    if (id === 'MM_SHIELD') {
+      mmShieldLevel = Math.max(mmShieldLevel, qty);
+    } else if (id === 'MM_PROGRESSIVE_SHIELDS') {
+      mmProgressiveShields = Math.max(mmProgressiveShields, qty);
+    }
+  }
+
+  // Which MM shields the player owns. The progressive record is monotonic, so
+  // shields obtained earlier stay marked after a later shield replaced them.
+  // Without the record the held shield has to stand in for the owned ones
+  // (level 1 is Deku when MM_SHIELD_IS_DEKU is set, Hero otherwise), which is
+  // the best we can do for shields obtained from non-progressive items.
+  const mmShieldHeld = mmShieldLevel >= MM_SHIELD_DEKU_LEVEL;
+  const mmDekuOwned =
+    (mmProgressiveShields & MM_SHIELD_PROGRESSIVE_DEKU_BIT) !== 0 ||
+    (mmShieldHeld && mmShieldIsDeku);
+  const mmHeroOwned =
+    (mmProgressiveShields & MM_SHIELD_PROGRESSIVE_HERO_BIT) !== 0 ||
+    (mmShieldHeld && !mmShieldIsDeku);
+  const mmMirrorOwned = mmShieldLevel >= MM_SHIELD_MIRROR_LEVEL;
+
+  if (mmDekuOwned) set('MM_SHIELD_DEKU', 1);
+  if (mmHeroOwned) set('MM_SHIELD_HERO', 1);
+  if (mmMirrorOwned) set('MM_SHIELD_MIRROR', 1);
+
+  // In "progressive" mode the pool holds the flexible shield item instead of
+  // the individual ones, and the pathfinder asks for it by stage count
+  // (Deku = 1, plus Hero = 2, plus Mirror = 3).
+  if (availableItemIds.has('MM_SHIELD')) {
+    const stage =
+      (mmDekuOwned ? 1 : 0) + (mmHeroOwned ? 1 : 0) + (mmMirrorOwned ? 1 : 0);
+    if (stage > 0) set('MM_SHIELD', stage);
+  }
+
   for (const { id, qty } of items) {
     if (SKIP_IDS.has(id)) continue;
 
@@ -1168,13 +1224,8 @@ export function translateAutotrackerItems(
       continue;
     }
 
-    // Progressive → individual decomposition (e.g. MM_SHIELD)
-    if (id in PROGRESSIVE_TO_INDIVIDUAL) {
-      for (const { minLevel, trackerId } of PROGRESSIVE_TO_INDIVIDUAL[id]) {
-        set(trackerId, qty >= minLevel ? 1 : 0);
-      }
-      continue;
-    }
+    // MM shield equipment level → individual shields is handled before the
+    // loop (MM_SHIELD / MM_SHIELD_IS_DEKU / MM_PROGRESSIVE_SHIELDS).
 
     // Dungeon items
     const dungeonResult = tryDungeonItemRename(id);

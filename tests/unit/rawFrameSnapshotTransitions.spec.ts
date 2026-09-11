@@ -346,6 +346,65 @@ describe('raw frame snapshot transitions', () => {
     ).toBe(true);
   });
 
+  it('keeps the OoT live scene sample when the room/link-age chunks are absent', () => {
+    const fixtureName = 'after-bombchu-2-20260501-202008.json';
+    const parser = createRawAutotrackerParser('v30_1');
+
+    const { message } = buildOotLiveSceneMessage(fixtureName, 1, {
+      liveSceneId: 40,
+      saveSceneId: 40,
+      chestFlags: 0x0000000f,
+    });
+
+    // The room (`roomCtx.curRoom.num`) and `linkAgeOnLoad` are plausibility
+    // guards on the same block, not sample inputs. A frame that does not carry
+    // them - e.g. a fixed full-dump range that stops at the play-state core -
+    // must still apply the live scene and its flag words.
+    const parsed = parser.parse({
+      ...message,
+      chunks: message.chunks.filter(
+        (chunk) =>
+          chunk.name !== 'oot_playstate_room' &&
+          chunk.name !== 'oot_playstate_link_age',
+      ),
+    });
+
+    if (!parsed) {
+      throw new Error('Failed to parse frame without room/link-age chunks');
+    }
+
+    const checks = parsedCheckSet(parsed.checks);
+    expect(parsed.ootSceneKnown).toBe(true);
+    expect(checks.has("Mido's House Top Left")).toBe(true);
+    expect(checks.has("Mido's House Bottom Left")).toBe(true);
+    expect(checks.has("Mido's House Bottom Right")).toBe(true);
+  });
+
+  it('keeps the MM live scene sample when the room chunk is absent', () => {
+    const fixtureName =
+      'mm-without-initial-song-of-healing-20260501-143756.json';
+    const parser = createRawAutotrackerParser('v30_1');
+
+    const { message } = buildMmLiveSceneMessage(fixtureName, 1, {
+      liveSceneId: 7,
+      chestFlags: 0,
+    });
+
+    const parsed = parser.parse({
+      ...message,
+      chunks: message.chunks.filter(
+        (chunk) => chunk.name !== 'mm_playstate_room',
+      ),
+    });
+
+    if (!parsed) {
+      throw new Error('Failed to parse frame without the room chunk');
+    }
+
+    expect(parsed.mmSceneKnown).toBe(true);
+    expect(parsed.mmSceneId).toBe(7);
+  });
+
   it('withholds live flags during the settle window after an MM scene change', () => {
     vi.useFakeTimers();
     const fixtureName =

@@ -186,6 +186,40 @@ version-specific specs out of its self-describing `regions`, re-parses, and
 compares the derived items/locations against `expected`. A missing or empty
 folder is a warning (exit 0). It is wired into `check-most:verify`.
 
+### Keeping `expected` in sync with the parser
+
+`expected` is the raw `parse()` output recorded at capture time, so a parser
+change that adds or removes a **raw item id** (or renames a check key) makes
+every already-captured dump fail verification, even though its recorded memory
+is unchanged. Two ways to resolve that:
+
+1. Re-capture the affected dump with **Debug: Dump Autotracker (Full)** (the
+   documented workflow above).
+2. For historical captures that cannot be reproduced, migrate the recorded
+   `expected` by re-deriving the raw items from the dump's own `regions` and
+   appending only the newly introduced ids (nothing else may differ, and the
+   ids must be new raw signals — never tracker-space items). This keeps old
+   captures meaningful instead of deleting them:
+
+   ```bash
+   # dry run (default), then apply
+   node --import tsx scripts/autotracker/migrate_dump_expected.ts --add MM_SHIELD_IS_DEKU
+   node --import tsx scripts/autotracker/migrate_dump_expected.ts --add MM_SHIELD_IS_DEKU --write
+   ```
+
+   The tool scans `public/test-dumps/` plus the committed
+   `tests/fixtures/autotracker/test-dumps/` fixtures and refuses any change
+   other than adding the ids passed via `--add`.
+
+### Fixed layout coverage invariant
+
+`buildFullDumpChunkSpecs()` must cover the union of every version-specific
+sub-range in `RAW_CHUNK_SPECS_BY_GAME` for all supported versions; otherwise a
+full capture silently loses that range and the verifier can no longer re-derive
+the recorded state from `regions` alone. `tests/unit/fullDumpLayoutCoverage.spec.ts`
+enforces this per version/game, and `FULL_DUMP_MEMORY_LAYOUT_VERSION` is bumped
+whenever the fixed ranges change.
+
 ## Performance Budgets
 
 Budgets are based on current fixture-driven baseline measurements.

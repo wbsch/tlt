@@ -45,10 +45,16 @@ OOT_PAYLOAD_SIZE   = 0x80000   # generous upper bound
 MM_PAYLOAD_SIZE    = 0x50000   # generous upper bound
 
 # Playstate (fixed ROM addresses, not version-dependent)
+# Sizes are the full sizeof(PlayState) structs (OoT/Actor overlay headers in
+# OoTMM: combo/oot/play.h ASSERT_SIZE(PlayState, 0x12518),
+# combo/mm/play.h _Static_assert(sizeof(PlayState) == 0x19258)).  The live
+# autotracker sample also reads roomCtx (+0x11CBC / +0x186E0) and
+# linkAgeOnLoad (+0x11DE8), which sit far beyond the play-state core, so the
+# "core + tail" sizes used previously did not cover them.
 OOT_PLAYSTATE_ADDR = 0x801C84A0
-OOT_PLAYSTATE_SIZE = 0x1CA8 + 0x12D   # core + tail
+OOT_PLAYSTATE_SIZE = 0x12518
 MM_PLAYSTATE_ADDR  = 0x803E6B20
-MM_PLAYSTATE_SIZE  = 0x1DD4 + 0x164   # core + tail
+MM_PLAYSTATE_SIZE  = 0x19258
 
 
 # ═══════════════════════════════════════════════════════════════════════
