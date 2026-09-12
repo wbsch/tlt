@@ -268,6 +268,57 @@ describe('useDungeonEntrances', () => {
     ).toBe(true);
   });
 
+  it('activates the Pirate Fortress dungeon-exit reverse through the overworld pool', () => {
+    const sessionStore = useOoTMMSessionStore();
+    useOoTMMUiStore();
+
+    sessionStore.trackerSettings = {
+      games: 'ootmm',
+      erDungeons: 'full',
+      erMajorDungeons: true,
+      erMinorDungeons: true,
+      erPirateFortress: false,
+      erOverworld: 'full',
+      erPiratesWorld: true,
+      erNoPolarity: true,
+      erMixed: 'full',
+      erMixedDungeons: true,
+      erMixedGrottos: true,
+      erMixedIndoors: true,
+      erMixedOverworld: true,
+      erGrottos: 'full',
+      erIndoors: 'full',
+      erIndoorsMajor: true,
+      erIndoorsExtra: true,
+      erIndoorsTelescopes: true,
+      erIndoorsGameLinks: true,
+    };
+
+    const entrances = useDungeonEntrances();
+
+    const fortressExit = entrances.activeEntrances.value.find(
+      (entry) => entry.key === 'MM_GREAT_BAY_FROM_PIRATE_FORTRESS',
+    );
+    expect(fortressExit).toBeTruthy();
+    expect(fortressExit!.pool).toBe('overworld');
+
+    const options = entrances.destinationOptionsForEntrance(fortressExit!);
+    expect(options.length).toBeGreaterThan(0);
+    // Mixed pools should surface destinations from several different pools,
+    // including both entrance and exit side keys.
+    const pools = new Set(options.map((option) => option.pool));
+    expect(pools.size).toBeGreaterThan(1);
+    expect(
+      options.some((option) => option.value === 'MM_PIRATE_FORTRESS'),
+    ).toBe(true);
+    // The reverse exit key is offered as a destination too.
+    expect(
+      options.some(
+        (option) => option.value === 'MM_GREAT_BAY_FROM_PIRATE_FORTRESS',
+      ),
+    ).toBe(true);
+  });
+
   it('mixes region destinations into other mixed entrance pools when enabled', () => {
     const sessionStore = useOoTMMSessionStore();
     useOoTMMUiStore();

@@ -456,7 +456,18 @@ export function getTrackedEntrancePool(
   }
   // erNoPolarity: exit types become source types in their corresponding pools,
   // mirroring OoTMM's assumedFromPools behavior.
-  if (noPolarity) {
+  if (noPolarity && TRACKED_EXIT_TYPES.has(type)) {
+    // Mirror OoTMM's `entrancesForTypes`: the reverse of a pool source is
+    // itself part of that source's pool. Deriving an exit's pool from its
+    // reverse keeps e.g. the `dungeon-exit` reverse of Pirate Fortress in the
+    // overworld pool once `erPiratesWorld` reassigns `dungeon-pf`.
+    const revKey = key ? getEdgeReverse(key) : null;
+    const revType = revKey ? ENTRANCES_RAW[revKey]?.type : undefined;
+    const revPool = revType
+      ? getTrackedEntrancePool(revType, revKey ?? undefined, settings)
+      : null;
+    if (revPool) return revPool;
+
     if (type === 'dungeon-exit') return 'dungeon';
     if (type === 'grotto-exit' || type === 'grave-exit') return 'grotto';
     if (type === 'indoors-exit') return 'interior';
@@ -1048,12 +1059,22 @@ export function getActiveEntranceKeys(
       if (data.type === 'dungeon-exit') {
         const revKey = getEdgeReverse(key);
         const revType = revKey && ENTRANCES_RAW[revKey]?.type;
-        if (
+        // Mirror the main loop: a reverse of type `dungeon-pf` is activated
+        // through the overworld pool under `erPiratesWorld`, not the dungeon
+        // pool, so accept either enablement path.
+        const reverseEnabledInDungeons = Boolean(
           erDungeons &&
           erDungeons !== 'none' &&
           revType &&
-          enabledDungeonTypes.has(revType)
-        ) {
+          enabledDungeonTypes.has(revType),
+        );
+        const reverseEnabledInOverworld = Boolean(
+          erOverworld &&
+          erOverworld !== 'none' &&
+          revType &&
+          enabledOverworldTypes.has(revType),
+        );
+        if (reverseEnabledInDungeons || reverseEnabledInOverworld) {
           keys.add(key);
           continue;
         }
