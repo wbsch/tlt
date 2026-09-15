@@ -161,6 +161,25 @@ export async function waitForAllReachable(
   return readReachableFraction(page);
 }
 
+export async function waitForAllChecked(
+  page: Page,
+  timeout = TEST_TIMEOUTS.SYNC_POLL,
+): Promise<TrackerStats> {
+  await ensureStatsExpanded(page);
+
+  await expect
+    .poll(
+      async () => {
+        const stats = await readTrackerStats(page);
+        return stats.total > 0 && stats.checked === stats.total;
+      },
+      { timeout },
+    )
+    .toBe(true);
+
+  return readTrackerStats(page);
+}
+
 export async function waitForBoot(page: Page): Promise<void> {
   // Wait for the Vue app to actually mount.  The static shell in index.html
   // also contains an <h1>The Last Tracker</h1>, which would satisfy a

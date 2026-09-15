@@ -44,6 +44,7 @@ const shareImportConfirmMessage = ref('');
 const shareImportIssues = ref<ShareImportIssue[]>([]);
 const isShareMenuOpen = ref(false);
 const isDebugDumpMenuOpen = ref(false);
+const isDebugActivateMenuOpen = ref(false);
 let shareStatusTimeoutId: number | null = null;
 const buildCommitDate = __TLT_BUILD_COMMIT_DATE__;
 const buildCommitHash = __TLT_BUILD_COMMIT_HASH__;
@@ -188,6 +189,11 @@ function handleWindowKeydown(event: KeyboardEvent) {
     return;
   }
 
+  if (isDebugActivateMenuOpen.value) {
+    isDebugActivateMenuOpen.value = false;
+    return;
+  }
+
   if (isInfoModalOpen.value) {
     event.preventDefault();
     closeInfoModal();
@@ -221,12 +227,34 @@ function handleWindowKeydown(event: KeyboardEvent) {
 }
 
 function debugActivateAll() {
+  isDebugActivateMenuOpen.value = false;
   const debugFn = (
     window as Window & { __TLT_DEBUG_ACTIVATE_ALL__?: () => void }
   ).__TLT_DEBUG_ACTIVATE_ALL__;
   if (typeof debugFn === 'function') {
     debugFn();
   }
+}
+
+function debugCollectAllLocations() {
+  isDebugActivateMenuOpen.value = false;
+  const collectFn = (
+    window as Window & { __TLT_DEBUG_COLLECT_ALL_LOCATIONS__?: () => boolean }
+  ).__TLT_DEBUG_COLLECT_ALL_LOCATIONS__;
+  if (typeof collectFn !== 'function') {
+    setShareStatus('Mark all locations collected unavailable');
+    return;
+  }
+  const didCollect = collectFn();
+  setShareStatus(
+    didCollect
+      ? 'All locations marked collected'
+      : 'Mark all locations collected unavailable',
+  );
+}
+
+function toggleDebugActivateMenu() {
+  isDebugActivateMenuOpen.value = !isDebugActivateMenuOpen.value;
 }
 
 async function runAutotrackerDump(
@@ -372,7 +400,12 @@ function toggleShareMenu() {
 }
 
 function handleDocumentClick(event: MouseEvent) {
-  if (!isShareMenuOpen.value && !isDebugDumpMenuOpen.value) return;
+  if (
+    !isShareMenuOpen.value &&
+    !isDebugDumpMenuOpen.value &&
+    !isDebugActivateMenuOpen.value
+  )
+    return;
   const target = event.target as HTMLElement;
   if (isShareMenuOpen.value && target.closest('.export-button-group')) {
     return;
@@ -380,8 +413,15 @@ function handleDocumentClick(event: MouseEvent) {
   if (isDebugDumpMenuOpen.value && target.closest('.debug-dump-button-group')) {
     return;
   }
+  if (
+    isDebugActivateMenuOpen.value &&
+    target.closest('.debug-activate-button-group')
+  ) {
+    return;
+  }
   isShareMenuOpen.value = false;
   isDebugDumpMenuOpen.value = false;
+  isDebugActivateMenuOpen.value = false;
 }
 
 function initializeDebugMode() {
@@ -498,15 +538,47 @@ onBeforeUnmount(() => {
         >
           FAQ
         </button>
-        <button
-          v-if="isDebugMode"
-          type="button"
-          class="debug-activate-all-button"
-          data-testid="debug-activate-all-button"
-          @click="debugActivateAll"
-        >
-          Debug: Activate All
-        </button>
+        <div v-if="isDebugMode" class="debug-activate-button-group">
+          <button
+            type="button"
+            class="debug-activate-all-button"
+            data-testid="debug-activate-all-button"
+            @click="debugActivateAll"
+          >
+            Debug: Activate All
+          </button>
+          <button
+            type="button"
+            class="debug-dump-dropdown-toggle"
+            data-testid="debug-activate-all-toggle"
+            aria-label="Activate all options"
+            @click="toggleDebugActivateMenu"
+          >
+            ⋮
+          </button>
+          <div
+            v-if="isDebugActivateMenuOpen"
+            class="debug-dump-dropdown-menu"
+            data-testid="debug-activate-all-menu"
+          >
+            <button
+              type="button"
+              class="debug-dump-dropdown-item"
+              data-testid="debug-activate-all-items-button"
+              @click="debugActivateAll"
+            >
+              Activate all items
+            </button>
+            <button
+              type="button"
+              class="debug-dump-dropdown-item"
+              data-testid="debug-collect-all-locations-button"
+              @click="debugCollectAllLocations"
+            >
+              Mark all locations collected
+            </button>
+          </div>
+        </div>
         <div v-if="isDebugMode" class="debug-dump-button-group">
           <button
             type="button"
@@ -978,12 +1050,14 @@ onBeforeUnmount(() => {
   background: #555;
 }
 
-.debug-dump-button-group {
+.debug-dump-button-group,
+.debug-activate-button-group {
   position: relative;
   display: inline-flex;
 }
 
-.debug-dump-button-group .debug-activate-all-button {
+.debug-dump-button-group .debug-activate-all-button,
+.debug-activate-button-group .debug-activate-all-button {
   border-right: none;
   border-radius: 0.25rem 0 0 0.25rem;
 }

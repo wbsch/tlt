@@ -2548,6 +2548,14 @@ function fillInventory() {
   sessionStore.fillInventoryForDebugActivateAll();
 }
 
+/**
+ * Debug helper: mark every known location as collected. Returns false when the
+ * tracker has no locations loaded yet (nothing to collect).
+ */
+function collectAllLocationsForDebug(): boolean {
+  return sessionStore.collectAllLocationsForDebug() > 0;
+}
+
 function formatHexAddress(address: number): string {
   return `0x${(address >>> 0).toString(16).padStart(8, '0')}`;
 }
@@ -4265,6 +4273,7 @@ onMounted(() => {
   }
   const windowWithHandlers = window as Window & {
     __TLT_DEBUG_ACTIVATE_ALL__?: () => void;
+    __TLT_DEBUG_COLLECT_ALL_LOCATIONS__?: () => boolean;
     __TLT_DEBUG_DUMP_AUTOTRACKER__?: () => boolean | Promise<boolean>;
     __TLT_DEBUG_DUMP_AUTOTRACKER_FULL__?: () => boolean | Promise<boolean>;
     __TLT_DEBUG_RECORD_AUTOTRACKER__?: () => boolean | Promise<boolean>;
@@ -4272,6 +4281,8 @@ onMounted(() => {
     __TLT_LEAVE_COOP__?: () => void;
   };
   windowWithHandlers.__TLT_DEBUG_ACTIVATE_ALL__ = fillInventory;
+  windowWithHandlers.__TLT_DEBUG_COLLECT_ALL_LOCATIONS__ =
+    collectAllLocationsForDebug;
   windowWithHandlers.__TLT_DEBUG_DUMP_AUTOTRACKER__ = exportAutotrackerDump;
   windowWithHandlers.__TLT_DEBUG_DUMP_AUTOTRACKER_FULL__ =
     exportAutotrackerDumpFull;
@@ -4297,6 +4308,7 @@ onMounted(() => {
 onBeforeUnmount(() => {
   const windowWithHandlers = window as Window & {
     __TLT_DEBUG_ACTIVATE_ALL__?: () => void;
+    __TLT_DEBUG_COLLECT_ALL_LOCATIONS__?: () => boolean;
     __TLT_DEBUG_DUMP_AUTOTRACKER__?: () => boolean | Promise<boolean>;
     __TLT_DEBUG_DUMP_AUTOTRACKER_FULL__?: () => boolean | Promise<boolean>;
     __TLT_DEBUG_RECORD_AUTOTRACKER__?: () => boolean | Promise<boolean>;
@@ -4305,6 +4317,12 @@ onBeforeUnmount(() => {
   };
   if (windowWithHandlers.__TLT_DEBUG_ACTIVATE_ALL__ === fillInventory) {
     delete windowWithHandlers.__TLT_DEBUG_ACTIVATE_ALL__;
+  }
+  if (
+    windowWithHandlers.__TLT_DEBUG_COLLECT_ALL_LOCATIONS__ ===
+    collectAllLocationsForDebug
+  ) {
+    delete windowWithHandlers.__TLT_DEBUG_COLLECT_ALL_LOCATIONS__;
   }
   if (
     windowWithHandlers.__TLT_DEBUG_DUMP_AUTOTRACKER__ === exportAutotrackerDump

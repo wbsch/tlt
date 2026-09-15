@@ -95,6 +95,8 @@ For local development you can instead drop
 
 - `?debug=1`
   - Enables the **Debug: Activate All** button in the app header.
+  - The button's `⋮` menu offers **Activate all items** and **Mark all locations
+    collected**.
 - `?devmode=1`
   - Enables map-dev mode UI for map marker diagnostics.
 

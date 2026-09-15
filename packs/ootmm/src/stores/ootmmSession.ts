@@ -2527,6 +2527,23 @@ export const useOoTMMSessionStore = defineStore('ootmm-session', () => {
     }
   }
 
+  /**
+   * Debug helper: mark every known location as collected.
+   *
+   * Uses the additive `collectLocationIds` path (granular `locations.
+   * set_collected` ops) so a coop peer's concurrent collect cannot be clobbered
+   * by a whole-list `locations.set_ids` replace.
+   *
+   * Returns the number of location ids that were targeted (0 when the tracker
+   * has no locations yet).
+   */
+  function collectAllLocationsForDebug(options?: MutationOptions): number {
+    const ids = allLocations.value.map((location) => location.id);
+    if (ids.length === 0) return 0;
+    collectLocationIds(ids, options);
+    return ids.length;
+  }
+
   // ── Hint Tracker Mutations ──
 
   function addPathHint(hint: RecordedPathHint, options?: MutationOptions) {
@@ -2796,6 +2813,7 @@ export const useOoTMMSessionStore = defineStore('ootmm-session', () => {
     recomputeReachability,
     resetSessionStateToDefaults,
     fillInventoryForDebugActivateAll,
+    collectAllLocationsForDebug,
     // Hint tracker mutations
     addPathHint,
     removePathHint,

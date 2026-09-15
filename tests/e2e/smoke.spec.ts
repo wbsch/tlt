@@ -3,6 +3,7 @@ import {
   gotoTracker,
   readTrackerStats,
   TEST_TIMEOUTS,
+  waitForAllChecked,
   waitForAllReachable,
   waitForBoot,
   waitForReachableFraction,
@@ -69,6 +70,19 @@ test.describe('OoTMM smoke', () => {
     const reachable = await waitForAllReachable(page);
     expect(reachable.total).toBeGreaterThan(0);
     expect(reachable.reachable).toBe(reachable.total);
+  });
+
+  test('debug menu marks all locations collected', async ({ page }) => {
+    await page.getByTestId('debug-activate-all-toggle').click();
+    await expect(page.getByTestId('debug-activate-all-menu')).toBeVisible();
+
+    await page.getByTestId('debug-collect-all-locations-button').click();
+    await expect(page.getByTestId('debug-activate-all-menu')).toHaveCount(0);
+
+    const stats = await waitForAllChecked(page);
+    expect(stats.total).toBeGreaterThan(0);
+    expect(stats.checked).toBe(stats.total);
+    expect(stats.remaining).toBe(0);
   });
 
   test('settings apply flow handles long operation', async ({ page }) => {
