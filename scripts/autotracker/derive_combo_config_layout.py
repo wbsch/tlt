@@ -72,6 +72,14 @@ DATA_BASE = os.path.join(
 
 CONFIG_H_REPO_PATH = "packages/generator/include/combo/config.h"
 PRICE_TS_REPO_PATH = "packages/logic/src/price.ts"
+CONFVARS_REPO_PATH = "packages/generator/lib/combo/confvars.ts"
+
+# `config[0x40]` flag indices the autotracker reads by name. Their index is the
+# position in CONFVARS (see codegenFile(CONFVARS_VALUES, "CFG", ...) ->
+# BITMAP8_GET(gComboConfig.config, flag)). The list ORDER changed between
+# releases (BRONZE_SCALE was 192 in v30.1, 225 in v31.0+), so the index is
+# version data and must be re-derived per release tag -- never hardcoded.
+CONFIG_FLAG_NAMES = ["BRONZE_SCALE"]
 
 # Hardcoded fixed offsets the parser (rawFrameParser.ts) reads WITHOUT going
 # through combo_config_layout.json. They are stable anchors across layouts: if
@@ -247,6 +255,29 @@ def compute_prices_max(price_ts):
 
 
 # --------------------------------------------------------------------------- #
+# confvars.ts -> ComboConfig config[] flag indices
+# --------------------------------------------------------------------------- #
+def compute_config_flags(confvars_ts):
+    """Map tracked flag name -> index in the OoTMM CONFVARS list.
+
+    `CONFVARS_VALUES[k] = i` over `CONFVARS = [ ... ]` is what codegen turns
+    into `#define CFG_<name> i`; `BITMAP8_GET(gComboConfig.config, CFG_<name>)`
+    then reads bit `i`. The index is therefore the array position.
+    """
+    m = re.search(r"export\s+const\s+CONFVARS\s*=\s*\[(.*?)\]", confvars_ts, re.S)
+    if not m:
+        raise SystemExit("CONFVARS array not found in confvars.ts")
+    names = re.findall(r"'([A-Z0-9_]+)'", m.group(1))
+    missing = [name for name in CONFIG_FLAG_NAMES if name not in names]
+    if missing:
+        raise SystemExit(
+            f"CONFVARS is missing tracked flag(s) {missing}; update "
+            f"CONFIG_FLAG_NAMES / the parser constants."
+        )
+    return {name: names.index(name) for name in CONFIG_FLAG_NAMES}
+
+
+# --------------------------------------------------------------------------- #
 # config.h -> struct layout
 # --------------------------------------------------------------------------- #
 def _extract_typedef_structs(header):
@@ -338,12 +369,13 @@ def layout_struct(body, typedefs, array_env, memo):
     return fields, offset, struct_align
 
 
-def derive_layout(header, prices_max):
+def derive_layout(header, prices_max, config_flags):
     """Compute the ComboConfig layout from the raw header text.
 
     Returns (layout, info, errors). `layout` is the combo_config_layout.json
     dict; `info` carries extra offsets for verification; `errors` non-empty
     means the fixed parser offsets changed and nothing should be written.
+    `config_flags` maps tracked flag name -> index in `config[]`.
     """
     typedefs = _extract_typedef_structs(header)
     if "ComboConfig" not in typedefs:
@@ -408,6 +440,7 @@ def derive_layout(header, prices_max):
         "bombchuBehaviorOotOffset": by_name["bombchuBehaviorOot"]["offset"],
         "bombchuBehaviorMmOffset": by_name["bombchuBehaviorMm"]["offset"],
         "songEventsOffset": song["offset"],
+        "configFlags": dict(config_flags),
     }
     padded = (raw_size + struct_align - 1) // struct_align * struct_align
     info = {
@@ -704,6 +737,10 @@ def report_mode_a(layout, info, tag, repo):
         print(f"  songEventsMm[{layout['size'] - layout['songEventsOffset']
                               - info['song_events_count']}] "
               f"@0x{layout['songEventsOffset'] + info['song_events_count']:03x}")
+    print("  configFlags: " + "  ".join(
+        f"{name}={flag} (0x{flag:02x})"
+        for name, flag in layout["configFlags"].items()
+    ) + f"  (from {CONFVARS_REPO_PATH})")
     return True
 
 
@@ -759,7 +796,9 @@ def main():
                 "packages/generator/lib/combo/logic/price.ts",
             )
         prices_max = compute_prices_max(price_ts)
-        layout, info, errors = derive_layout(header, prices_max)
+        confvars_ts = git_show(args.ootmm_repo, args.version, CONFVARS_REPO_PATH)
+        config_flags = compute_config_flags(confvars_ts)
+        layout, info, errors = derive_layout(header, prices_max, config_flags)
         report_mode_a(layout, info, args.version, args.ootmm_repo)
         if errors:
             all_ok = False

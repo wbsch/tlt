@@ -6,5 +6,8 @@
   "strayFairyRewardCountOffset": 710,
   "bombchuBehaviorOotOffset": 711,
   "bombchuBehaviorMmOffset": 712,
-  "songEventsOffset": 713
+  "songEventsOffset": 713,
+  "configFlags": {
+    "BRONZE_SCALE": 192
+  }
 }

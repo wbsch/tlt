@@ -18,9 +18,18 @@
  *    aborts the file),
  *  - dry run unless `--write` is passed.
  *
+ * A parser *fix* can also leave an already-captured dump with a stale
+ * quantity (e.g. the BRONZE_SCALE flag index fix changes OOT_SCALE/MM_SCALE
+ * from 1 to 2). `--fix-qty <ID>` allows exactly that: it corrects the
+ * quantity of the listed ids to the parser output while still refusing any
+ * other difference. Both modes can be combined.
+ *
  * Usage:
  *   node --import tsx scripts/autotracker/migrate_dump_expected.ts \
  *     --add MM_SHIELD_IS_DEKU --write
+ *
+ *   node --import tsx scripts/autotracker/migrate_dump_expected.ts \
+ *     --fix-qty OOT_SCALE --fix-qty MM_SCALE --write
  */
 import { fileURLToPath } from 'node:url';
 import path from 'node:path';
@@ -38,6 +47,7 @@ type Item = { id: string; qty: number };
 
 type Options = {
   add: Set<string>;
+  fixQty: Set<string>;
   write: boolean;
   dirs: string[];
   help: boolean;
@@ -46,6 +56,7 @@ type Options = {
 function parseArgs(argv: string[]): Options {
   const options: Options = {
     add: new Set(),
+    fixQty: new Set(),
     write: false,
     dirs: [DEFAULT_DUMPS_DIR, ...COMMITTED_FIXTURES],
     help: false,
@@ -59,6 +70,12 @@ function parseArgs(argv: string[]): Options {
         throw new Error('--add requires a raw item id');
       }
       options.add.add(value);
+    } else if (arg === '--fix-qty') {
+      const value = argv[++index];
+      if (!value) {
+        throw new Error('--fix-qty requires a raw item id');
+      }
+      options.fixQty.add(value);
     } else if (arg === '--dir') {
       const value = argv[++index];
       if (!value) {
@@ -100,12 +117,15 @@ async function main(): Promise<void> {
   if (options.help) {
     console.log(
       'Usage: node --import tsx scripts/autotracker/migrate_dump_expected.ts ' +
-        '--add <RAW_ITEM_ID> [--add ...] [--dir <dumps dir>] [--write]',
+        '[--add <RAW_ITEM_ID> ...] [--fix-qty <RAW_ITEM_ID> ...] ' +
+        '[--dir <dumps dir>] [--write]',
     );
     return;
   }
-  if (options.add.size === 0) {
-    throw new Error('Refusing to run without --add <RAW_ITEM_ID>');
+  if (options.add.size === 0 && options.fixQty.size === 0) {
+    throw new Error(
+      'Refusing to run without --add <RAW_ITEM_ID> or --fix-qty <RAW_ITEM_ID>',
+    );
   }
 
   const files = collectDumpFiles(options.dirs);
@@ -184,37 +204,66 @@ async function main(): Promise<void> {
         ([id, qty]) => derivedMap.has(id) && derivedMap.get(id) !== qty,
       );
       const disallowed = extra.filter(([id]) => !options.add.has(id));
+      // `--fix-qty <ID>` realigns that id to the parser output, including
+      // dropping it when the (fixed) parser no longer emits it at all. Every
+      // other difference is still refused below.
+      const realign = [...expectedMap.keys()].filter(
+        (id) =>
+          options.fixQty.has(id) && derivedMap.get(id) !== expectedMap.get(id),
+      );
+      const disallowedMissing = missing.filter(
+        ([id]) => !options.fixQty.has(id),
+      );
+      const disallowedQty = mismatch.filter(([id]) => !options.fixQty.has(id));
 
-      if (missing.length > 0 || mismatch.length > 0 || disallowed.length > 0) {
+      if (
+        disallowedMissing.length > 0 ||
+        disallowed.length > 0 ||
+        disallowedQty.length > 0
+      ) {
         console.error(
           `FAIL ${relative}: refusing to migrate — ` +
-            `missing=${JSON.stringify(missing)} ` +
-            `mismatch=${JSON.stringify(mismatch)} ` +
+            `missing=${JSON.stringify(disallowedMissing)} ` +
+            `qty-mismatch=${JSON.stringify(disallowedQty)} ` +
             `not-allowed=${JSON.stringify(disallowed)}`,
         );
         failed = true;
         continue;
       }
 
-      if (extra.length === 0) {
+      if (extra.length === 0 && realign.length === 0) {
         console.log(`OK   ${relative}: already up to date`);
         continue;
       }
 
       const merged: Item[] = [
-        ...expected,
+        ...expected
+          .filter((item) => !options.fixQty.has(item.id))
+          .map((item) => ({ ...item })),
         ...extra.map(([id, qty]) => ({ id, qty })),
+        // Re-read the allowed quantity fixes from the parser output.
+        ...realign
+          .filter((id) => derivedMap.has(id))
+          .map((id) => ({ id, qty: derivedMap.get(id) as number })),
       ].sort((left, right) => left.id.localeCompare(right.id));
       dump.expected.items = merged;
+
+      const realignSummary = realign.map((id) => ({
+        id,
+        from: expectedMap.get(id),
+        to: derivedMap.get(id),
+      }));
 
       if (options.write) {
         writeFileSync(file, `${JSON.stringify(dump, null, 2)}\n`);
         console.log(
-          `OK   ${relative}: added ${JSON.stringify(extra)} (${merged.length} items)`,
+          `OK   ${relative}: added ${JSON.stringify(extra)} ` +
+            `realigned ${JSON.stringify(realignSummary)} (${merged.length} items)`,
         );
       } else {
         console.log(
-          `DRY  ${relative}: would add ${JSON.stringify(extra)} (${merged.length} items)`,
+          `DRY  ${relative}: would add ${JSON.stringify(extra)} ` +
+            `realign ${JSON.stringify(realignSummary)} (${merged.length} items)`,
         );
       }
     }

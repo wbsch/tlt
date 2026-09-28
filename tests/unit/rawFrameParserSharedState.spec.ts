@@ -6,8 +6,16 @@ import {
 } from '../../packs/ootmm/src/autotracker/rawFrameParser';
 import { buildRawMessage } from '../helpers/autotrackerFixtures';
 
-const BRONZE_SCALE_COMBO_CONFIG_BYTE_OFFSET = 0x104;
-const BRONZE_SCALE_COMBO_CONFIG_BIT_MASK = 1 << 0;
+// The BRONZE_SCALE flag index in ComboConfig.config[] is version data (v30.1:
+// bit 192; v31.0+: bit 225). config[] itself starts at 0xec inside the combo
+// config block, so the byte to poke is 0xec + (flag >> 3).
+const BRONZE_SCALE_COMBO_CONFIG_FLAG = 192;
+const BRONZE_SCALE_COMBO_CONFIG_FLAGS_OFFSET = 0xec;
+const BRONZE_SCALE_COMBO_CONFIG_BYTE_OFFSET =
+  BRONZE_SCALE_COMBO_CONFIG_FLAGS_OFFSET +
+  (BRONZE_SCALE_COMBO_CONFIG_FLAG >> 3);
+const BRONZE_SCALE_COMBO_CONFIG_BIT_MASK =
+  1 << (BRONZE_SCALE_COMBO_CONFIG_FLAG & 7);
 const OOT_SCALE_BRONZE_PROGRESSIVE_BIT_MASK = 1 << 4;
 const MM_SCALE_BRONZE_PROGRESSIVE_BIT_MASK = 1 << 3;
 

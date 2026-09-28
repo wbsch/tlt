@@ -172,6 +172,20 @@ them (or the parser's hardcoded `special`/`prices`/`boss`/`songEvents` counts)
 changed — update `rawFrameParser.ts` and the script's `ANCHORS`/
 `PARSER_CONSTANTS` first.
 
+## `configFlags`: version-dependent indices into `ComboConfig.config[]`
+
+The `config[0x40]` block holds one bit per OoTMM confvar, read via
+`BITMAP8_GET(gComboConfig.config, CFG_<NAME>)` where the index is the position
+in `CONFVARS` (`packages/generator/lib/combo/confvars.ts`, turned into
+`#define CFG_<NAME> i` by codegen). **That list order is not stable across
+releases** — `BRONZE_SCALE` was index 192 in v30.1 but 225 in v31.0+ (index
+192 is `SHARED_MASK_KAMARO` there). So the JSON also carries
+`configFlags: { <CONFVAR_NAME>: index }` (derived by the same script from
+`confvars.ts` at the tag) and the parser resolves the index through
+`comboConfigFlagIndex(...)` instead of hardcoding it. Hardcoding the wrong
+index silently disables the flag (e.g. the bronze scale pre-stage) rather than
+erroring, so always regenerate this file on a version bump.
+
 ## Version-bump workflow
 
 ```bash

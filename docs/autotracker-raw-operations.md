@@ -211,6 +211,17 @@ is unchanged. Two ways to resolve that:
    `tests/fixtures/autotracker/test-dumps/` fixtures and refuses any change
    other than adding the ids passed via `--add`.
 
+   A parser **fix** can instead leave a capture with a stale quantity for an
+   id that already exists (e.g. the bronze-scale flag-index fix changed
+   `OOT_SCALE`/`MM_SCALE` from 1 to 2). `--fix-qty <ID>` re-aligns exactly the
+   listed ids — including dropping one the fixed parser no longer emits — while
+   still refusing every other difference:
+
+   ```bash
+   node --import tsx scripts/autotracker/migrate_dump_expected.ts \
+     --fix-qty OOT_SCALE --fix-qty MM_SCALE --write
+   ```
+
 ### Fixed layout coverage invariant
 
 `buildFullDumpChunkSpecs()` must cover the union of every version-specific

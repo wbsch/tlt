@@ -802,6 +802,13 @@ type ComboConfigLayout = {
   bombchuBehaviorOotOffset: number;
   bombchuBehaviorMmOffset: number;
   songEventsOffset: number;
+  /**
+   * Index into `ComboConfig.config[]` (BITMAP8_GET) for tracked flags, keyed by
+   * OoTMM confvar name. The `CONFVARS` list order changes between releases
+   * (e.g. BRONZE_SCALE was 192 in v30.1 but 225 in v31.0+), so the index is
+   * version data and must not be hardcoded.
+   */
+  configFlags: Record<string, number>;
 };
 
 const OOT_COMBO_CONFIG_FLAGS_OFFSET = 0x0ec;
@@ -817,7 +824,10 @@ const OOT_COMBO_CONFIG_PRICE_COUNT = 141;
 const OOT_COMBO_CONFIG_PRICE_MAX = 4995;
 const OOT_COMBO_CONFIG_BOSS_COUNT = 12;
 const OOT_COMBO_CONFIG_SONG_EVENT_COUNT = 18;
-const OOT_COMBO_CONFIG_FLAG_BRONZE_SCALE = 192;
+// ComboConfig config[] flag names (OoTMM confvar names). The numeric index is
+// resolved per version via `comboConfigLayout.configFlags` (see
+// `comboConfigFlagIndex`); it is NOT stable across versions.
+const OOT_COMBO_CONFIG_FLAG_NAME_BRONZE_SCALE = 'BRONZE_SCALE';
 
 /** Combo config tail layout for the currently active data version. */
 let comboConfigLayout: ComboConfigLayout =
@@ -3053,7 +3063,7 @@ function readOotRuntimeConfig(
         OOT_COMBO_CONFIG_FLAGS_OFFSET,
         OOT_COMBO_CONFIG_FLAGS_OFFSET + OOT_COMBO_CONFIG_FLAGS_COUNT,
       ),
-      OOT_COMBO_CONFIG_FLAG_BRONZE_SCALE,
+      comboConfigFlagIndex(OOT_COMBO_CONFIG_FLAG_NAME_BRONZE_SCALE),
     );
   }
 
@@ -3105,7 +3115,7 @@ function readOotRuntimeConfigFromMemory(
         OOT_COMBO_CONFIG_FLAGS_OFFSET,
         OOT_COMBO_CONFIG_FLAGS_OFFSET + OOT_COMBO_CONFIG_FLAGS_COUNT,
       ),
-      OOT_COMBO_CONFIG_FLAG_BRONZE_SCALE,
+      comboConfigFlagIndex(OOT_COMBO_CONFIG_FLAG_NAME_BRONZE_SCALE),
     );
   } else {
     const payload = memory.get(
@@ -3382,6 +3392,16 @@ function ootComboConfigFlagEnabled(config: Uint8Array, flag: number): boolean {
     return false;
   }
   return (config[byteIndex] & (1 << (flag % 8))) !== 0;
+}
+
+/**
+ * Resolve a ComboConfig `config[]` flag index from the active version's
+ * layout data. The `CONFVARS` order (and therefore the flag index) changes
+ * between OoTMM releases, so the index must never be hardcoded. Missing data
+ * yields -1, which `ootComboConfigFlagEnabled` treats as "off".
+ */
+function comboConfigFlagIndex(flagName: string): number {
+  return comboConfigLayout.configFlags?.[flagName] ?? -1;
 }
 
 function ootMaxKeyValueAllowed(sceneId: number, value: number): boolean {
