@@ -6,7 +6,7 @@ import {
   publishShareStatusMessage,
   SHARE_PARTIAL_IMPORT_MESSAGE,
 } from '@/utils/shareState';
-import { computed, markRaw, nextTick, ref, watch } from 'vue';
+import { computed, markRaw, nextTick, ref, shallowRef, watch } from 'vue';
 import type { TrackerPack } from '@/types/tracker';
 import { useSyncStatusStore } from '@/stores/syncStatus';
 import { ITEM_DATABASE } from '../data/items';
@@ -440,7 +440,14 @@ export const useOoTMMSessionStore = defineStore('ootmm-session', () => {
   const importedSpoilerLogVersion = ref<string | null>(null);
   const needsLegacyCrossWarpOotSynthesis = ref(false);
   const needsLegacyCrossWarpMmSynthesis = ref(false);
-  const spoilerPlacements = ref<ResolvedSpoilerPlacement[]>([]);
+  // A shallowRef on purpose: this array is ~2000 flat, immutable placement
+  // records that are only ever replaced wholesale (never mutated in place, see
+  // `setSpoilerPlacements`). A deep `ref` would make Vue proxy every record,
+  // which makes both Pinia's deep `$subscribe` (persistence) and every
+  // `JSON.stringify`/clone of the session walk ~2300 reactive proxies on each
+  // store mutation — the dominant remaining cost of marking a check collected
+  // on slower machines. Reactivity for full replacement is preserved.
+  const spoilerPlacements = shallowRef<ResolvedSpoilerPlacement[]>([]);
   const hintsText = ref<string | null>(null);
   const availableItemIds = ref<string[]>([]);
   const spoilerFishItemIds = ref<string[]>([]);
@@ -452,8 +459,16 @@ export const useOoTMMSessionStore = defineStore('ootmm-session', () => {
   const statsExtra = ref<Record<string, unknown>>({});
   const locationsVersion = ref(0);
   const isApplyingSettings = ref(false);
-  const undoHistory = ref<SessionSnapshot[]>([]);
-  const redoHistory = ref<SessionSnapshot[]>([]);
+  // Wrapped in markRaw so Vue never makes the (deep-copied) snapshot objects
+  // reactive. These snapshots are stored as opaque values and are only ever
+  // replaced wholesale, so they never need reactivity — but if Vue did proxy
+  // them, Pinia's `$subscribe` (which deep-watches the whole store state, see
+  // `$subscribeOptions = { deep: true }`) would traverse every node of up to
+  // HISTORY_LIMIT stored snapshots on *every* store mutation. With a full
+  // spoiler-log state that is hundreds of thousands of nodes per interaction,
+  // which made marking checks feel extremely laggy.
+  const undoHistory = ref<SessionSnapshot[]>(markRaw([]));
+  const redoHistory = ref<SessionSnapshot[]>(markRaw([]));
   const isNavigatingHistory = ref(false);
   let syncConnection: OoTMMSessionSyncConnection | null = null;
   let roomConnection: OoTMMRoomSyncConnection | null = null;
@@ -838,8 +853,8 @@ export const useOoTMMSessionStore = defineStore('ootmm-session', () => {
   }
 
   function clearHistory() {
-    undoHistory.value = [];
-    redoHistory.value = [];
+    undoHistory.value = markRaw([]);
+    redoHistory.value = markRaw([]);
   }
 
   // Remote operations must not be applied while a *local* settings-apply is
@@ -1248,7 +1263,7 @@ export const useOoTMMSessionStore = defineStore('ootmm-session', () => {
   }
 
   function pushUndoSnapshot(snapshot: SessionSnapshot) {
-    const next = [...undoHistory.value, snapshot];
+    const next = markRaw([...undoHistory.value, snapshot]);
     if (next.length > HISTORY_LIMIT) {
       next.splice(0, next.length - HISTORY_LIMIT);
     }
@@ -1256,7 +1271,7 @@ export const useOoTMMSessionStore = defineStore('ootmm-session', () => {
   }
 
   function pushRedoSnapshot(snapshot: SessionSnapshot) {
-    const next = [...redoHistory.value, snapshot];
+    const next = markRaw([...redoHistory.value, snapshot]);
     if (next.length > HISTORY_LIMIT) {
       next.splice(0, next.length - HISTORY_LIMIT);
     }
@@ -1268,7 +1283,7 @@ export const useOoTMMSessionStore = defineStore('ootmm-session', () => {
     const currentSnapshot = captureSessionSnapshot();
     if (snapshotsEqual(previousSnapshot, currentSnapshot)) return;
     pushUndoSnapshot(previousSnapshot);
-    redoHistory.value = [];
+    redoHistory.value = markRaw([]);
   }
 
   async function restoreSnapshot(snapshot: SessionSnapshot): Promise<boolean> {
