@@ -84,11 +84,13 @@ function writeU32BE(data: Uint8Array, offset: number, value: number): void {
  * given layout.  All fields default to zero (valid values); bosses get unique
  * ids 0..11 so the uniqueness check passes.  `bronzeScaleFlag` (when given)
  * sets that `config[]` bit to enable the bronze scale pre-stage.
+ * `songEvents` overrides the song-event indices (default all zero).
  */
 function buildComboConfig(
   layout: ComboConfigLayoutFixture,
   mqBits: number,
   bronzeScaleFlag?: number,
+  songEvents?: readonly number[],
 ): Uint8Array {
   const data = new Uint8Array(layout.size);
   data[0] = 1; // non-zero version marker; bytes 1..3 stay 0
@@ -100,7 +102,7 @@ function buildComboConfig(
   data[layout.bombchuBehaviorOotOffset] = 0;
   data[layout.bombchuBehaviorMmOffset] = 0;
   for (let index = 0; index < OOT_COMBO_CONFIG_SONG_EVENT_COUNT; index++) {
-    data[layout.songEventsOffset + index] = 0;
+    data[layout.songEventsOffset + index] = songEvents?.[index] ?? 0;
   }
   if (bronzeScaleFlag !== undefined) {
     data[OOT_COMBO_CONFIG_FLAGS_OFFSET + (bronzeScaleFlag >> 3)] |=
@@ -120,7 +122,11 @@ function buildComboConfig(
 function buildOotMessageWithComboConfig(
   comboConfig: Uint8Array,
   comboConfigSpecLength: number,
-  options: { ootScaleLevel?: number; bronzeScaleOwned?: boolean } = {},
+  options: {
+    ootScaleLevel?: number;
+    bronzeScaleOwned?: boolean;
+    xflagsOotBit?: number;
+  } = {},
 ): RawAutotrackerMessage {
   const chunks: RawAutotrackerMessage['chunks'] = [];
 
@@ -129,6 +135,12 @@ function buildOotMessageWithComboConfig(
     if (spec.name === 'oot_save_state_scene_flags') {
       // Scene 0 (Deku Tree) chest bit 3 → OOT_chest_0_3.
       writeU32BE(data, 0, 0x08);
+    }
+    if (
+      spec.name === 'oot_shared_custom_save_bitmap_xflagsOot' &&
+      options.xflagsOotBit !== undefined
+    ) {
+      data[options.xflagsOotBit >> 3] |= 1 << (options.xflagsOotBit & 7);
     }
     if (spec.name === 'oot_save_state_inventory' && options.ootScaleLevel) {
       // The inventory chunk starts at OOT_OFF_INV_ITEMS (0x74); the upgrades
@@ -253,6 +265,48 @@ describe('combo config layout version handling', () => {
       expect(names).not.toContain('Deku Tree Map Chest');
     },
   );
+
+  // Regression: `songEventsOot[]` holds indices into a 20-entry song table
+  // (`kOcarinaActions`), so shuffled seeds store values well above 5. The
+  // validator must accept those, otherwise the whole combo config is rejected,
+  // runtime MQ bits are ignored, and every Deku Tree / Jabu Jabu conflict
+  // check silently disappears (scene and bitmap conflicts both resolve via
+  // `ootMqDungeonState`).
+  const SHUFFLED_SONG_EVENTS = [
+    2, 1, 11, 7, 9, 6, 11, 5, 6, 6, 0, 9, 0, 7, 8, 0, 3, 5,
+  ] as const;
+
+  it('resolves scene-conflict checks when song events are shuffled (values > 5)', () => {
+    const parser = createRawAutotrackerParserSync('v32_3');
+    const comboSpec = RAW_CHUNK_SPECS_BY_GAME.oot.find(
+      (spec) => spec.name === 'oot_runtime_combo_config',
+    );
+    const message = buildOotMessageWithComboConfig(
+      buildComboConfig(LAYOUT_V31_PLUS, 0, undefined, SHUFFLED_SONG_EVENTS),
+      comboSpec?.length ?? LAYOUT_V31_PLUS.size,
+    );
+    const names = parsedCheckNames(parser, message);
+
+    expect(names).toContain('Deku Tree Map Chest');
+    expect(names).not.toContain('MQ Deku Tree Map Chest');
+  });
+
+  it('resolves xflag (bitmap) conflict checks when song events are shuffled (values > 5)', () => {
+    const parser = createRawAutotrackerParserSync('v32_3');
+    const comboSpec = RAW_CHUNK_SPECS_BY_GAME.oot.find(
+      (spec) => spec.name === 'oot_runtime_combo_config',
+    );
+    // xflagsOot bit 73 is a conflict: vanilla → Deku Tree Grass Water Room 2.
+    const message = buildOotMessageWithComboConfig(
+      buildComboConfig(LAYOUT_V31_PLUS, 0, undefined, SHUFFLED_SONG_EVENTS),
+      comboSpec?.length ?? LAYOUT_V31_PLUS.size,
+      { xflagsOotBit: 73 },
+    );
+    const names = parsedCheckNames(parser, message);
+
+    expect(names).toContain('Deku Tree Grass Water Room 2');
+    expect(names).not.toContain('MQ Deku Tree Grass Spike Room Back 1');
+  });
 
   it('does not resolve scene-conflict checks when the combo config does not match the parser layout', () => {
     // v31_1 parser expects the new (745-byte) layout; feeding it an old-layout

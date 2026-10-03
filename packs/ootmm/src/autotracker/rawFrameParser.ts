@@ -824,6 +824,12 @@ const OOT_COMBO_CONFIG_PRICE_COUNT = 141;
 const OOT_COMBO_CONFIG_PRICE_MAX = 4995;
 const OOT_COMBO_CONFIG_BOSS_COUNT = 12;
 const OOT_COMBO_CONFIG_SONG_EVENT_COUNT = 18;
+// Each `songEventsOot[]` entry is an index into the per-game song-event table
+// (`kOcarinaActions[]` in OoT, `sSongEventSongs[]` in MM), both of which hold
+// 20 entries. Values are therefore in `[0, 19]`, and can exceed 5 whenever the
+// seed shuffles song events (e.g. "songs: notes" without the standard songs),
+// so the sanity bound must allow the full table.
+const OOT_COMBO_CONFIG_SONG_EVENT_INDEX_COUNT = 20;
 // ComboConfig config[] flag names (OoTMM confvar names). The numeric index is
 // resolved per version via `comboConfigLayout.configFlags` (see
 // `comboConfigFlagIndex`); it is NOT stable across versions.
@@ -3360,7 +3366,10 @@ function validateOotComboConfig(data: Uint8Array): boolean {
     return false;
   }
   for (let index = 0; index < OOT_COMBO_CONFIG_SONG_EVENT_COUNT; index++) {
-    if ((data[comboConfigLayout.songEventsOffset + index] ?? 0) > 5) {
+    if (
+      (data[comboConfigLayout.songEventsOffset + index] ?? 0) >=
+      OOT_COMBO_CONFIG_SONG_EVENT_INDEX_COUNT
+    ) {
       return false;
     }
   }
