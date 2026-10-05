@@ -122,9 +122,9 @@ const props = defineProps<{
 const AUTOTRACKER_RELEASES_LATEST_URL =
   'https://github.com/jupiter0fire/tlt-autotracker/releases/latest';
 const AUTOTRACKER_WINDOWS_DOWNLOAD_URL =
-  'https://github.com/jupiter0fire/tlt-autotracker/releases/latest/download/ootmm-autotracker-v0.2.2-windows-amd64.exe';
+  'https://github.com/jupiter0fire/tlt-autotracker/releases/latest/download/ootmm-autotracker-v0.2.3-windows-amd64.exe';
 const AUTOTRACKER_LINUX_DOWNLOAD_URL =
-  'https://github.com/jupiter0fire/tlt-autotracker/releases/latest/download/ootmm-autotracker-v0.2.2-linux-amd64';
+  'https://github.com/jupiter0fire/tlt-autotracker/releases/latest/download/ootmm-autotracker-v0.2.3-linux-amd64';
 const AUTOTRACKER_LUA_DOWNLOAD_URL =
   'https://github.com/jupiter0fire/tlt-autotracker/releases/latest/download/tlt_autotracking_v2.lua';
 const AUTOTRACKER_NOT_FOUND_WARNING_MESSAGE =

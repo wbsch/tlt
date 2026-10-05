@@ -22,10 +22,10 @@ export type TrackerFaqContentBlock =
     };
 
 const WINDOWS_AUTOTRACKER_URL =
-  'https://github.com/jupiter0fire/tlt-autotracker/releases/latest/download/ootmm-autotracker-v0.2.2-windows-amd64.exe';
+  'https://github.com/jupiter0fire/tlt-autotracker/releases/latest/download/ootmm-autotracker-v0.2.3-windows-amd64.exe';
 
 const LINUX_AUTOTRACKER_URL =
-  'https://github.com/jupiter0fire/tlt-autotracker/releases/latest/download/ootmm-autotracker-v0.2.2-linux-amd64';
+  'https://github.com/jupiter0fire/tlt-autotracker/releases/latest/download/ootmm-autotracker-v0.2.3-linux-amd64';
 
 const ADAPTER_LUA_URL =
   'https://github.com/jupiter0fire/tlt-autotracker/releases/latest/download/tlt_autotracking_v2.lua';
