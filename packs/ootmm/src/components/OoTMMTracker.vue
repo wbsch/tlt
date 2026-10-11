@@ -5060,7 +5060,7 @@ onBeforeUnmount(() => {
                   rel="noopener noreferrer"
                 >
                   Github</a
-                >. If you use Project64, you also need the updated
+                >. If you use Project64, you also need v2 of the
                 <a
                   class="autotracker-inline-warning-link"
                   :href="AUTOTRACKER_LUA_DOWNLOAD_URL"

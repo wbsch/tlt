@@ -1185,6 +1185,25 @@ describe('OoT live scene availability (auto-map-switch guard)', () => {
     expect(parsed!.ootSceneId).toBe(96);
     expect(parsed!.ootSceneKnown).toBe(true);
   });
+
+  it('reports live scene 0 (Deku Tree) as-is instead of falling back to the stale save-context scene', () => {
+    const parser = createRawAutotrackerParser('v30_1');
+    const { message } = buildRawMessage(OOT_FIXTURE, 1);
+
+    // Scene 0 is a real scene (the Deku Tree). A live sample for it must be
+    // reported as-is and marked known, NOT replaced by the save-context
+    // fallback - which can point at a completely different, stale scene. That
+    // was the reported bug: entering the Deku Tree (live scene 0) showed the
+    // Zora River map (stale save-context scene 89).
+    const parsed = parser.parse({
+      ...message,
+      chunks: [...message.chunks, ...ootPlaystateChunks({ sceneId: 0 })],
+    });
+
+    expect(parsed).not.toBeNull();
+    expect(parsed!.ootSceneId).toBe(0);
+    expect(parsed!.ootSceneKnown).toBe(true);
+  });
 });
 
 describe('MM live scene flag remapping (inverted Stone Tower)', () => {

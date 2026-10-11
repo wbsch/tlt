@@ -1922,9 +1922,13 @@ class RawAutotrackerParserImpl implements RawAutotrackerParser {
 
     // Use the live (play-state) scene ID for auto-map-switching, as it
     // updates immediately on scene transitions. Fall back to the save-context
-    // scene ID when no live sample is available yet (liveSceneId == 0).
-    const ootSceneId =
-      state.oot.liveSceneId !== 0 ? state.oot.liveSceneId : state.oot.sceneId;
+    // scene ID only when no live sample has been observed yet. Availability
+    // is tracked by `liveSceneSeen`, NOT by `liveSceneId !== 0`: scene 0 is a
+    // real scene (the Deku Tree), so a live 0 must not be mistaken for "no
+    // sample" and replaced by the (possibly stale) save-context scene.
+    const ootSceneId = state.oot.liveSceneSeen
+      ? state.oot.liveSceneId
+      : state.oot.sceneId;
 
     return {
       activeGame: state.activeGame,
