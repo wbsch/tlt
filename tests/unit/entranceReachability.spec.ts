@@ -83,7 +83,7 @@ describe('entrance reachability', () => {
     const tracker = new OoTMMTracker();
     await tracker.initialize({
       games: 'ootmm',
-      startingAge: 'child',
+      startingAgeOot: 'child',
       erSpawns: 'both',
       erOverworld: 'full',
       erGrottos: 'full',

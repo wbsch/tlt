@@ -3,7 +3,7 @@ import { OoTMMTracker } from '../../packs/ootmm/src/tracker';
 
 async function runCase(label: string, extraItems: [string, number][]) {
   const tracker = new OoTMMTracker();
-  await tracker.initialize({ startingAge: 'adult' });
+  await tracker.initialize({ startingAgeOot: 'adult' });
 
   const inventory = new Map<string, number>([
     ['__grid_ref_state__:__grid_ref__:Bottle1:OOT_BOTTLE_BLUE_FIRE', 1],

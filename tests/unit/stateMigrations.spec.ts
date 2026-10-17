@@ -16,10 +16,10 @@ import {
 } from '@/stores/persist';
 
 describe('migration registry', () => {
-  it('has two steps today and LATEST_STATE_VERSION === 3', () => {
-    expect(STATE_MIGRATIONS).toHaveLength(2);
-    expect(STATE_MIGRATIONS.map((step) => step.version)).toEqual([1, 2]);
-    expect(LATEST_STATE_VERSION).toBe(3);
+  it('has three steps today and LATEST_STATE_VERSION === 4', () => {
+    expect(STATE_MIGRATIONS).toHaveLength(3);
+    expect(STATE_MIGRATIONS.map((step) => step.version)).toEqual([1, 2, 3]);
+    expect(LATEST_STATE_VERSION).toBe(4);
   });
 
   it('applies steps whose version is >= fromVersion (chaining)', () => {
@@ -178,6 +178,82 @@ describe('v2 → v3 location renames', () => {
     expect(result.trackerSettings).toMatchObject({
       junkLocations: ['MM Great Bay Coast Pot Lower Cliffs 1'],
     });
+  });
+});
+
+describe('v3 → v4 starting age split', () => {
+  it('copies startingAge to startingAgeOot and startingAgeMm', () => {
+    const migrated = migrateStateToLatest(
+      { trackerSettings: { startingAge: 'adult' } },
+      3,
+    );
+    expect(migrated.trackerSettings).toEqual({
+      startingAgeOot: 'adult',
+      startingAgeMm: 'adult',
+    });
+  });
+
+  it('keeps explicitly set new settings and drops the old key', () => {
+    const migrated = migrateStateToLatest(
+      {
+        trackerSettings: {
+          startingAge: 'child',
+          startingAgeOot: 'adult',
+          startingAgeMm: 'random',
+        },
+      },
+      3,
+    );
+    expect(migrated.trackerSettings).toEqual({
+      startingAgeOot: 'adult',
+      startingAgeMm: 'random',
+    });
+  });
+
+  it('leaves payloads without startingAge untouched', () => {
+    const input = { trackerSettings: { songSunMm: true } };
+    const migrated = migrateStateToLatest(input, 3);
+    expect(migrated).toBe(input);
+  });
+
+  it('does not run for payloads already at version 4', () => {
+    const input = { trackerSettings: { startingAge: 'adult' } };
+    const migrated = migrateStateToLatest(input, 4);
+    expect(migrated).toBe(input);
+    expect(migrated.trackerSettings).toEqual({ startingAge: 'adult' });
+  });
+
+  it('is idempotent', () => {
+    const once = migrateStateToLatest(
+      { trackerSettings: { startingAge: 'adult' } },
+      3,
+    );
+    const twice = migrateStateToLatest({ ...once }, 3);
+    expect(twice).toEqual(once);
+  });
+
+  it('migrates the setting through the store hydration allowlist', () => {
+    const result = sanitizePersistedStateForStore(
+      'ootmm-session',
+      { trackerSettings: { startingAge: 'adult' } },
+      3,
+    );
+    expect(result.trackerSettings).toEqual({
+      startingAgeOot: 'adult',
+      startingAgeMm: 'adult',
+    });
+  });
+
+  it('runs for versionless payloads through the full chain', () => {
+    const migrated = migrateStateToLatest(
+      { trackerSettings: { startingAge: 'child' } },
+      1,
+    );
+    expect(migrated.trackerSettings).toMatchObject({
+      startingAgeOot: 'child',
+      startingAgeMm: 'child',
+    });
+    expect(migrated.trackerSettings).not.toHaveProperty('startingAge');
   });
 });
 

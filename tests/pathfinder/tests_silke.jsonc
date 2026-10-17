@@ -775,7 +775,7 @@
       "items": [],
       "settings": [
         // All others are false
-        "setting_startingAge_adult",
+        "setting_startingAgeOot_adult",
       ],
       "tricks": [
         // All others are false
@@ -809,7 +809,7 @@
       ],
       "settings": [
         // All others are false
-        "setting_startingAge_adult",
+        "setting_startingAgeOot_adult",
         "setting_ageChange_always",
       ],
       "tricks": [
@@ -844,7 +844,7 @@
       ],
       "settings": [
         // All others are false
-        "setting_startingAge_adult",
+        "setting_startingAgeOot_adult",
       ],
       "tricks": [
         // All others are false
