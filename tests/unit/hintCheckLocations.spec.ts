@@ -69,9 +69,9 @@ describe('hint check location codes', () => {
       'OOT Ice Cavern Iron Boots',
       'OOT MQ Ice Cavern Iron Boots',
     ]);
+    // Since v33, OoTMM uses the same Sheik Song location in vanilla and MQ.
     expect(resolveCheckSlotLocationCodes(iceCavern, 1)).toEqual([
       'OOT Ice Cavern Sheik Song',
-      'OOT MQ Ice Cavern Sheik Song',
     ]);
   });
 

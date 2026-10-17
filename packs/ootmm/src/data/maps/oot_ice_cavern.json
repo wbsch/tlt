@@ -328,11 +328,6 @@
       "codes": ["OOT MQ Ice Cavern Compass Chest"]
     },
     {
-      "coords": [426, 317],
-      "image": "song",
-      "codes": ["OOT MQ Ice Cavern Sheik Song"]
-    },
-    {
       "coords": [421, 262],
       "image": "gold_skulltula",
       "codes": ["OOT MQ Ice Cavern GS Clear Blocks"]

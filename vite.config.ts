@@ -245,7 +245,7 @@ export default defineConfig(({ mode }) => {
           new URL('./OoTMM/packages/core/src/settings', import.meta.url),
         ),
         '@ootmm/core/items': fileURLToPath(
-          new URL('./OoTMM/packages/core/src/items', import.meta.url),
+          new URL('./OoTMM/packages/logic/src/items', import.meta.url),
         ),
         '@ootmm/core/logic/entrance': fileURLToPath(
           new URL(
@@ -268,6 +268,9 @@ export default defineConfig(({ mode }) => {
             import.meta.url,
           ),
         ),
+        // Upstream's own `@ootmm/core/src/...` deep imports (e.g. in
+        // logic/src/items/util.ts); must precede the bare '@ootmm/core'.
+        '@ootmm/core/src': ootmmCoreRoot,
         '@ootmm/core': ootmmCoreRoot,
       },
     },

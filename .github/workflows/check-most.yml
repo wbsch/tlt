@@ -14,7 +14,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 20
     env:
-      OOTMM_COMMIT: 4f79debce328c6d2a78c9e66d64448e2298baa7f
+      OOTMM_COMMIT: 961751062b35296ff27789214bd924206c9c8466
 
     steps:
       - name: Checkout
@@ -51,9 +51,9 @@ jobs:
         working-directory: OoTMM
         run: pnpm install --ignore-scripts --frozen-lockfile
 
-      - name: Build OoTMM core
+      - name: Build OoTMM data
         working-directory: OoTMM
-        run: pnpm --filter @ootmm/core build
+        run: pnpm --filter @ootmm/data build
 
       - name: Check
         run: npm run check-most:ci

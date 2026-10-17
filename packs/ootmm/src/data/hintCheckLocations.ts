@@ -135,7 +135,6 @@ export const SOMETIMES_HINT_CHECKS: HintCheckDef[] = [
       'OOT Ice Cavern Iron Boots',
       'OOT Ice Cavern Sheik Song',
       'OOT MQ Ice Cavern Iron Boots',
-      'OOT MQ Ice Cavern Sheik Song',
     ],
     itemCount: 2, // Iron Boots + Sheik Song (normal or MQ version per seed)
   },

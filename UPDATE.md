@@ -53,12 +53,15 @@ git diff --name-only v31.1 v32.0 | grep -E 'package\.json|pnpm-lock\.yaml'
 # `--ignore-scripts` avoids triggering native compilation.
 npx pnpm install --ignore-scripts
 
-# 2. Build just the @ootmm/core package (ALWAYS required — this is what
-# actually picks up the new release's data)
-# This generates `packages/core/dist/data-*.json` (data-world.json,
-# data-entrances.json, data-gossips.json, ...), which our
+# 2. Build just the @ootmm/data package (ALWAYS required — this is what
+# actually picks up the new release's data). It only turns the yaml/csv/xml
+# sources in `OoTMM/data/` into JSON; it is NOT the ROM/payload build.
+# This generates `packages/data/dist/lib/data-*.json` (data-world.json,
+# data-entrances.json, data-gossips.json, data-checks.json, ...), which our
 # `generate:map-schema` script and the '@ootmm/data' bridge expect to read.
-npx pnpm --filter @ootmm/core build
+# (Before v33 this was `--filter @ootmm/core build` writing to
+# `packages/core/dist/`; v33 removed that script.)
+npx pnpm --filter @ootmm/data build
 
 cd ..
 
@@ -66,8 +69,10 @@ cd ..
 # Resolve the release tag to the commit it points at:
 git ls-remote --tags https://github.com/OoTMM/OoTMM.git refs/tags/v32.0 refs/tags/v32.0^{}
 
-# Use the commit from the upstream OoTMM repository for `OOTMM_COMMIT`.
+# Use the commit from the upstream OoTMM repository for `OOTMM_COMMIT`
+# (the peeled `^{}` line for an annotated tag).
 # Do not use a local-only performance/test commit from your `OoTMM/` checkout.
+# If step 2's build command changed, update the workflow's build step too.
 
 # 4. If the release changed the autotracker-relevant data, regenerate it
 # (validate:autotracker-data will fail during check-all/build otherwise).
@@ -210,28 +215,61 @@ To fix this:
 2. Update the explicit path aliases in both `vite.config.ts` (under `resolve.alias`) and `tsconfig.json` (under `compilerOptions.paths`) to point perfectly to the new, granular locations.
 3. Remove trailing file extensions (e.g., `.js`) in imports if the randomizer rewrites those endpoints into pure TypeScript.
 
-Reference: state after the v30.1 → v31.0 restructuring (how things are wired now):
+Reference: how things are wired now (state after v33.0):
 
-- Upstream deleted the `@ootmm/data` package (`packages/data/`). The yaml/csv
-  sources moved to the top-level `OoTMM/data/` directory (e.g.
-  `data/defs/gi.yml`), and the JSON build outputs are produced by
-  `@ootmm/core` into `packages/core/dist/`.
+- The yaml/csv/xml sources live in the top-level `OoTMM/data/` directory
+  (e.g. `data/defs/gi.yml`, check definitions in `data/checks/{oot,mm}/*.xml`).
+- `@ootmm/data` is its own package again (`packages/data/`, removed in v31 and
+  restored in v33). Its build writes the JSON to `packages/data/dist/lib/` and
+  its sources are `packages/data/lib/index.ts`.
 - The tracker's `@ootmm/data` alias points at `scripts/ootmm_data_bridge.ts`,
-  which re-exports `OoTMM/packages/core/src/data/data.ts` and reconstructs
-  the removed `RAW_HINTS_DATA` export from `data-gossips.json` (the successor
-  of `data-hints-raw.json`; its records carry game-prefixed location names).
-- The old `packages/generator/lib/combo/logic/` moved to the new
-  `packages/logic/src/` package (aliased as `@ootmm/core/logic`); `items/`
-  and `monitor.ts` moved into `packages/core/src/`. Two logic submodules were
-  renamed and have dedicated aliases: `entrance` → `solver/entrances.ts` and
-  `is-shuffled` → `helpers.ts`.
+  which re-exports everything from `OoTMM/packages/data/lib/index.ts`. The
+  alias also shadows the package for OoTMM's own sources, so the re-export
+  must stay complete. The bridge additionally rebuilds two exports upstream
+  removed:
+  - `POOL` (per-game, unprefixed records) from `CHECKS` (`data-checks.json`,
+    the successor of `data-pool.json` since v33; game-prefixed locations,
+    items and scenes).
+  - `RAW_HINTS_DATA` from `GOSSIPS` (`data-gossips.json`, the successor of
+    `data-hints-raw.json` since v31).
+- Logic lives in `packages/logic/src/` (aliased as `@ootmm/core/logic`). Two
+  logic submodules have dedicated aliases: `entrance` → `solver/entrances.ts`
+  and `is-shuffled` → `helpers.ts`. Since v33 `items/` lives in
+  `packages/logic/src/items/` (still aliased as `@ootmm/core/items`), and
+  `monitor.ts` and `settings/` stay in `packages/core/src/`.
+- Upstream's own sources deep-import `@ootmm/core/src/...`, which needs its
+  own alias ahead of the bare `@ootmm/core` one in `vite.config.ts`.
+- `@ootmm/logic` and `@ootmm/data` imports _inside_ OoTMM resolve through
+  OoTMM's pnpm workspace symlinks (`packages/*/node_modules/@ootmm/`), so the
+  pnpm install in step 1 must have run at least once.
+- Since v33 `World` has no `checks` record anymore: the static check data is
+  `CHECKS_BY_LOCATION` from `@ootmm/data`, and each world only keeps
+  `world.checkItems: Map<location, Item>`. The tracker's `getWorldCheck()`
+  (`packs/ootmm/src/tracker.ts`) rebuilds the old record. The old `id`
+  (shop/scrub flag, npc name) is folded into `key`
+  (`ov << 24 | scene << 16 | value`, MM sets bit 31), and npc names come
+  from a reverse `NPC` lookup. OoT MQ scrubs carry `0x80` in their flag, so
+  the price slot is `flag & 0x7f`. The check type `fairy_spot` became
+  `fairy-spot`.
 - Upstream stopped exporting the `LogicPassEntrances` class; the tracker now
   calls the exported `logicPassEntrances(input)` wrapper instead.
 - Python scripts that read OoTMM data (`scripts/sync_gi_items.py`,
-  `scripts/check_map_locations.py`, `scripts/autotracker/*.py`) read from
-  `OoTMM/data/` and `OoTMM/packages/core/dist/`. The MM boss clear-state
-  discovery in `generate_special_locations.py` reads
-  `packages/logic/src/data/boss.ts`.
+  `scripts/check_map_locations.py`) read from `OoTMM/data/` and
+  `OoTMM/packages/data/dist/lib/`. The MM boss clear-state discovery in
+  `generate_special_locations.py` reads `packages/logic/src/data/boss.ts`.
+- Not yet migrated to v33: `scripts/autotracker/*.py` still expect
+  `packages/generator/include/combo/xflags_data.h`, which is now generated as
+  `packages/data/dist/include/combo/data/xflags.h` (`npm run test:scripts`
+  fails until that is fixed).
+
+Upstream also renames, merges or removes locations between releases. After a
+bump, compare the old and new location sets and remove stale codes from the
+maps (`packs/ootmm/src/data/maps/*.json`), `scripts/map_duplicate_whitelist.txt`
+and `packs/ootmm/src/data/hintCheckLocations.ts`. The unit test
+`hintCheckLocations.spec.ts` catches stale hint codes, but stale map codes
+are not reported. For example, v33 removed `OOT MQ Ice Cavern Sheik Song`
+(merged into `OOT Ice Cavern Sheik Song`), Kokiri Forest `Grass {Child,Adult}
+Near Crawl 7/8` and `Gerudo Fortress Pot Jail 3 1/2`.
 
 After a data update, `python3 scripts/check_map_locations.py` may report new
 locations that are not yet placed on any tracker map — that is content work,

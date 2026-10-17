@@ -106,6 +106,60 @@ const ENTRANCES_DATA =
     >
   >(DataMod, 'ENTRANCES') ?? {};
 
+const CHECKS_BY_LOCATION =
+  resolveExport<typeof DataMod.CHECKS_BY_LOCATION>(
+    DataMod,
+    'CHECKS_BY_LOCATION',
+  ) ?? {};
+const NPC_DATA = resolveExport<typeof DataMod.NPC>(DataMod, 'NPC') ?? {};
+
+// Reverse of the NPC table, keyed by game: `CHECKS` only carries the numeric
+// npc id inside its encoded override key.
+const NPC_NAME_BY_ID: Record<'oot' | 'mm', Map<number, string>> = {
+  oot: new Map(),
+  mm: new Map(),
+};
+for (const [name, id] of Object.entries(NPC_DATA)) {
+  const game = name.startsWith('MM_') ? 'mm' : 'oot';
+  NPC_NAME_BY_ID[game].set(id, name);
+}
+
+type WorldCheck = {
+  game: 'oot' | 'mm';
+  type: string;
+  scene: string;
+  hint?: string;
+  /** Npc name for `npc` checks, otherwise the override flag. */
+  id: number | string;
+  item?: { id?: string };
+};
+
+/**
+ * Rebuild the per-location check record that OoTMM's `world.checks` held
+ * before v33. Upstream split it into static `CHECKS_BY_LOCATION` data plus the
+ * per-world `world.checkItems` map, and folded the flag/npc id into `key`
+ * (`ov << 24 | scene << 16 | value`, MM sets the top bit).
+ */
+const getWorldCheck = (
+  world: World,
+  locationId: string,
+): WorldCheck | undefined => {
+  const check = CHECKS_BY_LOCATION[locationId];
+  if (!check) return undefined;
+  const value = check.key & 0xffff;
+  return {
+    game: check.game,
+    type: check.type,
+    scene: check.scene,
+    hint: check.hint,
+    id:
+      check.type === 'npc'
+        ? (NPC_NAME_BY_ID[check.game].get(value) ?? value)
+        : value,
+    item: world.checkItems?.get(locationId),
+  };
+};
+
 const SPAWN_SOURCE_TYPES = new Set(['spawn-child', 'spawn-adult']);
 
 function isSpawnEntranceSourceKey(key: string): boolean {
@@ -922,7 +976,7 @@ export class OoTMMTracker implements TrackerPack {
 
     // Cache all location IDs
     this.allLocationIds = this.worlds.flatMap((world, worldId) =>
-      Object.keys(world.checks).map((loc) => makeLocation(loc, worldId)),
+      [...world.checkItems.keys()].map((loc) => makeLocation(loc, worldId)),
     );
     this.fixedLocationIds = this.buildFixedLocationIds(
       worldData?.fixedLocations as Set<string> | undefined,
@@ -1443,11 +1497,11 @@ export class OoTMMTracker implements TrackerPack {
     const locations: LocationInfo[] = [];
     for (const [worldId, world] of worlds.entries()) {
       const dungeonLocations = this.buildDungeonLocationIds(world);
-      for (const locId of Object.keys(world.checks)) {
+      for (const [locId, item] of world.checkItems) {
         const fullId = makeLocation(locId, worldId);
         if (!includeHidden && this.hiddenLocationIds.has(fullId)) continue;
-        const check = world.checks?.[locId];
-        const itemId = (check as { item?: { id?: string } })?.item?.id;
+        const check = getWorldCheck(world, locId);
+        const itemId = item?.id;
         const isSkulltulaToken =
           itemId === 'OOT_GS_TOKEN' ||
           itemId === 'MM_GS_TOKEN_SWAMP' ||
@@ -1863,7 +1917,7 @@ export class OoTMMTracker implements TrackerPack {
       const world = this.worlds[worldId];
       const regions = world.regions;
       if (!regions) continue;
-      for (const locId of Object.keys(world.checks)) {
+      for (const locId of world.checkItems.keys()) {
         const region = regions[locId];
         if (!isValidHintRegion(region)) continue;
         map.set(makeLocation(locId, worldId), region);
@@ -2344,17 +2398,14 @@ export class OoTMMTracker implements TrackerPack {
     if (!worlds || !Items) return;
     const itemsById = Items as Record<string, unknown>;
     for (const world of worlds) {
-      const checks = (
-        world as { checks?: Record<string, { item?: { id?: string } }> }
-      ).checks;
-      if (!checks) continue;
-      for (const check of Object.values(checks)) {
-        const item = check?.item;
+      const checkItems = world.checkItems;
+      if (!checkItems) continue;
+      for (const [locId, item] of checkItems) {
         const id = item?.id;
         if (!id) continue;
         const canonical = itemsById[id];
         if (canonical) {
-          check.item = canonical;
+          checkItems.set(locId, canonical as typeof item);
         }
       }
     }
@@ -2670,7 +2721,7 @@ export class OoTMMTracker implements TrackerPack {
       if (worldId === null || worldId === undefined || Number.isNaN(worldId))
         continue;
       const world = worlds[worldId];
-      const itemId = world?.checks?.[locId]?.item?.id;
+      const itemId = world?.checkItems?.get(locId)?.id;
       if (!itemId) continue;
 
       const current = counts.get(itemId);
@@ -3223,8 +3274,8 @@ export class OoTMMTracker implements TrackerPack {
     if (!worlds || worlds.length === 0) return map;
 
     for (const [worldId, world] of worlds.entries()) {
-      for (const [locId, check] of Object.entries(world.checks ?? {})) {
-        const itemId = (check as { item?: { id?: string } })?.item?.id;
+      for (const [locId, item] of world.checkItems ?? []) {
+        const itemId = item?.id;
         if (!itemId || !predicate(itemId)) continue;
         const fullId = makeLocation(locId, worldId);
         const list = map.get(itemId) ?? [];
@@ -3247,13 +3298,9 @@ export class OoTMMTracker implements TrackerPack {
 
     for (const [worldId, world] of worlds.entries()) {
       const locationPriceSlots = this.buildLocationPriceSlotIndex(world);
-      for (const [locId, check] of Object.entries(world.checks ?? {})) {
-        const typedCheck = check as {
-          type?: string;
-          id?: number | string;
-          game?: 'oot' | 'mm';
-        };
-        if (typedCheck.game !== 'oot' && typedCheck.game !== 'mm') continue;
+      for (const locId of world.checkItems?.keys() ?? []) {
+        const typedCheck = getWorldCheck(world, locId);
+        if (!typedCheck) continue;
 
         const slots = this.computePriceSlots(
           typedCheck,
@@ -3315,7 +3362,8 @@ export class OoTMMTracker implements TrackerPack {
       Number.isInteger(check.id) &&
       check.id >= 0
     ) {
-      slots.add(PRICE_RANGE_OOT_SCRUBS + check.id);
+      // MQ scrubs carry 0x80 on top of their price slot id since v33.
+      slots.add(PRICE_RANGE_OOT_SCRUBS + (check.id & 0x7f));
     }
 
     if (

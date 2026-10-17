@@ -6,11 +6,11 @@
       "@packs/ootmm": ["./src/shims/ootmm-pack.d.ts"],
       "@packs/ootmm/*": ["./packs/ootmm/src/*"],
       "@ootmm/data": ["./scripts/ootmm_data_bridge.ts"],
-      "@ootmm/data/*": ["./OoTMM/packages/core/src/data/*"],
+      "@ootmm/data/*": ["./OoTMM/packages/data/lib/*"],
       "@ootmm/core/settings": ["./OoTMM/packages/core/src/settings/index.ts"],
       "@ootmm/core/settings/*": ["./OoTMM/packages/core/src/settings/*"],
-      "@ootmm/core/items": ["./OoTMM/packages/core/src/items/index.ts"],
-      "@ootmm/core/items/*": ["./OoTMM/packages/core/src/items/*"],
+      "@ootmm/core/items": ["./OoTMM/packages/logic/src/items/index.ts"],
+      "@ootmm/core/items/*": ["./OoTMM/packages/logic/src/items/*"],
       "@ootmm/core/logic": ["./OoTMM/packages/logic/src/index.ts"],
       "@ootmm/core/logic/entrance": [
         "./OoTMM/packages/logic/src/solver/entrances.ts"
@@ -21,6 +21,7 @@
       "@ootmm/core/logic/*": ["./OoTMM/packages/logic/src/*"],
       "@ootmm/core/monitor": ["./OoTMM/packages/core/src/monitor.ts"],
       "@ootmm/core/names": ["./OoTMM/packages/generator/lib/combo/names.ts"],
+      "@ootmm/core/src/*": ["./OoTMM/packages/core/src/*"],
       "@ootmm/core": ["./OoTMM/packages/core/src/index.ts"],
       "@ootmm/core/*": ["./OoTMM/packages/core/src/*"]
     },

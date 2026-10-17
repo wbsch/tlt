@@ -127,8 +127,6 @@ OOT Thieves Hideout Crate Break Room 4
 OOT Thieves Hideout Crate Jail 1
 OOT Thieves Hideout Crate Jail 2 1
 OOT Thieves Hideout Crate Jail 2 2
-OOT Gerudo Fortress Pot Jail 3 1
-OOT Gerudo Fortress Pot Jail 3 2
 OOT Thieves Hideout Crate Kitchen
 OOT Thieves Hideout Crate Kitchen Corridor 1
 OOT Thieves Hideout Crate Kitchen Corridor 2

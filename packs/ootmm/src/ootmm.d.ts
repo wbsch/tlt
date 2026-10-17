@@ -123,18 +123,7 @@ declare module '@ootmm/core/logic/world' {
         region?: string;
       }
     >;
-    checks: Record<
-      string,
-      {
-        game?: string;
-        scene?: string;
-        item?: { id?: string; [key: string]: unknown };
-        hint?: string;
-        type?: string;
-        id?: number | string;
-        [key: string]: unknown;
-      }
-    >;
+    checkItems: Map<string, { id?: string; [key: string]: unknown }>;
     dungeons: Record<string, Set<string>>;
     dungeonsBossAreas?: Record<string, Set<string>>;
     regions?: Record<string, string>;
@@ -155,6 +144,19 @@ declare module '@ootmm/core/logic/world' {
 
 declare module '@ootmm/data' {
   export const POOL: unknown;
+  export const CHECKS_BY_LOCATION: Record<
+    string,
+    {
+      game: 'oot' | 'mm';
+      type: string;
+      location: string;
+      scene: string;
+      hint?: string;
+      key: number;
+      item: string;
+    }
+  >;
+  export const NPC: Record<string, number>;
   export const WORLD: unknown;
   export const REGIONS: Record<string, number>;
   export function regionName(region: string): string;

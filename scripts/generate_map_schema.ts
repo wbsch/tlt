@@ -14,13 +14,13 @@ import type {
 const TYPES_FILE = path.resolve('packs/ootmm/src/data/maps/types.ts');
 const MAP_IMAGES_DIR = path.resolve('public/images/maps');
 const WORLD_DATA_FILE = path.resolve(
-  'OoTMM/packages/core/dist/data-world.json',
+  'OoTMM/packages/data/dist/lib/data-world.json',
 );
 const GOSSIPS_DATA_FILE = path.resolve(
-  'OoTMM/packages/core/dist/data-gossips.json',
+  'OoTMM/packages/data/dist/lib/data-gossips.json',
 );
 const ENTRANCES_DATA_FILE = path.resolve(
-  'OoTMM/packages/core/dist/data-entrances.json',
+  'OoTMM/packages/data/dist/lib/data-entrances.json',
 );
 const OUTPUT_FILE = path.resolve(
   'packs/ootmm/src/data/schemas/ootmm-map.schema.json',

@@ -34,10 +34,10 @@ describe('tracker aliased one-way entrance wiring', () => {
     const worlds = (tracker as unknown as { worlds: WorldWithAreas[] }).worlds;
     const areas = worlds[0].areas;
 
-    // First owl: Lake Hylia must no longer drop at Hyrule Field Drawbridge,
-    // and instead land where OOT_CRATER_FROM_GORON_CITY leads (DMC Bottom).
-    const lakeHyliaExits = areas['OOT Lake Hylia']?.exits ?? {};
-    expect('OOT Hyrule Field Drawbridge' in lakeHyliaExits).toBe(false);
+    // First owl: Lake Hylia must no longer drop at Hyrule Field, and instead
+    // land where OOT_CRATER_FROM_GORON_CITY leads (DMC Bottom).
+    const lakeHyliaExits = areas['OOT Lake Hylia Owl Flight']?.exits ?? {};
+    expect('OOT Hyrule Field' in lakeHyliaExits).toBe(false);
     expect('OOT Death Mountain Crater Bottom' in lakeHyliaExits).toBe(true);
 
     // Second owl: Death Mountain Summit must no longer drop at Kakariko

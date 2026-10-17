@@ -3,57 +3,73 @@
 // the tsconfig include sets on purpose: app type-checking sees only the
 // ambient declarations in packs/ootmm/src/ootmm.d.ts, never OoTMM sources.
 //
-// Upstream merged `@ootmm/data` into `@ootmm/core` (v31) and replaced
-// `data-hints-raw.json` with `data-gossips.json`, whose records carry
-// game-prefixed location names, so RAW_HINTS_DATA is rebuilt here in the old
-// per-game, unprefixed shape.
-import * as CoreDataMod from '../OoTMM/packages/core/src/data/data';
+// Since v33 upstream ships `@ootmm/data` as its own package again
+// (packages/data, JSON built into packages/data/dist/lib/). The alias shadows
+// that package for OoTMM's own sources too, so everything it exports is
+// re-exported unchanged. On top of that, two exports the tracker relies on are
+// rebuilt here:
+// - POOL: upstream dropped `data-pool.json`; its successor `data-checks.json`
+//   (CHECKS) is a flat list with game-prefixed locations and items, so it is
+//   regrouped into the old per-game, unprefixed shape.
+// - RAW_HINTS_DATA: `data-hints-raw.json` was replaced by `data-gossips.json`
+//   (v31), whose records also carry game-prefixed location names.
 import * as ComboRegionsMod from '../OoTMM/packages/generator/lib/combo/regions';
-import GOSSIPS from '../OoTMM/packages/core/dist/data-gossips.json';
+import { CHECKS, GOSSIPS } from '../OoTMM/packages/data/lib/index';
 
-// tsx loads the OoTMM sources as CommonJS (upstream has no "type": "module"),
-// which hides the named exports behind `default`; vite keeps them as ESM
-// named exports. Normalize before re-exporting. The indirection through a
-// parameter also keeps the bundler from statically flagging the `default`
-// access as an undefined import.
+export * from '../OoTMM/packages/data/lib/index';
+
+// tsx loads the generator sources as CommonJS (that package has no
+// "type": "module"), which hides the named exports behind `default`; vite
+// keeps them as ESM named exports. Normalize before re-exporting. The
+// indirection through a parameter also keeps the bundler from statically
+// flagging the `default` access as an undefined import.
 const unwrapNamespace = <T>(mod: T): T =>
   (mod as { default?: T }).default ?? mod;
 
-const coreData = unwrapNamespace(CoreDataMod);
 const comboRegions = unwrapNamespace(ComboRegionsMod);
-
-export const WORLD = coreData.WORLD;
-export const SCENES = coreData.SCENES;
-export const NPC = coreData.NPC;
-export const REGIONS = coreData.REGIONS;
-export const HINTS = coreData.HINTS;
-export const RAW_GI = coreData.RAW_GI;
-export const RAW_DRAWGI = coreData.RAW_DRAWGI;
-export const FILES = coreData.FILES;
-export const MACROS = coreData.MACROS;
-export const POOL = coreData.POOL;
-export const ENTRANCES = coreData.ENTRANCES;
-export type {
-  Entrance,
-  EntranceData,
-} from '../OoTMM/packages/core/src/data/data';
 
 export const regionName = (region: string): string =>
   comboRegions.regionName(region);
 
-type GossipRecord = { game: 'oot' | 'mm'; location: string };
+type Game = 'oot' | 'mm';
 
-const rawHints: Record<'oot' | 'mm', { location: string }[]> = {
+const stripGamePrefix = (game: Game, value: string, sep: string): string => {
+  const prefix = `${game.toUpperCase()}${sep}`;
+  return value.startsWith(prefix) ? value.slice(prefix.length) : value;
+};
+
+type PoolRecord = {
+  location: string;
+  type: string;
+  scene: string;
+  hint?: string;
+  item: string;
+};
+
+const pool: Record<Game, PoolRecord[]> = { oot: [], mm: [] };
+
+for (const check of CHECKS) {
+  pool[check.game].push({
+    location: stripGamePrefix(check.game, check.location, ' '),
+    type: check.type,
+    scene: stripGamePrefix(check.game, check.scene, '_'),
+    hint: check.hint,
+    item: stripGamePrefix(check.game, check.item, '_'),
+  });
+}
+
+export const POOL = pool;
+
+type GossipRecord = { game: Game; location: string };
+
+const rawHints: Record<Game, { location: string }[]> = {
   oot: [],
   mm: [],
 };
 
 for (const gossip of GOSSIPS as GossipRecord[]) {
-  const prefix = `${gossip.game.toUpperCase()} `;
   rawHints[gossip.game].push({
-    location: gossip.location.startsWith(prefix)
-      ? gossip.location.slice(prefix.length)
-      : gossip.location,
+    location: stripGamePrefix(gossip.game, gossip.location, ' '),
   });
 }
 

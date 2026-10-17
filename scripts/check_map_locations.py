@@ -139,13 +139,13 @@ def main() -> int:
     parser.add_argument(
         "--world-file",
         type=Path,
-        default=Path("OoTMM/packages/core/dist/data-world.json"),
+        default=Path("OoTMM/packages/data/dist/lib/data-world.json"),
         help="Path to data-world.json",
     )
     parser.add_argument(
         "--hints-file",
         type=Path,
-        default=Path("OoTMM/packages/core/dist/data-gossips.json"),
+        default=Path("OoTMM/packages/data/dist/lib/data-gossips.json"),
         help="Path to data-gossips.json",
     )
     parser.add_argument(
