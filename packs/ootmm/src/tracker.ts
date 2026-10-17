@@ -113,52 +113,13 @@ const CHECKS_BY_LOCATION =
   ) ?? {};
 const NPC_DATA = resolveExport<typeof DataMod.NPC>(DataMod, 'NPC') ?? {};
 
-// Reverse of the NPC table, keyed by game: `CHECKS` only carries the numeric
-// npc id inside its encoded override key.
-const NPC_NAME_BY_ID: Record<'oot' | 'mm', Map<number, string>> = {
-  oot: new Map(),
-  mm: new Map(),
-};
-for (const [name, id] of Object.entries(NPC_DATA)) {
-  const game = name.startsWith('MM_') ? 'mm' : 'oot';
-  NPC_NAME_BY_ID[game].set(id, name);
-}
-
-type WorldCheck = {
-  game: 'oot' | 'mm';
-  type: string;
-  scene: string;
-  hint?: string;
-  /** Npc name for `npc` checks, otherwise the override flag. */
-  id: number | string;
-  item?: { id?: string };
-};
+type CheckData = (typeof CHECKS_BY_LOCATION)[string];
 
 /**
- * Rebuild the per-location check record that OoTMM's `world.checks` held
- * before v33. Upstream split it into static `CHECKS_BY_LOCATION` data plus the
- * per-world `world.checkItems` map, and folded the flag/npc id into `key`
- * (`ov << 24 | scene << 16 | value`, MM sets the top bit).
+ * Low 16 bits of a check's override key (`ov << 24 | scene << 16 | value`):
+ * the flag, shop/scrub slot or npc id.
  */
-const getWorldCheck = (
-  world: World,
-  locationId: string,
-): WorldCheck | undefined => {
-  const check = CHECKS_BY_LOCATION[locationId];
-  if (!check) return undefined;
-  const value = check.key & 0xffff;
-  return {
-    game: check.game,
-    type: check.type,
-    scene: check.scene,
-    hint: check.hint,
-    id:
-      check.type === 'npc'
-        ? (NPC_NAME_BY_ID[check.game].get(value) ?? value)
-        : value,
-    item: world.checkItems?.get(locationId),
-  };
-};
+const checkValue = (check: CheckData): number => check.key & 0xffff;
 
 const SPAWN_SOURCE_TYPES = new Set(['spawn-child', 'spawn-adult']);
 
@@ -380,12 +341,21 @@ type ShopPriceSlot = {
   slots: number[];
 };
 
-const OOT_MERCHANT_SLOT_BY_ID: Record<string, number> = {
-  OOT_MEDIGORON: 0,
-  OOT_CARPET_MERCHANT: 1,
-  OOT_WITCH_BLUE_POTION: 2,
-  OOT_TALON_MILK: 3,
-};
+const OOT_MERCHANT_SLOT_BY_NPC = new Map<number, number>(
+  (
+    [
+      'OOT_MEDIGORON',
+      'OOT_CARPET_MERCHANT',
+      'OOT_WITCH_BLUE_POTION',
+      'OOT_TALON_MILK',
+    ] as const
+  ).map((name, slot) => [NPC_DATA[name], slot]),
+);
+const MM_TINGLE_MAP_NPCS = new Set(
+  Object.entries(NPC_DATA)
+    .filter(([name]) => name.startsWith('MM_TINGLE_MAP_'))
+    .map(([, id]) => id),
+);
 
 const isTrackerDebugModeEnabled = (): boolean => {
   if (typeof window === 'undefined') return false;
@@ -1500,7 +1470,6 @@ export class OoTMMTracker implements TrackerPack {
       for (const [locId, item] of world.checkItems) {
         const fullId = makeLocation(locId, worldId);
         if (!includeHidden && this.hiddenLocationIds.has(fullId)) continue;
-        const check = getWorldCheck(world, locId);
         const itemId = item?.id;
         const isSkulltulaToken =
           itemId === 'OOT_GS_TOKEN' ||
@@ -1514,14 +1483,14 @@ export class OoTMMTracker implements TrackerPack {
           world,
           locId,
           fullId,
-          check,
+          itemId,
           dungeonLocations,
         );
         const showWhenUnshuffled = this.shouldShowVanillaKeyLocation(itemId);
         locations.push({
           id: fullId,
           name: locId,
-          category: this.categorizeLocation(check),
+          category: CHECKS_BY_LOCATION[locId]?.type ?? 'None',
           area: this.getAreaFromLocation(locId),
           isSkulltulaToken,
           isStrayFairy,
@@ -1768,24 +1737,17 @@ export class OoTMMTracker implements TrackerPack {
   }
 
   // Helper methods
-  private categorizeLocation(check?: unknown): string {
-    if ((check as { type?: unknown })?.type)
-      return String((check as { type?: unknown }).type);
-    return 'None';
-  }
-
   private computeIsShuffled(
     world: World,
     locId: string,
     fullId: string,
-    check: unknown,
+    itemId: string | undefined,
     dungeonLocations: Set<string>,
   ): boolean {
     if (this.fixedLocationIds.has(fullId)) return false;
     const base = isShuffled
       ? Boolean(isShuffled(this.settings, world, locId, dungeonLocations))
       : true;
-    const itemId = (check as { item?: { id?: string } })?.item?.id;
     if (!itemId) return base;
 
     if (itemId === 'OOT_GS_TOKEN') {
@@ -3299,14 +3261,10 @@ export class OoTMMTracker implements TrackerPack {
     for (const [worldId, world] of worlds.entries()) {
       const locationPriceSlots = this.buildLocationPriceSlotIndex(world);
       for (const locId of world.checkItems?.keys() ?? []) {
-        const typedCheck = getWorldCheck(world, locId);
-        if (!typedCheck) continue;
+        const check = CHECKS_BY_LOCATION[locId];
+        if (!check) continue;
 
-        const slots = this.computePriceSlots(
-          typedCheck,
-          locId,
-          locationPriceSlots,
-        );
+        const slots = this.computePriceSlots(check, locId, locationPriceSlots);
         if (slots.length === 0) continue;
         if (!world.prices) continue;
 
@@ -3326,72 +3284,44 @@ export class OoTMMTracker implements TrackerPack {
   }
 
   private computePriceSlots(
-    check: { type?: string; id?: number | string; game?: 'oot' | 'mm' },
+    check: CheckData,
     locationId: string,
     locationPriceSlots: Map<string, number[]>,
   ): number[] {
     const slots = new Set<number>();
+    const value = checkValue(check);
+    const isOot = check.game === 'oot';
 
-    if (
-      check.type === 'shop' &&
-      typeof check.id === 'number' &&
-      Number.isInteger(check.id) &&
-      check.id >= 0
-    ) {
-      if (check.game === 'oot') {
-        slots.add(PRICE_RANGE_OOT_SHOPS + check.id);
-      } else if (check.game === 'mm') {
-        slots.add(PRICE_RANGE_MM_SHOPS + check.id);
-      }
-    }
-
-    if (
-      check.type === 'shop_ex' &&
-      check.game === 'mm' &&
-      typeof check.id === 'number' &&
-      Number.isInteger(check.id) &&
-      check.id >= 0
-    ) {
-      slots.add(PRICE_RANGE_MM_SHOPS_EX + check.id);
-    }
-
-    if (
-      check.type === 'scrub' &&
-      check.game === 'oot' &&
-      typeof check.id === 'number' &&
-      Number.isInteger(check.id) &&
-      check.id >= 0
-    ) {
-      // MQ scrubs carry 0x80 on top of their price slot id since v33.
-      slots.add(PRICE_RANGE_OOT_SCRUBS + (check.id & 0x7f));
-    }
-
-    if (
-      check.type === 'npc' &&
-      check.game === 'oot' &&
-      typeof check.id === 'string'
-    ) {
-      const merchantSlot = OOT_MERCHANT_SLOT_BY_ID[check.id];
-      if (typeof merchantSlot === 'number') {
-        slots.add(PRICE_RANGE_OOT_MERCHANTS + merchantSlot);
-      }
-    }
-
-    if (
-      check.type === 'npc' &&
-      check.game === 'mm' &&
-      typeof check.id === 'string' &&
-      check.id.startsWith('MM_TINGLE_MAP_')
-    ) {
-      const candidates = locationPriceSlots.get(locationId) ?? [];
-      for (const slot of candidates) {
-        if (
-          slot >= PRICE_RANGE_MM_TINGLE &&
-          slot < PRICE_RANGE_MM_TINGLE + PRICE_COUNT_MM_TINGLE
-        ) {
-          slots.add(slot);
+    switch (check.type) {
+      case 'shop':
+        slots.add(
+          (isOot ? PRICE_RANGE_OOT_SHOPS : PRICE_RANGE_MM_SHOPS) + value,
+        );
+        break;
+      case 'shop_ex':
+        if (!isOot) slots.add(PRICE_RANGE_MM_SHOPS_EX + value);
+        break;
+      case 'scrub':
+        // MQ scrubs carry 0x80 on top of their price slot id since v33.
+        if (isOot) slots.add(PRICE_RANGE_OOT_SCRUBS + (value & 0x7f));
+        break;
+      case 'npc':
+        if (isOot) {
+          const merchantSlot = OOT_MERCHANT_SLOT_BY_NPC.get(value);
+          if (merchantSlot !== undefined) {
+            slots.add(PRICE_RANGE_OOT_MERCHANTS + merchantSlot);
+          }
+        } else if (MM_TINGLE_MAP_NPCS.has(value)) {
+          for (const slot of locationPriceSlots.get(locationId) ?? []) {
+            if (
+              slot >= PRICE_RANGE_MM_TINGLE &&
+              slot < PRICE_RANGE_MM_TINGLE + PRICE_COUNT_MM_TINGLE
+            ) {
+              slots.add(slot);
+            }
+          }
         }
-      }
+        break;
     }
 
     return Array.from(slots)
