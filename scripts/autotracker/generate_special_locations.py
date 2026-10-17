@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 
 import argparse
-import csv
 import json
 import pathlib
 import re
@@ -162,19 +161,39 @@ def load_npc_ids(path: pathlib.Path) -> dict[str, int]:
     return ids
 
 
-def load_pool_names(path: pathlib.Path, prefix: str = "MM") -> dict[str, str]:
+def load_check_npc_names(repo_root: pathlib.Path, game: str = "mm") -> dict[str, str]:
+    """Map npc symbols to their check location names from the v33 data.
+
+    This replaces the removed ``data/pool/pool_*.csv`` files: the generated
+    check list carries the location and the numeric npc id, and
+    ``data-npc.json`` maps the id back to the symbol.
+    """
+    data_lib = repo_root / "packages/data/dist/lib"
+    checks_path = data_lib / "data-checks.json"
+    npcs_path = data_lib / "data-npc.json"
+    if not checks_path.is_file() or not npcs_path.is_file():
+        return {}
+
+    checks = json.loads(checks_path.read_text(encoding="utf-8"))
+    npcs = json.loads(npcs_path.read_text(encoding="utf-8"))
+    prefix = f"{game.upper()}_"
+    id_to_symbol = {
+        npc_id: symbol
+        for symbol, npc_id in npcs.items()
+        if symbol.startswith(prefix)
+    }
+
     names: dict[str, str] = {}
-    with path.open(newline="", encoding="utf-8") as handle:
-        reader = csv.DictReader(handle, skipinitialspace=True)
-        for row in reader:
-            if row["type"].strip() != "npc":
-                continue
-            location = row["location"].strip()
-            raw_id = row["id"].strip()
-            if not location or not raw_id:
-                continue
-            symbol = raw_id if raw_id.startswith(f"{prefix}_") else f"{prefix}_{raw_id}"
-            names.setdefault(symbol, location)
+    for check in checks:
+        if check.get("game") != game or check.get("ov") != "npc":
+            continue
+        symbol = id_to_symbol.get(int(check["key"]) & 0xFFFF)
+        if symbol is None:
+            continue
+        location = check["location"]
+        if location.startswith(f"{game.upper()} "):
+            location = location[len(game) + 1:]
+        names.setdefault(symbol, location)
     return names
 
 
@@ -754,7 +773,7 @@ def discover_mm_dungeon_clear_symbols(
 def build_entries(repo_root: pathlib.Path, hints: dict[str, dict[str, Any]]) -> tuple[list[dict[str, Any]], list[str]]:
     data_root = repo_root / "data"
     npc_ids = load_npc_ids(data_root / "defs/npc.yml")
-    pool_names = load_pool_names(data_root / "pool/pool_mm.csv")
+    pool_names = load_check_npc_names(repo_root)
     mm_save_header = repo_root / "packages/generator/include/combo/mm/save.h"
     bitfields = parse_bitfield_structs(mm_save_header)
     quest_fields = parse_quest_fields(mm_save_header)

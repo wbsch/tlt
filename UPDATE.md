@@ -257,10 +257,26 @@ Reference: how things are wired now (state after v33.0):
   `scripts/check_map_locations.py`) read from `OoTMM/data/` and
   `OoTMM/packages/data/dist/lib/`. The MM boss clear-state discovery in
   `generate_special_locations.py` reads `packages/logic/src/data/boss.ts`.
-- Not yet migrated to v33: `scripts/autotracker/*.py` still expect
-  `packages/generator/include/combo/xflags_data.h`, which is now generated as
-  `packages/data/dist/include/combo/data/xflags.h` (`npm run test:scripts`
-  fails until that is fixed).
+- The autotracker generators (`scripts/autotracker/*.py`) read the v33 data
+  from `OoTMM/packages/data/dist/lib/` (`data-checks.json`,
+  `data-checks-xflags.json`, `data-npc.json`) instead of the removed
+  `packages/generator/include/combo/xflags_data.h`, `xflag_table_*.bin` and
+  `data/pool/*.csv`. `xflags` is now one global bitmap shared by both games
+  (`XFLAGS_COUNT` lives in the generated
+  `packages/data/dist/include/combo/data/xflags.h`), so
+  `inventory_slots.py` maps both `xflagsOot` and `xflagsMm` onto it.
+- v33 also removed the leading `playerId` from `ComboConfig`, shifting the
+  fixed tail offsets (`mq`, `config`, `special`, `prices`, `triforcePieces`,
+  `triforceGoal`) by 4. `derive_combo_config_layout.py` now emits those
+  offsets into `combo_config_layout.json` and `rawFrameParser.ts` applies them
+  per data version (v30.1-v32.x simply omit the keys and keep the old
+  defaults).
+- `derive_web_symbols.py`'s zip discovery now follows Vite's relative dynamic
+  imports (`./App-*.js`), which is how the v33 web build reaches
+  `worker-*.js` and from there `assets/data-*.zip`. So
+  `generate:autotracker-data` can derive the foreign/shared save addresses for
+  a new version on its own. `comboConfigLive` and the two `runtime*Live`
+  addresses still require a patchfile (`OOTMM_PATCHFILE`).
 
 Upstream also renames, merges or removes locations between releases. After a
 bump, compare the old and new location sets and remove stale codes from the

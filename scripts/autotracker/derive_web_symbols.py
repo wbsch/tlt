@@ -82,6 +82,7 @@ import re
 import struct
 import sys
 import tempfile
+import urllib.parse
 import urllib.request
 import zipfile
 
@@ -125,8 +126,23 @@ def resolve_zip_url(version):
     iframe = cfg[version]["generator"]["iframe"]["path"]
 
     seen, queue = set(), [f"{STATIC}/{iframe}"]
-    asset_re = re.compile(r"assets/[A-Za-z0-9_.\-]+\.js")
-    zip_re = re.compile(r"(?:https?://static\.ootmm\.com/)?assets/[A-Za-z0-9_.\-]+\.zip")
+    # Any quoted module specifier. Vite emits the entry chunks as "assets/x.js"
+    # in the HTML, but *dynamic* imports inside a bundle are relative
+    # ("./App-x-ybctJ3.js"), and v31-v32 App chunks referenced the worker as a
+    # bare "assets/worker-*.js". Support all three so the crawl still reaches
+    # worker-*.js, which is where v33 keeps the data zip URL.
+    asset_re = re.compile(
+        r"""["'`]"""
+        r"""((?:(?:https?:)?//static\.ootmm\.com/(?:assets/)?"""
+        r"""|assets/|\.{1,2}/)?[A-Za-z0-9_.\-]+\.(?:js|mjs))"""
+        r"""["'`]"""
+    )
+    # Only data payload zips; a bare `*.zip` pattern also matches JSZip's own
+    # `this.zip` / `i.zip` identifiers.
+    zip_re = re.compile(
+        r"((?:(?:https?:)?//static\.ootmm\.com/assets/"
+        r"|assets/)data-[A-Za-z0-9_.\-]+\.zip)"
+    )
     for _ in range(40):  # depth/breadth cap
         if not queue:
             break
@@ -140,10 +156,9 @@ def resolve_zip_url(version):
             continue
         m = zip_re.search(text)
         if m:
-            path = m.group(0).split("assets/")[-1]
-            return version, f"{STATIC}/assets/{path}"
-        for a in asset_re.findall(text):
-            nxt = f"{STATIC}/{a}"
+            return version, urllib.parse.urljoin(url, m.group(1))
+        for spec in asset_re.findall(text):
+            nxt = urllib.parse.urljoin(url, spec)
             if nxt not in seen:
                 queue.append(nxt)
     raise SystemExit(

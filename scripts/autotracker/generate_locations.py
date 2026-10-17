@@ -1,84 +1,76 @@
 #!/usr/bin/env python3
 
+"""Build the autotracker location tables from OoTMM's generated check data.
+
+Since v33 OoTMM no longer ships the per-scene xflag bit tables or the
+``data/pool/*.csv`` files this script used to read. The prebuilt
+``data-checks.json`` now carries one record per check with a key that already
+encodes everything the autotracker needs:
+
+* ``ov`` is the overworld check type (``chest``, ``npc``, ``xflag``, ...).
+* The low 16 bits of ``key`` are the value (scene flag bit, npc id, xflag id,
+  ...).
+* Bits 16-23 hold the scene id where the type needs one.
+
+That removes the raw-id -> bit conversions this script used to do from
+``xflag_table_*.bin`` and the pool CSVs. MQ dungeon checks are still folded
+back onto their vanilla scene id: the save's permanent scene flags are indexed
+by the base scene id, so vanilla and MQ checks that share a flag bit are
+disambiguated at runtime by the MQ dungeon state (the ``*_conflicts`` tables).
+"""
+
 import argparse
-import csv
 import json
 import pathlib
-import re
-import struct
 import sys
 from collections import defaultdict
 
 
-SCENE_TYPES = {
+DATA_LIB_DIR = "packages/data/dist/lib"
+CHECKS_FILE = "data-checks.json"
+NPCS_FILE = "data-npc.json"
+
+# OoT MQ scenes occupy ids 0x70 + the vanilla dungeon scene id.
+MQ_SCENE_OFFSET = 0x70
+
+SCENE_KIND_BY_OV = {
     "chest": "chest",
     "collectible": "collect",
-    "cow": "cow",
 }
 
-XFLAG_TYPES = {
-    "pot",
-    "crate",
-    "barrel",
-    "grass",
-    "tree",
-    "bush",
-    "rock",
-    "soil",
-    "fairy",
-    "snowball",
-    "hive",
-    "rupee",
-    "heart",
-    "fairy_spot",
-    "wonder",
-    "butterfly",
-    "boulder",
-    "boulder-red",
-    "boulder-silver",
-    "icicle",
-    "redice",
+BITMAP_BLOCKS = {
+    ("oot", "npc"): "npcOot",
+    ("mm", "npc"): "npcMm",
+    ("oot", "gs"): "gsOot",
+    ("oot", "shop"): "shopsOot",
+    ("mm", "shop"): "shopsMm",
+    ("oot", "scrub"): "scrubsOot",
+    ("oot", "sr"): "srOot",
+    ("oot", "fish"): "caughtFishFlags",
 }
 
-BITMAP_SPECS = {
-    ("OOT", "fish"): "caughtFishFlags",
-    ("OOT", "gs"): "gsOot",
-    ("OOT", "npc"): "npcOot",
-    ("MM", "npc"): "npcMm",
-    ("OOT", "shop"): "shopsOot",
-    ("MM", "shop"): "shopsMm",
-    ("OOT", "scrub"): "scrubsOot",
-    ("OOT", "sr"): "srOot",
+XFLAG_BLOCKS = {
+    "oot": "xflagsOot",
+    "mm": "xflagsMm",
 }
 
-XFLAG_TABLE_FILES = {
-    "OOT": {
-        "scenes": "packages/generator/data/static/xflag_table_oot_scenes.bin",
-        "setups": "packages/generator/data/static/xflag_table_oot_setups.bin",
-        "rooms": "packages/generator/data/static/xflag_table_oot_rooms.bin",
-    },
-    "MM": {
-        "scenes": "packages/generator/data/static/xflag_table_mm_scenes.bin",
-        "setups": "packages/generator/data/static/xflag_table_mm_setups.bin",
-        "rooms": "packages/generator/data/static/xflag_table_mm_rooms.bin",
-    },
-}
+# Bitmap blocks where a shared bit can name either the vanilla or the MQ check.
+MQ_CONFLICT_BLOCKS = {"gsOot", "srOot", "scrubsOot"}
 
-XFLAG_COUNT_RE = re.compile(r"^#define\s+XFLAGS_COUNT_(OOT|MM)\s+0x([0-9a-fA-F]+)\s*$")
-
-OOT_MQ_DUNGEON_IDS = {
-    "DEKU_TREE": 0,
-    "DODONGO_CAVERN": 1,
-    "INSIDE_JABU_JABU": 2,
-    "TEMPLE_FOREST": 3,
-    "TEMPLE_FIRE": 4,
-    "TEMPLE_WATER": 5,
-    "TEMPLE_SPIRIT": 6,
-    "TEMPLE_SHADOW": 7,
-    "BOTTOM_OF_THE_WELL": 8,
-    "ICE_CAVERN": 9,
-    "GERUDO_TRAINING_GROUND": 10,
-    "INSIDE_GANON_CASTLE": 11,
+# Vanilla scene name -> MQ dungeon index, matching OoTMM's MQ config enum.
+MQ_DUNGEONS = {
+    "OOT_DEKU_TREE": 0,
+    "OOT_DODONGO_CAVERN": 1,
+    "OOT_INSIDE_JABU_JABU": 2,
+    "OOT_TEMPLE_FOREST": 3,
+    "OOT_TEMPLE_FIRE": 4,
+    "OOT_TEMPLE_WATER": 5,
+    "OOT_TEMPLE_SPIRIT": 6,
+    "OOT_TEMPLE_SHADOW": 7,
+    "OOT_BOTTOM_OF_THE_WELL": 8,
+    "OOT_ICE_CAVERN": 9,
+    "OOT_GERUDO_TRAINING_GROUND": 10,
+    "OOT_INSIDE_GANON_CASTLE": 11,
 }
 
 
@@ -99,87 +91,19 @@ def parse_args() -> argparse.Namespace:
     return parser.parse_args()
 
 
-def load_symbol_ids(path: pathlib.Path) -> dict[str, int]:
-    values: dict[str, int] = {}
-    for raw_line in path.read_text(encoding="utf-8").splitlines():
-        line = raw_line.strip()
-        if not line or line.startswith("#"):
-            continue
-        name, sep, value = line.partition(":")
-        if not sep:
-            continue
-        name = name.strip()
-        if not name.startswith(("OOT_", "MM_")):
-            continue
-        try:
-            values[name] = int(value.strip(), 0)
-        except ValueError:
-            continue
-    return values
+def load_json(path: pathlib.Path) -> object:
+    with path.open(encoding="utf-8") as handle:
+        return json.load(handle)
 
 
-def load_xflag_counts(path: pathlib.Path) -> dict[str, int]:
-    counts: dict[str, int] = {}
-    for raw_line in path.read_text(encoding="utf-8").splitlines():
-        match = XFLAG_COUNT_RE.match(raw_line.strip())
-        if not match:
-            continue
-        game, value = match.groups()
-        counts[game] = int(value, 16)
-    if set(counts) != {"OOT", "MM"}:
-        raise ValueError(f"failed to read XFLAG counts from {path}")
-    return counts
+def strip_game_prefix(game: str, value: str) -> str:
+    prefix = f"{game.upper()} "
+    return value[len(prefix):] if value.startswith(prefix) else value
 
 
-def load_u16_table(path: pathlib.Path) -> list[int]:
-    data = path.read_bytes()
-    if len(data) % 2 != 0:
-        raise ValueError(f"expected even-sized u16 table: {path}")
-    return [value[0] for value in struct.iter_unpack(">H", data)]
-
-
-def load_i16_table(path: pathlib.Path) -> list[int]:
-    data = path.read_bytes()
-    if len(data) % 2 != 0:
-        raise ValueError(f"expected even-sized i16 table: {path}")
-    return [value[0] for value in struct.iter_unpack(">h", data)]
-
-
-def scene_check_key(game: str, scene_id: int, kind: str, bit: int) -> str:
-    return f"{game}_{kind}_{scene_id}_{bit}"
-
-
-def xflag_bit_position(
-    scene_id: int,
-    raw_id: int,
-    scenes_table: list[int],
-    setups_table: list[int],
-    rooms_table: list[int],
-    bit_limit: int,
-) -> int | None:
-    if scene_id < 0 or scene_id >= len(scenes_table):
-        return None
-
-    setup_id = (raw_id >> 14) & 0x3
-    room_id = (raw_id >> 8) & 0x3F
-    slice_id = raw_id >> 16
-    actor_id = raw_id & 0xFF
-
-    setup_index = scenes_table[scene_id] + setup_id
-    if setup_index < 0 or setup_index >= len(setups_table):
-        return None
-
-    room_index = setups_table[setup_index] + room_id * 12 + slice_id
-    if room_index < 0 or room_index >= len(rooms_table):
-        return None
-
-    bit_pos = rooms_table[room_index] + actor_id
-    if bit_pos < 0 or bit_pos >= bit_limit:
-        return None
-    return bit_pos
-
-
-def add_unique_mapping(table: dict[object, str], conflicts: set[object], key: object, name: str) -> None:
+def add_unique_mapping(
+    table: dict[object, str], conflicts: set[object], key: object, name: str
+) -> None:
     existing = table.get(key)
     if existing is None:
         table[key] = name
@@ -188,233 +112,172 @@ def add_unique_mapping(table: dict[object, str], conflicts: set[object], key: ob
         conflicts.add(key)
 
 
-def finalize_mapping(table: dict[object, str], conflicts: set[object]) -> dict[object, str]:
+def finalize_mapping(
+    table: dict[object, str], conflicts: set[object]
+) -> dict[object, str]:
     return {key: value for key, value in table.items() if key not in conflicts}
 
 
+def scene_check_key(game: str, scene_id: int, kind: str, bit: int) -> str:
+    return f"{game.upper()}_{kind}_{scene_id}_{bit}"
+
+
+def decode_key(key: int) -> tuple[int, int]:
+    value = key & 0xFFFF
+    scene_id = (key >> 16) & 0xFF
+    return scene_id, value
+
+
+def dungeon_index_for_scene(scene_name: str) -> int | None:
+    return MQ_DUNGEONS.get(scene_name)
+
+
 def build_location_mapping(repo_root: pathlib.Path) -> dict[str, object]:
-    data_root = repo_root / "data"
-    defs_root = data_root / "defs"
-    pool_root = data_root / "pool"
-    xflags_header = repo_root / "packages/generator/include/combo/xflags_data.h"
+    data_lib = repo_root / DATA_LIB_DIR
+    checks = load_json(data_lib / CHECKS_FILE)
+    npcs = load_json(data_lib / NPCS_FILE)
 
-    scenes = load_symbol_ids(defs_root / "scenes.yml")
-    npcs = load_symbol_ids(defs_root / "npc.yml")
-    xflag_counts = load_xflag_counts(xflags_header)
-
-    xflag_tables: dict[str, dict[str, list[int]]] = {}
-    for game, files in XFLAG_TABLE_FILES.items():
-        xflag_tables[game] = {
-            "scenes": load_u16_table(repo_root / files["scenes"]),
-            "setups": load_u16_table(repo_root / files["setups"]),
-            "rooms": load_i16_table(repo_root / files["rooms"]),
-        }
+    # npc id -> symbol (without the OOT_/MM_ prefix), per game.
+    npc_symbols: dict[str, dict[int, str]] = {"oot": {}, "mm": {}}
+    for symbol, npc_id in npcs.items():
+        for game in ("oot", "mm"):
+            prefix = f"{game.upper()}_"
+            if symbol.startswith(prefix):
+                npc_symbols[game][npc_id] = symbol[len(prefix):]
 
     scene_checks_raw: dict[str, str] = {}
     scene_conflicts: set[str] = set()
-    scene_variant_candidates: dict[str, list[tuple[str, str]]] = defaultdict(list)
-    cow_checks_raw: dict[str, str] = {}
-    cow_variant_candidates: dict[str, list[tuple[str, str]]] = defaultdict(list)
+    scene_candidates: dict[str, list[tuple[str, str, bool]]] = defaultdict(list)
+
     bitmap_checks_raw: dict[tuple[str, int], str] = {}
     bitmap_conflicts: set[tuple[str, int]] = set()
-    bitmap_variant_candidates: dict[tuple[str, int], list[tuple[str, str]]] = defaultdict(list)
-    bitmap_priorities: dict[tuple[str, int], int] = {}
+    bitmap_candidates: dict[tuple[str, int], list[tuple[str, str, bool]]] = (
+        defaultdict(list)
+    )
+
     symbol_checks_raw: dict[tuple[str, str], str] = {}
 
-    for game, pool_name in (("OOT", "pool_oot.csv"), ("MM", "pool_mm.csv")):
-        with (pool_root / pool_name).open(newline="", encoding="utf-8") as handle:
-            reader = csv.DictReader(handle, skipinitialspace=True)
-            for row in reader:
-                location = row["location"].strip()
-                check_type = row["type"].strip()
-                scene_name = row["scene"].strip()
-                value = row["id"].strip()
-                if not location or not scene_name or not value:
-                    continue
+    for check in checks:
+        game = check["game"]
+        ov = check["ov"]
+        location = strip_game_prefix(game, check["location"])
+        key = int(check["key"])
+        scene_id, value = decode_key(key)
+        scene_name = check.get("scene") or ""
 
-                if check_type == "npc":
-                    symbol_checks_raw.setdefault((game, value), location)
+        is_mq = game == "oot" and scene_name.endswith("_MQ")
 
-                scene_kind = SCENE_TYPES.get(check_type)
-                if scene_kind is not None and check_type != "cow":
-                    scene_id = scenes.get(f"{game}_{scene_name}")
-                    if scene_id is None:
-                        continue
-                    try:
-                        bit = int(value, 0)
-                    except ValueError:
-                        continue
-                    if bit < 0 or bit >= 32:
-                        continue
-                    key = scene_check_key(game, scene_id, scene_kind, bit)
-                    if game == "OOT":
-                        scene_variant_candidates[key].append((scene_name, location))
-                    add_unique_mapping(scene_checks_raw, scene_conflicts, key, location)
-                    continue
+        if ov in SCENE_KIND_BY_OV or (game == "mm" and ov == "sf"):
+            if ov == "sf":
+                kind = "switch1" if value >= 0x20 else "collect"
+                bit = value & 0x1F
+            else:
+                kind = SCENE_KIND_BY_OV[ov]
+                bit = value
 
-                if check_type == "cow":
-                    try:
-                        cow_bit = int(value, 0)
-                    except ValueError:
-                        continue
-                    if cow_bit < 0 or cow_bit >= 32:
-                        continue
-                    key = f"{game}_cow_{cow_bit}"
-                    cow_variant_candidates[key].append((scene_name, location))
-                    cow_checks_raw[key] = location
-                    continue
+            if is_mq:
+                base_scene_id = scene_id - MQ_SCENE_OFFSET
+                base_scene_name = scene_name[: -len("_MQ")]
+            else:
+                base_scene_id = scene_id
+                base_scene_name = scene_name
 
-                if game == "MM" and check_type == "sf":
-                    scene_id = scenes.get(f"{game}_{scene_name}")
-                    if scene_id is None:
-                        continue
-                    try:
-                        raw_id = int(value, 0)
-                    except ValueError:
-                        continue
-                    if raw_id >= 0x20:
-                        scene_kind = "switch1"
-                    else:
-                        scene_kind = "collect"
-                    bit = raw_id & 0x1F
-                    key = scene_check_key(game, scene_id, scene_kind, bit)
-                    add_unique_mapping(scene_checks_raw, scene_conflicts, key, location)
-                    continue
+            scene_key = scene_check_key(game, base_scene_id, kind, bit)
+            add_unique_mapping(scene_checks_raw, scene_conflicts, scene_key, location)
+            scene_candidates[scene_key].append((base_scene_name, location, is_mq))
+            continue
 
-                bitmap_block = BITMAP_SPECS.get((game, check_type))
-                if bitmap_block is not None:
-                    if check_type == "npc":
-                        npc_id = npcs.get(f"{game}_{value}")
-                        if npc_id is None:
-                            continue
-                        add_unique_mapping(bitmap_checks_raw, bitmap_conflicts, (bitmap_block, npc_id), location)
-                        continue
+        if ov == "cow":
+            scene_key = f"{game.upper()}_cow_{value}"
+            add_unique_mapping(scene_checks_raw, scene_conflicts, scene_key, location)
+            continue
 
-                    try:
-                        bit = int(value, 0)
-                    except ValueError:
-                        continue
-                    if check_type == "gs":
-                        bit -= 8
-                    if bit < 0:
-                        continue
-                    add_unique_mapping(bitmap_checks_raw, bitmap_conflicts, (bitmap_block, bit), location)
-                    if game == "OOT" and bitmap_block in {"gsOot", "srOot", "scrubsOot"}:
-                        bitmap_variant_candidates[(bitmap_block, bit)].append((scene_name, location))
-                    continue
+        if ov in ("gs", "shop", "scrub", "sr", "fish", "npc"):
+            block = BITMAP_BLOCKS[(game, ov)]
+            bitmap_key = (block, value)
+            add_unique_mapping(
+                bitmap_checks_raw, bitmap_conflicts, bitmap_key, location
+            )
 
-                if check_type not in XFLAG_TYPES:
-                    continue
+            if block in MQ_CONFLICT_BLOCKS:
+                bitmap_candidates[bitmap_key].append((scene_name, location, is_mq))
+            elif game == "oot" and ov == "npc":
+                symbol = npc_symbols["oot"].get(value)
+                if symbol is not None:
+                    symbol_checks_raw.setdefault((game, symbol), location)
+            continue
 
-                scene_id = scenes.get(f"{game}_{scene_name}")
-                if scene_id is None:
-                    continue
-                try:
-                    raw_id = int(value, 0)
-                except ValueError:
-                    continue
-                tables = xflag_tables[game]
-                bit_pos = xflag_bit_position(
-                    scene_id,
-                    raw_id,
-                    tables["scenes"],
-                    tables["setups"],
-                    tables["rooms"],
-                    xflag_counts[game] * 8,
-                )
-                if bit_pos is None:
-                    continue
-                block = "xflagsOot" if game == "OOT" else "xflagsMm"
-                if game == "OOT":
-                    bitmap_variant_candidates[(block, bit_pos)].append((scene_name, location))
-                key = (block, bit_pos)
-                add_unique_mapping(bitmap_checks_raw, bitmap_conflicts, key, location)
+        if ov == "xflag":
+            block = XFLAG_BLOCKS[game]
+            bitmap_key = (block, value)
+            add_unique_mapping(
+                bitmap_checks_raw, bitmap_conflicts, bitmap_key, location
+            )
+            continue
 
-    all_scene_checks_raw: dict[str, str] = {**scene_checks_raw, **cow_checks_raw}
-    all_scene_conflicts = set(scene_conflicts)
-    all_scene_variant_candidates: dict[str, list[tuple[str, str]]] = defaultdict(list)
-    all_scene_variant_candidates.update(scene_variant_candidates)
-    all_scene_variant_candidates.update(cow_variant_candidates)
+        raise ValueError(f"unsupported check type {ov!r} for {check['location']!r}")
+
     scene_checks = [
         {"key": key, "name": name}
-        for key, name in sorted(finalize_mapping(all_scene_checks_raw, all_scene_conflicts).items())
+        for key, name in sorted(
+            finalize_mapping(scene_checks_raw, scene_conflicts).items()
+        )
     ]
-    scene_conflict_entries = []
-    for key, entries in sorted(scene_variant_candidates.items()):
-        unique_entries: list[tuple[str, str]] = []
-        seen_names: set[str] = set()
-        for scene_name, location in entries:
-            if location in seen_names:
-                continue
-            seen_names.add(location)
-            unique_entries.append((scene_name, location))
-        if len(unique_entries) <= 1:
-            continue
 
-        scene_names = {scene_name for scene_name, _ in unique_entries}
-        if len(scene_names) != 1:
+    scene_conflict_entries = []
+    for key, entries in sorted(scene_candidates.items()):
+        if key not in scene_conflicts:
             continue
-        scene_name = next(iter(scene_names))
-        dungeon_mq = OOT_MQ_DUNGEON_IDS.get(scene_name)
+        vanilla = [location for _, location, is_mq in entries if not is_mq]
+        mq = [location for _, location, is_mq in entries if is_mq]
+        if len(vanilla) != 1 or len(mq) != 1:
+            continue
+        dungeon_mq = dungeon_index_for_scene(entries[0][0])
         if dungeon_mq is None:
             continue
-
-        vanilla_names = [location for _, location in unique_entries if not location.startswith("MQ ")]
-        mq_names = [location for _, location in unique_entries if location.startswith("MQ ")]
-        if len(vanilla_names) != 1 or len(mq_names) != 1:
-            continue
-
         scene_conflict_entries.append(
             {
                 "key": key,
                 "dungeonMq": dungeon_mq,
-                "vanilla": vanilla_names[0],
-                "mq": mq_names[0],
+                "vanilla": vanilla[0],
+                "mq": mq[0],
             }
         )
+
     bitmap_checks = [
         {"block": block, "bit": bit, "name": name}
-        for (block, bit), name in sorted(finalize_mapping(bitmap_checks_raw, bitmap_conflicts).items())
+        for (block, bit), name in sorted(
+            finalize_mapping(bitmap_checks_raw, bitmap_conflicts).items()
+        )
     ]
-    bitmap_conflict_entries = []
-    for (block, bit), entries in sorted(bitmap_variant_candidates.items()):
-        unique_entries: list[tuple[str, str]] = []
-        seen_names: set[str] = set()
-        for scene_name, location in entries:
-            if location in seen_names:
-                continue
-            seen_names.add(location)
-            unique_entries.append((scene_name, location))
-        if len(unique_entries) <= 1:
-            continue
 
-        scene_names = {scene_name for scene_name, _ in unique_entries}
-        if len(scene_names) != 1:
+    bitmap_conflict_entries = []
+    for (block, bit), entries in sorted(bitmap_candidates.items()):
+        if (block, bit) not in bitmap_conflicts:
             continue
-        scene_name = next(iter(scene_names))
-        dungeon_mq = OOT_MQ_DUNGEON_IDS.get(scene_name)
+        vanilla = [location for _, location, is_mq in entries if not is_mq]
+        mq = [location for _, location, is_mq in entries if is_mq]
+        if not vanilla or not mq:
+            continue
+        dungeon_mq = dungeon_index_for_scene(entries[0][0])
         if dungeon_mq is None:
             continue
-
-        vanilla_names = [location for _, location in unique_entries if not location.startswith("MQ ")]
-        mq_names = [location for _, location in unique_entries if location.startswith("MQ ")]
-        if not vanilla_names or not mq_names:
-            continue
-
         bitmap_conflict_entries.append(
             {
                 "block": block,
                 "bit": bit,
                 "dungeonMq": dungeon_mq,
-                "vanilla": vanilla_names,
-                "mq": mq_names,
+                "vanilla": vanilla,
+                "mq": mq,
             }
         )
-    # Only include OOT symbols; MM symbols now come from special_locations_mm.json
+
+    # Only OOT symbols are emitted; MM symbols come from
+    # special_locations_mm.json.
     symbol_checks = [
-        {"game": game, "symbol": symbol, "name": name}
+        {"game": game.upper(), "symbol": symbol, "name": name}
         for (game, symbol), name in sorted(symbol_checks_raw.items())
-        if game == "OOT"
+        if game == "oot"
     ]
 
     return {

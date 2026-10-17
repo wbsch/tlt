@@ -278,7 +278,7 @@ function applyVersionData(tables: ParserTables): void {
   mmSymbolChecks = tables.mmSymbolChecks;
   ootSymbolChecks = tables.ootSymbolChecks;
   sceneCheckFallbacks = tables.sceneCheckFallbacks;
-  comboConfigLayout = tables.comboConfigLayout;
+  applyComboConfigLayout(tables.comboConfigLayout);
   rebuildChunkSpecs();
 }
 
@@ -787,9 +787,9 @@ const OOT_MAX_KEYS_BLOCK_SIZE = OOT_RUNTIME_SCENE_COUNT + 4;
 //                       songEventsMm[13] appended -> staticHints @0x2A6,
 //                       boss @0x2BB, strayFairy @0x2C7, bombchuOot/Mm
 //                       @0x2C8/0x2C9, songEventsOot[18] @0x2CA, size 0x2E9.
-// The fields before the hints (mq @0x9C, config[0x40] @0xEC, special @0x12C,
-// prices[141] @0x15C, triforce @0x276/0x278, hints @0x27A) are identical in
-// both layouts.
+// v33.0 dropped the leading `playerId` byte, which moved every following
+// field down by 4 (alignment): mq @0x98, config[0x40] @0xE8, special @0x128,
+// prices[141] @0x158, triforce @0x272/0x274, hints @0x276.
 //
 // The layout is version-specific data: every autotracker data directory
 // (v30_1, v31_0, v31_1, v32_0, ...) ships its own combo_config_layout.json.
@@ -803,6 +803,23 @@ type ComboConfigLayout = {
   bombchuBehaviorMmOffset: number;
   songEventsOffset: number;
   /**
+   * Fixed offsets the parser reads directly. They were identical from v30.1
+   * through v32.x, so older layout files omit them and the defaults below
+   * apply; v33.0 dropped the leading `playerId` and shifted them by 4.
+   */
+  mqOffset?: number;
+  configOffset?: number;
+  specialOffset?: number;
+  pricesOffset?: number;
+  triforcePiecesOffset?: number;
+  triforceGoalOffset?: number;
+  /**
+   * Whether the struct starts with the legacy `u8 playerId` (+3 alignment
+   * bytes). v33 dropped it, so the struct now starts with `dungeonWarps[12]`
+   * and the fixed offsets shifted by 4. Defaults to true for old layouts.
+   */
+  hasPlayerId?: boolean;
+  /**
    * Index into `ComboConfig.config[]` (BITMAP8_GET) for tracked flags, keyed by
    * OoTMM confvar name. The `CONFVARS` list order changes between releases
    * (e.g. BRONZE_SCALE was 192 in v30.1 but 225 in v31.0+), so the index is
@@ -811,15 +828,16 @@ type ComboConfigLayout = {
   configFlags: Record<string, number>;
 };
 
-const OOT_COMBO_CONFIG_FLAGS_OFFSET = 0x0ec;
+// Defaults for the v30.1-v32.x layout; overridden per data version below.
+let OOT_COMBO_CONFIG_FLAGS_OFFSET = 0x0ec;
 const OOT_COMBO_CONFIG_FLAGS_COUNT = 0x40;
-const OOT_COMBO_CONFIG_MQ_OFFSET = 0x09c;
-const OOT_COMBO_CONFIG_TRIFORCE_PIECES_OFFSET = 0x276;
-const OOT_COMBO_CONFIG_TRIFORCE_GOAL_OFFSET = 0x278;
-const OOT_COMBO_CONFIG_SPECIAL_OFFSET = 0x12c;
+let OOT_COMBO_CONFIG_MQ_OFFSET = 0x09c;
+let OOT_COMBO_CONFIG_TRIFORCE_PIECES_OFFSET = 0x276;
+let OOT_COMBO_CONFIG_TRIFORCE_GOAL_OFFSET = 0x278;
+let OOT_COMBO_CONFIG_SPECIAL_OFFSET = 0x12c;
 const OOT_COMBO_CONFIG_SPECIAL_COUNT = 5;
 const OOT_COMBO_CONFIG_SPECIAL_SIZE = 8;
-const OOT_COMBO_CONFIG_PRICES_OFFSET = 0x15c;
+let OOT_COMBO_CONFIG_PRICES_OFFSET = 0x15c;
 const OOT_COMBO_CONFIG_PRICE_COUNT = 141;
 const OOT_COMBO_CONFIG_PRICE_MAX = 4995;
 const OOT_COMBO_CONFIG_BOSS_COUNT = 12;
@@ -838,6 +856,20 @@ const OOT_COMBO_CONFIG_FLAG_NAME_BRONZE_SCALE = 'BRONZE_SCALE';
 /** Combo config tail layout for the currently active data version. */
 let comboConfigLayout: ComboConfigLayout =
   comboConfigLayoutData as ComboConfigLayout;
+
+/** Apply a version's layout and refresh the fixed offsets derived from it. */
+function applyComboConfigLayout(layout: ComboConfigLayout): void {
+  comboConfigLayout = layout;
+  OOT_COMBO_CONFIG_FLAGS_OFFSET = layout.configOffset ?? 0x0ec;
+  OOT_COMBO_CONFIG_MQ_OFFSET = layout.mqOffset ?? 0x09c;
+  OOT_COMBO_CONFIG_TRIFORCE_PIECES_OFFSET =
+    layout.triforcePiecesOffset ?? 0x276;
+  OOT_COMBO_CONFIG_TRIFORCE_GOAL_OFFSET = layout.triforceGoalOffset ?? 0x278;
+  OOT_COMBO_CONFIG_SPECIAL_OFFSET = layout.specialOffset ?? 0x12c;
+  OOT_COMBO_CONFIG_PRICES_OFFSET = layout.pricesOffset ?? 0x15c;
+}
+
+applyComboConfigLayout(comboConfigLayoutData as ComboConfigLayout);
 
 const OOT_PLAY_OFF_SCENE_ID = 0x00a4;
 const OOT_PLAY_OFF_CHEST_FLAGS = 0x1d38;
@@ -3306,8 +3338,11 @@ function validateOotComboConfig(data: Uint8Array): boolean {
   if (data.length < comboConfigLayout.size) {
     return false;
   }
-  if (data[0] === 0 || data[1] !== 0 || data[2] !== 0 || data[3] !== 0) {
-    return false;
+  if (comboConfigLayout.hasPlayerId !== false) {
+    // playerId (world id) is non-zero, followed by 3 alignment bytes.
+    if (data[0] === 0 || data[1] !== 0 || data[2] !== 0 || data[3] !== 0) {
+      return false;
+    }
   }
 
   const mqBits = readU32BE(data, OOT_COMBO_CONFIG_MQ_OFFSET);

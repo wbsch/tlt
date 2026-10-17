@@ -86,13 +86,13 @@ CONFIG_FLAG_NAMES = ["BRONZE_SCALE"]
 # any of them changes, the parser's OOT_COMBO_CONFIG_* constants must be
 # updated too -- refuse to write silently.
 ANCHORS = {
-    "mq": 0x9C,
-    "config": 0xEC,
-    "special": 0x12C,
-    "prices": 0x15C,
-    "triforcePieces": 0x276,
-    "triforceGoal": 0x278,
-    "hints": 0x27A,
+    "mq": 0x98,
+    "config": 0xE8,
+    "special": 0x128,
+    "prices": 0x158,
+    "triforcePieces": 0x272,
+    "triforceGoal": 0x274,
+    "hints": 0x276,
 }
 
 # Parser constants in rawFrameParser.ts that depend on the struct shape but
@@ -440,6 +440,19 @@ def derive_layout(header, prices_max, config_flags):
         "bombchuBehaviorOotOffset": by_name["bombchuBehaviorOot"]["offset"],
         "bombchuBehaviorMmOffset": by_name["bombchuBehaviorMm"]["offset"],
         "songEventsOffset": song["offset"],
+        # Fixed offsets the parser reads directly. v30.1-v32.x all shared the
+        # same values (0xEC/0x9C/...), so those layout files omit them; v33.0
+        # removed the leading playerId and shifted this block by 4.
+        "configOffset": by_name["config"]["offset"],
+        "mqOffset": by_name["mq"]["offset"],
+        "specialOffset": special["offset"],
+        "pricesOffset": prices["offset"],
+        "triforcePiecesOffset": by_name["triforcePieces"]["offset"],
+        "triforceGoalOffset": by_name["triforceGoal"]["offset"],
+        # v33 dropped the leading `u8 playerId` (+3 alignment bytes), which is
+        # what shifted every fixed offset above by 4. The parser's sanity check
+        # is skipped when the struct has no playerId.
+        "hasPlayerId": "playerId" in by_name,
         "configFlags": dict(config_flags),
     }
     padded = (raw_size + struct_align - 1) // struct_align * struct_align
@@ -565,8 +578,8 @@ def verify_layout(layout, info, hits):
         return hits.get(o, set())
 
     checks = []
-    checks.append(("triforcePieces lhu @0x276", "lhu" in kinds(0x276), True))
-    checks.append(("triforceGoal lhu @0x278", "lhu" in kinds(0x278), True))
+    checks.append(("triforcePieces lhu @0x272", "lhu" in kinds(0x272), True))
+    checks.append(("triforceGoal lhu @0x274", "lhu" in kinds(0x274), True))
     gi = info["gi_zora_sapphire_offset"]
     checks.append((f"giZoraSapphire lhu @0x{gi:03x} (info)",
                    "lhu" in kinds(gi), False))

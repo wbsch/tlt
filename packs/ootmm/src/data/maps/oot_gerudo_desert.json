@@ -679,6 +679,13 @@
             "OOT Gerudo Fortress Wonder Item Jail 4 1",
             "OOT Gerudo Fortress Wonder Item Jail 4 2"
           ]
+        },
+        {
+          "image": "pot",
+          "codes": [
+            "OOT Gerudo Fortress Pot Jail 4 1",
+            "OOT Gerudo Fortress Pot Jail 4 2"
+          ]
         }
       ]
     },
@@ -947,6 +954,13 @@
           "codes": [
             "OOT Gerudo Fortress Wonder Item Jail 4 1",
             "OOT Gerudo Fortress Wonder Item Jail 4 2"
+          ]
+        },
+        {
+          "image": "pot",
+          "codes": [
+            "OOT Gerudo Fortress Pot Jail 4 1",
+            "OOT Gerudo Fortress Pot Jail 4 2"
           ]
         }
       ]

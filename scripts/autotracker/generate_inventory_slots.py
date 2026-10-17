@@ -35,21 +35,24 @@ SAVE_LAYOUT_HEADERS = (
     "packages/generator/include/combo/oot/save.h",
     "packages/generator/include/combo/mm/save.h",
     "packages/generator/include/combo/math/vec.h",
-    "packages/generator/include/combo/xflags_data.h",
+    "packages/data/dist/include/combo/data/xflags.h",
     "packages/generator/include/combo/traps.h",
     "packages/generator/include/combo/notes.h",
     "packages/generator/include/combo/doors.h",
     "packages/generator/include/combo/sr.h",
+    "packages/generator/include/combo/save_flags.h",
 )
 
 # gSharedCustomSave bitmap name -> field path in SharedCustomSave.
 SHARED_BITMAP_FIELDS = (
-    ("xflagsOot", "oot.xflags"),
+    # Since v33 OoT and MM xflags share one global bit array; the ids are
+    # unique across both games, so both tracker blocks can point at it.
+    ("xflagsOot", "xflags"),
     ("npcOot", "oot.npc"),
     ("shopsOot", "oot.shops"),
     ("scrubsOot", "oot.scrubs"),
     ("srOot", "oot.sr"),
-    ("xflagsMm", "mm.xflags"),
+    ("xflagsMm", "xflags"),
     ("npcMm", "mm.npc"),
     ("shopsMm", "mm.shops"),
     ("soulsEnemyOot", "soulsEnemyOot"),
