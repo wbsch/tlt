@@ -140,6 +140,42 @@ describe('normalizeSpoilerSettings', () => {
     });
   });
 
+  it('splits legacy startingAge into startingAgeOot and startingAgeMm', () => {
+    const result = normalizeSpoilerSettings({ startingAge: 'adult' });
+    expect(result).toEqual({
+      startingAgeOot: 'adult',
+      startingAgeMm: 'adult',
+      moon: 'custom',
+    });
+    expect('startingAge' in result).toBe(false);
+  });
+
+  it('keeps explicit per-game ages when splitting legacy startingAge', () => {
+    const result = normalizeSpoilerSettings({
+      startingAge: 'child',
+      startingAgeOot: 'adult',
+      startingAgeMm: 'random',
+    });
+    expect(result).toEqual({
+      startingAgeOot: 'adult',
+      startingAgeMm: 'random',
+      moon: 'custom',
+    });
+    expect('startingAge' in result).toBe(false);
+  });
+
+  it('leaves v33.0 per-game ages unchanged', () => {
+    const result = normalizeSpoilerSettings({
+      startingAgeOot: 'child',
+      startingAgeMm: 'adult',
+    });
+    expect(result).toEqual({
+      startingAgeOot: 'child',
+      startingAgeMm: 'adult',
+      moon: 'custom',
+    });
+  });
+
   it('handles mixed old and new keys (DEV builds)', () => {
     const result = normalizeSpoilerSettings({
       crossWarpOot: true,
@@ -198,8 +234,18 @@ describe('hasLegacyKeys', () => {
     expect(hasLegacyKeys({ sunSongMm: true })).toBe(true);
   });
 
+  it('returns true for legacy startingAge', () => {
+    expect(hasLegacyKeys({ startingAge: 'adult' })).toBe(true);
+  });
+
   it('returns false for v31.0-only settings', () => {
     expect(hasLegacyKeys({ songMinuetMm: true, mode: 'single' })).toBe(false);
+  });
+
+  it('returns false for v33.0 per-game starting ages', () => {
+    expect(
+      hasLegacyKeys({ startingAgeOot: 'child', startingAgeMm: 'adult' }),
+    ).toBe(false);
   });
 
   it('returns false for empty settings', () => {

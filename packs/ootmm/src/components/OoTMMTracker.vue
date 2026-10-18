@@ -4088,16 +4088,15 @@ async function handleSpoilerFile(file: File) {
     const playerOptions = getSpoilerLogPlayerOptions(parsed);
     closeSpoilerSettingsWarningDialog();
 
-    // Normalize legacy settings (v30.1 keys → v31.0) before checking
-    // for unknown settings, so old keys like crossWarpOot, sunSongMm etc.
-    // are translated to their v31.0 equivalents and don't appear as
-    // "unknown" in the warning dialog.
+    // Normalize legacy settings (v30.1 keys → v31.0, v32.x `startingAge` →
+    // v33.0 `startingAgeOot`/`startingAgeMm`) before checking for unknown
+    // settings, so old keys don't appear as "unknown" in the warning dialog.
     const hasLegacy = hasLegacyKeys(parsed.settings);
     const normalizedSettings = normalizeSpoilerSettings(parsed.settings);
     if (hasLegacy) {
       spoilerLegacyWarningMessage.value =
         'This spoiler log contains settings from an older or mixed OoTMM version. ' +
-        'The settings have been converted to v31.0 equivalents as best as possible.';
+        'The settings have been converted to their current equivalents as best as possible.';
     }
 
     // Legacy crossWarp settings require cross-game item synthesis:

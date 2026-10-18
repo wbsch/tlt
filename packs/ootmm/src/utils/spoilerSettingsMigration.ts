@@ -31,8 +31,42 @@ const CROSS_WARP_MM_TO_OOT: Record<string, [string, string]> = {
 // ── Normalization ───────────────────────────────────────────────────────────
 
 /**
+ * Splits the legacy single `startingAge` setting into the per-game
+ * `startingAgeOot` / `startingAgeMm` settings introduced in OoTMM v33.0.
+ *
+ * The old setting applied to both games, so its value is copied to both new
+ * keys. Explicitly present new keys win. Returns the same object reference
+ * when the settings contain no legacy key, so callers can keep identity
+ * comparisons.
+ *
+ * Shared by spoiler-log import (`normalizeSpoilerSettings`) and the persisted
+ * state `3 → 4` migration (`src/utils/migrations/settingsSplits.ts`).
+ */
+export function splitLegacyStartingAgeSetting<
+  T extends Record<string, unknown>,
+>(settings: T): T {
+  if (!Object.prototype.hasOwnProperty.call(settings, 'startingAge')) {
+    return settings;
+  }
+
+  const next: Record<string, unknown> = { ...settings };
+  const legacyAge = next.startingAge;
+  if (typeof legacyAge === 'string') {
+    if (next.startingAgeOot === undefined) {
+      next.startingAgeOot = legacyAge;
+    }
+    if (next.startingAgeMm === undefined) {
+      next.startingAgeMm = legacyAge;
+    }
+  }
+
+  delete next.startingAge;
+  return next as T;
+}
+
+/**
  * Per-key normalization: scans raw settings for known old keys and
- * translates them one-by-one into their v31.0 equivalents.
+ * translates them one-by-one into their current equivalents.
  *
  * No version detection — each old key is handled independently.
  * DEV builds with a mix of old and new keys work correctly.
@@ -111,7 +145,9 @@ export function normalizeSpoilerSettings(
     result.moon = 'custom';
   }
 
-  return result;
+  // ── startingAge → startingAgeOot + startingAgeMm (OoTMM v33.0) ──
+  // Old spoiler logs carry a single age that applied to both games.
+  return splitLegacyStartingAgeSetting(result);
 }
 
 /**
@@ -124,7 +160,8 @@ export function hasLegacyKeys(rawSettings: Record<string, unknown>): boolean {
     'crossWarpMm' in rawSettings ||
     'progressiveGoronLullaby' in rawSettings ||
     'sunSongMm' in rawSettings ||
-    'clearStateDungeonsMm' in rawSettings
+    'clearStateDungeonsMm' in rawSettings ||
+    'startingAge' in rawSettings
   );
 }
 
