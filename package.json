@@ -19,6 +19,7 @@
     "generate:map-icons": "node scripts/generate_map_icon_index.ts",
     "generate:map-schema": "node scripts/generate_map_schema.ts",
     "generate:fallback-check": "node scripts/check_fallback_assets.ts",
+    "split:map-icons": "python3 scripts/split_spritesheets.py --preset map-icons --overwrite && npm run optimize:dirty-pngs",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "format": "prettier . --write --cache",

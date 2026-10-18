@@ -32,6 +32,8 @@ export const MAP_ICON_INDEX = [
   'gold_skulltula',
   'goron_ruby',
   'gossip_stone',
+  'gossip_stone_big_fairy',
+  'gossip_stone_small_fairy',
   'grass',
   'green_rupee',
   'grotto',
