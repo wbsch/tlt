@@ -182,18 +182,18 @@ describe('v2 → v3 location renames', () => {
 });
 
 describe('v3 → v4 starting age split', () => {
-  it('copies startingAge to startingAgeOot and startingAgeMm', () => {
+  it('maps startingAge to startingAgeOot and forces startingAgeMm to child', () => {
     const migrated = migrateStateToLatest(
       { trackerSettings: { startingAge: 'adult' } },
       3,
     );
     expect(migrated.trackerSettings).toEqual({
       startingAgeOot: 'adult',
-      startingAgeMm: 'adult',
+      startingAgeMm: 'child',
     });
   });
 
-  it('keeps explicitly set new settings and drops the old key', () => {
+  it('keeps an explicit OoT age, forces MM to child and drops the old key', () => {
     const migrated = migrateStateToLatest(
       {
         trackerSettings: {
@@ -206,7 +206,7 @@ describe('v3 → v4 starting age split', () => {
     );
     expect(migrated.trackerSettings).toEqual({
       startingAgeOot: 'adult',
-      startingAgeMm: 'random',
+      startingAgeMm: 'child',
     });
   });
 
@@ -240,7 +240,7 @@ describe('v3 → v4 starting age split', () => {
     );
     expect(result.trackerSettings).toEqual({
       startingAgeOot: 'adult',
-      startingAgeMm: 'adult',
+      startingAgeMm: 'child',
     });
   });
 

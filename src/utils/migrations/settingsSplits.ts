@@ -16,11 +16,11 @@ function isPlainObject(value: unknown): value is Record<string, unknown> {
  * The transform itself lives next to the other legacy settings mappings in
  * `packs/ootmm/src/utils/spoilerSettingsMigration.ts`, because imported
  * spoiler logs need the exact same split (applied by
- * `normalizeSpoilerSettings`). The legacy value is copied to BOTH new settings
- * (the old setting applied to both games). Explicitly present new keys win, so
- * the step is safe to run against payloads that were already (partially)
- * upgraded. Field-guarded: a payload without `trackerSettings.startingAge`
- * passes through unchanged.
+ * `normalizeSpoilerSettings`). The legacy value maps to `startingAgeOot` (an
+ * explicitly present OoT value wins), while `startingAgeMm` is ALWAYS forced
+ * to `'child'`. The step is safe to run against payloads that were already
+ * (partially) upgraded. Field-guarded: a payload without
+ * `trackerSettings.startingAge` passes through unchanged.
  */
 export const v3ToV4StartingAgeSplit: StateMigration = {
   version: 3,

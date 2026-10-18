@@ -34,10 +34,12 @@ const CROSS_WARP_MM_TO_OOT: Record<string, [string, string]> = {
  * Splits the legacy single `startingAge` setting into the per-game
  * `startingAgeOot` / `startingAgeMm` settings introduced in OoTMM v33.0.
  *
- * The old setting applied to both games, so its value is copied to both new
- * keys. Explicitly present new keys win. Returns the same object reference
- * when the settings contain no legacy key, so callers can keep identity
- * comparisons.
+ * The old setting only ever meaningfully applied to OoT, so its value is
+ * copied to `startingAgeOot` and an explicitly present `startingAgeOot`
+ * wins. `startingAgeMm` is ALWAYS reset to `'child'` — MM has no adult
+ * start, and the legacy value (or a stale explicit MM value) must never
+ * leak into it. Returns the same object reference when the settings contain
+ * no legacy key, so callers can keep identity comparisons.
  *
  * Shared by spoiler-log import (`normalizeSpoilerSettings`) and the persisted
  * state `3 → 4` migration (`src/utils/migrations/settingsSplits.ts`).
@@ -55,9 +57,7 @@ export function splitLegacyStartingAgeSetting<
     if (next.startingAgeOot === undefined) {
       next.startingAgeOot = legacyAge;
     }
-    if (next.startingAgeMm === undefined) {
-      next.startingAgeMm = legacyAge;
-    }
+    next.startingAgeMm = 'child';
   }
 
   delete next.startingAge;
@@ -146,7 +146,8 @@ export function normalizeSpoilerSettings(
   }
 
   // ── startingAge → startingAgeOot + startingAgeMm (OoTMM v33.0) ──
-  // Old spoiler logs carry a single age that applied to both games.
+  // Old spoiler logs carry a single age. It maps to OoT, while MM is
+  // always forced to 'child'.
   return splitLegacyStartingAgeSetting(result);
 }
 

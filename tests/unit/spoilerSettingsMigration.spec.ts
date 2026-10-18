@@ -140,17 +140,17 @@ describe('normalizeSpoilerSettings', () => {
     });
   });
 
-  it('splits legacy startingAge into startingAgeOot and startingAgeMm', () => {
+  it('splits legacy startingAge into startingAgeOot and a child startingAgeMm', () => {
     const result = normalizeSpoilerSettings({ startingAge: 'adult' });
     expect(result).toEqual({
       startingAgeOot: 'adult',
-      startingAgeMm: 'adult',
+      startingAgeMm: 'child',
       moon: 'custom',
     });
     expect('startingAge' in result).toBe(false);
   });
 
-  it('keeps explicit per-game ages when splitting legacy startingAge', () => {
+  it('keeps an explicit OoT age but always resets MM to child', () => {
     const result = normalizeSpoilerSettings({
       startingAge: 'child',
       startingAgeOot: 'adult',
@@ -158,7 +158,7 @@ describe('normalizeSpoilerSettings', () => {
     });
     expect(result).toEqual({
       startingAgeOot: 'adult',
-      startingAgeMm: 'random',
+      startingAgeMm: 'child',
       moon: 'custom',
     });
     expect('startingAge' in result).toBe(false);
