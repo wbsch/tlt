@@ -116,6 +116,7 @@ const RAW_ITEM_ICONS: Record<string, string> = {
   OOT_RUPEE_MAGICAL: 'images/rupee_magical.png',
   OOT_GS_TOKEN: 'images/skulltula_token.png',
   OOT_PLATINUM_TOKEN: 'images/skulltula_platinum.png',
+  OOT_CLOCK: 'images/clock.png',
 
   OOT_STONE_OF_AGONY: 'images/agony.png',
   OOT_GERUDO_CARD: 'images/gerudocard.png',

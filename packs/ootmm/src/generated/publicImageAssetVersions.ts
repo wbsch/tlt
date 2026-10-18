@@ -54,6 +54,7 @@ export const PUBLIC_IMAGE_ASSET_VERSIONS = {
   'images/clock_4.png': 'd7cd3bad83bb',
   'images/clock_5.png': '494804c9449f',
   'images/clock_6.png': 'eca807ca4bcf',
+  'images/clock.png': 'c1823ee97122',
   'images/coin_blue.png': '9c7e0e99da7e',
   'images/coin_green.png': '35fcce6baba3',
   'images/coin_red.png': '37933f432595',

@@ -246,6 +246,7 @@ export const DEFAULT_OOTMM_SETTINGS: OoTMMSettings = {
   rustyKeysOot: false,
   rustyKeysMm: false,
   clocksMm: false,
+  clocksOot: false,
   menuNotebook: false,
   coins: false,
   coinsRed: 0,
