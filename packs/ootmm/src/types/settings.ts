@@ -213,6 +213,7 @@ export const DEFAULT_OOTMM_SETTINGS: OoTMMSettings = {
   gerudoMaskMm: false,
   skullMaskMm: false,
   spookyMaskMm: false,
+  adultMaskMm: false,
   elegyOot: false,
   songSoaringOot: false,
   songHealingOot: false,

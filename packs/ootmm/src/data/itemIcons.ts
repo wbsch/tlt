@@ -439,6 +439,7 @@ const RAW_ITEM_ICONS: Record<string, string> = {
   MM_MASK_GERUDO: 'images/gerudo.png',
   MM_MASK_SKULL: 'images/skull.png',
   MM_MASK_SPOOKY: 'images/spooky.png',
+  MM_MASK_ADULT: 'images/mask_adult.png',
 
   // Boss remains
   MM_REMAINS_ODOLWA: 'images/items/mm_odolwa.png',
