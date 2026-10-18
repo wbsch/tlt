@@ -135,6 +135,7 @@ function buildParserTables(bundle: AutotrackerDataBundle): ParserTables {
       fo.songNotesOffset + fo.songNoteCount,
       fo.bombchuBagFlagsOffset + 1,
       fo.rustyKeysOffset + fo.rustyKeysOotSize + fo.rustyKeysMmSize,
+      fo.saveFlagsOffset == null ? 0 : fo.saveFlagsOffset + 1,
     ),
     sharedFixedOffsets: fo,
     addrOotSaveCtx: parseHexAddress(
@@ -425,6 +426,11 @@ type SharedFixedOffsets = {
   bombchuBagFlagsOffset: number;
   songFlagsOotOffset: number;
   songFlagsMmOffset: number;
+  /**
+   * `SharedCustomSave.saveFlags` (the final struct field).  Only present in
+   * data versions whose OoTMM headers have this field (v33.0+).
+   */
+  saveFlagsOffset?: number;
   silverRupeesOffset: number | null;
   triforceExtraRecordIndex: number;
 };
@@ -629,6 +635,7 @@ type SharedCustomState = {
   // (bit 0 = Deku, bit 1 = Hero).
   mmShieldIsDeku: number;
   mmProgressiveShields: number;
+  clockOot: number;
   songNotes: number[];
   caughtChildFishWeights: number[];
   caughtAdultFishWeights: number[];
@@ -1106,6 +1113,8 @@ const OOT_SILVER_RUPEE_ITEM_IDS = [
 const OOT_ITEM_RUTO_LETTER = 0x1b;
 const MM_ITEM_GOLD_DUST = 0x22;
 const MM_ITEM_RUTO_LETTER = 0xb6;
+const MM_ITEM_MASK_FIERCE_DEITY = 0x35;
+const MM_ITEM_MASK_ADULT = 0xbc;
 
 // Event check flag for detecting traded-away bottle contents
 const EV_OOT_CHK_KING_ZORA_MOVED = 0x33; // Set when Ruto's Letter is delivered to King Zora
@@ -1113,9 +1122,18 @@ const EV_OOT_CHK_KING_ZORA_MOVED = 0x33; // Set when Ruto's Letter is delivered 
 // MmExtraItems bitfield (see OoTMM combo/mm/save.h) is packed MSB-first:
 // hookshot:2 (31-30), ocarina:2 (29-28), goldDust:1 (27), hammerGFS:2 (26-25),
 // boomPicto:2 (24-23), bowSlingshot:2 (22-21), stoneGerudoSkull:3 (20-18),
-// gibdoSpooky:2 (17-16), unused:16. goldDust is latched when Gold Dust is first
-// obtained and persists after the bottle is traded to the Goron blacksmith.
+// gibdoSpooky:2 (17-16), fierceDeityAdult:2 (15-14), unused:14. goldDust is
+// latched when Gold Dust is first obtained and persists after the bottle is
+// traded to the Goron blacksmith.
 const MM_EXTRA_ITEMS_GOLD_DUST_BIT = 1 << 27;
+// `fierceDeityAdult` (MSB-first 2-bit field, bits 15-14) records which of the
+// two items sharing the Fierce Deity mask slot were obtained. Param 0 is
+// Fierce Deity's Mask, param 1 is the Adult Mask (`add:
+// [MM_FIERCE_DEITY_ADULT, 1]` in gi.yml); addItemFierceDeityAdult sets
+// `1 << param` on the field, so param 0 is the field's LSB (bit 14) and
+// param 1 is its MSB (bit 15).
+const MM_EXTRA_ITEMS_FIERCE_DEITY_BIT = 1 << 14;
+const MM_EXTRA_ITEMS_ADULT_MASK_BIT = 1 << 15;
 
 const EMPTY_INVENTORY_ITEM = 0xff;
 
@@ -1143,6 +1161,11 @@ const SHARED_EXTRA_SWORDS_OOT_MASK = 0x3;
 const SHARED_MM_SHIELD_IS_DEKU_SHIFT = 7;
 const SHARED_MM_PROGRESSIVE_SHIELDS_SHIFT = 5;
 const SHARED_MM_PROGRESSIVE_SHIELDS_MASK = 0x3;
+
+// `SharedCustomSave.saveFlags` is a LSB-first bitmap (BITMAP8_SET in OoTMM
+// combo/util.h).  SAVE_FLAG_CLOCK_OOT is the first entry (0), set when the
+// OoT Clock item is obtained.
+const SHARED_SAVE_FLAG_CLOCK_OOT = 0;
 
 const OOT_SCENE_TEMPLE_FOREST = 3;
 const OOT_SCENE_TEMPLE_FIRE = 4;
@@ -1417,6 +1440,14 @@ const buildSharedStateChunkSpecs = (
       length: fo.rustyKeysOotSize + fo.rustyKeysMmSize,
     },
   );
+
+  if (fo.saveFlagsOffset != null) {
+    specs.push({
+      name: `${prefix}_shared_custom_save_save_flags`,
+      address: baseAddress + fo.saveFlagsOffset,
+      length: 1,
+    });
+  }
 
   specs.sort((left, right) => {
     if (left.address === right.address) {
@@ -3724,6 +3755,10 @@ function parseSharedStateUnchecked(data: Uint8Array): SharedCustomState | null {
       (flags >> SHARED_MM_PROGRESSIVE_SHIELDS_SHIFT) &
       SHARED_MM_PROGRESSIVE_SHIELDS_MASK;
   }
+  if (fo.saveFlagsOffset != null && data.length > fo.saveFlagsOffset) {
+    const flags = data[fo.saveFlagsOffset] ?? 0;
+    parsed.clockOot = (flags >> SHARED_SAVE_FLAG_CLOCK_OOT) & 1;
+  }
   if (data.length >= fo.songNotesOffset + fo.songNoteCount) {
     for (let index = 0; index < fo.songNoteCount; index++) {
       parsed.songNotes[index] = data[fo.songNotesOffset + index] ?? 0;
@@ -4012,6 +4047,10 @@ function sharedStateDegradedFrom(
     return true;
   }
 
+  if (previous.clockOot > 0 && current.clockOot === 0) {
+    return true;
+  }
+
   return false;
 }
 
@@ -4032,6 +4071,7 @@ function sharedStateHasMeaningfulData(shared: SharedCustomState): boolean {
     shared.bombchuBagMm > 0 ||
     shared.extraSwordsOot > 0 ||
     shared.songNotes.some((value) => value > 0) ||
+    shared.clockOot > 0 ||
     shared.caughtChildFishWeights.some((value) => value > 0) ||
     shared.caughtAdultFishWeights.some((value) => value > 0) ||
     shared.songFlagsOot > 0 ||
@@ -4291,6 +4331,8 @@ function extractItems(state: GameState): RawAutotrackerItem[] {
   // the OOT equipment bitmask.  Emit the level (0 = none, 1 = Razor,
   // 2 = Gilded) so the mapping can synthesize the progressive stage.
   appendPositiveItem(items, 'OOT_EXTRA_SWORDS', state.shared.extraSwordsOot);
+  // The OoT Clock item only sets a persistent save flag in SharedCustomSave.
+  appendPositiveItem(items, 'OOT_CLOCK', state.shared.clockOot);
   appendPositiveItem(items, 'OOT_SHIELD', (oot.equipment >> 4) & 0x0f);
   appendPositiveItem(items, 'OOT_TUNIC', ootEquipmentLevel(ootTunics));
   appendPositiveItem(
@@ -4557,6 +4599,29 @@ function extractItems(state: GameState): RawAutotrackerItem[] {
       entry.itemId === 'MM_TRADE_2' ||
       entry.itemId === 'MM_TRADE_3'
     ) {
+      continue;
+    }
+    if (entry.itemId === 'MM_MASK_FIERCE_DEITY') {
+      // ITS_MM_MASK_FIERCE_DEITY is shared by Fierce Deity's Mask (0x35) and
+      // the Adult Mask (0xbc); the slot only holds whichever was obtained
+      // last. The monotonic `fierceDeityAdult` bits record both permanently.
+      const fierceDeityAdult = oot.extraRecords[EXTRA_IDX_MM_ITEMS] ?? 0;
+      appendPositiveItem(
+        items,
+        'MM_MASK_FIERCE_DEITY',
+        boolToInt(
+          itemId === MM_ITEM_MASK_FIERCE_DEITY ||
+            (fierceDeityAdult & MM_EXTRA_ITEMS_FIERCE_DEITY_BIT) !== 0,
+        ),
+      );
+      appendPositiveItem(
+        items,
+        'MM_MASK_ADULT',
+        boolToInt(
+          itemId === MM_ITEM_MASK_ADULT ||
+            (fierceDeityAdult & MM_EXTRA_ITEMS_ADULT_MASK_BIT) !== 0,
+        ),
+      );
       continue;
     }
     let qty = inventorySlotQty(entry, itemId, 0);
@@ -6205,6 +6270,7 @@ function createEmptySharedState(): SharedCustomState {
     bombchuBagMm: 0,
     mmShieldIsDeku: 0,
     mmProgressiveShields: 0,
+    clockOot: 0,
     songNotes: Array.from({ length: fo.songNoteCount }, () => 0),
     caughtChildFishWeights: Array.from(
       { length: fo.caughtFishWeightCount },
@@ -6290,6 +6356,7 @@ function cloneSharedState(source: SharedCustomState): SharedCustomState {
     bombchuBagMm: source.bombchuBagMm,
     mmShieldIsDeku: source.mmShieldIsDeku,
     mmProgressiveShields: source.mmProgressiveShields,
+    clockOot: source.clockOot,
     songNotes: [...source.songNotes],
     caughtChildFishWeights: [...source.caughtChildFishWeights],
     caughtAdultFishWeights: [...source.caughtAdultFishWeights],

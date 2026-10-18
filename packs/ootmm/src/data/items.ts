@@ -534,6 +534,13 @@ export const ITEM_DATABASE: OoTMMItem[] = [
     icon: '🎭',
   },
   {
+    id: 'MM_MASK_ADULT',
+    name: 'Adult Mask',
+    category: 'mask',
+    game: 'mm',
+    icon: '🎭',
+  },
+  {
     id: 'MM_MASK_GARO',
     name: "Garo's Mask",
     category: 'mask',
@@ -2794,6 +2801,13 @@ export const ITEM_DATABASE: OoTMMItem[] = [
   {
     id: 'OOT_BUTTON_C_DOWN',
     name: 'C-Down Button',
+    category: 'misc',
+    game: 'oot',
+    icon: '❓',
+  },
+  {
+    id: 'OOT_CLOCK',
+    name: 'Clock (OoT)',
     category: 'misc',
     game: 'oot',
     icon: '❓',

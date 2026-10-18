@@ -126,6 +126,10 @@ const MM_ITEM_MASK_GERUDO = 0xb9;
 const MM_ITEM_MASK_SKULL = 0xba;
 const MM_ITEM_MASK_GIBDO = 0x41;
 const MM_ITEM_MASK_SPOOKY = 0xbb;
+const MM_ITEM_MASK_FIERCE_DEITY = 0x35;
+const MM_ITEM_MASK_ADULT = 0xbc;
+const MM_EXTRA_ITEMS_FIERCE_DEITY_BIT = 1 << 14;
+const MM_EXTRA_ITEMS_ADULT_MASK_BIT = 1 << 15;
 
 /**
  * Builds a minimal OoT message whose foreign-MM inventory slot `slotIndex`
@@ -243,6 +247,42 @@ function buildOotMessageWithSharedSaveBitfield(
 
   const sharedData = new Uint8Array(sharedSpec.length);
   sharedData[SHARED_BOMBCHU_BAG_FLAGS_OFFSET] = flags;
+
+  return {
+    ...message,
+    chunks: [
+      ...message.chunks,
+      {
+        name: sharedSpec.name,
+        address: sharedSpec.address,
+        length: sharedSpec.length,
+        data: Buffer.from(sharedData).toString('base64'),
+      },
+    ],
+  };
+}
+
+// v33_0 shared_save_offsets.json `saveFlagsOffset`.  SAVE_FLAG_CLOCK_OOT is
+// bit 0 (SharedCustomSave.saveFlags is LSB-first).
+const SHARED_SAVE_FLAGS_OFFSET = 1304;
+
+/**
+ * Builds a minimal OoT message plus a monolithic shared custom save chunk
+ * whose `SharedCustomSave.saveFlags` byte is set to `flags`.
+ */
+function buildOotMessageWithSharedSaveFlags(
+  flags: number,
+): RawAutotrackerMessage {
+  const message = buildMinimalOotMessage({ [EXTRA_IDX_OOT_TRADE]: 1 });
+  const sharedSpec = RAW_CHUNK_SPECS.find(
+    (spec) => spec.name === SHARED_SAVE_CHUNK_NAME,
+  );
+  if (!sharedSpec) {
+    throw new Error(`Missing chunk spec ${SHARED_SAVE_CHUNK_NAME}`);
+  }
+
+  const sharedData = new Uint8Array(sharedSpec.length);
+  sharedData[SHARED_SAVE_FLAGS_OFFSET] = flags;
 
   return {
     ...message,
@@ -793,6 +833,69 @@ describe('raw frame parser', () => {
     expect(items.get('MM_MASK_SPOOKY')).toBeUndefined();
   });
 
+  it('reports the Adult Mask when the shared Fierce Deity slot holds it', () => {
+    const parser = createRawAutotrackerParser('v32_0');
+    // Fierce Deity's Mask and the Adult Mask share inventory slot 47, and the
+    // slot only keeps the item that was obtained first. The monotonic
+    // MmExtraItems.fierceDeityAdult field (bits 15-14) records both: param 0
+    // (Fierce Deity) is bit 14, param 1 (Adult) is bit 15.
+    const parsed = parser.parse(
+      buildOotMessageWithForeignMmSlot(47, MM_ITEM_MASK_ADULT, {
+        [EXTRA_IDX_MM_ITEMS]: MM_EXTRA_ITEMS_ADULT_MASK_BIT,
+      }),
+    );
+    expect(parsed).not.toBeNull();
+
+    const items = parsedItemMap(parsed!.items);
+    expect(items.get('MM_MASK_ADULT')).toBe(1);
+    expect(items.get('MM_MASK_FIERCE_DEITY')).toBeUndefined();
+  });
+
+  it('reports Fierce Deity\u2019s Mask when the shared slot holds it', () => {
+    const parser = createRawAutotrackerParser('v32_0');
+    const parsed = parser.parse(
+      buildOotMessageWithForeignMmSlot(47, MM_ITEM_MASK_FIERCE_DEITY, {
+        [EXTRA_IDX_MM_ITEMS]: MM_EXTRA_ITEMS_FIERCE_DEITY_BIT,
+      }),
+    );
+    expect(parsed).not.toBeNull();
+
+    const items = parsedItemMap(parsed!.items);
+    expect(items.get('MM_MASK_FIERCE_DEITY')).toBe(1);
+    expect(items.get('MM_MASK_ADULT')).toBeUndefined();
+  });
+
+  it('keeps both Fierce Deity and Adult masks after both were obtained', () => {
+    const parser = createRawAutotrackerParser('v32_0');
+    // The slot keeps the first item, so it still holds the Adult Mask while
+    // both bits are latched.
+    const parsed = parser.parse(
+      buildOotMessageWithForeignMmSlot(47, MM_ITEM_MASK_ADULT, {
+        [EXTRA_IDX_MM_ITEMS]:
+          MM_EXTRA_ITEMS_FIERCE_DEITY_BIT | MM_EXTRA_ITEMS_ADULT_MASK_BIT,
+      }),
+    );
+    expect(parsed).not.toBeNull();
+
+    const items = parsedItemMap(parsed!.items);
+    expect(items.get('MM_MASK_FIERCE_DEITY')).toBe(1);
+    expect(items.get('MM_MASK_ADULT')).toBe(1);
+  });
+
+  it('reports the Adult Mask from the latched bit even when the shared slot is empty', () => {
+    const parser = createRawAutotrackerParser('v32_0');
+    const parsed = parser.parse(
+      buildOotMessageWithForeignMmSlot(47, 0xff, {
+        [EXTRA_IDX_MM_ITEMS]: MM_EXTRA_ITEMS_ADULT_MASK_BIT,
+      }),
+    );
+    expect(parsed).not.toBeNull();
+
+    const items = parsedItemMap(parsed!.items);
+    expect(items.get('MM_MASK_FIERCE_DEITY')).toBeUndefined();
+    expect(items.get('MM_MASK_ADULT')).toBe(1);
+  });
+
   it('keeps Gold Dust owned after the bottle is traded via the MmExtraItems.goldDust bit', () => {
     const parser = createRawAutotrackerParser('v32_0');
     // MmExtraItems.goldDust is record 4, bit 27. It is latched when Gold Dust
@@ -899,6 +1002,23 @@ describe('raw frame parser', () => {
     const items = parsedItemMap(parsed!.items);
     expect(items.get('OOT_EXTRA_SWORDS')).toBe(1);
     expect(items.get('OOT_BOMBCHUS')).toBeUndefined();
+  });
+
+  it('reads the OoT Clock from SharedCustomSave.saveFlags', () => {
+    const parser = createRawAutotrackerParser('v33_0');
+    // SAVE_FLAG_CLOCK_OOT is bit 0 of the saveFlags byte.
+    const parsed = parser.parse(buildOotMessageWithSharedSaveFlags(0x01));
+    expect(parsed).not.toBeNull();
+
+    expect(parsedItemMap(parsed!.items).get('OOT_CLOCK')).toBe(1);
+  });
+
+  it('does not report the OoT Clock when its save flag is clear', () => {
+    const parser = createRawAutotrackerParser('v33_0');
+    const parsed = parser.parse(buildOotMessageWithSharedSaveFlags(0x00));
+    expect(parsed).not.toBeNull();
+
+    expect(parsedItemMap(parsed!.items).get('OOT_CLOCK')).toBeUndefined();
   });
 
   it('reads the OOT bombchu bag from the shared bitfield', () => {

@@ -12,6 +12,7 @@
   "rustyKeysOffset": 1295,
   "rustyKeysOotSize": 4,
   "rustyKeysMmSize": 5,
+  "saveFlagsOffset": 1304,
   "songFlagsOotOffset": 122,
   "songFlagsMmOffset": 360,
   "bombchuBagFlagsOffset": 1248,

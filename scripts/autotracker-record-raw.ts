@@ -252,6 +252,7 @@ interface SharedFixedOffsets {
   bombchuBagFlagsOffset: number;
   songFlagsOotOffset: number;
   songFlagsMmOffset: number;
+  saveFlagsOffset?: number;
   silverRupeesOffset: number | null;
   triforceExtraRecordIndex: number;
 }
@@ -354,6 +355,14 @@ function buildSharedStateChunks(
       length: fo.rustyKeysOotSize + fo.rustyKeysMmSize,
     },
   );
+
+  if (fo.saveFlagsOffset != null) {
+    specs.push({
+      name: `${prefix}_shared_custom_save_save_flags`,
+      address: baseAddress + fo.saveFlagsOffset,
+      length: 1,
+    });
+  }
 
   specs.sort((left, right) => {
     if (left.address === right.address) {
@@ -499,6 +508,7 @@ function decodeSharedState(
   );
   const songFlagsMm = byName.get(`${prefix}_shared_custom_save_song_flags_mm`);
   const rustyKeys = byName.get(`${prefix}_shared_custom_save_rusty_keys`);
+  const saveFlags = byName.get(`${prefix}_shared_custom_save_save_flags`);
 
   const coinsOffset = fo.coinsOffset;
   const ocarinaOotOffset = fo.ocarinaButtonMaskOotOffset - coinsOffset;
@@ -580,6 +590,8 @@ function decodeSharedState(
       songFlagsMm && songFlagsMm.length >= 1 ? readU8(songFlagsMm) : null,
     rustyKeysOot: rustyKeysOotArr,
     rustyKeysMm: rustyKeysMmArr,
+    // SAVE_FLAG_CLOCK_OOT is bit 0 of SharedCustomSave.saveFlags.
+    clockOot: saveFlags && saveFlags.length >= 1 ? readU8(saveFlags) & 1 : null,
   };
 }
 
@@ -716,6 +728,7 @@ function fmtShared(shared: unknown): string {
     `bombchuMm=${s.bombchuBagMm ?? '?'}`,
     `songFlagsOot=${hex16(s.songFlagsOot)}`,
     `songFlagsMm=${hex8(s.songFlagsMm)}`,
+    `clockOot=${s.clockOot ?? '?'}`,
   ].join(' ');
 }
 

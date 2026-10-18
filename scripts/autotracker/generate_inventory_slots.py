@@ -125,6 +125,9 @@ def build_shared_storage(shared_layout: dict) -> dict:
     # layout from the presence of the field; older versions report the old
     # values (`None` / 19).
     has_silver_rupees = "silverRupees" in fields
+    # v33.0 added the generic `saveFlags` bitmap at the end of SharedCustomSave
+    # (first entry: SAVE_FLAG_CLOCK_OOT).
+    has_save_flags = "saveFlags" in fields
 
     fixed_offsets = {
         "sharedCustomSaveSize": tracked_size,
@@ -143,6 +146,7 @@ def build_shared_storage(shared_layout: dict) -> dict:
         "songFlagsOotOffset": offset("oot.hasElegy"),
         "songFlagsMmOffset": offset("mm.ootSongs"),
         "bombchuBagFlagsOffset": offset("foundMasterSword"),
+        "saveFlagsOffset": offset("saveFlags") if has_save_flags else None,
         "silverRupeesOffset": offset("silverRupees") if has_silver_rupees else None,
         "triforceExtraRecordIndex": 14 if has_silver_rupees else 19,
     }
