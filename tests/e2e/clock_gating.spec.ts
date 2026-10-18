@@ -15,7 +15,7 @@ import {
 async function enableClocksAsItems(page: Page): Promise<void> {
   await page.getByTestId('tab-settings').click();
 
-  const clocksCheckbox = page.getByTestId('setting-input-clocks');
+  const clocksCheckbox = page.getByTestId('setting-input-clocksMm');
   await expect(clocksCheckbox).toBeVisible({
     timeout: TEST_TIMEOUTS.ELEMENT_VISIBLE,
   });

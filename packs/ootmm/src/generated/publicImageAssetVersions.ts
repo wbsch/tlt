@@ -402,7 +402,7 @@ export const PUBLIC_IMAGE_ASSET_VERSIONS = {
   'images/maps/oot_spirit_temple.png': '91f28fccf759',
   'images/maps/oot_water_temple.png': 'd50025a96249',
   'images/maps/oot_zoras_river.png': '245c1d15b28e',
-  'images/mask_adult.png': 'b40f8d12590a',
+  'images/mask_adult.png': 'ee7626b0d598',
   'images/medicine.png': '41826a030e60',
   'images/mushroom.png': 'd9da5332e7aa',
   'images/nayru.png': '37fe1434f926',

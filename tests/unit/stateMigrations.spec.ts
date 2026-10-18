@@ -181,7 +181,7 @@ describe('v2 → v3 location renames', () => {
   });
 });
 
-describe('v3 → v4 starting age split', () => {
+describe('v3 → v4 settings changes', () => {
   it('maps startingAge to startingAgeOot and forces startingAgeMm to child', () => {
     const migrated = migrateStateToLatest(
       { trackerSettings: { startingAge: 'adult' } },
@@ -254,6 +254,55 @@ describe('v3 → v4 starting age split', () => {
       startingAgeMm: 'child',
     });
     expect(migrated.trackerSettings).not.toHaveProperty('startingAge');
+  });
+
+  it('renames clocks to clocksMm and drops the old key', () => {
+    const migrated = migrateStateToLatest(
+      { trackerSettings: { clocks: true } },
+      3,
+    );
+    expect(migrated.trackerSettings).toEqual({ clocksMm: true });
+  });
+
+  it('keeps an explicit clocksMm value and drops the old key', () => {
+    const migrated = migrateStateToLatest(
+      { trackerSettings: { clocks: false, clocksMm: true } },
+      3,
+    );
+    expect(migrated.trackerSettings).toEqual({ clocksMm: true });
+  });
+
+  it('migrates both v33.0 settings in one step', () => {
+    const migrated = migrateStateToLatest(
+      { trackerSettings: { startingAge: 'adult', clocks: true } },
+      3,
+    );
+    expect(migrated.trackerSettings).toEqual({
+      startingAgeOot: 'adult',
+      startingAgeMm: 'child',
+      clocksMm: true,
+    });
+  });
+
+  it('leaves payloads without clocks untouched', () => {
+    const input = { trackerSettings: { clocksMm: true } };
+    const migrated = migrateStateToLatest(input, 3);
+    expect(migrated).toBe(input);
+  });
+
+  it('is idempotent for the clocks rename', () => {
+    const once = migrateStateToLatest({ trackerSettings: { clocks: true } }, 3);
+    const twice = migrateStateToLatest({ ...once }, 3);
+    expect(twice).toEqual(once);
+  });
+
+  it('migrates clocks through the store hydration allowlist', () => {
+    const result = sanitizePersistedStateForStore(
+      'ootmm-session',
+      { trackerSettings: { clocks: true } },
+      3,
+    );
+    expect(result.trackerSettings).toEqual({ clocksMm: true });
   });
 });
 

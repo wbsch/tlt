@@ -1,6 +1,6 @@
 import { legacyV1ToV2 } from './legacy';
 import { v2ToV3LocationRenames } from './locationRenames';
-import { v3ToV4StartingAgeSplit } from './settingsSplits';
+import { v3ToV4SettingsChanges } from './settingsSplits';
 
 /**
  * A single persisted store payload. Store payloads are plain JSON objects:
@@ -32,7 +32,7 @@ export type StateMigration = {
 export const STATE_MIGRATIONS: readonly StateMigration[] = [
   legacyV1ToV2,
   v2ToV3LocationRenames,
-  v3ToV4StartingAgeSplit,
+  v3ToV4SettingsChanges,
 ];
 
 /**

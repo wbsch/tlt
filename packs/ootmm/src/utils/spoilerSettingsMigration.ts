@@ -65,6 +65,34 @@ export function splitLegacyStartingAgeSetting<
 }
 
 /**
+ * Renames the legacy single `clocks` setting to the per-game `clocksMm`
+ * setting introduced in OoTMM v33.0.
+ *
+ * The old setting only ever controlled Majora's Mask, so its value maps to
+ * `clocksMm`; an explicitly present `clocksMm` wins. Returns the same object
+ * reference when the settings contain no legacy key, so callers can keep
+ * identity comparisons.
+ *
+ * Shared by spoiler-log import (`normalizeSpoilerSettings`) and the persisted
+ * state `3 → 4` migration (`src/utils/migrations/settingsSplits.ts`).
+ */
+export function migrateLegacyClocksSetting<T extends Record<string, unknown>>(
+  settings: T,
+): T {
+  if (!Object.prototype.hasOwnProperty.call(settings, 'clocks')) {
+    return settings;
+  }
+
+  const next: Record<string, unknown> = { ...settings };
+  if (next.clocksMm === undefined) {
+    next.clocksMm = next.clocks;
+  }
+
+  delete next.clocks;
+  return next as T;
+}
+
+/**
  * Per-key normalization: scans raw settings for known old keys and
  * translates them one-by-one into their current equivalents.
  *
@@ -148,7 +176,11 @@ export function normalizeSpoilerSettings(
   // ── startingAge → startingAgeOot + startingAgeMm (OoTMM v33.0) ──
   // Old spoiler logs carry a single age. It maps to OoT, while MM is
   // always forced to 'child'.
-  return splitLegacyStartingAgeSetting(result);
+  const withSplitAge = splitLegacyStartingAgeSetting(result);
+
+  // ── clocks → clocksMm (OoTMM v33.0) ──
+  // The old single toggle only controlled MM clocks.
+  return migrateLegacyClocksSetting(withSplitAge);
 }
 
 /**
@@ -162,7 +194,8 @@ export function hasLegacyKeys(rawSettings: Record<string, unknown>): boolean {
     'progressiveGoronLullaby' in rawSettings ||
     'sunSongMm' in rawSettings ||
     'clearStateDungeonsMm' in rawSettings ||
-    'startingAge' in rawSettings
+    'startingAge' in rawSettings ||
+    'clocks' in rawSettings
   );
 }
 

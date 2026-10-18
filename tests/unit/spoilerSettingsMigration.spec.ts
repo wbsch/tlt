@@ -176,6 +176,23 @@ describe('normalizeSpoilerSettings', () => {
     });
   });
 
+  it('renames legacy clocks to clocksMm', () => {
+    const result = normalizeSpoilerSettings({ clocks: true });
+    expect(result).toEqual({ clocksMm: true, moon: 'custom' });
+    expect('clocks' in result).toBe(false);
+  });
+
+  it('keeps an explicit clocksMm value when migrating clocks', () => {
+    const result = normalizeSpoilerSettings({ clocks: false, clocksMm: true });
+    expect(result).toEqual({ clocksMm: true, moon: 'custom' });
+    expect('clocks' in result).toBe(false);
+  });
+
+  it('leaves v33.0 clocksMm unchanged', () => {
+    const result = normalizeSpoilerSettings({ clocksMm: true });
+    expect(result).toEqual({ clocksMm: true, moon: 'custom' });
+  });
+
   it('handles mixed old and new keys (DEV builds)', () => {
     const result = normalizeSpoilerSettings({
       crossWarpOot: true,
@@ -238,6 +255,10 @@ describe('hasLegacyKeys', () => {
     expect(hasLegacyKeys({ startingAge: 'adult' })).toBe(true);
   });
 
+  it('returns true for legacy clocks', () => {
+    expect(hasLegacyKeys({ clocks: true })).toBe(true);
+  });
+
   it('returns false for v31.0-only settings', () => {
     expect(hasLegacyKeys({ songMinuetMm: true, mode: 'single' })).toBe(false);
   });
@@ -246,6 +267,10 @@ describe('hasLegacyKeys', () => {
     expect(
       hasLegacyKeys({ startingAgeOot: 'child', startingAgeMm: 'adult' }),
     ).toBe(false);
+  });
+
+  it('returns false for clocksMm', () => {
+    expect(hasLegacyKeys({ clocksMm: true })).toBe(false);
   });
 
   it('returns false for empty settings', () => {

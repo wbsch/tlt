@@ -245,7 +245,7 @@ export const DEFAULT_OOTMM_SETTINGS: OoTMMSettings = {
   soulsMiscMm: false,
   rustyKeysOot: false,
   rustyKeysMm: false,
-  clocks: false,
+  clocksMm: false,
   menuNotebook: false,
   coins: false,
   coinsRed: 0,

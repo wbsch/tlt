@@ -2476,7 +2476,7 @@ export class OoTMMTracker implements TrackerPack {
 
     const settings = this.settings as {
       players?: unknown;
-      clocks?: unknown;
+      clocksMm?: unknown;
       startingItems?: Record<string, unknown>;
     };
     if (!settings.startingItems || typeof settings.startingItems !== 'object') {
@@ -2514,7 +2514,7 @@ export class OoTMMTracker implements TrackerPack {
 
   /**
    * Prevent OoTMM's `LogicPassConfig` from assigning a random starting
-   * clock when `clocks: true, progressiveClocks: 'separate'`.
+   * clock when `clocksMm: true, progressiveClocks: 'separate'`.
    *
    * LogicPassConfig checks whether any clock is already present in
    * `settings.startingItems` (via `this.startingItems.has(pi)`).  If no
@@ -2537,7 +2537,7 @@ export class OoTMMTracker implements TrackerPack {
   private ensureDeterministicClockStart(
     settings: Record<string, unknown>,
   ): void {
-    if (settings.clocks !== true) return;
+    if (settings.clocksMm !== true) return;
     if (settings.progressiveClocks !== 'separate') return;
 
     // Only inject the sentinel when no real clock is already present.

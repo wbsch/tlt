@@ -4023,7 +4023,7 @@ async function applySpoilerLog(text: string, selectedPlayer?: number) {
   // Ascending or Descending, mark the corresponding clock as a starting
   // item. The progressiveClocks setting itself is not whitelisted since
   // it's irrelevant for logic — this is only about the starting item.
-  if (nextSettings.clocks === true) {
+  if (nextSettings.clocksMm === true) {
     const progClocks = String(
       parsed.settings.progressiveClocks ?? '',
     ).toLowerCase();
