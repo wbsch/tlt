@@ -429,6 +429,9 @@ export const DEFAULT_OOTMM_SETTINGS: OoTMMSettings = {
   platinumTokenOot: false,
   sharedPlatinumToken: false,
   shuffleLotteryMm: false,
+  sharedShovel: false,
+  shovelMm: false,
+  shovelOot: false,
 
   /** Tracker-only settings (not from OoTMM core) */
   autoMapSwitch: true,

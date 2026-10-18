@@ -238,7 +238,8 @@
                   [
                     "SHARED_BUTTON_C_RIGHT",
                     "SHARED_BUTTON_C_UP",
-                    "SHARED_SKELETON_KEY"
+                    "SHARED_SKELETON_KEY",
+                    "SHARED_SHOVEL"
                   ]
                 ]
               }
@@ -450,14 +451,17 @@
                         "OOT_BUTTON_C_DOWN",
                         "OOT_BUTTON_C_LEFT",
                         "OOT_BUTTON_C_RIGHT",
-                        "OOT_BUTTON_C_UP",
-                        "OOT_CLOCK"
+                        "OOT_BUTTON_C_UP"
                       ],
                       [
                         "OOT_BUTTON_A",
                         "OOT_SKELETON_KEY",
                         "OOT_PLATINUM_TOKEN",
-                        "OOT_RUPEE_MAGICAL",
+                        "OOT_RUPEE_MAGICAL"
+                      ],
+                      [
+                        "OOT_CLOCK",
+                        "OOT_SHOVEL",
                         {
                           "ref": "oot_rusty_keys_submenu",
                           "item": "OOT_RUSTY_KEY_TREASURE_CHEST_GAME",
@@ -1263,7 +1267,8 @@
                     "MM_OWL_WOODFALL",
                     "MM_OWL_MILK_ROAD",
                     "MM_OWL_MOUNTAIN_VILLAGE",
-                    "MM_SKELETON_KEY"
+                    "MM_SKELETON_KEY",
+                    "MM_SHOVEL"
                   ],
                   [
                     "MM_OWL_SNOWHEAD",

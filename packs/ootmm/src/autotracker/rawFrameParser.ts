@@ -636,6 +636,8 @@ type SharedCustomState = {
   mmShieldIsDeku: number;
   mmProgressiveShields: number;
   clockOot: number;
+  shovelOot: number;
+  shovelMm: number;
   songNotes: number[];
   caughtChildFishWeights: number[];
   caughtAdultFishWeights: number[];
@@ -1163,9 +1165,13 @@ const SHARED_MM_PROGRESSIVE_SHIELDS_SHIFT = 5;
 const SHARED_MM_PROGRESSIVE_SHIELDS_MASK = 0x3;
 
 // `SharedCustomSave.saveFlags` is a LSB-first bitmap (BITMAP8_SET in OoTMM
-// combo/util.h).  SAVE_FLAG_CLOCK_OOT is the first entry (0), set when the
-// OoT Clock item is obtained.
+// combo/util.h) indexed by the SAVE_FLAG_* enum in combo/save_flags.h:
+//   0 → SAVE_FLAG_CLOCK_OOT     (OoT Clock)
+//   1 → SAVE_FLAG_SHOVEL_OOT    (OoT Shovel, incl. Shared Shovel)
+//   2 → SAVE_FLAG_SHOVEL_MM     (MM Shovel, incl. Shared Shovel)
 const SHARED_SAVE_FLAG_CLOCK_OOT = 0;
+const SHARED_SAVE_FLAG_SHOVEL_OOT = 1;
+const SHARED_SAVE_FLAG_SHOVEL_MM = 2;
 
 const OOT_SCENE_TEMPLE_FOREST = 3;
 const OOT_SCENE_TEMPLE_FIRE = 4;
@@ -3758,6 +3764,8 @@ function parseSharedStateUnchecked(data: Uint8Array): SharedCustomState | null {
   if (fo.saveFlagsOffset != null && data.length > fo.saveFlagsOffset) {
     const flags = data[fo.saveFlagsOffset] ?? 0;
     parsed.clockOot = (flags >> SHARED_SAVE_FLAG_CLOCK_OOT) & 1;
+    parsed.shovelOot = (flags >> SHARED_SAVE_FLAG_SHOVEL_OOT) & 1;
+    parsed.shovelMm = (flags >> SHARED_SAVE_FLAG_SHOVEL_MM) & 1;
   }
   if (data.length >= fo.songNotesOffset + fo.songNoteCount) {
     for (let index = 0; index < fo.songNoteCount; index++) {
@@ -4051,6 +4059,14 @@ function sharedStateDegradedFrom(
     return true;
   }
 
+  if (previous.shovelOot > 0 && current.shovelOot === 0) {
+    return true;
+  }
+
+  if (previous.shovelMm > 0 && current.shovelMm === 0) {
+    return true;
+  }
+
   return false;
 }
 
@@ -4072,6 +4088,8 @@ function sharedStateHasMeaningfulData(shared: SharedCustomState): boolean {
     shared.extraSwordsOot > 0 ||
     shared.songNotes.some((value) => value > 0) ||
     shared.clockOot > 0 ||
+    shared.shovelOot > 0 ||
+    shared.shovelMm > 0 ||
     shared.caughtChildFishWeights.some((value) => value > 0) ||
     shared.caughtAdultFishWeights.some((value) => value > 0) ||
     shared.songFlagsOot > 0 ||
@@ -4333,6 +4351,12 @@ function extractItems(state: GameState): RawAutotrackerItem[] {
   appendPositiveItem(items, 'OOT_EXTRA_SWORDS', state.shared.extraSwordsOot);
   // The OoT Clock item only sets a persistent save flag in SharedCustomSave.
   appendPositiveItem(items, 'OOT_CLOCK', state.shared.clockOot);
+  // The shovels are also single save flags in SharedCustomSave. A Shared
+  // Shovel pickup sets both flags (OoTMM's kSimpleSharedItems maps it to both
+  // GI_OOT_SHOVEL and GI_MM_SHOVEL); the trackers map the game-specific IDs
+  // onto SHARED_SHOVEL when that is the pool item.
+  appendPositiveItem(items, 'OOT_SHOVEL', state.shared.shovelOot);
+  appendPositiveItem(items, 'MM_SHOVEL', state.shared.shovelMm);
   appendPositiveItem(items, 'OOT_SHIELD', (oot.equipment >> 4) & 0x0f);
   appendPositiveItem(items, 'OOT_TUNIC', ootEquipmentLevel(ootTunics));
   appendPositiveItem(
@@ -6271,6 +6295,8 @@ function createEmptySharedState(): SharedCustomState {
     mmShieldIsDeku: 0,
     mmProgressiveShields: 0,
     clockOot: 0,
+    shovelOot: 0,
+    shovelMm: 0,
     songNotes: Array.from({ length: fo.songNoteCount }, () => 0),
     caughtChildFishWeights: Array.from(
       { length: fo.caughtFishWeightCount },
@@ -6357,6 +6383,8 @@ function cloneSharedState(source: SharedCustomState): SharedCustomState {
     mmShieldIsDeku: source.mmShieldIsDeku,
     mmProgressiveShields: source.mmProgressiveShields,
     clockOot: source.clockOot,
+    shovelOot: source.shovelOot,
+    shovelMm: source.shovelMm,
     songNotes: [...source.songNotes],
     caughtChildFishWeights: [...source.caughtChildFishWeights],
     caughtAdultFishWeights: [...source.caughtAdultFishWeights],

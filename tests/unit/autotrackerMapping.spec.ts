@@ -463,6 +463,35 @@ describe('autotracker composite item inference', () => {
     expect(translated.OOT_BOOTS_HOVER).toBe(1);
   });
 
+  it('maps the game-specific shovel signals onto the shared shovel', () => {
+    const translated = translateAutotrackerItems(
+      [
+        { id: 'OOT_SHOVEL', qty: 1 },
+        { id: 'MM_SHOVEL', qty: 1 },
+      ],
+      makeAvailableItemIds(['SHARED_SHOVEL']),
+      makeItemMaxCounts({}),
+    );
+
+    expect(translated.SHARED_SHOVEL).toBe(1);
+    expect(translated.OOT_SHOVEL).toBeUndefined();
+    expect(translated.MM_SHOVEL).toBeUndefined();
+  });
+
+  it('keeps the game-specific shovel ids when they are the pool items', () => {
+    const translated = translateAutotrackerItems(
+      [
+        { id: 'OOT_SHOVEL', qty: 1 },
+        { id: 'MM_SHOVEL', qty: 1 },
+      ],
+      makeAvailableItemIds(['OOT_SHOVEL', 'MM_SHOVEL']),
+      makeItemMaxCounts({}),
+    );
+
+    expect(translated.OOT_SHOVEL).toBe(1);
+    expect(translated.MM_SHOVEL).toBe(1);
+  });
+
   it('uses the OOT hookshot stage for shared hookshot translation', () => {
     const translated = translateAutotrackerItems(
       [

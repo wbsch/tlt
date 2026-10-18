@@ -297,6 +297,9 @@ const SHARED_BOMBCHU_BAG_MM_SHIFT = 0;
 const SHARED_BOMBCHU_BAG_MASK = 0x3;
 const SHARED_EXTRA_SWORDS_OOT_SHIFT = 4;
 const SHARED_EXTRA_SWORDS_OOT_MASK = 0x3;
+const SHARED_SAVE_FLAG_CLOCK_OOT = 0;
+const SHARED_SAVE_FLAG_SHOVEL_OOT = 1;
+const SHARED_SAVE_FLAG_SHOVEL_MM = 2;
 
 function buildSharedStateChunks(
   prefix: 'oot' | 'mm',
@@ -590,8 +593,19 @@ function decodeSharedState(
       songFlagsMm && songFlagsMm.length >= 1 ? readU8(songFlagsMm) : null,
     rustyKeysOot: rustyKeysOotArr,
     rustyKeysMm: rustyKeysMmArr,
-    // SAVE_FLAG_CLOCK_OOT is bit 0 of SharedCustomSave.saveFlags.
-    clockOot: saveFlags && saveFlags.length >= 1 ? readU8(saveFlags) & 1 : null,
+    // SharedCustomSave.saveFlags is an LSB-first bitmap (see combo/save_flags.h).
+    clockOot:
+      saveFlags && saveFlags.length >= 1
+        ? (readU8(saveFlags) >> SHARED_SAVE_FLAG_CLOCK_OOT) & 1
+        : null,
+    shovelOot:
+      saveFlags && saveFlags.length >= 1
+        ? (readU8(saveFlags) >> SHARED_SAVE_FLAG_SHOVEL_OOT) & 1
+        : null,
+    shovelMm:
+      saveFlags && saveFlags.length >= 1
+        ? (readU8(saveFlags) >> SHARED_SAVE_FLAG_SHOVEL_MM) & 1
+        : null,
   };
 }
 
@@ -729,6 +743,8 @@ function fmtShared(shared: unknown): string {
     `songFlagsOot=${hex16(s.songFlagsOot)}`,
     `songFlagsMm=${hex8(s.songFlagsMm)}`,
     `clockOot=${s.clockOot ?? '?'}`,
+    `shovelOot=${s.shovelOot ?? '?'}`,
+    `shovelMm=${s.shovelMm ?? '?'}`,
   ].join(' ');
 }
 

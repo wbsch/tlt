@@ -117,6 +117,7 @@ const RAW_ITEM_ICONS: Record<string, string> = {
   OOT_GS_TOKEN: 'images/skulltula_token.png',
   OOT_PLATINUM_TOKEN: 'images/skulltula_platinum.png',
   OOT_CLOCK: 'images/clock.png',
+  OOT_SHOVEL: 'images/shovel.png',
 
   OOT_STONE_OF_AGONY: 'images/agony.png',
   OOT_GERUDO_CARD: 'images/gerudocard.png',
@@ -522,6 +523,7 @@ const RAW_ITEM_ICONS: Record<string, string> = {
   MM_CLOCK4: 'images/clock_4.png',
   MM_CLOCK5: 'images/clock_5.png',
   MM_CLOCK6: 'images/clock_6.png',
+  MM_SHOVEL: 'images/shovel.png',
 
   // === SPECIAL GRID ITEMS ===
   // These are custom items used in itemGrids.json that aren't actual game items
@@ -614,6 +616,7 @@ const RAW_ITEM_ICONS: Record<string, string> = {
   SHARED_SHIELD_MIRROR: 'images/shield3.png',
   SHARED_PLATINUM_TOKEN: 'images/skulltula_platinum.png',
   SHARED_POWDER_KEG: 'images/items/mm_keg.png',
+  SHARED_SHOVEL: 'images/shovel.png',
 };
 
 export const ITEM_ICONS: Record<string, string> = Object.fromEntries(

@@ -438,6 +438,7 @@ export const PUBLIC_IMAGE_ASSET_VERSIONS = {
   'images/shield1.png': 'f771406bf80b',
   'images/shield2.png': '5c9b68d28e76',
   'images/shield3.png': '1291e02ca96f',
+  'images/shovel.png': 'de1fddf34415',
   'images/skull.png': '74a5d641e247',
   'images/skulltula_platinum.png': 'e9d0057328b0',
   'images/skulltula_token.png': '1a2ad90cc815',

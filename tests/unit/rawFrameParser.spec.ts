@@ -1021,6 +1021,28 @@ describe('raw frame parser', () => {
     expect(parsedItemMap(parsed!.items).get('OOT_CLOCK')).toBeUndefined();
   });
 
+  it('reads both shovels from SharedCustomSave.saveFlags', () => {
+    const parser = createRawAutotrackerParser('v33_0');
+    // SAVE_FLAG_SHOVEL_OOT is bit 1, SAVE_FLAG_SHOVEL_MM is bit 2.
+    const parsed = parser.parse(buildOotMessageWithSharedSaveFlags(0x06));
+    expect(parsed).not.toBeNull();
+
+    const items = parsedItemMap(parsed!.items);
+    expect(items.get('OOT_SHOVEL')).toBe(1);
+    expect(items.get('MM_SHOVEL')).toBe(1);
+  });
+
+  it('does not report the shovels when their save flags are clear', () => {
+    const parser = createRawAutotrackerParser('v33_0');
+    // Only SAVE_FLAG_CLOCK_OOT is set, so neither shovel may appear.
+    const parsed = parser.parse(buildOotMessageWithSharedSaveFlags(0x01));
+    expect(parsed).not.toBeNull();
+
+    const items = parsedItemMap(parsed!.items);
+    expect(items.get('OOT_SHOVEL')).toBeUndefined();
+    expect(items.get('MM_SHOVEL')).toBeUndefined();
+  });
+
   it('reads the OOT bombchu bag from the shared bitfield', () => {
     const parser = createRawAutotrackerParser('v32_0');
     // bits 3-2 = bombchuBagOot = 1.

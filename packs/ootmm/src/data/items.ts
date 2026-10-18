@@ -2813,6 +2813,13 @@ export const ITEM_DATABASE: OoTMMItem[] = [
     icon: '❓',
   },
   {
+    id: 'OOT_SHOVEL',
+    name: 'Shovel',
+    category: 'misc',
+    game: 'oot',
+    icon: '❓',
+  },
+  {
     id: 'MM_BUTTON_A',
     name: 'A Button',
     category: 'misc',
@@ -3446,6 +3453,13 @@ export const ITEM_DATABASE: OoTMMItem[] = [
   {
     id: 'MM_CLOCK6',
     name: 'Clock (Night 3)',
+    category: 'misc',
+    game: 'mm',
+    icon: '❓',
+  },
+  {
+    id: 'MM_SHOVEL',
+    name: 'Shovel',
     category: 'misc',
     game: 'mm',
     icon: '❓',
@@ -6835,6 +6849,13 @@ export const ITEM_DATABASE: OoTMMItem[] = [
     icon: '🛡️',
   },
   {
+    id: 'SHARED_SHOVEL',
+    name: 'Shovel',
+    category: 'misc',
+    game: 'shared',
+    icon: '❓',
+  },
+  {
     id: 'SHARED_MAGIC_JAR_SMALL',
     name: 'Small Magic Jar',
     category: 'equipment',
@@ -8219,6 +8240,55 @@ export const ITEM_DATABASE: OoTMMItem[] = [
     category: 'song',
     game: 'shared',
     icon: '🎵',
+  },
+  {
+    id: 'OOT_STICK_UPGRADE3',
+    name: 'Second Deku Stick Upgrade',
+    category: 'misc',
+    game: 'oot',
+    icon: '❓',
+  },
+  {
+    id: 'OOT_NUT_UPGRADE3',
+    name: 'Second Deku Nut Upgrade',
+    category: 'misc',
+    game: 'oot',
+    icon: '❓',
+  },
+  {
+    id: 'MM_STICK_UPGRADE3',
+    name: 'Second Deku Stick Upgrade',
+    category: 'misc',
+    game: 'mm',
+    icon: '❓',
+  },
+  {
+    id: 'MM_NUT_UPGRADE3',
+    name: 'Second Deku Nut Upgrade',
+    category: 'misc',
+    game: 'mm',
+    icon: '❓',
+  },
+  {
+    id: 'MM_BOTTLE_RANDOM',
+    name: 'Random Bottle (MM)',
+    category: 'misc',
+    game: 'mm',
+    icon: '🍾',
+  },
+  {
+    id: 'OOT_BOTTLE_RANDOM',
+    name: 'Random Bottle (OoT)',
+    category: 'misc',
+    game: 'oot',
+    icon: '🍾',
+  },
+  {
+    id: 'SHARED_BOTTLE_RANDOM',
+    name: 'Random Bottle',
+    category: 'misc',
+    game: 'shared',
+    icon: '🍾',
   },
 ];
 
