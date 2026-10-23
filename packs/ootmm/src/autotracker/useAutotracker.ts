@@ -32,6 +32,11 @@ interface AutotrackerOptions {
   /** Whether child wallets are enabled in the current tracker settings. */
   childWalletsEnabled?: Ref<boolean>;
   /**
+   * Whether the initial Deku Stick & Nut upgrades are shuffled in the current
+   * tracker settings. When disabled the save starts one upgrade level in.
+   */
+  sticksNutsUpgradesInitialEnabled?: Ref<boolean>;
+  /**
    * OoTMM spoiler-log version string (e.g. "v30.1").
    * Used to select the correct autotracker data directory.
    */
@@ -332,12 +337,13 @@ function buildTranslatedAutotrackerState(
   availableItemIds: Set<string>,
   itemMaxCounts: Map<string, number>,
   childWalletsEnabled: boolean,
+  sticksNutsUpgradesInitialEnabled: boolean,
 ): Map<string, number> {
   const translated = translateAutotrackerItems(
     Array.from(rawState, ([id, qty]) => ({ id, qty })),
     availableItemIds,
     itemMaxCounts,
-    { childWalletsEnabled },
+    { childWalletsEnabled, sticksNutsUpgradesInitialEnabled },
   );
 
   return new Map(Object.entries(translated).filter(([, qty]) => qty > 0));
@@ -487,6 +493,10 @@ export function useAutotracker(options: AutotrackerOptions) {
 
   function childWalletsEnabled(): boolean {
     return options.childWalletsEnabled?.value ?? false;
+  }
+
+  function sticksNutsUpgradesInitialEnabled(): boolean {
+    return options.sticksNutsUpgradesInitialEnabled?.value ?? false;
   }
 
   let ws: WebSocket | null = null;
@@ -667,6 +677,7 @@ export function useAutotracker(options: AutotrackerOptions) {
       options.availableItemIds.value,
       options.itemMaxCounts.value,
       childWalletsEnabled(),
+      sticksNutsUpgradesInitialEnabled(),
     );
     replaceLiveChecks(parsed.checks);
 

@@ -964,53 +964,135 @@ const RAW_GRID_ICON_VARIANTS: Record<string, GridIconVariantConfig> = {
       },
     ],
   },
+  // OoT Stick/Nut capacity: when the initial upgrades are shuffled the player
+  // starts without any capacity, so the first level is dimmed and the pool
+  // holds one more upgrade. Without shuffling the first level is owned from
+  // the start (undimmed) and only the remaining upgrades are in the pool.
   OOT_STICK_UPGRADE: {
     default: {
       icons: ['images/stick.png', 'images/stick.png', 'images/stick.png'],
       overlays: STICK_UPGRADE_OVERLAY_VALUES,
-      startUndimmed: false,
+      startUndimmed: true,
       autoSelectItemId: 'OOT_STICK',
     },
+    variants: [
+      {
+        when: {
+          settings: {
+            sticksNutsUpgradesInitial: true,
+          },
+        },
+        icons: ['images/stick.png', 'images/stick.png', 'images/stick.png'],
+        overlays: STICK_UPGRADE_OVERLAY_VALUES,
+        startUndimmed: false,
+        autoSelectItemId: 'OOT_STICK',
+      },
+    ],
   },
   MM_STICK_UPGRADE: {
     default: {
       icons: ['images/stick.png', 'images/stick.png', 'images/stick.png'],
       overlays: STICK_UPGRADE_OVERLAY_VALUES,
-      startUndimmed: false,
+      startUndimmed: true,
       autoSelectItemId: 'MM_STICK',
     },
+    variants: [
+      {
+        when: {
+          settings: {
+            sticksNutsUpgradesInitial: true,
+          },
+        },
+        icons: ['images/stick.png', 'images/stick.png', 'images/stick.png'],
+        overlays: STICK_UPGRADE_OVERLAY_VALUES,
+        startUndimmed: false,
+        autoSelectItemId: 'MM_STICK',
+      },
+    ],
   },
   SHARED_STICK_UPGRADE: {
     default: {
       icons: ['images/stick.png', 'images/stick.png', 'images/stick.png'],
       overlays: STICK_UPGRADE_OVERLAY_VALUES,
-      startUndimmed: false,
+      startUndimmed: true,
       autoSelectItemId: 'SHARED_STICK',
     },
+    variants: [
+      {
+        when: {
+          settings: {
+            sticksNutsUpgradesInitial: true,
+          },
+        },
+        icons: ['images/stick.png', 'images/stick.png', 'images/stick.png'],
+        overlays: STICK_UPGRADE_OVERLAY_VALUES,
+        startUndimmed: false,
+        autoSelectItemId: 'SHARED_STICK',
+      },
+    ],
   },
   OOT_NUT_UPGRADE: {
     default: {
       icons: ['images/nut.png', 'images/nut.png', 'images/nut.png'],
       overlays: BOMB_AND_NUT_OVERLAY_VALUES,
-      startUndimmed: false,
+      startUndimmed: true,
       autoSelectItemId: 'OOT_NUTS_5',
     },
+    variants: [
+      {
+        when: {
+          settings: {
+            sticksNutsUpgradesInitial: true,
+          },
+        },
+        icons: ['images/nut.png', 'images/nut.png', 'images/nut.png'],
+        overlays: BOMB_AND_NUT_OVERLAY_VALUES,
+        startUndimmed: false,
+        autoSelectItemId: 'OOT_NUTS_5',
+      },
+    ],
   },
   SHARED_NUT_UPGRADE: {
     default: {
       icons: ['images/nut.png', 'images/nut.png', 'images/nut.png'],
       overlays: BOMB_AND_NUT_OVERLAY_VALUES,
-      startUndimmed: false,
+      startUndimmed: true,
       autoSelectItemId: 'SHARED_NUTS_5',
     },
+    variants: [
+      {
+        when: {
+          settings: {
+            sticksNutsUpgradesInitial: true,
+          },
+        },
+        icons: ['images/nut.png', 'images/nut.png', 'images/nut.png'],
+        overlays: BOMB_AND_NUT_OVERLAY_VALUES,
+        startUndimmed: false,
+        autoSelectItemId: 'SHARED_NUTS_5',
+      },
+    ],
   },
   MM_NUT_UPGRADE: {
     default: {
       icons: ['images/nut.png', 'images/nut.png', 'images/nut.png'],
       overlays: BOMB_AND_NUT_OVERLAY_VALUES,
-      startUndimmed: false,
+      startUndimmed: true,
       autoSelectItemId: 'MM_NUTS_5',
     },
+    variants: [
+      {
+        when: {
+          settings: {
+            sticksNutsUpgradesInitial: true,
+          },
+        },
+        icons: ['images/nut.png', 'images/nut.png', 'images/nut.png'],
+        overlays: BOMB_AND_NUT_OVERLAY_VALUES,
+        startUndimmed: false,
+        autoSelectItemId: 'MM_NUTS_5',
+      },
+    ],
   },
   OOT_BOMB_BAG: {
     default: {

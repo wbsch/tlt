@@ -1078,6 +1078,9 @@ const autotracker = useAutotracker({
   childWalletsEnabled: computed(() =>
     Boolean(trackerSettings.value?.childWallets),
   ),
+  sticksNutsUpgradesInitialEnabled: computed(() =>
+    Boolean(trackerSettings.value?.sticksNutsUpgradesInitial),
+  ),
   ootmmVersion: importedSpoilerLogVersion,
   onInventoryUpdate: (inventory, meta) => {
     pendingAutotrackerInventoryUpdate = {
@@ -2703,6 +2706,9 @@ function buildLiveInventoryFromRawItems(
     itemMaxCounts.value,
     {
       childWalletsEnabled: Boolean(trackerSettings.value?.childWallets),
+      sticksNutsUpgradesInitialEnabled: Boolean(
+        trackerSettings.value?.sticksNutsUpgradesInitial,
+      ),
     },
   );
 

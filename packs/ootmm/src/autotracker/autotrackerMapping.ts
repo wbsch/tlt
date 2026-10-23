@@ -970,11 +970,21 @@ export interface AutotrackerItem {
 
 export interface AutotrackerTranslationOptions {
   childWalletsEnabled?: boolean;
+  sticksNutsUpgradesInitialEnabled?: boolean;
   mode?: 'absolute' | 'delta';
 }
 
 function isBaseWalletId(itemId: string): boolean {
   return /^(OOT|MM)_WALLET$/.test(itemId);
+}
+
+function isStickNutUpgradeId(itemId: string): boolean {
+  return (
+    itemId === 'OOT_STICK_UPGRADE' ||
+    itemId === 'OOT_NUT_UPGRADE' ||
+    itemId === 'MM_STICK_UPGRADE' ||
+    itemId === 'MM_NUT_UPGRADE'
+  );
 }
 
 function isBottomlessWalletId(itemId: string): boolean {
@@ -1045,6 +1055,30 @@ function translateWalletQty(
   }
 
   const startLevelOffset = options.childWalletsEnabled ? 0 : 1;
+  return {
+    trackerId,
+    qty: Math.max(0, Math.min(maxCount, rawQty - startLevelOffset)),
+  };
+}
+
+function translateStickNutUpgradeQty(
+  rawId: string,
+  rawQty: number,
+  availableItemIds: Set<string>,
+  itemMaxCounts: Map<string, number>,
+  options: AutotrackerTranslationOptions,
+): { trackerId: string; qty: number } {
+  const trackerId = resolveTrackerId(rawId, availableItemIds);
+
+  if (options.mode === 'delta') {
+    return { trackerId, qty: rawQty };
+  }
+
+  const maxCount = getItemMaxCount(trackerId, itemMaxCounts);
+  // Without the initial upgrades shuffled the save starts one level in
+  // (dekuStick/dekuNut = 1 in both OoT and MM), so the first capacity level is
+  // not an item.
+  const startLevelOffset = options.sticksNutsUpgradesInitialEnabled ? 0 : 1;
   return {
     trackerId,
     qty: Math.max(0, Math.min(maxCount, rawQty - startLevelOffset)),
@@ -1252,6 +1286,18 @@ export function translateAutotrackerItems(
         options,
       );
       set(wallet.trackerId, wallet.qty);
+      continue;
+    }
+
+    if (isStickNutUpgradeId(id)) {
+      const upgrade = translateStickNutUpgradeQty(
+        id,
+        qty,
+        availableItemIds,
+        itemMaxCounts,
+        options,
+      );
+      set(upgrade.trackerId, upgrade.qty);
       continue;
     }
 

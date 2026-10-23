@@ -50,7 +50,10 @@ import {
   INTERIOR_GAME_LINK_EXIT_KEYS,
   INTERIOR_GAME_LINK_SOURCE_KEYS,
 } from '../utils/entranceRandomization';
-import { getGridItemDefinedMaxCount } from '../data/itemIcons';
+import {
+  getGridItemDefinedMaxCount,
+  startsGridItemUndimmed,
+} from '../data/itemIcons';
 import { isValidCoopRoomCode } from '../utils/coopFlag';
 import { useRegionLocationMap } from '../composables/useRegionLocationMap';
 import {
@@ -491,19 +494,29 @@ export const useOoTMMSessionStore = defineStore('ootmm-session', () => {
     return result;
   });
   function getEffectiveItemMaxCount(itemId: string, fallbackMax = 1): number {
-    const definedMaxCount =
-      getGridItemDefinedMaxCount(itemId, {
-        availableItemIds: availableItemIdSet.value,
-        inventory: inventoryMap.value,
-        settings: trackerSettings.value,
-      }) ?? 0;
-
-    return Math.max(
+    const context = {
+      availableItemIds: availableItemIdSet.value,
+      inventory: inventoryMap.value,
+      settings: trackerSettings.value,
+    };
+    const definedMaxCount = getGridItemDefinedMaxCount(itemId, context) ?? 0;
+    const maxCount = Math.max(
       1,
       fallbackMax,
       itemMaxCountsById.value[itemId] ?? 0,
       definedMaxCount,
     );
+
+    // Items that start undimmed already own their first capacity level, so the
+    // pool can never hold more levels than the icon grid can display. Clamp to
+    // the displayed stage count so a leftover, larger count (e.g. from the
+    // previous settings before the pool shrank) cannot add a duplicate top
+    // stage that looks identical to the real maximum.
+    if (definedMaxCount > 0 && startsGridItemUndimmed(itemId, context)) {
+      return Math.min(maxCount, definedMaxCount);
+    }
+
+    return maxCount;
   }
 
   const itemMaxCountsMap = computed(() => {

@@ -2,6 +2,7 @@ import { afterEach, describe, expect, it } from 'vitest';
 
 import {
   GRID_ICON_VARIANTS,
+  getGridItemDefinedMaxCount,
   getGridItemOverlay,
   getGridItemOverlayText,
   getGridItemOverlayValue,
@@ -10,6 +11,7 @@ import {
   getGridTextLabel,
   getGridWheelOverlayStageForValue,
   getGridWheelOverlayValue,
+  startsGridItemUndimmed,
 } from '@/../packs/ootmm/src/data/itemIcons';
 
 const TEST_ITEM_ID = '__TEST_MULTI_AUTOSELECT__';
@@ -44,6 +46,37 @@ describe('itemIcons autoSelectItemId', () => {
     ]);
     expect(getGridItemAutoSelectItemId(TEST_ITEM_ID)).toBe('ITEM_ALPHA');
   });
+});
+
+describe('itemIcons initial stick/nut upgrades', () => {
+  const upgradeIds = [
+    'OOT_STICK_UPGRADE',
+    'OOT_NUT_UPGRADE',
+    'MM_STICK_UPGRADE',
+    'MM_NUT_UPGRADE',
+    'SHARED_STICK_UPGRADE',
+    'SHARED_NUT_UPGRADE',
+  ];
+
+  it.each(upgradeIds)(
+    'starts %s undimmed with one level fewer when initial upgrades are not shuffled',
+    (itemId) => {
+      const context = { settings: { sticksNutsUpgradesInitial: false } };
+
+      expect(startsGridItemUndimmed(itemId, context)).toBe(true);
+      expect(getGridItemDefinedMaxCount(itemId, context)).toBe(2);
+    },
+  );
+
+  it.each(upgradeIds)(
+    'starts %s dimmed with an extra level when initial upgrades are shuffled',
+    (itemId) => {
+      const context = { settings: { sticksNutsUpgradesInitial: true } };
+
+      expect(startsGridItemUndimmed(itemId, context)).toBe(false);
+      expect(getGridItemDefinedMaxCount(itemId, context)).toBe(3);
+    },
+  );
 });
 
 describe('itemIcons grid text labels', () => {

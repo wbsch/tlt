@@ -174,6 +174,7 @@ export const DEFAULT_OOTMM_SETTINGS: OoTMMSettings = {
   bottleContentShuffle: false,
   extraBottlesOot: false,
   stoneAgonyMm: false,
+  sticksNutsUpgradesInitial: false,
   sticksNutsUpgradesMm: false,
   fairyOcarinaMm: false,
   blueFireArrows: false,

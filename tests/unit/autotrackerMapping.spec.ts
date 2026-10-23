@@ -586,6 +586,76 @@ describe('autotracker composite item inference', () => {
   });
 });
 
+describe('autotracker initial stick/nut upgrade tracking', () => {
+  it('offsets absolute levels when the initial upgrades are not shuffled', () => {
+    const translated = translateAutotrackerItems(
+      [
+        { id: 'OOT_STICK_UPGRADE', qty: 1 },
+        { id: 'OOT_NUT_UPGRADE', qty: 2 },
+      ],
+      makeAvailableItemIds(['OOT_STICK_UPGRADE', 'OOT_NUT_UPGRADE']),
+      makeItemMaxCounts({ OOT_STICK_UPGRADE: 2, OOT_NUT_UPGRADE: 2 }),
+      { sticksNutsUpgradesInitialEnabled: false },
+    );
+
+    expect(translated.OOT_STICK_UPGRADE).toBe(0);
+    expect(translated.OOT_NUT_UPGRADE).toBe(1);
+  });
+
+  it('keeps absolute levels aligned when the initial upgrades are shuffled', () => {
+    const translated = translateAutotrackerItems(
+      [
+        { id: 'OOT_STICK_UPGRADE', qty: 1 },
+        { id: 'OOT_NUT_UPGRADE', qty: 3 },
+      ],
+      makeAvailableItemIds(['OOT_STICK_UPGRADE', 'OOT_NUT_UPGRADE']),
+      makeItemMaxCounts({ OOT_STICK_UPGRADE: 3, OOT_NUT_UPGRADE: 3 }),
+      { sticksNutsUpgradesInitialEnabled: true },
+    );
+
+    expect(translated.OOT_STICK_UPGRADE).toBe(1);
+    expect(translated.OOT_NUT_UPGRADE).toBe(3);
+  });
+
+  it('maps the offsets onto the shared upgrades', () => {
+    const translated = translateAutotrackerItems(
+      [{ id: 'OOT_STICK_UPGRADE', qty: 2 }],
+      makeAvailableItemIds(['SHARED_STICK_UPGRADE']),
+      makeItemMaxCounts({ SHARED_STICK_UPGRADE: 2 }),
+      { sticksNutsUpgradesInitialEnabled: false },
+    );
+
+    expect(translated.SHARED_STICK_UPGRADE).toBe(1);
+  });
+
+  it('offsets the MM upgrades the same way', () => {
+    const translated = translateAutotrackerItems(
+      [
+        { id: 'MM_STICK_UPGRADE', qty: 1 },
+        { id: 'MM_NUT_UPGRADE', qty: 3 },
+      ],
+      makeAvailableItemIds(['MM_STICK_UPGRADE', 'MM_NUT_UPGRADE']),
+      makeItemMaxCounts({ MM_STICK_UPGRADE: 2, MM_NUT_UPGRADE: 3 }),
+      { sticksNutsUpgradesInitialEnabled: false },
+    );
+
+    expect(translated.MM_STICK_UPGRADE).toBe(0);
+    expect(translated.MM_NUT_UPGRADE).toBe(2);
+  });
+
+  it('treats stick/nut upgrade deltas as additive', () => {
+    const nextState = applyDelta(
+      new Map<string, number>(),
+      [{ id: 'OOT_NUT_UPGRADE', qty: 1 }],
+      makeAvailableItemIds(['OOT_NUT_UPGRADE']),
+      makeItemMaxCounts({ OOT_NUT_UPGRADE: 2 }),
+      { sticksNutsUpgradesInitialEnabled: false },
+    );
+
+    expect(nextState.get('OOT_NUT_UPGRADE')).toBe(1);
+  });
+});
+
 describe('autotracker MM shield tracking', () => {
   const dekuPool = makeAvailableItemIds([
     'MM_SHIELD_DEKU',
