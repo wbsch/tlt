@@ -1118,6 +1118,11 @@ const MM_ITEM_RUTO_LETTER = 0xb6;
 const MM_ITEM_MASK_FIERCE_DEITY = 0x35;
 const MM_ITEM_MASK_ADULT = 0xbc;
 
+// OotExtraTrade bits (see OoTMM combo/data/items.h). With `extraBottlesOot`,
+// the fifth bottle uses the adult trade slot and the sixth the child slot.
+const XITEM_OOT_ADULT_BOTTLE = 11;
+const XITEM_OOT_CHILD_BOTTLE = 14;
+
 // Event check flag for detecting traded-away bottle contents
 const EV_OOT_CHK_KING_ZORA_MOVED = 0x33; // Set when Ruto's Letter is delivered to King Zora
 
@@ -4462,6 +4467,16 @@ function extractItems(state: GameState): RawAutotrackerItem[] {
     'OOT_ADULT_TRADE',
     (ootTradeRecord | ootTradeSaveRecord) & 0xffff,
   );
+
+  const ootExtraAdultBottle =
+    ((ootTradeRecord | ootTradeSaveRecord) & (1 << XITEM_OOT_ADULT_BOTTLE)) !==
+    0;
+  const ootExtraChildBottle =
+    (((ootTradeRecord >>> 16) | (ootTradeSaveRecord >>> 16)) &
+      (1 << XITEM_OOT_CHILD_BOTTLE)) !==
+    0;
+  appendPositiveItem(items, 'OOT_BOTTLE_5', boolToInt(ootExtraAdultBottle));
+  appendPositiveItem(items, 'OOT_BOTTLE_6', boolToInt(ootExtraChildBottle));
 
   for (let index = 0; index < 20; index++) {
     const dungeonItem = oot.dungeonItems[index] ?? 0;

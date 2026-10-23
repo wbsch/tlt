@@ -535,6 +535,11 @@
                     "OOT_MASK_BLAST",
                     "OOT_MASK_STONE",
                     "OOT_MASK_KAMARO",
+                    {
+                      "ref": "Bottle4",
+                      "item": "OOT_BOTTLE_EMPTY",
+                      "title": "Bottle 4"
+                    },
                     "OOT_SONG_HEALING",
                     "OOT_SONG_NOTE_HEALING",
                     "OOT_SONG_SOARING",
@@ -546,6 +551,11 @@
                     "OOT_SPIN_UPGRADE",
                     "OOT_GREAT_FAIRY_SWORD",
                     "OOT_POWDER_KEG",
+                    {
+                      "ref": "Bottle5",
+                      "item": "OOT_BOTTLE_EMPTY",
+                      "title": "Bottle 5"
+                    },
                     "OOT_SONG_AWAKENING",
                     "OOT_SONG_NOTE_AWAKENING",
                     "OOT_SONG_GORON_HALF",

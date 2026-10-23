@@ -269,6 +269,9 @@ describe('useAutotracker checks', () => {
       items: [
         { id: 'OOT_BOTTLE_1', qty: 7 },
         { id: 'OOT_BOTTLE_2', qty: 1 },
+        { id: 'OOT_BOTTLE_4', qty: 1 },
+        { id: 'OOT_BOTTLE_5', qty: 1 },
+        { id: 'OOT_BOTTLE_6', qty: 1 },
         { id: 'MM_BOTTLE_5', qty: 3 },
         { id: 'SHARED_BOTTLE_3', qty: 2 },
       ],
@@ -295,11 +298,14 @@ describe('useAutotracker checks', () => {
 
     expect(inventoryUpdates).toEqual([
       {
-        OOT_BOTTLE_EMPTY: 2,
+        OOT_BOTTLE_EMPTY: 5,
         MM_BOTTLE_EMPTY: 1,
         SHARED_BOTTLE_EMPTY: 1,
         '__grid_ref_state__:__grid_ref__:Bottle1:OOT_BOTTLE_EMPTY': 1,
         '__grid_ref_state__:__grid_ref__:Bottle2:OOT_BOTTLE_EMPTY': 1,
+        '__grid_ref_state__:__grid_ref__:Bottle4:OOT_BOTTLE_EMPTY': 1,
+        '__grid_ref_state__:__grid_ref__:Bottle5:OOT_BOTTLE_EMPTY': 1,
+        '__grid_ref_state__:__grid_ref__:Bottle6:OOT_BOTTLE_EMPTY': 1,
         '__grid_ref_state__:__grid_ref__:MM_Bottle5:MM_BOTTLE_EMPTY': 1,
         '__grid_ref_state__:__grid_ref__:Shared_Bottle3:SHARED_BOTTLE_EMPTY': 1,
       },

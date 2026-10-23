@@ -498,6 +498,37 @@ describe('raw frame parser', () => {
     expect(translated.OOT_ODD_POTION).toBe(1);
   });
 
+  it('reports the extra OoT bottles from the adult and child trade slots', () => {
+    const parser = createRawAutotrackerParser('v33_0');
+    const parsed = parser.parse(
+      buildMinimalOotMessage({
+        [EXTRA_IDX_OOT_TRADE]: 1 << 11,
+        [EXTRA_IDX_OOT_TRADE_SAVE]: 1 << 30,
+      }),
+    );
+
+    expect(parsed).not.toBeNull();
+
+    const items = parsedItemMap(parsed!.items);
+    expect(items.get('OOT_BOTTLE_5')).toBe(1);
+    expect(items.get('OOT_BOTTLE_6')).toBe(1);
+  });
+
+  it('does not report extra OoT bottles when the trade-slot bits are clear', () => {
+    const parser = createRawAutotrackerParser('v33_0');
+    // A non-zero extra record keeps the permanent scene-flags region non-zero
+    // so isPlausibleOotSave accepts the save.
+    const parsed = parser.parse(
+      buildMinimalOotMessage({ [EXTRA_IDX_OOT_TRADE]: 1 }),
+    );
+
+    expect(parsed).not.toBeNull();
+
+    const items = parsedItemMap(parsed!.items);
+    expect(items.has('OOT_BOTTLE_5')).toBe(false);
+    expect(items.has('OOT_BOTTLE_6')).toBe(false);
+  });
+
   it('tracks the OOT Great Fairy Sword separately from the OOT hammer', () => {
     const parser = createRawAutotrackerParser('v32_0');
     // OOT Great Fairy Sword occupies the hammer slot (0xa8) and sets the

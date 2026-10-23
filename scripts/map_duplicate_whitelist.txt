@@ -66,6 +66,8 @@ OOT Gerudo Fortress Pot Jail 2 4
 OOT Gerudo Fortress Pot Jail 2 5
 OOT Gerudo Fortress Pot Jail 2 6
 OOT Gerudo Fortress Pot Jail 2 7
+OOT Gerudo Fortress Pot Jail 4 1
+OOT Gerudo Fortress Pot Jail 4 2
 OOT Gerudo Fortress Pot Kitchen 1
 OOT Gerudo Fortress Pot Kitchen 2
 OOT Gerudo Fortress Wonder Item Break Room Bottom

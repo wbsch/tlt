@@ -172,6 +172,7 @@ export const DEFAULT_OOTMM_SETTINGS: OoTMMSettings = {
   progressiveClocks: 'separate',
   fillWallets: false,
   bottleContentShuffle: false,
+  extraBottlesOot: false,
   stoneAgonyMm: false,
   sticksNutsUpgradesMm: false,
   fairyOcarinaMm: false,

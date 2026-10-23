@@ -340,6 +340,22 @@ const AUTOTRACKER_BOTTLE_SLOT_MAPPINGS: AutotrackerBottleSlotMapping[] = [
     sharedGridRef: 'Shared_Bottle3',
   },
   {
+    autotrackerId: 'OOT_BOTTLE_4',
+    trackerItemId: 'OOT_BOTTLE_EMPTY',
+    gridRef: 'Bottle4',
+    sharedGridRef: 'Shared_Bottle4',
+  },
+  {
+    autotrackerId: 'OOT_BOTTLE_5',
+    trackerItemId: 'OOT_BOTTLE_EMPTY',
+    gridRef: 'Bottle5',
+  },
+  {
+    autotrackerId: 'OOT_BOTTLE_6',
+    trackerItemId: 'OOT_BOTTLE_EMPTY',
+    gridRef: 'Bottle6',
+  },
+  {
     autotrackerId: 'MM_BOTTLE_1',
     trackerItemId: 'MM_BOTTLE_EMPTY',
     gridRef: 'MM_Bottle1',
