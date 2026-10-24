@@ -5,7 +5,13 @@ import {
   SPECIAL_CONDS,
   SPECIAL_CONDS_FIELDS,
 } from '@ootmm/core/settings/index';
-import { SETTINGS_DEFINITIONS } from '../data/settings';
+import {
+  MM_AGE_REQUIREMENT_VALUES,
+  SETTINGS_DEFINITIONS,
+  readMmAgeRequirement,
+  writeMmAgeRequirement,
+  type MmAgeRequirementValue,
+} from '../data/settings';
 import { useOoTMMUiStore } from '../stores/ootmmUi';
 import { matchesSearchTerms } from '../utils/search';
 import { selectSearchInputText } from '../utils/input';
@@ -203,6 +209,34 @@ function toggleMultiSelectValue(key: string, value: string, checked: boolean) {
   updateSetting(key, { type: 'specific', values: nextValues });
 }
 
+function getAgeRequirementValue(
+  def: (typeof SETTINGS_DEFINITIONS)[number],
+): MmAgeRequirementValue {
+  const control = def.control;
+  if (!control) return 'both';
+  return readMmAgeRequirement(
+    localSettings.value,
+    control.childKey,
+    control.adultKey,
+  );
+}
+
+function updateAgeRequirement(
+  def: (typeof SETTINGS_DEFINITIONS)[number],
+  value: string,
+) {
+  const control = def.control;
+  if (!control) return;
+  const next = value as MmAgeRequirementValue;
+  if (!MM_AGE_REQUIREMENT_VALUES.includes(next)) return;
+  localSettings.value = writeMmAgeRequirement(
+    localSettings.value,
+    control.childKey,
+    control.adultKey,
+    next,
+  );
+}
+
 function applySettings() {
   emit('update:settings', localSettings.value);
 }
@@ -241,6 +275,7 @@ function getSettingDefault(def: (typeof SETTINGS_DEFINITIONS)[number]) {
 function resetSettings() {
   localSettings.value = {};
   SETTINGS_DEFINITIONS.forEach((def) => {
+    if (def.control) return;
     localSettings.value[def.key] = getSettingDefault(def);
   });
 }
@@ -399,7 +434,9 @@ function updateSpecialCondCount(condKey: string, value: number) {
 }
 
 const visibleSettings = computed(() =>
-  SETTINGS_DEFINITIONS.filter(isSettingVisible),
+  SETTINGS_DEFINITIONS.filter(
+    (definition) => !definition.hidden && isSettingVisible(definition),
+  ),
 );
 
 // Filter settings by search query
@@ -465,7 +502,7 @@ watch(
   () => {
     const updates: Record<string, unknown> = {};
     for (const def of SETTINGS_DEFINITIONS) {
-      if (def.type !== 'select') continue;
+      if (def.control || def.type !== 'select') continue;
       const nextValue = getSelectValue(def);
       if (nextValue !== localSettings.value[def.key]) {
         updates[def.key] = nextValue;
@@ -549,9 +586,32 @@ defineExpose({
                 </span>
               </label>
 
+              <!-- MM age requirement (single dropdown for the child/adult pair) -->
+              <select
+                v-if="setting.control?.kind === 'mm-age-requirement'"
+                :id="setting.key"
+                :data-testid="`setting-input-${setting.control.childKey}`"
+                :value="getAgeRequirementValue(setting)"
+                class="setting-select"
+                @change="
+                  updateAgeRequirement(
+                    setting,
+                    ($event.target as HTMLSelectElement).value,
+                  )
+                "
+              >
+                <option
+                  v-for="opt in setting.options ?? []"
+                  :key="optionKey(opt.value)"
+                  :value="optionValueString(opt.value)"
+                >
+                  {{ opt.label }}
+                </option>
+              </select>
+
               <!-- Boolean -->
               <input
-                v-if="setting.type === 'boolean'"
+                v-else-if="setting.type === 'boolean'"
                 :id="setting.key"
                 :data-testid="`setting-input-${setting.key}`"
                 type="checkbox"

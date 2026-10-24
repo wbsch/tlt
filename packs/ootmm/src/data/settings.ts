@@ -1,5 +1,10 @@
 import type { SettingDefinition } from '@/types/tracker';
 import * as SettingsMod from '@ootmm/core/settings/data';
+import {
+  MM_AGE_REQ_ITEMS,
+  isMmAgeReqItemInPool,
+  type MmAgeReqItemDef,
+} from '@ootmm/core/mm-age-requirements';
 import settingsWhitelist from './settingsWhitelist.json';
 import { DEFAULT_OOTMM_SETTINGS } from '../types/settings';
 
@@ -37,6 +42,91 @@ const { SETTINGS, SUBCATEGORIES } = settingsDataModule as {
   SUBCATEGORIES?: { categories?: { key?: string; category?: string }[] }[];
 };
 
+const MM_AGE_REQUIREMENT_CATEGORY = 'MM Age Requirements';
+
+/**
+ * Both age flags of an MM age requirement item are `false` when no age is
+ * restricted.
+ */
+export type MmAgeRequirementValue = 'both' | 'child' | 'adult';
+
+export const MM_AGE_REQUIREMENT_VALUES: readonly MmAgeRequirementValue[] = [
+  'both',
+  'child',
+  'adult',
+];
+
+export function readMmAgeRequirement(
+  settings: Record<string, unknown>,
+  childKey: string,
+  adultKey: string,
+): MmAgeRequirementValue {
+  const child = Boolean(settings[childKey]);
+  const adult = Boolean(settings[adultKey]);
+
+  if (adult) {
+    // OoTMM treats both flags set as a child-only restriction.
+    return child ? 'child' : 'adult';
+  }
+
+  return child ? 'child' : 'both';
+}
+
+export function writeMmAgeRequirement(
+  settings: Record<string, unknown>,
+  childKey: string,
+  adultKey: string,
+  value: MmAgeRequirementValue,
+): Record<string, unknown> {
+  return {
+    ...settings,
+    [childKey]: value === 'child',
+    [adultKey]: value === 'adult',
+  };
+}
+
+/**
+ * MM only has age requirements when both ages are reachable in MM, which
+ * requires the Adult Mask or cross-game age.
+ */
+function hasMmAgeRequirements(settings: Record<string, unknown>): boolean {
+  const games = settings.games;
+  if (games !== 'ootmm' && games !== 'mm') return false;
+  return Boolean(settings.crossAge) || Boolean(settings.adultMaskMm);
+}
+
+function isMmAgeRequirementFlagKey(key: string): boolean {
+  return MM_AGE_REQ_ITEMS.some(
+    (item) => item.childSetting === key || item.adultSetting === key,
+  );
+}
+
+function buildMmAgeRequirementDefinition(
+  item: MmAgeReqItemDef,
+): SettingDefinition {
+  return {
+    key: `mmAgeReq.${item.id}`,
+    label: item.label,
+    description: `Which age can equip ${item.label} in MM.`,
+    type: 'select',
+    default: 'both',
+    category: MM_AGE_REQUIREMENT_CATEGORY,
+    options: MM_AGE_REQUIREMENT_VALUES.map((value) => ({
+      value,
+      label: value === 'both' ? 'Both' : value === 'child' ? 'Child' : 'Adult',
+    })),
+    // Only items that are actually part of the MM item pool can have an age
+    // requirement, and only when MM can switch between both ages.
+    cond: (settings) =>
+      hasMmAgeRequirements(settings) && isMmAgeReqItemInPool(settings, item),
+    control: {
+      kind: 'mm-age-requirement',
+      childKey: item.childSetting,
+      adultKey: item.adultSetting,
+    },
+  };
+}
+
 const CATEGORY_LABELS = new Map<string, string>([
   ['main', 'Main'],
   ['main.shuffle', 'Shuffle'],
@@ -52,6 +142,7 @@ const CATEGORY_LABELS = new Map<string, string>([
   ['items.ageless', 'Ageless Items'],
   ['items.progressive', 'Progressive Items'],
   ['items.extensions', 'Item Extensions'],
+  ['items.mmAgeRequirements', MM_AGE_REQUIREMENT_CATEGORY],
   ['entrances', 'Entrance Randomizer'],
   ['hints', 'Hints'],
 ]);
@@ -262,7 +353,39 @@ const BASE_SETTINGS_DEFINITIONS: SettingDefinition[] = (SETTINGS ?? [])
 export const ALL_SETTINGS_DEFINITIONS = applyDefaults(
   BASE_SETTINGS_DEFINITIONS,
 );
-export const SETTINGS_DEFINITIONS = applyWhitelist(ALL_SETTINGS_DEFINITIONS);
+
+/**
+ * Definitions rendered in the settings UI. The raw child/adult flags of an MM
+ * age requirement item are kept (hidden) so that spoiler logs can still be
+ * imported, while the UI shows a single age dropdown per item.
+ */
+const buildSettingsDefinitions = (
+  definitions: SettingDefinition[],
+): SettingDefinition[] => {
+  const result: SettingDefinition[] = [];
+
+  for (const def of definitions) {
+    if (!isMmAgeRequirementFlagKey(def.key)) {
+      result.push(def);
+      continue;
+    }
+
+    result.push({ ...def, hidden: true });
+
+    const item = MM_AGE_REQ_ITEMS.find(
+      (entry) => entry.childSetting === def.key,
+    );
+    if (item) {
+      result.push(buildMmAgeRequirementDefinition(item));
+    }
+  }
+
+  return result;
+};
+
+export const SETTINGS_DEFINITIONS = buildSettingsDefinitions(
+  applyWhitelist(ALL_SETTINGS_DEFINITIONS),
+);
 export const TRACKER_DEFAULT_SETTINGS = buildDefaultsRecord(
   ALL_SETTINGS_DEFINITIONS,
 );

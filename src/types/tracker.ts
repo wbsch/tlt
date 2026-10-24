@@ -211,4 +211,19 @@ export interface SettingDefinition {
   /** Optional numeric bounds (for number settings) */
   min?: number | ((settings: Record<string, unknown>) => number);
   max?: number | ((settings: Record<string, unknown>) => number);
+
+  /**
+   * Renders the setting with a dedicated control instead of the generic
+   * widget for its `type`.
+   */
+  control?: {
+    kind: 'mm-age-requirement';
+    /** Setting key for the "child only" flag */
+    childKey: string;
+    /** Setting key for the "adult only" flag */
+    adultKey: string;
+  };
+
+  /** Tracked (e.g. for spoiler imports) but not rendered in the settings UI */
+  hidden?: boolean;
 }

@@ -101,6 +101,25 @@ declare module '@ootmm/core/settings/tricks' {
   export const TRICKS: Record<string, { name?: string }>;
 }
 
+declare module '@ootmm/core/mm-age-requirements' {
+  export type MmAgeReqItemDef = {
+    id: string;
+    label: string;
+    cItem?: string;
+    childSetting: string;
+    adultSetting: string;
+    childConfvar: string;
+    adultConfvar: string;
+  };
+
+  export const MM_AGE_REQ_ITEMS: readonly MmAgeReqItemDef[];
+
+  export function isMmAgeReqItemInPool(
+    settings: Record<string, unknown>,
+    item: MmAgeReqItemDef,
+  ): boolean;
+}
+
 declare module '@ootmm/core/names' {
   export function itemName(id: string): string;
 }

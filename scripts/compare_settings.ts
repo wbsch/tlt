@@ -4,6 +4,7 @@ import ts from 'typescript';
 
 const TRACKER_SETTINGS_PATH = 'packs/ootmm/src/types/settings.ts';
 const CORE_SETTINGS_PATH = 'OoTMM/packages/core/src/settings/data.ts';
+const MM_AGE_REQ_PATH = 'OoTMM/packages/core/src/mm-age-requirements.ts';
 const IGNORED_TRACKER_SETTINGS = new Set(['tricks']);
 
 function getAbsolutePath(relativePath: string) {
@@ -111,6 +112,64 @@ function getObjectKeys(relativePath: string, variableName: string) {
   return keys;
 }
 
+function getStringPropertyValues(
+  relativePath: string,
+  variableName: string,
+  propertyName: string,
+) {
+  const sourceFile = readSourceFile(relativePath);
+  const initializer = unwrapExpression(
+    getVariableInitializer(sourceFile, variableName),
+  );
+
+  const values: string[] = [];
+
+  const collectFromObject = (objectLiteral: ts.ObjectLiteralExpression) => {
+    for (const property of objectLiteral.properties) {
+      if (!ts.isPropertyAssignment(property)) {
+        continue;
+      }
+
+      if (getPropertyName(property.name) !== propertyName) {
+        continue;
+      }
+
+      if (
+        ts.isStringLiteral(property.initializer) ||
+        ts.isNoSubstitutionTemplateLiteral(property.initializer)
+      ) {
+        values.push(property.initializer.text);
+      }
+
+      break;
+    }
+  };
+
+  if (ts.isArrayLiteralExpression(initializer)) {
+    for (const element of initializer.elements) {
+      if (ts.isObjectLiteralExpression(element)) {
+        collectFromObject(element);
+      }
+    }
+    return values;
+  }
+
+  if (ts.isObjectLiteralExpression(initializer)) {
+    collectFromObject(initializer);
+    return values;
+  }
+
+  throw new Error(
+    `Variable "${variableName}" in ${relativePath} is not an object or array literal.`,
+  );
+}
+
+function getMmAgeRequirementKeys() {
+  return ['childSetting', 'adultSetting'].flatMap((propertyName) =>
+    getStringPropertyValues(MM_AGE_REQ_PATH, 'MM_AGE_REQ_ITEMS', propertyName),
+  );
+}
+
 function getSettingKeys(relativePath: string, variableName: string) {
   const sourceFile = readSourceFile(relativePath);
   const initializer = unwrapExpression(
@@ -126,6 +185,18 @@ function getSettingKeys(relativePath: string, variableName: string) {
   const keys: string[] = [];
 
   for (const element of initializer.elements) {
+    if (ts.isSpreadElement(element) && ts.isIdentifier(element.expression)) {
+      if (element.expression.text === 'MM_AGE_REQ_SETTINGS') {
+        keys.push(...getMmAgeRequirementKeys());
+      }
+      continue;
+    }
+
+    if (ts.isIdentifier(element)) {
+      keys.push(...getStringPropertyValues(relativePath, element.text, 'key'));
+      continue;
+    }
+
     if (!ts.isObjectLiteralExpression(element)) {
       continue;
     }
