@@ -235,18 +235,31 @@
     {
       "coords": [341, 313],
       "image": "gossip_stone",
-      "codes": "OOT Dodongo Cavern Gossip",
       "visibleWhen": {
         "notContains": { "mqDungeons": "DC" }
-      }
+      },
+      "codes": "OOT Dodongo Cavern Gossip"
+    },
+    {
+      "coords": [332, 311],
+      "image": "gossip_stone_big_fairy",
+      "visibleWhen": {
+        "notContains": { "mqDungeons": "DC" }
+      },
+      "codes": "OOT Dodongo Cavern Gossip Big Fairy"
+    },
+    {
+      "coords": [335, 320],
+      "image": "gossip_stone_small_fairy",
+      "visibleWhen": {
+        "notContains": { "mqDungeons": "DC" }
+      },
+      "codes": "OOT Dodongo Cavern Gossip Fairy"
     },
     {
       "coords": [296, 266],
       "image": "boss_entrance",
       "type": "submenu",
-      "entranceMenu": {
-        "entranceIds": ["OOT_BOSS_DODONGO_CAVERN"]
-      },
       "markers": [
         {
           "image": "goron_ruby",
@@ -287,7 +300,10 @@
             ]
           }
         }
-      ]
+      ],
+      "entranceMenu": {
+        "entranceIds": ["OOT_BOSS_DODONGO_CAVERN"]
+      }
     },
     {
       "coords": [248, 266],
@@ -697,10 +713,36 @@
     {
       "coords": [278, 337],
       "image": "gossip_stone",
-      "codes": "OOT Dodongo Cavern Gossip",
       "visibleWhen": {
         "contains": { "mqDungeons": "DC" }
-      }
+      },
+      "codes": "OOT Dodongo Cavern Gossip"
+    },
+    {
+      "coords": [287, 339],
+      "image": "gossip_stone_big_fairy",
+      "visibleWhen": {
+        "contains": { "mqDungeons": "DC" }
+      },
+      "codes": "OOT Dodongo Cavern Gossip Big Fairy"
+    },
+    {
+      "coords": [282, 329],
+      "image": "gossip_stone_small_fairy",
+      "visibleWhen": {
+        "contains": { "mqDungeons": "DC" }
+      },
+      "codes": "OOT Dodongo Cavern Gossip Fairy"
+    },
+    {
+      "coords": [296, 337],
+      "image": "gossip_stone_big_fairy",
+      "codes": "OOT MQ Dodongo Cavern Gossip Big Fairy"
+    },
+    {
+      "coords": [296, 355],
+      "image": "gossip_stone_small_fairy",
+      "codes": "OOT MQ Dodongo Cavern Gossip Fairy"
     }
   ]
 }

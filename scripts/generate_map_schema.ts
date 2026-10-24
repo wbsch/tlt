@@ -19,6 +19,9 @@ const WORLD_DATA_FILE = path.resolve(
 const GOSSIPS_DATA_FILE = path.resolve(
   'OoTMM/packages/data/dist/lib/data-gossips.json',
 );
+const CHECKS_DATA_FILE = path.resolve(
+  'OoTMM/packages/data/dist/lib/data-checks.json',
+);
 const ENTRANCES_DATA_FILE = path.resolve(
   'OoTMM/packages/data/dist/lib/data-entrances.json',
 );
@@ -113,7 +116,15 @@ async function loadReferenceLocationCodes(): Promise<string[]> {
         : gossip.location,
     });
   }
-  return buildLocationCodeSet(world, hints);
+  const checksRaw = await readFile(CHECKS_DATA_FILE, 'utf8');
+  const checks = JSON.parse(checksRaw) as { location?: unknown }[];
+  const checkLocations = checks
+    .map((check) => check.location)
+    .filter((location): location is string => typeof location === 'string');
+  return toSortedUnique([
+    ...buildLocationCodeSet(world, hints),
+    ...checkLocations,
+  ]);
 }
 
 async function loadTrackerEntranceIds(): Promise<string[]> {

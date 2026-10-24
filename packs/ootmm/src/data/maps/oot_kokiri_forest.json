@@ -513,9 +513,29 @@
       "codes": "OOT Kokiri Gossip Left of Deku Tree"
     },
     {
+      "coords": [843, 250],
+      "image": "gossip_stone_big_fairy",
+      "codes": "OOT Kokiri Forest Gossip Big Fairy Near Deku Tree 1"
+    },
+    {
+      "coords": [855, 250],
+      "image": "gossip_stone_small_fairy",
+      "codes": "OOT Kokiri Forest Gossip Fairy Near Deku Tree 1"
+    },
+    {
       "coords": [944, 339],
       "image": "gossip_stone",
       "codes": "OOT Kokiri Gossip Right of Deku Tree"
+    },
+    {
+      "coords": [942, 348],
+      "image": "gossip_stone_big_fairy",
+      "codes": "OOT Kokiri Forest Gossip Big Fairy Near Deku Tree 2"
+    },
+    {
+      "coords": [952, 342],
+      "image": "gossip_stone_small_fairy",
+      "codes": "OOT Kokiri Forest Gossip Fairy Near Deku Tree 2"
     },
     {
       "coords": [532, 324],
@@ -523,9 +543,29 @@
       "codes": "OOT Kokiri Gossip Near Lost Woods Open"
     },
     {
+      "coords": [523, 324],
+      "image": "gossip_stone_big_fairy",
+      "codes": "OOT Kokiri Forest Gossip Big Fairy Near Lost Woods"
+    },
+    {
+      "coords": [530, 315],
+      "image": "gossip_stone_small_fairy",
+      "codes": "OOT Kokiri Forest Gossip Fairy Near Lost Woods"
+    },
+    {
       "coords": [351, 299],
       "image": "gossip_stone",
       "codes": "OOT Sacred Meadow Gossip Atop Maze Woods Side"
+    },
+    {
+      "coords": [358, 291],
+      "image": "gossip_stone_big_fairy",
+      "codes": "OOT Sacred Meadow Gossip Big Fairy Maze 1"
+    },
+    {
+      "coords": [359, 304],
+      "image": "gossip_stone_small_fairy",
+      "codes": "OOT Sacred Meadow Gossip Fairy Maze 1"
     },
     {
       "coords": [312, 265],
@@ -533,14 +573,44 @@
       "codes": "OOT Sacred Meadow Gossip Atop Maze Temple Side"
     },
     {
+      "coords": [304, 271],
+      "image": "gossip_stone_big_fairy",
+      "codes": "OOT Sacred Meadow Gossip Big Fairy Maze 2"
+    },
+    {
+      "coords": [305, 260],
+      "image": "gossip_stone_small_fairy",
+      "codes": "OOT Sacred Meadow Gossip Fairy Maze 2"
+    },
+    {
       "coords": [66, 431],
       "image": "gossip_stone",
       "codes": "OOT Lost Woods Gossip Under Bridge"
     },
     {
+      "coords": [54, 431],
+      "image": "gossip_stone_big_fairy",
+      "codes": "OOT Lost Woods Gossip Big Fairy"
+    },
+    {
+      "coords": [60, 423],
+      "image": "gossip_stone_small_fairy",
+      "codes": "OOT Lost Woods Gossip Fairy"
+    },
+    {
       "coords": [318, 99],
       "image": "gossip_stone",
       "codes": "OOT Sacred Meadow Gossip Near Forest Temple"
+    },
+    {
+      "coords": [310, 102],
+      "image": "gossip_stone_big_fairy",
+      "codes": "OOT Sacred Meadow Gossip Big Fairy Deep"
+    },
+    {
+      "coords": [317, 109],
+      "image": "gossip_stone_small_fairy",
+      "codes": "OOT Sacred Meadow Gossip Fairy Deep"
     },
     {
       "coords": [863, 337],
@@ -764,6 +834,14 @@
         {
           "image": "gossip_stone",
           "codes": "OOT Kokiri Gossip Near Lost Woods Grotto"
+        },
+        {
+          "image": "gossip_stone_big_fairy",
+          "codes": "OOT Kokiri Forest Storms Grotto Gossip Big Fairy"
+        },
+        {
+          "image": "gossip_stone_small_fairy",
+          "codes": "OOT Kokiri Forest Storms Grotto Gossip Fairy"
         }
       ],
       "entranceMenu": {
@@ -903,6 +981,14 @@
         {
           "image": "gossip_stone",
           "codes": "OOT Lost Woods Gossip Grotto"
+        },
+        {
+          "image": "gossip_stone_big_fairy",
+          "codes": "OOT Lost Woods Generic Grotto Gossip Big Fairy"
+        },
+        {
+          "image": "gossip_stone_small_fairy",
+          "codes": "OOT Lost Woods Generic Grotto Gossip Fairy"
         },
         {
           "image": "chest",

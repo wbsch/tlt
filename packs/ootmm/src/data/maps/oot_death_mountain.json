@@ -8,35 +8,35 @@
     {
       "coords": [48, 302],
       "image": "heart_piece",
-      "codes": ["OOT Death Mountain Trail HP"]
+      "codes": "OOT Death Mountain Trail HP"
     },
     {
       "coords": [120, 338],
       "image": "chest",
-      "codes": ["OOT Death Mountain Trail Chest"]
+      "codes": "OOT Death Mountain Trail Chest"
     },
     {
       "coords": [204, 74],
       "image": "npc",
       "overlays": ["adult"],
-      "codes": ["OOT Death Mountain Trail Prescription"]
+      "codes": "OOT Death Mountain Trail Prescription"
     },
     {
       "coords": [204, 90],
       "image": "npc",
       "overlays": ["adult"],
-      "codes": ["OOT Death Mountain Trail Claim Check"]
+      "codes": "OOT Death Mountain Trail Claim Check"
     },
     {
       "coords": [204, 106],
       "image": "npc",
       "overlays": ["adult"],
-      "codes": ["OOT Death Mountain Trail Biggoron Sword"]
+      "codes": "OOT Death Mountain Trail Biggoron Sword"
     },
     {
       "coords": [230, 240],
       "image": "chest",
-      "codes": ["OOT Goron City Maze Left"]
+      "codes": "OOT Goron City Maze Left"
     },
     {
       "coords": [252, 240],
@@ -47,7 +47,7 @@
       "coords": [419, 216],
       "image": "npc",
       "overlays": ["child"],
-      "codes": ["OOT Darunia"]
+      "codes": "OOT Darunia"
     },
     {
       "coords": [419, 195],
@@ -116,7 +116,7 @@
       "coords": [434, 302],
       "image": "npc",
       "overlays": ["child"],
-      "codes": ["OOT Goron City Bomb Bag"]
+      "codes": "OOT Goron City Bomb Bag"
     },
     {
       "coords": [414, 401],
@@ -128,81 +128,81 @@
       "coords": [457, 350],
       "image": "npc",
       "overlays": ["adult"],
-      "codes": ["OOT Goron City Tunic"]
+      "codes": "OOT Goron City Tunic"
     },
     {
       "coords": [818, 313],
       "image": "heart_piece",
-      "codes": ["OOT Death Mountain Crater Alcove HP"]
+      "codes": "OOT Death Mountain Crater Alcove HP"
     },
     {
       "coords": [746, 212],
       "image": "heart_piece",
-      "codes": ["OOT Death Mountain Crater Volcano HP"]
+      "codes": "OOT Death Mountain Crater Volcano HP"
     },
     {
       "coords": [758, 169],
       "image": "song",
-      "codes": ["OOT Death Mountain Crater Sheik Song"]
+      "codes": "OOT Death Mountain Crater Sheik Song"
     },
     {
       "coords": [43, 420],
       "image": "gold_skulltula",
-      "codes": ["OOT Death Mountain Trail GS Entrance"]
+      "codes": "OOT Death Mountain Trail GS Entrance"
     },
     {
       "coords": [56, 323],
       "image": "gold_skulltula",
       "overlays": ["child"],
-      "codes": ["OOT Death Mountain Trail GS Soil"]
+      "codes": "OOT Death Mountain Trail GS Soil"
     },
     {
       "coords": [84, 286],
       "image": "gold_skulltula",
       "overlays": ["adult", "night"],
-      "codes": ["OOT Death Mountain Trail GS Above Dodongo"]
+      "codes": "OOT Death Mountain Trail GS Above Dodongo"
     },
     {
       "coords": [152, 178],
       "image": "gold_skulltula",
       "overlays": ["adult", "night"],
-      "codes": ["OOT Death Mountain Trail GS Before Climb"]
+      "codes": "OOT Death Mountain Trail GS Before Climb"
     },
     {
       "coords": [272, 235],
       "image": "gold_skulltula",
       "overlays": ["child"],
-      "codes": ["OOT Goron City GS Maze"]
+      "codes": "OOT Goron City GS Maze"
     },
     {
       "coords": [414, 368],
       "image": "gold_skulltula",
       "overlays": ["adult"],
-      "codes": ["OOT Goron City GS Platform"]
+      "codes": "OOT Goron City GS Platform"
     },
     {
       "coords": [716, 390],
       "image": "gold_skulltula",
       "overlays": ["child"],
-      "codes": ["OOT Death Mountain Crater GS Crate"]
+      "codes": "OOT Death Mountain Crater GS Crate"
     },
     {
       "coords": [786, 191],
       "image": "gold_skulltula",
       "overlays": ["child"],
-      "codes": ["OOT Death Mountain Crater GS Soil"]
+      "codes": "OOT Death Mountain Crater GS Soil"
     },
     {
       "coords": [302, 548],
       "image": "shop",
       "overlays": ["adult"],
-      "codes": ["OOT Goron City Medigoron Giant Knife"]
+      "codes": "OOT Goron City Medigoron Giant Knife"
     },
     {
       "coords": [742, 332],
       "image": "business_scrub_oot",
       "overlays": ["child"],
-      "codes": ["OOT Death Mountain Crater Scrub Child"]
+      "codes": "OOT Death Mountain Crater Scrub Child"
     },
     {
       "coords": [271, 474],
@@ -216,7 +216,7 @@
     {
       "coords": [321, 538],
       "image": "pot",
-      "codes": ["OOT Goron City Pot Medigoron Room"]
+      "codes": "OOT Goron City Pot Medigoron Room"
     },
     {
       "coords": [423, 450],
@@ -256,29 +256,29 @@
       "coords": [84, 358],
       "image": "blue_rupee",
       "overlays": ["child"],
-      "codes": ["OOT Death Mountain Trail Rupee Lower"]
+      "codes": "OOT Death Mountain Trail Rupee Lower"
     },
     {
       "coords": [836, 325],
       "image": "boulder",
-      "codes": ["OOT Death Mountain Crater Boulder 2"]
+      "codes": "OOT Death Mountain Crater Boulder 2"
     },
     {
       "coords": [770, 305],
       "image": "boulder",
-      "codes": ["OOT Death Mountain Crater Boulder 3"]
+      "codes": "OOT Death Mountain Crater Boulder 3"
     },
     {
       "coords": [84, 358],
       "image": "boulder",
       "overlays": ["child"],
-      "codes": ["OOT Death Mountain Trail Boulder Child"]
+      "codes": "OOT Death Mountain Trail Boulder Child"
     },
     {
       "coords": [104, 358],
       "image": "red_rupee",
       "overlays": ["child"],
-      "codes": ["OOT Death Mountain Trail Rupee Upper"]
+      "codes": "OOT Death Mountain Trail Rupee Upper"
     },
     {
       "coords": [104, 358],
@@ -292,7 +292,7 @@
       "coords": [880, 132],
       "image": "red_rupee",
       "overlays": ["child"],
-      "codes": ["OOT Death Mountain Crater Rupee Child 1"]
+      "codes": "OOT Death Mountain Crater Rupee Child 1"
     },
     {
       "coords": [919, 181],
@@ -311,7 +311,7 @@
       "coords": [935, 181],
       "image": "red_rupee",
       "overlays": ["child"],
-      "codes": ["OOT Death Mountain Crater Rupee Child 8"]
+      "codes": "OOT Death Mountain Crater Rupee Child 8"
     },
     {
       "coords": [919, 247],
@@ -330,78 +330,78 @@
       "coords": [935, 247],
       "image": "red_rupee",
       "overlays": ["adult"],
-      "codes": ["OOT Death Mountain Crater Rupee Adult 7"]
+      "codes": "OOT Death Mountain Crater Rupee Adult 7"
     },
     {
       "coords": [110, 380],
       "image": "big_fairy_spot",
-      "codes": ["OOT Death Mountain Trail Big Fairy"]
+      "codes": "OOT Death Mountain Trail Big Fairy"
     },
     {
       "coords": [38, 460],
       "image": "red_boulder",
       "overlays": ["adult"],
-      "codes": ["OOT Death Mountain Trail Red Boulder Lower 1"]
+      "codes": "OOT Death Mountain Trail Red Boulder Lower 1"
     },
     {
       "coords": [21, 414],
       "image": "red_boulder",
       "overlays": ["adult"],
-      "codes": ["OOT Death Mountain Trail Red Boulder Lower 2"]
+      "codes": "OOT Death Mountain Trail Red Boulder Lower 2"
     },
     {
       "coords": [21, 391],
       "image": "red_boulder",
       "overlays": ["adult"],
-      "codes": ["OOT Death Mountain Trail Red Boulder Lower 5"]
+      "codes": "OOT Death Mountain Trail Red Boulder Lower 5"
     },
     {
       "coords": [45, 377],
       "image": "red_boulder",
       "overlays": ["adult"],
-      "codes": ["OOT Death Mountain Trail Red Boulder Lower 6"]
+      "codes": "OOT Death Mountain Trail Red Boulder Lower 6"
     },
     {
       "coords": [62, 335],
       "image": "red_boulder",
       "overlays": ["adult"],
-      "codes": ["OOT Death Mountain Trail Red Boulder Lower 3"]
+      "codes": "OOT Death Mountain Trail Red Boulder Lower 3"
     },
     {
       "coords": [62, 351],
       "image": "red_boulder",
       "overlays": ["adult"],
-      "codes": ["OOT Death Mountain Trail Red Boulder Lower 4"]
+      "codes": "OOT Death Mountain Trail Red Boulder Lower 4"
     },
     {
       "coords": [78, 296],
       "image": "red_boulder",
       "overlays": ["adult"],
-      "codes": ["OOT Death Mountain Trail Red Boulder Near Lower GS"]
+      "codes": "OOT Death Mountain Trail Red Boulder Near Lower GS"
     },
     {
       "coords": [99, 437],
       "image": "red_boulder",
       "overlays": ["adult"],
-      "codes": ["OOT Death Mountain Trail Red Boulder Lower 7"]
+      "codes": "OOT Death Mountain Trail Red Boulder Lower 7"
     },
     {
       "coords": [146, 214],
       "image": "red_boulder",
       "overlays": ["adult"],
-      "codes": ["OOT Death Mountain Trail Red Boulder Upper 1"]
+      "codes": "OOT Death Mountain Trail Red Boulder Upper 1"
     },
     {
       "coords": [114, 188],
       "image": "red_boulder",
       "overlays": ["adult"],
-      "codes": ["OOT Death Mountain Trail Red Boulder Upper 2"]
+      "codes": "OOT Death Mountain Trail Red Boulder Upper 2"
     },
     {
       "coords": [154, 165],
       "image": "red_boulder",
       "overlays": ["adult"],
-      "codes": ["OOT Death Mountain Trail Red Boulder Near Upper GS"]
+      "codes": "OOT Death Mountain Trail Red Boulder Near Upper GS"
     },
     {
       "coords": [470, 543],
@@ -487,9 +487,6 @@
       "coords": [646, 160],
       "image": "red_boulder_grotto",
       "type": "submenu",
-      "entranceMenu": {
-        "entranceIds": ["OOT_GROTTO_SCRUBS3_DMC"]
-      },
       "markers": [
         {
           "image": "red_boulder",
@@ -508,19 +505,19 @@
           "image": "beehive",
           "codes": "OOT Death Mountain Crater Scrub Grotto Hive"
         }
-      ]
+      ],
+      "entranceMenu": {
+        "entranceIds": ["OOT_GROTTO_SCRUBS3_DMC"]
+      }
     },
     {
       "coords": [680, 290],
       "image": "red_boulder_entrance",
       "type": "submenu",
-      "entranceMenu": {
-        "entranceIds": ["OOT_FAIRY_MAGIC2"]
-      },
       "markers": [
         {
           "image": "npc",
-          "codes": ["OOT Great Fairy Magic Upgrade 2"]
+          "codes": "OOT Great Fairy Magic Upgrade 2"
         },
         {
           "image": "red_boulder",
@@ -530,12 +527,15 @@
           ],
           "anchored": true
         }
-      ]
+      ],
+      "entranceMenu": {
+        "entranceIds": ["OOT_FAIRY_MAGIC2"]
+      }
     },
     {
       "coords": [712, 290],
       "image": "red_boulder",
-      "codes": ["OOT Death Mountain Crater Red Boulder Shortcut"]
+      "codes": "OOT Death Mountain Crater Red Boulder Shortcut"
     },
     {
       "coords": [36, 320],
@@ -566,12 +566,12 @@
       "coords": [138, 76],
       "image": "rock",
       "overlays": ["child"],
-      "codes": ["OOT Death Mountain Trail Rock Child"]
+      "codes": "OOT Death Mountain Trail Rock Child"
     },
     {
       "coords": [267, 242],
       "image": "rock",
-      "codes": ["OOT Goron City Rock"]
+      "codes": "OOT Goron City Rock"
     },
     {
       "coords": [797, 370],
@@ -631,22 +631,62 @@
     {
       "coords": [945, 360],
       "image": "gossip_stone",
-      "codes": ["OOT Death Mountain Crater Gossip Wall"]
+      "codes": "OOT Death Mountain Crater Gossip Wall"
+    },
+    {
+      "coords": [935, 360],
+      "image": "gossip_stone_big_fairy",
+      "codes": "OOT Death Mountain Crater Gossip Big Fairy"
+    },
+    {
+      "coords": [954, 360],
+      "image": "gossip_stone_small_fairy",
+      "codes": "OOT Death Mountain Crater Gossip Fairy"
     },
     {
       "coords": [256, 230],
       "image": "gossip_stone",
-      "codes": ["OOT Goron City Gossip Boulder Maze"]
+      "codes": "OOT Goron City Gossip Boulder Maze"
     },
     {
-      "coords": [173, 103],
+      "coords": [256, 220],
+      "image": "gossip_stone_big_fairy",
+      "codes": "OOT Goron City Gossip Big Fairy Maze"
+    },
+    {
+      "coords": [249, 223],
+      "image": "gossip_stone_small_fairy",
+      "codes": "OOT Goron City Gossip Fairy Maze"
+    },
+    {
+      "coords": [172, 95],
       "image": "gossip_stone",
-      "codes": ["OOT Death Mountain Trail Gossip on Climb"]
+      "codes": "OOT Death Mountain Trail Gossip on Climb"
+    },
+    {
+      "coords": [164, 90],
+      "image": "gossip_stone_big_fairy",
+      "codes": "OOT Death Mountain Trail Gossip Big Fairy"
+    },
+    {
+      "coords": [173, 85],
+      "image": "gossip_stone_small_fairy",
+      "codes": "OOT Death Mountain Trail Gossip Fairy"
     },
     {
       "coords": [322, 568],
       "image": "gossip_stone",
-      "codes": ["OOT Goron City Gossip Near Medigoron"]
+      "codes": "OOT Goron City Gossip Near Medigoron"
+    },
+    {
+      "coords": [313, 568],
+      "image": "gossip_stone_big_fairy",
+      "codes": "OOT Goron City Gossip Big Fairy Medigoron"
+    },
+    {
+      "coords": [331, 568],
+      "image": "gossip_stone_small_fairy",
+      "codes": "OOT Goron City Gossip Fairy Medigoron"
     },
     {
       "coords": [819, 10],
@@ -669,13 +709,10 @@
       "coords": [813, 371],
       "image": "boulder_grotto",
       "type": "submenu",
-      "entranceMenu": {
-        "entranceIds": ["OOT_GROTTO_GENERIC_DMC"]
-      },
       "markers": [
         {
           "image": "chest",
-          "codes": ["OOT Death Mountain Crater Grotto"]
+          "codes": "OOT Death Mountain Crater Grotto"
         },
         {
           "image": "grass",
@@ -706,19 +743,27 @@
           "codes": "OOT Death Mountain Crater Gossip Grotto"
         },
         {
+          "image": "gossip_stone_big_fairy",
+          "codes": "OOT Death Mountain Crater Generic Grotto Gossip Big Fairy"
+        },
+        {
+          "image": "gossip_stone_small_fairy",
+          "codes": "OOT Death Mountain Crater Generic Grotto Gossip Fairy"
+        },
+        {
           "image": "boulder",
           "codes": "OOT Death Mountain Crater Boulder 1",
           "anchored": true
         }
-      ]
+      ],
+      "entranceMenu": {
+        "entranceIds": ["OOT_GROTTO_GENERIC_DMC"]
+      }
     },
     {
       "coords": [536, 244],
       "image": "grotto",
       "type": "submenu",
-      "entranceMenu": {
-        "entranceIds": ["OOT_GROTTO_SCRUBS3_GORON_CITY"]
-      },
       "markers": [
         {
           "image": "business_scrub_oot",
@@ -732,15 +777,15 @@
           "image": "beehive",
           "codes": "OOT Goron City Grotto Hive"
         }
-      ]
+      ],
+      "entranceMenu": {
+        "entranceIds": ["OOT_GROTTO_SCRUBS3_GORON_CITY"]
+      }
     },
     {
       "coords": [387, 384],
       "image": "interior_entrance",
       "type": "submenu",
-      "entranceMenu": {
-        "entranceIds": ["OOT_SHOP_GORON"]
-      },
       "markers": [
         {
           "image": "shop",
@@ -755,33 +800,33 @@
             "OOT Goron Shop Item 8"
           ]
         }
-      ]
+      ],
+      "entranceMenu": {
+        "entranceIds": ["OOT_SHOP_GORON"]
+      }
     },
     {
       "coords": [132, 56],
       "image": "boulder_entrance",
       "type": "submenu",
-      "entranceMenu": {
-        "entranceIds": ["OOT_FAIRY_MAGIC"]
-      },
       "markers": [
         {
           "image": "npc",
           "codes": "OOT Great Fairy Magic Upgrade"
         }
-      ]
+      ],
+      "entranceMenu": {
+        "entranceIds": ["OOT_FAIRY_MAGIC"]
+      }
     },
     {
       "coords": [138, 310],
       "image": "song_grotto",
       "type": "submenu",
-      "entranceMenu": {
-        "entranceIds": ["OOT_GROTTO_GENERIC_DMT"]
-      },
       "markers": [
         {
           "image": "chest",
-          "codes": ["OOT Death Mountain Trail Grotto"]
+          "codes": "OOT Death Mountain Trail Grotto"
         },
         {
           "image": "grass",
@@ -810,16 +855,24 @@
         {
           "image": "gossip_stone",
           "codes": "OOT Death Mountain Trail Gossip Grotto"
+        },
+        {
+          "image": "gossip_stone_big_fairy",
+          "codes": "OOT Death Mountain Trail Storms Grotto Gossip Big Fairy"
+        },
+        {
+          "image": "gossip_stone_small_fairy",
+          "codes": "OOT Death Mountain Trail Storms Grotto Gossip Fairy"
         }
-      ]
+      ],
+      "entranceMenu": {
+        "entranceIds": ["OOT_GROTTO_GENERIC_DMT"]
+      }
     },
     {
       "coords": [108, 308],
       "image": "boulder_grotto",
       "type": "submenu",
-      "entranceMenu": {
-        "entranceIds": ["OOT_GROTTO_TRAIL_COW"]
-      },
       "markers": [
         {
           "image": "green_rupee",
@@ -858,18 +911,21 @@
         },
         {
           "image": "beehive",
-          "codes": ["OOT Death Mountain Trail Cow Grotto Hive"]
+          "codes": "OOT Death Mountain Trail Cow Grotto Hive"
         },
         {
           "image": "cow",
-          "codes": ["OOT Death Mountain Trail Cow"]
+          "codes": "OOT Death Mountain Trail Cow"
         },
         {
           "image": "boulder",
-          "codes": ["OOT Death Mountain Trail Boulder Upper"],
+          "codes": "OOT Death Mountain Trail Boulder Upper",
           "anchored": true
         }
-      ]
+      ],
+      "entranceMenu": {
+        "entranceIds": ["OOT_GROTTO_TRAIL_COW"]
+      }
     },
     {
       "coords": [52, 284],

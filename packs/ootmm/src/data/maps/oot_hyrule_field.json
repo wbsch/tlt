@@ -384,6 +384,14 @@
           "codes": "OOT Hyrule Field Gossip Near Gerudo Valley"
         },
         {
+          "image": "gossip_stone_big_fairy",
+          "codes": "OOT Hyrule Field Cow Grotto Gossip Big Fairy"
+        },
+        {
+          "image": "gossip_stone_small_fairy",
+          "codes": "OOT Hyrule Field Cow Grotto Gossip Fairy"
+        },
+        {
           "image": "gold_skulltula",
           "codes": "OOT Hyrule Field Grotto Near Gerudo GS"
         },
@@ -698,9 +706,29 @@
       "codes": "OOT Hyrule Castle Gossip Before Moat"
     },
     {
+      "coords": [351, 117],
+      "image": "gossip_stone_big_fairy",
+      "codes": "OOT Hyrule Castle Gossip Big Fairy Near Castle"
+    },
+    {
+      "coords": [357, 125],
+      "image": "gossip_stone_small_fairy",
+      "codes": "OOT Hyrule Castle Gossip Fairy Near Castle"
+    },
+    {
       "coords": [416, 206],
       "image": "gossip_stone",
       "codes": "OOT Hyrule Castle Gossip After Climb"
+    },
+    {
+      "coords": [409, 215],
+      "image": "gossip_stone_big_fairy",
+      "codes": "OOT Hyrule Castle Gossip Big Fairy Near Entrance"
+    },
+    {
+      "coords": [420, 216],
+      "image": "gossip_stone_small_fairy",
+      "codes": "OOT Hyrule Castle Gossip Fairy Near Entrance"
     },
     {
       "coords": [535, 387],
@@ -710,6 +738,26 @@
         "OOT Market Gossip Outside Temple Right-Center",
         "OOT Market Gossip Outside Temple Rightmost",
         "OOT Market Gossip Outside Temple Left-Center"
+      ]
+    },
+    {
+      "coords": [536, 405],
+      "image": "gossip_stone_big_fairy",
+      "codes": [
+        "OOT Temple of Time Exterior Gossip Big Fairy 1",
+        "OOT Temple of Time Exterior Gossip Big Fairy 2",
+        "OOT Temple of Time Exterior Gossip Big Fairy 3",
+        "OOT Temple of Time Exterior Gossip Big Fairy 4"
+      ]
+    },
+    {
+      "coords": [535, 369],
+      "image": "gossip_stone_small_fairy",
+      "codes": [
+        "OOT Temple of Time Exterior Gossip Fairy 1",
+        "OOT Temple of Time Exterior Gossip Fairy 2",
+        "OOT Temple of Time Exterior Gossip Fairy 3",
+        "OOT Temple of Time Exterior Gossip Fairy 4"
       ]
     },
     {
@@ -1323,6 +1371,14 @@
         {
           "image": "gossip_stone",
           "codes": "OOT Hyrule Field Gossip Near Lake Hylia"
+        },
+        {
+          "image": "gossip_stone_big_fairy",
+          "codes": "OOT Hyrule Field Open Grotto Gossip Big Fairy"
+        },
+        {
+          "image": "gossip_stone_small_fairy",
+          "codes": "OOT Hyrule Field Open Grotto Gossip Fairy"
         }
       ],
       "entranceMenu": {
@@ -1365,6 +1421,14 @@
         {
           "image": "gossip_stone",
           "codes": "OOT Hyrule Field Gossip Southeast Grotto"
+        },
+        {
+          "image": "gossip_stone_big_fairy",
+          "codes": "OOT Hyrule Field Southeast Grotto Gossip Big Fairy"
+        },
+        {
+          "image": "gossip_stone_small_fairy",
+          "codes": "OOT Hyrule Field Southeast Grotto Gossip Fairy"
         },
         {
           "image": "boulder",
@@ -1456,6 +1520,14 @@
           "codes": "OOT Hyrule Field Gossip Near Castle Town"
         },
         {
+          "image": "gossip_stone_big_fairy",
+          "codes": "OOT Hyrule Field Market Grotto Gossip Big Fairy"
+        },
+        {
+          "image": "gossip_stone_small_fairy",
+          "codes": "OOT Hyrule Field Market Grotto Gossip Fairy"
+        },
+        {
           "image": "boulder",
           "codes": "OOT Hyrule Field Boulder Near Market",
           "anchored": true
@@ -1490,7 +1562,7 @@
         },
         {
           "image": "boulder",
-          "codes": ["OOT Hyrule Castle Boulder"],
+          "codes": "OOT Hyrule Castle Boulder",
           "anchored": true
         }
       ],
@@ -1532,6 +1604,14 @@
         {
           "image": "gossip_stone",
           "codes": "OOT Hyrule Castle Gossip Grotto"
+        },
+        {
+          "image": "gossip_stone_big_fairy",
+          "codes": "OOT Hyrule Castle Grotto Gossip Big Fairy"
+        },
+        {
+          "image": "gossip_stone_small_fairy",
+          "codes": "OOT Hyrule Castle Grotto Gossip Fairy"
         }
       ],
       "entranceMenu": {

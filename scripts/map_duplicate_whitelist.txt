@@ -158,6 +158,8 @@ MM Cucco Shack Crate 1
 MM Cucco Shack Crate 2
 MM Cucco Shack Crate 3
 MM Cucco Shack Gossip
+MM Cucco Shack Gossip Big Fairy
+MM Cucco Shack Gossip Fairy
 MM Cucco Shack Potted Plant 1 Grass
 MM Cucco Shack Potted Plant 1 Pot
 MM Cucco Shack Potted Plant 2 Grass
@@ -205,6 +207,8 @@ MM Deku Shrine Rupee Main 19
 MM Deku Shrine Rupee Main 20
 MM Doggy Racetrack Chest
 MM Doggy Racetrack Gossip
+MM Doggy Racetrack Gossip Big Fairy
+MM Doggy Racetrack Gossip Fairy
 MM Doggy Racetrack HP
 MM Doggy Racetrack Pot 1
 MM Doggy Racetrack Pot 2

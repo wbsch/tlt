@@ -452,6 +452,16 @@
       "codes": "OOT Graveyard Gossip"
     },
     {
+      "coords": [841, 480],
+      "image": "gossip_stone_big_fairy",
+      "codes": "OOT Graveyard Gossip Big Fairy"
+    },
+    {
+      "coords": [846, 490],
+      "image": "gossip_stone_small_fairy",
+      "codes": "OOT Graveyard Gossip Fairy"
+    },
+    {
       "coords": [229, 417],
       "image": "interior_entrance",
       "type": "submenu",
@@ -716,6 +726,14 @@
         {
           "image": "gossip_stone",
           "codes": "OOT Kakariko Gossip Grotto"
+        },
+        {
+          "image": "gossip_stone_big_fairy",
+          "codes": "OOT Kakariko Generic Grotto Gossip Big Fairy"
+        },
+        {
+          "image": "gossip_stone_small_fairy",
+          "codes": "OOT Kakariko Generic Grotto Gossip Fairy"
         }
       ],
       "entranceMenu": {
@@ -828,8 +846,16 @@
           ],
           "visibleWhen": {
             "or": [
-              { "settings": { "erGrottos": "ownGame" } },
-              { "settings": { "erGrottos": "full" } }
+              {
+                "settings": {
+                  "erGrottos": "ownGame"
+                }
+              },
+              {
+                "settings": {
+                  "erGrottos": "full"
+                }
+              }
             ]
           }
         },
@@ -847,8 +873,16 @@
           ],
           "visibleWhen": {
             "or": [
-              { "settings": { "erGrottos": "ownGame" } },
-              { "settings": { "erGrottos": "full" } }
+              {
+                "settings": {
+                  "erGrottos": "ownGame"
+                }
+              },
+              {
+                "settings": {
+                  "erGrottos": "full"
+                }
+              }
             ]
           }
         },
@@ -873,8 +907,16 @@
           ],
           "visibleWhen": {
             "or": [
-              { "settings": { "erGrottos": "ownGame" } },
-              { "settings": { "erGrottos": "full" } }
+              {
+                "settings": {
+                  "erGrottos": "ownGame"
+                }
+              },
+              {
+                "settings": {
+                  "erGrottos": "full"
+                }
+              }
             ]
           }
         },
@@ -883,8 +925,16 @@
           "codes": "OOT Graveyard Dampe Tomb Reward 1",
           "visibleWhen": {
             "or": [
-              { "settings": { "erGrottos": "ownGame" } },
-              { "settings": { "erGrottos": "full" } }
+              {
+                "settings": {
+                  "erGrottos": "ownGame"
+                }
+              },
+              {
+                "settings": {
+                  "erGrottos": "full"
+                }
+              }
             ]
           }
         },
@@ -893,8 +943,16 @@
           "codes": "OOT Graveyard Dampe Tomb Reward 2",
           "visibleWhen": {
             "or": [
-              { "settings": { "erGrottos": "ownGame" } },
-              { "settings": { "erGrottos": "full" } }
+              {
+                "settings": {
+                  "erGrottos": "ownGame"
+                }
+              },
+              {
+                "settings": {
+                  "erGrottos": "full"
+                }
+              }
             ]
           }
         }

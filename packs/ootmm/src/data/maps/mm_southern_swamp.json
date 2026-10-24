@@ -8,79 +8,79 @@
     {
       "coords": [24, 392],
       "image": "npc",
-      "codes": ["MM Deku Shrine Mask of Scents"]
+      "codes": "MM Deku Shrine Mask of Scents"
     },
     {
       "coords": [420, 432],
       "image": "heart_piece",
-      "codes": ["MM Deku Palace HP"]
+      "codes": "MM Deku Palace HP"
     },
     {
       "coords": [460, 133],
       "image": "heart_piece",
-      "codes": ["MM Southern Swamp HP"]
+      "codes": "MM Southern Swamp HP"
     },
     {
       "coords": [490, 522],
       "image": "boulder",
-      "codes": ["MM Deku Palace Boulder 2"]
+      "codes": "MM Deku Palace Boulder 2"
     },
     {
       "coords": [538, 522],
       "image": "boulder",
-      "codes": ["MM Deku Palace Boulder 1"]
+      "codes": "MM Deku Palace Boulder 1"
     },
     {
       "coords": [490, 116],
       "image": "npc",
-      "codes": ["MM Southern Swamp Scrub Deed"]
+      "codes": "MM Southern Swamp Scrub Deed"
     },
     {
       "coords": [844, 565],
       "image": "chest",
-      "codes": ["MM Woodfall Near Owl Chest"]
+      "codes": "MM Woodfall Near Owl Chest"
     },
     {
       "coords": [939, 369],
       "image": "chest",
-      "codes": ["MM Woodfall HP Chest"]
+      "codes": "MM Woodfall HP Chest"
     },
     {
       "coords": [890, 345],
       "image": "chest",
-      "codes": ["MM Woodfall Entrance Chest"]
+      "codes": "MM Woodfall Entrance Chest"
     },
     {
       "coords": [948, 57],
       "image": "npc",
       "overlays": ["day2"],
-      "codes": ["MM Swamp Potion Shop Kotake"]
+      "codes": "MM Swamp Potion Shop Kotake"
     },
     {
       "coords": [796, 71],
       "image": "npc",
       "overlays": ["day3"],
-      "codes": ["MM Swamp Potion Shop Kotake"]
+      "codes": "MM Swamp Potion Shop Kotake"
     },
     {
       "coords": [498, 412],
       "image": "song",
-      "codes": ["MM Deku Palace Sonata of Awakening"]
+      "codes": "MM Deku Palace Sonata of Awakening"
     },
     {
       "coords": [338, 200],
       "image": "song",
-      "codes": ["MM Southern Swamp Song of Soaring"]
+      "codes": "MM Southern Swamp Song of Soaring"
     },
     {
       "coords": [474, 116],
       "image": "business_scrub_mm",
-      "codes": ["MM Southern Swamp Scrub Shop"]
+      "codes": "MM Southern Swamp Scrub Shop"
     },
     {
       "coords": [842, 533],
       "image": "owl_statue",
-      "codes": ["MM Woodfall Owl Statue"]
+      "codes": "MM Woodfall Owl Statue"
     },
     {
       "coords": [842, 516],
@@ -93,7 +93,7 @@
     {
       "coords": [406, 92],
       "image": "owl_statue",
-      "codes": ["MM Southern Swamp Owl Statue"]
+      "codes": "MM Southern Swamp Owl Statue"
     },
     {
       "coords": [419, 106],
@@ -125,27 +125,27 @@
     {
       "coords": [296, 532],
       "image": "pot",
-      "codes": ["MM Deku Shrine Pot 1"]
+      "codes": "MM Deku Shrine Pot 1"
     },
     {
       "coords": [316, 484],
       "image": "pot",
-      "codes": ["MM Deku Shrine Pot 2"]
+      "codes": "MM Deku Shrine Pot 2"
     },
     {
       "coords": [786, 430],
       "image": "blue_rupee",
-      "codes": ["MM Woodfall Rupee"]
+      "codes": "MM Woodfall Rupee"
     },
     {
       "coords": [564, 323],
       "image": "blue_rupee",
-      "codes": ["MM Southern Swamp Rupee 1"]
+      "codes": "MM Southern Swamp Rupee 1"
     },
     {
       "coords": [548, 339],
       "image": "blue_rupee",
-      "codes": ["MM Southern Swamp Rupee 2"]
+      "codes": "MM Southern Swamp Rupee 2"
     },
     {
       "coords": [203, 315],
@@ -273,7 +273,7 @@
     {
       "coords": [568, 446],
       "image": "red_rupee",
-      "codes": ["MM Deku Palace Rupee Right 07"]
+      "codes": "MM Deku Palace Rupee Right 07"
     },
     {
       "coords": [420, 414],
@@ -317,7 +317,7 @@
     {
       "coords": [590, 228],
       "image": "beehive",
-      "codes": ["MM Southern Swamp Hive"]
+      "codes": "MM Southern Swamp Hive"
     },
     {
       "coords": [855, 336],
@@ -404,24 +404,24 @@
     {
       "coords": [788, 129],
       "image": "grass",
-      "codes": ["MM Woods of Mystery Grass W 2"]
+      "codes": "MM Woods of Mystery Grass W 2"
     },
     {
       "coords": [812, 152],
       "image": "grass",
-      "codes": ["MM Woods of Mystery Grass W 1"]
+      "codes": "MM Woods of Mystery Grass W 1"
     },
     {
       "coords": [785, 216],
       "image": "grass",
       "overlays": ["day1"],
-      "codes": ["MM Woods of Mystery Grass SW 2"]
+      "codes": "MM Woods of Mystery Grass SW 2"
     },
     {
       "coords": [817, 204],
       "image": "grass",
       "overlays": ["day1"],
-      "codes": ["MM Woods of Mystery Grass SW 1"]
+      "codes": "MM Woods of Mystery Grass SW 1"
     },
     {
       "coords": [867, 224],
@@ -436,17 +436,17 @@
       "coords": [964, 232],
       "image": "grass",
       "overlays": ["day2"],
-      "codes": ["MM Woods of Mystery Grass SE"]
+      "codes": "MM Woods of Mystery Grass SE"
     },
     {
       "coords": [964, 136],
       "image": "grass",
-      "codes": ["MM Woods of Mystery Grass E 2"]
+      "codes": "MM Woods of Mystery Grass E 2"
     },
     {
       "coords": [934, 130],
       "image": "grass",
-      "codes": ["MM Woods of Mystery Grass E 1"]
+      "codes": "MM Woods of Mystery Grass E 1"
     },
     {
       "coords": [875, 142],
@@ -472,39 +472,39 @@
     {
       "coords": [876, 83],
       "image": "grass",
-      "codes": ["MM Woods of Mystery Grass N 2"]
+      "codes": "MM Woods of Mystery Grass N 2"
     },
     {
       "coords": [867, 53],
       "image": "grass",
-      "codes": ["MM Woods of Mystery Grass N 1"]
+      "codes": "MM Woods of Mystery Grass N 1"
     },
     {
       "coords": [811, 81],
       "image": "grass",
       "overlays": ["day3"],
-      "codes": ["MM Woods of Mystery Grass NW 1"]
+      "codes": "MM Woods of Mystery Grass NW 1"
     },
     {
       "coords": [804, 53],
       "image": "grass",
       "overlays": ["day3"],
-      "codes": ["MM Woods of Mystery Grass NW 2"]
+      "codes": "MM Woods of Mystery Grass NW 2"
     },
     {
       "coords": [580, 474],
       "image": "red_boulder",
-      "codes": ["MM Deku Palace Red Boulder 1"]
+      "codes": "MM Deku Palace Red Boulder 1"
     },
     {
       "coords": [556, 464],
       "image": "red_boulder",
-      "codes": ["MM Deku Palace Red Boulder 2"]
+      "codes": "MM Deku Palace Red Boulder 2"
     },
     {
       "coords": [564, 403],
       "image": "red_boulder",
-      "codes": ["MM Deku Palace Red Boulder 3"]
+      "codes": "MM Deku Palace Red Boulder 3"
     },
     {
       "coords": [636, 420],
@@ -518,15 +518,22 @@
     {
       "coords": [736, 73],
       "image": "gossip_stone",
-      "codes": ["MM Southern Swamp Gossip"]
+      "codes": "MM Southern Swamp Gossip"
+    },
+    {
+      "coords": [744, 69],
+      "image": "gossip_stone_big_fairy",
+      "codes": "MM Southern Swamp Gossip Big Fairy"
+    },
+    {
+      "coords": [736, 64],
+      "image": "gossip_stone_small_fairy",
+      "codes": "MM Southern Swamp Gossip Fairy"
     },
     {
       "coords": [250, 126],
       "image": "grotto",
       "type": "submenu",
-      "entranceMenu": {
-        "entranceIds": ["MM_GROTTO_GENERIC_SWAMP"]
-      },
       "markers": [
         {
           "image": "chest",
@@ -551,7 +558,10 @@
             "MM Southern Swamp Grotto Grass 14"
           ]
         }
-      ]
+      ],
+      "entranceMenu": {
+        "entranceIds": ["MM_GROTTO_GENERIC_SWAMP"]
+      }
     },
     {
       "coords": [290, 140],
@@ -638,9 +648,6 @@
       "coords": [461, 119],
       "image": "interior_entrance",
       "type": "submenu",
-      "entranceMenu": {
-        "entranceIds": ["MM_TOURIST_INFORMATION"]
-      },
       "markers": [
         {
           "image": "npc",
@@ -654,20 +661,20 @@
           "image": "npc",
           "codes": "MM Tourist Information Boat Archery"
         }
-      ]
+      ],
+      "entranceMenu": {
+        "entranceIds": ["MM_TOURIST_INFORMATION"]
+      }
     },
     {
       "coords": [702, 118],
       "image": "interior_entrance",
       "type": "submenu",
-      "entranceMenu": {
-        "entranceIds": ["MM_POTION_SHOP"]
-      },
       "markers": [
         {
           "image": "npc",
-          "overlays": ["day1"],
-          "codes": "MM Swamp Potion Shop Kotake"
+          "codes": "MM Swamp Potion Shop Kotake",
+          "overlays": ["day1"]
         },
         {
           "image": "shop",
@@ -681,7 +688,10 @@
           "image": "green_rupee",
           "codes": "MM Swamp Potion Shop Rupee"
         }
-      ]
+      ],
+      "entranceMenu": {
+        "entranceIds": ["MM_POTION_SHOP"]
+      }
     },
     {
       "coords": [842, 456],
@@ -696,15 +706,15 @@
       "coords": [932, 584],
       "image": "interior_entrance",
       "type": "submenu",
-      "entranceMenu": {
-        "entranceIds": ["MM_FAIRY_FOUNTAIN_WOODFALL"]
-      },
       "markers": [
         {
           "image": "npc",
           "codes": "MM Woodfall Great Fairy"
         }
-      ]
+      ],
+      "entranceMenu": {
+        "entranceIds": ["MM_FAIRY_FOUNTAIN_WOODFALL"]
+      }
     },
     {
       "coords": [513, 446],
@@ -718,9 +728,6 @@
       "coords": [489, 424],
       "image": "interior_entrance",
       "type": "submenu",
-      "entranceMenu": {
-        "entranceIds": ["MM_DEKU_PALACE_THRONE_CAGE"]
-      },
       "markers": [
         {
           "image": "song",
@@ -736,15 +743,15 @@
             ]
           }
         }
-      ]
+      ],
+      "entranceMenu": {
+        "entranceIds": ["MM_DEKU_PALACE_THRONE_CAGE"]
+      }
     },
     {
       "coords": [382, 390],
       "image": "interior_entrance",
       "type": "submenu",
-      "entranceMenu": {
-        "entranceIds": ["MM_DEKU_SHRINE"]
-      },
       "markers": [
         {
           "image": "npc",
@@ -849,16 +856,16 @@
             ]
           }
         }
-      ]
+      ],
+      "entranceMenu": {
+        "entranceIds": ["MM_DEKU_SHRINE"]
+      }
     },
     {
       "coords": [949, 218],
       "image": "grotto",
-      "overlays": ["day2"],
       "type": "submenu",
-      "entranceMenu": {
-        "entranceIds": ["MM_GROTTO_GENERIC_WOODS"]
-      },
+      "overlays": ["day2"],
       "markers": [
         {
           "image": "chest",
@@ -883,16 +890,15 @@
             "MM Woods of Mystery Grotto Grass 14"
           ]
         }
-      ]
+      ],
+      "entranceMenu": {
+        "entranceIds": ["MM_GROTTO_GENERIC_WOODS"]
+      }
     },
     {
       "coords": [591, 415],
       "image": "grotto",
-      "overlays": ["na_only"],
       "type": "submenu",
-      "entranceMenu": {
-        "entranceIds": ["MM_GROTTO_BEAN"]
-      },
       "visibleWhen": {
         "notContains": { "jpLayouts": "DekuPalace" }
       },
@@ -947,16 +953,16 @@
             "notContains": { "jpLayouts": "DekuPalace" }
           }
         }
-      ]
+      ],
+      "entranceMenu": {
+        "entranceIds": ["MM_GROTTO_BEAN"]
+      }
     },
     {
       "coords": [547, 407],
       "image": "grotto",
-      "overlays": ["jp_only"],
       "type": "submenu",
-      "entranceMenu": {
-        "entranceIds": ["MM_GROTTO_BEAN"]
-      },
+      "overlays": ["jp_only"],
       "visibleWhen": {
         "contains": { "jpLayouts": "DekuPalace" }
       },
@@ -1011,19 +1017,19 @@
             "contains": { "jpLayouts": "DekuPalace" }
           }
         }
-      ]
+      ],
+      "entranceMenu": {
+        "entranceIds": ["MM_GROTTO_BEAN"]
+      }
     },
     {
       "coords": [536, 391],
       "image": "grotto",
+      "type": "submenu",
       "overlays": ["jp_only"],
-      "entranceMenu": {
-        "entranceIds": ["MM_GROTTO_JP_LINE_END"]
-      },
       "visibleWhen": {
         "contains": { "jpLayouts": "DekuPalace" }
       },
-      "type": "submenu",
       "markers": [
         {
           "image": "grass",
@@ -1045,18 +1051,21 @@
             "MM Deku Palace JP Line Grotto Butterfly 5"
           ]
         }
-      ]
+      ],
+      "entranceMenu": {
+        "entranceIds": ["MM_GROTTO_JP_LINE_END"]
+      }
     },
     {
       "coords": [540, 446],
       "image": "grotto",
-      "overlays": ["jp_only"],
       "type": "submenu",
-      "entranceMenu": {
-        "entranceIds": ["MM_GROTTO_JP_CLIMB_RIGHT"]
-      },
+      "overlays": ["jp_only"],
       "visibleWhen": {
         "contains": { "jpLayouts": "DekuPalace" }
+      },
+      "entranceMenu": {
+        "entranceIds": ["MM_GROTTO_JP_CLIMB_RIGHT"]
       }
     },
     {
@@ -1071,23 +1080,20 @@
     {
       "coords": [482, 444],
       "image": "grotto",
-      "overlays": ["jp_only"],
       "type": "submenu",
-      "entranceMenu": {
-        "entranceIds": ["MM_GROTTO_JP_CLIMB_LEFT"]
-      },
+      "overlays": ["jp_only"],
       "visibleWhen": {
         "contains": { "jpLayouts": "DekuPalace" }
+      },
+      "entranceMenu": {
+        "entranceIds": ["MM_GROTTO_JP_CLIMB_LEFT"]
       }
     },
     {
       "coords": [435, 398],
       "image": "grotto",
-      "overlays": ["jp_only"],
       "type": "submenu",
-      "entranceMenu": {
-        "entranceIds": ["MM_GROTTO_JP_LINE_START"]
-      },
+      "overlays": ["jp_only"],
       "visibleWhen": {
         "contains": { "jpLayouts": "DekuPalace" }
       },
@@ -1112,7 +1118,10 @@
             "MM Deku Palace JP Line Grotto Butterfly 5"
           ]
         }
-      ]
+      ],
+      "entranceMenu": {
+        "entranceIds": ["MM_GROTTO_JP_LINE_START"]
+      }
     }
   ]
 }

@@ -17,27 +17,37 @@
     {
       "coords": [966, 377],
       "image": "heart_piece",
-      "codes": ["MM Ancient Castle of Ikana HP"]
+      "codes": "MM Ancient Castle of Ikana HP"
     },
     {
       "coords": [583, 493],
       "image": "heart_piece",
-      "codes": ["MM Ikana Valley Scrub HP"]
+      "codes": "MM Ikana Valley Scrub HP"
     },
     {
       "coords": [592, 503],
       "image": "gossip_stone",
-      "codes": ["MM Ikana Valley Gossip Scrub"]
+      "codes": "MM Ikana Valley Gossip Scrub"
+    },
+    {
+      "coords": [601, 508],
+      "image": "gossip_stone_big_fairy",
+      "codes": "MM Ikana Valley Gossip Big Fairy Scrub"
+    },
+    {
+      "coords": [592, 514],
+      "image": "gossip_stone_small_fairy",
+      "codes": "MM Ikana Valley Gossip Fairy Scrub"
     },
     {
       "coords": [546, 504],
       "image": "npc",
-      "codes": ["MM Ikana Valley Scrub Rupee"]
+      "codes": "MM Ikana Valley Scrub Rupee"
     },
     {
       "coords": [28, 392],
       "image": "chest",
-      "codes": ["MM Ikana Graveyard Captain Mask"]
+      "codes": "MM Ikana Graveyard Captain Mask"
     },
     {
       "coords": [313, 390],
@@ -47,12 +57,12 @@
     {
       "coords": [546, 520],
       "image": "business_scrub_mm",
-      "codes": ["MM Ikana Valley Scrub Shop"]
+      "codes": "MM Ikana Valley Scrub Shop"
     },
     {
       "coords": [636, 268],
       "image": "owl_statue",
-      "codes": ["MM Stone Tower Owl Statue"]
+      "codes": "MM Stone Tower Owl Statue"
     },
     {
       "coords": [636, 252],
@@ -65,7 +75,7 @@
     {
       "coords": [340, 412],
       "image": "owl_statue",
-      "codes": ["MM Ikana Canyon Owl Statue"]
+      "codes": "MM Ikana Canyon Owl Statue"
     },
     {
       "coords": [351, 401],
@@ -78,7 +88,7 @@
     {
       "coords": [976, 576],
       "image": "pot",
-      "codes": ["MM Ancient Castle of Ikana Pot Exterior"]
+      "codes": "MM Ancient Castle of Ikana Pot Exterior"
     },
     {
       "coords": [874, 82],
@@ -187,7 +197,7 @@
     {
       "coords": [898, 377],
       "image": "grass",
-      "codes": ["MM Ancient Castle of Ikana Grass 09"]
+      "codes": "MM Ancient Castle of Ikana Grass 09"
     },
     {
       "coords": [839, 489],
@@ -201,12 +211,12 @@
     {
       "coords": [867, 553],
       "image": "grass",
-      "codes": ["MM Ancient Castle of Ikana Grass 05"]
+      "codes": "MM Ancient Castle of Ikana Grass 05"
     },
     {
       "coords": [897, 553],
       "image": "grass",
-      "codes": ["MM Ancient Castle of Ikana Grass 04"]
+      "codes": "MM Ancient Castle of Ikana Grass 04"
     },
     {
       "coords": [928, 552],
@@ -229,7 +239,7 @@
     {
       "coords": [338, 423],
       "image": "grass",
-      "codes": ["MM Ikana Canyon Grass 4"]
+      "codes": "MM Ikana Canyon Grass 4"
     },
     {
       "coords": [44, 560],
@@ -239,7 +249,7 @@
     {
       "coords": [64, 544],
       "image": "grass",
-      "codes": ["MM Ikana Graveyard Grass 5"]
+      "codes": "MM Ikana Graveyard Grass 5"
     },
     {
       "coords": [68, 528],
@@ -264,22 +274,22 @@
     {
       "coords": [934, 63],
       "image": "soft_soil",
-      "codes": ["MM Stone Tower Inverted Soil Lower"]
+      "codes": "MM Stone Tower Inverted Soil Lower"
     },
     {
       "coords": [897, 81],
       "image": "soft_soil",
-      "codes": ["MM Stone Tower Inverted Soil Upper"]
+      "codes": "MM Stone Tower Inverted Soil Upper"
     },
     {
       "coords": [860, 52],
       "image": "rock",
-      "codes": ["MM Stone Tower Inverted Rock 2"]
+      "codes": "MM Stone Tower Inverted Rock 2"
     },
     {
       "coords": [902, 92],
       "image": "rock",
-      "codes": ["MM Stone Tower Inverted Rock 1"]
+      "codes": "MM Stone Tower Inverted Rock 1"
     },
     {
       "coords": [64, 424],
@@ -309,12 +319,32 @@
     {
       "coords": [390, 491],
       "image": "gossip_stone",
-      "codes": ["MM Ikana Valley Gossip Lower"]
+      "codes": "MM Ikana Valley Gossip Lower"
+    },
+    {
+      "coords": [383, 500],
+      "image": "gossip_stone_big_fairy",
+      "codes": "MM Ikana Valley Gossip Big Fairy Lower"
+    },
+    {
+      "coords": [395, 500],
+      "image": "gossip_stone_small_fairy",
+      "codes": "MM Ikana Valley Gossip Fairy Lower"
     },
     {
       "coords": [304, 264],
       "image": "gossip_stone",
-      "codes": ["MM Ikana Canyon Gossip Upper"]
+      "codes": "MM Ikana Canyon Gossip Upper"
+    },
+    {
+      "coords": [294, 264],
+      "image": "gossip_stone_big_fairy",
+      "codes": "MM Ikana Valley Gossip Big Fairy Upper"
+    },
+    {
+      "coords": [300, 254],
+      "image": "gossip_stone_small_fairy",
+      "codes": "MM Ikana Valley Gossip Fairy Upper"
     },
     {
       "coords": [812, 466],
@@ -458,43 +488,43 @@
       "coords": [424, 302],
       "image": "interior_entrance",
       "type": "submenu",
-      "entranceMenu": {
-        "entranceIds": ["MM_FAIRY_FOUNTAIN_IKANA"]
-      },
       "markers": [
         {
           "image": "npc",
           "codes": "MM Ikana Great Fairy"
         }
-      ]
+      ],
+      "entranceMenu": {
+        "entranceIds": ["MM_FAIRY_FOUNTAIN_IKANA"]
+      }
     },
     {
       "coords": [363, 318],
       "image": "interior_entrance",
       "type": "submenu",
-      "entranceMenu": {
-        "entranceIds": ["MM_MUSIC_BOX_HOUSE"]
-      },
       "markers": [
         {
           "image": "npc",
           "codes": "MM Music Box House Gibdo Mask"
         }
-      ]
+      ],
+      "entranceMenu": {
+        "entranceIds": ["MM_MUSIC_BOX_HOUSE"]
+      }
     },
     {
       "coords": [325, 257],
       "image": "interior_entrance",
       "type": "submenu",
-      "entranceMenu": {
-        "entranceIds": ["MM_GHOST_HUT"]
-      },
       "markers": [
         {
           "image": "npc",
           "codes": "MM Ghost Hut HP"
         }
-      ]
+      ],
+      "entranceMenu": {
+        "entranceIds": ["MM_GHOST_HUT"]
+      }
     },
     {
       "coords": [364, 223],
@@ -526,9 +556,6 @@
       "coords": [234, 406],
       "image": "grotto",
       "type": "submenu",
-      "entranceMenu": {
-        "entranceIds": ["MM_GROTTO_GENERIC_VALLEY"]
-      },
       "markers": [
         {
           "image": "chest",
@@ -553,7 +580,10 @@
             "MM Ikana Valley Grotto Grass 14"
           ]
         }
-      ]
+      ],
+      "entranceMenu": {
+        "entranceIds": ["MM_GROTTO_GENERIC_VALLEY"]
+      }
     },
     {
       "coords": [184, 422],
@@ -568,9 +598,6 @@
       "coords": [64, 413],
       "image": "bomb_grotto",
       "type": "submenu",
-      "entranceMenu": {
-        "entranceIds": ["MM_GROTTO_GENERIC_GRAVEYARD"]
-      },
       "markers": [
         {
           "image": "chest",
@@ -595,16 +622,16 @@
             "MM Ikana Graveyard Grotto Grass 14"
           ]
         }
-      ]
+      ],
+      "entranceMenu": {
+        "entranceIds": ["MM_GROTTO_GENERIC_GRAVEYARD"]
+      }
     },
     {
       "coords": [80, 527],
       "image": "grotto",
-      "overlays": ["day2"],
       "type": "submenu",
-      "entranceMenu": {
-        "entranceIds": ["MM_GRAVE_NIGHT2"]
-      },
+      "overlays": ["day2"],
       "markers": [
         {
           "image": "green_rupee",
@@ -645,16 +672,16 @@
           "image": "chest",
           "codes": "MM Beneath The Graveyard HP"
         }
-      ]
+      ],
+      "entranceMenu": {
+        "entranceIds": ["MM_GRAVE_NIGHT2"]
+      }
     },
     {
       "coords": [36, 536],
       "image": "grotto",
-      "overlays": ["day3"],
       "type": "submenu",
-      "entranceMenu": {
-        "entranceIds": ["MM_GRAVE_NIGHT3"]
-      },
+      "overlays": ["day3"],
       "markers": [
         {
           "image": "chest",
@@ -675,16 +702,16 @@
             "MM Beneath The Graveyard Pot Dampe 10"
           ]
         }
-      ]
+      ],
+      "entranceMenu": {
+        "entranceIds": ["MM_GRAVE_NIGHT3"]
+      }
     },
     {
       "coords": [77, 547],
       "image": "grotto",
-      "overlays": ["day1"],
       "type": "submenu",
-      "entranceMenu": {
-        "entranceIds": ["MM_GRAVE_NIGHT1"]
-      },
+      "overlays": ["day1"],
       "markers": [
         {
           "image": "pot",
@@ -704,7 +731,10 @@
           "image": "song",
           "codes": "MM Beneath The Graveyard Song of Storms"
         }
-      ]
+      ],
+      "entranceMenu": {
+        "entranceIds": ["MM_GRAVE_NIGHT1"]
+      }
     }
   ]
 }

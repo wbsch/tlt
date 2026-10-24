@@ -8,47 +8,47 @@
     {
       "coords": [117, 130],
       "image": "npc",
-      "codes": ["MM Cucco Shack Bunny Mask"]
+      "codes": "MM Cucco Shack Bunny Mask"
     },
     {
       "coords": [101, 536],
       "image": "chest",
-      "codes": ["MM Doggy Racetrack Chest"]
+      "codes": "MM Doggy Racetrack Chest"
     },
     {
       "coords": [196, 444],
       "image": "npc",
-      "codes": ["MM Doggy Racetrack HP"]
+      "codes": "MM Doggy Racetrack HP"
     },
     {
       "coords": [469, 259],
       "image": "npc",
       "overlays": ["day1", "night"],
-      "codes": ["MM Romani Ranch Aliens"]
+      "codes": "MM Romani Ranch Aliens"
     },
     {
       "coords": [485, 259],
       "image": "npc",
       "overlays": ["day2", "night"],
-      "codes": ["MM Romani Ranch Cremia Escort"]
+      "codes": "MM Romani Ranch Cremia Escort"
     },
     {
       "coords": [828, 404],
       "image": "npc",
       "overlays": ["day"],
-      "codes": ["MM Gorman Track Garo Mask"]
+      "codes": "MM Gorman Track Garo Mask"
     },
     {
       "coords": [469, 243],
       "image": "song",
       "overlays": ["day1", "day"],
-      "codes": ["MM Romani Ranch Epona Song"]
+      "codes": "MM Romani Ranch Epona Song"
     },
     {
       "coords": [828, 388],
       "image": "shop",
       "overlays": ["day"],
-      "codes": ["MM Gorman Track Milk Purchase"]
+      "codes": "MM Gorman Track Milk Purchase"
     },
     {
       "coords": [117, 521],
@@ -71,12 +71,12 @@
     {
       "coords": [843, 396],
       "image": "crate",
-      "codes": ["MM Gorman Track Crate"]
+      "codes": "MM Gorman Track Crate"
     },
     {
       "coords": [485, 243],
       "image": "crate",
-      "codes": ["MM Romani Ranch Crate"]
+      "codes": "MM Romani Ranch Crate"
     },
     {
       "coords": [241, 174],
@@ -274,12 +274,12 @@
       "coords": [389, 188],
       "image": "soft_soil",
       "overlays": ["day1"],
-      "codes": ["MM Romani Ranch Soil Day 1"]
+      "codes": "MM Romani Ranch Soil Day 1"
     },
     {
       "coords": [164, 510],
       "image": "soft_soil",
-      "codes": ["MM Doggy Racetrack Soil"]
+      "codes": "MM Doggy Racetrack Soil"
     },
     {
       "coords": [910, 575],
@@ -321,139 +321,186 @@
     {
       "coords": [613, 308],
       "image": "tree",
-      "codes": ["MM Romani Ranch Tree 3"]
+      "codes": "MM Romani Ranch Tree 3"
     },
     {
       "coords": [607, 330],
       "image": "tree",
-      "codes": ["MM Romani Ranch Tree 4"]
+      "codes": "MM Romani Ranch Tree 4"
     },
     {
       "coords": [453, 422],
       "image": "tree",
-      "codes": ["MM Romani Ranch Tree 7"]
+      "codes": "MM Romani Ranch Tree 7"
     },
     {
       "coords": [492, 290],
       "image": "tree",
-      "codes": ["MM Romani Ranch Tree 2"]
+      "codes": "MM Romani Ranch Tree 2"
     },
     {
       "coords": [487, 312],
       "image": "tree",
-      "codes": ["MM Romani Ranch Tree 1"]
+      "codes": "MM Romani Ranch Tree 1"
     },
     {
       "coords": [447, 324],
       "image": "tree",
-      "codes": ["MM Romani Ranch Tree 5"]
+      "codes": "MM Romani Ranch Tree 5"
     },
     {
       "coords": [367, 336],
       "image": "tree",
-      "codes": ["MM Romani Ranch Tree 6"]
+      "codes": "MM Romani Ranch Tree 6"
     },
     {
       "coords": [105, 123],
       "image": "tree",
-      "codes": ["MM Cucco Shack Tree"]
+      "codes": "MM Cucco Shack Tree"
     },
     {
       "coords": [561, 393],
       "image": "bush",
-      "codes": ["MM Romani Ranch Bush 3"]
+      "codes": "MM Romani Ranch Bush 3"
     },
     {
       "coords": [462, 344],
       "image": "bush",
-      "codes": ["MM Romani Ranch Bush 2"]
+      "codes": "MM Romani Ranch Bush 2"
     },
     {
       "coords": [388, 295],
       "image": "bush",
-      "codes": ["MM Romani Ranch Bush 1"]
+      "codes": "MM Romani Ranch Bush 1"
     },
     {
       "coords": [387, 218],
       "image": "bush",
-      "codes": ["MM Romani Ranch Bush 4"]
+      "codes": "MM Romani Ranch Bush 4"
     },
     {
       "coords": [156, 179],
       "image": "bush",
-      "codes": ["MM Cucco Shack Bush 2"]
+      "codes": "MM Cucco Shack Bush 2"
     },
     {
       "coords": [164, 120],
       "image": "bush",
-      "codes": ["MM Cucco Shack Bush 3"]
+      "codes": "MM Cucco Shack Bush 3"
     },
     {
       "coords": [183, 112],
       "image": "bush",
-      "codes": ["MM Cucco Shack Bush 7"]
+      "codes": "MM Cucco Shack Bush 7"
     },
     {
       "coords": [119, 80],
       "image": "bush",
-      "codes": ["MM Cucco Shack Bush 4"]
+      "codes": "MM Cucco Shack Bush 4"
     },
     {
       "coords": [82, 98],
       "image": "bush",
-      "codes": ["MM Cucco Shack Bush 5"]
+      "codes": "MM Cucco Shack Bush 5"
     },
     {
       "coords": [95, 126],
       "image": "bush",
-      "codes": ["MM Cucco Shack Bush 1"]
+      "codes": "MM Cucco Shack Bush 1"
     },
     {
       "coords": [49, 148],
       "image": "bush",
-      "codes": ["MM Cucco Shack Bush 6"]
+      "codes": "MM Cucco Shack Bush 6"
     },
     {
       "coords": [661, 351],
       "image": "gossip_stone",
-      "codes": ["MM Romani Ranch Gossip Entrance"]
+      "codes": "MM Romani Ranch Gossip Entrance"
+    },
+    {
+      "coords": [671, 347],
+      "image": "gossip_stone_big_fairy",
+      "codes": "MM Romani Ranch Gossip Big Fairy Entrance"
+    },
+    {
+      "coords": [661, 341],
+      "image": "gossip_stone_small_fairy",
+      "codes": "MM Romani Ranch Gossip Fairy Entrance"
     },
     {
       "coords": [459, 428],
       "image": "gossip_stone",
-      "codes": ["MM Romani Ranch Gossip Near Tree"]
+      "codes": "MM Romani Ranch Gossip Near Tree"
+    },
+    {
+      "coords": [468, 428],
+      "image": "gossip_stone_big_fairy",
+      "codes": "MM Romani Ranch Gossip Big Fairy Near Tree"
+    },
+    {
+      "coords": [460, 438],
+      "image": "gossip_stone_small_fairy",
+      "codes": "MM Romani Ranch Gossip Fairy Near Tree"
     },
     {
       "coords": [464, 183],
       "image": "gossip_stone",
-      "codes": ["MM Romani Ranch Gossip Behind House"]
+      "codes": "MM Romani Ranch Gossip Behind House"
+    },
+    {
+      "coords": [455, 183],
+      "image": "gossip_stone_big_fairy",
+      "codes": "MM Romani Ranch Gossip Big Fairy Behind House"
+    },
+    {
+      "coords": [464, 173],
+      "image": "gossip_stone_small_fairy",
+      "codes": "MM Romani Ranch Gossip Fairy Behind House"
     },
     {
       "coords": [90, 575],
       "image": "gossip_stone",
-      "codes": ["MM Doggy Racetrack Gossip"]
+      "codes": "MM Doggy Racetrack Gossip"
+    },
+    {
+      "coords": [80, 575],
+      "image": "gossip_stone_big_fairy",
+      "codes": "MM Doggy Racetrack Gossip Big Fairy"
+    },
+    {
+      "coords": [100, 575],
+      "image": "gossip_stone_small_fairy",
+      "codes": "MM Doggy Racetrack Gossip Fairy"
     },
     {
       "coords": [222, 124],
       "image": "gossip_stone",
-      "codes": ["MM Cucco Shack Gossip"]
+      "codes": "MM Cucco Shack Gossip"
+    },
+    {
+      "coords": [214, 116],
+      "image": "gossip_stone_big_fairy",
+      "codes": "MM Cucco Shack Gossip Big Fairy"
+    },
+    {
+      "coords": [225, 114],
+      "image": "gossip_stone_small_fairy",
+      "codes": "MM Cucco Shack Gossip Fairy"
     },
     {
       "coords": [482, 210],
       "image": "interior_entrance",
       "type": "submenu",
-      "entranceMenu": {
-        "entranceIds": ["MM_STABLES"]
-      },
       "markers": [
         {
           "image": "cow",
-          "overlays": ["day1", "day2"],
           "codes": [
             "MM Romani Ranch Barn Cow Left",
             "MM Romani Ranch Barn Cow Right Back",
             "MM Romani Ranch Barn Cow Right Front"
-          ]
+          ],
+          "overlays": ["day1", "day2"]
         },
         {
           "image": "wonder_item_blue_rupee",
@@ -462,7 +509,10 @@
             "MM Romani Ranch Barn Wonder Item 2"
           ]
         }
-      ]
+      ],
+      "entranceMenu": {
+        "entranceIds": ["MM_STABLES"]
+      }
     },
     {
       "coords": [433, 219],
@@ -503,13 +553,10 @@
       "coords": [312, 309],
       "image": "interior_entrance",
       "type": "submenu",
-      "entranceMenu": {
-        "entranceIds": ["MM_CUCCO_SHACK"]
-      },
       "markers": [
         {
           "image": "npc",
-          "codes": ["MM Cucco Shack Bunny Mask"],
+          "codes": "MM Cucco Shack Bunny Mask",
           "visibleWhen": {
             "and": [
               {
@@ -597,7 +644,7 @@
         },
         {
           "image": "tree",
-          "codes": ["MM Cucco Shack Tree"],
+          "codes": "MM Cucco Shack Tree",
           "visibleWhen": {
             "and": [
               {
@@ -611,7 +658,7 @@
         },
         {
           "image": "gossip_stone",
-          "codes": ["MM Cucco Shack Gossip"],
+          "codes": "MM Cucco Shack Gossip",
           "visibleWhen": {
             "and": [
               {
@@ -622,6 +669,14 @@
               }
             ]
           }
+        },
+        {
+          "image": "gossip_stone_big_fairy",
+          "codes": "MM Cucco Shack Gossip Big Fairy"
+        },
+        {
+          "image": "gossip_stone_small_fairy",
+          "codes": "MM Cucco Shack Gossip Fairy"
         },
         {
           "image": "wonder_item_green_rupee",
@@ -644,20 +699,20 @@
             ]
           }
         }
-      ]
+      ],
+      "entranceMenu": {
+        "entranceIds": ["MM_CUCCO_SHACK"]
+      }
     },
     {
       "coords": [336, 341],
       "image": "interior_entrance",
       "type": "submenu",
-      "entranceMenu": {
-        "entranceIds": ["MM_DOGGY_RACETRACK"]
-      },
       "markers": [
         {
           "image": "npc",
+          "codes": "MM Doggy Racetrack HP",
           "overlays": ["day"],
-          "codes": ["MM Doggy Racetrack HP"],
           "visibleWhen": {
             "and": [
               {
@@ -671,8 +726,8 @@
         },
         {
           "image": "chest",
+          "codes": "MM Doggy Racetrack Chest",
           "overlays": ["day"],
-          "codes": ["MM Doggy Racetrack Chest"],
           "visibleWhen": {
             "and": [
               {
@@ -686,13 +741,13 @@
         },
         {
           "image": "pot",
-          "overlays": ["day"],
           "codes": [
             "MM Doggy Racetrack Pot 1",
             "MM Doggy Racetrack Pot 2",
             "MM Doggy Racetrack Pot 3",
             "MM Doggy Racetrack Pot 4"
           ],
+          "overlays": ["day"],
           "visibleWhen": {
             "and": [
               {
@@ -706,8 +761,8 @@
         },
         {
           "image": "soft_soil",
+          "codes": "MM Doggy Racetrack Soil",
           "overlays": ["day"],
-          "codes": ["MM Doggy Racetrack Soil"],
           "visibleWhen": {
             "and": [
               {
@@ -721,8 +776,8 @@
         },
         {
           "image": "gossip_stone",
+          "codes": "MM Doggy Racetrack Gossip",
           "overlays": ["day"],
-          "codes": ["MM Doggy Racetrack Gossip"],
           "visibleWhen": {
             "and": [
               {
@@ -733,8 +788,19 @@
               }
             ]
           }
+        },
+        {
+          "image": "gossip_stone_big_fairy",
+          "codes": "MM Doggy Racetrack Gossip Big Fairy"
+        },
+        {
+          "image": "gossip_stone_small_fairy",
+          "codes": "MM Doggy Racetrack Gossip Fairy"
         }
-      ]
+      ],
+      "entranceMenu": {
+        "entranceIds": ["MM_DOGGY_RACETRACK"]
+      }
     }
   ]
 }
