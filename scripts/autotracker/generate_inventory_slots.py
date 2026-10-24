@@ -81,9 +81,91 @@ def load_save_layout(repo_root: pathlib.Path):
     return layouter, layouter.layout("SharedCustomSave")
 
 
-def build_shared_storage(shared_layout: dict) -> dict:
+EXTRA_RECORD_RE = re.compile(
+    r"^\s*#\s*define\s+(g[A-Za-z0-9_]+)\s+SAVE_EXTRA_RECORD\([^,]+,\s*(\d+)\)",
+    re.MULTILINE,
+)
+
+
+# Cross-game OoT songs live as adjacent bitfields in OotCustomSave.  Their
+# bit positions shift whenever a bitfield is inserted before them (v33.0 added
+# hasTimeTraveledAtTemple and waterBeaten), so derive them from the headers.
+SONG_FLAG_OOT_FIELDS = (
+    "hasElegy",
+    "chateauActive",
+    "hasSongHealing",
+    "hasSongSoaring",
+    "hasSongAwakening",
+    "hasSongGoronHalf",
+    "hasSongGoron",
+    "hasSongZora",
+    "hasSongOrder",
+)
+
+
+def load_extra_struct_offsets(repo_root: pathlib.Path) -> dict[str, object]:
+    """Offsets/bit positions of structs whose layout is version-specific.
+
+    `MmExtraBoss` changed from {boss, bossCycle, items, unused} to
+    {dungeon, bossCycle, boss, items} in v33.0, which moves the `items` byte
+    that holds the boss-warp bits from offset 2 to offset 3.  `OotCustomSave`
+    gained bitfields before the shared songs, which shifts their bit indexes.
+    """
+    headers = {
+        rel: (repo_root / rel).read_text(encoding="utf-8")
+        for rel in SAVE_LAYOUT_HEADERS
+    }
+    layouter = build_layouter(headers)
+
+    boss_layout = layouter.layout("MmExtraBoss")
+    items = next(
+        (f for f in boss_layout["fields"] if f["name"] == "items"), None
+    )
+    if items is None:
+        raise ValueError("MmExtraBoss has no `items` field in this OoTMM release")
+
+    oot_layout = layouter.layout("OotCustomSave")
+    oot_fields = {f["name"]: f for f in oot_layout["fields"]}
+    flag_byte = int(oot_fields["hasElegy"]["offset"])
+    song_bits = {}
+    for name in SONG_FLAG_OOT_FIELDS:
+        field = oot_fields.get(name)
+        if field is None or "bit_offset" not in field:
+            raise ValueError(f"OotCustomSave has no bitfield {name!r}")
+        # `bit_offset` counts from the MSB of the containing unit (MIPS
+        # big-endian layout); the runtime shifts an LSB-based integer, so
+        # convert it.
+        song_bits[name] = (
+            (int(field["offset"]) - flag_byte) * 8
+            + 8
+            - int(field["bit_offset"])
+            - int(field["bit_width"])
+        )
+
+    return {
+        "mmExtraBossItemsOffset": int(items["offset"]),
+        "songFlagsOotBits": song_bits,
+    }
+
+
+def load_extra_record_indices(repo_root: pathlib.Path) -> dict[str, int]:
+    """Read the `gXxx -> SAVE_EXTRA_RECORD(..., index)` defines from save.h.
+
+    The indexes are not stable: v33.0 removed `gMiscFlags`, `gCowFlags`,
+    `gSaveLedgerBase` and `gTriforceCount`, which shifted every later record
+    down by up to three. Read them instead of mirroring the numbers.
+    """
+    path = repo_root / "packages/generator/include/combo/save.h"
+    text = path.read_text(encoding="utf-8")
+    return {name: int(index) for name, index in EXTRA_RECORD_RE.findall(text)}
+
+
+def build_shared_storage(
+    shared_layout: dict, extra_record_indices: dict[str, int] | None = None
+) -> dict:
     """Build shared storage layout and fixed offsets from the parsed struct."""
     fields = {f["name"]: f for f in shared_layout["fields"]}
+    parsed_extra_indices = extra_record_indices or {}
 
     def field(path: str) -> dict:
         if path not in fields:
@@ -128,11 +210,32 @@ def build_shared_storage(shared_layout: dict) -> dict:
     # v33.0 added the generic `saveFlags` bitmap at the end of SharedCustomSave
     # (first entry: SAVE_FLAG_CLOCK_OOT).
     has_save_flags = "saveFlags" in fields
+    # v33.0 also moved the collected triforce count out of extra record 14
+    # (`gTriforceCount`) into the `triforcePieces` field.
+    has_triforce_pieces = "triforcePieces" in fields
+    # v33.0 dropped `gMiscFlags`, `gCowFlags`, `gSaveLedgerBase` and
+    # `gTriforceCount`; every later extra record moved down, and the collected
+    # cows moved into `SharedCustomSave.cows`. `cows` is the marker for that
+    # renumbered layout; the parsed define table wins when available.
+    has_cows = "cows" in fields
+
+    extra_indices = {
+        "ootTradeSaveExtraRecordIndex": parsed_extra_indices.get(
+            "gOotExtraTradeSave", 8 if has_cows else 10
+        ),
+        "mmOwlFlagsExtraRecordIndex": parsed_extra_indices.get(
+            "gMmOwlFlags", 9 if has_cows else 11
+        ),
+        "mmFlags3ExtraRecordIndex": parsed_extra_indices.get(
+            "gMmExtraFlags3", 10 if has_cows else 13
+        ),
+    }
 
     fixed_offsets = {
         "sharedCustomSaveSize": tracked_size,
         "halfDaysOffset": offset("mm.halfDays"),
         "coinsOffset": offset("coins"),
+        "cowsOffset": offset("cows") if has_cows else None,
         "ocarinaButtonMaskOotOffset": offset("ocarinaButtonMaskOot"),
         "ocarinaButtonMaskMmOffset": offset("ocarinaButtonMaskMm"),
         "caughtChildFishWeightOffset": offset("caughtChildFishWeight"),
@@ -148,7 +251,13 @@ def build_shared_storage(shared_layout: dict) -> dict:
         "bombchuBagFlagsOffset": offset("foundMasterSword"),
         "saveFlagsOffset": offset("saveFlags") if has_save_flags else None,
         "silverRupeesOffset": offset("silverRupees") if has_silver_rupees else None,
-        "triforceExtraRecordIndex": 14 if has_silver_rupees else 19,
+        "triforcePiecesOffset": (
+            offset("triforcePieces") if has_triforce_pieces else None
+        ),
+        "triforceExtraRecordIndex": parsed_extra_indices.get(
+            "gTriforceCount", 14 if has_silver_rupees else 19
+        ),
+        **extra_indices,
     }
 
     return {"shared": shared, "fixedOffsets": fixed_offsets}
@@ -744,7 +853,10 @@ def main() -> int:
             file=sys.stderr,
         )
         return 1
-    layout = build_shared_storage(shared_layout)
+    layout = build_shared_storage(
+        shared_layout, load_extra_record_indices(repo_root)
+    )
+    layout["fixedOffsets"].update(load_extra_struct_offsets(repo_root))
     mapping["catalog"] = build_catalog(
         gi_defs, notes_header, item_add_source, doors_header, layout["shared"]
     )

@@ -120,6 +120,23 @@ class AggregateTests(unittest.TestCase):
         self.assertEqual(offsets(result)["tail"], 24)
 
 
+class ScalarTypedefTests(unittest.TestCase):
+    def test_scalar_typedef_resolves_to_its_underlying_size(self):
+        # ComboGlobal.xflagId changed from Xflag (5 bytes) to `typedef u16
+        # XflagID` in v33.0; without alias support the layout fails and the
+        # exporter silently omits runtimeMaxKeysLive.
+        result = layout_of("""
+            typedef u16 XflagID;
+            typedef struct { u8 a; XflagID id; u8 tail; } S;
+        """)
+        self.assertEqual(offsets(result)["id"], 2)
+        self.assertEqual(offsets(result)["tail"], 4)
+
+    def test_unknown_scalar_typedef_still_raises(self):
+        with self.assertRaises(LayoutError):
+            layout_of("typedef struct { Missing id; } S;")
+
+
 class ConstantTests(unittest.TestCase):
     def test_array_count_from_define_and_expression(self):
         result = layout_of("""
@@ -206,7 +223,12 @@ class CheckedOutHeadersTests(unittest.TestCase):
     """Golden test: the engine must reproduce the shipped data for this checkout."""
 
     def test_shared_custom_save_matches_committed_offsets(self):
-        from generate_inventory_slots import build_shared_storage, load_save_layout
+        from generate_inventory_slots import (
+            build_shared_storage,
+            load_extra_record_indices,
+            load_extra_struct_offsets,
+            load_save_layout,
+        )
 
         ootmm = REPO_ROOT / "OoTMM"
         if not (ootmm / "packages/generator/include/combo/save.h").is_file():
@@ -230,7 +252,10 @@ class CheckedOutHeadersTests(unittest.TestCase):
             self.skipTest(f"no committed data for {dirname}")
 
         _, shared_layout = load_save_layout(ootmm)
-        derived = build_shared_storage(shared_layout)["fixedOffsets"]
+        derived = build_shared_storage(
+            shared_layout, load_extra_record_indices(ootmm)
+        )["fixedOffsets"]
+        derived.update(load_extra_struct_offsets(ootmm))
         self.assertEqual(derived, json.loads(committed.read_text()))
 
 

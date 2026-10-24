@@ -432,7 +432,38 @@ type SharedFixedOffsets = {
    */
   saveFlagsOffset?: number;
   silverRupeesOffset: number | null;
+  /**
+   * `SharedCustomSave.triforcePieces`. v33.0 moved the collected triforce
+   * count here from the OoT save's extra record 14 (`gTriforceCount`).
+   * Older versions omit/null it and keep using `triforceExtraRecordIndex`.
+   */
+  triforcePiecesOffset?: number | null;
   triforceExtraRecordIndex: number;
+  /**
+   * `SharedCustomSave.cows` (v33.0+). Before that the collected-cow bitmask
+   * lived in OoT extra record `EXTRA_IDX_COW_FLAGS`.
+   */
+  cowsOffset?: number | null;
+  // Extra-record indexes are not stable across OoTMM releases: v33.0 dropped
+  // `gMiscFlags`, `gCowFlags`, `gSaveLedgerBase` and `gTriforceCount`, which
+  // shifted every later record down. Read them from the data files instead of
+  // assuming the v32.x numbering.
+  ootTradeSaveExtraRecordIndex?: number;
+  mmOwlFlagsExtraRecordIndex?: number;
+  mmFlags3ExtraRecordIndex?: number;
+  /**
+   * Byte offset of `MmExtraBoss.items` inside the 4-byte extra record. v32.3
+   * laid the struct out as {boss, bossCycle, items, unused}, v33.0 as
+   * {dungeon, bossCycle, boss, items}; the boss-warp bits live in `items` in
+   * both. Default 2 matches the pre-v33 layout.
+   */
+  mmExtraBossItemsOffset?: number;
+  /**
+   * LSB-based bit index of each cross-game OoT song flag in the u16 read at
+   * `songFlagsOotOffset`. v33.0 inserted `hasTimeTraveledAtTemple` before
+   * `hasElegy`, shifting all of them by one. Defaults are the pre-v33 layout.
+   */
+  songFlagsOotBits?: Record<string, number>;
 };
 
 type SharedBitmapInfo = {
@@ -623,6 +654,8 @@ type SharedCustomState = {
   halfDays: number;
   coins: number[];
   silverRupees: number[];
+  cows: number;
+  triforcePieces: number;
   ocarinaButtonMaskOot: number;
   ocarinaButtonMaskMm: number;
   extraSwordsOot: number;
@@ -1378,8 +1411,48 @@ const DEFAULT_FIXED_OFFSETS: SharedFixedOffsets = {
   songFlagsOotOffset: 0x374,
   songFlagsMmOffset: 0x7b8,
   silverRupeesOffset: null,
+  triforcePiecesOffset: null,
   triforceExtraRecordIndex: EXTRA_IDX_OOT_TRIFORCE,
+  cowsOffset: null,
+  ootTradeSaveExtraRecordIndex: EXTRA_IDX_OOT_TRADE_SAVE,
+  mmOwlFlagsExtraRecordIndex: EXTRA_IDX_MM_OWL_FLAGS,
+  mmFlags3ExtraRecordIndex: EXTRA_IDX_MM_FLAGS3,
+  mmExtraBossItemsOffset: 2,
+  songFlagsOotBits: {
+    hasElegy: 7,
+    chateauActive: 6,
+    hasSongHealing: 5,
+    hasSongSoaring: 4,
+    hasSongAwakening: 3,
+    hasSongGoronHalf: 2,
+    hasSongGoron: 1,
+    hasSongZora: 0,
+    hasSongOrder: 15,
+  },
 };
+
+function ootTradeSaveRecordIndex(): number {
+  return (
+    sharedFixedOffsets.ootTradeSaveExtraRecordIndex ?? EXTRA_IDX_OOT_TRADE_SAVE
+  );
+}
+
+function mmOwlFlagsRecordIndex(): number {
+  return (
+    sharedFixedOffsets.mmOwlFlagsExtraRecordIndex ?? EXTRA_IDX_MM_OWL_FLAGS
+  );
+}
+
+function mmFlags3RecordIndex(): number {
+  return sharedFixedOffsets.mmFlags3ExtraRecordIndex ?? EXTRA_IDX_MM_FLAGS3;
+}
+
+function cowFlagsValue(state: GameState): number {
+  const offset = sharedFixedOffsets.cowsOffset;
+  return offset != null
+    ? state.shared.cows
+    : (state.oot.extraRecords[EXTRA_IDX_COW_FLAGS] ?? 0);
+}
 
 let sharedFixedOffsets: SharedFixedOffsets = { ...DEFAULT_FIXED_OFFSETS };
 
@@ -3721,6 +3794,15 @@ function parseSharedStateUnchecked(data: Uint8Array): SharedCustomState | null {
       parsed.silverRupees[index] = (byte >> ((index & 1) * 4)) & 0xf;
     }
   }
+  if (
+    fo.triforcePiecesOffset != null &&
+    data.length >= fo.triforcePiecesOffset + 2
+  ) {
+    parsed.triforcePieces = readU16BE(data, fo.triforcePiecesOffset);
+  }
+  if (fo.cowsOffset != null && data.length >= fo.cowsOffset + 4) {
+    parsed.cows = readU32BE(data, fo.cowsOffset);
+  }
   if (data.length >= fo.ocarinaButtonMaskMmOffset + 2) {
     parsed.ocarinaButtonMaskOot = readU16BE(
       data,
@@ -4091,6 +4173,8 @@ function sharedStateHasMeaningfulData(shared: SharedCustomState): boolean {
     shared.bombchuBagOot > 0 ||
     shared.bombchuBagMm > 0 ||
     shared.extraSwordsOot > 0 ||
+    shared.cows > 0 ||
+    shared.triforcePieces > 0 ||
     shared.songNotes.some((value) => value > 0) ||
     shared.clockOot > 0 ||
     shared.shovelOot > 0 ||
@@ -4306,20 +4390,54 @@ function extractItems(state: GameState): RawAutotrackerItem[] {
     QUEST_OOT_SONG_STORMS,
     'OOT_SONG_STORMS',
   );
-  // Cross-game songs stored as bitfields in SharedCustomSave.oot, not quest items.
-  // N64 is big-endian: GCC packs bitfields MSB-first within each byte.
-  // Byte 0: hasElegy(7) chateauActive(6) hasSongHealing(5) hasSongSoaring(4)
-  //          hasSongAwakening(3) hasSongGoronHalf(2) hasSongGoron(1) hasSongZora(0)
-  // Byte 1: hasSongOrder(15)
+  // Cross-game songs stored as bitfields in SharedCustomSave.oot, not quest
+  // items. The exact bit positions are generated from the headers because
+  // v33.0 inserted fields before them.
   const sf = state.shared.songFlagsOot;
-  appendPositiveItem(items, 'OOT_SONG_EMPTINESS', (sf >> 7) & 1);
-  appendPositiveItem(items, 'OOT_SONG_HEALING', (sf >> 5) & 1);
-  appendPositiveItem(items, 'OOT_SONG_SOARING', (sf >> 4) & 1);
-  appendPositiveItem(items, 'OOT_SONG_AWAKENING', (sf >> 3) & 1);
-  appendPositiveItem(items, 'OOT_SONG_GORON_HALF', (sf >> 2) & 1);
-  appendPositiveItem(items, 'OOT_SONG_GORON', (sf >> 1) & 1);
-  appendPositiveItem(items, 'OOT_SONG_ZORA', sf & 1);
-  appendPositiveItem(items, 'OOT_SONG_ORDER', (sf >> 15) & 1);
+  const songBit = (name: string): number => {
+    const generated = sharedFixedOffsets.songFlagsOotBits?.[name];
+    return generated ?? DEFAULT_FIXED_OFFSETS.songFlagsOotBits![name];
+  };
+  appendPositiveItem(
+    items,
+    'OOT_SONG_EMPTINESS',
+    (sf >> songBit('hasElegy')) & 1,
+  );
+  appendPositiveItem(
+    items,
+    'OOT_SONG_HEALING',
+    (sf >> songBit('hasSongHealing')) & 1,
+  );
+  appendPositiveItem(
+    items,
+    'OOT_SONG_SOARING',
+    (sf >> songBit('hasSongSoaring')) & 1,
+  );
+  appendPositiveItem(
+    items,
+    'OOT_SONG_AWAKENING',
+    (sf >> songBit('hasSongAwakening')) & 1,
+  );
+  appendPositiveItem(
+    items,
+    'OOT_SONG_GORON_HALF',
+    (sf >> songBit('hasSongGoronHalf')) & 1,
+  );
+  appendPositiveItem(
+    items,
+    'OOT_SONG_GORON',
+    (sf >> songBit('hasSongGoron')) & 1,
+  );
+  appendPositiveItem(
+    items,
+    'OOT_SONG_ZORA',
+    (sf >> songBit('hasSongZora')) & 1,
+  );
+  appendPositiveItem(
+    items,
+    'OOT_SONG_ORDER',
+    (sf >> songBit('hasSongOrder')) & 1,
+  );
   appendQuestBit(items, oot.questItems, QUEST_OOT_AGONY, 'OOT_STONE_OF_AGONY');
   appendQuestBit(
     items,
@@ -4456,7 +4574,7 @@ function extractItems(state: GameState): RawAutotrackerItem[] {
   );
 
   const ootTradeRecord = oot.extraRecords[EXTRA_IDX_OOT_TRADE] ?? 0;
-  const ootTradeSaveRecord = oot.extraRecords[EXTRA_IDX_OOT_TRADE_SAVE] ?? 0;
+  const ootTradeSaveRecord = oot.extraRecords[ootTradeSaveRecordIndex()] ?? 0;
   appendPositiveItem(
     items,
     'OOT_CHILD_TRADE',
@@ -4522,7 +4640,9 @@ function extractItems(state: GameState): RawAutotrackerItem[] {
   appendPositiveItem(
     items,
     'OOT_TRIFORCE',
-    oot.extraRecords[sharedFixedOffsets.triforceExtraRecordIndex] ?? 0,
+    sharedFixedOffsets.triforcePiecesOffset != null
+      ? state.shared.triforcePieces
+      : (oot.extraRecords[sharedFixedOffsets.triforceExtraRecordIndex] ?? 0),
   );
 
   appendQuestBit(
@@ -4764,7 +4884,7 @@ function extractItems(state: GameState): RawAutotrackerItem[] {
       items,
       itemId,
       boolToInt(
-        ((oot.extraRecords[EXTRA_IDX_MM_OWL_FLAGS] ?? 0) & (1 << bit)) !== 0,
+        ((oot.extraRecords[mmOwlFlagsRecordIndex()] ?? 0) & (1 << bit)) !== 0,
       ),
     );
   }
@@ -4915,10 +5035,7 @@ function extractChecks(state: GameState): RawAutotrackerCheck[] {
     state.oot,
     appendCheck,
   );
-  appendCowChecks(
-    state.oot.extraRecords[EXTRA_IDX_COW_FLAGS] ?? 0,
-    appendCheck,
-  );
+  appendCowChecks(cowFlagsValue(state), appendCheck);
   appendOotSymbolChecks(state, ootSymbolChecks, appendCheck);
   appendOotAdultTradeConsumptionFallbacks(state, appendCheck);
   appendMmSymbolChecks(state, mmSymbolChecks, appendCheck);
@@ -5071,7 +5188,7 @@ function appendMmSymbolChecks(
 ): void {
   const mmFlags = state.oot.extraRecords[EXTRA_IDX_MM_FLAGS] ?? 0;
   const mmFlags2 = mmExtraFlags2(state);
-  const mmFlags3 = state.oot.extraRecords[EXTRA_IDX_MM_FLAGS3] ?? 0;
+  const mmFlags3 = state.oot.extraRecords[mmFlags3RecordIndex()] ?? 0;
   for (const entry of entries) {
     if (!mmSymbolCheckMatches(state, entry, mmFlags, mmFlags2, mmFlags3)) {
       continue;
@@ -5086,9 +5203,9 @@ function appendOotSymbolChecks(
   appendCheck: (name: string | null | undefined) => void,
 ): void {
   const childTradeSave =
-    (state.oot.extraRecords[EXTRA_IDX_OOT_TRADE_SAVE] ?? 0) >>> 16;
+    (state.oot.extraRecords[ootTradeSaveRecordIndex()] ?? 0) >>> 16;
   const adultTradeSave =
-    (state.oot.extraRecords[EXTRA_IDX_OOT_TRADE_SAVE] ?? 0) & 0xffff;
+    (state.oot.extraRecords[ootTradeSaveRecordIndex()] ?? 0) & 0xffff;
   const ootFlags = state.oot.extraRecords[EXTRA_IDX_OOT_FLAGS] ?? 0;
   for (const entry of entries) {
     if (
@@ -5113,7 +5230,7 @@ function appendOotAdultTradeConsumptionFallbacks(
   const adultTrade =
     (state.oot.extraRecords[EXTRA_IDX_OOT_TRADE] ?? 0) & 0xffff;
   const adultTradeSave =
-    (state.oot.extraRecords[EXTRA_IDX_OOT_TRADE_SAVE] ?? 0) & 0xffff;
+    (state.oot.extraRecords[ootTradeSaveRecordIndex()] ?? 0) & 0xffff;
 
   for (const [consumedBit, symbol] of OOT_ADULT_TRADE_CONSUMPTION_FALLBACKS) {
     const mask = 1 << consumedBit;
@@ -5246,7 +5363,7 @@ function mmWalletLevel(state: GameState): number {
     (1 << MM_EXTRA_FLAGS_2_CHILD_WALLET_BIT)
   ) {
     if (
-      (state.oot.extraRecords[EXTRA_IDX_MM_FLAGS3] ?? 0) &
+      (state.oot.extraRecords[mmFlags3RecordIndex()] ?? 0) &
       (1 << MM_EXTRA_FLAGS_3_BOTTOMLESS_BIT)
     ) {
       return 5;
@@ -5293,7 +5410,14 @@ function mmExtraFlags2(state: GameState): number {
 }
 
 function mmExtraBossItems(state: GameState): number {
-  return ((state.oot.extraRecords[EXTRA_IDX_MM_BOSS] ?? 0) >>> 8) & 0xff;
+  // Extra records are read as big-endian u32, so byte N sits at shift
+  // (3 - N) * 8. `items` moved from byte 2 to byte 3 in v33.0.
+  const byteOffset = sharedFixedOffsets.mmExtraBossItemsOffset ?? 2;
+  return (
+    ((state.oot.extraRecords[EXTRA_IDX_MM_BOSS] ?? 0) >>>
+      ((3 - byteOffset) * 8)) &
+    0xff
+  );
 }
 
 function mmTownStrayFairyCollected(state: GameState): boolean {
@@ -6302,6 +6426,8 @@ function createEmptySharedState(): SharedCustomState {
     halfDays: 0,
     coins: Array.from({ length: SHARED_COIN_COUNT }, () => 0),
     silverRupees: Array.from({ length: OOT_SILVER_RUPEE_SET_COUNT }, () => 0),
+    cows: 0,
+    triforcePieces: 0,
     ocarinaButtonMaskOot: 0,
     ocarinaButtonMaskMm: 0,
     extraSwordsOot: 0,
@@ -6390,6 +6516,8 @@ function cloneSharedState(source: SharedCustomState): SharedCustomState {
     halfDays: source.halfDays,
     coins: [...source.coins],
     silverRupees: [...source.silverRupees],
+    cows: source.cows,
+    triforcePieces: source.triforcePieces,
     ocarinaButtonMaskOot: source.ocarinaButtonMaskOot,
     ocarinaButtonMaskMm: source.ocarinaButtonMaskMm,
     extraSwordsOot: source.extraSwordsOot,

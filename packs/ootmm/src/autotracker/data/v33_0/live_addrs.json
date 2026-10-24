@@ -1,6 +1,7 @@
 {
   "schemaVersion": 1,
   "generatedFrom": {
+    "patchfile": "/home/silke/stuff/repos/tlt/OoTMM-Patch-FgPuniix.ootmm",
     "ootmmRepo": "/home/silke/stuff/repos/tlt/OoTMM",
     "defs": "/home/silke/stuff/repos/tlt/OoTMM/packages/generator/include/combo/defs.h",
     "ootLinker": "/home/silke/stuff/repos/tlt/OoTMM/packages/generator/src/link_oot.in",
@@ -10,39 +11,49 @@
     "comboCtx": "0x80006584",
     "saveCtx": "0x8011a5d0",
     "payload": "0x80400000",
+    "comboConfigLive": "0x8044c6f8",
+    "runtimeSilverRupeeDataLive": "0x8043726c",
+    "runtimeMaxKeysLive": "0x8044ccb3",
     "sharedCustomSaveLive": "0x8044dd60",
     "foreignSaveLive": "0x8044e280",
     "derivation": {
       "comboCtx": "source-define",
       "saveCtx": "source-linker",
-      "payload": "source-define",
-      "sharedCustomSaveLive": "web-payload-code-scan",
-      "foreignSaveLive": "web-payload-code-scan"
-    }
+      "payload": "patchfile-vram",
+      "comboConfigLive": "patchfile-code-scan",
+      "runtimeSilverRupeeDataLive": "patchfile-payload-scan",
+      "runtimeMaxKeysLive": "patchfile-code-scan+offset",
+      "sharedCustomSaveLive": "patchfile-payload-code-scan",
+      "foreignSaveLive": "patchfile-payload-code-scan"
+    },
+    "missingPatchfileSymbols": ["gMmSave", "gSharedCustomSave"]
   },
   "mm": {
     "comboCtx": "0x80098280",
     "saveCtx": "0x801ef670",
     "payload": "0x80720000",
+    "comboConfigLive": "0x80771398",
     "sharedCustomSaveLive": "0x80772620",
     "foreignSaveLive": "0x80772b40",
     "derivation": {
       "comboCtx": "source-define",
       "saveCtx": "source-linker",
-      "payload": "source-define",
-      "sharedCustomSaveLive": "web-payload-code-scan",
-      "foreignSaveLive": "web-payload-code-scan"
-    }
+      "payload": "patchfile-vram",
+      "comboConfigLive": "patchfile-code-scan",
+      "sharedCustomSaveLive": "patchfile-payload-code-scan",
+      "foreignSaveLive": "patchfile-payload-code-scan"
+    },
+    "missingPatchfileSymbols": ["gOotSave", "gSharedCustomSave"]
   },
   "notDerivableWithoutLinking": {
     "oot": [],
     "mm": []
   },
   "savesDerivedFrom": {
-    "method": "web-payload-code-scan",
-    "source": "https://static.ootmm.com/assets/data-Cj4C9Osh.zip (v33.0)",
-    "tool": "scripts/autotracker/derive_web_symbols.py",
+    "method": "patchfile-payload-code-scan",
+    "source": "OoTMM-Patch-FgPuniix.ootmm (oot/payload, mm/payload)",
+    "tool": "scripts/autotracker/derive_web_symbols.py --oot <oot_payload.bin> --mm <mm_payload.bin>",
     "doc": "scripts/autotracker/DERIVING_SAVE_SYMBOLS.md",
-    "note": "gMmSave/gOotSave/gSharedCustomSave are absent from the patchfile and from the site's cosmetic symbol table; addresses were recovered by scanning the stripped payload code for the bzero/memcpy save-size signatures. Cross-checked: foreign == shared + detected shared size, and zero-filled .bss."
+    "note": "gMmSave/gOotSave/gSharedCustomSave are not exported by the patchfile, but the patchfile ships the raw payload images (including zero-filled .bss). Addresses were recovered by scanning the payload code for the bzero/memcpy save-size signatures. Cross-checked: foreign == shared + detected shared size, zero-filled .bss, and the MM gSaveContext anchor."
   }
 }

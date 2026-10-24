@@ -254,7 +254,14 @@ interface SharedFixedOffsets {
   songFlagsMmOffset: number;
   saveFlagsOffset?: number;
   silverRupeesOffset: number | null;
+  triforcePiecesOffset?: number | null;
   triforceExtraRecordIndex: number;
+  cowsOffset?: number | null;
+  ootTradeSaveExtraRecordIndex?: number;
+  mmOwlFlagsExtraRecordIndex?: number;
+  mmFlags3ExtraRecordIndex?: number;
+  mmExtraBossItemsOffset?: number;
+  songFlagsOotBits?: Record<string, number>;
 }
 
 interface SharedStorageLayout {

@@ -22,6 +22,7 @@ Output format is suitable for pasting into live_addrs.json.
 
 import argparse
 import json
+import pathlib
 import struct
 import sys
 
@@ -62,8 +63,16 @@ MIN_OOT_EMPTY_SLOTS = 4
 MAX_OOT_AGE         = 1
 MAX_OOT_GOLD_TOKENS = 100
 
-# SharedCustomSave
-SHARED_CUSTOM_SAVE_SIZE = 0x870
+# SharedCustomSave. The size is NOT stable across OoTMM releases (v32.3:
+# 0x8B0, v33.0: 0x520), so it is resolved from the checked-out headers in
+# main(). These module values are the fallback used when no checkout is
+# available and no explicit size is given.
+SHARED_CUSTOM_SAVE_SIZE = 0x520
+SHARED_HALF_DAYS_OFFSET = None
+SHARED_COINS_OFFSET = None
+SHARED_TRIFORCE_OFFSET = None
+SHARED_OCARINA_OOT_OFFSET = None
+SHARED_OCARINA_MM_OFFSET = None
 
 # Default payload base addresses (stable across versions)
 DEFAULT_OOT_PAYLOAD_BASE = 0x80400000
@@ -291,17 +300,64 @@ def _has_plausible_shared_prefix(payload: bytes, offset: int) -> bool:
 
 
 def _is_plausible_shared_custom_save(data: bytes) -> bool:
-    """Minimal structural check for SharedCustomSave."""
+    """Minimal structural check for SharedCustomSave.
+
+    The struct used to start with `netGiSkip[2]`, but v33.0 made it start with
+    `OotCustomSave.npc[32]`, so the old "first u16 is small" check is gone.
+    Instead check fields whose offsets are stable within a release and whose
+    value ranges are narrow.
+    """
     if len(data) < SHARED_CUSTOM_SAVE_SIZE:
         return False
-    # SharedCustomSave layout (0x870 bytes):
-    # Offset 0: netGiSkip[2] (2 bytes each, OoT then MM)
-    # These are small values (0-16 typically)
-    for off in (0, 2):
-        val = struct.unpack_from(">H", data, off)[0]
-        if val > 16:
+    if SHARED_HALF_DAYS_OFFSET is not None:
+        if data[SHARED_HALF_DAYS_OFFSET] > 6:
+            return False
+    if SHARED_COINS_OFFSET is not None:
+        for index in range(4):
+            value = struct.unpack_from(
+                ">H", data, SHARED_COINS_OFFSET + index * 2
+            )[0]
+            if value > 9999:
+                return False
+    if SHARED_TRIFORCE_OFFSET is not None:
+        if struct.unpack_from(">H", data, SHARED_TRIFORCE_OFFSET)[0] > 9999:
+            return False
+    for off in (SHARED_OCARINA_OOT_OFFSET, SHARED_OCARINA_MM_OFFSET):
+        if off is not None and struct.unpack_from(">H", data, off)[0] == 0xFFFF:
             return False
     return True
+
+
+def configure_shared_layout(repo_root: pathlib.Path, size_override: int | None) -> None:
+    """Resolve sizeof(SharedCustomSave) and inner offsets from OoTMM headers."""
+    global SHARED_CUSTOM_SAVE_SIZE, SHARED_HALF_DAYS_OFFSET, SHARED_COINS_OFFSET
+    global SHARED_TRIFORCE_OFFSET, SHARED_OCARINA_OOT_OFFSET
+    global SHARED_OCARINA_MM_OFFSET
+
+    if size_override is not None:
+        SHARED_CUSTOM_SAVE_SIZE = size_override
+
+    try:
+        from generate_inventory_slots import build_shared_storage, load_save_layout
+
+        _, shared_layout = load_save_layout(repo_root)
+        layout = build_shared_storage(shared_layout)
+    except Exception as exc:  # noqa: BLE001 - best-effort, the scan still works
+        print(
+            f"warning: could not derive SharedCustomSave layout from {repo_root} "
+            f"({exc}); using size 0x{SHARED_CUSTOM_SAVE_SIZE:X} and no field checks",
+            file=sys.stderr,
+        )
+        return
+
+    if size_override is None:
+        SHARED_CUSTOM_SAVE_SIZE = shared_layout["size"]
+    offsets = layout["fixedOffsets"]
+    SHARED_HALF_DAYS_OFFSET = offsets["halfDaysOffset"]
+    SHARED_COINS_OFFSET = offsets["coinsOffset"]
+    SHARED_TRIFORCE_OFFSET = offsets.get("triforcePiecesOffset")
+    SHARED_OCARINA_OOT_OFFSET = offsets["ocarinaButtonMaskOotOffset"]
+    SHARED_OCARINA_MM_OFFSET = offsets["ocarinaButtonMaskMmOffset"]
 
 
 # ═══════════════════════════════════════════════════════════════════════════
@@ -387,7 +443,19 @@ def main():
         "--mm-payload", type=lambda x: int(x, 16),
         default=None, help="MM payload VRAM base address (default: from dump or 0x80730000)"
     )
+    parser.add_argument(
+        "--ootmm-repo",
+        default="OoTMM",
+        help="Path to the OoTMM checkout used to derive sizeof(SharedCustomSave) "
+             "(default: OoTMM)",
+    )
+    parser.add_argument(
+        "--shared-save-size", type=lambda x: int(x, 0), default=None,
+        help="Override sizeof(SharedCustomSave) instead of deriving it from the headers",
+    )
     args = parser.parse_args()
+
+    configure_shared_layout(pathlib.Path(args.ootmm_repo).resolve(), args.shared_save_size)
 
     # Load dump
     with open(args.dump) as f:
@@ -414,6 +482,9 @@ def main():
         mm_payload_base = args.mm_payload
     elif mm_payload_base is None:
         mm_payload_base = DEFAULT_MM_PAYLOAD_BASE
+
+    mm_addr = None
+    oot_addr = None
 
     # ── Scan OoT payload for foreign MM save ──
     print("=" * 60)

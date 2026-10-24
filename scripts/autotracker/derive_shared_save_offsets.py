@@ -26,7 +26,12 @@ import json
 import pathlib
 import sys
 
-from generate_inventory_slots import build_shared_storage, load_save_layout
+from generate_inventory_slots import (
+    build_shared_storage,
+    load_extra_record_indices,
+    load_extra_struct_offsets,
+    load_save_layout,
+)
 
 
 def cross_check_inventory_slots(layout: dict, path: str) -> bool:
@@ -167,7 +172,10 @@ def main():
 
     repo_root = pathlib.Path(args.ootmm_repo).resolve()
     layouter, shared_layout = load_save_layout(repo_root)
-    layout = build_shared_storage(shared_layout)
+    layout = build_shared_storage(
+        shared_layout, load_extra_record_indices(repo_root)
+    )
+    layout["fixedOffsets"].update(load_extra_struct_offsets(repo_root))
     offsets = layout["fixedOffsets"]
 
     print(f"Laid out from {repo_root}:")

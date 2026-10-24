@@ -27,7 +27,14 @@ build, that step is wrong; stop and say so rather than kicking off a toolchain.
 They live in `.bss` (zero-initialised), so they have no data signature, and they
 are **not** exported by the patchfile nor by the website's cosmetic symbol table.
 
-So we recover them from the live website: `derive_web_symbols.py` (this dir)
+The `.ootmm` patchfile _does_ ship the linked payload images as `newFiles`
+entries `oot/payload` and `mm/payload` (`blob.bin` at `offset`, `size` bytes,
+raw big-endian, including the zero-filled `.bss`). The same code scan below
+therefore works offline on those bytes: extract both payloads and run
+`derive_web_symbols.py --oot <oot_payload.bin> --mm <mm_payload.bin>`. The web
+zip remains the primary path when no patchfile is available.
+
+So we recover them from the payload code: `derive_web_symbols.py` (this dir)
 pulls the _stripped_ payload the web generator ships and scans the payload code
 for the addresses. This is **the** method — see the workflow below.
 
@@ -136,6 +143,37 @@ oot.foreignSaveLive      = 0x8044bdb0   (gMmSave,  size 0x3ca0)
 mm.sharedCustomSaveLive  = 0x8076bc40   (gSharedCustomSave)
 mm.foreignSaveLive       = 0x8076c4d0   (gOotSave, size 0x1354)
 ```
+
+## v33.0 reference values (verified from the patchfile payloads)
+
+```
+oot.sharedCustomSaveLive = 0x8044dd60   (gSharedCustomSave, size 0x520)
+oot.foreignSaveLive      = 0x8044e280   (gMmSave,  size 0x3ca0)
+mm.sharedCustomSaveLive  = 0x80772620   (gSharedCustomSave, size 0x520)
+mm.foreignSaveLive       = 0x80772b40   (gOotSave, size 0x1354)
+```
+
+v33.0 moved both `xflags` arrays out of `OotCustomSave`/`MmCustomSave` into one
+shared `xflags` array, so `sizeof(SharedCustomSave)` dropped from 0x8b0 to 0x520.
+The adjacency check still passes; never assume the size only grows.
+
+The same release also renumbered the OoT extra records and shifted bitfields
+inside `OotCustomSave`/`MmExtraBoss`. `generate_inventory_slots.py` derives
+those from the headers and writes them into `shared_save_offsets.json`:
+
+| key                            | v32.3                                             | v33.0                                              | why                                                             |
+| ------------------------------ | ------------------------------------------------- | -------------------------------------------------- | --------------------------------------------------------------- |
+| `cowsOffset`                   | –                                                 | 1100                                               | `gCowFlags` extra record removed, `SharedCustomSave.cows` added |
+| `triforcePiecesOffset`         | –                                                 | 1112                                               | `gTriforceCount` extra record removed                           |
+| `saveFlagsOffset`              | –                                                 | 1304                                               | new trailing `saveFlags` bitmap                                 |
+| `ootTradeSaveExtraRecordIndex` | 10                                                | 8                                                  | `gMiscFlags`, `gCowFlags`, `gSaveLedgerBase` dropped            |
+| `mmOwlFlagsExtraRecordIndex`   | 11                                                | 9                                                  | same renumbering                                                |
+| `mmFlags3ExtraRecordIndex`     | 13                                                | 10                                                 | same renumbering                                                |
+| `mmExtraBossItemsOffset`       | 2                                                 | 3                                                  | `MmExtraBoss` became `{dungeon,bossCycle,boss,items}`           |
+| `songFlagsOotBits`             | `hasElegy`=7 … `hasSongZora`=0, `hasSongOrder`=15 | `hasElegy`=6 … `hasSongZora`=15, `hasSongOrder`=14 | `hasTimeTraveledAtTemple` inserted before `hasElegy`            |
+
+`rawFrameParser.ts` keeps the pre-v33 values as defaults, so older data
+directories that do not contain the new keys keep working unchanged.
 
 ---
 

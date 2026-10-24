@@ -25,6 +25,9 @@ const OOT_PERM_ENTRY_SIZE = 0x1c;
 const OOT_PERM_EXTRA_OFF = 0x10;
 const EXTRA_IDX_OOT_TRADE = 0;
 const EXTRA_IDX_OOT_TRADE_SAVE = 10;
+// v33.0 dropped gMiscFlags/gCowFlags/gSaveLedgerBase/gTriforceCount, moving
+// gOotExtraTradeSave from record 10 to record 8.
+const EXTRA_IDX_OOT_TRADE_SAVE_V33 = 8;
 const EXTRA_IDX_OOT_ITEMS = 1;
 const EXTRA_IDX_OOT_FLAGS = 2;
 const EXTRA_IDX_MM_ITEMS = 4;
@@ -298,6 +301,39 @@ function buildOotMessageWithSharedSaveFlags(
   };
 }
 
+/**
+ * Builds a minimal OoT message plus a monolithic shared custom save chunk
+ * with a single byte set at `offset`.
+ */
+function buildOotMessageWithSharedByte(
+  offset: number,
+  value: number,
+): RawAutotrackerMessage {
+  const message = buildMinimalOotMessage({ [EXTRA_IDX_OOT_TRADE]: 1 });
+  const sharedSpec = RAW_CHUNK_SPECS.find(
+    (spec) => spec.name === SHARED_SAVE_CHUNK_NAME,
+  );
+  if (!sharedSpec) {
+    throw new Error(`Missing chunk spec ${SHARED_SAVE_CHUNK_NAME}`);
+  }
+
+  const sharedData = new Uint8Array(sharedSpec.length);
+  sharedData[offset] = value;
+
+  return {
+    ...message,
+    chunks: [
+      ...message.chunks,
+      {
+        name: sharedSpec.name,
+        address: sharedSpec.address,
+        length: sharedSpec.length,
+        data: Buffer.from(sharedData).toString('base64'),
+      },
+    ],
+  };
+}
+
 describe('raw frame parser', () => {
   afterEach(() => {
     vi.useRealTimers();
@@ -503,7 +539,7 @@ describe('raw frame parser', () => {
     const parsed = parser.parse(
       buildMinimalOotMessage({
         [EXTRA_IDX_OOT_TRADE]: 1 << 11,
-        [EXTRA_IDX_OOT_TRADE_SAVE]: 1 << 30,
+        [EXTRA_IDX_OOT_TRADE_SAVE_V33]: 1 << 30,
       }),
     );
 
@@ -1050,6 +1086,28 @@ describe('raw frame parser', () => {
     expect(parsed).not.toBeNull();
 
     expect(parsedItemMap(parsed!.items).get('OOT_CLOCK')).toBeUndefined();
+  });
+
+  it('reads v33.0 cross-game song bits after the inserted bitfield', () => {
+    const parser = createRawAutotrackerParser('v33_0');
+    // v33.0 added hasTimeTraveledAtTemple before hasElegy, so hasElegy is
+    // bit 6 of the byte at songFlagsOotOffset (122) instead of bit 7.
+    const parsed = parser.parse(buildOotMessageWithSharedByte(122, 0x40));
+    expect(parsed).not.toBeNull();
+
+    expect(parsedItemMap(parsed!.items).get('OOT_SONG_EMPTINESS')).toBe(1);
+  });
+
+  it('reads the MM boss remains from the moved MmExtraBoss.items byte', () => {
+    const parser = createRawAutotrackerParser('v33_0');
+    // v33.0 laid MmExtraBoss out as {dungeon, bossCycle, boss, items}, so the
+    // items byte is the low byte of the big-endian u32 extra record.
+    const parsed = parser.parse(buildMinimalOotMessage({ 3: 0x01 }));
+    expect(parsed).not.toBeNull();
+
+    expect(parsedCheckSet(parsed!.checks).has('Woodfall Temple Boss')).toBe(
+      true,
+    );
   });
 
   it('reads both shovels from SharedCustomSave.saveFlags', () => {

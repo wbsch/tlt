@@ -2,6 +2,7 @@
   "sharedCustomSaveSize": 1305,
   "halfDaysOffset": 164,
   "coinsOffset": 1104,
+  "cowsOffset": 1100,
   "ocarinaButtonMaskOotOffset": 1124,
   "ocarinaButtonMaskMmOffset": 1126,
   "caughtChildFishWeightOffset": 1169,
@@ -12,10 +13,26 @@
   "rustyKeysOffset": 1295,
   "rustyKeysOotSize": 4,
   "rustyKeysMmSize": 5,
-  "saveFlagsOffset": 1304,
   "songFlagsOotOffset": 122,
   "songFlagsMmOffset": 360,
   "bombchuBagFlagsOffset": 1248,
+  "saveFlagsOffset": 1304,
   "silverRupeesOffset": 1114,
-  "triforceExtraRecordIndex": 14
+  "triforcePiecesOffset": 1112,
+  "triforceExtraRecordIndex": 14,
+  "ootTradeSaveExtraRecordIndex": 8,
+  "mmOwlFlagsExtraRecordIndex": 9,
+  "mmFlags3ExtraRecordIndex": 10,
+  "mmExtraBossItemsOffset": 3,
+  "songFlagsOotBits": {
+    "hasElegy": 6,
+    "chateauActive": 5,
+    "hasSongHealing": 4,
+    "hasSongSoaring": 3,
+    "hasSongAwakening": 2,
+    "hasSongGoronHalf": 1,
+    "hasSongGoron": 0,
+    "hasSongZora": 15,
+    "hasSongOrder": 14
+  }
 }

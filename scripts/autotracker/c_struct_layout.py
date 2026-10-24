@@ -301,6 +301,26 @@ def parse_members(body):
     return members
 
 
+_SCALAR_TYPEDEF_RE = re.compile(
+    r"^\s*typedef\s+([A-Za-z_]\w*)\s+([A-Za-z_]\w*)\s*;\s*$", re.MULTILINE
+)
+
+
+def extract_scalar_typedefs(text):
+    """Map scalar typedef aliases to another type name.
+
+    Handles `typedef u16 XflagID;` (used by ComboGlobal since v33.0). Aliases
+    whose target is not a modelled primitive/aggregate are ignored so a
+    forward declaration or an unrelated typedef cannot shadow a real type.
+    """
+    aliases = {}
+    for base, name in _SCALAR_TYPEDEF_RE.findall(strip_comments(text)):
+        if name in PRIMITIVE_SIZES:
+            continue
+        aliases[name] = base
+    return aliases
+
+
 def extract_typedefs(text):
     """Map typedef name -> aggregate descriptor for `typedef struct/union {...} N;`."""
     text = strip_comments(text)
@@ -348,8 +368,9 @@ def _align_up(value, alignment):
 class Layouter:
     """Lays out aggregates from a typedef table plus a constant environment."""
 
-    def __init__(self, typedefs, env):
+    def __init__(self, typedefs, env, aliases=None):
         self.typedefs = typedefs
+        self.aliases = aliases or {}
         self.env = env
         self._memo = {}
 
@@ -361,6 +382,10 @@ class Layouter:
             return PRIMITIVE_SIZES[type_name]
         if type_name in self._memo:
             return self._memo[type_name]
+        if type_name in self.aliases:
+            result = self.type_info(self.aliases[type_name])
+            self._memo[type_name] = result
+            return result
         if type_name not in self.typedefs:
             raise LayoutError(
                 f"unknown type {type_name!r} "
@@ -502,9 +527,11 @@ def build_layouter(headers, defines=(), extra_env=None):
     """
     env = dict(extra_env or {})
     typedefs = {}
+    aliases = {}
     for text in headers.values():
         resolved = apply_conditionals(text, set(defines))
         env.update(parse_defines(resolved))
         env.update(parse_enums(resolved, env))
         typedefs.update(extract_typedefs(resolved))
-    return Layouter(typedefs, env)
+        aliases.update(extract_scalar_typedefs(resolved))
+    return Layouter(typedefs, env, aliases)
