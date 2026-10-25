@@ -135,6 +135,7 @@ function buildParserTables(bundle: AutotrackerDataBundle): ParserTables {
       fo.songNotesOffset + fo.songNoteCount,
       fo.bombchuBagFlagsOffset + 1,
       fo.rustyKeysOffset + fo.rustyKeysOotSize + fo.rustyKeysMmSize,
+      fo.cowsOffset == null ? 0 : fo.cowsOffset + 4,
       fo.saveFlagsOffset == null ? 0 : fo.saveFlagsOffset + 1,
     ),
     sharedFixedOffsets: fo,
@@ -1464,6 +1465,7 @@ let sharedStateReadSize = Math.max(
   sharedFixedOffsets.rustyKeysOffset +
     sharedFixedOffsets.rustyKeysOotSize +
     sharedFixedOffsets.rustyKeysMmSize,
+  sharedFixedOffsets.cowsOffset == null ? 0 : sharedFixedOffsets.cowsOffset + 4,
 );
 
 const buildSharedStateChunkSpecs = (
@@ -1498,6 +1500,17 @@ const buildSharedStateChunkSpecs = (
       address: baseAddress + fo.coinsOffset,
       length: fo.ocarinaButtonMaskMmOffset + 2 - fo.coinsOffset,
     },
+    // v33.0 moved the cow bitmask into SharedCustomSave, just before `coins`
+    // and outside the `coins_and_masks` range below.
+    ...(fo.cowsOffset != null
+      ? [
+          {
+            name: `${prefix}_shared_custom_save_cows`,
+            address: baseAddress + fo.cowsOffset,
+            length: 4,
+          },
+        ]
+      : []),
     {
       name: `${prefix}_shared_custom_save_bombchu_bag_flags`,
       address: baseAddress + fo.bombchuBagFlagsOffset,

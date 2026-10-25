@@ -302,6 +302,52 @@ function buildOotMessageWithSharedSaveFlags(
 }
 
 /**
+ * Replaces the monolithic shared custom save chunk with the per-field chunks
+ * the live autotracker actually requests (`RAW_CHUNK_SPECS_BY_GAME`). This is
+ * the path that regressed when `SharedCustomSave.cows` was added in v33.0:
+ * `buildChunkedData` zero-fills any byte no per-field spec covers.
+ */
+function withPerFieldSharedChunks(
+  message: RawAutotrackerMessage,
+  sharedData: Uint8Array,
+): RawAutotrackerMessage {
+  const legacySpec = RAW_CHUNK_SPECS.find(
+    (spec) => spec.name === SHARED_SAVE_CHUNK_NAME,
+  );
+  if (!legacySpec) {
+    throw new Error(`Missing chunk spec ${SHARED_SAVE_CHUNK_NAME}`);
+  }
+
+  const perFieldSpecs = RAW_CHUNK_SPECS_BY_GAME.oot.filter(
+    (spec) =>
+      spec.address >= legacySpec.address &&
+      spec.address + spec.length <= legacySpec.address + legacySpec.length,
+  );
+
+  return {
+    ...message,
+    chunks: [
+      ...message.chunks.filter(
+        (chunk) =>
+          chunk.name !== SHARED_SAVE_CHUNK_NAME &&
+          !chunk.name.startsWith('oot_shared_custom_save_'),
+      ),
+      ...perFieldSpecs.map((spec) => {
+        const offset = spec.address - legacySpec.address;
+        return {
+          name: spec.name,
+          address: spec.address,
+          length: spec.length,
+          data: Buffer.from(
+            sharedData.slice(offset, offset + spec.length),
+          ).toString('base64'),
+        };
+      }),
+    ],
+  };
+}
+
+/**
  * Builds a minimal OoT message plus a monolithic shared custom save chunk
  * with a single byte set at `offset`.
  */
@@ -1096,6 +1142,47 @@ describe('raw frame parser', () => {
     expect(parsed).not.toBeNull();
 
     expect(parsedItemMap(parsed!.items).get('OOT_SONG_EMPTINESS')).toBe(1);
+  });
+
+  it('requests the SharedCustomSave.cows field as its own live chunk', () => {
+    createRawAutotrackerParser('v33_0');
+
+    const sharedSpec = RAW_CHUNK_SPECS.find(
+      (spec) => spec.name === 'mm_shared_custom_save',
+    );
+    const cowsSpec = RAW_CHUNK_SPECS_BY_GAME.mm.find(
+      (spec) => spec.name === 'mm_shared_custom_save_cows',
+    );
+
+    expect(sharedSpec).toBeDefined();
+    expect(cowsSpec).toBeDefined();
+    expect(cowsSpec!.address - sharedSpec!.address).toBe(1100);
+    expect(cowsSpec!.length).toBe(4);
+  });
+
+  it('reports Cow checks from SharedCustomSave.cows through per-field chunks', () => {
+    const parser = createRawAutotrackerParser('v33_0');
+    const legacySpec = RAW_CHUNK_SPECS.find(
+      (spec) => spec.name === SHARED_SAVE_CHUNK_NAME,
+    );
+    expect(legacySpec).toBeDefined();
+
+    const sharedData = new Uint8Array(legacySpec!.length);
+    // 1 << 0x10 = Romani Ranch Barn Cow Left, 1 << 0x12 = Right Back.
+    writeU32BE(sharedData, 1100, (1 << 0x10) | (1 << 0x12));
+
+    const parsed = parser.parse(
+      withPerFieldSharedChunks(
+        buildMinimalOotMessage({ [EXTRA_IDX_OOT_TRADE]: 1 }),
+        sharedData,
+      ),
+    );
+    expect(parsed).not.toBeNull();
+
+    const checks = parsedCheckSet(parsed!.checks);
+    expect(checks.has('Romani Ranch Barn Cow Left')).toBe(true);
+    expect(checks.has('Romani Ranch Barn Cow Right Back')).toBe(true);
+    expect(checks.has('Romani Ranch Barn Cow Right Front')).toBe(false);
   });
 
   it('reads the MM boss remains from the moved MmExtraBoss.items byte', () => {
