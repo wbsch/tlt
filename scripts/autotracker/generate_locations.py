@@ -14,9 +14,11 @@ encodes everything the autotracker needs:
 
 That removes the raw-id -> bit conversions this script used to do from
 ``xflag_table_*.bin`` and the pool CSVs. MQ dungeon checks are still folded
-back onto their vanilla scene id: the save's permanent scene flags are indexed
-by the base scene id, so vanilla and MQ checks that share a flag bit are
-disambiguated at runtime by the MQ dungeon state (the ``*_conflicts`` tables).
+back onto their vanilla scene id (and, for the bitmap blocks, onto the shared
+bit the game actually sets): the save's permanent scene flags are indexed by
+the base scene id and the bitmap blocks share bits between vanilla and MQ, so
+vanilla and MQ checks that share a flag bit are disambiguated at runtime by
+the MQ dungeon state (the ``*_conflicts`` tables).
 """
 
 import argparse
@@ -129,7 +131,30 @@ def decode_key(key: int) -> tuple[int, int]:
 
 
 def dungeon_index_for_scene(scene_name: str) -> int | None:
+    if scene_name.endswith("_MQ"):
+        scene_name = scene_name[: -len("_MQ")]
     return MQ_DUNGEONS.get(scene_name)
+
+
+def fold_mq_bitmap_value(block: str, value: int) -> int:
+    """Map an MQ bitmap check id back to the bit it shares with vanilla.
+
+    OoTMM stores MQ variants in the same global bit arrays as the vanilla
+    checks, but keeps their ids distinct in the check data:
+
+    * silver rupees and scrubs use ``id & 0x7f`` (``Mark_SetOot`` /
+      ``Mark_GetOot``)
+    * skulltulas use ``id - 0xb0`` for ids above ``0xb0`` (``getGsFlagOot``)
+
+    Folding here makes the bitmap tables point at the bit the save actually
+    sets and turns the vanilla/MQ pairs into conflict entries that are
+    resolved at runtime via the MQ dungeon state.
+    """
+    if block in ("srOot", "scrubsOot"):
+        return value & 0x7F
+    if block == "gsOot" and value > 0xB0:
+        return value - 0xB0
+    return value
 
 
 def build_location_mapping(repo_root: pathlib.Path) -> dict[str, object]:
@@ -194,13 +219,21 @@ def build_location_mapping(repo_root: pathlib.Path) -> dict[str, object]:
 
         if ov in ("gs", "shop", "scrub", "sr", "fish", "npc"):
             block = BITMAP_BLOCKS[(game, ov)]
-            bitmap_key = (block, value)
+            stored_value = (
+                fold_mq_bitmap_value(block, value) if is_mq else value
+            )
+            bitmap_key = (block, stored_value)
             add_unique_mapping(
                 bitmap_checks_raw, bitmap_conflicts, bitmap_key, location
             )
 
             if block in MQ_CONFLICT_BLOCKS:
-                bitmap_candidates[bitmap_key].append((scene_name, location, is_mq))
+                base_scene_name = (
+                    scene_name[: -len("_MQ")] if is_mq else scene_name
+                )
+                bitmap_candidates[bitmap_key].append(
+                    (base_scene_name, location, is_mq)
+                )
             elif game == "oot" and ov == "npc":
                 symbol = npc_symbols["oot"].get(value)
                 if symbol is not None:
