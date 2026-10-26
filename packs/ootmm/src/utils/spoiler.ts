@@ -117,6 +117,17 @@ const parseValue = (raw: string): string | number | boolean => {
   return raw;
 };
 
+/**
+ * OoTMM's spoiler writer interpolates every setting with a plain template
+ * string, so object-valued settings (e.g. an untouched set-type setting such
+ * as `mmAgeReqRandom`) are written as the literal marker "[object Object]".
+ * Such entries carry no usable value and must not be treated as a setting
+ * diff or applied to the tracker.
+ */
+export function isUnusableSpoilerSettingValue(value: unknown): boolean {
+  return typeof value === 'string' && value === '[object Object]';
+}
+
 export function parseSpoilerLog(
   text: string,
   options: ParseSpoilerLogOptions = {},

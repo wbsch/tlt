@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest';
 import {
   getSpoilerLogPlayerOptions,
   isAutotrackingSupportedSpoilerVersion,
+  isUnusableSpoilerSettingValue,
   parseSpoilerLog,
 } from '../../packs/ootmm/src/utils/spoiler';
 
@@ -103,6 +104,22 @@ World Flags
       type: 'specific',
       values: ['Forest Temple'],
     });
+  });
+
+  it('marks values stringified by the OoTMM spoiler writer as unusable', () => {
+    const parsed = parseSpoilerLog(`Settings
+  mmAgeReqRandom: [object Object]
+  mode: single
+`);
+
+    expect(parsed.settings.mmAgeReqRandom).toBe('[object Object]');
+    expect(isUnusableSpoilerSettingValue(parsed.settings.mmAgeReqRandom)).toBe(
+      true,
+    );
+    expect(isUnusableSpoilerSettingValue(parsed.settings.mode)).toBe(false);
+    expect(isUnusableSpoilerSettingValue(true)).toBe(false);
+    expect(isUnusableSpoilerSettingValue({ type: 'none' })).toBe(false);
+    expect(isUnusableSpoilerSettingValue(undefined)).toBe(false);
   });
 
   it('captures POCKET region location placements', () => {

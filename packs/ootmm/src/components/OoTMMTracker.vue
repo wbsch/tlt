@@ -32,6 +32,7 @@ import {
 import {
   getSpoilerLogPlayerOptions,
   isAutotrackingSupportedSpoilerVersion,
+  isUnusableSpoilerSettingValue,
   parseSpoilerLog,
   type SpoilerLocationPlacement,
   type SpoilerLogData,
@@ -3593,6 +3594,7 @@ function collectSpoilerSettingsWarnings(
 
   for (const [key, rawValue] of Object.entries(settings)) {
     if (!settingsByKey.has(key)) continue;
+    if (isUnusableSpoilerSettingValue(rawValue)) continue;
     if (supportedSettingKeys.has(key)) continue;
     if (SPOILER_DEFAULT_CHECK_EXCLUDED_SETTINGS.has(key)) continue;
     if (!Object.prototype.hasOwnProperty.call(trackerDefaultSettingsByKey, key))
@@ -3620,6 +3622,7 @@ function collectSpoilerUnknownSettings(
 
   for (const [key, rawValue] of Object.entries(settings)) {
     if (settingsByKey.has(key)) continue;
+    if (isUnusableSpoilerSettingValue(rawValue)) continue;
     unknown.push({
       key,
       value: formatSpoilerSettingValue(rawValue),
@@ -3970,6 +3973,7 @@ async function applySpoilerLog(text: string, selectedPlayer?: number) {
 
   for (const [key, value] of Object.entries(normalizedSettings)) {
     if (!supportedSettingKeys.has(key)) continue;
+    if (isUnusableSpoilerSettingValue(value)) continue;
     const def = settingsByKey.get(key);
     settingsPatch[key] = coerceSettingValue(value, def);
   }
