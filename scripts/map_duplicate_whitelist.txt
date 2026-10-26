@@ -365,3 +365,5 @@ OOT Spirit Temple Boss
 OOT Spirit Temple Boss HC
 OOT Water Temple Boss
 OOT Water Temple Boss HC
+OOT Dodongo Cavern Gossip Big Fairy
+OOT Dodongo Cavern Gossip Fairy
