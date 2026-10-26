@@ -76,9 +76,9 @@ git ls-remote --tags https://github.com/OoTMM/OoTMM.git refs/tags/v32.0 refs/tag
 
 # 4. If the release changed the autotracker-relevant data, regenerate it
 # (validate:autotracker-data will fail during check-all/build otherwise).
-# Pass a patchfile from a seed generated with THIS release -- see the
-# "live_addrs.json" warning below for why this matters:
-OOTMM_PATCHFILE=/path/to/OoTMM-Patch-XXXX.ootmm npm run generate:autotracker-data
+# This derives everything, including live_addrs.json, from this checkout plus
+# the published web build:
+npm run generate:autotracker-data
 
 # 5. Everything should now be ready for our main pipeline checks
 npm run check-all
@@ -88,36 +88,42 @@ npm run check-all
 
 `generate:autotracker-data` writes a per-version data directory
 (`packs/ootmm/src/autotracker/data/v32_0/` and friends). Every file in there is
-derived from the checked-out release **except `live_addrs.json`**, which can only
-be produced from a real patchfile. Without `OOTMM_PATCHFILE` set, the generator
-falls back to `selectSeedFile()` and copies whatever it finds — and because the
-base data directory holds no `live_addrs.json`, the fallback lands on the legacy
-`tlt_autotracker/ootmm-autotracker/ootmm/live_addrs.json`, which is old and comes
-from an unrelated checkout. It does **not** fall back to the previous version's
-directory, which is what you would probably expect.
+derived from the checked-out release, **including `live_addrs.json`** — the
+combo-context/save-context/payload addresses come from the release's headers and
+linker scripts (`export_live_addrs.py`), and the two save globals are recovered by
+`derive_web_symbols.py` from payload code.
+
+The remaining risk is the web-symbol step: it needs the release to be published
+on ootmm.com. If the version is not up yet (or you are offline), it only warns
+and skips, leaving `foreignSaveLive`/`sharedCustomSaveLive` out of the file (they
+then show up under `notDerivableWithoutLinking`). Re-run the generator once the
+version is live, or pass the payloads directly
+(`derive_web_symbols.py --oot … --mm …`, see below).
 
 This is easy to miss because nothing complains:
 
 - `validate:autotracker-data` checks only that `live_addrs.json` exists and has
   the right shape (`schemaVersion`, plus `comboCtx`/`saveCtx`/`payload` per game).
-  Its _contents_ are compared against a fresh derivation only when
-  `OOTMM_PATCHFILE` is set, so without one `check-all` and CI stay green.
-- The file is structurally valid, so nothing fails at runtime either. Autotracking
-  simply reads the wrong memory addresses and reports nonsense.
+  Its _contents_ are never compared against a fresh derivation, so `check-all`
+  and CI stay green regardless.
+- An incomplete or stale file still parses: the parser falls back to its
+  hardcoded addresses for anything missing (those lag several versions), so
+  nothing fails at runtime either. Autotracking simply reads the wrong memory
+  addresses and reports nonsense.
 
 So after regenerating, confirm the file really came from this release:
 
 ```bash
-python3 -c "import json;print(json.load(open('packs/ootmm/src/autotracker/data/v32_0/live_addrs.json'))['generatedFrom'])"
+python3 -c "import json;d=json.load(open('packs/ootmm/src/autotracker/data/v32_0/live_addrs.json'));print(d['generatedFrom']);print(d['notDerivableWithoutLinking'])"
 ```
 
-If `patchfile` points at someone else's home directory or an old seed, it is
-stale — regenerate with `OOTMM_PATCHFILE` set to a seed built from this release.
+`notDerivableWithoutLinking` must be empty for both games; if `ootmmRepo` points
+at someone else's checkout, the file is stale. Regenerate as above.
 
-### If you have no patchfile for the new release
+### Repairing `live_addrs.json` by hand
 
-You can still produce a _partial_ `live_addrs.json` without one — but never let
-the silent fallback above write it. Delete whatever the generator copied, then:
+If you need to rebuild the file for a version without rerunning the whole
+generator, run the two steps it runs internally:
 
 ```bash
 # 1. Base file from the checked-out release's headers + linker scripts.
@@ -132,9 +138,11 @@ python3 scripts/autotracker/derive_web_symbols.py v32.1 --write \
     packs/ootmm/src/autotracker/data/v32_1/live_addrs.json
 ```
 
-Step 2 fills in the foreign/shared save globals, which the patchfile does not
-export — `live_addrs.json` is only complete after both steps (or a patchfile
-run).
+Step 2 fills in the foreign/shared save globals. The sources do not define them,
+so they always come from scanning payload code — the published web build by
+default, or payload images you already have on disk
+(`derive_web_symbols.py --oot … --mm …`). `generate:autotracker-data` runs the
+web-build variant automatically as its last step.
 
 Related: `packs/ootmm/src/autotracker/data/versions.ts` deliberately gates which
 versions are enabled for autotracking. Leave a new version out of that list until

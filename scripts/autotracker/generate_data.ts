@@ -60,7 +60,6 @@ function tagToDirName(tag: string): string {
 const DATA_DIR = path.join(AUTOTRACKER_DATA_BASE, detectOotmmVersionDir());
 
 interface GenerateOptions {
-  includeLiveAddrs: boolean;
   updateFallbackBaselines: boolean;
 }
 
@@ -107,7 +106,7 @@ function selectFallbackSeedFile(fileName: string): string {
  * `sharedCustomSaveLive` for the current OoTMM version from the published
  * ootmm.com web build (see `derive_web_symbols.py` and
  * `DERIVING_SAVE_SYMBOLS.md`). These addresses live in .bss and are not
- * present in the patchfile or in the OoTMM sources.
+ * present in the OoTMM sources.
  *
  * The derivation CHECK is run first; only when it passes are the values
  * written back into the version's `live_addrs.json` (`--write`). A failing
@@ -158,14 +157,9 @@ function maybeDeriveWebSaveSymbols(): void {
 }
 
 function parseArgs(argv: string[]): GenerateOptions {
-  let includeLiveAddrs = false;
   let updateFallbackBaselines = false;
 
   for (const arg of argv) {
-    if (arg === '--include-live-addrs') {
-      includeLiveAddrs = true;
-      continue;
-    }
     if (arg === '--update-fallback-baselines') {
       updateFallbackBaselines = true;
       continue;
@@ -173,11 +167,7 @@ function parseArgs(argv: string[]): GenerateOptions {
     throw new Error(`Unknown argument: ${arg}`);
   }
 
-  if (process.env.OOTMM_PATCHFILE) {
-    includeLiveAddrs = true;
-  }
-
-  return { includeLiveAddrs, updateFallbackBaselines };
+  return { updateFallbackBaselines };
 }
 
 function main(): void {
@@ -299,42 +289,14 @@ function main(): void {
     );
   }
 
-  if (!options.includeLiveAddrs) {
-    // Without a patchfile, seed live_addrs.json from an existing file (the
-    // current version dir, then the shared base data dir). If no seed exists,
-    // derive the addresses that are readable straight from the OoTMM sources
-    // so the run still completes — the patchfile-only fields will be missing
-    // and listed under "notDerivableWithoutLinking".
-    const liveAddrsSeed = selectSeedFile('live_addrs.json');
-    if (existsSync(liveAddrsSeed)) {
-      copyFileSync(liveAddrsSeed, path.join(DATA_DIR, 'live_addrs.json'));
-    } else {
-      console.warn(
-        '[generate_data] No OOTMM_PATCHFILE set and no existing live_addrs.json ' +
-          'seed found; deriving live addresses from OoTMM sources only. ' +
-          'The foreign/shared save addresses will be missing ' +
-          '(see "notDerivableWithoutLinking").',
-      );
-      runPython('export_live_addrs.py', [
-        '--ootmm-repo',
-        OOTMM_REPO,
-        '--output',
-        path.join(DATA_DIR, 'live_addrs.json'),
-      ]);
-    }
-  } else {
-    const liveAddrsArgs = [
-      '--ootmm-repo',
-      OOTMM_REPO,
-      '--output',
-      path.join(DATA_DIR, 'live_addrs.json'),
-    ];
-    const patchfile = process.env.OOTMM_PATCHFILE?.trim();
-    if (patchfile) {
-      liveAddrsArgs.push('--patchfile', patchfile);
-    }
-    runPython('export_live_addrs.py', liveAddrsArgs);
-  }
+  // Derive the addresses this release defines (comboCtx / saveCtx / payload).
+  // The foreign/shared save globals are added by the web-symbol step below.
+  runPython('export_live_addrs.py', [
+    '--ootmm-repo',
+    OOTMM_REPO,
+    '--output',
+    path.join(DATA_DIR, 'live_addrs.json'),
+  ]);
 
   formatGeneratedFiles(REPO_ROOT, generatedFiles);
 
@@ -351,7 +313,7 @@ function main(): void {
   }
 
   // Final step: recover the foreign/shared save addresses from the published
-  // ootmm.com web build (they are not derivable from the patchfile/sources)
+  // ootmm.com web build (they are not derivable from the sources)
   // and write them into this version's live_addrs.json — but only if the
   // derivation's consistency checks pass.
   maybeDeriveWebSaveSymbols();

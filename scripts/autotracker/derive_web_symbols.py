@@ -1,8 +1,9 @@
 #!/usr/bin/env python3
 """
-Derive the autotracker "missingPatchfileSymbols" (the foreign-save and
-shared-custom-save globals) straight from a *fully built web version* of OoTMM
-hosted on ootmm.com -- no toolchain, no local ROM build, stdlib only.
+Derive the autotracker's foreign-save and shared-custom-save globals
+(`foreignSaveLive` / `sharedCustomSaveLive`) straight from a *fully built web
+version* of OoTMM hosted on ootmm.com -- no toolchain, no local ROM build,
+stdlib only.
 
 Full write-up, the method, and the version-bump workflow live next to this file
 in `DERIVING_SAVE_SYMBOLS.md` -- read that first if you're bumping a version.
@@ -382,8 +383,8 @@ def write_back(path, results, source_desc, version):
         "tool": "scripts/autotracker/derive_web_symbols.py",
         "doc": "scripts/autotracker/DERIVING_SAVE_SYMBOLS.md",
         "note": (
-            "gMmSave/gOotSave/gSharedCustomSave are absent from the patchfile and "
-            "from the site's cosmetic symbol table; addresses were recovered by "
+            "gMmSave/gOotSave/gSharedCustomSave are absent from the OoTMM sources "
+            "and from the site's cosmetic symbol table; addresses were recovered by "
             "scanning the stripped payload code for the bzero/memcpy save-size "
             "signatures. Cross-checked: foreign == shared + detected shared size, "
             "and zero-filled .bss."

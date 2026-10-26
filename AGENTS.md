@@ -15,7 +15,7 @@ If you changed code that pertains to the core map tracker logic or its usage of 
 
 Feel free to temporarily edit `scripts/pathfinder-tests/reachability_full_inventory.ts` in order to test other things, or use it as a blueprint for a similar file.
 
-When bumping the tracked OoTMM version (adding `packs/ootmm/src/autotracker/data/vXX_Y/`), some addresses in `live_addrs.json` — `foreignSaveLive` / `sharedCustomSaveLive` — are NOT in the patchfile and must be derived from the payload. Follow `scripts/autotracker/DERIVING_SAVE_SYMBOLS.md` (it drives `scripts/autotracker/derive_web_symbols.py`, which works off the ootmm.com web build — no OoTMM build, ever).
+When bumping the tracked OoTMM version (adding `packs/ootmm/src/autotracker/data/vXX_Y/`), some addresses in `live_addrs.json` — `foreignSaveLive` / `sharedCustomSaveLive` — are not defined by the OoTMM sources and must be derived from the payload. Follow `scripts/autotracker/DERIVING_SAVE_SYMBOLS.md` (it drives `scripts/autotracker/derive_web_symbols.py`, which works off the ootmm.com web build — no OoTMM build, ever).
 
 If you have changed relevant files, make sure the build still runs successfully before you're done: Run `npm run build`
 

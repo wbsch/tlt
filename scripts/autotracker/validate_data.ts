@@ -159,7 +159,7 @@ function validateLiveAddrsSchema(): void {
   const liveAddrsPath = path.join(DATA_DIR, 'live_addrs.json');
   if (!existsSync(liveAddrsPath)) {
     throw new Error(
-      'live_addrs.json is missing. Generate it with OOTMM_PATCHFILE=<path> npm run generate:autotracker-data -- --include-live-addrs.',
+      'live_addrs.json is missing. Generate it with npm run generate:autotracker-data.',
     );
   }
 
@@ -179,31 +179,6 @@ function validateLiveAddrsSchema(): void {
         throw new Error(`live_addrs.json is missing ${game}.${key}.`);
       }
     }
-  }
-}
-
-function maybeValidateLiveAddrsExact(tempDir: string): void {
-  const patchfile = process.env.OOTMM_PATCHFILE?.trim();
-  if (!patchfile) {
-    return;
-  }
-
-  runPython('export_live_addrs.py', [
-    '--ootmm-repo',
-    OOTMM_REPO,
-    '--patchfile',
-    patchfile,
-    '--output',
-    path.join(tempDir, 'live_addrs.json'),
-  ]);
-  formatGeneratedFiles(REPO_ROOT, [path.join(tempDir, 'live_addrs.json')]);
-
-  const actual = readUtf8(path.join(DATA_DIR, 'live_addrs.json'));
-  const expected = readUtf8(path.join(tempDir, 'live_addrs.json'));
-  if (actual !== expected) {
-    throw new Error(
-      'live_addrs.json is out of date for the configured OOTMM_PATCHFILE. Run npm run generate:autotracker-data -- --include-live-addrs.',
-    );
   }
 }
 
@@ -254,7 +229,6 @@ function main(): void {
 
     validateDataManifest();
     validateLiveAddrsSchema();
-    maybeValidateLiveAddrsExact(tempDir);
   } finally {
     rmSync(tempDir, { recursive: true, force: true });
   }

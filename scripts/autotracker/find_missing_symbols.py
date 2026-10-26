@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 """
-Extract the OoTMM payload symbol addresses the autotracker needs but which the
-patchfile does NOT export (the `missingPatchfileSymbols`), by reading the
-UNSTRIPPED payload ELFs produced by the generator build.
+Extract the OoTMM payload symbol addresses the autotracker needs but which are
+absent from the OoTMM sources, by reading the UNSTRIPPED payload ELFs produced by
+the generator build.
 
 NOT THE NORMAL PATH. Use the sibling `derive_web_symbols.py`, which recovers the
 same addresses from the STRIPPED payloads the website already ships. Full

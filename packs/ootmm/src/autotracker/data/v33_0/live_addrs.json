@@ -1,7 +1,6 @@
 {
   "schemaVersion": 1,
   "generatedFrom": {
-    "patchfile": "/home/silke/stuff/repos/tlt/OoTMM-Patch-FgPuniix.ootmm",
     "ootmmRepo": "/home/silke/stuff/repos/tlt/OoTMM",
     "defs": "/home/silke/stuff/repos/tlt/OoTMM/packages/generator/include/combo/defs.h",
     "ootLinker": "/home/silke/stuff/repos/tlt/OoTMM/packages/generator/src/link_oot.in",
@@ -16,11 +15,10 @@
     "derivation": {
       "comboCtx": "source-define",
       "saveCtx": "source-linker",
-      "payload": "patchfile-vram",
-      "sharedCustomSaveLive": "patchfile-payload-code-scan",
-      "foreignSaveLive": "patchfile-payload-code-scan"
-    },
-    "missingPatchfileSymbols": ["gMmSave", "gSharedCustomSave"]
+      "payload": "source-define",
+      "sharedCustomSaveLive": "web-payload-code-scan",
+      "foreignSaveLive": "web-payload-code-scan"
+    }
   },
   "mm": {
     "comboCtx": "0x80098280",
@@ -31,21 +29,20 @@
     "derivation": {
       "comboCtx": "source-define",
       "saveCtx": "source-linker",
-      "payload": "patchfile-vram",
-      "sharedCustomSaveLive": "patchfile-payload-code-scan",
-      "foreignSaveLive": "patchfile-payload-code-scan"
-    },
-    "missingPatchfileSymbols": ["gOotSave", "gSharedCustomSave"]
+      "payload": "source-define",
+      "sharedCustomSaveLive": "web-payload-code-scan",
+      "foreignSaveLive": "web-payload-code-scan"
+    }
   },
   "notDerivableWithoutLinking": {
     "oot": [],
     "mm": []
   },
   "savesDerivedFrom": {
-    "method": "patchfile-payload-code-scan",
-    "source": "OoTMM-Patch-FgPuniix.ootmm (oot/payload, mm/payload)",
-    "tool": "scripts/autotracker/derive_web_symbols.py --oot <oot_payload.bin> --mm <mm_payload.bin>",
+    "method": "web-payload-code-scan",
+    "source": "https://static.ootmm.com/assets/data-Cj4C9Osh.zip (v33.0)",
+    "tool": "scripts/autotracker/derive_web_symbols.py",
     "doc": "scripts/autotracker/DERIVING_SAVE_SYMBOLS.md",
-    "note": "gMmSave/gOotSave/gSharedCustomSave are not exported by the patchfile, but the patchfile ships the raw payload images (including zero-filled .bss). Addresses were recovered by scanning the payload code for the bzero/memcpy save-size signatures. Cross-checked: foreign == shared + detected shared size, zero-filled .bss, and the MM gSaveContext anchor."
+    "note": "gMmSave/gOotSave/gSharedCustomSave are absent from the OoTMM sources and from the site's cosmetic symbol table; addresses were recovered by scanning the stripped payload code for the bzero/memcpy save-size signatures. Cross-checked: foreign == shared + detected shared size, and zero-filled .bss."
   }
 }

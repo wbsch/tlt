@@ -1,7 +1,8 @@
-# Deriving the autotracker save-global addresses (`missingPatchfileSymbols`)
+# Deriving the autotracker save-global addresses
 
 Instructions for future me. This is about the four `live_addrs.json` values that
-the OoTMM `.ootmm` patchfile does **not** contain:
+the OoTMM sources do **not** define (they are plain `.bss` globals with no header
+offset and no linker-script entry):
 
 | game | key in `live_addrs.json` | payload symbol      | what it is                                         |
 | ---- | ------------------------ | ------------------- | -------------------------------------------------- |
@@ -25,14 +26,13 @@ build, that step is wrong; stop and say so rather than kicking off a toolchain.
 ## Why they're "missing"
 
 They live in `.bss` (zero-initialised), so they have no data signature, and they
-are **not** exported by the patchfile nor by the website's cosmetic symbol table.
+are **not** exported by the website's cosmetic symbol table either.
 
-The `.ootmm` patchfile _does_ ship the linked payload images as `newFiles`
-entries `oot/payload` and `mm/payload` (`blob.bin` at `offset`, `size` bytes,
-raw big-endian, including the zero-filled `.bss`). The same code scan below
-therefore works offline on those bytes: extract both payloads and run
-`derive_web_symbols.py --oot <oot_payload.bin> --mm <mm_payload.bin>`. The web
-zip remains the primary path when no patchfile is available.
+The code scan below only needs the two payload images (`oot_payload.bin` /
+`mm_payload.bin`, raw big-endian, including the zero-filled `.bss`). The web zip
+ships them, so `derive_web_symbols.py vX.Y` is normally all you need; if you
+already have the payloads on disk from some other source, pass them directly with
+`derive_web_symbols.py --oot <oot_payload.bin> --mm <mm_payload.bin>`.
 
 So we recover them from the payload code: `derive_web_symbols.py` (this dir)
 pulls the _stripped_ payload the web generator ships and scans the payload code
@@ -144,7 +144,7 @@ mm.sharedCustomSaveLive  = 0x8076bc40   (gSharedCustomSave)
 mm.foreignSaveLive       = 0x8076c4d0   (gOotSave, size 0x1354)
 ```
 
-## v33.0 reference values (verified from the patchfile payloads)
+## v33.0 reference values (verified from the web payloads)
 
 ```
 oot.sharedCustomSaveLive = 0x8044dd60   (gSharedCustomSave, size 0x520)

@@ -6,7 +6,6 @@ import json
 import pathlib
 import re
 import sys
-import zipfile
 from typing import Dict
 
 
@@ -28,12 +27,6 @@ def parse_args() -> argparse.Namespace:
 		help="Path to the OOTMM repository for source fallbacks (default: ../OoTMM)",
 	)
 	parser.add_argument(
-		"--patchfile",
-		type=pathlib.Path,
-		default=None,
-		help="Optional .ootmm patchfile used as the primary derivation source",
-	)
-	parser.add_argument(
 		"--output",
 		type=pathlib.Path,
 		default=pathlib.Path("ootmm/live_addrs.json"),
@@ -45,36 +38,20 @@ def parse_args() -> argparse.Namespace:
 def main() -> int:
 	args = parse_args()
 	repo = args.ootmm_repo.resolve() if args.ootmm_repo is not None else None
-	patchfile = args.patchfile.resolve() if args.patchfile is not None else None
-	if patchfile is None and repo is None:
-		print("Either --patchfile or --ootmm-repo is required", file=sys.stderr)
-		return 1
-	if patchfile is not None and not patchfile.is_file():
-		print(f"Warning: patchfile not found ({patchfile}) — live address data will not be updated from the patchfile.", file=sys.stderr)
-		patchfile = None
-	if repo is not None and not repo.is_dir():
+	if repo is None or not repo.is_dir():
 		print(f"OOTMM repository not found: {repo}", file=sys.stderr)
 		return 1
 
-	patch_meta = load_patchfile(patchfile) if patchfile is not None else None
-	source_meta = load_source_metadata(repo) if repo is not None else None
-
-	generated_from = {}
-	if patchfile is not None:
-		generated_from["patchfile"] = str(patchfile)
-	if source_meta is not None:
-		generated_from.update(source_meta["generatedFrom"])
+	source_meta = load_source_metadata(repo)
 
 	oot_output = build_game_output(
 		"oot",
-		patch_meta,
 		source_meta,
 		link_symbol_name="gSaveContext",
 		combo_define_name="COMBO_CTX_ADDR_OOT",
 	)
 	mm_output = build_game_output(
 		"mm",
-		patch_meta,
 		source_meta,
 		link_symbol_name="gSaveContext",
 		combo_define_name="COMBO_CTX_ADDR_MM",
@@ -82,7 +59,7 @@ def main() -> int:
 
 	output = {
 		"schemaVersion": 1,
-		"generatedFrom": generated_from,
+		"generatedFrom": source_meta["generatedFrom"],
 		"oot": oot_output,
 		"mm": mm_output,
 		"notDerivableWithoutLinking": {
@@ -96,18 +73,6 @@ def main() -> int:
 	output_path.write_text(json.dumps(output, indent=2) + "\n", encoding="utf-8")
 	print(output_path)
 	return 0
-
-
-def load_patchfile(path: pathlib.Path) -> dict:
-	with zipfile.ZipFile(path) as archive:
-		meta = json.loads(archive.read("meta.json"))
-		symbols = json.loads(archive.read("symbols.json"))
-		blob = archive.read("blob.bin")
-	return {
-		"meta": meta,
-		"symbols": symbols,
-		"blob": blob,
-	}
 
 
 def load_source_metadata(repo: pathlib.Path) -> dict:
@@ -141,63 +106,26 @@ def load_source_metadata(repo: pathlib.Path) -> dict:
 
 def build_game_output(
 	game: str,
-	patch_meta: dict | None,
-	source_meta: dict | None,
+	source_meta: dict,
 	link_symbol_name: str,
 	combo_define_name: str,
 ) -> dict:
 	output: dict = {}
 	derivation: dict = {}
-	missing_patch_symbols: list[str] = []
-	patch_symbols = patch_meta["symbols"][game] if patch_meta is not None else {}
 
-	combo_value = None
-	if source_meta is not None:
-		combo_value = resolve_define(combo_define_name, source_meta["defines"]["root"])
-		output["comboCtx"] = format_hex(combo_value)
-		derivation["comboCtx"] = "source-define"
+	combo_value = resolve_define(combo_define_name, source_meta["defines"]["root"])
+	output["comboCtx"] = format_hex(combo_value)
+	derivation["comboCtx"] = "source-define"
 
-	save_value = None
-	if source_meta is not None:
-		save_value = require_link_symbol(source_meta["links"][game], link_symbol_name)
-		output["saveCtx"] = format_hex(save_value)
-		derivation["saveCtx"] = "source-linker"
+	save_value = require_link_symbol(source_meta["links"][game], link_symbol_name)
+	output["saveCtx"] = format_hex(save_value)
+	derivation["saveCtx"] = "source-linker"
 
-	payload_value = None
-	if patch_meta is not None:
-		payload_entry = patchfile_new_file(patch_meta["meta"], f"{game}/payload")
-		payload_vram = extract_patchfile_vram(payload_entry, game)
-		if payload_vram is not None:
-			payload_value = payload_vram
-			output["payload"] = format_hex(payload_vram)
-			derivation["payload"] = "patchfile-vram"
-	if payload_value is None and source_meta is not None:
-		payload_value = resolve_define("PAYLOAD_RAM", source_meta["defines"][game])
-		output["payload"] = format_hex(payload_value)
-		derivation["payload"] = "source-define"
+	payload_value = resolve_define("PAYLOAD_RAM", source_meta["defines"][game])
+	output["payload"] = format_hex(payload_value)
+	derivation["payload"] = "source-define"
 
-	optional_symbol_map = {
-		"oot": {
-			"foreignSaveLive": "gMmSave",
-			"sharedCustomSaveLive": "gSharedCustomSave",
-		},
-		"mm": {
-			"foreignSaveLive": "gOotSave",
-			"sharedCustomSaveLive": "gSharedCustomSave",
-		},
-	}[game]
-	for field_name, symbol_name in optional_symbol_map.items():
-		symbol_value = first_patch_symbol(patch_symbols, symbol_name)
-		if symbol_value is None:
-			missing_patch_symbols.append(symbol_name)
-			continue
-		output[field_name] = format_hex(symbol_value)
-		derivation[field_name] = "patchfile-symbol"
-
-	if derivation:
-		output["derivation"] = derivation
-	if patch_meta is not None and missing_patch_symbols:
-		output["missingPatchfileSymbols"] = sorted(set(missing_patch_symbols))
+	output["derivation"] = derivation
 	return output
 
 
@@ -213,28 +141,6 @@ def not_derivable_without_linking(game: str, output: dict) -> list[str]:
 		],
 	}[game]
 	return [field for field in fields if field not in output]
-
-
-def patchfile_new_file(meta: dict, name: str) -> dict:
-	for entry in meta.get("newFiles", []):
-		if entry.get("name") == name:
-			return entry
-	raise ValueError(f"patchfile is missing new file {name!r}")
-
-
-def extract_patchfile_vram(entry: dict, game: str) -> int | None:
-	vram = entry.get("vram") or {}
-	range_value = vram.get(game)
-	if not range_value:
-		return None
-	return int(range_value[0])
-
-
-def first_patch_symbol(symbols: dict, name: str) -> int | None:
-	values = symbols.get(name)
-	if not values:
-		return None
-	return int(values[0])
 
 
 def parse_link_assignments(text: str) -> Dict[str, int]:
@@ -265,7 +171,6 @@ def parse_define_block(text: str) -> Dict[str, str]:
 		name, expr = match.groups()
 		defines[name] = expr.split("/*", 1)[0].strip()
 	return defines
-
 
 def resolve_define(name: str, defines: Dict[str, str]) -> int:
 	if name not in defines:
