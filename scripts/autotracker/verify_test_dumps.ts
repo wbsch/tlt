@@ -64,7 +64,9 @@ async function main(): Promise<void> {
     if (failed) {
       console.error(
         'One or more test dumps failed verification. If the parser changed ' +
-          'intentionally, re-capture the affected dump(s) via the debug dump UI.',
+          'intentionally, re-capture the affected dump(s) via the debug dump UI ' +
+          'or migrate them with scripts/autotracker/migrate_dump_expected.ts ' +
+          '(see docs/autotracker-raw-operations.md).',
       );
       process.exitCode = 1;
     }

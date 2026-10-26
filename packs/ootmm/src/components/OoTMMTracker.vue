@@ -115,6 +115,7 @@ import {
   mergeAutotrackerInventoryUpdate,
 } from '../autotracker/mergeState';
 import { DERIVED_AUTOTRACKER_ITEM_IDS } from '../autotracker/autotrackerMapping';
+import { resolveOotMqDungeonCodes } from '../autotracker/mqDungeons';
 
 const props = defineProps<{
   tracker: TrackerPack;
@@ -238,6 +239,18 @@ type AutotrackerDumpFile = {
   dumpKind: AutotrackerDumpKind;
   createdAt: string;
   ootmmVersion: string | null;
+  /**
+   * OoT dungeons that were on the MQ layout during the capture, as
+   * `mqDungeons` codes. The parser takes the vanilla/MQ split from the spoiler
+   * log rather than the runtime MQ bits, so verification has to replay it.
+   */
+  mqDungeons?: string[];
+  /**
+   * Whether the capture had the bronze scale enabled (spoiler-log
+   * `bronzeScale` setting). It affects the derived `OOT_SCALE`/`MM_SCALE`
+   * quantities, so verification has to replay it too.
+   */
+  bronzeScale?: boolean;
   expected: AutotrackerDumpExpected;
   // Tracker-native summary (translated inventory + collected location ids).
   // Only present on the normal ("sparse") dump; the full dump omits it.
@@ -1073,6 +1086,22 @@ function handleSceneChange(
 let pendingAutotrackerInventoryUpdate: PendingAutotrackerInventoryUpdate | null =
   null;
 
+// Which OoT dungeons use the MQ layout is fixed at generation time and comes
+// from the spoiler log's `mqDungeons` world flag (imported into the tracker
+// settings). The autotracker resolves vanilla/MQ check names from this instead
+// of reading the runtime MQ bits out of RAM.
+const autotrackerMqDungeons = computed(() =>
+  resolveOotMqDungeonCodes(trackerSettings.value?.mqDungeons),
+);
+
+// The bronze scale is a spoiler-log setting ("Settings" section, not a world
+// flag). The autotracker needs it to know whether the runtime bronze-scale bit
+// counts as an extra progressive scale step, instead of reading the
+// `BRONZE_SCALE` combo-config flag out of RAM.
+const autotrackerBronzeScale = computed(() =>
+  Boolean(trackerSettings.value?.bronzeScale),
+);
+
 const autotracker = useAutotracker({
   availableItemIds: availableItemIds,
   itemMaxCounts: itemMaxCounts,
@@ -1083,6 +1112,8 @@ const autotracker = useAutotracker({
     Boolean(trackerSettings.value?.sticksNutsUpgradesInitial),
   ),
   ootmmVersion: importedSpoilerLogVersion,
+  mqDungeons: autotrackerMqDungeons,
+  bronzeScale: autotrackerBronzeScale,
   onInventoryUpdate: (inventory, meta) => {
     pendingAutotrackerInventoryUpdate = {
       inventory: { ...inventory },
@@ -2799,6 +2830,8 @@ async function buildAutotrackerDumpSummary(
 ): Promise<AutotrackerDumpSummary | null> {
   const parser = await createRawAutotrackerParser({
     ootmmVersion: importedSpoilerLogVersion.value,
+    mqDungeons: autotrackerMqDungeons.value,
+    bronzeScale: autotrackerBronzeScale.value,
   });
   const parsed = parser.parse(rawSnapshot);
   if (!parsed) {
@@ -2829,6 +2862,8 @@ async function buildAutotrackerDumpExpected(
 ): Promise<AutotrackerDumpExpected | null> {
   const parser = await createRawAutotrackerParser({
     ootmmVersion: importedSpoilerLogVersion.value,
+    mqDungeons: autotrackerMqDungeons.value,
+    bronzeScale: autotrackerBronzeScale.value,
   });
   const parsed = parser.parse(rawSnapshot);
   if (!parsed) {
@@ -3050,6 +3085,8 @@ async function exportAutotrackerDump(
       ootmmVersion:
         importedSpoilerLogVersion.value ??
         resolveAutotrackerDataVersion(null).label,
+      mqDungeons: autotrackerMqDungeons.value,
+      bronzeScale: autotrackerBronzeScale.value,
       expected,
       ...(summary ? { summary } : {}),
       rawFrame: {
@@ -3156,6 +3193,8 @@ function classifyAutotrackerFrameRejection(raw: RawAutotrackerMessage): string {
 async function recordAutotrackerFrames(): Promise<boolean> {
   const parser = await createRawAutotrackerParser({
     ootmmVersion: importedSpoilerLogVersion.value,
+    mqDungeons: autotrackerMqDungeons.value,
+    bronzeScale: autotrackerBronzeScale.value,
   });
 
   const startedAt = Date.now();

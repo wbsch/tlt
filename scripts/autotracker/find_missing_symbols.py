@@ -32,11 +32,7 @@ Symbols we pull out
 
 Validation anchors (must match the v31.1 values already in live_addrs.json,
 otherwise the ELF is not v31.1 / not the right build):
-    OoT gComboConfig     == 0x80449ad8   (comboConfigLive)
-    OoT gSilverRupeeData == 0x80434c0c   (runtimeSilverRupeeDataLive)
-    OoT g + 0x20         == 0x8044a098   (runtimeMaxKeysLive)  => g == 0x8044a078
     OoT gSaveContext     == 0x8011a5d0   (saveCtx, from linker script)
-    MM  gComboConfig     == 0x8076a5c8   (comboConfigLive)
     MM  gSaveContext     == 0x801ef670   (saveCtx, from linker script)
 """
 
@@ -50,13 +46,9 @@ SHT_SYMTAB = 2
 
 EXPECTED = {
     "oot": {
-        "gComboConfig": 0x80449AD8,
-        "gSilverRupeeData": 0x80434C0C,
-        "g+0x20": 0x8044A098,
         "gSaveContext": 0x8011A5D0,
     },
     "mm": {
-        "gComboConfig": 0x8076A5C8,
         "gSaveContext": 0x801EF670,
     },
 }
@@ -219,11 +211,7 @@ def main():
         # Validation anchors
         print("    validation anchors:")
         for key, exp in EXPECTED[game].items():
-            if key == "g+0x20":
-                got = syms.get("g")
-                got = (got + 0x20) if got is not None else None
-            else:
-                got = syms.get(key)
+            got = syms.get(key)
             ok = got == exp
             all_ok = all_ok and ok
             print(f"      {key:<18} got {h(got)}  expected {h(exp)}  {'OK' if ok else 'MISMATCH'}")

@@ -59,9 +59,6 @@ ws.on('open', () => {
         'oot_foreign_mm_day',
         'oot_foreign_mm_cycle_flags',
         'oot_shared_custom_save_bitmap_0',
-        'oot_runtime_combo_config',
-        'oot_runtime_silver_rupee_data',
-        'oot_runtime_max_keys',
       ],
       mm: [
         'mm_save_state',
@@ -70,7 +67,6 @@ ws.on('open', () => {
         'mm_save_state_week_event_reg',
         'mm_foreign_oot_save',
         'mm_shared_custom_save_bitmap_0',
-        'mm_runtime_combo_config',
         'mm_playstate_scene',
         'mm_playstate_room',
         'mm_playstate_flags',

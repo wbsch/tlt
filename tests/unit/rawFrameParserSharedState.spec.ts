@@ -6,16 +6,8 @@ import {
 } from '../../packs/ootmm/src/autotracker/rawFrameParser';
 import { buildRawMessage } from '../helpers/autotrackerFixtures';
 
-// The BRONZE_SCALE flag index in ComboConfig.config[] is version data (v30.1:
-// bit 192; v31.0+: bit 225). config[] itself starts at 0xec inside the combo
-// config block, so the byte to poke is 0xec + (flag >> 3).
-const BRONZE_SCALE_COMBO_CONFIG_FLAG = 192;
-const BRONZE_SCALE_COMBO_CONFIG_FLAGS_OFFSET = 0xec;
-const BRONZE_SCALE_COMBO_CONFIG_BYTE_OFFSET =
-  BRONZE_SCALE_COMBO_CONFIG_FLAGS_OFFSET +
-  (BRONZE_SCALE_COMBO_CONFIG_FLAG >> 3);
-const BRONZE_SCALE_COMBO_CONFIG_BIT_MASK =
-  1 << (BRONZE_SCALE_COMBO_CONFIG_FLAG & 7);
+// The parser takes the bronze-scale setting from the spoiler log; RAM only
+// contributes the shared `progressiveFlags` bronze pre-stage bit.
 const OOT_SCALE_BRONZE_PROGRESSIVE_BIT_MASK = 1 << 4;
 const MM_SCALE_BRONZE_PROGRESSIVE_BIT_MASK = 1 << 3;
 
@@ -49,17 +41,8 @@ function updateChunkData(
 function withSyntheticBronzeScaleData(
   message: RawAutotrackerMessage,
 ): RawAutotrackerMessage {
-  const withBronzeComboConfig = updateChunkData(
-    message,
-    'oot_runtime_combo_config',
-    (data) => {
-      data[BRONZE_SCALE_COMBO_CONFIG_BYTE_OFFSET] |=
-        BRONZE_SCALE_COMBO_CONFIG_BIT_MASK;
-    },
-  );
-
   return updateChunkData(
-    withBronzeComboConfig,
+    message,
     'oot_shared_custom_save_bitmap_progressiveFlags',
     (data) => {
       data[0] |=
@@ -77,12 +60,7 @@ function zeroTransitionAuxiliaryChunks(
     ...message,
     sequence,
     chunks: message.chunks.map((chunk) => {
-      if (
-        !chunk.name.includes('_shared_custom_save_') &&
-        chunk.name !== 'oot_runtime_combo_config' &&
-        chunk.name !== 'oot_runtime_max_keys' &&
-        chunk.name !== 'oot_runtime_silver_rupee_data'
-      ) {
+      if (!chunk.name.includes('_shared_custom_save_')) {
         return chunk;
       }
 
@@ -96,7 +74,7 @@ function zeroTransitionAuxiliaryChunks(
 
 describe('rawFrameParser shared state fallback', () => {
   it('keeps the last known shared and runtime state when a later frame zeroes transition chunks during the same save state', () => {
-    const parser = createRawAutotrackerParser('v30_1');
+    const parser = createRawAutotrackerParser('v30_1', { bronzeScale: true });
     const { message } = buildRawMessage('after-bomchu-1-20260501-201847.json');
     const bronzeMessage = withSyntheticBronzeScaleData(message);
 
@@ -114,7 +92,7 @@ describe('rawFrameParser shared state fallback', () => {
   });
 
   it('does not invent shared or runtime state before any valid snapshot was seen', () => {
-    const parser = createRawAutotrackerParser('v30_1');
+    const parser = createRawAutotrackerParser('v30_1', { bronzeScale: true });
     const { message } = buildRawMessage('after-bomchu-1-20260501-201847.json');
     const bronzeMessage = withSyntheticBronzeScaleData(message);
 

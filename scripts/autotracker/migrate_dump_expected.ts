@@ -24,12 +24,30 @@
  * quantity of the listed ids to the parser output while still refusing any
  * other difference. Both modes can be combined.
  *
+ * `--mq-dungeons` backfills the `mqDungeons` field of dumps captured before
+ * the parser stopped reading the runtime MQ bits from `ComboConfig.mq`. The
+ * list is inferred from the dump's own `expected.locations` (see
+ * `deriveMqDungeons`), so historical dumps can still be replayed with the MQ
+ * layout they were captured with.
+ *
+ * `--bronze-scale` backfills the `bronzeScale` field of dumps captured before
+ * the parser stopped reading the `ComboConfig` bronze flag. Both values are
+ * tried and the one that reproduces the dump's own `expected.items` is
+ * recorded (the setting only shifts the derived `OOT_SCALE`/`MM_SCALE`
+ * quantities by one).
+ *
  * Usage:
  *   node --import tsx scripts/autotracker/migrate_dump_expected.ts \
  *     --add MM_SHIELD_IS_DEKU --write
  *
  *   node --import tsx scripts/autotracker/migrate_dump_expected.ts \
  *     --fix-qty OOT_SCALE --fix-qty MM_SCALE --write
+ *
+ *   node --import tsx scripts/autotracker/migrate_dump_expected.ts \
+ *     --mq-dungeons --write
+ *
+ *   node --import tsx scripts/autotracker/migrate_dump_expected.ts \
+ *     --bronze-scale --write
  */
 import { fileURLToPath } from 'node:url';
 import path from 'node:path';
@@ -48,6 +66,8 @@ type Item = { id: string; qty: number };
 type Options = {
   add: Set<string>;
   fixQty: Set<string>;
+  mqDungeons: boolean;
+  bronzeScale: boolean;
   write: boolean;
   dirs: string[];
   help: boolean;
@@ -57,6 +77,8 @@ function parseArgs(argv: string[]): Options {
   const options: Options = {
     add: new Set(),
     fixQty: new Set(),
+    mqDungeons: false,
+    bronzeScale: false,
     write: false,
     dirs: [DEFAULT_DUMPS_DIR, ...COMMITTED_FIXTURES],
     help: false,
@@ -82,6 +104,10 @@ function parseArgs(argv: string[]): Options {
         throw new Error('--dir requires a path');
       }
       options.dirs.push(path.resolve(value));
+    } else if (arg === '--mq-dungeons') {
+      options.mqDungeons = true;
+    } else if (arg === '--bronze-scale') {
+      options.bronzeScale = true;
     } else if (arg === '--write') {
       options.write = true;
     } else if (arg === '--help' || arg === '-h') {
@@ -112,19 +138,102 @@ function collectDumpFiles(dirs: string[]): string[] {
   return files.sort((left, right) => left.localeCompare(right));
 }
 
+type ConflictEntry = {
+  dungeonMq: number;
+  vanilla: string | string[];
+  mq: string | string[];
+};
+
+type MqDerivationInput = {
+  dirName: string;
+  expectedLocations: readonly string[];
+  registry: {
+    getVersionedDataFile: (
+      dirName: string,
+      fileName: string,
+    ) => {
+      scene_conflicts?: ConflictEntry[];
+      bitmap_conflicts?: ConflictEntry[];
+    } | null;
+  };
+  mqMod: { OOT_MQ_DUNGEON_CODES: readonly string[] };
+};
+
+function asNames(value: string | string[] | undefined): string[] {
+  if (typeof value === 'string') {
+    return [value];
+  }
+  return value ?? [];
+}
+
+/**
+ * Infer the MQ dungeon list a legacy dump was captured with from its own
+ * `expected` ground truth.
+ *
+ * The parser used to read the vanilla/MQ split from `ComboConfig.mq` in RAM,
+ * which a dump does not replay. The recorded `expected.locations` however only
+ * contains the names the parser actually emitted, and the version's
+ * `locations.json` maps every dungeon to its vanilla and MQ name variants
+ * (`dungeonMq`). So a dungeon is MQ exactly when more of its MQ variants show
+ * up in the dump than vanilla ones.
+ *
+ * A dungeon without any variant in the dump is left vanilla: none of its
+ * conflicting locations were collected, so the split cannot affect replay.
+ */
+function deriveMqDungeons(input: MqDerivationInput): string[] {
+  const locations = input.registry.getVersionedDataFile(
+    input.dirName,
+    'locations.json',
+  );
+  const codes = input.mqMod.OOT_MQ_DUNGEON_CODES;
+  if (!locations) {
+    return [];
+  }
+  const present = new Set(input.expectedLocations);
+  const hitCounts = codes.map(() => ({ mq: 0, vanilla: 0 }));
+  const entries = [
+    ...(locations.scene_conflicts ?? []),
+    ...(locations.bitmap_conflicts ?? []),
+  ];
+  for (const entry of entries) {
+    const counts = hitCounts[entry.dungeonMq];
+    if (!counts) {
+      continue;
+    }
+    counts.mq += asNames(entry.mq).filter((name) => present.has(name)).length;
+    counts.vanilla += asNames(entry.vanilla).filter((name) =>
+      present.has(name),
+    ).length;
+  }
+  const derived: string[] = [];
+  hitCounts.forEach((counts, index) => {
+    if (counts.mq > counts.vanilla) {
+      derived.push(codes[index]);
+    }
+  });
+  return derived;
+}
+
 async function main(): Promise<void> {
   const options = parseArgs(process.argv.slice(2));
   if (options.help) {
     console.log(
       'Usage: node --import tsx scripts/autotracker/migrate_dump_expected.ts ' +
         '[--add <RAW_ITEM_ID> ...] [--fix-qty <RAW_ITEM_ID> ...] ' +
+        '[--mq-dungeons] [--bronze-scale] ' +
         '[--dir <dumps dir>] [--write]',
     );
     return;
   }
-  if (options.add.size === 0 && options.fixQty.size === 0) {
+  if (
+    options.add.size === 0 &&
+    options.fixQty.size === 0 &&
+    !options.mqDungeons &&
+    !options.bronzeScale
+  ) {
     throw new Error(
-      'Refusing to run without --add <RAW_ITEM_ID> or --fix-qty <RAW_ITEM_ID>',
+      'Refusing to run without --add <RAW_ITEM_ID>, --fix-qty <RAW_ITEM_ID>, ' +
+        '--mq-dungeons or --bronze-scale',
     );
   }
 
@@ -151,6 +260,12 @@ async function main(): Promise<void> {
     const versions = await server.ssrLoadModule(
       '/packs/ootmm/src/autotracker/data/versions.ts',
     );
+    const registry = await server.ssrLoadModule(
+      '/packs/ootmm/src/autotracker/data/registry.ts',
+    );
+    const mqMod = await server.ssrLoadModule(
+      '/packs/ootmm/src/autotracker/mqDungeons.ts',
+    );
 
     let failed = false;
 
@@ -169,34 +284,102 @@ async function main(): Promise<void> {
       const { dirName } = versions.resolveAutotrackerDataVersion(
         dump.ootmmVersion,
       );
-      const parser = parserMod.createRawAutotrackerParserSync(dirName);
       const gameKey = String(dump.expected.activeGame).toLowerCase();
-      const specs = parserMod.RAW_CHUNK_SPECS_BY_GAME[gameKey];
       const regions = fixtures.decodeRegions(dump.regions);
-      const { chunks } = fixtures.buildChunksFromSpecs(regions, specs);
-      const parsed = parser.parse({
-        type: 'raw',
-        schemaVersion: '1',
-        diff: false,
-        refresh: true,
-        sequence: 1,
-        game: dump.expected.activeGame,
-        saveIndex: dump.expected.saveIndex >>> 0,
-        chunks,
-      });
-      if (!parsed) {
+
+      if (options.mqDungeons && dump.mqDungeons === undefined) {
+        const derived = deriveMqDungeons({
+          dirName,
+          expectedLocations: dump.expected.locations ?? [],
+          registry,
+          mqMod,
+        });
+        if (options.write) {
+          dump.mqDungeons = derived;
+          writeFileSync(file, `${JSON.stringify(dump, null, 2)}\n`);
+          console.log(
+            `OK   ${relative}: mqDungeons=${JSON.stringify(derived)}`,
+          );
+        } else {
+          console.log(
+            `DRY  ${relative}: would set mqDungeons=${JSON.stringify(derived)}`,
+          );
+        }
+      }
+
+      const runParse = (bronzeScale: boolean) => {
+        // Create the parser first: it applies the dump's version data, which
+        // rebuilds the module-global chunk specs. Reading them beforehand would
+        // slice the regions with the previous dump's version.
+        const parser = parserMod.createRawAutotrackerParserSync(dirName, {
+          mqDungeons: dump.mqDungeons ?? [],
+          bronzeScale,
+        });
+        const specs = parserMod.RAW_CHUNK_SPECS_BY_GAME[gameKey];
+        const { chunks } = fixtures.buildChunksFromSpecs(regions, specs);
+        const result = parser.parse({
+          type: 'raw',
+          schemaVersion: '1',
+          diff: false,
+          refresh: true,
+          sequence: 1,
+          game: dump.expected.activeGame,
+          saveIndex: dump.expected.saveIndex >>> 0,
+          chunks,
+        });
+        if (!result) {
+          return null;
+        }
+        return new Map<string, number>(
+          result.items
+            .filter((item: Item) => item.qty > 0)
+            .map((item: Item) => [item.id, item.qty]),
+        );
+      };
+
+      const expected: Item[] = dump.expected.items;
+      const expectedMap = new Map(expected.map((item) => [item.id, item.qty]));
+
+      if (options.bronzeScale && dump.bronzeScale === undefined) {
+        const matches = (derived: Map<string, number> | null) =>
+          derived !== null &&
+          derived.size === expectedMap.size &&
+          [...expectedMap].every(([id, qty]) => derived.get(id) === qty);
+        // The setting only shifts `OOT_SCALE`/`MM_SCALE` by one, so exactly one
+        // value reproduces `expected`. Both matching means no scale was picked
+        // up yet — then the setting is irrelevant and `false` is safe.
+        let resolved: boolean | undefined;
+        if (matches(runParse(false))) {
+          resolved = false;
+        } else if (matches(runParse(true))) {
+          resolved = true;
+        }
+        if (resolved === undefined) {
+          console.error(
+            `FAIL ${relative}: cannot infer bronzeScale (neither value reproduces expected)`,
+          );
+          failed = true;
+        } else {
+          dump.bronzeScale = resolved;
+          if (options.write) {
+            writeFileSync(file, `${JSON.stringify(dump, null, 2)}\n`);
+            console.log(`OK   ${relative}: bronzeScale=${resolved}`);
+          } else {
+            console.log(`DRY  ${relative}: would set bronzeScale=${resolved}`);
+          }
+        }
+      }
+
+      if (options.add.size === 0 && options.fixQty.size === 0) {
+        continue;
+      }
+
+      const derivedMap = runParse(dump.bronzeScale === true);
+      if (!derivedMap) {
         console.error(`FAIL ${relative}: parser returned no snapshot`);
         failed = true;
         continue;
       }
-
-      const expected: Item[] = dump.expected.items;
-      const expectedMap = new Map(expected.map((item) => [item.id, item.qty]));
-      const derivedMap = new Map<string, number>(
-        parsed.items
-          .filter((item: Item) => item.qty > 0)
-          .map((item: Item) => [item.id, item.qty]),
-      );
 
       const extra = [...derivedMap].filter(([id]) => !expectedMap.has(id));
       const missing = [...expectedMap].filter(([id]) => !derivedMap.has(id));

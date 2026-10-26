@@ -198,7 +198,6 @@ function main(): void {
       'special_locations_fallbacks_oot.lock.json',
     ),
     path.join(DATA_DIR, 'live_addrs.json'),
-    path.join(DATA_DIR, 'combo_config_layout.json'),
     path.join(DATA_DIR, 'manifest.json'),
   ];
 
@@ -264,17 +263,6 @@ function main(): void {
 
   runPython('generate_special_locations.py', specialLocationsArgs);
 
-  // Regenerate the ComboConfig tail layout from the OoTMM repo header at the
-  // current tag (fails loudly if the struct's fixed offsets changed).
-  runPython('derive_combo_config_layout.py', [
-    '--ootmm-repo',
-    OOTMM_REPO,
-    '--version',
-    detectOotmmVersionTag(),
-    '--write',
-    path.join(DATA_DIR, 'combo_config_layout.json'),
-  ]);
-
   // Write the data manifest.
   const manifest = {
     schemaVersion: 1,
@@ -286,7 +274,6 @@ function main(): void {
       'special_locations_fallbacks_mm.lock.json': 1,
       'special_locations_fallbacks_oot.lock.json': 1,
       'live_addrs.json': 1,
-      'combo_config_layout.json': 1,
     },
   };
   writeFileSync(
@@ -325,8 +312,7 @@ function main(): void {
       console.warn(
         '[generate_data] No OOTMM_PATCHFILE set and no existing live_addrs.json ' +
           'seed found; deriving live addresses from OoTMM sources only. ' +
-          'comboConfigLive / runtimeMaxKeysLive / runtimeSilverRupeeDataLive and ' +
-          'the foreign/shared save addresses will be missing ' +
+          'The foreign/shared save addresses will be missing ' +
           '(see "notDerivableWithoutLinking").',
       );
       runPython('export_live_addrs.py', [

@@ -1,5 +1,4 @@
 import autotrackerDataManifest from './data/v32_0/manifest.json';
-import comboConfigLayoutData from './data/v32_0/combo_config_layout.json';
 import inventorySlotsData from './data/v32_0/inventory_slots.json';
 import liveAddrsData from './data/v32_0/live_addrs.json';
 import locationsData from './data/v32_0/locations.json';
@@ -12,6 +11,11 @@ import {
   getSupportedVersionLabels,
 } from './data/versions';
 import { getVersionedDataFile } from './data/registry';
+import {
+  OOT_MQ_DUNGEON_COUNT,
+  buildOotMqDungeonMask,
+  ootMqDungeonId,
+} from './mqDungeons';
 
 // ---------------------------------------------------------------------------
 // Version-data loading (uses the eager registry, all files resolved at build time)
@@ -25,7 +29,6 @@ type AutotrackerDataBundle = {
   specialLocationsMm: MmSpecialLocationEntry[];
   specialLocationsOot: OotSpecialLocationEntry[];
   sharedSaveOffsets: SharedFixedOffsets;
-  comboConfigLayout: ComboConfigLayout;
 };
 
 function loadAutotrackerDataSync(dirName: string): AutotrackerDataBundle {
@@ -52,10 +55,6 @@ function loadAutotrackerDataSync(dirName: string): AutotrackerDataBundle {
       dirName,
       'shared_save_offsets.json',
     ) as SharedFixedOffsets,
-    comboConfigLayout: getVersionedDataFile(
-      dirName,
-      'combo_config_layout.json',
-    ) as ComboConfigLayout,
   };
 }
 
@@ -84,10 +83,6 @@ interface ParserTables {
   addrOotSharedCustomSaveLive: number;
   addrMmForeignOotSaveLive: number;
   addrMmSharedCustomSaveLive: number;
-  addrOotRuntimeMaxKeysLive: number;
-  addrOotRuntimeOotComboConfigLive: number;
-  addrOotRuntimeSilverRupeeDataLive: number;
-  addrMmRuntimeOotComboConfigLive: number;
   ootInventoryEntries: InventorySlotEntry[];
   mmInventoryEntries: InventorySlotEntry[];
   sharedStorage: SharedStorageLayout;
@@ -111,7 +106,6 @@ interface ParserTables {
   mmSymbolChecks: MmSymbolCheck[];
   ootSymbolChecks: OotSymbolCheck[];
   sceneCheckFallbacks: Map<string, string>;
-  comboConfigLayout: ComboConfigLayout;
 }
 
 function buildParserTables(bundle: AutotrackerDataBundle): ParserTables {
@@ -160,22 +154,6 @@ function buildParserTables(bundle: AutotrackerDataBundle): ParserTables {
       bundle.liveAddrs.mm.sharedCustomSaveLive,
       DEFAULT_ADDR_MM_SHARED_CUSTOM_SAVE_LIVE,
     ),
-    addrOotRuntimeMaxKeysLive: parseHexAddressWithFallback(
-      bundle.liveAddrs.oot.runtimeMaxKeysLive,
-      DEFAULT_ADDR_OOT_RUNTIME_MAX_KEYS_LIVE,
-    ),
-    addrOotRuntimeOotComboConfigLive: parseHexAddressWithFallback(
-      bundle.liveAddrs.oot.comboConfigLive,
-      DEFAULT_ADDR_OOT_RUNTIME_OOT_COMBO_CONFIG_LIVE,
-    ),
-    addrOotRuntimeSilverRupeeDataLive: parseHexAddressWithFallback(
-      bundle.liveAddrs.oot.runtimeSilverRupeeDataLive,
-      DEFAULT_ADDR_OOT_RUNTIME_SILVER_RUPEE_DATA_LIVE,
-    ),
-    addrMmRuntimeOotComboConfigLive: parseHexAddressWithFallback(
-      bundle.liveAddrs.mm.comboConfigLive,
-      DEFAULT_ADDR_MM_RUNTIME_OOT_COMBO_CONFIG_LIVE,
-    ),
     ootInventoryEntries: buildInventorySlotTable(bundle.inventorySlots.oot),
     mmInventoryEntries: buildInventorySlotTable(bundle.inventorySlots.mm),
     sharedStorage: bundle.inventorySlots.catalog.shared,
@@ -194,7 +172,6 @@ function buildParserTables(bundle: AutotrackerDataBundle): ParserTables {
         'Dodongo Cavern Heart Miniboss Lava',
       ],
     ]),
-    comboConfigLayout: bundle.comboConfigLayout,
   };
 }
 
@@ -209,9 +186,6 @@ type LiveAddrGameFile = {
   comboCtx: string;
   saveCtx: string;
   payload: string;
-  comboConfigLive?: string;
-  runtimeMaxKeysLive?: string;
-  runtimeSilverRupeeDataLive?: string;
   foreignSaveLive?: string;
   sharedCustomSaveLive?: string;
 };
@@ -247,10 +221,6 @@ function applyVersionData(tables: ParserTables): void {
   addrOotSharedCustomSaveLive = tables.addrOotSharedCustomSaveLive;
   addrMmForeignOotSaveLive = tables.addrMmForeignOotSaveLive;
   addrMmSharedCustomSaveLive = tables.addrMmSharedCustomSaveLive;
-  addrOotRuntimeMaxKeysLive = tables.addrOotRuntimeMaxKeysLive;
-  addrOotRuntimeOotComboConfigLive = tables.addrOotRuntimeOotComboConfigLive;
-  addrOotRuntimeSilverRupeeDataLive = tables.addrOotRuntimeSilverRupeeDataLive;
-  addrMmRuntimeOotComboConfigLive = tables.addrMmRuntimeOotComboConfigLive;
   inventorySlotFile = tables.inventorySlotFile;
   sharedStateReadSize = tables.sharedStateReadSize;
   sharedFixedOffsets = {
@@ -280,7 +250,6 @@ function applyVersionData(tables: ParserTables): void {
   mmSymbolChecks = tables.mmSymbolChecks;
   ootSymbolChecks = tables.ootSymbolChecks;
   sceneCheckFallbacks = tables.sceneCheckFallbacks;
-  applyComboConfigLayout(tables.comboConfigLayout);
   rebuildChunkSpecs();
 }
 
@@ -342,6 +311,17 @@ export interface ParsedRawAutotrackerSnapshot {
 export interface RawAutotrackerParser {
   parse(message: RawAutotrackerMessage): ParsedRawAutotrackerSnapshot | null;
   reset(): void;
+  /**
+   * Update which OoT dungeons use the MQ layout. Takes spoiler-log
+   * `mqDungeons` codes (`DT`, `DC`, `JJ`, `Forest`, …) and affects all
+   * subsequently parsed frames.
+   */
+  setMqDungeons(codes: readonly string[] | null | undefined): void;
+  /**
+   * Update whether the seed enables the bronze scale (spoiler-log
+   * `bronzeScale` setting). Affects all subsequently parsed frames.
+   */
+  setBronzeScale(enabled: boolean | null | undefined): void;
 }
 
 export interface RawAutotrackerChunkSpec {
@@ -602,12 +582,19 @@ type OotState = {
   dungeonKeys: number[];
   goldTokens: number;
   gsFlags: number[];
-  runtimeMqBits: number;
-  runtimeMaxKeys: number[];
-  runtimeSilverRupeeCounts: number[];
-  hasRuntimeMqBits: boolean;
-  hasRuntimeMaxKeys: boolean;
-  hasRuntimeSilverRupeeCounts: boolean;
+  /**
+   * Which OoT dungeons use the MQ layout, as a bitmask indexed by the
+   * generator's MQ dungeon id. Sourced from the spoiler log's `mqDungeons`
+   * world flag — the tracker cannot be autotracked without one — and applied
+   * by the parser on every frame; it is never read from RAM.
+   */
+  mqDungeonMask: number;
+  /**
+   * Whether the seed has the bronze scale as an extra progressive scale step.
+   * Sourced from the spoiler log's `bronzeScale` setting — the runtime
+   * `bronzeScaleOot/Mm` bits cannot tell, because the first scale pickup is
+   * always resolved to the bronze item (see `progressiveDiveOot` in OoTMM).
+   */
   bronzeScaleEnabled: boolean;
   sceneFlags: SceneFlags[];
   extraRecords: number[];
@@ -771,10 +758,6 @@ const DEFAULT_ADDR_OOT_FOREIGN_MM_SAVE_LIVE = 0x80443970;
 const DEFAULT_ADDR_OOT_SHARED_CUSTOM_SAVE_LIVE = 0x80443100;
 const DEFAULT_ADDR_MM_FOREIGN_OOT_SAVE_LIVE = 0x807729f0;
 const DEFAULT_ADDR_MM_SHARED_CUSTOM_SAVE_LIVE = 0x80772180;
-const DEFAULT_ADDR_OOT_RUNTIME_MAX_KEYS_LIVE = 0x80441c78;
-const DEFAULT_ADDR_OOT_RUNTIME_OOT_COMBO_CONFIG_LIVE = 0x804416c8;
-const DEFAULT_ADDR_OOT_RUNTIME_SILVER_RUPEE_DATA_LIVE = 0x8042ec10;
-const DEFAULT_ADDR_MM_RUNTIME_OOT_COMBO_CONFIG_LIVE = 0x80770b18;
 
 let addrOotSaveCtx = parseHexAddress(liveAddrs.oot.saveCtx, 'oot.saveCtx');
 let addrMmSaveCtx = parseHexAddress(liveAddrs.mm.saveCtx, 'mm.saveCtx');
@@ -794,126 +777,12 @@ let addrMmSharedCustomSaveLive = parseHexAddressWithFallback(
   liveAddrs.mm.sharedCustomSaveLive,
   DEFAULT_ADDR_MM_SHARED_CUSTOM_SAVE_LIVE,
 );
-let addrOotRuntimeMaxKeysLive = parseHexAddressWithFallback(
-  liveAddrs.oot.runtimeMaxKeysLive,
-  DEFAULT_ADDR_OOT_RUNTIME_MAX_KEYS_LIVE,
-);
-let addrOotRuntimeOotComboConfigLive = parseHexAddressWithFallback(
-  liveAddrs.oot.comboConfigLive,
-  DEFAULT_ADDR_OOT_RUNTIME_OOT_COMBO_CONFIG_LIVE,
-);
-let addrOotRuntimeSilverRupeeDataLive = parseHexAddressWithFallback(
-  liveAddrs.oot.runtimeSilverRupeeDataLive,
-  DEFAULT_ADDR_OOT_RUNTIME_SILVER_RUPEE_DATA_LIVE,
-);
-let addrMmRuntimeOotComboConfigLive = parseHexAddressWithFallback(
-  liveAddrs.mm.comboConfigLive,
-  DEFAULT_ADDR_MM_RUNTIME_OOT_COMBO_CONFIG_LIVE,
-);
 
-const OOT_RUNTIME_SCENE_COUNT = 17;
 const OOT_SILVER_RUPEE_SET_COUNT = 18;
-const OOT_SILVER_RUPEE_DATA_SIZE = OOT_SILVER_RUPEE_SET_COUNT * 4;
 // v32.2 stores the collected silver-rupee counts nibble-packed in
 // `SharedCustomSave.silverRupees[]` (two u8 counts per byte).
 const OOT_SILVER_RUPEE_SHARED_BYTE_COUNT =
   (OOT_SILVER_RUPEE_SET_COUNT + 1) >> 1;
-const OOT_MAX_KEYS_BLOCK_SIZE = OOT_RUNTIME_SCENE_COUNT + 4;
-
-// The OoTMM ComboConfig struct (generator include/combo/config.h) changed its
-// tail layout between v30.1 and v31.0:
-//   v30.1 and earlier:  staticHintsImportance[20] BEFORE giZoraSapphire,
-//                       no songEventsMm -> staticHints @0x2A4, boss @0x2BA,
-//                       strayFairy @0x2C6, bombchuOot/Mm @0x2C7/0x2C8,
-//                       songEventsOot[18] @0x2C9, size 0x2DC.
-//   v31.0 and later:   giZoraSapphire BEFORE staticHintsImportance[21],
-//                       songEventsMm[13] appended -> staticHints @0x2A6,
-//                       boss @0x2BB, strayFairy @0x2C7, bombchuOot/Mm
-//                       @0x2C8/0x2C9, songEventsOot[18] @0x2CA, size 0x2E9.
-// v33.0 dropped the leading `playerId` byte, which moved every following
-// field down by 4 (alignment): mq @0x98, config[0x40] @0xE8, special @0x128,
-// prices[141] @0x158, triforce @0x272/0x274, hints @0x276.
-//
-// The layout is version-specific data: every autotracker data directory
-// (v30_1, v31_0, v31_1, v32_0, ...) ships its own combo_config_layout.json.
-type ComboConfigLayout = {
-  size: number;
-  staticHintsOffset: number;
-  staticHintCount: number;
-  bossOffset: number;
-  strayFairyRewardCountOffset: number;
-  bombchuBehaviorOotOffset: number;
-  bombchuBehaviorMmOffset: number;
-  songEventsOffset: number;
-  /**
-   * Fixed offsets the parser reads directly. They were identical from v30.1
-   * through v32.x, so older layout files omit them and the defaults below
-   * apply; v33.0 dropped the leading `playerId` and shifted them by 4.
-   */
-  mqOffset?: number;
-  configOffset?: number;
-  specialOffset?: number;
-  pricesOffset?: number;
-  triforcePiecesOffset?: number;
-  triforceGoalOffset?: number;
-  /**
-   * Whether the struct starts with the legacy `u8 playerId` (+3 alignment
-   * bytes). v33 dropped it, so the struct now starts with `dungeonWarps[12]`
-   * and the fixed offsets shifted by 4. Defaults to true for old layouts.
-   */
-  hasPlayerId?: boolean;
-  /**
-   * Index into `ComboConfig.config[]` (BITMAP8_GET) for tracked flags, keyed by
-   * OoTMM confvar name. The `CONFVARS` list order changes between releases
-   * (e.g. BRONZE_SCALE was 192 in v30.1 but 225 in v31.0+), so the index is
-   * version data and must not be hardcoded.
-   */
-  configFlags: Record<string, number>;
-};
-
-// Defaults for the v30.1-v32.x layout; overridden per data version below.
-let OOT_COMBO_CONFIG_FLAGS_OFFSET = 0x0ec;
-const OOT_COMBO_CONFIG_FLAGS_COUNT = 0x40;
-let OOT_COMBO_CONFIG_MQ_OFFSET = 0x09c;
-let OOT_COMBO_CONFIG_TRIFORCE_PIECES_OFFSET = 0x276;
-let OOT_COMBO_CONFIG_TRIFORCE_GOAL_OFFSET = 0x278;
-let OOT_COMBO_CONFIG_SPECIAL_OFFSET = 0x12c;
-const OOT_COMBO_CONFIG_SPECIAL_COUNT = 5;
-const OOT_COMBO_CONFIG_SPECIAL_SIZE = 8;
-let OOT_COMBO_CONFIG_PRICES_OFFSET = 0x15c;
-const OOT_COMBO_CONFIG_PRICE_COUNT = 141;
-const OOT_COMBO_CONFIG_PRICE_MAX = 4995;
-const OOT_COMBO_CONFIG_BOSS_COUNT = 12;
-const OOT_COMBO_CONFIG_SONG_EVENT_COUNT = 18;
-// Each `songEventsOot[]` entry is an index into the per-game song-event table
-// (`kOcarinaActions[]` in OoT, `sSongEventSongs[]` in MM), both of which hold
-// 20 entries. Values are therefore in `[0, 19]`, and can exceed 5 whenever the
-// seed shuffles song events (e.g. "songs: notes" without the standard songs),
-// so the sanity bound must allow the full table.
-const OOT_COMBO_CONFIG_SONG_EVENT_INDEX_COUNT = 20;
-// ComboConfig config[] flag names (OoTMM confvar names). The numeric index is
-// resolved per version via `comboConfigLayout.configFlags` (see
-// `comboConfigFlagIndex`); it is NOT stable across versions.
-const OOT_COMBO_CONFIG_FLAG_NAME_BRONZE_SCALE = 'BRONZE_SCALE';
-
-/** Combo config tail layout for the currently active data version. */
-let comboConfigLayout: ComboConfigLayout =
-  comboConfigLayoutData as ComboConfigLayout;
-
-/** Apply a version's layout and refresh the fixed offsets derived from it. */
-function applyComboConfigLayout(layout: ComboConfigLayout): void {
-  comboConfigLayout = layout;
-  OOT_COMBO_CONFIG_FLAGS_OFFSET = layout.configOffset ?? 0x0ec;
-  OOT_COMBO_CONFIG_MQ_OFFSET = layout.mqOffset ?? 0x09c;
-  OOT_COMBO_CONFIG_TRIFORCE_PIECES_OFFSET =
-    layout.triforcePiecesOffset ?? 0x276;
-  OOT_COMBO_CONFIG_TRIFORCE_GOAL_OFFSET = layout.triforceGoalOffset ?? 0x278;
-  OOT_COMBO_CONFIG_SPECIAL_OFFSET = layout.specialOffset ?? 0x12c;
-  OOT_COMBO_CONFIG_PRICES_OFFSET = layout.pricesOffset ?? 0x15c;
-}
-
-applyComboConfigLayout(comboConfigLayoutData as ComboConfigLayout);
-
 const OOT_PLAY_OFF_SCENE_ID = 0x00a4;
 const OOT_PLAY_OFF_CHEST_FLAGS = 0x1d38;
 const OOT_PLAY_OFF_COLLECT_FLAGS = 0x1d44;
@@ -1118,12 +987,6 @@ const OOT_NPC_LOST_WOODS_MEMORY_BIT = 12;
 const OOT_EVENT_ITEM_LOST_WOODS_MEMORY = 0x17;
 
 const MM_SKELETON_KEY_MAX_KEYS = [1, 3, 1, 4];
-const OOT_FALLBACK_MAX_KEYS = [
-  0, 0, 0, 5, 7, 5, 5, 5, 3, 0, 0, 9, 4, 2, 0, 0, 0,
-];
-const OOT_FALLBACK_SILVER_RUPEE_MAX_COUNTS = [
-  0, 5, 5, 5, 5, 5, 0, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5,
-];
 
 const OOT_SILVER_RUPEE_ITEM_IDS = [
   ['OOT_RUPEE_SILVER_DC', 'OOT_RUPEE_SILVER_DC'],
@@ -1212,26 +1075,11 @@ const SHARED_SAVE_FLAG_CLOCK_OOT = 0;
 const SHARED_SAVE_FLAG_SHOVEL_OOT = 1;
 const SHARED_SAVE_FLAG_SHOVEL_MM = 2;
 
-const OOT_SCENE_TEMPLE_FOREST = 3;
-const OOT_SCENE_TEMPLE_FIRE = 4;
-const OOT_SCENE_TEMPLE_WATER = 5;
-const OOT_SCENE_TEMPLE_SPIRIT = 6;
-const OOT_SCENE_TEMPLE_SHADOW = 7;
-const OOT_SCENE_BOTTOM_OF_THE_WELL = 8;
-const OOT_SCENE_GERUDO_TRAINING_GROUND = 11;
-const OOT_SCENE_INSIDE_GANON_CASTLE = 13;
-
-const OOT_MQ_DODONGOS_CAVERN = 1;
-const OOT_MQ_TEMPLE_FOREST = 3;
-const OOT_MQ_TEMPLE_FIRE = 4;
-const OOT_MQ_TEMPLE_WATER = 5;
-const OOT_MQ_TEMPLE_SPIRIT = 6;
-const OOT_MQ_TEMPLE_SHADOW = 7;
-const OOT_MQ_BOTTOM_OF_THE_WELL = 8;
-const OOT_MQ_ICE_CAVERN = 9;
-const OOT_MQ_GERUDO_TRAINING_GROUNDS = 10;
-const OOT_MQ_GANON_CASTLE = 11;
-const OOT_MQ_DUNGEON_COUNT = 12;
+// MQ dungeon ids (`MQ_*` in generator/include/combo/dungeon.h) are the
+// positions of the codes in `OOT_MQ_DUNGEON_CODES`; nothing else in this module
+// needs a raw id.
+const OOT_MQ_DUNGEON_ID_SPIRIT = ootMqDungeonId('Spirit');
+const OOT_MQ_DUNGEON_ID_GANON_CASTLE = ootMqDungeonId('Ganon');
 
 const MM_EXTRA_BOSS_LEGACY_DUNGEON_INDEX_BASE = 8;
 
@@ -1275,83 +1123,6 @@ const OOT_ADULT_TRADE_CONSUMPTION_FALLBACKS = [
   [10, 'TRADE_BIGGORON_SWORD'],
 ] as const;
 
-const OOT_SILVER_RUPEE_ALLOWED: ReadonlyArray<
-  ReadonlyArray<{ flag: number; count: number }>
-> = [
-  [
-    { flag: 0x00, count: 0x00 },
-    { flag: 0x25, count: 0x05 },
-  ],
-  [
-    { flag: 0x1f, count: 0x05 },
-    { flag: 0x00, count: 0x00 },
-  ],
-  [
-    { flag: 0x05, count: 0x05 },
-    { flag: 0x37, count: 0x05 },
-  ],
-  [
-    { flag: 0x0a, count: 0x05 },
-    { flag: 0x00, count: 0x00 },
-  ],
-  [
-    { flag: 0x02, count: 0x05 },
-    { flag: 0x00, count: 0x00 },
-  ],
-  [
-    { flag: 0x01, count: 0x05 },
-    { flag: 0x01, count: 0x05 },
-  ],
-  [
-    { flag: 0x00, count: 0x00 },
-    { flag: 0x03, count: 0x0a },
-  ],
-  [
-    { flag: 0x09, count: 0x05 },
-    { flag: 0x11, count: 0x05 },
-  ],
-  [
-    { flag: 0x08, count: 0x05 },
-    { flag: 0x08, count: 0x0a },
-  ],
-  [
-    { flag: 0x08, count: 0x05 },
-    { flag: 0x00, count: 0x00 },
-  ],
-  [
-    { flag: 0x09, count: 0x05 },
-    { flag: 0x00, count: 0x00 },
-  ],
-  [
-    { flag: 0x1c, count: 0x05 },
-    { flag: 0x1c, count: 0x05 },
-  ],
-  [
-    { flag: 0x0c, count: 0x05 },
-    { flag: 0x0c, count: 0x06 },
-  ],
-  [
-    { flag: 0x1b, count: 0x05 },
-    { flag: 0x1b, count: 0x03 },
-  ],
-  [
-    { flag: 0x0b, count: 0x05 },
-    { flag: 0x0b, count: 0x05 },
-  ],
-  [
-    { flag: 0x12, count: 0x05 },
-    { flag: 0x02, count: 0x05 },
-  ],
-  [
-    { flag: 0x09, count: 0x05 },
-    { flag: 0x01, count: 0x05 },
-  ],
-  [
-    { flag: 0x0e, count: 0x05 },
-    { flag: 0x00, count: 0x00 },
-  ],
-];
-
 const SHARED_CHECK_BITMAP_NAMES = [
   'xflagsOot',
   'npcOot',
@@ -1371,10 +1142,6 @@ const OOT_FOREIGN_MM_SAVE_CHUNK = 'oot_foreign_mm_save';
 const MM_FOREIGN_OOT_SAVE_CHUNK = 'mm_foreign_oot_save';
 const OOT_SHARED_CUSTOM_SAVE_CHUNK = 'oot_shared_custom_save';
 const MM_SHARED_CUSTOM_SAVE_CHUNK = 'mm_shared_custom_save';
-const OOT_RUNTIME_COMBO_CONFIG_CHUNK = 'oot_runtime_combo_config';
-const MM_RUNTIME_COMBO_CONFIG_CHUNK = 'mm_runtime_combo_config';
-const OOT_RUNTIME_SILVER_RUPEE_DATA_CHUNK = 'oot_runtime_silver_rupee_data';
-const OOT_RUNTIME_MAX_KEYS_CHUNK = 'oot_runtime_max_keys';
 const MM_CYCLE_FLAGS_CHUNK = 'mm_cycle_flags';
 const OOT_PLAYSTATE_SCENE_CHUNK = 'oot_playstate_scene';
 const OOT_PLAYSTATE_ROOM_CHUNK = 'oot_playstate_room';
@@ -1587,21 +1354,6 @@ function rebuildChunkSpecs(): void {
       ...foreignMm,
       ...ootShared,
       {
-        name: OOT_RUNTIME_COMBO_CONFIG_CHUNK,
-        address: addrOotRuntimeOotComboConfigLive,
-        length: comboConfigLayout.size,
-      },
-      {
-        name: OOT_RUNTIME_SILVER_RUPEE_DATA_CHUNK,
-        address: addrOotRuntimeSilverRupeeDataLive,
-        length: OOT_SILVER_RUPEE_DATA_SIZE,
-      },
-      {
-        name: OOT_RUNTIME_MAX_KEYS_CHUNK,
-        address: addrOotRuntimeMaxKeysLive,
-        length: OOT_MAX_KEYS_BLOCK_SIZE,
-      },
-      {
         name: OOT_PLAYSTATE_SCENE_CHUNK,
         address: ADDR_OOT_PLAYSTATE_NTSC_10 + OOT_PLAY_OFF_SCENE_ID,
         length: 2,
@@ -1626,11 +1378,6 @@ function rebuildChunkSpecs(): void {
       ...activeMm,
       ...foreignOot,
       ...mmShared,
-      {
-        name: MM_RUNTIME_COMBO_CONFIG_CHUNK,
-        address: addrMmRuntimeOotComboConfigLive,
-        length: comboConfigLayout.size,
-      },
       {
         name: MM_PLAYSTATE_SCENE_CHUNK,
         address: ADDR_MM_PLAYSTATE_1 + MM_PLAY_OFF_SCENE_ID,
@@ -2047,13 +1794,27 @@ class RawAutotrackerParserImpl implements RawAutotrackerParser {
   private sceneSettleMs: number;
   private gameTransitionSettleMs: number;
   private hasEverSeenNonZeroMmRegions = false;
+  private mqDungeonMask = 0;
+  private bronzeScaleEnabled = false;
 
   constructor(
     sceneSettleMs = DEFAULT_SCENE_SETTLE_MS,
     gameTransitionSettleMs = DEFAULT_GAME_TRANSITION_SETTLE_MS,
+    mqDungeons?: readonly string[] | null,
+    bronzeScale?: boolean | null,
   ) {
     this.sceneSettleMs = sceneSettleMs;
     this.gameTransitionSettleMs = gameTransitionSettleMs;
+    this.setMqDungeons(mqDungeons);
+    this.setBronzeScale(bronzeScale);
+  }
+
+  setMqDungeons(codes: readonly string[] | null | undefined): void {
+    this.mqDungeonMask = buildOotMqDungeonMask(codes);
+  }
+
+  setBronzeScale(enabled: boolean | null | undefined): void {
+    this.bronzeScaleEnabled = enabled === true;
   }
 
   parse(message: RawAutotrackerMessage): ParsedRawAutotrackerSnapshot | null {
@@ -2164,8 +1925,6 @@ class RawAutotrackerParserImpl implements RawAutotrackerParser {
       this.overlayLastKnownMm(saveIndex, state.mm);
       state.mm.extraFlags2 = state.oot.extraRecords[EXTRA_IDX_MM_FLAGS2] ?? 0;
       this.readSharedState(memory, activeGame, state);
-      readOotRuntimeConfigFromMemory(memory, activeGame, state.oot);
-      this.restoreLastKnownOotRuntimeState(activeGame, state);
     } else {
       const mmSaveData = buildChunkedData(
         memory,
@@ -2191,9 +1950,14 @@ class RawAutotrackerParserImpl implements RawAutotrackerParser {
       this.readForeignOotState(memory, state.oot);
       state.mm.extraFlags2 = state.oot.extraRecords[EXTRA_IDX_MM_FLAGS2] ?? 0;
       this.readSharedState(memory, activeGame, state);
-      readOotRuntimeConfigFromMemory(memory, activeGame, state.oot);
-      this.restoreLastKnownOotRuntimeState(activeGame, state);
     }
+
+    // The MQ layout and the bronze-scale setting are not properties of the
+    // save data: they are fixed at generation time and reported by the spoiler
+    // log. Apply them last so no copy/reset path within this method can drop
+    // them.
+    state.oot.mqDungeonMask = this.mqDungeonMask;
+    state.oot.bronzeScaleEnabled = this.bronzeScaleEnabled;
 
     return state;
   }
@@ -2396,28 +2160,6 @@ class RawAutotrackerParserImpl implements RawAutotrackerParser {
     );
   }
 
-  private restoreLastKnownOotRuntimeState(
-    activeGame: RawAutotrackerGame,
-    state: GameState,
-  ): void {
-    if (
-      !this.lastKnownOot ||
-      !ootRuntimeStateHasMeaningfulData(this.lastKnownOot)
-    ) {
-      return;
-    }
-
-    if (!ootRuntimeStateLooksTransitionEmpty(state.oot)) {
-      return;
-    }
-
-    if (!this.activeGameCoreStateMatchesLastKnown(activeGame, state)) {
-      return;
-    }
-
-    copyOotRuntimeState(state.oot, this.lastKnownOot);
-  }
-
   private overlayLastKnownMm(saveIndex: number, mm: MmState): void {
     if (!this.lastKnownMm || this.lastKnownMmSaveIndex !== saveIndex) {
       return;
@@ -2585,6 +2327,22 @@ export interface CreateRawAutotrackerParserOptions {
    * so a game-transition defer window can be re-enabled later if needed.
    */
   gameTransitionSettleMs?: number;
+
+  /**
+   * OoT dungeons that use the Master Quest layout, as `mqDungeons` codes from
+   * the spoiler log (`'DT'`, `'DC'`, `'JJ'`, `'Forest'`, …). The autotracker
+   * only ever runs with an imported spoiler log, which carries this state in
+   * its `World Flags` section, so it is the single source of truth for the
+   * vanilla/MQ check-name split. Omitted codes resolve as vanilla.
+   */
+  mqDungeons?: readonly string[] | null;
+
+  /**
+   * Whether the seed enables the bronze scale (`bronzeScale` in the spoiler
+   * log's `Settings` section). It decides whether the runtime bronze-scale bit
+   * counts as an extra progressive scale step.
+   */
+  bronzeScale?: boolean | null;
 }
 
 export async function createRawAutotrackerParser(
@@ -2609,6 +2367,8 @@ export async function createRawAutotrackerParser(
       return new RawAutotrackerParserImpl(
         options.sceneSettleMs,
         options.gameTransitionSettleMs,
+        options.mqDungeons,
+        options.bronzeScale,
       );
     }
   }
@@ -2623,6 +2383,8 @@ export async function createRawAutotrackerParser(
   return new RawAutotrackerParserImpl(
     options?.sceneSettleMs,
     options?.gameTransitionSettleMs,
+    options?.mqDungeons,
+    options?.bronzeScale,
   );
 }
 
@@ -2634,9 +2396,16 @@ export function createRawAutotrackerParserForTest(
   bundle: AutotrackerDataBundle,
   sceneSettleMs?: number,
   gameTransitionSettleMs?: number,
+  mqDungeons?: readonly string[] | null,
+  bronzeScale?: boolean | null,
 ): RawAutotrackerParser {
   applyVersionData(buildParserTables(bundle));
-  return new RawAutotrackerParserImpl(sceneSettleMs, gameTransitionSettleMs);
+  return new RawAutotrackerParserImpl(
+    sceneSettleMs,
+    gameTransitionSettleMs,
+    mqDungeons,
+    bronzeScale,
+  );
 }
 
 /**
@@ -2648,7 +2417,7 @@ export function createRawAutotrackerParserSync(
   dirName = 'v32_0',
   options?: Pick<
     CreateRawAutotrackerParserOptions,
-    'sceneSettleMs' | 'gameTransitionSettleMs'
+    'sceneSettleMs' | 'gameTransitionSettleMs' | 'mqDungeons' | 'bronzeScale'
   >,
 ): RawAutotrackerParser {
   const bundle = loadAutotrackerDataSync(dirName);
@@ -2656,6 +2425,8 @@ export function createRawAutotrackerParserSync(
   return new RawAutotrackerParserImpl(
     options?.sceneSettleMs,
     options?.gameTransitionSettleMs,
+    options?.mqDungeons,
+    options?.bronzeScale,
   );
 }
 
@@ -3210,423 +2981,6 @@ function isPlausibleMmPlayStateSample(sample: MmPlayStateSample): boolean {
     sample.sceneId < MM_PERM_COUNT &&
     (sample.currentRoom === null || sample.currentRoom < 0x40)
   );
-}
-
-function readOotRuntimeConfig(
-  payload: Uint8Array,
-  includeRuntimeCounts: boolean,
-  oot: OotState,
-): void {
-  oot.runtimeMqBits = 0;
-  oot.hasRuntimeMqBits = false;
-  oot.bronzeScaleEnabled = false;
-  const comboConfigOffset = locateOotComboConfig(payload);
-  if (comboConfigOffset >= 0) {
-    const comboConfig = payload.subarray(
-      comboConfigOffset,
-      comboConfigOffset + comboConfigLayout.size,
-    );
-    oot.runtimeMqBits = readU32BE(comboConfig, OOT_COMBO_CONFIG_MQ_OFFSET);
-    oot.hasRuntimeMqBits = true;
-    oot.bronzeScaleEnabled = ootComboConfigFlagEnabled(
-      comboConfig.subarray(
-        OOT_COMBO_CONFIG_FLAGS_OFFSET,
-        OOT_COMBO_CONFIG_FLAGS_OFFSET + OOT_COMBO_CONFIG_FLAGS_COUNT,
-      ),
-      comboConfigFlagIndex(OOT_COMBO_CONFIG_FLAG_NAME_BRONZE_SCALE),
-    );
-  }
-
-  oot.runtimeMaxKeys.fill(0);
-  oot.hasRuntimeMaxKeys = false;
-  oot.runtimeSilverRupeeCounts.fill(0);
-  oot.hasRuntimeSilverRupeeCounts = false;
-  if (!includeRuntimeCounts) {
-    return;
-  }
-
-  const silverOffset = locateSilverRupeeData(payload);
-  if (silverOffset >= 0) {
-    for (let index = 0; index < OOT_SILVER_RUPEE_SET_COUNT; index++) {
-      oot.runtimeSilverRupeeCounts[index] =
-        payload[silverOffset + index * 4 + 3] ?? 0;
-    }
-    oot.hasRuntimeSilverRupeeCounts = true;
-  }
-
-  const maxKeysOffset = locateOotMaxKeys(payload);
-  if (maxKeysOffset >= 0) {
-    for (let index = 0; index < OOT_RUNTIME_SCENE_COUNT; index++) {
-      oot.runtimeMaxKeys[index] = payload[maxKeysOffset + index] ?? 0;
-    }
-    oot.hasRuntimeMaxKeys = true;
-  }
-}
-
-function readOotRuntimeConfigFromMemory(
-  memory: RawFrameMemory,
-  activeGame: RawAutotrackerGame,
-  oot: OotState,
-): void {
-  oot.runtimeMqBits = 0;
-  oot.hasRuntimeMqBits = false;
-  oot.bronzeScaleEnabled = false;
-
-  const comboChunk = memory.get(
-    activeGame === 'OoT'
-      ? OOT_RUNTIME_COMBO_CONFIG_CHUNK
-      : MM_RUNTIME_COMBO_CONFIG_CHUNK,
-  );
-  if (comboChunk && validateOotComboConfig(comboChunk.data)) {
-    oot.runtimeMqBits = readU32BE(comboChunk.data, OOT_COMBO_CONFIG_MQ_OFFSET);
-    oot.hasRuntimeMqBits = true;
-    oot.bronzeScaleEnabled = ootComboConfigFlagEnabled(
-      comboChunk.data.subarray(
-        OOT_COMBO_CONFIG_FLAGS_OFFSET,
-        OOT_COMBO_CONFIG_FLAGS_OFFSET + OOT_COMBO_CONFIG_FLAGS_COUNT,
-      ),
-      comboConfigFlagIndex(OOT_COMBO_CONFIG_FLAG_NAME_BRONZE_SCALE),
-    );
-  } else {
-    const payload = memory.get(
-      activeGame === 'OoT' ? 'oot_payload' : 'mm_payload',
-    );
-    if (payload) {
-      readOotRuntimeConfig(payload.data, activeGame === 'OoT', oot);
-      return;
-    }
-  }
-
-  oot.runtimeMaxKeys.fill(0);
-  oot.hasRuntimeMaxKeys = false;
-  oot.runtimeSilverRupeeCounts.fill(0);
-  oot.hasRuntimeSilverRupeeCounts = false;
-  if (activeGame !== 'OoT') {
-    return;
-  }
-
-  const silverChunk = memory.get(OOT_RUNTIME_SILVER_RUPEE_DATA_CHUNK);
-  if (silverChunk && validateSilverRupeeData(silverChunk.data)) {
-    for (let index = 0; index < OOT_SILVER_RUPEE_SET_COUNT; index++) {
-      oot.runtimeSilverRupeeCounts[index] =
-        silverChunk.data[index * 4 + 3] ?? 0;
-    }
-    oot.hasRuntimeSilverRupeeCounts = true;
-  }
-
-  const maxKeysChunk = memory.get(OOT_RUNTIME_MAX_KEYS_CHUNK);
-  if (maxKeysChunk && validateOotMaxKeyBlock(maxKeysChunk.data)) {
-    for (let index = 0; index < OOT_RUNTIME_SCENE_COUNT; index++) {
-      oot.runtimeMaxKeys[index] = maxKeysChunk.data[index] ?? 0;
-    }
-    oot.hasRuntimeMaxKeys = true;
-  }
-}
-
-function locateSilverRupeeData(payload: Uint8Array): number {
-  for (
-    let offset = 0;
-    offset + OOT_SILVER_RUPEE_DATA_SIZE <= payload.length;
-    offset++
-  ) {
-    if (
-      validateSilverRupeeData(
-        payload.subarray(offset, offset + OOT_SILVER_RUPEE_DATA_SIZE),
-      )
-    ) {
-      return offset;
-    }
-  }
-  return -1;
-}
-
-function validateSilverRupeeData(data: Uint8Array): boolean {
-  if (data.length < OOT_SILVER_RUPEE_DATA_SIZE) {
-    return false;
-  }
-  for (let index = 0; index < OOT_SILVER_RUPEE_SET_COUNT; index++) {
-    const flag = data[index * 4 + 2] ?? 0;
-    const count = data[index * 4 + 3] ?? 0;
-    const allowed = OOT_SILVER_RUPEE_ALLOWED[index];
-    const valid = allowed.some(
-      (entry) => entry.flag === flag && entry.count === count,
-    );
-    if (!valid) {
-      return false;
-    }
-  }
-
-  return (
-    sameSilverScene(data, 2, 3) &&
-    sameSilverScene(data, 3, 4) &&
-    sameSilverScene(data, 5, 6) &&
-    sameSilverScene(data, 6, 7) &&
-    sameSilverScene(data, 7, 8) &&
-    sameSilverScene(data, 9, 10) &&
-    sameSilverScene(data, 11, 12) &&
-    sameSilverScene(data, 12, 13) &&
-    sameSilverScene(data, 14, 15) &&
-    sameSilverScene(data, 15, 16) &&
-    sameSilverScene(data, 16, 17)
-  );
-}
-
-function sameSilverScene(
-  data: Uint8Array,
-  left: number,
-  right: number,
-): boolean {
-  const leftOffset = left * 4;
-  const rightOffset = right * 4;
-  return (
-    data[leftOffset] === data[rightOffset] &&
-    data[leftOffset + 1] === data[rightOffset + 1]
-  );
-}
-
-function locateOotMaxKeys(payload: Uint8Array): number {
-  let bestOffset = -1;
-  let bestScore = -1;
-  for (
-    let offset = 0;
-    offset + OOT_MAX_KEYS_BLOCK_SIZE <= payload.length;
-    offset++
-  ) {
-    const block = payload.subarray(offset, offset + OOT_MAX_KEYS_BLOCK_SIZE);
-    if (!validateOotMaxKeyBlock(block)) {
-      continue;
-    }
-    const score = maxKeyBlockScore(payload, offset);
-    if (score > bestScore) {
-      bestScore = score;
-      bestOffset = offset;
-    }
-  }
-  return bestOffset;
-}
-
-function maxKeyBlockScore(payload: Uint8Array, offset: number): number {
-  const end = offset + OOT_MAX_KEYS_BLOCK_SIZE;
-  let score = 0;
-  for (let index = offset; index < end; index++) {
-    score += payload[index] ?? 0;
-  }
-  for (let index = offset - 8; index < offset; index++) {
-    if (index >= 0 && payload[index] !== 0) {
-      score++;
-    }
-  }
-  for (let index = end; index < end + 12 && index < payload.length; index++) {
-    if (payload[index] !== 0) {
-      score++;
-    }
-  }
-  return score;
-}
-
-function validateOotMaxKeyBlock(data: Uint8Array): boolean {
-  if (data.length < OOT_MAX_KEYS_BLOCK_SIZE) {
-    return false;
-  }
-  for (let sceneId = 0; sceneId < OOT_RUNTIME_SCENE_COUNT; sceneId++) {
-    if (!ootMaxKeyValueAllowed(sceneId, data[sceneId] ?? 0)) {
-      return false;
-    }
-  }
-  return (
-    mmMaxKeyValueAllowed(0, data[17] ?? 0) &&
-    mmMaxKeyValueAllowed(1, data[18] ?? 0) &&
-    mmMaxKeyValueAllowed(2, data[19] ?? 0) &&
-    mmMaxKeyValueAllowed(3, data[20] ?? 0)
-  );
-}
-
-function locateOotComboConfig(payload: Uint8Array): number {
-  let bestOffset = -1;
-  let bestScore = -1;
-  for (
-    let offset = 0;
-    offset + comboConfigLayout.size <= payload.length;
-    offset += 4
-  ) {
-    const block = payload.subarray(offset, offset + comboConfigLayout.size);
-    if (!validateOotComboConfig(block)) {
-      continue;
-    }
-    const score = ootComboConfigScore(block);
-    if (score > bestScore) {
-      bestScore = score;
-      bestOffset = offset;
-    }
-  }
-  return bestOffset;
-}
-
-function validateOotComboConfig(data: Uint8Array): boolean {
-  if (data.length < comboConfigLayout.size) {
-    return false;
-  }
-  if (comboConfigLayout.hasPlayerId !== false) {
-    // playerId (world id) is non-zero, followed by 3 alignment bytes.
-    if (data[0] === 0 || data[1] !== 0 || data[2] !== 0 || data[3] !== 0) {
-      return false;
-    }
-  }
-
-  const mqBits = readU32BE(data, OOT_COMBO_CONFIG_MQ_OFFSET);
-  if ((mqBits & ~((1 << OOT_MQ_DUNGEON_COUNT) - 1)) !== 0) {
-    return false;
-  }
-
-  const triforcePieces = readU16BE(
-    data,
-    OOT_COMBO_CONFIG_TRIFORCE_PIECES_OFFSET,
-  );
-  const triforceGoal = readU16BE(data, OOT_COMBO_CONFIG_TRIFORCE_GOAL_OFFSET);
-  if (triforcePieces !== 0 && triforceGoal > triforcePieces) {
-    return false;
-  }
-
-  for (let index = 0; index < OOT_COMBO_CONFIG_SPECIAL_COUNT; index++) {
-    const offset =
-      OOT_COMBO_CONFIG_SPECIAL_OFFSET + index * OOT_COMBO_CONFIG_SPECIAL_SIZE;
-    const flags = readU32BE(data, offset);
-    const count = readU16BE(data, offset + 4);
-    const zero = readU16BE(data, offset + 6);
-    if (zero !== 0 || flags >>> 19 !== 0 || count > 0x400) {
-      return false;
-    }
-  }
-
-  for (let index = 0; index < OOT_COMBO_CONFIG_PRICE_COUNT; index++) {
-    const price = readU16BE(data, OOT_COMBO_CONFIG_PRICES_OFFSET + index * 2);
-    if (price > OOT_COMBO_CONFIG_PRICE_MAX || price % 5 !== 0) {
-      return false;
-    }
-  }
-
-  for (let index = 0; index < comboConfigLayout.staticHintCount; index++) {
-    const value = toSignedByte(
-      data[comboConfigLayout.staticHintsOffset + index] ?? 0,
-    );
-    if (value < -1 || value > 3) {
-      return false;
-    }
-  }
-
-  const seenBosses = new Set<number>();
-  for (let index = 0; index < OOT_COMBO_CONFIG_BOSS_COUNT; index++) {
-    const bossId = data[comboConfigLayout.bossOffset + index] ?? 0;
-    if (bossId >= OOT_COMBO_CONFIG_BOSS_COUNT || seenBosses.has(bossId)) {
-      return false;
-    }
-    seenBosses.add(bossId);
-  }
-
-  if ((data[comboConfigLayout.strayFairyRewardCountOffset] ?? 0) > 15) {
-    return false;
-  }
-  if (
-    (data[comboConfigLayout.bombchuBehaviorOotOffset] ?? 0) > 3 ||
-    (data[comboConfigLayout.bombchuBehaviorMmOffset] ?? 0) > 3
-  ) {
-    return false;
-  }
-  for (let index = 0; index < OOT_COMBO_CONFIG_SONG_EVENT_COUNT; index++) {
-    if (
-      (data[comboConfigLayout.songEventsOffset + index] ?? 0) >=
-      OOT_COMBO_CONFIG_SONG_EVENT_INDEX_COUNT
-    ) {
-      return false;
-    }
-  }
-
-  return true;
-}
-
-function ootComboConfigScore(data: Uint8Array): number {
-  let score = data[0] ?? 0;
-  for (let offset = 4; offset < OOT_COMBO_CONFIG_PRICES_OFFSET; offset += 4) {
-    if (readU32BE(data, offset) !== 0) {
-      score++;
-    }
-  }
-  for (let index = 0; index < OOT_COMBO_CONFIG_PRICE_COUNT; index++) {
-    if (readU16BE(data, OOT_COMBO_CONFIG_PRICES_OFFSET + index * 2) !== 0) {
-      score++;
-    }
-  }
-  return score;
-}
-
-function ootComboConfigFlagEnabled(config: Uint8Array, flag: number): boolean {
-  if (flag < 0) {
-    return false;
-  }
-  const byteIndex = Math.floor(flag / 8);
-  if (byteIndex < 0 || byteIndex >= config.length) {
-    return false;
-  }
-  return (config[byteIndex] & (1 << (flag % 8))) !== 0;
-}
-
-/**
- * Resolve a ComboConfig `config[]` flag index from the active version's
- * layout data. The `CONFVARS` order (and therefore the flag index) changes
- * between OoTMM releases, so the index must never be hardcoded. Missing data
- * yields -1, which `ootComboConfigFlagEnabled` treats as "off".
- */
-function comboConfigFlagIndex(flagName: string): number {
-  return comboConfigLayout.configFlags?.[flagName] ?? -1;
-}
-
-function ootMaxKeyValueAllowed(sceneId: number, value: number): boolean {
-  switch (sceneId) {
-    case 0:
-    case 1:
-    case 2:
-    case 9:
-    case 10:
-    case 14:
-    case 15:
-      return value === 0;
-    case 3:
-      return value === 0 || value === 5 || value === 6;
-    case 4:
-      return value === 0 || value === 5 || value === 7 || value === 8;
-    case 5:
-      return value === 0 || value === 2 || value === 5;
-    case 6:
-      return value === 0 || value === 5 || value === 7;
-    case 7:
-      return value === 0 || value === 5 || value === 6;
-    case 8:
-      return value === 0 || value === 2 || value === 3;
-    case 11:
-      return value === 0 || value === 3 || value === 9;
-    case 12:
-      return value === 0 || value === 1 || value === 4;
-    case 13:
-      return value === 0 || value === 2 || value === 3;
-    case 16:
-      return value === 0 || value === 6;
-    default:
-      return false;
-  }
-}
-
-function mmMaxKeyValueAllowed(dungeonIndex: number, value: number): boolean {
-  switch (dungeonIndex) {
-    case 0:
-    case 2:
-      return value === 0 || value === 1;
-    case 1:
-      return value === 0 || value === 3;
-    case 3:
-      return value === 0 || value === 4;
-    default:
-      return false;
-  }
 }
 
 function parseOotSave(oot: OotState, data: Uint8Array): void {
@@ -4199,32 +3553,6 @@ function sharedStateHasMeaningfulData(shared: SharedCustomState): boolean {
   );
 }
 
-function ootRuntimeStateHasMeaningfulData(oot: OotState): boolean {
-  return (
-    oot.hasRuntimeMqBits ||
-    oot.hasRuntimeMaxKeys ||
-    oot.hasRuntimeSilverRupeeCounts
-  );
-}
-
-function ootRuntimeStateLooksTransitionEmpty(oot: OotState): boolean {
-  return (
-    !oot.hasRuntimeMqBits &&
-    !oot.hasRuntimeSilverRupeeCounts &&
-    (!oot.hasRuntimeMaxKeys || arrayValuesAllEqual(oot.runtimeMaxKeys, 0))
-  );
-}
-
-function copyOotRuntimeState(target: OotState, source: OotState): void {
-  target.runtimeMqBits = source.runtimeMqBits;
-  target.hasRuntimeMqBits = source.hasRuntimeMqBits;
-  target.runtimeMaxKeys = [...source.runtimeMaxKeys];
-  target.hasRuntimeMaxKeys = source.hasRuntimeMaxKeys;
-  target.runtimeSilverRupeeCounts = [...source.runtimeSilverRupeeCounts];
-  target.hasRuntimeSilverRupeeCounts = source.hasRuntimeSilverRupeeCounts;
-  target.bronzeScaleEnabled = source.bronzeScaleEnabled;
-}
-
 function ootCoreProgressMatches(
   current: OotState,
   previous: OotState,
@@ -4270,16 +3598,6 @@ function arrayValuesEqual(left: number[], right: number[]): boolean {
 
   for (let index = 0; index < left.length; index++) {
     if (left[index] !== right[index]) {
-      return false;
-    }
-  }
-
-  return true;
-}
-
-function arrayValuesAllEqual(values: number[], expected: number): boolean {
-  for (const value of values) {
-    if (value !== expected) {
       return false;
     }
   }
@@ -5565,12 +4883,6 @@ function appendCatalogItems(
   for (const entry of trackedCatalogItems) {
     let qty = 0;
     switch (entry.source.kind) {
-      case 'oot-derived-key-ring':
-        qty = boolToInt(hasOotKeyRing(state.oot, entry.source.record ?? -1));
-        break;
-      case 'oot-derived-skeleton-key':
-        qty = boolToInt(hasOotSkeletonKey(state.oot));
-        break;
       case 'mm-derived-key-ring':
         qty = boolToInt(hasMmKeyRing(state.mm, entry.source.record ?? -1));
         break;
@@ -5579,9 +4891,6 @@ function appendCatalogItems(
         break;
       case 'mm-derived-platinum-token':
         qty = boolToInt(hasMmPlatinumToken(state.mm));
-        break;
-      case 'oot-derived-magical-rupee':
-        qty = boolToInt(hasOotMagicalRupee(state));
         break;
       case 'shared-bitmap-bit':
         qty = boolToInt(
@@ -5772,31 +5081,6 @@ function hasMmSkeletonKey(mm: MmState): boolean {
   return true;
 }
 
-function hasOotKeyRing(oot: OotState, dungeonIndex: number): boolean {
-  if (dungeonIndex < 0 || dungeonIndex >= OOT_RUNTIME_SCENE_COUNT) {
-    return false;
-  }
-  const wanted = ootMaxKeyLimit(oot, dungeonIndex);
-  return (
-    wanted > 0 && dungeonMaxKeys(oot.dungeonItems[dungeonIndex] ?? 0) >= wanted
-  );
-}
-
-function hasOotSkeletonKey(oot: OotState): boolean {
-  let totalWanted = 0;
-  for (let sceneId = 0; sceneId < OOT_RUNTIME_SCENE_COUNT; sceneId++) {
-    const wanted = ootMaxKeyLimit(oot, sceneId);
-    if (wanted === 0) {
-      continue;
-    }
-    totalWanted += wanted;
-    if (dungeonMaxKeys(oot.dungeonItems[sceneId] ?? 0) < wanted) {
-      return false;
-    }
-  }
-  return totalWanted > 0;
-}
-
 function hasMmKeyRing(mm: MmState, dungeonIndex: number): boolean {
   return (
     dungeonIndex >= 0 &&
@@ -5853,122 +5137,24 @@ function ootSilverRupeeItemId(oot: OotState, silverRupeeId: number): string {
   return entry[variant] ?? '';
 }
 
-function ootMqDungeonState(
-  oot: OotState,
-  dungeonId: number,
-): [boolean, boolean] {
-  if (oot.hasRuntimeMqBits) {
-    return [((oot.runtimeMqBits >>> dungeonId) & 1) !== 0, true];
+/**
+ * Whether the given MQ dungeon uses the Master Quest layout, per the spoiler
+ * log's `mqDungeons` world flag (applied by the parser via
+ * {@link OotState.mqDungeonMask}).
+ */
+function ootIsMqDungeon(oot: OotState, dungeonId: number): boolean {
+  if (dungeonId < 0 || dungeonId >= OOT_MQ_DUNGEON_COUNT) {
+    return false;
   }
-  switch (dungeonId) {
-    case OOT_MQ_DODONGOS_CAVERN:
-      return ootRuntimeSilverLimitMqState(oot, 0, 5, 0);
-    case OOT_MQ_TEMPLE_FOREST:
-      return ootRuntimeMaxKeyMqState(oot, OOT_SCENE_TEMPLE_FOREST, 6, 5);
-    case OOT_MQ_TEMPLE_FIRE:
-      return ootRuntimeMaxKeyMqState(oot, OOT_SCENE_TEMPLE_FIRE, 5, 7, 8);
-    case OOT_MQ_TEMPLE_WATER:
-      return ootRuntimeMaxKeyMqState(oot, OOT_SCENE_TEMPLE_WATER, 2, 5);
-    case OOT_MQ_TEMPLE_SPIRIT: {
-      const silverResult = ootRuntimeSilverLimitMqState(oot, 4, 0, 5);
-      if (silverResult[1]) {
-        return silverResult;
-      }
-      return ootRuntimeMaxKeyMqState(oot, OOT_SCENE_TEMPLE_SPIRIT, 7, 5);
-    }
-    case OOT_MQ_TEMPLE_SHADOW:
-      return ootRuntimeMaxKeyMqState(oot, OOT_SCENE_TEMPLE_SHADOW, 6, 5);
-    case OOT_MQ_BOTTOM_OF_THE_WELL:
-      return ootRuntimeMaxKeyMqState(oot, OOT_SCENE_BOTTOM_OF_THE_WELL, 2, 3);
-    case OOT_MQ_ICE_CAVERN:
-      return ootRuntimeSilverLimitMqState(oot, 9, 0, 5);
-    case OOT_MQ_GERUDO_TRAINING_GROUNDS: {
-      const maxKeyResult = ootRuntimeMaxKeyMqState(
-        oot,
-        OOT_SCENE_GERUDO_TRAINING_GROUND,
-        3,
-        9,
-      );
-      if (maxKeyResult[1]) {
-        return maxKeyResult;
-      }
-      return ootRuntimeSilverLimitMqState(oot, 12, 6, 5);
-    }
-    case OOT_MQ_GANON_CASTLE: {
-      const silverResult = ootRuntimeSilverLimitMqState(oot, 17, 0, 5);
-      if (silverResult[1]) {
-        return silverResult;
-      }
-      return ootRuntimeMaxKeyMqState(oot, OOT_SCENE_INSIDE_GANON_CASTLE, 3, 2);
-    }
-    default:
-      return [false, false];
-  }
-}
-
-function ootRuntimeMaxKeyMqState(
-  oot: OotState,
-  sceneId: number,
-  mqValue: number,
-  ...vanillaValues: number[]
-): [boolean, boolean] {
-  if (
-    !oot.hasRuntimeMaxKeys ||
-    sceneId < 0 ||
-    sceneId >= oot.runtimeMaxKeys.length
-  ) {
-    return [false, false];
-  }
-  const value = oot.runtimeMaxKeys[sceneId] ?? 0;
-  if (value === mqValue) {
-    return [true, true];
-  }
-  return [false, vanillaValues.includes(value)];
-}
-
-function ootRuntimeSilverLimitMqState(
-  oot: OotState,
-  silverRupeeId: number,
-  mqValue: number,
-  ...vanillaValues: number[]
-): [boolean, boolean] {
-  if (
-    !oot.hasRuntimeSilverRupeeCounts ||
-    silverRupeeId < 0 ||
-    silverRupeeId >= oot.runtimeSilverRupeeCounts.length
-  ) {
-    return [false, false];
-  }
-  const value = oot.runtimeSilverRupeeCounts[silverRupeeId] ?? 0;
-  if (value === mqValue) {
-    return [true, true];
-  }
-  return [false, vanillaValues.includes(value)];
+  return ((oot.mqDungeonMask >>> dungeonId) & 1) !== 0;
 }
 
 function ootIsMqSpirit(oot: OotState): boolean {
-  return ootMqDungeonState(oot, OOT_MQ_TEMPLE_SPIRIT)[0];
+  return ootIsMqDungeon(oot, OOT_MQ_DUNGEON_ID_SPIRIT);
 }
 
 function ootIsMqGanonCastle(oot: OotState): boolean {
-  return ootMqDungeonState(oot, OOT_MQ_GANON_CASTLE)[0];
-}
-
-function hasOotMagicalRupee(state: GameState): boolean {
-  for (
-    let silverRupeeId = 0;
-    silverRupeeId < OOT_SILVER_RUPEE_SET_COUNT;
-    silverRupeeId++
-  ) {
-    const wanted = ootSilverRupeeLimit(state.oot, silverRupeeId);
-    if (wanted === 0) {
-      continue;
-    }
-    if (ootSilverRupeeCount(state.oot, silverRupeeId, state.shared) < wanted) {
-      return false;
-    }
-  }
-  return true;
+  return ootIsMqDungeon(oot, OOT_MQ_DUNGEON_ID_GANON_CASTLE);
 }
 
 function ootSilverRupeeCount(
@@ -6001,24 +5187,6 @@ function sharedOcarinaButtonOwned(buttonMask: number, mask: number): boolean {
     buttonMask !== SHARED_OCARINA_BUTTON_MASK_DISABLED &&
     (buttonMask & mask) !== 0
   );
-}
-
-function ootMaxKeyLimit(oot: OotState, sceneId: number): number {
-  if (sceneId < 0 || sceneId >= OOT_RUNTIME_SCENE_COUNT) {
-    return 0;
-  }
-  return oot.hasRuntimeMaxKeys
-    ? (oot.runtimeMaxKeys[sceneId] ?? 0)
-    : (OOT_FALLBACK_MAX_KEYS[sceneId] ?? 0);
-}
-
-function ootSilverRupeeLimit(oot: OotState, silverRupeeId: number): number {
-  if (silverRupeeId < 0 || silverRupeeId >= OOT_SILVER_RUPEE_SET_COUNT) {
-    return 0;
-  }
-  return oot.hasRuntimeSilverRupeeCounts
-    ? (oot.runtimeSilverRupeeCounts[silverRupeeId] ?? 0)
-    : (OOT_FALLBACK_SILVER_RUPEE_MAX_COUNTS[silverRupeeId] ?? 0);
 }
 
 function dungeonMaxKeys(dungeonItem: number): number {
@@ -6195,11 +5363,7 @@ function ootConflictingBitmapCheckNames(
   if (!entry) {
     return [];
   }
-  const [mq, known] = ootMqDungeonState(oot, entry.dungeonMq);
-  if (!known) {
-    return [];
-  }
-  return mq ? entry.mq : entry.vanilla;
+  return ootIsMqDungeon(oot, entry.dungeonMq) ? entry.mq : entry.vanilla;
 }
 
 function ootConflictingXflagCheckNames(
@@ -6238,11 +5402,7 @@ function ootConflictingSceneCheckName(
   if (!entry) {
     return null;
   }
-  const [mq, known] = ootMqDungeonState(oot, entry.dungeonMq);
-  if (!known) {
-    return null;
-  }
-  return mq ? entry.mq : entry.vanilla;
+  return ootIsMqDungeon(oot, entry.dungeonMq) ? entry.mq : entry.vanilla;
 }
 
 function boolToInt(value: boolean): number {
@@ -6376,15 +5536,7 @@ function createEmptyOotState(): OotState {
     dungeonKeys: Array.from({ length: 19 }, () => -1),
     goldTokens: 0,
     gsFlags: Array.from({ length: 6 }, () => 0),
-    runtimeMqBits: 0,
-    runtimeMaxKeys: Array.from({ length: OOT_RUNTIME_SCENE_COUNT }, () => 0),
-    runtimeSilverRupeeCounts: Array.from(
-      { length: OOT_SILVER_RUPEE_SET_COUNT },
-      () => 0,
-    ),
-    hasRuntimeMqBits: false,
-    hasRuntimeMaxKeys: false,
-    hasRuntimeSilverRupeeCounts: false,
+    mqDungeonMask: 0,
     bronzeScaleEnabled: false,
     sceneFlags: Array.from({ length: OOT_PERM_COUNT }, createEmptySceneFlags),
     extraRecords: Array.from({ length: 22 }, () => 0),
@@ -6497,8 +5649,6 @@ function cloneOotState(source: OotState): OotState {
     dungeonItems: [...source.dungeonItems],
     dungeonKeys: [...source.dungeonKeys],
     gsFlags: [...source.gsFlags],
-    runtimeMaxKeys: [...source.runtimeMaxKeys],
-    runtimeSilverRupeeCounts: [...source.runtimeSilverRupeeCounts],
     sceneFlags: source.sceneFlags.map((flags) => ({ ...flags })),
     extraRecords: [...source.extraRecords],
     eventsChk: [...source.eventsChk],

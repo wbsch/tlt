@@ -161,6 +161,17 @@ A full dump is a JSON file with these fields:
   never branches on it.
 - `dumpKind` — `"sparse"` or `"full"`.
 - `ootmmVersion` — spoiler-log version at capture time (e.g. `"v32.1"`).
+- `mqDungeons` — the OoT dungeons that were on the MQ layout at capture time,
+  as spoiler-log `mqDungeons` codes. The parser takes the vanilla/MQ check split
+  from the spoiler log (`mqDungeons` under `World Flags`) rather than from
+  `ComboConfig.mq` in RAM, so a replay has to be handed the capture's value.
+  Optional for dumps recorded before this field existed; missing means "all
+  vanilla". Backfill with `--mq-dungeons` (see below).
+- `bronzeScale` — whether the capture had the bronze scale enabled (spoiler-log
+  `bronzeScale` setting). Same story: the parser takes it from the spoiler log
+  instead of the `ComboConfig` bronze flag, and it shifts the derived
+  `OOT_SCALE`/`MM_SCALE` quantities by one. Optional for older dumps; missing
+  means `false`. Backfill with `--bronze-scale` (see below).
 - `expected` — the raw `parse()` ground truth (`activeGame`, `saveIndex`,
   `items`, `locations`), normalized (qty > 0, sorted).
 - `regions` — the authoritative, self-describing memory spec: one entry per
@@ -220,6 +231,25 @@ is unchanged. Two ways to resolve that:
    ```bash
    node --import tsx scripts/autotracker/migrate_dump_expected.ts \
      --fix-qty OOT_SCALE --fix-qty MM_SCALE --write
+   ```
+
+   A parser change that moves the vanilla/MQ check split to a different source
+   can instead leave a capture without the `mqDungeons` it was recorded with.
+   `--mq-dungeons` infers that list from the dump's own `expected.locations`
+   (per dungeon, the MQ name variants that appear in the capture versus the
+   vanilla ones) and stores it on the dump:
+
+   ```bash
+   node --import tsx scripts/autotracker/migrate_dump_expected.ts --mq-dungeons --write
+   ```
+
+   The same applies to the bronze-scale setting, whose source also moved to the
+   spoiler log. `--bronze-scale` tries both values and records the one that
+   reproduces the dump's own `expected.items` (both matching means no scale had
+   been picked up yet, so `false` is recorded):
+
+   ```bash
+   node --import tsx scripts/autotracker/migrate_dump_expected.ts --bronze-scale --write
    ```
 
 ### Fixed layout coverage invariant

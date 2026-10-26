@@ -11,16 +11,10 @@
     "comboCtx": "0x80006584",
     "saveCtx": "0x8011a5d0",
     "payload": "0x80400000",
-    "comboConfigLive": "0x804416c8",
-    "runtimeSilverRupeeDataLive": "0x8042ec10",
-    "runtimeMaxKeysLive": "0x80441c78",
     "derivation": {
       "comboCtx": "source-define",
       "saveCtx": "source-linker",
-      "payload": "patchfile-vram",
-      "comboConfigLive": "patchfile-code-scan",
-      "runtimeSilverRupeeDataLive": "patchfile-payload-scan",
-      "runtimeMaxKeysLive": "patchfile-code-scan+offset"
+      "payload": "patchfile-vram"
     },
     "missingPatchfileSymbols": ["gMmSave", "gSharedCustomSave"]
   },
@@ -28,12 +22,10 @@
     "comboCtx": "0x80098280",
     "saveCtx": "0x801ef670",
     "payload": "0x80730000",
-    "comboConfigLive": "0x80770b18",
     "derivation": {
       "comboCtx": "source-define",
       "saveCtx": "source-linker",
-      "payload": "patchfile-vram",
-      "comboConfigLive": "patchfile-code-scan"
+      "payload": "patchfile-vram"
     },
     "missingPatchfileSymbols": ["gOotSave", "gSharedCustomSave"]
   },

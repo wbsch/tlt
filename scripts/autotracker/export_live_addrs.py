@@ -5,7 +5,6 @@ import ast
 import json
 import pathlib
 import re
-import struct
 import sys
 import zipfile
 from typing import Dict
@@ -14,45 +13,6 @@ from typing import Dict
 DEFINE_RE = re.compile(r"^\s*#\s*define\s+(\w+)\s+(.+?)\s*$", re.MULTILINE)
 IDENT_RE = re.compile(r"\b[A-Za-z_]\w*\b")
 LINK_ASSIGN_RE = re.compile(r"^\s*(\w+)\s*=\s*(0x[0-9a-fA-F]+)\s*;\s*$", re.MULTILINE)
-
-OOT_SILVER_RUPEE_DATA_PATTERN = bytes([
-	0x00, 0x01, 0x00, 0x00,
-	0x00, 0x08, 0x1F, 0x05,
-	0x00, 0x06, 0x05, 0x05,
-	0x00, 0x06, 0x0A, 0x05,
-	0x00, 0x06, 0x02, 0x05,
-	0x00, 0x07, 0x01, 0x05,
-	0x00, 0x07, 0x00, 0x00,
-	0x00, 0x07, 0x09, 0x05,
-	0x00, 0x07, 0x08, 0x05,
-	0x00, 0x09, 0x08, 0x05,
-	0x00, 0x09, 0x09, 0x05,
-	0x00, 0x0B, 0x1C, 0x05,
-	0x00, 0x0B, 0x0C, 0x05,
-	0x00, 0x0B, 0x1B, 0x05,
-	0x00, 0x0D, 0x0B, 0x05,
-	0x00, 0x0D, 0x12, 0x05,
-	0x00, 0x0D, 0x09, 0x05,
-	0x00, 0x0D, 0x0E, 0x05,
-])
-
-COMBO_CONFIG_VROM_LOAD = 0x3C05F020
-MIPS_ADDIU_OPS = {
-	0x2442,
-	0x2443,
-	0x2444,
-	0x2462,
-	0x2463,
-	0x2464,
-	0x2482,
-	0x2483,
-	0x2484,
-	0x24C6,
-	0x2529,
-	0x2610,
-}
-MIPS_LOAD_IMM_5 = {0x24020005, 0x24030005, 0x24040005, 0x24060005}
-
 
 def parse_args() -> argparse.Namespace:
 	parser = argparse.ArgumentParser(
@@ -105,15 +65,12 @@ def main() -> int:
 	if source_meta is not None:
 		generated_from.update(source_meta["generatedFrom"])
 
-	max_keys_offset = combo_global_max_keys_oot_offset(repo) if repo is not None else None
-
 	oot_output = build_game_output(
 		"oot",
 		patch_meta,
 		source_meta,
 		link_symbol_name="gSaveContext",
 		combo_define_name="COMBO_CTX_ADDR_OOT",
-		max_keys_offset=max_keys_offset,
 	)
 	mm_output = build_game_output(
 		"mm",
@@ -121,7 +78,6 @@ def main() -> int:
 		source_meta,
 		link_symbol_name="gSaveContext",
 		combo_define_name="COMBO_CTX_ADDR_MM",
-		max_keys_offset=max_keys_offset,
 	)
 
 	output = {
@@ -189,7 +145,6 @@ def build_game_output(
 	source_meta: dict | None,
 	link_symbol_name: str,
 	combo_define_name: str,
-	max_keys_offset: int | None,
 ) -> dict:
 	output: dict = {}
 	derivation: dict = {}
@@ -239,45 +194,6 @@ def build_game_output(
 		output[field_name] = format_hex(symbol_value)
 		derivation[field_name] = "patchfile-symbol"
 
-	combo_symbol = first_patch_symbol(patch_symbols, "gComboConfig")
-	if combo_symbol is not None:
-		output["comboConfigLive"] = format_hex(combo_symbol)
-		derivation["comboConfigLive"] = "patchfile-symbol"
-	else:
-		combo_value = scan_combo_config_addr(patch_meta, game) if patch_meta is not None else None
-		if combo_value is not None:
-			output["comboConfigLive"] = format_hex(combo_value)
-			derivation["comboConfigLive"] = "patchfile-code-scan"
-		else:
-			missing_patch_symbols.append("gComboConfig")
-
-	if game == "oot":
-		silver_symbol = first_patch_symbol(patch_symbols, "gSilverRupeeData")
-		if silver_symbol is not None:
-			output["runtimeSilverRupeeDataLive"] = format_hex(silver_symbol)
-			derivation["runtimeSilverRupeeDataLive"] = "patchfile-symbol"
-		else:
-			silver_value = scan_oot_silver_rupee_data_addr(patch_meta) if patch_meta is not None else None
-			if silver_value is not None:
-				output["runtimeSilverRupeeDataLive"] = format_hex(silver_value)
-				derivation["runtimeSilverRupeeDataLive"] = "patchfile-payload-scan"
-			else:
-				missing_patch_symbols.append("gSilverRupeeData")
-
-	if game == "oot":
-		g_symbol = first_patch_symbol(patch_symbols, "g")
-		if g_symbol is not None:
-			offset = max_keys_offset if max_keys_offset is not None else 0x20
-			output["runtimeMaxKeysLive"] = format_hex(g_symbol + offset)
-			derivation["runtimeMaxKeysLive"] = "patchfile-symbol+offset"
-		else:
-			g_value = scan_combo_global_addr(patch_meta, game, max_keys_offset) if patch_meta is not None and max_keys_offset is not None else None
-			if g_value is not None:
-				output["runtimeMaxKeysLive"] = format_hex(g_value + max_keys_offset)
-				derivation["runtimeMaxKeysLive"] = "patchfile-code-scan+offset"
-			else:
-				missing_patch_symbols.append("g")
-
 	if derivation:
 		output["derivation"] = derivation
 	if patch_meta is not None and missing_patch_symbols:
@@ -290,14 +206,10 @@ def not_derivable_without_linking(game: str, output: dict) -> list[str]:
 		"oot": [
 			"foreignSaveLive",
 			"sharedCustomSaveLive",
-			"comboConfigLive",
-			"runtimeMaxKeysLive",
-			"runtimeSilverRupeeDataLive",
 		],
 		"mm": [
 			"foreignSaveLive",
 			"sharedCustomSaveLive",
-			"comboConfigLive",
 		],
 	}[game]
 	return [field for field in fields if field not in output]
@@ -323,121 +235,6 @@ def first_patch_symbol(symbols: dict, name: str) -> int | None:
 	if not values:
 		return None
 	return int(values[0])
-
-
-def scan_oot_silver_rupee_data_addr(patch_meta: dict) -> int | None:
-	entry = patchfile_new_file(patch_meta["meta"], "oot/payload")
-	payload_base = extract_patchfile_vram(entry, "oot")
-	if payload_base is None:
-		return None
-	payload_data = patchfile_file_data(patch_meta, entry)
-	index = payload_data.find(OOT_SILVER_RUPEE_DATA_PATTERN)
-	if index < 0:
-		return None
-	return payload_base + index
-
-
-def scan_combo_config_addr(patch_meta: dict, game: str) -> int | None:
-	entry = patchfile_new_file(patch_meta["meta"], f"{game}/payload")
-	payload_base = extract_patchfile_vram(entry, game)
-	if payload_base is None:
-		return None
-	words = patchfile_words(patch_meta, entry)
-	hits = [index for index, word in enumerate(words) if word == COMBO_CONFIG_VROM_LOAD]
-	if len(hits) != 1:
-		return None
-
-	index = hits[0]
-	candidates = set()
-	for i in range(max(0, index-2), min(len(words), index+5)):
-		word = words[i]
-		if (word >> 26) != 0x0F:
-			continue
-		register = (word >> 16) & 0x1F
-		hi = word & 0xFFFF
-		for j in range(i+1, min(len(words), index+5)):
-			word2 = words[j]
-			if (word2 >> 16) not in MIPS_ADDIU_OPS:
-				continue
-			if ((word2 >> 21) & 0x1F) != register:
-				continue
-			target = mips_symbol_address(hi, word2 & 0xFFFF)
-			if payload_base <= target < payload_base + len(patchfile_file_data(patch_meta, entry)):
-				candidates.add(target)
-	if len(candidates) != 1:
-		return None
-	return next(iter(candidates))
-
-
-def combo_global_max_keys_oot_offset(repo: pathlib.Path) -> int | None:
-	"""Offset of ComboGlobal.maxKeysOot, laid out from the checked-out headers.
-
-	The offset is version-dependent: v32.2 removed `delayedSwitchFlags[4]` +
-	`delayedSwitchFlagsCount` from ComboGlobal, shifting `maxKeysOot` from 0x20
-	to 0x1b. We lay it out from `global.h` instead of hardcoding it.
-	"""
-	headers = {}
-	for rel in (
-		"packages/generator/include/combo/global.h",
-		"packages/generator/include/combo/xflags.h",
-		"packages/generator/include/combo/types.h",
-	):
-		path = repo / rel
-		if not path.is_file():
-			return None
-		headers[rel] = path.read_text(encoding="utf-8")
-	try:
-		from c_struct_layout import build_layouter
-		layouter = build_layouter(headers, defines=("GAME_OOT",))
-		layout = layouter.layout("ComboGlobal")
-	except Exception:
-		return None
-	for field in layout["fields"]:
-		if field["name"] == "maxKeysOot":
-			return field["offset"]
-	return None
-
-
-def scan_combo_global_addr(patch_meta: dict, game: str, max_keys_offset: int) -> int | None:
-	"""Locate the ComboGlobal `g` base address from its maxKeysOot read site.
-
-	`g` lives in .bss (not exported by the patchfile), but item_add.c reads
-	`g.maxKeysOot[dungeonId]` with a byte load (`lbu $x, <max_keys_offset>($s0)`).
-	The field offset is version-dependent (it moved in v32.2), so it is passed in
-	rather than hardcoded. Returns `g` (the `lui/addiu` target); the caller adds
-	`max_keys_offset` to obtain `runtimeMaxKeysLive`.
-	"""
-	entry = patchfile_new_file(patch_meta["meta"], f"{game}/payload")
-	words = patchfile_words(patch_meta, entry)
-	candidates = set()
-	for index in range(len(words) - 2):
-		if (words[index] >> 16) != 0x3C10 or (words[index + 1] >> 16) != 0x2610:
-			continue
-		g = mips_symbol_address(words[index] & 0xFFFF, words[index + 1] & 0xFFFF)
-		for j in range(index + 2, min(index + 8, len(words))):
-			word = words[j]
-			if (word >> 26) == 0x24 and ((word >> 21) & 0x1F) == 16 and (word & 0xFFFF) == max_keys_offset:
-				candidates.add(g)
-	if len(candidates) != 1:
-		return None
-	return next(iter(candidates))
-
-
-def patchfile_file_data(patch_meta: dict, entry: dict) -> bytes:
-	offset = int(entry["offset"])
-	size = int(entry["size"])
-	blob = patch_meta["blob"]
-	return blob[offset:offset + size]
-
-
-def patchfile_words(patch_meta: dict, entry: dict) -> list[int]:
-	data = patchfile_file_data(patch_meta, entry)
-	limit = len(data) - (len(data) % 4)
-	return [struct.unpack(">I", data[index:index+4])[0] for index in range(0, limit, 4)]
-
-
-def mips_symbol_address(hi: int, lo: int) -> int:
-	return ((hi << 16) + (lo if lo < 0x8000 else lo - 0x10000)) & 0xFFFFFFFF
 
 
 def parse_link_assignments(text: str) -> Dict[str, int]:

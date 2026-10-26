@@ -4,10 +4,14 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 const {
   parseRawMessageMock,
   resetRawParserMock,
+  setMqDungeonsMock,
+  setBronzeScaleMock,
   createRawAutotrackerParserMock,
 } = vi.hoisted(() => ({
   parseRawMessageMock: vi.fn(),
   resetRawParserMock: vi.fn(),
+  setMqDungeonsMock: vi.fn(),
+  setBronzeScaleMock: vi.fn(),
   createRawAutotrackerParserMock: vi.fn(),
 }));
 
@@ -17,13 +21,6 @@ vi.mock('@/../packs/ootmm/src/autotracker/rawFrameParser', () => ({
       { name: 'oot_save_state', address: 0x8011a5d4, length: 3888 },
       { name: 'oot_foreign_mm_save', address: 0x80443970, length: 15520 },
       { name: 'oot_shared_custom_save', address: 0x80443100, length: 2118 },
-      { name: 'oot_runtime_combo_config', address: 0x804416c8, length: 732 },
-      {
-        name: 'oot_runtime_silver_rupee_data',
-        address: 0x8042ec10,
-        length: 72,
-      },
-      { name: 'oot_runtime_max_keys', address: 0x80441c78, length: 21 },
       { name: 'oot_playstate_scene', address: 0x801c8544, length: 2 },
       { name: 'oot_playstate_room', address: 0x801da15c, length: 1 },
       { name: 'oot_playstate_link_age', address: 0x801da288, length: 1 },
@@ -34,7 +31,6 @@ vi.mock('@/../packs/ootmm/src/autotracker/rawFrameParser', () => ({
       { name: 'mm_cycle_flags', address: 0x801f35d8, length: 2400 },
       { name: 'mm_foreign_oot_save', address: 0x807729f0, length: 4948 },
       { name: 'mm_shared_custom_save', address: 0x80772180, length: 2118 },
-      { name: 'mm_runtime_combo_config', address: 0x80770b18, length: 732 },
       { name: 'mm_playstate_scene', address: 0x803e6bc4, length: 2 },
       { name: 'mm_playstate_room', address: 0x803ff200, length: 1 },
       { name: 'mm_playstate_flags', address: 0x803e8978, length: 32 },
@@ -45,6 +41,8 @@ vi.mock('@/../packs/ootmm/src/autotracker/rawFrameParser', () => ({
     return Promise.resolve({
       parse: parseRawMessageMock,
       reset: resetRawParserMock,
+      setMqDungeons: setMqDungeonsMock,
+      setBronzeScale: setBronzeScaleMock,
     });
   },
 }));
@@ -105,6 +103,8 @@ describe('useAutotracker checks', () => {
     vi.stubGlobal('WebSocket', FakeWebSocket);
     parseRawMessageMock.mockReset();
     resetRawParserMock.mockReset();
+    setMqDungeonsMock.mockReset();
+    setBronzeScaleMock.mockReset();
     createRawAutotrackerParserMock.mockReset();
   });
 
@@ -156,17 +156,6 @@ describe('useAutotracker checks', () => {
           { name: 'oot_save_state', address: 0x8011a5d4, length: 3888 },
           { name: 'oot_foreign_mm_save', address: 0x80443970, length: 15520 },
           { name: 'oot_shared_custom_save', address: 0x80443100, length: 2118 },
-          {
-            name: 'oot_runtime_combo_config',
-            address: 0x804416c8,
-            length: 732,
-          },
-          {
-            name: 'oot_runtime_silver_rupee_data',
-            address: 0x8042ec10,
-            length: 72,
-          },
-          { name: 'oot_runtime_max_keys', address: 0x80441c78, length: 21 },
           { name: 'oot_playstate_scene', address: 0x801c8544, length: 2 },
           { name: 'oot_playstate_room', address: 0x801da15c, length: 1 },
           { name: 'oot_playstate_link_age', address: 0x801da288, length: 1 },
@@ -177,11 +166,6 @@ describe('useAutotracker checks', () => {
           { name: 'mm_cycle_flags', address: 0x801f35d8, length: 2400 },
           { name: 'mm_foreign_oot_save', address: 0x807729f0, length: 4948 },
           { name: 'mm_shared_custom_save', address: 0x80772180, length: 2118 },
-          {
-            name: 'mm_runtime_combo_config',
-            address: 0x80770b18,
-            length: 732,
-          },
           { name: 'mm_playstate_scene', address: 0x803e6bc4, length: 2 },
           { name: 'mm_playstate_room', address: 0x803ff200, length: 1 },
           { name: 'mm_playstate_flags', address: 0x803e8978, length: 32 },
@@ -775,9 +759,6 @@ describe('useAutotracker checks', () => {
           expect.objectContaining({ name: 'oot_save_state' }),
           expect.objectContaining({ name: 'oot_foreign_mm_save' }),
           expect.objectContaining({ name: 'oot_shared_custom_save' }),
-          expect.objectContaining({ name: 'oot_runtime_combo_config' }),
-          expect.objectContaining({ name: 'oot_runtime_silver_rupee_data' }),
-          expect.objectContaining({ name: 'oot_runtime_max_keys' }),
           expect.objectContaining({ name: 'oot_playstate_scene' }),
           expect.objectContaining({ name: 'oot_playstate_room' }),
           expect.objectContaining({ name: 'oot_playstate_link_age' }),
@@ -788,7 +769,6 @@ describe('useAutotracker checks', () => {
           expect.objectContaining({ name: 'mm_cycle_flags' }),
           expect.objectContaining({ name: 'mm_foreign_oot_save' }),
           expect.objectContaining({ name: 'mm_shared_custom_save' }),
-          expect.objectContaining({ name: 'mm_runtime_combo_config' }),
           expect.objectContaining({ name: 'mm_playstate_scene' }),
           expect.objectContaining({ name: 'mm_playstate_room' }),
           expect.objectContaining({ name: 'mm_playstate_flags' }),
@@ -958,6 +938,40 @@ describe('useAutotracker checks', () => {
     expect(createRawAutotrackerParserMock).toHaveBeenLastCalledWith({
       ootmmVersion: null,
     });
+
+    autotracker.destroy();
+  });
+
+  it('pushes the spoiler-log MQ and bronze-scale settings into the raw parser', async () => {
+    const availableItemIds = ref(new Set<string>());
+    const itemMaxCounts = ref(new Map<string, number>());
+    const mqDungeons = ref<readonly string[] | null>(['DT']);
+    const bronzeScale = ref<boolean | null | undefined>(true);
+
+    const autotracker = useAutotracker({
+      availableItemIds,
+      itemMaxCounts,
+      mqDungeons,
+      bronzeScale,
+      onInventoryUpdate: () => {},
+    });
+
+    expect(createRawAutotrackerParserMock).toHaveBeenLastCalledWith({
+      ootmmVersion: undefined,
+      mqDungeons: ['DT'],
+      bronzeScale: true,
+    });
+    await nextTick();
+    expect(setMqDungeonsMock).toHaveBeenLastCalledWith(['DT']);
+    expect(setBronzeScaleMock).toHaveBeenLastCalledWith(true);
+
+    // Setting changes are pushed without recreating the parser.
+    mqDungeons.value = ['DT', 'DC'];
+    bronzeScale.value = false;
+    await nextTick();
+    expect(createRawAutotrackerParserMock).toHaveBeenCalledTimes(1);
+    expect(setMqDungeonsMock).toHaveBeenLastCalledWith(['DT', 'DC']);
+    expect(setBronzeScaleMock).toHaveBeenLastCalledWith(false);
 
     autotracker.destroy();
   });

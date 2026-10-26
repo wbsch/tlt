@@ -20,10 +20,23 @@ import {
 /**
  * The minimal dump shape the verifier reads. A full `AutotrackerDumpFile`
  * (see `packs/ootmm/src/components/OoTMMTracker.vue`) is a superset of this;
- * only `regions`, `expected` and `ootmmVersion` are consulted.
+ * only `regions`, `expected`, `ootmmVersion` and `mqDungeons` are consulted.
  */
 export type TestDumpFile = {
   ootmmVersion: string | null;
+  /**
+   * Dungeons the recording had on the MQ layout, as `mqDungeons` codes. The
+   * parser no longer reads the runtime MQ bits, so the dump has to record the
+   * spoiler-log state the capture was made with. Dumps predating this field
+   * are backfilled by `migrate_dump_expected.ts --mq-dungeons`.
+   */
+  mqDungeons?: string[];
+  /**
+   * Whether the recording had the bronze scale enabled (spoiler-log
+   * `bronzeScale` setting). Dumps predating this field are backfilled by
+   * `migrate_dump_expected.ts --bronze-scale`.
+   */
+  bronzeScale?: boolean;
   expected: {
     activeGame: string;
     saveIndex: number;
@@ -173,7 +186,10 @@ export function verifyTestDump(dump: TestDumpFile): TestDumpVerificationResult {
   // `applyVersionData` → `rebuildChunkSpecs`, which sets the module-global
   // `RAW_CHUNK_SPECS_BY_GAME` to the dump's version. Reading the specs before
   // this would yield the wrong (previously applied) version's specs.
-  const parser = createRawAutotrackerParserSync(dirName);
+  const parser = createRawAutotrackerParserSync(dirName, {
+    mqDungeons: dump.mqDungeons ?? [],
+    bronzeScale: dump.bronzeScale === true,
+  });
 
   // Step 3: read the version-specific specs AFTER step 2 and filter to the
   // dump's active game. These are the authoritative slice list, sourced from

@@ -132,11 +132,9 @@ python3 scripts/autotracker/derive_web_symbols.py v32.1 --write \
     packs/ootmm/src/autotracker/data/v32_1/live_addrs.json
 ```
 
-That still leaves `comboConfigLive` (both games) and `runtimeMaxKeysLive` /
-`runtimeSilverRupeeDataLive` (OoT) unset — those come only from patchfile code
-scans. They are optional fields in `rawFrameParser.ts`, so the build passes, but
-the version is **not** ready to enable in `versions.ts` until a real patchfile
-fills them in.
+Step 2 fills in the foreign/shared save globals, which the patchfile does not
+export — `live_addrs.json` is only complete after both steps (or a patchfile
+run).
 
 Related: `packs/ootmm/src/autotracker/data/versions.ts` deliberately gates which
 versions are enabled for autotracking. Leave a new version out of that list until
@@ -265,18 +263,15 @@ Reference: how things are wired now (state after v33.0):
   (`XFLAGS_COUNT` lives in the generated
   `packages/data/dist/include/combo/data/xflags.h`), so
   `inventory_slots.py` maps both `xflagsOot` and `xflagsMm` onto it.
-- v33 also removed the leading `playerId` from `ComboConfig`, shifting the
-  fixed tail offsets (`mq`, `config`, `special`, `prices`, `triforcePieces`,
-  `triforceGoal`) by 4. `derive_combo_config_layout.py` now emits those
-  offsets into `combo_config_layout.json` and `rawFrameParser.ts` applies them
-  per data version (v30.1-v32.x simply omit the keys and keep the old
-  defaults).
+- v33 also removed the leading `playerId` from `ComboConfig`. The autotracker
+  no longer reads that struct at all (the vanilla/MQ split and the bronze-scale
+  setting come from the spoiler log), so the version-specific
+  `combo_config_layout.json` files and `derive_combo_config_layout.py` are gone.
 - `derive_web_symbols.py`'s zip discovery now follows Vite's relative dynamic
   imports (`./App-*.js`), which is how the v33 web build reaches
   `worker-*.js` and from there `assets/data-*.zip`. So
   `generate:autotracker-data` can derive the foreign/shared save addresses for
-  a new version on its own. `comboConfigLive` and the two `runtime*Live`
-  addresses still require a patchfile (`OOTMM_PATCHFILE`).
+  a new version on its own.
 
 Upstream also renames, merges or removes locations between releases. After a
 bump, compare the old and new location sets and remove stale codes from the

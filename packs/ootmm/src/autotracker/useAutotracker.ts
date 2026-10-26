@@ -41,6 +41,19 @@ interface AutotrackerOptions {
    * Used to select the correct autotracker data directory.
    */
   ootmmVersion?: Ref<string | null>;
+  /**
+   * OoT dungeons that use the Master Quest layout, as `mqDungeons` codes from
+   * the spoiler log (`'DT'`, `'DC'`, `'JJ'`, `'Forest'`, …). The spoiler log is
+   * the single source of truth for the vanilla/MQ check-name split, so this is
+   * pushed into the raw parser instead of reading the runtime MQ bits.
+   */
+  mqDungeons?: Ref<readonly string[] | null>;
+  /**
+   * Whether the seed enables the bronze scale (spoiler-log `bronzeScale`
+   * setting). Decides whether the runtime bronze-scale bit counts as an extra
+   * progressive scale step.
+   */
+  bronzeScale?: Ref<boolean | null | undefined>;
   /** Called when the autotracker has new inventory to apply. */
   onInventoryUpdate: (
     inventory: Record<string, number>,
@@ -541,21 +554,37 @@ export function useAutotracker(options: AutotrackerOptions) {
     rawParserDataVersion = version;
     const generation = ++rawParserGeneration;
     invalidateAutotrackerLiveState();
-    void createRawAutotrackerParser({ ootmmVersion: version }).then(
-      (parser) => {
-        if (generation !== rawParserGeneration) {
-          // A newer version change superseded this creation; discard it.
-          return;
-        }
-        rawParser = parser;
-      },
-    );
+    void createRawAutotrackerParser({
+      ootmmVersion: version,
+      mqDungeons: options.mqDungeons?.value,
+      bronzeScale: options.bronzeScale?.value,
+    }).then((parser) => {
+      if (generation !== rawParserGeneration) {
+        // A newer version change superseded this creation; discard it.
+        return;
+      }
+      // The spoiler-log settings may have changed while the async data load
+      // was running.
+      parser.setMqDungeons(options.mqDungeons?.value);
+      parser.setBronzeScale(options.bronzeScale?.value);
+      rawParser = parser;
+    });
   }
 
   refreshRawParser(options.ootmmVersion?.value);
   if (options.ootmmVersion) {
     watch(options.ootmmVersion, (version) => {
       refreshRawParser(version);
+    });
+  }
+  if (options.mqDungeons) {
+    watch(options.mqDungeons, (codes) => {
+      rawParser?.setMqDungeons(codes);
+    });
+  }
+  if (options.bronzeScale) {
+    watch(options.bronzeScale, (enabled) => {
+      rawParser?.setBronzeScale(enabled);
     });
   }
 

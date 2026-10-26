@@ -11,18 +11,12 @@
     "comboCtx": "0x80006584",
     "saveCtx": "0x8011a5d0",
     "payload": "0x80400000",
-    "comboConfigLive": "0x8044c6f8",
-    "runtimeSilverRupeeDataLive": "0x8043726c",
-    "runtimeMaxKeysLive": "0x8044ccb3",
     "sharedCustomSaveLive": "0x8044dd60",
     "foreignSaveLive": "0x8044e280",
     "derivation": {
       "comboCtx": "source-define",
       "saveCtx": "source-linker",
       "payload": "patchfile-vram",
-      "comboConfigLive": "patchfile-code-scan",
-      "runtimeSilverRupeeDataLive": "patchfile-payload-scan",
-      "runtimeMaxKeysLive": "patchfile-code-scan+offset",
       "sharedCustomSaveLive": "patchfile-payload-code-scan",
       "foreignSaveLive": "patchfile-payload-code-scan"
     },
@@ -32,14 +26,12 @@
     "comboCtx": "0x80098280",
     "saveCtx": "0x801ef670",
     "payload": "0x80720000",
-    "comboConfigLive": "0x80771398",
     "sharedCustomSaveLive": "0x80772620",
     "foreignSaveLive": "0x80772b40",
     "derivation": {
       "comboCtx": "source-define",
       "saveCtx": "source-linker",
       "payload": "patchfile-vram",
-      "comboConfigLive": "patchfile-code-scan",
       "sharedCustomSaveLive": "patchfile-payload-code-scan",
       "foreignSaveLive": "patchfile-payload-code-scan"
     },
