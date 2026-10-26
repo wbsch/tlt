@@ -174,7 +174,7 @@ export const TRACKER_FAQ_SECTIONS: TrackerFaqSection[] = [
         blocks: [
           {
             type: 'paragraph',
-            text: 'Only randomizer versions v30.1 to v32.3 are supported (no dev seeds). Autotracking only works after you import a spoiler log.',
+            text: 'Only randomizer versions v30.1 to v33.0 are supported (no dev seeds). Autotracking only works after you import a spoiler log.',
           },
           {
             type: 'paragraph',
@@ -259,7 +259,7 @@ export const TRACKER_FAQ_SECTIONS: TrackerFaqSection[] = [
         blocks: [
           {
             type: 'paragraph',
-            text: 'Only randomizer versions v30.1 to v32.3 are supported (no dev seeds). Autotracking only works after you import a spoiler log.',
+            text: 'Only randomizer versions v30.1 to v33.0 are supported (no dev seeds). Autotracking only works after you import a spoiler log.',
           },
           {
             type: 'paragraph',
@@ -320,7 +320,7 @@ export const TRACKER_FAQ_SECTIONS: TrackerFaqSection[] = [
         blocks: [
           {
             type: 'paragraph',
-            text: 'Only randomizer versions v30.1 to v32.3 are supported (no dev seeds). Autotracking only works after you import a spoiler log.',
+            text: 'Only randomizer versions v30.1 to v33.0 are supported (no dev seeds). Autotracking only works after you import a spoiler log.',
           },
           {
             type: 'paragraph',
@@ -396,7 +396,6 @@ export const TRACKER_FAQ_SECTIONS: TrackerFaqSection[] = [
           {
             type: 'list',
             items: [
-              'The three checks "Zora River Bean Seller", "Market House Big Poes" and "Chest Game HP" cannot be cleanly tracked by the autotracker.',
               'The Goron Knife is not cleanly detected if you already have the Biggoron Sword.',
               'In Triforce Hunt mode, the autotracker cannot distinguish between the different Triforce Pieces.',
               'The last two limitations exist because the tracker sees the same information that the user sees in the in-game Inventory/Equipment screen.',
@@ -521,7 +520,7 @@ export const TRACKER_FAQ_SECTIONS: TrackerFaqSection[] = [
         blocks: [
           {
             type: 'paragraph',
-            text: 'The tracker supports all options from the current Stable Randomizer version v32.2.',
+            text: 'The tracker supports all options from the current Stable Randomizer version v33.0.',
           },
         ],
       },
