@@ -16,6 +16,10 @@ import type {
   RecordedFoolishHint,
   RecordedMoonHint,
 } from '../data/hintTypes';
+import {
+  DUNGEON_PATH_OPTIONS,
+  type PathSubIdOption,
+} from '../data/pathHintOptions';
 import HintItemPicker from './HintItemPicker.vue';
 import HintMissingSummary from './HintMissingSummary.vue';
 import SpoilerSearchCombobox from './SpoilerSearchCombobox.vue';
@@ -184,63 +188,15 @@ const PATH_SUBTYPE_OPTIONS: SubTypeOption[] = [
   { value: 'event', label: 'Path to Events' },
 ];
 
-// ── Path subtype options (filtered by tracker settings) ──
-// Which path hint types can actually occur in the seed depends on the
-// settings: Triforce paths only exist in Triforce Quest mode, and the
-// "Path to X" hints only when the corresponding hint setting is enabled.
-// Mirrors OoTMM's analysis-path.ts makePaths().
-const pathSubTypeOptions = computed<SubTypeOption[]>(() => {
-  const settings = trackerSettings.value ?? {};
-  const goal = String(settings.goal ?? '').toLowerCase();
-  return PATH_SUBTYPE_OPTIONS.filter((opt) => {
-    switch (opt.value) {
-      case 'woth':
-        return true;
-      case 'triforce':
-        return goal === 'triforce3';
-      case 'dungeon':
-        return Boolean(settings.hintPathDungeons);
-      case 'boss':
-        return Boolean(settings.hintPathBoss);
-      case 'end-boss':
-        return Boolean(settings.hintPathEndBoss);
-      case 'event':
-        return Boolean(settings.hintPathEvents);
-    }
-  });
-});
-
 // ── Path subId options per subtype ──
-interface SubIdOption {
-  value: number;
-  label: string;
-}
-
-const PATH_SUBID_OPTIONS: Record<PathSubType, SubIdOption[]> = {
+const PATH_SUBID_OPTIONS: Record<PathSubType, PathSubIdOption[]> = {
   woth: [],
   triforce: [
     { value: 0, label: 'Power' },
     { value: 1, label: 'Courage' },
     { value: 2, label: 'Wisdom' },
   ],
-  dungeon: [
-    { value: 0, label: 'Deku Tree' },
-    { value: 1, label: "Dodongo's Cavern" },
-    { value: 2, label: "Jabu-Jabu's Belly" },
-    { value: 3, label: 'Forest Temple' },
-    { value: 4, label: 'Fire Temple' },
-    { value: 5, label: 'Water Temple' },
-    { value: 6, label: 'Shadow Temple' },
-    { value: 7, label: 'Spirit Temple' },
-    { value: 8, label: 'Bottom of the Well' },
-    { value: 9, label: 'Ice Cavern' },
-    { value: 10, label: "Gerudo's Training Grounds" },
-    { value: 11, label: "Ganon's Castle" },
-    { value: 12, label: 'Woodfall Temple' },
-    { value: 13, label: 'Snowhead Temple' },
-    { value: 14, label: 'Great Bay Temple' },
-    { value: 15, label: 'Stone Tower Temple' },
-  ],
+  dungeon: DUNGEON_PATH_OPTIONS,
   boss: [
     { value: 0, label: 'Gohma' },
     { value: 1, label: 'King Dodongo' },
@@ -815,7 +771,7 @@ function removeMoonHint(index: number) {
             <label>Subtype</label>
             <SpoilerSearchCombobox
               v-model="pathFormSubTypeModel"
-              :options="pathSubTypeOptions"
+              :options="PATH_SUBTYPE_OPTIONS"
               placeholder="Search subtypes..."
             />
           </div>

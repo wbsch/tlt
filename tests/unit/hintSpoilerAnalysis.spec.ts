@@ -33,6 +33,37 @@ const DUAL_HINT_DEDUP_LOG = [
   '                                Romani Ranch Cremia Escort    Bombchu (sometimes required)',
 ].join('\n');
 
+describe('parseSpoilerHints - dungeon paths', () => {
+  it('maps all OoTMM dungeon path names to their detail ids', () => {
+    const log = [
+      'Paths',
+      '  Path to Deku Tree:',
+      '  Path to Dodongo Cavern:',
+      '  Path to Jabu-Jabu:',
+      '  Path to Gerudo Training Grounds:',
+      '  Path to Ganon Castle:',
+      '  Path to Swamp Spider House:',
+      '  Path to Ocean Spider House:',
+      '  Path to Beneath the Well:',
+      '  Path to Ancient Castle of Ikana:',
+      '  Path to Secret Shrine:',
+      '  Path to Inverted Stone Tower Temple:',
+      '  Path to Pirate Fortress:',
+      '  Path to Ganon Tower:',
+      '  Path to Clock Tower Roof:',
+    ].join('\n');
+
+    const parsed = parseSpoilerHints(log);
+
+    expect(parsed.availablePathSubTypes.has('dungeon')).toBe(true);
+    expect(
+      Array.from(parsed.availablePathSubIds.dungeon ?? []).sort(
+        (a, b) => a - b,
+      ),
+    ).toEqual([0, 1, 2, 10, 11, 16, 17, 18, 19, 20, 21, 22, 23, 24]);
+  });
+});
+
 describe('parseSpoilerHints - dual hints', () => {
   it('counts a dual hint as a single hint', () => {
     const parsed = parseSpoilerHints(DUAL_HINT_LOG);

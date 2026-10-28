@@ -3,6 +3,7 @@
 // structured data for the Hint Tracker.
 
 import type { PathSubType, ParsedSpoilerHint } from '../data/hintTypes';
+import { DUNGEON_NAME_TO_SUBID } from '../data/pathHintOptions';
 
 export type HintCategory =
   | 'path'
@@ -88,31 +89,6 @@ export function parseSpoilerHints(hintsText: string): ParsedHintsData {
   };
   const KNOWN_BOSS_NAMES = new Set(Object.keys(BOSS_NAMES_MAP));
   const BOSS_NAME_TO_SUBID = new Map(Object.entries(BOSS_NAMES_MAP));
-
-  // Known dungeon names → subId mapping
-  const DUNGEON_NAMES_MAP: Record<string, number> = {
-    'deku tree': 0,
-    "dodongo's cavern": 1,
-    'dodongo cavern': 1,
-    "jabu-jabu's belly": 2,
-    'jabu-jabu': 2,
-    'forest temple': 3,
-    'fire temple': 4,
-    'water temple': 5,
-    'shadow temple': 6,
-    'spirit temple': 7,
-    'bottom of the well': 8,
-    'ice cavern': 9,
-    "gerudo's training grounds": 10,
-    'gerudo training grounds': 10,
-    "ganon's castle": 11,
-    'ganon castle': 11,
-    'woodfall temple': 12,
-    'snowhead temple': 13,
-    'great bay temple': 14,
-    'stone tower temple': 15,
-  };
-  const DUNGEON_NAME_TO_SUBID = new Map(Object.entries(DUNGEON_NAMES_MAP));
 
   const lines = hintsText.split('\n');
   let currentSection:
