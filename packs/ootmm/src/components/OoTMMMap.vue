@@ -2658,7 +2658,6 @@ onBeforeUnmount(() => {
               draggable="false"
             />
             <span v-else class="map-marker__song-empty">?</span>
-            <span class="map-marker__song-caret">▾</span>
           </span>
           <img
             v-else
@@ -3355,16 +3354,11 @@ onBeforeUnmount(() => {
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 1px;
-  border: 1px solid #475569;
-  border-radius: 5px;
-  background: rgba(15, 23, 42, 0.92);
   z-index: 3;
 }
 
 .map-marker--song:hover,
 .map-marker--song:focus-visible {
-  border-color: #60a5fa;
   z-index: 4;
 }
 
@@ -3388,22 +3382,6 @@ onBeforeUnmount(() => {
   color: #94a3b8;
   font-size: 0.85rem;
   font-weight: 700;
-}
-
-.map-marker__song-caret {
-  position: absolute;
-  right: 1px;
-  bottom: 1px;
-  width: 0;
-  height: 0;
-  font-size: 0;
-  border-left: 4px solid transparent;
-  border-top: 4px solid #475569;
-}
-
-.map-marker--song:hover .map-marker__song-caret,
-.map-marker--song:focus-visible .map-marker__song-caret {
-  border-top-color: #93c5fd;
 }
 
 .map-marker__corner {
