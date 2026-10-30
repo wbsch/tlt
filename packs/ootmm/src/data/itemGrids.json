@@ -320,6 +320,11 @@
                   [
                     "OOT_BOTTLE_RUTO_LETTER",
                     {
+                      "ref": "BottleRutoLetter",
+                      "item": "OOT_BOTTLE_EMPTY",
+                      "title": "Bottle (Ruto's Letter)"
+                    },
+                    {
                       "ref": "Bottle1",
                       "item": "OOT_BOTTLE_EMPTY",
                       "title": "Bottle 1"

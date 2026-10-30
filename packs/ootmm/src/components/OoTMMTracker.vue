@@ -108,6 +108,11 @@ import {
   type RawAutotrackerMessage,
 } from '../autotracker/rawFrameParser';
 import { translateAutotrackerItems } from '../autotracker/autotrackerMapping';
+import {
+  buildOotBottleState,
+  isOotBottleContentItemId,
+  isOotBottleSlotItemId,
+} from '../autotracker/ootBottleSlots';
 import { OOT_SCENE_TO_MAP, MM_SCENE_TO_MAP } from '../autotracker/sceneToMap';
 import {
   buildAutotrackerInventorySnapshot,
@@ -2648,6 +2653,19 @@ function buildTrackerInventoryRecord(
       continue;
     }
 
+    // OoT bottle slots and their contents are handled by buildOotBottleState.
+    if (!sharedBottleMode && isOotBottleSlotItemId(id)) {
+      continue;
+    }
+    if (!sharedBottleMode && isOotBottleContentItemId(id)) {
+      // The parser also reports Ruto's Letter for the King Zora moved flag,
+      // even when the seed replaced it with an empty bottle.
+      if (availableIds.size === 0 || availableIds.has(id)) {
+        record[id] = qty;
+      }
+      continue;
+    }
+
     const separateBottleContentBaseItemId =
       SEPARATELY_TRACKED_BOTTLE_CONTENT_BASE_IDS[id];
     if (separateBottleContentBaseItemId) {
@@ -2715,6 +2733,17 @@ function buildTrackerInventoryRecord(
 
     for (const key of matchingGridRefStateKeys.slice(-suppressedCount)) {
       delete record[key];
+    }
+  }
+
+  if (!sharedBottleMode) {
+    const ootBottleState = buildOotBottleState(liveState, availableIds);
+    for (const gridRefStateKey of ootBottleState.gridRefStateKeys) {
+      record[gridRefStateKey] = 1;
+    }
+    if (ootBottleState.bottleCount > 0) {
+      record.OOT_BOTTLE_EMPTY =
+        (record.OOT_BOTTLE_EMPTY ?? 0) + ootBottleState.bottleCount;
     }
   }
 

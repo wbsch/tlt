@@ -229,6 +229,7 @@ describe('useAutotracker checks', () => {
     const availableItemIds = ref(
       new Set<string>([
         'OOT_BOTTLE_EMPTY',
+        'OOT_BOTTLE_RUTO_LETTER',
         'MM_BOTTLE_EMPTY',
         'SHARED_BOTTLE_EMPTY',
       ]),
@@ -287,9 +288,9 @@ describe('useAutotracker checks', () => {
         SHARED_BOTTLE_EMPTY: 1,
         '__grid_ref_state__:__grid_ref__:Bottle1:OOT_BOTTLE_EMPTY': 1,
         '__grid_ref_state__:__grid_ref__:Bottle2:OOT_BOTTLE_EMPTY': 1,
+        '__grid_ref_state__:__grid_ref__:Bottle3:OOT_BOTTLE_EMPTY': 1,
         '__grid_ref_state__:__grid_ref__:Bottle4:OOT_BOTTLE_EMPTY': 1,
         '__grid_ref_state__:__grid_ref__:Bottle5:OOT_BOTTLE_EMPTY': 1,
-        '__grid_ref_state__:__grid_ref__:Bottle6:OOT_BOTTLE_EMPTY': 1,
         '__grid_ref_state__:__grid_ref__:MM_Bottle5:MM_BOTTLE_EMPTY': 1,
         '__grid_ref_state__:__grid_ref__:Shared_Bottle3:SHARED_BOTTLE_EMPTY': 1,
       },
@@ -349,6 +350,128 @@ describe('useAutotracker checks', () => {
         OOT_BOTTLE_EMPTY: 1,
         OOT_BOTTLE_RUTO_LETTER: 1,
         '__grid_ref_state__:__grid_ref__:Bottle1:OOT_BOTTLE_EMPTY': 1,
+      },
+    ]);
+  });
+
+  it('marks bottles consecutively when King Zora is open and Ruto\'s Letter is replaced by an empty bottle', async () => {
+    const inventoryUpdates: Array<Record<string, number>> = [];
+    const availableItemIds = ref(new Set<string>(['OOT_BOTTLE_EMPTY']));
+    const itemMaxCounts = ref(new Map<string, number>());
+
+    const autotracker = useAutotracker({
+      availableItemIds,
+      itemMaxCounts,
+      onInventoryUpdate: (inventory) => {
+        inventoryUpdates.push(inventory);
+      },
+    });
+
+    autotracker.enabled.value = true;
+    await nextTick();
+
+    const socket = FakeWebSocket.instances[0];
+    expect(socket).toBeDefined();
+
+    parseRawMessageMock.mockReturnValueOnce({
+      items: [
+        { id: 'OOT_BOTTLE_1', qty: 1 },
+        { id: 'OOT_BOTTLE_2', qty: 1 },
+        { id: 'OOT_BOTTLE_3', qty: 1 },
+        { id: 'OOT_BOTTLE_4', qty: 1 },
+        // The King Zora moved flag is set from the start when King Zora is open.
+        { id: 'OOT_BOTTLE_RUTO_LETTER', qty: 1 },
+      ],
+      checks: [],
+    });
+
+    socket.emitOpen();
+    socket.emitMessage({
+      type: 'handshAck',
+      version: CURRENT_AUTOTRACKER_VERSION,
+      name: 'ootmm-autotracker',
+      refresh: true,
+    });
+    socket.emitMessage({
+      type: 'raw',
+      schemaVersion: '1',
+      diff: false,
+      refresh: true,
+      sequence: 1,
+      game: 'OoT',
+      saveIndex: 0,
+      chunks: [],
+    });
+
+    expect(inventoryUpdates).toEqual([
+      {
+        OOT_BOTTLE_EMPTY: 4,
+        '__grid_ref_state__:__grid_ref__:BottleRutoLetter:OOT_BOTTLE_EMPTY': 1,
+        '__grid_ref_state__:__grid_ref__:Bottle1:OOT_BOTTLE_EMPTY': 1,
+        '__grid_ref_state__:__grid_ref__:Bottle2:OOT_BOTTLE_EMPTY': 1,
+        '__grid_ref_state__:__grid_ref__:Bottle3:OOT_BOTTLE_EMPTY': 1,
+      },
+    ]);
+  });
+
+  it('marks six bottles consecutively when King Zora is open and Extra Bottles are enabled', async () => {
+    const inventoryUpdates: Array<Record<string, number>> = [];
+    const availableItemIds = ref(new Set<string>(['OOT_BOTTLE_EMPTY']));
+    const itemMaxCounts = ref(new Map<string, number>());
+
+    const autotracker = useAutotracker({
+      availableItemIds,
+      itemMaxCounts,
+      onInventoryUpdate: (inventory) => {
+        inventoryUpdates.push(inventory);
+      },
+    });
+
+    autotracker.enabled.value = true;
+    await nextTick();
+
+    const socket = FakeWebSocket.instances[0];
+    expect(socket).toBeDefined();
+
+    parseRawMessageMock.mockReturnValueOnce({
+      items: [
+        { id: 'OOT_BOTTLE_1', qty: 1 },
+        { id: 'OOT_BOTTLE_2', qty: 1 },
+        { id: 'OOT_BOTTLE_3', qty: 1 },
+        { id: 'OOT_BOTTLE_4', qty: 1 },
+        { id: 'OOT_BOTTLE_5', qty: 1 },
+        { id: 'OOT_BOTTLE_6', qty: 1 },
+      ],
+      checks: [],
+    });
+
+    socket.emitOpen();
+    socket.emitMessage({
+      type: 'handshAck',
+      version: CURRENT_AUTOTRACKER_VERSION,
+      name: 'ootmm-autotracker',
+      refresh: true,
+    });
+    socket.emitMessage({
+      type: 'raw',
+      schemaVersion: '1',
+      diff: false,
+      refresh: true,
+      sequence: 1,
+      game: 'OoT',
+      saveIndex: 0,
+      chunks: [],
+    });
+
+    expect(inventoryUpdates).toEqual([
+      {
+        OOT_BOTTLE_EMPTY: 6,
+        '__grid_ref_state__:__grid_ref__:BottleRutoLetter:OOT_BOTTLE_EMPTY': 1,
+        '__grid_ref_state__:__grid_ref__:Bottle1:OOT_BOTTLE_EMPTY': 1,
+        '__grid_ref_state__:__grid_ref__:Bottle2:OOT_BOTTLE_EMPTY': 1,
+        '__grid_ref_state__:__grid_ref__:Bottle3:OOT_BOTTLE_EMPTY': 1,
+        '__grid_ref_state__:__grid_ref__:Bottle4:OOT_BOTTLE_EMPTY': 1,
+        '__grid_ref_state__:__grid_ref__:Bottle5:OOT_BOTTLE_EMPTY': 1,
       },
     ]);
   });

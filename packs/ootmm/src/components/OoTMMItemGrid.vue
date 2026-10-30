@@ -19,6 +19,10 @@ import {
   type ResolvedGridArray,
   type ResolvedGridNode,
 } from './itemGridSchema';
+import {
+  isOotRutoLetterBottleReplaced,
+  OOT_RUTO_LETTER_BOTTLE_GRID_REF,
+} from '../autotracker/ootBottleSlots';
 
 // Import the grid layout JSON
 import itemGridsData from '../data/itemGrids.json';
@@ -411,6 +415,36 @@ function isItemVisible(itemId: string): boolean {
   return false;
 }
 
+const EXTRA_OOT_BOTTLE_GRID_REFS = new Set(['Bottle4', 'Bottle5']);
+
+function isBooleanSettingEnabled(value: unknown): boolean {
+  if (typeof value === 'boolean') return value;
+  if (typeof value === 'number') return value === 1;
+  if (typeof value === 'string') {
+    const normalized = value.trim().toLowerCase();
+    return (
+      normalized === 'true' ||
+      normalized === '1' ||
+      normalized === 'yes' ||
+      normalized === 'on'
+    );
+  }
+  return false;
+}
+
+function isGridRefVisible(ref: string): boolean {
+  // The fourth and fifth OoT bottle slots only exist with Extra Bottles (OoT).
+  if (EXTRA_OOT_BOTTLE_GRID_REFS.has(ref)) {
+    return isBooleanSettingEnabled(props.settings?.extraBottlesOot);
+  }
+  // With King Zora open the Ruto's Letter slot holds an empty bottle instead,
+  // so the replacement cell is only shown when the letter is not in the pool.
+  if (ref === OOT_RUTO_LETTER_BOTTLE_GRID_REF) {
+    return isOotRutoLetterBottleReplaced(props.availableItemIds ?? new Set());
+  }
+  return true;
+}
+
 function resolveVisibleItemRef(itemRef: unknown): string | null {
   if (isItemGridEmptyRef(itemRef)) {
     return EMPTY_GRID_ITEM_ID;
@@ -428,6 +462,7 @@ function resolveVisibleItemRef(itemRef: unknown): string | null {
   }
 
   if (isItemGridAliasRef(itemRef)) {
+    if (!isGridRefVisible(itemRef.ref)) return null;
     if (!isItemVisible(itemRef.item)) return null;
     return makeGridRefAliasKey(itemRef.ref);
   }
@@ -441,7 +476,9 @@ function resolveVisibleItemRef(itemRef: unknown): string | null {
     if (isGridRefAliasKey(itemRef)) {
       const ref = getGridRefFromAliasKey(itemRef);
       const alias = gridItemRefAliases.value[ref];
-      return alias && isItemVisible(alias.item) ? itemRef : null;
+      return alias && isGridRefVisible(ref) && isItemVisible(alias.item)
+        ? itemRef
+        : null;
     }
 
     if (rawGridItemSubmenus.value[itemRef]) {
@@ -452,7 +489,9 @@ function resolveVisibleItemRef(itemRef: unknown): string | null {
 
     const alias = gridItemRefAliases.value[itemRef];
     if (alias) {
-      return isItemVisible(alias.item) ? makeGridRefAliasKey(itemRef) : null;
+      return isGridRefVisible(itemRef) && isItemVisible(alias.item)
+        ? makeGridRefAliasKey(itemRef)
+        : null;
     }
   }
 
