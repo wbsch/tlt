@@ -29,7 +29,8 @@ export type MapMarkerSettingsVisibility = {
 export type MapSubmenuEntryDef = {
   image: string;
   overlays?: MapMarkerOverlay[];
-  codes: string | string[];
+  codes?: string | string[];
+  songEventMenu?: MapSongEventMenuDef;
   visibleWhen?: MapMarkerSettingsVisibility;
   /** When true, this entry's checks stay on the map it is defined on and do
    *  NOT follow their entrance under entrance randomization. */

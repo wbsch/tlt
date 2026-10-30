@@ -526,6 +526,13 @@
             "OOT Death Mountain Crater Red Boulder Great Fairy 2"
           ],
           "anchored": true
+        },
+        {
+          "image": "song",
+          "songEventMenu": {
+            "eventId": 9,
+            "game": "oot"
+          }
         }
       ],
       "entranceMenu": {
@@ -813,6 +820,13 @@
         {
           "image": "npc",
           "codes": "OOT Great Fairy Magic Upgrade"
+        },
+        {
+          "image": "song",
+          "songEventMenu": {
+            "eventId": 8,
+            "game": "oot"
+          }
         }
       ],
       "entranceMenu": {
@@ -960,24 +974,6 @@
       "type": "submenu",
       "songEventMenu": {
         "eventId": 4,
-        "game": "oot"
-      }
-    },
-    {
-      "coords": [110, 380],
-      "image": "song",
-      "type": "submenu",
-      "songEventMenu": {
-        "eventId": 8,
-        "game": "oot"
-      }
-    },
-    {
-      "coords": [930, 355],
-      "image": "song",
-      "type": "submenu",
-      "songEventMenu": {
-        "eventId": 9,
         "game": "oot"
       }
     }

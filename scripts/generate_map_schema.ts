@@ -316,11 +316,13 @@ async function generateMapSchema(): Promise<void> {
       submenuEntry: {
         type: 'object',
         additionalProperties: false,
-        required: ['image', 'codes'],
+        required: ['image'],
+        anyOf: [{ required: ['codes'] }, { required: ['songEventMenu'] }],
         properties: {
           image: { $ref: '#/$defs/markerImage' },
           overlays: { $ref: '#/$defs/overlays' },
           codes: { $ref: '#/$defs/codes' },
+          songEventMenu: { $ref: '#/$defs/songEventMenu' },
           visibleWhen: { $ref: '#/$defs/settingsVisibility' },
           anchored: { type: 'boolean' },
         },

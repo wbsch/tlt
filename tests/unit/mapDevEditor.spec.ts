@@ -15,6 +15,15 @@ function createTestMap(): MapDef {
         coords: [100, 120],
         image: 'unknown-icon',
         type: 'submenu',
+        markers: [
+          {
+            image: 'song',
+            songEventMenu: {
+              eventId: 6,
+              game: 'oot',
+            },
+          },
+        ],
         entranceMenu: {
           entranceIds: ['OOT_TEST_ENTRANCE'],
           display: 'exits',
@@ -77,6 +86,13 @@ describe('OoTMMMapDevEditor', () => {
         'OOT_TEST_ENTRANCE',
       ]);
       expect(exportedMap.markers[0]?.entranceMenu?.display).toBe('exits');
+      expect(exportedMap.markers[0]?.markers?.[0]).toEqual({
+        image: 'song',
+        songEventMenu: {
+          eventId: 6,
+          game: 'oot',
+        },
+      });
       expect(exportedMap.markers[1]?.songEventMenu).toEqual({
         eventId: 5,
         game: 'oot',

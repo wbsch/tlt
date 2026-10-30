@@ -58,6 +58,18 @@ describe('ootmm map schema', () => {
     expect(submenuEntryProps.anchored).toEqual({ type: 'boolean' });
   });
 
+  it('supports song event menus on submenu entries', () => {
+    const schema = JSON.parse(
+      readFileSync(
+        path.resolve('packs/ootmm/src/data/schemas/ootmm-map.schema.json'),
+        'utf8',
+      ),
+    ) as MapSchema;
+
+    const submenuEntryProps = schema.$defs?.submenuEntry?.properties ?? {};
+    expect(submenuEntryProps).toHaveProperty('songEventMenu');
+  });
+
   it('supports song event menus on submenu markers', () => {
     const schema = JSON.parse(
       readFileSync(

@@ -610,15 +610,6 @@
       }
     },
     {
-      "coords": [512, 339],
-      "image": "song",
-      "type": "submenu",
-      "songEventMenu": {
-        "eventId": 10,
-        "game": "oot"
-      }
-    },
-    {
       "coords": [440, 294],
       "image": "song",
       "type": "submenu",

@@ -1094,6 +1094,13 @@
           "image": "boulder",
           "codes": "OOT Zora Fountain Boulder Exposed",
           "anchored": true
+        },
+        {
+          "image": "song",
+          "songEventMenu": {
+            "eventId": 5,
+            "game": "oot"
+          }
         }
       ],
       "entranceMenu": {
@@ -1170,15 +1177,6 @@
       "type": "submenu",
       "songEventMenu": {
         "eventId": 3,
-        "game": "oot"
-      }
-    },
-    {
-      "coords": [925, 347],
-      "image": "song",
-      "type": "submenu",
-      "songEventMenu": {
-        "eventId": 5,
         "game": "oot"
       }
     }

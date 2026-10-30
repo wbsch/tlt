@@ -1924,7 +1924,7 @@ const mapSelectorCheckIdsByMap = computed(() => {
           // override destination here would import the destination interior's
           // checks onto the wrong map.
           const hasNonAnchoredCheckEntries = (marker.markers ?? []).some(
-            (entry) => entry.anchored !== true,
+            (entry) => entry.anchored !== true && !entry.songEventMenu,
           );
           if (hasNonAnchoredCheckEntries) {
             for (const code of resolveEntranceBoundCodes(

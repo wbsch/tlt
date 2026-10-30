@@ -1119,6 +1119,13 @@
         {
           "image": "npc",
           "codes": "OOT Great Fairy Nayru's Love"
+        },
+        {
+          "image": "song",
+          "songEventMenu": {
+            "eventId": 7,
+            "game": "oot"
+          }
         }
       ],
       "entranceMenu": {
@@ -1166,15 +1173,6 @@
       "entranceMenu": {
         "entranceIds": ["OOT_TEMPLE_SPIRIT"],
         "display": "entrances"
-      }
-    },
-    {
-      "coords": [40, 530],
-      "image": "song",
-      "type": "submenu",
-      "songEventMenu": {
-        "eventId": 7,
-        "game": "oot"
       }
     }
   ]

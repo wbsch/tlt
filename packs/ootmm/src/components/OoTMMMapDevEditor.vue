@@ -111,6 +111,12 @@ function cloneSubmenuEntry(entry: MapSubmenuEntryDef): MapSubmenuEntryDef {
     image: entry.image,
     overlays: entry.overlays ? [...entry.overlays] : undefined,
     codes: Array.isArray(entry.codes) ? [...entry.codes] : entry.codes,
+    songEventMenu: entry.songEventMenu
+      ? {
+          eventId: entry.songEventMenu.eventId,
+          game: entry.songEventMenu.game,
+        }
+      : undefined,
     visibleWhen: cloneVisibleWhen(entry.visibleWhen),
     anchored: entry.anchored,
   };
@@ -658,16 +664,19 @@ const draftErrors = computed<DraftIssue[]>(() => {
         });
       }
       submenuMarkers.forEach((submenuMarker, submenuIndex) => {
+        if (submenuMarker.songEventMenu) return;
         const codes = Array.isArray(submenuMarker.codes)
           ? submenuMarker.codes
-          : [submenuMarker.codes];
+          : submenuMarker.codes
+            ? [submenuMarker.codes]
+            : [];
         const trimmedCodes = codes
           .map((code) => code.trim())
           .filter((code) => code.length > 0);
         if (trimmedCodes.length === 0) {
           issues.push({
             markerIndex,
-            message: `Submenu marker #${submenuIndex + 1} must include at least one code`,
+            message: `Submenu marker #${submenuIndex + 1} must include at least one code or a song event`,
           });
         }
       });
@@ -704,9 +713,13 @@ const draftWarnings = computed<DraftIssue[]>(() => {
     if (marker.type === 'submenu') {
       const submenuUnresolved = (marker.markers ?? []).flatMap(
         (submenuMarker, submenuIndex) =>
-          (Array.isArray(submenuMarker.codes)
-            ? submenuMarker.codes
-            : [submenuMarker.codes]
+          (submenuMarker.songEventMenu
+            ? []
+            : Array.isArray(submenuMarker.codes)
+              ? submenuMarker.codes
+              : submenuMarker.codes
+                ? [submenuMarker.codes]
+                : []
           )
             .map((code) => code.trim())
             .filter(
@@ -768,14 +781,25 @@ function buildDraftExportMap(): MapDef | null {
             const codes = (
               Array.isArray(submenuMarker.codes)
                 ? submenuMarker.codes
-                : [submenuMarker.codes]
+                : submenuMarker.codes
+                  ? [submenuMarker.codes]
+                  : []
             )
               .map((code) => code.trim())
               .filter((code) => code.length > 0);
             const exportSubmenuMarker: MapSubmenuEntryDef = {
               image: submenuMarker.image.trim(),
-              codes: codes.length > 1 ? [...codes] : (codes[0] ?? ''),
             };
+            if (codes.length > 0) {
+              exportSubmenuMarker.codes =
+                codes.length > 1 ? [...codes] : codes[0];
+            }
+            if (submenuMarker.songEventMenu) {
+              exportSubmenuMarker.songEventMenu = {
+                eventId: submenuMarker.songEventMenu.eventId,
+                game: submenuMarker.songEventMenu.game,
+              };
+            }
             if (submenuMarker.overlays && submenuMarker.overlays.length > 0) {
               exportSubmenuMarker.overlays = [...submenuMarker.overlays];
             }

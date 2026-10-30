@@ -34,6 +34,7 @@ import {
   getMmSongChoices,
   getOotSongChoices,
   getSongEventLabel,
+  type SongChoice,
 } from '../data/song-events';
 import { OOTMM_MAP_DEFS } from '../data/maps';
 import {
@@ -54,6 +55,7 @@ import type {
   MapMarkerSettingsVisibility,
   MapPopupEntry,
   MapPopupPayload,
+  MapSongEventMenuDef,
   MapSubmenuEntryDef,
 } from '../data/maps/types';
 
@@ -141,6 +143,7 @@ type SubmenuEntryRuntime = MarkerRenderState & {
   id: string;
   parentMarkerId: string;
   image: string;
+  songEvent: SongEventMenuRuntime | null;
 };
 
 type SongEventMenuRuntime = {
@@ -165,6 +168,7 @@ type SubmenuMarkerRuntime = {
   entranceEntries: EntranceMenuEntryRuntime[];
   exitEntries: ExitMenuEntryRuntime[];
   submenuMarkers: SubmenuEntryRuntime[];
+  songEventEntries: SubmenuEntryRuntime[];
   allSubmenuCodeList: string[];
   songEvent: SongEventMenuRuntime | null;
   isVisible: boolean;
@@ -354,7 +358,11 @@ function markerCodeList(marker: MapMarkerDef): string[] {
 }
 
 function submenuEntryCodeList(marker: MapSubmenuEntryDef): string[] {
-  const rawList = Array.isArray(marker.codes) ? marker.codes : [marker.codes];
+  const rawList = Array.isArray(marker.codes)
+    ? marker.codes
+    : marker.codes
+      ? [marker.codes]
+      : [];
   return rawList.map((code) => code.trim()).filter((code) => code.length > 0);
 }
 
@@ -427,6 +435,12 @@ function cloneSubmenuEntry(entry: MapSubmenuEntryDef): MapSubmenuEntryDef {
     image: entry.image,
     overlays: entry.overlays ? [...entry.overlays] : undefined,
     codes: Array.isArray(entry.codes) ? [...entry.codes] : entry.codes,
+    songEventMenu: entry.songEventMenu
+      ? {
+          eventId: entry.songEventMenu.eventId,
+          game: entry.songEventMenu.game,
+        }
+      : undefined,
     visibleWhen: entry.visibleWhen,
     anchored: entry.anchored,
   };
@@ -610,6 +624,7 @@ const devUnmappedSubmenuIndicesByMarker = computed(() => {
     if (marker.type !== 'submenu') return;
     const submenuIndices = new Set<number>();
     (marker.markers ?? []).forEach((submenuEntry, submenuIndex) => {
+      if (submenuEntry.songEventMenu) return;
       if (!hasResolvedLocationCode(submenuEntryCodeList(submenuEntry))) {
         submenuIndices.add(submenuIndex);
       }
@@ -631,6 +646,7 @@ const devMqSubmenuIndicesByMarker = computed(() => {
     if (marker.type !== 'submenu') return;
     const submenuIndices = new Set<number>();
     (marker.markers ?? []).forEach((submenuEntry, submenuIndex) => {
+      if (submenuEntry.songEventMenu) return;
       if (markerHasMqLocation(submenuEntryCodeList(submenuEntry))) {
         submenuIndices.add(submenuIndex);
       }
@@ -1030,9 +1046,37 @@ function resolveBoundSubmenuEntryDefs(
   });
 }
 
+function resolveSongEventRuntime(
+  menuDef: MapSongEventMenuDef,
+  choices: readonly SongChoice[],
+): SongEventMenuRuntime {
+  const choice =
+    choices.find(
+      (entry) => entry.value === props.songEvents?.[menuDef.eventId],
+    ) ??
+    choices[0] ??
+    null;
+  return {
+    eventId: menuDef.eventId,
+    game: menuDef.game,
+    label: getSongEventLabel(menuDef.eventId, menuDef.game),
+    songLabel: choice?.label ?? null,
+    image: choice?.image ?? null,
+  };
+}
+
+function songEventShuffleEnabled(game: 'oot' | 'mm'): boolean {
+  return game === 'oot'
+    ? Boolean(props.settings?.songEventsShuffleOot)
+    : Boolean(props.settings?.songEventsShuffleMm);
+}
+
 function buildSubmenuRuntimeEntries(
   parentMarkerId: string,
   submenuEntryDefs: MapSubmenuEntryDef[],
+  resolveEntrySongEvent: (
+    entry: MapSubmenuEntryDef,
+  ) => SongEventMenuRuntime | null,
 ): SubmenuEntryRuntime[] {
   return submenuEntryDefs.map((submenuMarkerDef, submenuIndex) => {
     const submenuMarkerId = `${parentMarkerId}:submenu:${submenuIndex}`;
@@ -1050,6 +1094,7 @@ function buildSubmenuRuntimeEntries(
       id: submenuMarkerId,
       parentMarkerId,
       image: submenuMarkerDef.image,
+      songEvent: resolveEntrySongEvent(submenuMarkerDef),
     };
   });
 }
@@ -1080,30 +1125,30 @@ const markerViewModels = computed<MarkerRuntime[]>(() => {
           ? ootSongChoices.value
           : mmSongChoices.value
         : [];
-      const songEventChoice =
-        songEventDef === null
-          ? null
-          : (songEventChoices.find(
-              (choice) =>
-                choice.value === props.songEvents?.[songEventDef.eventId],
-            ) ??
-            songEventChoices[0] ??
-            null);
       const songEvent: SongEventMenuRuntime | null = songEventDef
-        ? {
-            eventId: songEventDef.eventId,
-            game: songEventDef.game,
-            label: getSongEventLabel(songEventDef.eventId, songEventDef.game),
-            songLabel: songEventChoice?.label ?? null,
-            image: songEventChoice?.image ?? null,
-          }
+        ? resolveSongEventRuntime(songEventDef, songEventChoices)
         : null;
       const songEventEnabled = songEvent
-        ? songEvent.game === 'oot'
-          ? Boolean(props.settings?.songEventsShuffleOot)
-          : Boolean(props.settings?.songEventsShuffleMm)
+        ? songEventShuffleEnabled(songEvent.game)
         : false;
       const hasSongEventMenu = songEvent !== null && songEventEnabled;
+      const resolveSubmenuEntrySongEvent = (
+        entry: MapSubmenuEntryDef,
+      ): SongEventMenuRuntime | null => {
+        const menuDef = entry.songEventMenu;
+        if (!menuDef) return null;
+        if (!props.devMode) {
+          if (!songEventShuffleEnabled(menuDef.game)) return null;
+          if (
+            !matchesMapSettingsVisibility(entry.visibleWhen, props.settings)
+          ) {
+            return null;
+          }
+        }
+        const choices =
+          menuDef.game === 'oot' ? ootSongChoices.value : mmSongChoices.value;
+        return resolveSongEventRuntime(menuDef, choices);
+      };
       const submenuSourceEntranceIds = markerDef.entranceMenu
         ? resolveEntranceMenuIds(markerDef, markerDef.entranceMenu)
         : [];
@@ -1191,6 +1236,7 @@ const markerViewModels = computed<MarkerRuntime[]>(() => {
       const submenuMarkers = buildSubmenuRuntimeEntries(
         markerId,
         submenuMarkersRaw,
+        resolveSubmenuEntrySongEvent,
       );
       const unresolvedSubmenuIndices = isDevUnmappedFilterActive
         ? devUnmappedSubmenuIndicesByMarker.value.get(markerIndex)
@@ -1198,7 +1244,8 @@ const markerViewModels = computed<MarkerRuntime[]>(() => {
       const mqSubmenuIndices =
         devMqSubmenuIndicesByMarker.value.get(markerIndex);
       const visibleSubmenuMarkers = props.devMode
-        ? submenuMarkers.filter((_marker, submenuIndex) => {
+        ? submenuMarkers.filter((marker, submenuIndex) => {
+            if (marker.songEvent) return false;
             const matchesUnmappedFilter =
               !isDevUnmappedFilterActive ||
               Boolean(unresolvedSubmenuIndices?.has(submenuIndex));
@@ -1208,7 +1255,18 @@ const markerViewModels = computed<MarkerRuntime[]>(() => {
               : !isMqMarker;
             return matchesUnmappedFilter && matchesMqFilter;
           })
-        : submenuMarkers.filter((marker) => marker.isVisible);
+        : submenuMarkers.filter(
+            (marker) => marker.isVisible && !marker.songEvent,
+          );
+      const seenSongEventKeys = new Set<string>();
+      const songEventEntries = submenuMarkers.filter((marker) => {
+        if (!marker.songEvent) return false;
+        const key = `${marker.songEvent.game}:${marker.songEvent.eventId}`;
+        if (seenSongEventKeys.has(key)) return false;
+        seenSongEventKeys.add(key);
+        return true;
+      });
+      const hasVisibleSongEvents = songEventEntries.length > 0;
       const visibleSubmenuCheckIds = new Set<string>();
       visibleSubmenuMarkers.forEach((marker) => {
         marker.allCheckIds.forEach((checkId) =>
@@ -1351,6 +1409,7 @@ const markerViewModels = computed<MarkerRuntime[]>(() => {
         hasVisibleEntrances ||
         hasVisibleExits ||
         hasVisibleHostedEntrances ||
+        hasVisibleSongEvents ||
         songEvent !== null;
 
       return {
@@ -1367,6 +1426,7 @@ const markerViewModels = computed<MarkerRuntime[]>(() => {
         entranceEntries: visibleSubmenuEntrances,
         exitEntries: visibleSubmenuExits,
         submenuMarkers: visibleSubmenuMarkers,
+        songEventEntries,
         allSubmenuCodeList: visibleSubmenuMarkers.flatMap(
           (marker) => marker.codeList,
         ),
@@ -1378,6 +1438,7 @@ const markerViewModels = computed<MarkerRuntime[]>(() => {
               hasVisibleEntrances ||
               hasVisibleExits ||
               hasVisibleHostedEntrances ||
+              hasVisibleSongEvents ||
               hasSongEventMenu),
       };
     }
@@ -1480,10 +1541,14 @@ const activeSubmenuPopupAttributeChips = computed<PopupAttributeChip[]>(() => {
   );
 });
 
+function songEventChoicesFor(game: 'oot' | 'mm'): readonly SongChoice[] {
+  return game === 'oot' ? ootSongChoices.value : mmSongChoices.value;
+}
+
 const activePanelSongChoices = computed(() => {
   const songEvent = activePanelMarker.value?.songEvent;
   if (!songEvent) return [];
-  return songEvent.game === 'oot' ? ootSongChoices.value : mmSongChoices.value;
+  return songEventChoicesFor(songEvent.game);
 });
 const activePanelSongEventValue = computed<number | undefined>(() => {
   const songEvent = activePanelMarker.value?.songEvent;
@@ -1499,6 +1564,24 @@ function handleSongEventChange(songId: number): void {
     [songEvent.eventId]: songId,
   });
   closeSubmenuPanel();
+}
+
+function songEventEntryValue(entry: SubmenuEntryRuntime): number | undefined {
+  const songEvent = entry.songEvent;
+  if (!songEvent) return undefined;
+  return props.songEvents?.[songEvent.eventId];
+}
+
+function handleSongEventEntryChange(
+  entry: SubmenuEntryRuntime,
+  songId: number,
+): void {
+  const songEvent = entry.songEvent;
+  if (!songEvent) return;
+  emit('update:song-events', {
+    ...(props.songEvents ?? {}),
+    [songEvent.eventId]: songId,
+  });
 }
 
 const sceneStyle = computed(() => {
@@ -1551,7 +1634,11 @@ function markerAriaLabel(marker: MarkerRuntime): string {
       : `Song event: ${songEvent.label}`;
   }
   if (marker.type === 'submenu') {
-    return `Submenu marker: ${marker.submenuMarkers.length} markers`;
+    const songEventCount = marker.songEventEntries.length;
+    const markerLabel = `Submenu marker: ${marker.submenuMarkers.length} markers`;
+    return songEventCount > 0
+      ? `${markerLabel}, ${songEventCount} song events`
+      : markerLabel;
   }
   return `Map marker: ${marker.codeList.join(', ')}`;
 }
@@ -2735,7 +2822,7 @@ onBeforeUnmount(() => {
         :aria-label="
           activePanelMarker.songEvent
             ? `Song event: ${activePanelMarker.songEvent.label}`
-            : `Submenu panel: ${activePanelMarker.entranceEntries.length} entrances, ${activePanelMarker.exitEntries.length} exits, ${activePanelMarker.submenuMarkers.length} checks`
+            : `Submenu panel: ${activePanelMarker.entranceEntries.length} entrances, ${activePanelMarker.exitEntries.length} exits, ${activePanelMarker.submenuMarkers.length} checks, ${activePanelMarker.songEventEntries.length} song events`
         "
         :style="submenuPanelStyle()"
         @pointerdown.stop
@@ -2761,6 +2848,7 @@ onBeforeUnmount(() => {
           v-if="
             activePanelMarker.songEvent &&
             (activePanelMarker.submenuMarkers.length > 0 ||
+              activePanelMarker.songEventEntries.length > 0 ||
               activePanelMarker.entranceEntries.length > 0 ||
               activePanelMarker.exitEntries.length > 0)
           "
@@ -2851,6 +2939,41 @@ onBeforeUnmount(() => {
         <div
           v-if="
             activePanelMarker.submenuMarkers.length > 0 &&
+            (activePanelMarker.songEventEntries.length > 0 ||
+              activePanelMarker.entranceEntries.length > 0)
+          "
+          class="map-submenu-panel__divider"
+          aria-hidden="true"
+        ></div>
+
+        <div
+          v-if="activePanelMarker.songEventEntries.length > 0"
+          class="map-song-event-list"
+        >
+          <div
+            v-for="songEventEntry in activePanelMarker.songEventEntries"
+            :key="songEventEntry.id"
+            class="map-song-event"
+          >
+            <SongEventPicker
+              v-if="songEventEntry.songEvent"
+              :event-id="songEventEntry.songEvent.eventId"
+              :event-label="songEventEntry.songEvent.label"
+              :game="songEventEntry.songEvent.game"
+              :choices="songEventChoicesFor(songEventEntry.songEvent.game)"
+              :model-value="songEventEntryValue(songEventEntry)"
+              :dropdown-id="`map-song-event-options-${songEventEntry.id}`"
+              @update:model-value="
+                handleSongEventEntryChange(songEventEntry, $event)
+              "
+              @close="closeSubmenuPanel"
+            />
+          </div>
+        </div>
+
+        <div
+          v-if="
+            activePanelMarker.songEventEntries.length > 0 &&
             activePanelMarker.entranceEntries.length > 0
           "
           class="map-submenu-panel__divider"
@@ -2884,7 +3007,8 @@ onBeforeUnmount(() => {
           v-if="
             activePanelMarker.exitEntries.length > 0 &&
             (activePanelMarker.entranceEntries.length > 0 ||
-              activePanelMarker.submenuMarkers.length > 0)
+              activePanelMarker.submenuMarkers.length > 0 ||
+              activePanelMarker.songEventEntries.length > 0)
           "
           class="map-submenu-panel__divider"
           aria-hidden="true"
@@ -3479,6 +3603,11 @@ onBeforeUnmount(() => {
 .map-song-event {
   padding: 0.55rem;
   min-width: 240px;
+}
+
+.map-song-event-list {
+  display: flex;
+  flex-direction: column;
 }
 
 .map-submenu-panel__grid {

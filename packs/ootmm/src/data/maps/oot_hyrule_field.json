@@ -777,6 +777,13 @@
         {
           "image": "npc",
           "codes": "OOT Great Fairy Defense Upgrade"
+        },
+        {
+          "image": "song",
+          "songEventMenu": {
+            "eventId": 10,
+            "game": "oot"
+          }
         }
       ],
       "entranceMenu": {
@@ -1564,6 +1571,13 @@
           "image": "boulder",
           "codes": "OOT Hyrule Castle Boulder",
           "anchored": true
+        },
+        {
+          "image": "song",
+          "songEventMenu": {
+            "eventId": 6,
+            "game": "oot"
+          }
         }
       ],
       "entranceMenu": {
@@ -1644,15 +1658,6 @@
       "type": "submenu",
       "songEventMenu": {
         "eventId": 0,
-        "game": "oot"
-      }
-    },
-    {
-      "coords": [409, 215],
-      "image": "song",
-      "type": "submenu",
-      "songEventMenu": {
-        "eventId": 6,
         "game": "oot"
       }
     }
