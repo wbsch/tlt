@@ -1039,6 +1039,15 @@
       "entranceMenu": {
         "entranceIds": ["MM_ROOM_LULU"]
       }
+    },
+    {
+      "coords": [455, 470],
+      "image": "song",
+      "type": "submenu",
+      "songEventMenu": {
+        "eventId": 25,
+        "game": "mm"
+      }
     }
   ]
 }

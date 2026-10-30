@@ -739,6 +739,15 @@
       "coords": [235, 411],
       "image": "wonder_item_random",
       "codes": "TODO KF 052 :: unnamed_stack > Shadow Temple > MQ Shadow > MQ Shadow Wonder :: Pasted Layer #51 :: 001-001-008-000.png"
+    },
+    {
+      "coords": [430, 415],
+      "image": "song",
+      "type": "submenu",
+      "songEventMenu": {
+        "eventId": 12,
+        "game": "oot"
+      }
     }
   ]
 }

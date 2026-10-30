@@ -20,6 +20,15 @@ function createTestMap(): MapDef {
           display: 'exits',
         },
       },
+      {
+        coords: [140, 120],
+        image: 'song',
+        type: 'submenu',
+        songEventMenu: {
+          eventId: 5,
+          game: 'oot',
+        },
+      },
     ],
   };
 }
@@ -68,6 +77,10 @@ describe('OoTMMMapDevEditor', () => {
         'OOT_TEST_ENTRANCE',
       ]);
       expect(exportedMap.markers[0]?.entranceMenu?.display).toBe('exits');
+      expect(exportedMap.markers[1]?.songEventMenu).toEqual({
+        eventId: 5,
+        game: 'oot',
+      });
     } finally {
       app.unmount();
       container.remove();

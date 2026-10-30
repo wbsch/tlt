@@ -1637,6 +1637,24 @@
           "codes": "OOT Castle Courtyard Wonder Item"
         }
       ]
+    },
+    {
+      "coords": [516, 392],
+      "image": "song",
+      "type": "submenu",
+      "songEventMenu": {
+        "eventId": 0,
+        "game": "oot"
+      }
+    },
+    {
+      "coords": [409, 215],
+      "image": "song",
+      "type": "submenu",
+      "songEventMenu": {
+        "eventId": 6,
+        "game": "oot"
+      }
     }
   ]
 }

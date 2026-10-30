@@ -29,6 +29,12 @@ import {
   type ExitEntry,
 } from '../composables/useDungeonEntrances';
 import EntranceDestinationCombobox from './EntranceDestinationCombobox.vue';
+import SongEventPicker from './SongEventPicker.vue';
+import {
+  getMmSongChoices,
+  getOotSongChoices,
+  getSongEventLabel,
+} from '../data/song-events';
 import { OOTMM_MAP_DEFS } from '../data/maps';
 import {
   isTrackedEntranceAvailable,
@@ -55,6 +61,7 @@ const MIN_SCALE = 0.5;
 const MAX_SCALE = 3;
 const WHEEL_ZOOM_FACTOR = 1.1;
 const MARKER_SIZE = 16;
+const SONG_EVENT_MARKER_SIZE = 22;
 const MARKER_PANEL_GAP = 2;
 const HOVER_POPUP_CLOSE_DELAY_MS = 160;
 const MAP_POPUP_WIDTH = 260;
@@ -136,6 +143,14 @@ type SubmenuEntryRuntime = MarkerRenderState & {
   image: string;
 };
 
+type SongEventMenuRuntime = {
+  eventId: number;
+  game: 'oot' | 'mm';
+  label: string;
+  songLabel: string | null;
+  image: string | null;
+};
+
 type SubmenuMarkerRuntime = {
   type: 'submenu';
   id: string;
@@ -151,6 +166,7 @@ type SubmenuMarkerRuntime = {
   exitEntries: ExitMenuEntryRuntime[];
   submenuMarkers: SubmenuEntryRuntime[];
   allSubmenuCodeList: string[];
+  songEvent: SongEventMenuRuntime | null;
   isVisible: boolean;
 };
 
@@ -237,6 +253,7 @@ const props = withDefaults(
     allLocations?: LocationInfo[];
     allLocationsForCodeSearch?: LocationInfo[];
     settings?: Record<string, unknown> | null;
+    songEvents?: Record<string, number> | null;
     devMode?: boolean;
     devCheckPickMode?: boolean;
     devShowUnmappedOnly?: boolean;
@@ -249,6 +266,7 @@ const props = withDefaults(
     allLocations: () => [],
     allLocationsForCodeSearch: () => [],
     settings: null,
+    songEvents: null,
     devMode: false,
     devCheckPickMode: false,
     devShowUnmappedOnly: false,
@@ -261,6 +279,7 @@ const props = withDefaults(
 const emit = defineEmits<{
   (e: 'toggle-collected', checkId: string): void;
   (e: 'mark-all-reachable', checkIds: string[]): void;
+  (e: 'update:song-events', events: Record<string, number>): void;
   (e: 'open-popup', markerId: string): void;
   (e: 'close-popup'): void;
   (e: 'dev-warnings-change', warnings: DevDraftIssue[]): void;
@@ -1035,6 +1054,9 @@ function buildSubmenuRuntimeEntries(
   });
 }
 
+const ootSongChoices = computed(() => getOotSongChoices(props.settings ?? {}));
+const mmSongChoices = computed(() => getMmSongChoices(props.settings ?? {}));
+
 const markerViewModels = computed<MarkerRuntime[]>(() => {
   const mapDef = renderMapDef.value;
   if (!mapDef) {
@@ -1052,6 +1074,36 @@ const markerViewModels = computed<MarkerRuntime[]>(() => {
     const markerType = markerDef.type === 'submenu' ? 'submenu' : 'check';
 
     if (markerType === 'submenu') {
+      const songEventDef = markerDef.songEventMenu ?? null;
+      const songEventChoices = songEventDef
+        ? songEventDef.game === 'oot'
+          ? ootSongChoices.value
+          : mmSongChoices.value
+        : [];
+      const songEventChoice =
+        songEventDef === null
+          ? null
+          : (songEventChoices.find(
+              (choice) =>
+                choice.value === props.songEvents?.[songEventDef.eventId],
+            ) ??
+            songEventChoices[0] ??
+            null);
+      const songEvent: SongEventMenuRuntime | null = songEventDef
+        ? {
+            eventId: songEventDef.eventId,
+            game: songEventDef.game,
+            label: getSongEventLabel(songEventDef.eventId, songEventDef.game),
+            songLabel: songEventChoice?.label ?? null,
+            image: songEventChoice?.image ?? null,
+          }
+        : null;
+      const songEventEnabled = songEvent
+        ? songEvent.game === 'oot'
+          ? Boolean(props.settings?.songEventsShuffleOot)
+          : Boolean(props.settings?.songEventsShuffleMm)
+        : false;
+      const hasSongEventMenu = songEvent !== null && songEventEnabled;
       const submenuSourceEntranceIds = markerDef.entranceMenu
         ? resolveEntranceMenuIds(markerDef, markerDef.entranceMenu)
         : [];
@@ -1298,7 +1350,8 @@ const markerViewModels = computed<MarkerRuntime[]>(() => {
         hasVisibleChecks ||
         hasVisibleEntrances ||
         hasVisibleExits ||
-        hasVisibleHostedEntrances;
+        hasVisibleHostedEntrances ||
+        songEvent !== null;
 
       return {
         type: 'submenu',
@@ -1317,13 +1370,15 @@ const markerViewModels = computed<MarkerRuntime[]>(() => {
         allSubmenuCodeList: visibleSubmenuMarkers.flatMap(
           (marker) => marker.codeList,
         ),
+        songEvent,
         isVisible: props.devMode
           ? isDevVisible
           : settingsVisible &&
             (hasVisibleChecks ||
               hasVisibleEntrances ||
               hasVisibleExits ||
-              hasVisibleHostedEntrances),
+              hasVisibleHostedEntrances ||
+              hasSongEventMenu),
       };
     }
 
@@ -1425,6 +1480,27 @@ const activeSubmenuPopupAttributeChips = computed<PopupAttributeChip[]>(() => {
   );
 });
 
+const activePanelSongChoices = computed(() => {
+  const songEvent = activePanelMarker.value?.songEvent;
+  if (!songEvent) return [];
+  return songEvent.game === 'oot' ? ootSongChoices.value : mmSongChoices.value;
+});
+const activePanelSongEventValue = computed<number | undefined>(() => {
+  const songEvent = activePanelMarker.value?.songEvent;
+  if (!songEvent) return undefined;
+  return props.songEvents?.[songEvent.eventId];
+});
+
+function handleSongEventChange(songId: number): void {
+  const songEvent = activePanelMarker.value?.songEvent;
+  if (!songEvent) return;
+  emit('update:song-events', {
+    ...(props.songEvents ?? {}),
+    [songEvent.eventId]: songId,
+  });
+  closeSubmenuPanel();
+}
+
 const sceneStyle = computed(() => {
   const mapDef = renderMapDef.value;
   if (!mapDef) return {};
@@ -1463,6 +1539,23 @@ function markerStyle(marker: MarkerRuntime): Record<string, string> {
   };
 }
 
+function songEventMarker(marker: MarkerRuntime): SongEventMenuRuntime | null {
+  return marker.type === 'submenu' ? marker.songEvent : null;
+}
+
+function markerAriaLabel(marker: MarkerRuntime): string {
+  const songEvent = songEventMarker(marker);
+  if (songEvent) {
+    return songEvent.songLabel
+      ? `Song event: ${songEvent.label}, song: ${songEvent.songLabel}`
+      : `Song event: ${songEvent.label}`;
+  }
+  if (marker.type === 'submenu') {
+    return `Submenu marker: ${marker.submenuMarkers.length} markers`;
+  }
+  return `Map marker: ${marker.codeList.join(', ')}`;
+}
+
 function panelSize(
   element: HTMLElement | null,
   fallbackWidth: number,
@@ -1483,6 +1576,7 @@ function calculateAnchoredPanelPosition(
   panelElement: HTMLElement | null,
   fallbackWidth: number,
   fallbackHeight: number,
+  markerSize = MARKER_SIZE,
 ): { left: number; top: number } | null {
   const viewport = viewportRef.value;
   if (!viewport) return null;
@@ -1494,7 +1588,7 @@ function calculateAnchoredPanelPosition(
   );
   const markerX = markerCoords[0] * scale.value + panX.value;
   const markerY = markerCoords[1] * scale.value + panY.value;
-  const markerHalfSize = MARKER_SIZE * scale.value * 0.5;
+  const markerHalfSize = markerSize * scale.value * 0.5;
   const markerGap = scaledMarkerPanelGap();
   const maxX = Math.max(8, viewport.clientWidth - popupWidth - 8);
   const maxY = Math.max(8, viewport.clientHeight - popupHeight - 8);
@@ -1536,6 +1630,7 @@ function calculateSubmenuPanelPosition(): { left: number; top: number } | null {
     usePredictedSize ? null : submenuPanelRef.value,
     predictedWidth,
     predictedHeight,
+    marker.songEvent ? SONG_EVENT_MARKER_SIZE : MARKER_SIZE,
   );
 }
 
@@ -1860,6 +1955,10 @@ function handleMarkerClick(marker: MarkerRuntime): void {
     return;
   }
   if (marker.type === 'submenu') {
+    if (marker.songEvent && submenuPanel.value.markerId === marker.id) {
+      closeSubmenuPanel();
+      return;
+    }
     openSubmenuPanel(marker.id, { pinned: true });
     return;
   }
@@ -1881,6 +1980,7 @@ function handleMarkerClick(marker: MarkerRuntime): void {
 function handleMarkerHoverStart(marker: MarkerRuntime): void {
   if (props.devMode) return;
   if (marker.type === 'submenu') {
+    if (marker.songEvent) return;
     if (submenuPanel.value.pinned) return;
     submenuPanel.value.hoverMarkerId = marker.id;
     openSubmenuPanel(marker.id);
@@ -1894,6 +1994,7 @@ function handleMarkerHoverStart(marker: MarkerRuntime): void {
 function handleMarkerHoverEnd(markerId: string): void {
   const marker = markerById.value.get(markerId);
   if (marker?.type === 'submenu') {
+    if (marker.songEvent) return;
     if (submenuPanel.value.pinned) return;
     if (submenuPanel.value.hoverMarkerId === markerId) {
       submenuPanel.value.hoverMarkerId = null;
@@ -2375,6 +2476,13 @@ watch(
 
     updateSubmenuPanelPosition();
     submenuPanel.value.layoutReady = true;
+    if (panelMarker && songEventMarker(panelMarker)) {
+      void nextTick(() => {
+        submenuPanelRef.value
+          ?.querySelector<HTMLElement>('.song-event-picker')
+          ?.focus({ preventScroll: true });
+      });
+    }
   },
 );
 
@@ -2526,13 +2634,10 @@ onBeforeUnmount(() => {
               isDevMode && devSelectedMarkerIndex === marker.markerIndex,
             'is-hovered-by-warning':
               isDevMode && props.devMarkerHoverIndex === marker.markerIndex,
+            'map-marker--song': songEventMarker(marker) !== null,
           }"
           :style="markerStyle(marker)"
-          :aria-label="
-            marker.type === 'submenu'
-              ? `Submenu marker: ${marker.submenuMarkers.length} markers`
-              : `Map marker: ${marker.codeList.join(', ')}`
-          "
+          :aria-label="markerAriaLabel(marker)"
           @pointerdown.stop
           @click.stop="handleMarkerClick(marker)"
           @mouseenter="handleMarkerHoverStart(marker)"
@@ -2540,7 +2645,23 @@ onBeforeUnmount(() => {
           @focus="handleMarkerHoverStart(marker)"
           @blur="handleMarkerHoverEnd(marker.id)"
         >
+          <span
+            v-if="songEventMarker(marker)"
+            class="map-marker__song"
+            aria-hidden="true"
+          >
+            <img
+              v-if="songEventMarker(marker)?.image"
+              class="map-marker__song-image"
+              :src="songEventMarker(marker)?.image ?? ''"
+              alt=""
+              draggable="false"
+            />
+            <span v-else class="map-marker__song-empty">?</span>
+            <span class="map-marker__song-caret">▾</span>
+          </span>
           <img
+            v-else
             class="map-marker__icon"
             :src="resolveMarkerImage(marker.image)"
             alt=""
@@ -2612,7 +2733,11 @@ onBeforeUnmount(() => {
         class="map-submenu-panel"
         role="dialog"
         aria-modal="false"
-        :aria-label="`Submenu panel: ${activePanelMarker.entranceEntries.length} entrances, ${activePanelMarker.exitEntries.length} exits, ${activePanelMarker.submenuMarkers.length} checks`"
+        :aria-label="
+          activePanelMarker.songEvent
+            ? `Song event: ${activePanelMarker.songEvent.label}`
+            : `Submenu panel: ${activePanelMarker.entranceEntries.length} entrances, ${activePanelMarker.exitEntries.length} exits, ${activePanelMarker.submenuMarkers.length} checks`
+        "
         :style="submenuPanelStyle()"
         @pointerdown.stop
         @mouseenter="handleSubmenuPanelHoverStart"
@@ -2620,6 +2745,30 @@ onBeforeUnmount(() => {
         @focusin="handleSubmenuPanelFocusIn"
         @focusout="handleSubmenuPanelFocusOut"
       >
+        <div v-if="activePanelMarker.songEvent" class="map-song-event">
+          <SongEventPicker
+            :event-id="activePanelMarker.songEvent.eventId"
+            :event-label="activePanelMarker.songEvent.label"
+            :game="activePanelMarker.songEvent.game"
+            :choices="activePanelSongChoices"
+            :model-value="activePanelSongEventValue"
+            :dropdown-id="`map-song-event-options-${activePanelMarker.id}`"
+            @update:model-value="handleSongEventChange"
+            @close="closeSubmenuPanel"
+          />
+        </div>
+
+        <div
+          v-if="
+            activePanelMarker.songEvent &&
+            (activePanelMarker.submenuMarkers.length > 0 ||
+              activePanelMarker.entranceEntries.length > 0 ||
+              activePanelMarker.exitEntries.length > 0)
+          "
+          class="map-submenu-panel__divider"
+          aria-hidden="true"
+        ></div>
+
         <div
           v-if="activePanelMarker.submenuMarkers.length > 0"
           class="map-submenu-panel__grid"
@@ -3166,12 +3315,15 @@ onBeforeUnmount(() => {
 }
 
 .map-marker:hover .map-marker__icon,
+.map-marker:hover .map-marker__song-image,
 .map-marker:hover .map-marker__overlay,
 .map-marker:hover .map-marker__digit,
 .map-marker:focus .map-marker__icon,
+.map-marker:focus .map-marker__song-image,
 .map-marker:focus .map-marker__overlay,
 .map-marker:focus .map-marker__digit,
 .map-marker:focus-visible .map-marker__icon,
+.map-marker:focus-visible .map-marker__song-image,
 .map-marker:focus-visible .map-marker__overlay,
 .map-marker:focus-visible .map-marker__digit {
   animation: map-marker-active-shimmer 1.1s ease-in-out infinite;
@@ -3195,6 +3347,63 @@ onBeforeUnmount(() => {
   height: 16px;
   display: block;
   image-rendering: pixelated;
+}
+
+.map-marker--song {
+  width: 22px;
+  height: 22px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1px;
+  border: 1px solid #475569;
+  border-radius: 5px;
+  background: rgba(15, 23, 42, 0.92);
+  z-index: 3;
+}
+
+.map-marker--song:hover,
+.map-marker--song:focus-visible {
+  border-color: #60a5fa;
+  z-index: 4;
+}
+
+.map-marker__song {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+}
+
+.map-marker__song-image {
+  width: 16px;
+  height: 16px;
+  object-fit: contain;
+  image-rendering: pixelated;
+}
+
+.map-marker__song-empty {
+  color: #94a3b8;
+  font-size: 0.85rem;
+  font-weight: 700;
+}
+
+.map-marker__song-caret {
+  position: absolute;
+  right: 1px;
+  bottom: 1px;
+  width: 0;
+  height: 0;
+  font-size: 0;
+  border-left: 4px solid transparent;
+  border-top: 4px solid #475569;
+}
+
+.map-marker--song:hover .map-marker__song-caret,
+.map-marker--song:focus-visible .map-marker__song-caret {
+  border-top-color: #93c5fd;
 }
 
 .map-marker__corner {
@@ -3287,6 +3496,11 @@ onBeforeUnmount(() => {
   z-index: 11;
   overflow: visible;
   cursor: default;
+}
+
+.map-song-event {
+  padding: 0.55rem;
+  min-width: 240px;
 }
 
 .map-submenu-panel__grid {

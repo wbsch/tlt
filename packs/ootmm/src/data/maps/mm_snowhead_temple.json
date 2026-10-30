@@ -588,6 +588,15 @@
         "MM Snowhead Temple Icicle Central Room Near Boss 3",
         "MM Snowhead Temple Icicle Central Room Near Boss 4"
       ]
+    },
+    {
+      "coords": [654, 560],
+      "image": "song",
+      "type": "submenu",
+      "songEventMenu": {
+        "eventId": 19,
+        "game": "mm"
+      }
     }
   ]
 }

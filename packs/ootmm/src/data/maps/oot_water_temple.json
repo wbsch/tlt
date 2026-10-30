@@ -744,6 +744,15 @@
       "coords": [681, 214],
       "image": "wonder_item_random",
       "codes": ["OOT MQ Water Temple Wonder Item Before Boss 1"]
+    },
+    {
+      "coords": [650, 400],
+      "image": "song",
+      "type": "submenu",
+      "songEventMenu": {
+        "eventId": 11,
+        "game": "oot"
+      }
     }
   ]
 }

@@ -464,6 +464,15 @@
         "OOT MQ Bottom of the Well Grass Dead-Hand 3",
         "OOT MQ Bottom of the Well Grass Dead-Hand 4"
       ]
+    },
+    {
+      "coords": [240, 215],
+      "image": "song",
+      "type": "submenu",
+      "songEventMenu": {
+        "eventId": 16,
+        "game": "oot"
+      }
     }
   ]
 }

@@ -953,6 +953,33 @@
         "entranceIds": ["OOT_GORON_CITY_FROM_LOST_WOODS"],
         "display": "exits"
       }
+    },
+    {
+      "coords": [432, 238],
+      "image": "song",
+      "type": "submenu",
+      "songEventMenu": {
+        "eventId": 4,
+        "game": "oot"
+      }
+    },
+    {
+      "coords": [110, 380],
+      "image": "song",
+      "type": "submenu",
+      "songEventMenu": {
+        "eventId": 8,
+        "game": "oot"
+      }
+    },
+    {
+      "coords": [930, 355],
+      "image": "song",
+      "type": "submenu",
+      "songEventMenu": {
+        "eventId": 9,
+        "game": "oot"
+      }
     }
   ]
 }

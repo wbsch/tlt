@@ -1163,6 +1163,24 @@
         "entranceIds": ["OOT_ICE_CAVERN"],
         "display": "entrances"
       }
+    },
+    {
+      "coords": [600, 462],
+      "image": "song",
+      "type": "submenu",
+      "songEventMenu": {
+        "eventId": 3,
+        "game": "oot"
+      }
+    },
+    {
+      "coords": [925, 347],
+      "image": "song",
+      "type": "submenu",
+      "songEventMenu": {
+        "eventId": 5,
+        "game": "oot"
+      }
     }
   ]
 }

@@ -41,6 +41,11 @@ export type MapDungeonEntranceMenuDef = {
   display?: 'both' | 'entrances' | 'exits';
 };
 
+export type MapSongEventMenuDef = {
+  eventId: number;
+  game: 'oot' | 'mm';
+};
+
 export type MapMarkerDef = {
   coords: [number, number];
   image: string;
@@ -49,6 +54,7 @@ export type MapMarkerDef = {
   codes?: string | string[];
   markers?: MapSubmenuEntryDef[];
   entranceMenu?: MapDungeonEntranceMenuDef;
+  songEventMenu?: MapSongEventMenuDef;
   visibleWhen?: MapMarkerSettingsVisibility;
 };
 

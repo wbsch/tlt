@@ -734,6 +734,33 @@
         "OOT MQ Spirit Temple Wonder Item Chest Hammer",
         "OOT MQ Spirit Temple Wonder Item Chest Slash"
       ]
+    },
+    {
+      "coords": [635, 410],
+      "image": "song",
+      "type": "submenu",
+      "songEventMenu": {
+        "eventId": 13,
+        "game": "oot"
+      }
+    },
+    {
+      "coords": [660, 430],
+      "image": "song",
+      "type": "submenu",
+      "songEventMenu": {
+        "eventId": 14,
+        "game": "oot"
+      }
+    },
+    {
+      "coords": [683, 122],
+      "image": "song",
+      "type": "submenu",
+      "songEventMenu": {
+        "eventId": 15,
+        "game": "oot"
+      }
     }
   ]
 }

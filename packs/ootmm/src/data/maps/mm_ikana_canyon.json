@@ -735,6 +735,33 @@
       "entranceMenu": {
         "entranceIds": ["MM_GRAVE_NIGHT1"]
       }
+    },
+    {
+      "coords": [424, 392],
+      "image": "song",
+      "type": "submenu",
+      "songEventMenu": {
+        "eventId": 23,
+        "game": "mm"
+      }
+    },
+    {
+      "coords": [70, 500],
+      "image": "song",
+      "type": "submenu",
+      "songEventMenu": {
+        "eventId": 26,
+        "game": "mm"
+      }
+    },
+    {
+      "coords": [363, 318],
+      "image": "song",
+      "type": "submenu",
+      "songEventMenu": {
+        "eventId": 29,
+        "game": "mm"
+      }
     }
   ]
 }

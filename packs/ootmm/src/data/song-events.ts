@@ -417,3 +417,8 @@ export function getFilteredDefaultChoice(
   }
   return choices[0];
 }
+
+export function getSongEventLabel(eventId: number, game: 'oot' | 'mm'): string {
+  const events = game === 'oot' ? SONG_EVENTS : SONG_EVENTS_MM;
+  return events.find((event) => event.id === eventId)?.label ?? 'Song Event';
+}

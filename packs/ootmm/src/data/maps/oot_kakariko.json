@@ -999,6 +999,24 @@
         "entranceIds": ["OOT_TEMPLE_SHADOW"],
         "display": "entrances"
       }
+    },
+    {
+      "coords": [352, 320],
+      "image": "song",
+      "type": "submenu",
+      "songEventMenu": {
+        "eventId": 1,
+        "game": "oot"
+      }
+    },
+    {
+      "coords": [800, 526],
+      "image": "song",
+      "type": "submenu",
+      "songEventMenu": {
+        "eventId": 2,
+        "game": "oot"
+      }
     }
   ]
 }

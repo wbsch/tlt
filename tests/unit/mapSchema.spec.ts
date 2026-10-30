@@ -16,6 +16,15 @@ type MapSchema = {
     submenuEntry?: {
       properties?: Record<string, unknown>;
     };
+    submenuMarker?: {
+      properties?: Record<string, unknown>;
+    };
+    songEventMenu?: {
+      properties?: {
+        eventId?: { enum?: number[] };
+        game?: { enum?: string[] };
+      };
+    };
   };
 };
 
@@ -47,5 +56,22 @@ describe('ootmm map schema', () => {
     const submenuEntryProps = schema.$defs?.submenuEntry?.properties ?? {};
     expect(submenuEntryProps).toHaveProperty('anchored');
     expect(submenuEntryProps.anchored).toEqual({ type: 'boolean' });
+  });
+
+  it('supports song event menus on submenu markers', () => {
+    const schema = JSON.parse(
+      readFileSync(
+        path.resolve('packs/ootmm/src/data/schemas/ootmm-map.schema.json'),
+        'utf8',
+      ),
+    ) as MapSchema;
+
+    const submenuMarkerProps = schema.$defs?.submenuMarker?.properties ?? {};
+    expect(submenuMarkerProps).toHaveProperty('songEventMenu');
+
+    const songEventMenuProps = schema.$defs?.songEventMenu?.properties ?? {};
+    expect(songEventMenuProps.eventId?.enum).toContain(0);
+    expect(songEventMenuProps.eventId?.enum).toContain(30);
+    expect(songEventMenuProps.game?.enum).toEqual(['oot', 'mm']);
   });
 });

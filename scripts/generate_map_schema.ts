@@ -3,6 +3,10 @@ import path from 'node:path';
 import prettier from 'prettier';
 import { MAP_ICON_INDEX } from '../packs/ootmm/src/data/maps/mapIconIndex.ts';
 import {
+  SONG_EVENT_LOCATIONS_MM,
+  SONG_EVENT_LOCATIONS_OOT,
+} from '../OoTMM/packages/core/src/song-events.ts';
+import {
   buildLocationCodeSet,
   toSortedUnique,
 } from '../packs/ootmm/src/data/locationCodeSource.ts';
@@ -334,11 +338,33 @@ async function generateMapSchema(): Promise<void> {
           visibleWhen: { $ref: '#/$defs/settingsVisibility' },
         },
       },
+      songEventMenu: {
+        type: 'object',
+        additionalProperties: false,
+        required: ['eventId', 'game'],
+        properties: {
+          eventId: {
+            type: 'integer',
+            enum: [
+              ...SONG_EVENT_LOCATIONS_OOT.map((_, index) => index),
+              ...SONG_EVENT_LOCATIONS_MM.map((_, index) => 18 + index),
+            ],
+          },
+          game: {
+            type: 'string',
+            enum: ['oot', 'mm'],
+          },
+        },
+      },
       submenuMarker: {
         type: 'object',
         additionalProperties: false,
         required: ['coords', 'image', 'type'],
-        anyOf: [{ required: ['markers'] }, { required: ['entranceMenu'] }],
+        anyOf: [
+          { required: ['markers'] },
+          { required: ['entranceMenu'] },
+          { required: ['songEventMenu'] },
+        ],
         properties: {
           coords: { $ref: '#/$defs/coords' },
           image: { $ref: '#/$defs/markerImage' },
@@ -350,6 +376,7 @@ async function generateMapSchema(): Promise<void> {
             minItems: 1,
           },
           entranceMenu: { $ref: '#/$defs/entranceMenuConfig' },
+          songEventMenu: { $ref: '#/$defs/songEventMenu' },
           visibleWhen: { $ref: '#/$defs/settingsVisibility' },
         },
       },

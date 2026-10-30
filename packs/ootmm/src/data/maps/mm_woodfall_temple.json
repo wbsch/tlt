@@ -442,6 +442,15 @@
         "MM Woodfall Temple Grass Compass Room 2",
         "MM Woodfall Temple Grass Compass Room 3"
       ]
+    },
+    {
+      "coords": [335, 400],
+      "image": "song",
+      "type": "submenu",
+      "songEventMenu": {
+        "eventId": 18,
+        "game": "mm"
+      }
     }
   ]
 }

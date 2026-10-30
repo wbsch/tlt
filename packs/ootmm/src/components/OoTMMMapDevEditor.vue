@@ -130,6 +130,12 @@ function cloneMarker(marker: MapMarkerDef): MapMarkerDef {
           display: marker.entranceMenu.display,
         }
       : undefined,
+    songEventMenu: marker.songEventMenu
+      ? {
+          eventId: marker.songEventMenu.eventId,
+          game: marker.songEventMenu.game,
+        }
+      : undefined,
     visibleWhen: cloneVisibleWhen(marker.visibleWhen),
   };
 }
@@ -639,11 +645,16 @@ const draftErrors = computed<DraftIssue[]>(() => {
       const submenuMarkers = marker.markers ?? [];
       const hasEntranceBinding =
         (marker.entranceMenu?.entranceIds?.length ?? 0) > 0;
-      if (submenuMarkers.length === 0 && !hasEntranceBinding) {
+      const hasSongEventMenu = Boolean(marker.songEventMenu);
+      if (
+        submenuMarkers.length === 0 &&
+        !hasEntranceBinding &&
+        !hasSongEventMenu
+      ) {
         issues.push({
           markerIndex,
           message:
-            'Submenu marker must include submenu markers or at least one entrance id',
+            'Submenu marker must include submenu markers, at least one entrance id, or a song event',
         });
       }
       submenuMarkers.forEach((submenuMarker, submenuIndex) => {
@@ -786,6 +797,12 @@ function buildDraftExportMap(): MapDef | null {
           exportMarker.entranceMenu = {
             entranceIds: [...marker.entranceMenu.entranceIds],
             display: marker.entranceMenu.display,
+          };
+        }
+        if (marker.songEventMenu) {
+          exportMarker.songEventMenu = {
+            eventId: marker.songEventMenu.eventId,
+            game: marker.songEventMenu.game,
           };
         }
       } else {
