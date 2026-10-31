@@ -969,7 +969,7 @@
       }
     },
     {
-      "coords": [432, 238],
+      "coords": [420, 238],
       "image": "song",
       "type": "submenu",
       "songEventMenu": {

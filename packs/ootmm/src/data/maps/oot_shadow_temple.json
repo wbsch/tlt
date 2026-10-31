@@ -419,9 +419,6 @@
       "coords": [299, 479],
       "image": "boss_entrance",
       "type": "submenu",
-      "entranceMenu": {
-        "entranceIds": ["OOT_BOSS_TEMPLE_SHADOW"]
-      },
       "markers": [
         {
           "image": "heart_container",
@@ -449,7 +446,10 @@
             ]
           }
         }
-      ]
+      ],
+      "entranceMenu": {
+        "entranceIds": ["OOT_BOSS_TEMPLE_SHADOW"]
+      }
     },
     {
       "coords": [307, 494],
@@ -741,7 +741,7 @@
       "codes": "TODO KF 052 :: unnamed_stack > Shadow Temple > MQ Shadow > MQ Shadow Wonder :: Pasted Layer #51 :: 001-001-008-000.png"
     },
     {
-      "coords": [430, 415],
+      "coords": [459, 392],
       "image": "song",
       "type": "submenu",
       "songEventMenu": {

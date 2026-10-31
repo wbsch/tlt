@@ -187,44 +187,41 @@
     {
       "coords": [426, 561],
       "image": "chest",
-      "codes": ["OOT MQ Water Temple Central Pillar Chest"]
+      "codes": "OOT MQ Water Temple Central Pillar Chest"
     },
     {
       "coords": [459, 279],
       "image": "chest",
-      "codes": ["OOT MQ Water Temple Longshot Chest"]
+      "codes": "OOT MQ Water Temple Longshot Chest"
     },
     {
       "coords": [768, 546],
       "image": "chest",
-      "codes": ["OOT MQ Water Temple Compass Chest"]
+      "codes": "OOT MQ Water Temple Compass Chest"
     },
     {
       "coords": [651, 490],
       "image": "chest",
-      "codes": ["OOT MQ Water Temple Boss Key Chest"]
+      "codes": "OOT MQ Water Temple Boss Key Chest"
     },
     {
       "coords": [635, 399],
       "image": "collectible",
-      "codes": ["OOT MQ Water Temple Side Loop Key"]
+      "codes": "OOT MQ Water Temple Side Loop Key"
     },
     {
       "coords": [768, 279],
       "image": "chest",
-      "codes": ["OOT MQ Water Temple Map Chest"]
+      "codes": "OOT MQ Water Temple Map Chest"
     },
     {
       "coords": [692, 186],
       "image": "boss_entrance",
       "type": "submenu",
-      "entranceMenu": {
-        "entranceIds": ["OOT_BOSS_TEMPLE_WATER"]
-      },
       "markers": [
         {
           "image": "heart_container",
-          "codes": ["OOT Water Temple Boss HC"],
+          "codes": "OOT Water Temple Boss HC",
           "visibleWhen": {
             "and": [
               {
@@ -237,7 +234,7 @@
         },
         {
           "image": "water_medallion",
-          "codes": ["OOT Water Temple Boss"],
+          "codes": "OOT Water Temple Boss",
           "visibleWhen": {
             "and": [
               {
@@ -248,42 +245,45 @@
             ]
           }
         }
-      ]
+      ],
+      "entranceMenu": {
+        "entranceIds": ["OOT_BOSS_TEMPLE_WATER"]
+      }
     },
     {
       "coords": [684, 170],
       "image": "heart_container",
-      "codes": ["OOT Water Temple Boss HC"]
+      "codes": "OOT Water Temple Boss HC"
     },
     {
       "coords": [700, 170],
       "image": "water_medallion",
-      "codes": ["OOT Water Temple Boss"]
+      "codes": "OOT Water Temple Boss"
     },
     {
       "coords": [595, 578],
       "image": "gold_skulltula",
-      "codes": ["OOT MQ Water Temple GS Three Torch"]
+      "codes": "OOT MQ Water Temple GS Three Torch"
     },
     {
       "coords": [690, 414],
       "image": "gold_skulltula",
-      "codes": ["OOT MQ Water Temple GS Side Loop"]
+      "codes": "OOT MQ Water Temple GS Side Loop"
     },
     {
       "coords": [588, 401],
       "image": "gold_skulltula",
-      "codes": ["OOT MQ Water Temple GS River"]
+      "codes": "OOT MQ Water Temple GS River"
     },
     {
       "coords": [651, 276],
       "image": "gold_skulltula",
-      "codes": ["OOT MQ Water Temple GS High Water Changer"]
+      "codes": "OOT MQ Water Temple GS High Water Changer"
     },
     {
       "coords": [431, 290],
       "image": "gold_skulltula",
-      "codes": ["OOT MQ Water Temple GS Lizalfos Hallway"]
+      "codes": "OOT MQ Water Temple GS Lizalfos Hallway"
     },
     {
       "coords": [610, 575],
@@ -306,7 +306,7 @@
     {
       "coords": [661, 479],
       "image": "pot",
-      "codes": ["OOT MQ Water Temple Pot Boss Key Room"]
+      "codes": "OOT MQ Water Temple Pot Boss Key Room"
     },
     {
       "coords": [651, 412],
@@ -385,7 +385,7 @@
     {
       "coords": [399, 300],
       "image": "pot",
-      "codes": ["OOT MQ Water Temple Pot Twisted Room Entrance"]
+      "codes": "OOT MQ Water Temple Pot Twisted Room Entrance"
     },
     {
       "coords": [362, 271],
@@ -420,7 +420,7 @@
     {
       "coords": [640, 482],
       "image": "crate",
-      "codes": ["OOT MQ Water Temple Boss Key Room By Switch Large Crate"]
+      "codes": "OOT MQ Water Temple Boss Key Room By Switch Large Crate"
     },
     {
       "coords": [644, 459],
@@ -510,7 +510,7 @@
     {
       "coords": [659, 285],
       "image": "small_crate",
-      "codes": ["OOT MQ Water Temple Room Before High Water Upper Small Crate"]
+      "codes": "OOT MQ Water Temple Room Before High Water Upper Small Crate"
     },
     {
       "coords": [692, 257],
@@ -626,12 +626,12 @@
     {
       "coords": [350, 269],
       "image": "small_crate",
-      "codes": ["OOT MQ Water Temple Room Before High Water Lower Small Crate"]
+      "codes": "OOT MQ Water Temple Room Before High Water Lower Small Crate"
     },
     {
       "coords": [573, 247],
       "image": "big_fairy_spot",
-      "codes": ["OOT MQ Water Temple Big Fairy Before Dark Link Ledge"]
+      "codes": "OOT MQ Water Temple Big Fairy Before Dark Link Ledge"
     },
     {
       "coords": [572, 213],
@@ -644,72 +644,72 @@
     {
       "coords": [436, 561],
       "image": "wonder_item_big_magic_jar",
-      "codes": ["OOT MQ Water Temple Wonder Item Under Pillar Room"]
+      "codes": "OOT MQ Water Temple Wonder Item Under Pillar Room"
     },
     {
       "coords": [605, 570],
       "image": "wonder_item_random",
-      "codes": ["OOT MQ Water Temple Wonder Item Triple Torches"]
+      "codes": "OOT MQ Water Temple Wonder Item Triple Torches"
     },
     {
       "coords": [778, 546],
       "image": "wonder_item_red_rupee",
-      "codes": ["OOT MQ Water Temple Wonder Item Lizalfos Room"]
+      "codes": "OOT MQ Water Temple Wonder Item Lizalfos Room"
     },
     {
       "coords": [641, 467],
       "image": "wonder_item_random",
-      "codes": ["OOT MQ Water Temple Wonder Item Dragon Room Eyes 1"]
+      "codes": "OOT MQ Water Temple Wonder Item Dragon Room Eyes 1"
     },
     {
       "coords": [625, 467],
       "image": "wonder_item_big_magic_jar",
-      "codes": ["OOT MQ Water Temple Wonder Item Dragon Room Eyes 2"]
+      "codes": "OOT MQ Water Temple Wonder Item Dragon Room Eyes 2"
     },
     {
       "coords": [599, 455],
       "image": "wonder_item_big_magic_jar",
-      "codes": ["OOT MQ Water Temple Wonder Item Dragon Room Portrait"]
+      "codes": "OOT MQ Water Temple Wonder Item Dragon Room Portrait"
     },
     {
       "coords": [668, 415],
       "image": "wonder_item_small_magic_jar",
-      "codes": ["OOT MQ Water Temple Wonder Item Water Sprouts 2"]
+      "codes": "OOT MQ Water Temple Wonder Item Water Sprouts 2"
     },
     {
       "coords": [668, 399],
       "image": "wonder_item_arrows",
-      "codes": ["OOT MQ Water Temple Wonder Item Water Sprouts 1"]
+      "codes": "OOT MQ Water Temple Wonder Item Water Sprouts 1"
     },
     {
       "coords": [644, 400],
       "image": "wonder_item_big_magic_jar",
-      "codes": ["OOT MQ Water Temple Wonder Item Freestanding Room"]
+      "codes": "OOT MQ Water Temple Wonder Item Freestanding Room"
     },
     {
       "coords": [778, 279],
       "image": "wonder_item_random",
-      "codes": ["OOT MQ Water Temple Wonder Item Stalfos Room"]
+      "codes": "OOT MQ Water Temple Wonder Item Stalfos Room"
     },
     {
       "coords": [703, 214],
       "image": "wonder_item_big_magic_jar",
-      "codes": ["OOT MQ Water Temple Wonder Item Before Boss 2"]
+      "codes": "OOT MQ Water Temple Wonder Item Before Boss 2"
     },
     {
       "coords": [603, 231],
       "image": "wonder_item_heart",
-      "codes": ["OOT MQ Water Temple Wonder Item Hookshot Staircase Right 2"]
+      "codes": "OOT MQ Water Temple Wonder Item Hookshot Staircase Right 2"
     },
     {
       "coords": [611, 247],
       "image": "wonder_item_red_rupee",
-      "codes": ["OOT MQ Water Temple Wonder Item Hookshot Staircase Right 3"]
+      "codes": "OOT MQ Water Temple Wonder Item Hookshot Staircase Right 3"
     },
     {
       "coords": [595, 247],
       "image": "wonder_item_deku_nuts",
-      "codes": ["OOT MQ Water Temple Wonder Item Hookshot Staircase Right 1"]
+      "codes": "OOT MQ Water Temple Wonder Item Hookshot Staircase Right 1"
     },
     {
       "coords": [595, 269],
@@ -723,30 +723,48 @@
     {
       "coords": [575, 91],
       "image": "wonder_item_big_magic_jar",
-      "codes": ["OOT MQ Water Temple Wonder Item After Dark Link"]
+      "codes": "OOT MQ Water Temple Wonder Item After Dark Link"
     },
     {
       "coords": [469, 279],
       "image": "wonder_item_small_magic_jar",
-      "codes": ["OOT MQ Water Temple Wonder Item Longshot Room"]
+      "codes": "OOT MQ Water Temple Wonder Item Longshot Room"
     },
     {
       "coords": [428, 323],
       "image": "wonder_item_arrows",
-      "codes": ["OOT MQ Water Temple Wonder Item Lizalfos Hallway"]
+      "codes": "OOT MQ Water Temple Wonder Item Lizalfos Hallway"
     },
     {
       "coords": [358, 284],
       "image": "wonder_item_random",
-      "codes": ["OOT MQ Water Temple Wonder Item Above 2F West Room"]
+      "codes": "OOT MQ Water Temple Wonder Item Above 2F West Room"
     },
     {
       "coords": [681, 214],
       "image": "wonder_item_random",
-      "codes": ["OOT MQ Water Temple Wonder Item Before Boss 1"]
+      "codes": "OOT MQ Water Temple Wonder Item Before Boss 1"
     },
     {
-      "coords": [650, 400],
+      "coords": [750, 288],
+      "image": "song",
+      "type": "submenu",
+      "songEventMenu": {
+        "eventId": 11,
+        "game": "oot"
+      }
+    },
+    {
+      "coords": [385, 266],
+      "image": "song",
+      "type": "submenu",
+      "songEventMenu": {
+        "eventId": 11,
+        "game": "oot"
+      }
+    },
+    {
+      "coords": [668, 291],
       "image": "song",
       "type": "submenu",
       "songEventMenu": {

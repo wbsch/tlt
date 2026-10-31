@@ -1298,6 +1298,13 @@
         {
           "image": "light_medallion",
           "codes": "OOT Temple of Time Medallion"
+        },
+        {
+          "image": "song",
+          "songEventMenu": {
+            "eventId": 0,
+            "game": "oot"
+          }
         }
       ],
       "entranceMenu": {
@@ -1651,15 +1658,6 @@
           "codes": "OOT Castle Courtyard Wonder Item"
         }
       ]
-    },
-    {
-      "coords": [516, 392],
-      "image": "song",
-      "type": "submenu",
-      "songEventMenu": {
-        "eventId": 0,
-        "game": "oot"
-      }
     }
   ]
 }

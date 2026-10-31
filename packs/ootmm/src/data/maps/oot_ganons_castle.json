@@ -610,7 +610,7 @@
       }
     },
     {
-      "coords": [440, 294],
+      "coords": [443, 306],
       "image": "song",
       "type": "submenu",
       "songEventMenu": {

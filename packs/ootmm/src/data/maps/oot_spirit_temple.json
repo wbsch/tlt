@@ -457,9 +457,6 @@
       "coords": [345, 116],
       "image": "boss_entrance",
       "type": "submenu",
-      "entranceMenu": {
-        "entranceIds": ["OOT_BOSS_TEMPLE_SPIRIT"]
-      },
       "markers": [
         {
           "image": "heart_container",
@@ -487,7 +484,10 @@
             ]
           }
         }
-      ]
+      ],
+      "entranceMenu": {
+        "entranceIds": ["OOT_BOSS_TEMPLE_SPIRIT"]
+      }
     },
     {
       "coords": [336, 105],
@@ -736,7 +736,7 @@
       ]
     },
     {
-      "coords": [635, 410],
+      "coords": [660, 409],
       "image": "song",
       "type": "submenu",
       "songEventMenu": {
@@ -745,7 +745,7 @@
       }
     },
     {
-      "coords": [660, 430],
+      "coords": [368, 426],
       "image": "song",
       "type": "submenu",
       "songEventMenu": {
@@ -754,7 +754,7 @@
       }
     },
     {
-      "coords": [683, 122],
+      "coords": [683, 167],
       "image": "song",
       "type": "submenu",
       "songEventMenu": {

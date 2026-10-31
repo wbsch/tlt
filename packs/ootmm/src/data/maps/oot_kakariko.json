@@ -775,6 +775,13 @@
         {
           "image": "heart_piece",
           "codes": "OOT Windmill HP"
+        },
+        {
+          "image": "song",
+          "songEventMenu": {
+            "eventId": 1,
+            "game": "oot"
+          }
         }
       ],
       "entranceMenu": {
@@ -1002,16 +1009,7 @@
       }
     },
     {
-      "coords": [352, 320],
-      "image": "song",
-      "type": "submenu",
-      "songEventMenu": {
-        "eventId": 1,
-        "game": "oot"
-      }
-    },
-    {
-      "coords": [800, 526],
+      "coords": [771, 512],
       "image": "song",
       "type": "submenu",
       "songEventMenu": {
