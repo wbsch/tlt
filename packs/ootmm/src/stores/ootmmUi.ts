@@ -33,6 +33,7 @@ export const useOoTMMUiStore = defineStore('ootmm-ui', () => {
   const locationsCollectionFilter = ref<CollectionFilter>('uncollected');
   const locationsShowUnshuffled = ref(true);
   const locationsShowGossipStones = ref(true);
+  const locationsShowSongEvents = ref(true);
   const entrancesReachabilityFilter = ref<ReachabilityFilter>('reachable');
   const entrancesMappingFilter = ref<EntranceMappingFilter>('all');
   const entrancesSearchQuery = ref('');
@@ -107,6 +108,7 @@ export const useOoTMMUiStore = defineStore('ootmm-ui', () => {
     locationsCollectionFilter.value = 'uncollected';
     locationsShowUnshuffled.value = true;
     locationsShowGossipStones.value = true;
+    locationsShowSongEvents.value = true;
     entrancesReachabilityFilter.value = 'reachable';
     entrancesMappingFilter.value = 'all';
     entrancesSearchQuery.value = '';
@@ -133,6 +135,7 @@ export const useOoTMMUiStore = defineStore('ootmm-ui', () => {
     locationsCollectionFilter,
     locationsShowUnshuffled,
     locationsShowGossipStones,
+    locationsShowSongEvents,
     entrancesReachabilityFilter,
     entrancesMappingFilter,
     entrancesSearchQuery,

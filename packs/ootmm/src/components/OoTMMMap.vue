@@ -268,6 +268,7 @@ const props = withDefaults(
     allLocationsForCodeSearch?: LocationInfo[];
     settings?: Record<string, unknown> | null;
     songEvents?: Record<string, number> | null;
+    showSongEvents?: boolean;
     devMode?: boolean;
     devCheckPickMode?: boolean;
     devShowUnmappedOnly?: boolean;
@@ -281,6 +282,7 @@ const props = withDefaults(
     allLocationsForCodeSearch: () => [],
     settings: null,
     songEvents: null,
+    showSongEvents: true,
     devMode: false,
     devCheckPickMode: false,
     devShowUnmappedOnly: false,
@@ -1149,7 +1151,10 @@ const markerViewModels = computed<MarkerRuntime[]>(() => {
       const songEventEnabled = songEvent
         ? songEventShuffleEnabled(songEvent.game)
         : false;
-      const hasSongEventMenu = songEvent !== null && songEventEnabled;
+      const hasSongEventMenu =
+        songEvent !== null &&
+        songEventEnabled &&
+        (props.showSongEvents || props.devMode);
       const resolveSubmenuEntrySongEvent = (
         entry: MapSubmenuEntryDef,
       ): SongEventMenuRuntime | null => {
@@ -1277,13 +1282,16 @@ const markerViewModels = computed<MarkerRuntime[]>(() => {
             (marker) => marker.isVisible && !marker.songEvent,
           );
       const seenSongEventKeys = new Set<string>();
-      const songEventEntries = submenuMarkers.filter((marker) => {
-        if (!marker.songEvent) return false;
-        const key = `${marker.songEvent.game}:${marker.songEvent.eventId}`;
-        if (seenSongEventKeys.has(key)) return false;
-        seenSongEventKeys.add(key);
-        return true;
-      });
+      const songEventEntries =
+        props.showSongEvents || props.devMode
+          ? submenuMarkers.filter((marker) => {
+              if (!marker.songEvent) return false;
+              const key = `${marker.songEvent.game}:${marker.songEvent.eventId}`;
+              if (seenSongEventKeys.has(key)) return false;
+              seenSongEventKeys.add(key);
+              return true;
+            })
+          : [];
       const hasVisibleSongEvents = songEventEntries.length > 0;
       const visibleSubmenuCheckIds = new Set<string>();
       visibleSubmenuMarkers.forEach((marker) => {
@@ -1609,6 +1617,7 @@ function handleSongEventEntryChange(
     ...(props.songEvents ?? {}),
     [songEvent.eventId]: songId,
   });
+  closeSubmenuPanel();
 }
 
 const sceneStyle = computed(() => {
@@ -3106,7 +3115,10 @@ onBeforeUnmount(() => {
         ></div>
 
         <div
-          v-if="activePanelMarker.submenuMarkers.length > 0"
+          v-if="
+            activePanelMarker.submenuMarkers.length > 0 ||
+            activePanelMarker.songEventEntries.length > 0
+          "
           class="map-submenu-panel__grid"
         >
           <button
@@ -3183,111 +3195,90 @@ onBeforeUnmount(() => {
               />
             </span>
           </button>
-        </div>
-
-        <div
-          v-if="
-            activePanelMarker.submenuMarkers.length > 0 &&
-            (activePanelMarker.songEventEntries.length > 0 ||
-              activePanelMarker.entranceEntries.length > 0)
-          "
-          class="map-submenu-panel__divider"
-          aria-hidden="true"
-        ></div>
-
-        <div
-          v-if="activePanelMarker.songEventEntries.length > 0"
-          class="map-song-event-list"
-        >
-          <div
+          <button
             v-for="songEventEntry in activePanelMarker.songEventEntries"
             :key="songEventEntry.id"
-            class="map-song-event__entry"
+            type="button"
+            class="map-submenu-marker map-song-event__trigger"
+            :data-song-event-entry-id="songEventEntry.id"
+            :aria-label="
+              songEventEntry.songEvent?.songLabel
+                ? `Song event: ${songEventEntry.songEvent.label}, song: ${songEventEntry.songEvent.songLabel}`
+                : `Song event: ${songEventEntry.songEvent?.label}`
+            "
+            :title="songEventEntry.songEvent?.label"
+            :aria-expanded="songEventPopup.entryId === songEventEntry.id"
+            :aria-controls="`map-song-event-options-${songEventEntry.id}`"
+            @pointerdown.stop
+            @mouseenter="handleSongEventEntryHoverStart(songEventEntry)"
+            @mouseleave="handleSongEventEntryHoverEnd(songEventEntry.id)"
+            @focus="handleSongEventEntryFocus(songEventEntry)"
+            @blur="handleSongEventEntryBlur"
           >
-            <button
-              v-if="songEventEntry.songEvent"
-              type="button"
-              class="map-song-event__trigger"
-              :data-song-event-entry-id="songEventEntry.id"
-              :aria-label="
-                songEventEntry.songEvent.songLabel
-                  ? `Song event: ${songEventEntry.songEvent.label}, song: ${songEventEntry.songEvent.songLabel}`
-                  : `Song event: ${songEventEntry.songEvent.label}`
-              "
-              :title="songEventEntry.songEvent.label"
-              :aria-expanded="songEventPopup.entryId === songEventEntry.id"
-              :aria-controls="`map-song-event-options-${songEventEntry.id}`"
-              @pointerdown.stop
-              @mouseenter="handleSongEventEntryHoverStart(songEventEntry)"
-              @mouseleave="handleSongEventEntryHoverEnd(songEventEntry.id)"
-              @focus="handleSongEventEntryFocus(songEventEntry)"
-              @blur="handleSongEventEntryBlur"
+            <span class="map-marker__song" aria-hidden="true">
+              <img
+                v-if="songEventEntry.songEvent?.image"
+                class="map-marker__song-image"
+                :src="songEventEntry.songEvent.image"
+                alt=""
+                draggable="false"
+              />
+              <span v-else class="map-marker__song-empty">?</span>
+            </span>
+            <span
+              v-if="songEventEntry.topLeftOverlays.length > 0"
+              class="map-marker__corner map-marker__corner--top-left"
             >
-              <span class="map-marker__song" aria-hidden="true">
-                <img
-                  v-if="songEventEntry.songEvent.image"
-                  class="map-marker__song-image"
-                  :src="songEventEntry.songEvent.image"
-                  alt=""
-                  draggable="false"
-                />
-                <span v-else class="map-marker__song-empty">?</span>
-              </span>
-              <span
-                v-if="songEventEntry.topLeftOverlays.length > 0"
-                class="map-marker__corner map-marker__corner--top-left"
-              >
-                <img
-                  v-for="overlay in songEventEntry.topLeftOverlays"
-                  :key="overlay.key"
-                  class="map-marker__overlay"
-                  :class="{ 'map-marker__overlay--wide': overlay.wide }"
-                  :src="overlay.src"
-                  alt=""
-                  draggable="false"
-                />
-              </span>
-              <span
-                v-if="songEventEntry.bottomLeftOverlays.length > 0"
-                class="map-marker__corner map-marker__corner--bottom-left"
-              >
-                <img
-                  v-for="overlay in songEventEntry.bottomLeftOverlays"
-                  :key="`song-event-bottom:${overlay.key}`"
-                  class="map-marker__overlay"
-                  :src="overlay.src"
-                  alt=""
-                  draggable="false"
-                />
-              </span>
-              <span
-                v-if="songEventEntry.topRightOverlays.length > 0"
-                class="map-marker__corner map-marker__corner--top-right"
-              >
-                <img
-                  v-for="overlay in songEventEntry.topRightOverlays"
-                  :key="`song-event-top:${overlay.key}`"
-                  class="map-marker__overlay"
-                  :src="overlay.src"
-                  alt=""
-                  draggable="false"
-                />
-              </span>
-              <span
-                v-if="songEventEntry.countDigitImages.length > 0"
-                class="map-marker__corner map-marker__corner--bottom-right"
-              >
-                <img
-                  v-for="(digitImage, index) in songEventEntry.countDigitImages"
-                  :key="`${songEventEntry.id}:digit:${index}`"
-                  class="map-marker__digit"
-                  :src="digitImage"
-                  alt=""
-                  draggable="false"
-                />
-              </span>
-            </button>
-          </div>
+              <img
+                v-for="overlay in songEventEntry.topLeftOverlays"
+                :key="overlay.key"
+                class="map-marker__overlay"
+                :class="{ 'map-marker__overlay--wide': overlay.wide }"
+                :src="overlay.src"
+                alt=""
+                draggable="false"
+              />
+            </span>
+            <span
+              v-if="songEventEntry.bottomLeftOverlays.length > 0"
+              class="map-marker__corner map-marker__corner--bottom-left"
+            >
+              <img
+                v-for="overlay in songEventEntry.bottomLeftOverlays"
+                :key="`song-event-bottom:${overlay.key}`"
+                class="map-marker__overlay"
+                :src="overlay.src"
+                alt=""
+                draggable="false"
+              />
+            </span>
+            <span
+              v-if="songEventEntry.topRightOverlays.length > 0"
+              class="map-marker__corner map-marker__corner--top-right"
+            >
+              <img
+                v-for="overlay in songEventEntry.topRightOverlays"
+                :key="`song-event-top:${overlay.key}`"
+                class="map-marker__overlay"
+                :src="overlay.src"
+                alt=""
+                draggable="false"
+              />
+            </span>
+            <span
+              v-if="songEventEntry.countDigitImages.length > 0"
+              class="map-marker__corner map-marker__corner--bottom-right"
+            >
+              <img
+                v-for="(digitImage, index) in songEventEntry.countDigitImages"
+                :key="`${songEventEntry.id}:digit:${index}`"
+                class="map-marker__digit"
+                :src="digitImage"
+                alt=""
+                draggable="false"
+              />
+            </span>
+          </button>
         </div>
 
         <div
@@ -3828,12 +3819,6 @@ onBeforeUnmount(() => {
   display: flex;
   align-items: center;
   justify-content: center;
-  z-index: 3;
-}
-
-.map-marker--song:hover,
-.map-marker--song:focus-visible {
-  z-index: 4;
 }
 
 .map-marker__song {
@@ -3955,26 +3940,13 @@ onBeforeUnmount(() => {
   min-width: 240px;
 }
 
-.map-song-event-list {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 0.35rem;
-  padding: 0.45rem;
-}
-
-.map-song-event__entry {
-  position: relative;
-  flex: 0 0 auto;
-}
-
 .map-song-event__trigger {
   position: relative;
   display: flex;
   align-items: center;
   justify-content: center;
-  width: calc(var(--submenu-marker-size) * 1.375);
-  height: calc(var(--submenu-marker-size) * 1.375);
+  width: var(--submenu-marker-size);
+  height: var(--submenu-marker-size);
   border: 0;
   padding: 0;
   background: transparent;

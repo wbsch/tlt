@@ -753,6 +753,7 @@ const {
   locationsCollectionFilter,
   locationsShowUnshuffled,
   locationsShowGossipStones,
+  locationsShowSongEvents,
   entrancesReachabilityFilter,
   entrancesMappingFilter,
   activeMapId,
@@ -767,6 +768,11 @@ const isMobileTrackerLayout = ref(
 );
 const statisticsCountsTooltip =
   'These counts exclude unshuffled tokens/fairies and gossip stones.';
+const songEventsShuffleEnabled = computed(
+  () =>
+    Boolean(trackerSettings.value?.songEventsShuffleOot) ||
+    Boolean(trackerSettings.value?.songEventsShuffleMm),
+);
 const isSpoilerPlayerDialogOpen = ref(false);
 const isAutotrackerSpoilerRequiredDialogOpen = ref(false);
 const isAutotrackerSpoilerVersionWarningDialogOpen = ref(false);
@@ -5527,6 +5533,13 @@ onBeforeUnmount(() => {
                 <input v-model="locationsShowGossipStones" type="checkbox" />
                 <span>Gossip Stones</span>
               </label>
+              <label
+                v-if="songEventsShuffleEnabled"
+                class="map-toolbar-toggle-label"
+              >
+                <input v-model="locationsShowSongEvents" type="checkbox" />
+                <span>Song Events</span>
+              </label>
             </div>
 
             <span v-if="isMapDevMode" class="map-toolbar-dev">DEV MODE</span>
@@ -5715,6 +5728,7 @@ onBeforeUnmount(() => {
             :visible-location-ids="visibleLocationIds"
             :settings="trackerSettings"
             :song-events="songEvents"
+            :show-song-events="locationsShowSongEvents"
             :dev-mode="isMapDevMode"
             :dev-check-pick-mode="isDevTraceSelectMode"
             :dev-show-unmapped-only="showDevUnmappedChecksOnly"
