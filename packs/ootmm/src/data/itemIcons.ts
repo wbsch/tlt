@@ -1237,6 +1237,18 @@ const RAW_GRID_ICON_VARIANTS: Record<string, GridIconVariantConfig> = {
       autoSelectItemId: 'MM_SEEDS_30',
     },
   },
+  SHARED_SLINGSHOT: {
+    default: {
+      icons: [
+        'images/slingshot.png',
+        'images/slingshot.png',
+        'images/slingshot.png',
+      ],
+      overlays: BOW_OVERLAY_VALUES,
+      startUndimmed: false,
+      autoSelectItemId: 'MM_SEEDS_30',
+    },
+  },
   'OOT_HOOKSHOT|SHARED_HOOKSHOT': {
     default: {
       icons: ['images/hookshot.png', 'images/longshot.png'],
