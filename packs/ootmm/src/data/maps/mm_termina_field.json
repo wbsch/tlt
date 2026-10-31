@@ -1828,6 +1828,13 @@
             "MM Clock Tower Roof Pot 3",
             "MM Clock Tower Roof Pot 4"
           ]
+        },
+        {
+          "image": "song",
+          "songEventMenu": {
+            "eventId": 30,
+            "game": "mm"
+          }
         }
       ],
       "entranceMenu": {
@@ -2567,20 +2574,11 @@
       }
     },
     {
-      "coords": [808, 108],
+      "coords": [801, 96],
       "image": "song",
       "type": "submenu",
       "songEventMenu": {
         "eventId": 24,
-        "game": "mm"
-      }
-    },
-    {
-      "coords": [248, 196],
-      "image": "song",
-      "type": "submenu",
-      "songEventMenu": {
-        "eventId": 30,
         "game": "mm"
       }
     }

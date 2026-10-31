@@ -618,15 +618,6 @@
         "MM Great Bay Temple Icicle Compass Room 4",
         "MM Great Bay Temple Icicle Compass Room 5"
       ]
-    },
-    {
-      "coords": [800, 400],
-      "image": "song",
-      "type": "submenu",
-      "songEventMenu": {
-        "eventId": 20,
-        "game": "mm"
-      }
     }
   ]
 }

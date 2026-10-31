@@ -354,7 +354,7 @@ describe('useAutotracker checks', () => {
     ]);
   });
 
-  it('marks bottles consecutively when King Zora is open and Ruto\'s Letter is replaced by an empty bottle', async () => {
+  it("marks bottles consecutively when King Zora is open and Ruto's Letter is replaced by an empty bottle", async () => {
     const inventoryUpdates: Array<Record<string, number>> = [];
     const availableItemIds = ref(new Set<string>(['OOT_BOTTLE_EMPTY']));
     const itemMaxCounts = ref(new Map<string, number>());

@@ -506,6 +506,13 @@
         {
           "image": "npc",
           "codes": "MM Music Box House Gibdo Mask"
+        },
+        {
+          "image": "song",
+          "songEventMenu": {
+            "eventId": 23,
+            "game": "mm"
+          }
         }
       ],
       "entranceMenu": {
@@ -529,6 +536,15 @@
     {
       "coords": [364, 223],
       "image": "interior_entrance",
+      "markers": [
+        {
+          "image": "song",
+          "songEventMenu": {
+            "eventId": 29,
+            "game": "mm"
+          }
+        }
+      ],
       "type": "submenu",
       "entranceMenu": {
         "entranceIds": ["MM_IKANA_CAVERN"]
@@ -737,29 +753,11 @@
       }
     },
     {
-      "coords": [424, 392],
-      "image": "song",
-      "type": "submenu",
-      "songEventMenu": {
-        "eventId": 23,
-        "game": "mm"
-      }
-    },
-    {
-      "coords": [70, 500],
+      "coords": [48, 409],
       "image": "song",
       "type": "submenu",
       "songEventMenu": {
         "eventId": 26,
-        "game": "mm"
-      }
-    },
-    {
-      "coords": [363, 318],
-      "image": "song",
-      "type": "submenu",
-      "songEventMenu": {
-        "eventId": 29,
         "game": "mm"
       }
     }

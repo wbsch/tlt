@@ -1150,6 +1150,13 @@
         {
           "image": "npc",
           "codes": "MM Goron Graveyard Mask"
+        },
+        {
+          "image": "song",
+          "songEventMenu": {
+            "eventId": 22,
+            "game": "mm"
+          }
         }
       ],
       "entranceMenu": {
@@ -1582,20 +1589,20 @@
       }
     },
     {
-      "coords": [790, 160],
-      "image": "song",
-      "type": "submenu",
-      "songEventMenu": {
-        "eventId": 22,
-        "game": "mm"
-      }
-    },
-    {
-      "coords": [745, 200],
+      "coords": [533, 151],
       "image": "song",
       "type": "submenu",
       "songEventMenu": {
         "eventId": 28,
+        "game": "mm"
+      }
+    },
+    {
+      "coords": [40, 371],
+      "image": "song",
+      "type": "submenu",
+      "songEventMenu": {
+        "eventId": 19,
         "game": "mm"
       }
     }

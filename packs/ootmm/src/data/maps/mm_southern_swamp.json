@@ -1122,6 +1122,15 @@
       "entranceMenu": {
         "entranceIds": ["MM_GROTTO_JP_LINE_START"]
       }
+    },
+    {
+      "coords": [842, 499],
+      "image": "song",
+      "type": "submenu",
+      "songEventMenu": {
+        "eventId": 18,
+        "game": "mm"
+      }
     }
   ]
 }
