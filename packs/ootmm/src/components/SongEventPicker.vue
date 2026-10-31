@@ -9,6 +9,7 @@ const props = defineProps<{
   choices: readonly SongChoice[];
   modelValue?: number;
   dropdownId: string;
+  autoFocus?: boolean;
 }>();
 
 const emit = defineEmits<{
@@ -82,7 +83,9 @@ onMounted(() => {
   );
   highlightedIndex.value = selectedIndex >= 0 ? selectedIndex : 0;
   scrollHighlightIntoView(highlightedIndex.value);
-  void nextTick(() => rootRef.value?.focus({ preventScroll: true }));
+  if (props.autoFocus ?? true) {
+    void nextTick(() => rootRef.value?.focus({ preventScroll: true }));
+  }
 });
 </script>
 

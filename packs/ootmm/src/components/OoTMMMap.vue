@@ -227,6 +227,15 @@ type SubmenuPopupState = {
   position: { left: number; top: number } | null;
 };
 
+type SongEventPopupState = {
+  entryId: string | null;
+  hoverEntryId: string | null;
+  isHovered: boolean;
+  isFocused: boolean;
+  layoutReady: boolean;
+  position: { left: number; top: number } | null;
+};
+
 type SubmenuPanelState = {
   markerId: string | null;
   hoverMarkerId: string | null;
@@ -295,6 +304,7 @@ const viewportRef = ref<HTMLDivElement | null>(null);
 const popupRef = ref<HTMLDivElement | null>(null);
 const submenuPanelRef = ref<HTMLDivElement | null>(null);
 const submenuPopupRef = ref<HTMLDivElement | null>(null);
+const songEventPopupRef = ref<HTMLDivElement | null>(null);
 
 const scale = ref(1);
 const panX = ref(0);
@@ -327,6 +337,14 @@ const submenuPopup = ref<SubmenuPopupState>({
   layoutReady: false,
   position: null,
 });
+const songEventPopup = ref<SongEventPopupState>({
+  entryId: null,
+  hoverEntryId: null,
+  isHovered: false,
+  isFocused: false,
+  layoutReady: false,
+  position: null,
+});
 
 const devDraftMap = ref<MapDef | null>(null);
 const devSelectedMarkerIndex = ref<number | null>(null);
@@ -337,6 +355,7 @@ let pinchStartDistance = 0;
 let pinchStartScale = 1;
 let hoverPopupCloseTimer: ReturnType<typeof setTimeout> | null = null;
 let submenuHoverPopupCloseTimer: ReturnType<typeof setTimeout> | null = null;
+let songEventPopupCloseTimer: ReturnType<typeof setTimeout> | null = null;
 let submenuPanelCloseTimer: ReturnType<typeof setTimeout> | null = null;
 
 const renderMapDef = computed<MapDef | null>(() =>
@@ -1508,6 +1527,15 @@ const activeSubmenuPopupMarker = computed<SubmenuEntryRuntime | null>(() => {
   );
 });
 
+const activeSongEventEntry = computed<SubmenuEntryRuntime | null>(() => {
+  if (!songEventPopup.value.entryId) return null;
+  return (
+    activePanelMarker.value?.songEventEntries.find(
+      (entry) => entry.id === songEventPopup.value.entryId,
+    ) ?? null
+  );
+});
+
 const activePopup = computed<MapPopupPayload | null>(() => {
   const marker = popupMarker.value;
   if (!marker || !allowPopupInteraction.value) return null;
@@ -1757,6 +1785,47 @@ function calculateSubmenuPopupPosition(): { left: number; top: number } | null {
   return { left, top };
 }
 
+function calculateSongEventPopupPosition(): {
+  left: number;
+  top: number;
+} | null {
+  const entry = activeSongEventEntry.value;
+  const panel = submenuPanelRef.value;
+  const viewport = viewportRef.value;
+  if (!entry || !panel || !viewport) return null;
+
+  const trigger = Array.from(
+    panel.querySelectorAll<HTMLElement>('[data-song-event-entry-id]'),
+  ).find((button) => button.dataset.songEventEntryId === entry.id);
+  if (!trigger) return null;
+
+  const { width: popupWidth, height: popupHeight } = panelSize(
+    songEventPopupRef.value,
+    MAP_POPUP_WIDTH,
+    MAP_POPUP_HEIGHT,
+  );
+  const viewportRect = viewport.getBoundingClientRect();
+  const triggerRect = trigger.getBoundingClientRect();
+  const triggerLeft = triggerRect.left - viewportRect.left;
+  const triggerRight = triggerRect.right - viewportRect.left;
+  const triggerCenterY =
+    triggerRect.top - viewportRect.top + triggerRect.height / 2;
+  const maxX = Math.max(8, viewport.clientWidth - popupWidth - 8);
+  const maxY = Math.max(8, viewport.clientHeight - popupHeight - 8);
+  const gap = scaledMarkerPanelGap();
+  const rightSideLeft = triggerRight + gap;
+  const leftSideLeft = triggerLeft - popupWidth - gap;
+  const centeredLeft = (triggerLeft + triggerRight - popupWidth) / 2;
+  const left =
+    rightSideLeft <= maxX
+      ? rightSideLeft
+      : leftSideLeft >= 8
+        ? leftSideLeft
+        : clamp(centeredLeft, 8, maxX);
+  const top = clamp(triggerCenterY - popupHeight / 2, 8, maxY);
+  return { left, top };
+}
+
 function updateMapPopupPosition(): void {
   mapPopup.value.position = calculateMapPopupPosition();
 }
@@ -1767,6 +1836,10 @@ function updateSubmenuPanelPosition(): void {
 
 function updateSubmenuPopupPosition(): void {
   submenuPopup.value.position = calculateSubmenuPopupPosition();
+}
+
+function updateSongEventPopupPosition(): void {
+  songEventPopup.value.position = calculateSongEventPopupPosition();
 }
 
 function popupStyle(): Record<string, string> {
@@ -1856,6 +1929,22 @@ function submenuPopupStyle(): Record<string, string> {
   };
 }
 
+function songEventPopupStyle(): Record<string, string> {
+  if (!songEventPopup.value.position) {
+    return {
+      visibility: 'hidden',
+      pointerEvents: 'none',
+    };
+  }
+
+  return {
+    left: `${songEventPopup.value.position.left}px`,
+    top: `${songEventPopup.value.position.top}px`,
+    visibility: songEventPopup.value.layoutReady ? 'visible' : 'hidden',
+    pointerEvents: songEventPopup.value.layoutReady ? 'auto' : 'none',
+  };
+}
+
 function clearHoverPopupCloseTimer(): void {
   if (hoverPopupCloseTimer === null) return;
   clearTimeout(hoverPopupCloseTimer);
@@ -1921,6 +2010,33 @@ function scheduleSubmenuHoverPopupClose(): void {
   }, HOVER_POPUP_CLOSE_DELAY_MS);
 }
 
+function clearSongEventPopupCloseTimer(): void {
+  if (songEventPopupCloseTimer === null) return;
+  clearTimeout(songEventPopupCloseTimer);
+  songEventPopupCloseTimer = null;
+}
+
+function scheduleSongEventPopupClose(): void {
+  if (
+    songEventPopup.value.isHovered ||
+    songEventPopup.value.isFocused ||
+    songEventPopup.value.hoverEntryId
+  ) {
+    return;
+  }
+  clearSongEventPopupCloseTimer();
+  songEventPopupCloseTimer = setTimeout(() => {
+    if (
+      songEventPopup.value.isHovered ||
+      songEventPopup.value.isFocused ||
+      songEventPopup.value.hoverEntryId
+    ) {
+      return;
+    }
+    closeSongEventPopup();
+  }, HOVER_POPUP_CLOSE_DELAY_MS);
+}
+
 function clearSubmenuPanelCloseTimer(): void {
   if (submenuPanelCloseTimer === null) return;
   clearTimeout(submenuPanelCloseTimer);
@@ -1932,7 +2048,9 @@ function scheduleSubmenuPanelClose(): void {
     submenuPanel.value.pinned ||
     submenuPanel.value.isHovered ||
     submenuPopup.value.pinned ||
-    submenuPopup.value.isHovered
+    submenuPopup.value.isHovered ||
+    songEventPopup.value.isHovered ||
+    songEventPopup.value.isFocused
   ) {
     return;
   }
@@ -1943,7 +2061,10 @@ function scheduleSubmenuPanelClose(): void {
       submenuPanel.value.isHovered ||
       submenuPanel.value.hoverMarkerId ||
       submenuPopup.value.pinned ||
-      submenuPopup.value.isHovered
+      submenuPopup.value.isHovered ||
+      songEventPopup.value.isHovered ||
+      songEventPopup.value.isFocused ||
+      songEventPopup.value.hoverEntryId
     ) {
       return;
     }
@@ -1962,6 +2083,7 @@ function openSubmenuPanel(
   }
   clearSubmenuPanelCloseTimer();
   if (submenuPanel.value.markerId !== markerId) {
+    closeSongEventPopup();
     submenuPanel.value.frozenWidth = null;
     submenuPanel.value.frozenHeight = null;
     submenuPanel.value.frozenScale = null;
@@ -1976,6 +2098,7 @@ function openSubmenuPanel(
 function closeSubmenuPanel(): void {
   clearSubmenuPanelCloseTimer();
   closeSubmenuPopup();
+  closeSongEventPopup();
   submenuPanel.value.markerId = null;
   submenuPanel.value.hoverMarkerId = null;
   submenuPanel.value.pinned = false;
@@ -2009,6 +2132,25 @@ function closeSubmenuPopup(): void {
   submenuPopup.value.layoutReady = false;
   submenuPopup.value.position = null;
   submenuPopup.value.markerId = null;
+}
+
+function openSongEventPopup(entryId: string): void {
+  closeSubmenuPopup();
+  clearSongEventPopupCloseTimer();
+  if (songEventPopup.value.entryId === entryId) return;
+  songEventPopup.value.entryId = entryId;
+  songEventPopup.value.layoutReady = false;
+  songEventPopup.value.position = null;
+}
+
+function closeSongEventPopup(): void {
+  clearSongEventPopupCloseTimer();
+  songEventPopup.value.entryId = null;
+  songEventPopup.value.hoverEntryId = null;
+  songEventPopup.value.isHovered = false;
+  songEventPopup.value.isFocused = false;
+  songEventPopup.value.layoutReady = false;
+  songEventPopup.value.position = null;
 }
 
 function handleMarkerClick(marker: MarkerRuntime): void {
@@ -2165,6 +2307,61 @@ function handleSubmenuPopupHoverEnd(): void {
   scheduleSubmenuPanelClose();
 }
 
+function handleSongEventEntryHoverStart(entry: SubmenuEntryRuntime): void {
+  if (props.devMode) return;
+  songEventPopup.value.hoverEntryId = entry.id;
+  openSongEventPopup(entry.id);
+}
+
+function handleSongEventEntryHoverEnd(entryId: string): void {
+  if (props.devMode) return;
+  if (songEventPopup.value.hoverEntryId === entryId) {
+    songEventPopup.value.hoverEntryId = null;
+  }
+  scheduleSongEventPopupClose();
+  scheduleSubmenuPanelClose();
+}
+
+function handleSongEventEntryFocus(entry: SubmenuEntryRuntime): void {
+  if (props.devMode) return;
+  songEventPopup.value.isFocused = true;
+  openSongEventPopup(entry.id);
+}
+
+function handleSongEventEntryBlur(): void {
+  if (props.devMode) return;
+  songEventPopup.value.isFocused = false;
+  scheduleSongEventPopupClose();
+}
+
+function handleSongEventPopupHoverStart(): void {
+  if (props.devMode) return;
+  songEventPopup.value.isHovered = true;
+  clearSongEventPopupCloseTimer();
+  clearSubmenuPanelCloseTimer();
+}
+
+function handleSongEventPopupHoverEnd(): void {
+  if (props.devMode) return;
+  songEventPopup.value.isHovered = false;
+  scheduleSongEventPopupClose();
+  scheduleSubmenuPanelClose();
+}
+
+function handleSongEventPopupFocusIn(): void {
+  if (props.devMode) return;
+  songEventPopup.value.isFocused = true;
+  clearSongEventPopupCloseTimer();
+  clearSubmenuPanelCloseTimer();
+}
+
+function handleSongEventPopupFocusOut(): void {
+  if (props.devMode) return;
+  songEventPopup.value.isFocused = false;
+  scheduleSongEventPopupClose();
+  scheduleSubmenuPanelClose();
+}
+
 function handleSubmenuPanelHoverStart(): void {
   if (props.devMode) return;
   submenuPanel.value.isHovered = true;
@@ -2287,6 +2484,14 @@ function handleWheel(event: WheelEvent): void {
   ) {
     return;
   }
+  const songEventPopupEl = songEventPopupRef.value;
+  if (
+    songEventPopupEl &&
+    event.target instanceof Node &&
+    songEventPopupEl.contains(event.target)
+  ) {
+    return;
+  }
 
   if (!renderMapDef.value) return;
   if (event.cancelable) event.preventDefault();
@@ -2396,6 +2601,10 @@ function handleEscapeKey(event: KeyboardEvent): void {
     devSelectedMarkerIndex.value = null;
     return;
   }
+  if (songEventPopup.value.entryId) {
+    closeSongEventPopup();
+    return;
+  }
   if (submenuPopup.value.markerId) {
     closeSubmenuPopup();
     return;
@@ -2498,6 +2707,15 @@ watch(markerViewModels, () => {
       closeSubmenuPopup();
     }
   }
+
+  if (
+    songEventPopup.value.entryId &&
+    !activePanelMarker.value?.songEventEntries.some(
+      (entry) => entry.id === songEventPopup.value.entryId,
+    )
+  ) {
+    closeSongEventPopup();
+  }
 });
 
 watch(
@@ -2591,6 +2809,31 @@ watch(
   },
 );
 
+watch(
+  () => songEventPopup.value.entryId,
+  async (entryId, previousEntryId) => {
+    if (!entryId) {
+      songEventPopup.value.layoutReady = false;
+      songEventPopup.value.position = null;
+      return;
+    }
+
+    if (entryId !== previousEntryId) {
+      songEventPopup.value.layoutReady = false;
+    }
+
+    await nextTick();
+    updateSongEventPopupPosition();
+    songEventPopup.value.layoutReady = songEventPopup.value.position !== null;
+    if (songEventPopup.value.layoutReady && songEventPopup.value.isFocused) {
+      await nextTick();
+      songEventPopupRef.value
+        ?.querySelector<HTMLElement>('.song-event-picker')
+        ?.focus({ preventScroll: true });
+    }
+  },
+);
+
 watch([scale, panX, panY, () => renderMapDef.value?.id], () => {
   if (mapPopup.value.markerId) {
     updateMapPopupPosition();
@@ -2599,6 +2842,9 @@ watch([scale, panX, panY, () => renderMapDef.value?.id], () => {
     updateSubmenuPanelPosition();
     if (submenuPopup.value.markerId) {
       updateSubmenuPopupPosition();
+    }
+    if (songEventPopup.value.entryId) {
+      updateSongEventPopupPosition();
     }
   }
 });
@@ -2646,6 +2892,9 @@ onMounted(() => {
       if (submenuPopup.value.markerId) {
         updateSubmenuPopupPosition();
       }
+      if (songEventPopup.value.entryId) {
+        updateSongEventPopupPosition();
+      }
     });
     resizeObserver.observe(viewportRef.value);
   }
@@ -2656,6 +2905,7 @@ onBeforeUnmount(() => {
   window.removeEventListener('blur', handleWindowBlur);
   clearHoverPopupCloseTimer();
   clearSubmenuHoverPopupCloseTimer();
+  clearSongEventPopupCloseTimer();
   clearSubmenuPanelCloseTimer();
   resizeObserver?.disconnect();
   resizeObserver = null;
@@ -2952,21 +3202,91 @@ onBeforeUnmount(() => {
           <div
             v-for="songEventEntry in activePanelMarker.songEventEntries"
             :key="songEventEntry.id"
-            class="map-song-event"
+            class="map-song-event__entry"
           >
-            <SongEventPicker
+            <button
               v-if="songEventEntry.songEvent"
-              :event-id="songEventEntry.songEvent.eventId"
-              :event-label="songEventEntry.songEvent.label"
-              :game="songEventEntry.songEvent.game"
-              :choices="songEventChoicesFor(songEventEntry.songEvent.game)"
-              :model-value="songEventEntryValue(songEventEntry)"
-              :dropdown-id="`map-song-event-options-${songEventEntry.id}`"
-              @update:model-value="
-                handleSongEventEntryChange(songEventEntry, $event)
+              type="button"
+              class="map-song-event__trigger"
+              :data-song-event-entry-id="songEventEntry.id"
+              :aria-label="
+                songEventEntry.songEvent.songLabel
+                  ? `Song event: ${songEventEntry.songEvent.label}, song: ${songEventEntry.songEvent.songLabel}`
+                  : `Song event: ${songEventEntry.songEvent.label}`
               "
-              @close="closeSubmenuPanel"
-            />
+              :title="songEventEntry.songEvent.label"
+              :aria-expanded="songEventPopup.entryId === songEventEntry.id"
+              :aria-controls="`map-song-event-options-${songEventEntry.id}`"
+              @pointerdown.stop
+              @mouseenter="handleSongEventEntryHoverStart(songEventEntry)"
+              @mouseleave="handleSongEventEntryHoverEnd(songEventEntry.id)"
+              @focus="handleSongEventEntryFocus(songEventEntry)"
+              @blur="handleSongEventEntryBlur"
+            >
+              <span class="map-marker__song" aria-hidden="true">
+                <img
+                  v-if="songEventEntry.songEvent.image"
+                  class="map-marker__song-image"
+                  :src="songEventEntry.songEvent.image"
+                  alt=""
+                  draggable="false"
+                />
+                <span v-else class="map-marker__song-empty">?</span>
+              </span>
+              <span
+                v-if="songEventEntry.topLeftOverlays.length > 0"
+                class="map-marker__corner map-marker__corner--top-left"
+              >
+                <img
+                  v-for="overlay in songEventEntry.topLeftOverlays"
+                  :key="overlay.key"
+                  class="map-marker__overlay"
+                  :class="{ 'map-marker__overlay--wide': overlay.wide }"
+                  :src="overlay.src"
+                  alt=""
+                  draggable="false"
+                />
+              </span>
+              <span
+                v-if="songEventEntry.bottomLeftOverlays.length > 0"
+                class="map-marker__corner map-marker__corner--bottom-left"
+              >
+                <img
+                  v-for="overlay in songEventEntry.bottomLeftOverlays"
+                  :key="`song-event-bottom:${overlay.key}`"
+                  class="map-marker__overlay"
+                  :src="overlay.src"
+                  alt=""
+                  draggable="false"
+                />
+              </span>
+              <span
+                v-if="songEventEntry.topRightOverlays.length > 0"
+                class="map-marker__corner map-marker__corner--top-right"
+              >
+                <img
+                  v-for="overlay in songEventEntry.topRightOverlays"
+                  :key="`song-event-top:${overlay.key}`"
+                  class="map-marker__overlay"
+                  :src="overlay.src"
+                  alt=""
+                  draggable="false"
+                />
+              </span>
+              <span
+                v-if="songEventEntry.countDigitImages.length > 0"
+                class="map-marker__corner map-marker__corner--bottom-right"
+              >
+                <img
+                  v-for="(digitImage, index) in songEventEntry.countDigitImages"
+                  :key="`${songEventEntry.id}:digit:${index}`"
+                  class="map-marker__digit"
+                  :src="digitImage"
+                  alt=""
+                  draggable="false"
+                />
+              </span>
+            </button>
           </div>
         </div>
 
@@ -3038,6 +3358,37 @@ onBeforeUnmount(() => {
               "
             />
           </div>
+        </div>
+      </div>
+
+      <div
+        v-if="activeSongEventEntry?.songEvent"
+        ref="songEventPopupRef"
+        class="map-popup map-song-event-dropdown"
+        role="dialog"
+        aria-modal="false"
+        :aria-label="`Song event: ${activeSongEventEntry.songEvent.label}`"
+        :style="songEventPopupStyle()"
+        @pointerdown.stop
+        @mouseenter="handleSongEventPopupHoverStart"
+        @mouseleave="handleSongEventPopupHoverEnd"
+        @focusin="handleSongEventPopupFocusIn"
+        @focusout="handleSongEventPopupFocusOut"
+      >
+        <div class="map-song-event">
+          <SongEventPicker
+            :event-id="activeSongEventEntry.songEvent.eventId"
+            :event-label="activeSongEventEntry.songEvent.label"
+            :game="activeSongEventEntry.songEvent.game"
+            :choices="songEventChoicesFor(activeSongEventEntry.songEvent.game)"
+            :model-value="songEventEntryValue(activeSongEventEntry)"
+            :dropdown-id="`map-song-event-options-${activeSongEventEntry.id}`"
+            :auto-focus="songEventPopup.isFocused"
+            @update:model-value="
+              handleSongEventEntryChange(activeSongEventEntry, $event)
+            "
+            @close="closeSongEventPopup"
+          />
         </div>
       </div>
 
@@ -3606,7 +3957,89 @@ onBeforeUnmount(() => {
 
 .map-song-event-list {
   display: flex;
-  flex-direction: column;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.45rem;
+}
+
+.map-song-event__entry {
+  position: relative;
+  flex: 0 0 auto;
+}
+
+.map-song-event__trigger {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: calc(var(--submenu-marker-size) * 1.375);
+  height: calc(var(--submenu-marker-size) * 1.375);
+  border: 0;
+  padding: 0;
+  background: transparent;
+  cursor: pointer;
+}
+
+.map-song-event__trigger:hover .map-marker__song-image,
+.map-song-event__trigger:focus-visible .map-marker__song-image,
+.map-song-event__trigger:hover .map-marker__overlay,
+.map-song-event__trigger:focus-visible .map-marker__overlay,
+.map-song-event__trigger:hover .map-marker__digit,
+.map-song-event__trigger:focus-visible .map-marker__digit {
+  animation: map-marker-active-shimmer 1.1s ease-in-out infinite;
+}
+
+.map-song-event__trigger:focus-visible {
+  outline: 2px solid #fbbf24;
+  outline-offset: 1px;
+}
+
+.map-song-event__trigger .map-marker__song-image {
+  width: var(--submenu-marker-size);
+  height: var(--submenu-marker-size);
+}
+
+.map-song-event__trigger .map-marker__corner {
+  gap: var(--submenu-corner-gap);
+}
+
+.map-song-event__trigger .map-marker__corner--top-left {
+  top: var(--submenu-corner-offset);
+  left: var(--submenu-corner-offset);
+}
+
+.map-song-event__trigger .map-marker__corner--bottom-left {
+  bottom: var(--submenu-corner-offset);
+  left: var(--submenu-corner-offset);
+}
+
+.map-song-event__trigger .map-marker__corner--top-right {
+  top: var(--submenu-corner-offset);
+  right: var(--submenu-corner-offset);
+}
+
+.map-song-event__trigger .map-marker__corner--bottom-right {
+  right: var(--submenu-corner-offset);
+  bottom: var(--submenu-corner-offset);
+}
+
+.map-song-event__trigger .map-marker__overlay {
+  width: var(--submenu-overlay-size);
+  height: var(--submenu-overlay-size);
+}
+
+.map-song-event__trigger .map-marker__overlay--wide {
+  width: var(--submenu-overlay-wide-size);
+}
+
+.map-song-event__trigger .map-marker__digit {
+  width: var(--submenu-digit-width);
+  height: var(--submenu-digit-height);
+}
+
+.map-song-event-dropdown {
+  z-index: 13;
 }
 
 .map-submenu-panel__grid {
