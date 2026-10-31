@@ -3,6 +3,8 @@ import { afterEach, describe, expect, it } from 'vitest';
 import {
   GRID_ICON_VARIANTS,
   getGridItemDefinedMaxCount,
+  getItemIcon,
+  hasItemIcon,
   getGridItemOverlay,
   getGridItemOverlayText,
   getGridItemOverlayValue,
@@ -122,5 +124,24 @@ describe('itemIcons grid text labels', () => {
         'oot_shadowtemple_label',
       ),
     ).toBe(9);
+  });
+});
+
+describe('soul item icons', () => {
+  it('uses the soul category icons', () => {
+    expect(getItemIcon('OOT_SOUL_ENEMY_STALFOS')).toContain('soul_enemy.png');
+    expect(getItemIcon('MM_SOUL_BOSS_GOHT')).toContain('soul_boss.png');
+    expect(getItemIcon('SHARED_SOUL_NPC_ANJU')).toContain('soul_npc.png');
+  });
+
+  it('uses the dedicated animal and misc soul icons', () => {
+    expect(getItemIcon('OOT_SOUL_ANIMAL_CUCCO')).toContain('soul_animal.png');
+    expect(getItemIcon('MM_SOUL_MISC_GS')).toContain('soul_misc.png');
+  });
+
+  it('reports soul items as having an icon', () => {
+    expect(hasItemIcon('OOT_SOUL_ENEMY_STALFOS')).toBe(true);
+    expect(hasItemIcon('OOT_BOOMERANG')).toBe(true);
+    expect(hasItemIcon('NOT_AN_ITEM')).toBe(false);
   });
 });

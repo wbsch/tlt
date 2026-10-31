@@ -188,6 +188,13 @@ export function collectAllGridItemIds(root: unknown): Set<string> {
           }
         }
       }
+    } else if (type === 'itemlist') {
+      const items = obj.items;
+      if (Array.isArray(items)) {
+        for (const slot of items) {
+          walkRef(slot);
+        }
+      }
     }
   }
 

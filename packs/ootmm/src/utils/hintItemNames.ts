@@ -126,9 +126,9 @@ export function getHintItemEntries(
   const items: HintItemEntry[] = [];
 
   function addItem(id: string, name: string): void {
-    // Souls are not in the item grid, but are still selectable for hint
-    // recording (Always/Sometimes and Region hints). They are excluded only
-    // when an explicit pool (e.g. Moon Trial masks) does not contain them.
+    // Souls are part of the item grid's Souls submenus, but keep accepting
+    // any soul item from the item database that is in the current pool so
+    // hint recording still works for grid variants that omit it.
     if (seenIds.has(id) || (!gridIds.has(id) && !isSoulItemId(id))) return;
     if (pool && !pool.has(id)) return;
     seenIds.add(id);

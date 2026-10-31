@@ -578,6 +578,13 @@ function filterGridElement(element: unknown): unknown | null {
     if (rows.length === 0) return null;
     return { ...element, rows };
   }
+  if ((element as { type?: string }).type === 'itemlist') {
+    const items = ((element as { items?: unknown[] }).items || [])
+      .map((itemRef: unknown) => resolveVisibleItemRef(itemRef))
+      .filter((itemId): itemId is string => Boolean(itemId));
+    if (items.length === 0) return null;
+    return { ...element, items };
+  }
   if ((element as { type?: string }).type === 'array') {
     const content = ((element as { content?: unknown[] }).content || [])
       .map((child: unknown) => filterGridElement(child))

@@ -34,6 +34,13 @@ export interface ItemGrid {
   rows: ItemGridSlot[][];
 }
 
+export interface GridItemList {
+  type: 'itemlist';
+  margin?: string;
+  scale?: number;
+  items: ItemGridSlot[];
+}
+
 export interface GridArray {
   type: 'array';
   orientation: 'vertical' | 'horizontal';
@@ -57,11 +64,16 @@ export type GridNode =
   | GridItem
   | GridCanvas
   | ItemGrid
+  | GridItemList
   | GridArray
   | GridSection;
 
 export interface ResolvedItemGrid extends Omit<ItemGrid, 'rows'> {
   rows: string[][];
+}
+
+export interface ResolvedItemList extends Omit<GridItemList, 'items'> {
+  items: string[];
 }
 
 export interface ResolvedGridArray extends Omit<GridArray, 'content'> {
@@ -76,6 +88,7 @@ export type ResolvedGridNode =
   | GridItem
   | GridCanvas
   | ResolvedItemGrid
+  | ResolvedItemList
   | ResolvedGridArray
   | ResolvedGridSection;
 

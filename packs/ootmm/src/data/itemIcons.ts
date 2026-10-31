@@ -1720,11 +1720,28 @@ function getResolvedGridVariantIndex(
 // Default fallback icon
 export const DEFAULT_ICON = withBasePath('images/unknown.png');
 
+// Souls share one icon per category.
+const SOUL_ICON_BY_CATEGORY: Record<string, string> = {
+  BOSS: 'images/soul_boss.png',
+  ENEMY: 'images/soul_enemy.png',
+  NPC: 'images/soul_npc.png',
+  ANIMAL: 'images/soul_animal.png',
+  MISC: 'images/soul_misc.png',
+};
+
+const SOUL_ITEM_ID_PATTERN = /^(?:OOT|MM|SHARED)_SOUL_([A-Z]+)_/;
+
+export function getSoulItemIcon(itemId: string): string | null {
+  const match = SOUL_ITEM_ID_PATTERN.exec(itemId);
+  const icon = match ? SOUL_ICON_BY_CATEGORY[match[1]] : null;
+  return icon ? withBasePath(icon) : null;
+}
+
 /**
  * Get the icon path for an item ID
  */
 export function getItemIcon(itemId: string): string {
-  return ITEM_ICONS[itemId] || DEFAULT_ICON;
+  return ITEM_ICONS[itemId] || getSoulItemIcon(itemId) || DEFAULT_ICON;
 }
 
 export function getGridTextLabel(value: string): string | null {
@@ -2125,5 +2142,5 @@ export function hasGridIconVariants(
  * Check if an item has a custom icon
  */
 export function hasItemIcon(itemId: string): boolean {
-  return itemId in ITEM_ICONS;
+  return itemId in ITEM_ICONS || getSoulItemIcon(itemId) !== null;
 }

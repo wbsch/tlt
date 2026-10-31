@@ -267,6 +267,13 @@ function collectNodeItemIds(node: ResolvedGridNode, itemIds: Set<string>) {
     return;
   }
 
+  if (node.type === 'itemlist') {
+    for (const childItemId of node.items) {
+      itemIds.add(childItemId);
+    }
+    return;
+  }
+
   for (const child of node.content) {
     collectNodeItemIds(child, itemIds);
   }

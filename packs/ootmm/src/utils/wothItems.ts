@@ -59,10 +59,11 @@ export const WOTH_GOLD_DUST_VARIANTS = new Set([
 ]);
 
 /**
- * Souls (enemy, boss, NPC, animal and misc souls) are not represented in the
- * item grid, but OoTMM can still use them as Way of the Hero path hint
- * targets. They are recognized by their `(OOT|MM|SHARED)_SOUL_...` item ID
- * prefix, mirroring the soul section detection in the inventory.
+ * Souls (enemy, boss, NPC, animal and misc souls) live in the item grid's
+ * "Souls" submenus. OoTMM can use them as Way of the Hero path hint targets
+ * even when the current grid variant does not contain a particular soul, so
+ * they are recognized by their `(OOT|MM|SHARED)_SOUL_...` item ID prefix,
+ * mirroring the soul section detection in the inventory.
  */
 const SOUL_ITEM_ID_RE = /^(?:OOT|MM|SHARED)_SOUL_/;
 
@@ -93,8 +94,8 @@ export function isWotHItemInGrid(
   itemId: string,
   gridItemIdSet: ReadonlySet<string>,
 ): boolean {
-  // Souls are never in the item grid, but are still valid Way of the Hero
-  // targets, so they always pass this check.
+  // Souls are valid Way of the Hero targets even if the current grid variant
+  // doesn't list the exact soul item, so they always pass this check.
   if (isSoulItemId(itemId)) return true;
   const bottleBase = WOTH_BOTTLE_CONTENT_BASE_ITEM_IDS[itemId];
   if (bottleBase) return gridItemIdSet.has(bottleBase);

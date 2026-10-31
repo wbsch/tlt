@@ -1,7 +1,10 @@
 <script setup lang="ts">
-import { inject, onBeforeUnmount, ref, computed } from 'vue';
+import { inject, onBeforeUnmount, ref, computed, watch } from 'vue';
 import type { StyleValue } from 'vue';
-import { itemGridRenderContextKey } from './itemGridSchema';
+import {
+  itemGridRenderContextKey,
+  type ResolvedGridNode,
+} from './itemGridSchema';
 import OoTMMGridNode from './OoTMMGridNode.vue';
 
 const props = defineProps<{
@@ -31,25 +34,89 @@ const context = injectedContext;
 
 const gridItemRef = ref<HTMLElement | null>(null);
 
+const PANEL_MAX_HEIGHT = 480;
+const PANEL_MIN_HEIGHT = 160;
+const PANEL_VIEWPORT_MARGIN = 8;
+
+const viewport = ref({ height: window.innerHeight });
+
+let viewportTracking = false;
+
+function syncViewport(): void {
+  viewport.value = { height: window.innerHeight };
+}
+
+function startViewportTracking(): void {
+  if (viewportTracking) return;
+  // The capture phase also catches scroll events of inner scroll containers.
+  window.addEventListener('scroll', syncViewport, {
+    capture: true,
+    passive: true,
+  });
+  window.addEventListener('resize', syncViewport);
+  viewportTracking = true;
+}
+
+function stopViewportTracking(): void {
+  if (!viewportTracking) return;
+  window.removeEventListener('scroll', syncViewport, { capture: true });
+  window.removeEventListener('resize', syncViewport);
+  viewportTracking = false;
+}
+
+const submenuNode = computed(() => context.getSubmenuNode(props.itemId));
+
+function isListNode(node: ResolvedGridNode): boolean {
+  if (node.type === 'itemlist') {
+    return true;
+  }
+  if (node.type === 'array' || node.type === 'section') {
+    return node.content.every(isListNode);
+  }
+  return false;
+}
+
+// Submenus made only of item lists shrink-wrap their content so the panel is
+// only slightly wider than the rows, while all rows share the same width.
+const isCompactSubmenu = computed(() => {
+  const node = submenuNode.value;
+  return node !== null && isListNode(node);
+});
+
 const submenuPanelStyle = computed(() => {
   if (!context.isSubmenuOpen(props.itemId) || !gridItemRef.value) {
     return undefined;
   }
+  // ``viewport`` is refreshed on scroll/resize so the fixed panel stays anchored
+  // to its tile and never grows past the visible viewport.
+  const viewportHeight = viewport.value.height;
   const rect = gridItemRef.value.getBoundingClientRect();
-  const spaceBelow = window.innerHeight - rect.bottom;
-  // Estimate ~350px for the panel (header + padding + ~6 rows × ~40px)
-  const fitsBelow = spaceBelow >= 300;
+  const spaceBelow = viewportHeight - rect.bottom - PANEL_VIEWPORT_MARGIN * 2;
+  const spaceAbove = rect.top - PANEL_VIEWPORT_MARGIN * 2;
+  const placeBelow = spaceBelow >= spaceAbove;
+  const available = Math.max(placeBelow ? spaceBelow : spaceAbove, 0);
+  const maxHeight = Math.min(
+    PANEL_MAX_HEIGHT,
+    viewportHeight - PANEL_VIEWPORT_MARGIN * 2,
+    Math.max(available, PANEL_MIN_HEIGHT),
+  );
   const style: Record<string, string> = {
     position: 'fixed',
     left: '16px',
     right: 'auto',
     zIndex: '9999',
+    maxHeight: `${Math.round(maxHeight)}px`,
   };
-  if (fitsBelow) {
-    style.top = `${rect.bottom + 8}px`;
-  } else {
-    style.bottom = `${window.innerHeight - rect.top + 8}px`;
-  }
+  const maxTop = Math.max(
+    PANEL_VIEWPORT_MARGIN,
+    viewportHeight - maxHeight - PANEL_VIEWPORT_MARGIN,
+  );
+  const preferredTop = placeBelow
+    ? rect.bottom + PANEL_VIEWPORT_MARGIN
+    : rect.top - PANEL_VIEWPORT_MARGIN - maxHeight;
+  style.top = `${Math.round(
+    Math.min(Math.max(preferredTop, PANEL_VIEWPORT_MARGIN), maxTop),
+  )}px`;
   return style;
 });
 
@@ -144,7 +211,21 @@ function handlePointerEnd(event: PointerEvent): void {
   clearLongPressState();
 }
 
+watch(
+  () => context.isSubmenuOpen(props.itemId),
+  (open) => {
+    if (open) {
+      syncViewport();
+      startViewportTracking();
+    } else {
+      stopViewportTracking();
+    }
+  },
+  { immediate: true },
+);
+
 onBeforeUnmount(() => {
+  stopViewportTracking();
   stopSuppressionReset();
   clearLongPressState();
 });
@@ -355,6 +436,7 @@ onBeforeUnmount(() => {
           context.isSubmenuOpen(props.itemId)
         "
         class="submenu-panel"
+        :class="{ 'submenu-panel--compact': isCompactSubmenu }"
         :style="submenuPanelStyle"
         @click.stop
         @mousedown.stop
@@ -674,6 +756,16 @@ onBeforeUnmount(() => {
   cursor: default;
   overflow-y: auto;
   isolation: isolate;
+}
+
+/* Item-list-only submenus shrink-wrap: the panel is just a bit wider than the
+   list rows and every row uses the same width. */
+.submenu-panel.submenu-panel--compact {
+  min-width: 0;
+}
+
+.submenu-panel--compact :deep(.grid-array.vertical) > .grid-section {
+  align-self: stretch;
 }
 
 .wheel-menu-panel {

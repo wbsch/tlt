@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { computed, inject } from 'vue';
+import OoTMMGridItemList from './OoTMMGridItemList.vue';
 import OoTMMGridItemTile from './OoTMMGridItemTile.vue';
 import {
   itemGridRenderContextKey,
@@ -9,6 +10,7 @@ import {
   type ResolvedGridNode,
   type ResolvedGridSection,
   type ResolvedItemGrid,
+  type ResolvedItemList,
 } from './itemGridSchema';
 
 defineOptions({
@@ -95,6 +97,12 @@ function sectionOrientation(
       />
     </div>
   </div>
+
+  <OoTMMGridItemList
+    v-else-if="node.type === 'itemlist'"
+    :node="node as ResolvedItemList"
+    :parent-scale="nodeScale"
+  />
 
   <OoTMMGridItemTile
     v-else-if="node.type === 'item'"
