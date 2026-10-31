@@ -75,6 +75,13 @@ export const SONG_ELEGY = 18; // Elegy of Emptiness
 export const SONG_OATH = 19; // Oath to Order
 
 /**
+ * Sentinel used when the required song for an event is unknown.
+ * It intentionally matches no valid song ID, so every `song-event-*`
+ * expression for that event evaluates to false.
+ */
+export const SONG_UNKNOWN = 0xff;
+
+/**
  * Vanilla default song assignments
  * Based on OoTMM/packages/core/lib/combo/logic/world.ts
  * Array index = Song Event ID, value = Song ID
@@ -124,6 +131,43 @@ export const VANILLA_SONG_EVENTS_MM = [
   SONG_STORMS, // 11: Song of Storms - Composer
   SONG_OATH, // 12: Clock Tower Roof
 ] as const;
+
+/** MM song event IDs are offset by the number of OoT events. */
+export const SONG_EVENT_MM_OFFSET = VANILLA_SONG_EVENTS.length;
+export const SONG_EVENT_OOT_COUNT = VANILLA_SONG_EVENTS.length;
+export const SONG_EVENT_MM_COUNT = VANILLA_SONG_EVENTS_MM.length;
+
+/**
+ * Preselects `Unknown` for every song event of an enabled game that has no
+ * explicit selection yet. Existing selections are preserved so the player's
+ * (or a previous seed's) entries are never overwritten.
+ */
+export function withDefaultSongEvents(
+  events: Record<string, number>,
+  enabled: { oot: boolean; mm: boolean },
+): { events: Record<string, number>; changed: boolean } {
+  const next = { ...events };
+  let changed = false;
+
+  const ensureUnknown = (eventId: number) => {
+    if (eventId in next) return;
+    next[eventId] = SONG_UNKNOWN;
+    changed = true;
+  };
+
+  if (enabled.oot) {
+    for (let eventId = 0; eventId < SONG_EVENT_OOT_COUNT; eventId++) {
+      ensureUnknown(eventId);
+    }
+  }
+  if (enabled.mm) {
+    for (let eventId = 0; eventId < SONG_EVENT_MM_COUNT; eventId++) {
+      ensureUnknown(SONG_EVENT_MM_OFFSET + eventId);
+    }
+  }
+
+  return { events: next, changed };
+}
 
 export type SongEventData = {
   id: number;
@@ -186,6 +230,12 @@ export type SongChoice = {
   value: number;
   label: string;
   image: string;
+};
+
+const UNKNOWN_SONG_CHOICE: SongChoice = {
+  value: SONG_UNKNOWN,
+  label: 'Unknown',
+  image: songEventImage('unknown.png'),
 };
 
 /**
@@ -292,6 +342,7 @@ export const SONG_CHOICES: SongChoice[] = [
     label: 'Oath to Order',
     image: songEventImage('oath_to_order.png'),
   },
+  UNKNOWN_SONG_CHOICE,
 ];
 
 /**
@@ -341,6 +392,8 @@ export function getOotSongChoices(
   if (settings.songOrderOot) {
     allowed.push(SONG_CHOICES[19]); // Oath to Order
   }
+
+  allowed.push(UNKNOWN_SONG_CHOICE);
 
   return allowed;
 }
@@ -399,6 +452,8 @@ export function getMmSongChoices(
     allowed.push(SONG_CHOICES[11]); // Prelude of Light
   }
 
+  allowed.push(UNKNOWN_SONG_CHOICE);
+
   return allowed;
 }
 
@@ -411,11 +466,25 @@ export function getFilteredDefaultChoice(
   choices: SongChoice[],
   currentValue: number | undefined,
 ): SongChoice {
-  if (currentValue !== undefined) {
-    const match = choices.find((c) => c.value === currentValue);
-    if (match) return match;
-  }
-  return choices[0];
+  return resolveSongChoice(choices, currentValue) ?? choices[0];
+}
+
+/**
+ * Resolves the choice to display for a song event. Without an explicit
+ * selection the event is unknown, so `Unknown` is shown instead of an
+ * arbitrary valid song.
+ */
+export function resolveSongChoice(
+  choices: readonly SongChoice[],
+  currentValue: number | undefined,
+): SongChoice | null {
+  const match = choices.find((choice) => choice.value === currentValue);
+  if (match) return match;
+  return (
+    choices.find((choice) => choice.value === SONG_UNKNOWN) ??
+    choices[0] ??
+    null
+  );
 }
 
 export function getSongEventLabel(eventId: number, game: 'oot' | 'mm'): string {

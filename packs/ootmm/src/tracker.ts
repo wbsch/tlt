@@ -7,6 +7,7 @@ import type {
 import type { OoTMMSettings } from './types/settings';
 import { DEFAULT_OOTMM_SETTINGS } from './types/settings';
 import {
+  SONG_UNKNOWN,
   VANILLA_SONG_EVENTS,
   VANILLA_SONG_EVENTS_MM,
 } from './data/song-events';
@@ -1591,7 +1592,9 @@ export class OoTMMTracker implements TrackerPack {
       if (Object.keys(events).length > 0) {
         for (const [eventKey, songId] of Object.entries(events)) {
           const eventId = parseInt(eventKey, 10);
-          if (isNaN(eventId) || songId < 0 || songId > 19) continue;
+          const isValidSong =
+            songId === SONG_UNKNOWN || (songId >= 0 && songId <= 19);
+          if (isNaN(eventId) || !isValidSong) continue;
 
           if (eventId >= 0 && eventId < VANILLA_SONG_EVENTS.length) {
             // OoT song event

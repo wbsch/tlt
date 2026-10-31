@@ -14,10 +14,7 @@ import {
   ALL_SETTINGS_DEFINITIONS,
   TRACKER_DEFAULT_SETTINGS,
 } from '../data/settings';
-import {
-  VANILLA_SONG_EVENTS,
-  VANILLA_SONG_EVENTS_MM,
-} from '../data/song-events';
+import { withDefaultSongEvents } from '../data/song-events';
 import {
   createOoTMMLocalSessionSync,
   OOTMM_LOCAL_SESSION_ID,
@@ -2207,33 +2204,16 @@ export const useOoTMMSessionStore = defineStore('ootmm-session', () => {
       trackerSettings.value?.songEventsShuffleMm,
     );
 
-    // Fill in missing defaults for every enabled game's events.
-    // When called from initialization or settings-change paths, the
-    // saved-state entries have already been restored (see applyRoomSnapshot
-    // ordering fix), so this only adds entries for games that were not
-    // yet present when the state was saved.
+    // Preselect `Unknown` for every event of an enabled game. When the
+    // Song Events Shuffle setting is turned on (manually or through a spoiler
+    // log) the actual songs are unknown until the player enters them, so the
+    // checks behind those events stay unreachable in the meantime. Entries the
+    // player already set are kept.
     if (songEventsShuffleOot || songEventsShuffleMm) {
-      const merged = { ...songEvents.value };
-      let changed = false;
-
-      if (songEventsShuffleOot) {
-        VANILLA_SONG_EVENTS.forEach((songId, eventId) => {
-          if (!(eventId in merged)) {
-            merged[eventId] = songId;
-            changed = true;
-          }
-        });
-      }
-
-      if (songEventsShuffleMm) {
-        VANILLA_SONG_EVENTS_MM.forEach((songId, mmEventId) => {
-          const key = 18 + mmEventId;
-          if (!(key in merged)) {
-            merged[key] = songId;
-            changed = true;
-          }
-        });
-      }
+      const { events: merged, changed } = withDefaultSongEvents(
+        songEvents.value,
+        { oot: songEventsShuffleOot, mm: songEventsShuffleMm },
+      );
 
       if (changed) {
         songEvents.value = merged;

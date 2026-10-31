@@ -34,6 +34,7 @@ import {
   getMmSongChoices,
   getOotSongChoices,
   getSongEventLabel,
+  resolveSongChoice,
   type SongChoice,
 } from '../data/song-events';
 import { OOTMM_MAP_DEFS } from '../data/maps';
@@ -1050,12 +1051,10 @@ function resolveSongEventRuntime(
   menuDef: MapSongEventMenuDef,
   choices: readonly SongChoice[],
 ): SongEventMenuRuntime {
-  const choice =
-    choices.find(
-      (entry) => entry.value === props.songEvents?.[menuDef.eventId],
-    ) ??
-    choices[0] ??
-    null;
+  const choice = resolveSongChoice(
+    choices,
+    props.songEvents?.[menuDef.eventId],
+  );
   return {
     eventId: menuDef.eventId,
     game: menuDef.game,

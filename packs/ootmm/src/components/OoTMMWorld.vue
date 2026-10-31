@@ -6,6 +6,7 @@ import {
   SONG_EVENTS_MM,
   getOotSongChoices,
   getMmSongChoices,
+  resolveSongChoice,
 } from '../data/song-events';
 
 type DungeonRow = {
@@ -57,9 +58,7 @@ function getSelectedSongChoice(
   gameChoices: SongChoice[],
 ): SongChoice {
   const selectedValue = getSongEventSelection(eventId);
-  return (
-    gameChoices.find((song) => song.value === selectedValue) ?? gameChoices[0]
-  );
+  return resolveSongChoice(gameChoices, selectedValue) ?? gameChoices[0];
 }
 
 function isSongDropdownOpen(eventId: number): boolean {

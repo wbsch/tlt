@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed, nextTick, onMounted, ref } from 'vue';
-import type { SongChoice } from '../data/song-events';
+import { resolveSongChoice, type SongChoice } from '../data/song-events';
 
 const props = defineProps<{
   eventId: number;
@@ -19,12 +19,9 @@ const emit = defineEmits<{
 const rootRef = ref<HTMLElement | null>(null);
 const highlightedIndex = ref(-1);
 
-const selectedChoice = computed<SongChoice | null>(() => {
-  const match = props.choices.find(
-    (choice) => choice.value === props.modelValue,
-  );
-  return match ?? props.choices[0] ?? null;
-});
+const selectedChoice = computed<SongChoice | null>(() =>
+  resolveSongChoice(props.choices, props.modelValue),
+);
 
 const gameLabel = computed(() => (props.game === 'oot' ? 'OoT' : 'MM'));
 
