@@ -416,6 +416,7 @@
     {
       "coords": [665, 516],
       "image": "butterfly",
+      "overlays": ["child"],
       "codes": [
         "OOT Graveyard Butterfly 1",
         "OOT Graveyard Butterfly 2",

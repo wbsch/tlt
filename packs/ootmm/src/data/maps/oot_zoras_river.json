@@ -480,6 +480,7 @@
     {
       "coords": [218, 282],
       "image": "butterfly",
+      "overlays": ["child"],
       "codes": [
         "OOT Lake Hylia Butterfly 1",
         "OOT Lake Hylia Butterfly 2",
@@ -489,6 +490,7 @@
     {
       "coords": [388, 162],
       "image": "butterfly",
+      "overlays": ["child"],
       "codes": [
         "OOT Zora River Butterfly Near Beans 1",
         "OOT Zora River Butterfly Near Beans 2"
@@ -497,6 +499,7 @@
     {
       "coords": [847, 407],
       "image": "butterfly",
+      "overlays": ["child"],
       "codes": [
         "OOT Zora Fountain Butterfly 1",
         "OOT Zora Fountain Butterfly 2"
@@ -505,6 +508,7 @@
     {
       "coords": [849, 62],
       "image": "butterfly",
+      "overlays": ["child"],
       "codes": [
         "OOT Zora River Butterfly Near Waterfall 1",
         "OOT Zora River Butterfly Near Waterfall 2",
