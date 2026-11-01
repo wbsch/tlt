@@ -14,7 +14,7 @@ type WorldWithAreas = {
  * (leaving its vanilla edge, e.g. Death Mountain Summit → Kakariko Rooftop,
  * incorrectly reachable).
  */
-describe('tracker aliased one-way entrance wiring', () => {
+describe('tracker aliased entrance wiring', () => {
   it('wires two shuffled owl flights onto the same overworld destination', async () => {
     const tracker = new OoTMMTracker();
     await tracker.initialize({
@@ -45,5 +45,47 @@ describe('tracker aliased one-way entrance wiring', () => {
     const dmtSummitExits = areas['OOT Death Mountain Summit']?.exits ?? {};
     expect('OOT Kakariko Rooftop' in dmtSummitExits).toBe(false);
     expect('OOT Death Mountain Crater Bottom' in dmtSummitExits).toBe(true);
+  }, 30000);
+
+  it('wires a wallmaster to an eligible interior exit destination', async () => {
+    const tracker = new OoTMMTracker();
+    await tracker.initialize({
+      games: 'ootmm',
+      erIndoors: 'full',
+      erWallmasters: 'full',
+      plando: {
+        entrances: {
+          MM_WALLMASTER_DAMPE: 'MM_CLOCK_TOWN_EAST_FROM_STOCK_POT_INN_ROOF',
+        },
+      },
+    } as Parameters<OoTMMTracker['initialize']>[0]);
+
+    const worlds = (tracker as unknown as { worlds: WorldWithAreas[] }).worlds;
+    const wallmasterExits =
+      worlds[0].areas['MM Beneath The Graveyard Night 3 Wallmaster']?.exits ??
+      {};
+
+    expect('MM Stock Pot Inn Roof' in wallmasterExits).toBe(true);
+  }, 30000);
+
+  it('wires a one-way entrance to an eligible interior exit destination', async () => {
+    const tracker = new OoTMMTracker();
+    await tracker.initialize({
+      games: 'ootmm',
+      erIndoors: 'full',
+      erOneWays: 'full',
+      erOneWaysAnywhere: true,
+      erOneWaysOwls: true,
+      plando: {
+        entrances: {
+          OOT_FIELD_OWL: 'MM_CLOCK_TOWN_EAST_FROM_STOCK_POT_INN_ROOF',
+        },
+      },
+    } as Parameters<OoTMMTracker['initialize']>[0]);
+
+    const worlds = (tracker as unknown as { worlds: WorldWithAreas[] }).worlds;
+    const owlExits = worlds[0].areas['OOT Lake Hylia Owl Flight']?.exits ?? {};
+
+    expect('MM Stock Pot Inn Roof' in owlExits).toBe(true);
   }, 30000);
 });

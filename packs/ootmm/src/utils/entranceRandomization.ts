@@ -681,13 +681,28 @@ export function isTrackedDestinationAllowedForSource(
   if (sourcePool === 'wallmaster') {
     const dstData = ENTRANCES_RAW[destinationKey];
     if (!dstData) return false;
-    return isTrackedWallmasterDestination(dstData.type, settings);
+    if (isTrackedWallmasterDestination(dstData.type, settings)) return true;
+
+    // Wallmaster destinations also include the exit-side key for each
+    // eligible entrance. Its type is an exit type (for example
+    // `indoors-exit`), so validate the paired entrance type instead.
+    const reverseKey = getEdgeReverse(destinationKey);
+    const reverseData = reverseKey ? ENTRANCES_RAW[reverseKey] : null;
+    return Boolean(
+      reverseData && isTrackedWallmasterDestination(reverseData.type, settings),
+    );
   }
 
   if (sourcePool === 'one-way') {
     const dstData = ENTRANCES_RAW[destinationKey];
     if (!dstData) return false;
-    return isTrackedOneWayDestination(dstData.type, settings);
+    if (isTrackedOneWayDestination(dstData.type, settings)) return true;
+
+    const reverseKey = getEdgeReverse(destinationKey);
+    const reverseData = reverseKey ? ENTRANCES_RAW[reverseKey] : null;
+    return Boolean(
+      reverseData && isTrackedOneWayDestination(reverseData.type, settings),
+    );
   }
 
   if (sourcePool !== 'spawn') {
