@@ -2869,6 +2869,11 @@ export class OoTMMTracker implements TrackerPack {
     const originalExploreArea = tracePathfinder.exploreArea?.bind(
       this.pathfinder,
     );
+    // Keys of the exploreArea calls currently on the stack. Age swaps re-enter
+    // the same area in the other age *before* the source area is registered in
+    // the pathfinder state, so the parent can only be resolved from the active
+    // stack entry (see resolveTraceParentKey).
+    const exploreStack: string[] = [];
 
     if (originalExploreArea) {
       tracePathfinder.exploreArea = (
@@ -2884,6 +2889,7 @@ export class OoTMMTracker implements TrackerPack {
             areaKey,
             this.resolveTraceParentKey(
               tracePathfinder.state,
+              exploreStack,
               worldId,
               age,
               areaName,
@@ -2891,13 +2897,18 @@ export class OoTMMTracker implements TrackerPack {
             ),
           );
         }
-        originalExploreArea(
-          worldId,
-          age,
-          areaName,
-          sourceAreaData,
-          fromAreaName,
-        );
+        exploreStack.push(areaKey);
+        try {
+          originalExploreArea(
+            worldId,
+            age,
+            areaName,
+            sourceAreaData,
+            fromAreaName,
+          );
+        } finally {
+          exploreStack.pop();
+        }
       };
     }
 
@@ -3000,6 +3011,7 @@ export class OoTMMTracker implements TrackerPack {
 
   private resolveTraceParentKey(
     state: PathfinderState | undefined,
+    exploreStack: string[],
     worldId: number,
     age: number,
     areaName: string,
@@ -3011,6 +3023,21 @@ export class OoTMMTracker implements TrackerPack {
         age,
         areaName: fromAreaName,
       });
+    }
+
+    // An age swap re-enters the same area before the source area has been
+    // recorded in the pathfinder state. The source call is still on the stack,
+    // so use it as the parent instead of consulting the (stale) state.
+    const activeKey = exploreStack[exploreStack.length - 1];
+    const currentKey = this.makeTraceAreaKey({ worldId, age, areaName });
+    const activeNode = activeKey ? this.parseTraceAreaKey(activeKey) : null;
+    if (
+      activeKey !== currentKey &&
+      activeNode &&
+      activeNode.worldId === worldId &&
+      activeNode.areaName === areaName
+    ) {
+      return activeKey;
     }
 
     const otherAge = age === 0 ? 1 : 0;
