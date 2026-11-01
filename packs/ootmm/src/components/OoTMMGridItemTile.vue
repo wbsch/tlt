@@ -33,17 +33,56 @@ if (!injectedContext) {
 const context = injectedContext;
 
 const gridItemRef = ref<HTMLElement | null>(null);
+const submenuPanelRef = ref<HTMLElement | null>(null);
 
 const PANEL_MAX_HEIGHT = 480;
 const PANEL_MIN_HEIGHT = 160;
+const PANEL_ESTIMATED_WIDTH = 360;
 const PANEL_VIEWPORT_MARGIN = 8;
 
-const viewport = ref({ height: window.innerHeight });
+const viewport = ref({ width: window.innerWidth, height: window.innerHeight });
+const submenuPanelSize = ref({ width: 0, height: 0 });
 
 let viewportTracking = false;
+let panelSizeTracking: ResizeObserver | null = null;
 
 function syncViewport(): void {
-  viewport.value = { height: window.innerHeight };
+  viewport.value = { width: window.innerWidth, height: window.innerHeight };
+}
+
+function syncSubmenuPanelSize(): void {
+  const panel = submenuPanelRef.value;
+  if (!panel) return;
+  const rect = panel.getBoundingClientRect();
+  const current = submenuPanelSize.value;
+  // ``scrollHeight`` is the content height even when ``max-height`` clips the
+  // panel, so placement can still pick the side where the panel fits.
+  const height = Math.max(rect.height, panel.scrollHeight);
+  if (
+    rect.width > 0 &&
+    height > 0 &&
+    (Math.abs(rect.width - current.width) > 0.5 ||
+      Math.abs(height - current.height) > 0.5)
+  ) {
+    submenuPanelSize.value = { width: rect.width, height };
+  }
+}
+
+function startPanelSizeTracking(): void {
+  stopPanelSizeTracking();
+  const panel = submenuPanelRef.value;
+  if (!panel) return;
+  syncSubmenuPanelSize();
+  if (typeof ResizeObserver === 'undefined') return;
+  panelSizeTracking = new ResizeObserver(syncSubmenuPanelSize);
+  panelSizeTracking.observe(panel);
+}
+
+function stopPanelSizeTracking(): void {
+  if (panelSizeTracking !== null) {
+    panelSizeTracking.disconnect();
+    panelSizeTracking = null;
+  }
 }
 
 function startViewportTracking(): void {
@@ -89,31 +128,53 @@ const submenuPanelStyle = computed(() => {
   }
   // ``viewport`` is refreshed on scroll/resize so the fixed panel stays anchored
   // to its tile and never grows past the visible viewport.
+  const viewportWidth = viewport.value.width;
   const viewportHeight = viewport.value.height;
   const rect = gridItemRef.value.getBoundingClientRect();
   const spaceBelow = viewportHeight - rect.bottom - PANEL_VIEWPORT_MARGIN * 2;
   const spaceAbove = rect.top - PANEL_VIEWPORT_MARGIN * 2;
-  const placeBelow = spaceBelow >= spaceAbove;
+  // Prefer the side where the panel actually fits; the measured height is only
+  // known once the panel has rendered, so use the min height as a fallback.
+  const measuredHeight =
+    submenuPanelSize.value.height > 0
+      ? submenuPanelSize.value.height
+      : PANEL_MIN_HEIGHT;
+  const placeBelow = spaceBelow >= measuredHeight || spaceBelow >= spaceAbove;
   const available = Math.max(placeBelow ? spaceBelow : spaceAbove, 0);
   const maxHeight = Math.min(
     PANEL_MAX_HEIGHT,
     viewportHeight - PANEL_VIEWPORT_MARGIN * 2,
     Math.max(available, PANEL_MIN_HEIGHT),
   );
+  // Anchor the panel to the tile horizontally. Until the panel has been
+  // measured (first frame after opening), fall back to its min-width so it
+  // still stays inside the viewport.
+  const panelWidth = Math.min(
+    submenuPanelSize.value.width > 0
+      ? submenuPanelSize.value.width
+      : PANEL_ESTIMATED_WIDTH,
+    Math.max(viewportWidth - PANEL_VIEWPORT_MARGIN * 2, 0),
+  );
+  const maxLeft = Math.max(
+    PANEL_VIEWPORT_MARGIN,
+    viewportWidth - panelWidth - PANEL_VIEWPORT_MARGIN,
+  );
+  const left = Math.min(Math.max(rect.left, PANEL_VIEWPORT_MARGIN), maxLeft);
   const style: Record<string, string> = {
     position: 'fixed',
-    left: '16px',
+    left: `${Math.round(left)}px`,
     right: 'auto',
     zIndex: '9999',
     maxHeight: `${Math.round(maxHeight)}px`,
   };
+  const panelHeight = Math.min(measuredHeight, maxHeight);
   const maxTop = Math.max(
     PANEL_VIEWPORT_MARGIN,
-    viewportHeight - maxHeight - PANEL_VIEWPORT_MARGIN,
+    viewportHeight - panelHeight - PANEL_VIEWPORT_MARGIN,
   );
   const preferredTop = placeBelow
     ? rect.bottom + PANEL_VIEWPORT_MARGIN
-    : rect.top - PANEL_VIEWPORT_MARGIN - maxHeight;
+    : rect.top - PANEL_VIEWPORT_MARGIN - panelHeight;
   style.top = `${Math.round(
     Math.min(Math.max(preferredTop, PANEL_VIEWPORT_MARGIN), maxTop),
   )}px`;
@@ -217,15 +278,19 @@ watch(
     if (open) {
       syncViewport();
       startViewportTracking();
+      startPanelSizeTracking();
     } else {
       stopViewportTracking();
+      stopPanelSizeTracking();
+      submenuPanelSize.value = { width: 0, height: 0 };
     }
   },
-  { immediate: true },
+  { immediate: true, flush: 'post' },
 );
 
 onBeforeUnmount(() => {
   stopViewportTracking();
+  stopPanelSizeTracking();
   stopSuppressionReset();
   clearLongPressState();
 });
@@ -435,6 +500,7 @@ onBeforeUnmount(() => {
           context.isSubmenuItem(props.itemId) &&
           context.isSubmenuOpen(props.itemId)
         "
+        ref="submenuPanelRef"
         class="submenu-panel"
         :class="{ 'submenu-panel--compact': isCompactSubmenu }"
         :style="submenuPanelStyle"
