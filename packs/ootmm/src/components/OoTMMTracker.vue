@@ -1397,8 +1397,14 @@ function queueAutotrackerLocationToasts(
     }
 
     const locationInfo = locationInfoById.value.get(locationId);
+    // Unknown here means "not part of this seed/settings". The store drops
+    // such ids from external deltas, so the check is never actually collected;
+    // announcing it would toast the same phantom check on every report (e.g.
+    // the Diving Game rupee collectibles with the shuffle disabled).
+    if (!locationInfo) {
+      continue;
+    }
     if (
-      locationInfo &&
       !matchesLocationBaseVisibility(
         locationInfo,
         locationVisibilityFilters.value,
