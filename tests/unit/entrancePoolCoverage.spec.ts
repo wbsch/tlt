@@ -1,7 +1,12 @@
 import { readFileSync, readdirSync } from 'node:fs';
 import path from 'node:path';
 import { describe, expect, it } from 'vitest';
-import { getActiveEntranceKeys } from '../../packs/ootmm/src/utils/entranceRandomization';
+import {
+  getActiveEntranceKeys,
+  isTrackedOneWayDestination,
+  isTrackedSpawnDestination,
+  isTrackedWallmasterDestination,
+} from '../../packs/ootmm/src/utils/entranceRandomization';
 
 type EntranceData = {
   game: 'oot' | 'mm';
@@ -147,5 +152,164 @@ describe('entrance pool coverage', () => {
       .filter((entry) => entry !== null);
 
     expect(missingRefs).toEqual([]);
+  });
+
+  it('only adds dungeon, dungeon-minor, and dungeon-sh unconditionally to wallmaster destinations', () => {
+    const settings = { games: 'ootmm', erWallmasters: 'full' };
+
+    for (const type of ['dungeon', 'dungeon-minor', 'dungeon-sh']) {
+      expect(isTrackedWallmasterDestination(type, settings)).toBe(true);
+    }
+    for (const type of [
+      'dungeon-ganon',
+      'dungeon-ganon-tower',
+      'dungeon-pf',
+      'dungeon-btw',
+      'dungeon-acoi',
+      'dungeon-ss',
+      'dungeon-ctr',
+    ]) {
+      expect(isTrackedWallmasterDestination(type, settings)).toBe(false);
+    }
+  });
+
+  it('gates non-unconditional dungeon types for wallmasters through erDungeons sub-settings', () => {
+    const base = {
+      games: 'ootmm',
+      erWallmasters: 'full',
+      erDungeons: 'full',
+    };
+
+    expect(
+      isTrackedWallmasterDestination('dungeon-ganon', {
+        ...base,
+        erMajorDungeons: true,
+      }),
+    ).toBe(false);
+    expect(
+      isTrackedWallmasterDestination('dungeon-ganon', {
+        ...base,
+        erGanonCastle: true,
+      }),
+    ).toBe(true);
+    expect(
+      isTrackedWallmasterDestination('dungeon-btw', {
+        ...base,
+        erBeneathWell: true,
+      }),
+    ).toBe(true);
+  });
+
+  it('restricts wallmaster interior destinations to enabled interior sub-pools', () => {
+    const settings = {
+      games: 'ootmm',
+      erWallmasters: 'full',
+      erIndoors: 'full',
+      erIndoorsMajor: true,
+    };
+
+    expect(isTrackedWallmasterDestination('indoors', settings)).toBe(true);
+    expect(isTrackedWallmasterDestination('indoors-extra', settings)).toBe(
+      false,
+    );
+    expect(isTrackedWallmasterDestination('indoors-pf', settings)).toBe(false);
+  });
+
+  it('never offers telescope interiors as wallmaster destinations', () => {
+    const settings = {
+      games: 'ootmm',
+      erWallmasters: 'full',
+      erIndoors: 'full',
+      erIndoorsMajor: true,
+      erIndoorsTelescopes: true,
+    };
+
+    expect(isTrackedWallmasterDestination('indoors-telescope', settings)).toBe(
+      false,
+    );
+  });
+
+  it('omits one-way types from wallmaster destinations under erOneWaysAnywhere', () => {
+    expect(
+      isTrackedWallmasterDestination('one-way', {
+        games: 'ootmm',
+        erWallmasters: 'full',
+        erOneWays: 'full',
+        erOneWaysMajor: true,
+      }),
+    ).toBe(true);
+    expect(
+      isTrackedWallmasterDestination('one-way', {
+        games: 'ootmm',
+        erWallmasters: 'full',
+        erOneWays: 'full',
+        erOneWaysMajor: true,
+        erOneWaysAnywhere: true,
+      }),
+    ).toBe(false);
+  });
+
+  it('removes telescope interiors from spawn destinations', () => {
+    const settings = {
+      games: 'ootmm',
+      erSpawns: 'both',
+      erIndoors: 'full',
+      erIndoorsMajor: true,
+      erIndoorsTelescopes: true,
+    };
+
+    expect(
+      isTrackedSpawnDestination(
+        'MM_TERMINA_FIELD_TELESCOPE',
+        'indoors-telescope',
+        settings,
+      ),
+    ).toBe(false);
+    expect(
+      isTrackedSpawnDestination('OOT_HOUSE_MIDO', 'indoors', settings),
+    ).toBe(true);
+  });
+
+  it('only adds dungeon, dungeon-minor, and dungeon-sh unconditionally to one-way-anywhere destinations', () => {
+    const settings = {
+      games: 'ootmm',
+      erOneWays: 'full',
+      erOneWaysAnywhere: true,
+      erOneWaysMajor: true,
+    };
+
+    for (const type of ['dungeon', 'dungeon-minor', 'dungeon-sh']) {
+      expect(isTrackedOneWayDestination(type, settings)).toBe(true);
+    }
+    for (const type of [
+      'dungeon-ganon',
+      'dungeon-ganon-tower',
+      'dungeon-pf',
+      'dungeon-btw',
+      'dungeon-acoi',
+      'dungeon-ss',
+      'dungeon-ctr',
+    ]) {
+      expect(isTrackedOneWayDestination(type, settings)).toBe(false);
+    }
+  });
+
+  it('restricts one-way-anywhere interior destinations to enabled interior sub-pools', () => {
+    const settings = {
+      games: 'ootmm',
+      erOneWays: 'full',
+      erOneWaysAnywhere: true,
+      erOneWaysMajor: true,
+      erIndoors: 'full',
+      erIndoorsMajor: true,
+      erIndoorsTelescopes: true,
+    };
+
+    expect(isTrackedOneWayDestination('indoors', settings)).toBe(true);
+    expect(isTrackedOneWayDestination('indoors-telescope', settings)).toBe(
+      true,
+    );
+    expect(isTrackedOneWayDestination('indoors-extra', settings)).toBe(false);
+    expect(isTrackedOneWayDestination('indoors-pf', settings)).toBe(false);
   });
 });

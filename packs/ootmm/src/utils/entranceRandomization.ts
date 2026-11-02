@@ -319,61 +319,84 @@ function getEnabledOneWaySourceTypes(
   return types;
 }
 
-function getSpawnDestinationTypes(
+/**
+ * Mirrors OoTMM's `poolsTypesDst()`: the union of the declared destination
+ * types of every active base pool from `makePoolsSimple()`.
+ *
+ * SPAWNS, WALLMASTERS and ONE_WAYS-anywhere derive their destination sets
+ * from this. The MIXED merge does not change the union, so it does not need
+ * to be modelled here.
+ */
+function getPoolsDestinationTypes(
   settings: Record<string, unknown>,
 ): Set<string> {
   const types = new Set<string>();
 
-  if (settings?.erDungeons && settings?.erDungeons !== 'none') {
+  if (isPoolEnabled(settings?.erBoss)) {
+    types.add('boss');
+  }
+
+  if (isPoolEnabled(settings?.erDungeons)) {
     for (const type of getEnabledDungeonTypes(settings)) {
       types.add(type);
     }
   }
 
-  if (settings?.erGrottos && settings?.erGrottos !== 'none') {
+  if (isPoolEnabled(settings?.erGrottos)) {
     for (const type of GROTTO_TYPES) {
       types.add(type);
     }
   }
 
-  if (settings?.erRegions && settings?.erRegions !== 'none') {
+  if (isPoolEnabled(settings?.erRegions)) {
     for (const type of getEnabledRegionSources(settings)) {
       types.add(type);
     }
   }
 
-  if (settings?.erIndoors && settings?.erIndoors !== 'none') {
-    const enabledInteriorSources = getEnabledInteriorSources(settings);
-    for (const type of enabledInteriorSources.types) {
-      types.add(type);
-    }
-  }
-
-  if (settings?.erWarps && settings?.erWarps !== 'none') {
-    for (const type of getEnabledWarpSources(settings)) {
-      types.add(type);
-    }
-  }
-
-  if (settings?.erOverworld && settings?.erOverworld !== 'none') {
+  if (isPoolEnabled(settings?.erOverworld)) {
     for (const type of getEnabledOverworldSources(settings)) {
       types.add(type);
     }
   }
 
-  // OoTMM's spawn pool includes one-way types (from poolOneWays) when
-  // erOneWays is enabled but NOT erOneWaysAnywhere (matching the solver's
-  // makePoolsSimple exclusion when erOneWaysAnywhere is true).
-  const erOneWays = settings?.erOneWays;
-  const erOneWaysAnywhere = settings?.erOneWaysAnywhere;
-  if (erOneWays && erOneWays !== 'none' && !erOneWaysAnywhere) {
+  if (isPoolEnabled(settings?.erIndoors)) {
+    const enabledInteriorSources = getEnabledInteriorSources(settings);
+    for (const type of enabledInteriorSources.types) {
+      types.add(type);
+    }
+    if (settings?.erIndoorsGameLinks) {
+      types.add('indoors-link');
+    }
+  }
+
+  if (isPoolEnabled(settings?.erWarps)) {
+    for (const type of getEnabledWarpSources(settings)) {
+      types.add(type);
+    }
+  }
+
+  // `makePoolsSimple()` only creates ONE_WAYS when erOneWaysAnywhere is off;
+  // anywhere mode is built separately by `makePools()`.
+  if (isPoolEnabled(settings?.erOneWays) && !settings?.erOneWaysAnywhere) {
     for (const type of getEnabledOneWaySourceTypes(settings)) {
       types.add(type);
     }
   }
 
-  // OoTMM's spawn pool always includes these destination categories even when
-  // their own settings are otherwise off.
+  return types;
+}
+
+function getSpawnDestinationTypes(
+  settings: Record<string, unknown>,
+): Set<string> {
+  const types = getPoolsDestinationTypes(settings);
+
+  // OoTMM's `poolSpawns()` removes boss and telescope interiors and adds
+  // these categories unconditionally.
+  types.delete('boss');
+  types.delete('indoors-telescope');
+  types.add('spawn');
   types.add('indoors');
   types.add('one-way-song');
   types.add('region');
@@ -543,6 +566,11 @@ function getTrackedPoolMode(
   settings: Record<string, unknown>,
 ): string {
   return String(settings?.[TRACKED_POOL_MODE_SETTING[pool]] ?? 'none');
+}
+
+/** A pool exists when its mode setting is not `none` (OoTMM's pool gates). */
+function isPoolEnabled(mode: unknown): boolean {
+  return typeof mode === 'string' && mode !== 'none';
 }
 
 function isTrackedPoolMixed(
@@ -750,72 +778,29 @@ function hasSetSettingValue(setting: unknown, value: string): boolean {
   return Array.isArray(values) && values.includes(value);
 }
 
+function getWallmasterDestinationTypes(
+  settings: Record<string, unknown>,
+): Set<string> {
+  const types = getPoolsDestinationTypes(settings);
+
+  // `poolWallmasters()` adds these dungeon types unconditionally, removes
+  // telescope interiors, and re-adds boss when boss shuffle is active.
+  types.add('dungeon');
+  types.add('dungeon-minor');
+  types.add('dungeon-sh');
+  types.delete('indoors-telescope');
+  if (isPoolEnabled(settings?.erBoss)) {
+    types.add('boss');
+  }
+
+  return types;
+}
+
 export function isTrackedWallmasterDestination(
   type: string,
   settings?: Record<string, unknown>,
 ): boolean {
-  // Dungeon types are ALWAYS included in Wallmaster destinations
-  // (matching OoTMM's poolWallmasters() unconditional addition)
-  if (DUNGEON_TYPES.has(type)) return true;
-
-  // Without settings (e.g., during plando import), allow all major types
-  if (!settings) {
-    if (BOSS_TYPES.has(type)) return true;
-    if (REGION_TYPES.has(type) || type === 'region-exit') return true;
-    if (GROTTO_TYPES.has(type)) return true;
-    if (INTERIOR_TYPES.has(type)) return true;
-    if (OVERWORLD_TYPES.has(type)) return true;
-    if (isOneWayTypeEnabled(type, settings)) return true;
-    return false;
-  }
-
-  // With settings, Wallmaster destinations match poolsTypesDst()
-  // (all enabled ER pool destination types), plus unconditional boss check
-  if (settings?.erBoss && settings?.erBoss !== 'none' && BOSS_TYPES.has(type))
-    return true;
-
-  if (
-    settings?.erRegions &&
-    settings?.erRegions !== 'none' &&
-    (REGION_TYPES.has(type) || type === 'region-exit')
-  )
-    return true;
-
-  if (
-    settings?.erGrottos &&
-    settings?.erGrottos !== 'none' &&
-    GROTTO_TYPES.has(type)
-  )
-    return true;
-
-  if (
-    settings?.erIndoors &&
-    settings?.erIndoors !== 'none' &&
-    INTERIOR_TYPES.has(type)
-  )
-    return true;
-
-  if (settings?.erOverworld && settings?.erOverworld !== 'none') {
-    // OoTMM's poolOverworld() dst includes the major-region edges as well,
-    // so overworld shuffle also makes them valid wallmaster destinations.
-    if (getEnabledOverworldSources(settings).has(type)) return true;
-  }
-
-  if (
-    settings?.erWarps &&
-    settings?.erWarps !== 'none' &&
-    getEnabledWarpSources(settings).has(type)
-  )
-    return true;
-
-  if (
-    settings?.erOneWays &&
-    settings?.erOneWays !== 'none' &&
-    isOneWayTypeEnabled(type, settings)
-  )
-    return true;
-
-  return false;
+  return getWallmasterDestinationTypes(settings ?? {}).has(type);
 }
 
 function isOneWayTypeEnabled(
@@ -834,46 +819,30 @@ export function isTrackedOneWayDestination(
   type: string,
   settings?: Record<string, unknown>,
 ): boolean {
+  const effectiveSettings = settings ?? {};
+
   // Standard mode: one-ways shuffle among themselves
-  if (!settings?.erOneWaysAnywhere) {
-    return isOneWayTypeEnabled(type, settings);
+  if (!effectiveSettings.erOneWaysAnywhere) {
+    return isOneWayTypeEnabled(type, effectiveSettings);
   }
 
-  // Anywhere mode: one-ways can target ALL shuffled destination types
-  // (matches OoTMM's poolOneWaysAnywhere which uses poolsTypesDst()).
-  // Each pool's types are only included if that pool's ER setting is
-  // active (not 'none').  Dungeon types are always included regardless
-  // (matching OoTMM's unconditional poolOneWaysAnywhere addition of
-  // dungeon / dungeon-minor / dungeon-sh).  Boss is gated behind
-  // erBoss !== 'none', matching the OoTMM solver.
-  if (isOneWayTypeEnabled(type, settings)) return true;
-  if (DUNGEON_TYPES.has(type)) return true;
-  if (settings?.erBoss && settings?.erBoss !== 'none' && BOSS_TYPES.has(type))
-    return true;
-  if (
-    settings?.erRegions &&
-    settings?.erRegions !== 'none' &&
-    (REGION_TYPES.has(type) || type === 'region-exit')
-  )
-    return true;
-  if (
-    settings?.erGrottos &&
-    settings?.erGrottos !== 'none' &&
-    GROTTO_TYPES.has(type)
-  )
-    return true;
-  if (
-    settings?.erIndoors &&
-    settings?.erIndoors !== 'none' &&
-    INTERIOR_TYPES.has(type)
-  )
-    return true;
-  if (settings?.erOverworld && settings?.erOverworld !== 'none') {
-    // OoTMM's poolOneWaysAnywhere() dst comes from poolsTypesDst(), which
-    // includes the overworld pool's major-region edges when erOverworld is on.
-    if (getEnabledOverworldSources(settings).has(type)) return true;
+  // Anywhere mode mirrors `poolOneWaysAnywhere()`: poolsTypesDst(), plus
+  // dungeon / dungeon-minor / dungeon-sh, boss when boss shuffle is active,
+  // and the enabled one-way subtypes themselves.
+  const types = getPoolsDestinationTypes(effectiveSettings);
+  types.add('dungeon');
+  types.add('dungeon-minor');
+  types.add('dungeon-sh');
+  if (isPoolEnabled(effectiveSettings.erBoss)) {
+    types.add('boss');
   }
-  return false;
+  if (isPoolEnabled(effectiveSettings.erOneWays)) {
+    for (const oneWayType of getEnabledOneWaySourceTypes(effectiveSettings)) {
+      types.add(oneWayType);
+    }
+  }
+
+  return types.has(type);
 }
 
 export function hasDekuPalaceJpLayout(

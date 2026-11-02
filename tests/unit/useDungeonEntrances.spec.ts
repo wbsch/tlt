@@ -1096,6 +1096,37 @@ describe('useDungeonEntrances', () => {
     ).toBe(true);
   });
 
+  it('includes warp-pool destinations in one-way destination options when erOneWaysAnywhere and erWarps are enabled', () => {
+    const sessionStore = useOoTMMSessionStore();
+    useOoTMMUiStore();
+
+    sessionStore.trackerSettings = {
+      games: 'ootmm',
+      erOneWays: 'full',
+      erOneWaysAnywhere: true,
+      erOneWaysOwls: true,
+      erWarps: 'full',
+    };
+
+    const entrances = useDungeonEntrances();
+    const owlFlight = entrances.activeEntrances.value.find(
+      (entry) => entry.key === 'OOT_FIELD_OWL',
+    );
+    expect(owlFlight).toBeTruthy();
+
+    const options = entrances.destinationOptionsForEntrance(owlFlight!);
+
+    // MM owl statues are `one-way-statue` destinations from the warp pool, so
+    // mixed (anywhere) one-way pools must offer them to OoT owl flights.
+    expect(
+      options.some(
+        (option) =>
+          option.value === 'MM_WARP_OWL_IKANA_CANYON' &&
+          option.label === 'Owl Ikana',
+      ),
+    ).toBe(true);
+  });
+
   it('includes one-way-type entrances in spawn destinations when erOneWays is enabled without erOneWaysAnywhere', () => {
     const sessionStore = useOoTMMSessionStore();
     useOoTMMUiStore();
@@ -1280,5 +1311,74 @@ describe('useDungeonEntrances', () => {
     expect(
       options.some((option) => option.value === 'OOT_WARP_SONG_LAKE'),
     ).toBe(true);
+  });
+
+  it('restricts wallmaster destinations to the active pool types', () => {
+    const sessionStore = useOoTMMSessionStore();
+    useOoTMMUiStore();
+
+    sessionStore.trackerSettings = {
+      games: 'ootmm',
+      erWallmasters: 'full',
+      erIndoors: 'full',
+      erIndoorsMajor: true,
+      erIndoorsTelescopes: true,
+    };
+
+    const entrances = useDungeonEntrances();
+    const wallmaster = entrances.activeEntrances.value.find(
+      (entry) => entry.pool === 'wallmaster',
+    );
+    expect(wallmaster).toBeTruthy();
+
+    const options = entrances.destinationOptionsForEntrance(wallmaster!);
+    const values = new Set(options.map((option) => option.value));
+
+    // Unconditional dungeon / dungeon-minor / dungeon-sh types stay valid.
+    expect(values.has('OOT_DEKU_TREE')).toBe(true);
+    expect(values.has('OOT_ICE_CAVERN')).toBe(true);
+    expect(values.has('MM_SPIDER_HOUSE_SWAMP')).toBe(true);
+
+    // Non-enabled dungeon subtypes must not be offered.
+    expect(values.has('OOT_GANON_CASTLE')).toBe(false);
+    expect(values.has('MM_BENEATH_THE_WELL')).toBe(false);
+
+    // Only enabled interior sub-pools; telescope is always excluded.
+    expect(values.has('OOT_HOUSE_MIDO')).toBe(true);
+    expect(values.has('OOT_HOUSE_LINK')).toBe(false);
+    expect(values.has('MM_ASTRAL_OBSERVATORY_FROM_TELESCOPE')).toBe(false);
+  });
+
+  it('restricts one-way-anywhere destinations to the active pool types', () => {
+    const sessionStore = useOoTMMSessionStore();
+    useOoTMMUiStore();
+
+    sessionStore.trackerSettings = {
+      games: 'ootmm',
+      erOneWays: 'full',
+      erOneWaysAnywhere: true,
+      erOneWaysMajor: true,
+      erIndoors: 'full',
+      erIndoorsMajor: true,
+      erDungeons: 'none',
+    };
+
+    const entrances = useDungeonEntrances();
+    const oneWay = entrances.activeEntrances.value.find(
+      (entry) => entry.key === 'OOT_LAKE_HYLIA_FROM_VALLEY',
+    );
+    expect(oneWay).toBeTruthy();
+
+    const options = entrances.destinationOptionsForEntrance(oneWay!);
+    const values = new Set(options.map((option) => option.value));
+
+    // Unconditional dungeon / dungeon-minor / dungeon-sh types stay valid.
+    expect(values.has('OOT_DEKU_TREE')).toBe(true);
+
+    // Non-enabled dungeon subtypes and interior subtypes must not appear.
+    expect(values.has('OOT_GANON_CASTLE')).toBe(false);
+    expect(values.has('MM_BENEATH_THE_WELL')).toBe(false);
+    expect(values.has('OOT_HOUSE_MIDO')).toBe(true);
+    expect(values.has('OOT_HOUSE_LINK')).toBe(false);
   });
 });
