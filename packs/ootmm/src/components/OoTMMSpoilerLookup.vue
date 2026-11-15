@@ -1,9 +1,10 @@
 <script setup lang="ts">
 import { useOoTMMSessionStore } from '../stores/ootmmSession';
 import { computed, ref } from 'vue';
-import { ITEM_DATABASE } from '../data/items';
+import { getItemName, ITEM_DATABASE } from '../data/items';
 import { GI_ITEM_LIST } from '../data/giItems';
 import { getRegionDisplayName } from '../data/regionNames';
+import { createItemDisplayNameResolver } from '../utils/hintItemNames';
 import SpoilerSearchCombobox from './SpoilerSearchCombobox.vue';
 import type { ResolvedSpoilerPlacement } from '../types';
 
@@ -62,13 +63,38 @@ const itemIconById = computed(() => {
   return map;
 });
 
+/**
+ * Base display name for an item, preferring the tracker's item database and
+ * falling back to the spoiler log's own name for items the database lacks.
+ */
+function baseItemName(itemId: string): string {
+  return itemNameById.value.get(itemId) ?? getItemName(itemId);
+}
+
+/**
+ * Item IDs used to decide whether a base name is ambiguous. The hint tracker's
+ * item pool is included so shared names are labelled consistently between both
+ * panels, and the seed's own placements are always included so items outside
+ * the grid pool (e.g. ammo like Bomb) are still disambiguated.
+ */
+const lookupItemIdScope = computed(() => {
+  const ids = new Set(seedItemIds.value);
+  for (const id of sessionStore.availableItemIdSet) ids.add(id);
+  return ids;
+});
+
+/** Resolver that prefixes ambiguous item names with their game. */
+const resolveItemName = computed(() =>
+  createItemDisplayNameResolver(lookupItemIdScope.value, baseItemName),
+);
+
 // ── Option lists (seed-only) ──
 
 const itemOptions = computed(() =>
   Array.from(seedItemIds.value)
     .map((id) => ({
       value: id,
-      label: itemNameById.value.get(id) ?? id,
+      label: resolveItemName.value(id),
     }))
     .sort((a, b) => a.label.localeCompare(b.label)),
 );
@@ -105,7 +131,7 @@ const foundItemId = computed(() => {
 
 const foundItemName = computed(() => {
   if (!foundItemId.value) return null;
-  return itemNameById.value.get(foundItemId.value) ?? foundItemId.value;
+  return resolveItemName.value(foundItemId.value);
 });
 
 const foundItemIcon = computed(() => {
@@ -115,7 +141,7 @@ const foundItemIcon = computed(() => {
 
 const selectedItemName = computed(() => {
   if (!selectedItemId.value) return null;
-  return itemNameById.value.get(selectedItemId.value) ?? selectedItemId.value;
+  return resolveItemName.value(selectedItemId.value);
 });
 
 const selectedItemIcon = computed(() => {
@@ -242,7 +268,7 @@ function switchMode(newMode: LookupMode) {
       <tbody>
         <tr v-for="(p, i) in sessionStore.spoilerPlacements" :key="i">
           <td>{{ p.locationName }} ({{ p.locationId }})</td>
-          <td>{{ p.itemName }} ({{ p.itemId }})</td>
+          <td>{{ resolveItemName(p.itemId) }} ({{ p.itemId }})</td>
           <td>{{ regionDisplayFor(p.locationId) ?? '—' }}</td>
         </tr>
       </tbody>

@@ -153,17 +153,22 @@ export function getHintItemEntries(
  * base name is shared by more than one ID (e.g. OoT/MM/Shared variants of the
  * same item) are prefixed with their game ("OoT", "MM", "Shared") so they can
  * be told apart.
+ *
+ * `baseNameForId` overrides how the unprefixed name is derived, for callers
+ * whose display names may come from another source than the item database
+ * (e.g. a spoiler log's item name for unknown IDs).
  */
 export function createItemDisplayNameResolver(
   itemIds: Iterable<string>,
+  baseNameForId: (itemId: string) => string = getItemName,
 ): (itemId: string) => string {
   const nameCounts = new Map<string, number>();
   for (const id of itemIds) {
-    const name = getItemName(id);
+    const name = baseNameForId(id);
     nameCounts.set(name, (nameCounts.get(name) ?? 0) + 1);
   }
   return (itemId: string): string => {
-    const base = getItemName(itemId);
+    const base = baseNameForId(itemId);
     if ((nameCounts.get(base) ?? 0) <= 1) return base;
     const prefix = getItemGamePrefix(itemId);
     return prefix ? `${prefix} ${base}` : base;

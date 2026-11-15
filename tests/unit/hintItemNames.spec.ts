@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import {
+  createItemDisplayNameResolver,
   getHintItemEntries,
   getMoonTrialMaskItemIds,
 } from '../../packs/ootmm/src/utils/hintItemNames';
@@ -35,5 +36,47 @@ describe('getHintItemEntries', () => {
 
     expect(ids.has('OOT_SOUL_ENEMY_STALFOS')).toBe(true);
     expect(ids.has('OOT_BOW')).toBe(true);
+  });
+});
+
+describe('createItemDisplayNameResolver', () => {
+  it('prefixes names shared by OoT/MM variants with their game', () => {
+    const resolve = createItemDisplayNameResolver([
+      'OOT_SOUL_ENEMY_IRON_KNUCKLE',
+      'MM_SOUL_ENEMY_IRON_KNUCKLE',
+    ]);
+
+    expect(resolve('OOT_SOUL_ENEMY_IRON_KNUCKLE')).toBe(
+      'OoT Soul of Iron Knuckles',
+    );
+    expect(resolve('MM_SOUL_ENEMY_IRON_KNUCKLE')).toBe(
+      'MM Soul of Iron Knuckles',
+    );
+  });
+
+  it('leaves unambiguous names and shared variants untouched', () => {
+    const resolve = createItemDisplayNameResolver([
+      'OOT_BOW',
+      'SHARED_MASK_BUNNY',
+    ]);
+
+    expect(resolve('OOT_BOW')).toBe('Fairy Bow');
+    expect(resolve('SHARED_MASK_BUNNY')).toBe('Bunny Hood');
+  });
+
+  it('uses the custom base-name resolver for display and deduplication', () => {
+    const names = new Map([
+      ['OOT_BOW', 'Same Name'],
+      ['MM_BOW', 'Same Name'],
+      ['OOT_HOOKSHOT', 'Other Name'],
+    ]);
+    const resolve = createItemDisplayNameResolver(
+      names.keys(),
+      (id) => names.get(id) ?? id,
+    );
+
+    expect(resolve('OOT_BOW')).toBe('OoT Same Name');
+    expect(resolve('MM_BOW')).toBe('MM Same Name');
+    expect(resolve('OOT_HOOKSHOT')).toBe('Other Name');
   });
 });
