@@ -381,9 +381,12 @@ onBeforeUnmount(() => {
       :class="{ disabled: context.isItemIconDisabled(props.itemId) }"
       @error="context.handleOverlayError"
     />
-    <span v-if="context.shouldShowItemCount(props.itemId)" class="item-count">{{
-      context.getGridItemCount(props.itemId)
-    }}</span>
+    <span
+      v-if="context.shouldShowItemCount(props.itemId)"
+      class="item-count"
+      :class="{ 'item-count-maxed': context.isItemCountMaxed(props.itemId) }"
+      >{{ context.getGridItemCount(props.itemId) }}</span
+    >
     <div v-if="context.isSubmenuItem(props.itemId)" class="submenu-indicator">
       ▼
     </div>
@@ -785,6 +788,10 @@ onBeforeUnmount(() => {
   min-width: 14px;
   text-align: center;
   z-index: 3;
+}
+
+.item-count.item-count-maxed {
+  color: #2fb84f;
 }
 
 .submenu-indicator {

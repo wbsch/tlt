@@ -54,6 +54,7 @@ const iconSize = computed(() => `${20 * props.parentScale}px`);
       <span
         v-if="context.shouldShowItemCount(itemId)"
         class="item-list-count"
+        :class="{ 'item-list-count-maxed': context.isItemCountMaxed(itemId) }"
         >{{ context.getGridItemCount(itemId) }}</span
       >
     </div>
@@ -129,5 +130,9 @@ const iconSize = computed(() => `${20 * props.parentScale}px`);
   color: #fff;
   font-size: 10px;
   font-weight: 700;
+}
+
+.item-list-count.item-list-count-maxed {
+  color: #2fb84f;
 }
 </style>

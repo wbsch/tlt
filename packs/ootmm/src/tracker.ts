@@ -26,6 +26,7 @@ import * as DataMod from '@ootmm/data';
 
 import { ITEM_DATABASE } from './data/items';
 import { getGridItemAutoSelectItemIds } from './data/itemIcons';
+import { resolveOotMqDungeonCodes } from './autotracker/mqDungeons';
 import { LOCATION_CODE_CATALOG } from './data/locationCatalog';
 import { isValidHintRegion } from './data/regionNames';
 import {
@@ -247,6 +248,22 @@ const BOTTLE_ALWAYS_INCLUDED_ITEM_IDS_OOT_MM = new Set([
 ]);
 
 const BOTTLE_ALWAYS_INCLUDED_ITEM_IDS_SHARED = new Set(['SHARED_BOTTLE_EMPTY']);
+
+/**
+ * Small-key items whose amount depends on whether the dungeon uses the MQ
+ * layout.  The static `maxCount` values in `ITEM_DATABASE` describe the
+ * vanilla layout, so MQ dungeons need the count from the active world.
+ */
+const OOT_SMALL_KEY_MQ_DUNGEON_CODES: Record<string, string> = {
+  OOT_SMALL_KEY_FOREST: 'Forest',
+  OOT_SMALL_KEY_FIRE: 'Fire',
+  OOT_SMALL_KEY_WATER: 'Water',
+  OOT_SMALL_KEY_SPIRIT: 'Spirit',
+  OOT_SMALL_KEY_SHADOW: 'Shadow',
+  OOT_SMALL_KEY_BOTW: 'BotW',
+  OOT_SMALL_KEY_GTG: 'GTG',
+  OOT_SMALL_KEY_GANON: 'Ganon',
+};
 
 const CLOCK_ITEM_IDS = new Set([
   'MM_CLOCK1',
@@ -2416,6 +2433,14 @@ export class OoTMMTracker implements TrackerPack {
           item.id.includes('SMALL_KEY') && typeof item.maxCount === 'number',
       ).map((item): [string, number] => [item.id, item.maxCount as number]);
 
+      const mqDungeonCodes = new Set(
+        resolveOotMqDungeonCodes(
+          (this.settings as { mqDungeons?: unknown }).mqDungeons,
+        ),
+      );
+      const layoutSmallKeyCounts =
+        mqDungeonCodes.size > 0 ? this.countSmallKeysInActiveLayout() : null;
+
       for (const [itemId, maxCount] of defaultSmallKeyCounts) {
         if (itemId === 'OOT_SMALL_KEY_GF') {
           if (hideoutSetting === 'vanilla') counts.set(itemId, maxCount);
@@ -2426,7 +2451,14 @@ export class OoTMMTracker implements TrackerPack {
           continue;
         }
         if (itemId.startsWith('OOT_SMALL_KEY_')) {
-          if (ootSetting === 'vanilla') counts.set(itemId, maxCount);
+          if (ootSetting === 'vanilla') {
+            const mqDungeonCode = OOT_SMALL_KEY_MQ_DUNGEON_CODES[itemId];
+            const layoutCount =
+              mqDungeonCode && mqDungeonCodes.has(mqDungeonCode)
+                ? layoutSmallKeyCounts?.get(itemId)
+                : undefined;
+            counts.set(itemId, layoutCount ?? maxCount);
+          }
           continue;
         }
         if (itemId.startsWith('MM_SMALL_KEY_')) {
@@ -2459,6 +2491,24 @@ export class OoTMMTracker implements TrackerPack {
       }
     }
 
+    return counts;
+  }
+
+  /**
+   * Count the small keys present in the active dungeon layout.  Used for
+   * vanilla key placement, where the vanilla `maxCount` from `ITEM_DATABASE`
+   * does not match MQ dungeons.
+   */
+  private countSmallKeysInActiveLayout(): Map<string, number> {
+    const counts = new Map<string, number>();
+    const worlds = this.baseWorlds.length > 0 ? this.baseWorlds : this.worlds;
+    for (const world of worlds) {
+      for (const item of world.checkItems?.values() ?? []) {
+        const itemId = item?.id;
+        if (!itemId?.includes('SMALL_KEY')) continue;
+        counts.set(itemId, (counts.get(itemId) ?? 0) + 1);
+      }
+    }
     return counts;
   }
 

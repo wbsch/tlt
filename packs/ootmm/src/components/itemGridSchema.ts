@@ -152,6 +152,7 @@ export interface ItemGridRenderContext {
   getWheelOverlayText: (itemId: string) => string | null;
   isItemIconDisabled: (itemId: string) => boolean;
   shouldShowItemCount: (itemId: string) => boolean;
+  isItemCountMaxed: (itemId: string) => boolean;
   getGridItemCount: (itemId: string) => number;
   handleImageError: (event: Event) => void;
   handleOverlayError: (event: Event) => void;

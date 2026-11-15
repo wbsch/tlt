@@ -806,6 +806,15 @@ function shouldShowItemCount(itemId: string): boolean {
   );
 }
 
+function isItemCountMaxed(itemId: string): boolean {
+  if (isEmptyGridItem(itemId)) return false;
+  if (getGridSubmenu(itemId)) return false;
+  if (!shouldShowItemCount(itemId)) return false;
+
+  const maxCount = getItemMaxCount(itemId);
+  return maxCount > 0 && getGridItemCount(itemId) >= maxCount;
+}
+
 function isItemIconDisabled(itemId: string): boolean {
   if (isEmptyGridItem(itemId)) return false;
   if (getGridSubmenu(itemId)) return false;
@@ -971,6 +980,7 @@ provide(itemGridRenderContextKey, {
   getWheelOverlayText,
   isItemIconDisabled,
   shouldShowItemCount,
+  isItemCountMaxed,
   getGridItemCount,
   handleImageError,
   handleOverlayError,
