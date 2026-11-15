@@ -108,6 +108,10 @@ const ENTRANCES_DATA =
     >
   >(DataMod, 'ENTRANCES') ?? {};
 
+const BOSS_METADATA_BY_ENTRANCE = resolveExport<
+  Map<string, { event: string; eventClear?: string }>
+>(LogicMod, 'BOSS_METADATA_BY_ENTRANCE');
+
 const CHECKS_BY_LOCATION =
   resolveExport<typeof DataMod.CHECKS_BY_LOCATION>(
     DataMod,
@@ -698,8 +702,15 @@ export class OoTMMTracker implements TrackerPack {
             // (self-mapping + user overrides).  Without this, user mappings that
             // cross entrance types (e.g. dungeon → dungeon-ctr) can leave
             // unmatched entries in the pool, causing "Unable to place pools".
+            //
+            // `erBoss` is intentionally kept: the boss pool stays empty because
+            // every boss entrance is self-mapped above, but the world expressions
+            // read the setting (`setting(erBoss, none)`) to decide whether a
+            // region's clear state follows the vanilla dungeon/boss association.
+            // Forcing it to 'none' made e.g. `is_spring` depend on the Snowhead
+            // boss event even with boss shuffle enabled, so clear-state checks
+            // were wrongly reachable without a boss entrance mapping.
             erDungeons: 'none',
-            erBoss: 'none',
             erGrottos: 'none',
             erIndoors: 'none',
             erRegions: 'none',
@@ -947,6 +958,23 @@ export class OoTMMTracker implements TrackerPack {
           }
           fromArea.exits[destinationData.to] = sourceExpr;
         }
+      }
+    }
+
+    // `logicPassEntrances()` records "boss beaten -> region clear state" events
+    // for every plando boss mapping on `OOT SPAWN`. The tracker self-maps all
+    // boss entrances so the boss pool stays empty, which means unmapped boss
+    // sources would keep the vanilla dungeon/boss association. Drop those
+    // events for the unmapped bosses: with boss shuffle it is unknown which
+    // dungeon the boss behind an unmapped boss access belongs to, so region
+    // clear-state conditions (e.g. `is_spring`) must not be satisfied.
+    for (const key of unmappedEntrances) {
+      const boss = BOSS_METADATA_BY_ENTRANCE?.get(key);
+      if (!boss?.eventClear) continue;
+      for (const world of this.worlds) {
+        const spawnArea = world.areas?.['OOT SPAWN'];
+        if (!spawnArea?.events) continue;
+        delete spawnArea.events[boss.eventClear];
       }
     }
 

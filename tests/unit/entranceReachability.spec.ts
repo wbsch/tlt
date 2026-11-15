@@ -164,4 +164,60 @@ describe('entrance reachability', () => {
       reachableEntranceIds.has('MM_DEKU_PALACE_EXTERIOR_FROM_SHRINE'),
     ).toBe(false);
   }, 30000);
+
+  // With boss shuffle the region clear state must follow the mapped boss
+  // access, not the vanilla dungeon↔boss association. Reaching the Snowhead
+  // boss room through an unrelated entrance says nothing about which dungeon's
+  // boss access leads there.
+  const bossShuffleBaseSettings: Partial<OoTMMSettings> = {
+    games: 'ootmm',
+    erBoss: 'full',
+    erOneWays: 'full',
+    erOneWaysMajor: true,
+    erOneWaysAnywhere: true,
+    plando: {
+      entrances: {
+        OOT_LAKE_HYLIA_FROM_VALLEY: 'MM_BOSS_TEMPLE_SNOWHEAD',
+      },
+    },
+  };
+
+  it('does not infer a region clear state from an unmapped boss entrance', async () => {
+    const tracker = new OoTMMTracker();
+    await tracker.initialize(bossShuffleBaseSettings);
+
+    const reachable = new Set(
+      tracker.checkReachability(tracker.getItemMaxCounts())
+        .reachableLocationIds,
+    );
+
+    // The Snowhead boss room itself is reachable through the one-way entrance…
+    expect(reachable.has('MM Snowhead Temple Boss@0')).toBe(true);
+    // …but the Snowhead clear state must not be assumed while the Snowhead
+    // boss access is unmapped.
+    expect(reachable.has('MM Mountain Village Gossip Outside@0')).toBe(false);
+  }, 30000);
+
+  it('derives a boss clear state from the mapped boss entrance', async () => {
+    const tracker = new OoTMMTracker();
+    await tracker.initialize({
+      ...bossShuffleBaseSettings,
+      plando: {
+        entrances: {
+          OOT_LAKE_HYLIA_FROM_VALLEY: 'MM_BOSS_TEMPLE_SNOWHEAD',
+          MM_BOSS_TEMPLE_GREAT_BAY: 'MM_BOSS_TEMPLE_SNOWHEAD',
+        },
+      },
+    });
+
+    const reachable = new Set(
+      tracker.checkReachability(tracker.getItemMaxCounts())
+        .reachableLocationIds,
+    );
+
+    // Great Bay's clear state now depends on Goht, which is reachable.
+    expect(reachable.has('MM Great Bay Coast Fisherman HP@0')).toBe(true);
+    // The Snowhead boss access is still unmapped, so Snowhead stays unknown.
+    expect(reachable.has('MM Mountain Village Gossip Outside@0')).toBe(false);
+  }, 30000);
 });
