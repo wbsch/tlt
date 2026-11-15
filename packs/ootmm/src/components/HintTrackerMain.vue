@@ -757,52 +757,6 @@ function removeMoonHint(index: number) {
       </button>
 
       <div v-if="!isPathCollapsed" class="hint-category__body">
-        <!-- Add form -->
-        <div v-if="isPathFormOpen" class="hint-add-form">
-          <div class="hint-add-form__field">
-            <label>Region</label>
-            <SpoilerSearchCombobox
-              v-model="pathFormRegion"
-              :options="regionOptions"
-              placeholder="Search regions..."
-            />
-          </div>
-          <div class="hint-add-form__field">
-            <label>Subtype</label>
-            <SpoilerSearchCombobox
-              v-model="pathFormSubTypeModel"
-              :options="PATH_SUBTYPE_OPTIONS"
-              placeholder="Search subtypes..."
-            />
-          </div>
-          <div
-            v-if="currentSubIdOptions.length > 0"
-            class="hint-add-form__field"
-          >
-            <label>Detail</label>
-            <SpoilerSearchCombobox
-              v-model="pathFormSubIdModel"
-              :options="currentSubIdStringOptions"
-              placeholder="Search details..."
-            />
-          </div>
-          <div class="hint-add-form__actions">
-            <button
-              class="hint-btn hint-btn--primary"
-              :disabled="!pathFormRegion"
-              @click="addPathHint"
-            >
-              Save
-            </button>
-            <button
-              class="hint-btn hint-btn--secondary"
-              @click="isPathFormOpen = false"
-            >
-              Cancel
-            </button>
-          </div>
-        </div>
-
         <!-- Recorded hints -->
         <div
           v-for="(hint, idx) in hintTracker.pathHints"
@@ -852,6 +806,52 @@ function removeMoonHint(index: number) {
           </button>
         </div>
 
+        <!-- Add form -->
+        <div v-if="isPathFormOpen" class="hint-add-form">
+          <div class="hint-add-form__field">
+            <label>Region</label>
+            <SpoilerSearchCombobox
+              v-model="pathFormRegion"
+              :options="regionOptions"
+              placeholder="Search regions..."
+            />
+          </div>
+          <div class="hint-add-form__field">
+            <label>Subtype</label>
+            <SpoilerSearchCombobox
+              v-model="pathFormSubTypeModel"
+              :options="PATH_SUBTYPE_OPTIONS"
+              placeholder="Search subtypes..."
+            />
+          </div>
+          <div
+            v-if="currentSubIdOptions.length > 0"
+            class="hint-add-form__field"
+          >
+            <label>Detail</label>
+            <SpoilerSearchCombobox
+              v-model="pathFormSubIdModel"
+              :options="currentSubIdStringOptions"
+              placeholder="Search details..."
+            />
+          </div>
+          <div class="hint-add-form__actions">
+            <button
+              class="hint-btn hint-btn--primary"
+              :disabled="!pathFormRegion"
+              @click="addPathHint"
+            >
+              Save
+            </button>
+            <button
+              class="hint-btn hint-btn--secondary"
+              @click="isPathFormOpen = false"
+            >
+              Cancel
+            </button>
+          </div>
+        </div>
+
         <button
           v-if="!isPathFormOpen"
           class="hint-btn hint-btn--add"
@@ -878,6 +878,47 @@ function removeMoonHint(index: number) {
       </button>
 
       <div v-if="!isAlwaysSometimesCollapsed" class="hint-category__body">
+        <div
+          v-for="(hint, idx) in hintTracker.alwaysSometimesHints"
+          :key="idx"
+          class="hint-row"
+        >
+          <div class="hint-row__info">
+            <strong>{{
+              getAlwaysSometimesLocationLabel(hint.location)
+            }}</strong>
+            <div class="hint-row__hint-items">
+              <span
+                v-for="(itemId, iidx) in getHintItems(hint)"
+                :key="iidx"
+                class="hint-row__hint-item"
+              >
+                <span v-if="itemId === 'JUNK'" class="hint-row__junk"
+                  >Junk</span
+                >
+                <template v-else>
+                  <img
+                    v-if="getHintItemIcon(itemId, trackerSettings)"
+                    :src="getHintItemIcon(itemId, trackerSettings)"
+                    class="hint-item-icon"
+                    :alt="itemId"
+                  />
+                  <span class="hint-row__item-name">{{
+                    resolveItemName(itemId)
+                  }}</span>
+                </template>
+              </span>
+            </div>
+          </div>
+          <button
+            class="hint-row__delete"
+            title="Delete hint"
+            @click="removeAlwaysSometimesHint(idx)"
+          >
+            🗑
+          </button>
+        </div>
+
         <div v-if="isAlwaysSometimesFormOpen" class="hint-add-form">
           <div class="hint-add-form__field">
             <label>Check Location</label>
@@ -923,47 +964,6 @@ function removeMoonHint(index: number) {
           </div>
         </div>
 
-        <div
-          v-for="(hint, idx) in hintTracker.alwaysSometimesHints"
-          :key="idx"
-          class="hint-row"
-        >
-          <div class="hint-row__info">
-            <strong>{{
-              getAlwaysSometimesLocationLabel(hint.location)
-            }}</strong>
-            <div class="hint-row__hint-items">
-              <span
-                v-for="(itemId, iidx) in getHintItems(hint)"
-                :key="iidx"
-                class="hint-row__hint-item"
-              >
-                <span v-if="itemId === 'JUNK'" class="hint-row__junk"
-                  >Junk</span
-                >
-                <template v-else>
-                  <img
-                    v-if="getHintItemIcon(itemId, trackerSettings)"
-                    :src="getHintItemIcon(itemId, trackerSettings)"
-                    class="hint-item-icon"
-                    :alt="itemId"
-                  />
-                  <span class="hint-row__item-name">{{
-                    resolveItemName(itemId)
-                  }}</span>
-                </template>
-              </span>
-            </div>
-          </div>
-          <button
-            class="hint-row__delete"
-            title="Delete hint"
-            @click="removeAlwaysSometimesHint(idx)"
-          >
-            🗑
-          </button>
-        </div>
-
         <button
           v-if="!isAlwaysSometimesFormOpen"
           class="hint-btn hint-btn--add"
@@ -990,36 +990,6 @@ function removeMoonHint(index: number) {
       </button>
 
       <div v-if="!isRegionCollapsed" class="hint-category__body">
-        <div v-if="isRegionFormOpen" class="hint-add-form">
-          <div class="hint-add-form__field">
-            <label>Region</label>
-            <SpoilerSearchCombobox
-              v-model="regionFormRegion"
-              :options="regionOptions"
-              placeholder="Search regions..."
-            />
-          </div>
-          <div class="hint-add-form__field">
-            <label>Item</label>
-            <HintItemPicker v-model="regionFormItem" />
-          </div>
-          <div class="hint-add-form__actions">
-            <button
-              class="hint-btn hint-btn--primary"
-              :disabled="!regionFormRegion || !regionFormItem"
-              @click="addRegionHint"
-            >
-              Save
-            </button>
-            <button
-              class="hint-btn hint-btn--secondary"
-              @click="isRegionFormOpen = false"
-            >
-              Cancel
-            </button>
-          </div>
-        </div>
-
         <div
           v-for="(hint, idx) in hintTracker.regionHints"
           :key="idx"
@@ -1049,6 +1019,36 @@ function removeMoonHint(index: number) {
           >
             🗑
           </button>
+        </div>
+
+        <div v-if="isRegionFormOpen" class="hint-add-form">
+          <div class="hint-add-form__field">
+            <label>Region</label>
+            <SpoilerSearchCombobox
+              v-model="regionFormRegion"
+              :options="regionOptions"
+              placeholder="Search regions..."
+            />
+          </div>
+          <div class="hint-add-form__field">
+            <label>Item</label>
+            <HintItemPicker v-model="regionFormItem" />
+          </div>
+          <div class="hint-add-form__actions">
+            <button
+              class="hint-btn hint-btn--primary"
+              :disabled="!regionFormRegion || !regionFormItem"
+              @click="addRegionHint"
+            >
+              Save
+            </button>
+            <button
+              class="hint-btn hint-btn--secondary"
+              @click="isRegionFormOpen = false"
+            >
+              Cancel
+            </button>
+          </div>
         </div>
 
         <button
@@ -1095,32 +1095,6 @@ function removeMoonHint(index: number) {
             ×
           </button>
         </div>
-        <div v-if="isFoolishFormOpen" class="hint-add-form">
-          <div class="hint-add-form__field">
-            <label>Region</label>
-            <SpoilerSearchCombobox
-              v-model="foolishFormRegion"
-              :options="regionOptions"
-              placeholder="Search regions..."
-            />
-          </div>
-          <div class="hint-add-form__actions">
-            <button
-              class="hint-btn hint-btn--primary"
-              :disabled="!foolishFormRegion"
-              @click="addFoolishHint"
-            >
-              Save
-            </button>
-            <button
-              class="hint-btn hint-btn--secondary"
-              @click="isFoolishFormOpen = false"
-            >
-              Cancel
-            </button>
-          </div>
-        </div>
-
         <div
           v-for="(hint, idx) in hintTracker.foolishHints"
           :key="idx"
@@ -1146,6 +1120,32 @@ function removeMoonHint(index: number) {
           >
             🗑
           </button>
+        </div>
+
+        <div v-if="isFoolishFormOpen" class="hint-add-form">
+          <div class="hint-add-form__field">
+            <label>Region</label>
+            <SpoilerSearchCombobox
+              v-model="foolishFormRegion"
+              :options="regionOptions"
+              placeholder="Search regions..."
+            />
+          </div>
+          <div class="hint-add-form__actions">
+            <button
+              class="hint-btn hint-btn--primary"
+              :disabled="!foolishFormRegion"
+              @click="addFoolishHint"
+            >
+              Save
+            </button>
+            <button
+              class="hint-btn hint-btn--secondary"
+              @click="isFoolishFormOpen = false"
+            >
+              Cancel
+            </button>
+          </div>
         </div>
 
         <button
@@ -1174,6 +1174,37 @@ function removeMoonHint(index: number) {
       </button>
 
       <div v-if="!isMoonCollapsed" class="hint-category__body">
+        <div
+          v-for="(hint, idx) in hintTracker.moonHints"
+          :key="idx"
+          class="hint-row"
+        >
+          <div class="hint-row__info">
+            <strong>{{ getRegionDisplayName(hint.region) }}</strong>
+            <span v-if="hint.itemId === 'JUNK'" class="hint-row__junk"
+              >Junk</span
+            >
+            <span v-else class="hint-row__hint-item">
+              <img
+                v-if="getHintItemIcon(hint.itemId, trackerSettings)"
+                :src="getHintItemIcon(hint.itemId, trackerSettings)"
+                class="hint-item-icon"
+                :alt="hint.itemId"
+              />
+              <span class="hint-row__item-name">{{
+                resolveItemName(hint.itemId)
+              }}</span>
+            </span>
+          </div>
+          <button
+            class="hint-row__delete"
+            title="Delete hint"
+            @click="removeMoonHint(idx)"
+          >
+            🗑
+          </button>
+        </div>
+
         <div v-if="isMoonFormOpen" class="hint-add-form">
           <div class="hint-add-form__field">
             <label>Region</label>
@@ -1205,37 +1236,6 @@ function removeMoonHint(index: number) {
               Cancel
             </button>
           </div>
-        </div>
-
-        <div
-          v-for="(hint, idx) in hintTracker.moonHints"
-          :key="idx"
-          class="hint-row"
-        >
-          <div class="hint-row__info">
-            <strong>{{ getRegionDisplayName(hint.region) }}</strong>
-            <span v-if="hint.itemId === 'JUNK'" class="hint-row__junk"
-              >Junk</span
-            >
-            <span v-else class="hint-row__hint-item">
-              <img
-                v-if="getHintItemIcon(hint.itemId, trackerSettings)"
-                :src="getHintItemIcon(hint.itemId, trackerSettings)"
-                class="hint-item-icon"
-                :alt="hint.itemId"
-              />
-              <span class="hint-row__item-name">{{
-                resolveItemName(hint.itemId)
-              }}</span>
-            </span>
-          </div>
-          <button
-            class="hint-row__delete"
-            title="Delete hint"
-            @click="removeMoonHint(idx)"
-          >
-            🗑
-          </button>
         </div>
 
         <button
